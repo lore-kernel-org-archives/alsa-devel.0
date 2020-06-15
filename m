@@ -2,76 +2,73 @@ Return-Path: <SRS0=afjW=74=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5EBDC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4EC8C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:43:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64F7F208D5
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:42:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63983208C7
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:43:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IEtAoMeK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FwFV+tA4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64F7F208D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ln7Rvh3W";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fpWlWhX2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63983208C7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E84FB1682;
-	Tue, 16 Jun 2020 01:41:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E84FB1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id E404B1615;
+	Tue, 16 Jun 2020 01:42:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E404B1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592264556;
-	bh=rX1DHAOnhPtnb7erlFKAIOqjfys/6ZA52aiWMCtZo7Y=;
+	s=default; t=1592264601;
+	bh=T0rnuvVjeJSYHDi4W2lrrHlq2P7qYT+X9jNjT15U5JU=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IEtAoMeKPUgJBoSK6D801IK76b5qenHYkG1rioF2h9OTPrNhjy8GcDjOeNEPbAWKv
-	 e8wvg637wilx+7Who4rm6x8Xgwm5V5n5ouz4EoEAIK6CRQEMUI+miL+tPzHKnKEiKM
-	 XXRv6gRF5eQNS0XJ/PjzRa2U15zJN6RmudbildHI=
+	b=ln7Rvh3W7sfTpopCDwywtYxeWCSOY09hZqymItABtop7oHC151T6RCKirRAPFLRpI
+	 r/yKkN5/Eh8QG50lNZEyjybIFcxld0X3c2VhK8I4US7l5W/v3yFPK4TU6mjv13tLOx
+	 lQKCsI4RsFefzQZu726CEm1Qq0fFku2XYXAP7Bmg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9377F802A8;
-	Tue, 16 Jun 2020 01:40:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E77EFF802A1;
+	Tue, 16 Jun 2020 01:40:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1886FF802A1; Tue, 16 Jun 2020 01:40:12 +0200 (CEST)
+ id ABBC4F802BE; Tue, 16 Jun 2020 01:40:14 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8768F8013E
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:40:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8768F8013E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16BE6F802A1
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:40:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16BE6F802A1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FwFV+tA4"
+ header.b="fpWlWhX2"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C936C207D4;
- Mon, 15 Jun 2020 23:40:03 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C38F4207D4;
+ Mon, 15 Jun 2020 23:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592264404;
- bh=rX1DHAOnhPtnb7erlFKAIOqjfys/6ZA52aiWMCtZo7Y=;
+ s=default; t=1592264410;
+ bh=T0rnuvVjeJSYHDi4W2lrrHlq2P7qYT+X9jNjT15U5JU=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=FwFV+tA4A7kJf7sdhkLV55rcuqeiXqHZVwcYmF4cAIhRt0Kfu+x2/saCCn3WB9xGU
- QyG8nOfMzur/WAPA7hSeOW0URwVB7SIuEb+PnGJgR4WnPNJqq3b+BAa5lrl/ew+H0z
- Uj4+X1can5ZZYawgQ1PAloxnAvFST4rNkCZSojQE=
-Date: Tue, 16 Jun 2020 00:40:01 +0100
+ b=fpWlWhX2WB5QqsGoxkCv14/W3luZTWN65SiYi8Wiym+c+0wiwrStR0Qh0HZPWMIOM
+ mOOM/SV21lsQYTBVGd+stxlprTKQZM0ye2o39yep7Xoc3moP+zc523wX1gTRaZukqv
+ I5nuUOVE5S7XL5kCF3AJlhODKlHzQLoBnep4nvQ4=
+Date: Tue, 16 Jun 2020 00:40:07 +0100
 From: Mark Brown <broonie@kernel.org>
-To: kjlu@umn.edu, "wu000273@umn.edu" <wu000273@umn.edu>
-In-Reply-To: <20200614033749.2975-1-wu000273@umn.edu>
-References: <20200614033749.2975-1-wu000273@umn.edu>
-Subject: Re: [PATCH] ASoC: img: Fix a reference count leak in
- img_i2s_in_set_fmt
-Message-Id: <159226439190.27409.3717160114611875111.b4-ty@kernel.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200612204050.25901-1-pierre-louis.bossart@linux.intel.com>
+References: <20200612204050.25901-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: improve core dmesg logs and verbosity
+Message-Id: <159226439190.27409.8023638721138982918.b4-ty@kernel.org>
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,11 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 13 Jun 2020 22:37:48 -0500, wu000273@umn.edu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code, causing incorrect ref count if
-> pm_runtime_put_noidle() is not called in error handling paths.
-> Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
+On Fri, 12 Jun 2020 15:40:47 -0500, Pierre-Louis Bossart wrote:
+> Try to both reduce useless verbosity and keep useful error reports.
+> 
+> Pierre-Louis Bossart (3):
+>   ASoC: soc-core: reduce verbosity of BE override message
+>   ASoC: soc-pcm: improve error messages in soc_pcm_new()
+>   ASoC: soc-pcm/compress: reduce verbosity on mapping ok messages
+> 
+> [...]
 
 Applied to
 
@@ -99,8 +100,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: img: Fix a reference count leak in img_i2s_in_set_fmt
-      commit: c4c59b95b7f7d4cef5071b151be2dadb33f3287b
+[1/3] ASoC: soc-core: reduce verbosity of BE override message
+      commit: 1328948fea693679ab81601aa72a9ed6025f81ea
+[2/3] ASoC: soc-pcm: improve error messages in soc_pcm_new()
+      commit: 799827a42045e77a34bd4a90ba8bde372ed8058d
+[3/3] ASoC: soc-pcm/compress: reduce verbosity on mapping ok messages
+      commit: 1d5cd5254f67bc65622f4cac04c25d6e082f21b0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
