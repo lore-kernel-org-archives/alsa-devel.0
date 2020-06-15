@@ -3,76 +3,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FCCAC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:43:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E521BC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:44:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 976032080D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:43:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71C4D208C7
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:44:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ktF+IECq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ntm1hMrD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 976032080D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j1VsZPmT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="h5ITp4wR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71C4D208C7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20A9B165D;
-	Tue, 16 Jun 2020 01:42:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A9B165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C88F1676;
+	Tue, 16 Jun 2020 01:43:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C88F1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592264614;
-	bh=nm6YjcSTLxiQn/pubcq2UsGgEJdKRxFZIDhtloCwd3s=;
+	s=default; t=1592264655;
+	bh=jHkTJHjduQC9+9EFbMcRvhbWtNAxkctB1zvS4CRnA/o=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ktF+IECqfLaASRjub9AM08h8C5BVhcNV7spmSJSIWFWWdoBFjMwf2w2GAvKYcKzMF
-	 YkloE5tAoMCiuM4Ujr9UpTa7mmia7qmT7wB06nGw/zq4DGp4ptQ5Z+NUb6UR49nKSV
-	 9YFXUODQSsb7lOjI3Jc99U3lnUicoV+xvtwBqU9A=
+	b=j1VsZPmTTPOXl9Xd5CCqyjDYPcj5Pq2arYv58wwOtfdCL/VXHop+b0gkUAw/v6yfG
+	 ryQQLvya18+g5/sWWIgd50yUdvBfBw1aW0OXUeE6kABDvnh0oKs3MoBV5HeMb4e8Jf
+	 sNHZk74FeSHqpv9/rO/6LCPD8RJueZoaFwHcWqeI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB2F7F802DD;
-	Tue, 16 Jun 2020 01:40:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5992F802E2;
+	Tue, 16 Jun 2020 01:40:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95DB0F802D2; Tue, 16 Jun 2020 01:40:20 +0200 (CEST)
+ id 47BA8F802E3; Tue, 16 Jun 2020 01:40:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6021F802A1
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:40:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6021F802A1
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF1EAF802E1
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:40:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF1EAF802E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ntm1hMrD"
+ header.b="h5ITp4wR"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B112820714;
- Mon, 15 Jun 2020 23:40:15 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id CE532207D4;
+ Mon, 15 Jun 2020 23:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592264416;
- bh=nm6YjcSTLxiQn/pubcq2UsGgEJdKRxFZIDhtloCwd3s=;
+ s=default; t=1592264421;
+ bh=jHkTJHjduQC9+9EFbMcRvhbWtNAxkctB1zvS4CRnA/o=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Ntm1hMrDLcgcUAULOYdK9V2T9COZBi0HBv2lbd+T/0XIPlV3P2LtOklrjg2H9R5ZF
- WXBHlIVx63/6xgJ712O9Yvru8unHNZKC2c7gfLzcqgfkXv+wlUnKzHPGjSyCZxy0m9
- uImbbtZPHj0u940PM3xMTaTUc9P6eXktQpfUJ0g8=
-Date: Tue, 16 Jun 2020 00:40:14 +0100
+ b=h5ITp4wRVUsSufzjTuUdIO3Qw50m4LvT9OksCtTWBAkyhkCdvxKaFkKClTNKPNRyf
+ O7YB5s45tGZxWM4P/GzjHqYdMnM9eOK0ok3eKIRQQbeTbPhwOw6DHSRYv5hIIp3z5L
+ 32NyHGaoFhhuzJaO3pFMrNbdVjzjY2L7PvjqesBU=
+Date: Tue, 16 Jun 2020 00:40:19 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-In-Reply-To: <20200530095519.24324-1-akshu.agrawal@amd.com>
-References: <20200530095519.24324-1-akshu.agrawal@amd.com>
-Subject: Re: [v3] ASoC: AMD: Use mixer control to switch between DMICs
-Message-Id: <159226439188.27409.56215501183185998.b4-ty@kernel.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- YueHaibing <yuehaibing@huawei.com>, yuhsuan@chromium.org,
- Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org, Sia Jee Heng <jee.heng.sia@intel.com>
+In-Reply-To: <1591682783-1923-1-git-send-email-jee.heng.sia@intel.com>
+References: <1591682783-1923-1-git-send-email-jee.heng.sia@intel.com>
+Subject: Re: [PATCH v5 0/3] ASoC: Intel: Add KeemBay ASoC platform driver
+Message-Id: <159226439189.27409.13376774227836668349.b4-ty@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, cezary.rojewski@intel.com, tiwai@suse.com,
+ andriy.shevchenko@intel.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,11 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 30 May 2020 15:25:06 +0530, Akshu Agrawal wrote:
-> Having mixer control to switch between DMICs prevents user to
-> initiate capture simultaneously on both the DMIcs.
-> Earlier 2 separate devices, one for each DMIC, gave an option of
-> using them simultaneously, which is not supported.
+On Tue, 9 Jun 2020 14:06:20 +0800, Sia Jee Heng wrote:
+> The below series of patches support the KeemBay ASoC platform driver.
+> The platform driver initialize the i2s to capture and playback the
+> pcm data on the ARM. The i2s is running in polling mode.
+> 
+> There is no DSP in the KeemBay SoC. Users are rely on the Gstreamer plugin
+> to perform Audio preprocessing.
+> 
+> [...]
 
 Applied to
 
@@ -100,8 +100,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: AMD: Use mixer control to switch between DMICs
-      commit: b7a742cff3f618d848e62e5a1ade0ff816e93092
+[1/3] ASoC: Intel: Add KeemBay platform driver
+      commit: c5477e966728f8e9d1434543d4ee677d515e1078
+[2/3] ASoC: Intel: Add makefiles and kconfig changes for KeemBay
+      commit: c544912bcc2dc806ba71d9157ccefca4a4a885f0
+[3/3] ASoC: Add documentation for KeemBay i2s
+      commit: e16caedf737145f74e34e45205b15695adf66f38
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
