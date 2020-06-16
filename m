@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBCE9C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:22:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A166C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:22:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 686E7206DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:22:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0866206DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:22:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Sbt+WWH8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 686E7206DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TvK1MZDU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0866206DB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 028BF168D;
-	Tue, 16 Jun 2020 07:21:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 028BF168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C4F51682;
+	Tue, 16 Jun 2020 07:21:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C4F51682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592284947;
-	bh=Y+Tz4rE8SjgroEcLwKLdgf9Sg4g3VlQr8vaiSD0aSXg=;
+	s=default; t=1592284964;
+	bh=8nqOwdhX/9OKGmtmNLCkjgE47rr4NgkVwSvqpiZ6v80=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sbt+WWH80azR41s1whIMrt5VGopCPgvaCOYOyKfb/OiFtPuM4m6Vd2IG6Up6t+pHt
-	 KA2s2UpQdLbrIA2yoo1XcC/NQU8hkB8BBcbeKDhI9GrzAhtnU1kVJ/qlnwTk48GQXl
-	 fw7G1W9K2rZxv5wBCBGTHVHmlxrrc+Fvdt5CoRgQ=
+	b=TvK1MZDUOup1/alRwskON3C/vBzZ+AqjloDUEp3ExWnFpmDmLN3G5qnnGkm3Kgjsy
+	 Ocqmm9BrL49nfih5OpaZ7eroFlZye+Zd/oQlSuO7wc3GR1lVq4F6kophh0f2IXvxGN
+	 kKcljIehDL2vINjDegL5u1kVu+Lc36q/52C3TQwY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D93EBF802BC;
-	Tue, 16 Jun 2020 07:20:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34CD2F802C4;
+	Tue, 16 Jun 2020 07:20:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0ED6FF802BD; Tue, 16 Jun 2020 07:20:21 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D9F72F802A9
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 07:20:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9F72F802A9
-Date: 16 Jun 2020 14:20:15 +0900
-X-IronPort-AV: E=Sophos;i="5.73,517,1583161200"; d="scan'208";a="49787588"
+ id 65683F802D2; Tue, 16 Jun 2020 07:20:27 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id BA4D8F802BD
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 07:20:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA4D8F802BD
+Date: 16 Jun 2020 14:20:23 +0900
+X-IronPort-AV: E=Sophos;i="5.73,517,1583161200"; d="scan'208";a="49577348"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 16 Jun 2020 14:20:15 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 16 Jun 2020 14:20:23 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0D03441A8B3C;
- Tue, 16 Jun 2020 14:20:15 +0900 (JST)
-Message-ID: <87pn9z4men.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9700641A8B3C;
+ Tue, 16 Jun 2020 14:20:23 +0900 (JST)
+Message-ID: <87o8pj4mef.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 03/16] ASoC: pxa: rename to snd_soc_component_read()
+Subject: [PATCH 04/16] ASoC: atmel: rename to snd_soc_component_read()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tuzb4mjg.wl-kuninori.morimoto.gx@renesas.com>
@@ -86,32 +86,26 @@ This patch renames _read32() to _read()
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/pxa/mioa701_wm9713.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/atmel/atmel-pdmic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index bf27b277c01f..763db7bbd9bb 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -51,14 +51,14 @@ static int rear_amp_power(struct snd_soc_component *component, int power)
- 	unsigned short reg;
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 04ec6f0af179..5245826cd99d 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -290,10 +290,10 @@ static int pdmic_get_mic_volsw(struct snd_kcontrol *kcontrol,
+ 	unsigned int dgain_val, scale_val;
+ 	int i;
  
- 	if (power) {
--		reg = snd_soc_component_read32(component, AC97_GPIO_CFG);
-+		reg = snd_soc_component_read(component, AC97_GPIO_CFG);
- 		snd_soc_component_write(component, AC97_GPIO_CFG, reg | 0x0100);
--		reg = snd_soc_component_read32(component, AC97_GPIO_PULL);
-+		reg = snd_soc_component_read(component, AC97_GPIO_PULL);
- 		snd_soc_component_write(component, AC97_GPIO_PULL, reg | (1<<15));
- 	} else {
--		reg = snd_soc_component_read32(component, AC97_GPIO_CFG);
-+		reg = snd_soc_component_read(component, AC97_GPIO_CFG);
- 		snd_soc_component_write(component, AC97_GPIO_CFG, reg & ~0x0100);
--		reg = snd_soc_component_read32(component, AC97_GPIO_PULL);
-+		reg = snd_soc_component_read(component, AC97_GPIO_PULL);
- 		snd_soc_component_write(component, AC97_GPIO_PULL, reg & ~(1<<15));
- 	}
+-	dgain_val = (snd_soc_component_read32(component, PDMIC_DSPR1) & PDMIC_DSPR1_DGAIN_MASK)
++	dgain_val = (snd_soc_component_read(component, PDMIC_DSPR1) & PDMIC_DSPR1_DGAIN_MASK)
+ 		    >> PDMIC_DSPR1_DGAIN_SHIFT;
  
+-	scale_val = (snd_soc_component_read32(component, PDMIC_DSPR0) & PDMIC_DSPR0_SCALE_MASK)
++	scale_val = (snd_soc_component_read(component, PDMIC_DSPR0) & PDMIC_DSPR0_SCALE_MASK)
+ 		    >> PDMIC_DSPR0_SCALE_SHIFT;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(mic_gain_table); i++) {
 -- 
 2.25.1
 
