@@ -2,57 +2,61 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DEEDC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:06:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EFE1C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:13:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4FB12074D
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:06:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5A422074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:13:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CujdfT76"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4FB12074D
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OjOP0M0u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5A422074D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=reaktanz.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67E0A169D;
-	Tue, 16 Jun 2020 10:05:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67E0A169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B18F167A;
+	Tue, 16 Jun 2020 10:12:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B18F167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592294775;
-	bh=M4TJ+TSJpTiNjpe3jkOebnglXJ0GqGtBw1X0qc+jJxQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CujdfT76Y9OwZrvsrT8qLs9lqGZ/iY01jV59YXRdmPLMyn1uXZYaCcrV7uDpSGRYx
-	 BtL3LykeqeD+jKnOTN+3+GOReqbkOd/Us3Hp+Ei/xGaT4rA0H8facxZdZmMRtFyUSv
-	 0Sl56oJFbOT1zMQs45SygYoiQUADQPr3dOQBHljw=
+	s=default; t=1592295179;
+	bh=GB4/Sj2N1ynfjSqfU6MB2WMpm745vHzdCLza/zjpgWQ=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OjOP0M0udp71qbAkGYkKyBNSHwyYM4mIn9ga6kja683tlSGzTQzSbCSnpwDxF+3KQ
+	 XjOZWMwLmtp0ZJBef1qZf5bUDllrE8XBg2hVWmzDlO1iosEZXcMB1fTQioGeaL0MSn
+	 p0VFvc6iKwdFcnbbAm5a+cnt+SnmuHO5LgrIrGp8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B76A1F80245;
-	Tue, 16 Jun 2020 10:05:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FAB9F80217;
+	Tue, 16 Jun 2020 10:12:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D536F80252; Tue, 16 Jun 2020 10:05:21 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 6DA4CF80232
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 10:05:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DA4CF80232
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+ id 61BF4F8022B; Tue, 16 Jun 2020 10:12:06 +0200 (CEST)
+Received: from dd48038.kasserver.com (dd48038.kasserver.com [85.13.164.104])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2824EF80114
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 10:11:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2824EF80114
+Received: from meadow.localnet (x4e3034a9.dyn.telefonica.de [78.48.52.169])
+ by dd48038.kasserver.com (Postfix) with ESMTPSA id A9923500085D
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 10:11:58 +0200 (CEST)
+From: "m.eik michalke" <alsa@reaktanz.de>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1592294717314460993-webhooks-bot@alsa-project.org>
-References: <1592294717314460993-webhooks-bot@alsa-project.org>
-Subject: low volume libalsa 1.2.3
-Message-Id: <20200616080521.1D536F80252@alsa1.perex.cz>
-Date: Tue, 16 Jun 2020 10:05:21 +0200 (CEST)
+Subject: presonus StudioLive 24.4.2
+Date: Tue, 16 Jun 2020 10:11:57 +0200
+Message-ID: <1859294.RmyynjnHiM@meadow>
+Organization: http://www.reaktanz.de/blog
+X-Face: :Fk?kfw3:=Vz)np%nh,d4^[#)-y,9IYe:y,; }P|%`fw>/.msl.f=*6j*-f$vL09$qopvp6
+ Ox|(^ge<|+0iS]{&|\<0>i7r'@'k+i=eB5y8*pO$#xT+$2uq=`
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,9 +72,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #60 was edited from texstar:
+hi,
 
-Sound is about 30% lower with alsa 1.2.3 than with alsa 1.2.2 using the same volume setting. Backing down to 1.2.2 to restore order as the natives are getting stabby.
+i'm trying to get a presonus StudioLive 24.4.2 up and running:
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/60
-Repository URL: https://github.com/alsa-project/alsa-lib
+  https://www.presonus.com/products/studiolive-24.4.2
+
+so far i'm partly successful -- looks like the board is automatically detected 
+and supported by the firewire dice module.
+
+however, i'm only offered 16 of the 24 supported audio channels. in the list 
+of soundcards it is merely shown as "studiolive" without further info on the 
+model. i wasn't able to find further info on this board's status with regards 
+to alsa, so if there's documentation on this somewhere, could someone please 
+point me to it?
+
+in case that as of now the studiolive isn't officially supported or the above 
+behavior is due to the fact that so far only the 16.4.2 is known to the 
+module, i'm willing to help as far as i can ;) i hope that already seeing 16 
+channels is a good point to start and that it's not too hard to make the 
+remaining 8 show up as well...
+
+
+best regards :: m.eik
+
+
+
