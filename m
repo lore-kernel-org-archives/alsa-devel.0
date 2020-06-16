@@ -2,57 +2,58 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C448CC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56EE1C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:30:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BAD7206DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:29:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDB32206DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:30:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FECVghzL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BAD7206DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L4r2zIyc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDB32206DB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8EA8168E;
-	Tue, 16 Jun 2020 07:28:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8EA8168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 665E31696;
+	Tue, 16 Jun 2020 07:29:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 665E31696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592285373;
-	bh=LpSGj/zxf0WB/y0upX6pZkVz9zlQFndN66NjH8FhNKI=;
+	s=default; t=1592285409;
+	bh=itWTMxiay6KlHTyxRArsyfATB59BNQWX/XkW82wrF78=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FECVghzLGH5lM9AQwoboUCI/h87m7bi13na+0CqsDD3NuCprb48yQjJSiiK3gzdXc
-	 N9TY+fiubUbNuCIZFTwGgYtyd0fqycurBMSQQOEGe/AklErbXm1cSbG9OYzoS0GLBK
-	 rwGuznvjvw7Ch43Hl43P9gaK5l/bLjRW5fUXK3gg=
+	b=L4r2zIycDEA2tIrC/YQsPUaRUNx95mygs/TBQtHP9H2WGySt/+o93zO1Y9s3uba3W
+	 xapcrceyKiF4avYFBRIgl5zI7Mw0Eu3gn4+J5rivt7iELYxycQ/sL5Ms73SL1D1hju
+	 nGybudcCwLuh1pDXQZkE7id5zN0B4GTmkd8AmE2s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FE80F8034C;
-	Tue, 16 Jun 2020 07:22:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97244F8034F;
+	Tue, 16 Jun 2020 07:22:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D063F80347; Tue, 16 Jun 2020 07:21:59 +0200 (CEST)
+ id 3F0AEF80350; Tue, 16 Jun 2020 07:22:03 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 0EFC5F80323
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 07:21:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EFC5F80323
-Date: 16 Jun 2020 14:21:50 +0900
-X-IronPort-AV: E=Sophos;i="5.73,517,1583161200"; d="scan'208";a="49787724"
+ by alsa1.perex.cz (Postfix) with ESMTP id A2BCAF8033F
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 07:21:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2BCAF8033F
+Date: 16 Jun 2020 14:21:55 +0900
+X-IronPort-AV: E=Sophos;i="5.73,517,1583161200"; d="scan'208";a="49787734"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 16 Jun 2020 14:21:50 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 16 Jun 2020 14:21:55 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id DA49C41AA3F9;
- Tue, 16 Jun 2020 14:21:50 +0900 (JST)
-Message-ID: <878sgn4mc0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2592F41AAE95;
+ Tue, 16 Jun 2020 14:21:55 +0900 (JST)
+Message-ID: <877dw74mbv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 15/16] ASoC: codecs: ak*: rename to snd_soc_component_read()
+Subject: [PATCH 16/16] ASoC: remove snd_soc_component_read32()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tuzb4mjg.wl-kuninori.morimoto.gx@renesas.com>
@@ -78,93 +79,26 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We need to use snd_soc_component_read()
-instead of     snd_soc_component_read32()
-
-This patch renames _read32() to _read()
+No driver is using snd_soc_component_read32() anymore.
+This patch removes it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/ak4458.c | 2 +-
- sound/soc/codecs/ak4535.c | 4 ++--
- sound/soc/codecs/ak4671.c | 8 ++++----
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ include/sound/soc-component.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 71562154c0b1..f180cb5dfe4f 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -410,7 +410,7 @@ static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index f64cffa12967..8917b15eccae 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -333,7 +333,6 @@ void snd_soc_component_set_aux(struct snd_soc_component *component,
+ int snd_soc_component_init(struct snd_soc_component *component);
  
- 	nfs = ak4458->fs;
- 
--	reg = snd_soc_component_read32(component, AK4458_0B_CONTROL7);
-+	reg = snd_soc_component_read(component, AK4458_0B_CONTROL7);
- 	ats = (reg & AK4458_ATS_MASK) >> AK4458_ATS_SHIFT;
- 
- 	ndt = att_speed[ats] / (nfs / 1000);
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index b2635f3b11ca..f5ad1f59eb46 100644
---- a/sound/soc/codecs/ak4535.c
-+++ b/sound/soc/codecs/ak4535.c
-@@ -261,7 +261,7 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4535_priv *ak4535 = snd_soc_component_get_drvdata(component);
--	u8 mode2 = snd_soc_component_read32(component, AK4535_MODE2) & ~(0x3 << 5);
-+	u8 mode2 = snd_soc_component_read(component, AK4535_MODE2) & ~(0x3 << 5);
- 	int rate = params_rate(params), fs = 256;
- 
- 	if (rate)
-@@ -312,7 +312,7 @@ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
- static int ak4535_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct snd_soc_component *component = dai->component;
--	u16 mute_reg = snd_soc_component_read32(component, AK4535_DAC);
-+	u16 mute_reg = snd_soc_component_read(component, AK4535_DAC);
- 	if (!mute)
- 		snd_soc_component_write(component, AK4535_DAC, mute_reg & ~0x20);
- 	else
-diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
-index 67564798f303..eb435235b5a3 100644
---- a/sound/soc/codecs/ak4671.c
-+++ b/sound/soc/codecs/ak4671.c
-@@ -425,7 +425,7 @@ static int ak4671_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	u8 fs;
- 
--	fs = snd_soc_component_read32(component, AK4671_PLL_MODE_SELECT0);
-+	fs = snd_soc_component_read(component, AK4671_PLL_MODE_SELECT0);
- 	fs &= ~AK4671_FS;
- 
- 	switch (params_rate(params)) {
-@@ -471,7 +471,7 @@ static int ak4671_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	struct snd_soc_component *component = dai->component;
- 	u8 pll;
- 
--	pll = snd_soc_component_read32(component, AK4671_PLL_MODE_SELECT0);
-+	pll = snd_soc_component_read(component, AK4671_PLL_MODE_SELECT0);
- 	pll &= ~AK4671_PLL;
- 
- 	switch (freq) {
-@@ -518,7 +518,7 @@ static int ak4671_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	u8 format;
- 
- 	/* set master/slave audio interface */
--	mode = snd_soc_component_read32(component, AK4671_PLL_MODE_SELECT1);
-+	mode = snd_soc_component_read(component, AK4671_PLL_MODE_SELECT1);
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
-@@ -532,7 +532,7 @@ static int ak4671_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
- 
- 	/* interface format */
--	format = snd_soc_component_read32(component, AK4671_FORMAT_SELECT);
-+	format = snd_soc_component_read(component, AK4671_FORMAT_SELECT);
- 	format &= ~AK4671_DIF;
- 
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ /* component IO */
+-#define snd_soc_component_read32 snd_soc_component_read
+ unsigned int snd_soc_component_read(struct snd_soc_component *component,
+ 				      unsigned int reg);
+ int snd_soc_component_write(struct snd_soc_component *component,
 -- 
 2.25.1
 
