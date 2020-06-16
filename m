@@ -2,64 +2,104 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1025DC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 22:02:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09712C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 23:29:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CB89208D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 22:02:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 848122085B
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 23:29:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SZO44MxH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CB89208D5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=shiny.it
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nOfhEmF/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e6gwvDdV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 848122085B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13B78886;
-	Wed, 17 Jun 2020 00:01:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B78886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0ACFC1607;
+	Wed, 17 Jun 2020 01:28:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ACFC1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592344958;
-	bh=AA4cJTMA4yhO7XdskMxzaVvKdS1ACWScLRPV9P1J2sg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592350177;
+	bh=kcyxnDyETlB+fkmm2FmIsSrYpXO++2rXZavIo3UEXM0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SZO44MxHJfpwlnWrt+MTh4pBYhHBHOl2qgReLtgMAT0cNfXM+e/sApJR4ZgGisvlR
-	 mpJwmRhhcbzDxlHOv1pF49Rfx11gz6w5ZR2ln8RorYNIvnJlrw0ikkbNq9nYVNbrY9
-	 XgmzuQNJN1XYYak5x2trbetmSddH7BzxjdFBN96M=
+	b=nOfhEmF/5L1iswlGVauW5WSdoCheI+fK7aTr68PRudjGJ7T8yeBr+zDP6nfyzM7q+
+	 b5d4lU3RAhQWdusPMMyTYsyKXorEY1zrT+cqungH1SgecKstNAY92HrVWcq6Z5z6fN
+	 4hKv6DyaUAMgRVUfa7qP5p49FtbMSgq+acUaIY+s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 520B3F80217;
-	Wed, 17 Jun 2020 00:01:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84F95F80217;
+	Wed, 17 Jun 2020 01:28:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37D8EF80217; Wed, 17 Jun 2020 00:01:45 +0200 (CEST)
-Received: from denise.shiny.it (denise.shiny.it [185.206.84.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 22073F8022B; Wed, 17 Jun 2020 01:28:43 +0200 (CEST)
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com
+ [IPv6:2607:f8b0:4864:20::1044])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4271FF80101
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 00:01:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4271FF80101
-Received: from wc1 (localhost [127.0.0.1])
- by denise.shiny.it (8.15.2/8.15.2) with ESMTP id 05GM1V9r030652;
- Wed, 17 Jun 2020 00:01:32 +0200
-Date: Wed, 17 Jun 2020 00:01:34 +0200
-From: Giuliano Pochini <pochini@shiny.it>
-To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-Message-ID: <20200617000134.60c5e2b5@wc1>
-In-Reply-To: <20200616131743.4793-3-mark@xwax.org>
-References: <2006161409060.30751@stax.localdomain>
- <20200616131743.4793-3-mark@xwax.org>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C534CF800EF
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 01:28:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C534CF800EF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="e6gwvDdV"
+Received: by mail-pj1-x1044.google.com with SMTP id ne5so98250pjb.5
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 16:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=nokaqO/7ikLY/CaZfj8RUoWXt7iRv0GsTFng8UE3qCw=;
+ b=e6gwvDdVsFAYgNKppHkmPneIamMoxYKb+W8s99Afmhxm/8zE417O3gj6Fzg1PDGboS
+ xWiqlnxIQTI3upPI0UHHS6mWgN7nJBr01/atAzaO7z4KWBo/iZVWgAfrTHDWt03gc88A
+ wmmCNj9DhLunFnQjlyo+OPRItLYaHz/Xn6FWfd5bNfAw6LaYen9/0w0E+B4VY33cLY+8
+ P0R4wMuKjyxOZ7IG1XCcDhfPBbCrW7kcpF9Hw6Y4kkUCxW0ybg885R88J2XovyyCGUS4
+ 2CEApyQqeu7SO77ui569hu6N5IyIbbUvNmkx0ZGgZH8aJ1DeUJOuA0crga3hn7rJHQzl
+ Sh9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=nokaqO/7ikLY/CaZfj8RUoWXt7iRv0GsTFng8UE3qCw=;
+ b=b8EPZFxtarZxjK3xNkU3MJNs4sUS91zZj69goL70OZWHIP5ipDwlmkuOzFA3+Jnw9i
+ Usl1F3hgrLIlVPG06ZLVDCa5IaSPtFZqoDQvAkJMmAs/Xxax42ADjOEc9z8//2VKBslL
+ rt/LGOvS6XNiHpL0IsK6R+dGaSpbc13PQAsfWtdJ05xsT/13wJDRGjfS2me7Audq7Odi
+ /xwKYbaSoBpLJdpCSbewaZZBmghzWzYGkKvafvKy/jbuBJPG7IJ+ynHrUeYkgwzLvt6v
+ 47aBqg4ddeNHVLF2zAblc35iE1aAPBgRpPww8K4J7Tb8NxhjonVP2nkk90hYZYymA8Jv
+ d+rQ==
+X-Gm-Message-State: AOAM532X2Yzj/Zzqp7h1jmx96ThHloCW106vKaCE5QBUIHijcVkRipIy
+ B8SGycLXqAs8XW2k1m1hyug=
+X-Google-Smtp-Source: ABdhPJyewwpFThwB7lVfDvCFj438Fo7Ix52QUxyvLW3sT2CUftR5ocnuBGDk+n7WlQXuxAkGZHplNg==
+X-Received: by 2002:a17:902:ed14:: with SMTP id
+ b20mr4118681pld.173.1592350108783; 
+ Tue, 16 Jun 2020 16:28:28 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+ by smtp.gmail.com with ESMTPSA id b1sm3547523pjc.33.2020.06.16.16.28.27
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Tue, 16 Jun 2020 16:28:28 -0700 (PDT)
+Date: Tue, 16 Jun 2020 16:28:11 -0700
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl_spdif: Add support for imx6sx platform
+Message-ID: <20200616232810.GA19896@Asurada-Nvidia>
+References: <1592289761-29118-1-git-send-email-shengjiu.wang@nxp.com>
+ <1592289761-29118-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592289761-29118-2-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@kernel.org,
+ Xiubo.Lee@gmail.com, lgirdwood@gmail.com, linuxppc-dev@lists.ozlabs.org,
+ tiwai@suse.com, robh+dt@kernel.org, broonie@kernel.org, festevam@gmail.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,78 +115,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 16 Jun 2020 14:17:43 +0100
-Mark Hills <mark@xwax.org> wrote:
+On Tue, Jun 16, 2020 at 02:42:41PM +0800, Shengjiu Wang wrote:
+> The one difference on imx6sx platform is that the root clock
+> is shared with ASRC module, so we add a new flags "ind_root_clk"
+> which means the root clock is independent, then we will not
+> do the clk_set_rate and clk_round_rate to avoid impact ASRC
+> module usage.
+> 
+> As add a new flags, we include the soc specific data struct.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  sound/soc/fsl/fsl_spdif.c | 43 +++++++++++++++++++++++++++++++++++----
+>  1 file changed, 39 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index 1b2e516f9162..00e06803d32f 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -42,6 +42,17 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
+>  
+>  #define DEFAULT_RXCLK_SRC	1
+>  
+> +/**
+> + * struct fsl_spdif_soc_data: soc specific data
+> + *
+> + * @imx: for imx platform
+> + * @ind_root_clk: flag for round clk rate
+> + */
+> +struct fsl_spdif_soc_data {
+> +	bool imx;
+> +	bool ind_root_clk;
 
-> +	counter = le32_to_cpu(*pipe->dma_counter);
+"ind" doesn't look very straightforward; maybe "shared_root_clock"?
+
+And for its comments:
+	* @shared_root_clock: flag of sharing a clock source with others;
+	*		      so the driver shouldn't set root clock rate
+
+> +};
 > +
-> +	period = bytes_to_frames(runtime, counter)
-> +		/ runtime->period_size;
-> +	last_period = bytes_to_frames(runtime, pipe->last_counter)
-> +		/ runtime->period_size;
-> +
-> +	if (period == last_period)
-> +		return 0;  /* don't do any work yet */
-> +
-> +	step = counter - pipe->last_counter;
+>  /*
+>   * SPDIF control structure
+>   * Defines channel status, subcode and Q sub
+> @@ -93,6 +104,7 @@ struct fsl_spdif_priv {
+>  	struct snd_soc_dai_driver cpu_dai_drv;
+>  	struct platform_device *pdev;
+>  	struct regmap *regmap;
+> +	const struct fsl_spdif_soc_data *soc;
 
-Uhmm.. no, when the dma_counter wraps around the comparison gives wrong
-result, unless 4G is divisible by the buffer size.
+Looks better if we move it to the top of the list :)
 
-Please consider this patch (to apply after yours). It computes the new period
-using pipe->position before and after adding the amount of bytes tranferred
-since the previous period.
-Briefly tested - It seems ok.
+> @@ -421,7 +448,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
+>  	sysclk_df = spdif_priv->sysclk_df[rate];
+>  
+>  	/* Don't mess up the clocks from other modules */
+> -	if (clk != STC_TXCLK_SPDIF_ROOT)
+> +	if (clk != STC_TXCLK_SPDIF_ROOT || !spdif_priv->soc->ind_root_clk)
+>  		goto clk_set_bypass;
+>  
+>  	/* The S/PDIF block needs a clock of 64 * fs * txclk_df */
+> @@ -1186,7 +1213,8 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
+>  			continue;
+>  
+>  		ret = fsl_spdif_txclk_caldiv(spdif_priv, clk, savesub, index,
+> -					     i == STC_TXCLK_SPDIF_ROOT);
+> +					     i == STC_TXCLK_SPDIF_ROOT &&
+> +					     spdif_priv->soc->ind_root_clk);
 
+Having more than one place that checks the condition, we can add:
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
---- sound/pci/echoaudio/echoaudio.c__orig	2020-06-16 23:36:02.818601055 +0200
-+++ sound/pci/echoaudio/echoaudio.c	2020-06-16 23:52:46.593325066 +0200
-@@ -1781,7 +1781,7 @@
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audiopipe *pipe = runtime->private_data;
--	unsigned counter, step, period, last_period;
-+	u32 counter, step, period, last_period, pipe_position;
- 	size_t buffer_bytes;
- 
- 	if (pipe->state != PIPE_STATE_STARTED)
-@@ -1789,24 +1789,22 @@
- 
- 	counter = le32_to_cpu(*pipe->dma_counter);
- 
--	period = bytes_to_frames(runtime, counter)
-+	step = counter - pipe->last_counter;
-+	pipe_position = pipe->position + step;	/* bytes */
-+	buffer_bytes = frames_to_bytes(runtime, runtime->buffer_size);
-+	while (pipe_position >= buffer_bytes)
-+		pipe_position -= buffer_bytes;
-+
-+	period = bytes_to_frames(runtime, pipe_position)
- 		/ runtime->period_size;
--	last_period = bytes_to_frames(runtime, pipe->last_counter)
-+	last_period = bytes_to_frames(runtime, pipe->position)
- 		/ runtime->period_size;
- 
- 	if (period == last_period)
- 		return 0;  /* don't do any work yet */
- 
--	step = counter - pipe->last_counter;
-+	pipe->position = pipe_position;
- 	pipe->last_counter = counter;
--
--	pipe->position += step;  /* bytes */
--
--	buffer_bytes = frames_to_bytes(runtime, runtime->buffer_size);
--
--	while (pipe->position >= buffer_bytes)
--		pipe->position -= buffer_bytes;
--
- 	return 1;
- }
- 
-
-
--- 
-Giuliano.
+/* Check if clk is a root clock that does not share clock source with others */
+static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif, int clk)
+{
+	return (clk == STC_TXCLK_SPDIF_ROOT) && !spdif->soc->shared_root_clock;
+}
