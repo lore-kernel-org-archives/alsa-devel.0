@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BEBBC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:19:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D78CC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:20:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 069962145D
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:19:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CC032098B
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:20:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ok46/VuN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="xNNtGWea"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 069962145D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HmIwtHCW";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="af2K7HUp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CC032098B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88AFB167A;
-	Tue, 16 Jun 2020 15:18:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88AFB167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12A6714E;
+	Tue, 16 Jun 2020 15:19:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12A6714E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592313577;
-	bh=nA5tJ/41+QYWEhfTT52g5iX/TZ7Dogg8oF6zssdzoRE=;
+	s=default; t=1592313628;
+	bh=p6CLRRTeE3NqCtcDJDQce9Dz3mL1mUPlWt+8pdO3qGw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ok46/VuNrb+UL/4oISxzsCgY8b0G5i5kJS7UdIojaOFhRPo8ZR1VAbRiP9E+UBiPe
-	 iv+c7A/SpD5axn80I6lENy+sWtL6Jy8/bru5TKO3TUxylcb2DMa0j4k3Pu72b+Vo6X
-	 zyTEl/U2hUmuAOlwj7Ln1lAqvJRNBHbOCLw1D8oE=
+	b=HmIwtHCWQdlir/wfsTsIT4edbzXwhzEKXaNgZfoQ+TidT8smLu6zpiJpayqhlHZPk
+	 UnZyWipOzYiQZU+6fkxQRqfAJBDFfH8mmeCX0YygNGaH68SCBMDGu97Dkn73nHhKE7
+	 JQ4Qmd4SNimqNn4ZELBerFVV2E5SPj4n+0Ufosu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BE3EF80255;
-	Tue, 16 Jun 2020 15:17:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05A10F802BC;
+	Tue, 16 Jun 2020 15:17:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A909EF80232; Tue, 16 Jun 2020 15:17:51 +0200 (CEST)
+ id 30BD7F802A2; Tue, 16 Jun 2020 15:17:56 +0200 (CEST)
 Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFD27F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2901F80101
  for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 15:17:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFD27F80217
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2901F80101
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
- header.b="xNNtGWea"
+ header.b="af2K7HUp"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
  ; s=a;
  h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:
@@ -56,25 +56,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
  Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
  :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
  List-Post:List-Owner:List-Archive;
- bh=7UYzsunQvXfkk8rWvceY/CKzKZJH+UfoPAGbZzm4SQA=; b=xNNtGWeaQAV/GL6QUj+mbbM/Cu
- YLmaPxBi3r5JNhmS/VssapzvQ3uF5jAktVNnDTpSpY63TFb0AgdYiF4ihuraABXDvH8usAzKzDQlE
- LbNWqtZOWBl9COg5jiyb6WIOGokuNYoIkiLdmMv2C8vpkdjaBocDY+lP2neZAw5o7IU8vES7VuhM0
- VsWDJHrfYNXAGY6qJuUF82B9ODggBOrIXZL11NYP7xU8SsbtEZP4DMDhInb2MO32Of337n0leGfpf
- /Fns0PN846xA8d7rnEfu/JWMXPBuS++ku6hypj/N6m/fkoisMVMiefaEnFA+dPLQT7PE6zlw31Q6L
- dM0XeI8g==;
+ bh=uk6p04jIyGEwhPstJTRrV0yyBWZrc9m+PRsuhl4h6bI=; b=af2K7HUpdTMT+kcPuBZ1JBnN/1
+ M3PLXr0arbtOX9P8ITTe9p8O/wrv6KKTQy4Z47J3Koa0FQkgnep2Yk8RgdYKg0eegvu7eYQ9EYY2A
+ /9m3QtWcs/smNEDg9RAEmUbwEOBnbXRvCw8TFGgSbpylnmkVAccvtUJ/8ZoMoVB0stIKt5P4QF9RP
+ i1T9MWdPwGzceRHvH5j+YH9mj/Oqlt7k4svqD/pffjdqRxErCu3riNFrIWgy2zdhjylhG2MsEcNJR
+ sdFRZptTh6CnC+FoffbxZLPNyTMgSOgLgE2Otg5m5xFjX5K3K/mkXj7MIvztdr9eqlk8DZF3T7H2/
+ DRwbau4A==;
 Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
  helo=stax.localdomain) by jazz.pogo.org.uk with esmtps (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93.0.4 (FreeBSD))
  (envelope-from <mark@xwax.org>)
- id 1jlBTD-000MY4-9P; Tue, 16 Jun 2020 14:17:43 +0100
+ id 1jlBTD-000MY3-9A; Tue, 16 Jun 2020 14:17:43 +0100
 Received: from mark by stax.localdomain with local (Exim 4.84)
  (envelope-from <mark@stax.localdomain>)
- id 1jlBTD-0001G6-27; Tue, 16 Jun 2020 14:17:43 +0100
+ id 1jlBTD-0001G1-1n; Tue, 16 Jun 2020 14:17:43 +0100
 From: Mark Hills <mark@xwax.org>
 To: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-Date: Tue, 16 Jun 2020 14:17:43 +0100
-Message-Id: <20200616131743.4793-3-mark@xwax.org>
+Subject: [PATCH 2/3] echoaudio: Prevent races in calls to set_audio_format()
+Date: Tue, 16 Jun 2020 14:17:42 +0100
+Message-Id: <20200616131743.4793-2-mark@xwax.org>
 X-Mailer: git-send-email 2.17.5
 In-Reply-To: <2006161409060.30751@stax.localdomain>
 References: <2006161409060.30751@stax.localdomain>
@@ -94,197 +94,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Distorted audio appears occasionally, affecting either playback
-or capture and requiring the affected substream to be closed by
-all applications and re-opened.
-
-The best way I have found to reproduce the bug is to use dmix in
-combination with Chromium, which opens the audio device multiple
-times in threads. Anecdotally, the problems appear to have increased
-with faster CPUs.
-
-Since applying this patch I have not had problems, where previously
-they would occur several times a day.
-
-This patch addresses the following issues:
-
-* Check for progress using the counter from the hardware, not after
-  it has been truncated to the buffer.
-
-  There appears to be a possible bug if a whole ringbuffer advances
-  between interrupts, it goes unnoticed.
-
-* Remove chip->last_period:
-
-  It's trivial to derive from pipe->last_counter, and inside pipe
-  is where it more logically belongs. This has less scope for bugs
-  as it is not wrapped to the buffer length.
-
-* Remove the accessing of pipe->dma_counter twice in the interrupt
-  handler:
-
-  The value will be changing between accesses. It doesn't look like
-  this could cause a bug in practice, assuming the value only goes up.
-  Except perhaps if another thread were able to reset it to 0 on the
-  second access because chip->lock is not held.
-
-  This may improve the performance of the interrupt handler;
-  dma_counter is volatile so access is slow.
-
-The resulting interrupt handling resembles more closely the pattern in
-the kernel "Writing an ALSA driver" documentation.
+The function uses chip->comm_page which needs locking against
+other use at the same time.
 
 Signed-off-by: Mark Hills <mark@xwax.org>
 ---
- sound/pci/echoaudio/echoaudio.c | 80 +++++++++++++++++++++------------
- sound/pci/echoaudio/echoaudio.h |  1 -
- 2 files changed, 52 insertions(+), 29 deletions(-)
+ sound/pci/echoaudio/echoaudio.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index 8cf08988959f..12217649fb44 100644
+index 82a49dfd2384..8cf08988959f 100644
 --- a/sound/pci/echoaudio/echoaudio.c
 +++ b/sound/pci/echoaudio/echoaudio.c
-@@ -2,6 +2,7 @@
- /*
-  *  ALSA driver for Echoaudio soundcards.
-  *  Copyright (C) 2003-2004 Giuliano Pochini <pochini@shiny.it>
-+ *  Copyright (C) 2020 Mark Hills <mark@xwax.org>
-  */
+@@ -711,9 +711,22 @@ static int pcm_prepare(struct snd_pcm_substream *substream)
  
- #include <linux/module.h>
-@@ -590,7 +591,6 @@ static int init_engine(struct snd_pcm_substream *substream,
- 	/* This stuff is used by the irq handler, so it must be
- 	 * initialized before chip->substream
- 	 */
--	chip->last_period[pipe_index] = 0;
- 	pipe->last_counter = 0;
- 	pipe->position = 0;
- 	smp_wmb();
-@@ -759,7 +759,6 @@ static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 				pipe = chip->substream[i]->runtime->private_data;
- 				switch (pipe->state) {
- 				case PIPE_STATE_STOPPED:
--					chip->last_period[i] = 0;
- 					pipe->last_counter = 0;
- 					pipe->position = 0;
- 					*pipe->dma_counter = 0;
-@@ -807,19 +806,8 @@ static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audiopipe *pipe = runtime->private_data;
--	size_t cnt, bufsize, pos;
- 
--	cnt = le32_to_cpu(*pipe->dma_counter);
--	pipe->position += cnt - pipe->last_counter;
--	pipe->last_counter = cnt;
--	bufsize = substream->runtime->buffer_size;
--	pos = bytes_to_frames(substream->runtime, pipe->position);
--
--	while (pos >= bufsize) {
--		pipe->position -= frames_to_bytes(substream->runtime, bufsize);
--		pos -= bufsize;
--	}
--	return pos;
-+	return bytes_to_frames(runtime, pipe->position);
+ 	if (snd_BUG_ON(pipe_index >= px_num(chip)))
+ 		return -EINVAL;
+-	if (snd_BUG_ON(!is_pipe_allocated(chip, pipe_index)))
++
++	/*
++	 * We passed checks we can do independently; now take
++	 * exclusive control
++	 */
++
++	spin_lock(&chip->lock);
++
++	if (snd_BUG_ON(!is_pipe_allocated(chip, pipe_index))) {
++		spin_unlock(&chip->lock);
+ 		return -EINVAL;
++	}
++
+ 	set_audio_format(chip, pipe_index, &format);
++	spin_unlock(&chip->lock);
++
+ 	return 0;
  }
  
- 
-@@ -1782,14 +1770,50 @@ static const struct snd_kcontrol_new snd_echo_channels_info = {
- 
- 
- /******************************************************************************
--	IRQ Handler
-+	IRQ Handling
- ******************************************************************************/
- 
-+/* Update software pointer to match the hardware
-+ *
-+ * Return: 1 if we crossed a period threshold, otherwise 0
-+ */
-+static int snd_echo_poll_substream(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct audiopipe *pipe = runtime->private_data;
-+	unsigned counter, step, period, last_period;
-+	size_t buffer_bytes;
-+
-+	if (pipe->state != PIPE_STATE_STARTED)
-+		return 0;
-+
-+	counter = le32_to_cpu(*pipe->dma_counter);
-+
-+	period = bytes_to_frames(runtime, counter)
-+		/ runtime->period_size;
-+	last_period = bytes_to_frames(runtime, pipe->last_counter)
-+		/ runtime->period_size;
-+
-+	if (period == last_period)
-+		return 0;  /* don't do any work yet */
-+
-+	step = counter - pipe->last_counter;
-+	pipe->last_counter = counter;
-+
-+	pipe->position += step;  /* bytes */
-+
-+	buffer_bytes = frames_to_bytes(runtime, runtime->buffer_size);
-+
-+	while (pipe->position >= buffer_bytes)
-+		pipe->position -= buffer_bytes;
-+
-+	return 1;
-+}
-+
- static irqreturn_t snd_echo_interrupt(int irq, void *dev_id)
- {
- 	struct echoaudio *chip = dev_id;
--	struct snd_pcm_substream *substream;
--	int period, ss, st;
-+	int ss, st;
- 
- 	spin_lock(&chip->lock);
- 	st = service_irq(chip);
-@@ -1800,18 +1824,18 @@ static irqreturn_t snd_echo_interrupt(int irq, void *dev_id)
- 	/* The hardware doesn't tell us which substream caused the irq,
- 	thus we have to check all running substreams. */
- 	for (ss = 0; ss < DSP_MAXPIPES; ss++) {
-+		struct snd_pcm_substream *substream;
-+
- 		substream = chip->substream[ss];
--		if (substream && ((struct audiopipe *)substream->runtime->
--				private_data)->state == PIPE_STATE_STARTED) {
--			period = pcm_pointer(substream) /
--				substream->runtime->period_size;
--			if (period != chip->last_period[ss]) {
--				chip->last_period[ss] = period;
--				spin_unlock(&chip->lock);
--				snd_pcm_period_elapsed(substream);
--				spin_lock(&chip->lock);
--			}
--		}
-+		if (!substream)
-+			continue;
-+
-+		if (!snd_echo_poll_substream(substream))
-+			continue;
-+
-+		spin_unlock(&chip->lock);
-+		snd_pcm_period_elapsed(substream);
-+		spin_lock(&chip->lock);
- 	}
- 	spin_unlock(&chip->lock);
- 
-diff --git a/sound/pci/echoaudio/echoaudio.h b/sound/pci/echoaudio/echoaudio.h
-index 6fd283e4e676..7ff5d4de6880 100644
---- a/sound/pci/echoaudio/echoaudio.h
-+++ b/sound/pci/echoaudio/echoaudio.h
-@@ -332,7 +332,6 @@ struct audioformat {
- struct echoaudio {
- 	spinlock_t lock;
- 	struct snd_pcm_substream *substream[DSP_MAXPIPES];
--	int last_period[DSP_MAXPIPES];
- 	struct mutex mode_mutex;
- 	u16 num_digital_modes, digital_mode_list[6];
- 	u16 num_clock_sources, clock_source_list[10];
 -- 
 2.17.5
 
