@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8CC0C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:05:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DEEDC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:06:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DA0220786
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:05:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D4FB12074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:06:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p/Zmxxq7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DA0220786
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CujdfT76"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4FB12074D
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD2841696;
-	Tue, 16 Jun 2020 10:04:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD2841696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67E0A169D;
+	Tue, 16 Jun 2020 10:05:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67E0A169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592294722;
-	bh=k0Nt+3nFjn/7nrY8ngQ7Tp8xR5mhmJBMkyjhmuw7VJ0=;
+	s=default; t=1592294775;
+	bh=M4TJ+TSJpTiNjpe3jkOebnglXJ0GqGtBw1X0qc+jJxQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p/Zmxxq7t+o6iIZYKiUrYNmUL7GzqT4W+MTaugSgC2MVLfn9gRfNi1cDcMlTWbWP4
-	 ySjwYcwxBWwEAhxOSpFt90HiBlFBWGRBf4Ea5ZfHHJJI8QNcKU+yY1UTRnG70tSA3K
-	 jgSF3nAHszTaHGzCaEcgWLH058Vf7MVQvAXDP1aw=
+	b=CujdfT76Y9OwZrvsrT8qLs9lqGZ/iY01jV59YXRdmPLMyn1uXZYaCcrV7uDpSGRYx
+	 BtL3LykeqeD+jKnOTN+3+GOReqbkOd/Us3Hp+Ei/xGaT4rA0H8facxZdZmMRtFyUSv
+	 0Sl56oJFbOT1zMQs45SygYoiQUADQPr3dOQBHljw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65438F80114;
-	Tue, 16 Jun 2020 10:04:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B76A1F80245;
+	Tue, 16 Jun 2020 10:05:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53800F80114; Tue, 16 Jun 2020 10:04:31 +0200 (CEST)
+ id 1D536F80252; Tue, 16 Jun 2020 10:05:21 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 275CFF80114
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 10:04:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 275CFF80114
+ by alsa1.perex.cz (Postfix) with ESMTP id 6DA4CF80232
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 10:05:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DA4CF80232
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1592294666313056946-webhooks-bot@alsa-project.org>
-References: <1592294666313056946-webhooks-bot@alsa-project.org>
+In-Reply-To: <1592294717314460993-webhooks-bot@alsa-project.org>
+References: <1592294717314460993-webhooks-bot@alsa-project.org>
 Subject: low volume libalsa 1.2.3
-Message-Id: <20200616080431.53800F80114@alsa1.perex.cz>
-Date: Tue, 16 Jun 2020 10:04:31 +0200 (CEST)
+Message-Id: <20200616080521.1D536F80252@alsa1.perex.cz>
+Date: Tue, 16 Jun 2020 10:05:21 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,9 +68,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #60 was opened from texstar:
+alsa-project/alsa-lib issue #60 was edited from texstar:
 
-Sound is about 30% lower with alsa 1.2.3 than with alsa 1.2.2 using the same volume settings. Backing down to 1.2.2 to restore order as the natives are getting stabby.
+Sound is about 30% lower with alsa 1.2.3 than with alsa 1.2.2 using the same volume setting. Backing down to 1.2.2 to restore order as the natives are getting stabby.
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/60
 Repository URL: https://github.com/alsa-project/alsa-lib
