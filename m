@@ -2,106 +2,105 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB623C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:26:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE4EC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:37:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4655D20767
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:26:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6CE3F2098B
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 08:37:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rTtDUPwD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b1kHUj6w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4655D20767
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ioKVUsLp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CE3F2098B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C290A167C;
-	Tue, 16 Jun 2020 10:26:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C290A167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01E2A74C;
+	Tue, 16 Jun 2020 10:36:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01E2A74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592296015;
-	bh=m5Lnjn5DnOrVjOTGqUTMzRtU8Jd1E/ehTe7PWx2YNpw=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1592296667;
+	bh=+ji1OCceWF4hCR6jZl7a1RCy9CZwDcqcKnsjrlRI8kw=;
+	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rTtDUPwDiDBhZwstx5J0O1+1ZurCxxE0auGC2G3Yed1olywvFfyuYnTlHfTavHRPh
-	 Wdyxh/YIyFRxtU9G1djwtY5uLgB38OMc4+HvJFHPSZMmiGOIHBmdNp2eTICYxxgX1H
-	 6tf5XF8Ni9SCI1YF0YYMFXgTzjtIGl56t85b1T1E=
+	b=ioKVUsLpq3gOlGOWHdjhXrM3pn/EfCwo+sr+n0Ux3dP0m3PG/yA7/2h4rWWDK4+sT
+	 p60DJVJ+yVUE8bd+3+TG8TGigE7eRuaT5gwDL40UIvI83nx5Faz/xukMxNE1ctmlde
+	 frM6iS1rkqDdRnFVlCur2oZCvWXKN5R/p3irwrzw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CC42F800EF;
-	Tue, 16 Jun 2020 10:26:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18350F80101;
+	Tue, 16 Jun 2020 10:36:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E060F8022B; Tue, 16 Jun 2020 10:26:02 +0200 (CEST)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 06F91F8022B; Tue, 16 Jun 2020 10:36:54 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55E13F800EF
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 10:25:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55E13F800EF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="b1kHUj6w"
-Received: by mail-wr1-x442.google.com with SMTP id j10so19768905wrw.8
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=07xCk+5jY+yVjJJU7xq7mzkwYJS7vzdNmZHffvaVIG8=;
- b=b1kHUj6wycATLgHP2T0yk5ebuvDbaMh0SHv3EO3P7pDMzuuXYJW6HMZWVpdQwLm/Z8
- N0+Yhsobpl7IGNJo9+dWe4cEtOoZZCT4nYLv0qGZy0ySdTxrPx5OgavRJKJDt971Lo9q
- 3s4UDyoO68dySXB/GkSTL3MHwb+qU5Lg33s/SWZJr6+oTvfYvSLL/+x1RpNttp92KZmx
- 6P624mEVTjnrfy+JPMnh7G3eK7RrpJDCsati3oVWCROJZWv3LcHjB4ztn0h1+Fn5rm15
- jPgq9oBlOUjehpGuIJK49SgqFnYEMq6+OQR9MXDHtvLI4XlA1botlXrUcJFMSoPBH5Se
- PZzg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 214D0F80101
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 10:36:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 214D0F80101
+Received: from mail-pl1-f198.google.com ([209.85.214.198])
+ by youngberry.canonical.com with esmtps
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>) id 1jl75N-0005Fk-C8
+ for alsa-devel@alsa-project.org; Tue, 16 Jun 2020 08:36:49 +0000
+Received: by mail-pl1-f198.google.com with SMTP id d13so4169094plr.20
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:36:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=07xCk+5jY+yVjJJU7xq7mzkwYJS7vzdNmZHffvaVIG8=;
- b=YTdqc2jxbdGJRIpZn2vGt9ZSSN903nKxYIDs6k6iwWYWfe5oumRwtyZkaKUUo+UZ9Y
- vodaLNCYyhKLPqiSLeQnoOftvAdg+ecgdyHWBFh+zJOvEn+tYDa3yTADe/hAYXsA7/40
- t/uogxBgCfMLQMofKxQ04ZF3xxLXGHNIjyeuy9kYhy+t3+E9AmT2+pR7bkkicxRVFwv3
- eLbjgks5SHJOdlUh5Y8pGu7Ji4pApgyNkaq4Hi+gb4pQKDJWHgs4X8TfW2YKfmSrn2d5
- BfP5ODacrFLlD+KLb9D9gs4C6DqS0UrFGaoarCRNQXxXxgu/RrbTPlp+L5qP3bXBBnmb
- oJmw==
-X-Gm-Message-State: AOAM532jlXwhitksYTt0AqZvIEhFWaF2d8GC8uyfy8A/rRLG3A47BBg6
- G6BvBezkShU0xCAYUqS2fk6bFQiiaGE=
-X-Google-Smtp-Source: ABdhPJytHRSw6ChmgjBP9/wCUUzXDWwYWr9dZzrImrRXHR2ZbA+g8UxpOzP42Rf7/PPunUINB/NuTA==
-X-Received: by 2002:adf:8b55:: with SMTP id v21mr1850235wra.187.1592295953987; 
- Tue, 16 Jun 2020 01:25:53 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id q5sm27940039wrm.62.2020.06.16.01.25.52
+ h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=4luD9Pjs2w7u5TOT9P/1cM0hYy6m6xjsnc/GO2bXHUI=;
+ b=Aacg9BNa275EHq2p/Y5jPEg6MeKdF7rdjaLYRXYdNlMLIwh8F96CT7+8t7xPYzAdvW
+ NY5LTy57fDnVzwMqz/UD66ppn3CswZ8twxfVcgq8LFlo8GqBF/g96keifTI1zTkXzgEI
+ yhU5WSu3OYEHYck9S4BWkaYMdVS/CBvVzLQCyYxQHszM2mcQDwyOA6VCm5gjPdoCM8jO
+ ZOZ+rI/2yOAkqNWflAN3DHbj8q4qR+EcZozesgruceQFjyud4WZI/8QcaTnrdD3hpQeY
+ zPCjLxZ4ejnUJ7uzcH5BJOyrYNm3zknuMSnQTjNNqQe5XFT6UlS3bbJc6DNs7QTR3Jnp
+ pc+g==
+X-Gm-Message-State: AOAM531Lbvb1quAsbeH5/hmuD0lcrmpSiOd5/RHepY6fW1g1hBNeRPHh
+ YEWbqfHM71/rdET1IaMvtpMf5xQefQXiQD1PrvYL8Lj4j/g53g9s+AVbZrXFllH4SUPGNyGEXzl
+ LsMm3BjFRPZ4VsacWtmqSkmQAa8+Z/2XF65wrbb+A
+X-Received: by 2002:a17:902:6bcb:: with SMTP id
+ m11mr1171728plt.126.1592296606571; 
+ Tue, 16 Jun 2020 01:36:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwr46RVkzz2pu7Plw4kJd58Tn68BBk+EPxhGs7rpMn1DvmsWcr5I98wLFFpjURYCM5noKBbYQ==
+X-Received: by 2002:a17:902:6bcb:: with SMTP id
+ m11mr1171698plt.126.1592296606019; 
+ Tue, 16 Jun 2020 01:36:46 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net.
+ [220.133.187.190])
+ by smtp.gmail.com with ESMTPSA id a12sm15906822pfr.44.2020.06.16.01.36.42
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 16 Jun 2020 01:25:53 -0700 (PDT)
-Subject: Re: [RESENDx2][PATCH] sound: qcom: Kconfig: Tweak dependencies on
- SND_SOC_SDM845
-To: John Stultz <john.stultz@linaro.org>, lkml <linux-kernel@vger.kernel.org>
-References: <20200616063417.110263-1-john.stultz@linaro.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <8f7f563b-fae7-e25e-33f2-18c608c338e6@linaro.org>
-Date: Tue, 16 Jun 2020 09:25:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200616063417.110263-1-john.stultz@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rohit kumar <rohitkr@codeaurora.org>
+ Tue, 16 Jun 2020 01:36:45 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH 1/2] ALSA: hda: Make codec controlled LED support more
+ generic
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <s5himfr30cv.wl-tiwai@suse.de>
+Date: Tue, 16 Jun 2020 16:36:41 +0800
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B11E093E-6A30-4820-AC0E-C2887F5462F2@canonical.com>
+References: <20200616044702.17570-1-kai.heng.feng@canonical.com>
+ <s5himfr30cv.wl-tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+Cc: Wenwen Wang <wenwen@cs.uga.edu>, Kailang Yang <kailang@realtek.com>,
+ Tomas Espeleta <tomas.espeleta@gmail.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ open list <linux-kernel@vger.kernel.org>, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+ Hui Wang <hui.wang@canonical.com>, Thomas Hebb <tommyhebb@gmail.com>,
+ Jian-Hong Pan <jian-hong@endlessm.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,52 +118,167 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 16/06/2020 07:34, John Stultz wrote:
-> CROS_EC isn't strictly required for audio to work
-> on other SDM845 platforms (like the Dragonboard 845c).
-> 
-> So lets remove the dependency and select the related
-> CROS_EC options if CROS_EC is already enabled.
+> On Jun 16, 2020, at 16:01, Takashi Iwai <tiwai@suse.de> wrote:
+>=20
+> On Tue, 16 Jun 2020 06:46:58 +0200,
+> Kai-Heng Feng wrote:
+>>=20
+>> Currently, only HDA codec GPIO controlled LED class is supported, and
+>> only via platform specific quirk.
+>>=20
+>> There are systems that control LED via COEF instead of GPIO, and to
+>> support those systems, move the LED class registration to
+>> snd_hda_gen_add_micmute_led(), so all systems can facilitate the same
+>> interface.
+>=20
+> This will result in creating the led cdev always when the mic-mute LED
+> feature is used, not only for HP but also for Dell and Huawei.
+> Is this the intended result?
 
-Sorry John, totally missed this one out!
+Ok, I can see there are other vendors calling =
+snd_hda_gen_fixup_micmute_led() to create LED class.
+And no, that's not the intended result.
 
-> 
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Cc: Rohit kumar <rohitkr@codeaurora.org>
-> Cc: Patrick Lai <plai@codeaurora.org>
-> Cc: Banajit Goswami <bgoswami@codeaurora.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
->   sound/soc/qcom/Kconfig | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-> index f51b28d1b94d..0434f2c7d746 100644
-> --- a/sound/soc/qcom/Kconfig
-> +++ b/sound/soc/qcom/Kconfig
-> @@ -99,12 +99,12 @@ config SND_SOC_MSM8996
->   
->   config SND_SOC_SDM845
->   	tristate "SoC Machine driver for SDM845 boards"
-> -	depends on QCOM_APR && CROS_EC && I2C && SOUNDWIRE
-> +	depends on QCOM_APR && I2C && SOUNDWIRE
->   	select SND_SOC_QDSP6
->   	select SND_SOC_QCOM_COMMON
->   	select SND_SOC_RT5663
->   	select SND_SOC_MAX98927
-> -	select SND_SOC_CROS_EC_CODEC
-> +	select SND_SOC_CROS_EC_CODEC if CROS_EC
+I guess a chained function can be a better approach.
 
-Isn't "imply SND_SOC_CROS_EC_CODEC" better option here?
+I'll send another series.
 
---srini
+Kai-Heng
 
->   	help
->   	  To add support for audio on Qualcomm Technologies Inc.
->   	  SDM845 SoC-based systems.
-> 
+>=20
+>=20
+> thanks,
+>=20
+> Takashi
+>=20
+>>=20
+>> In addition to that, add LED_CORE_SUSPENDRESUME flag since some =
+systems
+>> don't restore the LED properly after suspend.
+>>=20
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>> sound/pci/hda/hda_generic.c   | 28 ++++++++++++++++++++++++++++
+>> sound/pci/hda/patch_realtek.c | 30 ------------------------------
+>> 2 files changed, 28 insertions(+), 30 deletions(-)
+>>=20
+>> diff --git a/sound/pci/hda/hda_generic.c =
+b/sound/pci/hda/hda_generic.c
+>> index f4e9d9445e18..4242407734c0 100644
+>> --- a/sound/pci/hda/hda_generic.c
+>> +++ b/sound/pci/hda/hda_generic.c
+>> @@ -4006,6 +4006,28 @@ static const struct snd_kcontrol_new =
+micmute_led_mode_ctl =3D {
+>>  *
+>>  * Returns 0 if the hook is established or a negative error code.
+>>  */
+>> +
+>> +#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+>> +static int micmute_led_set(struct led_classdev *led_cdev,
+>> +			   enum led_brightness brightness)
+>> +{
+>> +	struct hda_codec *codec =3D =
+dev_to_hda_codec(led_cdev->dev->parent);
+>> +	struct hda_gen_spec *spec =3D codec->spec;
+>> +
+>> +	spec->micmute_led.led_mode =3D !brightness;
+>> +	call_micmute_led_update(codec);
+>> +	return 0;
+>> +}
+>> +
+>> +static struct led_classdev micmute_led_cdev =3D {
+>> +	.name =3D "hda::micmute",
+>> +	.max_brightness =3D 1,
+>> +	.brightness_set_blocking =3D micmute_led_set,
+>> +	.default_trigger =3D "audio-micmute",
+>> +	.flags =3D LED_CORE_SUSPENDRESUME,
+>> +};
+>> +#endif
+>> +
+>> int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+>> 				void (*hook)(struct hda_codec *))
+>> {
+>> @@ -4019,6 +4041,12 @@ int snd_hda_gen_add_micmute_led(struct =
+hda_codec *codec,
+>> 	spec->cap_sync_hook =3D update_micmute_led;
+>> 	if (!snd_hda_gen_add_kctl(spec, NULL, &micmute_led_mode_ctl))
+>> 		return -ENOMEM;
+>> +
+>> +#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+>> +	micmute_led_cdev.brightness =3D =
+ledtrig_audio_get(LED_AUDIO_MICMUTE);
+>> +	if (devm_led_classdev_register(&codec->core.dev, =
+&micmute_led_cdev))
+>> +		codec_warn(codec, "failed to register micmute LED\n");
+>> +#endif
+>> 	return 0;
+>> }
+>> EXPORT_SYMBOL_GPL(snd_hda_gen_add_micmute_led);
+>> diff --git a/sound/pci/hda/patch_realtek.c =
+b/sound/pci/hda/patch_realtek.c
+>> index 6d73f8beadb6..cead44a6c6cd 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -4109,26 +4109,6 @@ static void alc_gpio_micmute_update(struct =
+hda_codec *codec)
+>> 			    spec->gen.micmute_led.led_value);
+>> }
+>>=20
+>> -#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+>> -static int micmute_led_set(struct led_classdev *led_cdev,
+>> -			   enum led_brightness brightness)
+>> -{
+>> -	struct hda_codec *codec =3D =
+dev_to_hda_codec(led_cdev->dev->parent);
+>> -	struct alc_spec *spec =3D codec->spec;
+>> -
+>> -	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
+>> -			    spec->micmute_led_polarity, !!brightness);
+>> -	return 0;
+>> -}
+>> -
+>> -static struct led_classdev micmute_led_cdev =3D {
+>> -	.name =3D "hda::micmute",
+>> -	.max_brightness =3D 1,
+>> -	.brightness_set_blocking =3D micmute_led_set,
+>> -	.default_trigger =3D "audio-micmute",
+>> -};
+>> -#endif
+>> -
+>> /* setup mute and mic-mute GPIO bits, add hooks appropriately */
+>> static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+>> 				  int action,
+>> @@ -4136,9 +4116,6 @@ static void alc_fixup_hp_gpio_led(struct =
+hda_codec *codec,
+>> 				  unsigned int micmute_mask)
+>> {
+>> 	struct alc_spec *spec =3D codec->spec;
+>> -#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+>> -	int err;
+>> -#endif
+>>=20
+>> 	alc_fixup_gpio(codec, action, mute_mask | micmute_mask);
+>>=20
+>> @@ -4151,13 +4128,6 @@ static void alc_fixup_hp_gpio_led(struct =
+hda_codec *codec,
+>> 	if (micmute_mask) {
+>> 		spec->gpio_mic_led_mask =3D micmute_mask;
+>> 		snd_hda_gen_add_micmute_led(codec, =
+alc_gpio_micmute_update);
+>> -
+>> -#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+>> -		micmute_led_cdev.brightness =3D =
+ledtrig_audio_get(LED_AUDIO_MICMUTE);
+>> -		err =3D devm_led_classdev_register(&codec->core.dev, =
+&micmute_led_cdev);
+>> -		if (err)
+>> -			codec_warn(codec, "failed to register micmute =
+LED\n");
+>> -#endif
+>> 	}
+>> }
+>>=20
+>> --=20
+>> 2.17.1
+>>=20
+
