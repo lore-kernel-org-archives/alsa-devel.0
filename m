@@ -2,60 +2,60 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0496BC433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 19:47:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1025DC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 22:02:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 538C5214D8
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 19:47:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CB89208D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 22:02:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mO6P7384"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 538C5214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SZO44MxH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CB89208D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=shiny.it
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3A1F165E;
-	Tue, 16 Jun 2020 21:46:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3A1F165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13B78886;
+	Wed, 17 Jun 2020 00:01:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B78886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592336828;
-	bh=pMqjLlVOizE0h5zjPZ/YAZqRz30NRq+JGtfVzkto9r8=;
+	s=default; t=1592344958;
+	bh=AA4cJTMA4yhO7XdskMxzaVvKdS1ACWScLRPV9P1J2sg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mO6P7384ur401CU5+cbK2jbBnUbF3JosSJS6KITOodS4AkgnvHfGQTvhu75eevyBR
-	 rHPr29zNgUqWRu4m6z9c8YpXhfibCN952W8NobJOhAKsKrSToDXDsnIojp4ksg0KC1
-	 JOrQvPWz5L2UnlP/83SH3dyyV6AsvXxdwqjSwC/Y=
+	b=SZO44MxHJfpwlnWrt+MTh4pBYhHBHOl2qgReLtgMAT0cNfXM+e/sApJR4ZgGisvlR
+	 mpJwmRhhcbzDxlHOv1pF49Rfx11gz6w5ZR2ln8RorYNIvnJlrw0ikkbNq9nYVNbrY9
+	 XgmzuQNJN1XYYak5x2trbetmSddH7BzxjdFBN96M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AAB4F80217;
-	Tue, 16 Jun 2020 21:46:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 520B3F80217;
+	Wed, 17 Jun 2020 00:01:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02086F8022B; Tue, 16 Jun 2020 21:46:16 +0200 (CEST)
+ id 37D8EF80217; Wed, 17 Jun 2020 00:01:45 +0200 (CEST)
 Received: from denise.shiny.it (denise.shiny.it [185.206.84.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18B7DF80101
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 21:46:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18B7DF80101
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4271FF80101
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 00:01:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4271FF80101
 Received: from wc1 (localhost [127.0.0.1])
- by denise.shiny.it (8.15.2/8.15.2) with ESMTP id 05GJk4k8024115;
- Tue, 16 Jun 2020 21:46:05 +0200
-Date: Tue, 16 Jun 2020 21:46:10 +0200
+ by denise.shiny.it (8.15.2/8.15.2) with ESMTP id 05GM1V9r030652;
+ Wed, 17 Jun 2020 00:01:32 +0200
+Date: Wed, 17 Jun 2020 00:01:34 +0200
 From: Giuliano Pochini <pochini@shiny.it>
 To: Mark Hills <mark@xwax.org>
 Subject: Re: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-Message-ID: <20200616214603.71cfe49b@wc1>
+Message-ID: <20200617000134.60c5e2b5@wc1>
 In-Reply-To: <20200616131743.4793-3-mark@xwax.org>
 References: <2006161409060.30751@stax.localdomain>
  <20200616131743.4793-3-mark@xwax.org>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -78,53 +78,74 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On Tue, 16 Jun 2020 14:17:43 +0100
 Mark Hills <mark@xwax.org> wrote:
 
-> Distorted audio appears occasionally, affecting either playback
-> or capture and requiring the affected substream to be closed by
-> all applications and re-opened.
+> +	counter = le32_to_cpu(*pipe->dma_counter);
+> +
+> +	period = bytes_to_frames(runtime, counter)
+> +		/ runtime->period_size;
+> +	last_period = bytes_to_frames(runtime, pipe->last_counter)
+> +		/ runtime->period_size;
+> +
+> +	if (period == last_period)
+> +		return 0;  /* don't do any work yet */
+> +
+> +	step = counter - pipe->last_counter;
 
-Yes, it also happens here very rarely (one time every some months) and I failed to reproduce the problem.
+Uhmm.. no, when the dma_counter wraps around the comparison gives wrong
+result, unless 4G is divisible by the buffer size.
 
-
-> The best way I have found to reproduce the bug is to use dmix in
-> combination with Chromium, which opens the audio device multiple
-> times in threads. Anecdotally, the problems appear to have increased
-> with faster CPUs.
-> 
-> Since applying this patch I have not had problems, where previously
-> they would occur several times a day.
-> 
-> This patch addresses the following issues:
-> 
-> * Check for progress using the counter from the hardware, not after
->   it has been truncated to the buffer.
-> 
->   There appears to be a possible bug if a whole ringbuffer advances
->   between interrupts, it goes unnoticed.
-
-In that case the stream must be restarted anyway due to xrun.
+Please consider this patch (to apply after yours). It computes the new period
+using pipe->position before and after adding the amount of bytes tranferred
+since the previous period.
+Briefly tested - It seems ok.
 
 
-> * Remove chip->last_period:
-> 
->   It's trivial to derive from pipe->last_counter, and inside pipe
->   is where it more logically belongs. This has less scope for bugs
->   as it is not wrapped to the buffer length.
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
-Ok.
-
-
-> * Remove the accessing of pipe->dma_counter twice in the interrupt
->   handler:
-
-Why twice?
-
-
-> +static int snd_echo_poll_substream(struct snd_pcm_substream *substream)
-> [...]
->  static irqreturn_t snd_echo_interrupt(int irq, void *dev_id)
-> [...]
-
-Looks fine to me.
+--- sound/pci/echoaudio/echoaudio.c__orig	2020-06-16 23:36:02.818601055 +0200
++++ sound/pci/echoaudio/echoaudio.c	2020-06-16 23:52:46.593325066 +0200
+@@ -1781,7 +1781,7 @@
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audiopipe *pipe = runtime->private_data;
+-	unsigned counter, step, period, last_period;
++	u32 counter, step, period, last_period, pipe_position;
+ 	size_t buffer_bytes;
+ 
+ 	if (pipe->state != PIPE_STATE_STARTED)
+@@ -1789,24 +1789,22 @@
+ 
+ 	counter = le32_to_cpu(*pipe->dma_counter);
+ 
+-	period = bytes_to_frames(runtime, counter)
++	step = counter - pipe->last_counter;
++	pipe_position = pipe->position + step;	/* bytes */
++	buffer_bytes = frames_to_bytes(runtime, runtime->buffer_size);
++	while (pipe_position >= buffer_bytes)
++		pipe_position -= buffer_bytes;
++
++	period = bytes_to_frames(runtime, pipe_position)
+ 		/ runtime->period_size;
+-	last_period = bytes_to_frames(runtime, pipe->last_counter)
++	last_period = bytes_to_frames(runtime, pipe->position)
+ 		/ runtime->period_size;
+ 
+ 	if (period == last_period)
+ 		return 0;  /* don't do any work yet */
+ 
+-	step = counter - pipe->last_counter;
++	pipe->position = pipe_position;
+ 	pipe->last_counter = counter;
+-
+-	pipe->position += step;  /* bytes */
+-
+-	buffer_bytes = frames_to_bytes(runtime, runtime->buffer_size);
+-
+-	while (pipe->position >= buffer_bytes)
+-		pipe->position -= buffer_bytes;
+-
+ 	return 1;
+ }
+ 
 
 
 -- 
