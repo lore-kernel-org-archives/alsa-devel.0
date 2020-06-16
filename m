@@ -2,68 +2,62 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DFE1C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 04:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12E0EC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:18:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D253206DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 04:49:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CB5B20707
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 05:18:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JRWg2nto"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D253206DB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CjXoGPIS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CB5B20707
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D6A4167A;
-	Tue, 16 Jun 2020 06:48:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D6A4167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 200E21671;
+	Tue, 16 Jun 2020 07:17:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 200E21671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592282955;
-	bh=w5mrW+OWPyUJS1s/NVbWDhxsVteA862jXL3kd4Qbt8w=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1592284708;
+	bh=3vR2fJ/+aaPB+Jc2qpZF4crijF06B1WhPdeWeXCv/bA=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=JRWg2nto3egK4nR3ZnR8cdmcu5O1l9oCpiNsNVBArOZUvik6fekMAyL0L0LcrJkJu
-	 48A1k1kGYLP5pGkXNol0uoNsXQ4sc8avH4KHb218GuzPdhyJJCIQEG/Kf7iVijO1Qx
-	 o9KwSE4YpIM3HiRG9LG7tHYWf0/OjSbNKZmhzgkA=
+	b=CjXoGPIShEZ1QrJV+oZHL1pDRwwIp0Z/M+UorEQ2v2EjBz48Jo3goeCe3RtI4hirF
+	 TiMwCL2MrTAxRssh2tNnf0/hAhqH5xCkDj6gY9FEgsqsBVtES3uB4Fz8Rr4Y5iVwqp
+	 Zi4IPLpJt1zrH4uc6SwbG8RvmTPIkiHOXpHY01WI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1493BF80232;
-	Tue, 16 Jun 2020 06:47:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 875FBF80217;
+	Tue, 16 Jun 2020 07:17:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1304CF80232; Tue, 16 Jun 2020 06:47:49 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 055D4F80232
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 06:47:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 055D4F80232
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
- helo=localhost) by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>)
- id 1jl3V4-0004Qd-59; Tue, 16 Jun 2020 04:47:06 +0000
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH 1/2] ALSA: hda: Make codec controlled LED support more generic
-Date: Tue, 16 Jun 2020 12:46:58 +0800
-Message-Id: <20200616044702.17570-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-Cc: Wenwen Wang <wenwen@cs.uga.edu>, Kailang Yang <kailang@realtek.com>,
- Tomas Espeleta <tomas.espeleta@gmail.com>, Thomas Hebb <tommyhebb@gmail.com>,
- "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- open list <linux-kernel@vger.kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
- Hui Wang <hui.wang@canonical.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>
+ id E840BF8022B; Tue, 16 Jun 2020 07:17:32 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 04BC7F800EF
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 07:17:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04BC7F800EF
+Date: 16 Jun 2020 14:17:22 +0900
+X-IronPort-AV: E=Sophos;i="5.73,517,1583161200"; d="scan'208";a="49577080"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 16 Jun 2020 14:17:22 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4609C41A4FBA;
+ Tue, 16 Jun 2020 14:17:22 +0900 (JST)
+Message-ID: <87tuzb4mjg.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 00/16] ASoC: merge snd_soc_component_read() and
+ snd_soc_component_read32()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,124 +73,162 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently, only HDA codec GPIO controlled LED class is supported, and
-only via platform specific quirk.
 
-There are systems that control LED via COEF instead of GPIO, and to
-support those systems, move the LED class registration to
-snd_hda_gen_add_micmute_led(), so all systems can facilitate the same
-interface.
+Hi Mark
 
-In addition to that, add LED_CORE_SUSPENDRESUME flag since some systems
-don't restore the LED properly after suspend.
+Because we can use "read" function which is using
+"regmap" or "driver", current ALSA SoC drivers are using both
+	snd_soc_component_read()    // for regmap
+	snd_soc_component_read32()  // for driver callback
+These are similar but needs different parameter.
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/hda_generic.c   | 28 ++++++++++++++++++++++++++++
- sound/pci/hda/patch_realtek.c | 30 ------------------------------
- 2 files changed, 28 insertions(+), 30 deletions(-)
+This patch aggressively merge snd_soc_component_read() and _read32(),
+and makes snd_soc_component_read/write() as generally style.
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index f4e9d9445e18..4242407734c0 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -4006,6 +4006,28 @@ static const struct snd_kcontrol_new micmute_led_mode_ctl = {
-  *
-  * Returns 0 if the hook is established or a negative error code.
-  */
-+
-+#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
-+static int micmute_led_set(struct led_classdev *led_cdev,
-+			   enum led_brightness brightness)
-+{
-+	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
-+	struct hda_gen_spec *spec = codec->spec;
-+
-+	spec->micmute_led.led_mode = !brightness;
-+	call_micmute_led_update(codec);
-+	return 0;
-+}
-+
-+static struct led_classdev micmute_led_cdev = {
-+	.name = "hda::micmute",
-+	.max_brightness = 1,
-+	.brightness_set_blocking = micmute_led_set,
-+	.default_trigger = "audio-micmute",
-+	.flags = LED_CORE_SUSPENDRESUME,
-+};
-+#endif
-+
- int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
- 				void (*hook)(struct hda_codec *))
- {
-@@ -4019,6 +4041,12 @@ int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
- 	spec->cap_sync_hook = update_micmute_led;
- 	if (!snd_hda_gen_add_kctl(spec, NULL, &micmute_led_mode_ctl))
- 		return -ENOMEM;
-+
-+#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
-+	micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
-+	if (devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev))
-+		codec_warn(codec, "failed to register micmute LED\n");
-+#endif
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_hda_gen_add_micmute_led);
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6d73f8beadb6..cead44a6c6cd 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4109,26 +4109,6 @@ static void alc_gpio_micmute_update(struct hda_codec *codec)
- 			    spec->gen.micmute_led.led_value);
- }
- 
--#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
--static int micmute_led_set(struct led_classdev *led_cdev,
--			   enum led_brightness brightness)
--{
--	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
--	struct alc_spec *spec = codec->spec;
--
--	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
--			    spec->micmute_led_polarity, !!brightness);
--	return 0;
--}
--
--static struct led_classdev micmute_led_cdev = {
--	.name = "hda::micmute",
--	.max_brightness = 1,
--	.brightness_set_blocking = micmute_led_set,
--	.default_trigger = "audio-micmute",
--};
--#endif
--
- /* setup mute and mic-mute GPIO bits, add hooks appropriately */
- static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
- 				  int action,
-@@ -4136,9 +4116,6 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
- 				  unsigned int micmute_mask)
- {
- 	struct alc_spec *spec = codec->spec;
--#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
--	int err;
--#endif
- 
- 	alc_fixup_gpio(codec, action, mute_mask | micmute_mask);
- 
-@@ -4151,13 +4128,6 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
- 	if (micmute_mask) {
- 		spec->gpio_mic_led_mask = micmute_mask;
- 		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
--
--#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
--		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
--		err = devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev);
--		if (err)
--			codec_warn(codec, "failed to register micmute LED\n");
--#endif
- 	}
- }
- 
+New read doesn't return error if it failed,
+thus, it can't keep compatibility,
+but assuming it is not a big problem.
+Because 1) it will indicate error message,
+2) it can do nothing anyway if it fails "read".
+
+[02/16] patch is not directly connected to read function merging,
+but need to be apply after [01/16].
+
+Kuninori Morimoto (16):
+  ASoC: soc-component: merge snd_soc_component_read() and snd_soc_component_read32()
+  ASoC: soc-component: use io_mutex correctly
+  ASoC: pxa: rename to snd_soc_component_read()
+  ASoC: atmel: rename to snd_soc_component_read()
+  ASoC: codecs: rename to snd_soc_component_read()
+  ASoC: codecs: wcd*: rename to snd_soc_component_read()
+  ASoC: codecs: tlv*: rename to snd_soc_component_read()
+  ASoC: codecs: max*: rename to snd_soc_component_read()
+  ASoC: codecs: msm*: rename to snd_soc_component_read()
+  ASoC: codecs: alc*: rename to snd_soc_component_read()
+  ASoC: codecs: wm*: rename to snd_soc_component_read()
+  ASoC: codecs: rt*: rename to snd_soc_component_read()
+  ASoC: codecs: da*: rename to snd_soc_component_read()
+  ASoC: codecs: cs*: rename to snd_soc_component_read()
+  ASoC: codecs: ak*: rename to snd_soc_component_read()
+  ASoC: remove snd_soc_component_read32()
+
+ include/sound/soc-component.h          |  4 +-
+ sound/soc/atmel/atmel-pdmic.c          |  4 +-
+ sound/soc/codecs/88pm860x-codec.c      | 14 ++---
+ sound/soc/codecs/ab8500-codec.c        |  8 +--
+ sound/soc/codecs/ad1980.c              |  4 +-
+ sound/soc/codecs/ak4458.c              |  2 +-
+ sound/soc/codecs/ak4535.c              |  4 +-
+ sound/soc/codecs/ak4613.c              |  4 +-
+ sound/soc/codecs/ak4671.c              |  8 +--
+ sound/soc/codecs/alc5623.c             |  6 +-
+ sound/soc/codecs/alc5632.c             |  6 +-
+ sound/soc/codecs/arizona.c             | 18 +++---
+ sound/soc/codecs/cs4270.c              | 10 +--
+ sound/soc/codecs/cs42l42.c             |  2 +-
+ sound/soc/codecs/cs42l51.c             |  8 +--
+ sound/soc/codecs/cs42l73.c             |  4 +-
+ sound/soc/codecs/cs47l35.c             | 10 +--
+ sound/soc/codecs/cs47l85.c             | 10 +--
+ sound/soc/codecs/da7210.c              | 24 ++++----
+ sound/soc/codecs/da7213.c              | 24 ++++----
+ sound/soc/codecs/da7218.c              | 34 +++++------
+ sound/soc/codecs/da7219-aad.c          | 16 ++---
+ sound/soc/codecs/da7219.c              | 20 +++---
+ sound/soc/codecs/da732x.c              | 18 +++---
+ sound/soc/codecs/da9055.c              | 14 ++---
+ sound/soc/codecs/inno_rk3036.c         |  6 +-
+ sound/soc/codecs/madera.c              | 49 +++------------
+ sound/soc/codecs/max98088.c            | 12 ++--
+ sound/soc/codecs/max98090.c            | 20 +++---
+ sound/soc/codecs/max98095.c            | 16 ++---
+ sound/soc/codecs/max9850.c             |  2 +-
+ sound/soc/codecs/msm8916-wcd-analog.c  | 14 ++---
+ sound/soc/codecs/msm8916-wcd-digital.c | 16 ++---
+ sound/soc/codecs/nau8822.c             |  6 +-
+ sound/soc/codecs/rt1305.c              |  2 +-
+ sound/soc/codecs/rt298.c               |  2 +-
+ sound/soc/codecs/rt5616.c              |  2 +-
+ sound/soc/codecs/rt5631.c              | 32 +++++-----
+ sound/soc/codecs/rt5640.c              | 10 +--
+ sound/soc/codecs/rt5645.c              | 16 ++---
+ sound/soc/codecs/rt5651.c              |  6 +-
+ sound/soc/codecs/rt5659.c              | 14 ++---
+ sound/soc/codecs/rt5660.c              |  2 +-
+ sound/soc/codecs/rt5663.c              | 34 +++++------
+ sound/soc/codecs/rt5665.c              | 16 ++---
+ sound/soc/codecs/rt5668.c              | 16 ++---
+ sound/soc/codecs/rt5670.c              | 18 +++---
+ sound/soc/codecs/rt5682-i2c.c          |  2 +-
+ sound/soc/codecs/rt5682.c              | 19 +++---
+ sound/soc/codecs/sgtl5000.c            | 16 ++---
+ sound/soc/codecs/sta32x.c              |  4 +-
+ sound/soc/codecs/tas2552.c             |  4 +-
+ sound/soc/codecs/tas5720.c             |  4 +-
+ sound/soc/codecs/tda7419.c             |  9 +--
+ sound/soc/codecs/tlv320aic23.c         | 14 ++---
+ sound/soc/codecs/tlv320aic26.c         |  4 +-
+ sound/soc/codecs/tlv320aic32x4.c       | 16 ++---
+ sound/soc/codecs/tlv320aic3x.c         | 14 ++---
+ sound/soc/codecs/tscs42xx.c            |  4 +-
+ sound/soc/codecs/tscs454.c             | 24 ++------
+ sound/soc/codecs/wcd-clsh-v2.c         |  2 +-
+ sound/soc/codecs/wcd9335.c             | 48 +++++++--------
+ sound/soc/codecs/wcd934x.c             | 52 ++++++++--------
+ sound/soc/codecs/wm2200.c              |  4 +-
+ sound/soc/codecs/wm5100.c              | 18 +++---
+ sound/soc/codecs/wm5110.c              |  6 +-
+ sound/soc/codecs/wm8350.c              | 32 +++++-----
+ sound/soc/codecs/wm8400.c              | 50 +++++++--------
+ sound/soc/codecs/wm8510.c              | 28 ++++-----
+ sound/soc/codecs/wm8523.c              |  6 +-
+ sound/soc/codecs/wm8580.c              | 12 ++--
+ sound/soc/codecs/wm8711.c              |  8 +--
+ sound/soc/codecs/wm8728.c              | 10 +--
+ sound/soc/codecs/wm8731.c              |  6 +-
+ sound/soc/codecs/wm8750.c              |  8 +--
+ sound/soc/codecs/wm8753.c              | 42 ++++++-------
+ sound/soc/codecs/wm8770.c              |  2 +-
+ sound/soc/codecs/wm8776.c              |  2 +-
+ sound/soc/codecs/wm8804.c              |  2 +-
+ sound/soc/codecs/wm8900.c              | 22 +++----
+ sound/soc/codecs/wm8903.c              | 20 +++---
+ sound/soc/codecs/wm8904.c              | 16 ++---
+ sound/soc/codecs/wm8940.c              | 32 +++++-----
+ sound/soc/codecs/wm8955.c              |  2 +-
+ sound/soc/codecs/wm8958-dsp2.c         | 18 +++---
+ sound/soc/codecs/wm8960.c              | 20 +++---
+ sound/soc/codecs/wm8961.c              | 58 +++++++++---------
+ sound/soc/codecs/wm8962.c              | 31 +++++-----
+ sound/soc/codecs/wm8971.c              |  8 +--
+ sound/soc/codecs/wm8974.c              | 24 ++++----
+ sound/soc/codecs/wm8978.c              | 12 ++--
+ sound/soc/codecs/wm8983.c              |  8 +--
+ sound/soc/codecs/wm8985.c              |  8 +--
+ sound/soc/codecs/wm8988.c              | 12 ++--
+ sound/soc/codecs/wm8990.c              | 18 +++---
+ sound/soc/codecs/wm8991.c              | 38 ++++++------
+ sound/soc/codecs/wm8993.c              | 28 ++++-----
+ sound/soc/codecs/wm8994.c              | 60 +++++++++---------
+ sound/soc/codecs/wm8995.c              | 16 ++---
+ sound/soc/codecs/wm8996.c              | 30 ++++-----
+ sound/soc/codecs/wm8998.c              |  8 +--
+ sound/soc/codecs/wm9081.c              | 36 +++++------
+ sound/soc/codecs/wm9090.c              |  4 +-
+ sound/soc/codecs/wm9713.c              |  2 +-
+ sound/soc/codecs/wm_hubs.c             | 30 ++++-----
+ sound/soc/fsl/fsl_audmix.c             | 10 +--
+ sound/soc/fsl/fsl_easrc.c              |  5 +-
+ sound/soc/meson/aiu-encoder-i2s.c      |  3 +-
+ sound/soc/meson/aiu-fifo-i2s.c         |  3 +-
+ sound/soc/meson/aiu-fifo.c             |  3 +-
+ sound/soc/pxa/mioa701_wm9713.c         |  8 +--
+ sound/soc/soc-ac97.c                   |  7 +--
+ sound/soc/soc-component.c              | 84 ++++++++++++++------------
+ sound/soc/soc-dapm.c                   | 31 ++++------
+ sound/soc/soc-ops.c                    | 43 +++----------
+ 115 files changed, 854 insertions(+), 963 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
