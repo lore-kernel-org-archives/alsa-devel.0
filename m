@@ -6,79 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB959C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 14:02:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58582C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 14:19:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46CCC207E8
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 14:02:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA443207C4
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 14:19:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AqNhTCFy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="DXohuQul"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46CCC207E8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IHFZ8Ov2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA443207C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8BF5166E;
-	Tue, 16 Jun 2020 16:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8BF5166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6090D166E;
+	Tue, 16 Jun 2020 16:18:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6090D166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592316127;
-	bh=FVwkofudanH+Bm3/CfIOsDhG5AF6PbgfBjDt6X+sH2E=;
+	s=default; t=1592317166;
+	bh=bE7WZ6oRtugON+Udi8VXpi+UoK/pBP94BEZdmWh02OY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AqNhTCFyOfldW0xK9ShLEo/sdM30QbkhQibXJKPemQ6ZF79hz5sLdcTyeHO9nqS8p
-	 AfXfWnSgAMtz5RLmjSvQRQ9sj9BrFokXAtHe7Z5Z+qPj4EXBHXJKvBku1rTuvnYmmt
-	 STOVM5lDHQ8PCg9kpzdJodrrAk0vmkr9rsYs4db8=
+	b=IHFZ8Ov2tUYnzcAP6y1B1N2whkcg9eQT6lR/CEQ55lyMMS6B3QlCCmwJ+LO7nC3+M
+	 rf5CCDkJXtnwd4R6N1vNoA5ypXrj7mWVe3c908XDsmE9MrOczlCy5B7zIl2ZTWwuUi
+	 pxDfjMOV6D6k2mtsirDxwVjeK00HKbqd2689MFXo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ED5CF80217;
-	Tue, 16 Jun 2020 16:01:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E09A3F80101;
+	Tue, 16 Jun 2020 16:18:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 086F6F8022B; Tue, 16 Jun 2020 16:01:16 +0200 (CEST)
-Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 90921F8022B; Tue, 16 Jun 2020 16:18:33 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F0F2F80101
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 16:01:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F0F2F80101
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
- header.b="DXohuQul"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
- ; s=a;
- h=Content-Type:MIME-Version:References:Message-ID:In-Reply-To:Subject:
- cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=5KkvhX8DkJQqoOET62+MFkwWYpAGrw+jrL/zWEZeFd8=; b=DXohuQulSj7za3BqZpgIv+nv8Q
- ATp0NV3VcsGscOikSMEupKnAgRuyhgKYdl0JKxiKt3NpiIUVQQT8JT9mpqUYmu/LGkXjC9oJBbvLC
- jobZ6PhU6c7LYjCuixm4jObRFR/nls71teZ5q257DmOhVReay1ewuAtkKHGeM7vuRoiscn2XygJn1
- XPs7m2/jOjOBcmWHrxv0SRQhdDobx6htQD8JCMhR6tjMJTCc5BxuwjssjF8sF1IC+Gcf8icvfQst3
- y0zM3nTr7YrwwaJwZCb01mlLQq94EhTH7s+kkSiclMnLOdpYaPV1IOHdmzl0RSvxjYB3KmAAXI/qX
- vx2E4gfA==;
-Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
- helo=stax.localdomain) by jazz.pogo.org.uk with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93.0.4 (FreeBSD))
- (envelope-from <mark@xwax.org>)
- id 1jlC9H-000Me9-Kr; Tue, 16 Jun 2020 15:01:11 +0100
-Received: from mark (helo=localhost)
- by stax.localdomain with local-esmtp (Exim 4.84)
- (envelope-from <mark@xwax.org>)
- id 1jlC9H-0004qk-9j; Tue, 16 Jun 2020 15:01:11 +0100
-Date: Tue, 16 Jun 2020 15:01:11 +0100 (BST)
-From: Mark Hills <mark@xwax.org>
-To: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8489FF80101
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 16:18:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8489FF80101
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 71DF7ABE4;
+ Tue, 16 Jun 2020 14:18:33 +0000 (UTC)
+Date: Tue, 16 Jun 2020 16:18:28 +0200
+Message-ID: <s5hlfkn14cr.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Hills <mark@xwax.org>
 Subject: Re: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-In-Reply-To: <s5hsgev16ck.wl-tiwai@suse.de>
-Message-ID: <2006161451110.1865@stax.localdomain>
+In-Reply-To: <2006161451110.1865@stax.localdomain>
 References: <2006161409060.30751@stax.localdomain>
- <20200616131743.4793-3-mark@xwax.org> <s5hsgev16ck.wl-tiwai@suse.de>
-MIME-Version: 1.0
+ <20200616131743.4793-3-mark@xwax.org>
+ <s5hsgev16ck.wl-tiwai@suse.de>
+ <2006161451110.1865@stax.localdomain>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -96,68 +79,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 16 Jun 2020, Takashi Iwai wrote:
-
-> On Tue, 16 Jun 2020 15:17:43 +0200,
-> Mark Hills wrote:
+On Tue, 16 Jun 2020 16:01:11 +0200,
+Mark Hills wrote:
+> 
+> On Tue, 16 Jun 2020, Takashi Iwai wrote:
+> 
+> > On Tue, 16 Jun 2020 15:17:43 +0200,
+> > Mark Hills wrote:
+> > > 
+> > > +/* Update software pointer to match the hardware
+> > > + *
+> > > + * Return: 1 if we crossed a period threshold, otherwise 0
+> > > + */
+> > > +static int snd_echo_poll_substream(struct snd_pcm_substream *substream)
 > > 
-> > +/* Update software pointer to match the hardware
-> > + *
-> > + * Return: 1 if we crossed a period threshold, otherwise 0
-> > + */
-> > +static int snd_echo_poll_substream(struct snd_pcm_substream *substream)
+> > This is a bit confusing name.  One would imagine from the function
+> > name as if it were about the handling of poll() syscall.
 > 
-> This is a bit confusing name.  One would imagine from the function
-> name as if it were about the handling of poll() syscall.
-
-Poll felt intuitive to me; maybe from FreeBSD where network drivers can 
-poll on a timer instead of interrupts. I do know about poll(), though.
-
-How about snd_echo_update_substream()?
- 
-> > +{
-> > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > +	struct audiopipe *pipe = runtime->private_data;
-> > +	unsigned counter, step, period, last_period;
-> > +	size_t buffer_bytes;
-> > +
-> > +	if (pipe->state != PIPE_STATE_STARTED)
-> > +		return 0;
-> > +
-> > +	counter = le32_to_cpu(*pipe->dma_counter);
-> > +
-> > +	period = bytes_to_frames(runtime, counter)
-> > +		/ runtime->period_size;
-> > +	last_period = bytes_to_frames(runtime, pipe->last_counter)
-> > +		/ runtime->period_size;
-> > +
-> > +	if (period == last_period)
-> > +		return 0;  /* don't do any work yet */
-> > +
-> > +	step = counter - pipe->last_counter;
-> > +	pipe->last_counter = counter;
+> Poll felt intuitive to me; maybe from FreeBSD where network drivers can 
+> poll on a timer instead of interrupts. I do know about poll(), though.
 > 
-> Dose this calculation consider the overlap of 32bit integer of the
-> counter?  (I'm not sure whether the old code did it right, though.)
+> How about snd_echo_update_substream()?
 
-I believe it does, since (small - big) as unsigned gives small value. And 
-period is checked only for equality (not greater than). I'll add a comment 
-as such. I have run it with long streams.
+Yes, it's more self-explanatory.  Or even better
+snd_echo_update_substream_position() :)
 
-Would it be clearer, or should it be that buffer_bytes to "unsigned"? 
-Though size_t conveys that it is a byte length, in memory.
+> > > +{
+> > > +	struct snd_pcm_runtime *runtime = substream->runtime;
+> > > +	struct audiopipe *pipe = runtime->private_data;
+> > > +	unsigned counter, step, period, last_period;
+> > > +	size_t buffer_bytes;
+> > > +
+> > > +	if (pipe->state != PIPE_STATE_STARTED)
+> > > +		return 0;
+> > > +
+> > > +	counter = le32_to_cpu(*pipe->dma_counter);
+> > > +
+> > > +	period = bytes_to_frames(runtime, counter)
+> > > +		/ runtime->period_size;
+> > > +	last_period = bytes_to_frames(runtime, pipe->last_counter)
+> > > +		/ runtime->period_size;
+> > > +
+> > > +	if (period == last_period)
+> > > +		return 0;  /* don't do any work yet */
+> > > +
+> > > +	step = counter - pipe->last_counter;
+> > > +	pipe->last_counter = counter;
+> > 
+> > Dose this calculation consider the overlap of 32bit integer of the
+> > counter?  (I'm not sure whether the old code did it right, though.)
+> 
+> I believe it does, since (small - big) as unsigned gives small value. And 
+> period is checked only for equality (not greater than). I'll add a comment 
+> as such. I have run it with long streams.
 
-In general I haven't deviated from existing code without need to, so I 
-inherited these types.
+The problem is that the last_period calculation can be wrong if the
+period size isn't aligned.  e.g. when period size is 44100, around the
+boundary position, it gets a different last_period value although it
+still in the same period.
 
-The same goes for the pattern of calculating "step" with unsigned values, 
-and then using a loop to wrap it to the buffer:
 
-    while (pipe->position >= buffer_bytes)
-            pipe->position -= buffer_bytes;
+thanks,
 
-I've assumed this was a recognised pattern in ALSA code, preferred over 
-modulus.
-
--- 
-Mark
+Takashi
