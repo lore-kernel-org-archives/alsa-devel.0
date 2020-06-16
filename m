@@ -2,81 +2,79 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D58DDC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 14:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50D71C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 15:06:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6588220679
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 14:53:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFC4B208B8
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 15:06:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oMNGOL5l";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="yS4ku52I"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6588220679
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nJTXg1AA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFC4B208B8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7C93166C;
-	Tue, 16 Jun 2020 16:53:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7C93166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52F09166C;
+	Tue, 16 Jun 2020 17:05:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52F09166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592319231;
-	bh=o0Bhg6+CdsjgFDzC6GZL1NJgiQTDPMtCUhAd0vdksSw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592320004;
+	bh=M6mGS5CRfVUXcUuTgq+XPwYBJXYb2kp8nGOPtfIm+u0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oMNGOL5lMr7r3UQ5QCqk1vnM6O5W9FO9X3MlnDKyoI1BXhSm0L5ikD8LfbkcBr9rD
-	 /xLQUxCeNYHTfa2ec2HcVGPtCXY6gGLVvPkUWbKIG0/IBd7oSLkcLMwhtkdSMwByJ4
-	 lK6HXISN0+3piMyfFrvXkcWQLaqoYcX85cIB/Kfw=
+	b=nJTXg1AAjAgBZ9EQYc5OAnDlv5YqI1vCa2GRGlqK+Rgobz30DcK4WyEAXXAOwFBNz
+	 T61y/WaTINGEoAFf3KjrORobfmANwy0uOzY+KUYHM9l05iM2JurtjdN3Y1vmw9Z3ua
+	 5K7FF1lV0dVc1zIiXyRjt8MYur9/l6xYWGF/8kc4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63F35F80217;
-	Tue, 16 Jun 2020 16:53:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E712AF80114;
+	Tue, 16 Jun 2020 17:05:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1981DF8022B; Tue, 16 Jun 2020 16:52:59 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66F9FF80101
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 16:52:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66F9FF80101
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="yS4ku52I"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 2C6BAF8022B; Tue, 16 Jun 2020 17:05:52 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3A82C20679;
- Tue, 16 Jun 2020 14:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592319173;
- bh=o0Bhg6+CdsjgFDzC6GZL1NJgiQTDPMtCUhAd0vdksSw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=yS4ku52IvXbM/Et+Ox3vxRA5LQDWhSZ7H1iBMIajdL0K1SLYSNgftlCF31s7DFKVc
- lFINNO5Ax4ui4wSiRg/Q5Mu9quROOTGJ8+8x4jIZ86iM2PKCa10S+c6+w5AGL/cawC
- nalDGd7dOkQONTIqNJz0ZTZLrN6IIVkbmg22B8wo=
-Date: Tue, 16 Jun 2020 15:52:51 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9FBB6F80114
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 17:05:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FBB6F80114
+IronPort-SDR: RN1p/CjA7Ig2p8sCsCj6PNuXYo/VopYPOReVcwoLPbzj8SIBIrFoi81bhwwzmij3/fGUN6x+5C
+ vFemn+gyytuA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Jun 2020 08:05:45 -0700
+IronPort-SDR: jxzbzGApxJIaJDhqEbJ2zUypeSFkgQd+pygrV5wmB/uD0O90pYPpLRO+JzyCur2pM7I1p+yUgW
+ 0hf2X2ftiPqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,518,1583222400"; d="scan'208";a="298939342"
+Received: from nafrose-mobl.amr.corp.intel.com (HELO [10.254.107.226])
+ ([10.254.107.226])
+ by fmsmga004.fm.intel.com with ESMTP; 16 Jun 2020 08:05:39 -0700
 Subject: Re: [PATCH 1/4] ASoC: soc-pcm: dpcm: fix playback/capture checks
-Message-ID: <20200616145251.GO4447@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>
 References: <20200608194415.4663-1-pierre-louis.bossart@linux.intel.com>
  <20200608194415.4663-2-pierre-louis.bossart@linux.intel.com>
- <20200616085409.GA110999@gerhold.net>
- <20200616090210.GA111206@gerhold.net>
+ <20200616085409.GA110999@gerhold.net> <20200616090210.GA111206@gerhold.net>
  <254a667e-fa49-240a-6386-7e82df8e5c35@linux.intel.com>
+ <20200616145251.GO4447@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <af973f45-59b9-ecff-7d78-97d8352ed072@linux.intel.com>
+Date: Tue, 16 Jun 2020 10:05:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="/7YWha3R2g8GjXQ0"
-Content-Disposition: inline
-In-Reply-To: <254a667e-fa49-240a-6386-7e82df8e5c35@linux.intel.com>
-X-Cookie: Offer may end without notice.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200616145251.GO4447@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
  tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>,
@@ -99,41 +97,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---/7YWha3R2g8GjXQ0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jun 16, 2020 at 09:23:25AM -0500, Pierre-Louis Bossart wrote:
-> On 6/16/20 4:02 AM, Stephan Gerhold wrote:
-> > On Tue, Jun 16, 2020 at 10:54:17AM +0200, Stephan Gerhold wrote:
+On 6/16/20 9:52 AM, Mark Brown wrote:
+> On Tue, Jun 16, 2020 at 09:23:25AM -0500, Pierre-Louis Bossart wrote:
+>> On 6/16/20 4:02 AM, Stephan Gerhold wrote:
+>>> On Tue, Jun 16, 2020 at 10:54:17AM +0200, Stephan Gerhold wrote:
+> 
+>>>> For the QCOM case it may be feasible to set dpcm_playback/dpcm_capture
+>>>> appropriately because it is basically only used with one particular
+>>>> DAI driver. But simple-audio-card is generic and used with many
+>>>> different drivers so hard-coding a call into some other driver like
+>>>> Srinivas did above won't work in that case.
+> 
+>> Doesn't simple-card rely on DT blobs that can also be updated?
+> 
+> DT is an ABI just like ACPI - it's just more featureful.  Many systems
+> can easily update their DTs but not all of them and users don't always
+> want to try to keep it in lock step with the kernel.  Stuff like this is
+> why I've been dubious about putting DPCM things in there, it's too much
+> of a hard coding of internal APIs.
 
-> > > For the QCOM case it may be feasible to set dpcm_playback/dpcm_capture
-> > > appropriately because it is basically only used with one particular
-> > > DAI driver. But simple-audio-card is generic and used with many
-> > > different drivers so hard-coding a call into some other driver like
-> > > Srinivas did above won't work in that case.
+ok, but is there any actual use of dpcm_playback/capture outside of C code?
 
-> Doesn't simple-card rely on DT blobs that can also be updated?
+simple-card.c and audio-graph-card do hard-code but that's done with C 
+in the driver:
 
-DT is an ABI just like ACPI - it's just more featureful.  Many systems
-can easily update their DTs but not all of them and users don't always
-want to try to keep it in lock step with the kernel.  Stuff like this is
-why I've been dubious about putting DPCM things in there, it's too much
-of a hard coding of internal APIs.
+	ret = asoc_simple_parse_daifmt(dev, cpu_ep, codec_ep,
+				       NULL, &dai_link->dai_fmt);
+	if (ret < 0)
+		goto out_put_node;
 
---/7YWha3R2g8GjXQ0
-Content-Type: application/pgp-signature; name="signature.asc"
+	dai_link->dpcm_playback		= 1;
+	dai_link->dpcm_capture		= 1;
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7o3MIACgkQJNaLcl1U
-h9C6Iwf8DqtSXDce1saLgZazB9BSuYfGkxJTspLp32b773ihq774v2YXBPIjrBNl
-fAqFCqGIkvEKm3cQUds5a8zb0+IXuaeCwezGqV0p7mbi/QnA5XbUrR61Z7J22swi
-Rm7US4OYQXmhx8VGmbpqsAkG/pf/WzcDXTbc/ngqTOq5Fd9MEWWGc4EJLW62Dq0I
-MiTo/QopRpt+QhvtT655FXEKZohDylfgxEQBSuWiyXIfljSGLdQyn+3BGIVaxKzA
-3q4jOJ5mHmtWN7Z/z2Qjb5yoQQJim8xFvOq709myh204F3sM5LB4Z+EdsTRlJQ67
-GWEpPbBAtuvTLeWT8HX8hNBTQxtlCw==
-=N9Bg
------END PGP SIGNATURE-----
-
---/7YWha3R2g8GjXQ0--
+that that should be fixed based on the DAI format used in that dai_link 
+- in other words we can make sure the capabilities of the dailink are 
+aligned with the dais while parsing the DT blobs.
