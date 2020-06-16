@@ -2,73 +2,57 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06355C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 06:55:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5198C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 07:35:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 849E6207E8
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 06:55:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9A3C4204EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 07:35:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UhnRA+j/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 849E6207E8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Fe0DQq/C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A3C4204EC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tratt.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04F901694;
-	Tue, 16 Jun 2020 08:54:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04F901694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 199F4168A;
+	Tue, 16 Jun 2020 09:34:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 199F4168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592290542;
-	bh=68gBqIq5+Hsjitg932pwUty07RzbD3ApuMQqypqasyA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UhnRA+j/TA2ujEa6PAUMwMVPnQm6bcnbd7o2aElaDXRlp7MLMsVBbi0ZgHvtYo/J/
-	 smPrG6Yd0ck1ZP0qVV++dBGIXUAKfiot2v56Rp/73zGFX7nncl9Qe8YKoD2GD/empl
-	 JrmXqmzdONhP/9dhvzanFgnAHNL5z1B0BNheCYL8=
+	s=default; t=1592292933;
+	bh=lOJhom8RQVbir/TGX9f5kjkd072E9hmXfbtKV7u3SXo=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Fe0DQq/CzyTGtWOUAuNaas0fXShC7y7dnlCrg1lz2NDl63Z4S4IRWP1WAZE95ixsz
+	 xevwj+HJfM/bOXcrF6rtloHce7hRfwPZnlgKbgnJ9H8nhA6wN1ZNwe/z/rSYUhWRVr
+	 WeIt1gChheKL5+SMRGNzvttCQx+hln6xSF6pnP6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7990F80101;
-	Tue, 16 Jun 2020 08:54:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EA15F80217;
+	Tue, 16 Jun 2020 09:34:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B256FF80101; Tue, 16 Jun 2020 08:53:58 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 968B5F8022B; Tue, 16 Jun 2020 09:34:39 +0200 (CEST)
+Received: from echo.tratt.net (echo.default.edsfctgx.uk0.bigv.io [46.43.3.208])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B185F80101
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 08:53:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B185F80101
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A90C0200460;
- Tue, 16 Jun 2020 08:53:51 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 37E1A200470;
- Tue, 16 Jun 2020 08:53:46 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7BC6840310;
- Tue, 16 Jun 2020 14:53:39 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
- devicetree@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: fsl_spdif: Add support for imx6sx platform
-Date: Tue, 16 Jun 2020 14:42:41 +0800
-Message-Id: <1592289761-29118-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592289761-29118-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1592289761-29118-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F6A5F80114
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 09:34:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F6A5F80114
+Received: by echo.tratt.net (Postfix, from userid 1000)
+ id 2F5566604; Tue, 16 Jun 2020 08:34:30 +0100 (BST)
+Date: Tue, 16 Jun 2020 08:34:30 +0100
+From: Laurence Tratt <laurie@tratt.net>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] Add implicit feedback quirk for SSL2.
+Message-ID: <20200616073430.sj4ydbtx63bhclqx@overdrive.tratt.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,115 +68,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The one difference on imx6sx platform is that the root clock
-is shared with ASRC module, so we add a new flags "ind_root_clk"
-which means the root clock is independent, then we will not
-do the clk_set_rate and clk_round_rate to avoid impact ASRC
-module usage.
+As expected, this requires the same quirk as the SSL2+ in order for the
+clock to sync. This was suggested by, and tested on an SSL2, by Dmitry.
 
-As add a new flags, we include the soc specific data struct.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Dmitry <dpavlushko@gmail.com>
+Signed-off-by: Laurence Tratt <laurie@tratt.net>
 ---
- sound/soc/fsl/fsl_spdif.c | 43 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 39 insertions(+), 4 deletions(-)
+ sound/usb/pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 1b2e516f9162..00e06803d32f 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -42,6 +42,17 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
- 
- #define DEFAULT_RXCLK_SRC	1
- 
-+/**
-+ * struct fsl_spdif_soc_data: soc specific data
-+ *
-+ * @imx: for imx platform
-+ * @ind_root_clk: flag for round clk rate
-+ */
-+struct fsl_spdif_soc_data {
-+	bool imx;
-+	bool ind_root_clk;
-+};
-+
- /*
-  * SPDIF control structure
-  * Defines channel status, subcode and Q sub
-@@ -93,6 +104,7 @@ struct fsl_spdif_priv {
- 	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct platform_device *pdev;
- 	struct regmap *regmap;
-+	const struct fsl_spdif_soc_data *soc;
- 	bool dpll_locked;
- 	u32 txrate[SPDIF_TXRATE_MAX];
- 	u8 txclk_df[SPDIF_TXRATE_MAX];
-@@ -110,6 +122,21 @@ struct fsl_spdif_priv {
- 	u32 regcache_srpc;
- };
- 
-+static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
-+	.imx = false,
-+	.ind_root_clk = true,
-+};
-+
-+static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
-+	.imx = true,
-+	.ind_root_clk = true,
-+};
-+
-+static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
-+	.imx = true,
-+	.ind_root_clk = false,
-+};
-+
- /* DPLL locked and lock loss interrupt handler */
- static void spdif_irq_dpll_lock(struct fsl_spdif_priv *spdif_priv)
- {
-@@ -421,7 +448,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	sysclk_df = spdif_priv->sysclk_df[rate];
- 
- 	/* Don't mess up the clocks from other modules */
--	if (clk != STC_TXCLK_SPDIF_ROOT)
-+	if (clk != STC_TXCLK_SPDIF_ROOT || !spdif_priv->soc->ind_root_clk)
- 		goto clk_set_bypass;
- 
- 	/* The S/PDIF block needs a clock of 64 * fs * txclk_df */
-@@ -1186,7 +1213,8 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 			continue;
- 
- 		ret = fsl_spdif_txclk_caldiv(spdif_priv, clk, savesub, index,
--					     i == STC_TXCLK_SPDIF_ROOT);
-+					     i == STC_TXCLK_SPDIF_ROOT &&
-+					     spdif_priv->soc->ind_root_clk);
- 		if (savesub == ret)
- 			continue;
- 
-@@ -1230,6 +1258,12 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 
- 	spdif_priv->pdev = pdev;
- 
-+	spdif_priv->soc = of_device_get_match_data(&pdev->dev);
-+	if (!spdif_priv->soc) {
-+		dev_err(&pdev->dev, "failed to get soc data\n");
-+		return -ENODEV;
-+	}
-+
- 	/* Initialize this copy of the CPU DAI driver structure */
- 	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
- 	spdif_priv->cpu_dai_drv.name = dev_name(&pdev->dev);
-@@ -1359,8 +1393,9 @@ static const struct dev_pm_ops fsl_spdif_pm = {
- };
- 
- static const struct of_device_id fsl_spdif_dt_ids[] = {
--	{ .compatible = "fsl,imx35-spdif", },
--	{ .compatible = "fsl,vf610-spdif", },
-+	{ .compatible = "fsl,imx35-spdif", .data = &fsl_spdif_imx35, },
-+	{ .compatible = "fsl,vf610-spdif", .data = &fsl_spdif_vf610, },
-+	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
+diff --git sound/usb/pcm.c sound/usb/pcm.c
+index 84c0ae4319..dc1608bdf6 100644
+--- sound/usb/pcm.c
++++ sound/usb/pcm.c
+@@ -367,6 +367,7 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
+ 		ifnum = 0;
+ 		goto add_sync_ep_from_ifnum;
+ 	case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
++	case USB_ID(0x31e9, 0x0001): /* Solid State Logic SSL2 */
+ 	case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
+ 		ep = 0x81;
+ 		ifnum = 2;
 -- 
-2.21.0
+2.27.0
 
