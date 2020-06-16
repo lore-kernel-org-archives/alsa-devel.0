@@ -2,83 +2,58 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D78CC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:20:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83DA8C433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:23:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9CC032098B
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:20:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 055472098B
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 13:23:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HmIwtHCW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="af2K7HUp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CC032098B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="myO1zVvR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 055472098B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12A6714E;
-	Tue, 16 Jun 2020 15:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12A6714E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 909F514E;
+	Tue, 16 Jun 2020 15:22:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 909F514E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592313628;
-	bh=p6CLRRTeE3NqCtcDJDQce9Dz3mL1mUPlWt+8pdO3qGw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HmIwtHCWQdlir/wfsTsIT4edbzXwhzEKXaNgZfoQ+TidT8smLu6zpiJpayqhlHZPk
-	 UnZyWipOzYiQZU+6fkxQRqfAJBDFfH8mmeCX0YygNGaH68SCBMDGu97Dkn73nHhKE7
-	 JQ4Qmd4SNimqNn4ZELBerFVV2E5SPj4n+0Ufosu8=
+	s=default; t=1592313785;
+	bh=npVwl565n5+MjoLHX/wbvbb80jDZ/w5W60o6XyInuf0=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=myO1zVvRqVYkjYzPr3HrlNTaoev9cFq540+tHLrOfE4pr2fATd4EE0sszmsZcdMIS
+	 2PcMsS7899/v0PSiZd3T9PX/JX6oOgBFSAR8vYPpqZ9dQcdvC6gfzNXzDxba8Sohlm
+	 fUvGciCUNp1MVswIiD0mNOU6BIB0FOxtMdL6r5AI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05A10F802BC;
-	Tue, 16 Jun 2020 15:17:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37591F80217;
+	Tue, 16 Jun 2020 15:22:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30BD7F802A2; Tue, 16 Jun 2020 15:17:56 +0200 (CEST)
-Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B5AABF8022B; Tue, 16 Jun 2020 15:21:59 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2901F80101
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 15:17:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2901F80101
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
- header.b="af2K7HUp"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
- ; s=a;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:
- Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=uk6p04jIyGEwhPstJTRrV0yyBWZrc9m+PRsuhl4h6bI=; b=af2K7HUpdTMT+kcPuBZ1JBnN/1
- M3PLXr0arbtOX9P8ITTe9p8O/wrv6KKTQy4Z47J3Koa0FQkgnep2Yk8RgdYKg0eegvu7eYQ9EYY2A
- /9m3QtWcs/smNEDg9RAEmUbwEOBnbXRvCw8TFGgSbpylnmkVAccvtUJ/8ZoMoVB0stIKt5P4QF9RP
- i1T9MWdPwGzceRHvH5j+YH9mj/Oqlt7k4svqD/pffjdqRxErCu3riNFrIWgy2zdhjylhG2MsEcNJR
- sdFRZptTh6CnC+FoffbxZLPNyTMgSOgLgE2Otg5m5xFjX5K3K/mkXj7MIvztdr9eqlk8DZF3T7H2/
- DRwbau4A==;
-Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
- helo=stax.localdomain) by jazz.pogo.org.uk with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93.0.4 (FreeBSD))
- (envelope-from <mark@xwax.org>)
- id 1jlBTD-000MY3-9A; Tue, 16 Jun 2020 14:17:43 +0100
-Received: from mark by stax.localdomain with local (Exim 4.84)
- (envelope-from <mark@stax.localdomain>)
- id 1jlBTD-0001G1-1n; Tue, 16 Jun 2020 14:17:43 +0100
-From: Mark Hills <mark@xwax.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/3] echoaudio: Prevent races in calls to set_audio_format()
-Date: Tue, 16 Jun 2020 14:17:42 +0100
-Message-Id: <20200616131743.4793-2-mark@xwax.org>
-X-Mailer: git-send-email 2.17.5
-In-Reply-To: <2006161409060.30751@stax.localdomain>
-References: <2006161409060.30751@stax.localdomain>
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89548F800EF
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 15:21:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89548F800EF
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4FBE0B162
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 13:21:56 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek - Add quirk for MSI GE63 laptop
+Date: Tue, 16 Jun 2020 15:21:50 +0200
+Message-Id: <20200616132150.8778-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,42 +69,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The function uses chip->comm_page which needs locking against
-other use at the same time.
+MSI GE63 laptop with ALC1220 codec requires the very same quirk
+(ALC1220_FIXUP_CLEVO_P950) as other MSI devices for the proper sound
+output.
 
-Signed-off-by: Mark Hills <mark@xwax.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208057
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/echoaudio/echoaudio.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index 82a49dfd2384..8cf08988959f 100644
---- a/sound/pci/echoaudio/echoaudio.c
-+++ b/sound/pci/echoaudio/echoaudio.c
-@@ -711,9 +711,22 @@ static int pcm_prepare(struct snd_pcm_substream *substream)
- 
- 	if (snd_BUG_ON(pipe_index >= px_num(chip)))
- 		return -EINVAL;
--	if (snd_BUG_ON(!is_pipe_allocated(chip, pipe_index)))
-+
-+	/*
-+	 * We passed checks we can do independently; now take
-+	 * exclusive control
-+	 */
-+
-+	spin_lock(&chip->lock);
-+
-+	if (snd_BUG_ON(!is_pipe_allocated(chip, pipe_index))) {
-+		spin_unlock(&chip->lock);
- 		return -EINVAL;
-+	}
-+
- 	set_audio_format(chip, pipe_index, &format);
-+	spin_unlock(&chip->lock);
-+
- 	return 0;
- }
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d1b67d75f954..3ca93421e209 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2461,6 +2461,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
++	SND_PCI_QUIRK(0x1462, 0x11f7, "MSI-GE63", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
 -- 
-2.17.5
+2.25.0
 
