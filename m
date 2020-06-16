@@ -2,85 +2,78 @@ Return-Path: <SRS0=xZai=75=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A22C8C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 18:34:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 141CCC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 19:31:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CD76208D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 18:34:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 43CE3208D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2020 19:31:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CpLQwuMu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="klCom9v2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CD76208D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tHYpP3Cf";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="X+oBaBP9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43CE3208D5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CBF9886;
-	Tue, 16 Jun 2020 20:33:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CBF9886
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF47A1614;
+	Tue, 16 Jun 2020 21:30:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF47A1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592332459;
-	bh=T5lT9kWL1+5XoYspMvqDXRAJi69PKCHG+eu2XIHeo8E=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592335897;
+	bh=vxIbknIDOpY0n8dzfj/MQSDsvq14slq4x/GztH8qt6M=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CpLQwuMuzvr4C1TDHK38mfqCnkgs5BoGIUEIlcLyzNpCK4/RMoXfQ+aZVhr+nJJJW
-	 ImF1Yq2jdg2KffsDgmYSjilw6jDNatQXn5ODvuLpy4bP9tlLYqZpyfXgoiB74/0DJm
-	 2CT0RUcQIL3fkyyDEYkgrZ4irpXfD3/WI/r2Giuc=
+	b=tHYpP3Cfu3/mTlWpJDHPEo7NlgIdBp43SDIlt1sbrxg5I+mYfKxvm5QtgPKDazIc+
+	 OP46hDFo4XE7Vg9PUo2au8ATUP5qdRN6AkAoXZCeet0z1UHSR+Us5Y8yPksmeUMoqA
+	 VkbQOXvRs/RpNqRFd56yBEGDpy5l6LbTy056/2c0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E2EAF80217;
-	Tue, 16 Jun 2020 20:33:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C437F80217;
+	Tue, 16 Jun 2020 21:30:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EC73F8022B; Tue, 16 Jun 2020 20:33:27 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 875E2F8022B; Tue, 16 Jun 2020 21:30:45 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC5EEF80114
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 20:33:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC5EEF80114
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="klCom9v2"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CD8F9208D5;
- Tue, 16 Jun 2020 18:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592332401;
- bh=T5lT9kWL1+5XoYspMvqDXRAJi69PKCHG+eu2XIHeo8E=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=klCom9v2icWhWrWU1Ztb6psrEGGQw4kopyXhtC5s/KeJzERv6F6cx//cxW4b8MTQM
- oRfr/ikNKd8Nso8qlmmU5PILvp5o8tEzVeTn/4rj8gMoIR3nZDwbkw39ttb/RgC/RM
- aZu3fvLVxyCLrAmF11j7GrYv2ayDSXR8wBgy64Vg=
-Date: Tue, 16 Jun 2020 19:33:19 +0100
-From: Mark Brown <broonie@kernel.org>
-To: John Stultz <john.stultz@linaro.org>
-Subject: Re: [RESENDx2][PATCH] sound: qcom: Kconfig: Tweak dependencies on
- SND_SOC_SDM845
-Message-ID: <20200616183318.GW4447@sirena.org.uk>
-References: <20200616063417.110263-1-john.stultz@linaro.org>
- <8f7f563b-fae7-e25e-33f2-18c608c338e6@linaro.org>
- <CALAqxLXnijNBB4HBqLG4k679FRcHT8hjSLMnpjE_+0UkqU7Y0w@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD945F80101
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 21:30:39 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id D16E7A003F;
+ Tue, 16 Jun 2020 21:30:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz D16E7A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1592335837; bh=+Sk36dUMIby1XKyUOie5g10Uioiw6igLPOavjUUu8pI=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=X+oBaBP9eQJHfO0b2cisVuYlwb+/9Ys3wvuP2+mebrc0+N8QtRmAUXTNwWXwdYePK
+ 4NJb3fEJ5fJJeBDUytmsiXuT22SClSd/TH9eLpO/HuL5NAa1f8yVNL4fmjxuFwW+W3
+ wd1wdiU5C7BB3Je+7scgWDR7/XRCZwJhfDDbyNYk=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue, 16 Jun 2020 21:30:35 +0200 (CEST)
+Subject: Re: [PATCH alsa-lib] control: ctlparse - use type-specific bound on
+ element count
+To: John Keeping <john@metanate.com>, alsa-devel@alsa-project.org
+References: <20200616182930.480959-1-john@metanate.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <a9e1fa18-2b82-fc2b-0109-c5d5eb4c3563@perex.cz>
+Date: Tue, 16 Jun 2020 21:30:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="oDAD4Gb5rN9RYJiP"
-Content-Disposition: inline
-In-Reply-To: <CALAqxLXnijNBB4HBqLG4k679FRcHT8hjSLMnpjE_+0UkqU7Y0w@mail.gmail.com>
-X-Cookie: Offer may end without notice.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
- Takashi Iwai <tiwai@suse.com>, lkml <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200616182930.480959-1-john@metanate.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,41 +89,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Dne 16. 06. 20 v 20:29 John Keeping napsal(a):
+> Using a fixed bound of 128 means that too many values may be set for an
+> INTEGER64 type and that any elements past 128 are out of reach for BYTE
+> type controls.
+> 
+> Derive the maximum number of elements from the type so that the full
+> range is parsed for all types.
+> 
+> Signed-off-by: John Keeping <john@metanate.com>
 
---oDAD4Gb5rN9RYJiP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Nice catch. Applied to the alsa-lib repository. Thank you.
 
-On Tue, Jun 16, 2020 at 11:01:02AM -0700, John Stultz wrote:
-> On Tue, Jun 16, 2020 at 1:25 AM Srinivas Kandagatla
+			Jaroslav
 
-> > > +     select SND_SOC_CROS_EC_CODEC if CROS_EC
-
-> > Isn't "imply SND_SOC_CROS_EC_CODEC" better option here?
-
-> I've honestly not gotten my head around "imply", so I'll have to take
-> a closer look.
-> What I have in this patch least is easier to compare and match with
-> the existing code. :)
-
-It's a conditional select which enables a Kconfig symbol if its
-dependencies are enabled rather than forcing it on regardless of them,
-avoiding most of the errors that select tends to introduce with missing
-dependencies.
-
---oDAD4Gb5rN9RYJiP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7pEG4ACgkQJNaLcl1U
-h9A83gf/Wj+ilOQgoTPb2UGpwDK580vgreUDhkyI/tLuWCYjrCNHUE8QVY9gKbvz
-WV1cDOsr+wHc5cv7kja0mYMyRfvuu+coZkSVv73R8SWXyFYu8sX5WGK74GobfsJB
-1MxXEDMBz/WvXhdGITWeCzI0VgTWBUc7frTbx/EluN+nJOp1v+ogdpAjtO887vSP
-JoiUfYiPXNUMMOxGEa1JTkRpirVFOr+FvH8JV8EvYF61RHJTZq/t3+7VIPYV7Zao
-cdsNhNpvQm6tnfzaTrJA+nVEdr1vltAAT6tebOsGhrsXWQTfsQcif/jH7Me9h5EU
-D+li1k5pHnpAfeHhp3rzPVpAhUjXVg==
-=Xj+F
------END PGP SIGNATURE-----
-
---oDAD4Gb5rN9RYJiP--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
