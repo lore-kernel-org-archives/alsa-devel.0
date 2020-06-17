@@ -2,71 +2,78 @@ Return-Path: <SRS0=fhRg=76=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76997C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DA84C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:49:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC8992089D
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:49:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CC372089D
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:49:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Czdu5g+5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC8992089D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="owbMjsFy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CC372089D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61977852;
-	Wed, 17 Jun 2020 18:48:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61977852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26EEC167B;
+	Wed, 17 Jun 2020 18:49:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26EEC167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592412541;
-	bh=SeCYAD8trpmc6TyeKj3eK1/VQNcZx6JdF4JmCDwWQao=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Czdu5g+5xGOBGs5qWezkRwmt98ZUEVWjV0ULcXLm2kfGFlZCAkVrmNc8HpeieITdp
-	 f3NnTlI3anderYit38hMOr4TXckBqXVsYh7Dv61gk6drsv6gH9jJmNpG3L6Jcwj7lT
-	 v4ccGMXIWmg00EPm1EcFLIilXs5BAH61C9YeXDhc=
+	s=default; t=1592412594;
+	bh=mNmfb1HSB4WNfbWui8FvqpiIMauzYi369x2gMnjq+XM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=owbMjsFy0pcUGWPiu4uYC2gfC5ojFBBsqNFqAl8klIK94SbmBamy59QahmJgNp65B
+	 WTN5lMWdNlUuqDzLWtPo1KY47noOJHWCbShOoXXlL4i85kVArNBiB0NpDO2yKGm0k0
+	 jrnqTjeOLuwXbBUMgE7QR5kj1NPcwHTkVZw6E/RY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFEBCF800EF;
-	Wed, 17 Jun 2020 18:48:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67C9EF801EB;
+	Wed, 17 Jun 2020 18:48:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A297F800EF; Wed, 17 Jun 2020 18:48:08 +0200 (CEST)
+ id 1819FF801EB; Wed, 17 Jun 2020 18:48:10 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52815F800EF
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 18:48:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52815F800EF
-IronPort-SDR: zF2Qq6vEqaFcBGlUr4raTjQVIN3JrfkcErek5dpa5WggvVJcCg2nwbsOUbE/DteDUvldtdByvl
- J37NwcrHcJkg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 339C1F80116
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 18:48:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 339C1F80116
+IronPort-SDR: JMBX0/9rWOqnCEew6AfydYHNhtpvrRgYqNa0Z6RwC8G9cnOlzXR1uo3gXl6FgvA51TdrBeSSVj
+ IUM0KYfsLXPg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  17 Jun 2020 09:48:01 -0700
-IronPort-SDR: 19bC/MPo4kYU5bWbo3gkUSKL34rantg7cwZgvmzCL1ZUQ7yZcO9fXfluZ59+y0RShGCWlN8ByK
- kmioJcOqbXEw==
+IronPort-SDR: FwN7cfgpecogG39xFD0FH7WgC4TGGGDLa40Dwd6NdiGI2ZbWOQ3o9vNSOhDsG5SzoUgggfY4q/
+ PrzMxmmSEDWg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; d="scan'208";a="261776791"
+X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; d="scan'208";a="261776793"
 Received: from zdsmith-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.229.128])
- by fmsmga007.fm.intel.com with ESMTP; 17 Jun 2020 09:48:00 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 17 Jun 2020 09:48:01 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ASoC: SOF: Intel: update PCI IDs
-Date: Wed, 17 Jun 2020 11:47:52 -0500
-Message-Id: <20200617164755.18104-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/3] ASoC: Intel: SOF: merge COMETLAKE_LP and COMETLAKE_H
+Date: Wed, 17 Jun 2020 11:47:53 -0500
+Message-Id: <20200617164755.18104-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200617164755.18104-1-pierre-louis.bossart@linux.intel.com>
+References: <20200617164755.18104-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,20 +89,159 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean-up CometLake and add missing PCI IDs. Changes for the legacy
-driver are sent separately.
+We already have two configurations for CometLake, and a third one
+coming. On other platforms, we used a single Kconfig option, so we
+should follow the same trend by merging the two cases in a backwards
+compatible way.
 
-Pierre-Louis Bossart (3):
-  ASoC: Intel: SOF: merge COMETLAKE_LP and COMETLAKE_H
-  ASoC: SOF: Intel: add PCI ID for CometLake-S
-  ASoC: SOF: Intel: add PCI IDs for ICL-H and TGL-H
+The backwards compatibility is handled by overloading the COMETLAKE_LP
+kconfig as COMETLAKE. In practice we've never seen a case where
+COMETLAKE_H is not selected along with COMETLAKE_LP, so keeping one
+of the two is enough.
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
  sound/hda/intel-dsp-config.c   |  4 +---
  sound/soc/intel/boards/Kconfig |  4 ++--
  sound/soc/sof/intel/Kconfig    | 29 ++++++++---------------------
- sound/soc/sof/sof-pci-dev.c    | 24 ++++++++++++++----------
- 4 files changed, 25 insertions(+), 36 deletions(-)
+ sound/soc/sof/sof-pci-dev.c    | 12 ++++--------
+ 4 files changed, 15 insertions(+), 34 deletions(-)
 
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 20b8f6cb3ff8..99aec7349167 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -208,8 +208,8 @@ static const struct config_entry config_table[] = {
+ 	},
+ #endif
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE)
+ /* Cometlake-LP */
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = 0x02c8,
+@@ -240,9 +240,7 @@ static const struct config_entry config_table[] = {
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x02c8,
+ 	},
+-#endif
+ /* Cometlake-H */
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = 0x06c8,
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index a2a5798c9139..5dc489a79454 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -492,7 +492,7 @@ config SND_SOC_INTEL_SOF_PCM512x_MACH
+ 
+ endif ## SND_SOC_SOF_HDA_LINK || SND_SOC_SOF_BAYTRAIL
+ 
+-if (SND_SOC_SOF_COMETLAKE_LP && SND_SOC_SOF_HDA_LINK)
++if (SND_SOC_SOF_COMETLAKE && SND_SOC_SOF_HDA_LINK)
+ 
+ config SND_SOC_INTEL_CML_LP_DA7219_MAX98357A_MACH
+ 	tristate "CML_LP with DA7219 and MAX98357A in I2S Mode"
+@@ -520,7 +520,7 @@ config SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-endif ## SND_SOC_SOF_COMETLAKE_LP && SND_SOC_SOF_HDA_LINK
++endif ## SND_SOC_SOF_COMETLAKE && SND_SOC_SOF_HDA_LINK
+ 
+ if SND_SOC_SOF_JASPERLAKE
+ 
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index c9a2bee4b55c..3aaf25e4f766 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -25,8 +25,7 @@ config SND_SOC_SOF_INTEL_PCI
+ 	select SND_SOC_SOF_CANNONLAKE  if SND_SOC_SOF_CANNONLAKE_SUPPORT
+ 	select SND_SOC_SOF_COFFEELAKE  if SND_SOC_SOF_COFFEELAKE_SUPPORT
+ 	select SND_SOC_SOF_ICELAKE     if SND_SOC_SOF_ICELAKE_SUPPORT
+-	select SND_SOC_SOF_COMETLAKE_LP if SND_SOC_SOF_COMETLAKE_LP_SUPPORT
+-	select SND_SOC_SOF_COMETLAKE_H if SND_SOC_SOF_COMETLAKE_H_SUPPORT
++	select SND_SOC_SOF_COMETLAKE   if SND_SOC_SOF_COMETLAKE_SUPPORT
+ 	select SND_SOC_SOF_TIGERLAKE   if SND_SOC_SOF_TIGERLAKE_SUPPORT
+ 	select SND_SOC_SOF_ELKHARTLAKE if SND_SOC_SOF_ELKHARTLAKE_SUPPORT
+ 	select SND_SOC_SOF_JASPERLAKE  if SND_SOC_SOF_JASPERLAKE_SUPPORT
+@@ -201,34 +200,22 @@ config SND_SOC_SOF_ICELAKE
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+ 
+-config SND_SOC_SOF_COMETLAKE_LP
++config SND_SOC_SOF_COMETLAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+ 
+-config SND_SOC_SOF_COMETLAKE_LP_SUPPORT
+-	bool "SOF support for CometLake-LP"
+-	help
+-	  This adds support for Sound Open Firmware for Intel(R) platforms
+-	  using the Cometlake-LP processors.
+-	  Say Y if you have such a device.
+-	  If unsure select "N".
++config SND_SOC_SOF_COMETLAKE_SUPPORT
++	bool
+ 
+-config SND_SOC_SOF_COMETLAKE_H
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level
+-
+-config SND_SOC_SOF_COMETLAKE_H_SUPPORT
+-	bool "SOF support for CometLake-H"
++config SND_SOC_SOF_COMETLAKE_LP_SUPPORT
++	bool "SOF support for CometLake"
++	select SND_SOC_SOF_COMETLAKE_SUPPORT
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+-	  using the Cometlake-H processors.
+-	  Say Y if you have such a device.
++	  using the Cometlake processors.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_SOF_TIGERLAKE_SUPPORT
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index b13697dab7c0..7b5f6e17b05f 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -151,9 +151,7 @@ static const struct sof_dev_desc cfl_desc = {
+ };
+ #endif
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP) || \
+-	IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
+-
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE)
+ static const struct sof_dev_desc cml_desc = {
+ 	.machines		= snd_soc_acpi_intel_cml_machines,
+ 	.alt_machines		= snd_soc_acpi_intel_cml_sdw_machines,
+@@ -420,12 +418,10 @@ static const struct pci_device_id sof_pci_ids[] = {
+ 	{ PCI_DEVICE(0x8086, 0x4dc8),
+ 		.driver_data = (unsigned long)&jsl_desc},
+ #endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
+-	{ PCI_DEVICE(0x8086, 0x02c8),
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE)
++	{ PCI_DEVICE(0x8086, 0x02c8), /* CML-LP */
+ 		.driver_data = (unsigned long)&cml_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
+-	{ PCI_DEVICE(0x8086, 0x06c8),
++	{ PCI_DEVICE(0x8086, 0x06c8), /* CML-H */
+ 		.driver_data = (unsigned long)&cml_desc},
+ #endif
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
 -- 
 2.20.1
 
