@@ -2,74 +2,57 @@ Return-Path: <SRS0=fhRg=76=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 737B8C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 11:57:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB07BC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 11:57:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7570207DD
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 11:56:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3675F207DD
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 11:57:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FS1RkyBZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7570207DD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Iq4MsXBY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3675F207DD
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FD1A1676;
-	Wed, 17 Jun 2020 13:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FD1A1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id A72A11681;
+	Wed, 17 Jun 2020 13:56:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A72A11681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592395018;
-	bh=AqwyGI+2YBLZwendINsaWu58Eha7ijhjVr/i9lGlBTk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592395066;
+	bh=o16GcUfRhzwsmPN/cCoes3HW2sQhH8Y6ONyZbfb4jmU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FS1RkyBZtTHzSGnqpe2/7+rFWcRTlPxvbUSNcaepvxsGKaIRO3vd+zhLU+lGyrFSL
-	 Qfqa26HVuX3zO37kZQNUV8PZp279shd33oYabKzJYB9fHoAxTMO6XDozYEkOmiCKEw
-	 1Zop4xbk7pibeMDJtfoguOVhYfjDK2n8py7XYwNE=
+	b=Iq4MsXBYVP1ykVPskS1+DSilbKuM7iG8jocBhnxzCoLnqUmgKlMhzkGXJeLJXs/1D
+	 kzOpL6BfKQC9U9Y4t8//wo4O1piXbK6sAEkrsXrlHDaqMC6apVdpyXD0VIYDG9JbZ7
+	 OESnxAbStYPpEdYqgKKpKGm2tpVGeySI8fBpIx7w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CA83F801EB;
-	Wed, 17 Jun 2020 13:55:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EAB3F8025F;
+	Wed, 17 Jun 2020 13:56:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C28F9F801ED; Wed, 17 Jun 2020 13:55:36 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90A02F80116
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 13:55:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90A02F80116
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DD72EAD39;
- Wed, 17 Jun 2020 11:55:33 +0000 (UTC)
-Date: Wed, 17 Jun 2020 13:55:29 +0200
-Message-ID: <s5hbllhzz2m.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v3 2/2] ALSA: hda/realtek: Add mute LED and micmute LED
- support for HP systems
-In-Reply-To: <20200617102906.16156-2-kai.heng.feng@canonical.com>
-References: <20200617102906.16156-1-kai.heng.feng@canonical.com>
- <20200617102906.16156-2-kai.heng.feng@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated
- list:SOUND" <alsa-devel@alsa-project.org>, Kailang Yang <kailang@realtek.com>,
- Tomas Espeleta <tomas.espeleta@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, tiwai@suse.com,
- Hui Wang <hui.wang@canonical.com>, Thomas Hebb <tommyhebb@gmail.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+ id AD9D4F80271; Wed, 17 Jun 2020 13:56:51 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6ED54F80162
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 13:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ED54F80162
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1592395003659609079-webhooks-bot@alsa-project.org>
+References: <1592395003659609079-webhooks-bot@alsa-project.org>
+Subject: pcm: direct: correctly apply existing interval settings
+Message-Id: <20200617115651.AD9D4F80271@alsa1.perex.cz>
+Date: Wed, 17 Jun 2020 13:56:51 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,47 +68,158 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Jun 2020 12:29:02 +0200,
-Kai-Heng Feng wrote:
-> 
-> There are two more HP systems control mute LED from HDA codec and need
-> to expose micmute led class so SoF can control micmute LED.
-> 
-> Add quirks to support them.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+alsa-project/alsa-lib pull request #62 was opened from aditpape:
 
-I guess this can be applied independently from the patch#1?
-If so, I'll queue this for for-linus branch.
+Feature 'variable periodsize' allows to extend user period size up to buffer_size/2 independent of slave period.
+On enlargement of the settings for period_time.max and period_size.max the setting for openmax was not updated.
 
+This lead to the effect, that if the slave period itself had openmax set it was still set on the extended size.
+Configuration of a period matching half buffer size was thus rejected.
 
-thanks,
+Example for failure: period size of 384 (half buffer size) is requested which is rejected and rounded down to 352:
 
-Takashi
+root@oracle-virtualbox:~# arecord -DDSNOOP_32 -r48000 -fS16_LE -c2 --period-size=382 -vv --dump-hw-params > /dev/null
+Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+HW Params of device "DSNOOP_32":
+--------------------
+ACCESS:  MMAP_INTERLEAVED MMAP_NONINTERLEAVED RW_INTERLEAVED RW_NONINTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 48000
+PERIOD_TIME: (666 7334)
+PERIOD_SIZE: [32 352]
+PERIOD_BYTES: [128 1408]
+PERIODS: [2 24]
+BUFFER_TIME: (1333 16000]
+BUFFER_SIZE: [64 768]
+BUFFER_BYTES: [256 3072]
+TICK_TIME: ALL
+--------------------
+Direct Snoop PCM
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 704
+  period_size  : 352
+  period_time  : 7333
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 352
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 704
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6341068275337658368
+Hardware PCM card 0 'Intel 82801AA-ICH' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 768
+  period_size  : 32
+  period_time  : 666
+  tstamp_mode  : ENABLE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 32
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 6917529027641081856
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6917529027641081856
+  appl_ptr     : 0
+  hw_ptr       : 224
 
+When correctly applying the openmax setting:
 
-> ---
-> v3:
->  - No change.
-> v2:
->  - Wording.
-> 
->  sound/pci/hda/patch_realtek.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 0587d1e96b19..cd1a3619806a 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -7473,6 +7473,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
->  	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
->  	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
-> +	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
->  	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
-> -- 
-> 2.17.1
-> 
+root@oracle-virtualbox:~# arecord -DDSNOOP_32 -r48000 -fS16_LE -c2 --period-size=382 -vv --dump-hw-params > /dev/null
+Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+HW Params of device "DSNOOP_32":
+--------------------
+ACCESS:  MMAP_INTERLEAVED MMAP_NONINTERLEAVED RW_INTERLEAVED RW_NONINTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 48000
+PERIOD_TIME: (666 8000]
+PERIOD_SIZE: [32 384]
+PERIOD_BYTES: [128 1536]
+PERIODS: [2 24]
+BUFFER_TIME: (1333 16000]
+BUFFER_SIZE: [64 768]
+BUFFER_BYTES: [256 3072]
+TICK_TIME: ALL
+--------------------
+Direct Snoop PCM
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 768
+  period_size  : 384
+  period_time  : 8000
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 384
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 768
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6917529027641081856
+Hardware PCM card 0 'Intel 82801AA-ICH' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 768
+  period_size  : 32
+  period_time  : 666
+  tstamp_mode  : ENABLE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 32
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 6917529027641081856
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6917529027641081856
+  appl_ptr     : 0
+  hw_ptr       : 224
+
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/62
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/62.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
