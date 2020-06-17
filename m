@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEF1AC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:59:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09A5DC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:59:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 387CE2098B
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:59:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 860272098B
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:59:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VORpOjIp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 387CE2098B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UR0Zm0Gw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 860272098B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C23361681;
-	Wed, 17 Jun 2020 18:58:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C23361681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2470A1675;
+	Wed, 17 Jun 2020 18:58:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2470A1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592413143;
-	bh=2MUHHgj5lg4dHOYdi7xtrZsMXHrE80J5wG5NvBy4QcM=;
+	s=default; t=1592413172;
+	bh=08vleDmGKitimHUfeJEA0yenOeoXiDoIOL1bJ1otk5M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VORpOjIpf5D6VZHoKN+tH5Mi31+/LRDuo6exgSr4IIthh/pCjiIw+cPGg3XjE/PT6
-	 h0MRtgscRK4DSZ01R63sNn4YQ95Chjw7KMD2vD1vyL+5NiUEKqajCc/Mt1PV26/5QP
-	 tW7xIZiK8P+Ay4q16yl7LpWbtpXBeeLk2f8muMT0=
+	b=UR0Zm0GwizNwOsGI3j5asWsft3LjNM4v0DHq7LsvHtazIzxrIxrM5ElhX336NV1TT
+	 IgHtURFekHI9wnXFXQ5SFMwu7tK47s5WF9KIUbVBmUcanM+aO6NCpT67kc+IjUG0u1
+	 UP8AigAGMIj7Ap+GPGV5rwDXDA0MoLltiuuXm7pU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 722DAF80171;
-	Wed, 17 Jun 2020 18:56:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C86FFF802A8;
+	Wed, 17 Jun 2020 18:56:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3737EF802A2; Wed, 17 Jun 2020 18:56:35 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 441EBF8028F; Wed, 17 Jun 2020 18:56:35 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C8C8F80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46B2EF80116
  for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 18:56:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C8C8F80171
-IronPort-SDR: ++YkECi1w89VigkupB6ZtKeydPIwpurFk0m6ObYyQeeUNOywN+5QJedxziIN4Agctx0p38h2jD
- 9gKTzcHCPlpQ==
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46B2EF80116
+IronPort-SDR: 2Jc02iXalaSzKCFTB7DB5jA43z2Bd53rBlS8T0U17w71/MpWB2Qosj+YV3wvfjVNhB2kDEtYbU
+ YDP4pc79XGgg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  17 Jun 2020 09:56:24 -0700
-IronPort-SDR: 9KY0wNj7jXevn16i6/2FxJRzrauWyXEavhwB5BpCAyMnyJcQlt5Ek9IqckkLpMvHeDiEB0aOMm
- Sh6Bo0KqdbJw==
+IronPort-SDR: qXzYVUJAy6/N517PmHE5GrF9A1VB227t44oDZFCeWO7QT3/d09EdTg6NY5Ze1x+sdKFYiv9HMe
+ vDSPu+E+D/mQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; d="scan'208";a="277339142"
+X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; d="scan'208";a="277339146"
 Received: from zdsmith-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.229.128])
- by orsmga006.jf.intel.com with ESMTP; 17 Jun 2020 09:56:22 -0700
+ by orsmga006.jf.intel.com with ESMTP; 17 Jun 2020 09:56:23 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH RESEND 1/3] ASoC: Intel: byt*: simplify card names for SOF uses
-Date: Wed, 17 Jun 2020 11:56:14 -0500
-Message-Id: <20200617165616.18511-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RESEND 3/3] ASoC: Intel: broadwell: simplify card names for
+ SOF uses
+Date: Wed, 17 Jun 2020 11:56:16 -0500
+Message-Id: <20200617165616.18511-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200617165616.18511-1-pierre-louis.bossart@linux.intel.com>
 References: <20200617165616.18511-1-pierre-louis.bossart@linux.intel.com>
@@ -90,10 +91,10 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 Blindly adding an sof- prefix to the card name is not user friendly
 and causes UCM issues with a driver name truncated to 16 characters.
 
-Simplify to use "sof-bytcht <codec_name>" pattern for all byt* machine
-drivers. The sof- prefix is added by the core. A generic "SOF" driver
-name is used, and UCMv2 will detect the configuration for this driver
-by testing the card name.
+Simplify to use "sof-bdw <codec_name>" pattern for all Broadwell
+machine drivers. The sof- prefix is added by the core. A generic "SOF"
+driver name is used, and UCMv2 will detect the configuration for this
+driver by testing the card name.
 
 Legacy uses are unmodified.
 
@@ -101,135 +102,86 @@ Suggested-by: Jaroslav Kysela <perex@perex.cz>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcht_cx2072x.c | 12 +++++++++++-
- sound/soc/intel/boards/bytcht_da7213.c  | 12 +++++++++++-
- sound/soc/intel/boards/bytcht_es8316.c  | 12 +++++++++++-
- sound/soc/intel/boards/bytcr_rt5640.c   | 12 +++++++++++-
- sound/soc/intel/boards/bytcr_rt5651.c   | 12 +++++++++++-
- 5 files changed, 55 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/bdw-rt5650.c | 12 +++++++++++-
+ sound/soc/intel/boards/bdw-rt5677.c | 12 +++++++++++-
+ sound/soc/intel/boards/broadwell.c  | 12 +++++++++++-
+ 3 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_cx2072x.c b/sound/soc/intel/boards/bytcht_cx2072x.c
-index fad937610494..9cb42ba40c07 100644
---- a/sound/soc/intel/boards/bytcht_cx2072x.c
-+++ b/sound/soc/intel/boards/bytcht_cx2072x.c
-@@ -205,9 +205,19 @@ static struct snd_soc_dai_link byt_cht_cx2072x_dais[] = {
+diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+index a97e912adf4b..482d501b2f43 100644
+--- a/sound/soc/intel/boards/bdw-rt5650.c
++++ b/sound/soc/intel/boards/bdw-rt5650.c
+@@ -297,9 +297,19 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
  	},
  };
  
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
 +/* use space before codec name to simplify card ID, and simplify driver name */
-+#define CARD_NAME "bytcht cx2072x" /* card name will be 'sof-bytcht cx2072x' */
++#define CARD_NAME "bdw rt5650" /* card name will be 'sof-bdw rt5650' */
 +#define DRIVER_NAME "SOF"
 +#else
-+#define CARD_NAME "bytcht-cx2072x"
++#define CARD_NAME "bdw-rt5650"
 +#define DRIVER_NAME NULL /* card name will be used for driver name */
 +#endif
 +
- /* SoC card */
- static struct snd_soc_card byt_cht_cx2072x_card = {
--	.name = "bytcht-cx2072x",
+ /* ASoC machine driver for Broadwell DSP + RT5650 */
+ static struct snd_soc_card bdw_rt5650_card = {
+-	.name = "bdw-rt5650",
 +	.name = CARD_NAME,
 +	.driver_name = DRIVER_NAME,
  	.owner = THIS_MODULE,
- 	.dai_link = byt_cht_cx2072x_dais,
- 	.num_links = ARRAY_SIZE(byt_cht_cx2072x_dais),
-diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
-index f3791ff2bad1..17bb4ca34672 100644
---- a/sound/soc/intel/boards/bytcht_da7213.c
-+++ b/sound/soc/intel/boards/bytcht_da7213.c
-@@ -205,9 +205,19 @@ static struct snd_soc_dai_link dailink[] = {
- 	},
- };
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
-+/* use space before codec name to simplify card ID, and simplify driver name */
-+#define CARD_NAME "bytcht da7213" /* card name will be 'sof-bytcht da7213' */
-+#define DRIVER_NAME "SOF"
-+#else
-+#define CARD_NAME "bytcht-da7213"
-+#define DRIVER_NAME NULL /* card name will be used for driver name */
-+#endif
-+
- /* SoC card */
- static struct snd_soc_card bytcht_da7213_card = {
--	.name = "bytcht-da7213",
-+	.name = CARD_NAME,
-+	.driver_name = DRIVER_NAME,
- 	.owner = THIS_MODULE,
- 	.dai_link = dailink,
- 	.num_links = ARRAY_SIZE(dailink),
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 9e5fc9430628..98e47a5d3a65 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -407,8 +407,18 @@ static int byt_cht_es8316_resume(struct snd_soc_card *card)
+ 	.dai_link = bdw_rt5650_dais,
+ 	.num_links = ARRAY_SIZE(bdw_rt5650_dais),
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index 5f96d7ac0a22..34a3abb5991f 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -404,9 +404,19 @@ static int bdw_rt5677_resume_post(struct snd_soc_card *card)
  	return 0;
  }
  
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
 +/* use space before codec name to simplify card ID, and simplify driver name */
-+#define CARD_NAME "bytcht es8316" /* card name will be 'sof-bytcht es8316' */
++#define CARD_NAME "bdw rt5677" /* card name will be 'sof-bdw rt5677' */
 +#define DRIVER_NAME "SOF"
 +#else
-+#define CARD_NAME "bytcht-es8316"
++#define CARD_NAME "bdw-rt5677"
 +#define DRIVER_NAME NULL /* card name will be used for driver name */
 +#endif
 +
- static struct snd_soc_card byt_cht_es8316_card = {
--	.name = "bytcht-es8316",
+ /* ASoC machine driver for Broadwell DSP + RT5677 */
+ static struct snd_soc_card bdw_rt5677_card = {
+-	.name = "bdw-rt5677",
 +	.name = CARD_NAME,
 +	.driver_name = DRIVER_NAME,
  	.owner = THIS_MODULE,
- 	.dai_link = byt_cht_es8316_dais,
- 	.num_links = ARRAY_SIZE(byt_cht_es8316_dais),
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 1fdb70b9e478..1851aea983c7 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1127,8 +1127,18 @@ static int byt_rt5640_resume(struct snd_soc_card *card)
+ 	.dai_link = bdw_rt5677_dais,
+ 	.num_links = ARRAY_SIZE(bdw_rt5677_dais),
+diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
+index 42f8723beef2..c8fd4f7b1c0a 100644
+--- a/sound/soc/intel/boards/broadwell.c
++++ b/sound/soc/intel/boards/broadwell.c
+@@ -291,9 +291,19 @@ static int broadwell_resume(struct snd_soc_card *card){
  	return 0;
  }
  
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
 +/* use space before codec name to simplify card ID, and simplify driver name */
-+#define CARD_NAME "bytcht rt5640" /* card name will be 'sof-bytcht rt5640' */
++#define CARD_NAME "bdw rt286" /* card name will be 'sof-bdw rt286' */
 +#define DRIVER_NAME "SOF"
 +#else
-+#define CARD_NAME "bytcr-rt5640"
++#define CARD_NAME "broadwell-rt286"
 +#define DRIVER_NAME NULL /* card name will be used for driver name */
 +#endif
 +
- static struct snd_soc_card byt_rt5640_card = {
--	.name = "bytcr-rt5640",
+ /* broadwell audio machine driver for WPT + RT286S */
+ static struct snd_soc_card broadwell_rt286 = {
+-	.name = "broadwell-rt286",
 +	.name = CARD_NAME,
 +	.driver_name = DRIVER_NAME,
  	.owner = THIS_MODULE,
- 	.dai_link = byt_rt5640_dais,
- 	.num_links = ARRAY_SIZE(byt_rt5640_dais),
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 520e916e329c..3e5cd3a87c3d 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -827,8 +827,18 @@ static int byt_rt5651_resume(struct snd_soc_card *card)
- 	return 0;
- }
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
-+/* use space before codec name to simplify card ID, and simplify driver name */
-+#define CARD_NAME "bytcht rt5651" /* card name will be 'sof-bytcht rt5651' */
-+#define DRIVER_NAME "SOF"
-+#else
-+#define CARD_NAME "bytcr-rt5651"
-+#define DRIVER_NAME NULL /* card name will be used for driver name */
-+#endif
-+
- static struct snd_soc_card byt_rt5651_card = {
--	.name = "bytcr-rt5651",
-+	.name = CARD_NAME,
-+	.driver_name = DRIVER_NAME,
- 	.owner = THIS_MODULE,
- 	.dai_link = byt_rt5651_dais,
- 	.num_links = ARRAY_SIZE(byt_rt5651_dais),
+ 	.dai_link = broadwell_rt286_dais,
+ 	.num_links = ARRAY_SIZE(broadwell_rt286_dais),
 -- 
 2.20.1
 
