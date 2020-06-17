@@ -7,70 +7,64 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54D14C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 04:43:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3629C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 04:59:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFFD32082F
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 04:43:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63B53208B3
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 04:59:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e7pa8CWd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFFD32082F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nQtUBJT/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63B53208B3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 551291678;
-	Wed, 17 Jun 2020 06:42:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 551291678
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB83274C;
+	Wed, 17 Jun 2020 06:58:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB83274C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592369003;
-	bh=5IRQSFkF+gcN4rfvlxw9Tc2+R/yqc3ToofBnYW6CS6s=;
-	h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-	 References:Cc:List-Id:List-Unsubscribe:List-Archive:List-Post:
-	 List-Help:List-Subscribe:From;
-	b=e7pa8CWdvSZUIYRZqR/B/t2eBsfJ3J/+fa8wvFfqK7FURpf7oFDRNEBsAPN0T8iCf
-	 fNOrWut2rK7sxvbXJSGzdwUUovxOJCOpAp6T21s6h2OxrW/pq+ngF4pgROsSIQXxhn
-	 j+Rmz84ZLEr31UT2Q5cdXbsawUsktS4cDJQkvc9U=
+	s=default; t=1592369986;
+	bh=y9Ta6EwF9AE87jqwd/NojPnS2wZp8LlHC544bmiCAFs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nQtUBJT/uZCXuA4/d3Zf4XF8/PXk+MsFCu863k+Huz07/7Lifd/T3+fZMky4QCmkS
+	 yHnNtEf2Bz0OmCRTkMnigIMaOcCmWXELkjmNkGBuYGUepVLIrz+3ILN7lyK0YzyFYb
+	 2Qf54EZR6zqgfk4XOntwNfQH93T1ojX9Iv97OAc8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 224D2F801ED;
-	Wed, 17 Jun 2020 06:41:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4265AF80171;
+	Wed, 17 Jun 2020 06:58:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AAB5F80171; Wed, 17 Jun 2020 06:41:38 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D8431F801D9; Wed, 17 Jun 2020 06:58:52 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 738F2F80116
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 06:41:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 738F2F80116
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F21A31A09DA;
- Wed, 17 Jun 2020 06:41:29 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 817F41A09EC;
- Wed, 17 Jun 2020 06:41:24 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B2172402B3;
- Wed, 17 Jun 2020 12:41:17 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
- devicetree@vger.kernel.org
-Subject: [PATCH v2 2/2] ASoC: fsl_spdif: Add support for imx6sx platform
-Date: Wed, 17 Jun 2020 12:30:17 +0800
-Message-Id: <53a969a83999de91f3ff2809d78335c3f0cc1ee3.1592368322.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592368322.git.shengjiu.wang@nxp.com>
-References: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592368322.git.shengjiu.wang@nxp.com>
-In-Reply-To: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592368322.git.shengjiu.wang@nxp.com>
-References: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592368322.git.shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EE71F800EF
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 06:58:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EE71F800EF
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
+ helo=localhost) by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>)
+ id 1jlQ9g-0006w0-U0; Wed, 17 Jun 2020 04:58:33 +0000
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: tiwai@suse.com
+Subject: [PATCH v2 1/2] ALSA: hda/realtek: Add COEF controlled micmute LED
+ support
+Date: Wed, 17 Jun 2020 12:58:24 +0800
+Message-Id: <20200617045828.3735-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
+Cc: Wenwen Wang <wenwen@cs.uga.edu>, Kailang Yang <kailang@realtek.com>,
+ Tomas Espeleta <tomas.espeleta@gmail.com>, Thomas Hebb <tommyhebb@gmail.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+ Hui Wang <hui.wang@canonical.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Jian-Hong Pan <jian-hong@endlessm.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,126 +80,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The one difference on imx6sx platform is that the root clock
-is shared with ASRC module, so we add a new flags
-"shared_root_clock" which means the root clock is independent,
-then we will not do the clk_set_rate and clk_round_rate to avoid
-impact ASRC module usage.
+Currently, HDA codec LED class can only used by by GPIO controlled LED.
+However, there are some new systems that control LED via COEF instead of
+GPIO.
 
-As add a new flags, we include the soc specific data struct.
+In order to support those systems, create a new helper that can be
+facilitated by both COEF controlled and GPIO controlled LED, and use
+generic call_micmute_led_update() to control both case.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+In addition to that, add LED_CORE_SUSPENDRESUME flag since some systems
+don't restore the LED properly after suspend.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
-changes in v2
-- use shared_root_clk instead ind_root_clk.
-- add fsl_spdif_can_set_clk_rate function.
+v2:
+ - Prevent platforms like Dell, Lenovoe and Huawei create double LED
+   class devices.
 
- sound/soc/fsl/fsl_spdif.c | 50 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 46 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_generic.c   |  3 ++-
+ sound/pci/hda/hda_generic.h   |  1 +
+ sound/pci/hda/patch_realtek.c | 29 ++++++++++++++++-------------
+ 3 files changed, 19 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 1b2e516f9162..8dc1959d0463 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -42,6 +42,18 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
- 
- #define DEFAULT_RXCLK_SRC	1
- 
-+/**
-+ * struct fsl_spdif_soc_data: soc specific data
-+ *
-+ * @imx: for imx platform
-+ * @shared_root_clock: flag of sharing a clock source with others;
-+ *                     so the driver shouldn't set root clock rate
-+ */
-+struct fsl_spdif_soc_data {
-+	bool imx;
-+	bool shared_root_clock;
-+};
-+
- /*
-  * SPDIF control structure
-  * Defines channel status, subcode and Q sub
-@@ -89,6 +101,7 @@ struct spdif_mixer_control {
-  * @dma_params_rx: DMA parameters for receive channel
-  */
- struct fsl_spdif_priv {
-+	const struct fsl_spdif_soc_data *soc;
- 	struct spdif_mixer_control fsl_spdif_control;
- 	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct platform_device *pdev;
-@@ -110,6 +123,28 @@ struct fsl_spdif_priv {
- 	u32 regcache_srpc;
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index f4e9d9445e18..9c3f1990c621 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3897,7 +3897,7 @@ enum {
+ 	MICMUTE_LED_FOLLOW_MUTE,
  };
  
-+static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
-+	.imx = false,
-+	.shared_root_clock = false,
-+};
-+
-+static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
-+	.imx = true,
-+	.shared_root_clock = false,
-+};
-+
-+static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
-+	.imx = true,
-+	.shared_root_clock = true,
-+};
-+
-+/* Check if clk is a root clock that does not share clock source with others */
-+static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif,
-+					      int clk)
-+{
-+	return (clk == STC_TXCLK_SPDIF_ROOT) && !spdif->soc->shared_root_clock;
-+}
-+
- /* DPLL locked and lock loss interrupt handler */
- static void spdif_irq_dpll_lock(struct fsl_spdif_priv *spdif_priv)
+-static void call_micmute_led_update(struct hda_codec *codec)
++void call_micmute_led_update(struct hda_codec *codec)
  {
-@@ -421,7 +456,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	sysclk_df = spdif_priv->sysclk_df[rate];
+ 	struct hda_gen_spec *spec = codec->spec;
+ 	unsigned int val;
+@@ -3924,6 +3924,7 @@ static void call_micmute_led_update(struct hda_codec *codec)
+ 	if (spec->micmute_led.update)
+ 		spec->micmute_led.update(codec);
+ }
++EXPORT_SYMBOL_GPL(call_micmute_led_update);
  
- 	/* Don't mess up the clocks from other modules */
--	if (clk != STC_TXCLK_SPDIF_ROOT)
-+	if (!fsl_spdif_can_set_clk_rate(spdif_priv, clk))
- 		goto clk_set_bypass;
+ static void update_micmute_led(struct hda_codec *codec,
+ 			       struct snd_kcontrol *kcontrol,
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index fb9f1a90238b..9f08a9ee9112 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -353,6 +353,7 @@ unsigned int snd_hda_gen_path_power_filter(struct hda_codec *codec,
+ void snd_hda_gen_stream_pm(struct hda_codec *codec, hda_nid_t nid, bool on);
+ int snd_hda_gen_fix_pin_power(struct hda_codec *codec, hda_nid_t pin);
  
- 	/* The S/PDIF block needs a clock of 64 * fs * txclk_df */
-@@ -1186,7 +1221,7 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 			continue;
++void call_micmute_led_update(struct hda_codec *codec);
+ int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+ 				void (*hook)(struct hda_codec *));
+ void snd_hda_gen_fixup_micmute_led(struct hda_codec *codec,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6d73f8beadb6..9691af8241cf 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4114,10 +4114,10 @@ static int micmute_led_set(struct led_classdev *led_cdev,
+ 			   enum led_brightness brightness)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
+-	struct alc_spec *spec = codec->spec;
++	struct hda_gen_spec *spec = codec->spec;
  
- 		ret = fsl_spdif_txclk_caldiv(spdif_priv, clk, savesub, index,
--					     i == STC_TXCLK_SPDIF_ROOT);
-+					     fsl_spdif_can_set_clk_rate(spdif_priv, i));
- 		if (savesub == ret)
- 			continue;
+-	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
+-			    spec->micmute_led_polarity, !!brightness);
++	spec->micmute_led.led_mode = !brightness;
++	call_micmute_led_update(codec);
+ 	return 0;
+ }
  
-@@ -1230,6 +1265,12 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 
- 	spdif_priv->pdev = pdev;
- 
-+	spdif_priv->soc = of_device_get_match_data(&pdev->dev);
-+	if (!spdif_priv->soc) {
-+		dev_err(&pdev->dev, "failed to get soc data\n");
-+		return -ENODEV;
-+	}
+@@ -4126,7 +4126,17 @@ static struct led_classdev micmute_led_cdev = {
+ 	.max_brightness = 1,
+ 	.brightness_set_blocking = micmute_led_set,
+ 	.default_trigger = "audio-micmute",
++	.flags = LED_CORE_SUSPENDRESUME,
+ };
 +
- 	/* Initialize this copy of the CPU DAI driver structure */
- 	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
- 	spdif_priv->cpu_dai_drv.name = dev_name(&pdev->dev);
-@@ -1359,8 +1400,9 @@ static const struct dev_pm_ops fsl_spdif_pm = {
- };
++static void alc_register_micmute_led(struct hda_codec *codec)
++{
++		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
++		if (devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev))
++			codec_warn(codec, "failed to register micmute LED\n");
++}
++#else
++static inline void alc_register_micmute_led(struct hda_codec *codec) {}
+ #endif
  
- static const struct of_device_id fsl_spdif_dt_ids[] = {
--	{ .compatible = "fsl,imx35-spdif", },
--	{ .compatible = "fsl,vf610-spdif", },
-+	{ .compatible = "fsl,imx35-spdif", .data = &fsl_spdif_imx35, },
-+	{ .compatible = "fsl,vf610-spdif", .data = &fsl_spdif_vf610, },
-+	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
+ /* setup mute and mic-mute GPIO bits, add hooks appropriately */
+@@ -4136,9 +4146,6 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				  unsigned int micmute_mask)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-	int err;
+-#endif
+ 
+ 	alc_fixup_gpio(codec, action, mute_mask | micmute_mask);
+ 
+@@ -4151,13 +4158,7 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 	if (micmute_mask) {
+ 		spec->gpio_mic_led_mask = micmute_mask;
+ 		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
+-
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+-		err = devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev);
+-		if (err)
+-			codec_warn(codec, "failed to register micmute LED\n");
+-#endif
++		alc_register_micmute_led(codec);
+ 	}
+ }
+ 
+@@ -4305,6 +4306,7 @@ static void alc285_fixup_hp_coef_micmute_led(struct hda_codec *codec,
+ 		spec->mic_led_coefbit_on = 1<<13;
+ 		spec->mic_led_coefbit_off = 0;
+ 		snd_hda_gen_add_micmute_led(codec, alc_hp_cap_micmute_update);
++		alc_register_micmute_led(codec);
+ 	}
+ }
+ 
+@@ -4319,6 +4321,7 @@ static void alc236_fixup_hp_coef_micmute_led(struct hda_codec *codec,
+ 		spec->mic_led_coefbit_on = 2<<2;
+ 		spec->mic_led_coefbit_off = 1<<2;
+ 		snd_hda_gen_add_micmute_led(codec, alc_hp_cap_micmute_update);
++		alc_register_micmute_led(codec);
+ 	}
+ }
+ 
 -- 
-2.21.0
+2.17.1
 
