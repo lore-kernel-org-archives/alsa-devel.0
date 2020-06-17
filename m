@@ -2,78 +2,73 @@ Return-Path: <SRS0=fhRg=76=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A12CC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:51:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A00C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:51:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0596C20897
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:51:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B31721527
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jun 2020 16:51:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sTP1aJnK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0596C20897
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o3mdAgBC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="yp2qLsca"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B31721527
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D8E11674;
-	Wed, 17 Jun 2020 18:50:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D8E11674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F658167E;
+	Wed, 17 Jun 2020 18:50:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F658167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592412670;
-	bh=muHVtr/HaRUfqaoD3C6StiI2xpfQaCTGGLnSeItPwDk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592412706;
+	bh=jKmBqGMw//TDq5d1AN61mPbBQRkBy3ivxqxYjKASoVA=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sTP1aJnKjUbl7k2XuiOMyH6po//2gPkQqT+O7YxB+TbgfcownedAs+gnDUCP6dDyS
-	 t/fnO7RnjxsIXs2/SukbsV7cD/2If3t1Yp7s8oCqmcMV/NhQvlXojjbXQgqZ/FhcL5
-	 N+95Y/47Zm35T2ra/OMsEfyVAvhlzszzP7nb0xe8=
+	b=o3mdAgBCRVkm8CkuaNYvGnlWCjHHNVD3QoO2XJZt8UBbEyvEoz9LWTuw5e0Xd4WtC
+	 UBgAbJCBqgCXXDq9WL8/XaB7qz7R4aLDAodIzrY6f++2vC7Xdhj55K2Bg9dXWfp8LF
+	 YootnEXTMXZziO+iyIcBQjewPDCQ3E0JuJftaYFY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FF99F802A8;
-	Wed, 17 Jun 2020 18:48:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A42FF802DD;
+	Wed, 17 Jun 2020 18:48:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E16CF8025F; Wed, 17 Jun 2020 18:48:12 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 6CF8BF802DF; Wed, 17 Jun 2020 18:48:44 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84CA7F802DC
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 18:48:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84CA7F802DC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="yp2qLsca"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2319AF801D9
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2020 18:48:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2319AF801D9
-IronPort-SDR: dNulY60ftSZPo98wZzEJQogbNoNgTstXcBOywL5bhwo73frYNi7zSh//zK0qbwv1xTUc+cE5P4
- o4b9qCQROscg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jun 2020 09:48:03 -0700
-IronPort-SDR: Off22vtaQdswYEBUsHwivy/rK1Y6JudvfEPWypHiryZwRBxUC01ypHe98kJ/bMLE94qqJuqudt
- PPp2aZ3dF0Yw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; d="scan'208";a="261776799"
-Received: from zdsmith-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.255.229.128])
- by fmsmga007.fm.intel.com with ESMTP; 17 Jun 2020 09:48:02 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: SOF: Intel: add PCI IDs for ICL-H and TGL-H
-Date: Wed, 17 Jun 2020 11:47:55 -0500
-Message-Id: <20200617164755.18104-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200617164755.18104-1-pierre-louis.bossart@linux.intel.com>
-References: <20200617164755.18104-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id 1632E21532;
+ Wed, 17 Jun 2020 16:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592412518;
+ bh=jKmBqGMw//TDq5d1AN61mPbBQRkBy3ivxqxYjKASoVA=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=yp2qLscaYNDIVwrFhkLWX2B5HzhY7YccM3l+pUBHKnUwKRVEcmVTgaWk7CnhvqLmY
+ OnhO4lTymyuSDYGW5bY2oCVivdPCCj4uYbJgD04NYyI3gietIFrORHzxhKWFfkLdMW
+ psKHjNOdVbiAqyDAwnD8ITA/AJ/kJy5UKyjUm8Yk=
+Date: Wed, 17 Jun 2020 17:48:36 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20200617155047.1187256-1-jbrunet@baylibre.com>
+References: <20200617155047.1187256-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: meson: imply acodec glue on axg sound card
+Message-Id: <159241251642.14602.5400773312595061016.b4-ty@kernel.org>
+Cc: Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,46 +84,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Usually the DSP is not traditionally enabled on H skews but this might
-be used moving forward.
+On Wed, 17 Jun 2020 17:50:47 +0200, Jerome Brunet wrote:
+> When axg card driver support is enabled, lets enable the related
+> internal DAC glue by default.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/soc/sof/sof-pci-dev.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Applied to
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index f3cb2db67130..aa3532ba1434 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -409,8 +409,11 @@ static const struct pci_device_id sof_pci_ids[] = {
- 		.driver_data = (unsigned long)&cfl_desc},
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
--	{ PCI_DEVICE(0x8086, 0x34C8),
-+	{ PCI_DEVICE(0x8086, 0x34C8), /* ICL-LP */
- 		.driver_data = (unsigned long)&icl_desc},
-+	{ PCI_DEVICE(0x8086, 0x3dc8), /* ICL-H */
-+		.driver_data = (unsigned long)&icl_desc},
-+
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_JASPERLAKE)
- 	{ PCI_DEVICE(0x8086, 0x38c8),
-@@ -427,8 +430,11 @@ static const struct pci_device_id sof_pci_ids[] = {
- 		.driver_data = (unsigned long)&cml_desc},
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
--	{ PCI_DEVICE(0x8086, 0xa0c8),
-+	{ PCI_DEVICE(0x8086, 0xa0c8), /* TGL-LP */
- 		.driver_data = (unsigned long)&tgl_desc},
-+	{ PCI_DEVICE(0x8086, 0x43c8), /* TGL-H */
-+		.driver_data = (unsigned long)&tgl_desc},
-+
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
- 	{ PCI_DEVICE(0x8086, 0x4b55),
--- 
-2.20.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: meson: imply acodec glue on axg sound card
+      commit: e50186e1dae67e070d4725b1f0b35b131969141d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
