@@ -2,84 +2,80 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 209A6C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28E38C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:58:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E1BE20739
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:57:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A297220739
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:58:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S1aDB1Wc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E1BE20739
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bunKStIQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A297220739
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20BA71790;
-	Thu, 18 Jun 2020 16:56:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20BA71790
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38A22179B;
+	Thu, 18 Jun 2020 16:57:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38A22179B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592492250;
-	bh=MHZDsQ5fBftW/tDaGd1ZbDkyvp29BwkZehnehQQ6LT8=;
+	s=default; t=1592492303;
+	bh=qUFLtbzLa7BQHttBPEHcC0wMoBLEp83tx2S4k1kLG3k=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S1aDB1Wct975D48puSygocn8rbebDhyEjRuylke2KFwRsXx969DBlSUqAcvzFTMIo
-	 C7DZWqEXKvY+4EUIljiPw9xS09ViVXMOV5Rybm+zF2boZt+Uu+aVzqJYQ1tjqe7g50
-	 lMO6Qse6bl7cOPqiJ4PWt/FOmndC0x/VQ3p8TMLo=
+	b=bunKStIQrFhDUYpHiAhbYdzxmJZ9ZssEA9ZluTQiN36KGZkfeiYVTWX/nox1iJt/b
+	 jN4WWCsHAAMImKQfUirWTa583YdXCJMIxh331WhZDhAraYv3kNjgJvAjitcGoXs+vx
+	 9zyg6DZouMb6o2AfbSaUcgVRiSu5hgBy6KBUFxdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C88BF80101;
-	Thu, 18 Jun 2020 16:56:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 721F5F801D9;
+	Thu, 18 Jun 2020 16:56:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98176F80162; Thu, 18 Jun 2020 16:56:37 +0200 (CEST)
+ id 3FFD8F80101; Thu, 18 Jun 2020 16:56:39 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A94FEF800EF
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 16:56:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A94FEF800EF
-IronPort-SDR: MeX8ehN6A9K+JXEWgrTffqkK8decwn0JlJX5q+RIo96ZYU4g0FQ7fSQccpl2gARi1EnXIMgMpx
- GiWAtLDsTk4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="131000270"
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; d="scan'208";a="131000270"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97ACFF80101
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 16:56:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97ACFF80101
+IronPort-SDR: 6ikbQm1zr/pbHJMquDnmABX0eefsISegojcUOyl83c33JJwHI0Di75NE3Dgkj1v5jSbE+6kBs1
+ rNxSynNa97pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="131000243"
+X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; d="scan'208";a="131000243"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jun 2020 07:56:28 -0700
-IronPort-SDR: at+vlZROG39IV3Sw1Bc1iQbrAZz6YYBWa5nnlJi/L5Se4slJo2LQZAyVhOvMMTaLbxC+96C8l6
- bXzA2ADzW89Q==
+ 18 Jun 2020 07:56:27 -0700
+IronPort-SDR: NEx0GOaMn7OvG1Et1Z3rmhL2o3vxYosQnEPvgEEQoBzIU1av8cbFXZ6IsBIpSxA+94iSjx64Dh
+ kvfC5ZH29okg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; d="scan'208";a="477268238"
+X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; d="scan'208";a="477268207"
 Received: from richard2-mobl.amr.corp.intel.com (HELO [10.254.109.110])
  ([10.254.109.110])
- by fmsmga005.fm.intel.com with ESMTP; 18 Jun 2020 07:56:27 -0700
-Subject: Re: [PATCH] ASoC: codecs: Added MAX98373 Soundwire Driver
-To: Mark Brown <broonie@kernel.org>
-References: <20200617163015.16809-1-pierre-louis.bossart@linux.intel.com>
- <20200618110902.GE5789@sirena.org.uk>
+ by fmsmga005.fm.intel.com with ESMTP; 18 Jun 2020 07:56:25 -0700
+Subject: Re: [PATCH] ANDROID: sound: usb: Add vendor's hooking interface
+To: JaeHun Jung <jh0801.jung@samsung.com>, tiwai@suse.de
+References: <CGME20200617022554epcas2p214a49f03a15e504d8faa28148e06e796@epcas2p2.samsung.com>
+ <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d3bb399f-3af9-666d-054d-e4a1dda1dfb4@linux.intel.com>
-Date: Thu, 18 Jun 2020 07:42:25 -0500
+Message-ID: <d37660f8-3bb6-5f3a-8ac1-c0d6d5a08468@linux.intel.com>
+Date: Thu, 18 Jun 2020 07:27:07 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200618110902.GE5789@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Ryan Lee <ryans.lee@maximintegrated.com>,
- tiwai@suse.de, gregkh@linuxfoundation.org, vkoul@kernel.org,
- Naveen Manohar <naveen.m@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,68 +91,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks for the review Mark,
 
->> +static void max98373_read_config(struct sdw_slave *slave)
->> +{
->> +	int value;
->> +	struct device *dev = &slave->dev;
->> +	struct max98373_priv *max98373 = dev_get_drvdata(dev);
->> +
->> +	if (!device_property_read_u32(dev, "maxim,vmon-slot-no", &value))
->> +		max98373->v_slot = value & 0xF;
->> +	else
->> +		max98373->v_slot = 0;
-> 
-> The DT bindings need updating to add SoundWire support.
 
-Interesting. The properties are the same in I2C and SoundWire mode, so 
-would we need a completely different file that just specifies the 
-SoundWire DeviceID, e.g.
+On 6/16/20 9:18 PM, JaeHun Jung wrote:
+> In mobile, a co-processor is used when using USB audio
+> to improve power consumption.
+> hooking is required for sync-up when operating
+> the co-processor. So register call-back function.
+> The main operation of the call-back function is as follows:
+> - Initialize the co-processor by transmitting data
+>    when initializing.
+> - Change the co-processor setting value through
+>    the interface function.
+> - Configure sampling rate
+> - pcm open/close
 
-properties:
-   compatible:
-     const: sdw10217201000
-
-What's the process for such dual-mode devices?
+Thank you for this patch. With the removal of the 3.5mm jack on a number 
+of platforms, and improvements to reduce power consumption on a variety 
+of hosts there's indeed a need to enhance sound/usb in the kernel.
 
 > 
->> +	/* L/R mix configuration */
->> +	regmap_write(max98373->regmap,
->> +		     MAX98373_R2029_PCM_TO_SPK_MONO_MIX_1,
->> +		     0x80);
->> +	regmap_write(max98373->regmap,
->> +		     MAX98373_R202A_PCM_TO_SPK_MONO_MIX_2,
->> +		     0x1);
->> +	/* Set initial volume (0dB) */
->> +	regmap_write(max98373->regmap,
->> +		     MAX98373_R203D_AMP_DIG_VOL_CTRL,
->> +		     0x00);
->> +	regmap_write(max98373->regmap,
->> +		     MAX98373_R203E_AMP_PATH_GAIN,
->> +		     0x00);
+> Bug: 156315379
 > 
-> I'd expect these to be chip defaults, especially the volumes.
+> Change-Id: I32e1dd408e64aaef68ee06c480c4b4d4c95546dc
+> Signed-off-by: JaeHun Jung <jh0801.jung@samsung.com>
 
-The same sequence is already used in the I2C probe. if this needs to 
-change, it's got to be applied for both cases.
-> 
->> +	/* Speaker enable */
->> +	regmap_update_bits(max98373->regmap,
->> +			   MAX98373_R2043_AMP_EN,
->> +			   MAX98373_SPK_EN_MASK, 1);
-> 
-> I'd expect this to be managed via DAPM.
+You probably want to remove bug references and Change-Id if they are not 
+publicly visible
 
-It's also copied as is from the existing I2C parts.
+> @@ -891,6 +897,15 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>   	struct usb_interface *iface;
+>   	int ret;
+>   
+> +	if (usb_audio_ops && usb_audio_ops->vendor_set_pcmbuf) {
+> +		ret = usb_audio_ops->vendor_set_pcmbuf(subs->dev);
+> +
+> +		if (ret < 0) {
+> +			dev_err(&subs->dev->dev, "pcm buf transfer failed\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+>   	if (! subs->cur_audiofmt) {
+>   		dev_err(&subs->dev->dev, "no format is specified!\n");
+>   		return -ENXIO;
+> @@ -924,6 +939,15 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>   		if (ret < 0)
+>   			goto unlock;
+>   
+> +		if (usb_audio_ops && usb_audio_ops->vendor_set_rate) {
+> +			subs->need_setup_ep = false;
+> +			usb_audio_ops->vendor_set_rate(
+> +					subs->cur_audiofmt->iface,
+> +					subs->cur_rate,
+> +					subs->cur_audiofmt->altsetting);
+> +			goto unlock;
+> +		}
+> +
+>   		ret = configure_endpoint(subs);
+>   		if (ret < 0)
+>   			goto unlock;
+> @@ -1333,6 +1357,9 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+>   	struct snd_usb_substream *subs = &as->substream[direction];
+>   	int ret;
+>   
+> +	if (usb_audio_ops && usb_audio_ops->vendor_pcm_con)
+> +		usb_audio_ops->vendor_pcm_con(true, direction);
+> +
+>   	subs->interface = -1;
+>   	subs->altset_idx = 0;
+>   	runtime->hw = snd_usb_hardware;
+> @@ -1361,12 +1388,18 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+>   	struct snd_usb_substream *subs = &as->substream[direction];
+>   	int ret;
+>   
+> +	if (usb_audio_ops && usb_audio_ops->vendor_pcm_con)
+> +		usb_audio_ops->vendor_pcm_con(false, direction);
+> +
 
-We should probably cut the common parts out, as done for rt5682. Ryan, 
-can you look into this.
+can you elaborate on the PCM streaming parts? if you allocate a buffer 
+for the co-processor to deal with PCM data, will you end-up copying data 
+from the existing ring buffers allocated with vmalloc() into your 
+coprocessor?
 
-> 
->> +/* SPDX-License-Identifier: GPL-2.0-only
-> 
-> AIUI this needs the trailing */ on the same line for the license
-> compliance people.
+I was instead thinking of having a different 'mode' where the PCM 
+buffers are not allocated by sound/usb, but instead allocated by the 
+driver taking care of the low-power USB path, so that apps can directly 
+write into ring buffers that are handled by the coprocessor/offload unit.
 
-Indeed, that's a miss.
+Thanks
+-Pierre
