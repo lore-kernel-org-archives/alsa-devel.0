@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27DC6C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:19:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3AC9C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:19:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2B42206F1
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:19:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 332B921D90
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:19:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n26PHFo2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TcJZmhJn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2B42206F1
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SAvAxa9Q";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KESwxvfT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 332B921D90
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 271D716A0;
-	Thu, 18 Jun 2020 03:18:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 271D716A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1DAC168A;
+	Thu, 18 Jun 2020 03:18:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1DAC168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592443140;
-	bh=r63CG3lRlNECeZaLITgREg5AuTfmTKB+Dc4lY/TJL8k=;
+	s=default; t=1592443180;
+	bh=ZYAJ00KFqyy/tvH5dMqM3Tjkm+Yhg3s3YaLpmyGJbto=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n26PHFo2gi5/erXyM0zeqxyvkao6D6xYerO3ekc2Oe8cOxh4BSk0tENRKyvwh6Z5F
-	 8ZvMTtCZiqE/V7nyl7sBmObjwKF9zi7IpSH/p70fJ4NcutK+1VZTHmUpUi/a1KG+Gl
-	 VYmb39NghHEJtPrKSLGx6UsA+PBpbHvN6u1YmzxA=
+	b=SAvAxa9Q59MlsD95re0eon/JizPFy8FUE1YN9t1zZ8lMOnOkXkxfXbDKG6UCQAm7k
+	 OpbD6t8CYVG4CsUOHNWn8vUC67a5huMKzQqcJv96XYfBIhe3PNeh6Le8M3vBprF/9D
+	 R4Kdz+u4RCQ9eH8XFqyQSAs5duPSLusjnPbfR9JE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB7B7F8033E;
-	Thu, 18 Jun 2020 03:11:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9D5DF80341;
+	Thu, 18 Jun 2020 03:11:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60B44F8033F; Thu, 18 Jun 2020 03:11:37 +0200 (CEST)
+ id DF470F80341; Thu, 18 Jun 2020 03:11:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DA57F80339
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:11:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DA57F80339
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01F10F80338
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:11:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01F10F80338
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TcJZmhJn"
+ header.b="KESwxvfT"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2A7D02193E;
- Thu, 18 Jun 2020 01:11:29 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A19D820B1F;
+ Thu, 18 Jun 2020 01:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592442689;
- bh=r63CG3lRlNECeZaLITgREg5AuTfmTKB+Dc4lY/TJL8k=;
+ s=default; t=1592442692;
+ bh=ZYAJ00KFqyy/tvH5dMqM3Tjkm+Yhg3s3YaLpmyGJbto=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TcJZmhJndLI06ksq0rZ4aFI1vqj6PF/uEUPBRML45u7TiKfw+9g0c/hyPg8HmqXld
- zhbh3z4/SBwT4NgLbDFx80LQHjIjtG3q5qRm5pbDglvihblbt9kNZHTWAOt4HA+Pgm
- iW5wrkUAd5inY1qE75ahHnK66+v/0OAS2VQYnJ2U=
+ b=KESwxvfTZmm/vtKve9biDYZHrYPEdeqPRLfwTyMRdNzG1VffTo2UX8BfKyjHsA6MA
+ HqbR2AadqymL8kvSEwIw2FWRAL5oaRqCMgVdf8vMPk4g331BQO9MAmFu9UeOB+je8z
+ ac1scu7ZBnwWME1yqLaTPe/TpWjP1mhooWTeGXYo=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 155/388] ASoC: component: suppress
- uninitialized-variable warning
-Date: Wed, 17 Jun 2020 21:04:12 -0400
-Message-Id: <20200618010805.600873-155-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 157/388] ASoC: rt5682: fix I2C/Soundwire
+ dependencies
+Date: Wed, 17 Jun 2020 21:04:14 -0400
+Message-Id: <20200618010805.600873-157-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -94,39 +94,46 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit be16a0f0dc8fab8e25d9cdbeb4f8f28afc9186d2 ]
+[ Upstream commit fd443a20c2f0950f3c31765a08f7dd49b3bc69cb ]
 
-Old versions of gcc (tested on gcc-4.8) produce a warning for
-correct code:
+If one of the two is a loadable module, the combined driver must
+not be built-in:
 
-sound/soc/soc-compress.c: In function 'soc_compr_open':
-sound/soc/soc-compress.c:75:28: error: 'component' is used uninitialized in this function [-Werror=uninitialized]
-  struct snd_soc_component *component, *save = NULL;
+aarch64-linux-ld: sound/soc/codecs/rt5682.o: in function `rt5682_sdw_hw_free':
+rt5682.c:(.text+0xb34): undefined reference to `sdw_stream_remove_slave'
+aarch64-linux-ld: sound/soc/codecs/rt5682.o: in function `rt5682_sdw_hw_params':
+rt5682.c:(.text+0xe78): undefined reference to `sdw_stream_add_slave'
 
-Change the for_each_rtd_components() macro to ensure 'component'
-gets initialized to a value the compiler does not complain about.
+In particular, the soundwire driver must not be built-in if
+CONFIG_I2C=m.
 
+Fixes: 5549ea647997 ("ASoC: rt5682: fix unmet dependencies")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20200428214754.3925368-1-arnd@arndb.de
+Link: https://lore.kernel.org/r/20200428214642.3925004-1-arnd@arndb.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/soc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 946f88a6c63d..e0371e70242d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1177,7 +1177,7 @@ struct snd_soc_pcm_runtime {
- #define asoc_rtd_to_codec(rtd, n) (rtd)->dais[n + (rtd)->num_cpus]
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 7d2cbed55a9d..4c643d2e6d6b 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1136,10 +1136,13 @@ config SND_SOC_RT5677_SPI
+ config SND_SOC_RT5682
+ 	tristate
+ 	depends on I2C || SOUNDWIRE
++	depends on SOUNDWIRE || !SOUNDWIRE
++	depends on I2C || !I2C
  
- #define for_each_rtd_components(rtd, i, component)			\
--	for ((i) = 0;							\
-+	for ((i) = 0, component = NULL;					\
- 	     ((i) < rtd->num_components) && ((component) = rtd->components[i]);\
- 	     (i)++)
- #define for_each_rtd_cpu_dais(rtd, i, dai)				\
+ config SND_SOC_RT5682_SDW
+ 	tristate "Realtek RT5682 Codec - SDW"
+ 	depends on SOUNDWIRE
++	depends on I2C || !I2C
+ 	select SND_SOC_RT5682
+ 	select REGMAP_SOUNDWIRE
+ 
 -- 
 2.25.1
 
