@@ -2,70 +2,57 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42363C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 08:18:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49805C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 09:16:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5685208C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 08:18:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C814721841
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 09:16:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qb2DK/ka"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5685208C7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BjtsjKNV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C814721841
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49E5B1737;
-	Thu, 18 Jun 2020 10:17:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49E5B1737
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FBBC1739;
+	Thu, 18 Jun 2020 11:16:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FBBC1739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592468313;
-	bh=hle/64IepGyCUinO6eu79tFZXo0rca6+km/YPAypS+A=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592471811;
+	bh=eCCvaSV0xM2kfznJ6JPJ2KgYxnq9DdlSICzpCf03eTI=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qb2DK/kaD5O6xrKdC/cVZpdb+PiXo/E6UXMS/zYd0jqCZTxWKZuDpWlBTUXkWS0Fl
-	 dsBgs6iGXvtHVumqABQbKYYQokPRr4lYSrNmQRWpOfUTG69L0xvz1DIU9iOYnNqCRi
-	 9DDZw61arWV0g5oEHYZfmBRbW/Gf3CkOvwPY/zLM=
+	b=BjtsjKNVaDcuN3Jt8KUOBbr+gb4WY4EVT55NfgIiIh5/jqIDvMJqpQVXJixfAthmt
+	 y7k/q8pcrXkKtL/RdLMRZt+A14MWYfNlLB5LCZu5CyLp2WMC5kAu+VAMr2L64vyjpw
+	 W8/n3Hovyovn+jliIAvoMIFJwHKg/Jg7ulycsCOU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB99FF800EF;
-	Thu, 18 Jun 2020 10:17:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2278F8010E;
+	Thu, 18 Jun 2020 11:16:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FBFEF80101; Thu, 18 Jun 2020 10:17:41 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4410F80101
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 10:17:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4410F80101
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7AFA5AD35;
- Thu, 18 Jun 2020 08:17:35 +0000 (UTC)
-Date: Thu, 18 Jun 2020 10:17:35 +0200
-Message-ID: <s5hmu50yehs.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-In-Reply-To: <2006171134130.2561@stax.localdomain>
-References: <2006161409060.30751@stax.localdomain>
- <20200616131743.4793-3-mark@xwax.org>
- <s5hsgev16ck.wl-tiwai@suse.de>
- <2006161451110.1865@stax.localdomain>
- <s5hlfkn14cr.wl-tiwai@suse.de>
- <2006171134130.2561@stax.localdomain>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ id 3878BF80116; Thu, 18 Jun 2020 11:15:58 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 67827F80101
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 11:15:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67827F80101
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1592471753636013985-webhooks-bot@alsa-project.org>
+References: <1592471753636013985-webhooks-bot@alsa-project.org>
+Subject: File Plugin seems to drop data when writing to FIFO
+Message-Id: <20200618091558.3878BF80116@alsa1.perex.cz>
+Date: Thu, 18 Jun 2020 11:15:58 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,206 +68,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Jun 2020 12:51:05 +0200,
-Mark Hills wrote:
-> 
-> On Tue, 16 Jun 2020, Takashi Iwai wrote:
-> 
-> > On Tue, 16 Jun 2020 16:01:11 +0200,
-> > Mark Hills wrote:
-> > > 
-> > > On Tue, 16 Jun 2020, Takashi Iwai wrote:
-> > > 
-> > > > On Tue, 16 Jun 2020 15:17:43 +0200,
-> > > > Mark Hills wrote:
-> > > > > 
-> > > > > +/* Update software pointer to match the hardware
-> > > > > + *
-> > > > > + * Return: 1 if we crossed a period threshold, otherwise 0
-> > > > > + */
-> > > > > +static int snd_echo_poll_substream(struct snd_pcm_substream *substream)
-> > > > 
-> > > > This is a bit confusing name.  One would imagine from the function
-> > > > name as if it were about the handling of poll() syscall.
-> > > 
-> > > Poll felt intuitive to me; maybe from FreeBSD where network drivers can 
-> > > poll on a timer instead of interrupts. I do know about poll(), though.
-> > > 
-> > > How about snd_echo_update_substream()?
-> > 
-> > Yes, it's more self-explanatory.  Or even better
-> > snd_echo_update_substream_position() :)
-> 
-> Out of interest, these are static but the names are globally qualified. I 
-> see this elsewhere, so I followed, but is this agreed convention?
-> 
-> Because it could be update_substream_position() :)
+alsa-project/alsa-lib issue #63 was opened from riggiding:
 
-It's fine to use any name for a local function.
+Hi,
 
+we're using the file plugin to pipe data for use in a vu-meter application. This worked well but since updating to 1.1.4.1 the data received is incomplete (tested using sine test tones and Audacity to playback / inspect the data that went through the fifo).
+**When writing to a normal file all is fine.**
 
-> > > > > +{
-> > > > > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > > > > +	struct audiopipe *pipe = runtime->private_data;
-> > > > > +	unsigned counter, step, period, last_period;
-> > > > > +	size_t buffer_bytes;
-> > > > > +
-> > > > > +	if (pipe->state != PIPE_STATE_STARTED)
-> > > > > +		return 0;
-> > > > > +
-> > > > > +	counter = le32_to_cpu(*pipe->dma_counter);
-> > > > > +
-> > > > > +	period = bytes_to_frames(runtime, counter)
-> > > > > +		/ runtime->period_size;
-> > > > > +	last_period = bytes_to_frames(runtime, pipe->last_counter)
-> > > > > +		/ runtime->period_size;
-> > > > > +
-> > > > > +	if (period == last_period)
-> > > > > +		return 0;  /* don't do any work yet */
-> > > > > +
-> > > > > +	step = counter - pipe->last_counter;
-> > > > > +	pipe->last_counter = counter;
-> > > > 
-> > > > Dose this calculation consider the overlap of 32bit integer of the
-> > > > counter?  (I'm not sure whether the old code did it right, though.)
-> > > 
-> > > I believe it does, since (small - big) as unsigned gives small value. And 
-> > > period is checked only for equality (not greater than). I'll add a comment 
-> > > as such. I have run it with long streams.
-> > 
-> > The problem is that the last_period calculation can be wrong if the
-> > period size isn't aligned.  e.g. when period size is 44100, around the
-> > boundary position, it gets a different last_period value although it
-> > still in the same period.
-> 
-> Agreed, yes.
-> 
-> In which case I think it's clearer to not infer anything about periods 
-> from the current counter or position, and (effectively) accumulate it.
-> 
-> Would you please make suggestions on the code below?
-> 
-> Because it allowed for further simplification whilst fixing the bugs.
-> 
-> In the end, modulo became clearer than loops and I think it has the bonus 
-> of being less risky should the counter make a large step.
-> 
-> I'll run for a longer test today.
-> 
-> ---
-> 
-> /* Update software pointer to match the hardware
->  *
->  * \pre chip->lock is held
->  */
-> static void snd_echo_update_substream_position(struct echoaudio *chip,
-> 					struct snd_pcm_substream *substream)
-> {
-> 	struct snd_pcm_runtime *runtime = substream->runtime;
-> 	struct audiopipe *pipe = runtime->private_data;
-> 	u32 counter, step;
-> 	size_t period_bytes;
-> 
-> 	if (pipe->state != PIPE_STATE_STARTED)
-> 		return;
-> 
-> 	period_bytes = frames_to_bytes(runtime, runtime->period_size);
-> 
-> 	counter = le32_to_cpu(*pipe->dma_counter);
-> 
-> 	step = counter - pipe->last_counter;  /* handles wrapping of counter */
-> 	step -= step % period_bytes;  /* acknowledge whole periods only */
-> 
-> 	if (step == 0)
-> 		return;  /* haven't advanced a whole period yet */
-> 	pipe->last_counter += step;  /* does not always wrap on a period */
-> 	pipe->position += step;
-> 
-> 	/* wraparound the buffer */
-> 	pipe->position %= frames_to_bytes(runtime, runtime->buffer_size);
-> 
-> 	/* notify only once, even if multiple periods elapsed */
-> 	spin_unlock(&chip->lock);
-> 	snd_pcm_period_elapsed(substream);
-> 	spin_lock(&chip->lock);
-> }
-> 
-> static irqreturn_t snd_echo_interrupt(int irq, void *dev_id)
-> {
-> 	struct echoaudio *chip = dev_id;
-> 	int ss, st;
-> 
-> 	spin_lock(&chip->lock);
-> 	st = service_irq(chip);
-> 	if (st < 0) {
-> 		spin_unlock(&chip->lock);
-> 		return IRQ_NONE;
-> 	}
-> 	/* The hardware doesn't tell us which substream caused the irq,
-> 	thus we have to check all running substreams. */
-> 	for (ss = 0; ss < DSP_MAXPIPES; ss++) {
-> 		struct snd_pcm_substream *substream;
-> 
-> 		substream = chip->substream[ss];
-> 		if (substream)
-> 			snd_echo_update_substream_position(chip, substream);
-> 	}
-> 	spin_unlock(&chip->lock);
-> 
-> #ifdef ECHOCARD_HAS_MIDI
-> 	if (st > 0 && chip->midi_in) {
-> 		snd_rawmidi_receive(chip->midi_in, chip->midi_buffer, st);
-> 		dev_dbg(chip->card->dev, "rawmidi_iread=%d\n", st);
-> 	}
-> #endif
-> 	return IRQ_HANDLED;
-> }
-> 
-> static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
-> {
-> 	struct snd_pcm_runtime *runtime = substream->runtime;
-> 	struct audiopipe *pipe = runtime->private_data;
-> 
-> 	return bytes_to_frames(runtime, pipe->position);
+Also tried using tee, same result.
+Any hints or ideas would be great!
 
-I guess this misses the update of the precise position; in your code,
-pipe->position gets updated only with the period size at irq handler.
+**The fifo is created by:**
+#! /bin/sh
 
+if [ ! -p "$ALSA_FIFO" ]; then
+	# create a fifo for alsa -> vumeter
+	mkfifo "$ALSA_FIFO"                                           
+	chmod 666 "$ALSA_FIFO"
+fi
 
-IMO, we should have the code like:
+cat <>"$ALSA_FIFO"
 
-static bool update_stream_position(struct snd_pcm_substream *substream)
-{
-	// update pipe->position and others, returns true if period elapsed
+**asound.conf:**
+
+pcm.hiface {
+	type hw
+	card 0
+	device 0
 }
 
-static irqreturn_t snd_echo_interrupt()
-{
-	spin_lock(&chip->lock);
-	....
-	if (update_stream_position(substream)) {
-		spin_unlock(&chip->lock);
-		snd_pcm_period_elapsed(substream);
-		spin_lock(&chip->lock);
+pcm.vumeter {
+	type rate
+	slave {
+		pcm "alsaFifo"
+		rate 44100
+		format "S16_LE"
 	}
-	....
-	spin_unlock(&chip->lock);
-	return IRQ_HANDLED;
 }
 
-static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
-{
-	....
-	update_stream_position(substream);
-	return bytes_to_frames(runtime, pipe->position);
+pcm.alsaFifo {
+	type file
+	slave.pcm "null"
+	file "/tmp/alsa-fifo"
 }
 
+pcm.alsaFifoTee {
+       type empty
+       slave.pcm "tee:null,'/tmp/alsa-fifo',raw"
+}
 
-Note that snd_pcm_period_elapsed() isn't needed (must not be done)
-from the pointer callback.  The PCM core would detect and handle
-properly if the period gets elapsed there.
+pcm.direct {
+	type route
+	slave.pcm "split_direct"
+	ttable.0.0 1
+	ttable.1.1 1
+	ttable.0.2 1
+	ttable.1.3 1
+}
 
+pcm.split_direct {
+	type multi
+	slaves.a.pcm "hiface"
+	slaves.a.channels 2
+	slaves.b.pcm "vumeter"
+	slaves.b.channels 2
+	bindings.0.slave a
+	bindings.0.channel 0
+	bindings.1.slave a
+	bindings.1.channel 1
+	bindings.2.slave b
+	bindings.2.channel 0
+	bindings.3.slave b
+	bindings.3.channel 1
+}
 
-thanks,
-
-Takashi
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/63
+Repository URL: https://github.com/alsa-project/alsa-lib
