@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92CACC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C4FEC433E3
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:34:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FEA9207E8
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:33:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 84C8A2224B
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:34:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qBeoAyi1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vf243AJj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FEA9207E8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sjKFvhuM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/7Nebd7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84C8A2224B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBA4A169C;
-	Thu, 18 Jun 2020 03:32:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBA4A169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E1C516DA;
+	Thu, 18 Jun 2020 03:33:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E1C516DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592444022;
-	bh=082nMbW7W4EL25ot2oiMRYNGZ531syXYTu7mVW7Gabo=;
+	s=default; t=1592444057;
+	bh=zqUzg/9FJ0QNBiUqubuWOw8AVozkPnBWQfBMF2dn32M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qBeoAyi1txI2APuM2n1zLD0/JtRAYQHg2X90qT6PZvFUCqFnkv21xSjrPpeE2wVQ0
-	 s4EyCtIuUREdhkNkFX0ubUilcpVmpl4Uhkl/Ew7qdb5k3bWK+73IWs2nC7dk82G6ub
-	 jYBiXdugSKiWAI0teAqbZ+R4kvmuOdkyYRlS0kM4=
+	b=sjKFvhuMijYnUKe0vHUirQIO29wQaYFRwLQtZEyatwXq1SfaMdBX83Mh39cBUg78x
+	 poKZxBCh8qzDIxcBDIW56G/bhO8HcaP7CNqqGpqzBxoGD1cPUJ9jQAGIVgQaIcx7NL
+	 q4LREEmnoweEWX66oTZpMPADSXpuJCsDrlwU061k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60D6CF80407;
-	Thu, 18 Jun 2020 03:16:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BA91F80435;
+	Thu, 18 Jun 2020 03:16:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F469F80407; Thu, 18 Jun 2020 03:16:50 +0200 (CEST)
+ id 4AB71F8042B; Thu, 18 Jun 2020 03:16:56 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF6E9F80315
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:16:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF6E9F80315
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2AFCAF80429
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:16:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AFCAF80429
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vf243AJj"
+ header.b="P/7Nebd7"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5EA71221ED;
- Thu, 18 Jun 2020 01:16:44 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id CC13E21D79;
+ Thu, 18 Jun 2020 01:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592443005;
- bh=082nMbW7W4EL25ot2oiMRYNGZ531syXYTu7mVW7Gabo=;
+ s=default; t=1592443009;
+ bh=zqUzg/9FJ0QNBiUqubuWOw8AVozkPnBWQfBMF2dn32M=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=vf243AJj/k+EsVeXSSw/2fKB9ZWYnapKldOO1HYH3sZ/RhFUDKL9dPXX2jHsjCFIB
- twDlHUGDnbaqbUYV9wP/FrSHetIFoUbSDYPVVGKxebiBdoWTdQ9EXSl9/EEekMXnwJ
- ifRc0jnJOZhpmEyQS4dYG+zGk5lE7u8NI7caGif8=
+ b=P/7Nebd72QTAVVnZE8LBQpDm1JFzoN4YTd9pxF0fH/PqjYZX21Lzi2pe8rdql9bEC
+ Xy9eKhQ2sdAXDn+n2qyPXI3IZ+e15h1a5ycFXanuLgBJgp1UqsnvibL3oIcztBi15m
+ EkiPtLC3NYmsBqzj9RV2Qd8XfhDKM4+vViRmGExI=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 010/266] ASoC: fsl_esai: Disable exception
- interrupt before scheduling tasklet
-Date: Wed, 17 Jun 2020 21:12:15 -0400
-Message-Id: <20200618011631.604574-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 013/266] ASoC: davinci-mcasp: Fix dma_chan refcnt
+ leak when getting dma type
+Date: Wed, 17 Jun 2020 21:12:18 -0400
+Message-Id: <20200618011631.604574-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -75,9 +76,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Cc: Sasha Levin <sashal@kernel.org>, Xin Tan <tanxin.ctf@gmail.com>,
+ Xiyu Yang <xiyuyang19@fudan.edu.cn>, alsa-devel@alsa-project.org,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,39 +94,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 1fecbb71fe0e46b886f84e3b6decca6643c3af6d ]
+[ Upstream commit a697ae6ea56e23397341b027098c1b11d9ab13da ]
 
-Disable exception interrupt before scheduling tasklet, otherwise if
-the tasklet isn't handled immediately, there will be endless xrun
-interrupt.
+davinci_mcasp_get_dma_type() invokes dma_request_chan(), which returns a
+reference of the specified dma_chan object to "chan" with increased
+refcnt.
 
-Fixes: 7ccafa2b3879 ("ASoC: fsl_esai: recover the channel swap after xrun")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/a8f2ad955aac9e52587beedc1133b3efbe746895.1587968824.git.shengjiu.wang@nxp.com
+When davinci_mcasp_get_dma_type() returns, local variable "chan" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
+
+The reference counting issue happens in one exception handling path of
+davinci_mcasp_get_dma_type(). When chan device is NULL, the function
+forgets to decrease the refcnt increased by dma_request_chan(), causing
+a refcnt leak.
+
+Fix this issue by calling dma_release_channel() when chan device is
+NULL.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/1587818916-38730-1-git-send-email-xiyuyang19@fudan.edu.cn
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/ti/davinci-mcasp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c7a49d03463a..84290be778f0 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -87,6 +87,10 @@ static irqreturn_t esai_isr(int irq, void *devid)
- 	if ((saisr & (ESAI_SAISR_TUE | ESAI_SAISR_ROE)) &&
- 	    esai_priv->reset_at_xrun) {
- 		dev_dbg(&pdev->dev, "reset module for xrun\n");
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
-+				   ESAI_xCR_xEIE_MASK, 0);
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
-+				   ESAI_xCR_xEIE_MASK, 0);
- 		tasklet_schedule(&esai_priv->task);
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index 7aa3c32e4a49..0541071f454b 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -1875,8 +1875,10 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
+ 				PTR_ERR(chan));
+ 		return PTR_ERR(chan);
  	}
+-	if (WARN_ON(!chan->device || !chan->device->dev))
++	if (WARN_ON(!chan->device || !chan->device->dev)) {
++		dma_release_channel(chan);
+ 		return -EINVAL;
++	}
  
+ 	if (chan->device->dev->of_node)
+ 		ret = of_property_read_string(chan->device->dev->of_node,
 -- 
 2.25.1
 
