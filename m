@@ -2,113 +2,80 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3B40C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B2DFC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:31:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EB7920734
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:07:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21937207E8
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:31:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nVUMTRYn";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="XltKQcES";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UL9B4wMD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EB7920734
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RS2t3qNT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLAR0Z+X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21937207E8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D33551788;
-	Thu, 18 Jun 2020 16:06:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D33551788
+	by alsa0.perex.cz (Postfix) with ESMTPS id 843A3178B;
+	Thu, 18 Jun 2020 16:30:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 843A3178B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592489250;
-	bh=IADRxEKb3EDIavTcnmTwT2PU+PM5F9WEI/gadp7AQI4=;
+	s=default; t=1592490708;
+	bh=obOL30SQn9wE32rmVgFOC0DRObEfMlUdqxWbZkdA/zk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nVUMTRYnIAHBxckmrbUla8FIiPXng+NBKPaxboSMQyfK9G/TJQaXduUimSCR0Bum4
-	 wqvh8qmDquNof8JACcoVBhKpTKxZZJBVT7zbcHfbfDlOS2qKqrCtNcw48z2htIddoq
-	 bxysn7gFMM5YvzUzrNmOCqudvRR9l5gwZNNKKi0g=
+	b=RS2t3qNTXClx+lVCcHr92jTh/NLqzXbAeTLM5uNDSHPfHimr7JMMHxVg+T94ojnTN
+	 qvASHcskBNdGYHC++PZ6y8x4lGcUPqVaYyCWPV2iRHNlAVLqZdBho9n4h3MXImlCCZ
+	 8878hPvcchZJN+jxz4yIYwY7NrMKWJ6l5xkjpjjA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A9A7F8010E;
-	Thu, 18 Jun 2020 16:06:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E429EF8010E;
+	Thu, 18 Jun 2020 16:30:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52157F80116; Thu, 18 Jun 2020 16:06:38 +0200 (CEST)
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26])
+ id 9E1FFF80116; Thu, 18 Jun 2020 16:30:54 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B634EF80101
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 16:06:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B634EF80101
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B657F800EF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 16:30:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B657F800EF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="XltKQcES"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="UL9B4wMD"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id EE7FE5C010F;
- Thu, 18 Jun 2020 10:06:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Thu, 18 Jun 2020 10:06:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=Yc9syGFolV11kD/X8d3GbgjhJCG
- 6167kD0lMUsiY0A4=; b=XltKQcESOi0zevjnzSSuT2NRL1lXBTlz9Bp7I1deI7A
- SAVry65DKqwcLadFN0kbqkuqEbV0sTcCnyg/AytXZIuk3NxrNTz1m+397IPPPJMz
- LZcNy6zL2gUjE/r2mzVFB2mtvZxJ9lZ1UlwvJ57NdopHbpSLKA2C/p9zTyJzMik0
- CWK9NIXVEOQoCAWDoS1DVVr3GjvLNGeZH/V95z8l/37luAavGicDyYinFfFPRTXi
- hWHQQJqqw/1+bbFcTM/a6CBCAx1S+UF7+HC42GucNcYaeRa9dMmyycgA/swL2x7n
- xpLls9dW9pgZLjlGHMxUFWcYvwQlzBSZohuM0nMdWFA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Yc9syG
- FolV11kD/X8d3GbgjhJCG6167kD0lMUsiY0A4=; b=UL9B4wMDXpnvk5dwQcSonH
- MNc2Uo8Goe0Jmgk1orAwyWU1kl7MB5C/9piDuMDjPxyA1EEZYABf8zk80S/vh2qo
- iBBXsvXwnVa8AwnK1mNe236FXNN3d9XhJiEMyFRcafzHrEQWBCbSKhxtBeknYQsH
- G6cHFLes22DRQHfHN7Zggt5FVDrgqgemqDvJgLsf70LdgkZaQxoP13K5fj772fqS
- a3OP4Ck/ERPAWGu7++8QjP7kXtTcv3/C7yUV3nKzi0ZYxjTFamIa5vGGc4Yy1+0U
- uGUG9biy9Xv+dZenUEIX+lkj5mqiIXXXHgT6lFz84ObBZNa7ZFQw2avI3R7iPp1A
- ==
-X-ME-Sender: <xms:4nTrXgWvXLfv-mD0yv230r1ouDYPL94ymNO-NqmnB9KXfsdu7i0vMQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudejgedgjedvucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
- dttddtvdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepueefvdevue
- ffteeigffffeejveevkedvveeuhefgvefhffdtieefvedvhefhkeetnecuffhomhgrihhn
- pehjrhhighhgrdgtohdruhhkpdgrlhhsrgdqphhrohhjvggtthdrohhrghenucfkphepud
- ektddrvdefhedrfedrheegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
- rghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:4nTrXkkfR04zMBrJt9REr9eQLWoV8DCT8XSocquUGBtdAp5jmFOfew>
- <xmx:4nTrXkZAEFcfFdw3nuIXab7NryqT954VF7-WuuOZoknfMHM_pM3EPw>
- <xmx:4nTrXvWtFeV1cnytYf2hX2a7Pm_llhTRmkHeuwrJ-ee5tpD8ZiHJ7A>
- <xmx:43TrXmwVsCZ1DLgKde1MDAERd5WoneK6w9EqivLxmZv2JmBt_RxWRg>
-Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp
- [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id F15943280065;
- Thu, 18 Jun 2020 10:06:25 -0400 (EDT)
-Date: Thu, 18 Jun 2020 23:06:23 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: "m.eik michalke" <alsa@reaktanz.de>
-Subject: Re: presonus StudioLive 24.4.2
-Message-ID: <20200618140623.GA314288@workstation>
-Mail-Followup-To: "m.eik michalke" <alsa@reaktanz.de>,
- alsa-devel@alsa-project.org
-References: <1859294.RmyynjnHiM@meadow> <1950143.FVrUTiCnyk@yrla>
- <20200617233213.GA281450@workstation> <4447737.uXMYkMNjJ4@yrla>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MLAR0Z+X"
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4809E207E8;
+ Thu, 18 Jun 2020 14:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592490647;
+ bh=obOL30SQn9wE32rmVgFOC0DRObEfMlUdqxWbZkdA/zk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=MLAR0Z+XKCoWsWUztqZIKmKpbTfIvoXxXpVb57ccLX3wqamwcWmdavGWQEDSabc7o
+ RiNyr0iPWgpKrnpklb+iGwNvHEmN/5sR9r7KAPkbokHsovHisg/go7+5bFIF9n90cT
+ 17pOBbSz12/hBbeKYEC9PRlq0Zw6x0u72Lr7XirA=
+Date: Thu, 18 Jun 2020 10:30:46 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.7 004/388] ASoC: tegra: tegra_wm8903: Support
+ nvidia, headset property
+Message-ID: <20200618143046.GT1931@sasha-vm>
+References: <20200618010805.600873-1-sashal@kernel.org>
+ <20200618010805.600873-4-sashal@kernel.org>
+ <20200618110023.GB5789@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <4447737.uXMYkMNjJ4@yrla>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20200618110023.GB5789@sirena.org.uk>
+Cc: linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -124,59 +91,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jun 18, 2020 at 12:14:41PM +0200, m.eik michalke wrote:
-> hi,
-> 
-> Am Donnerstag, 18. Juni 2020, 01:32:13 CEST schrieb Takashi Sakamoto:
-> > > ok, could a hack like this also help me out?
-> > > 
-> > >   http://www.jrigg.co.uk/linuxaudio/ice1712multi.html
-> > 
-> > Yep, the PCM multi plugin in alsa-lib seems to be available as well.
-> 
-> that's encouraging. now i only have to figure that out ;) never had to deal 
-> with .asoundrc before (which is testament to the hard work of all of you, 
-> thx!).
- 
-The domain specific language in alsa-lib is not so easy to understand
-and control. The result affects to all of ALSA applications like pulseaudio.
-It's better to use alsa_in/alsa_out for the purpose to avoid unexpected
-influences, IMO...
+On Thu, Jun 18, 2020 at 12:00:23PM +0100, Mark Brown wrote:
+>On Wed, Jun 17, 2020 at 09:01:41PM -0400, Sasha Levin wrote:
+>> From: Dmitry Osipenko <digetx@gmail.com>
+>>
+>> [ Upstream commit 3ef9d5073b552d56bd6daf2af1e89b7e8d4df183 ]
+>>
+>> The microphone-jack state needs to be masked in a case of a 4-pin jack
+>> when microphone and ground pins are shorted. Presence of nvidia,headset
+>> tells that WM8903 CODEC driver should mask microphone's status if short
+>> circuit is detected, i.e headphones are inserted.
+>
+>This is a new feature not a bugfix.
 
-> > From my curiousity, would I ask you extra check in system log (like
-> > journalctl -k)? ALSA Dice driver supports TCAT protocol extension, and
-> > it firstly attempts to detect it for all of devices without explicit
-> > flags (in your case). If the device doesn't support the extension, the
-> > attempt fails and we can see below log:
-> > 
-> > ```
-> > kernel: snd_dice fw1.0: transaction failed: timeout
-> > ```
-> 
-> here's what i see in journalctl -k when the device is being plugged in:
-> 
-> kernel: firewire_ohci 0000:05:00.0: isochronous cycle inconsistent
-> kernel: firewire_core 0000:05:00.0: created device fw1: GUID 000a920404af7744, 
-> S400
-> kernel: firewire_core 0000:05:00.0: phy config: new root=ffc1, gap_count=5
-> kernel: firewire_core 0000:05:00.0: IRM is not 1394a compliant, making local 
-> node (ffc0) root
-> kernel: firewire_core 0000:05:00.0: phy config: new root=ffc0, gap_count=5
-> kernel: snd_dice fw1.0: transaction failed: address error
+I saw this patch more as a hardware quirk.
 
-Thanks. Now we confirm that the device doesn't support the protocol
-extension. (And I realize there're two cases; the device doesn't just respond,
-or returns RCODE_ADDRESS_ERROR.)
-
-> let me know if you need anything else.
-
-Hm. If you hear sound with periodical noise, please report it. The dice-based
-device is known as one of the devices to require drivers for media clock
-recovery. In detail, please read the other case[1].
-
-[1] https://mailman.alsa-project.org/pipermail/alsa-devel/2020-May/167413.html
-
-
-Regards
-
-Takashi Sakamoto
+-- 
+Thanks,
+Sasha
