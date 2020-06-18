@@ -2,59 +2,58 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2853C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:13:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4885EC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:13:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BDAB2078D
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:13:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C51762078D
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:13:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UhhiWkXb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BDAB2078D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qi13in7+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C51762078D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D42C7175D;
-	Thu, 18 Jun 2020 13:12:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D42C7175D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F3C91762;
+	Thu, 18 Jun 2020 13:12:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F3C91762
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592478794;
-	bh=HIeOK2FUMBmnW1/NNvAXlW885rfyhsEqw+RhGvl9w0M=;
+	s=default; t=1592478816;
+	bh=DztJoI8gXJFEi/+USaPog8hJO+QPCpUnLsfSibFam7Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UhhiWkXbdM+Ist5+h95LaofpepoOWCXu/RJB+ROQW93b92wU5iAGMLxTzMweg1dvb
-	 4Ll2mkvq0oRtSOoqy+fxh5FoM+L+x8aqSD5MHxJqPbwOGkZZegoF0n8Qq61Q4S/zgZ
-	 yDFXvmkHfk7q3Z8LT0PJdTvucsP5K7r96ph8x6Xo=
+	b=qi13in7+DHrcHSq0/nVVmz3dPIzAp6TZ93PcmYf2fe86Oehpo4tjfrIktonhzxMoJ
+	 rGt1J8xYxtbVvBLnIfrKwl+s/QbEJnJY3GCQw0PovYBSXvFPlWtBcEaLs4FUOkaWhd
+	 wftfelqW2U0xX2q9/YoTtwo7ZBkNKbOq/aMMFTis=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0D8BF802DD;
-	Thu, 18 Jun 2020 13:09:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19B48F802E1;
+	Thu, 18 Jun 2020 13:09:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3DE5F802A9; Thu, 18 Jun 2020 13:09:07 +0200 (CEST)
+ id 0C54EF802DB; Thu, 18 Jun 2020 13:09:13 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EA11F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95F07F801ED
  for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 13:08:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EA11F80217
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95F07F801ED
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 91F3DAF36;
+ by mx2.suse.de (Postfix) with ESMTP id A8C76AF3B;
  Thu, 18 Jun 2020 11:08:49 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/13] ALSA: hda/conexant: Convert to cdev-variant of mic-mute
- LED controls
-Date: Thu, 18 Jun 2020 13:08:33 +0200
-Message-Id: <20200618110842.27238-5-tiwai@suse.de>
+Subject: [PATCH 07/13] ALSA: hda: generic: Drop the old mic-mute LED hook
+Date: Thu, 18 Jun 2020 13:08:36 +0200
+Message-Id: <20200618110842.27238-8-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200618110842.27238-1-tiwai@suse.de>
 References: <20200618110842.27238-1-tiwai@suse.de>
@@ -74,47 +73,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the remaining user of
-snd_hda_gen_add_micmute_led() in Conexant codec driver into the new
-snd_hda_gen_add_micmute_led_cdev().
+Now all users of the old snd_hda_gen_add_micmute_led() have been
+converted to the new LED-classdev variant, and we can make it local,
+and remove the unused hda_gen_spec.micmute_led.update callback field.
 
 Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_conexant.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_generic.c | 22 +++-------------------
+ sound/pci/hda/hda_generic.h |  3 ---
+ 2 files changed, 3 insertions(+), 22 deletions(-)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 396b5503038a..5a7c16e39d7a 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -640,12 +640,14 @@ static void cxt_fixup_gpio_mute_hook(void *private_data, int enabled)
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 53a328d21e96..c97a1404af6b 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3922,8 +3922,6 @@ static void call_micmute_led_update(struct hda_codec *codec)
+ 	if (val == spec->micmute_led.led_value)
+ 		return;
+ 	spec->micmute_led.led_value = val;
+-	if (spec->micmute_led.update)
+-		spec->micmute_led.update(codec);
+ 	ledtrig_audio_set(LED_AUDIO_MICMUTE,
+ 			  spec->micmute_led.led_value ? LED_ON : LED_OFF);
  }
+@@ -3997,20 +3995,8 @@ static const struct snd_kcontrol_new micmute_led_mode_ctl = {
+ 	.put = micmute_led_mode_put,
+ };
  
- /* turn on/off mic-mute LED via GPIO per capture hook */
--static void cxt_gpio_micmute_update(struct hda_codec *codec)
-+static int cxt_gpio_micmute_update(struct led_classdev *led_cdev,
-+				   enum led_brightness brightness)
+-/**
+- * snd_hda_gen_add_micmute_led - helper for setting up mic mute LED hook
+- * @codec: the HDA codec
+- * @hook: the callback for updating LED
+- *
+- * Called from the codec drivers for offering the mic mute LED controls.
+- * When established, it sets up cap_sync_hook and triggers the callback at
+- * each time when the capture mixer switch changes.  The callback is supposed
+- * to update the LED accordingly.
+- *
+- * Returns 0 if the hook is established or a negative error code.
+- */
+-int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+-				void (*hook)(struct hda_codec *))
++/* Set up the capture sync hook for controlling the mic-mute LED */
++static int add_micmute_led_hook(struct hda_codec *codec)
  {
-+	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
- 	struct conexant_spec *spec = codec->spec;
+ 	struct hda_gen_spec *spec = codec->spec;
  
--	cxt_update_gpio_led(codec, spec->gpio_mic_led_mask,
--			    spec->gen.micmute_led.led_value);
-+	cxt_update_gpio_led(codec, spec->gpio_mic_led_mask, brightness);
-+	return 0;
+@@ -4018,13 +4004,11 @@ int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+ 	spec->micmute_led.capture = 0;
+ 	spec->micmute_led.led_value = 0;
+ 	spec->micmute_led.old_hook = spec->cap_sync_hook;
+-	spec->micmute_led.update = hook;
+ 	spec->cap_sync_hook = update_micmute_led;
+ 	if (!snd_hda_gen_add_kctl(spec, NULL, &micmute_led_mode_ctl))
+ 		return -ENOMEM;
+ 	return 0;
  }
+-EXPORT_SYMBOL_GPL(snd_hda_gen_add_micmute_led);
  
- 
-@@ -665,7 +667,7 @@ static void cxt_fixup_mute_led_gpio(struct hda_codec *codec,
- 		spec->mute_led_polarity = 0;
- 		spec->gpio_mute_led_mask = 0x01;
- 		spec->gpio_mic_led_mask = 0x02;
--		snd_hda_gen_add_micmute_led(codec, cxt_gpio_micmute_update);
-+		snd_hda_gen_add_micmute_led_cdev(codec, cxt_gpio_micmute_update);
+ /**
+  * snd_dha_gen_add_micmute_led_cdev - Create a LED classdev and enable as mic-mute LED
+@@ -4065,7 +4049,7 @@ int snd_hda_gen_add_micmute_led_cdev(struct hda_codec *codec,
+ 		}
  	}
- 	snd_hda_add_verbs(codec, gpio_init);
- 	if (spec->gpio_led)
+ 
+-	return snd_hda_gen_add_micmute_led(codec, NULL);
++	return add_micmute_led_hook(codec);
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_gen_add_micmute_led_cdev);
+ #endif /* CONFIG_SND_HDA_GENERIC_LEDS */
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index 6fcb62ed30c6..a59e66f9ff33 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -88,7 +88,6 @@ struct hda_micmute_hook {
+ 	unsigned int led_mode;
+ 	unsigned int capture;
+ 	unsigned int led_value;
+-	void (*update)(struct hda_codec *codec);
+ 	void (*old_hook)(struct hda_codec *codec,
+ 			 struct snd_kcontrol *kcontrol,
+ 			 struct snd_ctl_elem_value *ucontrol);
+@@ -355,8 +354,6 @@ unsigned int snd_hda_gen_path_power_filter(struct hda_codec *codec,
+ void snd_hda_gen_stream_pm(struct hda_codec *codec, hda_nid_t nid, bool on);
+ int snd_hda_gen_fix_pin_power(struct hda_codec *codec, hda_nid_t pin);
+ 
+-int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+-				void (*hook)(struct hda_codec *));
+ int snd_hda_gen_add_micmute_led_cdev(struct hda_codec *codec,
+ 				     int (*callback)(struct led_classdev *,
+ 						     enum led_brightness));
 -- 
 2.16.4
 
