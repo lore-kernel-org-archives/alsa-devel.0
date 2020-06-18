@@ -2,106 +2,90 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76607C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 10:17:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63CE2C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 10:58:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00D3E20732
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 10:17:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E35332085B
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 10:58:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t1UNahVh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00D3E20732
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E8UtEnvk";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hG3hPcg1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E35332085B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FA681749;
-	Thu, 18 Jun 2020 12:16:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FA681749
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66F921742;
+	Thu, 18 Jun 2020 12:57:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66F921742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592475442;
-	bh=KQBV+B4UnGYx/KiNCe+MBUwX6o1oxgEYkggMcnQur4c=;
-	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	s=default; t=1592477903;
+	bh=vY2sHSYgz3FSMcrfG9KrkW9kDXXo8NuTjtpQOy2E/lU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t1UNahVhRhhIm2Ol0x3jTED/0hTtkNFIT9GOY2cDlKhhsZ1ZJWg5SXsOEhrfDMyc5
-	 UZMt3zHyGvmBAe17tDlsFjrg774Sb58p5q92oxPjV5mDqnmI7s5DOrkgMMTf8uI8Gk
-	 6f0PlsYglQu1wyPPgjQlq4f18aji/nmdci2oXVEU=
+	b=E8UtEnvkUcqxahZcAreE3bMYvTSoK83VQ9rwgrSJrvx02ATd7Rv6mq8munwmZXZuq
+	 hEjZMmC2lZOhECwVJQP0h+L9b7DUyQq7JnuHOxVzxSkFzEcD0ypaHPq5Tdbi1KcFXR
+	 cb4C6HIi7nwg++Q7OipuVuJhFDxfBAvlvlRcFIUY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC60AF8010E;
-	Thu, 18 Jun 2020 12:16:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA35FF8010E;
+	Thu, 18 Jun 2020 12:57:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F14F3F80171; Thu, 18 Jun 2020 12:16:29 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id E3334F800D1; Thu, 18 Jun 2020 12:57:30 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E585EF8010E
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 12:16:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E585EF8010E
-Received: from mail-pl1-f200.google.com ([209.85.214.200])
- by youngberry.canonical.com with esmtps
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>) id 1jlrao-0006Qq-5S
- for alsa-devel@alsa-project.org; Thu, 18 Jun 2020 10:16:22 +0000
-Received: by mail-pl1-f200.google.com with SMTP id 59so3539235pla.12
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:16:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
- :content-transfer-encoding:message-id:references:to;
- bh=tafBBnafCbfI5o9MOV+64xc9E0d/3o9toKXYsB0LHjg=;
- b=fI/jqLvIcDbQaYuHpkqDNLfph9Z6lVeTRBRhsWwRspUDMXszvepS4n+27YDildJSlV
- 1MZyIqKL2yk9gDhVqnpl6zYVhorO6cEpRTWoA2uPb26Y1pezDBCqS/zvHH68UwOoY6t0
- QI1dUYAdNScbzejTIA/NQnLw4OzygWX2tp2ZO/vescfa/usmuPSeKr3WItGXGtmJldpa
- hmshXqGVCHHnaf58CA4XLh7QyMqEwoTWM7MOLNFOFMPwJADARRrwnp8eIuG4DRUcKias
- ffCw31BZDXewerZFqhV6zYhYuGgeRaWZ7LZeWJAoWsO5uRB5gmFPLsbpzsaQTNDsxOYp
- 6aJA==
-X-Gm-Message-State: AOAM531OIw/aXERoWYRiZIPFWY5DbI60Qn/91NQ0khkX4IM9NIj76dmU
- baSEYpzE2a8/OtHG6azFwA956iRsIBRNZ8DmlJfg0l0E4Jv5mIHALmhcMX5xEGb3TlpCfjRdr+M
- hFhaVsYAa+UJEVbEEad6jK03dKLYgjQzYjlS8FPCo
-X-Received: by 2002:a65:43cb:: with SMTP id n11mr2706888pgp.160.1592475380694; 
- Thu, 18 Jun 2020 03:16:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcrIMx+GxkoyBuQ/qT0KMBZ9GgjwPYV2GO9uzuY+3d9c7k8NOQNlyofE6oHwexJY5ElbUkBA==
-X-Received: by 2002:a65:43cb:: with SMTP id n11mr2706856pgp.160.1592475380156; 
- Thu, 18 Jun 2020 03:16:20 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net.
- [220.133.187.190])
- by smtp.gmail.com with ESMTPSA id x20sm2044113pjr.44.2020.06.18.03.16.17
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 18 Jun 2020 03:16:19 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v3 1/2] ALSA: hda/realtek: Add COEF controlled micmute LED
- support
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <s5hwo44ygku.wl-tiwai@suse.de>
-Date: Thu, 18 Jun 2020 18:16:15 +0800
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <50F84AE3-CA74-4231-86F2-30D7C7920B4D@canonical.com>
-References: <20200617102906.16156-1-kai.heng.feng@canonical.com>
- <s5hd05xzz3d.wl-tiwai@suse.de>
- <934401DE-7A4E-4B2C-8B06-E2AA203A9336@canonical.com>
- <s5h366tzo6x.wl-tiwai@suse.de>
- <DB5A1DD9-4D61-466F-A7DE-4219534DFA4D@canonical.com>
- <s5hwo44ygku.wl-tiwai@suse.de>
-To: Takashi Iwai <tiwai@suse.de>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-Cc: Wenwen Wang <wenwen@cs.uga.edu>, Kailang Yang <kailang@realtek.com>,
- Tomas Espeleta <tomas.espeleta@gmail.com>,
- "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- open list <linux-kernel@vger.kernel.org>, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
- Hui Wang <hui.wang@canonical.com>, Thomas Hebb <tommyhebb@gmail.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EE21F800D1
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 12:57:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EE21F800D1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="hG3hPcg1"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 365632085B;
+ Thu, 18 Jun 2020 10:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592477844;
+ bh=vY2sHSYgz3FSMcrfG9KrkW9kDXXo8NuTjtpQOy2E/lU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=hG3hPcg1C8sz2kAMaDAVmjGxfJ54TyooiyfBeTKxdTtslrW228ozcyIgBnZ6XLaSX
+ A4wJXR8wKV47rxN0Fgyz+fIuqydSZMcXM2xat4fEJ+jNjzq1KbqrIKLOSpgpvRuQ/1
+ 6MGpBbPkMZnN9J3urbv1bFZtfrvHjGPznDLmeMfw=
+Date: Thu, 18 Jun 2020 11:57:22 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: tas2562: Add firmware support for
+ tas2563
+Message-ID: <20200618105722.GA5789@sirena.org.uk>
+References: <20200609172841.22541-2-dmurphy@ti.com>
+ <20200609173143.GN4583@sirena.org.uk>
+ <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
+ <20200609175852.GQ4583@sirena.org.uk>
+ <414a2d73-6d09-1e76-59c8-4943c0e8f720@ti.com>
+ <20200609184734.GS4583@sirena.org.uk>
+ <014b85b5-677b-569a-4eb2-74526d3f00bc@ti.com>
+ <20200610102920.GC5005@sirena.org.uk>
+ <84a6dd5f-cc3e-adb4-ae94-b4fe389adfd9@ti.com>
+ <20200617220459.GA2884884@bogus>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+Content-Disposition: inline
+In-Reply-To: <20200617220459.GA2884884@bogus>
+X-Cookie: Androphobia:
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,117 +102,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Jun 18, 2020, at 15:32, Takashi Iwai <tiwai@suse.de> wrote:
->=20
-> On Thu, 18 Jun 2020 07:15:21 +0200,
-> Kai-Heng Feng wrote:
->>=20
->>=20
->>=20
->>> On Jun 17, 2020, at 23:50, Takashi Iwai <tiwai@suse.de> wrote:
->>>=20
->>> On Wed, 17 Jun 2020 17:24:30 +0200,
->>> Kai-Heng Feng wrote:
->>>>=20
->>>>=20
->>>>=20
->>>>> On Jun 17, 2020, at 19:55, Takashi Iwai <tiwai@suse.de> wrote:
->>>>>=20
->>>>> On Wed, 17 Jun 2020 12:29:01 +0200,
->>>>> Kai-Heng Feng wrote:
->>>>>>=20
->>>>>> Currently, HDA codec LED class can only be used by GPIO =
-controlled LED.
->>>>>> However, there are some new systems that control LED via COEF =
-instead of
->>>>>> GPIO.
->>>>>>=20
->>>>>> In order to support those systems, create a new helper that can =
-be
->>>>>> facilitated by both COEF controlled and GPIO controlled LED.
->>>>>>=20
->>>>>> In addition to that, add LED_CORE_SUSPENDRESUME flag since some =
-systems
->>>>>> don't restore the LED properly after suspend.
->>>>>>=20
->>>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>>>=20
->>>>> Thanks for the quick follow up, the issues I pointed were fixed.
->>>>>=20
->>>>> But, now looking at the code change again, I'm no longer sure =
-whether
->>>>> it's the right move.
->>>>>=20
->>>>> Basically, the led cdev should serve only for turning on/off the =
-LED
->>>>> as given.  But your patch changes it to call the generic mixer
->>>>> updater, which is rather the one who would call the led cdev state
->>>>> update itself.  That is, it's other way round.
->>>>>=20
->>>>> IMO, what we need is to make all places calling
->>>>> snd_hda_gen_add_micmute_led() to create led cdev, and change those
->>>>> calls with snd_hda_gen_fixup_micmute_led().
->>>>=20
->>>> Ok, so it's the same as patch v1.
->>>> How should we handle vendors other than HP?
->>>> Only create led cdev if the ID matches to HP?
->>>=20
->>> It's fine to create a LED classdev for other vendors, too.  But the
->>> problem is that it wasn't consistent.  With the LED classdev, we
->>> should use only cdev, instead of mixing up different ways.
->>=20
->> Ok, now I get what you meant...
->>=20
->>>=20
->>> I wrote a few patches to convert those mic-mute LED stuff to =
-classdev,
->>> including some cleanups.  The patches are found in
->>> topic/hda-micmute-led branch of sound git tree.  Could you check it?
->>>=20
->>> Note that it's totally untested.  Also it doesn't contain yet
->>> LED_CORE_SUSPENDRESUME, which should be done in another patch in
->>> anyway.
->>=20
->> Other than LED_CORE_SUSPENDRESUME, it works great!
->>=20
->> Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->=20
-> Good to hear!
->=20
->>>>> It'll be a bit more changes and likely not fitting with 5.8, but =
-the
->>>>> whole result will be more consistent.
->>>>=20
->>>> A bit off topic, but do you think it's reasonable to also create =
-led cdev for mute LED, in addition to micmute LED?
->>>> I just found that the LEDs are still on during system suspend, and =
-led cdev has the ability to turn off the LEDs on system suspend.
->>>=20
->>> Yes, it makes sense, too.  But the playback mute handling is a bit
->>> more complicated than the mic-mute LED because it's implemented with =
-a
->>> vmaster hook.  I'll take a look later.
->>=20
->> Thanks. I'll be happy to test it.
->=20
-> OK, I worked on this further and converted the whole mute LED handling
-> with LED classdev.
->=20
-> The topic/hda-micmute-led branch was updated again.  Could you give it
-> a try?  If that's OK, I'll add your tested-by tag and submit the
-> patches to ML later.
+On Wed, Jun 17, 2020 at 04:04:59PM -0600, Rob Herring wrote:
 
-Thanks for the work, it works great.
+> Given bus numbering may not be constant, that seems like not the best=20
+> way to match up devices. I'd assume that userspace needs some way to=20
+> identify which instance is which already, so maybe there's other data=20
+> you can use already.
 
-Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+There isn't really, you're putting stuff in the DT for that - usually as
+part of the card binding.  I guess we could use that string rather than
+the dev_name().
 
->=20
-> The old patchset is saved in topic/hda-micmute-led-old branch just for
-> a reference.
->=20
->=20
-> thanks,
->=20
-> Takashi
+--RnlQjJ0d97Da+TV1
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7rSJEACgkQJNaLcl1U
+h9AibAf/ZmP/R1X+W0rdK+oILKnjLxOdozk0Sprm6q6LHFutWUM6iachMjh1+7jW
+N/B9nHZSkHAjtocF5Xlfzt/K1jS/mNa4c0DVBmnBALam88CbZshWAG7lwMZhkf40
+DgLtkfZfyNCxFgd5/bTBcOZXnxLcWm1YHj45Pv/iOHtEhRDJ3UNmE5jry4DwjwSV
+YVl4a1Jjaoth+Xgy3THO6M8DAv5PXlHT3ysJSOLY4rkrXlqQPdu8ylpqe8tymPng
+Jv2FZWels3v9S+wWYj3OPbs2TkiTQE+Y34YaaxkTtz3FA4YktesN3F9mGUjE81jW
+yEMbgNDVy1xaeFNm7q9geJCHfGdyvQ==
+=DzpG
+-----END PGP SIGNATURE-----
+
+--RnlQjJ0d97Da+TV1--
