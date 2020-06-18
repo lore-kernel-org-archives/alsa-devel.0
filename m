@@ -2,86 +2,93 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BAD9C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A385C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 15:02:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23FE820773
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 14:59:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21CB12075E
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 15:02:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NrmEgRmO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23FE820773
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tqUG6J9s";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Agh+JJqc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21CB12075E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACC7817AE;
-	Thu, 18 Jun 2020 16:58:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACC7817AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98DC216E2;
+	Thu, 18 Jun 2020 17:01:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98DC216E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592492353;
-	bh=0lsdfzw+HOCH7/bslOEjsHkgniGY5LR62ZbxCk75BnA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1592492562;
+	bh=eUT8V2gyOM43tVhBO8xlNbvs06g4rMOSbbvIONUtD94=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NrmEgRmOVMD8+qWQAqmNgxwp2fLcMmHaP2xfn5Ns14T9Nz12kN74uV6mSk/dAmbdJ
-	 h/SpCPjXTPo1Rts8TYlvx0NpNcM/+IH3Z+Il7B1EgSCGayeFjQUS09Xc11fQNxOYlx
-	 G9qDv5KT0LhYOa0ltemNM0H4HDOWYqPJpOS64+qc=
+	b=tqUG6J9saAG+FsDpdbX+159R/E/Hhx8EHTnKyFrWWV/dzxQcl+pH933ZIUkjRQ0z1
+	 uEFE4+HLGaLkG/Iv31YyjG3F6VwJOfVy8o+XKhfJi0LMvQX1tiPKvGVSzYbRu7HzlM
+	 sZP6Rc5+SwWfX/ZRtD3xc/Lzf1XTjmDQRCBomdEE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CCDCF80271;
-	Thu, 18 Jun 2020 16:56:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 249FBF8010E;
+	Thu, 18 Jun 2020 17:01:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A25AF80271; Thu, 18 Jun 2020 16:56:45 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 375B7F80116; Thu, 18 Jun 2020 17:01:50 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3FACF80101
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 17:01:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3FACF80101
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Agh+JJqc"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18420F8010E;
- Thu, 18 Jun 2020 16:56:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18420F8010E
-IronPort-SDR: p9wpob4zm9HYPIEtvJuZDQVOGA/LIaf8GOD+1WA0RGU5qaxYqzvv54GjAFmDImZ98PsIvelvX1
- 73nPYTNG2cGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="131000319"
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; d="scan'208";a="131000319"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jun 2020 07:56:30 -0700
-IronPort-SDR: WRstlpxjt1sMiABU5OkC+WJgszXlBw0nMBk48hg8Q7MDBFZqPvdQEIFlqjkyo1iJjLy/U5lIEu
- 9HqF1/d3cd7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; d="scan'208";a="477268245"
-Received: from richard2-mobl.amr.corp.intel.com (HELO [10.254.109.110])
- ([10.254.109.110])
- by fmsmga005.fm.intel.com with ESMTP; 18 Jun 2020 07:56:29 -0700
-Subject: Re: [PATCH AUTOSEL 5.7 055/388] ASoC: SOF: Do nothing when DSP PM
- callbacks are not set
-To: Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>,
- Sasha Levin <sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
- <20200618010805.600873-55-sashal@kernel.org>
- <20200618110126.GC5789@sirena.org.uk>
- <1d1041f9-521b-98f5-a6ef-12d43615bc13@nxp.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c966e694-9ec8-3401-7d7c-fae5ca5fcce4@linux.intel.com>
-Date: Thu, 18 Jun 2020 08:56:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 200D92075E;
+ Thu, 18 Jun 2020 15:01:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592492505;
+ bh=eUT8V2gyOM43tVhBO8xlNbvs06g4rMOSbbvIONUtD94=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Agh+JJqcsZnxeps31IPNo5x9l3ZuVITVcK1+s83QWGnCWIDLbtqaXncVJ1+p3s32W
+ rW30QR3a4wZMulYdvnANkr68XkjV7plA8XqYjCkoR8P14s/wPJJF3k8fWo+EQkNpkr
+ gCHco7dpl0FZ5vJBWZI26kjPk4RY7EMjogeFSrq8=
+Date: Thu, 18 Jun 2020 16:01:43 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH 1/4] ASoC: soc-pcm: dpcm: fix playback/capture checks
+Message-ID: <20200618150143.GJ5789@sirena.org.uk>
+References: <20200616090210.GA111206@gerhold.net>
+ <254a667e-fa49-240a-6386-7e82df8e5c35@linux.intel.com>
+ <20200616145251.GO4447@sirena.org.uk>
+ <af973f45-59b9-ecff-7d78-97d8352ed072@linux.intel.com>
+ <20200616155544.GA8891@gerhold.net>
+ <7cbc9233-e5f2-03e0-5659-cf22dea75e53@linux.intel.com>
+ <45d43cc9-be22-a7d2-1628-3fb30232bd7c@linux.intel.com>
+ <20200617090112.GA38317@gerhold.net>
+ <62ccb59f-9d08-c241-952b-bb7af8311618@linux.intel.com>
+ <20200617174635.GA40060@gerhold.net>
 MIME-Version: 1.0
-In-Reply-To: <1d1041f9-521b-98f5-a6ef-12d43615bc13@nxp.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="3CAnR4CLEnEWqRMR"
+Content-Disposition: inline
+In-Reply-To: <20200617174635.GA40060@gerhold.net>
+X-Cookie: Androphobia:
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.de,
+ Daniel Baluta <daniel.baluta@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,39 +105,34 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--3CAnR4CLEnEWqRMR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 6/18/20 6:44 AM, Daniel Baluta wrote:
-> On 6/18/20 2:01 PM, Mark Brown wrote:
->> On Wed, Jun 17, 2020 at 09:02:32PM -0400, Sasha Levin wrote:
->>> From: Daniel Baluta <daniel.baluta@nxp.com>
->>>
->>> [ Upstream commit c26fde3b15ed41f5f452f1da727795f787833287 ]
->>>
->>> This provides a better separation between runtime and PM sleep
->>> callbacks.
->>>
->>> Only do nothing if given runtime flag is set and calback is not set.
->>>
->>> With the current implementation, if PM sleep callback is set but runtime
->>> callback is not set then at runtime resume we reload the firmware even
->>> if we do not support runtime resume callback.
->> This doesn't look like a bugfix, just an optimization?
-> 
-> Indeed can be seen as an optimization, but it does unexpected things 
-> which can cause trouble
-> 
-> and weird behavior for people not familiar with the matter.
-> 
-> For example, as explained in the commit message if you only provide
-> 
-> System PM handler but not runtime PM handler, then the DSP will be resetted
-> 
-> even if this is not the intention.
+On Wed, Jun 17, 2020 at 07:46:35PM +0200, Stephan Gerhold wrote:
 
-I think it's a bug fix for Intel legacy platforms (Baytrail, Broadwell) 
-where runtime_pm isn't supported. However the additional fixes for 
-system suspend/resume were only provided for 5.8, so this patch in 
-isolation will not do much for those platforms. Put differently, even if 
-this patch is applied to 5.7 suspend/resume would still not work for 
-Baytrail/Broadwell.
-Daniel, your call if you need this for i.MX?
+> At the end the question is if those machine drivers that have
+> dpcm_playback/capture hardcoded just set it because it was required to
+> make DPCM work, or if they actually use it to restrict the direction of
+> a DAI link.
+
+The other question would be if they are restricting it to limit the
+direction of a DAI link beyond the limits that the hardware has why are
+they doing that?  I'm not sure that'd be a sensible thing to do.
+
+--3CAnR4CLEnEWqRMR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7rgdYACgkQJNaLcl1U
+h9DoIwf/VbeCTcms9I+QZfQtPfP7YjQ7MKV7htjuAUqcTMHjVG/R7jnUL8sbDCzj
+i5luQU27hsygTwqbkciQDKXfl0qLXIysRkLxQwPJcnzzmGwzLeuHEKlmDyjlaYTV
+yLO6uR3JAVE9lKQfNB7De8PQZ4NHH00T1ykNlRL9MqExutvF/OmI6eoeo4wbK00d
+kmAy1YDTpQdxmj1JMq8mwW04RvH+qW/R3qKnVEfZGd4C3LLqamJ99f4d0TOZBl0t
+dmx3GB2YJPvwJV4B69hGjNpCMCcOjZq5AjHCaZtV2dZo2W1LuNy1pVYLO9Bpx7zR
+4S0vo/9u3mS8NSZEa6b10hsc4aJkgQ==
+=Jwu2
+-----END PGP SIGNATURE-----
+
+--3CAnR4CLEnEWqRMR--
