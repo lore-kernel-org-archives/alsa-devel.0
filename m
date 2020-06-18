@@ -2,88 +2,63 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 342FAC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:08:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED18C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:09:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC0E32078D
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:08:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF5C12078D
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:09:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZbBM8V8i";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="X8rgurD5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC0E32078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ug1gMer3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF5C12078D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DA8C174D;
-	Thu, 18 Jun 2020 13:07:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DA8C174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B1AD175B;
+	Thu, 18 Jun 2020 13:09:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B1AD175B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592478512;
-	bh=yUh+Aw7M+IzopO/i6gFGJRlYsotqzp0UeReTfhB/kPk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592478590;
+	bh=u9LOZbU9x1uhPdGO8lzGdZTfrmWj3WQ4uI81ZXjqmRE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZbBM8V8ij3I8ZmdZATSBVIL8vUCKpqLCzeR2skG21h9Lj1pPIymrHctAzciA37yNX
-	 PmXZvo2Rby0B0ohO587m62Fmf9MRxRIQOx4pgFOcAJXMY2irFq3lDDFK1gtDAc9oKO
-	 D2a7AqZXayL5lSVc81LxZI+Tl0V+CykhZItJiur0=
+	b=ug1gMer3wUaZKAhAaeaunLqXhcxS5DAdwJbpiy9CacmKV0rpmcsDC3DHb5LV6fDfJ
+	 8Wiew1FUxDROXvPibDGmAZMgoa63aH/fW68cs6fVpkCxn0BTCup5DqeDNBJMbgDniz
+	 Yi7tWRPp4WrqMVSL48My07S6Pg6yrbrnk7HJatt4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2B5CF80101;
-	Thu, 18 Jun 2020 13:07:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1AD0F80271;
+	Thu, 18 Jun 2020 13:08:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 259EAF800D1; Thu, 18 Jun 2020 13:07:40 +0200 (CEST)
-Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7B05BF802A1; Thu, 18 Jun 2020 13:08:57 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E98A3F800D1
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 13:07:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E98A3F800D1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
- header.b="X8rgurD5"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
- ; s=a;
- h=Content-Type:MIME-Version:References:Message-ID:In-Reply-To:Subject:
- cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=0ZnJkz30Rp+ixE6kqdI/YrFe25Lk/I+QDdqd1WTsBzw=; b=X8rgurD5eQ4rFTTOYPZujMMjen
- co9Fa+5u1x43DXEbnt+hpxlfbQnza/nORLlv+BXpPcAhQUP/cBY4D40nkuIO8Y9B5m+TLEdFve2yG
- AZqza02x30OamLB5s95BYJiaQx/QA5yR65YhsZqyNBb7r5rvtqIIFIpHsff0LteZ6+t68rrH8gGa4
- j4rcOZqOpDWLf6V35QXDpbZknYxM0A04docwEk/1qalWrBJIu/zTzfShfn3CXjqrteEPN36XCozzg
- R333MsoAfjAE5XIBss32DpuUEmudO1niQKBwaZBSY2aRAGY56t102sv6evOatsF4gaLL32siJ+fLy
- XdFrbUug==;
-Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
- helo=stax.localdomain) by jazz.pogo.org.uk with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93.0.4 (FreeBSD))
- (envelope-from <mark@xwax.org>)
- id 1jlsOM-0001rQ-9D; Thu, 18 Jun 2020 12:07:34 +0100
-Received: from mark (helo=localhost)
- by stax.localdomain with local-esmtp (Exim 4.84)
- (envelope-from <mark@xwax.org>)
- id 1jlsOL-0003bt-TX; Thu, 18 Jun 2020 12:07:33 +0100
-Date: Thu, 18 Jun 2020 12:07:33 +0100 (BST)
-From: Mark Hills <mark@xwax.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-In-Reply-To: <s5hmu50yehs.wl-tiwai@suse.de>
-Message-ID: <2006181008350.26846@stax.localdomain>
-References: <2006161409060.30751@stax.localdomain>
- <20200616131743.4793-3-mark@xwax.org> <s5hsgev16ck.wl-tiwai@suse.de>
- <2006161451110.1865@stax.localdomain> <s5hlfkn14cr.wl-tiwai@suse.de>
- <2006171134130.2561@stax.localdomain>
- <s5hmu50yehs.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D6D1F800D1
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 13:08:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D6D1F800D1
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7FE26AF26;
+ Thu, 18 Jun 2020 11:08:49 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 02/13] ALSA: hda: generic: Add a helper for mic-mute LED with
+ LED classdev
+Date: Thu, 18 Jun 2020 13:08:31 +0200
+Message-Id: <20200618110842.27238-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200618110842.27238-1-tiwai@suse.de>
+References: <20200618110842.27238-1-tiwai@suse.de>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,193 +74,232 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Jun 2020, Takashi Iwai wrote:
+A new helper, snd_hda_gen_add_micmute_led_cdev(), is introduced here
+for creating a LED classdev and setting up the hook to the capture
+control for controlling the mic-mute LED to follow the capture switch
+change.  This will replace the existing users of
+snd_hda_gen_add_micmute_led() in later patches.
 
-> On Wed, 17 Jun 2020 12:51:05 +0200,
-> Mark Hills wrote:
-> > 
-> > On Tue, 16 Jun 2020, Takashi Iwai wrote:
-> > 
-> > > On Tue, 16 Jun 2020 16:01:11 +0200,
-> > > Mark Hills wrote:
-[...]
-> > 
-> > /* Update software pointer to match the hardware
-> >  *
-> >  * \pre chip->lock is held
-> >  */
-> > static void snd_echo_update_substream_position(struct echoaudio *chip,
-> > 					struct snd_pcm_substream *substream)
-> > {
-> > 	struct snd_pcm_runtime *runtime = substream->runtime;
-> > 	struct audiopipe *pipe = runtime->private_data;
-> > 	u32 counter, step;
-> > 	size_t period_bytes;
-> > 
-> > 	if (pipe->state != PIPE_STATE_STARTED)
-> > 		return;
-> > 
-> > 	period_bytes = frames_to_bytes(runtime, runtime->period_size);
-> > 
-> > 	counter = le32_to_cpu(*pipe->dma_counter);
-> > 
-> > 	step = counter - pipe->last_counter;  /* handles wrapping of counter */
-> > 	step -= step % period_bytes;  /* acknowledge whole periods only */
-> > 
-> > 	if (step == 0)
-> > 		return;  /* haven't advanced a whole period yet */
-> > 	pipe->last_counter += step;  /* does not always wrap on a period */
-> > 	pipe->position += step;
-> > 
-> > 	/* wraparound the buffer */
-> > 	pipe->position %= frames_to_bytes(runtime, runtime->buffer_size);
-> > 
-> > 	/* notify only once, even if multiple periods elapsed */
-> > 	spin_unlock(&chip->lock);
-> > 	snd_pcm_period_elapsed(substream);
-> > 	spin_lock(&chip->lock);
-> > }
-> > 
-> > static irqreturn_t snd_echo_interrupt(int irq, void *dev_id)
-> > {
-> > 	struct echoaudio *chip = dev_id;
-> > 	int ss, st;
-> > 
-> > 	spin_lock(&chip->lock);
-> > 	st = service_irq(chip);
-> > 	if (st < 0) {
-> > 		spin_unlock(&chip->lock);
-> > 		return IRQ_NONE;
-> > 	}
-> > 	/* The hardware doesn't tell us which substream caused the irq,
-> > 	thus we have to check all running substreams. */
-> > 	for (ss = 0; ss < DSP_MAXPIPES; ss++) {
-> > 		struct snd_pcm_substream *substream;
-> > 
-> > 		substream = chip->substream[ss];
-> > 		if (substream)
-> > 			snd_echo_update_substream_position(chip, substream);
-> > 	}
-> > 	spin_unlock(&chip->lock);
-> > 
-> > #ifdef ECHOCARD_HAS_MIDI
-> > 	if (st > 0 && chip->midi_in) {
-> > 		snd_rawmidi_receive(chip->midi_in, chip->midi_buffer, st);
-> > 		dev_dbg(chip->card->dev, "rawmidi_iread=%d\n", st);
-> > 	}
-> > #endif
-> > 	return IRQ_HANDLED;
-> > }
-> > 
-> > static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
-> > {
-> > 	struct snd_pcm_runtime *runtime = substream->runtime;
-> > 	struct audiopipe *pipe = runtime->private_data;
-> > 
-> > 	return bytes_to_frames(runtime, pipe->position);
-> 
-> I guess this misses the update of the precise position; in your code,
-> pipe->position gets updated only with the period size at irq handler.
-> 
-> 
-> IMO, we should have the code like:
-> 
-> static bool update_stream_position(struct snd_pcm_substream *substream)
-> {
-> 	// update pipe->position and others, returns true if period elapsed
-> }
-> 
-> static irqreturn_t snd_echo_interrupt()
-> {
-> 	spin_lock(&chip->lock);
-> 	....
-> 	if (update_stream_position(substream)) {
-> 		spin_unlock(&chip->lock);
-> 		snd_pcm_period_elapsed(substream);
-> 		spin_lock(&chip->lock);
-> 	}
-> 	....
-> 	spin_unlock(&chip->lock);
-> 	return IRQ_HANDLED;
-> }
-> 
-> static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
-> {
-> 	....
-> 	update_stream_position(substream);
-> 	return bytes_to_frames(runtime, pipe->position);
-> }
+Also, introduce a new kconfig CONFIG_SND_HDA_GENERIC_LEDS, to indicate
+the usage of mute / mic-mute LED helpers.  It's selected by the codec
+drivers (Realtek, Conexant and Sigmatel), while it selects the
+necessary LED class dependencies.
 
-Thanks.
+Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/Kconfig         |  9 +++++++++
+ sound/pci/hda/hda_generic.c   | 47 +++++++++++++++++++++++++++++++++++++++++--
+ sound/pci/hda/hda_generic.h   |  5 +++++
+ sound/pci/hda/patch_realtek.c | 30 +--------------------------
+ 4 files changed, 60 insertions(+), 31 deletions(-)
 
-I certainly understand this in isolation. 
-
-But could I please ask for help with the bigger picture? As it feels 
-mismatched.
-
-* Code should take every possible opportunity to update the stream 
-  position; interrupts, or explicit pcm_pointer calls (whereas the docs 
-  guide towards doing it in the interrupt handler)
-
-* I critiqued (elsewhere in thread) the older interrupt handler for 
-  checking the counter, unlocking, calling back into PCM core and checking 
-  again a moment later. Whereas this is considered good behaviour.
-
-* Seems like the overall aim is for userland to be able (if it wants to)  
-  to poll the soundcard, even outside of periods.
-
-If all the above is true, I would expect interrupt handling to be very 
-simple -- it would straight away call into PCM core, join existing if the 
-codepaths (to take locks) and do a position update. PCM core would decide 
-if a period really elapsed, not the driver. But this is not how it works.
-
-This now relates strongly to a question of locking:
-
-I ran the code (top of this message) all day, with a few instances in 
-dmesg (at irregular intervals, not wrapping):
-
-  [161644.076666] snd_echo3g 0000:09:02.0: invalid position: , pos = 4096, buffer size = 4096, period size = 64
-  [163232.392501] snd_echo3g 0000:09:02.0: invalid position: , pos = 4096, buffer size = 4096, period size = 64
-  [164976.098069] snd_echo3g 0000:09:02.0: invalid position: , pos = 4096, buffer size = 4096, period size = 64
-  [165054.946225] snd_echo3g 0000:09:02.0: invalid position: , pos = 4096, buffer size = 4096, period size = 64
-  [165312.141545] snd_echo3g 0000:09:02.0: invalid position: , pos = 4096, buffer size = 4096, period size = 64
-
-A definite bug, of course.
-
-However (and I am happy to be corrected) the function never finishes with 
-position == buffer size. Only way is a race between interrupt handler and 
-pcm_pointer.
-
-Therefore one of these is needed:
-
-* pcm_pointer locks chip->lock
-
-  Even though the docs emphasise PCM core has exclusivity, it it not worth 
-  much as it does not protect against the interrupt handler.
-
-  But now interrupt handler becomes ugly in total: take chip->lock, check 
-  the counter, release chip->lock, go to PCM core (which takes middle 
-  layer locks), take chip->lock again, check counter again, release 
-  chip->lock again.
-
-* interrupt handler must make atomic update of pipe->position
-
-  This could have been a solution, but not if we expect pcm_pointer to 
-  also invoke the position update. Now we have a race: both the interrupt 
-  handler and pcm_position want to read dma_counter and write 
-  pipe->position after.
-
-So either do everthing in interrupt, everything in the pointer callback 
-(though there isn't the API for this), but doing both does not seem to 
-work well (though probably can be made to work if necessary)
-
-If we can clarify the requirements then I do not think it would be hard 
-for me to write the code.
-
-[...]
-> Takashi
-
-Thanks again,
-
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 7ba542e45a3d..3f9abdaef7f5 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -8,6 +8,9 @@ config SND_HDA
+ 	select SND_JACK
+ 	select SND_HDA_CORE
+ 
++config SND_HDA_GENERIC_LEDS
++       bool
++
+ config SND_HDA_INTEL
+ 	tristate "HD Audio PCI"
+ 	depends on SND_PCI
+@@ -91,6 +94,7 @@ config SND_HDA_PATCH_LOADER
+ config SND_HDA_CODEC_REALTEK
+ 	tristate "Build Realtek HD-audio codec support"
+ 	select SND_HDA_GENERIC
++	select SND_HDA_GENERIC_LEDS
+ 	help
+ 	  Say Y or M here to include Realtek HD-audio codec support in
+ 	  snd-hda-intel driver, such as ALC880.
+@@ -111,6 +115,7 @@ comment "Set to Y if you want auto-loading the codec driver"
+ config SND_HDA_CODEC_SIGMATEL
+ 	tristate "Build IDT/Sigmatel HD-audio codec support"
+ 	select SND_HDA_GENERIC
++	select SND_HDA_GENERIC_LEDS
+ 	help
+ 	  Say Y or M here to include IDT (Sigmatel) HD-audio codec support in
+ 	  snd-hda-intel driver, such as STAC9200.
+@@ -155,6 +160,7 @@ comment "Set to Y if you want auto-loading the codec driver"
+ config SND_HDA_CODEC_CONEXANT
+ 	tristate "Build Conexant HD-audio codec support"
+ 	select SND_HDA_GENERIC
++	select SND_HDA_GENERIC_LEDS
+ 	help
+ 	  Say Y or M here to include Conexant HD-audio codec support in
+ 	  snd-hda-intel driver, such as CX20549.
+@@ -215,6 +221,9 @@ comment "Set to Y if you want auto-loading the codec driver"
+ 
+ config SND_HDA_GENERIC
+ 	tristate "Enable generic HD-audio codec parser"
++	select LEDS_CLASS if SND_HDA_GENERIC_LEDS
++	select LEDS_TRIGGERS if SND_HDA_GENERIC_LEDS
++	select LEDS_TRIGGER_AUDIO if SND_HDA_GENERIC_LEDS
+ 	help
+ 	  Say Y or M here to enable the generic HD-audio codec parser
+ 	  in snd-hda-intel driver.
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index c95ccffbd0cf..419cfbd0dc5c 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3887,6 +3887,7 @@ static int parse_mic_boost(struct hda_codec *codec)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_SND_HDA_GENERIC_LEDS
+ /*
+  * mic mute LED hook helpers
+  */
+@@ -3923,10 +3924,8 @@ static void call_micmute_led_update(struct hda_codec *codec)
+ 	spec->micmute_led.led_value = val;
+ 	if (spec->micmute_led.update)
+ 		spec->micmute_led.update(codec);
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+ 	ledtrig_audio_set(LED_AUDIO_MICMUTE,
+ 			  spec->micmute_led.led_value ? LED_ON : LED_OFF);
+-#endif
+ }
+ 
+ static void update_micmute_led(struct hda_codec *codec,
+@@ -4050,6 +4049,50 @@ void snd_hda_gen_fixup_micmute_led(struct hda_codec *codec,
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_gen_fixup_micmute_led);
+ 
++/**
++ * snd_dha_gen_add_micmute_led_cdev - Create a LED classdev and enable as mic-mute LED
++ * @codec: the HDA codec
++ * @callback: the callback for LED classdev brightness_set_blocking
++ *
++ * Called from the codec drivers for offering the mic mute LED controls.
++ * This creates a LED classdev and sets up the cap_sync_hook that is called at
++ * each time when the capture mixer switch changes.
++ *
++ * When NULL is passed to @callback, no classdev is created but only the
++ * LED-trigger is set up.
++ *
++ * Returns 0 or a negative error.
++ */
++int snd_hda_gen_add_micmute_led_cdev(struct hda_codec *codec,
++				     int (*callback)(struct led_classdev *,
++						     enum led_brightness))
++{
++	int err;
++	struct led_classdev *cdev;
++
++	if (callback) {
++		cdev = devm_kzalloc(&codec->core.dev, sizeof(*cdev), GFP_KERNEL);
++		if (!cdev)
++			return -ENOMEM;
++
++		cdev->name = "hda::micmute";
++		cdev->max_brightness = 1;
++		cdev->default_trigger = "audio-micmute";
++		cdev->brightness_set_blocking = callback;
++		cdev->brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
++
++		err = devm_led_classdev_register(&codec->core.dev, cdev);
++		if (err) {
++			codec_warn(codec, "failed to create a mic-mute LED cdev\n");
++			return err;
++		}
++	}
++
++	return snd_hda_gen_add_micmute_led(codec, NULL);
++}
++EXPORT_SYMBOL_GPL(snd_hda_gen_add_micmute_led_cdev);
++#endif /* CONFIG_SND_HDA_GENERIC_LEDS */
++
+ /*
+  * parse digital I/Os and set up NIDs in BIOS auto-parse mode
+  */
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index fb9f1a90238b..f56bc8da20b2 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -8,6 +8,8 @@
+ #ifndef __SOUND_HDA_GENERIC_H
+ #define __SOUND_HDA_GENERIC_H
+ 
++#include <linux/leds.h>
++
+ /* table entry for multi-io paths */
+ struct hda_multi_io {
+ 	hda_nid_t pin;		/* multi-io widget pin NID */
+@@ -357,5 +359,8 @@ int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+ 				void (*hook)(struct hda_codec *));
+ void snd_hda_gen_fixup_micmute_led(struct hda_codec *codec,
+ 				   const struct hda_fixup *fix, int action);
++int snd_hda_gen_add_micmute_led_cdev(struct hda_codec *codec,
++				     int (*callback)(struct led_classdev *,
++						     enum led_brightness));
+ 
+ #endif /* __SOUND_HDA_GENERIC_H */
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6d73f8beadb6..1d0fe9a0983f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4100,16 +4100,6 @@ static void alc_fixup_gpio_mute_hook(void *private_data, int enabled)
+ }
+ 
+ /* turn on/off mic-mute LED via GPIO per capture hook */
+-static void alc_gpio_micmute_update(struct hda_codec *codec)
+-{
+-	struct alc_spec *spec = codec->spec;
+-
+-	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
+-			    spec->micmute_led_polarity,
+-			    spec->gen.micmute_led.led_value);
+-}
+-
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+ static int micmute_led_set(struct led_classdev *led_cdev,
+ 			   enum led_brightness brightness)
+ {
+@@ -4121,14 +4111,6 @@ static int micmute_led_set(struct led_classdev *led_cdev,
+ 	return 0;
+ }
+ 
+-static struct led_classdev micmute_led_cdev = {
+-	.name = "hda::micmute",
+-	.max_brightness = 1,
+-	.brightness_set_blocking = micmute_led_set,
+-	.default_trigger = "audio-micmute",
+-};
+-#endif
+-
+ /* setup mute and mic-mute GPIO bits, add hooks appropriately */
+ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				  int action,
+@@ -4136,9 +4118,6 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				  unsigned int micmute_mask)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-	int err;
+-#endif
+ 
+ 	alc_fixup_gpio(codec, action, mute_mask | micmute_mask);
+ 
+@@ -4150,14 +4129,7 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 	}
+ 	if (micmute_mask) {
+ 		spec->gpio_mic_led_mask = micmute_mask;
+-		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
+-
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+-		err = devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev);
+-		if (err)
+-			codec_warn(codec, "failed to register micmute LED\n");
+-#endif
++		snd_hda_gen_add_micmute_led_cdev(codec, micmute_led_set);
+ 	}
+ }
+ 
 -- 
-Mark
+2.16.4
+
