@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1280CC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:18:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27DC6C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:19:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 959F321D82
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:18:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A2B42206F1
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:19:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kVXgt3ly";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="inx/aNYV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 959F321D82
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n26PHFo2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TcJZmhJn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2B42206F1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A771167C;
-	Thu, 18 Jun 2020 03:17:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A771167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 271D716A0;
+	Thu, 18 Jun 2020 03:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 271D716A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592443112;
-	bh=aSa53t92DVXT/cLJEbKDqq8Nan5+N0R9B5Ft3mabQg4=;
+	s=default; t=1592443140;
+	bh=r63CG3lRlNECeZaLITgREg5AuTfmTKB+Dc4lY/TJL8k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kVXgt3lyxNqqVlmhFBMYxVx+F7UzGw0J4JgB5R0YC8DkJ0gYVMEd97PnU2g8gwOI/
-	 uOZ/EIXK9rV1nb6HOz0bCNUZ4n8kqnsZbBNr3ppCc6YSvP8OXILlXhpKh6nRnE9Jki
-	 6EYyKpRIObzCoG37rX4dmUz1+IrlBTU5CXv3wTvE=
+	b=n26PHFo2gi5/erXyM0zeqxyvkao6D6xYerO3ekc2Oe8cOxh4BSk0tENRKyvwh6Z5F
+	 8ZvMTtCZiqE/V7nyl7sBmObjwKF9zi7IpSH/p70fJ4NcutK+1VZTHmUpUi/a1KG+Gl
+	 VYmb39NghHEJtPrKSLGx6UsA+PBpbHvN6u1YmzxA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7441FF80336;
-	Thu, 18 Jun 2020 03:11:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB7B7F8033E;
+	Thu, 18 Jun 2020 03:11:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20345F80337; Thu, 18 Jun 2020 03:11:27 +0200 (CEST)
+ id 60B44F8033F; Thu, 18 Jun 2020 03:11:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12568F802E0
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:11:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12568F802E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DA57F80339
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:11:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DA57F80339
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="inx/aNYV"
+ header.b="TcJZmhJn"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C878F21D93;
- Thu, 18 Jun 2020 01:11:18 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2A7D02193E;
+ Thu, 18 Jun 2020 01:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592442679;
- bh=aSa53t92DVXT/cLJEbKDqq8Nan5+N0R9B5Ft3mabQg4=;
+ s=default; t=1592442689;
+ bh=r63CG3lRlNECeZaLITgREg5AuTfmTKB+Dc4lY/TJL8k=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=inx/aNYViGYBabs5GZ9I6qLXCW7WnjlAgsvl65Klpo9M5jOiklqGVeyvFt6hAlqgr
- YmcnZD2e6Mv224Csfd/B7gESvnFYi3rWg+oJKs0N4RDD8dpygrLO6bndO2ZRgsdOAS
- AqvpYZt3AY+gB0dwRaaUHGDcI34MZeShFu5ZY9QU=
+ b=TcJZmhJndLI06ksq0rZ4aFI1vqj6PF/uEUPBRML45u7TiKfw+9g0c/hyPg8HmqXld
+ zhbh3z4/SBwT4NgLbDFx80LQHjIjtG3q5qRm5pbDglvihblbt9kNZHTWAOt4HA+Pgm
+ iW5wrkUAd5inY1qE75ahHnK66+v/0OAS2VQYnJ2U=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 147/388] slimbus: ngd: get drvdata from correct
- device
-Date: Wed, 17 Jun 2020 21:04:04 -0400
-Message-Id: <20200618010805.600873-147-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 155/388] ASoC: component: suppress
+ uninitialized-variable warning
+Date: Wed, 17 Jun 2020 21:04:12 -0400
+Message-Id: <20200618010805.600873-155-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -76,10 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-arm-msm@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,48 +92,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit b58c663059b484f7ff547d076a34cf6d7a302e56 ]
+[ Upstream commit be16a0f0dc8fab8e25d9cdbeb4f8f28afc9186d2 ]
 
-Get drvdata directly from parent instead of ngd dev, as ngd
-dev can probe defer and previously set drvdata will become null.
+Old versions of gcc (tested on gcc-4.8) produce a warning for
+correct code:
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200417093618.7929-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+sound/soc/soc-compress.c: In function 'soc_compr_open':
+sound/soc/soc-compress.c:75:28: error: 'component' is used uninitialized in this function [-Werror=uninitialized]
+  struct snd_soc_component *component, *save = NULL;
+
+Change the for_each_rtd_components() macro to ensure 'component'
+gets initialized to a value the compiler does not complain about.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20200428214754.3925368-1-arnd@arndb.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index fc2575fef51b..7426b5884218 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1361,7 +1361,6 @@ static int of_qcom_slim_ngd_register(struct device *parent,
- 		ngd->pdev->driver_override = QCOM_SLIM_NGD_DRV_NAME;
- 		ngd->pdev->dev.of_node = node;
- 		ctrl->ngd = ngd;
--		platform_set_drvdata(ngd->pdev, ctrl);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 946f88a6c63d..e0371e70242d 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1177,7 +1177,7 @@ struct snd_soc_pcm_runtime {
+ #define asoc_rtd_to_codec(rtd, n) (rtd)->dais[n + (rtd)->num_cpus]
  
- 		platform_device_add(ngd->pdev);
- 		ngd->base = ctrl->base + ngd->id * data->offset +
-@@ -1376,12 +1375,13 @@ static int of_qcom_slim_ngd_register(struct device *parent,
- 
- static int qcom_slim_ngd_probe(struct platform_device *pdev)
- {
--	struct qcom_slim_ngd_ctrl *ctrl = platform_get_drvdata(pdev);
- 	struct device *dev = &pdev->dev;
-+	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev->parent);
- 	int ret;
- 
- 	ctrl->ctrl.dev = dev;
- 
-+	platform_set_drvdata(pdev, ctrl);
- 	pm_runtime_use_autosuspend(dev);
- 	pm_runtime_set_autosuspend_delay(dev, QCOM_SLIM_NGD_AUTOSUSPEND);
- 	pm_runtime_set_suspended(dev);
+ #define for_each_rtd_components(rtd, i, component)			\
+-	for ((i) = 0;							\
++	for ((i) = 0, component = NULL;					\
+ 	     ((i) < rtd->num_components) && ((component) = rtd->components[i]);\
+ 	     (i)++)
+ #define for_each_rtd_cpu_dais(rtd, i, dai)				\
 -- 
 2.25.1
 
