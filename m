@@ -2,73 +2,72 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F4A6C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:17:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BB5CC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:17:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1CA3221ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:17:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CDAB21D90
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:17:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="izSQ65bL";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OMxr8U4e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1CA3221ED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dwrdBMi7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5ANQaEJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CDAB21D90
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5425C16A3;
-	Thu, 18 Jun 2020 03:16:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5425C16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 372F4851;
+	Thu, 18 Jun 2020 03:17:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 372F4851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592443035;
-	bh=Xwqp5VeiNd1IsDMeWotZ1nD25aou2uHxHhgfdlOCxX8=;
+	s=default; t=1592443076;
+	bh=qIVTL6kloqxKMY1tm1nI4jXoolMw/CZL9rpotWD4kHU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=izSQ65bLDlwsFKGotSJpTthl/jGotLYysEJseCdm8/QBwX2b9jUtMBSJjzZnmRjgZ
-	 XmWpOUmkYehDeLkztCnXfgQsw92psEPKR07bNN06sI5tyASg0qM+cxt7O8+T4/tjOa
-	 gjhSUuXLgn50J0buFqkRakyI3xhmeyIQV64Wj3Io=
+	b=dwrdBMi7Z+d58sHbikOaKqjXnPU5rB2srkMtwwWmiOyaylJ5r6+P0ibCSuCngNO8O
+	 0SHRzN+zuMpKv3bOpTyypbaREhOizjjuRtcDPn8f0+3Jc9iXyu7B7anMCyr3YJ0BVQ
+	 G5yVyDvGvBUenvS05o9mi1Ah7bcn/vyS4Ad5OFzQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B11E9F80322;
-	Thu, 18 Jun 2020 03:11:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83686F80334;
+	Thu, 18 Jun 2020 03:11:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63BA9F80323; Thu, 18 Jun 2020 03:11:17 +0200 (CEST)
+ id EBDD3F80329; Thu, 18 Jun 2020 03:11:18 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F0E7F80306
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:11:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F0E7F80306
+ by alsa1.perex.cz (Postfix) with ESMTPS id 605E5F8031A
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:11:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 605E5F8031A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OMxr8U4e"
+ header.b="D5ANQaEJ"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 54C64221EB;
- Thu, 18 Jun 2020 01:11:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 37D2F21D93;
+ Thu, 18 Jun 2020 01:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592442669;
- bh=Xwqp5VeiNd1IsDMeWotZ1nD25aou2uHxHhgfdlOCxX8=;
+ s=default; t=1592442668;
+ bh=qIVTL6kloqxKMY1tm1nI4jXoolMw/CZL9rpotWD4kHU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=OMxr8U4eKXvNv/aijPitK1bfPSNS9+VdOrcV5tjZF0PR/ICRR2AUOHYdKp13QhWyc
- J07wxSnmNnJzMPs5+T8jy9zOtjBLmBQ1pH4kG8WecHtzeqsfj+e9q7I9KajAt5AmMK
- JsT4Mxjvj6Ld+54rqVkTP5KMcltmocPN7AJUWpaQ=
+ b=D5ANQaEJaHjLF8Brnq+S3wB6ae+Jin95CZt8AhiyYlY5BecCzGmDHJK1BO3qZuH5E
+ b7nZFDik6EqZZDQ96jnrxXKaosT5tA89KOH+bnseEmsyL1PjwHojHFEwN94yDritE7
+ AyyE2AATfaO3OCDSrf8t+hCSHOUJ4RTiUKCY48co=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 139/388] ALSA: usb-audio: Fix racy list management
- in output queue
-Date: Wed, 17 Jun 2020 21:03:56 -0400
-Message-Id: <20200618010805.600873-139-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 138/388] ALSA: usb-audio: Improve frames size
+ computation
+Date: Wed, 17 Jun 2020 21:03:55 -0400
+Message-Id: <20200618010805.600873-138-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -77,7 +76,7 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
+ Alexander Tsoy <alexander@tsoy.me>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,49 +92,165 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-[ Upstream commit 5b6cc38f3f3f37109ce72b60bda215a5f6892c0b ]
+[ Upstream commit f0bd62b64016508938df9babe47f65c2c727d25c ]
 
-The linked list entry from FIFO is peeked at
-queue_pending_output_urbs() but the actual element pop-out is
-performed outside the spinlock, and it's potentially racy.
+For computation of the the next frame size current value of fs/fps and
+accumulated fractional parts of fs/fps are used, where values are stored
+in Q16.16 format. This is quite natural for computing frame size for
+asynchronous endpoints driven by explicit feedback, since in this case
+fs/fps is a value provided by the feedback endpoint and it's already in
+the Q format. If an error is accumulated over time, the device can
+adjust fs/fps value to prevent buffer overruns/underruns.
 
-Do delete the link at the right place inside the spinlock.
+But for synchronous endpoints the accuracy provided by these computations
+is not enough. Due to accumulated error the driver periodically produces
+frames with incorrect size (+/- 1 audio sample).
 
-Fixes: 8fdff6a319e7 ("ALSA: snd-usb: implement new endpoint streaming model")
-Link: https://lore.kernel.org/r/20200424074016.14301-1-tiwai@suse.de
+This patch fixes this issue by implementing a different algorithm for
+frame size computation. It is based on accumulating of the remainders
+from division fs/fps and it doesn't accumulate errors over time. This
+new method is enabled for synchronous and adaptive playback endpoints.
+
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Link: https://lore.kernel.org/r/20200424022449.14972-1-alexander@tsoy.me
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/endpoint.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/usb/card.h     |  4 ++++
+ sound/usb/endpoint.c | 43 ++++++++++++++++++++++++++++++++++++++-----
+ sound/usb/endpoint.h |  1 +
+ sound/usb/pcm.c      |  2 ++
+ 4 files changed, 45 insertions(+), 5 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 395403a2d33f..820e564656ed 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -84,6 +84,10 @@ struct snd_usb_endpoint {
+ 	dma_addr_t sync_dma;		/* DMA address of syncbuf */
+ 
+ 	unsigned int pipe;		/* the data i/o pipe */
++	unsigned int framesize[2];	/* small/large frame sizes in samples */
++	unsigned int sample_rem;	/* remainder from division fs/fps */
++	unsigned int sample_accum;	/* sample accumulator */
++	unsigned int fps;		/* frames per second */
+ 	unsigned int freqn;		/* nominal sampling rate in fs/fps in Q16.16 format */
+ 	unsigned int freqm;		/* momentary sampling rate in fs/fps in Q16.16 format */
+ 	int	   freqshift;		/* how much to shift the feedback value to get Q16.16 */
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index d8dc7cb56d43..50104f658ed4 100644
+index 4a9a2f6ef5a4..d8dc7cb56d43 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -346,17 +346,17 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 			ep->next_packet_read_pos %= MAX_URBS;
+@@ -124,12 +124,12 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep)
  
- 			/* take URB out of FIFO */
--			if (!list_empty(&ep->ready_playback_urbs))
-+			if (!list_empty(&ep->ready_playback_urbs)) {
- 				ctx = list_first_entry(&ep->ready_playback_urbs,
- 					       struct snd_urb_ctx, ready_list);
-+				list_del_init(&ctx->ready_list);
-+			}
- 		}
- 		spin_unlock_irqrestore(&ep->lock, flags);
+ /*
+  * For streaming based on information derived from sync endpoints,
+- * prepare_outbound_urb_sizes() will call next_packet_size() to
++ * prepare_outbound_urb_sizes() will call slave_next_packet_size() to
+  * determine the number of samples to be sent in the next packet.
+  *
+- * For implicit feedback, next_packet_size() is unused.
++ * For implicit feedback, slave_next_packet_size() is unused.
+  */
+-int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
++int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep)
+ {
+ 	unsigned long flags;
+ 	int ret;
+@@ -146,6 +146,29 @@ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
+ 	return ret;
+ }
  
- 		if (ctx == NULL)
- 			return;
++/*
++ * For adaptive and synchronous endpoints, prepare_outbound_urb_sizes()
++ * will call next_packet_size() to determine the number of samples to be
++ * sent in the next packet.
++ */
++int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
++{
++	int ret;
++
++	if (ep->fill_max)
++		return ep->maxframesize;
++
++	ep->sample_accum += ep->sample_rem;
++	if (ep->sample_accum >= ep->fps) {
++		ep->sample_accum -= ep->fps;
++		ret = ep->framesize[1];
++	} else {
++		ret = ep->framesize[0];
++	}
++
++	return ret;
++}
++
+ static void retire_outbound_urb(struct snd_usb_endpoint *ep,
+ 				struct snd_urb_ctx *urb_ctx)
+ {
+@@ -190,6 +213,8 @@ static void prepare_silent_urb(struct snd_usb_endpoint *ep,
  
--		list_del_init(&ctx->ready_list);
--
- 		/* copy over the length information */
- 		for (i = 0; i < packet->packets; i++)
- 			ctx->packet_size[i] = packet->packet_size[i];
+ 		if (ctx->packet_size[i])
+ 			counts = ctx->packet_size[i];
++		else if (ep->sync_master)
++			counts = snd_usb_endpoint_slave_next_packet_size(ep);
+ 		else
+ 			counts = snd_usb_endpoint_next_packet_size(ep);
+ 
+@@ -874,10 +899,17 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ 	ep->maxpacksize = fmt->maxpacksize;
+ 	ep->fill_max = !!(fmt->attributes & UAC_EP_CS_ATTR_FILL_MAX);
+ 
+-	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL)
++	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL) {
+ 		ep->freqn = get_usb_full_speed_rate(rate);
+-	else
++		ep->fps = 1000;
++	} else {
+ 		ep->freqn = get_usb_high_speed_rate(rate);
++		ep->fps = 8000;
++	}
++
++	ep->sample_rem = rate % ep->fps;
++	ep->framesize[0] = rate / ep->fps;
++	ep->framesize[1] = (rate + (ep->fps - 1)) / ep->fps;
+ 
+ 	/* calculate the frequency in 16.16 format */
+ 	ep->freqm = ep->freqn;
+@@ -936,6 +968,7 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+ 	ep->active_mask = 0;
+ 	ep->unlink_mask = 0;
+ 	ep->phase = 0;
++	ep->sample_accum = 0;
+ 
+ 	snd_usb_endpoint_start_quirk(ep);
+ 
+diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
+index 63a39d4fa8d8..d23fa0a8c11b 100644
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -28,6 +28,7 @@ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep);
+ void snd_usb_endpoint_free(struct snd_usb_endpoint *ep);
+ 
+ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
++int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep);
+ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep);
+ 
+ void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index a4e4064f9aee..b50965ab3b3a 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1579,6 +1579,8 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 	for (i = 0; i < ctx->packets; i++) {
+ 		if (ctx->packet_size[i])
+ 			counts = ctx->packet_size[i];
++		else if (ep->sync_master)
++			counts = snd_usb_endpoint_slave_next_packet_size(ep);
+ 		else
+ 			counts = snd_usb_endpoint_next_packet_size(ep);
+ 
 -- 
 2.25.1
 
