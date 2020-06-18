@@ -6,68 +6,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F21C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:41:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD04CC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:41:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D903221ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:41:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BBE3221ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:41:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JA68gh7Z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="apENoXwL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D903221ED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GqmCtqXl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hzglrgyd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BBE3221ED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 187F11701;
-	Thu, 18 Jun 2020 03:40:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 187F11701
+	by alsa0.perex.cz (Postfix) with ESMTPS id E041616EB;
+	Thu, 18 Jun 2020 03:40:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E041616EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592444478;
-	bh=C4iKVDt08NYAinUh8xI0FNen0UxaP7QWj1KFSbiJm8I=;
+	s=default; t=1592444510;
+	bh=zrR7EWqR9FOZ7/8Tm7ym4wywgV/bCyV61N5vb0zUF8M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JA68gh7Z+BHqbvLptMyebCALPWrbQTJelUjUdTtQHY1FKyZuCBOJnivZtWoeIrA41
-	 E/5i1O4z6mDrfuffE+GWDbLpaAkEwPt5BTix+I5tTJlhu9q/1lZfKkYIbnmaGbBxDN
-	 4/0saIC5ya6XQ/LfbgBfPQs8k/2RXnHJEquN7yqY=
+	b=GqmCtqXlQ45ipaJZX1LaaJCMkU1xgEGXxE+R3uyl13xTTh5UEKRR0jPj2Z0CCvZ/P
+	 zn9sE7ly/l8bpbI6Afx2mDOf+dXZpy82BlFQNUCcl/LT4ljLEYhIxNrUGIWL12cah6
+	 qgt3r3Y8VBGqBykqyJsuVVBaI9N6XvFQ4IPm3CoE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D086BF8048D;
-	Thu, 18 Jun 2020 03:19:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C2F9F80491;
+	Thu, 18 Jun 2020 03:19:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADA60F8029B; Thu, 18 Jun 2020 03:19:29 +0200 (CEST)
+ id 162CCF8049D; Thu, 18 Jun 2020 03:19:35 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07047F8029B;
- Thu, 18 Jun 2020 03:19:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07047F8029B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40356F80339
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:19:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40356F80339
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="apENoXwL"
+ header.b="hzglrgyd"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C62EB221ED;
- Thu, 18 Jun 2020 01:19:23 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3BE94221F1;
+ Thu, 18 Jun 2020 01:19:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592443164;
- bh=C4iKVDt08NYAinUh8xI0FNen0UxaP7QWj1KFSbiJm8I=;
+ s=default; t=1592443170;
+ bh=zrR7EWqR9FOZ7/8Tm7ym4wywgV/bCyV61N5vb0zUF8M=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=apENoXwLAmkTQVKSqk2RYAWv3cf5I5xI4PLKE84suVvZH+RDQ6VMf7jCpjjBZnrdC
- rbZAC1CkdLe5srj7ZZRRqFAmKv/4dJVHkr2HphsxihWAEO45kNAFz66uwu3TjSIm0Q
- vbbtEr1/30eT1RPNHG/3fguMO8g3j7rAgKVpixoY=
+ b=hzglrgyd6wiC2jS+20fpX0x/FG5C6cryT5WLJjUHAFP4NAAv8QdwfURYQqvF1mF0I
+ jajC9H8y0K1ba+nOCGMB3EFsVSxHSQSZlzKEoZk1ngEqq3JlBwxt5NJg3AFqHmc/kl
+ thk6JEilGswwQwpVyJCdI5bMnSS593fKATslnDrg=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 130/266] ASoC: SOF: core: fix error return code in
- sof_probe_continue()
-Date: Wed, 17 Jun 2020 21:14:15 -0400
-Message-Id: <20200618011631.604574-130-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 135/266] ASoC: ux500: mop500: Fix some refcounted
+ resources issues
+Date: Wed, 17 Jun 2020 21:14:20 -0400
+Message-Id: <20200618011631.604574-135-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -76,8 +76,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>,
- Wei Yongjun <weiyongjun1@huawei.com>, sound-open-firmware@alsa-project.org
+ Mark Brown <broonie@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,35 +93,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 7d8785bc7adbb4dc5ba8ee06994107637848ded8 ]
+[ Upstream commit 4e8748fcaeec073e3ba794871ce86c545e4f961f ]
 
-Fix to return negative error code -ENOMEM from the IPC init error
-handling case instead of 0, as done elsewhere in this function.
+There are 2 issues here:
+   - if one of the 'of_parse_phandle' fails, calling 'mop500_of_node_put()'
+     is a no-op because the 'mop500_dai_links' structure has not been
+     initialized yet, so the referenced are not decremented
+   - The reference stored in 'mop500_dai_links[i].codecs' is refcounted
+     only once in the probe and must be decremented only once.
 
-Fixes: c16211d6226d ("ASoC: SOF: Add Sound Open Firmware driver core")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20200509093337.78897-1-weiyongjun1@huawei.com
+Fixes: 39013bd60e79 ("ASoC: Ux500: Dispose of device nodes correctly")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20200512100705.246349-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/ux500/mop500.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 12aec140819a..2a6b84d2781e 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -372,6 +372,7 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 	/* init the IPC */
- 	sdev->ipc = snd_sof_ipc_init(sdev);
- 	if (!sdev->ipc) {
-+		ret = -ENOMEM;
- 		dev_err(sdev->dev, "error: failed to init DSP IPC %d\n", ret);
- 		goto ipc_err;
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 2873e8e6f02b..cdae1190b930 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -63,10 +63,11 @@ static void mop500_of_node_put(void)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < 2; i++) {
++	for (i = 0; i < 2; i++)
+ 		of_node_put(mop500_dai_links[i].cpus->of_node);
+-		of_node_put(mop500_dai_links[i].codecs->of_node);
+-	}
++
++	/* Both links use the same codec, which is refcounted only once */
++	of_node_put(mop500_dai_links[0].codecs->of_node);
+ }
+ 
+ static int mop500_of_probe(struct platform_device *pdev,
+@@ -81,7 +82,9 @@ static int mop500_of_probe(struct platform_device *pdev,
+ 
+ 	if (!(msp_np[0] && msp_np[1] && codec_np)) {
+ 		dev_err(&pdev->dev, "Phandle missing or invalid\n");
+-		mop500_of_node_put();
++		for (i = 0; i < 2; i++)
++			of_node_put(msp_np[i]);
++		of_node_put(codec_np);
+ 		return -EINVAL;
  	}
+ 
 -- 
 2.25.1
 
