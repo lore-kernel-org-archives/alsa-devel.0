@@ -2,62 +2,83 @@ Return-Path: <SRS0=r+qN=77=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99966C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:15:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DE05C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:16:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25C3E207D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:15:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1757C207E8
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 11:16:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NB1xPU0l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25C3E207D8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BgqU+SQy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="O6AbxAxV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1757C207E8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE8231776;
-	Thu, 18 Jun 2020 13:15:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE8231776
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE58116CB;
+	Thu, 18 Jun 2020 13:15:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE58116CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592478957;
-	bh=WQb29NkX8c3uJd0FMY2A0SmrUM3LeiyRpx046VoL3pk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592478998;
+	bh=UT1FJJxUaRXffXu0wgBanfwio7zzEycd0uxbxe6JEGo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NB1xPU0l7Oku9192RBIoMOsXEL0y48Ng8nOj472XAG6W3tmbpJgbrrj/n+1ikNgz+
-	 CGs51OUvdWxIuh7InEgDqZwRUC4whBkxWeslg7KesBt50MwFITIf7kyC0TEgzQYhHv
-	 VKHDJIYG5m2LGnbRlNWnlBspVg6Yw6T2UJoqqtAg=
+	b=BgqU+SQy0R1XlrX1wpDadWW5GHBvw3czAHD+WNc+G9VB1IwdIJQwi8jextFMQ25Kw
+	 9o0Pciw0fOcf8yZM4luxbR0EPr/z2KeRNABGWmkfn7b1GP885wsWc1w2iOTS6DO/Mc
+	 quWpdQ1rj0btWAu6VI7sbMgYGXvmpu2USEMyVXVU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCD95F80304;
-	Thu, 18 Jun 2020 13:09:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5699CF80321;
+	Thu, 18 Jun 2020 13:09:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF65FF802DC; Thu, 18 Jun 2020 13:09:18 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 9E595F802DD; Thu, 18 Jun 2020 13:09:21 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98407F80252
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 13:08:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98407F80252
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BC898AF44;
- Thu, 18 Jun 2020 11:08:49 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/13] ALSA: hda/realtek: Use the new vmaster mute LED helper
-Date: Thu, 18 Jun 2020 13:08:38 +0200
-Message-Id: <20200618110842.27238-10-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200618110842.27238-1-tiwai@suse.de>
-References: <20200618110842.27238-1-tiwai@suse.de>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76344F801EB
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 13:09:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76344F801EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="O6AbxAxV"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 20E432078D;
+ Thu, 18 Jun 2020 11:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592478544;
+ bh=UT1FJJxUaRXffXu0wgBanfwio7zzEycd0uxbxe6JEGo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=O6AbxAxVMZkzeQcITMO7bEfBb4kIhp9PTFNFNgAc4qhLrDgrpkqLK6tKJpW5dTQMD
+ k/kgEkreTaWYFBvkQKCz+EiMpIyWIQyGcYCy2mEjUrLjnNS9Wwhr7ategYfDtrlPiD
+ QLwnP8C+fMOR3ZEpjIG1GeBM64tB1CYr+WFQn+MY=
+Date: Thu, 18 Jun 2020 12:09:02 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: codecs: Added MAX98373 Soundwire Driver
+Message-ID: <20200618110902.GE5789@sirena.org.uk>
+References: <20200617163015.16809-1-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="tVmo9FyGdCe4F4YN"
+Content-Disposition: inline
+In-Reply-To: <20200617163015.16809-1-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Androphobia:
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Ryan Lee <ryans.lee@maximintegrated.com>,
+ tiwai@suse.de, gregkh@linuxfoundation.org, vkoul@kernel.org,
+ Naveen Manohar <naveen.m@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,210 +94,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the mute LED handling in Realtek codec to the new vmaster mute
-helper.  A point to be cautiously handled is that the value passed to
-the callback is inverted; the vmaster passes "enabled" (0 = mute),
-while LED classdev passes "brightness" (1 = mute).
 
-The code in Thinkpad helper is also converted.   In that case, just
-call the new function and remove the open-code.
+--tVmo9FyGdCe4F4YN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c   | 54 +++++++++++++++++++++++------------------
- sound/pci/hda/thinkpad_helper.c | 17 ++-----------
- 2 files changed, 32 insertions(+), 39 deletions(-)
+On Wed, Jun 17, 2020 at 11:30:15AM -0500, Pierre-Louis Bossart wrote:
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6831587fc4d6..87f7a1c3558d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -80,7 +80,7 @@ struct alc_spec {
- 	unsigned int gpio_data;
- 	bool gpio_write_delay;	/* add a delay before writing gpio_data */
- 
--	/* mute LED for HP laptops, see alc269_fixup_mic_mute_hook() */
-+	/* mute LED for HP laptops, see vref_mute_led_set() */
- 	int mute_led_polarity;
- 	int micmute_led_polarity;
- 	hda_nid_t mute_led_nid;
-@@ -3990,23 +3990,25 @@ static void alc269_fixup_x101_headset_mic(struct hda_codec *codec,
- 
- 
- /* update mute-LED according to the speaker mute state via mic VREF pin */
--static void alc269_fixup_mic_mute_hook(void *private_data, int enabled)
-+static int vref_mute_led_set(struct led_classdev *led_cdev,
-+			     enum led_brightness brightness)
- {
--	struct hda_codec *codec = private_data;
-+	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
- 	struct alc_spec *spec = codec->spec;
- 	unsigned int pinval;
- 
- 	if (spec->mute_led_polarity)
--		enabled = !enabled;
-+		brightness = !brightness;
- 	pinval = snd_hda_codec_get_pin_target(codec, spec->mute_led_nid);
- 	pinval &= ~AC_PINCTL_VREFEN;
--	pinval |= enabled ? AC_PINCTL_VREF_HIZ : AC_PINCTL_VREF_80;
-+	pinval |= brightness ? AC_PINCTL_VREF_80 : AC_PINCTL_VREF_HIZ;
- 	if (spec->mute_led_nid) {
- 		/* temporarily power up/down for setting VREF */
- 		snd_hda_power_up_pm(codec);
- 		snd_hda_set_pin_ctl_cache(codec, spec->mute_led_nid, pinval);
- 		snd_hda_power_down_pm(codec);
- 	}
-+	return 0;
- }
- 
- /* Make sure the led works even in runtime suspend */
-@@ -4044,8 +4046,7 @@ static void alc269_fixup_hp_mute_led(struct hda_codec *codec,
- 			break;
- 		spec->mute_led_polarity = pol;
- 		spec->mute_led_nid = pin - 0x0a + 0x18;
--		spec->gen.vmaster_mute.hook = alc269_fixup_mic_mute_hook;
--		spec->gen.vmaster_mute_enum = 1;
-+		snd_hda_gen_add_mute_led_cdev(codec, vref_mute_led_set);
- 		codec->power_filter = led_power_filter;
- 		codec_dbg(codec,
- 			  "Detected mute LED for %x:%d\n", spec->mute_led_nid,
-@@ -4063,8 +4064,7 @@ static void alc269_fixup_hp_mute_led_micx(struct hda_codec *codec,
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->mute_led_polarity = 0;
- 		spec->mute_led_nid = pin;
--		spec->gen.vmaster_mute.hook = alc269_fixup_mic_mute_hook;
--		spec->gen.vmaster_mute_enum = 1;
-+		snd_hda_gen_add_mute_led_cdev(codec, vref_mute_led_set);
- 		codec->power_filter = led_power_filter;
- 	}
- }
-@@ -4097,13 +4097,15 @@ static void alc_update_gpio_led(struct hda_codec *codec, unsigned int mask,
- }
- 
- /* turn on/off mute LED via GPIO per vmaster hook */
--static void alc_fixup_gpio_mute_hook(void *private_data, int enabled)
-+static int gpio_mute_led_set(struct led_classdev *led_cdev,
-+			     enum led_brightness brightness)
- {
--	struct hda_codec *codec = private_data;
-+	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
- 	struct alc_spec *spec = codec->spec;
- 
- 	alc_update_gpio_led(codec, spec->gpio_mute_led_mask,
--			    spec->mute_led_polarity, enabled);
-+			    spec->mute_led_polarity, !brightness);
-+	return 0;
- }
- 
- /* turn on/off mic-mute LED via GPIO per capture hook */
-@@ -4132,7 +4134,7 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
- 		return;
- 	if (mute_mask) {
- 		spec->gpio_mute_led_mask = mute_mask;
--		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
-+		snd_hda_gen_add_mute_led_cdev(codec, gpio_mute_led_set);
- 	}
- 	if (micmute_mask) {
- 		spec->gpio_mic_led_mask = micmute_mask;
-@@ -4214,19 +4216,25 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
- }
- 
- /* update mute-LED according to the speaker mute state via COEF bit */
--static void alc_fixup_mute_led_coefbit_hook(void *private_data, int enabled)
-+static int coef_mute_led_set(struct led_classdev *led_cdev,
-+			     enum led_brightness brightness)
- {
--	struct hda_codec *codec = private_data;
-+	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
- 	struct alc_spec *spec = codec->spec;
- 
- 	if (spec->mute_led_polarity)
--		enabled = !enabled;
-+		brightness = !brightness;
- 
- 	/* temporarily power up/down for setting COEF bit */
--	enabled ? alc_update_coef_idx(codec, spec->mute_led_coef_idx,
--		spec->mute_led_coefbit_mask, spec->mute_led_coefbit_off) :
--		  alc_update_coef_idx(codec, spec->mute_led_coef_idx,
--		spec->mute_led_coefbit_mask, spec->mute_led_coefbit_on);
-+	if (brightness)
-+		alc_update_coef_idx(codec, spec->mute_led_coef_idx,
-+				    spec->mute_led_coefbit_mask,
-+				    spec->mute_led_coefbit_on);
-+	else
-+		alc_update_coef_idx(codec, spec->mute_led_coef_idx,
-+				    spec->mute_led_coefbit_mask,
-+				    spec->mute_led_coefbit_off);
-+	return 0;
- }
- 
- static void alc285_fixup_hp_mute_led_coefbit(struct hda_codec *codec,
-@@ -4241,8 +4249,7 @@ static void alc285_fixup_hp_mute_led_coefbit(struct hda_codec *codec,
- 		spec->mute_led_coefbit_mask = 1<<3;
- 		spec->mute_led_coefbit_on = 1<<3;
- 		spec->mute_led_coefbit_off = 0;
--		spec->gen.vmaster_mute.hook = alc_fixup_mute_led_coefbit_hook;
--		spec->gen.vmaster_mute_enum = 1;
-+		snd_hda_gen_add_mute_led_cdev(codec, coef_mute_led_set);
- 	}
- }
- 
-@@ -4258,8 +4265,7 @@ static void alc236_fixup_hp_mute_led_coefbit(struct hda_codec *codec,
- 		spec->mute_led_coefbit_mask = 1<<5;
- 		spec->mute_led_coefbit_on = 0;
- 		spec->mute_led_coefbit_off = 1<<5;
--		spec->gen.vmaster_mute.hook = alc_fixup_mute_led_coefbit_hook;
--		spec->gen.vmaster_mute_enum = 1;
-+		snd_hda_gen_add_mute_led_cdev(codec, coef_mute_led_set);
- 	}
- }
- 
-diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helper.c
-index cd14d5a55b42..6698ae241efc 100644
---- a/sound/pci/hda/thinkpad_helper.c
-+++ b/sound/pci/hda/thinkpad_helper.c
-@@ -3,13 +3,11 @@
-  * to be included from codec driver
-  */
- 
--#if IS_ENABLED(CONFIG_THINKPAD_ACPI) && IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
-+#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
- 
- #include <linux/acpi.h>
- #include <linux/leds.h>
- 
--static void (*old_vmaster_hook)(void *, int);
--
- static bool is_thinkpad(struct hda_codec *codec)
- {
- 	return (codec->core.subsystem_id >> 16 == 0x17aa) &&
-@@ -17,24 +15,13 @@ static bool is_thinkpad(struct hda_codec *codec)
- 		acpi_dev_found("IBM0068"));
- }
- 
--static void update_tpacpi_mute_led(void *private_data, int enabled)
--{
--	if (old_vmaster_hook)
--		old_vmaster_hook(private_data, enabled);
--
--	ledtrig_audio_set(LED_AUDIO_MUTE, enabled ? LED_OFF : LED_ON);
--}
--
- static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
- 				    const struct hda_fixup *fix, int action)
- {
--	struct hda_gen_spec *spec = codec->spec;
--
- 	if (action == HDA_FIXUP_ACT_PROBE) {
- 		if (!is_thinkpad(codec))
- 			return;
--		old_vmaster_hook = spec->vmaster_mute.hook;
--		spec->vmaster_mute.hook = update_tpacpi_mute_led;
-+		snd_hda_gen_add_mute_led_cdev(codec, NULL);
- 		snd_hda_gen_add_micmute_led_cdev(codec, NULL);
- 	}
- }
--- 
-2.16.4
+> +static void max98373_read_config(struct sdw_slave *slave)
+> +{
+> +	int value;
+> +	struct device *dev = &slave->dev;
+> +	struct max98373_priv *max98373 = dev_get_drvdata(dev);
+> +
+> +	if (!device_property_read_u32(dev, "maxim,vmon-slot-no", &value))
+> +		max98373->v_slot = value & 0xF;
+> +	else
+> +		max98373->v_slot = 0;
 
+The DT bindings need updating to add SoundWire support.
+
+> +	/* L/R mix configuration */
+> +	regmap_write(max98373->regmap,
+> +		     MAX98373_R2029_PCM_TO_SPK_MONO_MIX_1,
+> +		     0x80);
+> +	regmap_write(max98373->regmap,
+> +		     MAX98373_R202A_PCM_TO_SPK_MONO_MIX_2,
+> +		     0x1);
+> +	/* Set initial volume (0dB) */
+> +	regmap_write(max98373->regmap,
+> +		     MAX98373_R203D_AMP_DIG_VOL_CTRL,
+> +		     0x00);
+> +	regmap_write(max98373->regmap,
+> +		     MAX98373_R203E_AMP_PATH_GAIN,
+> +		     0x00);
+
+I'd expect these to be chip defaults, especially the volumes.
+
+> +	/* Speaker enable */
+> +	regmap_update_bits(max98373->regmap,
+> +			   MAX98373_R2043_AMP_EN,
+> +			   MAX98373_SPK_EN_MASK, 1);
+
+I'd expect this to be managed via DAPM.
+
+> +/* SPDX-License-Identifier: GPL-2.0-only
+
+AIUI this needs the trailing */ on the same line for the license
+compliance people.
+
+--tVmo9FyGdCe4F4YN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7rS00ACgkQJNaLcl1U
+h9Di3Qf8DQNux1KS2yuLr/ffoHzaXRDOAckEwJcvAFTzUGbe9McgoIR16RjFrhSK
+DgVlBwvvko7JodCtABJV15X9jstt81uGqvafldT3btmKO2w9qWiTAoxc7BAtLFM1
+1/h+5GS8As/7rhtRH9Tnc95R4kqLWOoYgy0So72w6opCG51tPiNdM3NKKUJoXFM/
+ndeVmRZElkqQ9tXoOnE0lPX9BMDk+wDmpnmFLeRUec7dHqkIh5QcN4/3tbuo2eM1
+VJfvaXkgM50O7FgxNdm0Qs39RenEAEZgXHA9sZxQOhqmWILoIo91QSuYUT+Pbz2u
+6lpR3n5N5/kAsVb8eywW0Kyjj5jUNQ==
+=KT6p
+-----END PGP SIGNATURE-----
+
+--tVmo9FyGdCe4F4YN--
