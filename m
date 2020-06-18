@@ -6,68 +6,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEC83C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC20AC433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:40:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4920F21D80
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:40:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 485BF22206
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jun 2020 01:40:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wht/Gn+r";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DCIAQL6+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4920F21D80
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hEufCntf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ve3ILFa3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 485BF22206
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D52B816E7;
-	Thu, 18 Jun 2020 03:39:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D52B816E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id D519516A8;
+	Thu, 18 Jun 2020 03:39:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D519516A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592444408;
-	bh=lffGI+usafluNIt52bJY49hTytGuNJw+IaRZwkMO2Rs=;
+	s=default; t=1592444441;
+	bh=kUGcVXRVxnsE4PRZ85J75kYg4bxTrLdCNBvOPXpXS+4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wht/Gn+rjx+jylxFfEC2EAkvU3Car72Q/5Ob9T1TlOiUZGxIL+wmtrlDjWX0qQ8fp
-	 3nJG8K/CMth9thWXX5ZP0wh1yQVOZZUbzzZGUG6noaEs9g18b+q+kChywPp3TFDtYW
-	 Rh9TAIVbCwgnByZf8RKN32vuL4Hl0F61aNRKBZgc=
+	b=hEufCntfMwolOJT0891Cn44j6w4XmKPoY++ZgSU3Z2HZNmfxNGh1+YRAPiW2eM7uY
+	 jzj9230W480FQmeNP201cTipsKJIXtrDNZVgGQ8EuivPsoC2vfygKIBE6oINBpdtrQ
+	 f9cym+6d/zhPeyH2teL+uKmlJuRKZVkVtKYIykpA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40113F80255;
-	Thu, 18 Jun 2020 03:19:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B4EFF8033F;
+	Thu, 18 Jun 2020 03:19:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB0A9F80252; Thu, 18 Jun 2020 03:19:10 +0200 (CEST)
+ id 5C75BF8047E; Thu, 18 Jun 2020 03:19:28 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4953CF80217
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:19:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4953CF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D507F8033F
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2020 03:19:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D507F8033F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DCIAQL6+"
+ header.b="ve3ILFa3"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1ED32221F6;
- Thu, 18 Jun 2020 01:19:03 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6891221D7E;
+ Thu, 18 Jun 2020 01:19:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592443143;
- bh=lffGI+usafluNIt52bJY49hTytGuNJw+IaRZwkMO2Rs=;
+ s=default; t=1592443161;
+ bh=kUGcVXRVxnsE4PRZ85J75kYg4bxTrLdCNBvOPXpXS+4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DCIAQL6+db1cgMjxPJuF6+iqx7d7QWwXpKEtTORPBcrT9VyND2TV/9twzXDNbB5jw
- 8js0ARPPowFYC4ujsBLGebdrZUx6Www54ODuqrqf9/S9ofQlqlDQH/RYsvt/2KQzcc
- 7PWGgEV4gMzKf8OK2jR5c/nMifJ8xrCrFD7kMtWM=
+ b=ve3ILFa37zhWTHeOkMPAyznMcleaCjbSI+Uuzl3g2+c6lZmLLD+lcpKS3WqWgPSUs
+ +CkX87ik4cDlr9MvDvOuBXtiFSbXwV2eAD2+VVfzqgxSChkS9IW3ZyMzEk7dklptKR
+ 3ZDGxHhQYzSa+2DQHiInCdTdAzEKmeLQDexviUy0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 113/266] ASoC: max98373: reorder max98373_reset()
- in resume
-Date: Wed, 17 Jun 2020 21:13:58 -0400
-Message-Id: <20200618011631.604574-113-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 127/266] ALSA: firewire-lib: fix invalid
+ assignment to union data for directional parameter
+Date: Wed, 17 Jun 2020 21:14:12 -0400
+Message-Id: <20200618011631.604574-127-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -75,8 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Yong Zhi <yong.zhi@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,54 +92,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yong Zhi <yong.zhi@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit 1a446873d7dd3a450f685928ce7f1907bde4583d ]
+[ Upstream commit 8304cf77c92038cd1c50c27b69d30be695cc8003 ]
 
-During S3 test, the following error was observed:
+Although the value of FDF is used just for outgoing stream, the assignment
+to union member is done for both directions of stream. At present this
+causes no issue because the value of same position is reassigned later for
+opposite stream. However, it's better to add if statement.
 
-[ 726.174237] i2c_designware i2c_designware.0: platform_pm_resume+0x0/0x3d returned 0 after 0 usecs
-[ 726.184187] max98373 i2c-MX98373:00: calling max98373_resume+0x0/0x30 [snd_soc_max98373] @ 12698, parent: i2c-11
-[ 726.195589] max98373 i2c-MX98373:00: Reset command failed. (ret:-16)
-
-When calling regmap_update_bits(), since map->reg_update_bits is NULL,
-_regmap_read() is entered with the following logic:
-
-	if (!map->cache_bypass) {
-		ret = regcache_read(map, reg, val);
-		if (ret == 0)
-			return 0;
-	}
-
-	if (map->cache_only)
-		return -EBUSY;
-
-regcache_read() hits -EINVAL because MAX98373_R2000_SW_RESET is volatile,
-as map->cache_only is set by codec suspend, thus -EBUSY is returned.
-Fix by moving max98373_reset() after cache_only set to false in max98373_resume().
-
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Link: https://lore.kernel.org/r/1588376661-29799-1-git-send-email-yong.zhi@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: d3d10a4a1b19 ("ALSA: firewire-lib: use union for directional parameters")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20200508043635.349339-2-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/max98373.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/firewire/amdtp-am824.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index cae1def8902d..96718e3a1ad0 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -850,8 +850,8 @@ static int max98373_resume(struct device *dev)
- {
- 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
+diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
+index 67d735e9a6a4..fea92e148790 100644
+--- a/sound/firewire/amdtp-am824.c
++++ b/sound/firewire/amdtp-am824.c
+@@ -82,7 +82,8 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	if (err < 0)
+ 		return err;
  
--	max98373_reset(max98373, dev);
- 	regcache_cache_only(max98373->regmap, false);
-+	max98373_reset(max98373, dev);
- 	regcache_sync(max98373->regmap);
- 	return 0;
- }
+-	s->ctx_data.rx.fdf = AMDTP_FDF_AM824 | s->sfc;
++	if (s->direction == AMDTP_OUT_STREAM)
++		s->ctx_data.rx.fdf = AMDTP_FDF_AM824 | s->sfc;
+ 
+ 	p->pcm_channels = pcm_channels;
+ 	p->midi_ports = midi_ports;
 -- 
 2.25.1
 
