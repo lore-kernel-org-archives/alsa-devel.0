@@ -2,64 +2,85 @@ Return-Path: <SRS0=ChbS=AA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 064E3C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 19:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2CE9C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 21:22:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 843EF20C09
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 19:57:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 79D6C217BA
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 21:22:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oVw9M1C3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 843EF20C09
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=shiny.it
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BAyJNowi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="slqG5au9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79D6C217BA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E1481612;
-	Fri, 19 Jun 2020 21:57:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E1481612
+	by alsa0.perex.cz (Postfix) with ESMTPS id D41F81668;
+	Fri, 19 Jun 2020 23:21:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D41F81668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592596674;
-	bh=989aojJ33LIOZzi4Fbe8j1Qzg7ol3CQZdYa1ra17wfQ=;
+	s=default; t=1592601764;
+	bh=jYUh1OvYrshMJqDzcix8yeNN5XKDASTudD7yHVLHVK4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oVw9M1C3LBPVQDymsVi49TcID9gjrUasnwjMpZ4BK02sQipjlY3306kRyj9jqV8Fn
-	 8+VYGPgprzUHEsqVWuD1RzW7A0ir9osqBsp0IQxrGLscgW9r2P07fSdhg5S3LmoTLj
-	 pQwZTmof1t0krhP5iz6uGxzbnw0/cj+SIgNwPCas=
+	b=BAyJNowi4oLP2OmzuOyrahLLqrm4GOcC07aRQKubv3gNurwpnMHc4SLJoRLCMO3tN
+	 1KiOGrlcZNen9UldN/y2qbYxFjukwOI82dHrxpvTTq2QFuWkRLUnkTqjnICgoxz/ws
+	 +hI0KqQBQ1wCGUO+RiqFjkScZ52SfMNrPwnH8CuY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 914C2F800EF;
-	Fri, 19 Jun 2020 21:57:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A067F80245;
+	Fri, 19 Jun 2020 23:21:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 490ADF80252; Fri, 19 Jun 2020 21:57:02 +0200 (CEST)
-Received: from denise.shiny.it (denise.shiny.it [185.206.84.1])
+ id E554AF80252; Fri, 19 Jun 2020 23:21:52 +0200 (CEST)
+Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20CA8F800EF
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 21:56:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20CA8F800EF
-Received: from wc1 (localhost [127.0.0.1])
- by denise.shiny.it (8.15.2/8.15.2) with ESMTP id 05JJunSF029677;
- Fri, 19 Jun 2020 21:56:50 +0200
-Date: Fri, 19 Jun 2020 21:56:55 +0200
-From: Giuliano Pochini <pochini@shiny.it>
-To: Mark Hills <mark@xwax.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17A18F800EF
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 23:21:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17A18F800EF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
+ header.b="slqG5au9"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
+ ; s=a;
+ h=Sender:Content-Type:MIME-Version:References:Message-ID:In-Reply-To:
+ Subject:cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=8jixx48ROAprPrsxlN+g/qmKQ2/7h41ZfAVylQvQKgg=; b=slqG5au9BDPG7pe79H9808afFH
+ MvqXQcV9IdbYGEXtnZIN7OUoX+kQDr20vTt6khzBb7E722gzz+J70XCP6rrayyWPQMTdl0Mn/RwOU
+ YW4Xbd+Vaf1NAMYIbO3snVO4WOdYYjq8QGfOnQHFtdayGkAjd/xV/xK6oM4pJsLYikky1CtP420sj
+ tBwFUQqgBTVcoDHrLgZQ1s6NLLK3VPs7ZCMrHbU5bGvu4qsLgaHM4zjs7eqx6oQOdZGQ7Q1LNsU4d
+ nPumM2hHfT00dLDtTtEIVVBKAYKq8IOQTTD4xvf3uo9xMrj3qBIgBHrUj3g14Z2DHR4wGx3eFfMZC
+ 9rhpE3Rg==;
+Received: from [2001:470:1d21:0:6e15:36bd:8667:43d5] (helo=tamla.localdomain)
+ by jazz.pogo.org.uk with esmtps (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93.0.4 (FreeBSD))
+ (envelope-from <mark@xwax.org>)
+ id 1jmOSH-00051k-GZ; Fri, 19 Jun 2020 22:21:45 +0100
+Received: from mark (helo=localhost)
+ by tamla.localdomain with local-esmtp (Exim 4.92.3)
+ (envelope-from <mark@tamla.localdomain>)
+ id 1jmOSQ-0003fW-Mu; Fri, 19 Jun 2020 22:21:54 +0100
+Date: Fri, 19 Jun 2020 22:21:54 +0100 (BST)
+From: Mark Hills <mark@xwax.org>
+To: Giuliano Pochini <pochini@shiny.it>
 Subject: Re: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-Message-ID: <20200619215655.07b6f3ed@wc1>
-In-Reply-To: <2006171158070.2561@stax.localdomain>
+In-Reply-To: <20200619215655.07b6f3ed@wc1>
+Message-ID: <2006192200200.12984@tamla.localdomain>
 References: <2006161409060.30751@stax.localdomain>
  <20200616131743.4793-3-mark@xwax.org> <20200617000134.60c5e2b5@wc1>
- <2006171158070.2561@stax.localdomain>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <2006171158070.2561@stax.localdomain> <20200619215655.07b6f3ed@wc1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -76,35 +97,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Jun 2020 12:14:42 +0100 (BST)
-Mark Hills <mark@xwax.org> wrote:
+On Fri, 19 Jun 2020, Giuliano Pochini wrote:
 
-> On Wed, 17 Jun 2020, Giuliano Pochini wrote:
-> [...]
-> > -	pipe->position += step;  /* bytes */
-> > -
-> > -	buffer_bytes = frames_to_bytes(runtime, runtime->buffer_size);
-> > -
-> > -	while (pipe->position >= buffer_bytes)
-> > -		pipe->position -= buffer_bytes;
-> > -
-> >  	return 1;
+> On Wed, 17 Jun 2020 12:14:42 +0100 (BST)
+> Mark Hills <mark@xwax.org> wrote:
 > 
-> I think this risks returning to a case where it concludes nothing
-> advances if the counter advances by a whole buffer?
+[...]
+> > You might be able to do the comparison before wrapping pipe_position, 
+> > but hopefully you'll consider my patch in reply to Takashi has more 
+> > clarity.
+> 
+> Your patch is very interesting. I didn't take into account the idea of 
+> advancing the position by full periods only. If the PCM subsystem hasn't 
+> changed much since I last checked (I wrote the driver many years ago), 
+> it should work fine (and I'm sure you tested it). But I don't know if 
+> something else requires better resolution.
 
-Yes, it can, but you can detect that case checking for step >= period_bytes.
+It's funny, but I didn't take account of the opposite; that there was any 
+merits to polling inbetween the interrupts for better resolution.
 
+Takashi pointed out the need for this and we had some discussion. Check 
+the other thread, where I provided a newer revision of the code.
 
-> You might be able to do the comparison before wrapping pipe_position, but 
-> hopefully you'll consider my patch in reply to Takashi has more clarity.
+The good thing is I think we can have all the things we want and be bug 
+free, just I have to understand the specification.
 
-Your patch is very interesting. I didn't take into account the idea of
-advancing the position by full periods only. If the PCM subsystem hasn't
-changed much since I last checked (I wrote the driver many years ago), it
-should work fine (and I'm sure you tested it). But I don't know if
-something else requires better resolution.
-
+It would be great if you would like to take a look at the newer code for 
+any problems you can see. I was going to run it for a few days then turn 
+it into some patches.
 
 -- 
-Giuliano.
+Mark
