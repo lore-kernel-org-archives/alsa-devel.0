@@ -2,96 +2,69 @@ Return-Path: <SRS0=ChbS=AA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42AF2C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 07:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17BACC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 08:06:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1E782078D
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 07:17:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96B47207FC
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 08:06:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mHcQID2C";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MThCG9Jw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1E782078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c3kTu9hj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96B47207FC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42378166D;
-	Fri, 19 Jun 2020 09:16:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42378166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19781166D;
+	Fri, 19 Jun 2020 10:06:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19781166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592551028;
-	bh=s2yDccPEJmq91XJy+RfVBl9hCa6HE4rg2sdEUftD7C0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mHcQID2Ce5B320oXCeg10ZBXnhTtX3kMF0N9zRgfhljQ+m/k6YkwsSY6R0hdn2VBG
-	 bUob+p6NLaEZHLG1eagIIfQMusCIdLzU5f0F7p70N2hTkkSzAn4G1F279zxj7HelYn
-	 M8cqV2h1XYn0DjGjQquIJzNgoXNw3Cm0jjk9RUVA=
+	s=default; t=1592554011;
+	bh=4+jSU+oBfzLN8cEn2RNN6AwAIbMe2qbkGLK6nh2ym58=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=c3kTu9hjN5zsspSzc8IxWzFsF52rbvHFR5Ze7dl8iue6GQeq+jcfm9viJhdRdimv5
+	 UgTn5Xwmv1TM7Ij/vQ/IXtM+mHyWAG7FWOc9PwpahJRLNlU9lbhD2jLZrk8HaVbwsT
+	 sO/gcr3NslLN+uGlpZPTZMrvM1v2684SleNtuE8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8DA1F80245;
-	Fri, 19 Jun 2020 09:16:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AF0CF80245;
+	Fri, 19 Jun 2020 10:06:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B49DF80252; Fri, 19 Jun 2020 09:16:15 +0200 (CEST)
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com
- [IPv6:2607:f8b0:4864:20::843])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5C278F80252; Fri, 19 Jun 2020 10:05:58 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D31BF80232
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 09:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D31BF80232
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="MThCG9Jw"
-Received: by mail-qt1-x843.google.com with SMTP id e16so6519379qtg.0
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 00:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=xcLqzNszUsRDe3jzmL6Kvi+SK8buR0iM6L0pJ0UQJfo=;
- b=MThCG9Jwd1aI1wlSrnihvC6cp3eKrh1rOv53tY8fvT3TtKvhO4+k+EFdPX6DnBxykT
- HIAUcdBak30KNoee1xQlVGjQw+hElyt19YBKvIplGecD/KWhj8ClCPXrtKXwLneEzPkG
- FX2YRtIycp9pDMfyTHJgBM5aXLXlxwmFiJy+p+G9rjP4s16pUfA8Ed7dtd9yN2DsSr65
- ajQr2uZOX1cSLXZrD31ZkfHZImQMfY35RGJ5SEJylICknu5fwuDtAcUp6VtIPDTgMuIT
- SdzZcm84vhjqCYCVAgG9traNzYrCUBJBeoTdbYa44zPvck6LQiRZDIa5uulw8dHVCqPb
- HDrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=xcLqzNszUsRDe3jzmL6Kvi+SK8buR0iM6L0pJ0UQJfo=;
- b=GAjGLz+JhGqeIxwniI1OoX6GUr9TgUOzMep4/qUvR8n56BpgKPqAozQNAgNpxX5W3v
- nFIO8LwTUP4pCgqCW8unUqMk72JcIkZqRoMJWomTiEvkVo8wK9J4DZj9jflWWdRy1wzd
- nGm8SOAY1fxMizvNx/DTkdpYxOLbHydHcQXtBnK1H/W7fWI7xkQrXiV+qX5ORWxwYSyd
- 3u1lSqFnPwGb8waiw38su6cqeGey6iD9NKUVh0Ea87+pSVwFTIbuEG2v6qPiJX22YVj1
- qK4/ib277owomUFIKgbM/EWmvYC4KHVdhSEy0Ccl+M8asieiZ2CZWxp+za+xOfjk4j51
- cNag==
-X-Gm-Message-State: AOAM533t+kmv3i61El19qFoGF31ZxDkje6ahnTWJnwixSshFdCCmX32c
- 1GyN5p9X8BND0w9YKeoKjEE0tY0u70rgArkBLeo=
-X-Google-Smtp-Source: ABdhPJwbTdL1Xjyp+rNzK2cppzw1kNNdm5CIImL/5YBuAp+LbbOkOHM6SMPUmT6BhKjPwcHCp3aPi+cLdaaqcQP4Te0=
-X-Received: by 2002:ac8:7417:: with SMTP id p23mr2043092qtq.204.1592550967172; 
- Fri, 19 Jun 2020 00:16:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <1592481334-3680-1-git-send-email-shengjiu.wang@nxp.com>
- <20200619054942.GA25856@Asurada-Nvidia>
-In-Reply-To: <20200619054942.GA25856@Asurada-Nvidia>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 19 Jun 2020 15:15:56 +0800
-Message-ID: <CAA+D8APdNAzLyJyf+-FGSyAJtG5_8BVZCJ1+8ALZe_ePySY+rQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_spdif: Add pm runtime function
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73370F800EF
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 10:05:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73370F800EF
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B62A9200FB1;
+ Fri, 19 Jun 2020 10:05:50 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5E779200FA6;
+ Fri, 19 Jun 2020 10:05:46 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E2F67402B1;
+ Fri, 19 Jun 2020 16:05:40 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH v2] ASoC: fsl_spdif: Add pm runtime function
+Date: Fri, 19 Jun 2020 15:54:33 +0800
+Message-Id: <579c0d71e976f34f23f40daa9f1aa06c4baca2f1.1592552389.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,48 +80,243 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Jun 19, 2020 at 1:51 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Thu, Jun 18, 2020 at 07:55:34PM +0800, Shengjiu Wang wrote:
-> > Add pm runtime support and move clock handling there.
-> > Close the clocks at suspend to reduce the power consumption.
-> >
-> > fsl_spdif_suspend is replaced by pm_runtime_force_suspend.
-> > fsl_spdif_resume is replaced by pm_runtime_force_resume.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->
-> LGTM, yet some nits, please add my ack after fixing:
->
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
->
-> > @@ -495,25 +496,10 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
->
-> >
-> > -disable_txclk:
-> > -     for (i--; i >= 0; i--)
-> > -             clk_disable_unprepare(spdif_priv->txclk[i]);
-> >  err:
-> > -     if (!IS_ERR(spdif_priv->spbaclk))
-> > -             clk_disable_unprepare(spdif_priv->spbaclk);
-> > -err_spbaclk:
-> > -     clk_disable_unprepare(spdif_priv->coreclk);
-> > -
-> >       return ret;
->
-> Only "return ret;" remains now. We could clean the goto away.
->
-> > -static int fsl_spdif_resume(struct device *dev)
-> > +static int fsl_spdif_runtime_resume(struct device *dev)
->
-> > +disable_rx_clk:
-> > +     clk_disable_unprepare(spdif_priv->rxclk);
-> > +disable_tx_clk:
-> > +disable_spba_clk:
->
-> Why have two duplicated ones? Could probably drop the 2nd one.
+Add pm runtime support and move clock handling there.
+Close the clocks at suspend to reduce the power consumption.
 
-seems can drop one, will send an update.
+fsl_spdif_suspend is replaced by pm_runtime_force_suspend.
+fsl_spdif_resume is replaced by pm_runtime_force_resume.
 
-best regards
-wang shengjiu
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+changes in v2
+- remove goto in startup()
+- remove goto disable_spba_clk
+- Add Acked-by: Nicolin Chen
+
+ sound/soc/fsl/fsl_spdif.c | 117 ++++++++++++++++++++++----------------
+ 1 file changed, 67 insertions(+), 50 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 5bc0e4729341..5b2689ae63d4 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -16,6 +16,7 @@
+ #include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/regmap.h>
++#include <linux/pm_runtime.h>
+ 
+ #include <sound/asoundef.h>
+ #include <sound/dmaengine_pcm.h>
+@@ -495,29 +496,14 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 	struct platform_device *pdev = spdif_priv->pdev;
+ 	struct regmap *regmap = spdif_priv->regmap;
+ 	u32 scr, mask;
+-	int i;
+ 	int ret;
+ 
+ 	/* Reset module and interrupts only for first initialization */
+ 	if (!snd_soc_dai_active(cpu_dai)) {
+-		ret = clk_prepare_enable(spdif_priv->coreclk);
+-		if (ret) {
+-			dev_err(&pdev->dev, "failed to enable core clock\n");
+-			return ret;
+-		}
+-
+-		if (!IS_ERR(spdif_priv->spbaclk)) {
+-			ret = clk_prepare_enable(spdif_priv->spbaclk);
+-			if (ret) {
+-				dev_err(&pdev->dev, "failed to enable spba clock\n");
+-				goto err_spbaclk;
+-			}
+-		}
+-
+ 		ret = spdif_softreset(spdif_priv);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to soft reset\n");
+-			goto err;
++			return ret;
+ 		}
+ 
+ 		/* Disable all the interrupts */
+@@ -531,18 +517,10 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
+ 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
+ 			SCR_TXFIFO_FSEL_MASK;
+-		for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
+-			ret = clk_prepare_enable(spdif_priv->txclk[i]);
+-			if (ret)
+-				goto disable_txclk;
+-		}
+ 	} else {
+ 		scr = SCR_RXFIFO_FSEL_IF8 | SCR_RXFIFO_AUTOSYNC;
+ 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
+ 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
+-		ret = clk_prepare_enable(spdif_priv->rxclk);
+-		if (ret)
+-			goto err;
+ 	}
+ 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
+ 
+@@ -550,17 +528,6 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(regmap, REG_SPDIF_SCR, SCR_LOW_POWER, 0);
+ 
+ 	return 0;
+-
+-disable_txclk:
+-	for (i--; i >= 0; i--)
+-		clk_disable_unprepare(spdif_priv->txclk[i]);
+-err:
+-	if (!IS_ERR(spdif_priv->spbaclk))
+-		clk_disable_unprepare(spdif_priv->spbaclk);
+-err_spbaclk:
+-	clk_disable_unprepare(spdif_priv->coreclk);
+-
+-	return ret;
+ }
+ 
+ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
+@@ -569,20 +536,17 @@ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
+ 	struct regmap *regmap = spdif_priv->regmap;
+-	u32 scr, mask, i;
++	u32 scr, mask;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		scr = 0;
+ 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
+ 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
+ 			SCR_TXFIFO_FSEL_MASK;
+-		for (i = 0; i < SPDIF_TXRATE_MAX; i++)
+-			clk_disable_unprepare(spdif_priv->txclk[i]);
+ 	} else {
+ 		scr = SCR_RXFIFO_OFF | SCR_RXFIFO_CTL_ZERO;
+ 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
+ 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
+-		clk_disable_unprepare(spdif_priv->rxclk);
+ 	}
+ 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
+ 
+@@ -591,9 +555,6 @@ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
+ 		spdif_intr_status_clear(spdif_priv);
+ 		regmap_update_bits(regmap, REG_SPDIF_SCR,
+ 				SCR_LOW_POWER, SCR_LOW_POWER);
+-		if (!IS_ERR(spdif_priv->spbaclk))
+-			clk_disable_unprepare(spdif_priv->spbaclk);
+-		clk_disable_unprepare(spdif_priv->coreclk);
+ 	}
+ }
+ 
+@@ -1350,6 +1311,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 
+ 	/* Register with ASoC */
+ 	dev_set_drvdata(&pdev->dev, spdif_priv);
++	pm_runtime_enable(&pdev->dev);
++	regcache_cache_only(spdif_priv->regmap, true);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_spdif_component,
+ 					      &spdif_priv->cpu_dai_drv, 1);
+@@ -1365,36 +1328,90 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int fsl_spdif_suspend(struct device *dev)
++#ifdef CONFIG_PM
++static int fsl_spdif_runtime_suspend(struct device *dev)
+ {
+ 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
++	int i;
+ 
+ 	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
+ 			&spdif_priv->regcache_srpc);
+-
+ 	regcache_cache_only(spdif_priv->regmap, true);
+-	regcache_mark_dirty(spdif_priv->regmap);
++
++	clk_disable_unprepare(spdif_priv->rxclk);
++
++	for (i = 0; i < SPDIF_TXRATE_MAX; i++)
++		clk_disable_unprepare(spdif_priv->txclk[i]);
++
++	if (!IS_ERR(spdif_priv->spbaclk))
++		clk_disable_unprepare(spdif_priv->spbaclk);
++	clk_disable_unprepare(spdif_priv->coreclk);
+ 
+ 	return 0;
+ }
+ 
+-static int fsl_spdif_resume(struct device *dev)
++static int fsl_spdif_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
++	int ret;
++	int i;
++
++	ret = clk_prepare_enable(spdif_priv->coreclk);
++	if (ret) {
++		dev_err(dev, "failed to enable core clock\n");
++		return ret;
++	}
++
++	if (!IS_ERR(spdif_priv->spbaclk)) {
++		ret = clk_prepare_enable(spdif_priv->spbaclk);
++		if (ret) {
++			dev_err(dev, "failed to enable spba clock\n");
++			goto disable_core_clk;
++		}
++	}
++
++	for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
++		ret = clk_prepare_enable(spdif_priv->txclk[i]);
++		if (ret)
++			goto disable_tx_clk;
++	}
++
++	ret = clk_prepare_enable(spdif_priv->rxclk);
++	if (ret)
++		goto disable_tx_clk;
+ 
+ 	regcache_cache_only(spdif_priv->regmap, false);
++	regcache_mark_dirty(spdif_priv->regmap);
+ 
+ 	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SRPC,
+ 			SRPC_CLKSRC_SEL_MASK | SRPC_GAINSEL_MASK,
+ 			spdif_priv->regcache_srpc);
+ 
+-	return regcache_sync(spdif_priv->regmap);
++	ret = regcache_sync(spdif_priv->regmap);
++	if (ret)
++		goto disable_rx_clk;
++
++	return 0;
++
++disable_rx_clk:
++	clk_disable_unprepare(spdif_priv->rxclk);
++disable_tx_clk:
++	for (i--; i >= 0; i--)
++		clk_disable_unprepare(spdif_priv->txclk[i]);
++	if (!IS_ERR(spdif_priv->spbaclk))
++		clk_disable_unprepare(spdif_priv->spbaclk);
++disable_core_clk:
++	clk_disable_unprepare(spdif_priv->coreclk);
++
++	return ret;
+ }
+-#endif /* CONFIG_PM_SLEEP */
++#endif /* CONFIG_PM */
+ 
+ static const struct dev_pm_ops fsl_spdif_pm = {
+-	SET_SYSTEM_SLEEP_PM_OPS(fsl_spdif_suspend, fsl_spdif_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
++	SET_RUNTIME_PM_OPS(fsl_spdif_runtime_suspend, fsl_spdif_runtime_resume,
++			   NULL)
+ };
+ 
+ static const struct of_device_id fsl_spdif_dt_ids[] = {
+-- 
+2.21.0
+
