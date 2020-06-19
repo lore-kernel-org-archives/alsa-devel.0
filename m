@@ -2,80 +2,82 @@ Return-Path: <SRS0=ChbS=AA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FD46C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 16:18:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D745C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 16:19:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF106217A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 16:18:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDC972168B
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 16:19:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pb/ziq9i";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k5YSysoM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF106217A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TdxysPdg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDC972168B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CFF384C;
-	Fri, 19 Jun 2020 18:17:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CFF384C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 608D2166C;
+	Fri, 19 Jun 2020 18:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 608D2166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592583522;
-	bh=lrCRWa0UIx9dDmqzEpeeKTZbbW/BkHejRfk5aTaPA0s=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592583575;
+	bh=pTbEMXhwsTdeD6ghvEdM6msdDqjBkimy2GBYTX3WE3M=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pb/ziq9iOYRHnpDpk+3sTon4fdD0ehf4QuOaDibX2QekJjxjV9wWpvi0ACY73Bs4k
-	 h9Q+PNUH9jo8fXa0/IO2BgKm4UkDV8Yy25QwWIjFlbtY1D5XL/0nqn2tdcRX1OvuMR
-	 YVNRoFwBmgTngPIDR+GpbqY6eaj6yRnxfavss708=
+	b=TdxysPdgjG/2olOSSNXxYDHXli7Px6SejgbOiEU4hdNnowWE12uOy5sTBYczaVPWl
+	 IffcMXYP1MLxgYsFrmjVAia58FiDqOKHB5fgmmH763GjgnZ97ihjTiTdq11ubS1uaQ
+	 OJHRIsK3leSPcobCeu6cOsY3DK3d58+BY9eq2g8c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1249F80245;
-	Fri, 19 Jun 2020 18:17:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54483F8025F;
+	Fri, 19 Jun 2020 18:18:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CBE9F80252; Fri, 19 Jun 2020 18:17:49 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3C81F800EF
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 18:17:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3C81F800EF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="k5YSysoM"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 8FD52F8028A; Fri, 19 Jun 2020 18:18:39 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CE0612168B;
- Fri, 19 Jun 2020 16:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592583459;
- bh=lrCRWa0UIx9dDmqzEpeeKTZbbW/BkHejRfk5aTaPA0s=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=k5YSysoMqSjDMlPIERn0w3HYpHc/5pJvaQU1T6Tmoqtt/HbjZy1HVKEi1x5Xd26MV
- jQFPBYsIA4ThGvHdkgY39OKVPdIuQDDhXS0E1k4oK++yDMgCHffz7moWCJzdCpAOGK
- RYaE5sOP2/Azu4Mt+RBGBj3snX+LABK8PjZdHYis=
-Date: Fri, 19 Jun 2020 17:17:37 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 01/16] ASoC: soc-component: merge
- snd_soc_component_read() and snd_soc_component_read32()
-Message-ID: <20200619161737.GA6251@sirena.org.uk>
-References: <87tuzb4mjg.wl-kuninori.morimoto.gx@renesas.com>
- <87sgev4mfl.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D3BCF800EF
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 18:18:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D3BCF800EF
+IronPort-SDR: 6sfokLTcTY/UDlKs/ku4uB6M6N8dkTVuM9j4RJcD4pid8g64/Y58yffVHcqWFp4ybjARoKdZ2O
+ gkF4aHj0SwyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9657"; a="122734129"
+X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; d="scan'208";a="122734129"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jun 2020 09:18:30 -0700
+IronPort-SDR: ZPn+sQrS3xQi+iXrTB+gfnRA8AalPx+1noM0YyA21HwCgONXv/WnAFbVTiOcscGTLkwMixmGsV
+ PJG4MhCd6/fg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; d="scan'208";a="318155770"
+Received: from lewest-mobl1.amr.corp.intel.com (HELO [10.255.230.148])
+ ([10.255.230.148])
+ by FMSMGA003.fm.intel.com with ESMTP; 19 Jun 2020 09:18:30 -0700
+Subject: Re: [PATCH 1/3] ALSA: compress: document the compress audio state
+ machine
+To: Vinod Koul <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>
+References: <20200619045449.3966868-1-vkoul@kernel.org>
+ <20200619045449.3966868-2-vkoul@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8e322574-14bc-aaaa-5fdb-751cb8b97fff@linux.intel.com>
+Date: Fri, 19 Jun 2020 09:22:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
-Content-Disposition: inline
-In-Reply-To: <87sgev4mfl.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: Q:	Are we not men?
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <20200619045449.3966868-2-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,35 +94,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> +
+> +                                        +----------+
+> +                                        |          |
+> +                                        |   OPEN   |
+> +                                        |          |
+> +                                        +----------+
+> +                                             |
+> +                                             |
+> +                                             | compr_set_params()
+> +                                             |
+> +                                             V
+> +                                        +----------+
+> +                compr_drain_notify()    |          |
+> +              +------------------------>|   SETUP  |
+> +              |                         |          |
+> +              |                         +----------+
+> +              |                              |
+> +              |                              |
+> +              |                              | compr_write()
+> +              |                              |
+> +              |                              V
+> +              |                         +----------+
+> +              |                         |          |
+> +              |                         |  PREPARE |
+> +              |                         |          |
+> +              |                         +----------+
+> +              |                              |
+> +              |                              |
+> +              |                              | compr_start()
+> +              |                              |
+> +              |                              V
+> +        +----------+                    +----------+     compr_pause()      +----------+
+> +        |          |                    |          |----------------------->|          |
+> +        |  DRAIN   |<-------------------|  RUNNING |                        |  PAUSE   |
+> +        |          |                    |          |<-----------------------|          |
+> +        +----------+                    +----------+     compr_resume()     +----------+
+> +              |                              |
+> +              |                              |
+> +              |                              | compr_free()
+> +              |                              |
+> +              |                              V
+> +              |                         +----------+
+> +              |     compr_free()        |          |
+> +              +------------------------>|          |
+> +                                        |   STOP   |
+> +                                        |          |
+> +                                        +----------+
 
-On Tue, Jun 16, 2020 at 02:19:41PM +0900, Kuninori Morimoto wrote:
 
-> -	snd_soc_component_read(component, PW_MGMT1, &mgmt1);
-> -	snd_soc_component_read(component, PW_MGMT3, &mgmt3);
-> +	mgmt1 = snd_soc_component_read(component, PW_MGMT1);
-> +	mgmt3 = snd_soc_component_read(component, PW_MGMT3);
+The STOP state doesn't seem quite right to me, sorry.
 
-It's a bit sad that we're loosing the possibility of error handling with
-this stuff, but OTOH looking at how much useful error handling we're
-actually doing here it's hard to argue that it's much of a loss.  Ho
-hum.
+the direction of the DRAIN-STOP comp_free() arrow seems wrong? Of if it 
+is correct, then something's missing to exit the STOP state so that the 
+stream can be opened again.
 
---UlVJffcvxoiEqYs2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7s5SAACgkQJNaLcl1U
-h9Bkiwf7Bf1cYWscUKuukv4CmlUNVfcQp3BtG38eTyOnWHTul7Lt2uAcuxM5W+YT
-BLVvnbVjXBuoh5i6UxYHzANWIOhceoYOFdTgrV6kjGowt8HRMAcEAOpBFoHx2p79
-dLsPHZwPC4wez8q5Roqt3ziGaN0Z12vIn9gRlHKigVwEOUHKuepDX9XVldz5Nrw6
-dHdAVwWDUxQbDEV+nYlwiAU3SCnxpUmhvg7BSdnGAL6dxR6XSN1MuDdlozq7TjK3
-qSCnuUITkRJuWl27CLl/KhJmWe28TFdjfHT5++O3JME5d9Fm50xCUbOsysM4wu7y
-0GCyqoUovPU0xg8QUCP+gl1NiU04MQ==
-=/KdC
------END PGP SIGNATURE-----
-
---UlVJffcvxoiEqYs2--
