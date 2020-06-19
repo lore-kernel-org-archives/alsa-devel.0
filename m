@@ -2,86 +2,105 @@ Return-Path: <SRS0=ChbS=AA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2CE9C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 21:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD3BBC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 21:29:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79D6C217BA
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 21:22:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 36EFD21941
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 21:29:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BAyJNowi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="slqG5au9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79D6C217BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EepUhHtP";
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="MJuy2uGZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36EFD21941
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D41F81668;
-	Fri, 19 Jun 2020 23:21:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D41F81668
+	by alsa0.perex.cz (Postfix) with ESMTPS id C36481668;
+	Fri, 19 Jun 2020 23:28:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C36481668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592601764;
-	bh=jYUh1OvYrshMJqDzcix8yeNN5XKDASTudD7yHVLHVK4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BAyJNowi4oLP2OmzuOyrahLLqrm4GOcC07aRQKubv3gNurwpnMHc4SLJoRLCMO3tN
-	 1KiOGrlcZNen9UldN/y2qbYxFjukwOI82dHrxpvTTq2QFuWkRLUnkTqjnICgoxz/ws
-	 +hI0KqQBQ1wCGUO+RiqFjkScZ52SfMNrPwnH8CuY=
+	s=default; t=1592602165;
+	bh=X5kEV9j1bvBSqSo0nAOX/0dJBmixJOYPc3lEpSp3TzQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EepUhHtP+8Q7XKZCq8UZNgydSvhcd4LuIhOueDELmv/3PiqIPmuvyxiA9vxJrHEhI
+	 e4y7rJfKc3gzER0+ZzcbaozQ9HO0VnKyTllnkyBhw1bWs4IGzkjurI1TFwRlUlfdqi
+	 P6fFbsk1xlNlgutjnTONGsazlidEESAlEkik7YF0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A067F80245;
-	Fri, 19 Jun 2020 23:21:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43FBFF80245;
+	Fri, 19 Jun 2020 23:28:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E554AF80252; Fri, 19 Jun 2020 23:21:52 +0200 (CEST)
-Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
+ id 199ECF80252; Fri, 19 Jun 2020 23:28:31 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17A18F800EF
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 23:21:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17A18F800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83F3FF800EF
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 23:28:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83F3FF800EF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
- header.b="slqG5au9"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
- ; s=a;
- h=Sender:Content-Type:MIME-Version:References:Message-ID:In-Reply-To:
- Subject:cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=8jixx48ROAprPrsxlN+g/qmKQ2/7h41ZfAVylQvQKgg=; b=slqG5au9BDPG7pe79H9808afFH
- MvqXQcV9IdbYGEXtnZIN7OUoX+kQDr20vTt6khzBb7E722gzz+J70XCP6rrayyWPQMTdl0Mn/RwOU
- YW4Xbd+Vaf1NAMYIbO3snVO4WOdYYjq8QGfOnQHFtdayGkAjd/xV/xK6oM4pJsLYikky1CtP420sj
- tBwFUQqgBTVcoDHrLgZQ1s6NLLK3VPs7ZCMrHbU5bGvu4qsLgaHM4zjs7eqx6oQOdZGQ7Q1LNsU4d
- nPumM2hHfT00dLDtTtEIVVBKAYKq8IOQTTD4xvf3uo9xMrj3qBIgBHrUj3g14Z2DHR4wGx3eFfMZC
- 9rhpE3Rg==;
-Received: from [2001:470:1d21:0:6e15:36bd:8667:43d5] (helo=tamla.localdomain)
- by jazz.pogo.org.uk with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93.0.4 (FreeBSD))
- (envelope-from <mark@xwax.org>)
- id 1jmOSH-00051k-GZ; Fri, 19 Jun 2020 22:21:45 +0100
-Received: from mark (helo=localhost)
- by tamla.localdomain with local-esmtp (Exim 4.92.3)
- (envelope-from <mark@tamla.localdomain>)
- id 1jmOSQ-0003fW-Mu; Fri, 19 Jun 2020 22:21:54 +0100
-Date: Fri, 19 Jun 2020 22:21:54 +0100 (BST)
-From: Mark Hills <mark@xwax.org>
-To: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [PATCH 3/3] echoaudio: Address bugs in the interrupt handling
-In-Reply-To: <20200619215655.07b6f3ed@wc1>
-Message-ID: <2006192200200.12984@tamla.localdomain>
-References: <2006161409060.30751@stax.localdomain>
- <20200616131743.4793-3-mark@xwax.org> <20200617000134.60c5e2b5@wc1>
- <2006171158070.2561@stax.localdomain> <20200619215655.07b6f3ed@wc1>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="MJuy2uGZ"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 05JLQewp032439; Fri, 19 Jun 2020 16:28:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=RGBYEOquVFiP9E+QCrFCPTeGKNNE7Y2tiQeVJ5VAMe0=;
+ b=MJuy2uGZOD0+yHBXWBOI60Ee2ARNBdUoTDpMnNDlCXsvy7PDUDf1p3tBvl/bUMm1s3DX
+ H6y4EbANWfCWvPKfRIiX3qLhSVoTF8trXOEX0E2f41aio4TwyUuZn3CptqThqjV2hZW+
+ oUIQoFmeK6mzX95e52ormk4D76npxuZY7u8AnsCDELTx9YtavfrZzCkG8TSInJWBFBT+
+ 6PPEzUzTvenfd+Bj42HdgR9zNE9xKTGwAXeXyBlK+R4dZKjDBFqK3yWbVxSXyOhWIwGP
+ roPwrtyKbGRXhwDB6AFR3x2kCyY7k/NqlS/THvw2d7Qq8u7WVF5kseA477UQD01PqiTa WA== 
+Authentication-Results: ppops.net;
+ spf=pass smtp.mailfrom=David.Rhodes@cirrus.com
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 31q664wsue-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 19 Jun 2020 16:28:21 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 19 Jun
+ 2020 22:28:19 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 19 Jun 2020 22:28:19 +0100
+Received: from localhost.localdomain (unknown [141.131.234.189])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DB6272C8;
+ Fri, 19 Jun 2020 21:28:17 +0000 (UTC)
+From: David Rhodes <david.rhodes@cirrus.com>
+To: <ckeepax@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+ <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: wm_adsp: Add controls for calibration and diagnostic FW
+Date: Fri, 19 Jun 2020 16:26:51 -0500
+Message-ID: <20200619212651.2739-1-david.rhodes@cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-SPF-Result: pass
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com
+ include:_spf1.cirrus.com include:_spf2.cirrus.com include:_spf3.cirrus.com
+ -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
+ bulkscore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0 phishscore=0
+ adultscore=0 suspectscore=2 lowpriorityscore=0 clxscore=1011
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006190151
+Cc: Vlad Karpovich <Vlad.Karpovich@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,34 +116,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Jun 2020, Giuliano Pochini wrote:
+From: Vlad Karpovich <Vlad.Karpovich@cirrus.com>
 
-> On Wed, 17 Jun 2020 12:14:42 +0100 (BST)
-> Mark Hills <mark@xwax.org> wrote:
-> 
-[...]
-> > You might be able to do the comparison before wrapping pipe_position, 
-> > but hopefully you'll consider my patch in reply to Takashi has more 
-> > clarity.
-> 
-> Your patch is very interesting. I didn't take into account the idea of 
-> advancing the position by full periods only. If the PCM subsystem hasn't 
-> changed much since I last checked (I wrote the driver many years ago), 
-> it should work fine (and I'm sure you tested it). But I don't know if 
-> something else requires better resolution.
+Exposed additional mixer controls to select calibration or diagnostic
+firmware.
 
-It's funny, but I didn't take account of the opposite; that there was any 
-merits to polling inbetween the interrupts for better resolution.
+'Calibration' --> chip-dsp<id>-spk-cali.wmfw (.bin)
+'Diagnostic'  --> chip-dsp<id>-spk-diag.wmfw (.bin)
 
-Takashi pointed out the need for this and we had some discussion. Check 
-the other thread, where I provided a newer revision of the code.
+Signed-off-by: Vlad Karpovich <Vlad.Karpovich@cirrus.com>
+Signed-off-by: David Rhodes <david.rhodes@cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-The good thing is I think we can have all the things we want and be bug 
-free, just I have to understand the specification.
-
-It would be great if you would like to take a look at the newer code for 
-any problems you can see. I was going to run it for a few days then turn 
-it into some patches.
-
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 4e63defa6857..d9d2bb5a1945 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -363,9 +363,11 @@ static void wm_adsp_buf_free(struct list_head *list)
+ #define WM_ADSP_FW_ASR      7
+ #define WM_ADSP_FW_TRACE    8
+ #define WM_ADSP_FW_SPK_PROT 9
+-#define WM_ADSP_FW_MISC     10
++#define WM_ADSP_FW_SPK_CALI 10
++#define WM_ADSP_FW_SPK_DIAG 11
++#define WM_ADSP_FW_MISC     12
+ 
+-#define WM_ADSP_NUM_FW      11
++#define WM_ADSP_NUM_FW      13
+ 
+ static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
+ 	[WM_ADSP_FW_MBC_VSS] =  "MBC/VSS",
+@@ -378,6 +380,8 @@ static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
+ 	[WM_ADSP_FW_ASR] =      "ASR Assist",
+ 	[WM_ADSP_FW_TRACE] =    "Dbg Trace",
+ 	[WM_ADSP_FW_SPK_PROT] = "Protection",
++	[WM_ADSP_FW_SPK_CALI] = "Calibration",
++	[WM_ADSP_FW_SPK_DIAG] = "Diagnostic",
+ 	[WM_ADSP_FW_MISC] =     "Misc",
+ };
+ 
+@@ -612,6 +616,8 @@ static const struct {
+ 		.caps = trace_caps,
+ 	},
+ 	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
++	[WM_ADSP_FW_SPK_CALI] = { .file = "spk-cali" },
++	[WM_ADSP_FW_SPK_DIAG] = { .file = "spk-diag" },
+ 	[WM_ADSP_FW_MISC] =     { .file = "misc" },
+ };
+ 
 -- 
-Mark
+2.25.1
+
