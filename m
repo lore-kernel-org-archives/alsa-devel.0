@@ -2,82 +2,67 @@ Return-Path: <SRS0=ChbS=AA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35B40C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 16:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA6CFC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 17:22:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5A872168B
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 16:20:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BB91208DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 17:22:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iCk1z6nN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5A872168B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qwi5PUFd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BB91208DB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49F611687;
-	Fri, 19 Jun 2020 18:19:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49F611687
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9D8D166D;
+	Fri, 19 Jun 2020 19:21:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D8D166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592583623;
-	bh=Ssq+EIXwoS0Z9cTjvOy2UvjHlg17fb+uGvRtAL1XWw0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1592587342;
+	bh=uPZPd0pnnTwa5nIFX781TvbWIWvNhn/Gt4CImRc3uD8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iCk1z6nN3j9HIHXkgfsjTV0hMpvh1TJOL6nzw7NOR48Dt61uBokXfaAQ6npYheGmL
-	 0XkwpSVoL3b6Csxzz073ZM+3d5tS2biSgXc5vmapAcFxbA1OrpohEyQ/rfGd7XiE7y
-	 OApYad2iN/z9XFvHOZyBXGZK4tuR1jXG5VPuyjFI=
+	b=Qwi5PUFdlXfTzuAG3peFTJMnJZVDzjvidLHf0NIpjFqgBjfh9sMAkDTkqZZrdM+6X
+	 tg+lcU6RIA8Y2SPMfuQCLo4PinKdyb4n9l3IW8WLpLKbecPwGr7/01xRxOGo/rX+1e
+	 RO/MfuhssZbMzoU+sZ5mRw9s6Xmcglsdpgp9rZ88=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 560C3F8028A;
-	Fri, 19 Jun 2020 18:18:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47F0AF80232;
+	Fri, 19 Jun 2020 19:21:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC7AAF80271; Fri, 19 Jun 2020 18:18:40 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 48FA9F80252; Fri, 19 Jun 2020 19:21:30 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C756F80252
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 18:18:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C756F80252
-IronPort-SDR: 8H89AbtvHN6aPV8F1hvBIHMmtW4Rng9HUPSZ33Fgblotlj84nSEbPCbYYIMJS9w2mV9XTIfqok
- MA2BGk0cC/PA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9657"; a="122734141"
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; d="scan'208";a="122734141"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jun 2020 09:18:32 -0700
-IronPort-SDR: /DmFc+3cPqdIRaz3sIKgfeJEkOARq2UBRc1SRgPSYVfFs06DmDEwDZlGOBMJJY15Bto79enO74
- 0qF3y6avS/cA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; d="scan'208";a="318155789"
-Received: from lewest-mobl1.amr.corp.intel.com (HELO [10.255.230.148])
- ([10.255.230.148])
- by FMSMGA003.fm.intel.com with ESMTP; 19 Jun 2020 09:18:31 -0700
-Subject: Re: [PATCH 2/3] ALSA: compress: document the compress gapless audio
- state machine
-To: Vinod Koul <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>
-References: <20200619045449.3966868-1-vkoul@kernel.org>
- <20200619045449.3966868-3-vkoul@kernel.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5c878ccf-43dd-4e13-aa6b-a6cb1e82af72@linux.intel.com>
-Date: Fri, 19 Jun 2020 09:27:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200619045449.3966868-3-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id E38CDF80232
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 19:21:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E38CDF80232
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id CD973AB64;
+ Fri, 19 Jun 2020 17:21:25 +0000 (UTC)
+Date: Fri, 19 Jun 2020 19:21:25 +0200
+Message-ID: <s5heeqbt1ii.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Lock-free dmix considered harmful
+In-Reply-To: <e69389e9-2b03-7ef1-8ea6-144f8285b80a@perex.cz>
+References: <HE1P191MB015371D61AF81262BD242966E2BD0@HE1P191MB0153.EURP191.PROD.OUTLOOK.COM>
+ <s5hzha4dom3.wl-tiwai@suse.de>
+ <e69389e9-2b03-7ef1-8ea6-144f8285b80a@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Maarten Baert <maarten-baert@hotmail.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,41 +78,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 19 May 2020 15:51:56 +0200,
+Jaroslav Kysela wrote:
+> 
+> Dne 19. 05. 20 v 15:46 Takashi Iwai napsal(a):
+> >
+> >> Because of these reasons I think it would be better to drop the lock-free implementation entirely and just use the existing non-concurrent architecture-independent implementation from pcm_dmix_generic.c. Aside from being faster, it would also eliminate a lot of architecture-dependent code and inline assembly. Should I submit a patch for this?
+> >
+> > The advantage of lockless dmix implementation isn't about its CPU usage
+> > but the nature where a stream isn't prevented by other streams, which
+> > assures the very low latency, too.  That is, with the generic dmix, a
+> > stream can be still halted when another stream stalls in the middle,
+> > and there is no way to recover from it.
+> >
+> > So, IMO, we can start with a dynamic configuration to choose the
+> > behavior and add a configure option to choose the implementations.
+> > The default behavior should be still an open question, though.
+> 
+> I fully agree here.
 
-> +For Gapless, we move from running state to partial drain and back, along
-> +with setting of meta_data and signalling for next track ::
-> +
-> +
-> +                                        +----------+
-> +                compr_drain_notify()    |          |
-> +              +------------------------>|  RUNNING |
-> +              |                         |          |
-> +              |                         +----------+
-> +              |                              |
-> +              |                              |
-> +              |                              | compr_next_track()
-> +              |                              |
-> +              |                              V
-> +              |                         +----------+
-> +              |                         |          |
-> +              |                         |NEXT_TRACK|
-> +              |                         |          |
-> +              |                         +----------+
-> +              |                              |
-> +              |                              |
-> +              |                              | compr_partial_drain()
-> +              |                              |
-> +              |                              V
-> +              |                         +----------+
-> +              |                         |          |
-> +              +------------------------ | PARTIAL_ |
-> +                                        |  DRAIN   |
-> +                                        +----------+
+OK, I implemented a couple of patches for this.
 
-May I suggest having a single state machine, not a big one and an 
-additional partial one. It would help explain why in one case 
-compr_drain_notify() triggers a transition to RUNNING while in the other 
-one it goes to SETUP.
+The default behavior is a bigger question and I chose disabling the
+lockless for less CPU usage.  But it's selectable via configure option
+or the runtime asoundrc setup (there is already an option 
+dmix.direct_memory_access).
 
-I realize it's more complicated to edit but it'd be easier on 
-reviewers/users.
+
+Takashi
