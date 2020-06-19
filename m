@@ -2,67 +2,58 @@ Return-Path: <SRS0=ChbS=AA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA6CFC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 17:22:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE380C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 17:23:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BB91208DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 17:22:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82ACF208D5
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jun 2020 17:23:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qwi5PUFd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BB91208DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C/HlHMAD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82ACF208D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9D8D166D;
-	Fri, 19 Jun 2020 19:21:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D8D166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E9D01674;
+	Fri, 19 Jun 2020 19:22:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E9D01674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592587342;
-	bh=uPZPd0pnnTwa5nIFX781TvbWIWvNhn/Gt4CImRc3uD8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Qwi5PUFdlXfTzuAG3peFTJMnJZVDzjvidLHf0NIpjFqgBjfh9sMAkDTkqZZrdM+6X
-	 tg+lcU6RIA8Y2SPMfuQCLo4PinKdyb4n9l3IW8WLpLKbecPwGr7/01xRxOGo/rX+1e
-	 RO/MfuhssZbMzoU+sZ5mRw9s6Xmcglsdpgp9rZ88=
+	s=default; t=1592587396;
+	bh=fga6MceDVJGFHbVBbatca2gOOAjJV1SWlMb+Rr8S4lk=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=C/HlHMADCuDlklqSjOHDlZX4cx6uGuBcNxe1CbquKSpgiTTlkcapELm4JeQilTa1e
+	 KBrfDJdo0LlnGzZe74C2inkBNa5zV87BPb42x3Gzh0WrLrZT77zxl87DyN/ymuNynx
+	 isjkiXfXI0PNLD/vYYbpbHct0/VX3amZVBldi+Ps=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47F0AF80232;
-	Fri, 19 Jun 2020 19:21:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF770F8025F;
+	Fri, 19 Jun 2020 19:22:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48FA9F80252; Fri, 19 Jun 2020 19:21:30 +0200 (CEST)
+ id 08A60F80271; Fri, 19 Jun 2020 19:22:20 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E38CDF80232
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 19:21:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E38CDF80232
+ by alsa1.perex.cz (Postfix) with ESMTPS id 324C8F80245
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 19:22:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 324C8F80245
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CD973AB64;
- Fri, 19 Jun 2020 17:21:25 +0000 (UTC)
-Date: Fri, 19 Jun 2020 19:21:25 +0200
-Message-ID: <s5heeqbt1ii.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id E33ADAB64
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2020 17:22:12 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Lock-free dmix considered harmful
-In-Reply-To: <e69389e9-2b03-7ef1-8ea6-144f8285b80a@perex.cz>
-References: <HE1P191MB015371D61AF81262BD242966E2BD0@HE1P191MB0153.EURP191.PROD.OUTLOOK.COM>
- <s5hzha4dom3.wl-tiwai@suse.de>
- <e69389e9-2b03-7ef1-8ea6-144f8285b80a@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Maarten Baert <maarten-baert@hotmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH alsa-lib] conf: Add /usr/etc to the default search paths
+Date: Fri, 19 Jun 2020 19:22:12 +0200
+Message-Id: <20200619172212.26735-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,31 +69,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 May 2020 15:51:56 +0200,
-Jaroslav Kysela wrote:
-> 
-> Dne 19. 05. 20 v 15:46 Takashi Iwai napsal(a):
-> >
-> >> Because of these reasons I think it would be better to drop the lock-free implementation entirely and just use the existing non-concurrent architecture-independent implementation from pcm_dmix_generic.c. Aside from being faster, it would also eliminate a lot of architecture-dependent code and inline assembly. Should I submit a patch for this?
-> >
-> > The advantage of lockless dmix implementation isn't about its CPU usage
-> > but the nature where a stream isn't prevented by other streams, which
-> > assures the very low latency, too.  That is, with the generic dmix, a
-> > stream can be still halted when another stream stalls in the middle,
-> > and there is no way to recover from it.
-> >
-> > So, IMO, we can start with a dynamic configuration to choose the
-> > behavior and add a configure option to choose the implementations.
-> > The default behavior should be still an open question, though.
-> 
-> I fully agree here.
+There's been some recent action to move the distribution-default setup
+from /etc to /usr/etc, and we should follow that, too.
 
-OK, I implemented a couple of patches for this.
+This patch adds /usr/etc/alsa.conf.d and /usr/etc/alsa.conf to the
+default search paths.
 
-The default behavior is a bigger question and I chose disabling the
-lockless for less CPU usage.  But it's selectable via configure option
-or the runtime asoundrc setup (there is already an option 
-dmix.direct_memory_access).
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/conf/alsa.conf | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
+index 18427ec6c4c6..aea1fe24f73c 100644
+--- a/src/conf/alsa.conf
++++ b/src/conf/alsa.conf
+@@ -8,6 +8,8 @@
+ 	{
+ 		func load
+ 		files [
++			"/usr/etc/alsa/conf.d"
++			"/usr/etc/asound.conf"
+ 			"/etc/alsa/conf.d"
+ 			"/etc/asound.conf"
+ 			"~/.asoundrc"
+-- 
+2.16.4
 
-Takashi
