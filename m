@@ -7,52 +7,53 @@ X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 824C5C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 21 Jun 2020 13:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D2ABC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 21 Jun 2020 15:09:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 370BC248F7
-	for <alsa-devel@archiver.kernel.org>; Sun, 21 Jun 2020 13:18:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBAB3251E8
+	for <alsa-devel@archiver.kernel.org>; Sun, 21 Jun 2020 15:09:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oIU/y/im"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 370BC248F7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kHxITJRc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBAB3251E8
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B43221672;
-	Sun, 21 Jun 2020 15:17:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B43221672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CEE21675;
+	Sun, 21 Jun 2020 17:08:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CEE21675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592745528;
-	bh=5M8SPlj3qrZ5Sj+x+Y3Q5M/Gig9xHnM6TrNvaj90Mv8=;
+	s=default; t=1592752145;
+	bh=ihOFjtUHHPE5BIh7d6mh3e+CrCMqXXusOJZCWYlYtCg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oIU/y/imki7rqlFIYlXhz54qy17tFPKhFRjtP7BifAGDvb5zZPEOUuIasXHkNsH24
-	 zUxOapxt3U6uxM4h/kVku12+CQGAdHo8CUPuyRHhpzOZdjWUSAO/6g9/HXdRGeuqXD
-	 ipvoAGaXKJeXjRYqyMtWGfAjujIGjOOJ9JEa44kk=
+	b=kHxITJRctSmM8lSyJSoSN7CcghrBkxgSoN4u2RSlG5LolclYOtjNWqkqtSZmM4beU
+	 B2Rxd2jXwG3UzoxhXpyefUO83A9GWJCK/ApSsY8XhYBhw6rQxTogzt5HC7qm+KkOSt
+	 m7HfldrsTvu31/A62lgZGOxfexyBFd9hNiPVAiCA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46399F800EB;
-	Sun, 21 Jun 2020 15:17:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44D30F80218;
+	Sun, 21 Jun 2020 17:08:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F185F80234; Sun, 21 Jun 2020 15:17:50 +0200 (CEST)
+ id 7A524F80234; Sun, 21 Jun 2020 17:08:08 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 708BCF800D0
- for <alsa-devel@alsa-project.org>; Sun, 21 Jun 2020 15:17:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 708BCF800D0
+ by alsa1.perex.cz (Postfix) with ESMTP id A7697F8010E
+ for <alsa-devel@alsa-project.org>; Sun, 21 Jun 2020 17:08:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7697F8010E
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1592745466367408991-webhooks-bot@alsa-project.org>
-References: <1592745466367408991-webhooks-bot@alsa-project.org>
-Subject: alsa-gobject: fix indentation
-Message-Id: <20200621131750.6F185F80234@alsa1.perex.cz>
-Date: Sun, 21 Jun 2020 15:17:50 +0200 (CEST)
+In-Reply-To: <1592752084904021978-webhooks-bot@alsa-project.org>
+References: <1592752084904021978-webhooks-bot@alsa-project.org>
+Subject: alsa-gobject: add API to get current protocol version in each
+ interface
+Message-Id: <20200621150808.7A524F80234@alsa1.perex.cz>
+Date: Sun, 21 Jun 2020 17:08:08 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,10 +69,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #43 was opened from takaswie:
+alsa-project/alsa-gobject pull request #44 was opened from takaswie:
 
-This patchset is trivial to apply fixes for 4-spaces indentation.
+In UAPI of Linux sound subsystem, interfaces support protocol versioning. This patchset adds API to get current protocol version in each interface.
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/43
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/43.patch
+Request URL   : https://github.com/alsa-project/alsa-gobject/pull/44
+Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/44.patch
 Repository URL: https://github.com/alsa-project/alsa-gobject
