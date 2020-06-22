@@ -6,86 +6,89 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39749C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 17:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 611CEC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 18:00:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCFA720738
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 17:58:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DF0EC206EB
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 18:00:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LdZqWNac";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wYyb/N05"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCFA720738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GbC6opeP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oijtiEOf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF0EC206EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F8CF16F7;
-	Mon, 22 Jun 2020 19:57:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F8CF16F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5778016F4;
+	Mon, 22 Jun 2020 19:59:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5778016F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592848707;
-	bh=Lt1P6AdsHmbhP2XV63ccQ6jG8uBCvmShpdyEWEYmjI8=;
+	s=default; t=1592848822;
+	bh=6dCK9DzfZgFydlzh6Jy+FIkFpt1Gd4f4rU7VW1IR+YA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LdZqWNacysnmP2wUs99b6pFUdmDjADjUVRD4wDNAvtNfUfQ9qg7dlh4dwwXtijSKH
-	 qks3TW1hSpT19RaKr2kxr5CAGEWfcYlZHREdIimhmIUiY3O1gxVvX78La3Gof48P1B
-	 4Refg0Fmg66HM5oEg5RShnA3s2o6KJ+nWUGt3quY=
+	b=GbC6opePhtxHlFC6CjVbRlBFpOKTZxP/37xDPSJIMWBNsC/9Y4OZGpVfgRUu3FbJW
+	 xdeFE2n0IPwhfLrwjaRA6WKes5W6KMcVTQx6qwZCHZN1ng56uCXyWgOslWNVrcrPEF
+	 Y2cv+sFFEUsrVgW40QqDVcClkE4P8ELjOtk/riVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1EADF8015A;
-	Mon, 22 Jun 2020 19:57:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7A96F8010E;
+	Mon, 22 Jun 2020 19:59:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B15A1F8015B; Mon, 22 Jun 2020 19:57:35 +0200 (CEST)
+ id E7DB9F8015B; Mon, 22 Jun 2020 19:59:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F267FF8010D
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 19:57:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F267FF8010D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92F68F8010E
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 19:59:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92F68F8010E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="wYyb/N05"
+ header.b="oijtiEOf"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id F0D7D2075A;
- Mon, 22 Jun 2020 17:57:28 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 93EF720738;
+ Mon, 22 Jun 2020 17:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592848649;
- bh=Lt1P6AdsHmbhP2XV63ccQ6jG8uBCvmShpdyEWEYmjI8=;
+ s=default; t=1592848766;
+ bh=6dCK9DzfZgFydlzh6Jy+FIkFpt1Gd4f4rU7VW1IR+YA=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=wYyb/N05uI8WHgJV1KE7C0JnHCvn8PQh/8jSeAnsF3wIXS0NFdG+HIvSMbEQntwyc
- m0VTgK20TYgLFCjQGJvgv1fwj38lNGON955q7nVUEKiyWYTE/VT/FjL2ToS69m/h0v
- KhEzV90KgXeSAL2ZgjrVRwu5NVwWO4/x27gjwhV0=
-Date: Mon, 22 Jun 2020 18:57:27 +0100
+ b=oijtiEOf1GF6w3Hq2d+oANQfRlAOd+DgeStto6Vd0u+RodCO8SwrtyoFfPNqALjEX
+ C1AMTBunKUmffJUGIHiT9RmYuvWUSUkx3AaLfAEn5RSJwCPm/KADw0UIQiWExL8OVp
+ GpapQDQwpN52R6nqmlzavZHpoIzHembcY3p/5qIw=
+Date: Mon, 22 Jun 2020 18:59:23 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.7 004/388] ASoC: tegra: tegra_wm8903: Support
- nvidia, headset property
-Message-ID: <20200622175727.GP4560@sirena.org.uk>
-References: <20200618010805.600873-1-sashal@kernel.org>
- <20200618010805.600873-4-sashal@kernel.org>
- <20200618110023.GB5789@sirena.org.uk>
- <20200618143046.GT1931@sasha-vm>
- <20200618143930.GI5789@sirena.org.uk>
- <20200621233352.GA1931@sasha-vm>
- <20200622112321.GB4560@sirena.org.uk>
- <20200622123118.GF1931@sasha-vm>
- <20200622132757.GG4560@sirena.org.uk>
- <20200622144402.GH1931@sasha-vm>
+To: Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH 1/4] ASoC: soc-pcm: dpcm: fix playback/capture checks
+Message-ID: <20200622175923.GQ4560@sirena.org.uk>
+References: <af973f45-59b9-ecff-7d78-97d8352ed072@linux.intel.com>
+ <20200616155544.GA8891@gerhold.net>
+ <7cbc9233-e5f2-03e0-5659-cf22dea75e53@linux.intel.com>
+ <45d43cc9-be22-a7d2-1628-3fb30232bd7c@linux.intel.com>
+ <20200617090112.GA38317@gerhold.net>
+ <62ccb59f-9d08-c241-952b-bb7af8311618@linux.intel.com>
+ <20200617174635.GA40060@gerhold.net>
+ <20200618150143.GJ5789@sirena.org.uk>
+ <145da893-5cb4-63fc-b988-c048ee839785@linux.intel.com>
+ <20200622175423.GA8907@gerhold.net>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="WOTjKnJ88wpJKlWH"
+ protocol="application/pgp-signature"; boundary="R4+lwT0Y15rLnKR0"
 Content-Disposition: inline
-In-Reply-To: <20200622144402.GH1931@sasha-vm>
+In-Reply-To: <20200622175423.GA8907@gerhold.net>
 X-Cookie: laser, n.:
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.de,
+ Daniel Baluta <daniel.baluta@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,57 +105,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---WOTjKnJ88wpJKlWH
+--R4+lwT0Y15rLnKR0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 22, 2020 at 10:44:02AM -0400, Sasha Levin wrote:
-> On Mon, Jun 22, 2020 at 02:27:57PM +0100, Mark Brown wrote:
-> > On Mon, Jun 22, 2020 at 08:31:18AM -0400, Sasha Levin wrote:
+On Mon, Jun 22, 2020 at 07:54:23PM +0200, Stephan Gerhold wrote:
 
-> > > How come? This is one of the things stable rules explicitly call for:
-> > > "New device IDs and quirks are also accepted".
+> If we end up simplifying those flags, and eventually removing
+> dpcm_playback/capture entirely, wouldn't it be the easiest solution to
+> just relax the error checks for 5.8? (Like the diff I suggested?)
 
-> > I would expect that to be data only additions, I would not expect that
-> > to be adding new code.
+> Pierre's diff to set dpcm_playback/capture correctly for
+> simple-audio-card etc would work too, but I'm not sure if this is worth
+> it if we end up removing those anyway.
 
-> These come hand in hand. Take a look at the more complex cases such as
-> sound/pci/hda/patch_*
+Yeah, if we're removing them anyway then taking something that just
+ignores them as a fix seems reasonable.
 
-There are more complex cases, I'm just not sure how good an idea
-backporting them.
-
-> > It would be much better to not have to watch stable constantly like we
-> > currently do - we're seeing people report breakage often enough to be a
-> > concern as things are, we don't need to be trying to pile extra stuff in
-> > there because there's some keywords in a changelog or whatever.  The
-> > testing coverage for drivers is weak, increasing the change rate puts
-> > more stress on that.
-
-> Shouldn't we instead improve testing here? nvidia for example already
-> provides Tegra testing for stable releases, if the coverage isn't
-> sufficient then let's work on making it better.
-
-Obviously it'd be good to improve the test coverage, but I think that's
-something that needs doing before backporting loads of stuff rather than
-after.  For this automated stuff I'd much rather see positive
-confirmation that the change had been tested on relevant systems (not
-just something with a similar SoC), especially on the edges where we're
-getting to board specific things.
-
---WOTjKnJ88wpJKlWH
+--R4+lwT0Y15rLnKR0
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7w8QYACgkQJNaLcl1U
-h9DC6wf/TsaPFLd+NPMuG4vVND70Z7iQQxL5/z/PyV7fUPbBpUUTkNGsq2Zuue1U
-aWOE4ExbeVUHmEoMtMCfYzkuigz2/cIm2zXvQC82I8EoUMLj2aG4vBhXhxNVv3Fi
-l4aBCgJTHyK3+mbu1lvaGykxUFLe3tjWj1I45GNV6mVX2jwNeyNRtwIgYtvvFw2J
-S9RzsRjKgm8GW9/JzJsY18MwkcxalIZIpsmzBkuQw/79/XjtbzC0aI3fbt2KCkha
-Cfu8PWJdRx276cbDQbGrCMJUZP36TA3Bve09TUx6OdB2nvxiODjAp0xn7VstW/xn
-m52d3uSB3K57NZFW0BuFGabvwFrHmw==
-=8po3
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7w8XsACgkQJNaLcl1U
+h9C06Af+JFOKtPK+X29/Wb28o4FjWW1Vi9zPp+RnnDPheQx5w41v/J/IsPulsR8M
+Oh2I5vSaQeVdJGhS+jLLvLLfLcqE65bnGRkBmE33g0tImc0feSFcCBe0tA8mLxSa
+3IEz/cTFgvVLtllJepAFJMzntG9j77IOcHYx1JRu2uLUHlLa2XO9nP0K1KzlvhmR
+c0Ig87ddOZK+lW9MMi6ljGG0PLgdHaWCjYR7vkrlI2ejvXYsdxfT1TpQAGaIg49n
+en+NQw4KzngkUTu7kORnk5rUVJwPwh0JtBaYHHZpGil/73p86TgcHIUvC4ChTSje
+6iMcC28e9+mE/FsrQDIjVV/nIHVd5Q==
+=166a
 -----END PGP SIGNATURE-----
 
---WOTjKnJ88wpJKlWH--
+--R4+lwT0Y15rLnKR0--
