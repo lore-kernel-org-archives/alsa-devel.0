@@ -2,80 +2,85 @@ Return-Path: <SRS0=6Zlx=AD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36BAAC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF962C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:52:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B021720716
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:46:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 590CC20720
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:52:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BoKo3Mg6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9F6qxFc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B021720716
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qDg3ydVC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k5bbji9D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 590CC20720
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 381221682;
-	Mon, 22 Jun 2020 13:45:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 381221682
+	by alsa0.perex.cz (Postfix) with ESMTPS id C04B61683;
+	Mon, 22 Jun 2020 13:51:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C04B61683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592826391;
-	bh=CSpDeQNGGQlPQCF+KzbowInS8wumLcclqnF6BxUAqVw=;
+	s=default; t=1592826750;
+	bh=6kI4L4zPUlkblUHtlE0vjkJQynOdD+oESUx6nEDdgtA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BoKo3Mg6FI9q/HwEDklC1Pc2cE5xur2EGS1VKGmH9fXdy8OyxSO+L93gUiXKKVIqp
-	 OSD3WPmSBqV1HhA/TWHkW6InUQJbDzawasN4vgpx3tQE4oJTVM4CJlmKi6v4wjMLXa
-	 byEEUyHhW6H9fuwHl85e8TdRuZCzz9lcurdsO2ao=
+	b=qDg3ydVCWcyeDZjSIlI6J8NaSW4xuz67ymPRUczZNvjRm2QPfj9kv3XsaZmZPVuIU
+	 Xnp6Cu/tvdzOqM+r+14iPKCTNMQ3try6awUSlX9KiWPk7QIjFw5wZIdfRrYLDdowDe
+	 MPR6yOdBWz8j8cBc0azG15kWxpkMRDLSh4/84ly0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4746F8015A;
-	Mon, 22 Jun 2020 13:45:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 367DCF8015A;
+	Mon, 22 Jun 2020 13:51:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34A2FF8015B; Mon, 22 Jun 2020 13:45:39 +0200 (CEST)
+ id 53A06F8015B; Mon, 22 Jun 2020 13:51:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E82AF80157
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 13:45:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E82AF80157
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A2E4F80157
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 13:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A2E4F80157
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="R9F6qxFc"
-Received: from localhost (unknown [171.61.66.58])
+ header.b="k5bbji9D"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BB1EE20716;
- Mon, 22 Jun 2020 11:45:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2D93B206EB;
+ Mon, 22 Jun 2020 11:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592826334;
- bh=CSpDeQNGGQlPQCF+KzbowInS8wumLcclqnF6BxUAqVw=;
+ s=default; t=1592826691;
+ bh=6kI4L4zPUlkblUHtlE0vjkJQynOdD+oESUx6nEDdgtA=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=R9F6qxFcIXjbvrGdQcrd8mBfnqf4iov4uRE7jKXDjuI2p++W8KxD0SgiC6H2DJjfx
- ARFRxv9hK2qUASiBP9taDXjlrQYa0XsO6g5d9ht9YL4daxNWRCC0LKI9lQtZnWcrk9
- 7eRh+2kGvU+MPEcl4MOEzfdbGU4aaGJo7Mr3tkhc=
-Date: Mon, 22 Jun 2020 17:15:30 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] soundwire: intel: fix memory leak with devm_kasprintf
-Message-ID: <20200622114530.GJ2324254@vkoul-mobl>
-References: <20200617163536.17401-1-pierre-louis.bossart@linux.intel.com>
+ b=k5bbji9DbfRj4tdakCUFG9c0m2fv4xOMhtcICMHdf7aexe0EUGfar7nMd2ujoLGWj
+ Zm9fi6pWgwb3HpZxKrRYxjVAtm+/vsWZjURMA/jMuJ7C+ouAEWJT6VL3hBBqWebpCx
+ xiZ5uBYb12DAW6k45vIv8bs9j8QJ0quxF2AHCaEQ=
+Date: Mon, 22 Jun 2020 12:51:29 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH 1/2] dt-bindings: sound: Device tree bindings for the
+ apq8039 sound complex
+Message-ID: <20200622115129.GC4560@sirena.org.uk>
+References: <20200619193831.12528-1-pantelis.antoniou@linaro.org>
+ <20200619193831.12528-2-pantelis.antoniou@linaro.org>
+ <20200619214126.GA1251@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="0vzXIDBeUiKkjNJl"
 Content-Disposition: inline
-In-Reply-To: <20200617163536.17401-1-pierre-louis.bossart@linux.intel.com>
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, gregkh@linuxfoundation.org,
- Daniel Baluta <daniel.baluta@gmail.com>, broonie@kernel.org,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+In-Reply-To: <20200619214126.GA1251@gerhold.net>
+X-Cookie: laser, n.:
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org,
+ Pantelis Antoniou <pantelis.antoniou@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Matt Porter <mporter@konsulko.com>, Shawn Guo <shawn.guo@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,12 +96,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 17-06-20, 11:35, Pierre-Louis Bossart wrote:
-> The dais are allocated with devm_kcalloc() but their name isn't
-> resourced managed and never freed. Fix by also using devm_ for the dai
-> names as well.
 
-Applied, thanks
+--0vzXIDBeUiKkjNJl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-~Vinod
+On Fri, Jun 19, 2020 at 11:41:26PM +0200, Stephan Gerhold wrote:
+> Hi Pantelis,
+>=20
+> On Fri, Jun 19, 2020 at 10:38:30PM +0300, Pantelis Antoniou wrote:
+> > Add a yaml device binding for the QCOM apq8039 sound complex driver.
+> >=20
+>=20
+> Nice to see some activity to get sound working on another SoC!
+> Thanks for documenting all these properties.
+
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
+
+> > +  function-definition:
+> > +    type: object
+> > +    description: |
+> > +      Functional configuration for the sound complex via a
+> > +      simple control. allows fixed and dynamically constructed
+> > +      function selection.
+> > +
+> > +    properties:
+> > +      mixer-control:
+> > +        $ref: /schemas/types.yaml#/definitions/string
+> > +        description: |
+> > +          Name of the exported alsa mix control.
+
+This does *not* look like something that should be in a DT binding, it
+is quite clearly OS specific.
+
+> > +      system-list:
+> > +        $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +        description: |
+> > +          phandle(s) of the default, init and shutdown functions
+> > +          Must be one of the declared ones in the function property.
+> > +          The default function is the one selected by default on
+> > +          startup (after the init function's sequence is executed).
+> > +          On shutdown the shutdown function sequence will be executed.
+> > +          Typically init and shutdown are the same and it's purpose
+> > +          is to initialize the sound complex mixer controls to the
+> > +          all off state, and be ready for a regular function selection.
+
+> This looks much like a replacement for ALSA UCM and userspace audio jack
+> detection coded into the device tree.
+
+Very much so.  This is use case configuration and completely
+inappropriate for DT.  DT should describe the hardware, the way the OS
+intends to use the hardware is up to the OS.
+
+> If you want to discuss ways to integrate mixer enable/disable sequences
+> into the device tree, I suggest that you post your ideas separately as
+> [RFC] with a more generic subject. That will make it more easy for
+> everyone interested to share their thoughts.
+
+> Right now it's quite hidden in a patch set where the subjects suggest
+> that it's just a simple machine driver to glue some codecs together.
+
+Indeed, I agree entirely.
+
+--0vzXIDBeUiKkjNJl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7wm0AACgkQJNaLcl1U
+h9CUhgf/RIFd53orwiMac+A1ik82HDNf5kX/wfvcuhQB6aFkTGuyMHXXcAC/8JJp
+XgvvAcZqZpVpGZd+l9FoSp3Ye2iAPJfA4zfM7pQ5MLHoZNjnQG8n5gE04w6JhCZq
+fWi4khSCyOej+9u3Wef+37mCCLIT8g1mB34QialxOU/JsFyZEzULz/9q0reposju
+yxbv899e+GoUrRdYwhYafXcbsvy2t8UfERlBdoaGb5WDOXpYXJeTbirDhnYCKWtb
+ze3jg9a1/OAtqkPjolDJHxHY8AC4WJSYwVyPGjHMPKnf5nhuLa/CKB7J6UMyyEXN
+SEQyffj47T49rSpjtvS9FdMTg7nwXw==
+=4kwO
+-----END PGP SIGNATURE-----
+
+--0vzXIDBeUiKkjNJl--
