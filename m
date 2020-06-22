@@ -3,79 +3,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D593C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 05:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24E42C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 06:59:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0C822083E
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 05:36:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5F2E25439
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 06:59:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q7hEjvRp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ixsUV6i0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0C822083E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dMmWcuml";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="l04caq2+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5F2E25439
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EFEA1695;
-	Mon, 22 Jun 2020 07:35:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EFEA1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2935116BC;
+	Mon, 22 Jun 2020 08:58:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2935116BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592804165;
-	bh=buogNVymtxZczQRvv8+g2nbdqd82HeUu7XS5fvcsNUM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Q7hEjvRp+WQHtq9nmqX8ui2xXN8HPmobI1vh4cTQ53EaJnIuUza6lda5ND+M5jq5h
-	 ENHUjBbR2z5zCoFCgFaQy9xmqOBYNCczYioqikZ1fdmH3sN7nLdT+6ln5TONLRWP6f
-	 ip0dX5ew4WUQjYmkR6J71LbuwflJXByVWNpTcc1Y=
+	s=default; t=1592809164;
+	bh=M+IMJCWsfaGwRdIZxma3LL04/JdsXZ7jXdbDu2zWSs8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dMmWcumlY18dOw1vuftA0ahaRLu0KgicLyEzy2Ilgn5OpR/7xbkazj02VkxefBhPL
+	 3Vx4gPmCdStSMgkFxL8Mt3LbN+sPaFQOkvVxlPxrfVz5HrVHulHR4bLCZs68zOtIfN
+	 MVo/cEcf0KFXaYXNlc7N1EuJ/Eb7TPmBMrwVuFIc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F4FEF8015A;
-	Mon, 22 Jun 2020 07:35:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A493DF8015A;
+	Mon, 22 Jun 2020 08:58:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B945F8015B; Mon, 22 Jun 2020 07:35:14 +0200 (CEST)
+ id 1A7F8F8015B; Mon, 22 Jun 2020 08:58:32 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 585FDF8010E
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 07:35:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 585FDF8010E
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAB3FF8010E
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 08:58:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAB3FF8010E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ixsUV6i0"
-Received: from localhost (unknown [171.61.66.58])
+ header.b="l04caq2+"
+Received: from localhost.localdomain (unknown [171.61.66.58])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6AB7A25403;
- Mon, 22 Jun 2020 05:35:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E5C7625360;
+ Mon, 22 Jun 2020 06:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592804106;
- bh=buogNVymtxZczQRvv8+g2nbdqd82HeUu7XS5fvcsNUM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ixsUV6i006rFSF+BM2wZPMzJv+W3L5HSubsSio34AulKk4MXs2Zb7H+/kNttBvXiM
- SwXB5XtJo87eWhierQ0slWFCy2kP5p+1akvFfW9tEqmefbq2Op1Q90NPSCEHM+tg0R
- vhlfcxdyuaD45ZqJCoRSPauOdqisrQDccUFivVuc=
-Date: Mon, 22 Jun 2020 11:05:02 +0530
+ s=default; t=1592809106;
+ bh=M+IMJCWsfaGwRdIZxma3LL04/JdsXZ7jXdbDu2zWSs8=;
+ h=From:To:Cc:Subject:Date:From;
+ b=l04caq2+VwFrt5m0dYJc5LRs8iiTn1o+HMA8ghi+N8f3XqMi+7KwU1sNFKobHP9MM
+ iUyz9jgrPTtoEqEAIRHtG9NQSac3bCTS3tyoTFytA1zfZAW3hiWG8WUKB/UB0iysDd
+ XH8dFCbQ0y629dk9gI/qSqH0DEj36sUjeJjsC4YM=
 From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 3/3] ALSA: compress: fix partial_drain completion state
-Message-ID: <20200622053502.GF2324254@vkoul-mobl>
-References: <20200619045449.3966868-1-vkoul@kernel.org>
- <20200619045449.3966868-4-vkoul@kernel.org>
- <0a0fcd4c-40dd-621e-b0ad-51296178aa9e@linaro.org>
+To: Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH v2 0/3] ALSA: compress: Document stream states and fix gapless
+ SM
+Date: Mon, 22 Jun 2020 12:28:08 +0530
+Message-Id: <20200622065811.221485-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a0fcd4c-40dd-621e-b0ad-51296178aa9e@linaro.org>
+Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,26 +90,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 19-06-20, 10:13, Srinivas Kandagatla wrote:
-> 
-> 
-> On 19/06/2020 05:54, Vinod Koul wrote:
-> > On partial_drain completion we should be in SNDRV_PCM_STATE_RUNNING
-> > state, so set that for partially draining streams in
-> > snd_compr_drain_notify() and use a flag for partially draining streams
-> > 
-> > While at it, add locks for stream state change in
-> > snd_compr_drain_notify() as well.
-> > 
-> > Fixes: f44f2a5417b2 ("ALSA: compress: fix drain calls blocking other compress functions (v6)")
-> > Reported-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> 
-> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Srini found issue with gapless implementation which prompted to look deeper
+into SM for compressed stream.
 
-Thanks for testing Srini
+So documenting SM was first step, so first two patches add that. Last patch
+fixes the issue by keeping track on partial_drain and then moving state to
+'running' in snd_compr_drain_notify() for partial_drain case on success.
+While at it, noticed snd_compr_drain_notify() is lockless state change, so
+fixed that as well.
+
+I have tested this on Dragon board RB3, compressed audio works out of the
+box on that platform and Srini will send driver and fcplay patches for
+gapless soon.
+
+Changes in v2:
+ - Added tested tag by Srini
+ - Update compress SM with Free state and compr_stop() transitions
+
+Vinod Koul (3):
+  ALSA: compress: document the compress audio state machine
+  ALSA: compress: document the compress gapless audio state machine
+  ALSA: compress: fix partial_drain completion state
+
+ .../sound/designs/compress-offload.rst        | 84 +++++++++++++++++++
+ include/sound/compress_driver.h               | 12 ++-
+ sound/core/compress_offload.c                 |  4 +
+ 3 files changed, 99 insertions(+), 1 deletion(-)
 
 -- 
-~Vinod
+2.26.2
+
