@@ -2,86 +2,81 @@ Return-Path: <SRS0=6Zlx=AD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2366C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E48F2C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:38:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B98420708
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:24:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B4152070E
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:38:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vMyyCtIX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rMxttB7F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B98420708
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UXNOe18x";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1GzAflTo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B4152070E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9ED01167B;
-	Mon, 22 Jun 2020 13:23:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9ED01167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB7DF1682;
+	Mon, 22 Jun 2020 13:37:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB7DF1682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592825061;
-	bh=lKPO9e624hVOJb9ys3y9YhyfWRz6FABHB2gyDaZqj2U=;
+	s=default; t=1592825928;
+	bh=lTqhDw3Cd5G+/fDtevGJJEA+nU1N8tNEJV1wtaYsQMc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vMyyCtIXBp5nMP6Yl+yYVw8d8hb2uLFTRAm4Czo8att8X4rg8cPStHQnbo4nAZgan
-	 XtoMguUpzvSqM3gmx5alCAWo7yOn5XzNXRVuo8uCetXRUm4ANTSAkA/N4R7Ec9+FoZ
-	 /3qjbVddgF/dUNkKUr4vo20ppJqafo4ThRoKL2U0=
+	b=UXNOe18xgcrtfO/Mmab0ztZahM5WGw4bBcxf82FvirmLSWXCWEfv3vhys6kp68v3Z
+	 TWANsK8bv+ETgQO+UC1GIJzBRSL0ttKezXFAnZ/5LCI/bIlvtbGL1FPiMn4xtxQlHM
+	 ZPNoeLQS3qCktgGFedvjbXZE0OXfw2LOvvJr6wRw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3657CF8010E;
-	Mon, 22 Jun 2020 13:23:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A4D5F8010E;
+	Mon, 22 Jun 2020 13:37:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB9ADF8015B; Mon, 22 Jun 2020 13:23:29 +0200 (CEST)
+ id A7041F8015B; Mon, 22 Jun 2020 13:37:56 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A4B7F80157
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 13:23:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A4B7F80157
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43193F80157
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 13:37:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43193F80157
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rMxttB7F"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ header.b="1GzAflTo"
+Received: from localhost (unknown [171.61.66.58])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 992FE20716;
- Mon, 22 Jun 2020 11:23:23 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 33E9F2070E;
+ Mon, 22 Jun 2020 11:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592825004;
- bh=lKPO9e624hVOJb9ys3y9YhyfWRz6FABHB2gyDaZqj2U=;
+ s=default; t=1592825872;
+ bh=lTqhDw3Cd5G+/fDtevGJJEA+nU1N8tNEJV1wtaYsQMc=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rMxttB7FzTiHJEa3tbN3WPIxJHrnt0u8SEYPYobsr7cEH3VUpxi+DC7EAYV+F1X4l
- 8QFmz85HHyuh+539leKlpPpSOYSEf3r8Spfs8V/djIJZCuNccky7F0Xl0iBTosnKqA
- kGowYb1JP0oSedLkJKguEaO6QduxXMYsGqSEVmGM=
-Date: Mon, 22 Jun 2020 12:23:21 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.7 004/388] ASoC: tegra: tegra_wm8903: Support
- nvidia, headset property
-Message-ID: <20200622112321.GB4560@sirena.org.uk>
-References: <20200618010805.600873-1-sashal@kernel.org>
- <20200618010805.600873-4-sashal@kernel.org>
- <20200618110023.GB5789@sirena.org.uk>
- <20200618143046.GT1931@sasha-vm>
- <20200618143930.GI5789@sirena.org.uk>
- <20200621233352.GA1931@sasha-vm>
+ b=1GzAflToXP3J6cUJt2uRC77c4kvkEndBxv8QJDh5qmMjyEXG/2uyr8znnNdGwf2qp
+ v5Mx1DM0+tuNJqnvgWaWRQQdcZ7Lud1tP9oywQeEOD6ONYr8GQGAf9SYLOSsg39+Np
+ RSWtnc1MFfp56BzZEAr2hsODeX4/UUIT9xIJPeKM=
+Date: Mon, 22 Jun 2020 17:07:47 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] soundwire: bus: clock_stop: don't deal with UNATTACHED
+ Slave devices
+Message-ID: <20200622113747.GI2324254@vkoul-mobl>
+References: <20200531151806.25951-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="cvVnyQ+4j833TQvp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200621233352.GA1931@sasha-vm>
-X-Cookie: laser, n.:
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+In-Reply-To: <20200531151806.25951-1-yung-chuan.liao@linux.intel.com>
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,41 +92,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 31-05-20, 23:18, Bard Liao wrote:
+> We don't need to do anything for the slave if it is unattached during
+> clock stop prepare and exit sequences.
 
---cvVnyQ+4j833TQvp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied, thanks
 
-On Sun, Jun 21, 2020 at 07:33:52PM -0400, Sasha Levin wrote:
-> On Thu, Jun 18, 2020 at 03:39:30PM +0100, Mark Brown wrote:
-> > On Thu, Jun 18, 2020 at 10:30:46AM -0400, Sasha Levin wrote:
-> > > On Thu, Jun 18, 2020 at 12:00:23PM +0100, Mark Brown wrote:
-
-> > > > This is a new feature not a bugfix.
-
-> > > I saw this patch more as a hardware quirk.
-
-> > Pretty much any DT property is a hardware quirk :(
-
-> Which is why we're taking most of them :)
-
-That's concerning - please don't do this.  It's not what stable is
-expected to be and there's no guarantee that you're getting all the
-changes required to actually make things work.
-
---cvVnyQ+4j833TQvp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7wlKgACgkQJNaLcl1U
-h9DxBQf9GXl9yCwJEINWq/Z/dhvqydIs7W9lZH5AwwYXFPMJqBw8hFXOc0py8n1n
-KyNasLuU3f6KllPb0/5OVx13fx8zGxkO3R+oGlO3Efu7Hy8PGBKDUCvSN3ot0Y/D
-G63LKSioz3J8TW/YESn7D1sIHgBeomqhnaXeqeXv3CvcOzSwNrxo7XEFdFezSfby
-QMKNjitxBVEiU5JiuuhpWhQ3A9f0bsNONgYLXX/j2nUFF2GTaoVqqAeuVHJsRtvY
-AxfBsxyFqe85oe6t6oelQ5DoiQTkEJYKTGpApxIby0uOXAoo2PgF4slrPeEqa+ZS
-tp+7ng+EvDqFhLMnHiZq1WTtbV02bw==
-=kpI5
------END PGP SIGNATURE-----
-
---cvVnyQ+4j833TQvp--
+-- 
+~Vinod
