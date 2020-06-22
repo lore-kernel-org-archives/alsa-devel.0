@@ -2,69 +2,66 @@ Return-Path: <SRS0=6Zlx=AD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AF8DC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F2AC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:28:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E034220720
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:27:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 38D0D2073E
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:28:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RUZQKvXR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E034220720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZqgQwaFI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38D0D2073E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DFFF16DB;
-	Mon, 22 Jun 2020 16:26:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DFFF16DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1B5E16F3;
+	Mon, 22 Jun 2020 16:27:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1B5E16F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592836047;
-	bh=QqsOHJGUY7QGQ4iNZKM6qaFXPndQw4OWgRqxzwl0/LM=;
+	s=default; t=1592836106;
+	bh=io8QGBd8Gf0n6GBilPT4ANPEDvxEQ8OksK5zbtWw/hw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RUZQKvXRSI7OR9bdpUH5z928Hzk274OXbOfyvOks/prqgcybTYpDwirs7cYx3IUWO
-	 rd59c3d3+PIxdQ8Gb14ij4leqbx5dyYr1fzAJvJpUoc2tITpeDnKmdIqAYLNCdrIsO
-	 wGpkbn0E0MUzcBnaYMycVMwAfZpd0w4dtY97s+Sc=
+	b=ZqgQwaFIISM/21uY1q/MktHjcArzIVLINLmVDgBh2xe3tFeRqhVGx89ggevlGcMsJ
+	 LXvbhBShBuqXG3EH2ybsn9IwCgSOolIwmXwOeVGIDOUsfpk1PUYmChIrGzkdXtP81F
+	 vphI/gBREoCdQWYYQCLbrBP07dUCkhqwos1R44Rs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02473F8010D;
-	Mon, 22 Jun 2020 16:26:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E610EF802A2;
+	Mon, 22 Jun 2020 16:26:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42B9AF8015B; Mon, 22 Jun 2020 16:26:23 +0200 (CEST)
+ id D071AF802A7; Mon, 22 Jun 2020 16:26:56 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B2B1F8010D
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 16:26:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B2B1F8010D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42E81F802A0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 16:26:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42E81F802A0
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B2E2EC1A5;
- Mon, 22 Jun 2020 14:26:14 +0000 (UTC)
-Date: Mon, 22 Jun 2020 15:52:31 +0200
-Message-ID: <s5ha70vryw0.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9601FC1B9;
+ Mon, 22 Jun 2020 14:26:48 +0000 (UTC)
+Date: Mon, 22 Jun 2020 15:11:27 +0200
+Message-ID: <s5hlfkfs0sg.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: amd: add logic to check dmic hardware runtime
-In-Reply-To: <46604924-3293-062e-db29-2647ecbc0701@perex.cz>
-References: <1592654687-24574-1-git-send-email-Vijendar.Mukunda@amd.com>
- <46604924-3293-062e-db29-2647ecbc0701@perex.cz>
+To: broonie@kernel.org
+Subject: Re: [GIT PULL] ASoC fixes for v5.8-rc2
+In-Reply-To: <20200622113909.A31332070E@mail.kernel.org>
+References: <20200622113909.A31332070E@mail.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Alexander.Deucher@amd.com, hui.wang@canonical.com,
- alsa-devel@alsa-project.org, Virendra-Pratap.Arya@amd.com,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,56 +77,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Jun 2020 15:27:25 +0200,
-Jaroslav Kysela wrote:
+On Mon, 22 Jun 2020 13:39:01 +0200,
+broonie@kernel.org wrote:
 > 
-> Dne 20. 06. 20 v 14:04 Vijendar Mukunda napsal(a):
-> > Add logic to check DMIC hardware exists or not on
-> > the platform at runtime.
-> >
-> > Add module param for overriding DMIC hardware check
-> > at runtime.
-> >
-> > Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> > ---
-> >   sound/soc/amd/renoir/rn-pci-acp3x.c | 29 +++++++++++++++++++++++++++++
-> >   sound/soc/amd/renoir/rn_acp3x.h     |  7 +++++++
-> >   2 files changed, 36 insertions(+)
-> >
-> > diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> > index 859ed67..ef6eeba 100644
-> > --- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-> > +++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> > @@ -5,6 +5,7 @@
-> >   //Copyright 2020 Advanced Micro Devices, Inc.
-> >     #include <linux/pci.h>
-> > +#include <linux/acpi.h>
-> >   #include <linux/module.h>
-> >   #include <linux/io.h>
-> >   #include <linux/delay.h>
-> > @@ -18,6 +19,16 @@ static int acp_power_gating;
-> >   module_param(acp_power_gating, int, 0644);
-> >   MODULE_PARM_DESC(acp_power_gating, "Enable acp power gating");
-> >   +/**
-> > + * dmic_acpi_check = 0 - Skips DMIC device creation and returns probe failure
-> > + *                 = 1 - Assumes that platform has DMIC support and skips ACPI
-> > + *                       method check
-> > + *                 = 2 - Checks ACPI method to know DMIC hardware status runtime
-> > + */
-> > +static int dmic_acpi_check = ACP_DMIC_AUTO;
+> The following changes since commit 44ce45f866c1606f03a411fb2d2c0db4626403a6:
 > 
-> I would prefer to have 0 = auto, 1 = force, 2 = skip to put the
-> dmic_acpi_check variable to BSS. Otherwise the patch looks
-> good. Thanks.
+>   Merge series "ASoC: Fix dailink checks for DPCM" from Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>: (2020-06-09 15:46:20 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.8-rc2
+> 
+> for you to fetch changes up to f141a422159a199f4c8dedb7e0df55b3b2cf16cd:
+> 
+>   ASoC: rockchip: Fix a reference count leak. (2020-06-18 17:21:58 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.8
+> 
+> This is a collection of mostly small fixes, mostly fixing fallout from
+> some of the DPCM changes that went in last time around which shook out
+> some issues on i.MX and Qualcomm platforms.  The addition of a managed
+> version of snd_soc_register_dai() is to fix resource leaks.
+> 
+> There's also a few new device IDs for x86 systems.
 
-It's "bint" module parameter type is used for this kind of flag, which
-implies:
-	-1 = auto, whatever the default
-	0 = disable
-	1 = enable
-
-Then user can pass dmic_acpi_check=1 or dmic_acpi_check=true (or on)
-to explicitly enable the flag.
+Thanks, pulled now.
 
 
 Takashi
