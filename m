@@ -2,86 +2,73 @@ Return-Path: <SRS0=6Zlx=AD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39958C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:45:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F107C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 15:00:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B65B12071A
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:45:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA00820702
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 15:00:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Js9jmcjO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DVP6gqnR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B65B12071A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DWBU5Med";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QN54frOX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA00820702
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D92E16DE;
-	Mon, 22 Jun 2020 16:44:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D92E16DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F93316E3;
+	Mon, 22 Jun 2020 16:59:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F93316E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592837106;
-	bh=JeM2k9LZLGwMR+rmDIhVvU3owb+bFfdgnMZMKkzslrI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592838025;
+	bh=ljSOV2vIqqJ1NhvgM4aWPaq9wUn9Uc1jPSW1roYHpfs=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Js9jmcjOnzBB9F5jMMNmQtmQg03TjSrcmAATIlHJAyichDfuybwvtjcoXxbJ11lNA
-	 PWRPq2M7nR0f8Tp+godZX3oWyom9uYhCWqYi/F/d0zAQFP68qGE65GrnCAs4Bp2X1B
-	 04oMFz0YQ8n31xI4eCBDVJRvFGW0h6pHSHKJ4P7k=
+	b=DWBU5MedMHiRC3WNiwd6Mci2wZCBV8iCjAG+OZvHmNruwUGhGDrBqOgp8ybV2IqIR
+	 CHEXLx09j5t1KNuFENaOOxBzjcQWDYykg3jsu8rnXztN76dfMy6OtQBmKaNmWuRsTA
+	 r5d20IYiaAdqxKmq8O0Kb1hM9+Nc4f1MZjMX7+IA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBE50F8015A;
-	Mon, 22 Jun 2020 16:44:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E260BF8015A;
+	Mon, 22 Jun 2020 16:59:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECCBEF8015B; Mon, 22 Jun 2020 16:44:13 +0200 (CEST)
+ id 6DC1AF801DB; Mon, 22 Jun 2020 16:59:33 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C5B1F8010E
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 16:44:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C5B1F8010E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35B85F8010E
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 16:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35B85F8010E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DVP6gqnR"
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+ header.b="QN54frOX"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6B6882071A;
- Mon, 22 Jun 2020 14:44:07 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 48C2B20732;
+ Mon, 22 Jun 2020 14:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592837047;
- bh=JeM2k9LZLGwMR+rmDIhVvU3owb+bFfdgnMZMKkzslrI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=DVP6gqnRjQLHKC8DyHJyDDhVgNrgyP7tjiARScsm0+Ali1+lbF0WmxaCZRJEZ/W0T
- 7KtBPBkSc5xg2Kw8ElBdyJEQJDTJ/vJyzGNDjYZOfV1a0V0Fb0Lh2yccrMwVfkjdRI
- E61BP9sHdlb3k1/t5dMbp1wO+rzGMnq9dvO+4njo=
-Date: Mon, 22 Jun 2020 10:44:02 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.7 004/388] ASoC: tegra: tegra_wm8903: Support
- nvidia, headset property
-Message-ID: <20200622144402.GH1931@sasha-vm>
-References: <20200618010805.600873-1-sashal@kernel.org>
- <20200618010805.600873-4-sashal@kernel.org>
- <20200618110023.GB5789@sirena.org.uk>
- <20200618143046.GT1931@sasha-vm>
- <20200618143930.GI5789@sirena.org.uk>
- <20200621233352.GA1931@sasha-vm>
- <20200622112321.GB4560@sirena.org.uk>
- <20200622123118.GF1931@sasha-vm>
- <20200622132757.GG4560@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200622132757.GG4560@sirena.org.uk>
-Cc: linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+ s=default; t=1592837966;
+ bh=ljSOV2vIqqJ1NhvgM4aWPaq9wUn9Uc1jPSW1roYHpfs=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=QN54frOXfr3ncbraGASjxSv06eWuZTiQ7fMZCvFPXnQ8xRA+RKqn03XoOiUPTUdXF
+ ViM+b4HjVoq0bJk6KBccYeNmgdVKo1J3wdY/LYMAmputJgRfIhCLD4dOM2cay+rrkO
+ lDDR3NU7y4k4HcCWWZuX5P++E5Fh76NypxsHvnbM=
+Date: Mon, 22 Jun 2020 15:59:24 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87tuzb4mjg.wl-kuninori.morimoto.gx@renesas.com>
+References: <87tuzb4mjg.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 00/16] ASoC: merge snd_soc_component_read() and
+ snd_soc_component_read32()
+Message-Id: <159283795951.27481.2932757779075244120.b4-ty@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,37 +84,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jun 22, 2020 at 02:27:57PM +0100, Mark Brown wrote:
->On Mon, Jun 22, 2020 at 08:31:18AM -0400, Sasha Levin wrote:
->> On Mon, Jun 22, 2020 at 12:23:21PM +0100, Mark Brown wrote:
->
->> > That's concerning - please don't do this.  It's not what stable is
->> > expected to be and there's no guarantee that you're getting all the
->> > changes required to actually make things work.
->
->> How come? This is one of the things stable rules explicitly call for:
->> "New device IDs and quirks are also accepted".
->
->I would expect that to be data only additions, I would not expect that
->to be adding new code.
+On 16 Jun 2020 14:17:22 +0900, Kuninori Morimoto wrote:
+> Because we can use "read" function which is using
+> "regmap" or "driver", current ALSA SoC drivers are using both
+> 	snd_soc_component_read()    // for regmap
+> 	snd_soc_component_read32()  // for driver callback
+> These are similar but needs different parameter.
+> 
+> This patch aggressively merge snd_soc_component_read() and _read32(),
+> and makes snd_soc_component_read/write() as generally style.
+> 
+> [...]
 
-These come hand in hand. Take a look at the more complex cases such as
-sound/pci/hda/patch_*
+Applied to
 
->> If we're missing anything, the solution is to make sure we stop missing
->> it rather than not take anything to begin with :)
->
->It would be much better to not have to watch stable constantly like we
->currently do - we're seeing people report breakage often enough to be a
->concern as things are, we don't need to be trying to pile extra stuff in
->there because there's some keywords in a changelog or whatever.  The
->testing coverage for drivers is weak, increasing the change rate puts
->more stress on that.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Shouldn't we instead improve testing here? nvidia for example already
-provides Tegra testing for stable releases, if the coverage isn't
-sufficient then let's work on making it better.
+Thanks!
 
--- 
+[01/16] ASoC: soc-component: merge snd_soc_component_read() and snd_soc_component_read32()
+        commit: cf6e26c71bfdff823fd40945b07666d75f1e1412
+[02/16] ASoC: soc-component: use io_mutex correctly
+        commit: e8712315c44d2e7dfc4d29254941831ed2ddcaef
+[03/16] ASoC: pxa: rename to snd_soc_component_read()
+        commit: 2f86f20bafc3252b4c60152db8d2976414970513
+[04/16] ASoC: atmel: rename to snd_soc_component_read()
+        commit: f0daed1a49985fed34d7ef96ad5f39534e8a5f92
+[05/16] ASoC: codecs: rename to snd_soc_component_read()
+        commit: 981abdfe99950d6eff2481fb4c19aeeac50d0ca9
+[06/16] ASoC: codecs: wcd*: rename to snd_soc_component_read()
+        commit: eaf2767cad9311e864e2736e2152d31799b23eda
+[07/16] ASoC: codecs: tlv*: rename to snd_soc_component_read()
+        commit: e348cf543426762d7babea49712534f95d0779b9
+[08/16] ASoC: codecs: max*: rename to snd_soc_component_read()
+        commit: 1227f601ba34773b43969f46773430788df9e6a9
+[09/16] ASoC: codecs: msm*: rename to snd_soc_component_read()
+        commit: a6f80d99b939f576725b1dfd0c2b89808e101e97
+[10/16] ASoC: codecs: alc*: rename to snd_soc_component_read()
+        commit: e896c1ed67ef5a4df301d88ea77835e1eb4cf102
+[11/16] ASoC: codecs: wm*: rename to snd_soc_component_read()
+        commit: 6d75dfc3e86500eda78fc2ddc6e2cdb52b9e2a1a
+[12/16] ASoC: codecs: rt*: rename to snd_soc_component_read()
+        commit: 467a2553dd21c7f0468ed9e651fa4b07fd082b93
+[13/16] ASoC: codecs: da*: rename to snd_soc_component_read()
+        commit: 2925b58209c9acfb89b036a0d0eb5b0ebc3abb3a
+[14/16] ASoC: codecs: cs*: rename to snd_soc_component_read()
+        commit: a11f8a1c33ed098097ac7876a2e823c589c30b6f
+[15/16] ASoC: codecs: ak*: rename to snd_soc_component_read()
+        commit: 8a6fc33ba64a79c0bdb1eb8f8ebb2632af0ba36a
+[16/16] ASoC: remove snd_soc_component_read32()
+        commit: 5b554b0a29ce9610e3c237c77a1f76db87454b72
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
 Thanks,
-Sasha
+Mark
