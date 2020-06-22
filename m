@@ -2,66 +2,86 @@ Return-Path: <SRS0=6Zlx=AD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F2AC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39958C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:45:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38D0D2073E
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:28:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B65B12071A
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:45:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZqgQwaFI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38D0D2073E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Js9jmcjO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DVP6gqnR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B65B12071A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1B5E16F3;
-	Mon, 22 Jun 2020 16:27:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1B5E16F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D92E16DE;
+	Mon, 22 Jun 2020 16:44:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D92E16DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592836106;
-	bh=io8QGBd8Gf0n6GBilPT4ANPEDvxEQ8OksK5zbtWw/hw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592837106;
+	bh=JeM2k9LZLGwMR+rmDIhVvU3owb+bFfdgnMZMKkzslrI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZqgQwaFIISM/21uY1q/MktHjcArzIVLINLmVDgBh2xe3tFeRqhVGx89ggevlGcMsJ
-	 LXvbhBShBuqXG3EH2ybsn9IwCgSOolIwmXwOeVGIDOUsfpk1PUYmChIrGzkdXtP81F
-	 vphI/gBREoCdQWYYQCLbrBP07dUCkhqwos1R44Rs=
+	b=Js9jmcjOnzBB9F5jMMNmQtmQg03TjSrcmAATIlHJAyichDfuybwvtjcoXxbJ11lNA
+	 PWRPq2M7nR0f8Tp+godZX3oWyom9uYhCWqYi/F/d0zAQFP68qGE65GrnCAs4Bp2X1B
+	 04oMFz0YQ8n31xI4eCBDVJRvFGW0h6pHSHKJ4P7k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E610EF802A2;
-	Mon, 22 Jun 2020 16:26:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBE50F8015A;
+	Mon, 22 Jun 2020 16:44:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D071AF802A7; Mon, 22 Jun 2020 16:26:56 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id ECCBEF8015B; Mon, 22 Jun 2020 16:44:13 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42E81F802A0
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 16:26:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42E81F802A0
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9601FC1B9;
- Mon, 22 Jun 2020 14:26:48 +0000 (UTC)
-Date: Mon, 22 Jun 2020 15:11:27 +0200
-Message-ID: <s5hlfkfs0sg.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: broonie@kernel.org
-Subject: Re: [GIT PULL] ASoC fixes for v5.8-rc2
-In-Reply-To: <20200622113909.A31332070E@mail.kernel.org>
-References: <20200622113909.A31332070E@mail.kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C5B1F8010E
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 16:44:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C5B1F8010E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="DVP6gqnR"
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6B6882071A;
+ Mon, 22 Jun 2020 14:44:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592837047;
+ bh=JeM2k9LZLGwMR+rmDIhVvU3owb+bFfdgnMZMKkzslrI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=DVP6gqnRjQLHKC8DyHJyDDhVgNrgyP7tjiARScsm0+Ali1+lbF0WmxaCZRJEZ/W0T
+ 7KtBPBkSc5xg2Kw8ElBdyJEQJDTJ/vJyzGNDjYZOfV1a0V0Fb0Lh2yccrMwVfkjdRI
+ E61BP9sHdlb3k1/t5dMbp1wO+rzGMnq9dvO+4njo=
+Date: Mon, 22 Jun 2020 10:44:02 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.7 004/388] ASoC: tegra: tegra_wm8903: Support
+ nvidia, headset property
+Message-ID: <20200622144402.GH1931@sasha-vm>
+References: <20200618010805.600873-1-sashal@kernel.org>
+ <20200618010805.600873-4-sashal@kernel.org>
+ <20200618110023.GB5789@sirena.org.uk>
+ <20200618143046.GT1931@sasha-vm>
+ <20200618143930.GI5789@sirena.org.uk>
+ <20200621233352.GA1931@sasha-vm>
+ <20200622112321.GB4560@sirena.org.uk>
+ <20200622123118.GF1931@sasha-vm>
+ <20200622132757.GG4560@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200622132757.GG4560@sirena.org.uk>
+Cc: linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,32 +97,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Jun 2020 13:39:01 +0200,
-broonie@kernel.org wrote:
-> 
-> The following changes since commit 44ce45f866c1606f03a411fb2d2c0db4626403a6:
-> 
->   Merge series "ASoC: Fix dailink checks for DPCM" from Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>: (2020-06-09 15:46:20 +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.8-rc2
-> 
-> for you to fetch changes up to f141a422159a199f4c8dedb7e0df55b3b2cf16cd:
-> 
->   ASoC: rockchip: Fix a reference count leak. (2020-06-18 17:21:58 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.8
-> 
-> This is a collection of mostly small fixes, mostly fixing fallout from
-> some of the DPCM changes that went in last time around which shook out
-> some issues on i.MX and Qualcomm platforms.  The addition of a managed
-> version of snd_soc_register_dai() is to fix resource leaks.
-> 
-> There's also a few new device IDs for x86 systems.
+On Mon, Jun 22, 2020 at 02:27:57PM +0100, Mark Brown wrote:
+>On Mon, Jun 22, 2020 at 08:31:18AM -0400, Sasha Levin wrote:
+>> On Mon, Jun 22, 2020 at 12:23:21PM +0100, Mark Brown wrote:
+>
+>> > That's concerning - please don't do this.  It's not what stable is
+>> > expected to be and there's no guarantee that you're getting all the
+>> > changes required to actually make things work.
+>
+>> How come? This is one of the things stable rules explicitly call for:
+>> "New device IDs and quirks are also accepted".
+>
+>I would expect that to be data only additions, I would not expect that
+>to be adding new code.
 
-Thanks, pulled now.
+These come hand in hand. Take a look at the more complex cases such as
+sound/pci/hda/patch_*
 
+>> If we're missing anything, the solution is to make sure we stop missing
+>> it rather than not take anything to begin with :)
+>
+>It would be much better to not have to watch stable constantly like we
+>currently do - we're seeing people report breakage often enough to be a
+>concern as things are, we don't need to be trying to pile extra stuff in
+>there because there's some keywords in a changelog or whatever.  The
+>testing coverage for drivers is weak, increasing the change rate puts
+>more stress on that.
 
-Takashi
+Shouldn't we instead improve testing here? nvidia for example already
+provides Tegra testing for stable releases, if the coverage isn't
+sufficient then let's work on making it better.
+
+-- 
+Thanks,
+Sasha
