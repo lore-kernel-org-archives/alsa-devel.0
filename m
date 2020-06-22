@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 562A1C433FB
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 13:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A060C433F7
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 13:20:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64FFD20768
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 13:17:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C743E206D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 13:17:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dDaIQpne";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="0WDHvl7W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64FFD20768
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D00eCg6G";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="gUwWQ+wo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C743E206D7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F20C616AA;
-	Mon, 22 Jun 2020 15:16:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F20C616AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E0BF16D4;
+	Mon, 22 Jun 2020 15:17:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E0BF16D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592831829;
-	bh=7rCpMp9Rp+FqySWIb7GWHLRiPGRWfT1zUsHrHxzex4U=;
+	s=default; t=1592831877;
+	bh=IDR7gxUCOvISnhdQcpd8cEMUtddSE7iNrTcfIY4h0Qo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dDaIQpneRwz/sxMHo+8IQ/2tcVSeCgxsyXTcBAahzSJHtEdHG+SbID4knn02dIVTe
-	 RVDW7DPG8FeFQ3cr9PTjsBTI28Zxk/jBQRMoxHlUTstsVA3eiy52mvL6dKNmk5gA6f
-	 p2n2LALSsLdxiwgCQjeDC2fCtMV+FuVZnxyRviGY=
+	b=D00eCg6GMuwUw+xLsx3raL8DtKaic6gU0sBi2HViv5q1q+9QuzqpPpiauyljpWogC
+	 H4yd/dY6frPFzfGqHkEu1m7REK2O5CryaLU344Ln4BdvCGl9BNFQq6XOGZbMQfOSiK
+	 Aguk7sDpOuiH94AP8G345sE/19kTW6cLROL0VKpQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D18CF80157;
-	Mon, 22 Jun 2020 15:15:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55425F802A8;
+	Mon, 22 Jun 2020 15:15:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DD04F802A2; Mon, 22 Jun 2020 15:15:24 +0200 (CEST)
+ id 1F4B7F802A7; Mon, 22 Jun 2020 15:15:29 +0200 (CEST)
 Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4538F8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C782F80157
  for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 15:15:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4538F8015B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C782F80157
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
- header.b="0WDHvl7W"
+ header.b="gUwWQ+wo"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
  ; s=a;
  h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:
@@ -56,25 +56,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
  Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
  :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
  List-Post:List-Owner:List-Archive;
- bh=vEejpRzBFTJ0ZNMAC69VSODSqA0qVvaW7DAqw5N5mBo=; b=0WDHvl7Wt5BXpFAgIcG6+ENy3r
- UMvtFXYBv1EkkBwUfa0N9i0pSU7Lv2h/nfmwHdmy+Vbs/AmHxDoZp0a4XWsh9y7089LNC1fojqSL7
- Ity7/g9R7uShg7iLXl3ku2w2H5n9wqJk79itGNzNa1UDSr1KElYqR+KLxTI7d65Z+QXQfGf5+VRLe
- p9HNzFJl52KMSa3+D296p0+AxoLG7aiAzIN1vKVVmDEdrWYIs2WcMzCKQQwF8EXf4FXjjBlV/jVl/
- 6M4IUw2XuZqEgRnq72kbzu36Wi33K2uB2PA7madjWLG8UpjvcpS3nFr3vow31DcP51qGaloVJMDTs
- LG8U+BsA==;
+ bh=J4SmVEdjlodgHeWKQbht59vRLnVPgyAYhS1qVuU+Wn8=; b=gUwWQ+wojYvf24ZctwC832vNrM
+ xyGXbuYYIpitUSXBNJrlxI4Fbzwb4ckVeFi/zfdbCFCMeW96Y6RW3K0Mnp++DvyKdb2XFmwECy+SA
+ eXnn0lFIzOhfabAtTd28fUhqDj//CYK62E98Poj1cuSLEDWw8GNdPXaPLVXgnyYSdr65nImAPVTF4
+ 4yGkBLixAY+mEyPR63H+MnJC3BvQ+444LGCY4jeyhkxxXPMWSl7JJ731GYqrGqHLxB3VRdHspRGIn
+ B8FD3YZUvVmO7kqf6u96w3cEYNpGjHmrtupE176WLl6GD531ut8mdiYz1K1+L9/QVcdylUeyIf3w8
+ aGYHh2ow==;
 Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
  helo=stax.localdomain) by jazz.pogo.org.uk with esmtps (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94 (FreeBSD))
  (envelope-from <mark@xwax.org>)
- id 1jnMI7-000BwP-GW; Mon, 22 Jun 2020 14:15:15 +0100
+ id 1jnMI7-000BwK-Ga; Mon, 22 Jun 2020 14:15:15 +0100
 Received: from mark by stax.localdomain with local (Exim 4.84)
  (envelope-from <mark@stax.localdomain>)
- id 1jnMI7-00066N-6h; Mon, 22 Jun 2020 14:15:15 +0100
+ id 1jnMI7-00065y-44; Mon, 22 Jun 2020 14:15:15 +0100
 From: Mark Hills <mark@xwax.org>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 8/9] dsnoop: Make use of the (previously unused) function
-Date: Mon, 22 Jun 2020 14:15:14 +0100
-Message-Id: <20200622131515.23385-8-mark@xwax.org>
+Subject: [PATCH 3/9] conf: Read a host-specific asoundrc
+Date: Mon, 22 Jun 2020 14:15:09 +0100
+Message-Id: <20200622131515.23385-3-mark@xwax.org>
 X-Mailer: git-send-email 2.17.5
 In-Reply-To: <2006221356390.20421@stax.localdomain>
 References: <2006221356390.20421@stax.localdomain>
@@ -94,28 +94,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Match the equivalent funciton for playback. This is on the assumption
-that values should be capped at zero, which is what _rewindable()
-implements.
+On systems with a network mounted home directory this is thoroughly
+useful to allow for a core set of asoundrc settings, but with different
+settings on different hosts.
+
+It's not possibly to implement this in our own asoundrc or local
+customisation, as it's too late. The installation file must be modified.
+
+This is similar to ~/.Xdefaults-* on some systems.
 
 Signed-off-by: Mark Hills <mark@xwax.org>
 ---
- src/pcm/pcm_dsnoop.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/conf/alsa.conf | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 3588eb91..7904314c 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -352,7 +352,7 @@ static int snd_pcm_dsnoop_pause(snd_pcm_t *pcm ATTRIBUTE_UNUSED, int enable ATTR
- 
- static snd_pcm_sframes_t snd_pcm_dsnoop_rewindable(snd_pcm_t *pcm)
- {
--	return snd_pcm_mmap_capture_hw_avail(pcm);
-+	return snd_pcm_mmap_capture_hw_rewindable(pcm);
- }
- 
- static snd_pcm_sframes_t snd_pcm_dsnoop_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
+index 18427ec6..4dae0e9c 100644
+--- a/src/conf/alsa.conf
++++ b/src/conf/alsa.conf
+@@ -24,6 +24,17 @@
+ 					"/alsa/asoundrc"
+ 				]
+ 			}
++			{
++				@func concat
++				strings [
++					"~/.asoundrc-"
++					{
++						@func getenv
++						vars [ HOSTNAME ]
++						default "localhost"
++					}
++				]
++			}
+ 		]
+ 		errors false
+ 	}
 -- 
 2.17.5
 
