@@ -2,81 +2,77 @@ Return-Path: <SRS0=6Zlx=AD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D587AC433E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 12:34:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77A50C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 12:46:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60C3D20716
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 12:34:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA96D2071A
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 12:46:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IR/alt9y";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cg7/4rIq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60C3D20716
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I6vyrwgl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA96D2071A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9A3616B5;
-	Mon, 22 Jun 2020 14:33:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9A3616B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E14216A0;
+	Mon, 22 Jun 2020 14:45:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E14216A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592829253;
-	bh=HKucR3qMyjkGIuv/CEcWoDelkdm9iYNzcU+Zrzv+ESM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592829960;
+	bh=agUak84EByTr6VsST2IfweEac8jCj0gpjJE8cznvHpI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IR/alt9yl1zEaGY4CCqWnYzxPQOSYHk7xhYGoNSTFYHHUsNaClthf0UiEZ+czYQI5
-	 CU/biMficw06uNCvfNqpnzRl913F44vaGbbsB+2EoD9VBsmoXv+P5ROSVtAkaa3js6
-	 J/YE/UHCl8IgkoUfvpwb4QriP0DRDEPoQR5E5c4Q=
+	b=I6vyrwglF19mkJF4o2IUOeG/YU+DSnsm1QgUZNnP6aNOdRbTrgvw2sbJG0WexEuxO
+	 ZHfrSoc6wAV7uz8sqDrBiTckO2TmDhvzc03DYF0VPn67BWX2XmtlaQ2mV9zG/UBXao
+	 9yA42MbrjUmVTprYgCtyFqcxJSG+/3irkJBhSYIE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90DB3F801DB;
-	Mon, 22 Jun 2020 14:32:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06714F8015A;
+	Mon, 22 Jun 2020 14:45:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF3FBF8015B; Mon, 22 Jun 2020 14:31:42 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CFC6F8010D
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 14:31:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CFC6F8010D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cg7/4rIq"
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+ id C4447F8015B; Mon, 22 Jun 2020 14:44:56 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C8167206BE;
- Mon, 22 Jun 2020 12:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592829099;
- bh=HKucR3qMyjkGIuv/CEcWoDelkdm9iYNzcU+Zrzv+ESM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=cg7/4rIqO7T+pOhTZK0nEHsZnkTKN8Pzg7CR/klS/Xb9Jmz6dnbVhVYsV2E2iDE75
- R5JWrgv+QRmXHbRgBkgqrSYpgkQmYVKLnGZpCEFOYVRG9OKNEyhtXdYSe4oRGeojS9
- roaskBVIIb3HR4bCpAukPCXu83+M9Jc6+AmSMiWE=
-Date: Mon, 22 Jun 2020 08:31:37 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.7 130/388] ASoC: Fix wrong dependency of da7210
- and wm8983
-Message-ID: <20200622123137.GG1931@sasha-vm>
-References: <20200618010805.600873-1-sashal@kernel.org>
- <20200618010805.600873-130-sashal@kernel.org>
- <20200618110258.GD5789@sirena.org.uk>
- <20200621233453.GB1931@sasha-vm>
- <20200622101830.GA4560@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C77CF8010D
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 14:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C77CF8010D
+IronPort-SDR: X5LyAvT34bb1yaVKWLVzWkvafN/uR+sUiwq4KtXSA8PNaw0khzGgsLnK5H3wnkfRAQZSKzKAeE
+ rCKidF7B4cew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9659"; a="132168034"
+X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; d="scan'208";a="132168034"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jun 2020 05:44:50 -0700
+IronPort-SDR: 68MqyOqeKLUbs4Smd8Wx/9QT9f30sCpnM5edZ/GiWcX4T8P6Ts4+PPXl/YAnEuqBHi3miyveoy
+ aKRDTQ0W7CEQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; d="scan'208";a="278740703"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga006.jf.intel.com with ESMTP; 22 Jun 2020 05:44:48 -0700
+Date: Mon, 22 Jun 2020 15:44:33 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 02/16] ASoC: soc-component: use io_mutex correctly
+In-Reply-To: <87r1uf4mfa.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <alpine.DEB.2.22.394.2006221537050.3186@eliteleevi.tm.intel.com>
+References: <87tuzb4mjg.wl-kuninori.morimoto.gx@renesas.com>
+ <87r1uf4mfa.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200622101830.GA4560@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Wei Li <liwei391@huawei.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,19 +88,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jun 22, 2020 at 11:18:30AM +0100, Mark Brown wrote:
->On Sun, Jun 21, 2020 at 07:34:53PM -0400, Sasha Levin wrote:
->> On Thu, Jun 18, 2020 at 12:02:58PM +0100, Mark Brown wrote:
->
->> > This is purely about build testing, are you sure this is stable
->> > material?
->
->> Is this not something that can happen in practice?
->
->Not outside of build testing.
+Hey,
 
-Okay, I'll drop it.
+On Tue, 16 Jun 2020, Kuninori Morimoto wrote:
 
--- 
-Thanks,
-Sasha
+> component has io_mutex, but it had been used at
+> snd_soc_component_update_bits_legacy() only which does read and write.
+
+this is quite interesting. I wonder as regmap does its own locking, should
+io_mutex only be used on the non-regmap paths? The patch looks correct 
+though, holding the mutex only in update_bits won't help when write is 
+without locks.
+
+Br, Kai
