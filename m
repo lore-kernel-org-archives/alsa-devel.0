@@ -2,70 +2,80 @@ Return-Path: <SRS0=6Zlx=AD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38E9CC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36BAAC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:46:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8B502070E
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:40:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B021720716
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 11:46:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mORcq4A4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMy4aO6L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8B502070E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BoKo3Mg6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9F6qxFc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B021720716
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D3181692;
-	Mon, 22 Jun 2020 13:39:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D3181692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 381221682;
+	Mon, 22 Jun 2020 13:45:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 381221682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592826010;
-	bh=OKCh/fWODx2ctvMsdy/gZmZCiu5KkfATF56rBs0BwQU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mORcq4A49vzmH+e5buLzMROESCochsePnZPtu9kyP49GS5qR8Dow68cLdMA1WQ9l2
-	 8Vt1/KE6AEewvJzfjTT7H/7TUskAJeh/p5nW5zBa89pwy0KCfJaL8MHRKFmg+uFL6e
-	 DAL2MGRpw1SG/2K7MGTs2wAvnztWPgTf13jVoymE=
+	s=default; t=1592826391;
+	bh=CSpDeQNGGQlPQCF+KzbowInS8wumLcclqnF6BxUAqVw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BoKo3Mg6FI9q/HwEDklC1Pc2cE5xur2EGS1VKGmH9fXdy8OyxSO+L93gUiXKKVIqp
+	 OSD3WPmSBqV1HhA/TWHkW6InUQJbDzawasN4vgpx3tQE4oJTVM4CJlmKi6v4wjMLXa
+	 byEEUyHhW6H9fuwHl85e8TdRuZCzz9lcurdsO2ao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8644F80162;
-	Mon, 22 Jun 2020 13:39:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4746F8015A;
+	Mon, 22 Jun 2020 13:45:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53BA9F801DB; Mon, 22 Jun 2020 13:39:18 +0200 (CEST)
+ id 34A2FF8015B; Mon, 22 Jun 2020 13:45:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BCFCF8010E
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 13:39:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BCFCF8010E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E82AF80157
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 13:45:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E82AF80157
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kMy4aO6L"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ header.b="R9F6qxFc"
+Received: from localhost (unknown [171.61.66.58])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A31332070E;
- Mon, 22 Jun 2020 11:39:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BB1EE20716;
+ Mon, 22 Jun 2020 11:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592825950;
- bh=OKCh/fWODx2ctvMsdy/gZmZCiu5KkfATF56rBs0BwQU=;
- h=From:To:Cc:Subject:Date:From;
- b=kMy4aO6LUmcLtyBQQQoUWyZtuSB7BhC6r+bM6PHYukYYvNSbPpbtvyApJGqTIJFUy
- KNEfwHlI0TaNZSGgI46uLVjKF4tDJYAIGjq0pnVFDMWIma+8zLnlc1mZ6ksH7mu5lF
- vqU/CWkIkZsb5OgnxD7jaJDZ0ITvJM0qaA64pK9c=
-From: broonie@kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Subject: [GIT PULL] ASoC fixes for v5.8-rc2
-Date: Mon, 22 Jun 2020 12:39:01 +0100
-Message-Id: <20200622113909.A31332070E@mail.kernel.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>
+ s=default; t=1592826334;
+ bh=CSpDeQNGGQlPQCF+KzbowInS8wumLcclqnF6BxUAqVw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=R9F6qxFcIXjbvrGdQcrd8mBfnqf4iov4uRE7jKXDjuI2p++W8KxD0SgiC6H2DJjfx
+ ARFRxv9hK2qUASiBP9taDXjlrQYa0XsO6g5d9ht9YL4daxNWRCC0LKI9lQtZnWcrk9
+ 7eRh+2kGvU+MPEcl4MOEzfdbGU4aaGJo7Mr3tkhc=
+Date: Mon, 22 Jun 2020 17:15:30 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] soundwire: intel: fix memory leak with devm_kasprintf
+Message-ID: <20200622114530.GJ2324254@vkoul-mobl>
+References: <20200617163536.17401-1-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617163536.17401-1-pierre-louis.bossart@linux.intel.com>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ tiwai@suse.de, gregkh@linuxfoundation.org,
+ Daniel Baluta <daniel.baluta@gmail.com>, broonie@kernel.org,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,96 +91,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The following changes since commit 44ce45f866c1606f03a411fb2d2c0db4626403a6:
+On 17-06-20, 11:35, Pierre-Louis Bossart wrote:
+> The dais are allocated with devm_kcalloc() but their name isn't
+> resourced managed and never freed. Fix by also using devm_ for the dai
+> names as well.
 
-  Merge series "ASoC: Fix dailink checks for DPCM" from Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>: (2020-06-09 15:46:20 +0100)
+Applied, thanks
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.8-rc2
-
-for you to fetch changes up to f141a422159a199f4c8dedb7e0df55b3b2cf16cd:
-
-  ASoC: rockchip: Fix a reference count leak. (2020-06-18 17:21:58 +0100)
-
-----------------------------------------------------------------
-ASoC: Fixes for v5.8
-
-This is a collection of mostly small fixes, mostly fixing fallout from
-some of the DPCM changes that went in last time around which shook out
-some issues on i.MX and Qualcomm platforms.  The addition of a managed
-version of snd_soc_register_dai() is to fix resource leaks.
-
-There's also a few new device IDs for x86 systems.
-
-----------------------------------------------------------------
-Brent Lu (1):
-      ASoC: SOF: Intel: hda: Clear RIRB status before reading WP
-
-Jack Yu (1):
-      ASoC: rt1015: Update rt1015 default register value according to spec modification.
-
-Mark Brown (2):
-      Merge series "ASoC: topology: fix use-after-free when removing components" from Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>:
-      Merge series "ASoC: SOF: Intel: update PCI IDs" from Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>:
-
-Pierre-Louis Bossart (7):
-      ASoC: soc-devres: add devm_snd_soc_register_dai()
-      ASoC: soc-topology: use devm_snd_soc_register_dai()
-      ASoC: soc-pcm: fix checks for multi-cpu FE dailinks
-      ASoC: Intel: SOF: merge COMETLAKE_LP and COMETLAKE_H
-      ASoC: SOF: Intel: add PCI ID for CometLake-S
-      ASoC: SOF: Intel: add PCI IDs for ICL-H and TGL-H
-      ASoC: hdac_hda: fix memleak with regmap not freed on remove
-
-Qiushi Wu (1):
-      ASoC: rockchip: Fix a reference count leak.
-
-Ravulapati Vishnu vardhan rao (1):
-      ASoC: amd: closing specific instance.
-
-Shengjiu Wang (5):
-      ASoC: soc-card: export snd_soc_lookup_component_nolocked
-      ASoC: dmaengine_pcm: export soc_component_to_pcm
-      ASoC: fsl_asrc_dma: Reuse the dma channel if available in Back-End
-      ASoC: fsl_asrc_dma: Fix data copying speed issue with EDMA
-      ASoC: fsl_ssi: Fix bclk calculation for mono channel
-
-Srinivas Kandagatla (3):
-      ASoC: q6asm: handle EOS correctly
-      ASoc: q6afe: add support to get port direction
-      ASoC: qcom: common: set correct directions for dailinks
-
-Steve Lee (1):
-      ASoC: max98390: Update regmap readable reg and volatile
-
-derek.fang (1):
-      ASoC: rt5682: Let dai clks be registered whether mclk exists or not
-
- include/sound/dmaengine_pcm.h         |  11 +++
- include/sound/soc.h                   |   6 ++
- sound/hda/intel-dsp-config.c          |   4 +-
- sound/soc/amd/raven/acp3x-pcm-dma.c   |  30 ++++++--
- sound/soc/codecs/hdac_hda.c           |  16 +++--
- sound/soc/codecs/max98390.c           |   6 +-
- sound/soc/codecs/rt1015.c             | 124 ++++++++++++++++++++--------------
- sound/soc/codecs/rt1015.h             |  15 +++-
- sound/soc/codecs/rt5682.c             |  11 +--
- sound/soc/fsl/fsl_asrc_common.h       |   2 +
- sound/soc/fsl/fsl_asrc_dma.c          |  47 +++++++++----
- sound/soc/fsl/fsl_ssi.c               |  13 ++--
- sound/soc/intel/boards/Kconfig        |   4 +-
- sound/soc/qcom/common.c               |  14 +++-
- sound/soc/qcom/qdsp6/q6afe.c          |   8 +++
- sound/soc/qcom/qdsp6/q6afe.h          |   1 +
- sound/soc/qcom/qdsp6/q6asm.c          |   7 +-
- sound/soc/rockchip/rockchip_pdm.c     |   4 +-
- sound/soc/soc-core.c                  |   3 +-
- sound/soc/soc-devres.c                |  37 ++++++++++
- sound/soc/soc-generic-dmaengine-pcm.c |  12 ----
- sound/soc/soc-pcm.c                   |   6 +-
- sound/soc/soc-topology.c              |   3 +-
- sound/soc/sof/intel/Kconfig           |  29 +++-----
- sound/soc/sof/intel/hda-stream.c      |   9 ++-
- sound/soc/sof/sof-pci-dev.c           |  24 ++++---
- 26 files changed, 295 insertions(+), 151 deletions(-)
+-- 
+~Vinod
