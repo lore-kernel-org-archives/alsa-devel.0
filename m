@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E8B8C4345D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F4A8C43460
 	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 13:21:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23DD820738
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 13:20:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D9C4206D4
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2020 13:20:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CI6oO001";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="FglQj2Nu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23DD820738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T9nFKFf/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="sviGoMOM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D9C4206D4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9E9616D4;
-	Mon, 22 Jun 2020 15:19:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9E9616D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4A6D168E;
+	Mon, 22 Jun 2020 15:19:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4A6D168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592832017;
-	bh=LHZ0tA8UNHuJFyKfvqyo+ofVZWN9X7ggyGU2y1i9WKw=;
+	s=default; t=1592832035;
+	bh=5DUZPgwn/zwalRpur+X/AsGfwRNlBanJL2WtFf/8TYs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CI6oO001gKneVq+PY8WuecSjkt0weaW9CJCJSRy6VVVckwt3/GazwP6ivAkrw605A
-	 JqBj/ztPvNUWzRr0YO9EVMuR58krUSTGQsvB4LwHIU6SfOTGx8EWcq2SEbdw7opFd8
-	 asvr5/jiZ9N2uBWf4eiKdiG7cC+tuUNCMoUp5S60=
+	b=T9nFKFf/8G/2nsQL8x6sA6Me4OddoNaz24y+u85dfFq4NX6DnkZ2PCHFDFImai7zG
+	 CqDp9q/jrmLZirURt+BuOkg1LLvD4KUmkips9nwN9Eb0ecggzrGZkfnfqwWAoc4nSg
+	 3wlM2fazuDN8/sRTSjA1OerRAzj3iu/MQy/QWPMw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32600F801F2;
-	Mon, 22 Jun 2020 15:16:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 841CBF802EC;
+	Mon, 22 Jun 2020 15:16:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 140D2F802F8; Mon, 22 Jun 2020 15:16:15 +0200 (CEST)
+ id 17832F8015A; Mon, 22 Jun 2020 15:16:15 +0200 (CEST)
 Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A13FAF8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C71AF801F2
  for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 15:15:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A13FAF8015A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C71AF801F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
- header.b="FglQj2Nu"
+ header.b="sviGoMOM"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
  ; s=a;
  h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:
@@ -56,25 +56,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
  Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
  :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
  List-Post:List-Owner:List-Archive;
- bh=K7i/GaZFHcvhTiY7K+bVMkKcwiS3a1ggjaJlZurhtOs=; b=FglQj2NuzOfINuReyh81RJORWy
- l30RL250yEDDTCRN1SBrsp9bgRsaTLGSUNE9yta7Sy3p6zcdU+0Se3lfKFWmzUuc6DddE3QRLOl0Z
- ZbzxgohDIvQ3M8LayVeHHxlndgWiK1kbKKvr9Pa+fiZavr+fUxdQBw9H8NLrQ0B4WrsVUx21Rg3jC
- rff8OAqg14qwozdUMNkZuYgqB6k+l0yW4uVT8f+dNJEFYVMnVppNzdqaOjtpvO6j+Ujqw1NOz/2Vl
- 5qtN8WBHLtMvrQpQ4jpgBDrWQDAUsgyqbns90T9GVwyBX0oQsXK2M6cNhgDVnM61E+jpaabzP8tI0
- vipkXoYQ==;
+ bh=8cU1UkvPEE3dgwW86w1iNdExXcQr4WWcypzmRmDBv5Q=; b=sviGoMOMegrdJ7ZQeI5lxm0gBE
+ BwxBgKcRPXKxyZy25cOFKNXhLS8WvROI9QaQraJQKg0VPg/gBGumstQbSSt3Z1ueSfYhSst51m9Lw
+ hZdoWWasM2FuxkoHrBy8pMEcxS4T0p14r5etVdgcgcVtkElBFryWyIJvUPWj6mOcI9zBZRx1z9Cmk
+ xT5Bf2Poo5vC7egrL9dX/5wm85SkgTZhtkUR7taVpSWqEWBTomILIlchgO3l2We1YDLK7XI4rpF78
+ x/AlrBSku26Dp5sKKcRwAkCZAl7Fv7TipjWl1kKQEdONW6CYDy1pBTpcC490gcIRkMzG4LLFqoMhO
+ lM/dhPvA==;
 Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
  helo=stax.localdomain) by jazz.pogo.org.uk with esmtps (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94 (FreeBSD))
  (envelope-from <mark@xwax.org>)
- id 1jnMI7-000BwI-FB; Mon, 22 Jun 2020 14:15:15 +0100
+ id 1jnMI7-000BwO-IC; Mon, 22 Jun 2020 14:15:15 +0100
 Received: from mark by stax.localdomain with local (Exim 4.84)
  (envelope-from <mark@stax.localdomain>)
- id 1jnMI7-00065q-3S; Mon, 22 Jun 2020 14:15:15 +0100
+ id 1jnMI7-00066I-6K; Mon, 22 Jun 2020 14:15:15 +0100
 From: Mark Hills <mark@xwax.org>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 1/9] control: Fix typos in the namehint example
-Date: Mon, 22 Jun 2020 14:15:07 +0100
-Message-Id: <20200622131515.23385-1-mark@xwax.org>
+Subject: [PATCH 7/9] dsnoop: Another bug where the empty, not full,
+ part of the ringbuffer was observed
+Date: Mon, 22 Jun 2020 14:15:13 +0100
+Message-Id: <20200622131515.23385-7-mark@xwax.org>
 X-Mailer: git-send-email 2.17.5
 In-Reply-To: <2006221356390.20421@stax.localdomain>
 References: <2006221356390.20421@stax.localdomain>
@@ -94,32 +95,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Ths "namehint" is a list, and there doesn't seem to have been any
-history where the separator would be a colon.
+This looks like a simple mistake dating back to 2003 (commit 7470a5b9)
+where code originated from dmix.
 
 Signed-off-by: Mark Hills <mark@xwax.org>
 ---
- src/control/namehint.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ src/pcm/pcm_dsnoop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/control/namehint.c b/src/control/namehint.c
-index ecd470f3..d81d3a7e 100644
---- a/src/control/namehint.c
-+++ b/src/control/namehint.c
-@@ -543,10 +543,10 @@ static int add_software_devices(snd_config_t *config, snd_config_t *rw_config,
-  * User-defined hints are gathered from namehint.IFACE tree like:
-  *
-  * <code>
-- * namehint.pcm {<br>
-+ * namehint.pcm [<br>
-  *   myfile "file:FILE=/tmp/soundwave.raw|Save sound output to /tmp/soundwave.raw"<br>
-- *   myplug "plug:front:Do all conversions for front speakers"<br>
-- * }
-+ *   myplug "plug:front|Do all conversions for front speakers"<br>
-+ * ]
-  * </code>
-  *
-  * Note: The device description is separated with '|' char.
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index 790d944c..3588eb91 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -241,7 +241,7 @@ static int snd_pcm_dsnoop_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp)
+ 		/* Fall through */
+ 	case SNDRV_PCM_STATE_PREPARED:
+ 	case SNDRV_PCM_STATE_SUSPENDED:
+-		*delayp = snd_pcm_mmap_capture_hw_avail(pcm);
++		*delayp = snd_pcm_mmap_capture_avail(pcm);
+ 		return 0;
+ 	case SNDRV_PCM_STATE_XRUN:
+ 		return -EPIPE;
 -- 
 2.17.5
 
