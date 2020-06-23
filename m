@@ -2,93 +2,80 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86432C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B079C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12E9520874
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DBF120B80
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tN/C2UzW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wrftZ2hx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12E9520874
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RH6dNz3t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DBF120B80
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2FE8171D;
-	Wed, 24 Jun 2020 10:08:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2FE8171D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C52A16B4;
+	Wed, 24 Jun 2020 10:08:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C52A16B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592986143;
-	bh=he7XbJ0X5cGTthJvccL0ViHP8fdA0j+js4V9qHAOwmA=;
+	s=default; t=1592986179;
+	bh=WHOSJ+/vNeWNxlGSNkIX8BD+GxCblyNh1CuaoElS//k=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tN/C2UzW55+rPqdKEtYuofqelsGMO4nqCBUOyJe7/a5x9Y5cmeiNlGVhmW37hJs+S
-	 HCGzZilcdmwv/1Na9W9ZKLi2cVQX7zIwjCndnJ0ahdElna0RlS5NBN1McTo20JqoEb
-	 nacgMzd6bLHEYFvBokuK5WeiDZHvVr4+dob/jJyo=
+	b=RH6dNz3tog32NPG2K21agmkv5l767hhCGhuxh9QCOzZE6V4tuv72N48iZW+shwGV0
+	 9Cy5GYK1SYqz+nOQR86wvEnvdLDwvqtrQ2ofxxROVknr5ulsBjKC0Lh9FhpDzW126d
+	 qDibk6SoHhNkacGkvvTqJBNwZNNO6p1jylYHDeto=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98BD5F80444;
-	Wed, 24 Jun 2020 09:50:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEFA3F8044A;
+	Wed, 24 Jun 2020 09:50:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18557F80234; Tue, 23 Jun 2020 17:31:25 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ id E3507F80259; Tue, 23 Jun 2020 17:56:56 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CFBAF800B2
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 17:31:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CFBAF800B2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wrftZ2hx"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05NFVAE3129071;
- Tue, 23 Jun 2020 10:31:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1592926270;
- bh=uLEHz/OHzk1ME3oUbqR4BuAwuEDDTmmWf+QZUv9aRpw=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=wrftZ2hxdZdy5Ycu7wJqynv5z5avLZ9o20iZ6o999yHnujIMMzvfjPynu0442vxqr
- oTyymjup9pXjP5TRreezd1Ah5L/j06W0uwx+a2OtcpZzZCjq3eH2O4kgxG+anIzbMB
- 3K45PTDsG5LdSh9MDLsdjuXRh3Io62aQjff3yvrY=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05NFV4sh037200
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 23 Jun 2020 10:31:04 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 23
- Jun 2020 10:31:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 23 Jun 2020 10:31:03 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05NFV1rK067938;
- Tue, 23 Jun 2020 10:31:02 -0500
-Subject: Re: [PATCH 18/19] ASoC: soc-dai: remove .digital_mute
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91BE4F8023E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 17:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91BE4F8023E
+IronPort-SDR: djoC1ZTNzM0ISvwykB0Lc6QUGJ2RDnVBXoWH+AxBkZnIlnutETZl3jY2PFnyU8ot5ycqvzjfOh
+ cdx4TEPczSJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="123791892"
+X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; d="scan'208";a="123791892"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jun 2020 08:56:49 -0700
+IronPort-SDR: bgB3ilcNPNXQyT5Ki0OLm5qgSkjC9l6GWTEQnuFagfsDao8YcahNQDkRFu8X9FneJOWqgMa/DV
+ z+GjrfbJ7Emg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; d="scan'208";a="263367240"
+Received: from meis-mobl1.amr.corp.intel.com (HELO [10.255.230.137])
+ ([10.255.230.137])
+ by fmsmga007.fm.intel.com with ESMTP; 23 Jun 2020 08:56:40 -0700
+Subject: Re: [PATCH 01/19] ASoC: hdmi-codec: merge .digital_mute() into
+ .mute_stream()
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
 References: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
- <87pn9q1ss8.wl-kuninori.morimoto.gx@renesas.com>
-From: Dan Murphy <dmurphy@ti.com>
-Message-ID: <4e8f7b7b-9d60-4e60-60db-91477cb1b1d8@ti.com>
-Date: Tue, 23 Jun 2020 10:31:01 -0500
+ <87eeq637ff.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3e596232-a22f-cd67-702e-59fb79c8aaec@linux.intel.com>
+Date: Tue, 23 Jun 2020 10:18:08 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <87pn9q1ss8.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87eeq637ff.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Wed, 24 Jun 2020 09:49:30 +0200
 Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
  Linux-ALSA <alsa-devel@alsa-project.org>, Michael Walle <michael@walle.cc>,
@@ -104,14 +91,13 @@ Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
  "Andrew F. Davis" <afd@ti.com>, Fabio Estevam <festevam@gmail.com>,
  Jerome Brunet <jbrunet@baylibre.com>,
  Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Lars-Peter Clausen <lars@metafoo.de>, Joonyoung Shim <jy0922.shim@samsung.com>,
  Matthias Reichl <hias@horus.com>, Katsuhiro Suzuki <katsuhiro@katsuster.net>,
- Kevin Hilman <khilman@baylibre.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- YueHaibing <yuehaibing@huawei.com>, Russell King <linux@armlinux.org.uk>,
- Krzysztof Kozlowski <krzk@kernel.org>, Daniel Drake <drake@endlessm.com>,
- Tzung-Bi Shih <tzungbi@google.com>,
+ Kevin Hilman <khilman@baylibre.com>, Masahiro Yamada <masahiroy@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
+ Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Daniel Drake <drake@endlessm.com>, Tzung-Bi Shih <tzungbi@google.com>,
  Ludovic Desroches <ludovic.desroches@microchip.com>,
  Kukjin Kim <kgene@kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
@@ -126,9 +112,8 @@ Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
  Nicolas Ferre <nicolas.ferre@microchip.com>,
  Chuhong Yuan <hslester96@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
  James Schulman <james.schulman@cirrus.com>, Inki Dae <inki.dae@samsung.com>,
- Masahiro Yamada <masahiroy@kernel.org>,
  Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Matthias Brugger <matthias.bgg@gmail.com>,
+ Dan Murphy <dmurphy@ti.com>, Matthias Brugger <matthias.bgg@gmail.com>,
  =?UTF-8?Q?Nuno_S=c3=a1?= <nuno.sa@analog.com>,
  Vincent Abriou <vincent.abriou@st.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
  Jernej Skrabec <jernej.skrabec@siol.net>,
@@ -139,10 +124,12 @@ Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
  David Rhodes <david.rhodes@cirrus.com>, Seung-Woo Kim <sw0312.kim@samsung.com>,
  Sandy Huang <hjc@rock-chips.com>, Pavel Dobias <dobias@2n.cz>,
  Philipp Puschmann <p.puschmann@pironex.de>,
- Kyungmin Park <kyungmin.park@samsung.com>, Daniel Vetter <daniel@ffwll.ch>,
- Colin Ian King <colin.king@canonical.com>,
- Kevin Cernekee <cernekee@chromium.org>, Shawn Guo <shawnguo@kernel.org>,
- Peter Rosin <peda@axentia.se>, Lucas Stach <l.stach@pengutronix.de>
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Vishwas A Deshpande <vishwas.a.deshpande@ti.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Colin Ian King <colin.king@canonical.com>,
+ Kevin Cernekee <cernekee@chromium.org>, Lucas Stach <l.stach@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>, Peter Rosin <peda@axentia.se>,
+ M R Swami Reddy <mr.swami.reddy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -158,54 +145,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Kuninori
 
-On 6/22/20 8:21 PM, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> All drivers are now using .mute_stream.
-> Let's remove .digital_mute.
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->   include/sound/soc-dai.h | 1 -
->   sound/soc/soc-dai.c     | 4 ----
->   2 files changed, 5 deletions(-)
->
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index 212257e84fac..a3db208cd062 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -246,7 +246,6 @@ struct snd_soc_dai_ops {
->   	 * DAI digital mute - optional.
->   	 * Called by soc-core to minimise any pops.
->   	 */
-> -	int (*digital_mute)(struct snd_soc_dai *dai, int mute);
->   	int (*mute_stream)(struct snd_soc_dai *dai, int mute, int stream);
+> -static int sii902x_audio_digital_mute(struct device *dev,
+> -				      void *data, bool enable)
+> +static int sii902x_audio_mute(struct device *dev, void *data,
+> +			      bool enable, int direction)
+>   {
+>   	struct sii902x *sii902x = dev_get_drvdata(dev);
 >   
->   	/*
-> diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-> index b05e18b63a1c..b0fc3d8b1798 100644
-> --- a/sound/soc/soc-dai.c
-> +++ b/sound/soc/soc-dai.c
-> @@ -301,10 +301,6 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
->   	if (dai->driver->ops &&
->   	    dai->driver->ops->mute_stream)
->   		ret = dai->driver->ops->mute_stream(dai, mute, direction);
-> -	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
-> -		 dai->driver->ops &&
-> -		 dai->driver->ops->digital_mute)
-> -		ret = dai->driver->ops->digital_mute(dai, mute);
+> +	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
+> +		return 0;
+> +
 
-Instead of putting the direction check in every codec driver can't the 
-check just part of the function? And then maybe a flag in dai_ops to 
-override that call to mute?
+Thanks for this clean-up Morimoto-san.
 
-if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-         return 0;
+One question: in all the codec changes the return is now 0.
 
-I did not look at every codec driver as there are too many.
+But in the previous implementation based on digital_mute, when the wrong 
+direction was used it would have been -ENOTSUPP.
 
-Dan
+int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+			     int direction)
+{
+	int ret = -ENOTSUPP;
 
+	if (dai->driver->ops &&
+	    dai->driver->ops->mute_stream)
+		ret = dai->driver->ops->mute_stream(dai, mute, direction);
+	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+		 dai->driver->ops &&
+		 dai->driver->ops->digital_mute)
+		ret = dai->driver->ops->digital_mute(dai, mute);
+
+<<< none of the branches taken for capture + digital_mute supported, so 
+return -ENOTSUPP.
+
+	return soc_dai_ret(dai, ret);
+}
+
+Was this change intentional?
+
+We also want to check why this return value is only tested in 
+soc-dapm.c, if this digital_mute can fail then we are missing tests left 
+and right - maybe that's a follow-up change?
 
