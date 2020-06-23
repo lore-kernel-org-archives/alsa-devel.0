@@ -8,92 +8,93 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB00C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 23:31:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 665CAC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 23:32:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45BA12098B
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 23:31:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E18D52078E
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 23:32:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pawwNtMV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C6iShYJW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45BA12098B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B7XOIVPv";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D3PrKqtt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E18D52078E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B20381775;
-	Wed, 24 Jun 2020 01:30:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B20381775
+	by alsa0.perex.cz (Postfix) with ESMTPS id 676DF17DE;
+	Wed, 24 Jun 2020 01:31:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 676DF17DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592955104;
-	bh=HfF+N063wzNbarJH2aiL2Y+y/+vQSkwbYz5qabmOLjg=;
+	s=default; t=1592955157;
+	bh=8vorLRwslmpe/EHZhDoTOmbkDf3C9hHQgZtVxy+RAqE=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pawwNtMVcQJuGrz9P4s4rOKJ72+iHQ+zB7SLmLjQXPfsBh2DNT7/1bao61NhrXWhA
-	 DgGyVc5GWqySdZREGnpCyaInzn1/oAn/Du3KVT8N4bUjY700Soy7mxhyFIpYyxQH30
-	 kpNmPmSAa03GBJljUcWtUugCKhkOpCaAc5NUUHhQ=
+	b=B7XOIVPvOA/ZUUMwjbY6x1eRibYhcMJsh5bbBOyveCl+cT6PcrVGK2ihejEFoisvH
+	 YOCqmZ2kmrgWzTBClZxkQGRUj+9775/hRq01p2LzuwZVeO5jG2sdAg9cRLHWM0hKXj
+	 hCQq+wV/UEGqDltETGdQ1mMstmOIAQqNVQ9SkvEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4AE01F80218;
-	Wed, 24 Jun 2020 01:30:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B1BCF80249;
+	Wed, 24 Jun 2020 01:31:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27BCAF80234; Wed, 24 Jun 2020 01:30:53 +0200 (CEST)
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
- [IPv6:2607:f8b0:4864:20::644])
+ id 126B5F80234; Wed, 24 Jun 2020 01:31:27 +0200 (CEST)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E271F8010E
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 01:30:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E271F8010E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EDC9F80234
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 01:31:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EDC9F80234
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="C6iShYJW"
-Received: by mail-pl1-x644.google.com with SMTP id d10so158543pls.5
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 16:30:46 -0700 (PDT)
+ header.b="D3PrKqtt"
+Received: by mail-pf1-x444.google.com with SMTP id f9so189233pfn.0
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 16:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to:user-agent;
- bh=89qgK7zoxJ0CxIlIbUd135zUy4sjIO0yIPQYW2bQXdo=;
- b=C6iShYJWie7aVa8GVkryo9BBNF5E6UroklqVgSNbUnmSrvA/2+VZNYJpL3shXp5iRK
- YOa71XUddAxmNPhn1KQICzn6sn8ghlmd8u8IPSmWoIj600lgmpjGm/BJzz2+0x6nymui
- xrNQR0cWvVWYaYEihMFcAHbwekRqpAHoivNOD0YJpsLbMqrfhnomGqCk+9sqB/vNzExS
- xcLmA6sRW5m1GbHyQUampD5E8um9yye/cBHTyQ9xOryjd+talV+Xz97xMPw5blS8EJMV
- g43wyqAInEAQSVWC5w90SsQ8Hu3XeyKxUd+rcxLhypmbpHewByKemSeuEd4RuNost1ls
- W9SA==
+ bh=v2em8WufMe/XzcJqk7YFYQSWFx3qyHpDXzQPwunL4Mg=;
+ b=D3PrKqttTaVJOmY8IJl9a74nK+vT3bB73vbRbEdADkSzTBJXKcW90YspYntqCqaJhL
+ flrsd1SDjQCLrku8MvQ8ffq7WXYKSRZGpOZpkpo4jBmp8mt/S8qVrp+WIcjXLAe7m0ko
+ 4hPR6azoWVRP2H3o0QL67neEJZtUvscXqKhJetbfR1waX4Kr21d6Tx5UyWIuFiUn+ggZ
+ pTTL8voMO9NWKPC/PhYy0SE0gPC1rE8w+3Sqkep5YwkwTRzpzrIJvD7ap/isv8xDIIkP
+ 3kgds5X7zJ30Hkne7cgO5PxcccR7DALNDjVPC5qn7FL9r/9FD7K39kmsydeCkzj2aDJ8
+ pErw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=89qgK7zoxJ0CxIlIbUd135zUy4sjIO0yIPQYW2bQXdo=;
- b=Rc8gs+DZd4T4xh/oOffd8LmBPQM6elPBwyIRawhoG6mZUG/5ic1/H/x2ZjI3yVMmvf
- 58k714Kgu4BrzcwfrEe1mW0EecxCvzpO9NTI7dot1CqHWhqUwsnGhFwa31uLK1LiY5o7
- QGU+tNT9nZuhsBrJ4kh9Bvu32AIsRjx7hWyALwi3q+inlXTrGl205NnUucq9ABV27TVg
- ciuEVlzgwPdczU3+aQ6khpn+9zyODSCeVHw3+8E73DiKVSAAoasvr+W6bXMc8Mn1ziYB
- z592zO7r4oE/aIK0oj8iraUUw7IrBslpHiJ1qOVNKzLSlbWwR2LAeH6N7ASv0cetCcrQ
- STNw==
-X-Gm-Message-State: AOAM533SWwSDuQUN5zKHhK5GbvHd7a5GzvXiLWL6p4Fe+w0mSwOT9qzR
- jhehDoKQy86RpwMmEu+zSh0=
-X-Google-Smtp-Source: ABdhPJxaKkxXXN2/KWbYMt8R19keUrj+/zo74qexOzyZbqDPwyo6rkVti8N8GMoMRPk/tKDyOyMfaw==
-X-Received: by 2002:a17:90a:7608:: with SMTP id
- s8mr27397634pjk.159.1592955039921; 
- Tue, 23 Jun 2020 16:30:39 -0700 (PDT)
+ bh=v2em8WufMe/XzcJqk7YFYQSWFx3qyHpDXzQPwunL4Mg=;
+ b=fITn4MCtWwkZjqDxid6AYRbrmKuJiTMT0D7Jx0hwNFs8B2cauacfNkKU+suCksj2Bp
+ dSkzF6wkjcRyeEpRFxKClCJKt+XHYyVDmTBlSXxSWfaCxNvNbhsRfbQPEzWEn0bZW+/i
+ 6RE99cHC81XFlUDWfmKCXIPTfM9MMU67JYHeUv9H8DeXZu4dGWTUb6b09CAkwLU2qQuI
+ YAkzwsa1k7kfGy3ewuNRhSUmwdaAoBALHX5btkbBC8tco/y5g2248oYq/ELeLBaSvNeB
+ /ELAG1kN8m5Hi3ZWeyHvhCenqbukbbWAv+XUYb8eaGtwQPpAHDzP9k0LWugPkTWBAV8G
+ QxvA==
+X-Gm-Message-State: AOAM533xtogM1JoNeqiIVCJmw1zmFDXp0kFh4lAH3HZ0yqdOk/ZO26Nd
+ T0OcuSLu8Mqf5PLmXE2JfSI=
+X-Google-Smtp-Source: ABdhPJygTOv/K578Nfi+keQ7SWHWmMxiyqT1qgqh4PY1PWO2ZBzG5y01Ax6vFA6ckUG9CyH3gxpZZw==
+X-Received: by 2002:a63:531a:: with SMTP id h26mr19943514pgb.188.1592955078526; 
+ Tue, 23 Jun 2020 16:31:18 -0700 (PDT)
 Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id u35sm14655786pgm.48.2020.06.23.16.30.39
+ by smtp.gmail.com with ESMTPSA id n62sm3651622pjb.42.2020.06.23.16.31.17
  (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 23 Jun 2020 16:30:39 -0700 (PDT)
-Date: Tue, 23 Jun 2020 16:30:11 -0700
+ Tue, 23 Jun 2020 16:31:18 -0700 (PDT)
+Date: Tue, 23 Jun 2020 16:30:51 -0700
 From: Nicolin Chen <nicoleotsuka@gmail.com>
 To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl-asoc-card: Add WM8524 support
-Message-ID: <20200623233003.GA28038@Asurada-Nvidia>
+Subject: Re: [PATCH 2/2] ASoC: bindings: fsl-asoc-card: Add compatible string
+ for wm8524
+Message-ID: <20200623233050.GA28062@Asurada-Nvidia>
 References: <1592895167-30483-1-git-send-email-shengjiu.wang@nxp.com>
+ <1592895167-30483-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592895167-30483-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1592895167-30483-2-git-send-email-shengjiu.wang@nxp.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
  linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
@@ -113,9 +114,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jun 23, 2020 at 02:52:46PM +0800, Shengjiu Wang wrote:
-> WM8524 only supports playback mode, and only works at
-> slave mode.
+On Tue, Jun 23, 2020 at 02:52:47PM +0800, Shengjiu Wang wrote:
+> In order to support wm8524 codec with fsl-asoc-card machine
+> driver, add compatible string "fsl,imx-audio-wm8524".
 > 
 > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
