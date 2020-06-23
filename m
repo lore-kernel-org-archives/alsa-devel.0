@@ -7,61 +7,62 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B987DC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD1DAC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:55:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E7DD206D4
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:12:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A39320679
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:55:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VIjfPSzQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E7DD206D4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KZ7TIHU5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A39320679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD73C172B;
-	Tue, 23 Jun 2020 12:12:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD73C172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4BDE176A;
+	Tue, 23 Jun 2020 12:54:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4BDE176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592907170;
-	bh=zEpQg7pV0j7ttcq6i249CBmrWyhwt5EXKxQN9sDU19o=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1592909720;
+	bh=JzFkKJG1+uXeabzwz48rFzYmlA/XIE8DsvzGyfheUxo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VIjfPSzQ1WT8tDH/hJw+FAppGo1mjEz5TyzBkRmwQ69W8wFt7uXvrKukyHeoMlBvT
-	 Lpzje/JRZXa5+cS/Xy0pHSFfcXkoM22TUbqliyyBhI5rA3GGATgs+4Rhtt7C13lv4b
-	 wqVMxfAkq7Vq69udbDKkftpSbX3dHwfVvMfmTjhI=
+	b=KZ7TIHU5VPpb/dpPQ9wn2cqgHuKaZBhviN8BUOJOL30dHXXMkpb27ztUQx5pXKSg8
+	 MePxnEP9zec5TjXMrw187TZkfXMUIq9n5G8UxO7UlXuntua7v9HaWsA0WPAGrAoB6R
+	 XTsxfx5/5co6JeDgGMihmTieImxJWEoRyg4DeCHk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60707F80218;
-	Tue, 23 Jun 2020 12:12:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 417E6F80218;
+	Tue, 23 Jun 2020 12:54:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16B05F80234; Tue, 23 Jun 2020 12:11:59 +0200 (CEST)
+ id 621BDF80234; Tue, 23 Jun 2020 12:54:27 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46808F8010E
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:11:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46808F8010E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F821F800B2
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:54:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F821F800B2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A6F74AE33
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 10:11:51 +0000 (UTC)
-Date: Tue, 23 Jun 2020 12:11:52 +0200
-Message-ID: <s5hk0zyozvb.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 8E229AED9;
+ Tue, 23 Jun 2020 10:54:19 +0000 (UTC)
+Date: Tue, 23 Jun 2020 12:54:19 +0200
+Message-ID: <s5hbllaoxwk.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: hda/conexant: Fix missing headphone node after
- reboot from Windows
-In-Reply-To: <20200623062510.27499-1-tiwai@suse.de>
-References: <20200623062510.27499-1-tiwai@suse.de>
+To: Mark Hills <mark@xwax.org>
+Subject: Re: [PATCH 3/9] conf: Read a host-specific asoundrc
+In-Reply-To: <20200622131515.23385-3-mark@xwax.org>
+References: <2006221356390.20421@stax.localdomain>
+ <20200622131515.23385-3-mark@xwax.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,25 +78,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 23 Jun 2020 08:25:10 +0200,
-Takashi Iwai wrote:
+On Mon, 22 Jun 2020 15:15:09 +0200,
+Mark Hills wrote:
 > 
-> When Lenovo Thinkpad E495 is rebooted from Windows, the headphone
-> control is lost.  This seems because BIOS doesn't initialize the
-> headphone node (NID 0x16) properly after the reboot from Windows, as
-> Windows likely turns off the power at its exit.  The node is left
-> as a vendor-specific unknown node and ignored by the HD-audio parser.
+> On systems with a network mounted home directory this is thoroughly
+> useful to allow for a core set of asoundrc settings, but with different
+> settings on different hosts.
 > 
-> This patch forcibly initializes the node at the probe time, by
-> overriding the widget caps and the connection list, so that the
-> headphone control is detected always at probe time.
+> It's not possibly to implement this in our own asoundrc or local
+> customisation, as it's too late. The installation file must be modified.
 > 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207741
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> This is similar to ~/.Xdefaults-* on some systems.
+> 
+> Signed-off-by: Mark Hills <mark@xwax.org>
 
-This turned out to be not effective, the audio stream itself doesn't
-work as expected.
+This kind of change popping up sometimes in the past, too, and I have
+a mixed feeling whether to take such a change globally or not.
+
+In one side, it can work, but OTOH, if you can deal with that detail,
+you're certainly able to set up the environment variable easily, too.
 
 
 thanks,
@@ -103,65 +104,31 @@ thanks,
 Takashi
 
 > ---
->  sound/pci/hda/patch_conexant.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
+>  src/conf/alsa.conf | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-> index 396b5503038a..37c8add48791 100644
-> --- a/sound/pci/hda/patch_conexant.c
-> +++ b/sound/pci/hda/patch_conexant.c
-> @@ -215,6 +215,7 @@ enum {
->  	CXT_FIXUP_MUTE_LED_GPIO,
->  	CXT_FIXUP_HEADSET_MIC,
->  	CXT_FIXUP_HP_MIC_NO_PRESENCE,
-> +	CXT_FIXUP_THINKPAD_E495,
->  };
->  
->  /* for hda_fixup_thinkpad_acpi() */
-> @@ -673,6 +674,22 @@ static void cxt_fixup_mute_led_gpio(struct hda_codec *codec,
->  				    spec->gpio_led);
->  }
->  
-> +static void cxt_fixup_thinkpad_e495(struct hda_codec *codec,
-> +				    const struct hda_fixup *fix,
-> +				    int action)
-> +{
-> +	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-> +		static const hda_nid_t conns[] = { 0x10, 0x11 };
-> +		/* BIOS invalidates the headphone pin NID 0x16 when rebooted
-> +		 * after Windows by some reason;
-> +		 * forcibly restoring the whole setup
-> +		 */
-> +		snd_hda_override_wcaps(codec, 0x16, 0x400581);
-> +		snd_hda_codec_set_pincfg(codec, 0x16, 0x03211040);
-> +		snd_hda_override_conn_list(codec, 0x16, ARRAY_SIZE(conns),
-> +					   conns);
-> +	}
-> +}
->  
->  /* ThinkPad X200 & co with cxt5051 */
->  static const struct hda_pintbl cxt_pincfg_lenovo_x200[] = {
-> @@ -846,6 +863,12 @@ static const struct hda_fixup cxt_fixups[] = {
->  		.chained = true,
->  		.chain_id = CXT_FIXUP_HEADSET_MIC,
->  	},
-> +	[CXT_FIXUP_THINKPAD_E495] = {
-> +		.type = HDA_FIXUP_FUNC,
-> +		.v.func = cxt_fixup_thinkpad_e495,
-> +		.chained = true,
-> +		.chain_id = CXT_FIXUP_THINKPAD_ACPI,
-> +	},
->  };
->  
->  static const struct snd_pci_quirk cxt5045_fixups[] = {
-> @@ -932,6 +955,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
->  	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
->  	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo G50-70", CXT_FIXUP_STEREO_DMIC),
->  	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
-> +	SND_PCI_QUIRK(0x17aa, 0x5124, "Lenovo Thinkpad E495", CXT_FIXUP_THINKPAD_E495),
->  	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
->  	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
->  	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
+> diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
+> index 18427ec6..4dae0e9c 100644
+> --- a/src/conf/alsa.conf
+> +++ b/src/conf/alsa.conf
+> @@ -24,6 +24,17 @@
+>  					"/alsa/asoundrc"
+>  				]
+>  			}
+> +			{
+> +				@func concat
+> +				strings [
+> +					"~/.asoundrc-"
+> +					{
+> +						@func getenv
+> +						vars [ HOSTNAME ]
+> +						default "localhost"
+> +					}
+> +				]
+> +			}
+>  		]
+>  		errors false
+>  	}
 > -- 
-> 2.16.4
+> 2.17.5
 > 
