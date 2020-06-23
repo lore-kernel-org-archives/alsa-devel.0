@@ -2,129 +2,90 @@ Return-Path: <SRS0=bSXK=AE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55791C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 20:14:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C199C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 20:26:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D17AF20707
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 20:14:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8B5E2082F
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 20:26:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tBM5rvDo";
-	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="S9+LXZs7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D17AF20707
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qGKKg/J8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwOqVH7N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8B5E2082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69CBC17B7;
-	Tue, 23 Jun 2020 22:13:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69CBC17B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F45B1796;
+	Tue, 23 Jun 2020 22:25:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F45B1796
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592943271;
-	bh=PsjdAsAS/kcRpzsmR3mSoAcEkAxCvRPxZDb8BFMRpGg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tBM5rvDoq8gBeuFzx+Vv9+BM5nFZp8Qlra8MtOIIycmgoOtPlxFs1sMDEtebgem7o
-	 70N2AN41ebTYnmnApPzI5GICanD85qBu14moqbEVL2LzQPsKC215Y0uyPKEDlg3YVI
-	 9JLSkgnTL3fVb93NWRDdZe6B6NQaHM9n3O/sPHR0=
+	s=default; t=1592943967;
+	bh=oas93NNC0F914MjXfIOoxIh9b9rSyP2udPEEJm45pOg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qGKKg/J8xM1FK/pAF5wdvCUpJe8pgdPwttFrHWuIsoiPwLad8fKF7kJDu2fUI0F2f
+	 CBjhK98/G9CcBDJzTKNpee19xSBnwmB6fJPub3tz/8iI62P5ODIBI2jiJyB3rgH1Kw
+	 Ivl0QwpMof3WpdXx/svT+UutNh7Ex5IaDlFLlGiE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0D03F80218;
-	Tue, 23 Jun 2020 22:13:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F350DF80218;
+	Tue, 23 Jun 2020 22:25:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39A4BF80234; Tue, 23 Jun 2020 22:13:39 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on2072.outbound.protection.outlook.com [40.107.243.72])
+ id 4EE2CF80234; Tue, 23 Jun 2020 22:25:15 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26B70F8010E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 22:25:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26B70F8010E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="VwOqVH7N"
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED3BDF8010E
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 22:13:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED3BDF8010E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="S9+LXZs7"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RHzX9BfvsWs4o424wTl5ts2uPN+cnJAJzyHn9B4jd6fdf06iyWeZJiRWtghJlav+4X3qIgKdbNirjH4QRxFxiV5W1Fbkfar+l0oljEdage8/JF19xOvuidUfPmt9CuDc7rS58DO+Hn2zvQf5OVTGFIedvjath3t5WJAvvQaFeRh9EqfTGM52j+fVDaOooDLRIjNOMWFr0xM27jXyecg0aqERe4ABsviGo6RFWBJp5h72P6R1HuwxsMKPQxqwhoWNwBAMMbNZBtVv1dv/YFeo7qwQ86tFPEVK/DiP5Hc6vlvZeGzkfjzy/NGHb47Z6ztBZoxkcdI3hVbtEU2xs3sRrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CQezMtX1mvw9xogG2ZSNgFBzUASkH/IBZ59+2L0vj/Q=;
- b=c2RapbDSlNUPIclkdLfOnFAaGuLek1YcO0PgczwO9nabkKJxRHVoTQcq2u28F+vILcAFsw4cla+DsorJAKrl+mjTXwL6AY/c1LJ5Gsnm2WgindonVWqharNg/r2POgJn0dsQqhwtmPOCcjeGC/bVKKJeAhOMpw49Dvqx3veBUAtf/PiuCEqYbQWkrDnGTVG11XEJZcQix5TJgrUP/7UdJ39HVZFBbPN0w9J2+XTcrPDuq9yRIHdLYFsLFAJHHOucZ81b1iNHjdjFpM+99+ZcAr6A84n6tsNwU4P2PJ4ov6tRnXeR5Mx8JO+j2tE40pmimSe+u4xYhfnxdI7OtmWQlw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=perex.cz smtp.mailfrom=amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CQezMtX1mvw9xogG2ZSNgFBzUASkH/IBZ59+2L0vj/Q=;
- b=S9+LXZs7Z4iLTGIoRSMLeD0mf05q7dZrenp+VUYXstYvLHZNqs8xeUZK/koqWsFQun3Zf4AOP2emM2U2+Kph1YCLCs5HoPgTXIOLQxGK+VSr9OaX5z+XIpPXL1sjSw/OvnX1bCnQ3Y73lt5ndo/lEj/1sCHjraNLp+rc4/xXzGE=
-Received: from DM6PR02CA0059.namprd02.prod.outlook.com (2603:10b6:5:177::36)
- by SN6PR12MB2768.namprd12.prod.outlook.com (2603:10b6:805:72::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.24; Tue, 23 Jun
- 2020 20:13:28 +0000
-Received: from DM6NAM11FT015.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:177:cafe::a2) by DM6PR02CA0059.outlook.office365.com
- (2603:10b6:5:177::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend
- Transport; Tue, 23 Jun 2020 20:13:28 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; perex.cz; dkim=none (message not signed)
- header.d=none;perex.cz; dmarc=permerror action=none header.from=amd.com;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-Received: from SATLEXMB02.amd.com (165.204.84.17) by
- DM6NAM11FT015.mail.protection.outlook.com (10.13.172.133) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3109.22 via Frontend Transport; Tue, 23 Jun 2020 20:13:28 +0000
-Received: from SATLEXMB01.amd.com (10.181.40.142) by SATLEXMB02.amd.com
- (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 23 Jun
- 2020 15:13:27 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Tue, 23 Jun 2020 15:13:25 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <perex@perex.cz>, <alsa-devel@alsa-project.org>
-Subject: [PATCH] ASoC: amd: add logic to check dmic hardware runtime
-Date: Wed, 24 Jun 2020 01:57:20 +0530
-Message-ID: <1592944040-12974-1-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
+ by mail.kernel.org (Postfix) with ESMTPSA id 16E93206C3;
+ Tue, 23 Jun 2020 20:25:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592943904;
+ bh=oas93NNC0F914MjXfIOoxIh9b9rSyP2udPEEJm45pOg=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=VwOqVH7Noghf1uXnjCBH3WeR4jQb53GUvXx2g/d6vTP2b0to5LpIZPU8puoBVI1gZ
+ kCD67OZcoatsJTZYOPtr49hwxlhX8NeF1y9e6GJNUuCnUTBquv9DXUx5OS77KC/z7N
+ LHszjp62V2bySRvt75Gqkzmr5t4O9aGml6VcnXXE=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 5.4 066/314] ASoC: qcom: q6asm-dai: kCFI fix
+Date: Tue, 23 Jun 2020 21:54:21 +0200
+Message-Id: <20200623195341.985207079@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SATLEXMB02.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFTY:;
- SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(46966005)(426003)(82740400003)(7696005)(336012)(478600001)(8676002)(26005)(47076004)(186003)(36756003)(316002)(2616005)(83380400001)(4326008)(8936002)(81166007)(5660300002)(6666004)(110136005)(54906003)(70206006)(70586007)(356005)(86362001)(82310400002)(2906002);
- DIR:OUT; SFP:1101; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a57d7467-c054-4b51-c6b2-08d817b1e47e
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2768:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB276807AECEBE03B57F32801697940@SN6PR12MB2768.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-Forefront-PRVS: 04433051BF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Quqnfa5qWixYwMAmY6RdV/s9d//afgApnNV/MFdaik0LDJkD33Im94zxZCCzho59jdOLidjSNNaYZpqjykK9hDNb5ql1e+ERPtTBvsZxlta309E3EbESvaxlv6rSZCWzsbqrgoTvxMIxJTMndTeUxHISDxHk+mb1+JV9FX2S0eV+cpHUPsc6/m+5X44GoRYmQ1hiQr1SXDApAIWhYCKPb+1GOoyyYwIv80Cuy7cjh4EC7kQGQac9dFC1waw/bRst6W6zubqy3iVtHjQrpDCyiRtdCOMxuQr/TB/UD1g8SCubddV7vmnmy8DrXKDfT4+wO62QnqN4lMH2FtGmEm4Uq4Yp8CVjlHuuTW1MmpKS/5WP/rglacl6Ng59J3sx1RxYhTYrgFSTrMU2eicMBPPPrg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2020 20:13:28.2259 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a57d7467-c054-4b51-c6b2-08d817b1e47e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB02.amd.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2768
-Cc: Alexander.Deucher@amd.com, hui.wang@canonical.com,
- Virendra-Pratap.Arya@amd.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Alistair Delva <adelva@google.com>, Amit Pundir <amit.pundir@linaro.org>,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Stephan Gerhold <stephan@gerhold.net>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Sasha Levin <sashal@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sami Tolvanen <samitolvanen@google.com>, John Stultz <john.stultz@linaro.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>, Todd Kjos <tkjos@google.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -140,92 +101,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add logic to check DMIC hardware exists or not on
-the platform at runtime.
+From: John Stultz <john.stultz@linaro.org>
 
-Add module param for overriding DMIC hardware check
-at runtime.
+[ Upstream commit a6b675a89e51a1cdad0481b809b7840d3f86e4b5 ]
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Fixes the following kCFI crash seen on db845c, caused
+by the function prototypes not matching the callback
+function prototype.
+
+[   82.585661] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000001
+[   82.595387] Mem abort info:
+[   82.599463]   ESR = 0x96000005
+[   82.602658]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   82.608177]   SET = 0, FnV = 0
+[   82.611829]   EA = 0, S1PTW = 0
+[   82.615369] Data abort info:
+[   82.618751]   ISV = 0, ISS = 0x00000005
+[   82.622641]   CM = 0, WnR = 0
+[   82.625774] user pgtable: 4k pages, 39-bit VAs, pgdp=0000000174259000
+[   82.632292] [0000000000000001] pgd=0000000000000000, pud=0000000000000000
+[   82.639167] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+[   82.644795] Modules linked in: hci_uart btqca xhci_plat_hcd xhci_pci_renesas xhci_pci xhci_hcd wcn36xx wcnss_ctrl wcd934x vctrl_regulator ufs_qcom syscon_reboot_e
+[   82.644927]  qcom_apcs_ipc_mailbox q6asm_dai q6routing q6asm q6afe_dai q6adm q6afe q6core q6dsp_common pm8941_pwrkey pm8916_wdt platform_mhu pinctrl_spmi_mpp pine
+[   82.812982] CPU: 3 PID: 240 Comm: kworker/u16:4 Tainted: G        W         5.6.0-rc7-mainline-00960-g0c34353d11b9-dirty #1
+[   82.824201] Hardware name: Thundercomm Dragonboard 845c (DT)
+[   82.829937] Workqueue: qcom_apr_rx apr_rxwq [apr]
+[   82.834698] pstate: 80c00005 (Nzcv daif +PAN +UAO)
+[   82.839553] pc : __cfi_check_fail+0x4/0x1c [q6asm_dai]
+[   82.844754] lr : __cfi_check+0x3a8/0x3b0 [q6asm_dai]
+[   82.849767] sp : ffffffc0105f3c20
+[   82.853123] x29: ffffffc0105f3c30 x28: 0000000000000020
+[   82.858489] x27: ffffff80f4588400 x26: ffffff80f458ec94
+[   82.863854] x25: ffffff80f458ece8 x24: ffffffe3670c7000
+[   82.869220] x23: ffffff8094bb7b34 x22: ffffffe367137000
+[   82.874585] x21: bd07909b332eada6 x20: 0000000000000001
+[   82.879950] x19: ffffffe36713863c x18: ffffff80f8df4430
+[   82.885316] x17: 0000000000000001 x16: ffffffe39d15e660
+[   82.890681] x15: 0000000000000001 x14: 0000000000000027
+[   82.896047] x13: 0000000000000000 x12: ffffffe39e6465a0
+[   82.901413] x11: 0000000000000051 x10: 000000000000ffff
+[   82.906779] x9 : 000ffffffe366c19 x8 : c3c5f18762d1ceef
+[   82.912145] x7 : 0000000000000000 x6 : ffffffc010877698
+[   82.917511] x5 : ffffffc0105f3c00 x4 : 0000000000000000
+[   82.922877] x3 : 0000000000000000 x2 : 0000000000000001
+[   82.928243] x1 : ffffffe36713863c x0 : 0000000000000001
+[   82.933610] Call trace:
+[   82.936099]  __cfi_check_fail+0x4/0x1c [q6asm_dai]
+[   82.940955]  q6asm_srvc_callback+0x22c/0x618 [q6asm]
+[   82.945973]  apr_rxwq+0x1a8/0x27c [apr]
+[   82.949861]  process_one_work+0x2e8/0x54c
+[   82.953919]  worker_thread+0x27c/0x4d4
+[   82.957715]  kthread+0x144/0x154
+[   82.960985]  ret_from_fork+0x10/0x18
+[   82.964603] Code: a8c37bfd f85f8e5e d65f03c0 b40000a0 (39400008)
+[   82.970762] ---[ end trace 410accb839617143 ]---
+[   82.975429] Kernel panic - not syncing: Fatal exception
+
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Patrick Lai <plai@codeaurora.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Stephan Gerhold <stephan@gerhold.net>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Todd Kjos <tkjos@google.com>
+Cc: Alistair Delva <adelva@google.com>
+Cc: Amit Pundir <amit.pundir@linaro.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: alsa-devel@alsa-project.org
+Link: https://lore.kernel.org/r/20200529213823.98812-1-john.stultz@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/renoir/rn-pci-acp3x.c | 29 +++++++++++++++++++++++++++++
- sound/soc/amd/renoir/rn_acp3x.h     |  2 ++
- 2 files changed, 31 insertions(+)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-index 859ed67..faa7566 100644
---- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-+++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-@@ -5,6 +5,7 @@
- //Copyright 2020 Advanced Micro Devices, Inc.
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 548eb4fa2da64..9f0ffdcef637e 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -171,7 +171,7 @@ static const struct snd_compr_codec_caps q6asm_compr_caps = {
+ };
  
- #include <linux/pci.h>
-+#include <linux/acpi.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/delay.h>
-@@ -18,6 +19,16 @@ static int acp_power_gating;
- module_param(acp_power_gating, int, 0644);
- MODULE_PARM_DESC(acp_power_gating, "Enable acp power gating");
- 
-+/**
-+ * dmic_acpi_check = -1 - Checks ACPI method to know DMIC hardware status runtime
-+ *                 = 0 - Skips the DMIC device creation and returns probe failure
-+ *                 = 1 - Assumes that platform has DMIC support and skips ACPI
-+ *                       method check
-+ */
-+static int dmic_acpi_check = ACP_DMIC_AUTO;
-+module_param(dmic_acpi_check, int, 0644);
-+MODULE_PARM_DESC(dmic_acpi_check, "checks Dmic hardware runtime");
-+
- struct acp_dev_data {
- 	void __iomem *acp_base;
- 	struct resource *res;
-@@ -157,6 +168,8 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
+ static void event_handler(uint32_t opcode, uint32_t token,
+-			  uint32_t *payload, void *priv)
++			  void *payload, void *priv)
  {
- 	struct acp_dev_data *adata;
- 	struct platform_device_info pdevinfo[ACP_DEVS];
-+	acpi_handle handle;
-+	acpi_integer dmic_status;
- 	unsigned int irqflags;
- 	int ret, index;
- 	u32 addr;
-@@ -201,6 +214,22 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- 	if (ret)
- 		goto disable_msi;
+ 	struct q6asm_dai_rtd *prtd = priv;
+ 	struct snd_pcm_substream *substream = prtd->substream;
+@@ -494,7 +494,7 @@ static struct snd_pcm_ops q6asm_dai_ops = {
+ };
  
-+	if (!dmic_acpi_check) {
-+		ret = -ENODEV;
-+		goto de_init;
-+	} else if (dmic_acpi_check == ACP_DMIC_AUTO) {
-+		handle = ACPI_HANDLE(&pci->dev);
-+		ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
-+		if (ACPI_FAILURE(ret)) {
-+			ret = -EINVAL;
-+			goto de_init;
-+		}
-+		if (!dmic_status) {
-+			ret = -ENODEV;
-+			goto de_init;
-+		}
-+	}
-+
- 	adata->res = devm_kzalloc(&pci->dev,
- 				  sizeof(struct resource) * 2,
- 				  GFP_KERNEL);
-diff --git a/sound/soc/amd/renoir/rn_acp3x.h b/sound/soc/amd/renoir/rn_acp3x.h
-index 75228e3..1462039 100644
---- a/sound/soc/amd/renoir/rn_acp3x.h
-+++ b/sound/soc/amd/renoir/rn_acp3x.h
-@@ -55,6 +55,8 @@
- 
- #define MAX_BUFFER (CAPTURE_MAX_PERIOD_SIZE * CAPTURE_MAX_NUM_PERIODS)
- #define MIN_BUFFER MAX_BUFFER
-+#define	ACP_DMIC_AUTO   -1
-+
- struct pdm_dev_data {
- 	u32 pdm_irq;
- 	void __iomem *acp_base;
+ static void compress_event_handler(uint32_t opcode, uint32_t token,
+-				   uint32_t *payload, void *priv)
++				   void *payload, void *priv)
+ {
+ 	struct q6asm_dai_rtd *prtd = priv;
+ 	struct snd_compr_stream *substream = prtd->cstream;
 -- 
-2.7.4
+2.25.1
+
+
 
