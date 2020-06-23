@@ -2,66 +2,81 @@ Return-Path: <SRS0=bSXK=AE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2FD5C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 16:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22C5AC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 17:19:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B0DD20774
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 16:51:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A03A420780
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 17:19:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a8fd3jdV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B0DD20774
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g3nphiiv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BNbAWLag"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A03A420780
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD18B1782;
-	Tue, 23 Jun 2020 18:50:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD18B1782
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17EE51718;
+	Tue, 23 Jun 2020 19:18:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17EE51718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592931061;
-	bh=mp2veAmJrx0HjmM7bfHyrU2dCOosKZKwlfPv3nLAWSc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592932783;
+	bh=cIuJzlalHBnO+2yYEVOVo9FBHnL7aMmBDhMGCrHBgk4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a8fd3jdVhuj8xBbedw+g2q3SN7ShXNxPMTNYnz5JKUurAABb3acU082tQylaZ1YNb
-	 MR9XtAKknMuqyMpgGcPFFnqTjYAZk5+k08YMuNP7AQslmaiWTDfXVrgER/akOj78lD
-	 o0cbbiwxtauYk7DKeq4i+cF5Jh0XSU0XFpoGiLuU=
+	b=g3nphiivW8RvN5TiAjeANswjipHMlp5L+k17pUuksRtG78WSGoJWdkw2fFgtXn1Ez
+	 P91SeGweFMBE3ETNyCpLpNeVrn2wKun+vvgdoT7xMAmuX0OnVR+CAb9ow8haiT7FFg
+	 lWsspfl1IACtH4x1k8HUNg/d0eE6fh6jtHhHwccc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ABA3F8010E;
-	Tue, 23 Jun 2020 18:50:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89498F80218;
+	Tue, 23 Jun 2020 19:18:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D451F80234; Tue, 23 Jun 2020 18:50:09 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 3CB2AF80234; Tue, 23 Jun 2020 19:18:51 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C563F8012F
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 18:49:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C563F8012F
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 04304AEAF;
- Tue, 23 Jun 2020 16:49:59 +0000 (UTC)
-Date: Tue, 23 Jun 2020 18:49:59 +0200
-Message-ID: <s5h366ln2vc.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stanislav Kazmin <stas.kazmin@gmail.com>
-Subject: Re: [HDAudio][ALC295] speakers not working on Acer Travelmate P614
-In-Reply-To: <CA+-1zuv3SeumhdMbqXjZU0tbmh7HB9LwTK2bfNTe5nOCmz4BgA@mail.gmail.com>
-References: <CA+-1zuv3SeumhdMbqXjZU0tbmh7HB9LwTK2bfNTe5nOCmz4BgA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAC0CF8010E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 19:18:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAC0CF8010E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="BNbAWLag"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id A51A220780;
+ Tue, 23 Jun 2020 17:18:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592932725;
+ bh=cIuJzlalHBnO+2yYEVOVo9FBHnL7aMmBDhMGCrHBgk4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=BNbAWLagG+qxgK2G9CP2wzedwW1br9Q7WF2deT2Qsm3h4cOL5D7x6G2pj8DJgPw4n
+ wgZNNzROlt7Mzs9iVEG4t4IHdXIa712oRPL8ew0iHvNwSPhFD6zoCKZAzBuRQNO4+R
+ PTAeC8xVB6UycZTKqCVwn9aGhPcqrdy8Lu32BowU=
+Date: Tue, 23 Jun 2020 18:18:42 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v4 2/2] ASoC: tas2562: Update shutdown GPIO property
+Message-ID: <20200623171842.GH5582@sirena.org.uk>
+References: <20200612171412.25423-1-dmurphy@ti.com>
+ <20200612171412.25423-2-dmurphy@ti.com>
+ <cfb043e3-77c5-2957-20b6-2814f1445cf0@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Enx9fNJ0XV5HaWRu"
+Content-Disposition: inline
+In-Reply-To: <cfb043e3-77c5-2957-20b6-2814f1445cf0@ti.com>
+X-Cookie: No motorized vehicles allowed.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,56 +92,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 23 Jun 2020 17:49:18 +0200,
-Stanislav Kazmin wrote:
-> 
-> Hello, I have the following problem on my Acer TravelMate P614-51T-G2:
-> 
-> I have all the audio sinks correctly identified (like HDMI, DMic, Headphones)
-> but the internal speakers do not produce any sound.
-> 
-> What I have tried so far:
-> 
-> - hard/soft shutdown on Windows and reboot
-> - disable/re-enable speakers and microphone in BIOS
-> - uninstall pulseaudio and test alsa alone (so it is defeitely **not** a
-> pulseaudio issue)
-> - switch from sof-hda-dsp to snd-hda-intel driver (without Dmic support)
-> - retask pins 0x14, 0x16, 0x1b to "Internal Speakers" through hdajackretask
-> (only basic, without advanced features)
-> - removed/reconnected the headphones
-> 
-> `alsamixer` shows all needed sinks and nothing is muted.
-> 
-> I already discussed the issue at sof github https://github.com/thesofproject/
-> sof/issues/3058 but since the same issue occurs on `snd-hda-intel` legacy
-> river, I was advised to communicate with alsa-devel team.
-> 
-> The alsa-info.sh result are linked at http://alsa-project.org/db/?
-> f=252f92c7a1df3c755d16ee69353b26d2535a4d81
-> 
-> I have tested the kernel 5.8-rc1 but it does not make any difference.
-> 
-> Let me know if I can do anything else to test the issue.
 
-It's hard to know and the only way is to some trial-and-errors.
-The first shot I'd take is to toggle GPIO pins.  You can change the
-bit via hda-verb program like
-  hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x01
-  hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_MASK 0x01
-  hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x01
-  
-to turn on the bit 0 of GPIO.  The first 0x01 is the node ID and it's
-0x01 on Realtek, and the last 0x01 the GPIO bit 0.  For toggling the
-bit 1, pass 0x02 in the last argument, and for bit 2, pass 0x04.
+--Enx9fNJ0XV5HaWRu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And try turn on EAPD on non-used pins.  This can be done via hda-verb,
-too.
+On Tue, Jun 23, 2020 at 10:59:49AM -0500, Dan Murphy wrote:
+> On 6/12/20 12:14 PM, Dan Murphy wrote:
+> > Update the shutdown GPIO property to be shutdown from shut-down.
 
-If this doesn't help, you might need to try some COEF changes as done
-in various quirks in sound/pci/hda/patch_realtek.c.
+> I have some other patches that go on top of this patchset I am wondering if
+> I should re-submit with those patches on top or indicate in a cover letter
+> the dependency
 
+If you decide to resubmit please make the YAML conversion the very last
+thing you do in your series, there is a considerable backlog on YAML
+conversion reviews which slows down any changes that depend on them.
 
-HTH,
+--Enx9fNJ0XV5HaWRu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Takashi
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7yOXIACgkQJNaLcl1U
+h9DxlAf+KjPVhJ8fCMl8ps3tTLy8n/19ma5ndPpYF8kS9ZuKTLlBXh6hVWHTBnwq
+KMMcn5CPNvDfmKqVKFygogITiYAtAeHc7WZvzX4ywLygdYWPL/gUwdY7ICTi+peL
+CS2WAxTuYvUntqJoVld9hJIWfzC7fygA8N+FBsgZVRXrwwDDaJc2GWysUI4C8DX7
+gtJ+nqk8DnmnRMAe4oVt0LOR69bNzu2MJNtAmpmBzGz7qXg6iqqnCTeJDkVCn+Ll
+HmQIXKDlCbn4qz/4SpN73m9n0TdO8XUHmm6/DC32JviMHtgqqmUWgEn8cnS60Q6o
+++jE7wjAKh4RwJdwZ8PDBCyIKbWUXw==
+=ytyL
+-----END PGP SIGNATURE-----
+
+--Enx9fNJ0XV5HaWRu--
