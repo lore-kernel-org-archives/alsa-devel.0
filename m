@@ -2,78 +2,147 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF3FCC433E3
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:08:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86432C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A52120874
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:08:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12E9520874
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LJXPsVqn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A52120874
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tN/C2UzW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wrftZ2hx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12E9520874
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC9731888;
-	Wed, 24 Jun 2020 10:07:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC9731888
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2FE8171D;
+	Wed, 24 Jun 2020 10:08:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2FE8171D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592986113;
-	bh=LGEJy4s4M3gH6u8p4Kf0ncvfdufOKDwlAIE4Xc1NFPM=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LJXPsVqnzjwH/cMYW3LS3wI2Ce9t3OFxMc2vbd+xYGCX3qQX1iiVgVUEm8VJkyx3q
-	 84YkXfZ16W8zeM7OGDmxq8MHPF9SfDCYWKFLHoOJFDe5hNOWQdVPWlA/0TkMqLTCqT
-	 3atidoxXcOlCt8faI7L0ytT9jkWu8m7Fz/Na85MM=
+	s=default; t=1592986143;
+	bh=he7XbJ0X5cGTthJvccL0ViHP8fdA0j+js4V9qHAOwmA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tN/C2UzW55+rPqdKEtYuofqelsGMO4nqCBUOyJe7/a5x9Y5cmeiNlGVhmW37hJs+S
+	 HCGzZilcdmwv/1Na9W9ZKLi2cVQX7zIwjCndnJ0ahdElna0RlS5NBN1McTo20JqoEb
+	 nacgMzd6bLHEYFvBokuK5WeiDZHvVr4+dob/jJyo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7A70F8043D;
-	Wed, 24 Jun 2020 09:50:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98BD5F80444;
+	Wed, 24 Jun 2020 09:50:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 488DCF80234; Tue, 23 Jun 2020 23:08:29 +0200 (CEST)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 18557F80234; Tue, 23 Jun 2020 17:31:25 +0200 (CEST)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35893F8012F
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 23:08:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35893F8012F
-Received: by mail-io1-f72.google.com with SMTP id a16so16037407iow.9
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 14:08:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=ELUKFjBiXhk0webECGHmWukN2wiZ/fGcxCiXxbEJvZw=;
- b=NPZiKIip3ACiVz8DHxYnF34sPz2MtxnSmxkTOI7/4NEZc/WMik3TKoOJbraVllz98l
- bV8lxVNjM6YSQymGfEvkNRFOeTBuDhimQS8E6hqEolVlK5IAdn3vjgQtYDTd9C3LXI47
- 300tvHAEo/ncn8DIay7XqFkcVsGD/TU9ep9x0k8BkkRD3sYj3zOzkx22VXHg3A8bUdSN
- jh6Ciz05gCN8kGcwaAmqYCkRnD2WoCFF3D+K05VxAB0SaQRW1Jg/1VRrxP4BlAGgBf3V
- LJ/0EyJOigX7C55bA3CQfQnJndQ9VYBdeSQ0dVaEX7seeUzLZLD0f7yayexBaFnyOOYL
- 2neA==
-X-Gm-Message-State: AOAM531RPokqXZIx61QYgSG8qp7NfXVUeeaXw3vXKDbHGWLI96WWA+XO
- XG08nqyRkzXfGVEOu7F7SGL2kQ5XrYJ+zFOG+eBA+08tYcU7
-X-Google-Smtp-Source: ABdhPJzxUWezLj25GQcJjmzFyyzV8zPhnAOMUqh+3uMYMglVl03aqlkd4yYm3QP6f4c1cxC0jQjo0GNtFagv4l+QvSFZJRYKs793
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CFBAF800B2
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 17:31:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CFBAF800B2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wrftZ2hx"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05NFVAE3129071;
+ Tue, 23 Jun 2020 10:31:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1592926270;
+ bh=uLEHz/OHzk1ME3oUbqR4BuAwuEDDTmmWf+QZUv9aRpw=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=wrftZ2hxdZdy5Ycu7wJqynv5z5avLZ9o20iZ6o999yHnujIMMzvfjPynu0442vxqr
+ oTyymjup9pXjP5TRreezd1Ah5L/j06W0uwx+a2OtcpZzZCjq3eH2O4kgxG+anIzbMB
+ 3K45PTDsG5LdSh9MDLsdjuXRh3Io62aQjff3yvrY=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05NFV4sh037200
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 23 Jun 2020 10:31:04 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 23
+ Jun 2020 10:31:03 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 23 Jun 2020 10:31:03 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05NFV1rK067938;
+ Tue, 23 Jun 2020 10:31:02 -0500
+Subject: Re: [PATCH 18/19] ASoC: soc-dai: remove .digital_mute
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+References: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
+ <87pn9q1ss8.wl-kuninori.morimoto.gx@renesas.com>
+From: Dan Murphy <dmurphy@ti.com>
+Message-ID: <4e8f7b7b-9d60-4e60-60db-91477cb1b1d8@ti.com>
+Date: Tue, 23 Jun 2020 10:31:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:f41:: with SMTP id
- y1mr25744802ilj.232.1592946499365; 
- Tue, 23 Jun 2020 14:08:19 -0700 (PDT)
-Date: Tue, 23 Jun 2020 14:08:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003dbc0305a8c6c238@google.com>
-Subject: KASAN: slab-out-of-bounds Write in snd_usb_mixer_interrupt
-From: syzbot <syzbot+2405ca3401e943c538b5@syzkaller.appspotmail.com>
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
- syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87pn9q1ss8.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Mailman-Approved-At: Wed, 24 Jun 2020 09:49:30 +0200
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Michael Walle <michael@walle.cc>,
+ =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+ Neil Armstrong <narmstrong@baylibre.com>, David Airlie <airlied@linux.ie>,
+ =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+ Jonghwan Choi <charlie.jh@kakaocorp.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Paul Cercueil <paul@crapouillou.net>, Andrzej Hajda <a.hajda@samsung.com>,
+ Frank Shi <shifu0704@thundersoft.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+ "Andrew F. Davis" <afd@ti.com>, Fabio Estevam <festevam@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Joonyoung Shim <jy0922.shim@samsung.com>,
+ Matthias Reichl <hias@horus.com>, Katsuhiro Suzuki <katsuhiro@katsuster.net>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, Russell King <linux@armlinux.org.uk>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Daniel Drake <drake@endlessm.com>,
+ Tzung-Bi Shih <tzungbi@google.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Kukjin Kim <kgene@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Dinghao Liu <dinghao.liu@zju.edu.cn>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Cheng-Yi Chiang <cychiang@chromium.org>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Jonas Karlman <jonas@kwiboo.se>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Chuhong Yuan <hslester96@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
+ James Schulman <james.schulman@cirrus.com>, Inki Dae <inki.dae@samsung.com>,
+ Masahiro Yamada <masahiroy@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ =?UTF-8?Q?Nuno_S=c3=a1?= <nuno.sa@analog.com>,
+ Vincent Abriou <vincent.abriou@st.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Jernej Skrabec <jernej.skrabec@siol.net>,
+ Support Opensource <support.opensource@diasemi.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Jason Yan <yanaijie@huawei.com>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+ David Rhodes <david.rhodes@cirrus.com>, Seung-Woo Kim <sw0312.kim@samsung.com>,
+ Sandy Huang <hjc@rock-chips.com>, Pavel Dobias <dobias@2n.cz>,
+ Philipp Puschmann <p.puschmann@pironex.de>,
+ Kyungmin Park <kyungmin.park@samsung.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Colin Ian King <colin.king@canonical.com>,
+ Kevin Cernekee <cernekee@chromium.org>, Shawn Guo <shawnguo@kernel.org>,
+ Peter Rosin <peda@axentia.se>, Lucas Stach <l.stach@pengutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,157 +158,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+Kuninori
 
-syzbot found the following crash on:
+On 6/22/20 8:21 PM, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>
+> All drivers are now using .mute_stream.
+> Let's remove .digital_mute.
+>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>   include/sound/soc-dai.h | 1 -
+>   sound/soc/soc-dai.c     | 4 ----
+>   2 files changed, 5 deletions(-)
+>
+> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+> index 212257e84fac..a3db208cd062 100644
+> --- a/include/sound/soc-dai.h
+> +++ b/include/sound/soc-dai.h
+> @@ -246,7 +246,6 @@ struct snd_soc_dai_ops {
+>   	 * DAI digital mute - optional.
+>   	 * Called by soc-core to minimise any pops.
+>   	 */
+> -	int (*digital_mute)(struct snd_soc_dai *dai, int mute);
+>   	int (*mute_stream)(struct snd_soc_dai *dai, int mute, int stream);
+>   
+>   	/*
+> diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+> index b05e18b63a1c..b0fc3d8b1798 100644
+> --- a/sound/soc/soc-dai.c
+> +++ b/sound/soc/soc-dai.c
+> @@ -301,10 +301,6 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+>   	if (dai->driver->ops &&
+>   	    dai->driver->ops->mute_stream)
+>   		ret = dai->driver->ops->mute_stream(dai, mute, direction);
+> -	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+> -		 dai->driver->ops &&
+> -		 dai->driver->ops->digital_mute)
+> -		ret = dai->driver->ops->digital_mute(dai, mute);
 
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b9b0a1100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be4578b3f1083656
-dashboard link: https://syzkaller.appspot.com/bug?extid=2405ca3401e943c538b5
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1589f7cd100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10162bf1100000
+Instead of putting the direction check in every codec driver can't the 
+check just part of the function? And then maybe a flag in dai_ops to 
+override that call to mute?
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+2405ca3401e943c538b5@syzkaller.appspotmail.com
+if (direction != SNDRV_PCM_STREAM_PLAYBACK)
+         return 0;
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in snd_usb_mixer_notify_id sound/usb/mixer.c:3240 [inline]
-BUG: KASAN: slab-out-of-bounds in snd_usb_mixer_interrupt+0xaa7/0xc30 sound/usb/mixer.c:3379
-Write of size 4 at addr ffff8880a39c5ae0 by task swapper/0/0
+I did not look at every codec driver as there are too many.
 
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1e9/0x30e lib/dump_stack.c:118
- print_address_description+0x66/0x5a0 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report+0x132/0x1d0 mm/kasan/report.c:530
- snd_usb_mixer_notify_id sound/usb/mixer.c:3240 [inline]
- snd_usb_mixer_interrupt+0xaa7/0xc30 sound/usb/mixer.c:3379
- __usb_hcd_giveback_urb+0x333/0x4b0 drivers/usb/core/hcd.c:1650
- dummy_timer+0x75c/0x3ff0 drivers/usb/gadget/udc/dummy_hcd.c:1966
- call_timer_fn+0x91/0x160 kernel/time/timer.c:1404
- expire_timers kernel/time/timer.c:1449 [inline]
- __run_timers+0x776/0x970 kernel/time/timer.c:1773
- run_timer_softirq+0x46/0x80 kernel/time/timer.c:1786
- __do_softirq+0x268/0x80c kernel/softirq.c:292
- invoke_softirq kernel/softirq.c:373 [inline]
- irq_exit+0x223/0x230 kernel/softirq.c:413
- exiting_irq arch/x86/include/asm/apic.h:546 [inline]
- smp_apic_timer_interrupt+0x113/0x280 arch/x86/kernel/apic/apic.c:1107
- apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
- </IRQ>
-RIP: 0010:native_safe_halt+0xe/0x10 arch/x86/include/asm/irqflags.h:61
-Code: 80 e1 07 80 c1 03 38 c1 7c bc 48 89 df e8 9a 17 9b f9 eb b2 cc cc cc cc cc cc cc cc e9 07 00 00 00 0f 00 2d 56 46 4a 00 fb f4 <c3> 90 e9 07 00 00 00 0f 00 2d 46 46 4a 00 f4 c3 cc cc 41 56 53 65
-RSP: 0018:ffffffff89207d48 EFLAGS: 00000286 ORIG_RAX: ffffffffffffff13
-RAX: 1ffffffff12577b9 RBX: 0000000000000000 RCX: ffffffffffffffff
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff89282364
-RBP: 1ffff1104351204e R08: ffffffff817a4660 R09: fffffbfff1250361
-R10: fffffbfff1250361 R11: 0000000000000000 R12: 0000000000000001
-R13: dffffc0000000000 R14: dffffc0000000000 R15: ffff88821a890270
- arch_safe_halt arch/x86/include/asm/paravirt.h:150 [inline]
- acpi_safe_halt+0x87/0xe0 drivers/acpi/processor_idle.c:111
- acpi_idle_do_entry drivers/acpi/processor_idle.c:525 [inline]
- acpi_idle_enter+0x3f4/0xac0 drivers/acpi/processor_idle.c:651
- cpuidle_enter_state+0x2d7/0x7b0 drivers/cpuidle/cpuidle.c:234
- cpuidle_enter+0x59/0x90 drivers/cpuidle/cpuidle.c:345
- call_cpuidle kernel/sched/idle.c:117 [inline]
- cpuidle_idle_call kernel/sched/idle.c:207 [inline]
- do_idle+0x49c/0x650 kernel/sched/idle.c:269
- cpu_startup_entry+0x15/0x20 kernel/sched/idle.c:365
- start_kernel+0x674/0x777 init/main.c:1041
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:242
-
-Allocated by task 12:
- save_stack mm/kasan/common.c:48 [inline]
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0x103/0x140 mm/kasan/common.c:494
- kmem_cache_alloc_trace+0x234/0x300 mm/slab.c:3551
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- add_single_ctl_with_resume sound/usb/mixer_quirks.c:147 [inline]
- snd_mbox1_create_sync_switch sound/usb/mixer_quirks.c:719 [inline]
- snd_usb_mixer_apply_create_quirk+0x1333/0x4fc0 sound/usb/mixer_quirks.c:2654
- snd_usb_create_mixer+0x22d8/0x2e90 sound/usb/mixer.c:3538
- snd_usb_create_quirk sound/usb/quirks.c:563 [inline]
- create_composite_quirk+0x221/0x510 sound/usb/quirks.c:48
- usb_audio_probe+0xc3d/0x2500 sound/usb/card.c:668
- usb_probe_interface+0x614/0xac0 drivers/usb/core/driver.c:374
- really_probe+0x761/0xf60 drivers/base/dd.c:524
- driver_probe_device+0xe6/0x230 drivers/base/dd.c:697
- bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
- __device_attach+0x20c/0x3a0 drivers/base/dd.c:870
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x1828/0x1ba0 drivers/base/core.c:2557
- usb_set_configuration+0x19d2/0x1f20 drivers/usb/core/message.c:2032
- usb_generic_driver_probe+0x82/0x140 drivers/usb/core/generic.c:241
- usb_probe_device+0x12d/0x1d0 drivers/usb/core/driver.c:272
- really_probe+0x761/0xf60 drivers/base/dd.c:524
- driver_probe_device+0xe6/0x230 drivers/base/dd.c:697
- bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
- __device_attach+0x20c/0x3a0 drivers/base/dd.c:870
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x1828/0x1ba0 drivers/base/core.c:2557
- usb_new_device+0xcc3/0x1650 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5208 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x2823/0x4cb0 drivers/usb/core/hub.c:5576
- process_one_work+0x76e/0xfd0 kernel/workqueue.c:2268
- worker_thread+0xa7f/0x1450 kernel/workqueue.c:2414
- kthread+0x353/0x380 kernel/kthread.c:268
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
-
-Freed by task 4844:
- save_stack mm/kasan/common.c:48 [inline]
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0x114/0x170 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x10a/0x220 mm/slab.c:3757
- tomoyo_path_perm+0x59b/0x740 security/tomoyo/file.c:842
- security_inode_getattr+0xc0/0x140 security/security.c:1278
- vfs_getattr fs/stat.c:121 [inline]
- vfs_statx_fd fs/stat.c:151 [inline]
- vfs_fstat include/linux/fs.h:3319 [inline]
- __do_sys_newfstat fs/stat.c:398 [inline]
- __se_sys_newfstat fs/stat.c:395 [inline]
- __x64_sys_newfstat+0x97/0x150 fs/stat.c:395
- do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-The buggy address belongs to the object at ffff8880a39c5a80
- which belongs to the cache kmalloc-64 of size 64
-The buggy address is located 32 bytes to the right of
- 64-byte region [ffff8880a39c5a80, ffff8880a39c5ac0)
-The buggy address belongs to the page:
-page:ffffea00028e7140 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea000299a688 ffffea00028e3948 ffff8880aa400380
-raw: 0000000000000000 ffff8880a39c5000 0000000100000020 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880a39c5980: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff8880a39c5a00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
->ffff8880a39c5a80: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-                                                       ^
- ffff8880a39c5b00: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff8880a39c5b80: 00 00 00 00 01 fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Dan
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
