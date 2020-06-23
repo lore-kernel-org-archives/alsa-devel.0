@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8823C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:00:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F872C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:00:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E4B220768
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:00:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6D5D2070E
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:00:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YiossoZb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E4B220768
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QGMXouTJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6D5D2070E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF155178A;
-	Tue, 23 Jun 2020 12:59:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF155178A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9156E1780;
+	Tue, 23 Jun 2020 12:59:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9156E1780
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592910009;
-	bh=2x1dOIGxIH2RMgwAHABHGlk7FmmhUD3kMdDxNSAnKKY=;
+	s=default; t=1592910038;
+	bh=YAuh3tw+a44XluKi86F8G1DAJtWq1SLeMgMY41EhRD0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YiossoZbqzjTk9DQRMJ5FMrk0H7UIcvCPzWyLEOSoes+QmN9rW+wHB8brh13zYqN6
-	 68WswcfuRKZuepLYnhycoF7EeLJbI7DFSaY98w31nGdnvYcd34VPquhxkRtJwrcvgY
-	 wuu8e3Iv7/8f7S7hfzYjISSMxl5y/h7d9zKhNuqo=
+	b=QGMXouTJnsoSO86P5j7dTdy/dzVytuaakJp23yeL40iusR9IayVTkJXiO6o5N7eJy
+	 UH/AsqPiI67BqNxFfZ0XYSLLWUAJldd71rrODW8hvXa+uWceNiwqXTBI5/ZIBs5WBF
+	 7+gGg4NU01FSUjwaEei1vVPE0CK/eQdx7AMSNOqo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23950F802A0;
-	Tue, 23 Jun 2020 12:58:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31D6FF802A1;
+	Tue, 23 Jun 2020 12:58:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB04FF802A1; Tue, 23 Jun 2020 12:58:02 +0200 (CEST)
+ id A70BBF802A7; Tue, 23 Jun 2020 12:58:43 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60C25F80259
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:58:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60C25F80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id D726DF80218
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:58:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D726DF80218
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 989D0AED9;
- Tue, 23 Jun 2020 10:57:59 +0000 (UTC)
-Date: Tue, 23 Jun 2020 12:57:59 +0200
-Message-ID: <s5h7dvyoxqg.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1E8BDAED9;
+ Tue, 23 Jun 2020 10:58:37 +0000 (UTC)
+Date: Tue, 23 Jun 2020 12:58:37 +0200
+Message-ID: <s5h5zbioxpe.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 4/9] dsnoop: The delay presented to snd_pcm_status_delay()
- was incorrect
-In-Reply-To: <20200622131515.23385-4-mark@xwax.org>
+Subject: Re: [PATCH 5/9] pcm: Annotate the _delay functions based on findings
+ from the previous bug
+In-Reply-To: <20200622131515.23385-5-mark@xwax.org>
 References: <2006221356390.20421@stax.localdomain>
- <20200622131515.23385-4-mark@xwax.org>
+ <20200622131515.23385-5-mark@xwax.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,25 +78,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Jun 2020 15:15:10 +0200,
+On Mon, 22 Jun 2020 15:15:11 +0200,
 Mark Hills wrote:
-> 
-> This was the original bug that caused me to start looking at the
-> ring buffer functions.
-> 
-> In the API this is documented as:
-> 
->   "Delay is distance between current application frame position and
->    sound frame position. It's positive and less than buffer size in
->    normal situation, negative on playback underrun and greater than
->    buffer size on capture overrun. "
-> 
-> Because dsnoop was returning the buffer space available to the hardware
-> the return value was always quite large, and moved in the wrong
-> direction.
-> 
-> With this patch, dsnoop now gives results which are comparable to using
-> the "hw" device directly. My test case was with snd-echo3g (Layla3G).
 > 
 > Signed-off-by: Mark Hills <mark@xwax.org>
 
