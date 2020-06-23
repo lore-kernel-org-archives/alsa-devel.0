@@ -2,184 +2,78 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE2C2C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF3FCC433E3
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:08:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 489E720874
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:08:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A52120874
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:08:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I4nbTrPX";
-	dkim=pass (1024-bit key) header.d=dialogsemiconductor.onmicrosoft.com header.i=@dialogsemiconductor.onmicrosoft.com header.b="Tzdts/BH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 489E720874
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=diasemi.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LJXPsVqn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A52120874
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C97A6171D;
-	Wed, 24 Jun 2020 10:07:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C97A6171D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC9731888;
+	Wed, 24 Jun 2020 10:07:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC9731888
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592986082;
-	bh=zb+Ratdsse8YglfxUtBKrqucnPiUwpHogaDnqHky12I=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=I4nbTrPX+ZT9yVwZ79EagpL3nTi8bSFvSczQ/iz6PPEihqaOpX+dw+2QL6A0nWPnO
-	 2t4VaiJOXqnVPwefIGD1E87DjlfHYYW9qVRtFZUYk6FJ2g4aFth9VrryBTLRD8LknO
-	 Ww+9rXi/USJ2EEZZowG9TpqX/4i2A9g8R7+mgMjQ=
+	s=default; t=1592986113;
+	bh=LGEJy4s4M3gH6u8p4Kf0ncvfdufOKDwlAIE4Xc1NFPM=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LJXPsVqnzjwH/cMYW3LS3wI2Ce9t3OFxMc2vbd+xYGCX3qQX1iiVgVUEm8VJkyx3q
+	 84YkXfZ16W8zeM7OGDmxq8MHPF9SfDCYWKFLHoOJFDe5hNOWQdVPWlA/0TkMqLTCqT
+	 3atidoxXcOlCt8faI7L0ytT9jkWu8m7Fz/Na85MM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF85AF80435;
-	Wed, 24 Jun 2020 09:50:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7A70F8043D;
+	Wed, 24 Jun 2020 09:50:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1D32F80234; Tue, 23 Jun 2020 17:16:54 +0200 (CEST)
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com
- (mail-eopbgr10063.outbound.protection.outlook.com [40.107.1.63])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 488DCF80234; Tue, 23 Jun 2020 23:08:29 +0200 (CEST)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C0FAF800B2
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 17:16:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C0FAF800B2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=dialogsemiconductor.onmicrosoft.com
- header.i=@dialogsemiconductor.onmicrosoft.com header.b="Tzdts/BH"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gZF5i6Yc+RcUvMlLOEAfn7jQjXJ7kIBVzKX/2JteNClvK1rhep7Lzr2e/gdIxcQJfGAlAscLoI05LtRPvbYSorAgx0Akjr3kUiE217dGLvoAb9hB20a9/+fVEtKNhlYF4nLshRjwPHhuqvkcNrinsDGLzDUadogK/JHvo5+7C970DPzaDz8OesFhlnv5sGD+wab3RS8qH0Z1hR8g4LPDVBBHNDiOmR/PQzF8fG48anglZ7C6hN23XGgIY4QLqG/Xq7PWhd0Td2BOL5VM8/h42SNgARxeVUlx9lGAPM784zIaaDVKyKu7bgamVwDuyZyAK/H4Rp5xjUO4nphpmZWCHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wtn40sEOkuH2HY0Cn3+LO/qrr+MKKW0z5fyyijnA75c=;
- b=jRduNpVzOy+yCQup6CXHOwtCpn/ElM3CIB+MfE8UEM/Aso3v+ovis1vadlGnayAUNOysTGqgenGDZTYgFMpngFLNCrXVvtEkHEQVb30jPGQZf+q8ankqGzaZ3hUHEH1uknbUYw3Yywlmreyhu0XyeD2CsOXzthZoYwgqaOTpZZl1Vg4vQDqjlcKZEwKJxxxGftWKZHCMqQyUToF/F2mDA9QOSRFuMtx0UpmUSDzM5fq6PspiXf1cCOEOpxoWb/9+UjGXCnoY/kj4jOpuZXW2sIZxvVWlaM2YXA0KIvFwvCxHZ7utaP8pPNC7GprOM+OJosuL1jRkUPPEnSEOR8/TCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wtn40sEOkuH2HY0Cn3+LO/qrr+MKKW0z5fyyijnA75c=;
- b=Tzdts/BH87U2/a0J5up1xohbe3bpxBiJkXdXInK+z/TCtuZBbkxwBm/xUDXr40bY4nVAy/zCDUZseouH38xumo5uKq6MhkQGM2eSTHt4P/ccCqZ8oTt3gsPndR+pWl9fQ7B+0w5C7YBqQwb1HKIEPqIvevONQvpwLus4aEaV3a0=
-Received: from AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:52::13)
- by AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:ed::23)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Tue, 23 Jun
- 2020 15:16:39 +0000
-Received: from AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6d54:9ddd:f235:d379]) by AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6d54:9ddd:f235:d379%5]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
- 15:16:39 +0000
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
-Subject: RE: [PATCH 15/19] ASoC: codecs: da*: merge .digital_mute() into
- .mute_stream()
-Thread-Topic: [PATCH 15/19] ASoC: codecs: da*: merge .digital_mute() into
- .mute_stream()
-Thread-Index: AQHWSPyLyhgsp3kA4kG+7417QBiOg6jmUJDg
-Date: Tue, 23 Jun 2020 15:16:35 +0000
-Message-ID: <AM6PR10MB226320A3D7ED6B9A573D2EB280940@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
-References: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
- <87tuz21sso.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87tuz21sso.wl-kuninori.morimoto.gx@renesas.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: renesas.com; dkim=none (message not signed)
- header.d=none;renesas.com; dmarc=none action=none header.from=diasemi.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [146.199.34.209]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b8dc2d37-f1eb-49df-b1d7-08d817886dd9
-x-ms-traffictypediagnostic: AM6PR10MB3399:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR10MB3399B96B7BD8F3E3EDB77FD3A7940@AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:913;
-x-forefront-prvs: 04433051BF
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AetIqWgl0+t/H+RfFPzG/S7iDQJeS+RQn+pEQuj93mwxeZwlZ4vym7dSqOC5ACo7mmu2OVzujxVNNWWme8H4wb3cQIfo/MiOkRPsaexs4hS973qd6cx+PrHZpuTpEqoEm/m/MZgvm0XNOZskcX9V3vezdxfpr4mTmGmE/amA7lEw8c2prMSDy8GUPmc3ppqQZstiPJPtbdNs9rAxwJIalVyEDzPy1xxGxZ02ij2k16moDd5SS9qsc4Fyd6wCJgriDcISt3S1dIWQTtr2AzQAxqFGT0kiy+149HpH6KmAzJVduCi0aYCr7rtd3RDoisokmiiW56SMoxzcLJOJKlSXYMOnMqUWIbAcRjYHwfhQ8ojUxZqYeTV9bftnKf9O+TSImNcuMo8ak8y8UNcmhH8EJg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFTY:;
- SFS:(4636009)(366004)(86362001)(2906002)(6666004)(8676002)(8936002)(71200400001)(76116006)(66556008)(64756008)(83380400001)(66446008)(66476007)(66946007)(5660300002)(52536014)(4326008)(7696005)(9686003)(498600001)(54906003)(110136005)(55016002)(26005)(7366002)(7336002)(186003)(7416002)(7406005)(33656002)(6506007)(53546011)(142923001)(21314003);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: VHt4bjXYRs/gH+xRRHjYIUFXTCBl5Cc45J4g2Y4ekdNfq597+eaA6xUmVMAJpS1LT+VC1f2IYCd50hWh4qre+aOuuL6n0vW2td4O2vnTdWuwfERZXzZusNgv+ZkyEn47Cg9eFmar+TWWM00VeHrDRWADnVi6sHmNPC1IbN7OAdnbRQaWQa8j7XITwtws6SCcokuCO0Mvo7tTlCuoRDzTrMQzVJOxGCk4aBAZU6iT4Pn4GnFE/gcJO9M5Ca2AuuKJ6EjssVsZuIxoXb9TOxOmhKnRnsxUVdY/8sVLqDeHDKN6XbfMsUGvUye30xBy4glLd3bz0oWRCu+Q9dOgiDdOWp/aciTm5lTjH7UE8vHIgrZf4pkj0oMZKON5OuyaC18Eslpwun9xeOgFOuVMerSGld2qDIIXjJD+nYgJhgppiYRPaXYxoq8jCFxv28GQPlu49DPgUnMV30DdxRh7NesXYx69yqCfl71ArVuWJ2DwKZevucEz6m3npnKQhqdAaLhU
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35893F8012F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 23:08:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35893F8012F
+Received: by mail-io1-f72.google.com with SMTP id a16so16037407iow.9
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 14:08:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+ bh=ELUKFjBiXhk0webECGHmWukN2wiZ/fGcxCiXxbEJvZw=;
+ b=NPZiKIip3ACiVz8DHxYnF34sPz2MtxnSmxkTOI7/4NEZc/WMik3TKoOJbraVllz98l
+ bV8lxVNjM6YSQymGfEvkNRFOeTBuDhimQS8E6hqEolVlK5IAdn3vjgQtYDTd9C3LXI47
+ 300tvHAEo/ncn8DIay7XqFkcVsGD/TU9ep9x0k8BkkRD3sYj3zOzkx22VXHg3A8bUdSN
+ jh6Ciz05gCN8kGcwaAmqYCkRnD2WoCFF3D+K05VxAB0SaQRW1Jg/1VRrxP4BlAGgBf3V
+ LJ/0EyJOigX7C55bA3CQfQnJndQ9VYBdeSQ0dVaEX7seeUzLZLD0f7yayexBaFnyOOYL
+ 2neA==
+X-Gm-Message-State: AOAM531RPokqXZIx61QYgSG8qp7NfXVUeeaXw3vXKDbHGWLI96WWA+XO
+ XG08nqyRkzXfGVEOu7F7SGL2kQ5XrYJ+zFOG+eBA+08tYcU7
+X-Google-Smtp-Source: ABdhPJzxUWezLj25GQcJjmzFyyzV8zPhnAOMUqh+3uMYMglVl03aqlkd4yYm3QP6f4c1cxC0jQjo0GNtFagv4l+QvSFZJRYKs793
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8dc2d37-f1eb-49df-b1d7-08d817886dd9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2020 15:16:38.3768 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: G8ohAOftk1F1QZEmKH/FFA7wfHh/IsTFgQapu2lmo0z+45AQwVUgUbh9N++wPwmZlwbmk3ALmup95wcSbQn4PdsavkltD8uAi5vwpFB42iI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR10MB3399
+X-Received: by 2002:a05:6e02:f41:: with SMTP id
+ y1mr25744802ilj.232.1592946499365; 
+ Tue, 23 Jun 2020 14:08:19 -0700 (PDT)
+Date: Tue, 23 Jun 2020 14:08:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003dbc0305a8c6c238@google.com>
+Subject: KASAN: slab-out-of-bounds Write in snd_usb_mixer_interrupt
+From: syzbot <syzbot+2405ca3401e943c538b5@syzkaller.appspotmail.com>
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
+ syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Wed, 24 Jun 2020 09:49:30 +0200
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Michael Walle <michael@walle.cc>,
- =?iso-8859-2?Q?=22Heiko_St=FCbner=22?= <heiko@sntech.de>,
- Neil Armstrong <narmstrong@baylibre.com>, David Airlie <airlied@linux.ie>,
- =?iso-8859-2?Q?=22Micha=B3_Miros=B3aw=22?= <mirq-linux@rere.qmqm.pl>,
- Jonghwan Choi <charlie.jh@kakaocorp.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Paul Cercueil <paul@crapouillou.net>, Andrzej Hajda <a.hajda@samsung.com>,
- Frank Shi <shifu0704@thundersoft.com>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Benjamin Gaignard <benjamin.gaignard@linaro.org>,
- "Andrew F. Davis" <afd@ti.com>, Fabio Estevam <festevam@gmail.com>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Joonyoung Shim <jy0922.shim@samsung.com>,
- Matthias Reichl <hias@horus.com>, Katsuhiro Suzuki <katsuhiro@katsuster.net>,
- Kevin Hilman <khilman@baylibre.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- YueHaibing <yuehaibing@huawei.com>, Russell King <linux@armlinux.org.uk>,
- Krzysztof Kozlowski <krzk@kernel.org>, Daniel Drake <drake@endlessm.com>,
- Tzung-Bi Shih <tzungbi@google.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Kukjin Kim <kgene@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Dinghao Liu <dinghao.liu@zju.edu.cn>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Cheng-Yi Chiang <cychiang@chromium.org>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Jonas Karlman <jonas@kwiboo.se>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Chuhong Yuan <hslester96@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
- James Schulman <james.schulman@cirrus.com>, Inki Dae <inki.dae@samsung.com>,
- Masahiro Yamada <masahiroy@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Dan Murphy <dmurphy@ti.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- =?iso-8859-2?B?Ik51bm8gU+Ei?= <nuno.sa@analog.com>,
- Vincent Abriou <vincent.abriou@st.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- Support Opensource <Support.Opensource@diasemi.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Jason Yan <yanaijie@huawei.com>,
- Stephen Boyd <sboyd@kernel.org>,
- Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
- David Rhodes <david.rhodes@cirrus.com>, Seung-Woo Kim <sw0312.kim@samsung.com>,
- Sandy Huang <hjc@rock-chips.com>, Pavel Dobias <dobias@2n.cz>,
- Philipp Puschmann <p.puschmann@pironex.de>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Vishwas A Deshpande <vishwas.a.deshpande@ti.com>,
- Daniel Vetter <daniel@ffwll.ch>, Colin Ian King <colin.king@canonical.com>,
- Kevin Cernekee <cernekee@chromium.org>, Lucas Stach <l.stach@pengutronix.de>,
- Shawn Guo <shawnguo@kernel.org>, Peter Rosin <peda@axentia.se>,
- M R Swami Reddy <mr.swami.reddy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -195,132 +89,157 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 23 June 2020 02:21, Kuninori Morimoto wrote:
+Hello,
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> snd_soc_dai_digital_mute() is internally using both
-> mute_stream() (1) or digital_mute() (2), but the difference between
-> these 2 are only handling direction.
-> We can merge digital_mute() into mute_stream
->=20
-> 	int snd_soc_dai_digital_mute(xxx, int direction)
-> 	{
-> 		...
-> 		else if (dai->driver->ops->mute_stream)
-> (1)			return dai->driver->ops->mute_stream(xxx, direction);
-> 		else if (direction =3D=3D SNDRV_PCM_STREAM_PLAYBACK &&
-> 			 dai->driver->ops->digital_mute)
-> (2)			return dai->driver->ops->digital_mute(xxx);
-> 		...
-> 	}
->=20
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+syzbot found the following crash on:
 
-Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b9b0a1100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=be4578b3f1083656
+dashboard link: https://syzkaller.appspot.com/bug?extid=2405ca3401e943c538b5
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1589f7cd100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10162bf1100000
 
-> ---
->  sound/soc/codecs/da7210.c | 7 +++++--
->  sound/soc/codecs/da7213.c | 7 +++++--
->  sound/soc/codecs/da9055.c | 7 +++++--
->  3 files changed, 15 insertions(+), 6 deletions(-)
->=20
-> diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-> index 0c99dcf242e4..8e5e5cd4bcbe 100644
-> --- a/sound/soc/codecs/da7210.c
-> +++ b/sound/soc/codecs/da7210.c
-> @@ -924,11 +924,14 @@ static int da7210_set_dai_fmt(struct snd_soc_dai
-> *codec_dai, u32 fmt)
->  	return 0;
->  }
->=20
-> -static int da7210_mute(struct snd_soc_dai *dai, int mute)
-> +static int da7210_mute(struct snd_soc_dai *dai, int mute, int direction)
->  {
->  	struct snd_soc_component *component =3D dai->component;
->  	u8 mute_reg =3D snd_soc_component_read(component,
-> DA7210_DAC_HPF) & 0xFB;
->=20
-> +	if (direction !=3D SNDRV_PCM_STREAM_PLAYBACK)
-> +		return 0;
-> +
->  	if (mute)
->  		snd_soc_component_write(component, DA7210_DAC_HPF,
-> mute_reg | 0x4);
->  	else
-> @@ -1034,7 +1037,7 @@ static const struct snd_soc_dai_ops da7210_dai_ops =
-=3D {
->  	.set_fmt	=3D da7210_set_dai_fmt,
->  	.set_sysclk	=3D da7210_set_dai_sysclk,
->  	.set_pll	=3D da7210_set_dai_pll,
-> -	.digital_mute	=3D da7210_mute,
-> +	.mute_stream	=3D da7210_mute,
->  };
->=20
->  static struct snd_soc_dai_driver da7210_dai =3D {
-> diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-> index cc4ae7b311b4..55f8097112e1 100644
-> --- a/sound/soc/codecs/da7213.c
-> +++ b/sound/soc/codecs/da7213.c
-> @@ -1321,10 +1321,13 @@ static int da7213_set_dai_fmt(struct snd_soc_dai
-> *codec_dai, unsigned int fmt)
->  	return 0;
->  }
->=20
-> -static int da7213_mute(struct snd_soc_dai *dai, int mute)
-> +static int da7213_mute(struct snd_soc_dai *dai, int mute, int direction)
->  {
->  	struct snd_soc_component *component =3D dai->component;
->=20
-> +	if (direction !=3D SNDRV_PCM_STREAM_PLAYBACK)
-> +		return 0;
-> +
->  	if (mute) {
->  		snd_soc_component_update_bits(component,
-> DA7213_DAC_L_CTRL,
->  				    DA7213_MUTE_EN, DA7213_MUTE_EN);
-> @@ -1507,7 +1510,7 @@ static int da7213_set_component_pll(struct
-> snd_soc_component *component,
->  static const struct snd_soc_dai_ops da7213_dai_ops =3D {
->  	.hw_params	=3D da7213_hw_params,
->  	.set_fmt	=3D da7213_set_dai_fmt,
-> -	.digital_mute	=3D da7213_mute,
-> +	.mute_stream	=3D da7213_mute,
->  };
->=20
->  static struct snd_soc_dai_driver da7213_dai =3D {
-> diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
-> index e93436ccb674..e388b1c0ba19 100644
-> --- a/sound/soc/codecs/da9055.c
-> +++ b/sound/soc/codecs/da9055.c
-> @@ -1211,10 +1211,13 @@ static int da9055_set_dai_fmt(struct snd_soc_dai
-> *codec_dai, unsigned int fmt)
->  	return 0;
->  }
->=20
-> -static int da9055_mute(struct snd_soc_dai *dai, int mute)
-> +static int da9055_mute(struct snd_soc_dai *dai, int mute, int direction)
->  {
->  	struct snd_soc_component *component =3D dai->component;
->=20
-> +	if (direction !=3D SNDRV_PCM_STREAM_PLAYBACK)
-> +		return 0;
-> +
->  	if (mute) {
->  		snd_soc_component_update_bits(component,
-> DA9055_DAC_L_CTRL,
->  				    DA9055_DAC_L_MUTE_EN,
-> DA9055_DAC_L_MUTE_EN);
-> @@ -1324,7 +1327,7 @@ static const struct snd_soc_dai_ops da9055_dai_ops =
-=3D {
->  	.set_fmt	=3D da9055_set_dai_fmt,
->  	.set_sysclk	=3D da9055_set_dai_sysclk,
->  	.set_pll	=3D da9055_set_dai_pll,
-> -	.digital_mute	=3D da9055_mute,
-> +	.mute_stream	=3D da9055_mute,
->  };
->=20
->  static struct snd_soc_dai_driver da9055_dai =3D {
-> --
-> 2.25.1
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+2405ca3401e943c538b5@syzkaller.appspotmail.com
 
+==================================================================
+BUG: KASAN: slab-out-of-bounds in snd_usb_mixer_notify_id sound/usb/mixer.c:3240 [inline]
+BUG: KASAN: slab-out-of-bounds in snd_usb_mixer_interrupt+0xaa7/0xc30 sound/usb/mixer.c:3379
+Write of size 4 at addr ffff8880a39c5ae0 by task swapper/0/0
+
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1e9/0x30e lib/dump_stack.c:118
+ print_address_description+0x66/0x5a0 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ snd_usb_mixer_notify_id sound/usb/mixer.c:3240 [inline]
+ snd_usb_mixer_interrupt+0xaa7/0xc30 sound/usb/mixer.c:3379
+ __usb_hcd_giveback_urb+0x333/0x4b0 drivers/usb/core/hcd.c:1650
+ dummy_timer+0x75c/0x3ff0 drivers/usb/gadget/udc/dummy_hcd.c:1966
+ call_timer_fn+0x91/0x160 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449 [inline]
+ __run_timers+0x776/0x970 kernel/time/timer.c:1773
+ run_timer_softirq+0x46/0x80 kernel/time/timer.c:1786
+ __do_softirq+0x268/0x80c kernel/softirq.c:292
+ invoke_softirq kernel/softirq.c:373 [inline]
+ irq_exit+0x223/0x230 kernel/softirq.c:413
+ exiting_irq arch/x86/include/asm/apic.h:546 [inline]
+ smp_apic_timer_interrupt+0x113/0x280 arch/x86/kernel/apic/apic.c:1107
+ apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
+ </IRQ>
+RIP: 0010:native_safe_halt+0xe/0x10 arch/x86/include/asm/irqflags.h:61
+Code: 80 e1 07 80 c1 03 38 c1 7c bc 48 89 df e8 9a 17 9b f9 eb b2 cc cc cc cc cc cc cc cc e9 07 00 00 00 0f 00 2d 56 46 4a 00 fb f4 <c3> 90 e9 07 00 00 00 0f 00 2d 46 46 4a 00 f4 c3 cc cc 41 56 53 65
+RSP: 0018:ffffffff89207d48 EFLAGS: 00000286 ORIG_RAX: ffffffffffffff13
+RAX: 1ffffffff12577b9 RBX: 0000000000000000 RCX: ffffffffffffffff
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff89282364
+RBP: 1ffff1104351204e R08: ffffffff817a4660 R09: fffffbfff1250361
+R10: fffffbfff1250361 R11: 0000000000000000 R12: 0000000000000001
+R13: dffffc0000000000 R14: dffffc0000000000 R15: ffff88821a890270
+ arch_safe_halt arch/x86/include/asm/paravirt.h:150 [inline]
+ acpi_safe_halt+0x87/0xe0 drivers/acpi/processor_idle.c:111
+ acpi_idle_do_entry drivers/acpi/processor_idle.c:525 [inline]
+ acpi_idle_enter+0x3f4/0xac0 drivers/acpi/processor_idle.c:651
+ cpuidle_enter_state+0x2d7/0x7b0 drivers/cpuidle/cpuidle.c:234
+ cpuidle_enter+0x59/0x90 drivers/cpuidle/cpuidle.c:345
+ call_cpuidle kernel/sched/idle.c:117 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:207 [inline]
+ do_idle+0x49c/0x650 kernel/sched/idle.c:269
+ cpu_startup_entry+0x15/0x20 kernel/sched/idle.c:365
+ start_kernel+0x674/0x777 init/main.c:1041
+ secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:242
+
+Allocated by task 12:
+ save_stack mm/kasan/common.c:48 [inline]
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x103/0x140 mm/kasan/common.c:494
+ kmem_cache_alloc_trace+0x234/0x300 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ add_single_ctl_with_resume sound/usb/mixer_quirks.c:147 [inline]
+ snd_mbox1_create_sync_switch sound/usb/mixer_quirks.c:719 [inline]
+ snd_usb_mixer_apply_create_quirk+0x1333/0x4fc0 sound/usb/mixer_quirks.c:2654
+ snd_usb_create_mixer+0x22d8/0x2e90 sound/usb/mixer.c:3538
+ snd_usb_create_quirk sound/usb/quirks.c:563 [inline]
+ create_composite_quirk+0x221/0x510 sound/usb/quirks.c:48
+ usb_audio_probe+0xc3d/0x2500 sound/usb/card.c:668
+ usb_probe_interface+0x614/0xac0 drivers/usb/core/driver.c:374
+ really_probe+0x761/0xf60 drivers/base/dd.c:524
+ driver_probe_device+0xe6/0x230 drivers/base/dd.c:697
+ bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
+ __device_attach+0x20c/0x3a0 drivers/base/dd.c:870
+ bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
+ device_add+0x1828/0x1ba0 drivers/base/core.c:2557
+ usb_set_configuration+0x19d2/0x1f20 drivers/usb/core/message.c:2032
+ usb_generic_driver_probe+0x82/0x140 drivers/usb/core/generic.c:241
+ usb_probe_device+0x12d/0x1d0 drivers/usb/core/driver.c:272
+ really_probe+0x761/0xf60 drivers/base/dd.c:524
+ driver_probe_device+0xe6/0x230 drivers/base/dd.c:697
+ bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
+ __device_attach+0x20c/0x3a0 drivers/base/dd.c:870
+ bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
+ device_add+0x1828/0x1ba0 drivers/base/core.c:2557
+ usb_new_device+0xcc3/0x1650 drivers/usb/core/hub.c:2554
+ hub_port_connect drivers/usb/core/hub.c:5208 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
+ port_event drivers/usb/core/hub.c:5494 [inline]
+ hub_event+0x2823/0x4cb0 drivers/usb/core/hub.c:5576
+ process_one_work+0x76e/0xfd0 kernel/workqueue.c:2268
+ worker_thread+0xa7f/0x1450 kernel/workqueue.c:2414
+ kthread+0x353/0x380 kernel/kthread.c:268
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
+
+Freed by task 4844:
+ save_stack mm/kasan/common.c:48 [inline]
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0x114/0x170 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x10a/0x220 mm/slab.c:3757
+ tomoyo_path_perm+0x59b/0x740 security/tomoyo/file.c:842
+ security_inode_getattr+0xc0/0x140 security/security.c:1278
+ vfs_getattr fs/stat.c:121 [inline]
+ vfs_statx_fd fs/stat.c:151 [inline]
+ vfs_fstat include/linux/fs.h:3319 [inline]
+ __do_sys_newfstat fs/stat.c:398 [inline]
+ __se_sys_newfstat fs/stat.c:395 [inline]
+ __x64_sys_newfstat+0x97/0x150 fs/stat.c:395
+ do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+The buggy address belongs to the object at ffff8880a39c5a80
+ which belongs to the cache kmalloc-64 of size 64
+The buggy address is located 32 bytes to the right of
+ 64-byte region [ffff8880a39c5a80, ffff8880a39c5ac0)
+The buggy address belongs to the page:
+page:ffffea00028e7140 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea000299a688 ffffea00028e3948 ffff8880aa400380
+raw: 0000000000000000 ffff8880a39c5000 0000000100000020 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a39c5980: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8880a39c5a00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+>ffff8880a39c5a80: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
+                                                       ^
+ ffff8880a39c5b00: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8880a39c5b80: 00 00 00 00 01 fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
