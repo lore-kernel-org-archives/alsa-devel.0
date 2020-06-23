@@ -2,61 +2,83 @@ Return-Path: <SRS0=bSXK=AE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 250EBC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 15:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD07C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 15:57:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A158E2073E
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 15:52:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E6E02073E
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 15:57:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GHzgHZXm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A158E2073E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="usbRQLO9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E6E02073E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BF9617A2;
-	Tue, 23 Jun 2020 17:52:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BF9617A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D681C179C;
+	Tue, 23 Jun 2020 17:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D681C179C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592927578;
-	bh=eVAQyZQd4hc/19sTDMa1ggVsaLEtjvcJ0GRDAhMrmVE=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1592927862;
+	bh=g+n1WSfZ4qG7o8N3jm3SjrykTQmL+2nPMzr2pc98fwo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GHzgHZXmGfrNyQ2uN/twzx+gc8W64gxJBrirS98Zvi+HNXcNScimcjo8BNduRV0c9
-	 YPpHNXFV/Aa57FRLj9KIxYMGE9sJ0kAH5FjkieNv0s2MLVvdIQC2GS9NjF+209K3wS
-	 GKhhRGHAnqQCNpY1dO+qDrGcbZreHfkOeRXY5a3I=
+	b=usbRQLO9KyATZk6rbTwcSVQrG8p4M/4QCMZhAOGXCxMAUqkNidw/Ab8XFRX5IFWKI
+	 ULDRF/PAFtvQnCRIRWThd3fwrH0hzVwMk8geMdafoBzl4CCYWhOiCA/rj+l24DFzzc
+	 K5GuOivhOZnLPVbGId/0VTdk4+iglR1jhaQLD7Mw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36226F802C4;
-	Tue, 23 Jun 2020 17:49:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D9E9F80218;
+	Tue, 23 Jun 2020 17:56:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E512F802BD; Tue, 23 Jun 2020 17:49:45 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8E0E4F80234; Tue, 23 Jun 2020 17:56:50 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67FC8F8023E
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 17:49:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67FC8F8023E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5991CB039
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 15:49:32 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib v2 1/2] pcm: dmix: make lockless operation optional
-Date: Tue, 23 Jun 2020 17:49:30 +0200
-Message-Id: <20200623154931.27755-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200623154931.27755-1-tiwai@suse.de>
-References: <20200623154931.27755-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27B1CF8010E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 17:56:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27B1CF8010E
+IronPort-SDR: mJ5mvwMr57vnw/s2LoVG4Ssrgrd9RUoAz6iWO5cat7DDzoAqlR745eZUeV73sSHNRe4bNqoOKB
+ r/a4xuQRt0yA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="205621079"
+X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; d="scan'208";a="205621079"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jun 2020 08:56:40 -0700
+IronPort-SDR: 0PVf8oWguu0opVT1lGIwDJwdEJ/FJcvCuPCRLbtLPsBXLRFbRIzQzLBlDYE9zDAWp6dmL+GgGs
+ BueNe13Meolg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; d="scan'208";a="263367198"
+Received: from meis-mobl1.amr.corp.intel.com (HELO [10.255.230.137])
+ ([10.255.230.137])
+ by fmsmga007.fm.intel.com with ESMTP; 23 Jun 2020 08:56:38 -0700
+Subject: Re: [PATCH 1/5] ASoC: soc-link: introduce exit() callback
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <20200622154241.29053-1-pierre-louis.bossart@linux.intel.com>
+ <20200622154241.29053-2-pierre-louis.bossart@linux.intel.com>
+ <87imfi3bdd.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <5c020775-94db-0371-9a07-a1e59759a158@linux.intel.com>
+Date: Tue, 23 Jun 2020 09:50:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <87imfi3bdd.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.de,
+ Curtis Malainey <curtis@malainey.com>, broonie@kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,104 +94,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recently reported (but a long-standing) bug about the
-unconditional semaphore usage in the dmix implies that basically we've
-had no problem with the locking in the practical usages over years.
-Although the lockless operation has a clear merit, it's a much higher
-CPU usage (especially on some uncached pages), and it might lead to a
-potential deadlock in theory (which is hard to reproduce at will,
-though).
 
-This patch introduces a new configure option "--enable-lockless-dmix"
-or "--disable-lockless-dmix" to let user choose the default dmix
-operation mode.  The usage of the lockless mixing has been already
-conditionally enabled via asoundrc and card config
-"direct_memory_access", so we just need to set the default value based
-on it.
 
-In this patch, the default is set off to the lockless mixing, i.e. the
-generic mixing is chosen.  It makes more sense from the performance
-POV.  For any users who still require the lockless operation, it can
-be enabled either via configure option or the asoundrc.
+On 6/22/20 6:54 PM, Kuninori Morimoto wrote:
+> 
+> Hi Pierre-Louis
+> 
+>> The exit() is invoked in soc_remove_pcm_runtime(), which is not
+>> completely symmetric with the init() invoked in soc_init_pcm_runtime().
+> (snip)
+>> @@ -945,6 +945,9 @@ void snd_soc_remove_pcm_runtime(struct snd_soc_card *card,
+>>   {
+>>   	lockdep_assert_held(&client_mutex);
+>>   
+>> +	/* release machine specific resources */
+>> +	snd_soc_link_exit(rtd);
+> 
+> I can understand that 100% symmetric calling init()/exit() is difficult.
+> So we can't help it this time. But if so, it is easy to notice that
+> this .exit() is the one of non-symmetric if it has such comment.
 
-The magic number used in the shmem is also changed depending on the
-operation mode.  It's just for safety, not to conflict both operation
-modes with each other.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- configure.ac         | 13 +++++++++++++
- src/pcm/pcm_direct.c | 16 +++++++++++++---
- 2 files changed, 26 insertions(+), 3 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index 4577c417037a..75d037d5509a 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -629,6 +629,19 @@ if test "$build_pcm_mmap_emul" = "yes"; then
-   AC_DEFINE([BUILD_PCM_PLUGIN_MMAP_EMUL], "1", [Build PCM mmap-emul plugin])
- fi
- 
-+if test "$build_pcm_dmix" = "yes"; then
-+AC_MSG_CHECKING(for default lockless dmix)
-+AC_ARG_ENABLE(lockless-dmix,
-+  AS_HELP_STRING([--enable-lockless-dmix],
-+    [use lockless dmix as default on x86]),
-+  lockless_dmix="$enableval", lockless_dmix="no")
-+if test "$lockless_dmix" = "yes"; then
-+  AC_MSG_RESULT(yes)
-+  AC_DEFINE([LOCKLESS_DMIX_DEFAULT], "1", [Lockless dmix as default])
-+else
-+  AC_MSG_RESULT(no)
-+fi
-+fi
- 
- dnl Create PCM plugin symbol list for static library
- rm -f "$srcdir"/src/pcm/pcm_symbols_list.c
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 665340954cf3..19c5a811262f 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -82,7 +82,13 @@ int snd_pcm_direct_semaphore_create_or_connect(snd_pcm_direct_t *dmix)
- 	return 0;
- }
- 
--#define SND_PCM_DIRECT_MAGIC	(0xa15ad300 + sizeof(snd_pcm_direct_share_t))
-+static unsigned int snd_pcm_direct_magic(snd_pcm_direct_t *dmix)
-+{
-+	if (!dmix->direct_memory_access)
-+		return 0xa15ad300 + sizeof(snd_pcm_direct_share_t);
-+	else
-+		return 0xb15ad300 + sizeof(snd_pcm_direct_share_t);
-+}
- 
- /*
-  *  global shared memory area 
-@@ -132,10 +138,10 @@ retryget:
- 			buf.shm_perm.gid = dmix->ipc_gid;
- 			shmctl(dmix->shmid, IPC_SET, &buf);
- 		}
--		dmix->shmptr->magic = SND_PCM_DIRECT_MAGIC;
-+		dmix->shmptr->magic = snd_pcm_direct_magic(dmix);
- 		return 1;
- 	} else {
--		if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC) {
-+		if (dmix->shmptr->magic != snd_pcm_direct_magic(dmix)) {
- 			snd_pcm_direct_shm_discard(dmix);
- 			return -EINVAL;
- 		}
-@@ -1892,7 +1898,11 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 	rec->slowptr = 1;
- 	rec->max_periods = 0;
- 	rec->var_periodsize = 0;
-+#ifdef LOCKLESS_DMIX_DEFAULT
- 	rec->direct_memory_access = 1;
-+#else
-+	rec->direct_memory_access = 0;
-+#endif
- 	rec->hw_ptr_alignment = SND_PCM_HW_PTR_ALIGNMENT_AUTO;
- 	rec->tstamp_type = -1;
- 
--- 
-2.16.4
-
+Sorry Morimoto-san, I don't understand your last sentence.
+Were you suggesting to reword the "release machine specific resources" 
+comment above, or add a comment in the snd_soc_link_exit() definition, 
+or something else altogether?
+I don't mind sending an update if you feel that makes the core more 
+readable.
+Thanks!
