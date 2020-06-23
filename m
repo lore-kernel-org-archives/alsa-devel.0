@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F872C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:00:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DB5FC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:01:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6D5D2070E
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:00:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FB6B20738
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 11:01:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QGMXouTJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6D5D2070E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bbzo1Og5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FB6B20738
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9156E1780;
-	Tue, 23 Jun 2020 12:59:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9156E1780
+	by alsa0.perex.cz (Postfix) with ESMTPS id C21441792;
+	Tue, 23 Jun 2020 13:00:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C21441792
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592910038;
-	bh=YAuh3tw+a44XluKi86F8G1DAJtWq1SLeMgMY41EhRD0=;
+	s=default; t=1592910061;
+	bh=w4XntGaHYLfRsLdKujrXj/GP6ChMqEIDqHakMLHQ15U=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QGMXouTJnsoSO86P5j7dTdy/dzVytuaakJp23yeL40iusR9IayVTkJXiO6o5N7eJy
-	 UH/AsqPiI67BqNxFfZ0XYSLLWUAJldd71rrODW8hvXa+uWceNiwqXTBI5/ZIBs5WBF
-	 7+gGg4NU01FSUjwaEei1vVPE0CK/eQdx7AMSNOqo=
+	b=bbzo1Og5JAhl1PKXz4tpKGW63Ki+4gHSdM4IYh3GUGx8G2DR041Owi6I/j0Nc7NdC
+	 0vt0Af1lPzpnrknu4Fl2F17e/9sx2c1GBWuCo/D5MBK+LVXvmH5OLwRx/RPi0W/xyi
+	 3jKLMAMgVkmU3XLZtMuyMX9tKljvdJUu5RCvEJvM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31D6FF802A1;
-	Tue, 23 Jun 2020 12:58:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49CA1F80234;
+	Tue, 23 Jun 2020 12:59:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A70BBF802A7; Tue, 23 Jun 2020 12:58:43 +0200 (CEST)
+ id C9FB7F80234; Tue, 23 Jun 2020 12:59:35 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D726DF80218
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:58:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D726DF80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id D78DDF8010E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:59:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D78DDF8010E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1E8BDAED9;
- Tue, 23 Jun 2020 10:58:37 +0000 (UTC)
-Date: Tue, 23 Jun 2020 12:58:37 +0200
-Message-ID: <s5h5zbioxpe.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1EF2BAED9;
+ Tue, 23 Jun 2020 10:59:29 +0000 (UTC)
+Date: Tue, 23 Jun 2020 12:59:29 +0200
+Message-ID: <s5h4kr2oxny.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 5/9] pcm: Annotate the _delay functions based on findings
- from the previous bug
-In-Reply-To: <20200622131515.23385-5-mark@xwax.org>
+Subject: Re: [PATCH 6/9] dsnoop: The stop threshold was not implemented
+ correctly
+In-Reply-To: <20200622131515.23385-6-mark@xwax.org>
 References: <2006221356390.20421@stax.localdomain>
- <20200622131515.23385-5-mark@xwax.org>
+ <20200622131515.23385-6-mark@xwax.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,8 +78,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Jun 2020 15:15:11 +0200,
+On Mon, 22 Jun 2020 15:15:12 +0200,
 Mark Hills wrote:
+> 
+> The previous implementation would mean that stop_threshold behaved
+> erratically. The intent is to detect that the buffer is too full,
+> and stop.
+> 
+> In practice, I don't think this was a bug in practice for applications
+> which don't adjust the stop_threshold. The line above catches those cases.
 > 
 > Signed-off-by: Mark Hills <mark@xwax.org>
 
