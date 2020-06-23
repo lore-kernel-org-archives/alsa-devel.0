@@ -2,61 +2,60 @@ Return-Path: <SRS0=bSXK=AE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD1DAC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5A91C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:58:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A39320679
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:55:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 744AA20738
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:58:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KZ7TIHU5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A39320679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sLtVKV0+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 744AA20738
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4BDE176A;
-	Tue, 23 Jun 2020 12:54:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4BDE176A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 086C21775;
+	Tue, 23 Jun 2020 12:57:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 086C21775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592909720;
-	bh=JzFkKJG1+uXeabzwz48rFzYmlA/XIE8DsvzGyfheUxo=;
+	s=default; t=1592909908;
+	bh=YIuvDeTsbEkUV9PKLxIiKtk/1prbOacYH9GdCCaQt+E=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KZ7TIHU5VPpb/dpPQ9wn2cqgHuKaZBhviN8BUOJOL30dHXXMkpb27ztUQx5pXKSg8
-	 MePxnEP9zec5TjXMrw187TZkfXMUIq9n5G8UxO7UlXuntua7v9HaWsA0WPAGrAoB6R
-	 XTsxfx5/5co6JeDgGMihmTieImxJWEoRyg4DeCHk=
+	b=sLtVKV0+JT/J8BtVWrIxZJ+bxQw/74xNDX/E5kdwc7YkC4PVteXA85ZkATvDf79wu
+	 9ZGv+DHiCcXXp+mw+I0MpsPv/RCu6SYr2nC9dsbTF28pvTS2Ozr1ixnW9BoymBMun2
+	 SMmVjTsR7mV1hH3yCNwvnHlCTwu3dvsD9n9DGh2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 417E6F80218;
-	Tue, 23 Jun 2020 12:54:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98422F80218;
+	Tue, 23 Jun 2020 12:57:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 621BDF80234; Tue, 23 Jun 2020 12:54:27 +0200 (CEST)
+ id C0479F800B2; Tue, 23 Jun 2020 12:57:35 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F821F800B2
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:54:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F821F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5E59F800B2
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:57:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5E59F800B2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 8E229AED9;
- Tue, 23 Jun 2020 10:54:19 +0000 (UTC)
-Date: Tue, 23 Jun 2020 12:54:19 +0200
-Message-ID: <s5hbllaoxwk.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 266EBAF27;
+ Tue, 23 Jun 2020 10:57:29 +0000 (UTC)
+Date: Tue, 23 Jun 2020 12:57:29 +0200
+Message-ID: <s5ha70uoxra.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 3/9] conf: Read a host-specific asoundrc
-In-Reply-To: <20200622131515.23385-3-mark@xwax.org>
+Subject: Re: [PATCH 1/9] control: Fix typos in the namehint example
+In-Reply-To: <20200622131515.23385-1-mark@xwax.org>
 References: <2006221356390.20421@stax.localdomain>
- <20200622131515.23385-3-mark@xwax.org>
+ <20200622131515.23385-1-mark@xwax.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,57 +77,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Jun 2020 15:15:09 +0200,
+On Mon, 22 Jun 2020 15:15:07 +0200,
 Mark Hills wrote:
 > 
-> On systems with a network mounted home directory this is thoroughly
-> useful to allow for a core set of asoundrc settings, but with different
-> settings on different hosts.
-> 
-> It's not possibly to implement this in our own asoundrc or local
-> customisation, as it's too late. The installation file must be modified.
-> 
-> This is similar to ~/.Xdefaults-* on some systems.
+> Ths "namehint" is a list, and there doesn't seem to have been any
+> history where the separator would be a colon.
 > 
 > Signed-off-by: Mark Hills <mark@xwax.org>
 
-This kind of change popping up sometimes in the past, too, and I have
-a mixed feeling whether to take such a change globally or not.
+Thanks, applied.
 
-In one side, it can work, but OTOH, if you can deal with that detail,
-you're certainly able to set up the environment variable easily, too.
-
-
-thanks,
 
 Takashi
-
-> ---
->  src/conf/alsa.conf | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
-> index 18427ec6..4dae0e9c 100644
-> --- a/src/conf/alsa.conf
-> +++ b/src/conf/alsa.conf
-> @@ -24,6 +24,17 @@
->  					"/alsa/asoundrc"
->  				]
->  			}
-> +			{
-> +				@func concat
-> +				strings [
-> +					"~/.asoundrc-"
-> +					{
-> +						@func getenv
-> +						vars [ HOSTNAME ]
-> +						default "localhost"
-> +					}
-> +				]
-> +			}
->  		]
->  		errors false
->  	}
-> -- 
-> 2.17.5
-> 
