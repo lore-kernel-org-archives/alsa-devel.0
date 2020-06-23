@@ -7,53 +7,54 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 148EDC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E73AAC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:05:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 944BD20FC3
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:04:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7584620FC3
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:05:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P36FOpkS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 944BD20FC3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k64U2Hab"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7584620FC3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EC3E1800;
-	Wed, 24 Jun 2020 10:03:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EC3E1800
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC9D01829;
+	Wed, 24 Jun 2020 10:04:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC9D01829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592985885;
-	bh=QAwj8N81fFmTwJFwRH2P4jAZ0iSvyJDoHg35tx42lDQ=;
+	s=default; t=1592985922;
+	bh=XKxCxAaUZaN/g4ywWCA4/3GvR3s3gCJY3HoA/vrfkQ0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P36FOpkSlj1GKYR7nhoLC2fvfEvy4r9Mot/VtRiSuKmOavKQh00z75d60oYRO44ns
-	 tcpE9o0TlPT/huaRrTyazEnBd8A/vIpqIT/3CkPcEXuD1ydZastEfEpke468iB//Ik
-	 SR4iVQlJpQSYNz2xUXNdYIH1aZJII8sLCoP37kYA=
+	b=k64U2Habf17FAS6ffCsuXVHo77fhLiVrXdDIrSiuPj4p8tmAuWXxq0gAR9tAUa3Nd
+	 88gftFT+zdfCSjBdTVe6I2o/zl5rsiFwrh7cPt/VIvLyhxPFKiH7hgnoplPBfjbV5o
+	 MLI3dkXmf/V1fK97ZoT56AgbdUu+tcWVk6+YR3Ys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6F87F80385;
-	Wed, 24 Jun 2020 09:50:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AAD9F8038C;
+	Wed, 24 Jun 2020 09:50:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37617F8015B; Tue, 23 Jun 2020 03:21:18 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2C55EF80157
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:21:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C55EF80157
-Date: 23 Jun 2020 10:21:09 +0900
-X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50119025"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 23 Jun 2020 10:21:09 +0900
+ id 49622F801DB; Tue, 23 Jun 2020 03:21:25 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1EEBEF80157
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:21:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EEBEF80157
+Date: 23 Jun 2020 10:21:16 +0900
+X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50329558"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 23 Jun 2020 10:21:16 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 71B8841846B1;
- Tue, 23 Jun 2020 10:21:09 +0900 (JST)
-Message-ID: <87pn9q1ss8.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5EC1A4001DC8;
+ Tue, 23 Jun 2020 10:21:16 +0900 (JST)
+Message-ID: <87o8pa1ss2.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 18/19] ASoC: soc-dai: remove .digital_mute
+Subject: [PATCH 19/19] ASoC: soc-core: snd_soc_dai_digital_mute() for both
+ CPU/Codec
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
@@ -131,45 +132,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-All drivers are now using .mute_stream.
-Let's remove .digital_mute.
+snd_soc_dai_digital_mute() is used for both CPU and Codec.
+For example, soc_pcm_prepare() / soc_pcm_hw_free() are caring
+both CPU and Codec.
+But, soc_resume_deferred() / snd_soc_suspend() are not.
+This patch cares it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-dai.h | 1 -
- sound/soc/soc-dai.c     | 4 ----
- 2 files changed, 5 deletions(-)
+ sound/soc/soc-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 212257e84fac..a3db208cd062 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -246,7 +246,6 @@ struct snd_soc_dai_ops {
- 	 * DAI digital mute - optional.
- 	 * Called by soc-core to minimise any pops.
- 	 */
--	int (*digital_mute)(struct snd_soc_dai *dai, int mute);
- 	int (*mute_stream)(struct snd_soc_dai *dai, int mute, int stream);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 62c0c9482018..d84d91d8e3e0 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -548,7 +548,7 @@ int snd_soc_suspend(struct device *dev)
+ 		if (rtd->dai_link->ignore_suspend)
+ 			continue;
  
- 	/*
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index b05e18b63a1c..b0fc3d8b1798 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -301,10 +301,6 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
- 	if (dai->driver->ops &&
- 	    dai->driver->ops->mute_stream)
- 		ret = dai->driver->ops->mute_stream(dai, mute, direction);
--	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
--		 dai->driver->ops &&
--		 dai->driver->ops->digital_mute)
--		ret = dai->driver->ops->digital_mute(dai, mute);
+-		for_each_rtd_codec_dais(rtd, i, dai) {
++		for_each_rtd_dais(rtd, i, dai) {
+ 			if (snd_soc_dai_stream_active(dai, playback))
+ 				snd_soc_dai_digital_mute(dai, 1, playback);
+ 		}
+@@ -687,7 +687,7 @@ static void soc_resume_deferred(struct work_struct *work)
+ 		if (rtd->dai_link->ignore_suspend)
+ 			continue;
  
- 	return soc_dai_ret(dai, ret);
- }
+-		for_each_rtd_codec_dais(rtd, i, dai) {
++		for_each_rtd_dais(rtd, i, dai) {
+ 			if (snd_soc_dai_stream_active(dai, playback))
+ 				snd_soc_dai_digital_mute(dai, 0, playback);
+ 		}
 -- 
 2.25.1
 
