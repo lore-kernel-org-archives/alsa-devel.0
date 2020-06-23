@@ -7,69 +7,71 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA62CC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:52:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88952C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:52:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70CCF2085B
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:52:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1485B20899
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:52:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="trL+nGyf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70CCF2085B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HmD5YQkk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1485B20899
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 087A51802;
-	Wed, 24 Jun 2020 09:51:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 087A51802
+	by alsa0.perex.cz (Postfix) with ESMTPS id 371DF181D;
+	Wed, 24 Jun 2020 09:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 371DF181D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592985154;
-	bh=nJY5pM1XJK+PkGo8ItvEhMxQJ8KB2jky9DEP6kMh9Dg=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592985176;
+	bh=okg8FBWz9PjlAHfVtRwN6lndH7DJ7dFdauuPPC4ylTE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=trL+nGyfAspfiwz+TOnbuEmjRF63P4Q/DyBI4H4PXBuSYGO9qzH4+6mkN/Th4GzzH
-	 lzh+oacmH5zaXx95oLFc5FzzOS6GryxLVcEWKFYJwxOstZRK7LSNjdxp51uXkmqekj
-	 lx7fhxDpmRXNlEiFMEmzQDwxIVs4yCUkGY/8Hi0k=
+	b=HmD5YQkkXQif7SViprIm2i/kjJgMdDNJd4WRK46cA+M3Ax9AxEVmiM9VzSH6mzlUZ
+	 uLjguDfYsUWVVqR1J2Gy7Io7VzTDbfs8J3Y7Z6OmEvb6cILrq+HZU5nS3CJNHy/+sP
+	 J4KHE1oHED9Y1p8Pa13brKS8jyehNDvagdU3RfnI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B6F5F802A1;
-	Wed, 24 Jun 2020 09:49:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8ED00F802BE;
+	Wed, 24 Jun 2020 09:49:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6C3FF80162; Tue, 23 Jun 2020 03:19:47 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 686DBF8015A
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 686DBF8015A
-Date: 23 Jun 2020 10:19:43 +0900
-X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50118833"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 23 Jun 2020 10:19:43 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 765E04001DB1;
- Tue, 23 Jun 2020 10:19:43 +0900 (JST)
-Message-ID: <87blla37f2.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 03/19] ASoC: spear: merge .digital_mute() into .mute_stream()
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
+ id 786B8F80218; Tue, 23 Jun 2020 13:29:49 +0200 (CEST)
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
+ [217.70.183.199])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BA76F8023E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 13:29:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BA76F8023E
+X-Originating-IP: 86.202.110.81
+Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr
+ [86.202.110.81])
+ (Authenticated sender: alexandre.belloni@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 69F8AFF808;
+ Tue, 23 Jun 2020 11:29:32 +0000 (UTC)
+Date: Tue, 23 Jun 2020 13:29:31 +0200
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 05/19] ASoC: atmel: merge .digital_mute() into
+ .mute_stream()
+Message-ID: <20200623112931.GM131826@piout.net>
 References: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ <878sge37eq.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878sge37eq.wl-kuninori.morimoto.gx@renesas.com>
 X-Mailman-Approved-At: Wed, 24 Jun 2020 09:49:28 +0200
 Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
  Linux-ALSA <alsa-devel@alsa-project.org>, Michael Walle <michael@walle.cc>,
- =?ISO-8859-1?Q?=22Heiko_St=FCbner=22?= <heiko@sntech.de>,
+ =?iso-8859-1?B?IkhlaWtvIFN0/GJuZXIi?= <heiko@sntech.de>,
  Neil Armstrong <narmstrong@baylibre.com>, David Airlie <airlied@linux.ie>,
- =?ISO-8859-2?Q?=22Micha=B3_Miros=B3aw=22?= <mirq-linux@rere.qmqm.pl>,
- Jonghwan Choi <charlie.jh@kakaocorp.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Paul Cercueil <paul@crapouillou.net>, Andrzej Hajda <a.hajda@samsung.com>,
- Frank Shi <shifu0704@thundersoft.com>,
+ =?utf-8?B?Ik1pY2hhxYIgTWlyb3PFgmF3Ig==?= <mirq-linux@rere.qmqm.pl>,
+ Jonghwan Choi <charlie.jh@kakaocorp.com>, Paul Cercueil <paul@crapouillou.net>,
+ Andrzej Hajda <a.hajda@samsung.com>, Frank Shi <shifu0704@thundersoft.com>,
  Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
  Benjamin Gaignard <benjamin.gaignard@linaro.org>,
  "Andrew F. Davis" <afd@ti.com>, Fabio Estevam <festevam@gmail.com>,
@@ -97,10 +99,10 @@ Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
  Nicolas Ferre <nicolas.ferre@microchip.com>,
  Chuhong Yuan <hslester96@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
  James Schulman <james.schulman@cirrus.com>, Inki Dae <inki.dae@samsung.com>,
- Masahiro Yamada <masahiroy@kernel.org>,
+ Masahiro Yamada <masahiroy@kernel.org>, Mark Brown <broonie@kernel.org>,
  Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
  Dan Murphy <dmurphy@ti.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- =?ISO-8859-1?Q?=22Nuno_S=E1=22?= <nuno.sa@analog.com>,
+ =?iso-8859-1?B?Ik51bm8gU+Ei?= <nuno.sa@analog.com>,
  Vincent Abriou <vincent.abriou@st.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
  Jernej Skrabec <jernej.skrabec@siol.net>,
  Support Opensource <support.opensource@diasemi.com>,
@@ -131,69 +133,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 23/06/2020 10:19:56+0900, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> snd_soc_dai_digital_mute() is internally using both
+> mute_stream() (1) or digital_mute() (2), but the difference between
+> these 2 are only handling direction.
+> We can merge digital_mute() into mute_stream
+> 
+> 	int snd_soc_dai_digital_mute(xxx, int direction)
+> 	{
+> 		...
+> 		else if (dai->driver->ops->mute_stream)
+> (1)			return dai->driver->ops->mute_stream(xxx, direction);
+> 		else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+> 			 dai->driver->ops->digital_mute)
+> (2)			return dai->driver->ops->digital_mute(xxx);
+> 		...
+> 	}
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-snd_soc_dai_digital_mute() is internally using both
-mute_stream() (1) or digital_mute() (2), but the difference between
-these 2 are only handling direction.
-We can merge digital_mute() into mute_stream
+> ---
+>  sound/soc/atmel/atmel-classd.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+> index e98601eccfa3..59231c0371b8 100644
+> --- a/sound/soc/atmel/atmel-classd.c
+> +++ b/sound/soc/atmel/atmel-classd.c
+> @@ -327,12 +327,16 @@ static int atmel_classd_codec_dai_startup(struct snd_pcm_substream *substream,
+>  	return clk_prepare_enable(dd->gclk);
+>  }
+>  
+> -static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
+> -	int mute)
+> +static int atmel_classd_codec_dai_mute(struct snd_soc_dai *codec_dai,
+> +				       int mute,
+> +				       int direction)
+>  {
+>  	struct snd_soc_component *component = codec_dai->component;
+>  	u32 mask, val;
+>  
+> +	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
+> +		return 0;
+> +
+>  	mask = CLASSD_MR_LMUTE_MASK | CLASSD_MR_RMUTE_MASK;
+>  
+>  	if (mute)
+> @@ -469,7 +473,7 @@ static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
+>  }
+>  
+>  static const struct snd_soc_dai_ops atmel_classd_codec_dai_ops = {
+> -	.digital_mute	= atmel_classd_codec_dai_digital_mute,
+> +	.mute_stream	= atmel_classd_codec_dai_mute,
+>  	.startup	= atmel_classd_codec_dai_startup,
+>  	.shutdown	= atmel_classd_codec_dai_shutdown,
+>  	.hw_params	= atmel_classd_codec_dai_hw_params,
+> -- 
+> 2.25.1
+> 
 
-	int snd_soc_dai_digital_mute(xxx, int direction)
-	{
-		...
-		else if (dai->driver->ops->mute_stream)
-(1)			return dai->driver->ops->mute_stream(xxx, direction);
-		else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
-			 dai->driver->ops->digital_mute)
-(2)			return dai->driver->ops->digital_mute(xxx);
-		...
-	}
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/spear/spdif_out.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
-index 58d5843811f9..c53c59f3b359 100644
---- a/sound/soc/spear/spdif_out.c
-+++ b/sound/soc/spear/spdif_out.c
-@@ -188,11 +188,14 @@ static int spdif_out_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return ret;
- }
- 
--static int spdif_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int spdif_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
- 	u32 val;
- 
-+	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-+		return 0;
-+
- 	host->saved_params.mute = mute;
- 	val = readl(host->io_base + SPDIF_OUT_CTRL);
- 	val &= ~SPDIF_OPMODE_MASK;
-@@ -229,7 +232,8 @@ static int spdif_mute_put(struct snd_kcontrol *kcontrol,
- 	if (host->saved_params.mute == ucontrol->value.integer.value[0])
- 		return 0;
- 
--	spdif_digital_mute(cpu_dai, ucontrol->value.integer.value[0]);
-+	spdif_mute(cpu_dai, ucontrol->value.integer.value[0],
-+		   SNDRV_PCM_STREAM_PLAYBACK);
- 
- 	return 1;
- }
-@@ -250,7 +254,7 @@ static int spdif_soc_dai_probe(struct snd_soc_dai *dai)
- }
- 
- static const struct snd_soc_dai_ops spdif_out_dai_ops = {
--	.digital_mute	= spdif_digital_mute,
-+	.mute_stream	= spdif_mute,
- 	.startup	= spdif_out_startup,
- 	.shutdown	= spdif_out_shutdown,
- 	.trigger	= spdif_out_trigger,
 -- 
-2.25.1
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
