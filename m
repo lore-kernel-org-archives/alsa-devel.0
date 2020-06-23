@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A567BC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 05:32:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40020C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 05:33:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D0FC2072E
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 05:32:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BF22520768
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 05:33:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MO7uwpmS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D0FC2072E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PRw7JWgE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF22520768
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B44DB17FD;
-	Wed, 24 Jun 2020 07:31:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B44DB17FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 338EE17E8;
+	Wed, 24 Jun 2020 07:32:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 338EE17E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592976764;
-	bh=JbNrFgLqa1UhOPk0L1v+djmi6G0BCDkKVoP23gx0kzU=;
+	s=default; t=1592976794;
+	bh=GENM/UHksWUU7Vh5R7uPeqZxkDgY9jdN6OUxHl+miQs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MO7uwpmSofC+Cno2G8+VY2z9S4YKbd2kAz0lLkNqNDiY/fEW3Xv1tikAO74+VECZ3
-	 cwro8diCFetaNEpStEEVICGLROe2j/0Xr6VPcdfNzEVKbPfNaAMGv0/0+cGjx1oDlq
-	 6jcgYCpVMj0QetMbTxZoM7JwCAUVxfRi+d4AdZvM=
+	b=PRw7JWgEf2iqUduYziUFRJNcUDEO/hHJOdD9L7KUzuBJX8HfwaW54XWeRqiboRrBI
+	 r3UVKPgShaqtBW6GW/TFUq3RMpDISQJcJg9Z/gSLhFZ5YDfEVHJ7GCuetaC38LjO1G
+	 9LYl1536fYmeRDclpL5wKvbhrExJbTIoOowGVAhI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9507FF802A2;
-	Wed, 24 Jun 2020 07:30:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50ECAF802BE;
+	Wed, 24 Jun 2020 07:30:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECA2EF802A2; Wed, 24 Jun 2020 07:30:21 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 94249F802BE; Wed, 24 Jun 2020 07:30:32 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5831F80268
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 07:30:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5831F80268
-IronPort-SDR: 7BZLMg8z/xoFOYJiYVY86DXE/VEUug8Xk/VcjSQaYOyps4Su1o98or/TL46jGpTwSfSoZPc4WZ
- dO7WsAaXaqZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="131775981"
-X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; d="scan'208";a="131775981"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA832F802A7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 07:30:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA832F802A7
+IronPort-SDR: 5waXIMQ056p5esxcjprhaIXU5SEWUP4hxIYAm8Wkd3FO6qyDsto83AhR0MQqYJLNIaqfqcJCea
+ 9D+aaJwtViMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="124007097"
+X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; d="scan'208";a="124007097"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Jun 2020 22:30:11 -0700
-IronPort-SDR: 6qCjaBh756XqDD1clRqa/Sk30co5NJU1FxK+EtZTZG0fuOjWw3u9OXaRJ1EeSpKMRh/1iux4nc
- DkmZlTqqFcrw==
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jun 2020 22:30:21 -0700
+IronPort-SDR: dNNG/FjxZNNvO92lWI4QFllYq59j9TOUC3fQy9jseazoWzXQf0pfVLlAsAEwlVcbG7wc5+yczg
+ qKkFU99mtWqg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; d="scan'208";a="452513392"
+X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; d="scan'208";a="452513461"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005.jf.intel.com with ESMTP; 23 Jun 2020 22:30:06 -0700
+ by orsmga005.jf.intel.com with ESMTP; 23 Jun 2020 22:30:16 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 3/9] soundwire: intel: introduce a helper to arm link
- synchronization
-Date: Wed, 24 Jun 2020 01:35:40 +0800
-Message-Id: <20200623173546.21870-4-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 5/9] soundwire: intel_init: add implementation of
+ sdw_intel_enable_irq()
+Date: Wed, 24 Jun 2020 01:35:42 +0800
+Message-Id: <20200623173546.21870-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
 References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
@@ -93,64 +93,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Move code from pre_bank_switch to dedicated helper, will be used in
-follow-up patches as recommended by programming flows.
+This function is required to enable all interrupts across all links.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ drivers/soundwire/intel_init.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 4792613e8e5a..6a745602c9cc 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -497,6 +497,21 @@ static int __maybe_unused intel_link_power_down(struct sdw_intel *sdw)
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index f50a93130d12..d8f0c1472f1f 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -142,6 +142,30 @@ sdw_intel_scan_controller(struct sdw_intel_acpi_info *info)
  	return 0;
  }
  
-+static void intel_shim_sync_arm(struct sdw_intel *sdw)
++#define HDA_DSP_REG_ADSPIC2             (0x10)
++#define HDA_DSP_REG_ADSPIS2             (0x14)
++#define HDA_DSP_REG_ADSPIC2_SNDW        BIT(5)
++
++/**
++ * sdw_intel_enable_irq() - enable/disable Intel SoundWire IRQ
++ * @mmio_base: The mmio base of the control register
++ * @enable: true if enable
++ */
++void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
 +{
-+	void __iomem *shim = sdw->link_res->shim;
-+	u32 sync_reg;
++	u32 val;
 +
-+	mutex_lock(sdw->link_res->shim_lock);
++	val = readl(mmio_base + HDA_DSP_REG_ADSPIC2);
 +
-+	/* update SYNC register */
-+	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
-+	sync_reg |= (SDW_SHIM_SYNC_CMDSYNC << sdw->instance);
-+	intel_writel(shim, SDW_SHIM_SYNC, sync_reg);
++	if (enable)
++		val |= HDA_DSP_REG_ADSPIC2_SNDW;
++	else
++		val &= ~HDA_DSP_REG_ADSPIC2_SNDW;
 +
-+	mutex_unlock(sdw->link_res->shim_lock);
++	writel(val, mmio_base + HDA_DSP_REG_ADSPIC2);
 +}
++EXPORT_SYMBOL(sdw_intel_enable_irq);
 +
- /*
-  * PDI routines
-  */
-@@ -710,21 +725,12 @@ static int intel_pre_bank_switch(struct sdw_bus *bus)
+ static struct sdw_intel_ctx
+ *sdw_intel_probe_controller(struct sdw_intel_res *res)
  {
- 	struct sdw_cdns *cdns = bus_to_cdns(bus);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
--	void __iomem *shim = sdw->link_res->shim;
--	int sync_reg;
- 
- 	/* Write to register only for multi-link */
- 	if (!bus->multi_link)
- 		return 0;
- 
--	mutex_lock(sdw->link_res->shim_lock);
--
--	/* Read SYNC register */
--	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
--	sync_reg |= SDW_SHIM_SYNC_CMDSYNC << sdw->instance;
--	intel_writel(shim, SDW_SHIM_SYNC, sync_reg);
--
--	mutex_unlock(sdw->link_res->shim_lock);
-+	intel_shim_sync_arm(sdw);
- 
- 	return 0;
- }
 -- 
 2.17.1
 
