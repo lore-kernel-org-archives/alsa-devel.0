@@ -7,45 +7,46 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70FCCC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 12:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33C8DC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 12:50:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E63D02072E
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 12:49:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B13FC2072E
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 12:50:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g6an2nWF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E63D02072E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l7kiSYNp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B13FC2072E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=katsuster.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7874517D8;
-	Tue, 23 Jun 2020 14:48:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7874517D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A26917E7;
+	Tue, 23 Jun 2020 14:49:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A26917E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592916552;
-	bh=eueGRvvDOy1WOVlw2JL5/lc48TRJH7FrBa0ahDjl0uE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=g6an2nWFmqrRHcbCmTYDAE1s7/j5oZi/9MUzfFiONJhZmX01c+8nY6p88kaiYXPy5
-	 QmwTdhnsTPSuj2JMCBmqI1tLCk2JvaWt8h1CF551ybPAYTMW4JGp3YfOR05a/RK3iL
-	 g2NvhYbXX+Vd/9gDUj5HYjgboHO/ivY86vm4qr/s=
+	s=default; t=1592916605;
+	bh=mDZRnAWXxUc01VOaqrlbzSe1EoQy57r5X4eZZgjwveI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=l7kiSYNpCP2q5Dm8ZdBMntgUVpBl6SbdJpo1UHQ7SbvEn9FoM/6uG3Lh4amivZs9K
+	 9rG+Z02ZV1DikHaa0uoo/uwCTpGpc9k2sMua/p1eg/C2LYf0H8kfZqOX2G4Xz6yzAw
+	 s4NZ97ub8YX6C5nrLB2mBBrgxufBNfRQfME741iM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A92BF8012F;
-	Tue, 23 Jun 2020 14:48:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A303F80259;
+	Tue, 23 Jun 2020 14:48:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D8BFF80234; Tue, 23 Jun 2020 14:48:20 +0200 (CEST)
+ id C557BF80218; Tue, 23 Jun 2020 14:48:21 +0200 (CEST)
 Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E17C5F8010E
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 14:48:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E17C5F8010E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52577F800B2
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 14:48:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52577F800B2
 Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05NClfLP068785;
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05NClfui068788;
  Tue, 23 Jun 2020 21:47:41 +0900 (JST)
  (envelope-from katsuhiro@katsuster.net)
 Received: from www1102.sakura.ne.jp (219.94.129.142)
@@ -54,16 +55,19 @@ Received: from www1102.sakura.ne.jp (219.94.129.142)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
 Received: from localhost.localdomain (121.252.232.153.ap.dti.ne.jp
  [153.232.252.121]) (authenticated bits=0)
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05NClbP5068743
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05NClbP6068743
  (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
  Tue, 23 Jun 2020 21:47:41 +0900 (JST)
  (envelope-from katsuhiro@katsuster.net)
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 To: Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH 1/2] dt-bindings: sound: convert rk3328 codec binding to yaml
-Date: Tue, 23 Jun 2020 21:47:33 +0900
-Message-Id: <20200623124734.1736470-1-katsuhiro@katsuster.net>
+Subject: [PATCH 2/2] dt-bindings: sound: add missing clock description of
+ rk3328 DT schema
+Date: Tue, 23 Jun 2020 21:47:34 +0900
+Message-Id: <20200623124734.1736470-2-katsuhiro@katsuster.net>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200623124734.1736470-1-katsuhiro@katsuster.net>
+References: <20200623124734.1736470-1-katsuhiro@katsuster.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Katsuhiro Suzuki <katsuhiro@katsuster.net>,
@@ -84,117 +88,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Just convert Rockchip rk3328 audio codec binding to DT schema.
+This patch adds description about "mclk" clock and fixes some errors
+which are dt_binding_check reported.
 
 Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 ---
- .../bindings/sound/rockchip,rk3328-codec.txt  | 28 ---------
- .../bindings/sound/rockchip,rk3328-codec.yaml | 61 +++++++++++++++++++
- 2 files changed, 61 insertions(+), 28 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.yaml
+ .../bindings/sound/rockchip,rk3328-codec.yaml     | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt
-deleted file mode 100644
-index 1ecd75d2032a..000000000000
---- a/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt
-+++ /dev/null
-@@ -1,28 +0,0 @@
--* Rockchip Rk3328 internal codec
--
--Required properties:
--
--- compatible: "rockchip,rk3328-codec"
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- rockchip,grf: the phandle of the syscon node for GRF register.
--- clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
--- clock-names: should be "pclk".
--- spk-depop-time-ms: speak depop time msec.
--
--Optional properties:
--
--- mute-gpios: GPIO specifier for external line driver control (typically the
--              dedicated GPIO_MUTE pin)
--
--Example for rk3328 internal codec:
--
--codec: codec@ff410000 {
--	compatible = "rockchip,rk3328-codec";
--	reg = <0x0 0xff410000 0x0 0x1000>;
--	rockchip,grf = <&grf>;
--	clocks = <&cru PCLK_ACODEC>;
--	clock-names = "pclk";
--	mute-gpios = <&grf_gpio 0 GPIO_ACTIVE_LOW>;
--	spk-depop-time-ms = 100;
--};
 diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.yaml b/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.yaml
-new file mode 100644
-index 000000000000..08a74e28e483
---- /dev/null
+index 08a74e28e483..525b48c2f5de 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.yaml
 +++ b/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/rockchip,rk3328-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+@@ -19,10 +19,12 @@ properties:
+   clocks:
+     items:
+       - description: clock for audio codec
++      - description: clock for I2S master clock
+ 
+   clock-names:
+     items:
+       - const: pclk
++      - const: mclk
+ 
+   rockchip,grf:
+     $ref: /schemas/types.yaml#/definitions/phandle
+@@ -41,21 +43,28 @@ properties:
+       GPIO specifier for external line driver control (typically the
+       dedicated GPIO_MUTE pin)
+ 
++  "#sound-dai-cells":
++    const: 0
 +
-+title: Rockchip rk3328 internal codec
-+
-+maintainers:
-+  - Heiko Stuebner <heiko@sntech.de>
-+
-+properties:
-+  compatible:
-+    const: rockchip,rk3328-codec
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: clock for audio codec
-+
-+  clock-names:
-+    items:
-+      - const: pclk
-+
-+  rockchip,grf:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      The phandle of the syscon node for the GRF register.
-+
-+  spk-depop-time-ms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 200
-+    description:
-+      Speaker depop time in msec.
-+
-+  mute-gpios:
-+    maxItems: 1
-+    description:
-+      GPIO specifier for external line driver control (typically the
-+      dedicated GPIO_MUTE pin)
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - rockchip,grf
-+
-+examples:
-+  - |
-+    codec: codec@ff410000 {
-+      compatible = "rockchip,rk3328-codec";
-+      reg = <0xff410000 0x1000>;
-+      clocks = <&cru PCLK_ACODEC>;
-+      clock-names = "pclk";
-+      rockchip,grf = <&grf>;
-+      mute-gpios = <&grf_gpio 0 GPIO_ACTIVE_LOW>;
-+      spk-depop-time-ms = 100;
-+    };
+ required:
+   - compatible
+   - reg
+   - clocks
+   - clock-names
+   - rockchip,grf
++  - "#sound-dai-cells"
+ 
+ examples:
+   - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/clock/rk3328-cru.h>
+     codec: codec@ff410000 {
+       compatible = "rockchip,rk3328-codec";
+       reg = <0xff410000 0x1000>;
+-      clocks = <&cru PCLK_ACODEC>;
+-      clock-names = "pclk";
++      clocks = <&cru PCLK_ACODECPHY>, <&cru SCLK_I2S1>;
++      clock-names = "pclk", "mclk";
+       rockchip,grf = <&grf>;
+       mute-gpios = <&grf_gpio 0 GPIO_ACTIVE_LOW>;
+-      spk-depop-time-ms = 100;
++      spk-depop-time-ms = <100>;
++      #sound-dai-cells = <0>;
+     };
 -- 
 2.27.0
 
