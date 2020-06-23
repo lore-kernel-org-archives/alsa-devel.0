@@ -7,54 +7,53 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 478E1C433E2
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:51:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B426C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:52:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA9A92085B
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:51:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EEB5A20874
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:52:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aghf7Ygg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA9A92085B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PC9V/pS7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEB5A20874
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B2131809;
-	Wed, 24 Jun 2020 09:50:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B2131809
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DBDF1801;
+	Wed, 24 Jun 2020 09:51:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DBDF1801
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592985075;
-	bh=in89xyYa93xGj8OvC3Ofe5NZH555LdXlFB5d1wKpJUI=;
+	s=default; t=1592985123;
+	bh=8RouWAQGAfFLqEp/nys8NV1ahriMhvcHXbxHmoMRtio=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aghf7YggiX/+hsJWlSBqJdl+zakCqQGWu8pASy3fmUMYzlLxCSzI21QZUtehQLL0/
-	 dU7H+GY2FbRxVhVqUEin9/R6UNwP8vj+Yxlst1+z5uuKxM/uDOZKikze2hjWrs7F9v
-	 BMDWP/8Lkc7tpE/+ex4Rq6U2jv6Tw+w43SGb8yAA=
+	b=PC9V/pS7ZmnDHbFb3yN36o133rIzdCmT6VK0y1gZ3LsarhdLdPm9Uv1XfXrfAPaV/
+	 m1nNnEkMWgkxywNQwGsSMEv1rM9f2hU9KzhOICnCarUNzmwga78DgwJU2EUVHnq3r2
+	 XoHRhqBW/DlJEgX4birFGbBkjhDrsGls9R9DoH+k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11DADF80246;
-	Wed, 24 Jun 2020 09:49:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A621BF802A0;
+	Wed, 24 Jun 2020 09:49:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93238F80162; Tue, 23 Jun 2020 03:19:41 +0200 (CEST)
+ id 12A0FF8015B; Tue, 23 Jun 2020 03:19:46 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4DF71F80157
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:19:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DF71F80157
-Date: 23 Jun 2020 10:19:31 +0900
-X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50118810"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 23 Jun 2020 10:19:31 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 84194F8010D
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:19:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84194F8010D
+Date: 23 Jun 2020 10:19:38 +0900
+X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50118822"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 23 Jun 2020 10:19:38 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 51D884008C65;
- Tue, 23 Jun 2020 10:19:31 +0900 (JST)
-Message-ID: <87eeq637ff.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 93BD94183C30;
+ Tue, 23 Jun 2020 10:19:37 +0900 (JST)
+Message-ID: <87d05q37f8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 01/19] ASoC: hdmi-codec: merge .digital_mute() into
- .mute_stream()
+Subject: [PATCH 02/19] ASoC: ti: merge .digital_mute() into .mute_stream()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
@@ -132,6 +131,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 snd_soc_dai_digital_mute() is internally using both
@@ -150,284 +150,52 @@ We can merge digital_mute() into mute_stream
 		...
 	}
 
-For hdmi-codec, we need to update struct hdmi_codec_ops,
-and all its users in the same time.
-
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- drivers/gpu/drm/bridge/sii902x.c       |  9 ++++++---
- drivers/gpu/drm/exynos/exynos_hdmi.c   |  8 ++++++--
- drivers/gpu/drm/i2c/tda998x_drv.c      |  9 ++++++---
- drivers/gpu/drm/mediatek/mtk_hdmi.c    |  8 ++++++--
- drivers/gpu/drm/rockchip/cdn-dp-core.c |  9 ++++++---
- drivers/gpu/drm/sti/sti_hdmi.c         |  8 ++++++--
- drivers/gpu/drm/zte/zx_hdmi.c          |  9 ++++++---
- include/sound/hdmi-codec.h             |  3 ++-
- sound/soc/codecs/hdmi-codec.c          | 13 +++++++------
- 9 files changed, 51 insertions(+), 25 deletions(-)
+ sound/soc/ti/ams-delta.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
-index 6dad025f8da7..68b850f3a027 100644
---- a/drivers/gpu/drm/bridge/sii902x.c
-+++ b/drivers/gpu/drm/bridge/sii902x.c
-@@ -672,11 +672,14 @@ static void sii902x_audio_shutdown(struct device *dev, void *data)
- 	clk_disable_unprepare(sii902x->audio.mclk);
- }
+diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
+index e17cd5e939f0..4fd3ec39bde4 100644
+--- a/sound/soc/ti/ams-delta.c
++++ b/sound/soc/ti/ams-delta.c
+@@ -420,10 +420,13 @@ static struct snd_soc_ops ams_delta_ops;
+  * Shares hardware with codec config pulse generation */
+ static bool ams_delta_muted = 1;
  
--static int sii902x_audio_digital_mute(struct device *dev,
--				      void *data, bool enable)
-+static int sii902x_audio_mute(struct device *dev, void *data,
-+			      bool enable, int direction)
+-static int ams_delta_digital_mute(struct snd_soc_dai *dai, int mute)
++static int ams_delta_mute(struct snd_soc_dai *dai, int mute, int direction)
  {
- 	struct sii902x *sii902x = dev_get_drvdata(dev);
+ 	int apply;
  
 +	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
 +		return 0;
 +
- 	mutex_lock(&sii902x->mutex);
+ 	if (ams_delta_muted == mute)
+ 		return 0;
  
- 	sii902x_mute(sii902x, enable);
-@@ -724,7 +727,7 @@ static int sii902x_audio_get_dai_id(struct snd_soc_component *component,
- static const struct hdmi_codec_ops sii902x_audio_codec_ops = {
- 	.hw_params = sii902x_audio_hw_params,
- 	.audio_shutdown = sii902x_audio_shutdown,
--	.digital_mute = sii902x_audio_digital_mute,
-+	.mute_stream = sii902x_audio_mute,
- 	.get_eld = sii902x_audio_get_eld,
- 	.get_dai_id = sii902x_audio_get_dai_id,
+@@ -439,18 +442,18 @@ static int ams_delta_digital_mute(struct snd_soc_dai *dai, int mute)
+ 
+ /* Our codec DAI probably doesn't have its own .ops structure */
+ static const struct snd_soc_dai_ops ams_delta_dai_ops = {
+-	.digital_mute = ams_delta_digital_mute,
++	.mute_stream = ams_delta_mute,
  };
-diff --git a/drivers/gpu/drm/exynos/exynos_hdmi.c b/drivers/gpu/drm/exynos/exynos_hdmi.c
-index 95dd399aa9cc..f0f8fb9c62ec 100644
---- a/drivers/gpu/drm/exynos/exynos_hdmi.c
-+++ b/drivers/gpu/drm/exynos/exynos_hdmi.c
-@@ -1604,10 +1604,14 @@ static int hdmi_audio_hw_params(struct device *dev, void *data,
- 	return 0;
- }
  
--static int hdmi_audio_digital_mute(struct device *dev, void *data, bool mute)
-+static int hdmi_audio_mute(struct device *dev, void *data,
-+			   bool mute, int direction)
+ /* Will be used if the codec ever has its own digital_mute function */
+ static int ams_delta_startup(struct snd_pcm_substream *substream)
  {
- 	struct hdmi_context *hdata = dev_get_drvdata(dev);
- 
-+	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-+		return 0;
-+
- 	mutex_lock(&hdata->mutex);
- 
- 	hdata->audio.mute = mute;
-@@ -1634,7 +1638,7 @@ static int hdmi_audio_get_eld(struct device *dev, void *data, uint8_t *buf,
- static const struct hdmi_codec_ops audio_codec_ops = {
- 	.hw_params = hdmi_audio_hw_params,
- 	.audio_shutdown = hdmi_audio_shutdown,
--	.digital_mute = hdmi_audio_digital_mute,
-+	.mute_stream = hdmi_audio_mute,
- 	.get_eld = hdmi_audio_get_eld,
- };
- 
-diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-index 9517f522dcb9..e24cbfbb154a 100644
---- a/drivers/gpu/drm/i2c/tda998x_drv.c
-+++ b/drivers/gpu/drm/i2c/tda998x_drv.c
-@@ -1133,11 +1133,14 @@ static void tda998x_audio_shutdown(struct device *dev, void *data)
- 	mutex_unlock(&priv->audio_mutex);
+-	return ams_delta_digital_mute(NULL, 0);
++	return ams_delta_digital_mute(NULL, 0, substream->stream);
  }
  
--static int tda998x_audio_digital_mute(struct device *dev, void *data,
--				      bool enable)
-+static int tda998x_audio_mute_stream(struct device *dev, void *data,
-+				     bool enable, int direction)
+ static void ams_delta_shutdown(struct snd_pcm_substream *substream)
  {
- 	struct tda998x_priv *priv = dev_get_drvdata(dev);
- 
-+	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-+		return 0;
-+
- 	mutex_lock(&priv->audio_mutex);
- 
- 	tda998x_audio_mute(priv, enable);
-@@ -1162,7 +1165,7 @@ static int tda998x_audio_get_eld(struct device *dev, void *data,
- static const struct hdmi_codec_ops audio_codec_ops = {
- 	.hw_params = tda998x_audio_hw_params,
- 	.audio_shutdown = tda998x_audio_shutdown,
--	.digital_mute = tda998x_audio_digital_mute,
-+	.mute_stream = tda998x_audio_mute_stream,
- 	.get_eld = tda998x_audio_get_eld,
- };
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-index 5feb760617cb..7721b4762758 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-@@ -1647,10 +1647,14 @@ static void mtk_hdmi_audio_shutdown(struct device *dev, void *data)
+-	ams_delta_digital_mute(NULL, 1);
++	ams_delta_digital_mute(NULL, 1, substream->stream);
  }
  
- static int
--mtk_hdmi_audio_digital_mute(struct device *dev, void *data, bool enable)
-+mtk_hdmi_audio_mute(struct device *dev, void *data,
-+		    bool enable, int direction)
- {
- 	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
  
-+	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-+		return 0;
-+
- 	dev_dbg(dev, "%s(%d)\n", __func__, enable);
- 
- 	if (enable)
-@@ -1692,7 +1696,7 @@ static const struct hdmi_codec_ops mtk_hdmi_audio_codec_ops = {
- 	.hw_params = mtk_hdmi_audio_hw_params,
- 	.audio_startup = mtk_hdmi_audio_startup,
- 	.audio_shutdown = mtk_hdmi_audio_shutdown,
--	.digital_mute = mtk_hdmi_audio_digital_mute,
-+	.mute_stream = mtk_hdmi_audio_mute,
- 	.get_eld = mtk_hdmi_audio_get_eld,
- 	.hook_plugged_cb = mtk_hdmi_audio_hook_plugged_cb,
- };
-diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-index c634b95b50f7..aacde58b8fe8 100644
---- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
-+++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-@@ -817,12 +817,15 @@ static void cdn_dp_audio_shutdown(struct device *dev, void *data)
- 	mutex_unlock(&dp->lock);
- }
- 
--static int cdn_dp_audio_digital_mute(struct device *dev, void *data,
--				     bool enable)
-+static int cdn_dp_audio_mute_stream(struct device *dev, void *data,
-+				    bool enable, int direction)
- {
- 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
- 	int ret;
- 
-+	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-+		return 0;
-+
- 	mutex_lock(&dp->lock);
- 	if (!dp->active) {
- 		ret = -ENODEV;
-@@ -849,7 +852,7 @@ static int cdn_dp_audio_get_eld(struct device *dev, void *data,
- static const struct hdmi_codec_ops audio_codec_ops = {
- 	.hw_params = cdn_dp_audio_hw_params,
- 	.audio_shutdown = cdn_dp_audio_shutdown,
--	.digital_mute = cdn_dp_audio_digital_mute,
-+	.mute_stream = cdn_dp_audio_mute_stream,
- 	.get_eld = cdn_dp_audio_get_eld,
- };
- 
-diff --git a/drivers/gpu/drm/sti/sti_hdmi.c b/drivers/gpu/drm/sti/sti_hdmi.c
-index 5b15c4974e6b..471ac2139a64 100644
---- a/drivers/gpu/drm/sti/sti_hdmi.c
-+++ b/drivers/gpu/drm/sti/sti_hdmi.c
-@@ -1191,10 +1191,14 @@ static int hdmi_audio_hw_params(struct device *dev,
- 	return 0;
- }
- 
--static int hdmi_audio_digital_mute(struct device *dev, void *data, bool enable)
-+static int hdmi_audio_mute(struct device *dev, void *data,
-+			   bool enable, int direction)
- {
- 	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
- 
-+	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-+		return 0;
-+
- 	DRM_DEBUG_DRIVER("%s\n", enable ? "enable" : "disable");
- 
- 	if (enable)
-@@ -1219,7 +1223,7 @@ static int hdmi_audio_get_eld(struct device *dev, void *data, uint8_t *buf, size
- static const struct hdmi_codec_ops audio_codec_ops = {
- 	.hw_params = hdmi_audio_hw_params,
- 	.audio_shutdown = hdmi_audio_shutdown,
--	.digital_mute = hdmi_audio_digital_mute,
-+	.mute_stream = hdmi_audio_mute,
- 	.get_eld = hdmi_audio_get_eld,
- };
- 
-diff --git a/drivers/gpu/drm/zte/zx_hdmi.c b/drivers/gpu/drm/zte/zx_hdmi.c
-index 76a16d997a23..bb4ab395f71d 100644
---- a/drivers/gpu/drm/zte/zx_hdmi.c
-+++ b/drivers/gpu/drm/zte/zx_hdmi.c
-@@ -439,11 +439,14 @@ static int zx_hdmi_audio_hw_params(struct device *dev,
- 	return zx_hdmi_infoframe_trans(hdmi, &frame, FSEL_AUDIO);
- }
- 
--static int zx_hdmi_audio_digital_mute(struct device *dev, void *data,
--				      bool enable)
-+static int zx_hdmi_audio_mute(struct device *dev, void *data,
-+			      bool enable, int direction)
- {
- 	struct zx_hdmi *hdmi = dev_get_drvdata(dev);
- 
-+	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-+		return 0;
-+
- 	if (enable)
- 		hdmi_writeb_mask(hdmi, TPI_AUD_CONFIG, TPI_AUD_MUTE,
- 				 TPI_AUD_MUTE);
-@@ -468,7 +471,7 @@ static const struct hdmi_codec_ops zx_hdmi_codec_ops = {
- 	.audio_startup = zx_hdmi_audio_startup,
- 	.hw_params = zx_hdmi_audio_hw_params,
- 	.audio_shutdown = zx_hdmi_audio_shutdown,
--	.digital_mute = zx_hdmi_audio_digital_mute,
-+	.mute_stream = zx_hdmi_audio_mute,
- 	.get_eld = zx_hdmi_audio_get_eld,
- };
- 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 83b17682e01c..4b7cc86bae95 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -76,7 +76,8 @@ struct hdmi_codec_ops {
- 	 * Mute/unmute HDMI audio stream.
- 	 * Optional
- 	 */
--	int (*digital_mute)(struct device *dev, void *data, bool enable);
-+	int (*mute_stream)(struct device *dev, void *data,
-+			   bool enable, int direction);
- 
- 	/*
- 	 * Provides EDID-Like-Data from connected HDMI device.
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index f005751da2cc..422ed5cd427f 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -558,13 +558,14 @@ static int hdmi_codec_i2s_set_fmt(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int hdmi_codec_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 
--	if (hcp->hcd.ops->digital_mute)
--		return hcp->hcd.ops->digital_mute(dai->dev->parent,
--						  hcp->hcd.data, mute);
-+	if (hcp->hcd.ops->mute_stream)
-+		return hcp->hcd.ops->mute_stream(dai->dev->parent,
-+						 hcp->hcd.data,
-+						 mute, direction);
- 
- 	return 0;
- }
-@@ -574,14 +575,14 @@ static const struct snd_soc_dai_ops hdmi_codec_i2s_dai_ops = {
- 	.shutdown	= hdmi_codec_shutdown,
- 	.hw_params	= hdmi_codec_hw_params,
- 	.set_fmt	= hdmi_codec_i2s_set_fmt,
--	.digital_mute	= hdmi_codec_digital_mute,
-+	.mute_stream	= hdmi_codec_mute,
- };
- 
- static const struct snd_soc_dai_ops hdmi_codec_spdif_dai_ops = {
- 	.startup	= hdmi_codec_startup,
- 	.shutdown	= hdmi_codec_shutdown,
- 	.hw_params	= hdmi_codec_hw_params,
--	.digital_mute	= hdmi_codec_digital_mute,
-+	.mute_stream	= hdmi_codec_mute,
- };
- 
- #define HDMI_RATES	(SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
 -- 
 2.25.1
 
