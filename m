@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5A91C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36460C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:59:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 744AA20738
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:58:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6307320768
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 10:59:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sLtVKV0+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 744AA20738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mj2TPzwE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6307320768
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 086C21775;
-	Tue, 23 Jun 2020 12:57:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 086C21775
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1D1D177E;
+	Tue, 23 Jun 2020 12:58:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D1D177E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592909908;
-	bh=YIuvDeTsbEkUV9PKLxIiKtk/1prbOacYH9GdCCaQt+E=;
+	s=default; t=1592909960;
+	bh=8TyokLYgzSxp4Aia8szt1FT6qopzlr01ChmQzbzqpJo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sLtVKV0+JT/J8BtVWrIxZJ+bxQw/74xNDX/E5kdwc7YkC4PVteXA85ZkATvDf79wu
-	 9ZGv+DHiCcXXp+mw+I0MpsPv/RCu6SYr2nC9dsbTF28pvTS2Ozr1ixnW9BoymBMun2
-	 SMmVjTsR7mV1hH3yCNwvnHlCTwu3dvsD9n9DGh2c=
+	b=Mj2TPzwE6ofj9dgMQZYrUibdS3shHO7GJvFBL3zQmxhaYeNQygqVQ9FF+jhS29Rjx
+	 JOFKJLPvlBBYPHzb8V72yiimIftLpWkqmVcD0pfaEEj0xGAJDnCGbeO91vCMA7fmOL
+	 5C8LQTmeiOv94k4U2lvUdRAxr2WUZHVtS8VzB7lA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98422F80218;
-	Tue, 23 Jun 2020 12:57:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0368F80249;
+	Tue, 23 Jun 2020 12:57:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0479F800B2; Tue, 23 Jun 2020 12:57:35 +0200 (CEST)
+ id 83A2AF80259; Tue, 23 Jun 2020 12:57:48 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5E59F800B2
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:57:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5E59F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2D31F8023E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:57:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2D31F8023E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 266EBAF27;
- Tue, 23 Jun 2020 10:57:29 +0000 (UTC)
-Date: Tue, 23 Jun 2020 12:57:29 +0200
-Message-ID: <s5ha70uoxra.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 0AA35AEE6;
+ Tue, 23 Jun 2020 10:57:42 +0000 (UTC)
+Date: Tue, 23 Jun 2020 12:57:42 +0200
+Message-ID: <s5h8sgeoxqx.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 1/9] control: Fix typos in the namehint example
-In-Reply-To: <20200622131515.23385-1-mark@xwax.org>
+Subject: Re: [PATCH 2/9] control: Fix a bug that prevented namehint behaviour
+In-Reply-To: <20200622131515.23385-2-mark@xwax.org>
 References: <2006221356390.20421@stax.localdomain>
- <20200622131515.23385-1-mark@xwax.org>
+ <20200622131515.23385-2-mark@xwax.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -77,11 +77,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Jun 2020 15:15:07 +0200,
+On Mon, 22 Jun 2020 15:15:08 +0200,
 Mark Hills wrote:
 > 
-> Ths "namehint" is a list, and there doesn't seem to have been any
-> history where the separator would be a colon.
+> Looks like the documented behaviour was broken in commit 1ba513f9 in
+> 2006, with the introduction of multiple fields.
+> 
+> I've chosen to match the described behaviour. Prior to this patch,
+> using namehint could be made to work by exploiting the lack of escaping
+> of the "name", populating the other fields:
+> 
+>   "plug:front|DESCDo all conversions for front speakers"
+> 
+> rather than that which is documented and presumed to be the intention
+> for asoundrc files:
+> 
+>   "plug:front|Do all conversions for front speakers"
+> 
+> Everything seems to strongly suggest nobody is using this feature; I can
+> find no working examples through a web search and probably someone
+> would have hit this bug. It's not documented in configuration, only in
+> the snd_device_name_hint() call. So it would probably clutter things to
+> provide compatibility for the old behaviour.
+> 
+> I have found it to be very useful since working in Chromium, where it is
+> the only way to expose chosen ALSA devices to web applications.
+> 
+> A temporary buffer is required to null-terminate the string.  I see no
+> use of alloca() in the code, presumably to avoid unbounded stack size.
+> So memory is allocated on the heap.
 > 
 > Signed-off-by: Mark Hills <mark@xwax.org>
 
