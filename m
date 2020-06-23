@@ -2,111 +2,120 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 414DAC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:56:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 311F0C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:57:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB1882085B
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:56:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE0BD20874
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:57:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Aes2Eim8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="miQD36o/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB1882085B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="guiugTSS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE0BD20874
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50BC61827;
-	Wed, 24 Jun 2020 09:55:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50BC61827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2959A17F9;
+	Wed, 24 Jun 2020 09:56:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2959A17F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592985393;
-	bh=X/gHabGyJjIvH7klo+Z30N80BShhTBTxHAMboUHZsDw=;
-	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	s=default; t=1592985431;
+	bh=zniIKLWgw1oSJHh7xT29+yyI1bZ+tYb8LtxgX9lWPPo=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Aes2Eim8Wz98wfcOF6KK9G0TNJimqY2gpjGpONtp/aCvn9snMLwcberHPosvUj3TE
-	 ZmsRauJNOXJMZV+WnlX2kurnuMlwHTtokZ/gXEoRFJBtBJXMR3ncKcWZ2fJc3rhyml
-	 COIl6Ef6a5UAkQIlthpVZvhz4aetojQIF4mncydU=
+	b=guiugTSSY7iO1Uz2FJlXsYKBXHmZ8Sf39iUDnx9LHCqWW7jhZCSpF9ZO7M7Chrrve
+	 YCm9tbFC2wljl96772SVUHzWvebQnsxrrYjYm+6NCajgfloLeqPkS6SekG8rdvoFSe
+	 hG360HcvwEjjTrsbfxOlTs1yTJ2PoaKjhB2n54jA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E44D7F80322;
-	Wed, 24 Jun 2020 09:49:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 190FAF8032A;
+	Wed, 24 Jun 2020 09:49:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA43CF8015B; Mon, 22 Jun 2020 16:04:29 +0200 (CEST)
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
- [IPv6:2a00:1450:4864:20::643])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0944F8010D
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 16:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0944F8010D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="miQD36o/"
-Received: by mail-ej1-x643.google.com with SMTP id n24so18162724ejd.0
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2020 07:04:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:subject:from:in-reply-to:date:cc
- :content-transfer-encoding:message-id:references:to;
- bh=AkXgQz4f6Jb/SfgaY94+eCp/+t+YH9GzfLxXy17qw1I=;
- b=miQD36o/JVjj5qBA3N2E8kQsw3fyaP5shHvUmpQxO/WwB1W6F7TkFAu7FqDbqJycGX
- ZbeQWR2lKhtbYP//aapUtjeRUXbixUHgYN49PT749c4rJMWYqQ94jitfnK2fNizM3qLV
- JfGYxFe2V7sES1ZDIN5R6a4kRzHwxusjH/P6ealaz9HEjzYsgvKtQT1HXe/komoioEHB
- 7igQ6Lz1LBp1TXvdZnfydpnd6UVM0Gp/eqiTwXd/jzlbfJ7eAjrHAeMlcHXavgR5Zcud
- QWPbD6neGomrMu2L3fqSTWi3FZbTIgBxcBKIlQwBPnzekCnOuCr4f3M/TppY18mdfq9x
- lTgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
- :content-transfer-encoding:message-id:references:to;
- bh=AkXgQz4f6Jb/SfgaY94+eCp/+t+YH9GzfLxXy17qw1I=;
- b=bGU0U+LpbpcFOSbMqsbKtuRw0TEFese4uw+8FlApYFPTCxb4g386luM92sVkxEhA0D
- lij64HgFGpfRUuTiPinHsAhbbUhV7rcGuNFM/umtua47oEi6EG7GamoUHRtyxvZzPVU+
- QjZ9wSDXFEOmu6Eijkvx8WOcIQYjPU/+NRkZT2gxAEBAbrCSdPvkSvcq6lBVP5Eoo2yd
- pdrp+w7OTRHO4eDRLBUT+E9O+wU7h7WVlVc0oiOvEHPIqyK9cyWnC32yBfB+2PjZKCZS
- RWuZEfYdRDg8dW3F3WavQxYT3XyR46i1M8127rjHdS3Jw+lMvPbxhsUEiS78DChY23/5
- 7YYg==
-X-Gm-Message-State: AOAM532yFuBjAcLm7/oGhdq9Js5xFXNy/94zpC11cD1wPI9/6o6t9ul/
- L0rcgaU+iIeD8yIzJZwKf5hrGA==
-X-Google-Smtp-Source: ABdhPJx13jRteSsX752kFTZR7wYlw7AZQfoFikTlKm6sVUt89ZqX2jnk7bahtoLDO7GiSW+vMYhcyA==
-X-Received: by 2002:a17:906:5e08:: with SMTP id
- n8mr15834673eju.132.1592834658428; 
- Mon, 22 Jun 2020 07:04:18 -0700 (PDT)
-Received: from [192.168.2.2] (ppp089210109128.access.hol.gr. [89.210.109.128])
- by smtp.gmail.com with ESMTPSA id
- w18sm1217980edv.11.2020.06.22.07.04.16
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 22 Jun 2020 07:04:17 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 1/2] dt-bindings: sound: Device tree bindings for the
- apq8039 sound complex
-From: Pantelis Antoniou <pantelis.antoniou@linaro.org>
-In-Reply-To: <20200622134145.GJ4560@sirena.org.uk>
-Date: Mon, 22 Jun 2020 17:04:16 +0300
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8C9C4D5E-D92B-426D-A597-C784D1611967@linaro.org>
-References: <20200619193831.12528-1-pantelis.antoniou@linaro.org>
- <20200619193831.12528-2-pantelis.antoniou@linaro.org>
- <20200619214126.GA1251@gerhold.net>
- <2070B433-83E0-4ACE-A470-36401934FC5A@linaro.org>
- <20200622120409.GD4560@sirena.org.uk>
- <519B5FAC-4DB8-4968-B9D4-96E376D74F1E@linaro.org>
- <20200622134145.GJ4560@sirena.org.uk>
+ id 683C7F8015B; Tue, 23 Jun 2020 03:19:57 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1EF51F80157
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:19:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EF51F80157
+Date: 23 Jun 2020 10:19:49 +0900
+X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50329359"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 23 Jun 2020 10:19:49 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 64BC94183C30;
+ Tue, 23 Jun 2020 10:19:49 +0900 (JST)
+Message-ID: <87a70u37ex.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 04/19] ASoC: meson: merge .digital_mute() into .mute_stream()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Mailman-Approved-At: Wed, 24 Jun 2020 09:49:29 +0200
-Cc: devicetree <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Matthew Porter <mporter@konsulko.com>, Shawn Guo <shawn.guo@linaro.org>
+In-Reply-To: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Mailman-Approved-At: Wed, 24 Jun 2020 09:49:28 +0200
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Michael Walle <michael@walle.cc>,
+ =?ISO-8859-1?Q?=22Heiko_St=FCbner=22?= <heiko@sntech.de>,
+ Neil Armstrong <narmstrong@baylibre.com>, David Airlie <airlied@linux.ie>,
+ =?ISO-8859-2?Q?=22Micha=B3_Miros=B3aw=22?= <mirq-linux@rere.qmqm.pl>,
+ Jonghwan Choi <charlie.jh@kakaocorp.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Paul Cercueil <paul@crapouillou.net>, Andrzej Hajda <a.hajda@samsung.com>,
+ Frank Shi <shifu0704@thundersoft.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+ "Andrew F. Davis" <afd@ti.com>, Fabio Estevam <festevam@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Joonyoung Shim <jy0922.shim@samsung.com>,
+ Matthias Reichl <hias@horus.com>, Katsuhiro Suzuki <katsuhiro@katsuster.net>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, Russell King <linux@armlinux.org.uk>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Daniel Drake <drake@endlessm.com>,
+ Tzung-Bi Shih <tzungbi@google.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Kukjin Kim <kgene@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Dinghao Liu <dinghao.liu@zju.edu.cn>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Cheng-Yi Chiang <cychiang@chromium.org>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Jonas Karlman <jonas@kwiboo.se>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Chuhong Yuan <hslester96@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
+ James Schulman <james.schulman@cirrus.com>, Inki Dae <inki.dae@samsung.com>,
+ Masahiro Yamada <masahiroy@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Dan Murphy <dmurphy@ti.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ =?ISO-8859-1?Q?=22Nuno_S=E1=22?= <nuno.sa@analog.com>,
+ Vincent Abriou <vincent.abriou@st.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Jernej Skrabec <jernej.skrabec@siol.net>,
+ Support Opensource <support.opensource@diasemi.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Jason Yan <yanaijie@huawei.com>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+ David Rhodes <david.rhodes@cirrus.com>, Seung-Woo Kim <sw0312.kim@samsung.com>,
+ Sandy Huang <hjc@rock-chips.com>, Pavel Dobias <dobias@2n.cz>,
+ Philipp Puschmann <p.puschmann@pironex.de>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Vishwas A Deshpande <vishwas.a.deshpande@ti.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Colin Ian King <colin.king@canonical.com>,
+ Kevin Cernekee <cernekee@chromium.org>, Lucas Stach <l.stach@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>, Peter Rosin <peda@axentia.se>,
+ M R Swami Reddy <mr.swami.reddy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,73 +132,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> On Jun 22, 2020, at 16:41 , Mark Brown <broonie@kernel.org> wrote:
->=20
-> On Mon, Jun 22, 2020 at 04:32:46PM +0300, Pantelis Antoniou wrote:
->>> On Jun 22, 2020, at 15:04 , Mark Brown <broonie@kernel.org> wrote:
->=20
->>> No, you're encoding use case decisions into the DT here - for =
-example
->>> your example will break use cases like ring tones and shutter sounds
->>> which should play through both speaker and headphones.  It's also
->>> setting volumes which may be inappropriate or may be not and =
-interferes
->>> with userspace using those same physical volume controls.
->=20
->> It is completely optional whether you use this functionality or not.
->=20
-> It's optional for whoever writes the DT and flashes it, it is not
-> optional for whoever's doing the OS configuration - these may not be =
-the
-> same people.
->=20
->> In that case you don=E2=80=99t use the automatic routing you merely =
-set it to off
->> and everything works as before. Or you merely use the route setup for
->> the function from userspace.
->=20
-> Userspace shouldn't have to be fighting with the kernel for control of
-> the device.
->=20
->> The device in question is not a mobile phone so there is no =
-requirement
->> to have speaker and headphone active at the same time. It is possible =
-to
->> create a function that would be headphone+speaker active at the same =
-time
->> for that case.
->=20
-> That may be true for your OS configuration but that doesn't mean that
-> some other user of the same hardware won't want to do something that
-> needs both simultaneously.
+snd_soc_dai_digital_mute() is internally using both
+mute_stream() (1) or digital_mute() (2), but the difference between
+these 2 are only handling direction.
+We can merge digital_mute() into mute_stream
 
-Let=E2=80=99s step back a bit and let me present the problem and what =
-this is about.
-Disregard the automatic function selection using external state inputs.
+	int snd_soc_dai_digital_mute(xxx, int direction)
+	{
+		...
+		else if (dai->driver->ops->mute_stream)
+(1)			return dai->driver->ops->mute_stream(xxx, direction);
+		else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+			 dai->driver->ops->digital_mute)
+(2)			return dai->driver->ops->digital_mute(xxx);
+		...
+	}
 
-The problem is that for sound card that is composed of a number of =
-component
-like this one a pretty non trivial setting of controls must be done.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/meson/axg-spdifout.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Tt is not atypical for a card like this the set of control being a dozen
-or so, with some requiring even more.
-
-Someone has to do them, be it the kernel or userspace.
-
-Instead of having userspace do it, bundle everything in DT so that =
-everything
-can be set in one go, and without having the user-space engineer read =
-the
-a few 10-100 pages of reference manuals.
-
-This is arguably a hardware setting (eg. the set of configuration =
-parameters
-that enables routing sound to speaker).
-
-Now this is not going to perfect for all cases; some cases are very =
-complicated
-and indeed user-space has to be engaged and perform the configuration.
-This mechanism does not preclude it.
-
+diff --git a/sound/soc/meson/axg-spdifout.c b/sound/soc/meson/axg-spdifout.c
+index 7ce6aa97ddf7..b5dcbfc35a1b 100644
+--- a/sound/soc/meson/axg-spdifout.c
++++ b/sound/soc/meson/axg-spdifout.c
+@@ -108,10 +108,13 @@ static int axg_spdifout_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	}
+ }
+ 
+-static int axg_spdifout_digital_mute(struct snd_soc_dai *dai, int mute)
++static int axg_spdifout_mute(struct snd_soc_dai *dai, int mute, int direction)
+ {
+ 	struct axg_spdifout *priv = snd_soc_dai_get_drvdata(dai);
+ 
++	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
++		return 0;
++
+ 	/* Use spdif valid bit to perform digital mute */
+ 	regmap_update_bits(priv->map, SPDIFOUT_CTRL0, SPDIFOUT_CTRL0_VSET,
+ 			   mute ? SPDIFOUT_CTRL0_VSET : 0);
+@@ -285,7 +288,7 @@ static void axg_spdifout_shutdown(struct snd_pcm_substream *substream,
+ 
+ static const struct snd_soc_dai_ops axg_spdifout_ops = {
+ 	.trigger	= axg_spdifout_trigger,
+-	.digital_mute	= axg_spdifout_digital_mute,
++	.mute_stream	= axg_spdifout_mute,
+ 	.hw_params	= axg_spdifout_hw_params,
+ 	.startup	= axg_spdifout_startup,
+ 	.shutdown	= axg_spdifout_shutdown,
+-- 
+2.25.1
 
