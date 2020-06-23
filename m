@@ -2,134 +2,77 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FROM_LOCAL_DIGITS,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B079C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B923EC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:10:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DBF120B80
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:09:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 45A6220B1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:10:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RH6dNz3t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DBF120B80
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gttv/VhW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45A6220B1F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C52A16B4;
-	Wed, 24 Jun 2020 10:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C52A16B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1A921874;
+	Wed, 24 Jun 2020 10:09:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1A921874
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592986179;
-	bh=WHOSJ+/vNeWNxlGSNkIX8BD+GxCblyNh1CuaoElS//k=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RH6dNz3tog32NPG2K21agmkv5l767hhCGhuxh9QCOzZE6V4tuv72N48iZW+shwGV0
-	 9Cy5GYK1SYqz+nOQR86wvEnvdLDwvqtrQ2ofxxROVknr5ulsBjKC0Lh9FhpDzW126d
-	 qDibk6SoHhNkacGkvvTqJBNwZNNO6p1jylYHDeto=
+	s=default; t=1592986210;
+	bh=mEBuL1qI7v2oN4tDrbJZDW/UTkBKrmZOl0RLoc+mSjk=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Gttv/VhWD//9DZSG6h3H9irnPALzijbzfcL5M56PpnB1qIYDic6KvHYsaiWRajzmA
+	 jrOc118A0mur6OVGLn1UuSbmEc/x809TLOpcsI7M4g7EZm+j3hXfsIO2aA5LHaRLmt
+	 naBKNgErzB4bNocrRJsB1TVtNOcFvDuzstLdL4Ug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEFA3F8044A;
-	Wed, 24 Jun 2020 09:50:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5DADF8044B;
+	Wed, 24 Jun 2020 09:50:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3507F80259; Tue, 23 Jun 2020 17:56:56 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A8D13F80234; Tue, 23 Jun 2020 21:47:23 +0200 (CEST)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91BE4F8023E
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 17:56:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91BE4F8023E
-IronPort-SDR: djoC1ZTNzM0ISvwykB0Lc6QUGJ2RDnVBXoWH+AxBkZnIlnutETZl3jY2PFnyU8ot5ycqvzjfOh
- cdx4TEPczSJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="123791892"
-X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; d="scan'208";a="123791892"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Jun 2020 08:56:49 -0700
-IronPort-SDR: bgB3ilcNPNXQyT5Ki0OLm5qgSkjC9l6GWTEQnuFagfsDao8YcahNQDkRFu8X9FneJOWqgMa/DV
- z+GjrfbJ7Emg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; d="scan'208";a="263367240"
-Received: from meis-mobl1.amr.corp.intel.com (HELO [10.255.230.137])
- ([10.255.230.137])
- by fmsmga007.fm.intel.com with ESMTP; 23 Jun 2020 08:56:40 -0700
-Subject: Re: [PATCH 01/19] ASoC: hdmi-codec: merge .digital_mute() into
- .mute_stream()
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>
-References: <87ftam37ko.wl-kuninori.morimoto.gx@renesas.com>
- <87eeq637ff.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3e596232-a22f-cd67-702e-59fb79c8aaec@linux.intel.com>
-Date: Tue, 23 Jun 2020 10:18:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9555AF8010E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 21:47:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9555AF8010E
+Received: by mail-io1-f69.google.com with SMTP id x22so862525ion.18
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 12:47:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+ bh=KCtwlgZ+RKZk2rijKadVPUxLfAiSocZDUn+/oj8K6OM=;
+ b=lsREqs3sL2jT4AOqJNFLHR4fhwcj4IJpNrD0HZ70IIM6ZiBOWBN5gAMianPoqjsTcV
+ ciDUND6wNmiJErsQnJ6rgOWyBKOt8FSLFKFs4xBg/58OANR7fjpDPq2w5PqyR4mWa5ax
+ u+rk5T+gh7D+gEGZKXXyOVFHbG31qOJDgQ5pLUmgfMtqs7w+LrBFjh22UlniX1HuvmBJ
+ Epjc3HO0KXVD1hXbdfyniO5SCKdcIkoyYH/ByhwMrKSedIu03CP4djftf9knz4inj6fn
+ 4287KkSOQ/Bk+gvjlEtuFk7Viist8zdWZ2uvDUIeoEXa21wgRJzenr0K3B10LOzB7AcE
+ jMMA==
+X-Gm-Message-State: AOAM533NZk79iDJ86ujHJG9akkVqxV2dbBWJrIYIqCxMKTU4/lVdUnWv
+ x0+31yU/nn1CnFILHY7JtLr05uj8yMe4fCTfPQWhDdZGAEQk
+X-Google-Smtp-Source: ABdhPJxWbF/JdduAtICGRLIrD7B2M74O58yKMzgV1pFof1zqa1ZQrLCp5Xyp58BB+mzyuCSmcZA4j3aEPLRx4Sl8c5fDsij5hO4W
 MIME-Version: 1.0
-In-Reply-To: <87eeq637ff.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:c643:: with SMTP id 3mr25846387ill.229.1592941634164; 
+ Tue, 23 Jun 2020 12:47:14 -0700 (PDT)
+Date: Tue, 23 Jun 2020 12:47:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000040aa7e05a8c5a02c@google.com>
+Subject: KASAN: slab-out-of-bounds Write in snd_usb_mixer_notify_id
+From: syzbot <syzbot+fb14314433463ad51625@syzkaller.appspotmail.com>
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
+ syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Wed, 24 Jun 2020 09:49:30 +0200
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Michael Walle <michael@walle.cc>,
- =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
- Neil Armstrong <narmstrong@baylibre.com>, David Airlie <airlied@linux.ie>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
- Jonghwan Choi <charlie.jh@kakaocorp.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Paul Cercueil <paul@crapouillou.net>, Andrzej Hajda <a.hajda@samsung.com>,
- Frank Shi <shifu0704@thundersoft.com>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Benjamin Gaignard <benjamin.gaignard@linaro.org>,
- "Andrew F. Davis" <afd@ti.com>, Fabio Estevam <festevam@gmail.com>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Joonyoung Shim <jy0922.shim@samsung.com>,
- Matthias Reichl <hias@horus.com>, Katsuhiro Suzuki <katsuhiro@katsuster.net>,
- Kevin Hilman <khilman@baylibre.com>, Masahiro Yamada <masahiroy@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
- Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
- Daniel Drake <drake@endlessm.com>, Tzung-Bi Shih <tzungbi@google.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Kukjin Kim <kgene@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Dinghao Liu <dinghao.liu@zju.edu.cn>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Cheng-Yi Chiang <cychiang@chromium.org>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Jonas Karlman <jonas@kwiboo.se>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Chuhong Yuan <hslester96@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
- James Schulman <james.schulman@cirrus.com>, Inki Dae <inki.dae@samsung.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Dan Murphy <dmurphy@ti.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- =?UTF-8?Q?Nuno_S=c3=a1?= <nuno.sa@analog.com>,
- Vincent Abriou <vincent.abriou@st.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- Support Opensource <support.opensource@diasemi.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Jason Yan <yanaijie@huawei.com>,
- Stephen Boyd <sboyd@kernel.org>,
- Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
- David Rhodes <david.rhodes@cirrus.com>, Seung-Woo Kim <sw0312.kim@samsung.com>,
- Sandy Huang <hjc@rock-chips.com>, Pavel Dobias <dobias@2n.cz>,
- Philipp Puschmann <p.puschmann@pironex.de>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Vishwas A Deshpande <vishwas.a.deshpande@ti.com>,
- Daniel Vetter <daniel@ffwll.ch>, Colin Ian King <colin.king@canonical.com>,
- Kevin Cernekee <cernekee@chromium.org>, Lucas Stach <l.stach@pengutronix.de>,
- Shawn Guo <shawnguo@kernel.org>, Peter Rosin <peda@axentia.se>,
- M R Swami Reddy <mr.swami.reddy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -145,47 +88,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hello,
 
-> -static int sii902x_audio_digital_mute(struct device *dev,
-> -				      void *data, bool enable)
-> +static int sii902x_audio_mute(struct device *dev, void *data,
-> +			      bool enable, int direction)
->   {
->   	struct sii902x *sii902x = dev_get_drvdata(dev);
->   
-> +	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
-> +		return 0;
-> +
+syzbot found the following crash on:
 
-Thanks for this clean-up Morimoto-san.
+HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a0b46e100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
+dashboard link: https://syzkaller.appspot.com/bug?extid=fb14314433463ad51625
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bb9d35100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1309c569100000
 
-One question: in all the codec changes the return is now 0.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+fb14314433463ad51625@syzkaller.appspotmail.com
 
-But in the previous implementation based on digital_mute, when the wrong 
-direction was used it would have been -ENOTSUPP.
+==================================================================
+BUG: KASAN: slab-out-of-bounds in snd_usb_mixer_notify_id+0x219/0x2a0 sound/usb/mixer.c:3240
+Write of size 4 at addr ffff888095d78ce0 by task swapper/1/0
 
-int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
-			     int direction)
-{
-	int ret = -ENOTSUPP;
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ snd_usb_mixer_notify_id+0x219/0x2a0 sound/usb/mixer.c:3240
+ snd_usb_mixer_interrupt+0x416/0x980 sound/usb/mixer.c:3379
+ __usb_hcd_giveback_urb+0x2af/0x4b0 drivers/usb/core/hcd.c:1650
+ usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
+ __skb_queue_head_init include/linux/skbuff.h:1854 [inline]
+ skbpoolfree drivers/block/aoe/aoedev.c:435 [inline]
+ freedev drivers/block/aoe/aoedev.c:290 [inline]
+ dummy_timer+0x1243/0x2fe1 drivers/block/aoe/aoedev.c:366
+ call_timer_fn+0x1ac/0x780 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449 [inline]
+ __run_timers kernel/time/timer.c:1773 [inline]
+ __run_timers kernel/time/timer.c:1740 [inline]
+ run_timer_softirq+0x623/0x1600 kernel/time/timer.c:1786
 
-	if (dai->driver->ops &&
-	    dai->driver->ops->mute_stream)
-		ret = dai->driver->ops->mute_stream(dai, mute, direction);
-	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
-		 dai->driver->ops &&
-		 dai->driver->ops->digital_mute)
-		ret = dai->driver->ops->digital_mute(dai, mute);
 
-<<< none of the branches taken for capture + digital_mute supported, so 
-return -ENOTSUPP.
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-	return soc_dai_ret(dai, ret);
-}
-
-Was this change intentional?
-
-We also want to check why this return value is only tested in 
-soc-dapm.c, if this digital_mute can fail then we are missing tests left 
-and right - maybe that's a follow-up change?
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
