@@ -2,58 +2,58 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CB80C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 404F0C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:03:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDFAC20FC3
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:02:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C350720DD4
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 08:03:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WxrOvIWy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDFAC20FC3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oV3qzh53"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C350720DD4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E3A61846;
-	Wed, 24 Jun 2020 10:01:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E3A61846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BEA817ED;
+	Wed, 24 Jun 2020 10:02:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BEA817ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592985759;
-	bh=MSw9CUCjVn+3Qoq5CW6dQIqIMQ+qyPCTVXbkIWPfOn0=;
+	s=default; t=1592985789;
+	bh=BEgM/bxEZucgBickK9um8aksRu81x3Ud0/XG8PTowEk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WxrOvIWyAg33G/OQEaqddwxvWqfVY5CDmB5c/C/r46TXbR2vmHcNbchi3zXCe4/Dh
-	 CelXNsdZ3Ah1moV9fRDMPjEjmlgTE8VnlZbMd8J+NSQDZY+ZpLqtScWOelAnc/j0++
-	 QurBnlBn8FXWD17AWTrzyk+a4i48mNnGKQIk91i4=
+	b=oV3qzh53DT7u4Cgz3Hveui5Db+o0VxeeJJDtxDF/phCwb0/5pdV3dEGOCQXjP/to7
+	 6ruCg2+wVcpnoXUvb3FKeXD9PJY8SMKEFCGXG5t/ubZmQL4RER144n+bOC/MraJERQ
+	 jYQ65TxhC2apGODZhqd7LfzKw/gAT1c5JkSFU0qE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5B82F8036A;
-	Wed, 24 Jun 2020 09:50:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3FECF8036E;
+	Wed, 24 Jun 2020 09:50:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 895A1F8015B; Tue, 23 Jun 2020 03:20:52 +0200 (CEST)
+ id 9F7E6F80162; Tue, 23 Jun 2020 03:21:03 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 45B67F8015A
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:20:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45B67F8015A
-Date: 23 Jun 2020 10:20:48 +0900
-X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50118976"
+ by alsa1.perex.cz (Postfix) with ESMTP id 82DEEF8010D
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 03:20:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82DEEF8010D
+Date: 23 Jun 2020 10:20:54 +0900
+X-IronPort-AV: E=Sophos;i="5.75,268,1589209200"; d="scan'208";a="50118981"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 23 Jun 2020 10:20:48 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 23 Jun 2020 10:20:54 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 52737418450A;
- Tue, 23 Jun 2020 10:20:48 +0900 (JST)
-Message-ID: <87v9ji1ssu.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 902BF4183C43;
+ Tue, 23 Jun 2020 10:20:53 +0900 (JST)
+Message-ID: <87tuz21sso.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 14/19] ASoC: codecs: es*: merge .digital_mute() into
+Subject: [PATCH 15/19] ASoC: codecs: da*: merge .digital_mute() into
  .mute_stream()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -152,62 +152,96 @@ We can merge digital_mute() into mute_stream
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/es8316.c | 7 +++++--
- sound/soc/codecs/es8328.c | 7 +++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ sound/soc/codecs/da7210.c | 7 +++++--
+ sound/soc/codecs/da7213.c | 7 +++++--
+ sound/soc/codecs/da9055.c | 7 +++++--
+ 3 files changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 36eef1fb3d18..6e0066fc9e26 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -507,8 +507,11 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index 0c99dcf242e4..8e5e5cd4bcbe 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -924,11 +924,14 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
  	return 0;
  }
  
--static int es8316_mute(struct snd_soc_dai *dai, int mute)
-+static int es8316_mute(struct snd_soc_dai *dai, int mute, int direction)
+-static int da7210_mute(struct snd_soc_dai *dai, int mute)
++static int da7210_mute(struct snd_soc_dai *dai, int mute, int direction)
  {
+ 	struct snd_soc_component *component = dai->component;
+ 	u8 mute_reg = snd_soc_component_read(component, DA7210_DAC_HPF) & 0xFB;
+ 
 +	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
 +		return 0;
 +
- 	snd_soc_component_update_bits(dai->component, ES8316_DAC_SET1, 0x20,
- 			    mute ? 0x20 : 0);
+ 	if (mute)
+ 		snd_soc_component_write(component, DA7210_DAC_HPF, mute_reg | 0x4);
+ 	else
+@@ -1034,7 +1037,7 @@ static const struct snd_soc_dai_ops da7210_dai_ops = {
+ 	.set_fmt	= da7210_set_dai_fmt,
+ 	.set_sysclk	= da7210_set_dai_sysclk,
+ 	.set_pll	= da7210_set_dai_pll,
+-	.digital_mute	= da7210_mute,
++	.mute_stream	= da7210_mute,
+ };
+ 
+ static struct snd_soc_dai_driver da7210_dai = {
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index cc4ae7b311b4..55f8097112e1 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1321,10 +1321,13 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
  	return 0;
-@@ -522,7 +525,7 @@ static const struct snd_soc_dai_ops es8316_ops = {
- 	.hw_params = es8316_pcm_hw_params,
- 	.set_fmt = es8316_set_dai_fmt,
- 	.set_sysclk = es8316_set_dai_sysclk,
--	.digital_mute = es8316_mute,
-+	.mute_stream = es8316_mute,
- };
+ }
  
- static struct snd_soc_dai_driver es8316_dai = {
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index fdf64c29f563..b8ac7b31e2b9 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -449,8 +449,11 @@ static const struct snd_soc_dapm_route es8328_dapm_routes[] = {
- 	{ "ROUT2", NULL, "Right Out 2" },
- };
- 
--static int es8328_mute(struct snd_soc_dai *dai, int mute)
-+static int es8328_mute(struct snd_soc_dai *dai, int mute, int direction)
+-static int da7213_mute(struct snd_soc_dai *dai, int mute)
++static int da7213_mute(struct snd_soc_dai *dai, int mute, int direction)
  {
+ 	struct snd_soc_component *component = dai->component;
+ 
 +	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
 +		return 0;
 +
- 	return snd_soc_component_update_bits(dai->component, ES8328_DACCONTROL3,
- 			ES8328_DACCONTROL3_DACMUTE,
- 			mute ? ES8328_DACCONTROL3_DACMUTE : 0);
-@@ -692,7 +695,7 @@ static int es8328_set_bias_level(struct snd_soc_component *component,
- static const struct snd_soc_dai_ops es8328_dai_ops = {
- 	.startup	= es8328_startup,
- 	.hw_params	= es8328_hw_params,
--	.digital_mute	= es8328_mute,
-+	.mute_stream	= es8328_mute,
- 	.set_sysclk	= es8328_set_sysclk,
- 	.set_fmt	= es8328_set_dai_fmt,
+ 	if (mute) {
+ 		snd_soc_component_update_bits(component, DA7213_DAC_L_CTRL,
+ 				    DA7213_MUTE_EN, DA7213_MUTE_EN);
+@@ -1507,7 +1510,7 @@ static int da7213_set_component_pll(struct snd_soc_component *component,
+ static const struct snd_soc_dai_ops da7213_dai_ops = {
+ 	.hw_params	= da7213_hw_params,
+ 	.set_fmt	= da7213_set_dai_fmt,
+-	.digital_mute	= da7213_mute,
++	.mute_stream	= da7213_mute,
  };
+ 
+ static struct snd_soc_dai_driver da7213_dai = {
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index e93436ccb674..e388b1c0ba19 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -1211,10 +1211,13 @@ static int da9055_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
+-static int da9055_mute(struct snd_soc_dai *dai, int mute)
++static int da9055_mute(struct snd_soc_dai *dai, int mute, int direction)
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 
++	if (direction != SNDRV_PCM_STREAM_PLAYBACK)
++		return 0;
++
+ 	if (mute) {
+ 		snd_soc_component_update_bits(component, DA9055_DAC_L_CTRL,
+ 				    DA9055_DAC_L_MUTE_EN, DA9055_DAC_L_MUTE_EN);
+@@ -1324,7 +1327,7 @@ static const struct snd_soc_dai_ops da9055_dai_ops = {
+ 	.set_fmt	= da9055_set_dai_fmt,
+ 	.set_sysclk	= da9055_set_dai_sysclk,
+ 	.set_pll	= da9055_set_dai_pll,
+-	.digital_mute	= da9055_mute,
++	.mute_stream	= da9055_mute,
+ };
+ 
+ static struct snd_soc_dai_driver da9055_dai = {
 -- 
 2.25.1
 
