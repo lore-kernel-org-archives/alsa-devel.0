@@ -2,81 +2,79 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30856C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 00:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88DCCC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 00:29:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AACFA20C09
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 00:26:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12B4F20DD4
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 00:29:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZYprtsAJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AACFA20C09
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UN8gGlsT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12B4F20DD4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B81D17DB;
-	Wed, 24 Jun 2020 02:25:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B81D17DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9134817D6;
+	Wed, 24 Jun 2020 02:28:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9134817D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592958399;
-	bh=BNMAhWwDX1bcbun0PcVI3NdMH8VaEivh3aGkk6pzPVA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592958585;
+	bh=Tm3RagHb5MR+ryCRpOSVJd9cdI8SnOET7AhUw9utZ54=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZYprtsAJ9e3Mc0xueTF9xfA10AcXRHa6VLBn2a/MKeteeu5Z1QaN9x4bIkxzfHQ3C
-	 L0pV7w6+bnxjWiE8U2sEnata1J5qKWdAXTuE5etswGL6yxJTYyKZv2g0a8RUjPLj74
-	 Lm2kZ3k0T8kXqRoryj+VqteIYNcyI+LJZJJPcSws=
+	b=UN8gGlsTeVaHk+lQQFfIPHqjybrmWItffYfvnn3+ZD97dGy3/MGC23ingAuJO1NW6
+	 EMTaaZ/4HISXmwoee0rPLA2BOpuB3VGXMq74DvOVyKvcycwv4GDuHbb90MBD/Mzki6
+	 1v0cY7WzGFppRn0yxfQMcVydbb8g3t24Zwo5tjfI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9421AF80218;
-	Wed, 24 Jun 2020 02:25:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31A36F80218;
+	Wed, 24 Jun 2020 02:28:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C450F80234; Wed, 24 Jun 2020 02:25:46 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 2AC31F80234; Wed, 24 Jun 2020 02:28:52 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E1EDF8010E
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 02:25:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E1EDF8010E
-IronPort-SDR: wne63ZIBaynSTHVe4xngx2XXWmjCDyuFIoMkbJP6IkHFHGfF+balngtuoczoIHFzaWBwuBuPV1
- 5me/YUSSQ3Sg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="124528365"
-X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; d="scan'208";a="124528365"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74501F800B2
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 02:28:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74501F800B2
+IronPort-SDR: 4MHINnp//+S41vFBxjIuXo5Wbduj0Okyc+ChTA7QmqR6l3qBfhaNq4kxwgvJN4CpsDFF6Y31kj
+ hVXBRasCxKYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="162353260"
+X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; d="scan'208";a="162353260"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Jun 2020 17:25:36 -0700
-IronPort-SDR: EoS4AuvFJZL6jk0vneFcOF0yEEDN0CxiVE4Lwaud5o6G3njbeInCTtepN3cryVUwCUcpye+5Py
- jzaZZ1sRwEDg==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jun 2020 17:28:44 -0700
+IronPort-SDR: jMZ8seqlBGGDSnj9bd0j9IfoJAecr58HKW4t9EYyHrcEURv2hhDySvGOMP3KbzhZ1gjRzooAHx
+ yOk71YCRj6Xg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; d="scan'208";a="385015282"
-Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
- by fmsmga001.fm.intel.com with ESMTP; 23 Jun 2020 17:25:34 -0700
-Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1jntEL-0000bN-VP; Wed, 24 Jun 2020 00:25:33 +0000
-Date: Wed, 24 Jun 2020 08:25:13 +0800
-From: kernel test robot <lkp@intel.com>
+X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; d="scan'208";a="479071924"
+Received: from jsoloni-mobl.amr.corp.intel.com (HELO [10.254.107.75])
+ ([10.254.107.75])
+ by fmsmga005.fm.intel.com with ESMTP; 23 Jun 2020 17:28:43 -0700
+Subject: Re: [PATCH] ALSA: hda/hdmi: Add Intel silent stream support
 To: Harsha Priya <harshapriya.n@intel.com>, alsa-devel@alsa-project.org,
  tiwai@suse.de
-Subject: Re: [PATCH] ALSA: hda/hdmi: Add Intel silent stream support
-Message-ID: <202006240840.T22JaACv%lkp@intel.com>
 References: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d9608b01-a111-d5ac-dcf7-c2dfdae79d08@linux.intel.com>
+Date: Tue, 23 Jun 2020 19:28:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: kai.vehmanen@intel.com, Harsha Priya <harshapriya.n@intel.com>,
- kbuild-all@lists.01.org, Emmanuel Jillela <emmanuel.jillela@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: kai.vehmanen@intel.com, Emmanuel Jillela <emmanuel.jillela@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,97 +90,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Harsha,
+2 nit-picks that I missed in previous versions of this patch, sorry:
 
-Thank you for the patch! Yet something to improve:
+> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+> index 7ba542e45a3d..8804808410b3 100644
+> --- a/sound/pci/hda/Kconfig
+> +++ b/sound/pci/hda/Kconfig
+> @@ -232,4 +232,20 @@ config SND_HDA_POWER_SAVE_DEFAULT
+>   
+>   endif
+>   
+> +config SND_HDA_INTEL_HDMI_SILENT_STREAM
+> +	bool "Enable Silent Stream always for HDMI"
+> +	depends on SND_HDA
 
-[auto build test ERROR on sound/for-next]
-[also build test ERROR on v5.8-rc2 next-20200623]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use  as documented in
-https://git-scm.com/docs/git-format-patch]
+nit-pick: should this be 'depends on SND_HDA_INTEL'?
+if not, this 'depends on SND_HDA' is redundant, already within an
+'if SND_HDA' block
 
-url:    https://github.com/0day-ci/linux/commits/Harsha-Priya/ALSA-hda-hdmi-Add-Intel-silent-stream-support/20200624-073425
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-config: i386-tinyconfig
-compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
-reproduce (this is a W=1 build):
-        make W=1 ARCH=i386  tinyconfig
-        make W=1 ARCH=i386 
+> +	help
+> +	  Intel hardware has a feature called 'silent stream', that
+> +	  keeps external HDMI receiver's analog circuitry powered on
+> +	  avoiding 2-3 sec silence during playback start. This mechanism
+> +	  relies on an info packet and preventing the codec from going to
+> +	  D3. (increasing the platform static power consumption when a
+> +	  HDMI receiver is plugged-in). 2-3 sec silence at the playback
+> +	  start is expected whenever there is format change. (default is
+> +	  2 channel format).
+> +	  Say Y to enable Silent Stream feature.
+> +
+> +endif
+> +
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+[...]
 
-All errors (new ones prefixed by >>):
+>   /* update ELD and jack state via audio component */
+>   static void sync_eld_via_acomp(struct hda_codec *codec,
+>   			       struct hdmi_spec_per_pin *per_pin)
+>   {
+>   	struct hdmi_spec *spec = codec->spec;
+>   	struct hdmi_eld *eld = &spec->temp_eld;
+> +	bool monitor_prev, monitor_next;
+>   
+>   	mutex_lock(&per_pin->lock);
+>   	eld->monitor_present = false;
+> +	monitor_prev = per_pin->sink_eld.monitor_present;
+>   	eld->eld_size = snd_hdac_acomp_get_eld(&codec->core, per_pin->pin_nid,
+>   				      per_pin->dev_id, &eld->monitor_present,
+>   				      eld->eld_buffer, ELD_MAX_SIZE);
+>   	eld->eld_valid = (eld->eld_size > 0);
+>   	update_eld(codec, per_pin, eld, 0);
+> +	monitor_next = per_pin->sink_eld.monitor_present;
+>   	mutex_unlock(&per_pin->lock);
+> +
+> +	/*
+> +	 * Power-up will call hdmi_present_sense, so the PM calls
+> +	 * have to be done without mutex held.
+> +	 */
+> +
+> +	if (enable_silent_stream) {
+> +		if (!monitor_prev && monitor_next) {
+> +			snd_hda_power_up_pm(codec);
 
->> sound/pci/hda/Kconfig:258: unexpected 'if' within menu block
->> sound/pci/hda/Kconfig:260: unexpected 'menu' within if block
-   sound/Kconfig:102: 'if' in different file than 'if'
-   sound/pci/hda/Kconfig:2: location of the 'if'
-   sound/Kconfig:104: 'if' in different file than 'if'
-   sound/pci/hda/Kconfig:2: location of the 'if'
->> sound/Kconfig:106: unexpected 'if' within menu block
->> drivers/Kconfig:239: syntax error
-   drivers/Kconfig:238: invalid statement
-   make[2]: *** [scripts/kconfig/Makefile:71: oldconfig] Error 1
-   make[1]: *** [Makefile:606: oldconfig] Error 2
-   make: *** [Makefile:185: __sub-make] Error 2
-   make: Target 'oldconfig' not remade because of errors.
---
->> sound/pci/hda/Kconfig:258: unexpected 'if' within menu block
->> sound/pci/hda/Kconfig:260: unexpected 'menu' within if block
-   sound/Kconfig:102: 'if' in different file than 'if'
-   sound/pci/hda/Kconfig:2: location of the 'if'
-   sound/Kconfig:104: 'if' in different file than 'if'
-   sound/pci/hda/Kconfig:2: location of the 'if'
->> sound/Kconfig:106: unexpected 'if' within menu block
->> drivers/Kconfig:239: syntax error
-   drivers/Kconfig:238: invalid statement
-   make[2]: *** [scripts/kconfig/Makefile:71: olddefconfig] Error 1
-   make[1]: *** [Makefile:606: olddefconfig] Error 2
-   make: *** [Makefile:185: __sub-make] Error 2
-   make: Target 'olddefconfig' not remade because of errors.
---
->> sound/pci/hda/Kconfig:258: unexpected 'if' within menu block
->> sound/pci/hda/Kconfig:260: unexpected 'menu' within if block
-   sound/Kconfig:102: 'if' in different file than 'if'
-   sound/pci/hda/Kconfig:2: location of the 'if'
-   sound/Kconfig:104: 'if' in different file than 'if'
-   sound/pci/hda/Kconfig:2: location of the 'if'
->> sound/Kconfig:106: unexpected 'if' within menu block
->> drivers/Kconfig:239: syntax error
-   drivers/Kconfig:238: invalid statement
-   make[5]: *** [scripts/kconfig/Makefile:71: allnoconfig] Error 1
-   make[4]: *** [Makefile:606: allnoconfig] Error 2
-   make[3]: *** [Makefile:336: __build_one_by_one] Error 2
-   make[3]: Target 'allnoconfig' not remade because of errors.
-   make[3]: Target 'tiny.config' not remade because of errors.
-   make[2]: *** [scripts/kconfig/Makefile:109: tinyconfig] Error 2
-   make[1]: *** [Makefile:606: tinyconfig] Error 2
-   make: *** [Makefile:185: __sub-make] Error 2
-   make: Target 'tinyconfig' not remade because of errors.
+nit-pick: is there a need to test the return value? I see this in 
+patch_hdmi.c
 
-vim +/if +258 sound/pci/hda/Kconfig
+	ret = snd_hda_power_up_pm(codec);
+	if (ret < 0 && pm_runtime_suspended(hda_codec_dev(codec)))
+		goto out;
 
-   243	
-   244	config SND_HDA_INTEL_HDMI_SILENT_STREAM
-   245		bool "Enable Silent Stream always for HDMI"
-   246		depends on SND_HDA
-   247		help
-   248		  Intel hardware has a feature called 'silent stream', that
-   249		  keeps external HDMI receiver's analog circuitry powered on
-   250		  avoiding 2-3 sec silence during playback start. This mechanism
-   251		  relies on an info packet and preventing the codec from going to
-   252		  D3. (increasing the platform static power consumption when a
-   253		  HDMI receiver is plugged-in). 2-3 sec silence at the playback
-   254		  start is expected whenever there is format change. (default is
-   255		  2 channel format).
-   256		  Say Y to enable Silent Stream feature.
-   257	
- > 258	endif
-   259	
- > 260	endmenu
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +			silent_stream_enable(codec, per_pin);
+> +		} else if (monitor_prev && !monitor_next)
+> +			snd_hda_power_down_pm(codec);
+> +	}
+>   }
+>   
+>   static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+> 
