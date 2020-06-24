@@ -2,72 +2,69 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA95C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA45C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:36:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE46F206C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:34:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C21DE2078A
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:36:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ssMLET5o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE46F206C0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a8KWtJlW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C21DE2078A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 501101886;
-	Wed, 24 Jun 2020 19:33:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 501101886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43EC21886;
+	Wed, 24 Jun 2020 19:35:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43EC21886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593020054;
-	bh=TUYNYcG324mutIxlaUwfBS8RTAsvAs2zCmDlJT2y3Q8=;
+	s=default; t=1593020202;
+	bh=S/QXx04XsY8A68+GrwX49Ddju4hOU4iEBstsCRMeIW8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ssMLET5obiYhgHnFqDZcb96f8jgOZUMTe4nrgxfBq4TNCPc5ozMn4kNGYlMjSF99K
-	 BpnO/TAtybn56NRaFs+wNP2OLs9CgIGNnV7+NhWA6BTHaTOc2Uj8MDyLzcs9qPS6eE
-	 gVxp/yCTzUEJHhySg9QsVdYjkv/Dtd9A9De/5cCU=
+	b=a8KWtJlWTu5qYNEyJDiwUlBV5/ViweGYw7YU9WajIj4Yz7n11kU367n1PbJL5EqB4
+	 fdv1xnC5a1ptpLMmGM+Sno0lb3NWFpes5OubQmC0VC6Xs40scLLOJ5W9M1UgOq34Up
+	 mUdG67uNaTZ+x4Im01TggKeELJCRyjmOetENyEhQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8608F8015A;
-	Wed, 24 Jun 2020 19:33:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7B4DF8015A;
+	Wed, 24 Jun 2020 19:35:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B36B5F8015B; Wed, 24 Jun 2020 19:33:22 +0200 (CEST)
+ id 10C24F8015B; Wed, 24 Jun 2020 19:35:50 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E38DF800B2
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 19:33:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E38DF800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4437DF80084
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 19:35:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4437DF80084
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5B7FBAD87;
- Wed, 24 Jun 2020 17:33:13 +0000 (UTC)
-Date: Wed, 24 Jun 2020 19:33:13 +0200
-Message-ID: <s5hftakid2e.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 8E0D5AE37;
+ Wed, 24 Jun 2020 17:35:46 +0000 (UTC)
+Date: Wed, 24 Jun 2020 19:35:46 +0200
+Message-ID: <s5heeq4icy5.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda/hdmi: Add Intel silent stream support
-In-Reply-To: <2404f45d-832d-69a0-fb3b-1981ae455f50@linux.intel.com>
-References: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
- <s5hr1u4lxee.wl-tiwai@suse.de>
- <f2da25c0-c740-4d44-ab66-6017622f7dde@perex.cz>
- <7dd38f98-e74a-94c0-6888-523e6189c00b@linux.intel.com>
- <s5ho8p8ifcn.wl-tiwai@suse.de>
- <2404f45d-832d-69a0-fb3b-1981ae455f50@linux.intel.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: core: Warn on empty module
+In-Reply-To: <6e04386e-d5f7-7e59-3641-13b551de9392@perex.cz>
+References: <20200624160300.21703-1-tiwai@suse.de>
+ <8d9cd8bf-9023-f3f7-e62d-167da5263714@linux.intel.com>
+ <6e04386e-d5f7-7e59-3641-13b551de9392@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Harsha Priya <harshapriya.n@intel.com>, kai.vehmanen@intel.com,
- alsa-devel@alsa-project.org, Emmanuel Jillela <emmanuel.jillela@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,78 +80,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Jun 2020 19:05:14 +0200,
-Pierre-Louis Bossart wrote:
+On Wed, 24 Jun 2020 18:33:00 +0200,
+Jaroslav Kysela wrote:
 > 
-> 
-> 
-> On 6/24/20 11:43 AM, Takashi Iwai wrote:
-> > On Wed, 24 Jun 2020 17:33:45 +0200,
-> > Pierre-Louis Bossart wrote:
-> >>
-> >>
-> >>>>> The silent stream is enabled with a Kconfig option, as well as a kernel
-> >>>>> parameter should there be a need to override the build time default.
-> >>>>
-> >>>> I'm not sure whether the module option is the best interface.
-> >>>> An alternative is a mixer element that controls dynamically.  Then
-> >>>> it'll be per card unlike the module option.
-> >>>
-> >>> +1, kcontrol seems the appropriate way to control this.
-> >>
-> >> It was my suggestion to use Kconfig+kernel parameter for
-> >> simplicity/overrides.
-> >>
-> >> The kcontrol is a nice idea, but in practice we typically only have
-> >> one card dealing with HDMI.
+> Dne 24. 06. 20 v 18:13 Pierre-Louis Bossart napsal(a):
 > >
-> > Not really.  There are systems with two HDMI outputs from both
-> > integrated and discrete GPUs.  Most modern systems are only with
-> > hybrid graphics, though.
-> 
-> Ok, maybe I am mistaken, in most of the HDMI issues we've seen only
-> one HDMI source.
-> 
-> But it's a good point that this is only supposed to be used for Intel
-> whether it's a kernel parameter or a kcontrol shouldn't this be
-> dependent on a PCI ID being detected and a SKYLAKE flag being set?
-> it's my understanding that this applies from Skylake to TigerLake, not
-> before.
-
-I guess we can check it from the codec ID?  Change the probe function
-for Skylake+ codecs to patch_i915_skl_hdmi and co, and set the flag
-there.
-
-> >> It also doesn't have a UCM representation
-> >> so would force the use of amixer and manual configs, or the UCM file
-> >> would always set the mode.
 > >
-> > But people usually use the distro kernels, so the situation is more or
-> > less equivalent; you'd have to adjust a module option manually if you
-> > want a different one from the default, and you'd have to be root to
-> > change it.
+> > On 6/24/20 11:03 AM, Takashi Iwai wrote:
+> >> The module argument passed to snd_card_new() must be a valid non-NULL
+> >> pointer when the module support is enabled.  Since ASoC driver passes
+> >> the argument from each snd_soc_card definition, one may forget to set
+> >> the owner field and lead to a NULL module easily.
+> >>
+> >> For catching such an overlook, add a WARN_ON() in snd_card_new().
+> >> Also, put the card->module assignment in the ifdef block for a very
+> >> minor optimization.
+> >>
+> >> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> >> ---
+> >>    sound/core/init.c | 3 +++
+> >>    1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/sound/core/init.c b/sound/core/init.c
+> >> index b02a99766351..0478847ba2b8 100644
+> >> --- a/sound/core/init.c
+> >> +++ b/sound/core/init.c
+> >> @@ -203,7 +203,10 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+> >>    	mutex_unlock(&snd_card_mutex);
+> >>    	card->dev = parent;
+> >>    	card->number = idx;
+> >> +#ifdef MODULE
+> >> +	WARN_ON(!module);
+> >>    	card->module = module;
+> >> +#endif
+> >>    	INIT_LIST_HEAD(&card->devices);
+> >>    	init_rwsem(&card->controls_rwsem);
+> >>    	rwlock_init(&card->ctl_files_rwlock);
 > >
-> > So, rather the question is how we should provide the setup of such
-> > parameter.  It's supposed to be a part of power management stuff that
-> > should be touched by either a smart PM tool or a manual override such
-> > as runtime PM setup?  Or can it be seen as a more casual tuning?
+> > Would it make sense to also change the ASoC code to use THIS_MODULE
+> > instead of card->owner?
+> >
+> > /* card bind complete so register a sound card */
+> > ret = snd_card_new(card->dev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+> > 		card->owner, 0, &card->snd_card);
+> >
+> > A quick grep shows we are setting .owner = THIS_MODULE pretty much all
+> > the time for machine drivers.
+> >
 > 
-> I am not aware of such tools. The only thing I know is that some of
-> the HDaudio power settings are already controlled by kernel
-> parameters, e.g.
-> 
-> /etc/modprobe.d/audio_powersave.conf
-> options snd_hda_intel power_save=1
+> THIS_MODULE is defined when the object file is created (compile
+> time). We want to assign the real module which creates the card here,
+> not "snd_soc_core" which is misleading.
 
-Yes, it's been the primary knob for years to turn on/off the runtime
-PM for HD-audio and other legacy drivers.  This was used by powertop
-or some other power-aware daemons and tools, to be toggled dynamically
-per the power cable state or such.
+Right.  We could make a helper macro to pass THIS_MODULE automagically
+but I don't think it worth.  A simple check should suffice.
+Of course, we can put a similar check in ASoC side, too, so that it
+points more clearly what's wrong.
 
-And, how the silent stream feature should be seen?
-Should it be a system-wide root-only setup or adjustable per user?
-Would it be changed often?  Such questions and answers will lead us to
-the right direction, I hope.
 
+thanks,
 
 Takashi
