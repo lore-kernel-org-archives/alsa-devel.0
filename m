@@ -2,88 +2,66 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32B8DC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 05:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3079C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:46:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF15D2072E
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 05:38:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3CB3520768
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 07:46:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FjwoGOnH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="CJ9CkwVw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF15D2072E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XlpARoLE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CB3520768
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47496180B;
-	Wed, 24 Jun 2020 07:37:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47496180B
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE8E217F7;
+	Wed, 24 Jun 2020 09:45:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE8E217F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592977107;
-	bh=vs0KqsSuzeTxcycWQlcnoRo95hHwAWr2pbyJZu/UC90=;
-	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FjwoGOnHhxiLsmujL3CYB5BJ5tjaiylmGHlmNW0rMOInLUZSnaW+m1pCtGpGUxCUr
-	 K5KGrrRxXylGuHT+KmwBz2FeBNY661McLO4EQA4ZVX0kf/2yd9fsqZC0yJ4JGtbY9y
-	 yAlL7Kd2ZIai5cy6mKiuUKeLQX2f5UBYZy+OZ/HQ=
+	s=default; t=1592984804;
+	bh=Ja1f/dW/hu7sDLiOiMsJTqq+gQAEWNx2f/lWJsmVMhs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XlpARoLEsKjEVO5mvkc1UC6I/HdgYb+w22/h6zbVLOBDCf4iExqEE6MUatCHuNM2w
+	 k/HH8Wgf+0wFpfFyt7G7XFI0cE59HWGdcUo+l4pBldaULng2xTVelho26PQn4HME5l
+	 RfrgseNXndRPuJtVMU4l0kuAWzQ2qyddAmK30sFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC5C1F802A0;
-	Wed, 24 Jun 2020 07:36:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A762F8015A;
+	Wed, 24 Jun 2020 09:45:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE371F802A1; Wed, 24 Jun 2020 07:36:37 +0200 (CEST)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
- [IPv6:2607:f8b0:4864:20::b49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 74609F8015B; Wed, 24 Jun 2020 09:45:51 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA0A4F802A0
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 07:36:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA0A4F802A0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="CJ9CkwVw"
-Received: by mail-yb1-xb49.google.com with SMTP id s90so1141413ybi.6
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 22:36:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=GAkzm4XJCASn693uxyR1CFgyLYJYXn8EA6JRtwcUKhA=;
- b=CJ9CkwVw32a7EaWbISj96EVSSbSPLspKq5PRf0EC7lSH82o6BQmrbAFcxZgEC32kbK
- MeQJRnyzkfA/RYiZN93QzGod+3f/l8ZxrPki9vvGxaZjWiHKSzKLHaSEJdk9VGMP3me2
- R9uL4XZMtHHmJn9GcfDUrrJ1/XxppplyedCKFx8bZLaj0a33IuY45RysPdJ2adS9gLiw
- EHsT1TLD6WGzM6ZBm3jkwv3Wa1SeKvf/1gfM8X55gz/47cTaTzGCl55v/ZGFcasif6SY
- KC/je0MBq+vnGibDHr8jS9dd1AuK6JOm7jn/8y+DQl/D+wFQPAuzdDkZyAm+cubSoZ2u
- iQAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=GAkzm4XJCASn693uxyR1CFgyLYJYXn8EA6JRtwcUKhA=;
- b=oRQs6p+3r7tB6H/4I3dMy+oLbjZVRUlj2LRq2ULmIfvq1rxISvjDM2ZJv/BRkNqR2Z
- krsY5H4qhF7JipsX6ozviyOe0JSeFgeqs0HgM3wjLVa2slyIDdKF5nWQ2/lvBkzs8HZZ
- Ys29qK1jpjaW7e8eFGQHsEN7MgZtEZ48Ijuwd11BgGzeXm+s/IxQuKSKX3iEkuZVA1gr
- d78fLdu+OKmcvo/TXeKuC/Nor9HHDGvS9xynjLqLGfRtP0avxIyd5LKfRUFXceJl3fX4
- jNhZ4J/Suxhxxi1NHHy6jHsW/eI/TodFxNHxCF2FB2U/RJtJSCiPBf+tFskfKFD+Efnq
- Beow==
-X-Gm-Message-State: AOAM533WazqCYI/8gynskxC3cNcwQbpzwt55FuYFLkstmbIFjomTazlQ
- HSb9EFekh9nCIo6FEjxhq/N80fQ7yM47
-X-Google-Smtp-Source: ABdhPJw7hEKgbBwHvkwhssVldTU0aIIDES96D3nf6nu5LVYP7W9mJXpEGQ6/pd6Hy3Re9Jvc+93Sqe9GAQlD
-X-Received: by 2002:a25:bcc2:: with SMTP id l2mr38114726ybm.154.1592976992437; 
- Tue, 23 Jun 2020 22:36:32 -0700 (PDT)
-Date: Wed, 24 Jun 2020 13:36:27 +0800
-Message-Id: <20200624053627.65179-1-tzungbi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-Subject: [PATCH] ASoC: rt1015: add missing header inclusion
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B303F80084
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 09:45:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B303F80084
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 25C80AD4B;
+ Wed, 24 Jun 2020 07:45:45 +0000 (UTC)
+Date: Wed, 24 Jun 2020 09:45:45 +0200
+Message-ID: <s5hr1u4lxee.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Harsha Priya <harshapriya.n@intel.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi: Add Intel silent stream support
+In-Reply-To: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
+References: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: kai.vehmanen@intel.com, Emmanuel Jillela <emmanuel.jillela@intel.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,57 +77,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To fix compile error:
+On Wed, 24 Jun 2020 01:26:36 +0200,
+Harsha Priya wrote:
+> 
+> External HDMI receivers have analog circuitry that needs to be powered-on
+> when exiting standby, and a mechanism to detect PCM v. IEC61937 data.
+> These two steps take time and up to 2-3 seconds of audio may be muted
+> when starting playback.
+> 
+> Intel hardware can keep the link active with a 'silent stream', so that
+> the receiver does not go through those two steps when valid audio is
+> transmitted. This mechanism relies on an info packet and preventing the
+> codec from going to D3, which will increase the platform static power
+> consumption. The info packet assumes a basic 2ch stereo, and the silent
+> stream is enabled when connecting a monitor. In case of format changes the
+> detection of PCM v. IEC61937 needs to be re-run. In this case there is no
+> way to avoid the 2-3s mute.
+> 
+> The silent stream is enabled with a Kconfig option, as well as a kernel
+> parameter should there be a need to override the build time default.
 
-error: implicit declaration of function 'ACPI_PTR'
-[-Werror,-Wimplicit-function-declaration]
-                .acpi_match_table = ACPI_PTR(rt1015_acpi_match),
-		                    ^
+I'm not sure whether the module option is the best interface.
+An alternative is a mixer element that controls dynamically.  Then
+it'll be per card unlike the module option.
 
-Adds the missing header inclusion and sorts in alphabetical.
+And I think Kconfig is redundant.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/codecs/rt1015.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+> Silent stream is supported in Intel platforms Skylake and beyond.
+> Tested HDMI plug-out plug-in from Intel Cometlake based Chromebook
+> connected to few different monitors.
 
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 1f61b4aa4353..548f68649064 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -8,23 +8,24 @@
- //
- //
- 
-+#include <linux/acpi.h>
-+#include <linux/delay.h>
-+#include <linux/firmware.h>
- #include <linux/fs.h>
-+#include <linux/gpio.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/init.h>
--#include <linux/delay.h>
-+#include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/regmap.h>
--#include <linux/i2c.h>
--#include <linux/platform_device.h>
--#include <linux/firmware.h>
--#include <linux/gpio.h>
- #include <sound/core.h>
-+#include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
--#include <sound/soc.h>
- #include <sound/soc-dapm.h>
--#include <sound/initval.h>
-+#include <sound/soc.h>
- #include <sound/tlv.h>
- 
- #include "rl6231.h"
--- 
-2.27.0.111.gc72c7da667-goog
+IMO, the feature enablement should be done only for those devices.
+The current patch influences on all HDMI devices including AMD and
+others that are irrelevant so far.
 
+About the code changes:
+
+>  /* update ELD and jack state via audio component */
+>  static void sync_eld_via_acomp(struct hda_codec *codec,
+>  			       struct hdmi_spec_per_pin *per_pin)
+>  {
+>  	struct hdmi_spec *spec = codec->spec;
+>  	struct hdmi_eld *eld = &spec->temp_eld;
+> +	bool monitor_prev, monitor_next;
+>  
+>  	mutex_lock(&per_pin->lock);
+>  	eld->monitor_present = false;
+> +	monitor_prev = per_pin->sink_eld.monitor_present;
+>  	eld->eld_size = snd_hdac_acomp_get_eld(&codec->core, per_pin->pin_nid,
+>  				      per_pin->dev_id, &eld->monitor_present,
+>  				      eld->eld_buffer, ELD_MAX_SIZE);
+>  	eld->eld_valid = (eld->eld_size > 0);
+>  	update_eld(codec, per_pin, eld, 0);
+> +	monitor_next = per_pin->sink_eld.monitor_present;
+>  	mutex_unlock(&per_pin->lock);
+> +
+> +	/*
+> +	 * Power-up will call hdmi_present_sense, so the PM calls
+> +	 * have to be done without mutex held.
+> +	 */
+> +
+> +	if (enable_silent_stream) {
+> +		if (!monitor_prev && monitor_next) {
+
+Isn't a valid ELD mandatory?  The monitor_present flag itself can be
+set even for the monitor without audio support, IIRC.
+
+> +			snd_hda_power_up_pm(codec);
+> +			silent_stream_enable(codec, per_pin);
+> +		} else if (monitor_prev && !monitor_next)
+> +			snd_hda_power_down_pm(codec);
+
+This power up/down sequence may lead to the unbalance if the
+enable_silent_stream flag is flipped during operation.
+
+
+thanks,
+
+Takashi
