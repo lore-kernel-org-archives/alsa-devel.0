@@ -1,104 +1,82 @@
-Return-Path: <SRS0=bSXK=AE=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 665CAC433E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 23:32:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30856C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 00:26:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E18D52078E
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2020 23:32:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AACFA20C09
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 00:26:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B7XOIVPv";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D3PrKqtt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E18D52078E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZYprtsAJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AACFA20C09
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 676DF17DE;
-	Wed, 24 Jun 2020 01:31:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 676DF17DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B81D17DB;
+	Wed, 24 Jun 2020 02:25:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B81D17DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592955157;
-	bh=8vorLRwslmpe/EHZhDoTOmbkDf3C9hHQgZtVxy+RAqE=;
+	s=default; t=1592958399;
+	bh=BNMAhWwDX1bcbun0PcVI3NdMH8VaEivh3aGkk6pzPVA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B7XOIVPvOA/ZUUMwjbY6x1eRibYhcMJsh5bbBOyveCl+cT6PcrVGK2ihejEFoisvH
-	 YOCqmZ2kmrgWzTBClZxkQGRUj+9775/hRq01p2LzuwZVeO5jG2sdAg9cRLHWM0hKXj
-	 hCQq+wV/UEGqDltETGdQ1mMstmOIAQqNVQ9SkvEs=
+	b=ZYprtsAJ9e3Mc0xueTF9xfA10AcXRHa6VLBn2a/MKeteeu5Z1QaN9x4bIkxzfHQ3C
+	 L0pV7w6+bnxjWiE8U2sEnata1J5qKWdAXTuE5etswGL6yxJTYyKZv2g0a8RUjPLj74
+	 Lm2kZ3k0T8kXqRoryj+VqteIYNcyI+LJZJJPcSws=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B1BCF80249;
-	Wed, 24 Jun 2020 01:31:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9421AF80218;
+	Wed, 24 Jun 2020 02:25:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 126B5F80234; Wed, 24 Jun 2020 01:31:27 +0200 (CEST)
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8C450F80234; Wed, 24 Jun 2020 02:25:46 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1EDC9F80234
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 01:31:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EDC9F80234
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="D3PrKqtt"
-Received: by mail-pf1-x444.google.com with SMTP id f9so189233pfn.0
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2020 16:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=v2em8WufMe/XzcJqk7YFYQSWFx3qyHpDXzQPwunL4Mg=;
- b=D3PrKqttTaVJOmY8IJl9a74nK+vT3bB73vbRbEdADkSzTBJXKcW90YspYntqCqaJhL
- flrsd1SDjQCLrku8MvQ8ffq7WXYKSRZGpOZpkpo4jBmp8mt/S8qVrp+WIcjXLAe7m0ko
- 4hPR6azoWVRP2H3o0QL67neEJZtUvscXqKhJetbfR1waX4Kr21d6Tx5UyWIuFiUn+ggZ
- pTTL8voMO9NWKPC/PhYy0SE0gPC1rE8w+3Sqkep5YwkwTRzpzrIJvD7ap/isv8xDIIkP
- 3kgds5X7zJ30Hkne7cgO5PxcccR7DALNDjVPC5qn7FL9r/9FD7K39kmsydeCkzj2aDJ8
- pErw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=v2em8WufMe/XzcJqk7YFYQSWFx3qyHpDXzQPwunL4Mg=;
- b=fITn4MCtWwkZjqDxid6AYRbrmKuJiTMT0D7Jx0hwNFs8B2cauacfNkKU+suCksj2Bp
- dSkzF6wkjcRyeEpRFxKClCJKt+XHYyVDmTBlSXxSWfaCxNvNbhsRfbQPEzWEn0bZW+/i
- 6RE99cHC81XFlUDWfmKCXIPTfM9MMU67JYHeUv9H8DeXZu4dGWTUb6b09CAkwLU2qQuI
- YAkzwsa1k7kfGy3ewuNRhSUmwdaAoBALHX5btkbBC8tco/y5g2248oYq/ELeLBaSvNeB
- /ELAG1kN8m5Hi3ZWeyHvhCenqbukbbWAv+XUYb8eaGtwQPpAHDzP9k0LWugPkTWBAV8G
- QxvA==
-X-Gm-Message-State: AOAM533xtogM1JoNeqiIVCJmw1zmFDXp0kFh4lAH3HZ0yqdOk/ZO26Nd
- T0OcuSLu8Mqf5PLmXE2JfSI=
-X-Google-Smtp-Source: ABdhPJygTOv/K578Nfi+keQ7SWHWmMxiyqT1qgqh4PY1PWO2ZBzG5y01Ax6vFA6ckUG9CyH3gxpZZw==
-X-Received: by 2002:a63:531a:: with SMTP id h26mr19943514pgb.188.1592955078526; 
- Tue, 23 Jun 2020 16:31:18 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id n62sm3651622pjb.42.2020.06.23.16.31.17
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 23 Jun 2020 16:31:18 -0700 (PDT)
-Date: Tue, 23 Jun 2020 16:30:51 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 2/2] ASoC: bindings: fsl-asoc-card: Add compatible string
- for wm8524
-Message-ID: <20200623233050.GA28062@Asurada-Nvidia>
-References: <1592895167-30483-1-git-send-email-shengjiu.wang@nxp.com>
- <1592895167-30483-2-git-send-email-shengjiu.wang@nxp.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E1EDF8010E
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 02:25:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E1EDF8010E
+IronPort-SDR: wne63ZIBaynSTHVe4xngx2XXWmjCDyuFIoMkbJP6IkHFHGfF+balngtuoczoIHFzaWBwuBuPV1
+ 5me/YUSSQ3Sg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="124528365"
+X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; d="scan'208";a="124528365"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jun 2020 17:25:36 -0700
+IronPort-SDR: EoS4AuvFJZL6jk0vneFcOF0yEEDN0CxiVE4Lwaud5o6G3njbeInCTtepN3cryVUwCUcpye+5Py
+ jzaZZ1sRwEDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; d="scan'208";a="385015282"
+Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
+ by fmsmga001.fm.intel.com with ESMTP; 23 Jun 2020 17:25:34 -0700
+Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1jntEL-0000bN-VP; Wed, 24 Jun 2020 00:25:33 +0000
+Date: Wed, 24 Jun 2020 08:25:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Harsha Priya <harshapriya.n@intel.com>, alsa-devel@alsa-project.org,
+ tiwai@suse.de
+Subject: Re: [PATCH] ALSA: hda/hdmi: Add Intel silent stream support
+Message-ID: <202006240840.T22JaACv%lkp@intel.com>
+References: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592895167-30483-2-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
- broonie@kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org
+In-Reply-To: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: kai.vehmanen@intel.com, Harsha Priya <harshapriya.n@intel.com>,
+ kbuild-all@lists.01.org, Emmanuel Jillela <emmanuel.jillela@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,10 +92,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jun 23, 2020 at 02:52:47PM +0800, Shengjiu Wang wrote:
-> In order to support wm8524 codec with fsl-asoc-card machine
-> driver, add compatible string "fsl,imx-audio-wm8524".
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Hi Harsha,
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on sound/for-next]
+[also build test ERROR on v5.8-rc2 next-20200623]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use  as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/0day-ci/linux/commits/Harsha-Priya/ALSA-hda-hdmi-Add-Intel-silent-stream-support/20200624-073425
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+config: i386-tinyconfig
+compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+reproduce (this is a W=1 build):
+        make W=1 ARCH=i386  tinyconfig
+        make W=1 ARCH=i386 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> sound/pci/hda/Kconfig:258: unexpected 'if' within menu block
+>> sound/pci/hda/Kconfig:260: unexpected 'menu' within if block
+   sound/Kconfig:102: 'if' in different file than 'if'
+   sound/pci/hda/Kconfig:2: location of the 'if'
+   sound/Kconfig:104: 'if' in different file than 'if'
+   sound/pci/hda/Kconfig:2: location of the 'if'
+>> sound/Kconfig:106: unexpected 'if' within menu block
+>> drivers/Kconfig:239: syntax error
+   drivers/Kconfig:238: invalid statement
+   make[2]: *** [scripts/kconfig/Makefile:71: oldconfig] Error 1
+   make[1]: *** [Makefile:606: oldconfig] Error 2
+   make: *** [Makefile:185: __sub-make] Error 2
+   make: Target 'oldconfig' not remade because of errors.
+--
+>> sound/pci/hda/Kconfig:258: unexpected 'if' within menu block
+>> sound/pci/hda/Kconfig:260: unexpected 'menu' within if block
+   sound/Kconfig:102: 'if' in different file than 'if'
+   sound/pci/hda/Kconfig:2: location of the 'if'
+   sound/Kconfig:104: 'if' in different file than 'if'
+   sound/pci/hda/Kconfig:2: location of the 'if'
+>> sound/Kconfig:106: unexpected 'if' within menu block
+>> drivers/Kconfig:239: syntax error
+   drivers/Kconfig:238: invalid statement
+   make[2]: *** [scripts/kconfig/Makefile:71: olddefconfig] Error 1
+   make[1]: *** [Makefile:606: olddefconfig] Error 2
+   make: *** [Makefile:185: __sub-make] Error 2
+   make: Target 'olddefconfig' not remade because of errors.
+--
+>> sound/pci/hda/Kconfig:258: unexpected 'if' within menu block
+>> sound/pci/hda/Kconfig:260: unexpected 'menu' within if block
+   sound/Kconfig:102: 'if' in different file than 'if'
+   sound/pci/hda/Kconfig:2: location of the 'if'
+   sound/Kconfig:104: 'if' in different file than 'if'
+   sound/pci/hda/Kconfig:2: location of the 'if'
+>> sound/Kconfig:106: unexpected 'if' within menu block
+>> drivers/Kconfig:239: syntax error
+   drivers/Kconfig:238: invalid statement
+   make[5]: *** [scripts/kconfig/Makefile:71: allnoconfig] Error 1
+   make[4]: *** [Makefile:606: allnoconfig] Error 2
+   make[3]: *** [Makefile:336: __build_one_by_one] Error 2
+   make[3]: Target 'allnoconfig' not remade because of errors.
+   make[3]: Target 'tiny.config' not remade because of errors.
+   make[2]: *** [scripts/kconfig/Makefile:109: tinyconfig] Error 2
+   make[1]: *** [Makefile:606: tinyconfig] Error 2
+   make: *** [Makefile:185: __sub-make] Error 2
+   make: Target 'tinyconfig' not remade because of errors.
+
+vim +/if +258 sound/pci/hda/Kconfig
+
+   243	
+   244	config SND_HDA_INTEL_HDMI_SILENT_STREAM
+   245		bool "Enable Silent Stream always for HDMI"
+   246		depends on SND_HDA
+   247		help
+   248		  Intel hardware has a feature called 'silent stream', that
+   249		  keeps external HDMI receiver's analog circuitry powered on
+   250		  avoiding 2-3 sec silence during playback start. This mechanism
+   251		  relies on an info packet and preventing the codec from going to
+   252		  D3. (increasing the platform static power consumption when a
+   253		  HDMI receiver is plugged-in). 2-3 sec silence at the playback
+   254		  start is expected whenever there is format change. (default is
+   255		  2 channel format).
+   256		  Say Y to enable Silent Stream feature.
+   257	
+ > 258	endif
+   259	
+ > 260	endmenu
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
