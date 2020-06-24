@@ -7,78 +7,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 512A9C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:52:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01459C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:52:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D406C2077D
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:52:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8694D2080C
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 17:52:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lmeq+bWN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ynwewCyb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D406C2077D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="URNErfrB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="o5g25OCC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8694D2080C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66D781896;
-	Wed, 24 Jun 2020 19:51:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66D781896
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9E0618AE;
+	Wed, 24 Jun 2020 19:51:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9E0618AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593021130;
-	bh=PkxOHEqtp8ZysVQaBIx5FAQNbyWVqhA49IFEMNJX1jE=;
+	s=default; t=1593021162;
+	bh=ArmfbbDnyFqNypH7WUuZRwZQVlDE7i4eEhwEoRqLh/8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lmeq+bWN0bNj9k6vNjkujhODT+CyfLJxRgrTyNM0YmGPElWtTjrQ32ab/LbU5VZEv
-	 2Uhn5qewsxD38ETyI2M4+YxevIKtcbLl6NKAFs2HRgLTHHU+lFWmIMqJ+f36Polo5b
-	 uURGTp5knUei0VmtO2lMiHt3JxoXBPbmxv7uacPM=
+	b=URNErfrBKgHhinCBtpnlLeBK7gSUoUsECPztmpmiKs3+ssnnaHFpHiZZ0gobzr2Gw
+	 RAEg5vKpBxbMcord3ekKNkkR6+0z8ElR8L/dV9uGTvxL/cwP0lfnX5KoXOXpVpxLRU
+	 9esv9ltpDZOYiswpP24U3TMSDXCmQ81dYwLnlTOQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59409F802BC;
-	Wed, 24 Jun 2020 19:50:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73393F802DC;
+	Wed, 24 Jun 2020 19:50:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DB77F802A2; Wed, 24 Jun 2020 19:50:01 +0200 (CEST)
+ id 917D4F800B2; Wed, 24 Jun 2020 19:50:06 +0200 (CEST)
 Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D1F0F802A2
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 19:49:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D1F0F802A2
+ by alsa1.perex.cz (Postfix) with ESMTPS id F41AAF802A1
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 19:50:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F41AAF802A1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ynwewCyb"
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="o5g25OCC"
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OHnsQZ062662;
- Wed, 24 Jun 2020 12:49:54 -0500
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OHnx6i062677;
+ Wed, 24 Jun 2020 12:49:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1593020994;
- bh=e4c8HtBVunTIXDjsz5ID1fxiAatAsli/NNkAvswBlVQ=;
+ s=ti-com-17Q1; t=1593020999;
+ bh=Y5MdwCGXU77RAWVwX/WygJujeCPyLUiyCkJR3oQySLQ=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=ynwewCybshtrvVA0QUDM9/D6QwkAOfOTlHYUnPCXIq3iltzJyjxAlxIakNaNjXlXm
- tUPR6/1sybju7bdqbVqaUOqzqnOtrNt2SLiNHhun0Y26MkLKvNRtbffavfLnvN1WDX
- Xkhfmq4b2Ngy9CARWYJ7D1OnE8Xm8bGB8ARYFMXg=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OHns9H082161;
- Wed, 24 Jun 2020 12:49:54 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ b=o5g25OCCFUZZ3BAWAxqxAbf9F7AgYKdNEJZBl163nV9U3u4CQAUcyavwqVOXzeZK4
+ IHeZloQ4cQKB4dIp1bZjkykKUklkO0NVAcMtMzHcOP/8BbQZmSuFzvGgIcVQGLpWJl
+ hZW2lVq4Jpe7lHpIZFM5+wESUO/byafWBnS8onEw=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OHnxnB082225;
+ Wed, 24 Jun 2020 12:49:59 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
- Jun 2020 12:49:53 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2020 12:49:59 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 24 Jun 2020 12:49:53 -0500
+ Frontend Transport; Wed, 24 Jun 2020 12:49:59 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OHnrEX119444;
- Wed, 24 Jun 2020 12:49:53 -0500
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OHnxUf119507;
+ Wed, 24 Jun 2020 12:49:59 -0500
 From: Dan Murphy <dmurphy@ti.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH v6 3/7] ASoC: tas2562: Fix format issue for extra space before
- a comma
-Date: Wed, 24 Jun 2020 12:49:28 -0500
-Message-ID: <20200624174932.9604-4-dmurphy@ti.com>
+Subject: [PATCH v6 4/7] ASoC: tas2562: Add rx and tx slot programming
+Date: Wed, 24 Jun 2020 12:49:29 -0500
+Message-ID: <20200624174932.9604-5-dmurphy@ti.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200624174932.9604-1-dmurphy@ti.com>
 References: <20200624174932.9604-1-dmurphy@ti.com>
@@ -103,28 +102,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix the issue found that there is an extra space before a comma in the
-volume control.
+Add programming for the tdm slots for both tx and rx offsets.
 
-Fixes: bf726b1c86f2c ("ASoC: tas2562: Add support for digital volume control")
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- sound/soc/codecs/tas2562.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tas2562.c | 17 ++++++++++++++++-
+ sound/soc/codecs/tas2562.h |  4 ++++
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index f6495426f562..d26e30a2948c 100644
+index d26e30a2948c..2f1d4b697f01 100644
 --- a/sound/soc/codecs/tas2562.c
 +++ b/sound/soc/codecs/tas2562.c
-@@ -504,7 +504,7 @@ static const struct snd_kcontrol_new tas2562_snd_controls[] = {
- 		.info = snd_soc_info_volsw,
- 		.get = tas2562_volume_control_get,
- 		.put = tas2562_volume_control_put,
--		.private_value = SOC_SINGLE_VALUE(TAS2562_DVC_CFG1, 0, 110, 0, 0) ,
-+		.private_value = SOC_SINGLE_VALUE(TAS2562_DVC_CFG1, 0, 110, 0, 0),
- 	},
- };
+@@ -208,6 +208,22 @@ static int tas2562_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	if (ret < 0)
+ 		return ret;
  
++	if (tx_mask > TAS2562_TX_OFF_MAX) {
++		dev_err(tas2562->dev, "TX slot is larger then %d",
++			TAS2562_TX_OFF_MAX);
++		return -EINVAL;
++	}
++
++	ret = snd_soc_component_update_bits(component, TAS2562_TDM_CFG1,
++					    TAS2562_RX_OFF_MASK, rx_mask << 1);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_component_update_bits(component, TAS2562_TDM_CFG4,
++					    TAS2562_TX_OFF_MASK, tx_mask << 1);
++	if (ret < 0)
++		return ret;
++
+ 	return 0;
+ }
+ 
+@@ -327,7 +343,6 @@ static int tas2562_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	ret = snd_soc_component_update_bits(component, TAS2562_TDM_CFG1,
+ 					    TAS2562_TDM_CFG1_RX_OFFSET_MASK,
+ 					    tdm_rx_start_slot);
+-
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/sound/soc/codecs/tas2562.h b/sound/soc/codecs/tas2562.h
+index 28e75fc431d0..47e59c82eef3 100644
+--- a/sound/soc/codecs/tas2562.h
++++ b/sound/soc/codecs/tas2562.h
+@@ -34,6 +34,10 @@
+ #define TAS2562_TDM_DET		TAS2562_REG(0, 0x11)
+ #define TAS2562_REV_ID		TAS2562_REG(0, 0x7d)
+ 
++#define TAS2562_RX_OFF_MASK	GENMASK(5, 1)
++#define TAS2562_TX_OFF_MASK	GENMASK(3, 1)
++#define TAS2562_TX_OFF_MAX	7
++
+ /* Page 2 */
+ #define TAS2562_DVC_CFG1	TAS2562_REG(2, 0x0c)
+ #define TAS2562_DVC_CFG2	TAS2562_REG(2, 0x0d)
 -- 
 2.26.2
 
