@@ -2,78 +2,82 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D1DC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 15:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 119ECC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 15:49:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 545B520706
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 15:42:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 830CC20720
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 15:49:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iu1WUvlt";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dkW12UzB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 545B520706
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cACIZKm+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 830CC20720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2B3D185E;
-	Wed, 24 Jun 2020 17:41:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2B3D185E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F5EA185A;
+	Wed, 24 Jun 2020 17:48:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F5EA185A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593013328;
-	bh=EkpMO2y3Mkqy3dJRVw5QfgtDq9zlRdPmlOMku+obFrQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1593013744;
+	bh=+dJjNjbAFG5oreJ6jWgolF5zddh7mL9u3hY4kWcH1bI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iu1WUvltoCWLY3Hhce9653DZhHKMMMEKvHjQosX7ZWudBwL4Q3AZQ8HGx5luv0ahj
-	 rWICwd4AoB5A+mpZP1G56nHy5+P2r+47qvEwceA5OjAf8AyEB6hbu2Hw5PNh6ITnWH
-	 EWHH0NmxV0N35HXzQEsdTXuWAaADpYi4V95/7VRw=
+	b=cACIZKm+UC5dx1fH8w4TTE3/VcItGBpg9BKzp+PhYoFAbo45m8WuMrjf35rXErpA+
+	 nY4K4lM1uCxOKp2A2haSP9qQ2mjs4a+nA7y+LlObjSkLKHjegz+der1td+BbyZkRaU
+	 12VHanq08DY0AqrcVFJXDnz/ONaKzV3qvd7Ar4+0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8968AF8015A;
-	Wed, 24 Jun 2020 17:41:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A16F9F8015A;
+	Wed, 24 Jun 2020 17:48:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCE31F8015B; Wed, 24 Jun 2020 17:41:16 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A178F800B2
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 17:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A178F800B2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dkW12UzB"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 25652F800B2; Wed, 24 Jun 2020 17:48:12 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4FCE820720;
- Wed, 24 Jun 2020 15:41:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1593013271;
- bh=EkpMO2y3Mkqy3dJRVw5QfgtDq9zlRdPmlOMku+obFrQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=dkW12UzBPaQMESSBob9yI5VsoG6UPmhzaeCwAQfNnOSpbILCmMXFW+7tijEIlF9gw
- 1Rinm88dHfbeluXmE9//7bKlh1XrPY8Oeo4J2wzkjG2DkUHPx2qUnbfYBmaU8c2c0W
- zt/Ush29sLbOc4Nl3qnOwOXpGkT38Xhy3mqRFcZk=
-Date: Wed, 24 Jun 2020 16:41:09 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-Subject: Re: [PATCH] ASoC: rt1015: add missing header inclusion
-Message-ID: <20200624154109.GA48567@sirena.org.uk>
-References: <20200624053627.65179-1-tzungbi@google.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83457F800B2
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 17:48:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83457F800B2
+IronPort-SDR: T1y+D+lCa2eTDyKb/Tty6ApUoT62arHHAepsf3imv3jl89R6cR6qTFva5mqMDvJUJ+Y6BLGvqR
+ BRTUj5roPRoQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="124773171"
+X-IronPort-AV: E=Sophos;i="5.75,275,1589266800"; d="scan'208";a="124773171"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Jun 2020 08:48:04 -0700
+IronPort-SDR: 1fOZxaumamDFEwr2EtI126XZfYPpl6EnkhnFagpBmQGlfjPIaer8ZHziy+gLU7hEdicHiz1YbL
+ DnDMB7diiitQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,275,1589266800"; d="scan'208";a="279509947"
+Received: from bkorrapa-mobl1.amr.corp.intel.com (HELO [10.254.109.185])
+ ([10.254.109.185])
+ by orsmga006.jf.intel.com with ESMTP; 24 Jun 2020 08:48:03 -0700
+Subject: Re: [PATCH] ALSA: hda/hdmi: Add Intel silent stream support
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>,
+ Harsha Priya <harshapriya.n@intel.com>
+References: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
+ <s5hr1u4lxee.wl-tiwai@suse.de>
+ <f2da25c0-c740-4d44-ab66-6017622f7dde@perex.cz>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <7dd38f98-e74a-94c0-6888-523e6189c00b@linux.intel.com>
+Date: Wed, 24 Jun 2020 10:33:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="qMm9M+Fa2AknHoGS"
-Content-Disposition: inline
-In-Reply-To: <20200624053627.65179-1-tzungbi@google.com>
-X-Cookie: WYSIWYG:
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <f2da25c0-c740-4d44-ab66-6017622f7dde@perex.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: kai.vehmanen@intel.com, Emmanuel Jillela <emmanuel.jillela@intel.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,104 +94,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---qMm9M+Fa2AknHoGS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>> The silent stream is enabled with a Kconfig option, as well as a kernel
+>>> parameter should there be a need to override the build time default.
+>>
+>> I'm not sure whether the module option is the best interface.
+>> An alternative is a mixer element that controls dynamically.  Then
+>> it'll be per card unlike the module option.
+> 
+> +1, kcontrol seems the appropriate way to control this.
 
-On Wed, Jun 24, 2020 at 01:36:27PM +0800, Tzung-Bi Shih wrote:
-> To fix compile error:
->=20
-> error: implicit declaration of function 'ACPI_PTR'
-> [-Werror,-Wimplicit-function-declaration]
->                 .acpi_match_table =3D ACPI_PTR(rt1015_acpi_match),
-> 		                    ^
->=20
-> Adds the missing header inclusion and sorts in alphabetical.
+It was my suggestion to use Kconfig+kernel parameter for 
+simplicity/overrides.
 
-This breaks the build for an x86 allmodconfig:
+The kcontrol is a nice idea, but in practice we typically only have one 
+card dealing with HDMI. It also doesn't have a UCM representation so 
+would force the use of amixer and manual configs, or the UCM file would 
+always set the mode.
 
-In file included from /mnt/kernel/sound/soc/codecs/rt1015.c:27:
-/mnt/kernel/include/sound/soc-dapm.h:435:39: warning: 'struct snd_soc_pcm_r=
-untime' declared inside parameter list will not be visible outside of this =
-definition or declaration
- void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
-                                       ^~~~~~~~~~~~~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h:437:38: warning: 'struct snd_soc_pcm_r=
-untime' declared inside parameter list will not be visible outside of this =
-definition or declaration
- void snd_soc_dapm_stream_stop(struct snd_soc_pcm_runtime *rtd, int stream);
-                                      ^~~~~~~~~~~~~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h:445:50: warning: 'struct soc_enum' dec=
-lared inside parameter list will not be visible outside of this definition =
-or declaration
-   struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e,
-                                                  ^~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h:494:7: warning: 'enum snd_soc_bias_lev=
-el' declared inside parameter list will not be visible outside of this defi=
-nition or declaration
-  enum snd_soc_bias_level level);
-       ^~~~~~~~~~~~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h:668:26: error: field 'bias_level' has =
-incomplete type
-  enum snd_soc_bias_level bias_level;
-                          ^~~~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h:678:26: error: field 'target_bias_leve=
-l' has incomplete type
-  enum snd_soc_bias_level target_bias_level;
-                          ^~~~~~~~~~~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h:725:61: error: parameter 2 ('level') h=
-as incomplete type
-  struct snd_soc_dapm_context *dapm, enum snd_soc_bias_level level)
-                                     ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
-/mnt/kernel/include/sound/soc-dapm.h:724:20: error: function declaration is=
-n't a prototype [-Werror=3Dstrict-prototypes]
- static inline void snd_soc_dapm_init_bias_level(
-                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h:736:39: error: return type is an incom=
-plete type
- static inline enum snd_soc_bias_level snd_soc_dapm_get_bias_level(
-                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-/mnt/kernel/include/sound/soc-dapm.h: In function 'snd_soc_dapm_get_bias_le=
-vel':
-/mnt/kernel/include/sound/soc-dapm.h:739:9: warning: 'return' with a value,=
- in function returning void
-  return dapm->bias_level;
-         ^~~~
-/mnt/kernel/include/sound/soc-dapm.h:736:39: note: declared here
- static inline enum snd_soc_bias_level snd_soc_dapm_get_bias_level(
-                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from /mnt/kernel/include/sound/soc.h:1424,
-                 from /mnt/kernel/sound/soc/codecs/rt1015.c:28:
-/mnt/kernel/include/sound/soc-component.h: In function 'snd_soc_component_g=
-et_bias_level':
-/mnt/kernel/include/sound/soc-component.h:281:9: error: void value not igno=
-red as it ought to be
-  return snd_soc_dapm_get_bias_level(
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   snd_soc_component_get_dapm(component));
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/mnt/kernel/include/sound/soc-component.h: In function 'snd_soc_component_f=
-orce_bias_level':
-/mnt/kernel/include/sound/soc-component.h:299:3: error: type of formal para=
-meter 2 is incomplete
-   level);
-   ^~~~~
-cc1: some warnings being treated as errors
-
---qMm9M+Fa2AknHoGS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7zdBQACgkQJNaLcl1U
-h9AjNwf8CicJZyPitSmO2DinachgVP1XSa8IInfTszJG96DkaxV8zpacJDq6yuhe
-CW/zu/TBR7UIk9J2UEljnc7JO5v7TP3z3XKmgN1GrNtFs8Orn1xpZBIxHZzjmlnP
-60cV9KkYnJ7mPvA1kz9j5QwcxoDXrVeEXAgrd9e7EGD+uY2FDX9U5SjC6x4UFlWO
-dttRcNmcwbBqCyevHxBBpBbcsXHanAiis2iZSEAeOzJjrlxkN+aGFkPZmQkCsgnS
-0APWv053q7kDgP3rH7/shV+Vs9AkO3N0HXw9z4WDWwTUBjy9fDNm35oo7BE0r1Mj
-zUykAP+7xxtxGNoj1NpOQqBu2E/Bcw==
-=LxH4
------END PGP SIGNATURE-----
-
---qMm9M+Fa2AknHoGS--
