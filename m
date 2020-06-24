@@ -2,79 +2,83 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A3B1C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 18:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 827BFC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 19:15:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D091A2082F
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 18:56:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12C3F2077D
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 19:15:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Htfp0s9W";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="Ke+LWn0z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D091A2082F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RvnYEUTs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12C3F2077D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 613D2189A;
-	Wed, 24 Jun 2020 20:56:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 613D2189A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EE2918A4;
+	Wed, 24 Jun 2020 21:14:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EE2918A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593025014;
-	bh=DZ2kbG9urYV0E43KVtSrRIn0vwitF7O28mAWuhXImKA=;
+	s=default; t=1593026129;
+	bh=6+MfreiqfK+xz/gCA4sYHvjIpbGa4HEWg2oxRvnHmT8=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Htfp0s9WRqbPRRUAFAzVadqPiev+M06QdvE0R1uZccTWcHWRIGRvr7dfDSXkZBTO7
-	 2lFX1ZP6AJjDatawl6V+6ErP4FECxxa3QAWiIVGVEY/2FGHlL+I/GntYCf54AJoGpg
-	 VeWOJ0pokgVJCrsZqnM/Bw7xLHQzVARBuky8Jc5Y=
+	b=RvnYEUTs1IOvYI/AHB2u4u5I7mXl1YMW77yhgi3b5ZpfAfAm1DbmDGB/47cRmwlyq
+	 LRvx0bTKRnQ2C3JETViXkxihiRURJHJO7NYfvHmeF3T+iLCaqReXdDkJnxNYb8B1cT
+	 GmLV0cBJ57Sg/5vqGFvK7xnZMFEoe6w3SRR77pNE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8071F8012F;
-	Wed, 24 Jun 2020 20:56:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9E8AF8015A;
+	Wed, 24 Jun 2020 21:14:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1F29F8015A; Wed, 24 Jun 2020 20:56:02 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 85DBBF8012F; Wed, 24 Jun 2020 21:14:37 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88FEBF800B2
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 20:55:55 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 750CCA003F;
- Wed, 24 Jun 2020 20:55:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 750CCA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1593024954; bh=yA9SzuFSGDLyG2J9swRwCnPzRODDVukJio3yerv7Urs=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=Ke+LWn0zlpTEQt8bAHxyupHf82uTStPciGsGW6C79FjeXOX2D/24iQIRmNjcPqu1I
- QuDk7Nk6g249UlEIPAHP66LvpUrd0HGSYmCO4qxUpGdMSEoH+qyVeZHZDcFAzA0Jrv
- l6xjDBpE0Bjc3YyV+n9bLcvsPpYBZ32i3ihbLPE0=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 24 Jun 2020 20:55:45 +0200 (CEST)
-Subject: Re: [PATCH V3] ASoC: amd: add logic to check dmic hardware runtime
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, alsa-devel@alsa-project.org
-References: <1593025336-21482-1-git-send-email-Vijendar.Mukunda@amd.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <94c72bc7-6448-6d6f-d59d-4d6b30d20107@perex.cz>
-Date: Wed, 24 Jun 2020 20:55:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9895FF8012F
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 21:14:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9895FF8012F
+IronPort-SDR: eJ1+O7zFPm+XqbvZzFz5qEmm618FgybPjhnJfC4Vm2dHzE2IhtCm+2zdbrKnLZUWDkeeIihuMY
+ Jwthw7UzeRNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="142084235"
+X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; d="scan'208";a="142084235"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Jun 2020 12:14:29 -0700
+IronPort-SDR: RBdXwswyeJEW42opUpbwbn/jyTIMsNvQp2RNLZ3lXbeLk+Nqniuqd83UnL9xqaKYSP6sGVGpSb
+ x3xzJh5XasJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; d="scan'208";a="319540143"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.12.106])
+ ([10.213.12.106])
+ by FMSMGA003.fm.intel.com with ESMTP; 24 Jun 2020 12:14:26 -0700
+Subject: Re: [PATCH 2/5] ASoC: Intel: bdw-rt5677: fix module load/unload issues
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <20200622154241.29053-1-pierre-louis.bossart@linux.intel.com>
+ <20200622154241.29053-3-pierre-louis.bossart@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <031f1766-14cc-76ed-4a0f-b0436c50922a@intel.com>
+Date: Wed, 24 Jun 2020 21:14:25 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <1593025336-21482-1-git-send-email-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20200622154241.29053-3-pierre-louis.bossart@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Alexander.Deucher@amd.com, hui.wang@canonical.com,
- Virendra-Pratap.Arya@amd.com, Mark Brown <broonie@kernel.org>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ Curtis Malainey <curtis@malainey.com>, broonie@kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,101 +94,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 24. 06. 20 v 21:02 Vijendar Mukunda napsal(a):
-> Add logic to check DMIC hardware exists or not on
-> the platform at runtime.
+On 2020-06-22 5:42 PM, Pierre-Louis Bossart wrote:
+> The mainline code currently prevents modules from being removed.
 > 
-> Add module param for overriding DMIC hardware check
-> at runtime.
+> The BE dailink .init() function calls devm_gpiod_get() using the codec
+> component device as argument. When the machine driver is removed, the
+> references to the gpiod are not released, and it's not possible to
+> remove the codec driver module - which is the only entity which could
+> free the gpiod.
 > 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-
-> ---
-> v3: changed  dmic_acpi_check module param as bint
-> v2: changed module param usage -1 as default, 0 - skip, 1 - force
->   sound/soc/amd/renoir/rn-pci-acp3x.c | 29 +++++++++++++++++++++++++++++
->   sound/soc/amd/renoir/rn_acp3x.h     |  2 ++
->   2 files changed, 31 insertions(+)
+> This conceptual deadlock can be avoided by invoking gpiod_get() in the
+> .init() callback, and calling gpiod_put() in the exit() callback.
 > 
-> diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> index 859ed67..d1faea5 100644
-> --- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-> +++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> @@ -5,6 +5,7 @@
->   //Copyright 2020 Advanced Micro Devices, Inc.
->   
->   #include <linux/pci.h>
-> +#include <linux/acpi.h>
->   #include <linux/module.h>
->   #include <linux/io.h>
->   #include <linux/delay.h>
-> @@ -18,6 +19,16 @@ static int acp_power_gating;
->   module_param(acp_power_gating, int, 0644);
->   MODULE_PARM_DESC(acp_power_gating, "Enable acp power gating");
->   
-> +/**
-> + * dmic_acpi_check = -1 - Checks ACPI method to know DMIC hardware status runtime
-> + *                 = 0 - Skips the DMIC device creation and returns probe failure
-> + *                 = 1 - Assumes that platform has DMIC support and skips ACPI
-> + *                       method check
-> + */
-> +static int dmic_acpi_check = ACP_DMIC_AUTO;
-> +module_param(dmic_acpi_check, bint, 0644);
-> +MODULE_PARM_DESC(dmic_acpi_check, "checks Dmic hardware runtime");
-> +
->   struct acp_dev_data {
->   	void __iomem *acp_base;
->   	struct resource *res;
-> @@ -157,6 +168,8 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
->   {
->   	struct acp_dev_data *adata;
->   	struct platform_device_info pdevinfo[ACP_DEVS];
-> +	acpi_handle handle;
-> +	acpi_integer dmic_status;
->   	unsigned int irqflags;
->   	int ret, index;
->   	u32 addr;
-> @@ -201,6 +214,22 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
->   	if (ret)
->   		goto disable_msi;
->   
-> +	if (!dmic_acpi_check) {
-> +		ret = -ENODEV;
-> +		goto de_init;
-> +	} else if (dmic_acpi_check == ACP_DMIC_AUTO) {
-> +		handle = ACPI_HANDLE(&pci->dev);
-> +		ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
-> +		if (ACPI_FAILURE(ret)) {
-> +			ret = -EINVAL;
-> +			goto de_init;
-> +		}
-> +		if (!dmic_status) {
-> +			ret = -ENODEV;
-> +			goto de_init;
-> +		}
-> +	}
-> +
->   	adata->res = devm_kzalloc(&pci->dev,
->   				  sizeof(struct resource) * 2,
->   				  GFP_KERNEL);
-> diff --git a/sound/soc/amd/renoir/rn_acp3x.h b/sound/soc/amd/renoir/rn_acp3x.h
-> index 75228e3..1462039 100644
-> --- a/sound/soc/amd/renoir/rn_acp3x.h
-> +++ b/sound/soc/amd/renoir/rn_acp3x.h
-> @@ -55,6 +55,8 @@
->   
->   #define MAX_BUFFER (CAPTURE_MAX_PERIOD_SIZE * CAPTURE_MAX_NUM_PERIODS)
->   #define MIN_BUFFER MAX_BUFFER
-> +#define	ACP_DMIC_AUTO   -1
-> +
->   struct pdm_dev_data {
->   	u32 pdm_irq;
->   	void __iomem *acp_base;
+> Tested on SAMUS Chromebook with SOF driver.
 > 
 
+As /intel/haswell is the go-to driver for BDW platforms, please test and 
+confirm with legacy driver first. SOF is optional and thus non-blocking.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Czarek
