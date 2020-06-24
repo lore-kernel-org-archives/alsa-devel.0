@@ -2,81 +2,86 @@ Return-Path: <SRS0=wWF8=AF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83DCBC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 16:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BDB4C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 16:16:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0615120899
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 16:16:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C2A520781
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jun 2020 16:16:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t0PRkPmC";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="O9+Xgjp1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0615120899
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CH8xsJwy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gFgcK8MR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C2A520781
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 955971860;
-	Wed, 24 Jun 2020 18:15:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 955971860
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DC9D186D;
+	Wed, 24 Jun 2020 18:15:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DC9D186D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593015360;
-	bh=67EeWk1kzvyPqaG1ulIjrKHm9bNV9VBtKcXZnk5qHZw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=t0PRkPmCmrqUuYLhtBv4j/txWoZ0qxyODpaEYwcSu/S1s/xGAvClE1zLsXe9RZ8B7
-	 e+fIcVeNCfXr8Xf3lPR/f1emE27glK2YZAchFL7z8TuEL3k1zJlUGEwuXpgtNGO6pb
-	 vBpp/CWjRl9AIKioTrqdzvZAK3vHbyUeVgSi2sPw=
+	s=default; t=1593015367;
+	bh=X9gJlOVmYgX+dnnImHx3UzxP1R9p/y5i+/WcgjNqnrI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CH8xsJwyL+hGSu48Az3ffBq2sFEOmsjRgCG0FPL+te3XACJPfeNDMaObzSGZcmppS
+	 IIzeffIUtkVL1SR5vMlcwzBi7tDYG1edZOnIUZmxugExwRSIuDITy4oPsFo9k2qf5+
+	 q7vtLRmOB/UMn6Dc/fooXfMxgJcsvsKunzzsJrjc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EDB4F80162;
-	Wed, 24 Jun 2020 18:15:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39ADBF80246;
+	Wed, 24 Jun 2020 18:15:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DF62F801DB; Wed, 24 Jun 2020 18:15:08 +0200 (CEST)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ id 2D02CF80268; Wed, 24 Jun 2020 18:15:16 +0200 (CEST)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D66AF800B2
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 18:15:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D66AF800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B30BF80246
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2020 18:15:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B30BF80246
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="O9+Xgjp1"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF1cl038472;
- Wed, 24 Jun 2020 11:15:01 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gFgcK8MR"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF7wQ005227;
+ Wed, 24 Jun 2020 11:15:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1593015301;
- bh=PERrQrRfdmam6H0p9AISJ5uvgazKR0B7qBwzzHc92JA=;
- h=From:To:CC:Subject:Date;
- b=O9+Xgjp1yiFV1ez/tC5FJaYDrH7dzhajKNpZbiK31kD8bvPAqFwo3n721Ww7l2lhT
- 3onjWEhL7U2JN3QYoO27m/SaNPniSKNqaGJwqH0OqpXi979pGI3r8pL1VTRCQYzKLN
- p0NBdi0LROr/Bi3KAxnUkJGY0XdK+1zP3/aSPyIo=
+ s=ti-com-17Q1; t=1593015307;
+ bh=kULjw8GNfWNWdNFzaMSzkxUfYNEK2eh4pWXT0B+D/Fs=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=gFgcK8MRCPE9fct1j+GmNSWiv5ZW9Lz9BoVUj7qVmrDDkUgupFAqxaA1WCV7pLOzR
+ 4RmwYdMHmq1MK9h4TqBxrwvBnU0juTSVayp861LWpwONn3Mxd//zgQYRtkinOEGbL4
+ Ae4Mkvt9chYQi33z2IDC3I1KTMaSU/QHiJvM3QU0=
 Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF120079293;
- Wed, 24 Jun 2020 11:15:01 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE109.ent.ti.com
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05OGF7se052319
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 24 Jun 2020 11:15:07 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
  (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
- Jun 2020 11:15:00 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2020 11:15:06 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 24 Jun 2020 11:15:00 -0500
+ Frontend Transport; Wed, 24 Jun 2020 11:15:06 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF0de112577;
- Wed, 24 Jun 2020 11:15:00 -0500
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF6C6079177;
+ Wed, 24 Jun 2020 11:15:06 -0500
 From: Dan Murphy <dmurphy@ti.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH v5 0/7] TAS2562 issue fixes and slot programming 
-Date: Wed, 24 Jun 2020 11:14:52 -0500
-Message-ID: <20200624161459.19248-1-dmurphy@ti.com>
+Subject: [PATCH v5 1/7] dt-bindings: tas2562: Fix shut-down gpio property
+Date: Wed, 24 Jun 2020 11:14:53 -0500
+Message-ID: <20200624161459.19248-2-dmurphy@ti.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200624161459.19248-1-dmurphy@ti.com>
+References: <20200624161459.19248-1-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -98,45 +103,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello
+Fix the shut-down gpio property to be shut-down-gpio and fix the
+example.
 
-This series fixes issues tih the shut-down gpio device tree allocation and a
-code format issue found.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ Documentation/devicetree/bindings/sound/tas2562.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-While working on a project slot programming for the tx and rx paths needed to be
-enabled.  In addition the vsense slot programming needed to be configurable and
-not directly a simpler adder to the isense slot.
-
-Finally the yaml conversion patch was moved to be the last patch in the series
-so that the fixes can be applied and the yaml can be reviewed appropriately
-and does not hold up the rest of the fixes.
-
-Dan
-
-
-Dan Murphy (7):
-  dt-bindings: tas2562: Fix shut-down gpio property
-  ASoC: tas2562: Update shutdown GPIO property
-  ASoC: tas2562: Fix format issue for extra space before a comma
-  ASoC: tas2562: Add rx and tx slot programming
-  dt-bindings: tas2562: Add voltage sense slot property
-  ASoC: tas2562: Add voltage sense slot configuration
-  dt-bindings: tas2562: Convert the tas2562 binding to yaml
-
- .../devicetree/bindings/sound/tas2562.txt     |   34 -
- .../devicetree/bindings/sound/tas2562.yaml    |   77 +
- arch/arm/boot/compressed/fdt.h                |   66 +
- arch/arm/boot/compressed/libfdt.h             | 2072 +++++++++++++++++
- arch/arm/boot/compressed/libfdt_internal.h    |  173 ++
- sound/soc/codecs/tas2562.c                    |   88 +-
- sound/soc/codecs/tas2562.h                    |    4 +
- 7 files changed, 2462 insertions(+), 52 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
- create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
- create mode 100644 arch/arm/boot/compressed/fdt.h
- create mode 100644 arch/arm/boot/compressed/libfdt.h
- create mode 100644 arch/arm/boot/compressed/libfdt_internal.h
-
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
+index 94796b547184..fd0ac8636c01 100644
+--- a/Documentation/devicetree/bindings/sound/tas2562.txt
++++ b/Documentation/devicetree/bindings/sound/tas2562.txt
+@@ -16,7 +16,7 @@ Optional properties:
+ - interrupt-parent: phandle to the interrupt controller which provides
+                     the interrupt.
+ - interrupts: (GPIO) interrupt to which the chip is connected.
+-- shut-down: GPIO used to control the state of the device.
++- shut-down-gpio: GPIO used to control the state of the device.
+ 
+ Examples:
+ tas2562@4c {
+@@ -28,7 +28,7 @@ tas2562@4c {
+         interrupt-parent = <&gpio1>;
+         interrupts = <14>;
+ 
+-	shut-down = <&gpio1 15 0>;
++	shut-down-gpio = <&gpio1 15 0>;
+         ti,imon-slot-no = <0>;
+ };
+ 
 -- 
 2.26.2
 
