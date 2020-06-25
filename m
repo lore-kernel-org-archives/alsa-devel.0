@@ -6,54 +6,54 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49E76C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 06:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 863AEC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 07:04:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C15CF20773
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 06:42:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 10ADE207E8
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 07:04:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G/DQAIdM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C15CF20773
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bvE9YwiJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10ADE207E8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F42218A9;
-	Thu, 25 Jun 2020 08:41:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F42218A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87B3C18B3;
+	Thu, 25 Jun 2020 09:03:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87B3C18B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593067349;
-	bh=eTUSU+d9uCBiygnx2fgjHYCPQD4UaOGi1dXs0uOuxck=;
+	s=default; t=1593068656;
+	bh=dvxi63yAMDTYcmLcd6I35VOezS8AXurQc8ZKmuyRWb4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G/DQAIdMrffHgfawu4aUZ6/eKYp1qU8LAVzP8+B+U2d7i7x2e4svbUAGuKL/tUWM4
-	 1sAecKjxRU54KicrL5+SjlNq+EW/nAL9C7JCsyKCtzQqhBlq9lp39Zs4yZC491PRM3
-	 eCrh1ESMvEQB+S3bD+atO8xdMAd0+0dQL6xLEv+U=
+	b=bvE9YwiJBCxo+fn86pg7dH8kgcesipxrFCeiVi3DCG8jz+rB6GSc3xiIXvnL5pu0L
+	 uXlvRkfi6AvCfKN1Wk5zjQWyGkIerSeuaBbIbwCUffrQUHHjzlyLKKDTOSIZ+MdnZx
+	 Ag179UrRbnev5HofvKQCWbjswWww6rUwZhXExBpI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FAB7F80218;
-	Thu, 25 Jun 2020 08:41:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB7DDF80137;
+	Thu, 25 Jun 2020 09:03:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD1F2F80234; Thu, 25 Jun 2020 08:41:35 +0200 (CEST)
+ id 23055F800B2; Thu, 25 Jun 2020 09:03:24 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E6C5F800B2
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 08:41:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E6C5F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD7FDF800B2
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 09:03:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD7FDF800B2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4F411AAD0;
- Thu, 25 Jun 2020 06:41:28 +0000 (UTC)
-Date: Thu, 25 Jun 2020 08:41:28 +0200
-Message-ID: <s5hbll7ir53.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id BB56FAAD0;
+ Thu, 25 Jun 2020 07:03:17 +0000 (UTC)
+Date: Thu, 25 Jun 2020 09:03:17 +0200
+Message-ID: <s5h7dvviq4q.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "N, Harshapriya" <harshapriya.n@intel.com>
+To: "Arun Raghavan" <arun@arunraghavan.net>
 Subject: Re: [PATCH] ALSA: hda/hdmi: Add Intel silent stream support
-In-Reply-To: <BY5PR11MB43073E2381CE37D7CF584234FD950@BY5PR11MB4307.namprd11.prod.outlook.com>
+In-Reply-To: <3bfd1d2f-a2f0-4321-8f9d-2b9f265dcebd@www.fastmail.com>
 References: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
  <s5hr1u4lxee.wl-tiwai@suse.de>
  <f2da25c0-c740-4d44-ab66-6017622f7dde@perex.cz>
@@ -61,16 +61,18 @@ References: <1592954796-12449-1-git-send-email-harshapriya.n@intel.com>
  <s5ho8p8ifcn.wl-tiwai@suse.de>
  <2404f45d-832d-69a0-fb3b-1981ae455f50@linux.intel.com>
  <s5hftakid2e.wl-tiwai@suse.de>
- <BY5PR11MB43073E2381CE37D7CF584234FD950@BY5PR11MB4307.namprd11.prod.outlook.com>
+ <3bfd1d2f-a2f0-4321-8f9d-2b9f265dcebd@www.fastmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "Vehmanen, Kai" <kai.vehmanen@intel.com>, "Jillela,
- Emmanuel" <emmanuel.jillela@intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>,
+ Harsha Priya <harshapriya.n@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ kai.vehmanen@intel.com, Emmanuel Jillela <emmanuel.jillela@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,26 +88,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Jun 2020 19:58:40 +0200,
-N, Harshapriya wrote:
+On Thu, 25 Jun 2020 02:18:58 +0200,
+Arun Raghavan wrote:
 > 
+> +pulseaudio-discuss for information
+> 
+> On Wed, 24 Jun 2020, at 1:33 PM, Takashi Iwai wrote:
 > > On Wed, 24 Jun 2020 19:05:14 +0200,
 > > Pierre-Louis Bossart wrote:
-> > >
-> > >
-> > >
+> > > 
+> > > 
+> > > 
 > > > On 6/24/20 11:43 AM, Takashi Iwai wrote:
 > > > > On Wed, 24 Jun 2020 17:33:45 +0200,
 > > > > Pierre-Louis Bossart wrote:
 > > > >>
 > > > >>
-> > > >>>>> The silent stream is enabled with a Kconfig option, as well as a
-> > > >>>>> kernel parameter should there be a need to override the build time
-> > default.
+> > > >>>>> The silent stream is enabled with a Kconfig option, as well as a kernel
+> > > >>>>> parameter should there be a need to override the build time default.
 > > > >>>>
 > > > >>>> I'm not sure whether the module option is the best interface.
-> > > >>>> An alternative is a mixer element that controls dynamically.
-> > > >>>> Then it'll be per card unlike the module option.
+> > > >>>> An alternative is a mixer element that controls dynamically.  Then
+> > > >>>> it'll be per card unlike the module option.
 > > > >>>
 > > > >>> +1, kcontrol seems the appropriate way to control this.
 > > > >>
@@ -118,66 +122,68 @@ N, Harshapriya wrote:
 > > > > Not really.  There are systems with two HDMI outputs from both
 > > > > integrated and discrete GPUs.  Most modern systems are only with
 > > > > hybrid graphics, though.
-> > >
+> > > 
 > > > Ok, maybe I am mistaken, in most of the HDMI issues we've seen only
 > > > one HDMI source.
-> > >
+> > > 
 > > > But it's a good point that this is only supposed to be used for Intel
 > > > whether it's a kernel parameter or a kcontrol shouldn't this be
 > > > dependent on a PCI ID being detected and a SKYLAKE flag being set?
 > > > it's my understanding that this applies from Skylake to TigerLake, not
 > > > before.
 > > 
-> > I guess we can check it from the codec ID?  Change the probe function for
-> > Skylake+ codecs to patch_i915_skl_hdmi and co, and set the flag there.
+> > I guess we can check it from the codec ID?  Change the probe function
+> > for Skylake+ codecs to patch_i915_skl_hdmi and co, and set the flag
+> > there.
 > > 
-> > > >> It also doesn't have a UCM representation so would force the use of
-> > > >> amixer and manual configs, or the UCM file would always set the
-> > > >> mode.
+> > > >> It also doesn't have a UCM representation
+> > > >> so would force the use of amixer and manual configs, or the UCM file
+> > > >> would always set the mode.
 > > > >
-> > > > But people usually use the distro kernels, so the situation is more
-> > > > or less equivalent; you'd have to adjust a module option manually if
-> > > > you want a different one from the default, and you'd have to be root
-> > > > to change it.
+> > > > But people usually use the distro kernels, so the situation is more or
+> > > > less equivalent; you'd have to adjust a module option manually if you
+> > > > want a different one from the default, and you'd have to be root to
+> > > > change it.
 > > > >
 > > > > So, rather the question is how we should provide the setup of such
-> > > > parameter.  It's supposed to be a part of power management stuff
-> > > > that should be touched by either a smart PM tool or a manual
-> > > > override such as runtime PM setup?  Or can it be seen as a more casual
-> > tuning?
-> > >
+> > > > parameter.  It's supposed to be a part of power management stuff that
+> > > > should be touched by either a smart PM tool or a manual override such
+> > > > as runtime PM setup?  Or can it be seen as a more casual tuning?
+> > > 
 > > > I am not aware of such tools. The only thing I know is that some of
 > > > the HDaudio power settings are already controlled by kernel
 > > > parameters, e.g.
-> > >
+> > > 
 > > > /etc/modprobe.d/audio_powersave.conf
 > > > options snd_hda_intel power_save=1
 > > 
-> > Yes, it's been the primary knob for years to turn on/off the runtime PM for HD-
-> > audio and other legacy drivers.  This was used by powertop or some other
-> > power-aware daemons and tools, to be toggled dynamically per the power
-> > cable state or such.
+> > Yes, it's been the primary knob for years to turn on/off the runtime
+> > PM for HD-audio and other legacy drivers.  This was used by powertop
+> > or some other power-aware daemons and tools, to be toggled dynamically
+> > per the power cable state or such.
 > > 
 > > And, how the silent stream feature should be seen?
 > > Should it be a system-wide root-only setup or adjustable per user?
-> > Would it be changed often?  Such questions and answers will lead us to the
-> > right direction, I hope.
-> I think this feature should not be adjustable by the user during runtime because,
-> a)  It's based on the platform and OEM preference of having it (given it has power implications)
+> > Would it be changed often?  Such questions and answers will lead us to
+> > the right direction, I hope.
+> 
+> For audio, would UCM not be the appropriate point for a system integrator to decide how the audio device should be set up?
+> 
+> This would allow for a choice based on the situation in which the device is actually being deployed without users having to muck around with module parameters -- maybe someone wants want this enabled for an HTPC setup, but not on a desktop connected to a monitor.
 
-Well, the argument isn't equivalent with runtime PM.  The runtime PM
-is supposed to keep the almost same functionality, hence it's
-preferred to be enabled unless you hit a clear demerit (e.g. click
-noise or such).  But this one is rather a trade-off between power-save
-vs avoiding the drop of first samples.
+Right, that's my concern.  Many users with HDMI monitor that is
+capable of audio don't use HDMI audio because they don't need it
+and/or the output sucks.  For them, this feature is superfluous and
+harmful from the runtime PM POV.
 
-The problem is that this feature blocks the whole runtime PM, even if
-you don't use HDMI audio.  From that point, I guess many users prefer
-this off for those who don't use HDMI audio.
+If it were provided via UCM, would it be yet another UCM profile like
+HDMI+silentstream?  This can be confusing, too, I'm afraid.
 
-> b) Changing it on the runtime will cause the issue of unbalanced power up/down sequence like you mentioned
-
-This should be no problem if we do code right :)
+ From the interface POV, as Kai suggested in another mail, the
+analogy to power_save option makes sense.  OTOH, power_save is the
+knob that is better to be enabled (as long as it works), silent stream
+is the feature that is needed only when required.  So it comes to the
+question which interface is easier to manage.
 
 
 thanks,
