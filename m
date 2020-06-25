@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AA01C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:15:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08318C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:16:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05A992065D
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:15:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A9AD2065D
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:16:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tFXsrI9R"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05A992065D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CHtRH697"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A9AD2065D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 919181AAB;
-	Thu, 25 Jun 2020 21:14:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 919181AAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CCA71A96;
+	Thu, 25 Jun 2020 21:15:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CCA71A96
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593112531;
-	bh=hjJlaoyLyOYl6yPLRybUKuq9qqygZ+DYo/2xyZzFmUE=;
+	s=default; t=1593112577;
+	bh=7UBUz8dsjP5698j26YtV2kUqLfyP0w56nlG3j4kCdjc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tFXsrI9RXu/L70JiEG92N72L9wTa1mKc17qaxFQn39ZVwR2yOsnYDMU43FMeTWNCG
-	 JoWqcoTRKonz1hQSObr+Sg0HXMb/2WW1xO6JAZMD+VYk1dD3rwZ9wQumKHDQkeSqLB
-	 KmqroYr4dY/jhAQSpBQ2p9EWRdMPI/hlp6pip3ms=
+	b=CHtRH697PSEXS9plchyhQxrS8VVcIyVPtAxP54Lj/padH7/ZO0LkDUlt6HTdtbJFS
+	 I7VYk4AXgCpu4H/JFaLMZEY+9l8+/dtPYU3mYIcLSFDF56yG6YiaRtBdhyvZbMinn5
+	 vF6SPI+UAhO2QM44MSVer2QPrwmZUuuXYCTT4R2U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9358DF80218;
-	Thu, 25 Jun 2020 21:13:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FF49F802BC;
+	Thu, 25 Jun 2020 21:13:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1472EF802DB; Thu, 25 Jun 2020 21:13:47 +0200 (CEST)
+ id 3309CF80277; Thu, 25 Jun 2020 21:13:48 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 927D0F80277
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 21:13:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 927D0F80277
-IronPort-SDR: NKckVP5d6MZreeQl/c1F9k8fUYiHHBzOEr2JjkwDmEUm/a7yzXBwoDZ+/+bhx65r8L/Gj2QHea
- tS7M3j7cRceQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="144120815"
-X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; d="scan'208";a="144120815"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CDDAF80137
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 21:13:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CDDAF80137
+IronPort-SDR: 1gKju1J3d2h+grzuac5DO7HqCpkbJw+mYUz0WZmPyrFcZl6gaQOGdYZqrH/vuAhcgZtolyVd4m
+ eZ3NHlaylWoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="144120818"
+X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; d="scan'208";a="144120818"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  25 Jun 2020 12:13:33 -0700
-IronPort-SDR: hsIoCVMRgp/T58xBnCyby5ULZEo/s61e4PdCK2rtvmwt8lbSPeECAs31zo86rb1sN3DV9zj4ex
- LnY2zLCjFEjA==
-X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; d="scan'208";a="354559469"
+IronPort-SDR: uzRBCB+iqfdMZ6j7InY4IJXdzDXSufWYleGW2Y7jXu+TmMUi1UN9wx45v+c3f9iPaVeGtZFK3q
+ vmadGQSIyB8A==
+X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; d="scan'208";a="354559473"
 Received: from zeqimao-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.109.39])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jun 2020 12:13:32 -0700
+ 25 Jun 2020 12:13:33 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/17] ASoC: Intel: cml_rt1011_rt5682: add missing .owner field
-Date: Thu, 25 Jun 2020 14:12:53 -0500
-Message-Id: <20200625191308.3322-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/17] ASoC: Intel: sof_sdw: add missing .owner field
+Date: Thu, 25 Jun 2020 14:12:54 -0500
+Message-Id: <20200625191308.3322-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200625191308.3322-1-pierre-louis.bossart@linux.intel.com>
 References: <20200625191308.3322-1-pierre-louis.bossart@linux.intel.com>
@@ -97,25 +97,25 @@ cat /proc/asound/modules
 
 Reported-by: Jaroslav Kysela <perex@perex.cz>
 Suggested-by: Takashi Iwai <tiwai@suse.de>
-Fixes: 17fe95d6df93 ('ASoC: Intel: boards: Add CML m/c using RT1011 and RT5682')
+Fixes: 52db12d193d4 ('ASoC: Intel: boards: add sof_sdw machine driver')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/intel/boards/cml_rt1011_rt5682.c | 1 +
+ sound/soc/intel/boards/sof_sdw.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-index 189c908c4aa8..6e8934f348ef 100644
---- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
-+++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-@@ -501,6 +501,7 @@ static struct snd_soc_codec_conf rt1011_conf[] = {
- /* Cometlake audio machine driver for RT1011 and RT5682 */
- static struct snd_soc_card snd_soc_card_cml = {
- 	.name = "cml_rt1011_rt5682",
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index e1c1a8ba78e6..1bfd9613449e 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -893,6 +893,7 @@ static const char sdw_card_long_name[] = "Intel Soundwire SOF";
+ 
+ static struct snd_soc_card card_sof_sdw = {
+ 	.name = "soundwire",
 +	.owner = THIS_MODULE,
- 	.dai_link = cml_rt1011_rt5682_dailink,
- 	.num_links = ARRAY_SIZE(cml_rt1011_rt5682_dailink),
- 	.codec_conf = rt1011_conf,
+ 	.late_probe = sof_sdw_hdmi_card_late_probe,
+ 	.codec_conf = codec_conf,
+ 	.num_configs = ARRAY_SIZE(codec_conf),
 -- 
 2.20.1
 
