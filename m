@@ -2,65 +2,82 @@ Return-Path: <SRS0=XzTt=AG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C00CDC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 13:02:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9E9CC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 13:23:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BDE620672
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 13:02:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 567502076E
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 13:23:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PumtscZl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BDE620672
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u3CBHvDm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="zofvMJ0/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 567502076E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B875018D3;
-	Thu, 25 Jun 2020 15:01:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B875018D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id D27EE18D3;
+	Thu, 25 Jun 2020 15:22:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D27EE18D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593090130;
-	bh=f4qPRuuaSdmhxf6sF7rbYphF2jvJyCPRUuBI3xi171c=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1593091420;
+	bh=cIzv8OnHFNTKvxIVCOIG+Sw1VodfcxfOwam7r6nyET8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PumtscZlz2pG7qGLj3bFTYp2ri0XEHPy4j2IUAo181DUgu1BjQIi3E7gL3bp94ho9
-	 Q+LMTr663+xyMcCHmO7Czeoqve/0DuAVxI3Eu5Z5VipuYygg1ReInxJDatIELtyNx5
-	 8M6PiXs6NLMKoMwZZA6+Vja553xfLHO9jkzMIZGI=
+	b=u3CBHvDmeJkGD9dcK/cRsQecM5O1W0fzsQ6XpbTw78Uqs+MJFZd/1C072UVgcQzRb
+	 Yf1x04BRc2OVICjB1h5OEavGleTOeDqiOS23Wrbx9nPihcjxFfjgZ6hfTim3JGcKyU
+	 3vu3WWHQxwRpjZedQitAtA+Gh4XzeqGyJafFvypo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EDF1F80218;
-	Thu, 25 Jun 2020 15:01:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 687D3F80218;
+	Thu, 25 Jun 2020 15:22:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 243EEF80234; Thu, 25 Jun 2020 15:01:18 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 0F325F80234; Thu, 25 Jun 2020 15:22:48 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C81FDF80137
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 15:01:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C81FDF80137
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 8CFB4AE54;
- Thu, 25 Jun 2020 13:01:09 +0000 (UTC)
-Date: Thu, 25 Jun 2020 15:01:09 +0200
-Message-ID: <s5heeq3guzu.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - let hs_mic be picked ahead of hp_mic
-In-Reply-To: <20200625083833.11264-1-hui.wang@canonical.com>
-References: <20200625083833.11264-1-hui.wang@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63E45F80158
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 15:22:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63E45F80158
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="zofvMJ0/"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7865B2076E;
+ Thu, 25 Jun 2020 13:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1593091363;
+ bh=cIzv8OnHFNTKvxIVCOIG+Sw1VodfcxfOwam7r6nyET8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=zofvMJ0/urdqt5QkTpvKigt6XBmAL/dcdpZc5gHhwJhNAvf75JlG5uLkLe8BiZHXC
+ zMj7VbDad/YjctkKZnuAyF4k6BL59L8SLoEST5MTIDNRjnfPrG5DauvPA+va6Paxkh
+ HTR21IZ970v8rMyHYFsAziYkJP4Cm+U2oqgrD1Mk=
+Date: Thu, 25 Jun 2020 14:22:40 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Subject: Re: [PATCH V3] ASoC: amd: add logic to check dmic hardware runtime
+Message-ID: <20200625132240.GC5686@sirena.org.uk>
+References: <1593025336-21482-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <94c72bc7-6448-6d6f-d59d-4d6b30d20107@perex.cz>
+ <20200625111142.GA5686@sirena.org.uk>
+ <4c17afc2-cfaf-3d10-ffef-cc59747fe8c6@amd.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="4ZLFUWh1odzi/v6L"
+Content-Disposition: inline
+In-Reply-To: <4c17afc2-cfaf-3d10-ffef-cc59747fe8c6@amd.com>
+X-Cookie: One organism, one vote.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Alexander.Deucher@amd.com, hui.wang@canonical.com,
+ alsa-devel@alsa-project.org, Virendra-Pratap.Arya@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,38 +93,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Jun 2020 10:38:33 +0200,
-Hui Wang wrote:
-> 
-> We have a Dell AIO, there is neither internal speaker nor internal
-> mic, only a multi-function audio jack on it.
-> 
-> Users reported that after freshly installing the OS and plug
-> a headset to the audio jack, the headset can't output sound. I
-> reproduced this bug, at that moment, the Input Source is as below:
-> Simple mixer control 'Input Source',0
->   Capabilities: cenum
->   Items: 'Headphone Mic' 'Headset Mic'
->   Item0: 'Headphone Mic'
-> 
-> That is because the patch_realtek will set this audio jack as mic_in
-> mode if Input Source's value is hp_mic.
-> 
-> If it is not fresh installing, this issue will not happen since the
-> systemd will run alsactl restore -f /var/lib/alsa/asound.state, this
-> will set the 'Input Source' according to history value.
-> 
-> If there is internal speaker or internal mic, this issue will not
-> happen since there is valid sink/source in the pulseaudio, the PA will
-> set the 'Input Source' according to active_port.
-> 
-> To fix this issue, change the parser function to let the hs_mic be
-> stored ahead of hp_mic.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-Applied now.  Thanks.
+--4ZLFUWh1odzi/v6L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Jun 25, 2020 at 05:32:33PM +0530, Mukunda,Vijendar wrote:
 
-Takashi
+> Next time onwards, i will make sure using maintainer list for posting new
+> patch.
+
+Please send me this patch as well if you want me to review it.
+
+--4ZLFUWh1odzi/v6L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl70pR8ACgkQJNaLcl1U
+h9DWcAf/WfCHrmU/g5g+eXDBt+NBftuSMz2BIyWrCvn3C8Oh+Lr0+EXb1DTqzUuw
+12LuTJeeiFM8tgKUX092N6tRgK8j/dnHpMwF7jGsvkSrWfyL389tV/OgNVCdi3Tu
+3EWJy3EeaMx5FcN7BZMNYHueoALwvVlXLGGbYeZszyk4crjbURhyP2J85VgENtdP
+wjTILG/LsnhvLhLZDKhSCvYQzAHISff+0att5XCBcM26f1YcidhhEtpAIBrWehHy
++irhDQBp8uLxcckkm0Li5OezqEotNG9OLZE3wMO86C38C2FcIgeAgTd4zSnSzBRI
+LanBbGiN1IB+KhuQQ2SjbOcPRpftUA==
+=yqoS
+-----END PGP SIGNATURE-----
+
+--4ZLFUWh1odzi/v6L--
