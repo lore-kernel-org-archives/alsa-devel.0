@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1682AC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 11:59:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11B42C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 12:06:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 944F120781
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 11:59:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 922A320720
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 12:06:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RL40QPTp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="kiS4bNg5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 944F120781
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ujcQWI0f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 922A320720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21E5285D;
-	Thu, 25 Jun 2020 13:58:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21E5285D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FED41835;
+	Thu, 25 Jun 2020 14:05:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FED41835
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593086380;
-	bh=mqSK+Nk/lpG1HDQvrdVnROhVSFO5g7eKbhytbx0wI7A=;
+	s=default; t=1593086797;
+	bh=NLmXwO3fl6JiDSplUQObqbKRReUnA2vhb3UubkhmDbk=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=RL40QPTpv+H+YJinDVBS8T+CHDzyR88JxegF6uPqFwXHZGFR6Or7+svgLcEYHxaTO
-	 uzKnmpOpCCuwGOYF5fDkRyz48av6CEQo3/JAQIcDsUHY1uuVLswYxIWLX3pPGxW9Pq
-	 4/OTI8PPdAaRZHwRLSsG2wAJO8PiVoaCZ76BkVEg=
+	b=ujcQWI0fvOAjc3xsqftLoHnj7UaUsPkP7kwvsC6NmhFuQpYAf+4mPP0TjAYgFXt2F
+	 U6RztKoc/uAfhhhDSJdu6zh/ogYVd2iFf1O0tj2eNcLIuladpJYPuADI541OKk6mqA
+	 yPCygHJIPIYHzJteGz3dbaL/1suYdhx78ktOAsE8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E7B1F80158;
-	Thu, 25 Jun 2020 13:58:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB8B9F80158;
+	Thu, 25 Jun 2020 14:05:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75C6EF80234; Thu, 25 Jun 2020 13:58:47 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2649FF80158
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 13:58:40 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 13DF0A003F;
- Thu, 25 Jun 2020 13:58:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 13DF0A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1593086319; bh=1p+fiRQhOEUiwl+CUXZO320U1CUa5ubHCZI3JICVqSE=;
- h=From:To:Cc:Subject:Date:From;
- b=kiS4bNg5LhAU9t6MjlJtZIkSWjved04+GPaeiuc8QdgVB5lZNETu+vif+Dkw5ffLI
- OpCb0L5bgf0pxhyiI9v/uXL0XzSsHr+TZLsP2og8kw74Z/gPxJf1eUNBoH1VHCCr2D
- 0iFn9yBh72N3wjTTI0KnuiU6+LKWTv80+77v+ggk=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ id 62EABF80277; Thu, 25 Jun 2020 14:05:44 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 25 Jun 2020 13:58:32 +0200 (CEST)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH] AsoC: amd: add missing snd- module prefix to the acp3x-rn
- driver kernel module
-Date: Thu, 25 Jun 2020 13:58:29 +0200
-Message-Id: <20200625115829.791750-1-perex@perex.cz>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Alexander.Deucher@amd.com,
- Mark Brown <broonie@kernel.org>, vijendar.mukunda@amd.com
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4B33F80158
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 14:05:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4B33F80158
+IronPort-SDR: MC8iEsh0ZUQdVxBKwZQLtvMorHAqM6m+O21Tr+gDvbR4ysiRsHlumJ0yyS3I9DN7cRY8Ln933O
+ C4xR0TfoLfqA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="206389918"
+X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; d="scan'208";a="206389918"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jun 2020 05:05:34 -0700
+IronPort-SDR: b2dJ3CrglRbVnPhLMpsJhyqJDAhBnh0VUZ1SA9TK7BhCEf609jGyLpdfaQNiZQHrIv4y2U8xHn
+ yXQC3HrC1vcA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; d="scan'208";a="354438926"
+Received: from test-hp-compaq-8100-elite-cmt-pc.igk.intel.com ([10.237.149.93])
+ by orsmga001.jf.intel.com with ESMTP; 25 Jun 2020 05:05:33 -0700
+From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH alsa-lib 1/8] topology: decode: fix channel map memory
+ allocation
+Date: Thu, 25 Jun 2020 13:03:39 +0200
+Message-Id: <1593083026-7501-1-git-send-email-piotrx.maziarz@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
+Cc: cezary.rojewski@intel.com, amadeuszx.slawinski@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,28 +82,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: vijendar.mukunda@amd.com
-Cc: Alexander.Deucher@amd.com
----
- sound/soc/amd/renoir/Makefile | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Without proper memory allocation behaviour was undefined.
 
-diff --git a/sound/soc/amd/renoir/Makefile b/sound/soc/amd/renoir/Makefile
-index e4371932a55a..4a82690aec16 100644
---- a/sound/soc/amd/renoir/Makefile
-+++ b/sound/soc/amd/renoir/Makefile
-@@ -2,6 +2,7 @@
- # Renoir platform Support
- snd-rn-pci-acp3x-objs	:= rn-pci-acp3x.o
- snd-acp3x-pdm-dma-objs	:= acp3x-pdm-dma.o
--obj-$(CONFIG_SND_SOC_AMD_RENOIR)	 += snd-rn-pci-acp3x.o
--obj-$(CONFIG_SND_SOC_AMD_RENOIR)	 += snd-acp3x-pdm-dma.o
--obj-$(CONFIG_SND_SOC_AMD_RENOIR_MACH)	+= acp3x-rn.o
-+snd-acp3x-rn-objs	:= acp3x-rn.o
-+obj-$(CONFIG_SND_SOC_AMD_RENOIR)	+= snd-rn-pci-acp3x.o
-+obj-$(CONFIG_SND_SOC_AMD_RENOIR)	+= snd-acp3x-pdm-dma.o
-+obj-$(CONFIG_SND_SOC_AMD_RENOIR_MACH)	+= snd-acp3x-rn.o
+Signed-off-by: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
+---
+ src/topology/ctl.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/src/topology/ctl.c b/src/topology/ctl.c
+index 90241b6..c8c7e94 100644
+--- a/src/topology/ctl.c
++++ b/src/topology/ctl.c
+@@ -1330,7 +1330,6 @@ int tplg_decode_control_enum1(snd_tplg_t *tplg,
+ 			      void *bin, size_t size)
+ {
+ 	struct snd_soc_tplg_enum_control *ec = bin;
+-	struct snd_tplg_channel_map_template cmt;
+ 	int i;
+ 
+ 	if (size < sizeof(*ec)) {
+@@ -1375,11 +1374,11 @@ int tplg_decode_control_enum1(snd_tplg_t *tplg,
+ 		}
+ 	}
+ 
+-	et->map = &cmt;
+-	memset(&cmt, 0, sizeof(cmt));
+-	cmt.num_channels = ec->num_channels;
+-	for (i = 0; i < cmt.num_channels; i++) {
+-		struct snd_tplg_channel_elem *channel = &cmt.channel[i];
++	et->map = tplg_calloc(heap, sizeof(struct snd_tplg_channel_map_template));
++	et->map->num_channels = ec->num_channels;
++	for (i = 0; i < et->map->num_channels; i++) {
++		struct snd_tplg_channel_elem *channel = &et->map->channel[i];
++
+ 		tplg_log(tplg, 'D', pos + ((void *)&ec->channel[i] - (void *)ec),
+ 			 "enum: channel size %d", ec->channel[i].size);
+ 		channel->reg = ec->channel[i].reg;
 -- 
-2.25.4
+2.7.4
+
