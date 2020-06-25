@@ -2,84 +2,89 @@ Return-Path: <SRS0=XzTt=AG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28DA3C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 15:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5AC6C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 15:37:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A733B207E8
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 15:36:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F678207D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 15:37:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DqpKZQ9M";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="wN+MxTkZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A733B207E8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fOPD6zAv";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="T9dcF8M+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F678207D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CB9418F4;
-	Thu, 25 Jun 2020 17:35:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CB9418F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEC9D1907;
+	Thu, 25 Jun 2020 17:36:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEC9D1907
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593099409;
-	bh=04m4u2+mvzmpZ44TdW4eCw2RXju7PGthRuHD8q/NbdA=;
-	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DqpKZQ9MPwBWq0duZFyRsPzZgEWwI1v3kxGbMhXayDd04XYhvQke2DSMGXavZufcD
-	 dVhi54ajqX3o+uqTMKQ2XaHR8xMRefAHJU3C5Omx5+cJjDlrpVvtagaxR5hILHRzJG
-	 XKwXeLkO0otLsHJ0Hysg3lVTNDkC4Qcbxhb9JGEU=
+	s=default; t=1593099462;
+	bh=l1GLlwn24ElrzRgS2/l9FKxYLhWc07dos496Wz8Arho=;
+	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fOPD6zAvIPP/Bqpn+HgifesCKnEjHlBN5mfZbBm4u/Jaf3A7jzpmqULusLeNgcSh8
+	 lau4uLRI0pLimNMS29jldbIFW3B+CclaQ67ZjZT03UDqDJKszh8LtiLwpWGpLsLsPg
+	 y2lMmCf6BebIkuFlu8vp+sOGcHh84j4hbe8muaPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C279DF80218;
-	Thu, 25 Jun 2020 17:35:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C78BEF80249;
+	Thu, 25 Jun 2020 17:36:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21889F80158; Thu, 25 Jun 2020 17:35:58 +0200 (CEST)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
- [IPv6:2607:f8b0:4864:20::b4a])
+ id 9E89FF80259; Thu, 25 Jun 2020 17:36:02 +0200 (CEST)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74A39F80158
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 17:35:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74A39F80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63EB0F80234
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 17:35:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63EB0F80234
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="wN+MxTkZ"
-Received: by mail-yb1-xb4a.google.com with SMTP id s90so6311137ybi.6
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 08:35:55 -0700 (PDT)
+ header.b="T9dcF8M+"
+Received: by mail-yb1-xb49.google.com with SMTP id s7so6305703ybg.10
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 08:35:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=Jy5xo/OxV/VNYtE2APHxAVGCJ3z+jMwyCElZE6ZTgGk=;
- b=wN+MxTkZn3rz7tBxcr6OPaHIp6Dxo13dvMLYQJ1JQyOIFAwgvKNz63qzMjeNWOsIRU
- cwTHo0EByP9AjcTelUY1D6WEVJQ0sXpvKsCMsabzp8aWSfeE9uZZePBJS+zcD+enRgdm
- 3N5bm+SCqtNbsgCbZvSRG4TBmwWtfLxEi5GaxhxlhdbANRVrowZz6iO3KOktemtR43ID
- q34SZ28qlD7gjhSy9Q5Z770bLvZOCQtFICEiIL6cgoJK8+yZXECpvwApbq9c+DqNSbwZ
- gfuS08dnJdjMTGSqlUXkM3PbWNZI0i+svq2sZdOtqgxRKSa1wu0+r4UNOV2R6b3w43Sp
- lsmA==
+ h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+ :cc; bh=dbGI7v9rzg/Ac7uwlTJsLHWm06iT1PR6qePnkUIC9XA=;
+ b=T9dcF8M+YccA4Bnlvh4rBbTe+LGEddNeoc9rJUWs6GLzXbxBZ5NbGBRJTcBMtbNegH
+ E2i5ojBn4GMnaSAQHzc6gpOsdJVuisBORihCnQ9jF5/LpPkLEhEbXPrCTdGIPhlJRMEC
+ TBJi6iLAqxY6vwtKLa8/cXCu9IFcyFyGIAzO2EzQ3Bk1yPtM7LGVoXjWFZErH03T596L
+ g4pnQh4HdWDAWRqf75f1TyNIvN9qs2rjRm1ects6Ex32Ny0oNqLtq57Eex22RiVLwmrb
+ Js+A2dcxPGAfPBXXFkf3KgwzG3W/gyWMcyLcAf0qpe8Cn2+R5EwvQdoaoGrfqQVYwbpM
+ AULA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=Jy5xo/OxV/VNYtE2APHxAVGCJ3z+jMwyCElZE6ZTgGk=;
- b=r+MVq9WSQH5tSiNyj42WtfaExuyntQKxHtFu2n69WlajWjtS/8lMMdnZIZfhAt9hKZ
- cmbhwW14fWceX+eMtNWkrsFg2sSc2se7OhWeOyoBgpH1faLz7J8JvfsJzFCZlBi7uZbG
- oDpe03ZKOB4oAlcioP+vWNV3Jh5cXjPeY7CTEwK3UoP4jZUdHjxHZOAk8ysns6dcVGYM
- QAGqBpihhgTHN3AKDt++9YJXX2oI5XYFrqO8Gef4pNgCnwUtjAgV71EG2uw2kHEKbco/
- y6hCPAwoNzNHMzBhZdHeLB+mYpidnDyIJEFV1Eg2/tU408rCEpXxeFdXIk7iAAWemlyf
- szEw==
-X-Gm-Message-State: AOAM530mQ70r+MNOwRdlsbRny1kFOS7F2cRnGqioZUl1DuK5xvuocLql
- Wn/QrEGVap2UBr1EOFeceU4oIQtTvNnH
-X-Google-Smtp-Source: ABdhPJz4oZ3iNP6QQXj4eUYt4fm0/1ooZxu0GCqpFhNca0NggNx22a8S/x5Rl9Mldr/y/nodNvXH25+8I14k
-X-Received: by 2002:a5b:290:: with SMTP id x16mr49447975ybl.75.1593099353421; 
- Thu, 25 Jun 2020 08:35:53 -0700 (PDT)
-Date: Thu, 25 Jun 2020 23:35:40 +0800
-Message-Id: <20200625153543.85039-1-tzungbi@google.com>
+ h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+ :references:subject:from:to:cc;
+ bh=dbGI7v9rzg/Ac7uwlTJsLHWm06iT1PR6qePnkUIC9XA=;
+ b=XZr/eu8kIacQQ6+7KcWMf48Kk5fhI7CJrDWZeOr35CNSEFKLPujnn1bN0QJU334ztm
+ ifmGlLcf2pBfe/C745nIJ8VMSDGWGmKObSDaYlb0UF0tzHgf6Gh7XfIObqoewPLmQ8Ds
+ glm0ScnJO8MNwMsfQ22FrSryHuc6F4FPxHQ4aV3RrIYU5YB/vv1yUXo0KubVO9pxM6ld
+ ynsy8NeJa2SGaNN56zk/LjQAWOAVRaVBwvKP7fIbJK/jQy3elGldrx1HzvAjm0878LD8
+ P9mdYtp+h0paRBCtS3RzSsrG/9+QKDu9uN4BlYuY5T6TQoWd13FksSINlL0Hud0oo4Zv
+ HfYg==
+X-Gm-Message-State: AOAM530vpbtJotOlazlGDftQEFhuYgDu9yZGWZajRpBvq4+1XgXOE9oo
+ +QzUXYT+gweniGYvw2BDr05i8VoYsqqd
+X-Google-Smtp-Source: ABdhPJzgR0jm3M2pJ8FWv89j3WkCT1Y2LQKWLnM5V+nQ3jpXXF8+NUr8PvJs6AJ5Wyew+OsnB3plQQsMs+Of
+X-Received: by 2002:a05:6902:4e9:: with SMTP id
+ w9mr52565520ybs.311.1593099357573; 
+ Thu, 25 Jun 2020 08:35:57 -0700 (PDT)
+Date: Thu, 25 Jun 2020 23:35:41 +0800
+In-Reply-To: <20200625153543.85039-1-tzungbi@google.com>
+Message-Id: <20200625153543.85039-2-tzungbi@google.com>
 Mime-Version: 1.0
+References: <20200625153543.85039-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH v2 0/3] ASoC: rt1015: fix compilation errors and warnings
+Subject: [PATCH v2 1/3] ASoC: core: move definition of enum snd_soc_bias_level
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -99,28 +104,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The series fixes compilation errors and warnings discovered in the thread
-https://patchwork.kernel.org/patch/11622319/.
+To fix compilation error:
 
-The original patch:
-(1) adds acpi.h for fixing implicit declaration of function 'ACPI_PTR'
-(2) sorts header inclusions in alphabetical
+- error: field 'XXX' has incomplete type
 
-The compilation errors and warnings are likely introduced by (2).
+Moves definition of enum snd_soc_bias_level from soc.h to soc-dapm.h.
 
-The 1st and 2nd patches fix the newly discovered errors and warnings.
-The 3rd patch is the same as the original patch.
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+ include/sound/soc-dapm.h | 18 ++++++++++++++++++
+ include/sound/soc.h      | 18 ------------------
+ 2 files changed, 18 insertions(+), 18 deletions(-)
 
-Tzung-Bi Shih (3):
-  ASoC: core: move definition of enum snd_soc_bias_level
-  ASoC: dapm: declare missing structure prototypes
-  ASoC: rt1015: add missing header inclusion
-
- include/sound/soc-dapm.h  | 20 ++++++++++++++++++++
- include/sound/soc.h       | 18 ------------------
- sound/soc/codecs/rt1015.c | 17 +++++++++--------
- 3 files changed, 29 insertions(+), 26 deletions(-)
-
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index cc3dcb815282..75467f2ed405 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -376,6 +376,24 @@ struct snd_soc_dapm_widget_list;
+ struct snd_soc_dapm_update;
+ enum snd_soc_dapm_direction;
+ 
++/*
++ * Bias levels
++ *
++ * @ON:      Bias is fully on for audio playback and capture operations.
++ * @PREPARE: Prepare for audio operations. Called before DAPM switching for
++ *           stream start and stop operations.
++ * @STANDBY: Low power standby state when no playback/capture operations are
++ *           in progress. NOTE: The transition time between STANDBY and ON
++ *           should be as fast as possible and no longer than 10ms.
++ * @OFF:     Power Off. No restrictions on transition times.
++ */
++enum snd_soc_bias_level {
++	SND_SOC_BIAS_OFF = 0,
++	SND_SOC_BIAS_STANDBY = 1,
++	SND_SOC_BIAS_PREPARE = 2,
++	SND_SOC_BIAS_ON = 3,
++};
++
+ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
+ int dapm_clock_event(struct snd_soc_dapm_widget *w,
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 33aceadebd03..6791b7570a67 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -368,24 +368,6 @@
+ #define SOC_ENUM_SINGLE_VIRT_DECL(name, xtexts) \
+ 	const struct soc_enum name = SOC_ENUM_SINGLE_VIRT(ARRAY_SIZE(xtexts), xtexts)
+ 
+-/*
+- * Bias levels
+- *
+- * @ON:      Bias is fully on for audio playback and capture operations.
+- * @PREPARE: Prepare for audio operations. Called before DAPM switching for
+- *           stream start and stop operations.
+- * @STANDBY: Low power standby state when no playback/capture operations are
+- *           in progress. NOTE: The transition time between STANDBY and ON
+- *           should be as fast as possible and no longer than 10ms.
+- * @OFF:     Power Off. No restrictions on transition times.
+- */
+-enum snd_soc_bias_level {
+-	SND_SOC_BIAS_OFF = 0,
+-	SND_SOC_BIAS_STANDBY = 1,
+-	SND_SOC_BIAS_PREPARE = 2,
+-	SND_SOC_BIAS_ON = 3,
+-};
+-
+ struct device_node;
+ struct snd_jack;
+ struct snd_soc_card;
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
