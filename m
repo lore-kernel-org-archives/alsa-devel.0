@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62CDAC433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 12:08:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC93EC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 12:08:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6A28207D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 12:08:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2BBC82076E
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 12:08:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u8de9Ra5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6A28207D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ujwHXG2Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BBC82076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4868F18DD;
-	Thu, 25 Jun 2020 14:07:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4868F18DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD93318CC;
+	Thu, 25 Jun 2020 14:07:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD93318CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593086898;
-	bh=22e/obb5ShwM0dLH10zu4DerUoff0JgSOBne0CP8iCk=;
+	s=default; t=1593086929;
+	bh=3IyPOezfJjebFqUSNNL4opUwfK5akQA/OmxyD9z+A+I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u8de9Ra5p138HSDoCBzdVx9Yu1M1HpflQDWyrSOx4KAWuQRefs8KJ96VIiGKH73oE
-	 bgCmVnYV2dWVHr5c8TrlN0ksD5vPwF1WseZSubkrnSS4QpFRduCalel9o1OzK0/J1O
-	 5fbJE9HAHYyFkux2BK1rVC/60qHySWOgrZAJVNVg=
+	b=ujwHXG2QRtu7b1rl/9EST68aDysZgn5qVJFLm6w9GpqCgWLfE5Nktn2hvwK4qyN5m
+	 cSTjSTzhdpNJEyIBktCgD8UyZVblPwpflSdqzHeFTIHfvAtK34xoDvvS938RoxwA7s
+	 86BSiIcJdQZwXHKrGLrEd4qGCsZwEKvNW88uFZxI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAEF4F80249;
-	Thu, 25 Jun 2020 14:05:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE6D3F802BC;
+	Thu, 25 Jun 2020 14:05:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55781F802A8; Thu, 25 Jun 2020 14:05:52 +0200 (CEST)
+ id 76B4CF802A7; Thu, 25 Jun 2020 14:05:52 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B626FF8023E
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 14:05:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B626FF8023E
-IronPort-SDR: vKyC13sWMpdzRxf22YOwn75lEavN74vQigf2rSf5Zv39KwPYdSx1iPF0uCCE/osVJMivFfHzdC
- idP/2j9NwHgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="206389932"
-X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; d="scan'208";a="206389932"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48F01F80218
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 14:05:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48F01F80218
+IronPort-SDR: LTpjhfrAc632oAEE615eBw2mim6bt/m2X8sfv4V9qdkuMHN1blfacx66QYahjXgjde29X4K9gH
+ WDVnJChKwIgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="206389937"
+X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; d="scan'208";a="206389937"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jun 2020 05:05:39 -0700
-IronPort-SDR: OWGI6IkvYC6vFsFNzniIIo0sWEKSlIDlzsbc4PS25rQINq/5lz0Hj+bY4IXiXt1IzDxPwzHmh7
- pyRSkQtrqfSQ==
+ 25 Jun 2020 05:05:40 -0700
+IronPort-SDR: hHHPgURUk1BOougzDVnAdbbGTx1TAPW9gdtq8fMUpq2njTTeyFf4xd6Vo7TE/YGD5aDU91mfju
+ PjddTDrNtvXw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; d="scan'208";a="354438957"
+X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; d="scan'208";a="354438961"
 Received: from test-hp-compaq-8100-elite-cmt-pc.igk.intel.com ([10.237.149.93])
- by orsmga001.jf.intel.com with ESMTP; 25 Jun 2020 05:05:37 -0700
+ by orsmga001.jf.intel.com with ESMTP; 25 Jun 2020 05:05:39 -0700
 From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 4/8] topology: decode: Change declaration of enum
- decoding function
-Date: Thu, 25 Jun 2020 13:03:42 +0200
-Message-Id: <1593083026-7501-4-git-send-email-piotrx.maziarz@linux.intel.com>
+Subject: [PATCH alsa-lib 5/8] topology: decode: Fix decoding PCM formats and
+ rates
+Date: Thu, 25 Jun 2020 13:03:43 +0200
+Message-Id: <1593083026-7501-5-git-send-email-piotrx.maziarz@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593083026-7501-1-git-send-email-piotrx.maziarz@linux.intel.com>
 References: <1593083026-7501-1-git-send-email-piotrx.maziarz@linux.intel.com>
@@ -85,85 +85,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Size constraints are always checked before invoking
-tplg_decode_control_enum1. There is no need to validate it twice.
-Alos moved debug print about size to invoking function, since now it's it
-responsibility to check size.
+Not checking _LAST format and rate, which are valid indexes in arrays,
+makes data loss while converting binary to UML.
 
 Signed-off-by: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
 ---
- src/topology/ctl.c        | 19 +++++--------------
- src/topology/dapm.c       |  3 +--
- src/topology/tplg_local.h |  2 +-
- 3 files changed, 7 insertions(+), 17 deletions(-)
+ src/topology/pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/topology/ctl.c b/src/topology/ctl.c
-index 24eadc8..b5e3e34 100644
---- a/src/topology/ctl.c
-+++ b/src/topology/ctl.c
-@@ -1335,22 +1335,10 @@ int tplg_decode_control_enum1(snd_tplg_t *tplg,
- 			      struct list_head *heap,
- 			      struct snd_tplg_enum_template *et,
- 			      size_t pos,
--			      void *bin, size_t size)
-+			      struct snd_soc_tplg_enum_control *ec)
- {
--	struct snd_soc_tplg_enum_control *ec = bin;
- 	int i;
- 
--	if (size < sizeof(*ec)) {
--		SNDERR("enum: small size %d", size);
--		return -EINVAL;
--	}
--
--	tplg_log(tplg, 'D', pos, "enum: size %d private size %d",
--		 ec->size, ec->priv.size);
--	if (size != ec->size + ec->priv.size) {
--		SNDERR("enum: unexpected element size %d", size);
--		return -EINVAL;
--	}
- 	if (ec->num_channels > SND_TPLG_MAX_CHAN ||
- 	    ec->num_channels > SND_SOC_TPLG_MAX_CHAN) {
- 		SNDERR("enum: unexpected channel count %d", ec->num_channels);
-@@ -1425,7 +1413,10 @@ next:
- 		return -EINVAL;
- 	}
- 
--	err = tplg_decode_control_enum1(tplg, &heap, &et, pos, bin, size);
-+	tplg_log(tplg, 'D', pos, "enum: size %d private size %d",
-+		 ec->size, ec->priv.size);
-+
-+	err = tplg_decode_control_enum1(tplg, &heap, &et, pos, ec);
- 	if (err >= 0) {
- 		t.enum_ctl = &et;
- 		err = snd_tplg_add_object(tplg, &t);
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index cd1a877..73a9390 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -972,8 +972,7 @@ next:
- 				err = -EINVAL;
- 				goto retval;
- 			}
--			err = tplg_decode_control_enum1(tplg, &heap, et, pos,
--							bin, size2);
-+			err = tplg_decode_control_enum1(tplg, &heap, et, pos, ec);
- 			break;
- 		case SND_SOC_TPLG_TYPE_BYTES:
- 			bt = tplg_calloc(&heap, sizeof(*bt));
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 5ace0d1..acb01a8 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -398,7 +398,7 @@ int tplg_decode_control_enum1(snd_tplg_t *tplg,
- 			      struct list_head *heap,
- 			      struct snd_tplg_enum_template *et,
- 			      size_t pos,
--			      void *bin, size_t size);
-+			      struct snd_soc_tplg_enum_control *ec);
- int tplg_decode_control_enum(snd_tplg_t *tplg, size_t pos,
- 			     struct snd_soc_tplg_hdr *hdr,
- 			     void *bin, size_t size);
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index b15b950..db40114 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -549,7 +549,7 @@ int tplg_save_stream_caps(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ 	if (err >= 0 && sc->formats) {
+ 		err = tplg_save_printf(dst, pfx, "\tformats '");
+ 		first = 1;
+-		for (i = 0; err >= 0 && i < SND_PCM_FORMAT_LAST; i++) {
++		for (i = 0; err >= 0 && i <= SND_PCM_FORMAT_LAST; i++) {
+ 			if (sc->formats & (1ULL << i)) {
+ 				s = snd_pcm_format_name(i);
+ 				err = tplg_save_printf(dst, NULL, "%s%s",
+@@ -563,7 +563,7 @@ int tplg_save_stream_caps(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ 	if (err >= 0 && sc->rates) {
+ 		err = tplg_save_printf(dst, pfx, "\trates '");
+ 		first = 1;
+-		for (i = 0; err >= 0 && i < SND_PCM_RATE_LAST; i++) {
++		for (i = 0; err >= 0 && i <= SND_PCM_RATE_LAST; i++) {
+ 			if (sc->rates & (1ULL << i)) {
+ 				s = get_rate_name(i);
+ 				err = tplg_save_printf(dst, NULL, "%s%s",
 -- 
 2.7.4
 
