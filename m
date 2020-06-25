@@ -2,72 +2,73 @@ Return-Path: <SRS0=XzTt=AG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB8DEC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:13:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09A06C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:14:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F0C52075A
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:13:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66C622076E
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jun 2020 19:14:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jbUUzyqJ";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2i1pA4R0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F0C52075A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cmGSwbzy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66C622076E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B18BA1944;
-	Thu, 25 Jun 2020 21:13:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B18BA1944
+	by alsa0.perex.cz (Postfix) with ESMTPS id D20901672;
+	Thu, 25 Jun 2020 21:13:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D20901672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593112430;
-	bh=tOQefQlo/4WDe+47uHGcZESDTbY90cFY/SuuWR2gmZE=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jbUUzyqJ9wwVeq3G802uxlM150iEGCnvtoQuHtgDzJNMBt2ESTASHq7RZaLH92Yok
-	 7PrXBrzUjOZb8WUYBILNCSHI0WXVyrRTZAldWCCQBFgrm7lOFPQZt0ktBnZ9NPLCY1
-	 hoIhKAQfK53elp5lH9enFbmIteBvZtt8ixKgVGSA=
+	s=default; t=1593112478;
+	bh=jXoM1LOipa+LeTqxrWgxUwvuwDhYjvBTkhMPBUKE3DQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cmGSwbzyyAhjbXBbxnDJyz1Teh0kIFaOISHu1yhQNHNbTVncW3RwnG9x24ZKqBKpK
+	 e7DbRsKaVvBDvOgNv3WDSlBGR1U0urHEUDR8XT1UlS8V86Zd85hEZG8IIm1gV/m6zA
+	 2T9aD97nHaFX6ucX8uzQpXIQGZI6IhQIHkKRqp5E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C098F80249;
-	Thu, 25 Jun 2020 21:12:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A61C0F802A7;
+	Thu, 25 Jun 2020 21:13:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AF2CF80234; Thu, 25 Jun 2020 21:12:10 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68DADF80234
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 21:12:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68DADF80234
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="2i1pA4R0"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id C1527F802A2; Thu, 25 Jun 2020 21:13:41 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7183B2076E;
- Thu, 25 Jun 2020 19:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1593112325;
- bh=tOQefQlo/4WDe+47uHGcZESDTbY90cFY/SuuWR2gmZE=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=2i1pA4R0O0vpEKWtLxHOZwVCvEavX5cbf1yVu/YA6b5whxhDCGLRkLpX4DG3KwJtW
- wpXceyTXGx3NGjlr2d5C9vQWg0IMmnO5h+uENxBNLLRzpcxOv6QZ4I3KAdIptM+4cc
- rYAW78k/NlZRy6D8Nb4McnMZxRndq6xoVzItwQuI=
-Date: Thu, 25 Jun 2020 20:12:02 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20200625153543.85039-1-tzungbi@google.com>
-References: <20200625153543.85039-1-tzungbi@google.com>
-Subject: Re: [PATCH v2 0/3] ASoC: rt1015: fix compilation errors and warnings
-Message-Id: <159311231750.10637.12370136760007816881.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD6B7F80218
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2020 21:13:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD6B7F80218
+IronPort-SDR: mkT9tLU6ej8fxVgOrB30y70y+Z0+JFV5Pcz+PwJcK7DbRLJ9pHg0r9I1YX2Z0aOOM3kLdZQD4u
+ KAn0hRTFYx1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="144120811"
+X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; d="scan'208";a="144120811"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jun 2020 12:13:32 -0700
+IronPort-SDR: Pt2+MZ2iPRa3OWpxehQozcYodxcz+LrW95wMY3WpKrL7mz1XHoLBQZCftI+qw4a3nB7kNVZqVL
+ ROG0IftXjgKA==
+X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; d="scan'208";a="354559462"
+Received: from zeqimao-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.254.109.39])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jun 2020 12:13:31 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 00/17] ASoC: Intel: machine driver updates for 5.9
+Date: Thu, 25 Jun 2020 14:12:51 -0500
+Message-Id: <20200625191308.3322-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,44 +84,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Jun 2020 23:35:40 +0800, Tzung-Bi Shih wrote:
-> The series fixes compilation errors and warnings discovered in the thread
-> https://patchwork.kernel.org/patch/11622319/.
-> 
-> The original patch:
-> (1) adds acpi.h for fixing implicit declaration of function 'ACPI_PTR'
-> (2) sorts header inclusions in alphabetical
-> 
-> [...]
+This patchset adds:
 
-Applied to
+a) fixes for missing .owner = THIS_MODULE initializations for
+snd_soc_card structures
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+b) extensions for TigerLake and JasperLake reusing the same machine
+drivers.
 
-Thanks!
+c) Max98373 support for SoundWire machine driver.
 
-[1/3] ASoC: core: move definition of enum snd_soc_bias_level
-      commit: 10e834099d38dd2c02bf2bd5feaa3997cfcf139f
-[2/3] ASoC: dapm: declare missing structure prototypes
-      commit: 3d62ef4280a377bb2ccaee4e8f6c5093f5b8f9d4
-[3/3] ASoC: rt1015: add missing header inclusion
-      commit: 72ac4a4bef48e67bb26bc5a01d68c8163def013d
+d) cleanups (use-after-free, quirks, etc).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Bard Liao (1):
+  ASoC: intel: cml_rt1011_rt5682: use for_each_card_prelinks
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Dharageswari R (3):
+  ASoC: Intel: Boards: tgl_max98373: add dai_trigger function
+  ASoC: Intel: Boards: tgl_max98373: Fix the comment for
+    max_98373_components
+  ASoC: Intel: Boards: tgl_max98373: Update TDM configuration in
+    hw_params
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Fred Oh (3):
+  ASoC: Intel: Boards: cml_rt1011_rt5682: reduce log level for printing
+    quirk
+  ASoC: Intel: Boards: cml_rt1011_rt5682: use statically define codec
+    config
+  ASoc: Intel: cml_rt1011_rt5682: explicitly access first codec
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Naveen Manohar (2):
+  ASoC: Intel: sof_sdw: Add MAX98373 support
+  ASoC: Intel: common: add match table for TGL MAX98373 + RT5682
+    SoundWire driver
 
-Thanks,
-Mark
+Pierre-Louis Bossart (6):
+  ASoC: SOF: nocodec: add missing .owner field
+  ASoC: Intel: cml_rt1011_rt5682: add missing .owner field
+  ASoC: Intel: sof_sdw: add missing .owner field
+  ASoC: Intel: bxt_rt298: add missing .owner field
+  ASoC: Intel: sof_sdw: add quirk override with kernel parameter
+  ASoC: Intel: boards: byt*.c: remove cast in dev_info quirk log
+
+Yong Zhi (1):
+  ASoC: intel: sof_rt5682: Add support for jsl-max98360a-rt5682
+
+randerwang (1):
+  ASoC: Intel: sdw_max98373: add card_late_probe support
+
+ sound/soc/intel/boards/Kconfig                |  3 +-
+ sound/soc/intel/boards/Makefile               |  2 +
+ sound/soc/intel/boards/bxt_rt298.c            |  2 +
+ sound/soc/intel/boards/bytcht_es8316.c        |  5 +-
+ sound/soc/intel/boards/bytcr_rt5640.c         |  4 +-
+ sound/soc/intel/boards/bytcr_rt5651.c         |  4 +-
+ sound/soc/intel/boards/cml_rt1011_rt5682.c    | 90 ++++++-------------
+ sound/soc/intel/boards/sof_maxim_common.c     | 55 ++++++++++--
+ sound/soc/intel/boards/sof_maxim_common.h     |  3 +
+ sound/soc/intel/boards/sof_rt5682.c           | 32 +++++++
+ sound/soc/intel/boards/sof_sdw.c              | 72 ++++++++++++++-
+ sound/soc/intel/boards/sof_sdw_common.h       | 15 ++++
+ sound/soc/intel/boards/sof_sdw_max98373.c     | 86 ++++++++++++++++++
+ .../intel/common/soc-acpi-intel-jsl-match.c   | 13 +++
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 25 ++++++
+ sound/soc/sof/nocodec.c                       |  1 +
+ 16 files changed, 332 insertions(+), 80 deletions(-)
+ create mode 100644 sound/soc/intel/boards/sof_sdw_max98373.c
+
+
+base-commit: 6f81e520b2906258a063f09b8d1dd9d0cc6a3172
+-- 
+2.20.1
+
