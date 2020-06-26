@@ -2,110 +2,81 @@ Return-Path: <SRS0=sUwr=AH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 410E7C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 10:46:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAEE5C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 14:38:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFA3F206B7
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 10:46:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7296D2070A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 14:38:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Srl/MbGy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="TKKXIlNZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFA3F206B7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ESrWPKsp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0PdSCAAO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7296D2070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A9A2167D;
-	Fri, 26 Jun 2020 12:45:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A9A2167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC47E167F;
+	Fri, 26 Jun 2020 16:37:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC47E167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593168380;
-	bh=4G7vg+Ka2G1q/KlyULnBxayeO4j0d+prAJASY+o1o/s=;
+	s=default; t=1593182317;
+	bh=18kzELTvzTWjkjSNJX6G05xuDOB2wb5K896c44xywRA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Srl/MbGydQMPEx+5bzKPZQLBgwEyg7A8X94pFZU3g+4GAH1HLlN7FowpyymoJQny2
-	 STG8VBpy4FoeuD29nx+bGB5uBTZex61TjcPIN9eIYOwOzaNbBSCnyzu2uV+i1+NbaR
-	 ioV3Y2CD1RUHYcsqgTpzVcKV4Q18dM6d9p79Tx1g=
+	b=ESrWPKspDaJkOrliMi72cnwXnx7thuvS7BetvKfxIYrImNlC2U1ljqR/pCe7d3y26
+	 CnAOJhKuoPGDtOZk1AXTr1iOfl9pw3IpLmQfu3WYJE9dDasrr8tqK1CEq/sF50RyiV
+	 fhqfHWTLz50/jvf+yHt7HgEz5+6dKMX75+OO9oJY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0BAAF8015A;
-	Fri, 26 Jun 2020 12:45:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74D68F8015A;
+	Fri, 26 Jun 2020 16:37:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAF65F8015B; Fri, 26 Jun 2020 12:45:28 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 7D87AF8015B; Fri, 26 Jun 2020 16:37:45 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A4C1F800F1
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2020 16:37:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A4C1F800F1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="0PdSCAAO"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8264DF800F1
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2020 12:45:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8264DF800F1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="TKKXIlNZ"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 05QAcXan005493; Fri, 26 Jun 2020 05:45:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=yuqVxib/OfeKhWvQNRZsWQpeJuc2MCZD82snGcZPbvY=;
- b=TKKXIlNZhrtCtrvcPLS2cTAD7q+rVFd+GWHM0kAfDLc7UwW4e86BKpn63LAJeT27dbnc
- k5ZDgpdRHHvfebakcOLVhcfz9xjHzFCzmRAMircnpCg8PKo3eeMoNHSgEtZ0zwGw7Q+9
- x5E1hQBcEEwa8sCWwCq+wK4q7UXOFnQsXQMHFLIVEKBj9L6SumY2TY3mbcqE0/dJ3mlc
- 7+2psNNivT7ldMeNIF0H4BY3nOZFwKF5uj7fVPqhtf9btUYY8RKMDhOgfvyBzWi0M8RI
- oQr4wh+Q8d//Bk30lch0Cw9OPvq7fk+6JUJFZ2WmPcAxSIpwrB+pYf88rMr6v0vxuazs mA== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 31uus3c4ah-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 26 Jun 2020 05:45:21 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 26 Jun
- 2020 11:45:19 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 26 Jun 2020 11:45:19 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CAF212C5;
- Fri, 26 Jun 2020 10:45:19 +0000 (UTC)
-Date: Fri, 26 Jun 2020 10:45:19 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v3 1/3] ALSA: compress: document the compress audio state
- machine
-Message-ID: <20200626104519.GD71940@ediswmail.ad.cirrus.com>
-References: <20200625154651.99758-1-vkoul@kernel.org>
- <20200625154651.99758-2-vkoul@kernel.org>
+ by mail.kernel.org (Postfix) with ESMTPSA id 477752070A;
+ Fri, 26 Jun 2020 14:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1593182254;
+ bh=18kzELTvzTWjkjSNJX6G05xuDOB2wb5K896c44xywRA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=0PdSCAAOM7/cMWnmQmBnDLgKKErr5BCImr3MlqRKqzq9K126gNWaQKOb1ejXUD36C
+ JaAwNv2XbD2Xp0sqmI90NK1nVE0Cj5qjS0/zaCONQr90/J9pVNyxpdTGf+AzErEIEj
+ 9YUlGdlkXAcjQ+CgNTx+n57S0BKDKMXJeIJYF8iY=
+Date: Fri, 26 Jun 2020 15:37:32 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 16/17] ASoC: Intel: sdw_max98373: add card_late_probe
+ support
+Message-ID: <20200626143732.GA34281@sirena.org.uk>
+References: <20200625192652.4365-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
 Content-Disposition: inline
-In-Reply-To: <20200625154651.99758-2-vkoul@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com
- ip4:5.172.152.52 -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- lowpriorityscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0 cotscore=-2147483648
- impostorscore=0 priorityscore=1501 bulkscore=0 adultscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006260077
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200625192652.4365-1-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Man and wife make one fool.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ randerwang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,14 +92,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jun 25, 2020 at 09:16:49PM +0530, Vinod Koul wrote:
-> So we had some discussions of the stream states, so I thought it is a
-> good idea to document the state transitions, so add it documentation
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Charles
+On Thu, Jun 25, 2020 at 02:26:52PM -0500, Pierre-Louis Bossart wrote:
+> From: randerwang <rander.wang@linux.intel.com>
+>=20
+> Disable Left and Right Spk pin after boot so that sof can
+> get suspended. Please check patch: ASoC: Intel: Boards:
+> tgl_max98373: add dai_trigger function
+
+This doesn't apply against current code, please check and resend.
+
+
+--3V7upXqbjpZ4EhLz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl72CCsACgkQJNaLcl1U
+h9Aqzwf/SGf2fgj8jN9fYJ7xeGilqFE9OMNbnJ1MO1ke0OzVBqLabf4aqBDfIf7m
+ZiFaz6asXaBTKwwbemx9BwFCgPcQGPHOcchIhyEaVObYSijzQJWSKH0jwXeKTYrw
+w0ecwdBdAl5wqrTlqFu0PUyg+rYO7/BpXeUiKOwMW/ajbM4RGbHs6FLjtITUDHOX
+laWktBOTttjFWgwP/NotIndRlrrEnwLLxM/FQ6i/nMWls1mGPAXDND/8QAZ4Gjo2
+qR88pWIEvsHi+16B7W8cENSAbnEEMaX8HTNkQGk8BeNeluL0TvHoBCDdY/TXhXj4
+fXeO95L5qzYenjrymlFppElcgfkUow==
+=K2jk
+-----END PGP SIGNATURE-----
+
+--3V7upXqbjpZ4EhLz--
