@@ -2,81 +2,83 @@ Return-Path: <SRS0=sUwr=AH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00816C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 15:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCE23C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 15:17:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CEEF206E9
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 15:02:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6ABB920702
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jun 2020 15:17:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u5kAB0tY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CEEF206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZnZBk1k4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0rj3Zx26"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6ABB920702
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F35711688;
-	Fri, 26 Jun 2020 17:01:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F35711688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00E2A167F;
+	Fri, 26 Jun 2020 17:16:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00E2A167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593183729;
-	bh=FvXpMZmcv6a4qx/4LBTuVv7xienzG9Os6eAHeMshWlc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1593184643;
+	bh=GuoB/W+zvtjdbgZiBd3AqIE7OXS5XW+E8sUCRKZw5DU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u5kAB0tYhjCtzEGSjxyikwhxi3tUiF4odskNBqGwMIoSH5AqqFEFwgfS/jnre9DcE
-	 uh4DrfwJR0HBfTXDtaeLpCbcVYRVh9s6gcX+y/niFSejAf0Y3dpO/+bT48qJZde0Xs
-	 4yj+4rnHmKjDufP+fK0UFIN6aC2zhIiX/ryW2qTo=
+	b=ZnZBk1k4X0vB4ONTIVJi6VkFDUaOdXrkdYJGjIUAT6koaRurFdIpWTmWJDsQphLXu
+	 j7YF0ToLG30j84L/9/UwfBAEWARfzgfbvtKG9ab1se8ngzWpdZIz4oqPTR1ivrstc3
+	 rd5SC8wxVwYZsAR/wdwlystiJoLVJVZ9abRVNo7A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A1D8F801DB;
-	Fri, 26 Jun 2020 17:00:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B713F8015A;
+	Fri, 26 Jun 2020 17:16:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7EBFF8015A; Fri, 26 Jun 2020 17:00:24 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 52F13F8015B; Fri, 26 Jun 2020 17:16:30 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A556FF80096
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2020 17:16:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A556FF80096
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="0rj3Zx26"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5006EF800F1
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2020 17:00:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5006EF800F1
-IronPort-SDR: 6pIpets2n4KxlZ9IMptgNcTpxx3PsEmw7yFAohS2bIjoOLCS77bG/XhpNDx2Na3qTc6glB/sg+
- ai/1BM6jmvCg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="230122113"
-X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; d="scan'208";a="230122113"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jun 2020 08:00:13 -0700
-IronPort-SDR: hsPjDnOTLe/LxKw1Mzb195JGpBVxQIUoxh7UAx46lDK63UfeYBkdwTX9GObJgXAEmqioj3kPav
- Q6SQF0+QAkSA==
-X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; d="scan'208";a="280171468"
-Received: from avenkat1-mobl2.amr.corp.intel.com (HELO [10.254.109.204])
- ([10.254.109.204])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jun 2020 08:00:12 -0700
-Subject: Re: [PATCH] snd/soc: correct trivial kernel-doc inconsistency
-To: Colton Lewis <colton.w.lewis@protonmail.com>, alsa-devel@alsa-project.org
-References: <4574918.31r3eYUQgx@laptop.coltonlewis.name>
- <db6d3b05-33c1-91b9-d0b4-c5063ebafcae@linux.intel.com>
- <20200626053953.68797-1-colton.w.lewis@protonmail.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3f131b97-08db-6c1e-e76e-362df261fbae@linux.intel.com>
-Date: Fri, 26 Jun 2020 09:35:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 3BD3C20702;
+ Fri, 26 Jun 2020 15:16:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1593184584;
+ bh=GuoB/W+zvtjdbgZiBd3AqIE7OXS5XW+E8sUCRKZw5DU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=0rj3Zx26/fdablCW5niVQmxceFaGulmb7z2Ct6UgE3YyXdqSuu5vBcIzmz9l6V3+T
+ 0SNLFck/i55yd79ZffcefR/6fsji1Xdn9D2+EjSZX5cVAY9PXDi8dGqUjBKH2AGri/
+ 9OxXuZJVfq6Qk8n8bSyVin43Y6zoT8DXDX1bWuR0=
+Date: Fri, 26 Jun 2020 16:16:22 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 16/17] ASoC: Intel: sdw_max98373: add card_late_probe
+ support
+Message-ID: <20200626151622.GG5289@sirena.org.uk>
+References: <20200625192652.4365-1-pierre-louis.bossart@linux.intel.com>
+ <20200626143732.GA34281@sirena.org.uk>
+ <2ca5ecb6-8827-458a-4db2-4232818a6841@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200626053953.68797-1-colton.w.lewis@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, broonie@kernel.org, lgirwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="3xoW37o/FfUZJwQG"
+Content-Disposition: inline
+In-Reply-To: <2ca5ecb6-8827-458a-4db2-4232818a6841@linux.intel.com>
+X-Cookie: You can't get there from here.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ randerwang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,31 +95,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--3xoW37o/FfUZJwQG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 6/26/20 12:40 AM, Colton Lewis wrote:
-> Silence documentation build warning by correcting kernel-doc comment
-> for snd_soc_runtime_action.
-> 
-> ./sound/soc/soc-pcm.c:220: warning: Function parameter or member 'action' not described in 'snd_soc_runtime_action'
-> 
-> Signed-off-by: Colton Lewis <colton.w.lewis@protonmail.com>
+On Fri, Jun 26, 2020 at 09:52:41AM -0500, Pierre-Louis Bossart wrote:
+> On 6/26/20 9:37 AM, Mark Brown wrote:
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > This doesn't apply against current code, please check and resend.
 
-> ---
->   sound/soc/soc-pcm.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 2c114b4542ce..9ab376844ac1 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -208,6 +208,7 @@ static inline void dpcm_remove_debugfs_state(struct snd_soc_dpcm *dpcm)
->    * PCM runtime components
->    * @rtd: ASoC PCM runtime that is activated
->    * @stream: Direction of the PCM stream
-> + * @action: Activate stream if 1. Deactivate if -1.
->    *
->    * Increments/Decrements the active count for all the DAIs and components
->    * attached to a PCM runtime.
-> 
+> Not sure what happened here, I always apply the patches on your latest
+> branch in a separate tree, then re-extract them and recheck. maybe an email
+> glitch, SMTP was behaving yesterday?
+
+You didn't thread a bunch of patches in your series yesterday, if there
+were dependencies within the series they may have been disrupted.
+
+--3xoW37o/FfUZJwQG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl72EUUACgkQJNaLcl1U
+h9B+Zgf+Jb+voLJdj8AM1qYyDEY/xmchy6nXHZgBYi8LxCT/xsemWrgQb9aBNApo
+E2f3WG7Lx9EAs6VEhk9G1uNjNy9fydovaIMSFYkytPVyENOwzo3p6hcbZhgbvXom
+1yavcKpZTEhe4kxFNA7954WZPKudcp0NaI0mweI83D1NQ2PLV+QHsv3Dfd3ErCXo
+XAEkx6OutUG2MmqzcvtgvQ8T1GiidZsArIpX03Xe7mBpuIUTO5X4VA9lkyvFNS+R
+BPGhTagNzUspYu3dQutxsEZPHv2hNCRa2qJCd9DGehnKbzl9PfiJHorXK7nT85A5
+j8KBGEjN8sZgncV+Un2mWjNBAqbDNA==
+=P6aE
+-----END PGP SIGNATURE-----
+
+--3xoW37o/FfUZJwQG--
