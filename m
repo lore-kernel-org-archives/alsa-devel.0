@@ -7,78 +7,79 @@ X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E82F8C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 17:47:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E22EC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 17:48:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 74DAB20772
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 17:47:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E4EB2053B
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 17:48:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mtb6C+41";
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G/l2AE2W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74DAB20772
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X2jN80b/";
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K40VvFJJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E4EB2053B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05D1C1672;
-	Sun, 28 Jun 2020 19:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05D1C1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF33E1687;
+	Sun, 28 Jun 2020 19:47:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF33E1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593366456;
-	bh=3vLHdtbe8I6wc5piqoGw6Z0Rat4Ovta3EIrg+BzEkzU=;
+	s=default; t=1593366479;
+	bh=jRsGpx8tg7cQXB83P98wymo3DSoHLF8xNtfyJx2u0X8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mtb6C+41hEybIQyW5SnajLpgfMKiBnGQwBwMkIADjwqUbCvhi1BQmhgAe05ycS2BN
-	 TyBl1wL2mK8hU3MR0gq/7jB+Eg/xY/NE9F+CbLUofWcUAOar0b4UwVMD6kQDpP8PaU
-	 lbBmAu65aeue2KB3BTG5dKE7otLVufhscnrgK5Fo=
+	b=X2jN80b/ynjDGVJKJFALGl52JnFQQ72d3fH0qg7aW1BSdLWcbCvu43H0n0oNziF38
+	 X261pz0CNF/ItHBpK1ktFxRQP16EP+ZYTpNxNV+Ts3tKsOGhVg6q/d4r42CVBHVG31
+	 9LOgDM8WGv7NLzh+Pu7guufhILwpMLeb6RzyfCuA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A5F8F802A9;
-	Sun, 28 Jun 2020 19:44:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8078F802BD;
+	Sun, 28 Jun 2020 19:44:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4ADE6F800E8; Sun, 28 Jun 2020 19:44:35 +0200 (CEST)
-Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
- [207.211.31.120])
+ id BAD1EF80253; Sun, 28 Jun 2020 19:44:37 +0200 (CEST)
+Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com
+ [205.139.110.61])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF8C7F8022D
- for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2020 19:44:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF8C7F8022D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71B1EF800F0
+ for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2020 19:44:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71B1EF800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="G/l2AE2W"
+ header.b="K40VvFJJ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1593366270;
+ s=mimecast20190719; t=1593366272;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eAwEwJJjupzTaezwR7yIngNVexOZCOWPArujMLd3zbc=;
- b=G/l2AE2Wu548jo+zC+qC75+1u5kdeyUiBZpvOzrKm2eUKJnyTaO48i+81I4UpIwKU3zgjw
- JRJs+6/R33cPzLnuXsigjUFZm3GPNEcfVKsp+kZYUKUp6F/sEk4wlZ8coR4vQeolez5Tsx
- K7CvtgkhIMJEEBkKywgsGfbWzhTCtGE=
+ bh=WWGm3198Dm1xpe7bsa+BO7zUZICM0e3RFV6MlnJGjck=;
+ b=K40VvFJJWg74J63perAfEZ4eZ4uNPMfw1NEeSiPHuB2+bAbLsFU/r9gFaIPkSosJKpUyZF
+ eVcGIIswBGrv/fT29TMk/c5XLDa772wvIMWTHbIUpKLYFOVQ9muW3THef4afqmv6KxfaWP
+ 4P6B0fPA+W+igPXW2Dsc0H655HXJWDY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-WvJaUwNfNTCR8LnGThZmPg-1; Sun, 28 Jun 2020 13:44:28 -0400
-X-MC-Unique: WvJaUwNfNTCR8LnGThZmPg-1
+ us-mta-354-jNqGG7BmPtaKiRTJGlLRLg-1; Sun, 28 Jun 2020 13:44:29 -0400
+X-MC-Unique: jNqGG7BmPtaKiRTJGlLRLg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com
  [10.5.11.14])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88E691800D42;
- Sun, 28 Jun 2020 17:44:27 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9053580183C;
+ Sun, 28 Jun 2020 17:44:28 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-41.ams2.redhat.com [10.36.112.41])
- by smtp.corp.redhat.com (Postfix) with ESMTP id C51005D9D5;
- Sun, 28 Jun 2020 17:44:26 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id CCEB95D9D5;
+ Sun, 28 Jun 2020 17:44:27 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 4/5] cht-bsw-rt5672: Boost ADC volume a bit
-Date: Sun, 28 Jun 2020 19:44:20 +0200
-Message-Id: <20200628174421.115133-4-hdegoede@redhat.com>
+Subject: [PATCH alsa-lib 5/5] chtrt5645: Restore stereo sound output when
+ switching from MonoSpeaker to Headphones
+Date: Sun, 28 Jun 2020 19:44:21 +0200
+Message-Id: <20200628174421.115133-5-hdegoede@redhat.com>
 In-Reply-To: <20200628174421.115133-1-hdegoede@redhat.com>
 References: <20200628174421.115133-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,41 +104,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Both the DMICs and the headset mic are quite soft, even with the 20 dB
-IN1 boost we already congfigure for the headset.
+Commit fe3b0bdc2f43 ("chtrt5645: merge all possible configurations to
+HiFi.conf") missed the part of the removed HiFi-mono-speaker-analog-mic.conf
+file which restores stereo mixing (instead of mixing left + right to the
+left DAC mixer output) when switching from the mono speaker setup to the
+headphones output.
 
-This commit sets the ADC Boost gain (range 0-3) to 1 = 12 dB, which makes
-the volume a lot better. The next step of the ADC Boost gain setting is
-24 dB which is a bit too much.
+This was causing both left and right channels to only be played on the
+left ear of the headphones. This commit fixes this.
 
-This has been tested with both the builtin DMIC and with a headset mic
-on the following devices:
-
-Lenovo Miix 2 10
-Lenovo Thinkpad 8
-Lenovo Thinkpad 10 (gen 1)
-
+Fixes: fe3b0bdc2f43 ("chtrt5645: merge all possible configurations to HiFi.conf")
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- ucm2/codecs/rt5672/EnableSeq.conf | 5 +++++
+ ucm2/chtrt5645/HiFi.conf | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/ucm2/codecs/rt5672/EnableSeq.conf b/ucm2/codecs/rt5672/EnableSeq.conf
-index a19a982..ddfb1c7 100644
---- a/ucm2/codecs/rt5672/EnableSeq.conf
-+++ b/ucm2/codecs/rt5672/EnableSeq.conf
-@@ -30,6 +30,11 @@ EnableSequence [
- 	cset "name='ADC Capture Volume' 47"
- 	cset "name='ADC Capture Switch' on"
+diff --git a/ucm2/chtrt5645/HiFi.conf b/ucm2/chtrt5645/HiFi.conf
+index 5d0e3bf..10b0a1c 100644
+--- a/ucm2/chtrt5645/HiFi.conf
++++ b/ucm2/chtrt5645/HiFi.conf
+@@ -93,6 +93,11 @@ SectionDevice."Speaker" {
+ 				cset "name='Stereo DAC MIXL DAC R1 Switch' 1"
+ 				cset "name='Stereo DAC MIXR DAC R1 Switch' 0"
+ 			]
++			DisableSequence [
++				# Undo monospeaker mixing
++				cset "name='Stereo DAC MIXL DAC R1 Switch' 0"
++				cset "name='Stereo DAC MIXR DAC R1 Switch' 1"
++			]
+ 		}
+ 	}
  
-+	# Both the DMICs and the headset mic (even with the 20 dB boost below)
-+	# are quite soft, set the ADC Boost gain (range 0-3) to 1 = 12 dB the
-+	# next step is 24 dB which is a bit too much
-+	cset "name='STO1 ADC Boost Gain Volume' 1"
-+
- 	# Headset mic is quite soft, boost it a bit, 1 = 20dB which is the first
- 	# available boost step
- 	cset "name='IN1 Boost Volume' 1"
 -- 
 2.26.2
 
