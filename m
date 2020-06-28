@@ -7,82 +7,81 @@ X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CBC4C433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 15:54:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E634BC433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 15:55:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C58A2206F1
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 15:54:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6EE57206F1
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Jun 2020 15:55:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BifbNRSd";
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QDplHabp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C58A2206F1
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hR9mk7eX";
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BothqoK/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EE57206F1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59491167A;
-	Sun, 28 Jun 2020 17:53:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59491167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1D1815E5;
+	Sun, 28 Jun 2020 17:54:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1D1815E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593359669;
-	bh=pnU6eHhCF13EpJU0xFwpuXoIveiCnAemmEKqN2ztliQ=;
+	s=default; t=1593359718;
+	bh=VOgtNy6HsWSf4X/OwH8rdtUFAmWFqrCm9YBzG0Ffn9g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BifbNRSdDh8LWGQkqvHhEsx2gRhTaSuh9r+NjwtfpKXMuuyVjaBcvIe1r3JgCmH/6
-	 dMLplw8ijR+yL50rfZIsbKEI1I9NqCw81H00iM01Tcp7ZOLerD4cfIMrKTGyyGpWsi
-	 41J670bZQoFAJBH9k2swfl8kUTKu70rTUxKavodA=
+	b=hR9mk7eX1ZRrn1JU0T9KYmuhvP97tb23KMwtCEsqLhREOQdU1NJfg48Krb603cdMc
+	 BErG4NLLl1pAunGqWxdidlalGX5XyZtSDGZxmf6scK9qp2NOSCqgMVkA4KKLw34aLl
+	 bc6hMohuMhKI809Fx+tOaaBofpLkgya8uZi+gDc4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89C54F8025F;
-	Sun, 28 Jun 2020 17:52:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 978F1F8022D;
+	Sun, 28 Jun 2020 17:52:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69218F8022D; Sun, 28 Jun 2020 17:52:45 +0200 (CEST)
-Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com
- [207.211.31.81])
+ id 8A822F80253; Sun, 28 Jun 2020 17:52:48 +0200 (CEST)
+Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
+ [205.139.110.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06106F800F0
- for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2020 17:52:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06106F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73AEDF80096
+ for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2020 17:52:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73AEDF80096
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="QDplHabp"
+ header.b="BothqoK/"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1593359559;
+ s=mimecast20190719; t=1593359562;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=tup3JNhnMrSyWfFhwMz3iwoU167e7gBF13OGzA9K/z8=;
- b=QDplHabpasZw3CQh1mGa2ehv4egkarWEn/iTdQwYk0vM5zmKtotq/IOpDTGBnFPSdip7jV
- kDmk6YoJsOycguYwaP9V1Wnsx2RsNNDC9VZmL6K9v+7Q3kSimhE0c9sQeHBPb3lm8nfyk2
- 0GIAofrJ6+G/iboIcviF8E0vdfTA7to=
+ bh=/T+n/WMSXGYQh59L/TuX8qKl/A0OCCf7D9e+yxcaST8=;
+ b=BothqoK/iLXVIERmyiFstwNMQWbWOUKzRixyWAMDuJwwYz2WjErvl36iYC+Papspm1WkO/
+ oub8INPcF6i+P2EMl1Xp5TXQVAeOlNF4sLiv4jiyJMdiJdi6LC8Ha9j+blImRdthRfv4ii
+ Rzjkit2nqvwrF23CA1Iqv5SmAJMop2M=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-wmrIUZHTO2G7hDKsI0Aipg-1; Sun, 28 Jun 2020 11:52:38 -0400
-X-MC-Unique: wmrIUZHTO2G7hDKsI0Aipg-1
+ us-mta-18-_OOB8aivOMKO-qr5yjEHUg-1; Sun, 28 Jun 2020 11:52:39 -0400
+X-MC-Unique: _OOB8aivOMKO-qr5yjEHUg-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
  [10.5.11.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6921D107ACCD;
- Sun, 28 Jun 2020 15:52:36 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B19F18FE860;
+ Sun, 28 Jun 2020 15:52:38 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-41.ams2.redhat.com [10.36.112.41])
- by smtp.corp.redhat.com (Postfix) with ESMTP id B8CAD1944D;
- Sun, 28 Jun 2020 15:52:34 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id B01D01944D;
+ Sun, 28 Jun 2020 15:52:36 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>,
  Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 1/6] ASoC: Intel: cht_bsw_rt5672: Change bus format to I2S 2
- channel
-Date: Sun, 28 Jun 2020 17:52:26 +0200
-Message-Id: <20200628155231.71089-2-hdegoede@redhat.com>
+Subject: [PATCH 2/6] ASoC: rt5670: Correct RT5670_LDO_SEL_MASK
+Date: Sun, 28 Jun 2020 17:52:27 +0200
+Message-Id: <20200628155231.71089-3-hdegoede@redhat.com>
 In-Reply-To: <20200628155231.71089-1-hdegoede@redhat.com>
 References: <20200628155231.71089-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -105,74 +104,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The default mode for SSP configuration is TDM 4 slot and so far we were
-using this for the bus format on cht-bsw-rt56732 boards.
+The RT5670_PWR_ANLG1 register has 3 bits to select the LDO voltage,
+so the correct mask is 0x7 not 0x3.
 
-One board, the Lenovo Miix 2 10 uses not 1 but 2 codecs connected to SSP2.
-The second piggy-backed, output-only codec is inside the keyboard-dock
-(which has extra speakers). Unlike the main rt5672 codec, we cannot
-configure this codec, it is hard coded to use 2 channel 24 bit I2S.
+Because of this wrong mask we were programming the ldo bits
+to a setting of binary 001 (0x05 & 0x03) instead of binary 101
+when moving to SND_SOC_BIAS_PREPARE.
 
-Using 4 channel TDM leads to the dock speakers codec (which listens in on
-the data send from the SSP to the rt5672 codec) emiting horribly distorted
-sound.
+According to the datasheet 001 is a reserved value, so no idea
+what it did, since the driver was working fine before I guess we
+got lucky and it does something which is ok.
 
-Since we only support 2 channels anyways, there is no need for TDM on any
-cht-bsw-rt5672 designs. So we can simply use I2S 2ch everywhere.
-
-This commit fixes the Lenovo Miix 2 10 dock speakers issue by changing
-the bus format set in cht_codec_fixup() to I2S 2 channel.
-
-This change has been tested on the following devices with a rt5672 codec:
-
-Lenovo Miix 2 10
-Lenovo Thinkpad 8
-Lenovo Thinkpad 10 (gen 1)
-
+Fixes: 5e8351de740d ("ASoC: add RT5670 CODEC driver")
 Cc: stable@vger.kernel.org
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1786723
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ sound/soc/codecs/rt5670.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 7a43c70a1378..22e432768edb 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -253,21 +253,20 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
+diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
+index a8c3e44770b8..de0203369b7c 100644
+--- a/sound/soc/codecs/rt5670.h
++++ b/sound/soc/codecs/rt5670.h
+@@ -757,7 +757,7 @@
+ #define RT5670_PWR_VREF2_BIT			4
+ #define RT5670_PWR_FV2				(0x1 << 3)
+ #define RT5670_PWR_FV2_BIT			3
+-#define RT5670_LDO_SEL_MASK			(0x3)
++#define RT5670_LDO_SEL_MASK			(0x7)
+ #define RT5670_LDO_SEL_SFT			0
  
- 	/*
--	 * Default mode for SSP configuration is TDM 4 slot
-+	 * Default mode for SSP configuration is TDM 4 slot. One board/design,
-+	 * the Lenovo Miix 2 10 uses not 1 but 2 codecs connected to SSP2. The
-+	 * second piggy-backed, output-only codec is inside the keyboard-dock
-+	 * (which has extra speakers). Unlike the main rt5672 codec, we cannot
-+	 * configure this codec, it is hard coded to use 2 channel 24 bit I2S.
-+	 * Since we only support 2 channels anyways, there is no need for TDM
-+	 * on any cht-bsw-rt5672 designs. So we simply use I2S 2ch everywhere.
- 	 */
--	ret = snd_soc_dai_set_fmt(asoc_rtd_to_codec(rtd, 0),
--				  SND_SOC_DAIFMT_DSP_B |
--				  SND_SOC_DAIFMT_IB_NF |
-+	ret = snd_soc_dai_set_fmt(asoc_rtd_to_cpu(rtd, 0),
-+				  SND_SOC_DAIFMT_I2S     |
-+				  SND_SOC_DAIFMT_NB_NF   |
- 				  SND_SOC_DAIFMT_CBS_CFS);
- 	if (ret < 0) {
--		dev_err(rtd->dev, "can't set format to TDM %d\n", ret);
--		return ret;
--	}
--
--	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
--	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_codec(rtd, 0), 0xF, 0xF, 4, 24);
--	if (ret < 0) {
--		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
-+		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
- 		return ret;
- 	}
- 
+ /* Power Management for Analog 2 (0x64) */
 -- 
 2.26.2
 
