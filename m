@@ -2,102 +2,78 @@ Return-Path: <SRS0=wrte=AK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DD7C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 19:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 937A7C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 19:39:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 538A220720
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 19:25:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26C0F20672
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 19:39:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mCOU31/J";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rJockAN7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 538A220720
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rYT2FvCN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oFJae37O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26C0F20672
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC824847;
-	Mon, 29 Jun 2020 21:24:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC824847
+	by alsa0.perex.cz (Postfix) with ESMTPS id A365E847;
+	Mon, 29 Jun 2020 21:38:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A365E847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593458740;
-	bh=NQfVhLd82tOgy+Bc30AUEkGdr8mJgATU0+ubiyO/qGo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1593459578;
+	bh=MaMLRdKGA2R2MLXvl0tCL0oYxq7/CID2IPMt3BqbmhY=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mCOU31/JK0fnKNSw2pNuFEGH2ULUGEcFTtC23PAt6/zaZ+f2Xe1wUC34N4ZuuVxeH
-	 I9ZFE1R/tbzm6uoeqIefY7+98rKXbWMOTV01Hv5KQ1+11ePPmM+dH1z1ZznsRyZLsY
-	 ZQ1GvuoyyfTSKrMyJ392sA99ycLNWI2uMG2gBnaw=
+	b=rYT2FvCNhYevpvEWQHctmsegKOKPGH5KFGrvJFL4p+f2qGDd+hYJhmJ+NQkXLC6D5
+	 K/eWAZ1WoEsnrkJ9eYsBXE7OGk0Cz7IO8YkeErYelYV2n96i1TWUA4WvIk4e6UwVqF
+	 erF5l3M6cJDjgTI7Xt92JZ5bw9T/iKulEymMCJ2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47E7BF8020C;
-	Mon, 29 Jun 2020 21:24:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19445F8020C;
+	Mon, 29 Jun 2020 21:38:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47593F800BA; Mon, 29 Jun 2020 21:24:47 +0200 (CEST)
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com
- [IPv6:2607:f8b0:4864:20::1041])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 745E3F80217; Mon, 29 Jun 2020 21:38:46 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E951EF800BA
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 21:24:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E951EF800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7811FF800EA
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 21:38:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7811FF800EA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="rJockAN7"
-Received: by mail-pj1-x1041.google.com with SMTP id f6so4393664pjq.5
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 12:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=9dKxVJjlaX8jxkeSh8T6e6YHQEcdayiIxfyFI+zqbOE=;
- b=rJockAN73JAGXobfkev1y93WYQunULGBKvkHTFKad7D/eGF6tMmDd+MraUFMuEk8ni
- uXbBn82EgTam3bfIUAMR/28dBeHDZ2Ju1ZhDVGhwDN9bLMd5ab7IeRqJMfACaETguWjG
- ydJZCKge5IZiRZi904cCLfh2TZuu6KY7ZhfNqBlHwNWPwI9tE1If8SAcbqLmottXPj2z
- dUzUTfjA2PoZRb1dYCcN7cbsFQ9P9PZ563y0ZDe94rzLrXbX9u3EhaD2a4MOmnplChLU
- xAtkHqY2Rt2UHA/D4yO4QtII2iv+pNwVnQmpL1QrBEoRA9UAfEiXm+JN7Dmtiu4oV4ev
- 944A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=9dKxVJjlaX8jxkeSh8T6e6YHQEcdayiIxfyFI+zqbOE=;
- b=V/if3yPQfVAflkHnNtbP8bqT2osRoFj6BM5a8RCguPIrZJmVCwN7q780EhOee4/AxG
- t2nx5r7SSZtXUQjxvTu9ZECTpBRLcwzGqp/73+7Nvd1OScFe0UY7Z3SV+88D67gyO0gd
- u+de50lhWcDgD9m9FjmG15l0rwcekwEaAN96eSN1n12U76MzwOoG7A8/NlIQdY43efoL
- tVg9ZrVmzjiIsJnbhXknzFwb6N/TI3R6bi98iryDKbc3LbJw8zPWofi7zBsJm4Xrv/zY
- 20DHjn29AxuMu2u3p1vY7FGD/CNlvg4UT+rk3W+nF/0AHY/XAXobjpvgjtm1NwiN5UFW
- cnpA==
-X-Gm-Message-State: AOAM53389tGnFl67poPE7yoCH44tjzYES+3nHZ/7USMYljqINMtWA5++
- tdIxnb6LnxiCGu0ta+aHnoWhASHFyx8=
-X-Google-Smtp-Source: ABdhPJw2NTojIOVe1N+k9d1UhrBCtTCNAURgml2u7637EWsRsIvR4dZARYK0e7VEMzNZsiIfyPManQ==
-X-Received: by 2002:a17:90b:698:: with SMTP id
- m24mr4120032pjz.15.1593458677861; 
- Mon, 29 Jun 2020 12:24:37 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id y8sm278658pju.49.2020.06.29.12.24.37
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 29 Jun 2020 12:24:37 -0700 (PDT)
-Date: Mon, 29 Jun 2020 12:24:03 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Refine regcache usage with pm runtime
-Message-ID: <20200629192402.GA27967@Asurada-Nvidia>
-References: <1593412953-10897-1-git-send-email-shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593412953-10897-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, broonie@kernel.org,
- festevam@gmail.com, linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="oFJae37O"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6B80820672;
+ Mon, 29 Jun 2020 19:38:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1593459520;
+ bh=MaMLRdKGA2R2MLXvl0tCL0oYxq7/CID2IPMt3BqbmhY=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=oFJae37Oikbrw1fa9XojJE82yyto8cL5rTai2NSwGIglgFtrvCmTPEvvQCA3WsgIL
+ OjV3YO0MAYMBmM0mjbF3vKCu06Hv6SG+GVcLWFh4LiT3ys9yeGz+cEof3I2MeXHA9m
+ JzhdKmqC4ATM44tVtTUKGJdxc2xry/SHE0bdwTO8=
+Date: Mon, 29 Jun 2020 20:38:38 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Oder Chiou <oder_chiou@realtek.com>
+In-Reply-To: <20200628155231.71089-2-hdegoede@redhat.com>
+References: <20200628155231.71089-1-hdegoede@redhat.com>
+ <20200628155231.71089-2-hdegoede@redhat.com>
+Subject: Re: [PATCH 1/6] ASoC: Intel: cht_bsw_rt5672: Change bus format to I2S
+ 2 channel
+Message-Id: <159345951863.3333.2806987177417509858.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,13 +89,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jun 29, 2020 at 02:42:33PM +0800, Shengjiu Wang wrote:
-> When there is dedicated power domain bound with device, after probing
-> the power will be disabled, then registers are not accessible in
-> fsl_sai_dai_probe(), so regcache only need to be enabled in end of
-> probe() and regcache_mark_dirty should be moved to pm runtime resume
-> callback function.
+On Sun, 28 Jun 2020 17:52:26 +0200, Hans de Goede wrote:
+> The default mode for SSP configuration is TDM 4 slot and so far we were
+> using this for the bus format on cht-bsw-rt56732 boards.
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> One board, the Lenovo Miix 2 10 uses not 1 but 2 codecs connected to SSP2.
+> The second piggy-backed, output-only codec is inside the keyboard-dock
+> (which has extra speakers). Unlike the main rt5672 codec, we cannot
+> configure this codec, it is hard coded to use 2 channel 24 bit I2S.
+> 
+> [...]
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/4] ASoC: Intel: cht_bsw_rt5672: Change bus format to I2S 2 channel
+      commit: 0ceb8a36d023d4bb4ffca3474a452fb1dfaa0ef2
+[2/4] ASoC: rt5670: Correct RT5670_LDO_SEL_MASK
+      commit: 5cacc6f5764e94fa753b2c1f5f7f1f3f74286e82
+[3/4] ASoC: rt5670: Add new gpio1_is_ext_spk_en quirk and enable it on the Lenovo Miix 2 10
+      commit: 85ca6b17e2bb96b19caac3b02c003d670b66de96
+[4/4] ASoC: rt5670: Fix dac- and adc- vol-tlv values being off by a factor of 10
+      commit: 3f31f7d9b5404a10648abe536c8b408bfb4502e1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
