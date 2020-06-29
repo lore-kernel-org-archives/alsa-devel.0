@@ -2,63 +2,62 @@ Return-Path: <SRS0=wrte=AK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C474C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:06:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE29C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:25:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D952220771
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:06:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67C3C20663
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:25:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OfLV1EeQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D952220771
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a6cfp3jB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67C3C20663
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 582CE83E;
-	Mon, 29 Jun 2020 03:06:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 582CE83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFA161616;
+	Mon, 29 Jun 2020 03:24:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFA161616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593392813;
-	bh=1kswyCV/QrDZar6mzOIsT4cIR0mOK02bQ8qqUMh4frY=;
+	s=default; t=1593393937;
+	bh=vZfKuolBn8SL4h9CpST3hWRfDRiT807JNxLqc1u5DFo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OfLV1EeQTO6RVcvRp2MPILnZO3u4vyyBvUQjVM3/v6Ap41c0sIP6CsO4grxrEw+I7
-	 p2HWOqCL6v0h0UE2zwEBTXX/iF0W6AYwNgAqTL1sW0WzRHJkgMvTkXfw57OT3x8P5u
-	 +Jf+Ow/fMpLCiezRI+kONreJBFoIIHHbA+ylLYKc=
+	b=a6cfp3jBa+PhXrRt17TNG/uhLmjjG54LWu870odQZZ0WhuBExagvRvIcjFOcb40lG
+	 rIG0qGBSCYcRSoVSndYeGBX4O+UldkH3dTshzYHYPd2K+14XokjE4BIYFHgyHOZjIQ
+	 tvp9gyXplz0A5xGtNuYOXqpG6Ln8GsviWVdGEob8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C173F800E8;
-	Mon, 29 Jun 2020 03:06:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6619AF801F8;
+	Mon, 29 Jun 2020 03:24:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5657F8022D; Mon, 29 Jun 2020 03:06:01 +0200 (CEST)
+ id 409C9F8020C; Mon, 29 Jun 2020 03:24:45 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 76635F800E8
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 03:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76635F800E8
-Date: 29 Jun 2020 10:05:52 +0900
-X-IronPort-AV: E=Sophos;i="5.75,293,1589209200"; d="scan'208";a="50571301"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 29 Jun 2020 10:05:52 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id AE603F800EA
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 03:24:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE603F800EA
+Date: 29 Jun 2020 10:24:37 +0900
+X-IronPort-AV: E=Sophos;i="5.75,293,1589209200"; d="scan'208";a="50573471"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 29 Jun 2020 10:24:37 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id C5A324005E13;
- Mon, 29 Jun 2020 10:05:52 +0900 (JST)
-Message-ID: <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id EB6F44142EEB;
+ Mon, 29 Jun 2020 10:24:36 +0900 (JST)
+Message-ID: <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children for
- 'mclk-fs'
-In-Reply-To: <1593233625-14961-12-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link with
+ multiple Codecs
+In-Reply-To: <1593233625-14961-13-git-send-email-spujar@nvidia.com>
 References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-12-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-13-git-send-email-spujar@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -86,30 +85,48 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-> CPU/Codec in DPCM DAI links are connected as CPU<->Dummy and Dummy<->Codec.
-> Though mostly CPU won't use/require 'mclk-fs' property, looping over
-> 'np' (current child node in a DAI link) can help in cases where multiple
-> Codecs are defined. This further helps to get rid of 'codec' argument
-> from simple_dai_link_of_dpcm() function, which gets called for DPCM links.
-> 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
+> The simple-card driver supports multiple CPU and single Codec entries
+> for DPCM DAI links. In some cases it is required to have multiple
+> CPU/Codecs. Currently parsing logic for DPCM link loops over all
+> children of DAI link but assumes that there is a single Codec entry.
+> When DAI link has multiple Codecs it considers only the first Codec
+> entry and remaining Codecs are wrongly treated as CPU. This happens
+> because first Codec is used as reference for parsing all other child
+> nodes.
 (snip)
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-> index 39cdc71..02d6295 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -107,7 +107,9 @@ static void simple_parse_mclk_fs(struct device_node *top,
->  	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
->  	of_property_read_u32(node,	prop, &props->mclk_fs);
->  	of_property_read_u32(cpu,	prop, &props->mclk_fs);
-> -	of_property_read_u32(codec,	prop, &props->mclk_fs);
-> +
-> +	if (cpu != codec)
-> +		of_property_read_u32(codec, prop, &props->mclk_fs);
+> @@ -137,8 +136,13 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+>  	 * Codec |return|Pass
+>  	 * np
+>  	 */
+> -	if (li->cpu == (np == codec))
+> -		return 0;
+> +	if (li->cpu) {
+> +		if (!strcmp(np->name, "codec"))
+> +			return 0;
+> +	} else {
+> +		if (!strcmp(np->name, "cpu"))
+> +			return 0;
+> +	}
 
-Maybe we want to have "cpu" in simple_dai_link_of_dpcm() side
-without using magical code in simple_parse_mclk_fs() side ?
+Checking node name is maybe nice idea,
+but please consider "prefix" here.
+
+Maybe base issue for multiple codec support
+is that simple_for_each_link() is caring first codec only ?
+
+	simple_for_each_link(...)
+	{
+		...
+		do {
+=>			/* get codec */
+=>			codec = of_get_child_by_name(...);
+			...
+		}
+	}
+
+Remove above and having simple_node_is_codec(np, xxx) function
+or something can help it ?
+
 
 Thank you for your help !!
 
