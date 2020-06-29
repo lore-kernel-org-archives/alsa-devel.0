@@ -2,62 +2,63 @@ Return-Path: <SRS0=wrte=AK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC62DC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 00:57:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C474C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:06:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C043206C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 00:57:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D952220771
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:06:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NOYF0mdw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C043206C0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OfLV1EeQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D952220771
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D96601658;
-	Mon, 29 Jun 2020 02:56:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D96601658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 582CE83E;
+	Mon, 29 Jun 2020 03:06:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 582CE83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593392248;
-	bh=a9H7AIUC9hAZ1sqqyFMc7jpKYTR+s/9CkeHY1ABHvvU=;
+	s=default; t=1593392813;
+	bh=1kswyCV/QrDZar6mzOIsT4cIR0mOK02bQ8qqUMh4frY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NOYF0mdwSECLHQPg18fvS18Ok1ETfRmJSac5SyFxG8m1+hftFn/W1pH5le6K/VqnR
-	 DWX1EDGtx2JCywEIxnj15ZUzRgkCQ/KJg280CS5NzzxTRpubdofa5SOrUa2GHean14
-	 uT6zU58376mOOESThs3idpUSU4QdfWFaUhmqmhoc=
+	b=OfLV1EeQTO6RVcvRp2MPILnZO3u4vyyBvUQjVM3/v6Ap41c0sIP6CsO4grxrEw+I7
+	 p2HWOqCL6v0h0UE2zwEBTXX/iF0W6AYwNgAqTL1sW0WzRHJkgMvTkXfw57OT3x8P5u
+	 +Jf+Ow/fMpLCiezRI+kONreJBFoIIHHbA+ylLYKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6300CF800F0;
-	Mon, 29 Jun 2020 02:56:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C173F800E8;
+	Mon, 29 Jun 2020 03:06:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0532F8022D; Mon, 29 Jun 2020 02:56:36 +0200 (CEST)
+ id A5657F8022D; Mon, 29 Jun 2020 03:06:01 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A5E42F800B4
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 02:56:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5E42F800B4
-Date: 29 Jun 2020 09:56:27 +0900
-X-IronPort-AV: E=Sophos;i="5.75,293,1589209200"; d="scan'208";a="50570200"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 29 Jun 2020 09:56:27 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 76635F800E8
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 03:05:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76635F800E8
+Date: 29 Jun 2020 10:05:52 +0900
+X-IronPort-AV: E=Sophos;i="5.75,293,1589209200"; d="scan'208";a="50571301"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 29 Jun 2020 10:05:52 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 053E04134250;
- Mon, 29 Jun 2020 09:56:27 +0900 (JST)
-Message-ID: <877dvq1yhy.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C5A324005E13;
+ Mon, 29 Jun 2020 10:05:52 +0900 (JST)
+Message-ID: <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v4 10/23] ASoC: simple-card: Wrong daifmt for CPU end of
- DPCM DAI link
-In-Reply-To: <1593233625-14961-11-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children for
+ 'mclk-fs'
+In-Reply-To: <1593233625-14961-12-git-send-email-spujar@nvidia.com>
 References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-11-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-12-git-send-email-spujar@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -85,33 +86,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
->  simple-audio-card,dai-link@xxx {
->      format = "i2s";
->      bitclock-master=<&cpu1>;
->      frame-master=<&cpu1>;
+> CPU/Codec in DPCM DAI links are connected as CPU<->Dummy and Dummy<->Codec.
+> Though mostly CPU won't use/require 'mclk-fs' property, looping over
+> 'np' (current child node in a DAI link) can help in cases where multiple
+> Codecs are defined. This further helps to get rid of 'codec' argument
+> from simple_dai_link_of_dpcm() function, which gets called for DPCM links.
 > 
->      cpu1: cpu@0 {
->          ...
->      };
-> 
->      codec@0 {
->          ...
->      };
-> 
->      ...
->  };
-> 
-> In above case CPU is expected to be configured as a master and Codec as
-> a slave device. But both CPU/Codec are being configured as slave devices.
-> This happens because asoc_simple_parse_daifmt() uses Codec reference and
-> sets up the 'dai_link->dai_fmt' accordingly while parsing both CPU and
-> Codec.
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+(snip)
+> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+> index 39cdc71..02d6295 100644
+> --- a/sound/soc/generic/simple-card.c
+> +++ b/sound/soc/generic/simple-card.c
+> @@ -107,7 +107,9 @@ static void simple_parse_mclk_fs(struct device_node *top,
+>  	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
+>  	of_property_read_u32(node,	prop, &props->mclk_fs);
+>  	of_property_read_u32(cpu,	prop, &props->mclk_fs);
+> -	of_property_read_u32(codec,	prop, &props->mclk_fs);
+> +
+> +	if (cpu != codec)
+> +		of_property_read_u32(codec, prop, &props->mclk_fs);
 
-I'm sorry but I don't 100% understand about this case...
-asoc_simple_parse_daifmt() should work in this case
-
-The reason why it needs codec node is that
-SND_SOC_DAIFMT_CBx_CFx are "Codec" base Master/Slave.
+Maybe we want to have "cpu" in simple_dai_link_of_dpcm() side
+without using magical code in simple_parse_mclk_fs() side ?
 
 Thank you for your help !!
 
