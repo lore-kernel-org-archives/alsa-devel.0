@@ -2,75 +2,81 @@ Return-Path: <SRS0=wrte=AK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5DEFC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 03:01:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B615C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 03:24:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4093E206F1
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 03:01:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DB203206C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 03:24:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qEnj4Y4S";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="KzRR0dcf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4093E206F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IiXXmTf2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DE01pAvH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB203206C0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA57A1660;
-	Mon, 29 Jun 2020 05:00:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA57A1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62A2086E;
+	Mon, 29 Jun 2020 05:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62A2086E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593399693;
-	bh=f9a/Uh2FgpVP1xpkgrlsgWUZHoP34cJM8i5Cfs8bVow=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1593401089;
+	bh=GLo2TyclngioM5ejyNuUSGXaY7cT++dGp5711A9S0do=;
+	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qEnj4Y4SdDw2uHaHtGS8i2WZFH3KNbi+iAobAyuDlcCXoMBKVH16eMJi+E8AHTqu5
-	 6LjX/cGbokfA6ZpuMc+QcfQuAVuPmj2NXSUKzEWSFwQEDR8nbxXP6IjaeKROSr/PB2
-	 MuGhAWhfoGdpUxFe7yoDyz3N9zoZEIkZd6goYoKk=
+	b=IiXXmTf2yafDeiMu3swk8D5QieK+LnxZoeV7pAao/2GqytBmfTwmwWUsCynwu1H7w
+	 mTHUTaMyPdRwHjuqsH94U2wEYQJLv6cbFcowO2iksAs1fz2la+LiB9CONpjsHNTJdx
+	 ur+KHdmx4SavHZeSlkT/oSuO+0Iaf8hYRYmNnV7M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5197F80217;
-	Mon, 29 Jun 2020 04:59:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE369F800BA;
+	Mon, 29 Jun 2020 05:23:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8C99F8020C; Mon, 29 Jun 2020 04:59:48 +0200 (CEST)
-Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+ id 843FEF8020C; Mon, 29 Jun 2020 05:23:56 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A8ABF800BA
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 04:59:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A8ABF800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7AF5FF800EA
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 05:23:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AF5FF800EA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
- header.b="KzRR0dcf"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
- s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
- Subject:Cc:To:From:Reply-To:Content-Type:Content-ID:Content-Description:
- Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
- In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=Mc9i2ZK3gwds1gRgo2eSMw+8HK7J7GXFupwKk48KXpg=; b=KzRR0dcfcDTghi2kcLCWCQBJqE
- s2XLkSfaVZyHB5NuOYP3ntzCu8HdiUltkyLmGiK/JcNDFOmtk3kNCydSNXoO6iiNYtFn7LmRP15bj
- hKFQiPet14SyqJI7nUbxd6FkEJXYf0nY46hsT5si9HVFSg1EwheGs8RRE/gS3+QWWyiQ=;
-Received: from [2a00:1370:8125:614e:c510:d933:d0ef:dfce]
- (helo=home.puleglot.ru)
- by puleglot.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
- (Exim 4.93.0.4) (envelope-from <puleglot@puleglot.ru>)
- id 1jpk1A-000nGE-6D; Mon, 29 Jun 2020 05:59:36 +0300
-From: Alexander Tsoy <alexander@tsoy.me>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ALSA: usb-audio: Fix packet size calculation
-Date: Mon, 29 Jun 2020 05:59:33 +0300
-Message-Id: <20200629025934.154288-1-alexander@tsoy.me>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="DE01pAvH"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=blQRyd/HnAyTbWfbQ9xtykWqeCj1aEkm67zC7s9PG2w=; b=DE01pAvHW6rcfid3cvE/jIdTqU
+ nqqb9R2nFsmYFIjfnzSXtcbUHQzBQ95NnEZPBuq7UNDzYSHWA5DhHA9ZAUXVOSdrixZqIQdMu0y3S
+ v7F9ibuJJoanNGjL1CC9W+CoBW6KsNZoF06HAKqv3EBhpa7G+BCKyzb+ZtxhnV6vxy475Lf5Fl7xV
+ 75aDqAn1/Bi0T6Z0VxVzxkg6vqZCjEWqcxVBAoBE+Rjus2AeKz+GA8NWMl0lnSIkis89unej4pTSk
+ lYmf1ALW0kemIFuM6ca57rm/yYqUy1jDytPH4zD64cjYRGnDME8bc9pdmm+QXInAKpdCC2Y4E/FXf
+ 2oo5LwhA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jpkOO-0003eW-BA; Mon, 29 Jun 2020 03:23:37 +0000
+To: LKML <linux-kernel@vger.kernel.org>,
+ moderated for non-subscribers <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH -next] ASoC: Documentation: fix reference to renamed source
+ file
+Message-ID: <a9f59f30-8cf2-ea82-567c-1706fd64fe62@infradead.org>
+Date: Sun, 28 Jun 2020 20:23:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Peter Bui <pbui@kernel.bx612.space>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,33 +92,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
-introduced a regression for devices which have playback endpoints with
-bInterval > 1. Fix this by taking ep->datainterval into account.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Note that frame and fps are actually mean packet and packets per second
-in the code introduces by the mentioned commit. This will be fixed in a
-follow-up patch.
+sound/soc/soc-io.c was merged into sound/soc/soc-component.c, so fixup
+the Documentation to use the updated file name.
 
-Fixes: f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208353
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Error: Cannot open file ../sound/soc/soc-io.c
+WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno ../sound/soc/soc-io.c' failed with return code 1
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>
 ---
- sound/usb/endpoint.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/sound/kernel-api/alsa-driver-api.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 9bea7d3f99f8..11f23778f0a5 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1093,6 +1093,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 		ep->freqn = get_usb_high_speed_rate(rate);
- 		ep->fps = 8000;
- 	}
-+	ep->fps >>= ep->datainterval;
- 
- 	ep->sample_rem = rate % ep->fps;
- 	ep->framesize[0] = rate / ep->fps;
--- 
-2.26.2
+--- linux-next-20200626.orig/Documentation/sound/kernel-api/alsa-driver-api.rst
++++ linux-next-20200626/Documentation/sound/kernel-api/alsa-driver-api.rst
+@@ -99,7 +99,7 @@ ASoC Core API
+ .. kernel-doc:: include/sound/soc.h
+ .. kernel-doc:: sound/soc/soc-core.c
+ .. kernel-doc:: sound/soc/soc-devres.c
+-.. kernel-doc:: sound/soc/soc-io.c
++.. kernel-doc:: sound/soc/soc-component.c
+ .. kernel-doc:: sound/soc/soc-pcm.c
+ .. kernel-doc:: sound/soc/soc-ops.c
+ .. kernel-doc:: sound/soc/soc-compress.c
 
