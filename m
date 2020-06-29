@@ -6,58 +6,57 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ED29C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:39:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0164C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:42:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0788206C3
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:39:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C92D206C3
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2020 01:42:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IkWjBFxK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0788206C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vRh3LM0+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C92D206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A4F31654;
-	Mon, 29 Jun 2020 03:38:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A4F31654
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABDA71654;
+	Mon, 29 Jun 2020 03:41:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABDA71654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593394753;
-	bh=n0mhngvSkyNqfTH7ygFjIKeXIAFamm2N3lxClaBV4lQ=;
+	s=default; t=1593394959;
+	bh=4Fr/zKn147crE+gijnIHqo5TVwk9ynxd1mgx3jdk2+g=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IkWjBFxKa5cXOOsvXKsGhDN2S6PdPjk2Z1Qu6kti+Xjux5GPu82I+KvTC0d1x8GUi
-	 5tVgNi4YO6EYC5w0Byd2obPq6pR2TauaHROT/5uwr/QTY6cH2CGOy8I2LbJqoctmJi
-	 jtNTmaXZ4jGLUmlf4Be20rj5/kuiSMnDZEz/4p4g=
+	b=vRh3LM0+Kwvd+bergffRz/b4X/B/Gs9yJWdoFIbuLEqXs1kmwj3bNYbuFZ1fHavpx
+	 SZpXyaIlWZlInbBhYJUULBHqIHVT8J8qHapAiEhHk2M903SM+2PiZCw96i5bLWSR1C
+	 zTmsB9wr+2CXcgiAXF5KKhhf+lyQxj6M+e4fVmck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E93C9F801F8;
-	Mon, 29 Jun 2020 03:38:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AAC5F801F8;
+	Mon, 29 Jun 2020 03:41:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6367FF8020C; Mon, 29 Jun 2020 03:38:20 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 100BDF800BA
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 03:38:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 100BDF800BA
-Date: 29 Jun 2020 10:38:13 +0900
-X-IronPort-AV: E=Sophos;i="5.75,293,1589209200"; d="scan'208";a="50575129"
+ id 6AF43F8020C; Mon, 29 Jun 2020 03:41:47 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 84144F800EA
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2020 03:41:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84144F800EA
+Date: 29 Jun 2020 10:41:39 +0900
+X-IronPort-AV: E=Sophos;i="5.75,293,1589209200"; d="scan'208";a="50786419"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 29 Jun 2020 10:38:13 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 29 Jun 2020 10:41:39 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id C67B64148028;
- Mon, 29 Jun 2020 10:38:13 +0900 (JST)
-Message-ID: <87366e1wkb.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5FD79414B92C;
+ Mon, 29 Jun 2020 10:41:39 +0900 (JST)
+Message-ID: <871rly1wem.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v4 15/23] ASoC: soc-core: Identify 'no_pcm' DAI links for
- DPCM
-In-Reply-To: <1593233625-14961-16-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v4 16/23] ASoC: soc-pcm: Get all BEs along DAPM path
+In-Reply-To: <1593233625-14961-17-git-send-email-spujar@nvidia.com>
 References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-16-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-17-git-send-email-spujar@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -85,33 +84,21 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-> PCM devices are created for dai links with 'no-pcm' flag as '0'.
-> Such DAI links have CPU component which implement pcm_construct()
-> and pcm_destruct() callbacks. Based on this, current patch exposes
-> a helper function to identify such components and populate 'no_pcm'
-> flag for DPCM DAI link.
+> dpcm_end_walk_at_be() stops the graph walk when first BE is found for
+> the given FE component. In a component model we may want to connect
+> multiple DAIs from different components. A new flag is introduced in
+> 'snd_soc_card', which when set allows DAI/component chaining. Later
+> PCM operations can be called for all these listed components for a
+> valid DAPM path.
 (snip)
-> +bool soc_component_is_pcm(struct snd_soc_dai_link_component *dlc)
-> +{
-> +	struct snd_soc_component *component;
-> +	struct snd_soc_dai *dai;
-> +
-> +	for_each_component(component) {
-> +		if (!component->driver)
-> +			continue;
-> +
-> +		for_each_component_dais(component, dai) {
-> +			if (!dai->name || !dlc->dai_name)
-> +				continue;
-> +
-> +			if (strcmp(dai->name, dlc->dai_name))
-> +				continue;
+> @@ -1069,6 +1069,7 @@ struct snd_soc_card {
+>  	int num_of_dapm_widgets;
+>  	const struct snd_soc_dapm_route *of_dapm_routes;
+>  	int num_of_dapm_routes;
+> +	bool component_chaining;
 
-
-We can/should NULL poinster check for "dlc->dai_name" on top of
-this function instead of inside loop ?
-And then, we can remove "dai->name" check because next strcmp()
-automatically fail if dai->name was NULL.
+snd_soc_card has many /* bit field */ variables.
+Please use it instead of bool.
 
 Thank you for your help !!
 
