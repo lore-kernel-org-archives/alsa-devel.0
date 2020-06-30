@@ -2,81 +2,69 @@ Return-Path: <SRS0=uo8V=AL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C263C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 13:56:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C1BDC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 14:08:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A4B820774
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 13:56:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E040C2072D
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 14:08:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dnTNjLex"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A4B820774
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=katsuster.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dY2dF/m6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E040C2072D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38911168F;
-	Tue, 30 Jun 2020 15:55:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38911168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79BFA168C;
+	Tue, 30 Jun 2020 16:08:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79BFA168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593525397;
-	bh=DOXOlHrbyEs6eOiKn6WY+7e258TeyawtZfWSsqxd+60=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dnTNjLex8G2AUlMw5tjCquVs9Hw3X88F/7mG7abn4opbka+97K9IVhTT6j7g9+tx7
-	 GqKI51D+UAX6xIkGjFsuDQrXniY0/gwgNZtvVToRb8cyCu+PRpoTg/d0gFgUzNf81j
-	 kZn8JbugXOO3Y/CXBwXlkeUV1woAELzA/Zoq4o90=
+	s=default; t=1593526137;
+	bh=Ooww5ffXHd2kcdUPhYOido3YbQF/RXLkFqEKVfyz60Y=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dY2dF/m6idykftRh4glXDaFcpltbeQY5bXUkFJ6sQc85r03WF1tIkye8MF5sI/zpx
+	 uYs8JRanAmLdmps5DhhtAxB5hj6P/tRdbjrIGjjHi5FxAjq3XHpolCiV+0/s+Lrzii
+	 mx1PVlSJA3Rm1FOTwGHn9rDPORb8EktQb2o27uWM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D616FF80245;
-	Tue, 30 Jun 2020 15:55:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6C74F801D8;
+	Tue, 30 Jun 2020 16:08:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 446A7F80247; Tue, 30 Jun 2020 15:55:03 +0200 (CEST)
-Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
+ id AF3F1F801F2; Tue, 30 Jun 2020 16:08:04 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9F6FF80135
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 15:54:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9F6FF80135
-Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05UDs806069756;
- Tue, 30 Jun 2020 22:54:08 +0900 (JST)
- (envelope-from katsuhiro@katsuster.net)
-Received: from www1102.sakura.ne.jp (219.94.129.142)
- by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
- Tue, 30 Jun 2020 22:54:08 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
-Received: from [192.168.1.2] (121.252.232.153.ap.dti.ne.jp [153.232.252.121])
- (authenticated bits=0)
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05UDs7nx069750
- (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
- Tue, 30 Jun 2020 22:54:08 +0900 (JST)
- (envelope-from katsuhiro@katsuster.net)
-Subject: Re: [PATCH 1/2] dt-bindings: sound: convert rk3328 codec binding to
- yaml
-To: Rob Herring <robh@kernel.org>
-References: <20200623124734.1736470-1-katsuhiro@katsuster.net>
- <20200629220040.GA3011219@bogus>
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Message-ID: <ba6514ab-72a6-34d2-88c3-368759ea841f@katsuster.net>
-Date: Tue, 30 Jun 2020 22:54:07 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200629220040.GA3011219@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1E71F80135
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 16:07:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1E71F80135
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E65DA1A0480;
+ Tue, 30 Jun 2020 16:07:56 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 26BAD1A046C;
+ Tue, 30 Jun 2020 16:07:52 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 45150402D0;
+ Tue, 30 Jun 2020 22:07:46 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH v3] ASoC: fsl_asrc: Add an option to select internal ratio mode
+Date: Tue, 30 Jun 2020 21:56:07 +0800
+Message-Id: <1593525367-23221-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,46 +80,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Rob,
+The ASRC not only supports ideal ratio mode, but also supports
+internal ratio mode.
 
-Thanks for your comment. I see.
-I'll squash 2 patches and resend it.
+For internal rato mode, the rate of clock source should be divided
+with no remainder by sample rate, otherwise there is sound
+distortion.
 
-Best Regards,
-Katsuhiro Suzuki
+Add function fsl_asrc_select_clk() to find proper clock source for
+internal ratio mode, if the clock source is available then internal
+ratio mode will be selected.
 
-On 2020/06/30 7:00, Rob Herring wrote:
-> On Tue, 23 Jun 2020 21:47:33 +0900, Katsuhiro Suzuki wrote:
->> Just convert Rockchip rk3328 audio codec binding to DT schema.
->>
->> Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
->> ---
->>   .../bindings/sound/rockchip,rk3328-codec.txt  | 28 ---------
->>   .../bindings/sound/rockchip,rk3328-codec.yaml | 61 +++++++++++++++++++
->>   2 files changed, 61 insertions(+), 28 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt
->>   create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.yaml
->>
-> 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> Error: Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.example.dts:22.26-27 syntax error
-> FATAL ERROR: Unable to parse input tree
-> scripts/Makefile.lib:315: recipe for target 'Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.example.dt.yaml' failed
-> make[1]: *** [Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> Makefile:1347: recipe for target 'dt_binding_check' failed
-> make: *** [dt_binding_check] Error 2
-> 
-> 
-> See https://patchwork.ozlabs.org/patch/1315234
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure dt-schema is up to date:
-> 
-> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-> 
-> Please check and re-submit.
-> 
+With change, the ideal ratio mode is not the only option for user.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v3
+- convert fsl_asrc_select_clk to void type
+
+changes in v2
+- update according to Nicolin's comments
+
+ sound/soc/fsl/fsl_asrc.c | 46 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 44 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 95f6a9617b0b..462ce9f9ab48 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -582,11 +582,51 @@ static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
+ 			SNDRV_PCM_HW_PARAM_RATE, &fsl_asrc_rate_constraints);
+ }
+ 
++/* Select proper clock source for internal ratio mode */
++static void fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
++				struct fsl_asrc_pair *pair,
++				int in_rate,
++				int out_rate)
++{
++	struct fsl_asrc_pair_priv *pair_priv = pair->private;
++	struct asrc_config *config = pair_priv->config;
++	int rate[2], select_clk[2]; /* Array size 2 means IN and OUT */
++	int clk_rate, clk_index;
++	int i = 0, j = 0;
++
++	rate[IN] = in_rate;
++	rate[OUT] = out_rate;
++
++	/* Select proper clock source for internal ratio mode */
++	for (j = 0; j < 2; j++) {
++		for (i = 0; i < ASRC_CLK_MAP_LEN; i++) {
++			clk_index = asrc_priv->clk_map[j][i];
++			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
++			/* Only match a perfect clock source with no remainder */
++			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
++			    (clk_rate % rate[j]) == 0)
++				break;
++		}
++
++		select_clk[j] = i;
++	}
++
++	/* Switch to ideal ratio mode if there is no proper clock source */
++	if (select_clk[IN] == ASRC_CLK_MAP_LEN || select_clk[OUT] == ASRC_CLK_MAP_LEN) {
++		select_clk[IN] = INCLK_NONE;
++		select_clk[OUT] = OUTCLK_ASRCK1_CLK;
++	}
++
++	config->inclk = select_clk[IN];
++	config->outclk = select_clk[OUT];
++}
++
+ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct fsl_asrc *asrc = snd_soc_dai_get_drvdata(dai);
++	struct fsl_asrc_priv *asrc_priv = asrc->private;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+ 	struct fsl_asrc_pair_priv *pair_priv = pair->private;
+@@ -605,8 +645,6 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	config.pair = pair->index;
+ 	config.channel_num = channels;
+-	config.inclk = INCLK_NONE;
+-	config.outclk = OUTCLK_ASRCK1_CLK;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		config.input_format   = params_format(params);
+@@ -620,6 +658,10 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 		config.output_sample_rate = rate;
+ 	}
+ 
++	fsl_asrc_select_clk(asrc_priv, pair,
++			    config.input_sample_rate,
++			    config.output_sample_rate);
++
+ 	ret = fsl_asrc_config_pair(pair, false);
+ 	if (ret) {
+ 		dev_err(dai->dev, "fail to config asrc pair\n");
+-- 
+2.21.0
 
