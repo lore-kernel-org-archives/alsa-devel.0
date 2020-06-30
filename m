@@ -2,65 +2,66 @@ Return-Path: <SRS0=uo8V=AL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78329C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:50:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44C2EC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:53:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36BB720724
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:50:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C19A320724
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:53:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HT9E3EN5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36BB720724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="picdQZRc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C19A320724
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C559F1665;
-	Tue, 30 Jun 2020 19:49:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C559F1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64DC583B;
+	Tue, 30 Jun 2020 19:52:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64DC583B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593539429;
-	bh=vNhZK7h8V11bnUPdPtoFrZAewGdSzdZbjindd5UPUgw=;
+	s=default; t=1593539579;
+	bh=FBQd9f97n6M+tU3SXpX/LCCTws2em7S9KfnJ9ZPgyMA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HT9E3EN53bO9/cKX7fKqhAQS4BphFHzUirOHEYQxarLPJhWjjiRejvrHO+2Qap9uP
-	 NxBwyYQ2t3tVYO2kPXZfyQ7vF/2gX+XAiLIpLaajycMfANi4bGWAZxODmrtCmiS+zi
-	 w3uLcIsJC6v9XHJrTrYi84yJ3TpteicclZQivU7w=
+	b=picdQZRcycqsiMrV45gMLcXNvFiJEG487ezn/BDvaDFkMcTYA2GIy6fG7Vc+EvR92
+	 g4rkc22OKiVW0OLGRH4lAnxiih9DxS8BW0ziInu/ZcvXVTvIsRuepkheE4ak3qMf0T
+	 gznaHmITMoQxigoDS2fg2xP0T/0hI/KOJzhnEIl4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CB34F80253;
-	Tue, 30 Jun 2020 19:48:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8B5BF8013E;
+	Tue, 30 Jun 2020 19:52:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06DFBF802A7; Tue, 30 Jun 2020 19:48:47 +0200 (CEST)
+ id AC579F801F2; Tue, 30 Jun 2020 19:52:06 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00C2EF80253
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 19:48:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00C2EF80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id AED5AF800EA
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 19:52:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AED5AF800EA
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A2C48AE83;
- Tue, 30 Jun 2020 17:48:40 +0000 (UTC)
-Date: Tue, 30 Jun 2020 19:48:40 +0200
-Message-ID: <s5hmu4kfnrb.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 335B0AEA7;
+ Tue, 30 Jun 2020 17:52:03 +0000 (UTC)
+Date: Tue, 30 Jun 2020 19:52:03 +0200
+Message-ID: <s5hlfk4fnlo.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix some typos
-In-Reply-To: <20200629032607.255419-1-alexander@tsoy.me>
-References: <20200629032607.255419-1-alexander@tsoy.me>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v5.8-rc3
+In-Reply-To: <20200629163209.452DA2558B@mail.kernel.org>
+References: <20200629163209.452DA2558B@mail.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,16 +77,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 29 Jun 2020 05:26:07 +0200,
-Alexander Tsoy wrote:
+On Mon, 29 Jun 2020 18:31:26 +0200,
+Mark Brown wrote:
 > 
-> Fix the following typos in comments and in the code:
->  - KHz -> kHz
->  - procssed -> processed
+> The following changes since commit f141a422159a199f4c8dedb7e0df55b3b2cf16cd:
 > 
-> Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+>   ASoC: rockchip: Fix a reference count leak. (2020-06-18 17:21:58 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.8-rc3
+> 
+> for you to fetch changes up to bc5c7f55f5ea91e137fc7939435ed2e2bb6e5a15:
+> 
+>   AsoC: amd: add missing snd- module prefix to the acp3x-rn driver kernel module (2020-06-25 15:06:56 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.8
+> 
+> A few small driver specific fixes, nothing particularly dramatic.
 
-Applied to for-next branch.
+Thanks, pulled now.
+
+JFYI, I'm traveling in this week, so I'll delay the pull request to
+Linus likely into the next week.
+
 
 thanks,
 
