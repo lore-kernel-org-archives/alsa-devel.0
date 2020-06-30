@@ -4,72 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C887FC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:41:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBAA1C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:48:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 521D320775
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:41:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48D332074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:48:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YC0GVe+K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 521D320775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YQ7jsLdC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48D332074D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1D9583A;
-	Tue, 30 Jun 2020 19:40:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D9583A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB3AD836;
+	Tue, 30 Jun 2020 19:47:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB3AD836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593538889;
-	bh=/GM6AeIqw9iMfwaAUqPqb+JVH2GTSEAEZE3z28g1yd8=;
+	s=default; t=1593539328;
+	bh=b0u5+s1gWFmqUKyFq9DSR+65zfqblPMjkUWuMNfbbTs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YC0GVe+KDSSrAMEUpnp/yBYIe/GVyzDsF7GZ/2lQr62UMCgbertXIXQxr44JSC5rQ
-	 GdkAmbGt1IB55jGwXaDmbgCQpHcQbIzDKdMlUv1Y9QI2tvptmY/yKE2QvbiGPD8FXC
-	 wczjqn5Z0pwMH8qbGAnFhdph1PdKxNVGp30QEEhM=
+	b=YQ7jsLdC8pXYEIBMcW0UiwBzb35hPx8mV8BCzEETJfTz/vuiYagubqTw/my8U4Zdz
+	 pFBnHIAe/YOTfct1YCdkf5IVWb/9kLXJQ0sv6FPBneeInow8zNNAZFBwBsvIs3WanA
+	 itTEK0heDDiiSS7Lk3gOFpqJK7AY8TNSOUQ/qL0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DCD7F801D8;
-	Tue, 30 Jun 2020 19:40:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F1F3F800EA;
+	Tue, 30 Jun 2020 19:47:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 791F4F801F2; Tue, 30 Jun 2020 19:40:37 +0200 (CEST)
+ id 4697FF801F2; Tue, 30 Jun 2020 19:47:57 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACC8AF80135
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 19:40:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACC8AF80135
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60D88F800EA
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 19:47:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60D88F800EA
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A0E64AE2A;
- Tue, 30 Jun 2020 17:40:30 +0000 (UTC)
-Date: Tue, 30 Jun 2020 19:40:30 +0200
-Message-ID: <s5hsgecfo4x.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5E4F1AE83;
+ Tue, 30 Jun 2020 17:47:50 +0000 (UTC)
+Date: Tue, 30 Jun 2020 19:47:49 +0200
+Message-ID: <s5hpn9gfnsq.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: Re: [PATCH] ALSA: core: Warn on empty module
-In-Reply-To: <b170d0e1d022dc26eb446c9003ff9bd9194a0fd0.camel@suse.de>
-References: <20200624160300.21703-1-tiwai@suse.de>
- <CGME20200630123043eucas1p2f95aa10ad1611e902269fbf9b783c405@eucas1p2.samsung.com>
- <0ec9855e-18d5-6144-ae5f-6cb239214dee@samsung.com>
- <c16be1b9b4da811e923e3ff589ff5dfcdfebe314.camel@suse.de>
- <8a5e65f3-771d-5896-1288-f4e441225034@samsung.com>
- <b170d0e1d022dc26eb446c9003ff9bd9194a0fd0.camel@suse.de>
+To: Alexander Tsoy <alexander@tsoy.me>
+Subject: Re: [PATCH 1/2] ALSA: usb-audio: Fix packet size calculation
+In-Reply-To: <20200629025934.154288-1-alexander@tsoy.me>
+References: <20200629025934.154288-1-alexander@tsoy.me>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org,
- linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: alsa-devel@alsa-project.org, Peter Bui <pbui@kernel.bx612.space>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,104 +76,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 30 Jun 2020 14:38:14 +0200,
-Nicolas Saenz Julienne wrote:
+On Mon, 29 Jun 2020 04:59:33 +0200,
+Alexander Tsoy wrote:
 > 
-> On Tue, 2020-06-30 at 14:36 +0200, Marek Szyprowski wrote:
-> > On 30.06.2020 14:34, Nicolas Saenz Julienne wrote:
-> > > Hi Marek,
-> > > Thanks for pointing this out!
-> > > 
-> > > On Tue, 2020-06-30 at 14:30 +0200, Marek Szyprowski wrote:
-> > > > Hi
-> > > > 
-> > > > On 24.06.2020 18:03, Takashi Iwai wrote:
-> > > > > The module argument passed to snd_card_new() must be a valid non-NULL
-> > > > > pointer when the module support is enabled.  Since ASoC driver passes
-> > > > > the argument from each snd_soc_card definition, one may forget to set
-> > > > > the owner field and lead to a NULL module easily.
-> > > > > 
-> > > > > For catching such an overlook, add a WARN_ON() in snd_card_new().
-> > > > > Also, put the card->module assignment in the ifdef block for a very
-> > > > > minor optimization.
-> > > > > 
-> > > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > > I know that this is intended, but I would like to note that this patch
-> > > > reveals the following issue on Raspberry Pi 3B with ARM 32bit kernel
-> > > > compiled from multi_v7_defconfig:
-> > > > 
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 1 PID: 210 at sound/core/init.c:207
-> > > > snd_card_new+0x378/0x398 [snd]
-> > > > Modules linked in: vc4(+) snd_soc_core ac97_bus snd_pcm_dmaengine
-> > > > bluetooth snd_pcm snd_timer crc32_arm_ce raspberrypi_hwmon snd soundcore
-> > > > ecdh_generic ecc bcm2835_thermal phy_generic
-> > > > CPU: 1 PID: 210 Comm: systemd-udevd Not tainted
-> > > > 5.8.0-rc1-00027-g81033c6b584b #1087
-> > > > Hardware name: BCM2835
-> > > > [<c03113c0>] (unwind_backtrace) from [<c030bcb4>] (show_stack+0x10/0x14)
-> > > > [<c030bcb4>] (show_stack) from [<c071cef8>] (dump_stack+0xd4/0xe8)
-> > > > [<c071cef8>] (dump_stack) from [<c0345bfc>] (__warn+0xdc/0xf4)
-> > > > [<c0345bfc>] (__warn) from [<c0345cc4>] (warn_slowpath_fmt+0xb0/0xb8)
-> > > > [<c0345cc4>] (warn_slowpath_fmt) from [<bf02ff74>]
-> > > > (snd_card_new+0x378/0x398 [snd])
-> > > > [<bf02ff74>] (snd_card_new [snd]) from [<bf11f0b4>]
-> > > > (snd_soc_bind_card+0x280/0x99c [snd_soc_core])
-> > > > [<bf11f0b4>] (snd_soc_bind_card [snd_soc_core]) from [<bf12f000>]
-> > > > (devm_snd_soc_register_card+0x34/0x6c [snd_soc_core])
-> > > > [<bf12f000>] (devm_snd_soc_register_card [snd_soc_core]) from
-> > > > [<bf165654>] (vc4_hdmi_bind+0x43c/0x5f4 [vc4])
-> > > > [<bf165654>] (vc4_hdmi_bind [vc4]) from [<c09d660c>]
-> > > > (component_bind_all+0xec/0x24c)
-> > > > [<c09d660c>] (component_bind_all) from [<bf15c44c>]
-> > > > (vc4_drm_bind+0xd4/0x174 [vc4])
-> > > > [<bf15c44c>] (vc4_drm_bind [vc4]) from [<c09d6ac0>]
-> > > > (try_to_bring_up_master+0x160/0x1b0)
-> > > > [<c09d6ac0>] (try_to_bring_up_master) from [<c09d6f38>]
-> > > > (component_master_add_with_match+0xd0/0x104)
-> > > > [<c09d6f38>] (component_master_add_with_match) from [<bf15c588>]
-> > > > (vc4_platform_drm_probe+0x9c/0xbc [vc4])
-> > > > [<bf15c588>] (vc4_platform_drm_probe [vc4]) from [<c09df740>]
-> > > > (platform_drv_probe+0x6c/0xa4)
-> > > > [<c09df740>] (platform_drv_probe) from [<c09dd6f0>]
-> > > > (really_probe+0x210/0x350)
-> > > > [<c09dd6f0>] (really_probe) from [<c09dd940>]
-> > > > (driver_probe_device+0x5c/0xb4)
-> > > > [<c09dd940>] (driver_probe_device) from [<c09ddb38>]
-> > > > (device_driver_attach+0x58/0x60)
-> > > > [<c09ddb38>] (device_driver_attach) from [<c09ddbc0>]
-> > > > (__driver_attach+0x80/0xbc)
-> > > > [<c09ddbc0>] (__driver_attach) from [<c09db820>]
-> > > > (bus_for_each_dev+0x68/0xb4)
-> > > > [<c09db820>] (bus_for_each_dev) from [<c09dc9f8>]
-> > > > (bus_add_driver+0x130/0x1e8)
-> > > > [<c09dc9f8>] (bus_add_driver) from [<c09de648>]
-> > > > (driver_register+0x78/0x110)
-> > > > [<c09de648>] (driver_register) from [<c0302038>]
-> > > > (do_one_initcall+0x50/0x220)
-> > > > [<c0302038>] (do_one_initcall) from [<c03db544>]
-> > > > (do_init_module+0x60/0x210)
-> > > > [<c03db544>] (do_init_module) from [<c03da4f8>]
-> > > > (load_module+0x1e34/0x2338)
-> > > > [<c03da4f8>] (load_module) from [<c03dac00>] (sys_finit_module+0xac/0xbc)
-> > > > [<c03dac00>] (sys_finit_module) from [<c03000c0>]
-> > > > (ret_fast_syscall+0x0/0x54)
-> > > > Exception stack(0xeded9fa8 to 0xeded9ff0)
-> > > > ...
-> > > > ---[ end trace 6414689569c2bc08 ]---
-> > > > 
-> > > > This warning is not present when booting ARM 64bit kernel, but I suspect
-> > > > that this is due to the differences in the kernel configuration.
-> > > It's because vc4 is not yet supported on RPi4.
-> > 
-> > This happens on RPi *3B* :)
+> Commit f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
+> introduced a regression for devices which have playback endpoints with
+> bInterval > 1. Fix this by taking ep->datainterval into account.
 > 
-> Ok, read too fast. Thanks!
+> Note that frame and fps are actually mean packet and packets per second
+> in the code introduces by the mentioned commit. This will be fixed in a
+> follow-up patch.
+> 
+> Fixes: f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208353
+> Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
 
-FYI, you just need to set card->owner field properly in
-vc4_hdmi_audio_init().
+Applied now.  Thanks.
 
-
-thanks,
 
 Takashi
