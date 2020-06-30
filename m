@@ -6,55 +6,57 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBAA1C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:48:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C61DC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:49:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48D332074D
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:48:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 271972074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 17:49:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YQ7jsLdC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48D332074D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MjKyeEM2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 271972074D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB3AD836;
-	Tue, 30 Jun 2020 19:47:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB3AD836
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3A20165D;
+	Tue, 30 Jun 2020 19:48:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3A20165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593539328;
-	bh=b0u5+s1gWFmqUKyFq9DSR+65zfqblPMjkUWuMNfbbTs=;
+	s=default; t=1593539381;
+	bh=4xE7dk9XBpoTTFhTjMhfwVg+3zhxrxMQuTBnaTJglQs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YQ7jsLdC8pXYEIBMcW0UiwBzb35hPx8mV8BCzEETJfTz/vuiYagubqTw/my8U4Zdz
-	 pFBnHIAe/YOTfct1YCdkf5IVWb/9kLXJQ0sv6FPBneeInow8zNNAZFBwBsvIs3WanA
-	 itTEK0heDDiiSS7Lk3gOFpqJK7AY8TNSOUQ/qL0s=
+	b=MjKyeEM2HpJo83W3jgosaHVL9z9bsp7ZzIVu6F0VI21RJMkiy38EKMJ6+PZBDBxGR
+	 IiKmxgC4ewRIqYdsy/CzGB7+bZR6IkKnzGJlP5bJ96SvMIiGxxGDIgH25qQPidkjvY
+	 84ENaBi6ch1txUlHdCecTVEL2FjKF8618l2cP5S8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F1F3F800EA;
-	Tue, 30 Jun 2020 19:47:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C48A2F801D8;
+	Tue, 30 Jun 2020 19:48:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4697FF801F2; Tue, 30 Jun 2020 19:47:57 +0200 (CEST)
+ id 27A01F80247; Tue, 30 Jun 2020 19:48:10 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60D88F800EA
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 19:47:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60D88F800EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF26CF801D8
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 19:48:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF26CF801D8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5E4F1AE83;
- Tue, 30 Jun 2020 17:47:50 +0000 (UTC)
-Date: Tue, 30 Jun 2020 19:47:49 +0200
-Message-ID: <s5hpn9gfnsq.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9B3A6AE83;
+ Tue, 30 Jun 2020 17:48:03 +0000 (UTC)
+Date: Tue, 30 Jun 2020 19:48:03 +0200
+Message-ID: <s5ho8p0fnsc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Alexander Tsoy <alexander@tsoy.me>
-Subject: Re: [PATCH 1/2] ALSA: usb-audio: Fix packet size calculation
-In-Reply-To: <20200629025934.154288-1-alexander@tsoy.me>
+Subject: Re: [PATCH 2/2] ALSA: usb-audio: Replace s/frame/packet/ where
+ appropriate
+In-Reply-To: <20200629025934.154288-2-alexander@tsoy.me>
 References: <20200629025934.154288-1-alexander@tsoy.me>
+ <20200629025934.154288-2-alexander@tsoy.me>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,22 +78,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 29 Jun 2020 04:59:33 +0200,
+On Mon, 29 Jun 2020 04:59:34 +0200,
 Alexander Tsoy wrote:
 > 
-> Commit f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
-> introduced a regression for devices which have playback endpoints with
-> bInterval > 1. Fix this by taking ep->datainterval into account.
+> Replace several occurences of "frame" with a "packet" where appropriate.
 > 
-> Note that frame and fps are actually mean packet and packets per second
-> in the code introduces by the mentioned commit. This will be fixed in a
-> follow-up patch.
-> 
-> Fixes: f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208353
 > Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
 
-Applied now.  Thanks.
+Applied, thanks.
 
 
 Takashi
