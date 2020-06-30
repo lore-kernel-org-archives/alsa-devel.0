@@ -6,60 +6,60 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF15AC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 00:57:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54FC6C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 01:26:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3773720781
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 00:57:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D04E520760
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 01:25:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XKzmrH09"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3773720781
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cK0OuzuA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D04E520760
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFFD0843;
-	Tue, 30 Jun 2020 02:56:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFFD0843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DAC615E0;
+	Tue, 30 Jun 2020 03:25:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DAC615E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593478639;
-	bh=+mfq/PVD2VY3LoexJQLhsbyzFYyqWbpxtplubuWIaCI=;
+	s=default; t=1593480358;
+	bh=8HuZ2S6BcFkPF7vwkdPSTrQ73tmKo8QLUNhtnWvyFFY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XKzmrH09nqZnL9aTtrWW9ktDXKmKvR/3Q/6bIwjwzK40g+UZWo9yb9vETB8kaKP6T
-	 qEJhyLswIiOkm+OKZl2Vg/t2paCF9OmpngaP0rqEppSS0AyR0bagVJ7GvpY15YOgXq
-	 xb6GPhKZDCTZwFOQsENKqRkGEqPmdK8Y40oxoUUA=
+	b=cK0OuzuAbWdEVHnp1FU8pjCZjnVcKl05MCbQ4OqfVJhFqnEZh0KT346SPMzQ0ljmV
+	 Oz/yNC7oa3Ip2zWWkvRp5eWj6zOA9iYHkVaYIWyAC8CynRB1GMbfJqPBhDKSHDNZAI
+	 DH8vFbqyCwoy2lXQXjKjaf5tuSB9ZzH7762LSOmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 425A6F800BA;
-	Tue, 30 Jun 2020 02:56:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE479F801D8;
+	Tue, 30 Jun 2020 03:25:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F21C2F80217; Tue, 30 Jun 2020 02:56:27 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 7F02DF800BA
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 02:56:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F02DF800BA
-Date: 30 Jun 2020 09:56:17 +0900
-X-IronPort-AV: E=Sophos;i="5.75,296,1589209200"; d="scan'208";a="50884743"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 30 Jun 2020 09:56:17 +0900
+ id 20345F801F2; Tue, 30 Jun 2020 03:25:06 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id C043AF80135
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 03:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C043AF80135
+Date: 30 Jun 2020 10:24:48 +0900
+X-IronPort-AV: E=Sophos;i="5.75,296,1589209200"; d="scan'208";a="50677645"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 30 Jun 2020 10:24:48 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8FFB0400389E;
- Tue, 30 Jun 2020 09:56:17 +0900 (JST)
-Message-ID: <87o8p1z81b.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 668654136A60;
+ Tue, 30 Jun 2020 10:24:48 +0900 (JST)
+Message-ID: <87mu4lz6pt.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v4 10/23] ASoC: simple-card: Wrong daifmt for CPU end of
- DPCM DAI link
-In-Reply-To: <6e27daa5-331e-968b-4027-2e30aeb7d382@nvidia.com>
+Subject: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link with
+ multiple Codecs
+In-Reply-To: <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
 References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-11-git-send-email-spujar@nvidia.com>
- <877dvq1yhy.wl-kuninori.morimoto.gx@renesas.com>
- <6e27daa5-331e-968b-4027-2e30aeb7d382@nvidia.com>
+ <1593233625-14961-13-git-send-email-spujar@nvidia.com>
+ <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
+ <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -87,33 +87,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
->  snd_soc_runtime_set_dai_fmt() {
->      ...
-> 
->      if (cpu_dai->component->driver->non_legacy_dai_naming)
->          fmt = inv_dai_fmt;
-> 
->      ...
->  }
-> 
-> Above flips polarity for 'cpu_dai' if 'non_legacy_dai_naming' flag is set.
-> 
-> 1. Hence example mentioned in the commit message does not work if my 'cpu_dai'
-> driver does not have this flag set.
+> > Maybe base issue for multiple codec support
+> > is that simple_for_each_link() is caring first codec only ?
+(snip)
+> Ideally I wanted to remove above two lines and allow empty codec
+> list. But some users may expect the parsing to fail if no 'Codec' is
+> found in the DAI link, hence did not remove above. If it is fine to
+> remove above two lines it would be simpler. The loop inside
+> simple_for_each_link() would anyway loop for each child node of DAI
+> link and simple_dai_link_of_dpcm() can parse each 'np'.
 
-?
-Do you want fo flip it ? or don't flip?
-It is for Codec <-> Codec connection.
+Current simple-card is not assuming multi Codec,
+thus, we need to update it correctly, not quick-hack.
 
-> 2. While it is true that we consider reference of 'Codec' mode for simple CPU<->
-> Codec DAI links, for DPCM this does not seem flexible. For DPCM links CPU and
-> Codec are not directly connected (CPU<->Dummy or Dummy<->Codec). Please
-> consider, for example, if the DAI link has multiple CPU/Codecs. Which 'Codec'
-> reference needs to be considered? Isn't it better if we explicitly mention which
-> DAI we want to operate as 'Master'?
+I'm not sure how to do it, but it seems we need to update
+many functions to support it, not only simple-card driver.
+For example, simple-card-utils, soc-core, etc, etc...
 
-I think Lars-Peter has (had ?) plan for this SND_SOC_DAIFMT_CBx_CFx
-flag flexibility ? Yes maybe it is needed for multi CPU/Codec system.
+I'm not sure, this is just my guess.
+I'm happy if we can support it more easily :)
+
+But, if it was difficult to keep compatibility on simple-card,
+we/you need to have new one.
+Actually, I had a plan to create more flexible sound card
+driver, but it is not hi priority for me in these days.
 
 Thank you for your help !!
 
