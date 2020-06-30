@@ -7,66 +7,65 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DAD9C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:42:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDDBC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:42:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC86E20747
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:42:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E01620747
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:42:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U433+UHI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC86E20747
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="krUQx+KA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E01620747
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 785C4168B;
-	Wed,  1 Jul 2020 08:41:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 785C4168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id F04D0168D;
+	Wed,  1 Jul 2020 08:41:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F04D0168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593585728;
-	bh=tcpzQE8i26SuXvBF6hSs1Dh4vk/45y1ck1i9wkeCJN0=;
+	s=default; t=1593585765;
+	bh=RHRucXMDjO4G/jkIm4LiHl6mq1nBBOKqyZb1V6UA/pM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U433+UHIZBUjjuXbAD8FmKXU1Za1dIPjfvzInuSR3V5eSHZEz4F9kYGH1au8Qc7sr
-	 BKDHi0kGgRKonYdQCZd7by6ggzd2FlCmMs+Hb3zulyzgvAL/A0HhBV3c1KknlGLrWW
-	 4LmRdLuVgwQtOMghniksyZvXQGr6n2astuOfT2pA=
+	b=krUQx+KAm/hG1HB0Q+Z0t23pOsGLsukGHLp5pBYSn3d5h6WPjyF3toe3cTYGSOuo6
+	 T7PgSo12+a6AZse745yaHd0jI1/dLbZMC/8nTLu8l9j7y1AmloSWfPjMWFOKXBeCfN
+	 Q5w1vucCZx78pdVIjgmtwcSw6QJt40BGSiXjLhBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65D62F802DF;
-	Wed,  1 Jul 2020 08:38:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6100F802E9;
+	Wed,  1 Jul 2020 08:38:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1166F802DB; Wed,  1 Jul 2020 08:38:40 +0200 (CEST)
+ id A075EF802E3; Wed,  1 Jul 2020 08:38:44 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CC5EF8020C
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 08:38:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CC5EF8020C
-IronPort-SDR: ECo301srXZTCjAhA5q1Lpu/XUHw+GYVtCam/COc6RgaR0s3AypXAGs0x0goTZrWedGU1gKR6Rg
- GrQkinicCDqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126109916"
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; d="scan'208";a="126109916"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40CCAF802E1
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 08:38:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40CCAF802E1
+IronPort-SDR: 783CskwXkrpWLO2mOKupujjIw5b/pwskj57QYRtURZZtCPTPyjOptB2zEHGJhaqJwWh1IdA5hR
+ tW1e2PYs3oCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126109921"
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; d="scan'208";a="126109921"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jun 2020 23:38:36 -0700
-IronPort-SDR: eqYGQQd709q3rzrNxl2K3eQUl8IEWAC5nYrSvQ/PPtWAvZpcpSOkpDcA3FFXIUWB6Co2cS3rn5
- 4N+ulvVItb0g==
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; d="scan'208";a="454946965"
+ 30 Jun 2020 23:38:40 -0700
+IronPort-SDR: Q+GiJwb4zioCvqY1lM5QnllgZFlaHnBRaIzpVdgwQmSSPudeams+Jb4Td/INg505q+k58yaMJB
+ Tr9STXYMelvA==
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; d="scan'208";a="454947025"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jun 2020 23:38:32 -0700
+ 30 Jun 2020 23:38:36 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 4/5] soundwire: cadence: allocate/free dma_data in
- set_sdw_stream
-Date: Wed,  1 Jul 2020 02:43:55 +0800
-Message-Id: <20200630184356.24939-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 5/5] soundwire: intel: don't free dma_data in DAI shutdown
+Date: Wed,  1 Jul 2020 02:43:56 +0800
+Message-Id: <20200630184356.24939-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
 References: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
@@ -93,91 +92,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The current memory allocation is somewhat strange: the dma_data is
-allocated in set_sdw_stream, but released in the intel DAI
-shutdown. This no longer works with the multi-cpu implementation,
-since the dma_data is released in the dai shutdown which takes place
-before the dailink shutdown.
-
-Move to a more symmetric allocation where the dma_data is allocated
-with non-NULL SoundWire stream, and conversely released when a NULL
-stream is provided - for consistency with the stream startup and
-shutdown operations.
+Now that the DMA data is allocated/freed in set_sdw_stream(), remove
+free operations.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 52 ++++++++++++++++++++++--------
- 1 file changed, 38 insertions(+), 14 deletions(-)
+ drivers/soundwire/intel.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 9ea87538b9ef..613dbd415b91 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -1437,25 +1437,49 @@ int cdns_set_sdw_stream(struct snd_soc_dai *dai,
- 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
- 	struct sdw_cdns_dma_data *dma;
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 2e1e1088a743..7a65414e5714 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -806,14 +806,7 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ static void intel_shutdown(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+-	struct sdw_cdns_dma_data *dma;
  
--	dma = kzalloc(sizeof(*dma), GFP_KERNEL);
+-	dma = snd_soc_dai_get_dma_data(dai, substream);
 -	if (!dma)
--		return -ENOMEM;
-+	if (stream) {
-+		/* first paranoia check */
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-+			dma = dai->playback_dma_data;
-+		else
-+			dma = dai->capture_dma_data;
- 
--	if (pcm)
--		dma->stream_type = SDW_STREAM_PCM;
--	else
--		dma->stream_type = SDW_STREAM_PDM;
-+		if (dma) {
-+			dev_err(dai->dev,
-+				"dma_data already allocated for dai %s\n",
-+				dai->name);
-+			return -EINVAL;
-+		}
- 
--	dma->bus = &cdns->bus;
--	dma->link_id = cdns->instance;
-+		/* allocate and set dma info */
-+		dma = kzalloc(sizeof(*dma), GFP_KERNEL);
-+		if (!dma)
-+			return -ENOMEM;
- 
--	dma->stream = stream;
-+		if (pcm)
-+			dma->stream_type = SDW_STREAM_PCM;
-+		else
-+			dma->stream_type = SDW_STREAM_PDM;
- 
--	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
--		dai->playback_dma_data = dma;
--	else
--		dai->capture_dma_data = dma;
-+		dma->bus = &cdns->bus;
-+		dma->link_id = cdns->instance;
- 
-+		dma->stream = stream;
-+
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-+			dai->playback_dma_data = dma;
-+		else
-+			dai->capture_dma_data = dma;
-+	} else {
-+		/* for NULL stream we release allocated dma_data */
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			kfree(dai->playback_dma_data);
-+			dai->playback_dma_data = NULL;
-+		} else {
-+			kfree(dai->capture_dma_data);
-+			dai->capture_dma_data = NULL;
-+		}
-+	}
- 	return 0;
+-		return;
+-
+-	snd_soc_dai_set_dma_data(dai, substream, NULL);
+-	kfree(dma);
  }
- EXPORT_SYMBOL(cdns_set_sdw_stream);
+ 
+ static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
 -- 
 2.17.1
 
