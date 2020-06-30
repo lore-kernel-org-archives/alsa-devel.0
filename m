@@ -2,73 +2,103 @@ Return-Path: <SRS0=uo8V=AL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CC12C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 02:09:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FBB1C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 03:49:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98D8C2068F
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 02:09:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC993206CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 03:49:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JUW2PCbh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98D8C2068F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QQ+cXUgF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="qwFpHH7Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC993206CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0766A15E0;
-	Tue, 30 Jun 2020 04:08:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0766A15E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4807A83E;
+	Tue, 30 Jun 2020 05:48:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4807A83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593482976;
-	bh=soMGlzpHBRpdYEuYp5eYubnrvkqv2Llzn13Iny0eKIg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1593488954;
+	bh=UcthL2nug+KzY9nuYTxpnBMkugp7xSoOqkW4NlNHcSo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JUW2PCbhgNexmMGIIIZYsYnG+UgtF/kNnny2KdelD9vQSc7B3gIGgvAuuQh5ZIyC0
-	 LzCTw8OJEMuyD5eLRbflqhmyN1mC6T3I79DORJyWlJb7PYmSTmzYqJjOMKD+6FlOAj
-	 pcYrOt0FquVNrB1x3gapOJJgOWK24S1DlXoGx0cY=
+	b=QQ+cXUgFlMm81V2ZNzZPHrVWccdWMKGDLt3QgCrlyEHVWBPNabcUH4mOskRiS5TpW
+	 Y4r4XbZ9qipw/RRoj6OSkTmdgnmXXBum3k+ZMlC/cL1g+9mlXDjC9G554YgNzJpa00
+	 C6uyH7y+AsgZrSmzkJunqHBBmbG++NRl/QFeIOFc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15647F801D8;
-	Tue, 30 Jun 2020 04:08:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B525EF801D8;
+	Tue, 30 Jun 2020 05:48:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2768F801F2; Tue, 30 Jun 2020 04:08:43 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E821FF800EA
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 04:08:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E821FF800EA
-Date: 30 Jun 2020 11:08:33 +0900
-X-IronPort-AV: E=Sophos;i="5.75,296,1589209200"; d="scan'208";a="50683838"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 30 Jun 2020 11:08:33 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id CF456400493A;
- Tue, 30 Jun 2020 11:08:33 +0900 (JST)
-Message-ID: <87lfk5z4ov.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children for
- 'mclk-fs'
-In-Reply-To: <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
+ id 766D6F801D8; Tue, 30 Jun 2020 05:48:21 +0200 (CEST)
+Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
+ [216.228.121.143])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EFF1F8013E
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 05:48:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EFF1F8013E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="qwFpHH7Q"
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5efab59a0000>; Mon, 29 Jun 2020 20:46:34 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate102.nvidia.com (PGP Universal service);
+ Mon, 29 Jun 2020 20:48:12 -0700
+X-PGP-Universal: processed;
+ by hqpgpgate102.nvidia.com on Mon, 29 Jun 2020 20:48:12 -0700
+Received: from [10.25.97.62] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
+ 2020 03:48:03 +0000
+Subject: Re: [PATCH v4 10/23] ASoC: simple-card: Wrong daifmt for CPU end of
+ DPCM DAI link
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-12-git-send-email-spujar@nvidia.com>
- <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
- <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ <1593233625-14961-11-git-send-email-spujar@nvidia.com>
+ <877dvq1yhy.wl-kuninori.morimoto.gx@renesas.com>
+ <6e27daa5-331e-968b-4027-2e30aeb7d382@nvidia.com>
+ <87o8p1z81b.wl-kuninori.morimoto.gx@renesas.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <841ac69f-1c3f-2b13-17f9-6f196811ce52@nvidia.com>
+Date: Tue, 30 Jun 2020 09:17:59 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <87o8p1z81b.wl-kuninori.morimoto.gx@renesas.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1593488794; bh=Waf+fRsBa+tnFyTsNnzSNk2rurwJRlEFA5A13c5KFMs=;
+ h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+ Content-Language;
+ b=qwFpHH7QE9mC28kfCJxAzmZEE6JRNuOHvraL8M+Y1I0zQ2WHYK/Oh8u5rmuHvtNqL
+ GcmVOB6EW9EOlpdfCaH4AOmTYNBxxacg/Aqt2JtYELBNEAWybmjXvu3pfb4AEyqrHY
+ yYntjl5O1xuuT5F/Sh4kN2gK+PEGfeQf+KCl4vnYO0NNbx7GcryFnkzP9t1XgMNp6w
+ +kXre478ipBLf7aA32L6fd0Y6QQeVQ5UhAfx1kBLrlGT0G/1FnvSypYJelewxTlkSP
+ ACpFmiAhdlrKdgWY8KEQGkm7JZP3NEu8oHzSFiQf8DZKRtYw9BWJms99RTFKLDDhT7
+ ThgNFlWVXU8Ag==
 Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
  atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
- nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
- viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, digetx@gmail.com,
- rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
+ spujar@nvidia.com, nwartikar@nvidia.com, lgirdwood@gmail.com,
+ robh+dt@kernel.org, tiwai@suse.com, viswanathl@nvidia.com, sharadg@nvidia.com,
+ broonie@kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
+ digetx@gmail.com, rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,46 +115,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Sameer
 
-> >>        snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
-> >>        of_property_read_u32(node,      prop, &props->mclk_fs);
-> >>        of_property_read_u32(cpu,       prop, &props->mclk_fs);
-> >> -     of_property_read_u32(codec,     prop, &props->mclk_fs);
-> >> +
-> >> +     if (cpu != codec)
-> >> +             of_property_read_u32(codec, prop, &props->mclk_fs);
-> > Maybe we want to have "cpu" in simple_dai_link_of_dpcm() side
-> > without using magical code in simple_parse_mclk_fs() side ?
-> 
-> Are you suggesting if we should simplify simple_parse_mclk_fs() by
-> either passing 'cpu' or 'codec'?
+On 6/30/2020 6:26 AM, Kuninori Morimoto wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Hi Sameer
+>
+>>   snd_soc_runtime_set_dai_fmt() {
+>>       ...
+>>
+>>       if (cpu_dai->component->driver->non_legacy_dai_naming)
+>>           fmt = inv_dai_fmt;
+>>
+>>       ...
+>>   }
+>>
+>> Above flips polarity for 'cpu_dai' if 'non_legacy_dai_naming' flag is set.
+>>
+>> 1. Hence example mentioned in the commit message does not work if my 'cpu_dai'
+>> driver does not have this flag set.
+> ?
+> Do you want fo flip it ? or don't flip?
+> It is for Codec <-> Codec connection.
 
-Oops, sorry I was misunderstand.
+For DPCM links I don't want to flip based on one Codec reference. My 
+goal was to make the binding work for multiple CPU/Codec link. Hence I 
+thought it would be better to explicitly describe the 'Master' DAI. We 
+can eventually get rid of 'codec' argument from simple_dai_link_of_dpcm().
+>> 2. While it is true that we consider reference of 'Codec' mode for simple CPU<->
+>> Codec DAI links, for DPCM this does not seem flexible. For DPCM links CPU and
+>> Codec are not directly connected (CPU<->Dummy or Dummy<->Codec). Please
+>> consider, for example, if the DAI link has multiple CPU/Codecs. Which 'Codec'
+>> reference needs to be considered? Isn't it better if we explicitly mention which
+>> DAI we want to operate as 'Master'?
+> I think Lars-Peter has (had ?) plan for this SND_SOC_DAIFMT_CBx_CFx
+> flag flexibility ? Yes maybe it is needed for multi CPU/Codec system.
+>
+> Thank you for your help !!
+>
+> Best regards
+> ---
+> Kuninori Morimoto
 
-But I still not 100% understand what do you want to do here.
-Maybe 50% is my English skill, but in your code
- 
-(C)	 	of_property_read_u32(cpu,	prop, &props->mclk_fs);
-	-	of_property_read_u32(codec,	prop, &props->mclk_fs);
-	+
-	+	if (cpu != codec)
-(B)	+		of_property_read_u32(codec, prop, &props->mclk_fs);
-
-and
-
-	-	simple_parse_mclk_fs(top, np, codec, dai_props, prefix);
-(A)	+	simple_parse_mclk_fs(top, np, np, dai_props, prefix);
-
-Because of (A), cpu = codec = np in simple_parse_mclk_fs().
-Do we have chance to call (B) ?
-And it still have read_u32(cpu, ...) at (C),
-this means all np will read mclk_fs anyway ?
-For me, if you don't want/need mclk_fs, don't set it on DT
-is the best answer, but am I misunderstanding ?
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
