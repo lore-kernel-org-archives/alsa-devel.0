@@ -6,60 +6,60 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54FC6C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 01:26:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CC12C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 02:09:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D04E520760
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 01:25:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 98D8C2068F
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2020 02:09:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cK0OuzuA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D04E520760
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JUW2PCbh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98D8C2068F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DAC615E0;
-	Tue, 30 Jun 2020 03:25:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DAC615E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0766A15E0;
+	Tue, 30 Jun 2020 04:08:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0766A15E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593480358;
-	bh=8HuZ2S6BcFkPF7vwkdPSTrQ73tmKo8QLUNhtnWvyFFY=;
+	s=default; t=1593482976;
+	bh=soMGlzpHBRpdYEuYp5eYubnrvkqv2Llzn13Iny0eKIg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cK0OuzuAbWdEVHnp1FU8pjCZjnVcKl05MCbQ4OqfVJhFqnEZh0KT346SPMzQ0ljmV
-	 Oz/yNC7oa3Ip2zWWkvRp5eWj6zOA9iYHkVaYIWyAC8CynRB1GMbfJqPBhDKSHDNZAI
-	 DH8vFbqyCwoy2lXQXjKjaf5tuSB9ZzH7762LSOmU=
+	b=JUW2PCbhgNexmMGIIIZYsYnG+UgtF/kNnny2KdelD9vQSc7B3gIGgvAuuQh5ZIyC0
+	 LzCTw8OJEMuyD5eLRbflqhmyN1mC6T3I79DORJyWlJb7PYmSTmzYqJjOMKD+6FlOAj
+	 pcYrOt0FquVNrB1x3gapOJJgOWK24S1DlXoGx0cY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE479F801D8;
-	Tue, 30 Jun 2020 03:25:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15647F801D8;
+	Tue, 30 Jun 2020 04:08:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20345F801F2; Tue, 30 Jun 2020 03:25:06 +0200 (CEST)
+ id A2768F801F2; Tue, 30 Jun 2020 04:08:43 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C043AF80135
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 03:24:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C043AF80135
-Date: 30 Jun 2020 10:24:48 +0900
-X-IronPort-AV: E=Sophos;i="5.75,296,1589209200"; d="scan'208";a="50677645"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 30 Jun 2020 10:24:48 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id E821FF800EA
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2020 04:08:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E821FF800EA
+Date: 30 Jun 2020 11:08:33 +0900
+X-IronPort-AV: E=Sophos;i="5.75,296,1589209200"; d="scan'208";a="50683838"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 30 Jun 2020 11:08:33 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 668654136A60;
- Tue, 30 Jun 2020 10:24:48 +0900 (JST)
-Message-ID: <87mu4lz6pt.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CF456400493A;
+ Tue, 30 Jun 2020 11:08:33 +0900 (JST)
+Message-ID: <87lfk5z4ov.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link with
- multiple Codecs
-In-Reply-To: <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
+Subject: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children for
+ 'mclk-fs'
+In-Reply-To: <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
 References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-13-git-send-email-spujar@nvidia.com>
- <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
- <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
+ <1593233625-14961-12-git-send-email-spujar@nvidia.com>
+ <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
+ <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -87,30 +87,41 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-> > Maybe base issue for multiple codec support
-> > is that simple_for_each_link() is caring first codec only ?
-(snip)
-> Ideally I wanted to remove above two lines and allow empty codec
-> list. But some users may expect the parsing to fail if no 'Codec' is
-> found in the DAI link, hence did not remove above. If it is fine to
-> remove above two lines it would be simpler. The loop inside
-> simple_for_each_link() would anyway loop for each child node of DAI
-> link and simple_dai_link_of_dpcm() can parse each 'np'.
+> >>        snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
+> >>        of_property_read_u32(node,      prop, &props->mclk_fs);
+> >>        of_property_read_u32(cpu,       prop, &props->mclk_fs);
+> >> -     of_property_read_u32(codec,     prop, &props->mclk_fs);
+> >> +
+> >> +     if (cpu != codec)
+> >> +             of_property_read_u32(codec, prop, &props->mclk_fs);
+> > Maybe we want to have "cpu" in simple_dai_link_of_dpcm() side
+> > without using magical code in simple_parse_mclk_fs() side ?
+> 
+> Are you suggesting if we should simplify simple_parse_mclk_fs() by
+> either passing 'cpu' or 'codec'?
 
-Current simple-card is not assuming multi Codec,
-thus, we need to update it correctly, not quick-hack.
+Oops, sorry I was misunderstand.
 
-I'm not sure how to do it, but it seems we need to update
-many functions to support it, not only simple-card driver.
-For example, simple-card-utils, soc-core, etc, etc...
+But I still not 100% understand what do you want to do here.
+Maybe 50% is my English skill, but in your code
+ 
+(C)	 	of_property_read_u32(cpu,	prop, &props->mclk_fs);
+	-	of_property_read_u32(codec,	prop, &props->mclk_fs);
+	+
+	+	if (cpu != codec)
+(B)	+		of_property_read_u32(codec, prop, &props->mclk_fs);
 
-I'm not sure, this is just my guess.
-I'm happy if we can support it more easily :)
+and
 
-But, if it was difficult to keep compatibility on simple-card,
-we/you need to have new one.
-Actually, I had a plan to create more flexible sound card
-driver, but it is not hi priority for me in these days.
+	-	simple_parse_mclk_fs(top, np, codec, dai_props, prefix);
+(A)	+	simple_parse_mclk_fs(top, np, np, dai_props, prefix);
+
+Because of (A), cpu = codec = np in simple_parse_mclk_fs().
+Do we have chance to call (B) ?
+And it still have read_u32(cpu, ...) at (C),
+this means all np will read mclk_fs anyway ?
+For me, if you don't want/need mclk_fs, don't set it on DT
+is the best answer, but am I misunderstanding ?
 
 Thank you for your help !!
 
