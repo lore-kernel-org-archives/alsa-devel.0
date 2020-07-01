@@ -2,57 +2,78 @@ Return-Path: <SRS0=heU4=AM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C414C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D071C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:10:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25B822070C
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:09:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C39302074D
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:10:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tGqqLQ9R"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25B822070C
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mdC3MVcu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C39302074D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1D0C1665;
-	Wed,  1 Jul 2020 08:08:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1D0C1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57A3D1678;
+	Wed,  1 Jul 2020 08:09:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57A3D1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593583747;
-	bh=46L3pKTTYuRBzkuZog2J+xxNy5tTm3xOKGYl4Ft3IUA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tGqqLQ9RJDGIghQhvkdtf8X1kvkprVzzJQyqpY3ZPwetg8lNoOybcmDfGEqAX/sK6
-	 okmyqpb/fm/rQSvSR+4QNQVos929kXs/6Rxrs7/YCSrzQlL73cPw9U4dKh3NVcTlb4
-	 mZ3oo3FqZNQefzl6290M34UZW8mNrsVEGuiYYEA4=
+	s=default; t=1593583800;
+	bh=Q6PIE/Pm4qDhgK19inPjmvhsoSBovNM+lvWhqIkKVrk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mdC3MVcufjuiNMJS3ux1n0Q6LefueDP4wTNo9GWmTlBQn7WkytLQJ23AyNAm6pfVs
+	 Pb+9sO2UaELldiIe74wVnbJt/D7WTTPKoYlPuR8ImRG/kD+N0Yh7tC8GqxxnBcyiiL
+	 YOeSKrBJJtSzqOlNOG1pBeDh2ymwZRl15ZsMZKUc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38AC2F8020C;
-	Wed,  1 Jul 2020 08:08:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6207FF80229;
+	Wed,  1 Jul 2020 08:09:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1B02F80217; Wed,  1 Jul 2020 08:08:13 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 0D3D7F801D8
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 08:08:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D3D7F801D8
+ id 52EA0F80256; Wed,  1 Jul 2020 08:08:59 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05761F80217
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 08:08:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05761F80217
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06168iuK6016619,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06168iuK6016619
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 1 Jul 2020 14:08:44 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 1 Jul 2020 14:08:44 +0800
+Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 1 Jul 2020
+ 14:08:43 +0800
+From: <jack.yu@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: rt1015: DAC volume range modification.
+Date: Wed, 1 Jul 2020 14:08:36 +0800
+Message-ID: <20200701060836.15117-1-jack.yu@realtek.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1593583689154257059-webhooks-bot@alsa-project.org>
-References: <1593583689154257059-webhooks-bot@alsa-project.org>
-Subject: Sof hda dsp fixup
-Message-Id: <20200701060813.B1B02F80217@alsa1.perex.cz>
-Date: Wed,  1 Jul 2020 08:08:13 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMB05.realtek.com.tw (172.21.6.98) To
+ RTEXMB01.realtek.com.tw (172.21.6.94)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, kent_chen@realtek.com, kenny_chen@realtek.com,
+ derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,12 +89,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #38 was opened from libinyang:
+From: Jack Yu <jack.yu@realtek.com>
 
-This PR does such fixup:
-fixup typo "codec" => "codecs"
-sof-hda-dsp should include sof-hda-dsp/Hdmi.conf not HDA-Intel/Hdmi.conf
+RT1015 dac volume range modification.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/38
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/38.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+---
+ sound/soc/codecs/rt1015.c | 4 ++--
+ sound/soc/codecs/rt1015.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
+index 548f68649064..90bd7e22ec3b 100644
+--- a/sound/soc/codecs/rt1015.c
++++ b/sound/soc/codecs/rt1015.c
+@@ -401,7 +401,7 @@ static bool rt1015_readable_register(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -9525, 75, 0);
++static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -95625, 375, 0);
+ 
+ static const char * const rt1015_din_source_select[] = {
+ 	"Left",
+@@ -517,7 +517,7 @@ static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
+ 
+ static const struct snd_kcontrol_new rt1015_snd_controls[] = {
+ 	SOC_SINGLE_TLV("DAC Playback Volume", RT1015_DAC1, RT1015_DAC_VOL_SFT,
+-		127, 0, dac_vol_tlv),
++		255, 0, dac_vol_tlv),
+ 	SOC_DOUBLE("DAC Playback Switch", RT1015_DAC3,
+ 		RT1015_DA_MUTE_SFT, RT1015_DVOL_MUTE_FLAG_SFT, 1, 1),
+ 	SOC_ENUM_EXT("Boost Mode", rt1015_boost_mode_enum,
+diff --git a/sound/soc/codecs/rt1015.h b/sound/soc/codecs/rt1015.h
+index 7bd159e8f958..cc1ae33ca753 100644
+--- a/sound/soc/codecs/rt1015.h
++++ b/sound/soc/codecs/rt1015.h
+@@ -214,8 +214,8 @@
+ #define RT1015_ID_VERB				0x1
+ 
+ /* 0x0102 */
+-#define RT1015_DAC_VOL_MASK			(0x7f << 9)
+-#define RT1015_DAC_VOL_SFT			9
++#define RT1015_DAC_VOL_MASK			(0xff << 8)
++#define RT1015_DAC_VOL_SFT			8
+ 
+ /* 0x0104 */
+ #define RT1015_DAC_CLK				(0x1 << 13)
+-- 
+2.27.0
+
