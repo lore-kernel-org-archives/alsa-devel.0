@@ -6,92 +6,83 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6643C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 16:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22EA0C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 16:53:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 316D42067D
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 16:49:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A357420748
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 16:53:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d5x0Qm3j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 316D42067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dgSaVjKm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A357420748
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B87E6167B;
-	Wed,  1 Jul 2020 18:48:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B87E6167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F39B167B;
+	Wed,  1 Jul 2020 18:52:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F39B167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593622158;
-	bh=9yOVr4qOgk03XtSkEixCsQ8DspNpEIilMaC3NDAM4cE=;
+	s=default; t=1593622403;
+	bh=9C5o8j/NP1d+64GsonbcLWzdXWd8UmAVCaWzkik1cx0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d5x0Qm3jWxxo7Stg2hOlM80i/jgBq70J46Q33NFVJcuJ+1pUUpyFTyR/U6WDhG27P
-	 sQB9Zaszh7w1Ao5JzWqfCTbc4xIRSifdHXIxJycTlW9bmA2IwQWcRL691g5X4vR7nn
-	 OLwCZmnLxocL1yy5k2Orc5/DP3RFefZGWSa8MqB0=
+	b=dgSaVjKmJFMAokbwhWx/+8PIy2nMB20PyuYbTfRGewQoF4Eh0omOzFe021gWy+0+7
+	 fJde0awJIAU7Nnv2k/eBuvzNPpXJ9j7z7dyqWFIwRNjvi3jTBGsH97tzvng1zY4nM7
+	 5DtPHqfOkKCQrxdfta0d5ySOUE1JSTXcqXSu/R7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46FF4F8020C;
-	Wed,  1 Jul 2020 18:48:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEAA3F8020C;
+	Wed,  1 Jul 2020 18:52:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4102AF80217; Wed,  1 Jul 2020 18:48:27 +0200 (CEST)
+ id 8B16CF800EA; Wed,  1 Jul 2020 18:52:31 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46736F801D8
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 18:48:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46736F801D8
-IronPort-SDR: tppwL6OeZG0MRdSwNONwFJeVHOerwIvexs8xQgoYUESmSx7mDYe35NkQlSnAzS21kyesY6XaVK
- Et1QuOC5AvRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="211693587"
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="211693587"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 280E3F800EA
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 18:52:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 280E3F800EA
+IronPort-SDR: jWF2Hh2xXS4f1MssrRGqiTf90dcGo8sOM/JstWlTX6GTMN67Evdhwpz3tqse6W5jk6Kmt0Mjka
+ rUblLiMhqe/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="211695200"
+X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="211695200"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jul 2020 09:48:20 -0700
-IronPort-SDR: ywwjct/MbgHFM/ViP9O9jEEhk1M7aKesW/NJjeFQnWmYsFWc6cSzOYE9BcpU3t2rIRRgEn4U84
- lRc91hDufqxg==
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="455167707"
+ 01 Jul 2020 09:52:26 -0700
+IronPort-SDR: yvrYmqKRmgb3daAF8TA4Yd1Pyh0ktR/XLawZUDQRuasQUP5ETGvw2mwW/Op5/gk3LlUuo1VtIg
+ uL7Fxozk2f4w==
+X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="455168903"
 Received: from dsapozni-mobl1.amr.corp.intel.com (HELO [10.251.16.243])
  ([10.251.16.243])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jul 2020 09:48:18 -0700
-Subject: Re: [PATCH v3] ASoC: Intel: kbl_rt5663_rt5514_max98927: Split
- be_hw_params_fixup function
-To: "N, Harshapriya" <harshapriya.n@intel.com>,
- =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>
-References: <20200521162518.1809995-1-lma@semihalf.com>
- <3c89e614-81f5-ba87-19a9-fbe9f5c73925@linux.intel.com>
- <CAFJ_xbr8TN3ynfELJ3NQnkuRg0VRbkjB7=Cyb8yu2L==JGXJiw@mail.gmail.com>
- <475fb5c0-9b26-a8f6-c102-25c7775bc2ca@linux.intel.com>
- <CAFJ_xbq-QotvPG=AxSp7=Etc5P5f4ePRWLCvSNnTkzUO9o_qjQ@mail.gmail.com>
- <268b11b6-9f4c-d769-a7f9-536d77198705@linux.intel.com>
- <CAFJ_xboUTDtnpvskb2dY4fGhGLNkEgT0sH3dU0NYJV_Cb_gqPw@mail.gmail.com>
- <BY5PR11MB4307284BAE6DA415CFC0865CFD6E0@BY5PR11MB4307.namprd11.prod.outlook.com>
- <CAFJ_xbq3DU8NMmymYHLjy0z+QbGRAOmB4NaiXPphAr2Zu0MPAg@mail.gmail.com>
- <BY5PR11MB4307CBA736456853777A9FD9FD6E0@BY5PR11MB4307.namprd11.prod.outlook.com>
- <BY5PR11MB4307C20278F32D17551112FAFD6C0@BY5PR11MB4307.namprd11.prod.outlook.com>
+ 01 Jul 2020 09:52:25 -0700
+Subject: Re: [PATCH 8/9] soundwire: intel: add wake interrupt support
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
+ <20200623173546.21870-9-yung-chuan.liao@linux.intel.com>
+ <20200630165126.GT2599@vkoul-mobl>
+ <a69aa5d0-613a-6ef6-9263-378b1e99770a@linux.intel.com>
+ <20200701055654.GW2599@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7e38bb2e-2132-d305-e94d-043fa53bd836@linux.intel.com>
-Date: Wed, 1 Jul 2020 11:48:16 -0500
+Message-ID: <81a33798-0667-9a4f-9916-eb157ad5514d@linux.intel.com>
+Date: Wed, 1 Jul 2020 10:25:02 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <BY5PR11MB4307C20278F32D17551112FAFD6C0@BY5PR11MB4307.namprd11.prod.outlook.com>
+In-Reply-To: <20200701055654.GW2599@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Jie Yang <yang.jie@linux.intel.com>, Radoslaw Biernacki <rad@semihalf.com>,
- Ross Zwisler <zwisler@google.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, "M R,
- Sathya Prakash" <sathya.prakash.m.r@intel.com>, Bob Brandt <brndt@google.com>,
- Marcin Wojtas <mw@semihalf.com>, Alex Levin <levinale@chromium.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, mengdong.lin@intel.com, slawomir.blauciak@intel.com,
+ sanyog.r.kale@intel.com, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,47 +99,94 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-On 7/1/20 11:37 AM, N, Harshapriya wrote:
+>>>> +	 * wake up master and slave so that slave can notify master
+>>>> +	 * the wakeen event and let codec driver check codec status
+>>>> +	 */
+>>>> +	list_for_each_entry(slave, &bus->slaves, node) {
+>>>> +		/*
+>>>> +		 * discard devices that are defined in ACPI tables but
+>>>> +		 * not physically present and devices that cannot
+>>>> +		 * generate wakes
+>>>> +		 */
+>>>> +		if (slave->dev_num_sticky && slave->prop.wake_capable)
+>>>> +			pm_request_resume(&slave->dev);
+>>>
+>>> Hmmm, shouldn't slave do this? would it not make sense to notify the
+>>> slave thru callback and then slave decides to resume or not..?
 >>
->>>> For speakers and headsets its 48Khz, 2 ch and 24 bit and this
->>>> setting is done based on the front-end dai For speakers, however
->>>> support only
->>>> 16 bit, so we set it back to 16 bit If the front end dai is dmic,
->>>> then the channel
->>> is set to either 2 or 4 dmic_constraints. No other formats need to be set.
->>>>
->>>> All the SSP1 usages do not have the same parameters (as dmic is on
->>>> SSP1 and its different as given above) Most parameters are same for
->>> speakers and headset which are on different SSP. This is the reason we
->>> had a single fixup function.
->> On SSP1, for dmic we need to fix the channels which is derived from dmic_num
->> of the snd_soc_acpi_mach structure based on the number of dmic on the
->> board.
->> The channel is something that might be different from speakers.
->> We might not want to constraint the dmic capture to always be 48Khz as well.
->> Given this, there seems to me, 2 ways to set it:
->> 1. Derive if the fixup is being called for dmic or speaker 2. Having a new dailink
+>> In this mode, the bus is clock-stop mode, and events are detected with level
+>> detector tied to PCI events. The master and slave devices are all in
+>> pm_runtime suspended states. The codec cannot make any decisions on its own
+>> since the bus is stopped, it needs to first resume, which assumes that the
+>> master resumes first and the enumeration re-done before it can access any of
+>> its registers.
 >>
->> If #2 is not preferred (going by Pierre's comments), can we use rtd-
->>> cpu_dai/codec_dai->name to figure out if its for dmic or speaker?
->> I can test this and get back to you.
-> Tested and the following is something we can use without creating a new dailink.
->         	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> 	if (!strcmp(codec_dai->name, KBL_REALTEK_DMIC_CODEC_DAI)) {
-> 		if (params_channels(params) == 2 ||  DMIC_CH(dmic_constraints) == 2)
-> 			channels->min = channels->max = 2;
-> 		else
-> 			channels->min = channels->max = 4;
-> 	} else {
-> 		rate->min = rate->max = 48000;
-> 		channels->min = channels->max = 2;
-> 		snd_mask_none(fmt);
-> 		snd_mask_set_format(fmt, pcm_fmt);
-> 	}
+>> By looping through the list of devices that can generate events, you end-up
+>> first forcing the master to resume, and then each slave resumes and can
+>> check who generated the event and what happened while suspended. if the
+>> codec didn't generate the event it will go back to suspended mode after the
+>> usual timeout.
+>>
+>> We can add a callback but that callback would only be used for Intel
+>> solutions, but internally it would only do a pm_request_resume() since the
+>> codec cannot make any decisions before first resuming. In other words, it
+>> would be an Intel-specific callback that is implemented using generic resume
+>> operations. It's probably better to keep this in Intel-specific code, no?
 > 
-> Pierre, thoughts?
+> I do not like the idea that a device would be woken up, that kind of
+> defeats the whole idea behind the runtime pm. Waking up a device to
+> check the events is a generic sdw concept, I don't see that as Intel
+> specific one.
 
-thanks Harsha, that looks like what I had in mind, but my earlier 
-question was why we deal with the rates and formats only in the last case?
+In this case, this in an Intel-specific mode that's beyond what MIPI 
+defined. This is not the traditional in-band SoundWire wake defined in 
+the SoundWire specification. The bus is completely down, the master IP 
+is powered-off and all context lost. There is still the ability for a 
+Slave device to throw a wake as defined by MIPI in clock-stop-mode1, but 
+this is handled with a separate level detector and the wake detection is 
+handled by the PCI subsystem. On a wake, the master IP needs to be 
+powered-up, the entire bus needs to be restarted and the Slave devices 
+re-enumerated.
+
+We trigger that sequence with a loop that calls pm_request_resume() for 
+all Slave devices that are present and exposed in their properties that 
+they are wake-capable. As you rightly said in your comments, this will 
+result a nice wake-up handled by the pm_runtime framework in the right 
+sequence (DSP first, then SoundWire master then Slave devices).
+
+You will see in follow-up patches that the master IP can be configured 
+in different clock stop modes, depending on the needs (power/latency 
+compromise typically). When the more traditional SoundWire wake is used, 
+we do not use this sequence at all.
+
+> I would like to see a generic callback for the devices and let devices
+> do the resume part, that is standard operating principle when we deal
+> with suspended devices. If the device thinks they need to resume, they
+> will do the runtime resume, check the status and sleep if not
+> applicable. Since we have set the parents correctly, any resume
+> operation for slaves would wake master up as well...
+> 
+> I do not see a need for intel driver to resume slave devices here, or
+> did I miss something?
+
+Yes, the part "If the device thinks they need to resume" is not quite 
+right. The Slave device cannot access its registers before fully 
+resuming, which in this case means a re-enumeration, so cannot "think" 
+or make a decision on its own. That's the reason why we force them to 
+resume, since it's the first step they would need to do anyways, and 
+then if they don't have anything to do they go back to idle after a 
+timeout. I invite you to see the suspend/resume sequences in codec 
+drivers where you will see regmap access moves to cache-only on suspend 
+and full access restored on resume, along with a hardware sync.
+
+I see your point and I really think we are talking about a similar 
+sequence, but we simplified your idea since there's no possibility of 
+making a decision before Slave devices resume.
+
+The only optimization we did here is that we only resume Slave devices 
+than can generate a wake, and filter out the 'ghost' devices that are 
+described in ACPI tables but don't physically exist.
+
+Does this help?
+
 
