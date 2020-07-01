@@ -2,76 +2,79 @@ Return-Path: <SRS0=heU4=AM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF4A1C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:47:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCAA6C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 07:18:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D7242074D
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:47:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B0B2206BE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 07:18:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rkz884oB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D7242074D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="djyTeM9w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B0B2206BE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8D5C1615;
-	Wed,  1 Jul 2020 08:46:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8D5C1615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F6261661;
+	Wed,  1 Jul 2020 09:17:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F6261661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593586045;
-	bh=hQW6Dk6xK7qiA9B6jl6tryZIJwRbzRNC9RWsjlvMHqI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Rkz884oBsM4/bAjYHtb9w6pnMJsGp51e3Yo1NZ2h0KNTzcDfD/LTIHVQDHKT0eowz
-	 xE+2/SSlC7iULU6I2vYSCyDUYk+xGRxRtlrQnEnApDleM0aUoCtqk2eKFqBmez8qHz
-	 wUgiY6PXd/sSpeZvLVpd+BFq19vHncd0CZR4+Tp4=
+	s=default; t=1593587885;
+	bh=JnPvr4u4AHz5r/RSELDO1CfOuoYW56V1A4nyghnWpHI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=djyTeM9wS8/URKR07nDZtY3w9/+KAAGP0e5kgQb9/Q4qt4d9hNX/PHQBcuBZmrzu1
+	 VFBeDYDreROLEFqkggT4WFevqP1iB1cSMzsmK6n5IjV7Urs7tlhZcOhyX7FHdKGL6O
+	 v7YtdLAoBA6gDRZiQTdSjr7rMe7V6A8/n9syiiAk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CDA3F8020C;
-	Wed,  1 Jul 2020 08:46:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CCC0F8020C;
+	Wed,  1 Jul 2020 09:17:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8906EF80217; Wed,  1 Jul 2020 08:46:33 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9EC88F80217; Wed,  1 Jul 2020 09:17:14 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1CF8F801D8
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 08:46:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1CF8F801D8
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 07FD3AE17;
- Wed,  1 Jul 2020 06:46:27 +0000 (UTC)
-Date: Wed, 01 Jul 2020 08:46:26 +0200
-Message-ID: <s5hh7urg2bh.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Serialize setting GPIO LED
-In-Reply-To: <20200701052138.6378-1-kai.heng.feng@canonical.com>
-References: <20200701052138.6378-1-kai.heng.feng@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Libin Yang <libin.yang@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "moderated
- list:SOUND" <alsa-devel@alsa-project.org>, Kailang Yang <kailang@realtek.com>,
- Tomas Espeleta <tomas.espeleta@gmail.com>, Thomas Hebb <tommyhebb@gmail.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
- open list <linux-kernel@vger.kernel.org>, tiwai@suse.com,
- Hui Wang <hui.wang@canonical.com>, anthony.won@canonical.com,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06876F800EA
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 09:17:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06876F800EA
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0617GouwE011166,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0617GouwE011166
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 1 Jul 2020 15:16:50 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 1 Jul 2020 15:16:49 +0800
+Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 1 Jul 2020
+ 15:16:49 +0800
+From: Oder Chiou <oder_chiou@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: rt5682: cancel jack_detect_work if hs_jack is set to
+ null even soundwire mode
+Date: Wed, 1 Jul 2020 15:16:45 +0800
+Message-ID: <20200701071645.32061-1-oder_chiou@realtek.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMB05.realtek.com.tw (172.21.6.98) To
+ RTEXMB01.realtek.com.tw (172.21.6.94)
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
+ alsa-devel@alsa-project.org, albertchen@realtek.com, derek.fang@realtek.com,
+ bard.liao@intel.com, shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,38 +90,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 01 Jul 2020 07:21:35 +0200,
-Kai-Heng Feng wrote:
-> 
-> If a system has two GPIO controlled LED, one for mute and another one
-> for micmute, and both of them are on before system suspend, sometimes
-> one of them won't be turned off by system suspend.
-> 
-> The codec doesn't seem to be able to control multiple GPIO LEDs at the
-> same time, so introduce a new mutex to serialize setting the LED, to
-> prevent the issue from happening.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  include/sound/hda_codec.h     | 1 +
->  sound/pci/hda/hda_codec.c     | 1 +
->  sound/pci/hda/patch_realtek.c | 3 +++
->  3 files changed, 5 insertions(+)
-> 
-> diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-> index d16a4229209b..3a1792bbb7ac 100644
-> --- a/include/sound/hda_codec.h
-> +++ b/include/sound/hda_codec.h
-> @@ -206,6 +206,7 @@ struct hda_codec {
->  
->  	struct mutex spdif_mutex;
->  	struct mutex control_mutex;
-> +	struct mutex led_mutex;
+Base on https://patchwork.kernel.org/patch/11237953/
+Soundwire mode also should follow it.
 
-Since it's only for Realtek codec, can it be better in alc_spec
-instead?
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5682.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index e9514c81b9ba..de40b6cd16cf 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -992,16 +992,17 @@ static int rt5682_set_jack_detect(struct snd_soc_component *component,
+ 
+ 	rt5682->hs_jack = hs_jack;
+ 
+-	if (!rt5682->is_sdw) {
+-		if (!hs_jack) {
+-			regmap_update_bits(rt5682->regmap, RT5682_IRQ_CTRL_2,
+-				RT5682_JD1_EN_MASK, RT5682_JD1_DIS);
+-			regmap_update_bits(rt5682->regmap, RT5682_RC_CLK_CTRL,
+-				RT5682_POW_JDH | RT5682_POW_JDL, 0);
+-			cancel_delayed_work_sync(&rt5682->jack_detect_work);
+-			return 0;
+-		}
++	if (!hs_jack) {
++		regmap_update_bits(rt5682->regmap, RT5682_IRQ_CTRL_2,
++			RT5682_JD1_EN_MASK, RT5682_JD1_DIS);
++		regmap_update_bits(rt5682->regmap, RT5682_RC_CLK_CTRL,
++			RT5682_POW_JDH | RT5682_POW_JDL, 0);
++		cancel_delayed_work_sync(&rt5682->jack_detect_work);
+ 
++		return 0;
++	}
++
++	if (!rt5682->is_sdw) {
+ 		switch (rt5682->pdata.jd_src) {
+ 		case RT5682_JD1:
+ 			snd_soc_component_update_bits(component,
+-- 
+2.27.0
 
-thanks,
-
-Takashi
