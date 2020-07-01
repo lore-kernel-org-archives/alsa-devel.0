@@ -2,77 +2,72 @@ Return-Path: <SRS0=heU4=AM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A126C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 18:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E35DC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 18:25:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B043320870
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 18:19:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 047BF20781
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 18:25:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eKHz6dXf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B043320870
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LyY45cdU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 047BF20781
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B4C616B2;
-	Wed,  1 Jul 2020 20:18:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B4C616B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F6961676;
+	Wed,  1 Jul 2020 20:24:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F6961676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593627549;
-	bh=K+8lnCkQEm2LLRhbR6kOyFLibOfsqhYzvTA5WAf9ePk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eKHz6dXfpbmcvZHtnmBbBCfMPxgRZT65OSVW9Hnk/rTx1KMhfTSmNz3N1jpXxSS5L
-	 bZo9D9ajfJWYc+Csoa7y04NcaBRIjgGxEeN8RDOut9JjgLgE33rLHQY1DUxIkOZVYN
-	 nVi8CVlg6cWuIvsur6fLLQUlAH9uuxQdIU0oiNho=
+	s=default; t=1593627928;
+	bh=g40S+PDkgHbmf28XSUxusP5ZPkOswueKEJmmGezVMBo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LyY45cdUlUhe/Pp+E7XOY5ZYfkzyfjA6f5FZdamXzJemHbum7FbQQKw9PICju0t5d
+	 HnmqxodPYgQzdhJFwaoAfvPXEx5i2g9UcUI4Rd+k3iXZZcOoM7uOIenhqopacSUSLC
+	 PI6t2KQX+/gW95vF8QcikrZqHTO9VkunPZEK2zr0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2718BF802EB;
-	Wed,  1 Jul 2020 20:14:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2DA8F80229;
+	Wed,  1 Jul 2020 20:24:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF536F802BE; Wed,  1 Jul 2020 20:14:14 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 5D0C9F8020C; Wed,  1 Jul 2020 20:24:35 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B09D3F802A9
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 20:14:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B09D3F802A9
-IronPort-SDR: kjE8uM9vMvTH08kcMXmQoS2ni/A2R6iXV1mDP+IklbsX7UaHpVEKmsB0bNIlK/x/vZNAU58nkl
- fGkGfZOi5LEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="145753295"
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="145753295"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54F5DF801D8
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 20:24:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54F5DF801D8
+IronPort-SDR: vHWwDbud7t9vIr8iyrwE/d2i9tZQ35qJ9cr9kyerQbYZJe75sKiUBraSgZ7SjqQJsDVT6cO6Vi
+ fVseTcAvhU6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="208189484"
+X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="208189484"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jul 2020 11:13:58 -0700
-IronPort-SDR: 9124I9w6YLT/w9p27DAKq8CmyxnEIU3bl/ayEzjzu9V/jK6qH9zMJZN/Zv+WEE0xhWvOkm0CrL
- us4WZJt4TH4Q==
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="481686409"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jul 2020 11:24:29 -0700
+IronPort-SDR: gMuENYqhdKVip2oR/18O7v2BkYxVfM8b3iZ1zZuHN+2ZHx1IswMVk7t2GmErmj0MZgQVPi4+bD
+ xbmrmGbXuKvw==
+X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; d="scan'208";a="425679542"
 Received: from srnatla-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.76.199])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jul 2020 11:13:57 -0700
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jul 2020 11:24:29 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 7/7] ASoC: codecs: wm8400: add _maybe_unused as needed
-Date: Wed,  1 Jul 2020 13:13:20 -0500
-Message-Id: <20200701181320.80848-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/11] ASoC: codecs: fix kernel-doc and W=1 warnings
+Date: Wed,  1 Jul 2020 13:24:11 -0500
+Message-Id: <20200701182422.81496-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200701181320.80848-1-pierre-louis.bossart@linux.intel.com>
-References: <20200701181320.80848-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,45 +84,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix W=1 warning by adding __maybe_unused. Maintainers for this file
-may want to double-check if those definitions are necessary.
+Second batch of cleanups to remove all the warnings reported by
+buildbots/compile tests.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/wm8400.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Pierre-Louis Bossart (11):
+  ASoC: codecs: ak4458: fix 'set but not used' warning
+  ASoC: codecs: cros_ec_codec: fix 'defined but not used' warning
+  ASoC: codecs: da7210: fix kernel-doc
+  ASoC: codecs: da7219: fix 'defined but not used' warning
+  ASoC: codecs: es8316: fix 'defined but not used' warning
+  ASoC: codecs: max98390: fix 'defined but not used' warning
+  ASoC: codecs: rt*: fix 'defined but not used' warning
+  ASoC: codecs: rt5659: add _maybe_unused as needed
+  ASoC: codecs: rt5631: fix kernel-doc
+  ASoC: codecs: tlv320aic26: fix kernel-doc warning
+  ASoC: codecs: jz4770: add _maybe_unused as needed
 
-diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
-index 2551eb0f1868..1e5671d345da 100644
---- a/sound/soc/codecs/wm8400.c
-+++ b/sound/soc/codecs/wm8400.c
-@@ -67,7 +67,7 @@ static void wm8400_component_reset(struct snd_soc_component *component)
- 	wm8400_reset_codec_reg_cache(wm8400->wm8400);
- }
- 
--static const DECLARE_TLV_DB_SCALE(rec_mix_tlv, -1500, 600, 0);
-+static __maybe_unused const DECLARE_TLV_DB_SCALE(rec_mix_tlv, -1500, 600, 0);
- 
- static const DECLARE_TLV_DB_SCALE(in_pga_tlv, -1650, 3000, 0);
- 
-@@ -75,7 +75,7 @@ static const DECLARE_TLV_DB_SCALE(out_mix_tlv, -2100, 0, 0);
- 
- static const DECLARE_TLV_DB_SCALE(out_pga_tlv, -7300, 600, 0);
- 
--static const DECLARE_TLV_DB_SCALE(out_omix_tlv, -600, 0, 0);
-+static __maybe_unused const DECLARE_TLV_DB_SCALE(out_omix_tlv, -600, 0, 0);
- 
- static const DECLARE_TLV_DB_SCALE(out_dac_tlv, -7163, 0, 0);
- 
-@@ -440,7 +440,7 @@ static const struct snd_kcontrol_new wm8400_dapm_ainrmux_controls =
- SOC_DAPM_ENUM("Route", wm8400_ainrmux_enum);
- 
- /* RXVOICE */
--static const struct snd_kcontrol_new wm8400_dapm_rxvoice_controls[] = {
-+static __maybe_unused const struct snd_kcontrol_new wm8400_dapm_rxvoice_controls[] = {
- SOC_DAPM_SINGLE_TLV("LIN4/RXN", WM8400_INPUT_MIXER5, WM8400_LR4BVOL_SHIFT,
- 			WM8400_LR4BVOL_MASK, 0, in_mix_tlv),
- SOC_DAPM_SINGLE_TLV("RIN4/RXP", WM8400_INPUT_MIXER6, WM8400_RL4BVOL_SHIFT,
+ sound/soc/codecs/ak4458.c        |  2 +-
+ sound/soc/codecs/cros_ec_codec.c |  2 ++
+ sound/soc/codecs/da7210.c        | 12 +++++++-----
+ sound/soc/codecs/da7219.c        |  2 ++
+ sound/soc/codecs/es8316.c        |  2 ++
+ sound/soc/codecs/jz4770.c        |  2 +-
+ sound/soc/codecs/max98390.c      |  8 --------
+ sound/soc/codecs/rt274.c         |  2 ++
+ sound/soc/codecs/rt286.c         |  2 ++
+ sound/soc/codecs/rt298.c         |  2 ++
+ sound/soc/codecs/rt5631.c        |  8 ++++++--
+ sound/soc/codecs/rt5659.c        | 14 +++++++-------
+ sound/soc/codecs/rt5660.c        |  2 ++
+ sound/soc/codecs/rt5677-spi.c    |  2 ++
+ sound/soc/codecs/tlv320aic26.c   |  2 +-
+ 15 files changed, 39 insertions(+), 25 deletions(-)
+
+
+base-commit: a2b782d59c57cb6f673dbb4804ffc500336d7a54
 -- 
 2.25.1
 
