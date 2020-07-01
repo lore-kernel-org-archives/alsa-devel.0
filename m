@@ -2,79 +2,76 @@ Return-Path: <SRS0=heU4=AM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDDBC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF4A1C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:47:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E01620747
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:42:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D7242074D
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 06:47:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="krUQx+KA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E01620747
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rkz884oB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D7242074D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F04D0168D;
-	Wed,  1 Jul 2020 08:41:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F04D0168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8D5C1615;
+	Wed,  1 Jul 2020 08:46:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8D5C1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593585765;
-	bh=RHRucXMDjO4G/jkIm4LiHl6mq1nBBOKqyZb1V6UA/pM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1593586045;
+	bh=hQW6Dk6xK7qiA9B6jl6tryZIJwRbzRNC9RWsjlvMHqI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=krUQx+KAm/hG1HB0Q+Z0t23pOsGLsukGHLp5pBYSn3d5h6WPjyF3toe3cTYGSOuo6
-	 T7PgSo12+a6AZse745yaHd0jI1/dLbZMC/8nTLu8l9j7y1AmloSWfPjMWFOKXBeCfN
-	 Q5w1vucCZx78pdVIjgmtwcSw6QJt40BGSiXjLhBg=
+	b=Rkz884oBsM4/bAjYHtb9w6pnMJsGp51e3Yo1NZ2h0KNTzcDfD/LTIHVQDHKT0eowz
+	 xE+2/SSlC7iULU6I2vYSCyDUYk+xGRxRtlrQnEnApDleM0aUoCtqk2eKFqBmez8qHz
+	 wUgiY6PXd/sSpeZvLVpd+BFq19vHncd0CZR4+Tp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6100F802E9;
-	Wed,  1 Jul 2020 08:38:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CDA3F8020C;
+	Wed,  1 Jul 2020 08:46:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A075EF802E3; Wed,  1 Jul 2020 08:38:44 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8906EF80217; Wed,  1 Jul 2020 08:46:33 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40CCAF802E1
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 08:38:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40CCAF802E1
-IronPort-SDR: 783CskwXkrpWLO2mOKupujjIw5b/pwskj57QYRtURZZtCPTPyjOptB2zEHGJhaqJwWh1IdA5hR
- tW1e2PYs3oCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126109921"
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; d="scan'208";a="126109921"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jun 2020 23:38:40 -0700
-IronPort-SDR: Q+GiJwb4zioCvqY1lM5QnllgZFlaHnBRaIzpVdgwQmSSPudeams+Jb4Td/INg505q+k58yaMJB
- Tr9STXYMelvA==
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; d="scan'208";a="454947025"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jun 2020 23:38:36 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH v2 5/5] soundwire: intel: don't free dma_data in DAI shutdown
-Date: Wed,  1 Jul 2020 02:43:56 +0800
-Message-Id: <20200630184356.24939-6-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
-References: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
- rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1CF8F801D8
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2020 08:46:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1CF8F801D8
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 07FD3AE17;
+ Wed,  1 Jul 2020 06:46:27 +0000 (UTC)
+Date: Wed, 01 Jul 2020 08:46:26 +0200
+Message-ID: <s5hh7urg2bh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Serialize setting GPIO LED
+In-Reply-To: <20200701052138.6378-1-kai.heng.feng@canonical.com>
+References: <20200701052138.6378-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Libin Yang <libin.yang@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "moderated
+ list:SOUND" <alsa-devel@alsa-project.org>, Kailang Yang <kailang@realtek.com>,
+ Tomas Espeleta <tomas.espeleta@gmail.com>, Thomas Hebb <tommyhebb@gmail.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ open list <linux-kernel@vger.kernel.org>, tiwai@suse.com,
+ Hui Wang <hui.wang@canonical.com>, anthony.won@canonical.com,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Jian-Hong Pan <jian-hong@endlessm.com>,
+ =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,36 +87,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Wed, 01 Jul 2020 07:21:35 +0200,
+Kai-Heng Feng wrote:
+> 
+> If a system has two GPIO controlled LED, one for mute and another one
+> for micmute, and both of them are on before system suspend, sometimes
+> one of them won't be turned off by system suspend.
+> 
+> The codec doesn't seem to be able to control multiple GPIO LEDs at the
+> same time, so introduce a new mutex to serialize setting the LED, to
+> prevent the issue from happening.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  include/sound/hda_codec.h     | 1 +
+>  sound/pci/hda/hda_codec.c     | 1 +
+>  sound/pci/hda/patch_realtek.c | 3 +++
+>  3 files changed, 5 insertions(+)
+> 
+> diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+> index d16a4229209b..3a1792bbb7ac 100644
+> --- a/include/sound/hda_codec.h
+> +++ b/include/sound/hda_codec.h
+> @@ -206,6 +206,7 @@ struct hda_codec {
+>  
+>  	struct mutex spdif_mutex;
+>  	struct mutex control_mutex;
+> +	struct mutex led_mutex;
 
-Now that the DMA data is allocated/freed in set_sdw_stream(), remove
-free operations.
+Since it's only for Realtek codec, can it be better in alc_spec
+instead?
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c | 7 -------
- 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 2e1e1088a743..7a65414e5714 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -806,14 +806,7 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- static void intel_shutdown(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
--	struct sdw_cdns_dma_data *dma;
- 
--	dma = snd_soc_dai_get_dma_data(dai, substream);
--	if (!dma)
--		return;
--
--	snd_soc_dai_set_dma_data(dai, substream, NULL);
--	kfree(dma);
- }
- 
- static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
--- 
-2.17.1
+thanks,
 
+Takashi
