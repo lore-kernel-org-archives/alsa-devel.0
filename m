@@ -2,73 +2,75 @@ Return-Path: <SRS0=heU4=AM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D67A2C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 22:28:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73935C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 22:29:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55F8820780
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 22:28:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E458B20780
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jul 2020 22:29:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YB8HW8SR";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRk5UD+s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55F8820780
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aTsxYpx9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OwzRtDOM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E458B20780
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E37A61693;
-	Thu,  2 Jul 2020 00:27:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E37A61693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77ECB16A4;
+	Thu,  2 Jul 2020 00:28:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77ECB16A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593642520;
-	bh=7xvA3cUAtWd0mO8KbivoOz3yDGmDmzbZ4IbXH/dBUFE=;
+	s=default; t=1593642567;
+	bh=MZDLyLA8acGzO9yHIN4h77587T3pKwK3OCF/8mjr1T4=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YB8HW8SR9I9lHqC1VPHS6ioZruRKoLYJG+RyC8abzw1ttQ6myWRNL8NQw8kh++Nr2
-	 Ba3c3J3PWA4vMkvCs4Jnvfee3hlvth4t5CFFXYrHadccEJ+bjfqF1sK7dvaQHZV0n2
-	 1Gy84XLvKvQd13L86EJyk09MZqs7adsNix6pxHQI=
+	b=aTsxYpx93xIkdfxBdax+HuxpxrEvG/RdyrDdsT1rsqxg6oJUY9TeIJxu48rtgr41M
+	 zMZyLVWhsLosX7jwLwjoqx2SO543a3CYkYlqA+cdZ/oz25nx45PSniQ15Xku/kQFl0
+	 q+Vp4MMZ4+qLfqBtG7J1A1e+fhC5AntHEzxtXc5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22318F80303;
-	Thu,  2 Jul 2020 00:23:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F348AF80322;
+	Thu,  2 Jul 2020 00:23:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07F6EF802FD; Thu,  2 Jul 2020 00:23:22 +0200 (CEST)
+ id 6BA65F80323; Thu,  2 Jul 2020 00:23:27 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E06DF802FD
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 00:23:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E06DF802FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83280F80316
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 00:23:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83280F80316
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fRk5UD+s"
+ header.b="OwzRtDOM"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8A08120780;
- Wed,  1 Jul 2020 22:23:17 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8150E20780;
+ Wed,  1 Jul 2020 22:23:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1593642198;
- bh=7xvA3cUAtWd0mO8KbivoOz3yDGmDmzbZ4IbXH/dBUFE=;
+ s=default; t=1593642203;
+ bh=MZDLyLA8acGzO9yHIN4h77587T3pKwK3OCF/8mjr1T4=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=fRk5UD+sxhWB/hiPkkJtu4ozNr1sT9itXDqqk6wwwJqlUCl4UX/yQFGyudO8Yn4s6
- 21LTjs4VK6aivMoCvgkqyVYQhQVYviLEfIlD8KLRYLxVcz+L7mmV1ErwwMkh8r5nNz
- Tl2HzIB8lCJjTguZDnkMD0CrZRxR52FJmWTKa5kc=
-Date: Wed, 01 Jul 2020 23:23:15 +0100
+ b=OwzRtDOMcJlv9bj6O59TgwJLA6UVR42K0I24tKzFMuD7ans/rBy2deG+BFDNg8aTV
+ 44AuFhe/9mOv/Rp0O3fp3NtY5k32XL40R2Aviz4U1HBbE/hSkcAH6f1RuMVf3w4OzW
+ 1mXQgOGUFojXTtDw36jREyNMrtew9/7fp0BcH4P8=
+Date: Wed, 01 Jul 2020 23:23:20 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200701183716.83314-1-pierre-louis.bossart@linux.intel.com>
-References: <20200701183716.83314-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: Intel: atom: fix kernel-doc and W=1 warnings
-Message-Id: <159364215575.10630.1416175564616167123.b4-ty@kernel.org>
-Cc: tiwai@suse.de
+To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
+In-Reply-To: <20200701071645.32061-1-oder_chiou@realtek.com>
+References: <20200701071645.32061-1-oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5682: cancel jack_detect_work if hs_jack is set
+ to null even soundwire mode
+Message-Id: <159364215574.10630.4566381066826223824.b4-ty@kernel.org>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, albertchen@realtek.com,
+ derek.fang@realtek.com, flove@realtek.com, shumingf@realtek.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,15 +86,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 1 Jul 2020 13:37:14 -0500, Pierre-Louis Bossart wrote:
-> Yet another series to fix broken kernel-doc and mark unused variables
-> as such.
-> 
-> Pierre-Louis Bossart (2):
->   ASoC: Intel: atom: fix kernel-doc
->   ASoC: Intel: atom: fix 'defined but not used' warning
-> 
-> [...]
+On Wed, 1 Jul 2020 15:16:45 +0800, Oder Chiou wrote:
+> Base on https://patchwork.kernel.org/patch/11237953/
+> Soundwire mode also should follow it.
 
 Applied to
 
@@ -100,10 +96,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: Intel: atom: fix kernel-doc
-      commit: 11013884025044374ee6222408f67ec518831353
-[2/2] ASoC: Intel: atom: fix 'defined but not used' warning
-      commit: 544079abf603bf7823453748285b7cc048b09a9f
+[1/1] ASoC: rt5682: cancel jack_detect_work if hs_jack is set to null even soundwire mode
+      commit: bc4be656471b39af8f2ad57ee372012c55da1da7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
