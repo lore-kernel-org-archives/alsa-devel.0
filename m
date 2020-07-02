@@ -2,69 +2,73 @@ Return-Path: <SRS0=znNF=AN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C16BC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8E08C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:38:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8933E2088E
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:37:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F5682088E
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:38:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g6SiLz5z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8933E2088E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F3kObsR8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F5682088E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 110FB16BF;
-	Thu,  2 Jul 2020 21:36:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 110FB16BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85AF916E9;
+	Thu,  2 Jul 2020 21:37:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85AF916E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593718639;
-	bh=RWhwFOkXsKdKsffcmPcuTiKLZ6Oa9mn9sq2CaOwyDZQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=g6SiLz5z1DPTmMCPHWCX5WZCij000MUQsC+b/FY0JWjjp26RjQEz8vhSdUjhRLXxw
-	 jA5jYyLd/5WwNt/uku1g6CVtLZ64n8MmsYI7u2Dqg2W++Pgn48Y0Xj4jrZeQe6Wf3k
-	 4Uv3hz9ZsOQYEsYhL+Xkusw1sfC4r9NY26U2dvqQ=
+	s=default; t=1593718691;
+	bh=3UAgwWR05A/h1+a8XxqcCfu3F5K6Fy2x2gpTP8fNp+k=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=F3kObsR8Vo6YiSFHRC6HhXrVdZ4PAaR+7WJxZUEzxIvszJI7+PIcV/C48VXrhcPS3
+	 JArUaAHOLzli2mUqos44l1ReZtSnW1DDeioiFNjbTffHYO8mVB+VW81Vm4rvJIG5z7
+	 kKhAMOOKP9GfmuRbU2Upl7RUwoALE3BaORvZHdgg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E6BDF80245;
-	Thu,  2 Jul 2020 21:36:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3076F802A9;
+	Thu,  2 Jul 2020 21:36:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8F6BF80134; Thu,  2 Jul 2020 21:36:27 +0200 (CEST)
+ id 57ECAF800C1; Thu,  2 Jul 2020 21:36:34 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14482F80134
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 21:36:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14482F80134
-IronPort-SDR: rQTJFU0XWWMNdkEF/AMaNLLAGXQzpnGgd6o82PPpzGeWadYQOgcFrRzkJnQWroYr7IOzq56+cP
- 36NGYhuh6+mA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148549338"
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="148549338"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5EA8DF800C1
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 21:36:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EA8DF800C1
+IronPort-SDR: oFkuKKlYkBkXOJTKIYwkluV6Vl3wWkxNefmymU3sjifU3dkqx4MxQBN2AjmyTJQrX9CClrurc9
+ T5TCmRC8OOdQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148549339"
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="148549339"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  02 Jul 2020 12:36:18 -0700
-IronPort-SDR: sa8HDhVXmD5aBtyUWT5pDV6/SDLYqH89RWhG7svw60SSOKml43guHs6q21EhR2PZw/GVUXytt4
- nz9ehRDkiaQw==
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="482116349"
+IronPort-SDR: WKYBJFjkvJ6rMfKl0tvnwJytFbk02hrZg+KVWLOTjEWWf6g42HXvHKoH8kF0ZxI7I5hapC9hq3
+ GGuPBVNxrmdw==
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="482116350"
 Received: from dhprice-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.75.219])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  02 Jul 2020 12:36:17 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 00/23] ALSA: fix kernel-doc and W=1 warnings
-Date: Thu,  2 Jul 2020 14:35:41 -0500
-Message-Id: <20200702193604.169059-1-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 01/23] ALSA: isa/gus: remove -Wmissing-prototypes warnings
+Date: Thu,  2 Jul 2020 14:35:42 -0500
+Message-Id: <20200702193604.169059-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200702193604.169059-1-pierre-louis.bossart@linux.intel.com>
+References: <20200702193604.169059-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -84,68 +88,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This cleanup touches a lot of old - and very old code for hardware
-designed in the late 1990s/early 2000s -, hence the RFC status. I
-mostly did dumb edits just to make warnings go away, suggestions and
-feedback welcome.
+Fix W=1 warnings by adding prototypes to header file
 
-Pierre-Louis Bossart (23):
-  ALSA: isa/gus: remove -Wmissing-prototypes warnings
-  ALSA: isa/gus: remove 'set but not used' warning
-  ALSA: pci/asihpi: remove 'set but not used' warnings
-  ALSA: pci/asihpi: fix kernel-doc
-  ALSA: pci/asihpi: remove 'set but not used' warning
-  ALSA: pci/echoaudio: remove 'set but not used' warning
-  ALSA: pci/aw2-saa7146: remove 'set but not used' warning
-  ALSA: pci/ctxfi/ctatc: fix kernel-doc
-  ALSA: pci/ctxfi: fix kernel-doc warnings
-  ALSA: usb/line6: remove 'defined but not used' warning
-  ASoC: pci/emu10k1: remove "set but not used' warnings
-  ALSA: firewire: fix kernel-doc
-  ALSA: pci/emu10k1: remove 'set but not used' warning
-  ALSA: pci/korg1212: remove 'set but not used' warnings
-  ALSA: pci/rme9652/hdspm: remove always true condition
-  ALSA: pci/oxygen/xonar_wm87x6: remove always true condition
-  ALSA: xen: remove 'set but not used' warning
-  ALSA: pci/es1938: remove 'set but not used' warning
-  ALSA: pci/fm801: fix kernel-doc
-  ALSA: pci/via82xx: remove 'set but not used' warnings
-  ALSA: pcmcia/pdaudiocf: fix kernel-doc
-  ALSA: vx_core: remove warning for empty loop body
-  ALSA: pci/au88x0: remove "defined but not used" warnings
+sound/isa/gus/gus_timer.c:141:6: warning: no previous prototype for
+‘snd_gf1_timers_init’ [-Wmissing-prototypes]
+  141 | void snd_gf1_timers_init(struct snd_gus_card * gus)
+      |      ^~~~~~~~~~~~~~~~~~~
+sound/isa/gus/gus_timer.c:177:6: warning: no previous prototype for
+‘snd_gf1_timers_done’ [-Wmissing-prototypes]
+  177 | void snd_gf1_timers_done(struct snd_gus_card * gus)
+      |      ^~~~~~~~~~~~~~~~~~~
 
- include/sound/gus.h                |  4 ++++
- sound/drivers/vx/vx_core.c         |  3 ++-
- sound/firewire/cmp.c               |  1 -
- sound/isa/gus/gus_reset.c          |  2 --
- sound/isa/gus/gus_uart.c           |  3 ++-
- sound/pci/asihpi/asihpi.c          | 12 +++++-----
- sound/pci/asihpi/hpicmn.c          | 26 +++++++++++----------
- sound/pci/au88x0/au88x0_a3ddata.c  |  8 +++----
- sound/pci/au88x0/au88x0_xtalk.c    | 36 +++++++++++++++---------------
- sound/pci/aw2/aw2-saa7146.c        |  2 +-
- sound/pci/ctxfi/ctatc.c            |  4 ++++
- sound/pci/ctxfi/cthardware.c       |  2 +-
- sound/pci/ctxfi/cthw20k1.c         |  2 +-
- sound/pci/ctxfi/cthw20k2.c         |  2 +-
- sound/pci/ctxfi/ctimap.c           |  2 +-
- sound/pci/ctxfi/ctmixer.c          |  2 +-
- sound/pci/ctxfi/ctpcm.c            |  2 +-
- sound/pci/echoaudio/echoaudio.c    |  3 ++-
- sound/pci/emu10k1/emu10k1_main.c   |  4 ++--
- sound/pci/emu10k1/emu10k1_patch.c  |  3 ++-
- sound/pci/es1938.c                 |  3 ++-
- sound/pci/fm801.c                  | 27 ++++++++++++++++++++++
- sound/pci/korg1212/korg1212.c      |  4 +++-
- sound/pci/oxygen/xonar_wm87x6.c    |  6 +++--
- sound/pci/rme9652/hdspm.c          |  4 ++--
- sound/pci/via82xx.c                |  2 +-
- sound/pci/via82xx_modem.c          |  2 +-
- sound/pcmcia/pdaudiocf/pdaudiocf.c |  1 +
- sound/usb/line6/driver.h           |  4 ++--
- sound/xen/xen_snd_front.c          |  2 +-
- 30 files changed, 110 insertions(+), 68 deletions(-)
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/gus.h       | 4 ++++
+ sound/isa/gus/gus_reset.c | 2 --
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/include/sound/gus.h b/include/sound/gus.h
+index 410939ecf3a5..cd8da68cab92 100644
+--- a/include/sound/gus.h
++++ b/include/sound/gus.h
+@@ -613,4 +613,8 @@ int snd_gus_dram_write(struct snd_gus_card *gus, char __user *ptr,
+ int snd_gus_dram_read(struct snd_gus_card *gus, char __user *ptr,
+ 		      unsigned int addr, unsigned int size, int rom);
+ 
++/* gus_timer.c */
++void snd_gf1_timers_init(struct snd_gus_card *gus);
++void snd_gf1_timers_done(struct snd_gus_card *gus);
++
+ #endif /* __SOUND_GUS_H */
+diff --git a/sound/isa/gus/gus_reset.c b/sound/isa/gus/gus_reset.c
+index 07bfcda43827..9a1ab5872c4f 100644
+--- a/sound/isa/gus/gus_reset.c
++++ b/sound/isa/gus/gus_reset.c
+@@ -9,8 +9,6 @@
+ #include <sound/core.h>
+ #include <sound/gus.h>
+ 
+-extern void snd_gf1_timers_init(struct snd_gus_card * gus);
+-extern void snd_gf1_timers_done(struct snd_gus_card * gus);
+ extern int snd_gf1_synth_init(struct snd_gus_card * gus);
+ extern void snd_gf1_synth_done(struct snd_gus_card * gus);
+ 
 -- 
 2.25.1
 
