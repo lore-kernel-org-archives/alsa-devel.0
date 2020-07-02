@@ -2,69 +2,68 @@ Return-Path: <SRS0=znNF=AN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3CB9C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1641AC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:25:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D81620760
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:24:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D81620760
+	by mail.kernel.org (Postfix) with ESMTPS id A29E6206BE
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:25:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A29E6206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C031116D5;
-	Thu,  2 Jul 2020 19:23:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C031116D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09C8816E5;
+	Thu,  2 Jul 2020 19:24:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09C8816E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593710674;
-	bh=QFwz722mU0R7dewWtVi3QCoLQKTldWrE3m/X3OzRFNM=;
+	s=default; t=1593710723;
+	bh=KfsVHSKhteMDnZK+Fu/9TroDTxGppX+oaRsqLzNOWpc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lVi1HUWDMQBlezzPkhdwtKH4VPgeY07yN4kI6hH13DtobggjllwHKZuwE8ejHj7hk
-	 8HptDjKY6jNpGb9VmR1p1ik6EQmyevIWZgLByd/X6mQY3udseVwOgSqrHC76my2ITf
-	 h2EDQ00DzUbbUxvjScirp8UV4HwTMdikfq6ki+BM=
+	b=C7sXLqObWyoX2Qxc6vxJLs9pg/ihb94W6RVaqyl72lNrDfA06j0H2Lx9xoCuKTdII
+	 RJ6/TNW5FmTJthuYEKWzMPY0nMNFQehfMg0yPCkQapTC3dwXcgJ9IHKfWP6oSpflfu
+	 zwx6Qk9dh9r9TYvYpBfbYGs2Zg3jx4L0ELEMBeHk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E41B1F80247;
-	Thu,  2 Jul 2020 19:22:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86398F802BD;
+	Thu,  2 Jul 2020 19:22:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E083BF802BC; Thu,  2 Jul 2020 19:22:53 +0200 (CEST)
+ id F1FE3F802BD; Thu,  2 Jul 2020 19:22:55 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B12AF80134
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 19:22:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B12AF80134
-IronPort-SDR: 9BrfOOpB5XYLQwwmfJiy5DtCB5yOqhA93TQXeO57XgejFPPCpth7hNN+GakL/VppZbG4Zvi8D4
- Z5RZGmMRjmfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="144480291"
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="144480291"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29BF7F80245
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 19:22:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29BF7F80245
+IronPort-SDR: YwfG+rti/rSC/RVTMiI3WKtF2/2rpN187S4kzDr6nBI6su5FZk9cvgFVNaxvOwHuzgbHj+odwW
+ GgPXjHPoyAHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="144480301"
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="144480301"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jul 2020 10:22:45 -0700
-IronPort-SDR: UUNR5coPI111eAku83iHfdW4mTPO7RwdIt6eEIAR4P3mWO5KNZlCLKlFpUtyVpbM/TV3ZYFSkv
- aICZh4f9wwHQ==
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="356521239"
+ 02 Jul 2020 10:22:48 -0700
+IronPort-SDR: mAjwL2tKlw+8j+DkGoWVLnlP8CIn6QoiOCfJJKopCnLuikTcm3HZo/+RhJsu9GbTHbE/l9bvp0
+ GBUyMbj0BL5A==
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="356521253"
 Received: from nzbastur-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.231.182])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jul 2020 10:22:44 -0700
+ 02 Jul 2020 10:22:47 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/6] ASoC: fsl: fsl_ssi_dbg: remove spurious kernel-doc
- comment start
-Date: Thu,  2 Jul 2020 12:22:22 -0500
-Message-Id: <20200702172227.164474-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: fsl: fsl-asoc-card: fix kernel-doc
+Date: Thu,  2 Jul 2020 12:22:24 -0500
+Message-Id: <20200702172227.164474-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702172227.164474-1-pierre-louis.bossart@linux.intel.com>
 References: <20200702172227.164474-1-pierre-louis.bossart@linux.intel.com>
@@ -93,35 +92,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix W=1 warnings. There is no kernel-doc here.
+Fix W=1 warnings. Kernel-doc syntax was not properly used.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/fsl/fsl_ssi_dbg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl-asoc-card.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
-index 2a20ee23dc52..2c46c55f0a88 100644
---- a/sound/soc/fsl/fsl_ssi_dbg.c
-+++ b/sound/soc/fsl/fsl_ssi_dbg.c
-@@ -78,7 +78,7 @@ void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *dbg, u32 sisr)
- 		dbg->stats.tfe0++;
- }
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 57ea1b072326..91220b96e043 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -33,8 +33,7 @@
+ #define DAI_FMT_BASE (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF)
+ 
+ /**
+- * CODEC private data
+- *
++ * struct codec_priv - CODEC private data
+  * @mclk_freq: Clock rate of MCLK
+  * @mclk_id: MCLK (or main clock) id for set_sysclk()
+  * @fll_id: FLL (or secordary clock) id for set_sysclk()
+@@ -48,11 +47,10 @@ struct codec_priv {
+ };
+ 
+ /**
+- * CPU private data
+- *
+- * @sysclk_freq[2]: SYSCLK rates for set_sysclk()
+- * @sysclk_dir[2]: SYSCLK directions for set_sysclk()
+- * @sysclk_id[2]: SYSCLK ids for set_sysclk()
++ * struct cpu_priv - CPU private data
++ * @sysclk_freq: SYSCLK rates for set_sysclk()
++ * @sysclk_dir: SYSCLK directions for set_sysclk()
++ * @sysclk_id: SYSCLK ids for set_sysclk()
+  * @slot_width: Slot width of each frame
+  *
+  * Note: [1] for tx and [0] for rx
+@@ -65,9 +63,8 @@ struct cpu_priv {
+ };
+ 
+ /**
+- * Freescale Generic ASOC card private data
+- *
+- * @dai_link[3]: DAI link structure including normal one and DPCM link
++ * struct fsl_asoc_card_priv - struct Freescale Generic ASOC card private data
++ * @dai_link: DAI link structure including normal one and DPCM link
+  * @pdev: platform device pointer
+  * @codec_priv: CODEC private data
+  * @cpu_priv: CPU private data
+@@ -94,8 +91,8 @@ struct fsl_asoc_card_priv {
+ 	char name[32];
+ };
  
 -/**
+- * This dapm route map exsits for DPCM link only.
 +/*
-  * Show the statistics of a flag only if its interrupt is enabled
++ * This dapm route map exits for DPCM link only.
+  * The other routes shall go through Device Tree.
   *
-  * Compilers will optimize it to a no-op if the interrupt is disabled
-@@ -90,7 +90,7 @@ void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *dbg, u32 sisr)
- 	} while (0)
- 
- 
--/**
-+/*
-  * Display the statistics for the current SSI device
-  *
-  * To avoid confusion, only show those counts that are enabled
+  * Note: keep all ASRC routes in the second half
 -- 
 2.25.1
 
