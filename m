@@ -7,101 +7,101 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A432C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 09:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41543C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 09:30:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD76B20702
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 09:24:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDD8820771
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 09:30:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l+uQMfKW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Henjgm7B"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD76B20702
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N3GISKXq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="WZQ6L/Qj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDD8820771
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3476C169A;
-	Thu,  2 Jul 2020 11:23:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3476C169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B49416AB;
+	Thu,  2 Jul 2020 11:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B49416AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593681861;
-	bh=mk+cP6ab8HFv3C1+zOHjK1REMlA/xBvLVJIwpMAVK5M=;
+	s=default; t=1593682234;
+	bh=n4dvV1XkBOw1b2ou31MqwcZPGaT8nhOR7VL5KQL0pwk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l+uQMfKWOj3Nvnn7tx+cwAmDw6Jugm6pRm91rTkT+pRA4p0nMQToYrRXwodSFkPKe
-	 MSpXjXuCMHPRg7e+D+i55TYx/aO3y4o68U7Jbwm6zbvM5nrk3uVDZnVol8RP3dGR8f
-	 zbGVZ7CYTi1BqC9PRJEgMYpiRy4TWFMHKHy0Mhm0=
+	b=N3GISKXqJC6NCm9WkiQZgkuLEhD/ft/x6gddiFr5hu/oyY4xHbGWxvuTJrETEK+1M
+	 sJQ/8JP9MpziMZVZgZTvJZyajsqN5LUurQW62wJ3YwK5klW0P5aCyJ7TMIjX5xWgHU
+	 EsFOx140ZuvR7QN4vsKO8i1S92vxfRRT0wIqi684=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C69CAF8022B;
-	Thu,  2 Jul 2020 11:23:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5BBCF8022B;
+	Thu,  2 Jul 2020 11:29:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98634F8022D; Thu,  2 Jul 2020 11:23:29 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 03325F8022D; Thu,  2 Jul 2020 11:29:39 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4976F800C1
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 11:23:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4976F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C6C6F80134
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 11:29:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C6C6F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Henjgm7B"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 0629K0Jv024016; Thu, 2 Jul 2020 04:23:21 -0500
+ header.b="WZQ6L/Qj"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 0629GRWs025172; Thu, 2 Jul 2020 04:29:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=PODMain02222019;
- bh=J0AXJKehzt+e/GELyh0zbYY6Mu4SNRdcwWUGlkpq0OQ=;
- b=Henjgm7Bi10eJVwj6R9bGw6Akp6b+BN8NnrdNTqPwfSrkpTYhoPsngUB64JqbFROGP8V
- VC9lHUrkqcxrznwGsPtVGB216sROs+qy3TairypHN3utE8fevEUXUgEg3sgfijpvU/ZW
- THg8uGn9Nk2oe8cinaubmoYgACGLkD57tR/qORurpkROVed9mVFfveb8NmIfrVeJnoim
- N1Pryzg8tmH3Y6OnpD7MXf1bh/sMtRHFs0f70WngZN0ZSiN47AxEdWa57gourZs8ib0L
- 9iBpzVUOOYtzzVbYK29CJIqUrh6Yj7RTjlT2NzZ2tZUaG4amvLkoud0fDgYuW9YQ7mxp rQ== 
+ bh=w/ZS+NN9FMNqtzEq9OQKf0Dckp7KEUTUNyMoLvBWt9c=;
+ b=WZQ6L/QjPlMClTw0JnquXUosNNOeyziiyBkJf/gVbYIDDOOZUAOC/SJ3ll1GciP3iy6C
+ bw0QvzHkfthhYIi0pb68qy3uqUjG+Qkew3rdcF/r9Nsc+WP5DyvkJj4a9TeZcLjLnejd
+ OU0C0NSEuQZPPQNYq6kzWk+vhRpq9+usv1+NQOSjdxnUiO34EyiBZCaZR+oNHJN5RSR0
+ jlDzLg6Jix5Se/5fzuTcNYB+TQyjkQ42kuFIsQnUrf6FeuKSN1rPFv8HvMaP9pEmG7hf
+ SFUNnuRW1JlzxI0dN6GZrWgsjAH5m9qiftjFAWyfSbOv5/2vpplxh5T3eASpNHmZtKtl rQ== 
 Authentication-Results: ppops.net;
  spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 31x3h4qmab-1
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 31x2hpy9ya-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 02 Jul 2020 04:23:21 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 02 Jul 2020 04:29:32 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 2 Jul 2020
- 10:23:19 +0100
+ 10:29:30 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 2 Jul 2020 10:23:19 +0100
+ Transport; Thu, 2 Jul 2020 10:29:30 +0100
 Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ED60F44A;
- Thu,  2 Jul 2020 09:23:18 +0000 (UTC)
-Date: Thu, 2 Jul 2020 09:23:18 +0000
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A13B7448;
+ Thu,  2 Jul 2020 09:29:30 +0000 (UTC)
+Date: Thu, 2 Jul 2020 09:29:30 +0000
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 7/7] ASoC: codecs: wm8400: add _maybe_unused as needed
-Message-ID: <20200702092318.GL71940@ediswmail.ad.cirrus.com>
-References: <20200701181320.80848-1-pierre-louis.bossart@linux.intel.com>
- <20200701181320.80848-8-pierre-louis.bossart@linux.intel.com>
+To: <puyou.lu@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: wm8974: fix Boost Mixer Aux Switch
+Message-ID: <20200702092930.GM71940@ediswmail.ad.cirrus.com>
+References: <1593657025-4903-1-git-send-email-puyou.lu@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200701181320.80848-8-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1593657025-4903-1-git-send-email-puyou.lu@gmail.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Proofpoint-SPF-Result: fail
 X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
  include:spf.protection.outlook.com
  ip4:5.172.152.52 -all
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- lowpriorityscore=0
- cotscore=-2147483648 malwarescore=0 bulkscore=0 adultscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2007020069
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+ mlxlogscore=736 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 phishscore=0
+ cotscore=-2147483648 suspectscore=1 priorityscore=1501 spamscore=0
+ clxscore=1011 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007020069
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ broonie@kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,16 +117,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jul 01, 2020 at 01:13:20PM -0500, Pierre-Louis Bossart wrote:
-> Fix W=1 warning by adding __maybe_unused. Maintainers for this file
-> may want to double-check if those definitions are necessary.
+On Thu, Jul 02, 2020 at 10:30:25AM +0800, puyou.lu@gmail.com wrote:
+> From: Puyou Lu <puyou.lu@gmail.com>
 > 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Clear BIT6 of INPPGA means not muted (Switch On).
+> 
+> Signed-off-by: Puyou Lu <puyou.lu@gmail.com>
 > ---
 
-Yeah I think in this case better to remove them, they arn't used
-in the driver, the driver is pretty old and no one really works
-on it so little chance the features are ever getting added.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
 Charles
