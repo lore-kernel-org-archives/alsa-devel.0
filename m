@@ -2,74 +2,73 @@ Return-Path: <SRS0=znNF=AN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1AF8C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:47:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 136B8C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:48:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F51820885
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:47:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 916212088E
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:48:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a3qiv50x";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AGo7RUqt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F51820885
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L8HOZddv";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OaXsPp8u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 916212088E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9DAF16AC;
-	Thu,  2 Jul 2020 17:46:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9DAF16AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A6FD16E2;
+	Thu,  2 Jul 2020 17:47:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A6FD16E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593704858;
-	bh=sNB0otr3YXbGQdp8LUGPooYFhKBdpdTWobuGYek895E=;
+	s=default; t=1593704918;
+	bh=C5NUiizv1j+Nd6aQD/bkutUY7qnfv6PuLdHFK48cf00=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a3qiv50xzfF6Ymm/UrRq2KIfPf3USoPs+ztl4+EsFMI0yvLW5dnhOghKzEPskqXXf
-	 Ed6T4JWE0UVQV7kbPnWQr/oLRbZcOexIpBtFNT6TO0W9ZN9OPwqa33xkby5jMtIUNW
-	 pJPGyUxwvYK6oAOajZv19XIOVnOhGrOnzYANVIdA=
+	b=L8HOZddvnPbbgeWpl8h3xuijuixzfH8aBKNYkOlQrgSPgsm7DKwqn4NObOISVbss/
+	 3Plh3i/9XABRznwdlHXvIO5aYMubSNzlJIhR+eEGYeiirUyACnroa7AwKybVVdUZBW
+	 E/S2CehgOK99rVik1g3bS2zgBqvHvTM92vNGc5Xo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E0FEF8022B;
-	Thu,  2 Jul 2020 17:46:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43055F802BC;
+	Thu,  2 Jul 2020 17:46:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21D75F8022D; Thu,  2 Jul 2020 17:46:47 +0200 (CEST)
+ id D9D9DF80245; Thu,  2 Jul 2020 17:46:51 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E886F800C1
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 17:46:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E886F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58A39F80245
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 17:46:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58A39F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AGo7RUqt"
+ header.b="OaXsPp8u"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7CEE220885;
- Thu,  2 Jul 2020 15:46:42 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 813B020885;
+ Thu,  2 Jul 2020 15:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1593704803;
- bh=sNB0otr3YXbGQdp8LUGPooYFhKBdpdTWobuGYek895E=;
+ s=default; t=1593704808;
+ bh=C5NUiizv1j+Nd6aQD/bkutUY7qnfv6PuLdHFK48cf00=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=AGo7RUqtz2XsmL//2NL5IQlvHgy30k9r6m2tFm6qwHxWQPpilr4A36QAhfsOjOkpE
- 9Hqa/40SxXqxV/1GsfRs8j1i1DM4BjSPudx9toXTAD7X1w+woYzcVI7wKwpSu7F7R2
- xv+Dt6kK9i7oxlcUO5FYAW5WO+M1JXirzmgFEWnQ=
-Date: Thu, 02 Jul 2020 16:46:40 +0100
+ b=OaXsPp8urbdfLENKQsnnZ/J4yPHz/soyJ78m7otw34xg57vj4YZDeD3hNYHbkH98J
+ YNfQdPQi5quPEv0KhKoUo7weWz4Z6HONfj7/ZB9rCM2Ba93MAH4KvCYJ0funoYNWww
+ Id1iQKDL+TEM/+NkF6ykrs0wbctW29QNmC9Fl90w=
+Date: Thu, 02 Jul 2020 16:46:45 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-In-Reply-To: <20200630223020.25546-1-festevam@gmail.com>
-References: <20200630223020.25546-1-festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: simple-card: Fix 'make
- dt_binding_check' warnings
-Message-Id: <159370480067.5443.4442289678532780201.b4-ty@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- kuninori.morimoto.gx@renesas.com
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200701181320.80848-1-pierre-louis.bossart@linux.intel.com>
+References: <20200701181320.80848-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/7] ASoC: codecs: wm/cs: fix kernel-doc and W=1 warnings
+Message-Id: <159370480067.5443.9245355177534477130.b4-ty@kernel.org>
+Cc: tiwai@suse.de, Charles Keepax <ckeepax@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,18 +84,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 30 Jun 2020 19:30:20 -0300, Fabio Estevam wrote:
-> The following build warnings are seen with 'make dt_binding_check':
+On Wed, 1 Jul 2020 13:13:13 -0500, Pierre-Louis Bossart wrote:
+> I've been doing a lot of cleanups to get to zero warnings with W=1,
+> here's the first batch for Cirrus/Wolfson codecs.
 > 
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:209.46-211.15: Warning (unit_address_vs_reg): /example-4/sound/simple-audio-card,cpu@0: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:213.37-215.15: Warning (unit_address_vs_reg): /example-4/sound/simple-audio-card,cpu@1: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:250.42-261.15: Warning (unit_address_vs_reg): /example-5/sound/simple-audio-card,dai-link@0: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:263.42-288.15: Warning (unit_address_vs_reg): /example-5/sound/simple-audio-card,dai-link@1: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:270.32-272.19: Warning (unit_address_vs_reg): /example-5/sound/simple-audio-card,dai-link@1/cpu@0: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:273.23-275.19: Warning (unit_address_vs_reg): /example-5/sound/simple-audio-card,dai-link@1/cpu@1: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:276.23-278.19: Warning (unit_address_vs_reg): /example-5/sound/simple-audio-card,dai-link@1/cpu@2: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:279.23-281.19: Warning (unit_address_vs_reg): /example-5/sound/simple-audio-card,dai-link@1/cpu@3: node has a unit name, but no reg or ranges property
-> Documentation/devicetree/bindings/sound/simple-card.example.dts:290.42-303.15: Warning (unit_address_vs_reg): /example-5/sound/simple-audio-card,dai-link@2: node has a unit name, but no reg or ranges property
+> Pierre-Louis Bossart (7):
+>   ASoC: codecs: cs4270: fix kernel-doc
+>   ASoC: codecs: cs42l42: remove always-true comparisons
+>   ASoC: codecs: wm8986: fix missing kernel-doc arguments
+>   ASoC: codecs: wm8960: fix kernel-doc
+>   ASoC: codecs: wm9713: remove spurious kernel-doc comment start
+>   ASoC: codecs: wm8994: fix kernel-doc
+>   ASoC: codecs: wm8400: add _maybe_unused as needed
 > 
 > [...]
 
@@ -106,8 +105,18 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: simple-card: Fix 'make dt_binding_check' warnings
-      commit: 88ba5f4a642e4fb6ab7058254967f55375ca068d
+[1/6] ASoC: codecs: cs4270: fix kernel-doc
+      commit: 7fdc1512096217c2888959bf662ebff9f37021aa
+[2/6] ASoC: codecs: cs42l42: remove always-true comparisons
+      commit: 5502ce4ea214658c4ed80afc024a6fa6a6837023
+[3/6] ASoC: codecs: wm8986: fix missing kernel-doc arguments
+      commit: 824186fbf73499adad545a3ae30b0a3feef4f05a
+[4/6] ASoC: codecs: wm8960: fix kernel-doc
+      commit: 419eac3cff69c07bf38902be1b245dee3b309342
+[5/6] ASoC: codecs: wm9713: remove spurious kernel-doc comment start
+      commit: 442950a3dc9ced1e3416e497f97636cc4c955ccf
+[6/6] ASoC: codecs: wm8994: fix kernel-doc
+      commit: 7c4084e1127026546b102152cebda297b8237870
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
