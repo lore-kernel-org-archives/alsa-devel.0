@@ -2,81 +2,121 @@ Return-Path: <SRS0=znNF=AN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 328C9C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:08:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C431C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:29:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B788620771
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:08:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB2CF2073E
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 15:29:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B834Ib4c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B788620771
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="StitAbjL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB2CF2073E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A83D16D1;
-	Thu,  2 Jul 2020 17:07:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A83D16D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A0FE16CD;
+	Thu,  2 Jul 2020 17:28:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A0FE16CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593702493;
-	bh=MZaSn20N9vbNlcflGXGLgoIKLp7OhrNAPw6g6sLsCM8=;
+	s=default; t=1593703748;
+	bh=EDfI4Bw4mL9inyACQzacQAbiz0Gvwt21n2ZkQPWTdH8=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B834Ib4c+v/9qBm1Lqd+xIVjL4h657t0TMbsCxvRUXr7NByyE38urswesa2DGXo3k
-	 lfpFWqWgveRQpqaxCya+4TqvnO06P6fSS8JGh26TUMzOZY5T+pWjFUPZnfUlgMGPuU
-	 qy6TSXj9sgpy/ny9ZRhN2uOITBu/xgx6stKB1BfI=
+	b=StitAbjLvFZSZINaNjlnMYfee+AtNZ0ZmN2VlcKl/nOMRT8ph9em+nlznA1dY8iky
+	 QzCGTrusmdFRcEJ46IkRLrTZkwBQfrj+WaMMU5RhYzd4fwkkncdhwBiIaJDhOzeRjo
+	 ozJcAwajJsiFnEKHtL6tN9BjRYhekqHG6YXIXo2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40163F8022B;
-	Thu,  2 Jul 2020 17:07:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5AA4F8022B;
+	Thu,  2 Jul 2020 17:28:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36683F8022D; Thu,  2 Jul 2020 17:07:21 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 5ABD8F8022D; Thu,  2 Jul 2020 17:28:14 +0200 (CEST)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C93A5F800C1
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 17:07:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C93A5F800C1
-IronPort-SDR: EkkIaWou8Fpf6WzReWs2AphR+fKHMyU7P3GCA7+qB937al0aNXIZiqZjW69pRQmF4wwqK5/WOU
- qdD+Xns/C2Sg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148468347"
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="148468347"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jul 2020 08:07:15 -0700
-IronPort-SDR: ZR0UMN3WcFHnx0VAwF4wDFeA4aKpHzgbfRNoCOzKpWi6k63NWHrkLP+vYvWr5YYKjerUeXLTrk
- AxkbSClCAPpQ==
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="304276958"
-Received: from nchava-mobl1.amr.corp.intel.com (HELO [10.252.135.144])
- ([10.252.135.144])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jul 2020 08:07:14 -0700
-Subject: Re: [PATCH 7/7] ASoC: codecs: wm8400: add _maybe_unused as needed
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-References: <20200701181320.80848-1-pierre-louis.bossart@linux.intel.com>
- <20200701181320.80848-8-pierre-louis.bossart@linux.intel.com>
- <20200702092318.GL71940@ediswmail.ad.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3c2c9d10-0d7d-2447-01a6-3cf04836c34c@linux.intel.com>
-Date: Thu, 2 Jul 2020 10:07:13 -0500
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80543F80134
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 17:28:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80543F80134
+Received: from [IPv6:2a01:e35:2fb5:1510:315a:ecf0:6250:a3ed] (unknown
+ [IPv6:2a01:e35:2fb5:1510:315a:ecf0:6250:a3ed])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: aferraris)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DF3732A5F5D;
+ Thu,  2 Jul 2020 16:28:05 +0100 (BST)
+Subject: Re: [PATCH 1/2] dt-bindings: sound: fsl-asoc-card: add new compatible
+ for I2S slave
+To: Mark Brown <broonie@kernel.org>
+References: <20200702141114.232688-1-arnaud.ferraris@collabora.com>
+ <20200702141114.232688-2-arnaud.ferraris@collabora.com>
+ <20200702143145.GG4483@sirena.org.uk>
+From: Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Autocrypt: addr=arnaud.ferraris@collabora.com; keydata=
+ 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
+ xZQG6fKWuIur3RI=
+Message-ID: <5de5ea5b-0716-8ed1-28b0-9ad3da7a2d47@collabora.com>
+Date: Thu, 2 Jul 2020 17:28:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200702092318.GL71940@ediswmail.ad.cirrus.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200702143145.GG4483@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ kernel@collabora.com, Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,21 +132,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark,
 
-
-On 7/2/20 4:23 AM, Charles Keepax wrote:
-> On Wed, Jul 01, 2020 at 01:13:20PM -0500, Pierre-Louis Bossart wrote:
->> Fix W=1 warning by adding __maybe_unused. Maintainers for this file
->> may want to double-check if those definitions are necessary.
+Le 02/07/2020 à 16:31, Mark Brown a écrit :
+> On Thu, Jul 02, 2020 at 04:11:14PM +0200, Arnaud Ferraris wrote:
+>> fsl-asoc-card currently doesn't support generic codecs with the SoC
+>> acting as I2S slave.
 >>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
+>> This commit adds a new `fsl,imx-audio-i2s-slave` for this use-case, as
+>> well as the following mandatory properties:
 > 
-> Yeah I think in this case better to remove them, they arn't used
-> in the driver, the driver is pretty old and no one really works
-> on it so little chance the features are ever getting added.
+> Why require that the CODEC be clock master here - why not make this
+> configurable, reusing the properties from the generic and audio graph
+> cards?
 
-Thanks Charles, I can resend a v2 series with your Acked-by and remove 
-these definitions.
+This is partly because I'm not sure how to do it (yet), but mostly
+because I don't have the hardware to test this (the 2 CODECs present on
+my only i.MX6 board are both clock master)
 
-Out of curiosity, who can check the patch 1 and 2 (cs4270 / cs42l42)?
+Regards,
+Arnaud
