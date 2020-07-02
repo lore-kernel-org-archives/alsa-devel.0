@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55522C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F02AC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:45:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3DD4206E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:45:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE4F82088E
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:45:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QpFTcwij"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3DD4206E2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ufMurkSC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE4F82088E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59E6316E6;
-	Thu,  2 Jul 2020 21:44:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59E6316E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5309416F2;
+	Thu,  2 Jul 2020 21:44:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5309416F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593719101;
-	bh=RHEYSEyoxOjORCdUmHL2/R4q8JTqBbc3ygATOIgDQmA=;
+	s=default; t=1593719148;
+	bh=6inimV1WLpdT8bbdGtVM8ItUKhvLB0AdubJb1/Pd+AU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QpFTcwijWhbUHsmQ5u0326c+97CTKell5h6s5wSxEOz71LTzCPcgwKN5Ko6oNijvv
-	 Jpp2QyPtyPgu706FmCTJcIBw07JPzneANltvSgCEkpZHU8zg5RLQaz0r7OeLEV0cjt
-	 aVeHLwm7GevQbk3hXawOlSTjwuTA5gVEsXfmK7dk=
+	b=ufMurkSCwuJFRe6eYu2TTzIp79AFzmAb/GLYvJeDFEQmkQyi2gv1zArUvzY3JB1rC
+	 V2KLZeyz0LBiLpHmyr925L4KP6x0H1DMNWUWHuc2FkmQ+3RvRGqT2bCT8iWAdd618S
+	 A5eJ223BeUUEVbCu/xwcrynJ+OZYAuc2+9Cbj3Ms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62766F80333;
-	Thu,  2 Jul 2020 21:37:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC3A3F80341;
+	Thu,  2 Jul 2020 21:37:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8376DF80305; Thu,  2 Jul 2020 21:36:54 +0200 (CEST)
+ id BA3A3F800C1; Thu,  2 Jul 2020 21:36:55 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0100F802DD
+ by alsa1.perex.cz (Postfix) with ESMTPS id F251CF802DF
  for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 21:36:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0100F802DD
-IronPort-SDR: Wzk7sn0FPct43fE+RW6A56H6sASZoyu6/yeJPBCS5BEyPrNionNZd+8i/D/JVRreyqBgRf9h2s
- 5WIDwU2HQkwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148549354"
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="148549354"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F251CF802DF
+IronPort-SDR: tlmWpGUCDJcKNJC2FGRQIPB9hGeP2aZ25/bE6cfUd5+Pb2yJ4pzoOJUNtoHUOIMi7+4mD7jPeu
+ 0UeDbCM/mgig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148549356"
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="148549356"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  02 Jul 2020 12:36:26 -0700
-IronPort-SDR: RBYM2fb4Fr3qlDqRJ3tlfXEJZ91E8XvvIkTL1/mR1cNBNTJIeP3Ynvbv6PN3Z5wEzHY+YDEEzu
- pP5gdvAk6aeA==
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="482116384"
+IronPort-SDR: jmdDyOYoJHiTiyjck32cngoo3LnhpWep6AWQL1CfnfJuvUaPsLw4vG1ZPjgtOy47c0rrGxWanr
+ pldmHNwjmh7Q==
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="482116385"
 Received: from dhprice-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.75.219])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jul 2020 12:36:25 -0700
+ 02 Jul 2020 12:36:26 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 13/23] ALSA: pci/emu10k1: remove 'set but not used' warning
-Date: Thu,  2 Jul 2020 14:35:54 -0500
-Message-Id: <20200702193604.169059-14-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 14/23] ALSA: pci/korg1212: remove 'set but not used'
+ warnings
+Date: Thu,  2 Jul 2020 14:35:55 -0500
+Message-Id: <20200702193604.169059-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702193604.169059-1-pierre-louis.bossart@linux.intel.com>
 References: <20200702193604.169059-1-pierre-louis.bossart@linux.intel.com>
@@ -88,35 +89,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix W=1 warning. The loopsize variable is only used in compiled-out
-code, so mark with __maybe_unused.
+Fix W=1 warnings. Two variables are only used for debug logs, mark
+with __maybe_unused:
 
-sound/pci/emu10k1/emu10k1_patch.c: In function
-‘snd_emu10k1_sample_new’:
-sound/pci/emu10k1/emu10k1_patch.c:30:22: warning: variable ‘loopsize’
+sound/pci/korg1212/korg1212.c: In function ‘snd_korg1212_create’:
+sound/pci/korg1212/korg1212.c:2152:36: warning: variable ‘iomem2_size’
 set but not used [-Wunused-but-set-variable]
-   30 |  int truesize, size, loopsize, blocksize;
-      |                      ^~~~~~~~
+ 2152 |  unsigned ioport_size, iomem_size, iomem2_size;
+      |                                    ^~~~~~~~~~~
+sound/pci/korg1212/korg1212.c:2152:11: warning: variable ‘ioport_size’
+set but not used [-Wunused-but-set-variable]
+ 2152 |  unsigned ioport_size, iomem_size, iomem2_size;
+      |           ^~~~~~~~~~~
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/emu10k1/emu10k1_patch.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/korg1212/korg1212.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1_patch.c
-index b3aa7bbe1067..89890f24509f 100644
---- a/sound/pci/emu10k1/emu10k1_patch.c
-+++ b/sound/pci/emu10k1/emu10k1_patch.c
-@@ -27,7 +27,8 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
- 		       const void __user *data, long count)
+diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
+index 65a887b217ee..2eddd9de9e6d 100644
+--- a/sound/pci/korg1212/korg1212.c
++++ b/sound/pci/korg1212/korg1212.c
+@@ -2149,7 +2149,9 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
  {
- 	int offset;
--	int truesize, size, loopsize, blocksize;
-+	int truesize, size, blocksize;
-+	__maybe_unused int loopsize;
- 	int loopend, sampleend;
- 	unsigned int start_addr;
- 	struct snd_emu10k1 *emu;
+         int err, rc;
+         unsigned int i;
+-	unsigned ioport_size, iomem_size, iomem2_size;
++	unsigned iomem_size;
++	__maybe_unused unsigned ioport_size;
++	__maybe_unused unsigned iomem2_size;
+         struct snd_korg1212 * korg1212;
+ 	const struct firmware *dsp_code;
+ 
 -- 
 2.25.1
 
