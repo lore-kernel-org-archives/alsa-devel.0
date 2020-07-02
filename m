@@ -2,100 +2,80 @@ Return-Path: <SRS0=znNF=AN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EC13C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 18:57:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F129C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:04:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98B68208FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 18:57:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C3DF20702
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:04:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mNdS9tI/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3G4MtAN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98B68208FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K72nmRWo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C3DF20702
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0522416AB;
-	Thu,  2 Jul 2020 20:56:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0522416AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB2F516BF;
+	Thu,  2 Jul 2020 21:03:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB2F516BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593716223;
-	bh=HcGKm8Y5ba6plaar7Tpen6IUaTQxUP42sL9mpMfbwXg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1593716669;
+	bh=8hdEW7EwqIN/1VG2iLcQDuqIN5qDb+WvsjNtxbPCL7Y=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mNdS9tI/ntu2+mRvk5OFawk8cWvFGqoj734ipoXm6IZ0MOFBbIK2Vi5kUnzN2l7yw
-	 NFWdnnV+eo+3Y2WuruN6dWbaufow6MjrYx8cZPiEoXc7+Yu8TD4Y9+tLoMdRHiP0Sx
-	 +tewle71yVL9U36/2OiR0dwN+Jos7cSmDv4oEKEM=
+	b=K72nmRWoB07cEifNzTvYvN6jxiOZloxLkugjDrS84ORl7ux5T7WfTdqGWTb5kT05L
+	 BcDb6JsAqmzEt7DCMJqGz6rcPxAmUwtTXqPZ6/kWu8tj5zhjvGr1Ver4ppGhEcEbAA
+	 7aRmVXfXSBkpkE5dmTqXlSd/OWKoMURI+93PxnYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B118F80134;
-	Thu,  2 Jul 2020 20:56:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65E33F80134;
+	Thu,  2 Jul 2020 21:03:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F107DF8022D; Thu,  2 Jul 2020 20:56:10 +0200 (CEST)
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
- [IPv6:2607:f8b0:4864:20::644])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7C590F8022D; Thu,  2 Jul 2020 21:03:37 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A504CF80134
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 20:56:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A504CF80134
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="A3G4MtAN"
-Received: by mail-pl1-x644.google.com with SMTP id g17so11650779plq.12
- for <alsa-devel@alsa-project.org>; Thu, 02 Jul 2020 11:56:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=qBFSIEqb3Ng7/lC0JUelHpDcsFXn4/YiY3KJn+e0D5Y=;
- b=A3G4MtANzT6glf9L54RU8hc1oacj7n2KB3QD7g0+kHEo/8S28CgBxelB4vKRcvhnc3
- RSnK4atX1dx5Qih53uU7m0JQvP9hx1zMxNvFzp7+kEavqGXpPcfBUUXibPw5AEBVkSUW
- CpQ82qvhwyIsH9H84QtLcbpcR5C0Xe9EKZhqpVrvMckIzbA8EvZNHDCRzqpqWXVmOo6u
- 2b25n3RkYBpMCZnTiTlNwEQDAhnVecoxMzHzgobV4ZxLWKRAqqPFu5bcBygECag2dI2x
- IT9Nf76Z1P0cPoKdTmSIC3Y+fSJeUwVLG1Z0Jj2dgYvKb9bZ3p8Wq1jYn9xzLe1y6b1T
- D9hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=qBFSIEqb3Ng7/lC0JUelHpDcsFXn4/YiY3KJn+e0D5Y=;
- b=i3obvZqYO0L9BzhfRjwYmz9+isQow1PxNgDnwKHy8xD3JtyoJdWfNmpG2w7P6F1Jvk
- 2fSY18SkDo3C85MErowK9eGykYPbBE89uy9WCLlSvGrGX82W9Xi0sCfETizZZGRxj2J3
- hTO4CFbFcTFznK6FJ+2lRDBlX8pgqz0jNkgCZa25Gbv4GmLcCDgMKjUjZTTBqXf+U2Fb
- ixaWAepkr0OxKx6mqX1Whczy4E45BmmTL07JF4VH2Vzu5leMYLTWQ3Lqr1crYYfDJ2Y/
- qaLpCx6575vgBs8Zu3HFubnsT1vQaJ6VFqrGjlXfYAJctnvx4O2/DcXAdOynkqbay27N
- 8mYw==
-X-Gm-Message-State: AOAM533PSa9npkgDWeTPpV8Fe+nkrBxY5tQsUM1JVW2n+D3FhK42BB89
- kaJgW1qdWMuNZZsg4Eoikh8=
-X-Google-Smtp-Source: ABdhPJzmLnrOT4bL83BOEWHbMjWQcuvAWjX4ZOEdS5WteN03EusTe1EhtKuJZhn9XxejD3G2LQnkxw==
-X-Received: by 2002:a17:90a:2465:: with SMTP id
- h92mr3998120pje.26.1593716161116; 
- Thu, 02 Jul 2020 11:56:01 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id m92sm8863055pje.13.2020.07.02.11.56.00
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Thu, 02 Jul 2020 11:56:00 -0700 (PDT)
-Date: Thu, 2 Jul 2020 11:55:56 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 6/6] ASoC: fsl: fsl_esai: fix kernel-doc
-Message-ID: <20200702185556.GG23935@Asurada-Nvidia>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A1C5F80134
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 21:03:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A1C5F80134
+IronPort-SDR: CIsuDbZe40thPOVbcOldV+4yqv5ogy2bPd/T5w20YVbCXepD6fc6v7SelqmR9cCRagoHgEgNG/
+ ElYQrDZNP87A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="146088766"
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="146088766"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jul 2020 12:03:23 -0700
+IronPort-SDR: ITwhDjjC2EW5TkDGnDY5YhDJPnao/dKwEHsS0zhlA07dwxJxe7RUuCj3idyidbNsnHlTLiFRvr
+ Qic3MYf842Mg==
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="295989015"
+Received: from dhprice-mobl1.amr.corp.intel.com (HELO [10.254.75.219])
+ ([10.254.75.219])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jul 2020 12:03:22 -0700
+Subject: Re: [PATCH 3/6] ASoC: fsl: fsl-asoc-card: fix kernel-doc
+To: Nicolin Chen <nicoleotsuka@gmail.com>
 References: <20200702172227.164474-1-pierre-louis.bossart@linux.intel.com>
- <20200702172227.164474-7-pierre-louis.bossart@linux.intel.com>
+ <20200702172227.164474-4-pierre-louis.bossart@linux.intel.com>
+ <20200702184727.GD23935@Asurada-Nvidia>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <7c6fac59-562c-d3b5-8eea-3e0f450cee6b@linux.intel.com>
+Date: Thu, 2 Jul 2020 14:03:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702172227.164474-7-pierre-louis.bossart@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200702184727.GD23935@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
  Xiubo Li <Xiubo.Lee@gmail.com>, tiwai@suse.de,
  "open list:FREESCALE SOC SOUND DRIVERS" <linuxppc-dev@lists.ozlabs.org>,
@@ -117,22 +97,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jul 02, 2020 at 12:22:27PM -0500, Pierre-Louis Bossart wrote:
-> Fix W=1 warnings. Fix kernel-doc syntax and add missing parameters.
+
+
+On 7/2/20 1:47 PM, Nicolin Chen wrote:
+> On Thu, Jul 02, 2020 at 12:22:24PM -0500, Pierre-Louis Bossart wrote:
+>> Fix W=1 warnings. Kernel-doc syntax was not properly used.
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   sound/soc/fsl/fsl-asoc-card.c | 21 +++++++++------------
+>>   1 file changed, 9 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
 > 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>   /**
+>> - * Freescale Generic ASOC card private data
+>> + * struct fsl_asoc_card_priv - struct Freescale Generic ASOC card private data
+> 
+> Just a nit, can you drop the "struct" before "Freescale"?
+> Other parts of your changes don't really add this word.
 
-> + * fsl_esai_set_dai_sysclk - This function mainly configures the clock frequency of MCLK (HCKT/HCKR)
+will do, thanks for spotting this.
 
-Can drop "This function mainly"
-
->  /**
-> - * This function configures the related dividers according to the bclk rate
-> + * fsl_esai_set_bclk - This function configures the related dividers according to the bclk rate
-
-Here too -- dropping "This function"
-
-Otherwise,
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
-Thanks!
+> Otherwise,
+> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> 
