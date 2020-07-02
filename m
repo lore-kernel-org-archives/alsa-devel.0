@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1831C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22CA1C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:26:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43F3420772
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:26:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C87220780
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 19:26:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="npHo9kus"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43F3420772
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LmVS6gEf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C87220780
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D480816E2;
-	Thu,  2 Jul 2020 21:25:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D480816E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2AB8616CE;
+	Thu,  2 Jul 2020 21:26:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AB8616CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593717976;
-	bh=8dcyltR5g5glwPpbFnbbix9TuEPmw7M/QtoN9jJL+Qo=;
+	s=default; t=1593718016;
+	bh=gp0XisQgJL7A5W89dwuxfBKA+HAbmTtginrWEET+8i4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=npHo9kusLi4J5xM3ICBLmps7x5jtQf4ETlGSXGOHNK0sFjMn3wGgvpZfWpAZhzbP1
-	 MNZxG6YRfRIVbQfvpjKcmLSwiZh1AK2vFgGhrsF9tO0x4WTavD10AUnoT2dLIxbiRI
-	 F31JgHn/YMuhzl0M027fpvZ2koBEZT0xgby2sadE=
+	b=LmVS6gEfQPlfLXr7NlDWY9bz/ua0dudI/1LWJP/tYxiPzKEQIgL2b6YNWdGkfkPk2
+	 4ky9IR8NPJFtxcRwJHn5BwVKel0WSbmT+SdB0AeX2mVYysEnrvqQ3T5h+jh8bEE1cc
+	 sf0MF48FhCXcB4wU8Qs2j7ntVa59V0vxZP9ARXQ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1702F802E9;
-	Thu,  2 Jul 2020 21:22:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71379F802F7;
+	Thu,  2 Jul 2020 21:22:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA2B7F802E0; Thu,  2 Jul 2020 21:22:12 +0200 (CEST)
+ id 2DF7EF802E2; Thu,  2 Jul 2020 21:22:13 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 205C2F8027B
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 21:22:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 205C2F8027B
-IronPort-SDR: i+2XfCFDuuP5k29uWaHVb1s3xDMAHJ2CejnpbKveX9Pk6UfDdJ4E5tqac7xrh6iWaKIrf/M9UL
- p/IvjcuOyrdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="165059458"
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="165059458"
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9ECFF80247
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 21:22:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9ECFF80247
+IronPort-SDR: R3+lYNuezXWWLPjFHgIdpssU20K7iGp3jkEv2KYJKlLvZpFdTwvBOWPt13WlwrNRfhrlttWclH
+ hoMGtpHa8u8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="165059437"
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="165059437"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jul 2020 12:22:02 -0700
-IronPort-SDR: VC72ixVpyhh/fzeRMmVEKwl5TjkPN9T8Gz6Ihijn5Ym4BmvGMVKt/JyIvDAMZIjI26KDBZluLx
- TXWvphkw/aQQ==
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="304345329"
+ 02 Jul 2020 12:21:56 -0700
+IronPort-SDR: 6OjvD23UP84IymI1Eg3XIOo4iHMZS45yBUSzHrmHf1EBCQ0bK3xxVoyJdVmINb5RhnWKNzD3hN
+ U18IDw47Xx7A==
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; d="scan'208";a="304345268"
 Received: from dhprice-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.75.219])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jul 2020 12:22:01 -0700
+ 02 Jul 2020 12:21:54 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 5/6] ASoC: fsl: fsl_asrc: fix kernel-doc
-Date: Thu,  2 Jul 2020 14:21:40 -0500
-Message-Id: <20200702192141.168018-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 2/6] ASoC: fsl: fsl_ssi: fix kernel-doc
+Date: Thu,  2 Jul 2020 14:21:37 -0500
+Message-Id: <20200702192141.168018-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702192141.168018-1-pierre-louis.bossart@linux.intel.com>
 References: <20200702192141.168018-1-pierre-louis.bossart@linux.intel.com>
@@ -94,178 +94,221 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix W=1 warnings. fix kernel doc and describe arguments.
+Fix W=1 warnings. The kernel-doc support is partial, add more
+descriptions and follow proper syntax
 
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/fsl/fsl_asrc.c | 57 +++++++++++++++++++++++++++-------------
- 1 file changed, 39 insertions(+), 18 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 70 ++++++++++++++++++++++++++---------------
+ 1 file changed, 44 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 462ce9f9ab48..02c81d2e34ad 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -37,7 +37,7 @@ static struct snd_pcm_hw_constraint_list fsl_asrc_rate_constraints = {
- 	.list = supported_asrc_rate,
- };
- 
--/**
-+/*
-  * The following tables map the relationship between asrc_inclk/asrc_outclk in
-  * fsl_asrc.h and the registers of ASRCSR
-  */
-@@ -68,7 +68,7 @@ static unsigned char output_clk_map_imx53[ASRC_CLK_MAP_LEN] = {
- 	0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
- };
- 
--/**
-+/*
-  * i.MX8QM/i.MX8QXP uses the same map for input and output.
-  * clk_map_imx8qm[0] is for i.MX8QM asrc0
-  * clk_map_imx8qm[1] is for i.MX8QM asrc1
-@@ -102,16 +102,17 @@ static unsigned char clk_map_imx8qxp[2][ASRC_CLK_MAP_LEN] = {
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 1a2fa7f18142..7ec80b240563 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -203,12 +203,10 @@ struct fsl_ssi_soc_data {
  };
  
  /**
-- * Select the pre-processing and post-processing options
-+ * fsl_asrc_sel_proc - Select the pre-processing and post-processing options
-+ * @inrate: input sample rate
-+ * @outrate: output sample rate
-+ * @pre_proc: return value for pre-processing option
-+ * @post_proc: return value for post-processing option
-+ *
-  * Make sure to exclude following unsupported cases before
-  * calling this function:
-  * 1) inrate > 8.125 * outrate
-  * 2) inrate > 16.125 * outrate
-  *
-- * inrate: input sample rate
-- * outrate: output sample rate
-- * pre_proc: return value for pre-processing option
-- * post_proc: return value for post-processing option
+- * fsl_ssi: per-SSI private data
+- *
++ * struct fsl_ssi - per-SSI private data
+  * @regs: Pointer to the regmap registers
+  * @irq: IRQ of this SSI
+  * @cpu_dai_drv: CPU DAI driver for this device
+- *
+  * @dai_fmt: DAI configuration this device is currently used with
+  * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
+  * @i2s_net: I2S and Network mode configurations of SCR register
+@@ -221,38 +219,29 @@ struct fsl_ssi_soc_data {
+  * @slot_width: Width of each DAI slot
+  * @slots: Number of slots
+  * @regvals: Specific RX/TX register settings
+- *
+  * @clk: Clock source to access register
+  * @baudclk: Clock source to generate bit and frame-sync clocks
+  * @baudclk_streams: Active streams that are using baudclk
+- *
+  * @regcache_sfcsr: Cache sfcsr register value during suspend and resume
+  * @regcache_sacnt: Cache sacnt register value during suspend and resume
+- *
+  * @dma_params_tx: DMA transmit parameters
+  * @dma_params_rx: DMA receive parameters
+  * @ssi_phys: physical address of the SSI registers
+- *
+  * @fiq_params: FIQ stream filtering parameters
+- *
+  * @card_pdev: Platform_device pointer to register a sound card for PowerPC or
+  *             to register a CODEC platform device for AC97
+  * @card_name: Platform_device name to register a sound card for PowerPC or
+  *             to register a CODEC platform device for AC97
+  * @card_idx: The index of SSI to register a sound card for PowerPC or
+  *            to register a CODEC platform device for AC97
+- *
+  * @dbg_stats: Debugging statistics
+- *
+  * @soc: SoC specific data
+  * @dev: Pointer to &pdev->dev
+- *
+  * @fifo_watermark: The FIFO watermark setting. Notifies DMA when there are
+  *                  @fifo_watermark or fewer words in TX fifo or
+  *                  @fifo_watermark or more empty words in RX fifo.
+  * @dma_maxburst: Max number of words to transfer in one go. So far,
+  *                this is always the same as fifo_watermark.
+- *
+  * @ac97_reg_lock: Mutex lock to serialize AC97 register access operations
   */
- static void fsl_asrc_sel_proc(int inrate, int outrate,
- 			     int *pre_proc, int *post_proc)
-@@ -148,7 +149,9 @@ static void fsl_asrc_sel_proc(int inrate, int outrate,
+ struct fsl_ssi {
+@@ -374,7 +363,9 @@ static bool fsl_ssi_is_i2s_cbm_cfs(struct fsl_ssi *ssi)
  }
  
  /**
-- * Request ASRC pair
-+ * fsl_asrc_request_pair - Request ASRC pair
-+ * @channels: number of channels
-+ * @pair: pointer to pair
-  *
-  * It assigns pair by the order of A->C->B because allocation of pair B,
-  * within range [ANCA, ANCA+ANCB-1], depends on the channels of pair A
-@@ -193,7 +196,8 @@ static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
- }
- 
- /**
-- * Release ASRC pair
-+ * fsl_asrc_release_pair - Release ASRC pair
-+ * @pair: pair to release
-  *
-  * It clears the resource from asrc and releases the occupied channels.
-  */
-@@ -217,7 +221,10 @@ static void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
- }
- 
- /**
-- * Configure input and output thresholds
-+ * fsl_asrc_set_watermarks- configure input and output thresholds
-+ * @pair: pointer to pair
-+ * @in: input threshold
-+ * @out: output threshold
-  */
- static void fsl_asrc_set_watermarks(struct fsl_asrc_pair *pair, u32 in, u32 out)
- {
-@@ -234,7 +241,9 @@ static void fsl_asrc_set_watermarks(struct fsl_asrc_pair *pair, u32 in, u32 out)
- }
- 
- /**
-- * Calculate the total divisor between asrck clock rate and sample rate
-+ * fsl_asrc_cal_asrck_divisor - Calculate the total divisor between asrck clock rate and sample rate
-+ * @pair: pointer to pair
-+ * @div: divider
-  *
-  * It follows the formula clk_rate = samplerate * (2 ^ prescaler) * divider
-  */
-@@ -250,7 +259,10 @@ static u32 fsl_asrc_cal_asrck_divisor(struct fsl_asrc_pair *pair, u32 div)
- }
- 
- /**
-- * Calculate and set the ratio for Ideal Ratio mode only
-+ * fsl_asrc_set_ideal_ratio - Calculate and set the ratio for Ideal Ratio mode only
-+ * @pair: pointer to pair
-+ * @inrate: input rate
-+ * @outrate: output rate
-  *
-  * The ratio is a 32-bit fixed point value with 26 fractional bits.
-  */
-@@ -293,7 +305,9 @@ static int fsl_asrc_set_ideal_ratio(struct fsl_asrc_pair *pair,
- }
- 
- /**
-- * Configure the assigned ASRC pair
-+ * fsl_asrc_config_pair - Configure the assigned ASRC pair
-+ * @pair: pointer to pair
-+ * @use_ideal_rate: boolean configuration
-  *
-  * It configures those ASRC registers according to a configuration instance
-  * of struct asrc_config which includes in/output sample rate, width, channel
-@@ -508,7 +522,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
- }
- 
- /**
-- * Start the assigned ASRC pair
-+ * fsl_asrc_start_pair - Start the assigned ASRC pair
-+ * @pair: pointer to pair
-  *
-  * It enables the assigned pair and makes it stopped at the stall level.
-  */
-@@ -539,7 +554,8 @@ static void fsl_asrc_start_pair(struct fsl_asrc_pair *pair)
- }
- 
- /**
-- * Stop the assigned ASRC pair
-+ * fsl_asrc_stop_pair - Stop the assigned ASRC pair
-+ * @pair: pointer to pair
-  */
- static void fsl_asrc_stop_pair(struct fsl_asrc_pair *pair)
- {
-@@ -552,7 +568,9 @@ static void fsl_asrc_stop_pair(struct fsl_asrc_pair *pair)
- }
- 
- /**
-- * Get DMA channel according to the pair and direction.
-+ * fsl_asrc_get_dma_channel- Get DMA channel according to the pair and direction.
-+ * @pair: pointer to pair
-+ * @dir: DMA direction
-  */
- static struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair,
- 						 bool dir)
-@@ -896,7 +914,8 @@ static const struct regmap_config fsl_asrc_regmap_config = {
- };
- 
- /**
-- * Initialize ASRC registers with a default configurations
-+ * fsl_asrc_init - Initialize ASRC registers with a default configuration
-+ * @asrc: ASRC context
-  */
- static int fsl_asrc_init(struct fsl_asrc *asrc)
- {
-@@ -930,7 +949,9 @@ static int fsl_asrc_init(struct fsl_asrc *asrc)
- }
- 
- /**
-- * Interrupt handler for ASRC
-+ * fsl_asrc_isr- Interrupt handler for ASRC
+- * Interrupt handler to gather states
++ * fsl_ssi_irq - Interrupt handler to gather states
 + * @irq: irq number
-+ * @dev_id: ASRC context
++ * @dev_id: context
   */
- static irqreturn_t fsl_asrc_isr(int irq, void *dev_id)
+ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
  {
+@@ -395,7 +386,10 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+ }
+ 
+ /**
+- * Set SCR, SIER, STCR and SRCR registers with cached values in regvals
++ * fsl_ssi_config_enable - Set SCR, SIER, STCR and SRCR registers with
++ * cached values in regvals
++ * @ssi: SSI context
++ * @tx: direction
+  *
+  * Notes:
+  * 1) For offline_config SoCs, enable all necessary bits of both streams
+@@ -474,7 +468,7 @@ static void fsl_ssi_config_enable(struct fsl_ssi *ssi, bool tx)
+ 	ssi->streams |= BIT(dir);
+ }
+ 
+-/**
++/*
+  * Exclude bits that are used by the opposite stream
+  *
+  * When both streams are active, disabling some bits for the current stream
+@@ -495,7 +489,10 @@ static void fsl_ssi_config_enable(struct fsl_ssi *ssi, bool tx)
+ 	((vals) & _ssi_xor_shared_bits(vals, avals, aactive))
+ 
+ /**
+- * Unset SCR, SIER, STCR and SRCR registers with cached values in regvals
++ * fsl_ssi_config_disable - Unset SCR, SIER, STCR and SRCR registers
++ * with cached values in regvals
++ * @ssi: SSI context
++ * @tx: direction
+  *
+  * Notes:
+  * 1) For offline_config SoCs, to avoid online reconfigurations, disable all
+@@ -577,7 +574,9 @@ static void fsl_ssi_tx_ac97_saccst_setup(struct fsl_ssi *ssi)
+ }
+ 
+ /**
+- * Cache critical bits of SIER, SRCR, STCR and SCR to later set them safely
++ * fsl_ssi_setup_regvals - Cache critical bits of SIER, SRCR, STCR and
++ * SCR to later set them safely
++ * @ssi: SSI context
+  */
+ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
+ {
+@@ -661,9 +660,12 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+ }
+ 
+ /**
+- * Configure Digital Audio Interface bit clock
++ * fsl_ssi_set_bclk - Configure Digital Audio Interface bit clock
++ * @substream: ASoC substream
++ * @dai: pointer to DAI
++ * @hw_params: pointers to hw_params
+  *
+- * Note: This function can be only called when using SSI as DAI master
++ * Notes: This function can be only called when using SSI as DAI master
+  *
+  * Quick instruction for parameters:
+  * freq: Output BCLK frequency = samplerate * slots * slot_width
+@@ -782,7 +784,10 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ }
+ 
+ /**
+- * Configure SSI based on PCM hardware parameters
++ * fsl_ssi_hw_params - Configure SSI based on PCM hardware parameters
++ * @substream: ASoC substream
++ * @hw_params: pointers to hw_params
++ * @dai: pointer to DAI
+  *
+  * Notes:
+  * 1) SxCCR.WL bits are critical bits that require SSI to be temporarily
+@@ -997,7 +1002,9 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
+ }
+ 
+ /**
+- * Configure Digital Audio Interface (DAI) Format
++ * fsl_ssi_set_dai_fmt - Configure Digital Audio Interface (DAI) Format
++ * @dai: pointer to DAI
++ * @fmt: format mask
+  */
+ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+@@ -1011,7 +1018,12 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ }
+ 
+ /**
+- * Set TDM slot number and slot width
++ * fsl_ssi_set_dai_tdm_slot - Set TDM slot number and slot width
++ * @dai: pointer to DAI
++ * @tx_mask: mask for TX
++ * @rx_mask: mask for RX
++ * @slots: number of slots
++ * @slot_width: number of bits per slot
+  */
+ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+ 				    u32 rx_mask, int slots, int slot_width)
+@@ -1055,7 +1067,10 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+ }
+ 
+ /**
+- * Start or stop SSI and corresponding DMA transaction.
++ * fsl_ssi_trigger - Start or stop SSI and corresponding DMA transaction.
++ * @substream: ASoC substream
++ * @cmd: trigger command
++ * @dai: pointer to DAI
+  *
+  * The DMA channel is in external master start and pause mode, which
+  * means the SSI completely controls the flow of data.
+@@ -1239,7 +1254,8 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
+ };
+ 
+ /**
+- * Initialize SSI registers
++ * fsl_ssi_hw_init - Initialize SSI registers
++ * @ssi: SSI context
+  */
+ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
+ {
+@@ -1268,7 +1284,8 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
+ }
+ 
+ /**
+- * Clear SSI registers
++ * fsl_ssi_hw_clean - Clear SSI registers
++ * @ssi: SSI context
+  */
+ static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
+ {
+@@ -1285,7 +1302,8 @@ static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
+ 		regmap_update_bits(ssi->regs, REG_SSI_SCR, SSI_SCR_SSIEN, 0);
+ 	}
+ }
+-/**
++
++/*
+  * Make every character in a string lower-case
+  */
+ static void make_lowercase(char *s)
 -- 
 2.25.1
 
