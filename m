@@ -2,72 +2,73 @@ Return-Path: <SRS0=znNF=AN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B00C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 01:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E9C6C433E1
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 01:26:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12F2E20874
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 01:25:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C4C520899
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 01:26:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pMVW6kBm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eXGtN+Y/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12F2E20874
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yme3dh0h";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R97W5t9J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C4C520899
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9273F1694;
-	Thu,  2 Jul 2020 03:25:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9273F1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id BABBB168F;
+	Thu,  2 Jul 2020 03:25:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BABBB168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593653156;
-	bh=K+8DiW78hpyxOFxK1fhgrYHAc5PufAYISdcBtUkSMz0=;
+	s=default; t=1593653205;
+	bh=ibgWaXaIp9fRZflJ+8sQ813HXN7UoFBwZ3Vfhhpu6q8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pMVW6kBmeJL6GcyJ5tPoWFvnDIObgZVUPXwSWFSJwYuZwlyP0d+oph3aSE1eUWVYY
-	 B69uARByyoxOlafJ0imkXPmigff2bR+L/f+zn47rbZMc/8R89WYenog0iadqjJZ7EM
-	 G5oZMdKgT1KpKsjRdBKcFOiLv3ocOIaqauEeqvj4=
+	b=Yme3dh0hTY6mz24ZiFkAJdJo7Njw5LR9X8MC5kmWOWa5m4obIf3T1P/ap5nMKDKKK
+	 SCdO3TboNyuuF4la1pXgMaVxtVv71YMypif7aCDz9c3g2e220PLvdgB/8/J44LhwA3
+	 H6/HyuO8+bshVFDLeSIvzzkQlF9plZ5ehcWV/Avg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52E18F8022D;
-	Thu,  2 Jul 2020 03:23:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE794F802DD;
+	Thu,  2 Jul 2020 03:23:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D09AF80134; Thu,  2 Jul 2020 03:23:28 +0200 (CEST)
+ id F38B2F8022B; Thu,  2 Jul 2020 03:23:28 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9983F80134;
- Thu,  2 Jul 2020 03:23:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9983F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 163DFF8022D
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 03:23:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 163DFF8022D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eXGtN+Y/"
+ header.b="R97W5t9J"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9C4CF2083E;
- Thu,  2 Jul 2020 01:23:12 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BE6552082F;
+ Thu,  2 Jul 2020 01:23:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1593652993;
- bh=K+8DiW78hpyxOFxK1fhgrYHAc5PufAYISdcBtUkSMz0=;
+ s=default; t=1593652997;
+ bh=ibgWaXaIp9fRZflJ+8sQ813HXN7UoFBwZ3Vfhhpu6q8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=eXGtN+Y/1XL9y2YWtxkFE1kgTvZizbzWIrmhtUhjVsFWz5sPcTAnagZUOly31VS8b
- 636G61Jbu0KVWqonYma6mdQGtno1n+wNOYjMYeDNyWnh9q3/MitLENFVRMjPIa7Rr5
- SiA73IsqC2dVbJIOcO3dywJJUYde/5sGJ7uRWQro=
+ b=R97W5t9JRtOVvtLDH+uK+agZ1P5QcHxU/E/VB3UqxH9xrlbj9ds76FrVIqefIXzMc
+ Qfr9V/cx/TZHHUYUxTtX8NGPpF8J8V5X/W3Rb4CgyEKpb3W2B3rLxBZnRVjLgwrPgf
+ YVM/dLZIt8uOjxeJHjG70BB5R5kFx5fbtXa+mrUw=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 15/53] ASoC: SOF: Intel: add PCI IDs for ICL-H and
- TGL-H
-Date: Wed,  1 Jul 2020 21:21:24 -0400
-Message-Id: <20200702012202.2700645-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 18/53] ALSA: hda: Intel: add missing PCI IDs for
+ ICL-H, TGL-H and EKL
+Date: Wed,  1 Jul 2020 21:21:27 -0400
+Message-Id: <20200702012202.2700645-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
 References: <20200702012202.2700645-1-sashal@kernel.org>
@@ -78,8 +79,8 @@ Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>,
  Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, sound-open-firmware@alsa-project.org
+ Takashi Iwai <tiwai@suse.de>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,51 +98,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit c8d2e2bfaeffa0f914330e8b4e45b986c8d30b58 ]
+[ Upstream commit d50313a5a0d803bcf55121a2b82086633060d05e ]
 
-Usually the DSP is not traditionally enabled on H skews but this might
-be used moving forward.
+Mirror PCI ids used for SOF.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200617164755.18104-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200617164909.18225-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/sof-pci-dev.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_intel.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 7b1846aeadd59..3a71f813fb563 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -411,8 +411,11 @@ static const struct pci_device_id sof_pci_ids[] = {
- 		.driver_data = (unsigned long)&cfl_desc},
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
--	{ PCI_DEVICE(0x8086, 0x34C8),
-+	{ PCI_DEVICE(0x8086, 0x34C8), /* ICL-LP */
- 		.driver_data = (unsigned long)&icl_desc},
-+	{ PCI_DEVICE(0x8086, 0x3dc8), /* ICL-H */
-+		.driver_data = (unsigned long)&icl_desc},
-+
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_JASPERLAKE)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 41a03c61a74b3..11ec5c56c80e9 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2470,6 +2470,9 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* Icelake */
+ 	{ PCI_DEVICE(0x8086, 0x34c8),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
++	/* Icelake-H */
++	{ PCI_DEVICE(0x8086, 0x3dc8),
++	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+ 	/* Jasperlake */
  	{ PCI_DEVICE(0x8086, 0x38c8),
-@@ -431,8 +434,11 @@ static const struct pci_device_id sof_pci_ids[] = {
- 		.driver_data = (unsigned long)&cml_desc},
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
--	{ PCI_DEVICE(0x8086, 0xa0c8),
-+	{ PCI_DEVICE(0x8086, 0xa0c8), /* TGL-LP */
- 		.driver_data = (unsigned long)&tgl_desc},
-+	{ PCI_DEVICE(0x8086, 0x43c8), /* TGL-H */
-+		.driver_data = (unsigned long)&tgl_desc},
-+
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+@@ -2478,9 +2481,14 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* Tigerlake */
+ 	{ PCI_DEVICE(0x8086, 0xa0c8),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
++	/* Tigerlake-H */
++	{ PCI_DEVICE(0x8086, 0x43c8),
++	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+ 	/* Elkhart Lake */
  	{ PCI_DEVICE(0x8086, 0x4b55),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
++	{ PCI_DEVICE(0x8086, 0x4b58),
++	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+ 	/* Broxton-P(Apollolake) */
+ 	{ PCI_DEVICE(0x8086, 0x5a98),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
 -- 
 2.25.1
 
