@@ -2,86 +2,75 @@ Return-Path: <SRS0=znNF=AN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0404C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 16:06:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9230BC433E2
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 16:37:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C1D92068F
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 16:06:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F3A6B2084C
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jul 2020 16:37:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NmBcxbxy";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lCqEjgTo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C1D92068F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W9NVakYs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3A6B2084C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7DA916CE;
-	Thu,  2 Jul 2020 18:05:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7DA916CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7629E16D0;
+	Thu,  2 Jul 2020 18:37:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7629E16D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593705994;
-	bh=+ViH9gg1N4vHnbvW09Osmv3jgSWPSKTM98itdeGHjxc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NmBcxbxyfoLlaz0X2z3uo75F9JX22IpBBV2ixsNzysJmr3c9goeDZgiGaSenE9CTe
-	 EW7C8i5xSS+l9PCw/+wnpo0wqG4C8JIN2Wp0JIE6qjElUZSOdGyaFTNzzjRfprJMGA
-	 CJ99+0JwoPnTn3I2LzBRP8QEDD3EQA/K5+l3GzBg=
+	s=default; t=1593707876;
+	bh=Q2RBQ3US4S+XtMQsdrT0JZHck6UPZcuMar8ecgUbGPw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=W9NVakYs2KLLs4mFeGJYQ3HEvl+jDBkDRIAyQN7UZG8idOy4jQP104BR5OJV32Gth
+	 LBjgsGFT/eJ1M8zXiwDYDfcwxgc+w4arKTjMMzei88x3/dHZQYyBiKcP6eAVOTp25O
+	 3jrvCwXPtMzLGUE4gavmf3SdBgjIKTiShXNxmAP0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E822F8022B;
-	Thu,  2 Jul 2020 18:05:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAC0FF8022B;
+	Thu,  2 Jul 2020 18:37:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFA16F800C1; Thu,  2 Jul 2020 18:05:42 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92E4AF800C1;
- Thu,  2 Jul 2020 18:05:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92E4AF800C1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lCqEjgTo"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 091F7F8022D; Thu,  2 Jul 2020 18:37:04 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8C36520720;
- Thu,  2 Jul 2020 16:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1593705931;
- bh=+ViH9gg1N4vHnbvW09Osmv3jgSWPSKTM98itdeGHjxc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lCqEjgToa9YAhlJo1P8SbSYSZUeSeu/pHkTTDYA3v5owSvPxgpYFbtqNG5GGDIXC3
- dsm6bXEs1n031wwtKAjWbzf1IL2MTt1e3w9Hapd1UpsRoSYJV1JwbmdHFJ2SR4sHdP
- LF5TlWhXdyM5G8azXBd4kwt9NPAhYivwFXJZIxo0=
-Date: Thu, 2 Jul 2020 17:05:28 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH AUTOSEL 5.7 15/53] ASoC: SOF: Intel: add PCI IDs for
- ICL-H and TGL-H
-Message-ID: <20200702160528.GL4483@sirena.org.uk>
-References: <20200702012202.2700645-1-sashal@kernel.org>
- <20200702012202.2700645-15-sashal@kernel.org>
- <20200702111835.GB4483@sirena.org.uk>
- <0baf17f3-1af8-a4a1-644c-ab27490f9b44@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EE01F800ED
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2020 18:36:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EE01F800ED
+IronPort-SDR: QmZjcp4Ot3PoBy4MzVrqb5ou0g93uWrqc0nH2x3heOCOFWuTsaPqk7GeI944j2jbSuR2k42TxT
+ dIkytdqGTUbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134419784"
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="134419784"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jul 2020 09:36:52 -0700
+IronPort-SDR: 7SG9avuyXbU1aokEqyQnDY6qPOHZ0Jgkuggn2X2wVU/mhoPKVQx4YuUSL36KrQtY81NlKUA9CM
+ 8Aq/eklqnvAg==
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; d="scan'208";a="482064516"
+Received: from nzbastur-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.255.231.182])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jul 2020 09:36:51 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: codecs: wm8400: remove unused variables
+Date: Thu,  2 Jul 2020 11:36:33 -0500
+Message-Id: <20200702163633.162508-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="CgTrtGVSVGoxAIFj"
-Content-Disposition: inline
-In-Reply-To: <0baf17f3-1af8-a4a1-644c-ab27490f9b44@linux.intel.com>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Sasha Levin <sashal@kernel.org>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,53 +86,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Fix W=1 warning by removing unused variables
 
---CgTrtGVSVGoxAIFj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Suggested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/wm8400.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-On Thu, Jul 02, 2020 at 10:42:21AM -0500, Pierre-Louis Bossart wrote:
-> On 7/2/20 6:18 AM, Mark Brown wrote:
-> > On Wed, Jul 01, 2020 at 09:21:24PM -0400, Sasha Levin wrote:
-> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index 2551eb0f1868..35ffa7765c85 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -67,16 +67,12 @@ static void wm8400_component_reset(struct snd_soc_component *component)
+ 	wm8400_reset_codec_reg_cache(wm8400->wm8400);
+ }
+ 
+-static const DECLARE_TLV_DB_SCALE(rec_mix_tlv, -1500, 600, 0);
+-
+ static const DECLARE_TLV_DB_SCALE(in_pga_tlv, -1650, 3000, 0);
+ 
+ static const DECLARE_TLV_DB_SCALE(out_mix_tlv, -2100, 0, 0);
+ 
+ static const DECLARE_TLV_DB_SCALE(out_pga_tlv, -7300, 600, 0);
+ 
+-static const DECLARE_TLV_DB_SCALE(out_omix_tlv, -600, 0, 0);
+-
+ static const DECLARE_TLV_DB_SCALE(out_dac_tlv, -7163, 0, 0);
+ 
+ static const DECLARE_TLV_DB_SCALE(in_adc_tlv, -7163, 1763, 0);
+@@ -439,14 +435,6 @@ static SOC_ENUM_SINGLE_DECL(wm8400_ainrmux_enum,
+ static const struct snd_kcontrol_new wm8400_dapm_ainrmux_controls =
+ SOC_DAPM_ENUM("Route", wm8400_ainrmux_enum);
+ 
+-/* RXVOICE */
+-static const struct snd_kcontrol_new wm8400_dapm_rxvoice_controls[] = {
+-SOC_DAPM_SINGLE_TLV("LIN4/RXN", WM8400_INPUT_MIXER5, WM8400_LR4BVOL_SHIFT,
+-			WM8400_LR4BVOL_MASK, 0, in_mix_tlv),
+-SOC_DAPM_SINGLE_TLV("RIN4/RXP", WM8400_INPUT_MIXER6, WM8400_RL4BVOL_SHIFT,
+-			WM8400_RL4BVOL_MASK, 0, in_mix_tlv),
+-};
+-
+ /* LOMIX */
+ static const struct snd_kcontrol_new wm8400_dapm_lomix_controls[] = {
+ SOC_DAPM_SINGLE("LOMIX Right ADC Bypass Switch", WM8400_OUTPUT_MIXER1,
+-- 
+2.25.1
 
-> > > [ Upstream commit c8d2e2bfaeffa0f914330e8b4e45b986c8d30b58 ]
-
-> > > Usually the DSP is not traditionally enabled on H skews but this might
-> > > be used moving forward.
-
-> > "This might be used moving forward"?
-
-> There are two conditions for the SOF driver to be used in a distro:
-> a) the DSP needs to be enabled (as reported by the pci class info)
-> b) sound/hda/intel-dsp-config.c needs to contain a quirk to select SOF over
-> the legacy HDaudio, such as presence of DMIC/SoundWire or a known vendor
-> DMI.
-
-> Traditionally for desktops neither a) nor b) are true, but this is changing:
-> we will start adding quirks for specific product lines as requested by OEMs.
-
-> Does this answer to your question?
-
-The question was more of a why is this being backported one - without
-those extra quirks this does nothing, and frankly with them it seems
-like a *major* change someone might see in stable if they update their
-kernel and it suddenly switches to an entirely different DSP software
-stack.
-
---CgTrtGVSVGoxAIFj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7+BcgACgkQJNaLcl1U
-h9D9WQf/eYD0E9xMzfnYMjmvItrYNt7IX6kw7q7O/der/0OiCiMdvfKFLFr6bPBF
-61VoeZFlJkpui/EcoPgTsf5qlJLPMoCy1Ht7i/TacZppBWp2I07uEw+rtioDkDRe
-SAy+8LDiHk+Z6JQAXTXUmvdeUcI+tq9dfvQG8KY1wvAlh0+6dyLu4NOnlsTJHgFN
-xYM6xR1n/y33C8oU7AnQNMZEN1U1O7QH78iHqUmktoWM/71PbE/e+54ZjshjXteV
-nniGaCewi0NFozRzQaLS6e4SdPssH3Rh3npqa+cQOkLtTn+2U4zt1/mu9VGqmmLp
-ojykL5QiFLb6CxUSm33uvn2zV8V6gw==
-=iB43
------END PGP SIGNATURE-----
-
---CgTrtGVSVGoxAIFj--
