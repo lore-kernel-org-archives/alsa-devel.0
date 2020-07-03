@@ -4,69 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8B1DC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 03:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29107C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 03:31:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43CD520781
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 03:05:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7C9BA207E8
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 03:31:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Zd4DjoI7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43CD520781
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TsDFutz6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iaD8iCHT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C9BA207E8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEF8316A6;
-	Fri,  3 Jul 2020 05:05:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEF8316A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1092616B0;
+	Fri,  3 Jul 2020 05:30:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1092616B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593745551;
-	bh=jGZlEEh4dUNM3cX/GGZ8DLajU57/vj0n+tKQmCryuNM=;
+	s=default; t=1593747071;
+	bh=r87HZ2kp1j+Ttfjp8IFuaiDWNmMwgjjqXMVUNSZLr3o=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Zd4DjoI7ReJ+xe5FcurkNIMaZil0+K5oJS8+Eg3h6vtU4m13fJ53UlgNaY8eVzeCc
-	 5bT9ojmQ8nokS4M4nPhk0xv7IVOINXV92ax+kIxS4raUxsvVc7po7XtyUrfhorr6AY
-	 //lHexBOh6qBiu1+vKlU2JSqVImxpmdZcXk01g5c=
+	b=TsDFutz6hzSOHc2Hdl484MdLgxrwOzwWzLLr27DpaJN5a2A3jCbm0rYlK3gJEb04U
+	 MQ4Rxz4DEr6ovtc81BZ4lZ7BxZMtkFd78UYb8iqwXnWrKoYaXeWiO6kzGk8xOu9Npd
+	 FsXPNw05LoNa5lHPgYfJ+VN6suUweU72/Xstz5HY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC147F8020C;
-	Fri,  3 Jul 2020 05:05:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E218F8020C;
+	Fri,  3 Jul 2020 05:30:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3511AF80217; Fri,  3 Jul 2020 05:04:58 +0200 (CEST)
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 23B89F80217; Fri,  3 Jul 2020 05:30:19 +0200 (CEST)
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
+ [IPv6:2607:f8b0:4864:20::541])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8686CF800E0
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2020 05:04:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8686CF800E0
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 22DB6E5DE6A194980ED4;
- Fri,  3 Jul 2020 11:04:37 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Jul 2020 11:04:27 +0800
-From: Wei Yongjun <weiyongjun1@huawei.com>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH -next] ASoC: ti: j721e-evm: Fix missing unlock on error in
- j721e_audio_hw_params()
-Date: Fri, 3 Jul 2020 03:09:10 +0000
-Message-ID: <20200703030910.75047-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB604F800E2
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2020 05:30:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB604F800E2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="iaD8iCHT"
+Received: by mail-pg1-x541.google.com with SMTP id g67so13563456pgc.8
+ for <alsa-devel@alsa-project.org>; Thu, 02 Jul 2020 20:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=mhHWKWz4+7rswG/cVf5u/2XBys3C/A1wtkJS52atwvM=;
+ b=iaD8iCHT2tH5aaetOxDpmb+hp2NNKCSgqWir0PneWlfh4jPSqWmG3Fq/6hs0On7hGp
+ gI0BLO0U6dRmbAGhJjcsNID08E0c6sOnvn+Y0TDwzf4kOTQ8/QUp/wdQzgZVNfTKxMpZ
+ pED1PF+Nfrmmp0Zu8JYR/O0h5j4QoT8142OiY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=mhHWKWz4+7rswG/cVf5u/2XBys3C/A1wtkJS52atwvM=;
+ b=iE17BjoRtknB+pnijVNqHOqqSIk9UNvkuwAjavKcqMJ/PouWjlXQF4h5t8WmCeStBj
+ yIxxeeXFKxRWm6fSJ5X4IIgmwfRqSWgVi1rVP52LO0lYPnw97U9JJ8G8Q6cbjZcEGh3T
+ IANarhK4Rvi8Lixh6ZY76UvKikEjjSB4NmtTIjV9mOBDFL8trGgHW1CcORnVH8dN4KWO
+ f0MiaJZrblMqsHTJ21/02c31BaAmAB+bHdNsa+mlPR/8CyhmkuYbw3yqWZe4/o++qUtt
+ n1RrywObo5EdqagOYRRsSq4UMJ5oY5xgzD/KOCswCOvlPn/0zOpf7FmSvgzNPe+Vy+uc
+ NcQg==
+X-Gm-Message-State: AOAM533FfRVfulyqsGjLug6me7abt3QiVBLSOT8RMvSI5HN5XE6yd9T1
+ Ozv8JNoUMZyLQfhyDMslHSPUIQ==
+X-Google-Smtp-Source: ABdhPJwOdorMAP4NfsHg8xE4MqSzD2/7knFWxWKzUNwHu1GYKFX+989l2/Yd0xXOGX/+GHWBW8hGOA==
+X-Received: by 2002:a65:448c:: with SMTP id l12mr26586535pgq.234.1593747006589; 
+ Thu, 02 Jul 2020 20:30:06 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+ by smtp.gmail.com with ESMTPSA id 204sm10372466pfc.18.2020.07.02.20.30.03
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 02 Jul 2020 20:30:05 -0700 (PDT)
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: cros_ec_codec: Log results when EC commands fail
+Date: Fri,  3 Jul 2020 11:29:48 +0800
+Message-Id: <20200703032948.2185290-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
-Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
- Wei Yongjun <weiyongjun1@huawei.com>, linux-kernel@vger.kernel.org,
- Hulk Robot <hulkci@huawei.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Tzung-Bi Shih <tzungbi@google.com>,
+ Mark Brown <broonie@kernel.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Guenter Roeck <groeck@chromium.org>, Benson Leung <bleung@chromium.org>,
+ Yu-Hsuan Hsu <yuhsuan@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,29 +107,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add the missing unlock before return from function j721e_audio_hw_params()
-in the error handling case.
+Log results of failed EC commands to identify a problem more easily.
 
-Fixes: 6748d0559059 ("ASoC: ti: Add custom machine driver for j721e EVM (CPB and IVI)")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 ---
- sound/soc/ti/j721e-evm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cros_ec_codec.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-index 3a2a8b1f3aa3..174306cf53ad 100644
---- a/sound/soc/ti/j721e-evm.c
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -330,7 +330,7 @@ static int j721e_audio_hw_params(struct snd_pcm_substream *substream,
- 		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 2,
- 					       slot_width);
- 		if (ret && ret != -ENOTSUPP)
--			return ret;
-+			goto out;
- 	}
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index 8d45c628e988e..a4ab62f59efa6 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -90,10 +90,17 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
+ 	if (outsize)
+ 		memcpy(msg->data, out, outsize);
  
- 	ret = j721e_configure_refclk(priv, domain_id, params_rate(params));
-
-
+-	ret = cros_ec_cmd_xfer_status(ec_dev, msg);
++	ret = cros_ec_cmd_xfer(ec_dev, msg);
+ 	if (ret < 0)
+ 		goto error;
+ 
++	if (msg->result != EC_RES_SUCCESS) {
++		dev_err(ec_dev->dev, "Command %d failed: %d\n", cmd,
++			msg->result);
++		ret = -EPROTO;
++		goto error;
++	}
++
+ 	if (insize)
+ 		memcpy(in, msg->data, insize);
+ 
+-- 
+2.27.0.212.ge8ba1cc988-goog
 
