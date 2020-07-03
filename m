@@ -2,97 +2,118 @@ Return-Path: <SRS0=5/d5=AO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68575C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 10:11:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BD22C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 10:11:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E48A020720
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 10:11:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03E8420720
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 10:11:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rl+fYELi";
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WsLo1yrN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E48A020720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RNLFIB0X";
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GEONvX+G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03E8420720
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65FB416ED;
-	Fri,  3 Jul 2020 12:10:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65FB416ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77AF416E3;
+	Fri,  3 Jul 2020 12:10:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77AF416E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593771068;
-	bh=Yww9f60lF1iMb9e4eztlMrm6b9LLeEQ84/w77YGmRns=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1593771104;
+	bh=FQei4XLZBvpVs0N0ERkF0cS7PyjuOBdksim1di/lJBg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rl+fYELiPik7K8RQShDMf3+dENh4YBYXT6tXGhXhwUbj58yZ1M8Jj7ZjUvfA0W4uO
-	 DqXcYXQhvMe1GwadOP+1nRdkCYMG9i+Ozvm+uCtx3T1PIes0Tuogi/ItkKSX/ztWtf
-	 xsSu5aMdFETCWC55ONOiQCSdf8CI5OiXBdwsM1tM=
+	b=RNLFIB0XdSsuz7b0mriPGsSNuZLHkWOpWoeEmpPNAs4sNq5/Q192nnlayzFSBq4mk
+	 NZ6zkaPuT3BAyw7oesaT+/l6WH3/aV4mtDQAPbzSHvqWCnE2XXN4q+5bn7URjsfI2Y
+	 wocnKcR3j+Os272eaInzGtNSHmQvHVvBYIfbyRpU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ED65F8028F;
-	Fri,  3 Jul 2020 12:08:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11CFBF80217;
+	Fri,  3 Jul 2020 12:10:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12190F80269; Fri,  3 Jul 2020 12:08:39 +0200 (CEST)
+ id D1299F8021D; Fri,  3 Jul 2020 12:10:51 +0200 (CEST)
 Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
  [207.211.31.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 180B0F80229
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2020 12:08:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 180B0F80229
+ by alsa1.perex.cz (Postfix) with ESMTPS id C777FF8020C
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2020 12:10:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C777FF8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="WsLo1yrN"
+ header.b="GEONvX+G"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1593770914;
+ s=mimecast20190719; t=1593771044;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ATtwAF3rUpK6oBeQ4Qt0NuC/Mjni6TC4aWilweXNpx4=;
- b=WsLo1yrNXmpy2MGq08sYvdEJBBH8nBFgm7LG9DxALnhzxrzhXO4f9uDWvP5VMXmDyClsEQ
- 00ofaH3AiZaVnSEyxFbxZxRAsNRybFknRUdITeiPMyISixnT1ek8qLeBFz4yg0G8ZImb0j
- v/hnMPDfRA/5hquqNv7teTok8yZPKcY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-hOlX4WSdO9OTQHFUHA1SGQ-1; Fri, 03 Jul 2020 06:08:30 -0400
-X-MC-Unique: hOlX4WSdO9OTQHFUHA1SGQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
- [10.5.11.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E3BF8015FA;
- Fri,  3 Jul 2020 10:08:29 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-114-45.ams2.redhat.com [10.36.114.45])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 7FDA36111F;
- Fri,  3 Jul 2020 10:08:27 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
+ bh=YsUdmKIAIuE6rKh8K8ZFKX4lZ/UeIMT2j3jmwMOwD+A=;
+ b=GEONvX+GhvPV2rNm8w5DeVIoAIu9b6rwt7burYJX/nlPrfFk3hu/iqPL6rnHkERqqbp+bR
+ JlipjTrQod8fAM6uqgeJDj+5EbZ4z6ZjtnNT3pJTEasZOUnuHlMi9LK4SjXCYe+oeLBAyp
+ xSVOVp2MyM8esYWDSSBQkQpEXmaZYmY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-nqeibAStNQKUzND6llP7Rw-1; Fri, 03 Jul 2020 06:10:42 -0400
+X-MC-Unique: nqeibAStNQKUzND6llP7Rw-1
+Received: by mail-wr1-f72.google.com with SMTP id o12so31063437wrj.23
+ for <alsa-devel@alsa-project.org>; Fri, 03 Jul 2020 03:10:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=YsUdmKIAIuE6rKh8K8ZFKX4lZ/UeIMT2j3jmwMOwD+A=;
+ b=JetA4ZPxeVqakD+wuvFjq1naomr+aexRuq0/qOARYJvmheh7QM8LRer+cHHjSAR1V2
+ 8qElYBVlPzrmrkWMgK/GGFzueZbZrSXA88EYgZU8c6RVJHWG3AudhFRt0ZJb9pjZJj/T
+ XWfCgWXhTNZqL1hAcR72xZ9IzZPQtRU3EzdM+kbDNIq+/igJgNtvHjU1K/WVGdhOd5AS
+ 3T7xgRDDCNUloLhODPiUlOU4Ng6ZbOT39ZLdgyYtCUsbAcJsyD0X6RSCMMfbHBa3jgYe
+ 6FzjquLxqxjk0YMqFsS+Tu1TOGvFyxDm4yrwmEVf0Fd0tqoWxlZXq89GnLOsqce+IpFn
+ Vj9A==
+X-Gm-Message-State: AOAM531O4hgHZe4pn20dMwVZuRbxxWpEuma1/1eTFTzJQA7XYUZ1kNwk
+ JseYjLcdnjfQ5m5+Xryad9VWtPxv4GOW+xGpdGMTiPQaz1ebsbPAZ5KFvuMFhqtBlWjiFHeVMfn
+ D+JA6gHzFlznTTwn0BdtJ7q4=
+X-Received: by 2002:a7b:c099:: with SMTP id r25mr38073911wmh.159.1593771041495; 
+ Fri, 03 Jul 2020 03:10:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9am+xgHpk4a/bShyxLMWnkRM6baB16ndLKlb82LUpjz7e/d4V9R8szIIsa72WquW0eNVJ6g==
+X-Received: by 2002:a7b:c099:: with SMTP id r25mr38073897wmh.159.1593771041336; 
+ Fri, 03 Jul 2020 03:10:41 -0700 (PDT)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id x7sm13753747wrr.72.2020.07.03.03.10.40
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 03 Jul 2020 03:10:40 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] ASoC: rt5670: 2 small cleanups
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>,
  Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2 1/2] ASoC: rt5670: Remove struct rt5670_platform_data
-Date: Fri,  3 Jul 2020 12:08:22 +0200
-Message-Id: <20200703100823.258033-2-hdegoede@redhat.com>
-In-Reply-To: <20200703100823.258033-1-hdegoede@redhat.com>
 References: <20200703100823.258033-1-hdegoede@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <52ae5ebc-feb8-181c-c980-23e98d6025eb@redhat.com>
+Date: Fri, 3 Jul 2020 12:10:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20200703100823.258033-1-hdegoede@redhat.com>
+Content-Language: en-US
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,290 +129,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-platform_data is an obsolete concept, instead device_properties,
-set through e.g. device-tree, should be used.
+Hi,
 
-struct rt5670_platform_data is only used internally by the rt5670 codec
-driver, so lets remove it before someone starts relying on it.
+On 7/3/20 12:08 PM, Hans de Goede wrote:
+> Hi All,
+> 
+> Here is in essence a resend of my 2 cleanup patches for the rt5670 ASoC
+> codec code, rebased on top of broonie/sound/for-5.9 with
+> broonie/sound/for-5.8 merged in.
+> 
+> Regards,
+> 
+> Hans
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- include/sound/rt5670.h    | 26 ------------------
- sound/soc/codecs/rt5670.c | 55 ++++++++++++++++++---------------------
- sound/soc/codecs/rt5670.h | 16 +++++++++---
- 3 files changed, 38 insertions(+), 59 deletions(-)
- delete mode 100644 include/sound/rt5670.h
+I just realized I forgot to add the Reviewed-by from Pierre-Louis
+from v1, since these are unchanged (only rebased) that still stands,
+so this series is:
 
-diff --git a/include/sound/rt5670.h b/include/sound/rt5670.h
-deleted file mode 100644
-index 02e1d7778354..000000000000
---- a/include/sound/rt5670.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * linux/sound/rt5670.h -- Platform data for RT5670
-- *
-- * Copyright 2014 Realtek Microelectronics
-- */
--
--#ifndef __LINUX_SND_RT5670_H
--#define __LINUX_SND_RT5670_H
--
--struct rt5670_platform_data {
--	int jd_mode;
--	bool in2_diff;
--	bool dev_gpio;
--	bool gpio1_is_ext_spk_en;
--
--	bool dmic_en;
--	unsigned int dmic1_data_pin;
--	/* 0 = GPIO6; 1 = IN2P; 3 = GPIO7*/
--	unsigned int dmic2_data_pin;
--	/* 0 = GPIO8; 1 = IN3N; */
--	unsigned int dmic3_data_pin;
--	/* 0 = GPIO9; 1 = GPIO10; 2 = GPIO5*/
--};
--
--#endif
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 91c68c8965d1..3ccaeb985176 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -25,7 +25,6 @@
- #include <sound/soc-dapm.h>
- #include <sound/initval.h>
- #include <sound/tlv.h>
--#include <sound/rt5670.h>
- 
- #include "rl6231.h"
- #include "rt5670.h"
-@@ -518,7 +517,7 @@ static int rt5670_irq_detection(void *data)
- 	struct snd_soc_jack *jack = rt5670->jack;
- 	int val, btn_type, report = jack->status;
- 
--	if (rt5670->pdata.jd_mode == 1) /* 2 port */
-+	if (rt5670->jd_mode == 1) /* 2 port */
- 		val = snd_soc_component_read(rt5670->component, RT5670_A_JD_CTRL1) & 0x0070;
- 	else
- 		val = snd_soc_component_read(rt5670->component, RT5670_A_JD_CTRL1) & 0x0020;
-@@ -1454,7 +1453,7 @@ static int rt5670_spk_event(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct rt5670_priv *rt5670 = snd_soc_component_get_drvdata(component);
- 
--	if (!rt5670->pdata.gpio1_is_ext_spk_en)
-+	if (!rt5670->gpio1_is_ext_spk_en)
- 		return 0;
- 
- 	switch (event) {
-@@ -2624,7 +2623,7 @@ static int rt5670_set_bias_level(struct snd_soc_component *component,
- 				RT5670_LDO_SEL_MASK, 0x3);
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		if (rt5670->pdata.jd_mode)
-+		if (rt5670->jd_mode)
- 			snd_soc_component_update_bits(component, RT5670_PWR_ANLG1,
- 				RT5670_PWR_VREF1 | RT5670_PWR_MB |
- 				RT5670_PWR_BG | RT5670_PWR_VREF2 |
-@@ -2927,7 +2926,6 @@ static const struct dmi_system_id dmi_platform_intel_quirks[] = {
- static int rt5670_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
--	struct rt5670_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt5670_priv *rt5670;
- 	int ret;
- 	unsigned int val;
-@@ -2940,9 +2938,6 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, rt5670);
- 
--	if (pdata)
--		rt5670->pdata = *pdata;
--
- 	dmi_check_system(dmi_platform_intel_quirks);
- 	if (quirk_override) {
- 		dev_info(&i2c->dev, "Overriding quirk 0x%x => 0x%x\n",
-@@ -2951,56 +2946,56 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	if (rt5670_quirk & RT5670_DEV_GPIO) {
--		rt5670->pdata.dev_gpio = true;
-+		rt5670->dev_gpio = true;
- 		dev_info(&i2c->dev, "quirk dev_gpio\n");
- 	}
- 	if (rt5670_quirk & RT5670_GPIO1_IS_EXT_SPK_EN) {
--		rt5670->pdata.gpio1_is_ext_spk_en = true;
-+		rt5670->gpio1_is_ext_spk_en = true;
- 		dev_info(&i2c->dev, "quirk GPIO1 is external speaker enable\n");
- 	}
- 	if (rt5670_quirk & RT5670_IN2_DIFF) {
--		rt5670->pdata.in2_diff = true;
-+		rt5670->in2_diff = true;
- 		dev_info(&i2c->dev, "quirk IN2_DIFF\n");
- 	}
- 	if (rt5670_quirk & RT5670_DMIC_EN) {
--		rt5670->pdata.dmic_en = true;
-+		rt5670->dmic_en = true;
- 		dev_info(&i2c->dev, "quirk DMIC enabled\n");
- 	}
- 	if (rt5670_quirk & RT5670_DMIC1_IN2P) {
--		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
-+		rt5670->dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
- 		dev_info(&i2c->dev, "quirk DMIC1 on IN2P pin\n");
- 	}
- 	if (rt5670_quirk & RT5670_DMIC1_GPIO6) {
--		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_GPIO6;
-+		rt5670->dmic1_data_pin = RT5670_DMIC_DATA_GPIO6;
- 		dev_info(&i2c->dev, "quirk DMIC1 on GPIO6 pin\n");
- 	}
- 	if (rt5670_quirk & RT5670_DMIC1_GPIO7) {
--		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_GPIO7;
-+		rt5670->dmic1_data_pin = RT5670_DMIC_DATA_GPIO7;
- 		dev_info(&i2c->dev, "quirk DMIC1 on GPIO7 pin\n");
- 	}
- 	if (rt5670_quirk & RT5670_DMIC2_INR) {
--		rt5670->pdata.dmic2_data_pin = RT5670_DMIC_DATA_IN3N;
-+		rt5670->dmic2_data_pin = RT5670_DMIC_DATA_IN3N;
- 		dev_info(&i2c->dev, "quirk DMIC2 on INR pin\n");
- 	}
- 	if (rt5670_quirk & RT5670_DMIC2_GPIO8) {
--		rt5670->pdata.dmic2_data_pin = RT5670_DMIC_DATA_GPIO8;
-+		rt5670->dmic2_data_pin = RT5670_DMIC_DATA_GPIO8;
- 		dev_info(&i2c->dev, "quirk DMIC2 on GPIO8 pin\n");
- 	}
- 	if (rt5670_quirk & RT5670_DMIC3_GPIO5) {
--		rt5670->pdata.dmic3_data_pin = RT5670_DMIC_DATA_GPIO5;
-+		rt5670->dmic3_data_pin = RT5670_DMIC_DATA_GPIO5;
- 		dev_info(&i2c->dev, "quirk DMIC3 on GPIO5 pin\n");
- 	}
- 
- 	if (rt5670_quirk & RT5670_JD_MODE1) {
--		rt5670->pdata.jd_mode = 1;
-+		rt5670->jd_mode = 1;
- 		dev_info(&i2c->dev, "quirk JD mode 1\n");
- 	}
- 	if (rt5670_quirk & RT5670_JD_MODE2) {
--		rt5670->pdata.jd_mode = 2;
-+		rt5670->jd_mode = 2;
- 		dev_info(&i2c->dev, "quirk JD mode 2\n");
- 	}
- 	if (rt5670_quirk & RT5670_JD_MODE3) {
--		rt5670->pdata.jd_mode = 3;
-+		rt5670->jd_mode = 3;
- 		dev_info(&i2c->dev, "quirk JD mode 3\n");
- 	}
- 
-@@ -3041,11 +3036,11 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 	regmap_update_bits(rt5670->regmap, RT5670_DIG_MISC,
- 				 RT5670_MCLK_DET, RT5670_MCLK_DET);
- 
--	if (rt5670->pdata.in2_diff)
-+	if (rt5670->in2_diff)
- 		regmap_update_bits(rt5670->regmap, RT5670_IN2,
- 					RT5670_IN_DF2, RT5670_IN_DF2);
- 
--	if (rt5670->pdata.dev_gpio) {
-+	if (rt5670->dev_gpio) {
- 		/* for push button */
- 		regmap_write(rt5670->regmap, RT5670_IL_CMD, 0x0000);
- 		regmap_write(rt5670->regmap, RT5670_IL_CMD2, 0x0010);
-@@ -3057,14 +3052,14 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 				   RT5670_GP1_PF_MASK, RT5670_GP1_PF_OUT);
- 	}
- 
--	if (rt5670->pdata.gpio1_is_ext_spk_en) {
-+	if (rt5670->gpio1_is_ext_spk_en) {
- 		regmap_update_bits(rt5670->regmap, RT5670_GPIO_CTRL1,
- 				   RT5670_GP1_PIN_MASK, RT5670_GP1_PIN_GPIO1);
- 		regmap_update_bits(rt5670->regmap, RT5670_GPIO_CTRL2,
- 				   RT5670_GP1_PF_MASK, RT5670_GP1_PF_OUT);
- 	}
- 
--	if (rt5670->pdata.jd_mode) {
-+	if (rt5670->jd_mode) {
- 		regmap_update_bits(rt5670->regmap, RT5670_GLB_CLK,
- 				   RT5670_SCLK_SRC_MASK, RT5670_SCLK_SRC_RCCLK);
- 		rt5670->sysclk = 0;
-@@ -3079,7 +3074,7 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 				   RT5670_JD_TRI_CBJ_SEL_MASK |
- 				   RT5670_JD_TRI_HPO_SEL_MASK,
- 				   RT5670_JD_CBJ_JD1_1 | RT5670_JD_HPO_JD1_1);
--		switch (rt5670->pdata.jd_mode) {
-+		switch (rt5670->jd_mode) {
- 		case 1:
- 			regmap_update_bits(rt5670->regmap, RT5670_A_JD_CTRL1,
- 					   RT5670_JD1_MODE_MASK,
-@@ -3100,12 +3095,12 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 		}
- 	}
- 
--	if (rt5670->pdata.dmic_en) {
-+	if (rt5670->dmic_en) {
- 		regmap_update_bits(rt5670->regmap, RT5670_GPIO_CTRL1,
- 				   RT5670_GP2_PIN_MASK,
- 				   RT5670_GP2_PIN_DMIC1_SCL);
- 
--		switch (rt5670->pdata.dmic1_data_pin) {
-+		switch (rt5670->dmic1_data_pin) {
- 		case RT5670_DMIC_DATA_IN2P:
- 			regmap_update_bits(rt5670->regmap, RT5670_DMIC_CTRL1,
- 					   RT5670_DMIC_1_DP_MASK,
-@@ -3134,7 +3129,7 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 			break;
- 		}
- 
--		switch (rt5670->pdata.dmic2_data_pin) {
-+		switch (rt5670->dmic2_data_pin) {
- 		case RT5670_DMIC_DATA_IN3N:
- 			regmap_update_bits(rt5670->regmap, RT5670_DMIC_CTRL1,
- 					   RT5670_DMIC_2_DP_MASK,
-@@ -3154,7 +3149,7 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 			break;
- 		}
- 
--		switch (rt5670->pdata.dmic3_data_pin) {
-+		switch (rt5670->dmic3_data_pin) {
- 		case RT5670_DMIC_DATA_GPIO5:
- 			regmap_update_bits(rt5670->regmap, RT5670_DMIC_CTRL2,
- 					   RT5670_DMIC_3_DP_MASK,
-diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
-index de0203369b7c..657420805918 100644
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -9,8 +9,6 @@
- #ifndef __RT5670_H__
- #define __RT5670_H__
- 
--#include <sound/rt5670.h>
--
- /* Info */
- #define RT5670_RESET				0x00
- #define RT5670_VENDOR_ID			0xfd
-@@ -1988,11 +1986,23 @@ int rt5670_sel_asrc_clk_src(struct snd_soc_component *component,
- 
- struct rt5670_priv {
- 	struct snd_soc_component *component;
--	struct rt5670_platform_data pdata;
- 	struct regmap *regmap;
- 	struct snd_soc_jack *jack;
- 	struct snd_soc_jack_gpio hp_gpio;
- 
-+	int jd_mode;
-+	bool in2_diff;
-+	bool dev_gpio;
-+	bool gpio1_is_ext_spk_en;
-+
-+	bool dmic_en;
-+	unsigned int dmic1_data_pin;
-+	/* 0 = GPIO6; 1 = IN2P; 3 = GPIO7*/
-+	unsigned int dmic2_data_pin;
-+	/* 0 = GPIO8; 1 = IN3N; */
-+	unsigned int dmic3_data_pin;
-+	/* 0 = GPIO9; 1 = GPIO10; 2 = GPIO5*/
-+
- 	int sysclk;
- 	int sysclk_src;
- 	int lrck[RT5670_AIFS];
--- 
-2.26.2
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Regards,
+
+Hans
 
