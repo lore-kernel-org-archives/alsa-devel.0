@@ -6,69 +6,72 @@ X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D3CC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 17:08:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C66BC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 17:08:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D562620899
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 17:08:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 90EA320870
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2020 17:08:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZngRaLWl";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="etDOa+wJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D562620899
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QvFY2kxN";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDxfGx+a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90EA320870
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A5361697;
-	Fri,  3 Jul 2020 19:07:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A5361697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19A9616CA;
+	Fri,  3 Jul 2020 19:08:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19A9616CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593796113;
-	bh=PLlPyPWcQObVCDAfUx0mabpb9HYBu89t2O+cdrLUUCI=;
+	s=default; t=1593796132;
+	bh=u9uVrDTqK0wRptdS3zOB8pENulWvXRF3AfIsNI9ad8k=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZngRaLWlZDUJKV/9GNIJhRhpTf7EVt/5CJ9sSEgtkuDSbfoZttWTpCbB8Bgjed3ha
-	 fkVs2LTSIyP1Iw9H1UvVjXgfG+pzYQaJxcm8PW/swLLw9vYidXJfAVi9umxwszZweI
-	 4x4rdNRM6X/qua3qvdqeTEPmKc25D3L5//8mPx+Y=
+	b=QvFY2kxNLRE4dEk7FBJdEF6C0tekugiWCto1DiKZJfuTGm6QOozCIzAhqkcOS9/lv
+	 RBtdv8DpQyIklqLoNmt8okPQdr+UUIPdkROtJtSr/z1Q8xqifdlthZd+GsPT7M+xB2
+	 SMz7ircVu1XPVA6dRcFtEaV0kI497M0tGXkUbr+0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A61AF802F7;
-	Fri,  3 Jul 2020 19:04:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74619F802FD;
+	Fri,  3 Jul 2020 19:04:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB779F802F8; Fri,  3 Jul 2020 19:04:15 +0200 (CEST)
+ id 89BB4F802FE; Fri,  3 Jul 2020 19:04:21 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 668B5F802EC
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2020 19:04:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 668B5F802EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56A62F802F9
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2020 19:04:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56A62F802F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="etDOa+wJ"
+ header.b="sDxfGx+a"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6941C20C56;
- Fri,  3 Jul 2020 17:04:11 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 804FF2100A;
+ Fri,  3 Jul 2020 17:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1593795851;
- bh=PLlPyPWcQObVCDAfUx0mabpb9HYBu89t2O+cdrLUUCI=;
+ s=default; t=1593795857;
+ bh=u9uVrDTqK0wRptdS3zOB8pENulWvXRF3AfIsNI9ad8k=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=etDOa+wJ/35Q0C1f1wB1XQIiidN6FP9S1MWVD6agWkmIPJduYfbbyWGpmDwcutr3h
- 2KDtiYwELBDVrwtVEp6k8x9XPas12chOC2saZTxC6RW3QJG4SnmnBfEOcuUjFWPt7K
- aKJ1bfRYXtwt+wMAvd5im/AeE+VO3xBdPFHbkcIs=
-Date: Fri, 03 Jul 2020 18:04:09 +0100
+ b=sDxfGx+a/PCUNOVR7IqKMtl2Z+/lNrzf0n/dPUk/5Kait88CCJI6/C3a0+0qic7T9
+ NuDNRpB9TXciNxnfpqBaSg4VTW6whAi+QYsQgp2TuQLBQvjkFfaSfLXunVIF2qxblV
+ uPw5CyqpDwAqa6xHB9pOG0RAu0/oK0Lbbsda8wlk=
+Date: Fri, 03 Jul 2020 18:04:14 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Oder Chiou <oder_chiou@realtek.com>, Jie Yang <yang.jie@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200702192141.168018-1-pierre-louis.bossart@linux.intel.com>
-References: <20200702192141.168018-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/6] ASoC: fsl: fix kernel-doc
-Message-Id: <159379581381.55795.17070443567066342064.b4-ty@kernel.org>
-Cc: tiwai@suse.de
+In-Reply-To: <20200703100823.258033-1-hdegoede@redhat.com>
+References: <20200703100823.258033-1-hdegoede@redhat.com>
+Subject: Re: [PATCH v2 0/2] ASoC: rt5670: 2 small cleanups
+Message-Id: <159379581381.55795.17943057797770768500.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,20 +87,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Jul 2020 14:21:35 -0500, Pierre-Louis Bossart wrote:
-> This cleanup patchset is only about kernel-doc, mostly trivial edits
-> and format correction.
+On Fri, 3 Jul 2020 12:08:21 +0200, Hans de Goede wrote:
+> Here is in essence a resend of my 2 cleanup patches for the rt5670 ASoC
+> codec code, rebased on top of broonie/sound/for-5.9 with
+> broonie/sound/for-5.8 merged in.
 > 
-> v2: added Nicolin Chen's Acked-by tags and included the three
-> suggested edits.
+> Regards,
 > 
-> Pierre-Louis Bossart (6):
->   ASoC: fsl: fsl_ssi_dbg: remove spurious kernel-doc comment start
->   ASoC: fsl: fsl_ssi: fix kernel-doc
->   ASoC: fsl: fsl-asoc-card: fix kernel-doc
->   ASoC: fsl: fsl_spdif: fix kernel-doc
->   ASoC: fsl: fsl_asrc: fix kernel-doc
->   ASoC: fsl: fsl_esai: fix kernel-doc
+> Hans
 > 
 > [...]
 
@@ -107,18 +104,10 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: fsl: fsl_ssi_dbg: remove spurious kernel-doc comment start
-      commit: 2f981391756f95037a53421100a1634a30684ad1
-[2/6] ASoC: fsl: fsl_ssi: fix kernel-doc
-      commit: e3b741918f23d46b3c4974cfa57f4634e2fb9131
-[3/6] ASoC: fsl: fsl-asoc-card: fix kernel-doc
-      commit: 31deacffcdba10a1e4f23efd243821d15f0b5325
-[4/6] ASoC: fsl: fsl_spdif: fix kernel-doc
-      commit: 28fd6ff1586724cc85166ba2aae2127d913b214b
-[5/6] ASoC: fsl: fsl_asrc: fix kernel-doc
-      commit: 4674bf0622b38ce38313091dc4226c2451df2ffb
-[6/6] ASoC: fsl: fsl_esai: fix kernel-doc
-      commit: 3bae1719b383cc97bbfb22c79b8caf2a863a8103
+[1/2] ASoC: rt5670: Remove struct rt5670_platform_data
+      commit: c14f61a89c1335f95d9b37624ee157fb1fd424ee
+[2/2] ASoC: rt5670: Rename dev_gpio to gpio1_is_irq
+      commit: 883330c11fa6dca55e30f8612398b3e0abc51dc5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
