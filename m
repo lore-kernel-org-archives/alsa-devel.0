@@ -5,92 +5,92 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 423DCC433E0
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jul 2020 11:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EFD0C433DF
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jul 2020 11:42:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2CDA20890
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jul 2020 11:41:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0F91420890
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jul 2020 11:42:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jV9WW1vS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uLSRDPJx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2CDA20890
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uThzr725";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PIWwyRoC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F91420890
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 449FE16D3;
-	Sat,  4 Jul 2020 13:40:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 449FE16D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EC6416A5;
+	Sat,  4 Jul 2020 13:41:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EC6416A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593862905;
-	bh=hjZj1fNjiyztfV7q0ctTDdIJy29UhiZEk5sleYmJ0Bs=;
+	s=default; t=1593862948;
+	bh=rYaUAVM959KzPquOQ0MQESAbbQVPRLLZVa/hjA5sSAo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jV9WW1vSqWb9ouOddWoBsRSzTLfAiNOC4/0UyFdiWCcrBv8fL4iwiIkXmmlKN0rmW
-	 DUZOrs52yjtbaEFqrYQ841zT8dacyPdCxxRaY1BvBrfI6vR3ASraX7pEema+Ql6RwM
-	 NtViU7/681jmJIU6Tp7QiL4Qow7H8IZxJFzneaWE=
+	b=uThzr725HopkrKvxvK0QHj2uZ9FbGeZlDhz0WST0i1LHLQhkldpad5QiQV/5i+zXL
+	 pM405G7yIwfWYHss2NyN70RH3CxNWVKI8fmD2xpNOr2hBJKcEbDpRMp2tdJKeCIsPv
+	 o2lmZlo+fADwQYS+KZFQ5T5Gp8Q0KpcZex/a5I8E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B22CF802DB;
-	Sat,  4 Jul 2020 13:39:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF716F802E3;
+	Sat,  4 Jul 2020 13:39:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CD11F8022B; Sat,  4 Jul 2020 13:39:15 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id 75889F802C2; Sat,  4 Jul 2020 13:39:16 +0200 (CEST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D593BF8022B
- for <alsa-devel@alsa-project.org>; Sat,  4 Jul 2020 13:39:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D593BF8022B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CC62F80252
+ for <alsa-devel@alsa-project.org>; Sat,  4 Jul 2020 13:39:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CC62F80252
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="uLSRDPJx"
-Received: by mail-wr1-x443.google.com with SMTP id f2so7458675wrp.7
- for <alsa-devel@alsa-project.org>; Sat, 04 Jul 2020 04:39:08 -0700 (PDT)
+ header.b="PIWwyRoC"
+Received: by mail-wr1-x444.google.com with SMTP id r12so35372538wrj.13
+ for <alsa-devel@alsa-project.org>; Sat, 04 Jul 2020 04:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wM8K//a3jkdseqCAX2c7vevYvjhQJoc1FelDz72tbrA=;
- b=uLSRDPJxTFQXZeoHyKDe5jl2kj0U+TGby3zgXWBnikqtT6iWF2HlxK66opO7RAlSaT
- PlGtaqTqdSRH5fxRrcNbVqNexyGLLvRP60i+KX6k1qhMSGGY9dsvNC3LEVf1INfUi/p5
- ye6D6sD2UHAIpmmf7aM/z87jqs1s877OgEWe+asl/0NtltxFcZb4Sbqp/TRmiSXAxSWb
- hMeWglCBdNY1hf+OTXKA/zPoeoMreUO9Cj7gPjk+gsAYGUQruNFh3K4ZhxTXVI2CmmeP
- adiQel92MTrYxYZqyyWgHE54DkcHH5zUbFyOnnofBty/t4XfBv/3DRt0FhdYIAMuHikg
- RxSw==
+ bh=mfUlbLhy3zCoUfuZ7lv6AWp7miv/wyOIxAIOxyL0xzQ=;
+ b=PIWwyRoCqsBaX9nPER9cPo7v8vFonBdLE2eVhGNrwR5I+StZFL1tZdKc+WzG0NZidO
+ gxyT0KfE+zOQ+uuLH0UbBNwUtytomerrFLMtj6VTZzxhIixjEGV2wVoU6tLhULs4DBbl
+ pvSXQl3aver7dp+YDjZJ5Y9Vpmf3JEHPRhk6N3fMwz0tvNputROHxdnntTL4jvWMEx5q
+ v4Y3e6LdFJCqHmnLjst7OzBpCXXWsNF6vHDeAsyHh1eaRIxa+rcZvzronG8dPMpFN6iI
+ 1xtNXL0soUtLNKLINbL9+kJu0duC78+M5+jEqvbgnndRhKh9ZULFuBEv/82Mw/oqX6IH
+ zZGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wM8K//a3jkdseqCAX2c7vevYvjhQJoc1FelDz72tbrA=;
- b=VuVXue1/M7Sicfk2JwYgPN9am1k5RjD7/cxivrGWDSLanXSillVe+VLlgeiomyTkVY
- FsF75NBCITfquI7OBJ0NTJj3JP4stQmdastrmKh4phHBNt9THvkIbBMu6lLjsYfu4tWq
- 198yl7cFxkvBq0hunDAluXCmwESlYJKaZBqCqCw4kgq+1ArbWug92vK0KQQYZ4MI1nRd
- jSudFG50Qubl9IGwTmBRPJQws6dr+ghCRZ3zINBXPRRbmYSohpVarRG+pFYuE82GnEl6
- MdCj+hm3qixq+fGU/Fp/UPQwUbvvzx3quDc4MlBqE+uUESiAu7vQVlyBKFBG0bnUhaM0
- k/KA==
-X-Gm-Message-State: AOAM5336E4GSK339S4sjPHmsOg09VnNhDveiRlZVsK/cQAHJOtqLPQCL
- 6vKiEvDUKROjv12m7ZeJdPs=
-X-Google-Smtp-Source: ABdhPJwuek4INGNtBBLyn1Xm7fiys3LCOLkRgtyoQjhb5oZz83S7qN2/HUPVrbJchM+9xFxxHAwRKA==
-X-Received: by 2002:adf:ea06:: with SMTP id q6mr39049381wrm.69.1593862748290; 
- Sat, 04 Jul 2020 04:39:08 -0700 (PDT)
+ bh=mfUlbLhy3zCoUfuZ7lv6AWp7miv/wyOIxAIOxyL0xzQ=;
+ b=S7fEPRmsZdj22WC75S1Kcwqk8hPH/INzDrtEfpOXQYibrZ1trktjij8g+Bm0mJV9tF
+ aBeA2yFQ1eJ41A35MqkTAv8eQiVORin7eA5t4nHFshCpDjID8I4TN2IaE2Fn0pxOzqIc
+ lmweB6TzUYgUpeCRHoS53JrhZlXdd0b7UgVgkO+VHtBuzwZALWY2AxjEXXLm7HEyy46g
+ ebt602ELRK1Gck7j8wJl5mxmdt7w1/ND6sAPzN0fn3bkLIi6vQj8fYWCtMFQyrg/4XeF
+ bJ615yzn9ir8kmrZgIjFICijC8uGZV2IIhpvUoyn3ySHeKY1eC2LGqRJkQQ4y9E7NppZ
+ ED4g==
+X-Gm-Message-State: AOAM530DjM38dfnEDENNsq3+68cdaid5RXlQxIarNsfOahKyDOUNy+tO
+ juMF3awIXnC5gmZ+JEw4phs=
+X-Google-Smtp-Source: ABdhPJx2KaZJUWEmVAGB18IDljsecuvwvgpq9vXCZvlEb0I6GKdNi4CeaGG0cZ1tJezk5Dlp33Po4w==
+X-Received: by 2002:adf:8168:: with SMTP id 95mr41311474wrm.104.1593862750649; 
+ Sat, 04 Jul 2020 04:39:10 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr
  (213-245-241-245.rev.numericable.fr. [213.245.241.245])
- by smtp.gmail.com with ESMTPSA id j24sm18657373wrd.43.2020.07.04.04.39.07
+ by smtp.gmail.com with ESMTPSA id j24sm18657373wrd.43.2020.07.04.04.39.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 04 Jul 2020 04:39:07 -0700 (PDT)
+ Sat, 04 Jul 2020 04:39:10 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 02/16] ASoC: sun4i-i2s: Adjust LRCLK width
-Date: Sat,  4 Jul 2020 13:38:48 +0200
-Message-Id: <20200704113902.336911-3-peron.clem@gmail.com>
+Subject: [PATCH 04/16] ASoC: sun4i-i2s: Set sign extend sample
+Date: Sat,  4 Jul 2020 13:38:50 +0200
+Message-Id: <20200704113902.336911-5-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200704113902.336911-1-peron.clem@gmail.com>
 References: <20200704113902.336911-1-peron.clem@gmail.com>
@@ -102,7 +102,7 @@ Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
  Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>,
  linux-sunxi@googlegroups.com,
  =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
- Maxime Ripard <maxime@cerno.tech>, linux-arm-kernel@lists.infradead.org
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,32 +120,87 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-Some codecs such as i2s based HDMI audio and the Pine64 DAC require
-a different amount of bit clocks per frame than what is calculated
-by the sample width. Use the values obtained by the tdm slot bindings
-to adjust the LRCLK width accordingly.
+On the newer SoCs such as the H3 and A64 this is set by default
+to transfer a 0 after each sample in each slot. However the A10
+and A20 SoCs that this driver was developed on had a default
+setting where it padded the audio gain with zeros.
+
+This isn't a problem while we have only support for 16bit audio
+but with larger sample resolution rates in the pipeline then SEXT
+bits should be cleared so that they also pad at the LSB. Without
+this the audio gets distorted.
+
+Set sign extend sample for all the sunxi generations even if they
+are not affected. This will keep coherency and avoid relying on
+default.
 
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
-Acked-by: Maxime Ripard <maxime@cerno.tech>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sunxi/sun4i-i2s.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 9690389cb68e..8bae97efea30 100644
+index 8bae97efea30..f78167e152ce 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -470,6 +470,9 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 		return -EINVAL;
- 	}
+@@ -48,6 +48,9 @@
+ #define SUN4I_I2S_FMT0_FMT_I2S				(0 << 0)
  
-+	if (i2s->slot_width)
-+		lrck_period = i2s->slot_width;
+ #define SUN4I_I2S_FMT1_REG		0x08
++#define SUN4I_I2S_FMT1_REG_SEXT_MASK		BIT(8)
++#define SUN4I_I2S_FMT1_REG_SEXT(sext)			((sext) << 8)
 +
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
- 			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
- 			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
+ #define SUN4I_I2S_FIFO_TX_REG		0x0c
+ #define SUN4I_I2S_FIFO_RX_REG		0x10
+ 
+@@ -105,6 +108,9 @@
+ #define SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED		(1 << 7)
+ #define SUN8I_I2S_FMT0_BCLK_POLARITY_NORMAL		(0 << 7)
+ 
++#define SUN8I_I2S_FMT1_REG_SEXT_MASK		GENMASK(5, 4)
++#define SUN8I_I2S_FMT1_REG_SEXT(sext)			((sext) << 4)
++
+ #define SUN8I_I2S_INT_STA_REG		0x0c
+ #define SUN8I_I2S_FIFO_TX_REG		0x20
+ 
+@@ -663,6 +669,12 @@ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 	}
+ 	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+ 			   SUN4I_I2S_CTRL_MODE_MASK, val);
++
++	/* Set sign extension to pad out LSB with 0 */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
++			   SUN4I_I2S_FMT1_REG_SEXT_MASK,
++			   SUN4I_I2S_FMT1_REG_SEXT(0));
++
+ 	return 0;
+ }
+ 
+@@ -765,6 +777,11 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
+ 			   val);
+ 
++	/* Set sign extension to pad out LSB with 0 */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
++			   SUN8I_I2S_FMT1_REG_SEXT_MASK,
++			   SUN8I_I2S_FMT1_REG_SEXT(0));
++
+ 	return 0;
+ }
+ 
+@@ -867,6 +884,11 @@ static int sun50i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
+ 			   val);
+ 
++	/* Set sign extension to pad out LSB with 0 */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
++			   SUN8I_I2S_FMT1_REG_SEXT_MASK,
++			   SUN8I_I2S_FMT1_REG_SEXT(0));
++
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
