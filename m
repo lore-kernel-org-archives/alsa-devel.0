@@ -1,88 +1,88 @@
-Return-Path: <SRS0=zuuw=AP=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=7iNo=AQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A8CDC433DF
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jul 2020 16:50:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4369AC433DF
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2020 03:43:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9F0E20674
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jul 2020 16:50:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C6AC20890
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2020 03:43:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KtDkh3K/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9F0E20674
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csgroup.eu
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jh8g6qap";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Em3mLVBJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C6AC20890
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EFD41690;
-	Sat,  4 Jul 2020 18:49:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EFD41690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C561168D;
+	Sun,  5 Jul 2020 05:42:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C561168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1593881416;
-	bh=slIcyNX43jn/rjQlkSAL/Zblep9juUf8xyM/cB6BhZE=;
-	h=From:Subject:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1593920618;
+	bh=6NLk9kxfB9NifSC8qM7HHRRcGwOajkI+N6rXtbLiKTQ=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=KtDkh3K/zUjcLL8zDHDdIyCMSygHswRvBNg3v7oPr+yBeNv/0Inyj9UtrHfvnlUFm
-	 JTP0UOLT7qe2IlfXDqnrM1djrgOlHjwtr/2BX4DmBpVbhtd3ZDlklNLEl5ZVIVcwCb
-	 5hyCRdQd2YCaJB4guGuQQf6CIOZaCkPMWqOGYCWk=
+	b=Jh8g6qapl0uu+4Wdwx2zsEIYVfVCoCZf9o/WjXt66XzKd2iVFcbg0iepVU1Uavyns
+	 0CNNciudAc1gzedzp82gNJKXzog7N2cA9/ntasWQeCalkizeF1nFhaFQYfSBLXb9tD
+	 yU6UmnefSZVEB16SJkzl6utRcaJCmb8piJlzl41o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D19FAF8022B;
-	Sat,  4 Jul 2020 18:49:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DAB6F801F9;
+	Sun,  5 Jul 2020 05:42:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 344A0F8022D; Sat,  4 Jul 2020 18:49:24 +0200 (CEST)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 341BDF80216; Sun,  5 Jul 2020 05:42:46 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8D92F8011B
- for <alsa-devel@alsa-project.org>; Sat,  4 Jul 2020 18:49:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8D92F8011B
-Received: from localhost (mailhub1-int [192.168.12.234])
- by localhost (Postfix) with ESMTP id 49zd8X45wzz9tyNd;
- Sat,  4 Jul 2020 18:49:16 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
- by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
- with ESMTP id 6A-LboEen77o; Sat,  4 Jul 2020 18:49:16 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
- by pegase1.c-s.fr (Postfix) with ESMTP id 49zd8X2Py1z9tyNc;
- Sat,  4 Jul 2020 18:49:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by messagerie.si.c-s.fr (Postfix) with ESMTP id 9C8698B780;
- Sat,  4 Jul 2020 18:49:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
- by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
- with ESMTP id LdNBUEYla3iI; Sat,  4 Jul 2020 18:49:18 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
- by messagerie.si.c-s.fr (Postfix) with ESMTP id D6ACD8B75B;
- Sat,  4 Jul 2020 18:49:17 +0200 (CEST)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Looking for guidance for porting home made audio driver to ASoC/FSL
-To: Qiang Zhao <qiang.zhao@nxp.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- Li Yang <leoyang.li@nxp.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Message-ID: <d27d50d0-f99a-7702-4175-79281b06ad8c@csgroup.eu>
-Date: Sat, 4 Jul 2020 18:49:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0A27F800DA
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2020 05:42:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0A27F800DA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Em3mLVBJ"
+Received: by mail-wr1-x436.google.com with SMTP id z15so25952815wrl.8
+ for <alsa-devel@alsa-project.org>; Sat, 04 Jul 2020 20:42:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=JpsMVBhQ0eJujSA2LTKBZYrXPuJgPEWcLG+df8QBVNA=;
+ b=Em3mLVBJym41MTcQtAE6dsukSry4HLq0gOdmLnW+KDt3mroMXQecV9M6vHIspG3mMQ
+ mLIl+7VWPsYC9k1Se62MZm5cH0gMwUdrAslQlZT52bINCFb6UejYbkss+SLieuy3vGwz
+ JCAPX26vxsgCzQWf5Hwu1O10fepstrp3AhhOdM/dFu7sb4c3BdWHCDb/nbPnoObIwKBi
+ 1/ZM+7D5+1h7WmomoWln8+JmKjHza9QkISnhj578CzajaWkMXkbG0dvz9FH9jBpyZUW1
+ wJzfCrF9wBiOMYcbTgciYaF4Co0xCComArAEtwsOggmM2AshdHSZU3XCpHYD56ePVfcA
+ Jw2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=JpsMVBhQ0eJujSA2LTKBZYrXPuJgPEWcLG+df8QBVNA=;
+ b=tsDwEP6yaIlq6/yusvXI9MujsIXuIUhzRNp4Gm4kdCjPvlvk0mvzEph8X0g77ZgBPW
+ 0xpls43ACrzToCKO+4uBBTORdngHN03VDmtFsDuV121llPGXfHtCvT18zGpL9OoD8hJ4
+ u7Hsnw85nNaB9iOdQ54fqJLnA3Ew4ZWpEv6wV/NBZNmPjK2lyR6Q9Lh/uiRP6k18Brwr
+ swQPDG6dRWwePLMc4saF9Ks4O3ZOdxtu/0AGYXcLvbdwLDxn2Vl7RU0JYxih7gamMG29
+ Lsq/FoE8b09KLerzT/HBpEOjbMsrI9hVY0Gr7L1JHrm2qo8qFVVYa3bvv2LUt7DASvY9
+ KPYg==
+X-Gm-Message-State: AOAM531owQpPkuIUXQG+eR5jJwej4MZtMOSD26x7SwgoNWOZpayg99Oq
+ 8sPohiOFApM1rphVqJgEWbYgA40R5IUq57vQC9kxINnWIL4=
+X-Google-Smtp-Source: ABdhPJyc9sO5CRZ/CyU180aOmFeSlbEqwYse41JpNVJhT1duEN5BlGhmptbUjg2b+21q9jGm1iu3lo+QdTagw4vB9rE=
+X-Received: by 2002:adf:ebd0:: with SMTP id v16mr36670865wrn.241.1593920559760; 
+ Sat, 04 Jul 2020 20:42:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 7bit
-Cc: TIGE Jean-Paul <jean-paul.tige@csgroup.eu>,
- "F. TRINH THAI" <florent.trinh-thai@csgroup.eu>
+From: =?UTF-8?B?0KHRgtCw0L3QuNGB0LvQsNCyINCQ0LvQtdC60YHQsNC90LTRgNC+0LI=?=
+ <lightofmysoul@gmail.com>
+Date: Sun, 5 Jul 2020 06:42:29 +0300
+Message-ID: <CAEo19OgAGRWGsaPZ9G=xYcdC=MgyO9jdH365ZMmS--o5BoWFKw@mail.gmail.com>
+Subject: Some questions about asoc codec mixer elements naming
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,39 +98,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello
+Hello.
 
-I'm looking for guidance for porting a home made audio driver to 
-ASoC/FSL on a custom board.
+I am writing an asoc codec driver and stuck with mixer and output
+naming. Could someone clarify a few things?
+This codec has two playback PGAs and 4 outputs:
 
-The board has an MPC8321 freescale/NXP cpu. The board has a TDM bus 
-connected to one of the cpu TDM port. On that TDM bus, there are three 
-IDT 821034 quad codecs (PCM G.711) and an E1 chip that carries IP over E1.
+PGA1 ->  [Speaker,Headphone,Line Out]
+PGA2 ->  [Mono Output]
 
-Today, there is a home made audio driver providing raw read/write 
-devices plus an home made WAN HDLC driver for the E1.
+[PGA1] controls volume and mute for all three outputs.
+[Speaker,Headphone,Line Out] have only mute.
 
-The CPU Quicc Engine (QE) is configured to connect the TDM port to one 
-UCC. QUICC Multi-Channel Controller (QMC) is used to distribute E1 
-timeslots to the HDLC driver and each of the 12 codec timeslots to the 
-audio driver. (The QMC is able to manage two types of channels: 
-transparent and HDLC).
+[PGA2] controls volume and mute.
+[Mono Output] also has mute.
 
-We would like to make all this more standard and port it to use ALSA 
-ASoC for the audio part, and the Freescale Quicc Engine HDLC. As of 
-today, the Freescale QE HDLC wan driver uses the UCC directly, it 
-doesn't interface through the QMC. And the FSL ASoC drivers seem to 
-neither handle QE TDM via QE QMC nor QE UCC.
+Codec is bound to platform driver via simple-audio-card:
+simple-audio-card,widgets =
+    "Headphone", "Headphones",
+    "Speaker", "Speakers",
+    "Line", "Line Out Jack";
 
-We are thinking about adding a QE QMC layer in driver/soc/fsl/ which 
-would more or less present to the consumer the same kind of API as the 
-FSL UCC layer, and enhance the WAN FSL HDLC driver to be able to use 
-that new layer.
+simple-audio-card,routing =
+     "Headphones", "HPOUT",
+     "Speakers", "SPKOUT",
+     "Line Out Jack", "LINEOUT";
 
-For the ALSA ASoC part, could some parts of existing FSL ASoC drivers be 
-re-used of would we have to start implementing an ASoC from scratch ?
+Is it possible to name mixer controls so that no further configuration
+is required when the driver is loaded?
+i.e. pulseaudio automatically detects all these outputs and controls,
+correctly maps them and allows switching between them?
 
-Any recommendation and/or guidance would be welcomed and appreciated.
+Currently i have this configuration(simplified):
 
-Thanks in advance
-Christophe
+SOC_DOUBLE_S8_TLV("Master Playback Volume", PGA1, ...)
+SOC_DOUBLE("Master Playback Switch", PGA1, ...)
+
+SOC_SINGLE("Speaker Playback Switch", ...)
+SOC_SINGLE("Headphone Playback Switch", ...)
+SOC_SINGLE("Line Out Playback Switch", ...)
+
+SOC_SINGLE_S8_TLV("Mono Output Playback Volume", PGA2...)
+SOC_SINGLE("Mono Output Playback Switch", PGA2....)
+
+With these settings pulseaudio only detects Speaker and Headphone (but
+not Line Out because it wants to find its Jack)
+But as I understand "Master Playback" assumes control for all sound
+streams, so this is probably not correct =\
+
+If it is impossible to name those elements that way so everything is
+autodetected, what should i use then? Write a machine audio driver or
+use alsaucm?
