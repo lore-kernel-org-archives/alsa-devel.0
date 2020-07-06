@@ -2,84 +2,83 @@ Return-Path: <SRS0=aG7p=AR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 237D8C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:04:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2091C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:15:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A342E206E6
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:04:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3CE2B20715
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:15:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nxeYOw3h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A342E206E6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AzuyniVu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CE2B20715
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40B181615;
-	Mon,  6 Jul 2020 17:03:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40B181615
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF6101615;
+	Mon,  6 Jul 2020 17:14:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF6101615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594047861;
-	bh=N3mjiEdu6UpxcD7uc35235j2jeVGa1VI1eAyhWT6Uwk=;
+	s=default; t=1594048530;
+	bh=4VMU2hJMjXBmEA2WldMBBxKT0ltR4rlSsXZmqi3ncTc=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nxeYOw3hu++nLk4UzfM8OqGLaDQV2/TlLOhj8r0J+55wtwdPH7bBzsYPgYjFCwbqI
-	 sVzV/8J1eKIGm6AxhFUC01Z5e8EgMuPunQU/qY/MirDOAFD6MOz4Fy/+sYuwVKYLhH
-	 MemJK8LZOGkIjIWV2uxvC0yqMGbuiBHgg/+J84pM=
+	b=AzuyniVuSAJDHOTOgF3+SFHLB9LxrAZ8vyI39TiizhBP/iH/jjbcYkWvO4/zJUy/P
+	 ym7PkvoAYaMt/rAx9Fa4QfDoNfP/fCkJVIIBIul0Q8+x+vR8pxzrSDFKqKaC/zb0tk
+	 ya4lqphBQtuUm5t9bL+m3bbf71sWn0nal8Q+/AUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAED5F80150;
-	Mon,  6 Jul 2020 17:03:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54C5CF80150;
+	Mon,  6 Jul 2020 17:14:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1875DF8015A; Mon,  6 Jul 2020 17:03:28 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 036E4F8015A; Mon,  6 Jul 2020 17:14:38 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61E24F80125
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2020 17:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61E24F80125
-IronPort-SDR: jvgMVA3pVbjhVtV1CNKlWaPk7qPCEgMqRltTCUXbSyNNz1679LmMX+XhAH3uMizdckJSyTFgqp
- +w0QV57425Cw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="147434763"
-X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; d="scan'208";a="147434763"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8BA0F8011F
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2020 17:14:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8BA0F8011F
+IronPort-SDR: J2YqU4GVyvbMjMMiKw49WGc5wDsxvd6tHUQs08VFteLqk6ZtX9SMxLqWm7hk9+DFpqHoW/7u4G
+ B2RtN4wvPVEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="212412980"
+X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; d="scan'208";a="212412980"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2020 08:03:16 -0700
-IronPort-SDR: L2Z3VR5sFl9G4jx008pgy5I4rdrzbvcEZVVZuOT1zJtYIDuouKToK++PVl7NF1i3/4++i90Gb7
- TBDYFAOfGVFw==
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jul 2020 08:14:32 -0700
+IronPort-SDR: jp+xSpM0hz4RXPelb813+eh1Xv2NFOLsPZD+jeKCERs+hs6W1K7rsAx5C6G9hslF567dRAI2gk
+ RMVTXLTYELsw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; d="scan'208";a="313986367"
+X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; d="scan'208";a="313989791"
 Received: from aislam-mobl1.amr.corp.intel.com ([10.212.167.133])
- by orsmga008.jf.intel.com with ESMTP; 06 Jul 2020 08:03:15 -0700
-Subject: Re: [PATCH 3/8] ASoC: samsung: pcm: fix kernel-doc
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>, alsa-devel@alsa-project.org
-References: <20200702165901.164100-1-pierre-louis.bossart@linux.intel.com>
- <CGME20200702165920eucas1p236c3c4c82424ea459ea88ebacf9b8a6e@eucas1p2.samsung.com>
- <20200702165901.164100-4-pierre-louis.bossart@linux.intel.com>
- <d6980967-5def-58c9-39a9-239a5c671f3f@samsung.com>
+ by orsmga008.jf.intel.com with ESMTP; 06 Jul 2020 08:14:31 -0700
+Subject: Re: [RFC PATCH] ALSA: compress: add support to change codec profile
+ in gapless playback
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org,
+ perex@perex.cz, tiwai@suse.com, plai@codeaurora.org
+References: <20200702111114.32217-1-srinivas.kandagatla@linaro.org>
+ <90ed95e0-8b01-6c87-b86b-dfa463181527@linux.intel.com>
+ <2444711a-319e-1f9b-1289-7744bb1a2987@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7b485413-98f1-fb13-2e82-4eeacbfff6dc@linux.intel.com>
-Date: Mon, 6 Jul 2020 10:03:14 -0500
+Message-ID: <ee34dac9-715c-6e6c-aa33-bb46f0c8261a@linux.intel.com>
+Date: Mon, 6 Jul 2020 10:14:30 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <d6980967-5def-58c9-39a9-239a5c671f3f@samsung.com>
+In-Reply-To: <2444711a-319e-1f9b-1289-7744bb1a2987@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>,
- broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ vathota@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ broonie@kernel.org, ckeepax@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,51 +94,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/3/20 1:47 PM, Sylwester Nawrocki wrote:
-> On 02.07.2020 18:58, Pierre-Louis Bossart wrote:
->> Fix W=1 warnings - missing fields in structure
+On 7/3/20 4:47 AM, Srinivas Kandagatla wrote:
+> Thanks Pierre for the comments,
+> 
+> +Adding Patric Lai into loop,
+> 
+> 
+> 
+> On 02/07/2020 16:00, Pierre-Louis Bossart wrote:
 >>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   sound/soc/samsung/pcm.c | 5 +++++
->>   1 file changed, 5 insertions(+)
 >>
->> diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
->> index a5b1a12b3496..86eefbc89e9e 100644
->> --- a/sound/soc/samsung/pcm.c
->> +++ b/sound/soc/samsung/pcm.c
->> @@ -104,8 +104,13 @@
+>> On 7/2/20 6:11 AM, Srinivas Kandagatla wrote:
+>>> For gapless playback its possible that each track can have different
+>>> codec profile with same decoder, for example we have WMA album,
+>>> we may have different tracks as WMA v9, WMA v10 and so on
+>>>
+>>> Existing code does not allow to change this profile while doing gapless
+>>> playback.
+>>>
+>>> This patch adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL to allow
+>>> userspace to set this new parameters required for new codec profile.
+>>
+>> That does not seem fully correct to me. WMA profiles are actually 
+>> different encoding schemes - specifically the WMA 10 LBR.
+>>
+>> The premise for gapless playback was that the same codec and profile 
+>> be used between tracks, so that the same internal delay was used. If 
+>> you look at the output data, it's made of zeroes for N samples, and 
+>> then you see decoded data. When you change tracks, the first N samples 
+>> actually come from the previous track.
+>>
+>> If you change coding schemes between tracks, you cannot call this 
+>> gapless playback. You will both remove the last N samples of the 
+>> previous track and insert M zeroes (for the new decoder).
+>>
+>> If you wanted to support such a mode, you would need to provide an 
+>> indication of the delay difference, e.g. by looking at the ID3 tags 
+>> and let firmware realign. Unfortunately, you don't send this 
+>> information with the new IOCTL? You would also need firmware tricks 
+>> for the first decoder to flush out its output and the new decoder to 
+>> realign.
+>>
+>> I also don't see how one might end-up with different profiles for an 
+>> album in the first place. The gapless use came mostly from ripping 
+>> live music recorded on audio CDs in different tracks, and it would 
+>> have taken a twisted mind to select different encodings between tracks.
+>>
+>> If the 'album' is really a playlist, then the gapless playback as 
+>> supported by the ASoC compressed layer is nearly useless. What you 
+>> would really want is cross-fade but that's a different use case and 
+>> implementation that would be needed.
 > 
-> Thank you for the patch, I have some suggestions to improve the comments.
+> Patrick seems to have discussed this topic in detail at one of the audio 
+> conf!
 > 
->>   /**
->>    * struct s3c_pcm_info - S3C PCM Controller information
->> + * @lock: Spin lock
-> 
-> @lock: Spin lock to serialize access to the device registers and @idle_clk
-> 
->>    * @dev: The parent device passed to use from the probe.
->>    * @regs: The pointer to the device register block.
->> + * @sclk_per_fs: number of sclk per frame sync
->> + * @idleclk: Whether to keep PCMSCLK enabled even when idle(no active xfer)
-> 
-> How about adding space before the opening parenthesis?
-> 
->> + * @pclk: the pclk pointer
-> 
-> @pclk: the PCLK_PCM (pcm) clock pointer
-> 
->> + * @cclk: the clck pointer
-> 
-> @cclk: the SCLK_AUDIO (audio-bus) clock pointer
-> 
->>    * @dma_playback: DMA information for playback channel.
->>    * @dma_capture: DMA information for capture channel.
->>    */
->   
-> With above changes feel free to add:
-> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> He might want to add more to this discussion.
 
-I wasn't really happy with the lame comments I added for pclk and cclk, 
-thanks for suggesting a better wording. Will fix in a v2.
+One more counter-argument I thought of after sending my response. If the 
+samples for the previous track and the next track are not generated by 
+the *same* filterbank, then you would lose the implicit averaging 
+between tracks performed by the filterbank (usually an inverse MDCT), 
+which will likely result in sample discontinuities and pop noise on 
+transitions. If we have different filterbanks we should really look into 
+explicit cross-fading which is a much larger change than what this patch 
+suggests.
+
 
