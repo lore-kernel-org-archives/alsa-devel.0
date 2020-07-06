@@ -2,72 +2,96 @@ Return-Path: <SRS0=aG7p=AR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B175AC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 10:14:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7046C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 11:30:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A3A520760
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 10:14:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 341AA2074F
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2020 11:30:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qlxepXZC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A3A520760
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K7MPymni";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="H4EH98DL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 341AA2074F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAD691680;
-	Mon,  6 Jul 2020 12:13:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAD691680
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEA011658;
+	Mon,  6 Jul 2020 13:30:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEA011658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594030470;
-	bh=EzKVS1WST4ATVLY8ixzGQxiWpuU4uP96t/suRRtmyNU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qlxepXZC1rxh7TS4+rZ7SHdZzleV+Zbk14v1qLrngVa6r/5I56IIasCEC4G2yIZeN
-	 C3WRZCLarjuHocDwuwSdGI4pAWsY9O3jjbsku9KjyKwM5Qqtt49jV8TTRJzCrDurHU
-	 v9jq02Jb6z1f/j2LJhHOb8FsEpqKOCLP1sLZZeqY=
+	s=default; t=1594035050;
+	bh=P+QHjmqJ/wu4dx3O3T/VEjcuS5rxOecmj4+68SWWCcQ=;
+	h=Subject:To:References:From:Date:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=K7MPymninEgkn5fnHgTSvLAeeTSm0vz79IFrTEXB+CLGCT6xqAMGl7T3Jtggpdt5r
+	 IGTmQgwMmD8uOg7g6ZZjxVij0WaLcBa2fLo+eBGM9XGWXzLRwvLPop9YhhviswiCk5
+	 zi7/OVLxM4gwMLvvAhLOyLgi0aaklF2FGLYvYQug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47062F80316;
-	Mon,  6 Jul 2020 12:07:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B90AF8011F;
+	Mon,  6 Jul 2020 13:30:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BF68F802F7; Mon,  6 Jul 2020 12:07:51 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 059B2F8015A; Mon,  6 Jul 2020 13:29:57 +0200 (CEST)
+Received: from mail29.static.mailgun.info (mail29.static.mailgun.info
+ [104.130.122.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2BBFF80125
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2020 12:07:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2BBFF80125
-IronPort-SDR: 4rfLHY4ebj4mgyxfMXlz5A12QvyNY076Y2GkWUtxdSisLhIu7KNef2ZXGWhjBFoiFH/v99by0W
- 3LiQ72HljNAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="135637975"
-X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; d="scan'208";a="135637975"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2020 03:07:44 -0700
-IronPort-SDR: mGophpnQgsVHtNuwWFnpdmrB7TrCLPVgva+niAWFKcoxGXPab9Wj0roJUCbbd7TNVZYNjpbV/q
- bSOmILmj7SmA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; d="scan'208";a="313913042"
-Received: from test-hp-compaq-8100-elite-cmt-pc.igk.intel.com ([10.237.149.93])
- by orsmga008.jf.intel.com with ESMTP; 06 Jul 2020 03:07:43 -0700
-From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 09/10] topology: decode: Add DAI name printing
-Date: Mon,  6 Jul 2020 11:06:02 +0200
-Message-Id: <1594026363-30276-10-git-send-email-piotrx.maziarz@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594026363-30276-1-git-send-email-piotrx.maziarz@linux.intel.com>
-References: <1594026363-30276-1-git-send-email-piotrx.maziarz@linux.intel.com>
-Cc: cezary.rojewski@intel.com, amadeuszx.slawinski@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2CC5F8011F
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2020 13:29:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2CC5F8011F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="H4EH98DL"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1594034990; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Date: Message-ID: From: References: Cc: To: Subject:
+ Sender; bh=B4x/MNKnw7dNqtrqeARr2ZbfiWYvHwIO7a3zTHiX2RQ=;
+ b=H4EH98DL+GHc4hPZehrYbX+ML77ClbmaiW10FZDiDLUA7BXF/5c7ddOAru2z6ymMcpiQdw2l
+ vb/l226gmdgVrKGN1+tv90J41O2M9kDD0tShxqrCRg/lk2wfSfL803pfP62xXJvLrwUktEaa
+ Tj3J8KBSkPKFXz+CK/zo9gQMWTw=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n18.prod.us-west-2.postgun.com with SMTP id
+ 5f030b2a117610c7ff13166b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 06 Jul 2020 11:29:46
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 0126AC433CA; Mon,  6 Jul 2020 11:29:46 +0000 (UTC)
+Received: from [192.168.0.129] (unknown [183.83.142.110])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: rohitkr)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 536EBC433C8;
+ Mon,  6 Jul 2020 11:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 536EBC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=none smtp.mailfrom=rohitkr@codeaurora.org
+Subject: Re: [PATCH v2 1/7] Documentation: device-tree: sound: Update
+ lpass-cpu driver binding
+To: Ajit Pandey <ajitp@codeaurora.org>, Mark Brown <broonie@kernel.org>
+References: 
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Message-ID: <f44e2526-3497-7900-0db6-39b6b5af2d9b@codeaurora.org>
+Date: Mon, 6 Jul 2020 16:59:39 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, plai@codeaurora.org, linux-kernel@vger.kernel.org,
+ srinivas.kandagatla@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,29 +107,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-DAI name is a part of topology binary. Not printing makes data loss while
-converting from binary to UCM.
 
-Change-Id: I57307108b5e922d18db2f155b9237db3fe175d7f
----
- src/topology/pcm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 5/16/2020 11:07 PM, Ajit Pandey wrote:
+> On 5/14/2020 10:14 PM, Mark Brown wrote:
+>> On Thu, May 14, 2020 at 10:08:12PM +0530, Ajit Pandey wrote:
+>>> Done the required cleanups to update lpass-cpu binding with newer
+>>> yaml formats.
+>> Please do YAML conversions as the last thing in any patch series, there
+>> is quite a big backlog of reviews of YAML conversions so they can slow
+>> down the code development.  It's good to do them, just try to make sure
+>> other patches don't depend on them.
+>>
+>> Please submit patches using subject lines reflecting the style for the
+>> subsystem, this makes it easier for people to identify relevant patches.
+>> Look at what existing commits in the area you're changing are doing and
+>> make sure your subject lines visually resemble what they're doing.
+>> There's no need to resubmit to fix this alone.
+>
+> Ok.. we'll do the yaml conversion as a separate patch chain so that it 
+> won't block
+>
+> merging of this feature in ASoC core.
 
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 49c5eab..5a54e15 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -781,7 +781,9 @@ int tplg_save_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 	struct snd_soc_tplg_pcm *pcm = elem->pcm;
- 	int err = 0;
- 
--	if (pcm->dai_id > 0)
-+	if (strlen(pcm->dai_name))
-+		err = tplg_save_printf(dst, pfx, "dai.'%s'.id %u\n", pcm->dai_name, pcm->dai_id);
-+	else if (pcm->dai_id > 0)
- 		err = tplg_save_printf(dst, pfx, "dai.0.id %u\n", pcm->dai_id);
- 	return err;
- }
+@Mark, I was planning to post v3 patchset series for this and keep yaml 
+change as
+
+last patch in the series as suggested. However, we have one update in 
+the driver to
+
+support another compatible string. If we keep Documentation change at 
+the last, the
+
+driver change will have checkpatch errors. Can you please suggest if 
+should make
+
+first Documentation change in text file itself before driver change and 
+finally have a
+
+patch to convert it to yaml at the end?
+
+
+Thanks,
+
+Rohit
+
 -- 
-2.7.4
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
 
