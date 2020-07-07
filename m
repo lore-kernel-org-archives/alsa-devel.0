@@ -7,100 +7,97 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBB1CC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 568BAC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:20:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 731C920702
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:19:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D68EE2065F
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:20:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LFXprp13";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eKf7OQbj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 731C920702
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aBWdqq42";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZKwj3HHw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D68EE2065F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D626515DC;
-	Tue,  7 Jul 2020 12:18:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D626515DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72FE5820;
+	Tue,  7 Jul 2020 12:19:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72FE5820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594117168;
-	bh=bB/EsNMT3r4QSVJf/UJcZsfcfVuUyBDo8aqPvM5R5ZA=;
+	s=default; t=1594117212;
+	bh=1Ifd8O975coMZ3wL2+EXrnNnrNU7zwyBLOi9HB9oScY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LFXprp136KPkRpVLFshA/oDaKiOgceh5J+6id1yL/npQqg2VRI2l/JnmcXn8ia3d+
-	 g0aW27Knzmoq3IQ/1sZx2HB3Hc8puFtLV18MMGvk+oky7IrOBSfVmFrzPMROupwqa4
-	 cdz3+rJlQL9NdH+lp5RDQcqsmSwBVlkcXB4RikAk=
+	b=aBWdqq42p82feafRwr66oa+vIdVsdT4naCX1zE31MpQ62J5v3yToQEqmtlFKEtaN3
+	 A49LE/H+ibjDKNhBZtkVwohQqkV2TdodXym2J2YZLJeesnbDFV161hZbwZfUe5I+fh
+	 dRs4/xPQfeQ+eiYT4OUFW8PQRlszaCSR3Yay6ZqM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3BCBF802E2;
-	Tue,  7 Jul 2020 12:17:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E6B4F80274;
+	Tue,  7 Jul 2020 12:17:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7EE52F802E0; Tue,  7 Jul 2020 12:17:02 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id BC6ACF802EB; Tue,  7 Jul 2020 12:17:05 +0200 (CEST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0108BF8025A
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:16:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0108BF8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04C16F80264
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:16:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04C16F80264
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="eKf7OQbj"
-Received: by mail-wr1-x441.google.com with SMTP id z2so22274612wrp.2
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:16:51 -0700 (PDT)
+ header.b="ZKwj3HHw"
+Received: by mail-wm1-x341.google.com with SMTP id g10so1411317wmc.1
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
- b=eKf7OQbj/SAKIuqAfQubX24p12bDVbV98ZLiLwXpicE8+hlGHR2Lwqg2oTYcLwu/qD
- Bn5Gn1gBc/1gGzBGsmqTb+Q+gUH+21qv7MFJY6nOjy++f7nMMe8Uoj5EWJRz+g+D/XLb
- lTtDXG7caO9jtnbnh02SmWHCT20SHTj18dUEk2p19o/ko5C6t0jv1EgkhiXWypF+9X83
- Yg2bkKaO/kwFRZb6VQD/FOiRIyeNO8bncKjdrWxHfp/Q3nQSOfaHxzzXXVE8YKEnUc15
- o/LFftlJi1GnXMqcbZ9j6KBshO9S1Arc8MHEO5MopHLhfQ3irAsVv5y6Ee972eCGsmtq
- 8Nyw==
+ bh=WA9dG36UknQVCp/Rfsks+W3xsfkt4WlYU9zyAfbsCgQ=;
+ b=ZKwj3HHwQOk7yXe4WVIDlXiwgYKi35YtfQOQBLtduNJaim5iOiInCvN13A/ysgBTFA
+ gid3Y1lntBVYfmTMVDpyzc5Dpl8m16t8Jmkd33+lgwA+zsTrLp9Z616D7dJuQEiEaqwO
+ xhLycdc4APcvWyNwd2DH6fBd6ToPPhQ4SLe5Q8uYSdU8kTWwRVjT0JLT2uqIRYnuU0yZ
+ //VZ8EBQVJv7gy0gQdMd9vdEqaX5MCkItW3oM2WVNZXGH7o0W+6cGt3kbz+cAiWIleC6
+ zj2SRmISQNV9o+ZRxaou75jIdRInodNYBtvGpqOlkAfZlEF9nqmJCeYzQc7IUAgDIhs6
+ NH0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
- b=h7BxOzgJFljBPOsRxKMN1aOWdfsFr11POoeZkcvAXIVkCHzmIiOCsCu6250hM3GGWC
- barMLfOH5dmPlCCAXub5OXSpvPMSUeFLviTH6E8Hj67FPRHH/bx0l+QCK01+dl2cygZH
- iAHgrI98ZAV723CfVgYvc5wacHk8BuZb46KcwuPKEXeMbs2riq+pRR+A/Lnb1gUDNLwB
- r9dyhtLFu9VCcvqsA6YV9Vcs1v6vFFcLBjgidSmni717xYHLWqIiygDdMlYJrGwzhAYT
- QANqVLJ2SJoAUsvUQsU59yRust4MGmTpEhlCrnIkdluqg+13Q6oKs3HKaGYH7VFDO1rX
- LSMg==
-X-Gm-Message-State: AOAM532x+0C/+sXuNCMZCBeFbMjb8YF/qMPxDOCconMyhqo4BVBxWrtE
- v4Bc/d5E+DLaVRLC1HVLl1IY7A==
-X-Google-Smtp-Source: ABdhPJxXHqSXuvC/N6FMDoHvlD9BJG1LNiYAOWrAD6I4lg3PAZdm04pKuSFnfS9ZIM3N4PgczWCONg==
-X-Received: by 2002:a5d:474f:: with SMTP id o15mr50415169wrs.306.1594117009607; 
- Tue, 07 Jul 2020 03:16:49 -0700 (PDT)
+ bh=WA9dG36UknQVCp/Rfsks+W3xsfkt4WlYU9zyAfbsCgQ=;
+ b=IbFLvFcAZ6mJUvExgJeoM6k49CkLYKQkWf4PW1dlUg3VWAWIrgN/MarVUsOH/7YcO3
+ XznX36m+uN5KvPzKmd3jDzDRf5Q90OKADiSRnz/JZVQ21ivVfHXlCGcEzdqvGSV2awO4
+ SQS9G5XffFecNFdYCA3J5XZWapdXy7c0PfUrkTVv1RFA50VsEwPiuj9gDBSB91HEin3A
+ WUHU3mA2x8EJLZkAKCziJ2tv02F6WSIDFPndHnyHnkhLa8crNoOgvAOy0ExQMpb0KnLz
+ SvhlQCaej16AW1bCpunKNlu3LpgD4uRuRf775rlouLbGxw9Y7OpldCUFmrOh7JdA8hKB
+ IsmQ==
+X-Gm-Message-State: AOAM530FPbIWgGzAr8Bh3RT70c0ZrdsAw4og0hgvoeCQLTiGno6ArQxP
+ k+gbtboEqwLJlP6SlalwCMhzYA==
+X-Google-Smtp-Source: ABdhPJwfe7mJl2Nlvy7MUCw7TJuJtcEgvNqi1W6VVbo7nbbTXXlCa6Y7P3z77mktRj4O6UVPNWCFTA==
+X-Received: by 2002:a1c:3245:: with SMTP id y66mr3228476wmy.64.1594117012898; 
+ Tue, 07 Jul 2020 03:16:52 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.48
+ by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 03:16:48 -0700 (PDT)
+ Tue, 07 Jul 2020 03:16:52 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH 02/28] ASoC: atmel: atmel_ssc_dai: Demote function header
- which is clearly not kerneldoc
-Date: Tue,  7 Jul 2020 11:16:16 +0100
-Message-Id: <20200707101642.1747944-3-lee.jones@linaro.org>
+Subject: [PATCH 04/28] ASoC: fsl: fsl_asrc: Demote obvious misuse of kerneldoc
+ to standard comment blocks
+Date: Tue,  7 Jul 2020 11:16:18 +0100
+Message-Id: <20200707101642.1747944-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Sedji Gaouaou <sedji.gaouaou@atmel.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Frank Mandarino <fmandarino@endrelia.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,36 +113,177 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No attempt has been made to document the demoted function here.
+No attempt has been made to document any of the demoted functions here.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/atmel/atmel_ssc_dai.c:892: warning: Function parameter or member 'ssc_id' not described in 'atmel_ssc_set_audio'
+ sound/soc/fsl/fsl_asrc.c:44: warning: cannot understand function prototype: 'unsigned char input_clk_map_imx35[ASRC_CLK_MAP_LEN] = '
+ sound/soc/fsl/fsl_asrc.c:78: warning: cannot understand function prototype: 'unsigned char clk_map_imx8qm[2][ASRC_CLK_MAP_LEN] = '
+ sound/soc/fsl/fsl_asrc.c:118: warning: Function parameter or member 'inrate' not described in 'fsl_asrc_sel_proc'
+ sound/soc/fsl/fsl_asrc.c:118: warning: Function parameter or member 'outrate' not described in 'fsl_asrc_sel_proc'
+ sound/soc/fsl/fsl_asrc.c:118: warning: Function parameter or member 'pre_proc' not described in 'fsl_asrc_sel_proc'
+ sound/soc/fsl/fsl_asrc.c:118: warning: Function parameter or member 'post_proc' not described in 'fsl_asrc_sel_proc'
+ sound/soc/fsl/fsl_asrc.c:158: warning: Function parameter or member 'channels' not described in 'fsl_asrc_request_pair'
+ sound/soc/fsl/fsl_asrc.c:158: warning: Function parameter or member 'pair' not described in 'fsl_asrc_request_pair'
+ sound/soc/fsl/fsl_asrc.c:201: warning: Function parameter or member 'pair' not described in 'fsl_asrc_release_pair'
+ sound/soc/fsl/fsl_asrc.c:223: warning: Function parameter or member 'pair' not described in 'fsl_asrc_set_watermarks'
+ sound/soc/fsl/fsl_asrc.c:223: warning: Function parameter or member 'in' not described in 'fsl_asrc_set_watermarks'
+ sound/soc/fsl/fsl_asrc.c:223: warning: Function parameter or member 'out' not described in 'fsl_asrc_set_watermarks'
+ sound/soc/fsl/fsl_asrc.c:242: warning: Function parameter or member 'pair' not described in 'fsl_asrc_cal_asrck_divisor'
+ sound/soc/fsl/fsl_asrc.c:242: warning: Function parameter or member 'div' not described in 'fsl_asrc_cal_asrck_divisor'
+ sound/soc/fsl/fsl_asrc.c:259: warning: Function parameter or member 'pair' not described in 'fsl_asrc_set_ideal_ratio'
+ sound/soc/fsl/fsl_asrc.c:259: warning: Function parameter or member 'inrate' not described in 'fsl_asrc_set_ideal_ratio'
+ sound/soc/fsl/fsl_asrc.c:259: warning: Function parameter or member 'outrate' not described in 'fsl_asrc_set_ideal_ratio'
+ sound/soc/fsl/fsl_asrc.c:310: warning: Function parameter or member 'pair' not described in 'fsl_asrc_config_pair'
+ sound/soc/fsl/fsl_asrc.c:310: warning: Function parameter or member 'use_ideal_rate' not described in 'fsl_asrc_config_pair'
+ sound/soc/fsl/fsl_asrc.c:516: warning: Function parameter or member 'pair' not described in 'fsl_asrc_start_pair'
+ sound/soc/fsl/fsl_asrc.c:545: warning: Function parameter or member 'pair' not described in 'fsl_asrc_stop_pair'
+ sound/soc/fsl/fsl_asrc.c:559: warning: Function parameter or member 'pair' not described in 'fsl_asrc_get_dma_channel'
+ sound/soc/fsl/fsl_asrc.c:559: warning: Function parameter or member 'dir' not described in 'fsl_asrc_get_dma_channel'
+ sound/soc/fsl/fsl_asrc.c:902: warning: Function parameter or member 'asrc' not described in 'fsl_asrc_init'
+ sound/soc/fsl/fsl_asrc.c:936: warning: Function parameter or member 'irq' not described in 'fsl_asrc_isr'
+ sound/soc/fsl/fsl_asrc.c:936: warning: Function parameter or member 'dev_id' not described in 'fsl_asrc_isr'
 
-Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: Frank Mandarino <fmandarino@endrelia.com>
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_asrc.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 0f18dfb85bfed..3a0335864034a 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -885,7 +885,7 @@ static int asoc_ssc_init(struct device *dev)
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 462ce9f9ab488..209bf80dc3670 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -37,7 +37,7 @@ static struct snd_pcm_hw_constraint_list fsl_asrc_rate_constraints = {
+ 	.list = supported_asrc_rate,
+ };
+ 
+-/**
++/*
+  * The following tables map the relationship between asrc_inclk/asrc_outclk in
+  * fsl_asrc.h and the registers of ASRCSR
+  */
+@@ -68,7 +68,7 @@ static unsigned char output_clk_map_imx53[ASRC_CLK_MAP_LEN] = {
+ 	0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
+ };
+ 
+-/**
++/*
+  * i.MX8QM/i.MX8QXP uses the same map for input and output.
+  * clk_map_imx8qm[0] is for i.MX8QM asrc0
+  * clk_map_imx8qm[1] is for i.MX8QM asrc1
+@@ -101,7 +101,7 @@ static unsigned char clk_map_imx8qxp[2][ASRC_CLK_MAP_LEN] = {
+ 	},
+ };
+ 
+-/**
++/*
+  * Select the pre-processing and post-processing options
+  * Make sure to exclude following unsupported cases before
+  * calling this function:
+@@ -147,7 +147,7 @@ static void fsl_asrc_sel_proc(int inrate, int outrate,
+ 		*post_proc = 1;
+ }
+ 
+-/**
++/*
+  * Request ASRC pair
+  *
+  * It assigns pair by the order of A->C->B because allocation of pair B,
+@@ -192,7 +192,7 @@ static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
+ 	return ret;
+ }
+ 
+-/**
++/*
+  * Release ASRC pair
+  *
+  * It clears the resource from asrc and releases the occupied channels.
+@@ -216,7 +216,7 @@ static void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
+ 	spin_unlock_irqrestore(&asrc->lock, lock_flags);
+ }
+ 
+-/**
++/*
+  * Configure input and output thresholds
+  */
+ static void fsl_asrc_set_watermarks(struct fsl_asrc_pair *pair, u32 in, u32 out)
+@@ -233,7 +233,7 @@ static void fsl_asrc_set_watermarks(struct fsl_asrc_pair *pair, u32 in, u32 out)
+ 			   ASRMCRi_OUTFIFO_THRESHOLD(out));
+ }
+ 
+-/**
++/*
+  * Calculate the total divisor between asrck clock rate and sample rate
+  *
+  * It follows the formula clk_rate = samplerate * (2 ^ prescaler) * divider
+@@ -249,7 +249,7 @@ static u32 fsl_asrc_cal_asrck_divisor(struct fsl_asrc_pair *pair, u32 div)
+ 	return ((div - 1) << ASRCDRi_AxCPi_WIDTH) | ps;
+ }
+ 
+-/**
++/*
+  * Calculate and set the ratio for Ideal Ratio mode only
+  *
+  * The ratio is a 32-bit fixed point value with 26 fractional bits.
+@@ -292,7 +292,7 @@ static int fsl_asrc_set_ideal_ratio(struct fsl_asrc_pair *pair,
  	return 0;
  }
  
 -/**
 +/*
-  * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
+  * Configure the assigned ASRC pair
+  *
+  * It configures those ASRC registers according to a configuration instance
+@@ -507,7 +507,7 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
+ 	return fsl_asrc_set_ideal_ratio(pair, inrate, outrate);
+ }
+ 
+-/**
++/*
+  * Start the assigned ASRC pair
+  *
+  * It enables the assigned pair and makes it stopped at the stall level.
+@@ -538,7 +538,7 @@ static void fsl_asrc_start_pair(struct fsl_asrc_pair *pair)
+ 	regmap_write(asrc->regmap, REG_ASRIER, ASRIER_AOLIE);
+ }
+ 
+-/**
++/*
+  * Stop the assigned ASRC pair
   */
- int atmel_ssc_set_audio(int ssc_id)
+ static void fsl_asrc_stop_pair(struct fsl_asrc_pair *pair)
+@@ -551,7 +551,7 @@ static void fsl_asrc_stop_pair(struct fsl_asrc_pair *pair)
+ 			   ASRCTR_ASRCEi_MASK(index), 0);
+ }
+ 
+-/**
++/*
+  * Get DMA channel according to the pair and direction.
+  */
+ static struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair,
+@@ -895,7 +895,7 @@ static const struct regmap_config fsl_asrc_regmap_config = {
+ 	.cache_type = REGCACHE_FLAT,
+ };
+ 
+-/**
++/*
+  * Initialize ASRC registers with a default configurations
+  */
+ static int fsl_asrc_init(struct fsl_asrc *asrc)
+@@ -929,7 +929,7 @@ static int fsl_asrc_init(struct fsl_asrc *asrc)
+ 	return regmap_write(asrc->regmap, REG_ASR56K, ipg_rate / 56000);
+ }
+ 
+-/**
++/*
+  * Interrupt handler for ASRC
+  */
+ static irqreturn_t fsl_asrc_isr(int irq, void *dev_id)
 -- 
 2.25.1
 
