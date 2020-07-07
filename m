@@ -7,75 +7,74 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDC87C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 21:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D929C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 21:01:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DEF820720
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 21:01:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FFDF206F6
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 21:01:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AQ4S793l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DEF820720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CDqK5nGI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FFDF206F6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 042261685;
-	Tue,  7 Jul 2020 23:00:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 042261685
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2B7B167B;
+	Tue,  7 Jul 2020 23:00:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2B7B167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594155678;
-	bh=mAfiToesfvz341cKew5cRW/EzL/9sziRc3jjcSBvbuQ=;
+	s=default; t=1594155693;
+	bh=LWOGiRvycLejGk24R6hgN8mQ4wWvpRvtQAgyuFVHubI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AQ4S793ldbjo0ZDd3h2KeRirGx4C/gVt9/SDEoRiqk+SYayCqx5CQ9S7HZV2r5qAI
-	 6Pz4bufxOKi5gIbbkGAd7kGA8f0AWI3SmGm78rsyCVekTA8be09eLvxdONNz5HlR/T
-	 NyBIbxqaJ7M3wEawmL2SwciMG2pf3Q8NsWBQgvZ4=
+	b=CDqK5nGI/WxU/YS4FUFDBs9PjBBQCCydpFs/qQt7oADTk5B2VnQnMndhj94S6ZX7F
+	 R6ZIF1iHJAjUS7VGYY6ygo9rdb3fiyqayb34qUBk37ooWNF1Il1gTWBDDVmFfJ5Eso
+	 G0lfwlS96sCsk1ZgUJrMYWkIHNHxKRN6TWXZClPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4589F802DD;
-	Tue,  7 Jul 2020 22:58:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC77CF802E2;
+	Tue,  7 Jul 2020 22:58:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BF00F80257; Tue,  7 Jul 2020 22:58:05 +0200 (CEST)
+ id A645CF802DB; Tue,  7 Jul 2020 22:58:08 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4748F80257
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 22:57:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4748F80257
-IronPort-SDR: sLeDv9H3ydYK7BcJg0YUGVzRkq4Hne9tvizSh6aG92IXapLp6hbfoUQkg5bCPpMmybRrnoH3iL
- KIRk4IA6mHuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="146762916"
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="146762916"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F81FF80264
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 22:57:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F81FF80264
+IronPort-SDR: K7SeSaVKsul10/UFOREPt8LMWLnOhOEDJRPKlzr8urjoG6IvGy2co0sAwkxyIXB+6L1/kFl1jf
+ pJASZ25VB2bA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="146762920"
+X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="146762920"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 13:57:53 -0700
-IronPort-SDR: 30qYnOwhP6jGrnxAPwtv8k4s082mRVv9MoQOdZWf1FPB3T8kQc5HKX/+OQBau/C4p6lQWGmzlr
- wl9kvHd99wuQ==
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="305796646"
+ 07 Jul 2020 13:57:55 -0700
+IronPort-SDR: 9/PH69B0olGdEMVy+2M6PN/DvU8BrGLkdmADvGIyv50g8FCtVUq1CEZc4Q6JvdyN5Sbb0mjuaQ
+ F4kXvkcILf5Q==
+X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="305796653"
 Received: from colvinch-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.229.3])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 13:57:52 -0700
+ 07 Jul 2020 13:57:54 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 3/6] ASoc: codecs: max98373: remove Idle_bias_on to let
- codec suspend
-Date: Tue,  7 Jul 2020 15:57:37 -0500
-Message-Id: <20200707205740.114927-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 5/6] ASoC: Intel: sof-sdw: add MAX98373 I2C dependencies
+Date: Tue,  7 Jul 2020 15:57:39 -0500
+Message-Id: <20200707205740.114927-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707205740.114927-1-pierre-louis.bossart@linux.intel.com>
 References: <20200707205740.114927-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Ryan Lee <ryans.lee@maximintegrated.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, randerwang <rander.wang@linux.intel.com>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,33 +90,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: randerwang <rander.wang@linux.intel.com>
+Reflect Kconfig changes and add both SoundWire and I2C modes
 
-Idle_bias_on is used to decide bias on/off in standby state by dapm.
-When Idle_bias_on is set to one, dapm will keep max98373 active at
-idle time. Max98373 is doing nothing in this state, so remove
-idle_bias_on setting to let max98373 get suspended when it is idle.
-
-Reviewed-by: Ryan Lee <ryans.lee@maximintegrated.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: randerwang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/max98373.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/intel/boards/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index c3202c1dc517..bf5572fc4f66 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -390,7 +390,6 @@ const struct snd_soc_component_driver soc_codec_dev_max98373 = {
- 	.num_dapm_widgets	= ARRAY_SIZE(max98373_dapm_widgets),
- 	.dapm_routes		= max98373_audio_map,
- 	.num_dapm_routes	= ARRAY_SIZE(max98373_audio_map),
--	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
- 	.non_legacy_dai_naming	= 1,
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 1032f6608045..d96fc1313434 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -565,6 +565,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+ 	depends on SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES || COMPILE_TEST
+ 	depends on SOUNDWIRE
+ 	depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
++	select SND_SOC_MAX98373_I2C
+ 	select SND_SOC_MAX98373_SDW
+ 	select SND_SOC_RT700_SDW
+ 	select SND_SOC_RT711_SDW
 -- 
 2.25.1
 
