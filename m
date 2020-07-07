@@ -2,138 +2,78 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 099F1C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:37:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC4FAC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:37:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 889C22065F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:37:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6412220702
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:37:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y7YnAxFf";
-	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="1fG0G8ss"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 889C22065F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nkiHu38s";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="KN3FUgW6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6412220702
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BA991694;
-	Tue,  7 Jul 2020 12:36:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BA991694
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDEBA1684;
+	Tue,  7 Jul 2020 12:37:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDEBA1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594118229;
-	bh=5ryEWQkTszs0vDuXYzAIkzPHeYBFvkNw1mDhMEzISOw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Y7YnAxFfoWw1qUX9H98NzzqWYEODJi6OHO8KLcLLKTP4lX650HrejJKC4yWZOCyf0
-	 VmJn8l9Ab1at2kMEHCqrVTyvO5Mihj5yMGzJ8rqFzeTvukJ7iJ1xXcdHHIoK3CPBik
-	 Ma4eDQGP9pTPEAfnSD0W5YkTkuQqV6QbVT2sXUHA=
+	s=default; t=1594118273;
+	bh=D0ssH4e3eiJBNljyOc756aE8nfEHm9AzQ21hHdhSmjA=;
+	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nkiHu38sPE/8nuH5lQcWnd5f/PPBeilS2BdP5UQrvf454+JGxZJyfucuxFbHrQY2m
+	 geIK3t2VTCH8EWJmHjo/bcoLBUotKp6D08JQnE5+zXa2S06BtKq23y20g5iA6RdUJY
+	 Y6KGKsUJBF58jVAr3EdVnnzvcVsy5WvrlVj9ShX4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6926BF802DB;
-	Tue,  7 Jul 2020 12:33:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB5BDF802DF;
+	Tue,  7 Jul 2020 12:34:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8457CF802DF; Tue,  7 Jul 2020 12:33:04 +0200 (CEST)
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam11on2071.outbound.protection.outlook.com [40.107.223.71])
+ id 8B412F802E8; Tue,  7 Jul 2020 12:34:27 +0200 (CEST)
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D3A8F8025A
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:32:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D3A8F8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D25EAF800D0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:34:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D25EAF800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="1fG0G8ss"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l54omh208ayP/id6Q0YVvq8fsQcCQ1c94XaGxm+v4n+mhOSzV6W209bL+dpw6CUVzUJpYKc7HsAGpqoUjV6S4G5co50/dOfYFG9N76Z0yz5u9cTlo6THn1mfHxvTSLFuLbjaBNFTzT3Kua+k+0bJmfdMrpcRxzQR/0X8W0pONBgHmih5fhgnNMbY3ot1duKOZ29/pwSwLUG6ZatPJZ645QDMFdYUE76FkOVY6u+r0lOQmiWtCEGEIxc0OZQyaJM6Zwsvji0mnbGE/oMvJLIRIvhvgGCuJ/fAJ0gB/I1ZBPhvaHdio3s443WZYDyCXjBwqwTWYilU8pxrx8a6TU7qKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uo0jBFwdYzI2HgdAr+Ljv02NvSGjdaRxTWqn/fpRYLc=;
- b=e8RgiFfYP2CRC7N0knr1TkeDL3AycGSIW0991HV5sAUJ6FMVk6u6DLhka04+2yFMZqbs5wd1pLblshPHsNGCOaQICdtST+Pzj5gzbBODbClie20o2XqygyV5YYxrpb24rA+vaM9kyCFbvunjjjhcHjy/AUBarfzVIknss032H6JhgGlqPK6S++gULfL9cCchGibx4B3tpYSF81qG1zzYc9dhBWxif6wfUptC1odNqtfykQoCvFyyWGsoun2BleUxo3wYFsWrw6ufsgW+tmJ/d7qqT7QmLGn6pAb2eRPXaBPpFQ0haZPocGaOw6w6s73sxVWe/kNQCJ2glB4RWGd/Rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uo0jBFwdYzI2HgdAr+Ljv02NvSGjdaRxTWqn/fpRYLc=;
- b=1fG0G8sskQ6PoNyV8Ee1lFIoJ4ouXliu9b/+emAwgLTjjfDhjy1IS3Dsa0dHRBUk+VXqwlGcWtSFnUssMhrIRUXkJMvIBOcireEXxmdrpqGfoq6WHDcV8C/wVBfdzzBoaRdp8NNWns3U19oO54Kxo7q4M1ob/3L6HsRMC3RZLik=
-Received: from MW2PR16CA0061.namprd16.prod.outlook.com (2603:10b6:907:1::38)
- by BN6PR12MB1297.namprd12.prod.outlook.com (2603:10b6:404:14::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Tue, 7 Jul
- 2020 10:32:49 +0000
-Received: from CO1NAM11FT008.eop-nam11.prod.protection.outlook.com
- (2603:10b6:907:1:cafe::a8) by MW2PR16CA0061.outlook.office365.com
- (2603:10b6:907:1::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21 via Frontend
- Transport; Tue, 7 Jul 2020 10:32:49 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; alsa-project.org; dkim=none (message not signed)
- header.d=none;alsa-project.org; dmarc=permerror action=none
- header.from=amd.com;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- CO1NAM11FT008.mail.protection.outlook.com (10.13.175.191) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3153.24 via Frontend Transport; Tue, 7 Jul 2020 10:32:49 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 7 Jul 2020
- 05:32:47 -0500
-Received: from SATLEXMB01.amd.com (10.181.40.142) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 7 Jul 2020
- 05:32:47 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Tue, 7 Jul 2020 05:32:44 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <alsa-devel@alsa-project.org>
-Subject: [PATCH] ASoC: amd: add ACPI dependency check
-Date: Tue, 7 Jul 2020 16:16:41 +0530
-Message-ID: <1594118813-18689-1-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
+ dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
+ header.b="KN3FUgW6"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
+ s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
+ References:In-Reply-To:Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID
+ :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+ Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+ :List-Post:List-Owner:List-Archive;
+ bh=0tYA2OGdalzXxQL21KHhAIsJJCzeGY/ZyL063pnitF8=; b=KN3FUgW6QQIjULY+ZifqTEGJss
+ q79dtrjyz/KeIFkaPOZ/9Kx/f2W9JuFRiKIaHKa0muGYoKKNj1DBZwTsLDA5PepEQqPK4BK4BeU9A
+ KdLS9ECKdLaak2OHwJjxbYcVBosjgi4Y+9buxIwiwgXDOLpYNAdmNDA8miCDXxMwZTRI=;
+Received: from [10.8.10.223] (helo=work)
+ by puleglot.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+ (Exim 4.93.0.4) (envelope-from <puleglot@puleglot.ru>)
+ id 1jskvY-000ePh-Ai; Tue, 07 Jul 2020 13:34:16 +0300
+Message-ID: <c233f32650a48c92a6c984db9da1f5c231df27a7.camel@tsoy.me>
+Subject: Re: Ignored USB-audio implicit feedback in kernel 5.8rc3
+From: Alexander Tsoy <alexander@tsoy.me>
+To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+Date: Tue, 07 Jul 2020 13:34:15 +0300
+In-Reply-To: <5bd5efb4-66f0-955c-783e-57aff997028a@ivitera.com>
+References: <5be78c36-bca0-da9c-43ec-2e2a538948a8@ivitera.com>
+ <51a129ba-d74f-bfe3-933c-4805bc87804a@ivitera.com>
+ <5bd5efb4-66f0-955c-783e-57aff997028a@ivitera.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SATLEXMB01.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFTY:;
- SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(46966005)(478600001)(26005)(70586007)(82310400002)(6666004)(70206006)(4326008)(186003)(47076004)(83380400001)(336012)(2906002)(54906003)(316002)(36756003)(2616005)(4744005)(356005)(86362001)(426003)(5660300002)(8936002)(81166007)(8676002)(82740400003)(6916009)(7696005);
- DIR:OUT; SFP:1101; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 50d3ebdd-6a28-4b20-129b-08d82261189f
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1297:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB129793D50BB5D4A6F6260B6697660@BN6PR12MB1297.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NlR5EPCd6bFcOWMQCeve1pztoeCubiE/8MDO2yd+IbIbImslI5EhYJqBAOzYDjgdHq7oBfrgbggBtlVOOaeG/2aCBg6f1I5xyqyuY3YijSXjRG2u2O+Pv+SSp/S5arKZfH+AqJ+PimCfPRb2q5NoGzRp9mISFtYvG4MfElw+Vv6EhqoVqbIOAYf9yn7M5w+8H3/GKJ9w57jW8NKmj2O5VoapcZcW2F0LUcvjkEIddwzCDloHphHHxHH5g5sSSfnH/NlsCoBVIBlJ8m+yTulFxcvOY1d+00TgVsEGl0zoJIB13ax9ZxbktlcPXgRRzl7PmLo2UXAM1FW594q40MZSOTFadtrg4UiQtHjUsqKxDvA+fY6vGxrPZqrodF2T+IUQCYzWw4hJrFG1pIVnY7z4mw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2020 10:32:49.1556 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50d3ebdd-6a28-4b20-129b-08d82261189f
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT008.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1297
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, hui.wang@canonical.com,
- Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Alexander.Deucher@amd.com
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -149,34 +89,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add ACPI dependency for evaluating DMIC hardware
-runtime.
+В Чт, 02/07/2020 в 13:28 +0200, Pavel Hofman пишет:
+> Dne 29. 06. 20 v 17:08 Pavel Hofman napsal(a):
+> > Dne 29. 06. 20 v 13:28 Pavel Hofman napsal(a):
+> > > Audio analyzer RTX6001 (XMOS-based) is using implicit feedback,
+> > > yet the
+> > > feedback is not used by the latest kernel 5.8 rc3 (i.e. already
+> > > with the
+> > > latest implicit-feedback patches).
+> > > 
+> > > Two analyzers on two different PCs are getting clicks in duplex-
+> > > mode
+> > > loobpack, one every 10 secs, the other one every 50 secs.
+> > > 
+> 
+> I am very sure the problem is identical to that for MOTU M2/4, Solid
+> State Logic SSL2+, Fractal Audio Axe-Fx III etc.
+> https://github.com/torvalds/linux/commit/e7585db1b0b5b4e4eb1967bb1472df308f7ffcbf
+> . I will try the simple quirk, IMO it will work OK. BTW if I
+> understand
+> correctly all these devices use the XMOS.
+> 
+> However, I would like to ask, why a quirk for these devices is
+> required.
+> The comment explanation in this interesting patch
+> https://lore.kernel.org/patchwork/patch/1174179/ talks about the same
+> EP
+> numbers, but in the different direction. 0x01 EP OUT + 0x81 EP IN
+> implicit feedback data. All the devices mentioned above have this
+> numbering, just the EP IN is in a different interface than the EP
+> OUT.
+> But please are there actually any duplex implicit feedback devices
+> having EP OUT and implicit-feedback EP IN  in the same interface? The
+> explicit feedback EP IN is clear, they are in the same interface. E-
+> MU
+> 0404 USB has EP OUT + EP IN explicit feedback in interface 1,
+> together,
+> EP IN implicit feedback data in interface 2. My other soundcards,
+> adaptive OUT and async IN again each in a different interface (though
+> there is no feedback to solve).
+> 
+> Please is the requirement that EP OUT + EP IN implicit feedback data
+> must be in the same interface really necessary? If such a requirement
+> was dropped, IMO many devices could be removed from the existing
+> set_sync_ep_implicit_fb_quirk and many devices would work out of the
+> box, as they require no other quirk (unlike the MOTUs, but that's a
+> different issue).
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/renoir/rn-pci-acp3x.c | 2 ++
- 1 file changed, 2 insertions(+)
+USB Audio Class specs are pretty clear about it: only one isochronous
+endpoint is allowed per interface. And it can be accompanied by the
+*explicit* feedback endpoint.
 
-diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-index d1faea5..165c93f 100644
---- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-+++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-@@ -218,6 +218,7 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- 		ret = -ENODEV;
- 		goto de_init;
- 	} else if (dmic_acpi_check == ACP_DMIC_AUTO) {
-+#if defined(CONFIG_ACPI)
- 		handle = ACPI_HANDLE(&pci->dev);
- 		ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
- 		if (ACPI_FAILURE(ret)) {
-@@ -228,6 +229,7 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- 			ret = -ENODEV;
- 			goto de_init;
- 		}
-+#endif
- 	}
- 
- 	adata->res = devm_kzalloc(&pci->dev,
--- 
-2.7.4
+I have patches that implement autodetection of implicit feedback, but I
+need to clean them up and be careful not to break Scarlett 18i8/18i20
+3rd Gen (these devices have 3 altsettings per interface and probably
+require some additional sample rates filtering, so that each sample
+rate uniquely match one single altsetting).
 
