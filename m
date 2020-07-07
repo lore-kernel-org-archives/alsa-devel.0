@@ -2,98 +2,93 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C9A0C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6733CC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 11:00:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF69220702
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:48:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6D2D2065D
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 11:00:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UIdNGyAF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="W7I/bYA4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF69220702
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H1fO7/PU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="dLgZqZOb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6D2D2065D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64EC61683;
-	Tue,  7 Jul 2020 12:47:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64EC61683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CC49166C;
+	Tue,  7 Jul 2020 12:59:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CC49166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594118920;
-	bh=vk9jR+Q9qynsTW3RGwZMwkvsjz5AeiN68oRmbekC0EA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1594119619;
+	bh=HgP0jte1uEBp0/EldBW2mmfa/xaCi6WXeXmXNLmIHk0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UIdNGyAF2lyqUYFFybF1V+H/HB/Ki14lDESWcRxmlB3/sQ3ulzzn9wEmsFPiws3GS
-	 havy3Z7zJsI/0FEUTqnsyi/Bp2OJ3XurRP4uwzZW3FWxQFX3pApELFGoUVH9JBuVXU
-	 1BTYnuKi3sOo6Xp8diYgueRaE67+9jo9xB0wYU2g=
+	b=H1fO7/PUJ16AGZlqoiT60deN3Dhsc6m/Ckns+T/Oi0IW0997FbyCGuD7t71E62zUn
+	 Na3qIC8O1dgoBjkI2UAnTcMY2FqP6TgSaO/Q3WJecvHvpaE0qrmBvnufu9JaOAzBTf
+	 E7qbuxX8YlMUQ74/jlQJRRR84GLkdJVgovonc6Os=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08171F801F9;
-	Tue,  7 Jul 2020 12:47:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA7C5F801F9;
+	Tue,  7 Jul 2020 12:59:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD3AAF80216; Tue,  7 Jul 2020 12:47:47 +0200 (CEST)
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+ id F27A6F800D0; Tue,  7 Jul 2020 12:59:26 +0200 (CEST)
+Received: from conssluserg-05.nifty.com (conssluserg-05.nifty.com
+ [210.131.2.90])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38C68F8011F
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:47:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38C68F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6274CF800D0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:59:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6274CF800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="W7I/bYA4"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 067AlXf7075713;
- Tue, 7 Jul 2020 05:47:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1594118854;
- bh=T+nHlhZOidYOCH29bUqU/Pu9XpetYy0kEACSndhggaU=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=W7I/bYA4P+vOJYQQssbhsAL3EojexiAa+4hA8Ips/b9sVXRZ/lf/JiINNDnpVcyce
- H9Ag4yjTH4rD48TwtCQnQEMC68gIMgROVFVlMQv/fuv2rMJPGwM3tBNQb9sa95Twlg
- sMzpFHxXjUXoh1/9xLoHvg3Ag5nFJR5SnOGcWFNI=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 067AlXG4099736
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 7 Jul 2020 05:47:33 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 7 Jul
- 2020 05:47:33 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 7 Jul 2020 05:47:33 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 067AlVc2096354;
- Tue, 7 Jul 2020 05:47:31 -0500
-Subject: Re: [PATCH 21/28] ASoC: ti: omap-mcbsp-st: Remove set, but unused
- variable 'w'
-To: Lee Jones <lee.jones@linaro.org>, <broonie@kernel.org>,
- <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>
-References: <20200707101642.1747944-1-lee.jones@linaro.org>
- <20200707101642.1747944-22-lee.jones@linaro.org>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <61d554e7-0579-3c6c-b9e1-30b135d5927c@ti.com>
-Date: Tue, 7 Jul 2020 13:48:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ dkim=pass (2048-bit key) header.d=nifty.com header.i=@nifty.com
+ header.b="dLgZqZOb"
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com
+ [209.85.217.52]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id 067Awmw7012540
+ for <alsa-devel@alsa-project.org>; Tue, 7 Jul 2020 19:58:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 067Awmw7012540
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1594119529;
+ bh=Q7blUsQ9JbN98/2v6PmnTU26WzCTrui/OAXxYYFuhio=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=dLgZqZOb+1s/K5aLOfNDqded0K4JdophwcRkFTTL4Po8yMixKmG+ezypY5cDyonf4
+ 2baAVDsHGf9tXnEbJkwAkUxwBjhzElyQYq6jF71BODCtrwzGkQDlhZK+zV5aJ6muWv
+ Otb0oPc/nL3cgndiZ0BQSAr/9aeG1Sy5JYzIMpNB/HffKJxL+r+fxAQ4oEfCYwL92T
+ LG3UHUJiJIPz3P1f9B/s6n/RGQOyFtSzHitUaiR2rwMA/uy6ZTvGI/rJiRmt5c/B6N
+ KHt92Tf5QfGQkq4D9JeqidL8NYp96aajg4loIh+m7/AT8B96bZbBSJemFzbtDhBEqo
+ ZmPN9LuYqhm5Q==
+X-Nifty-SrcIP: [209.85.217.52]
+Received: by mail-vs1-f52.google.com with SMTP id 64so16026723vsl.3
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:58:49 -0700 (PDT)
+X-Gm-Message-State: AOAM5330A+fadRr2GtNwfqJtsuJOjg083zBwgOaIg25ehgGLr5FJ7bsb
+ UqNE3wZgwQOtPtVtyrGEHaiIM4VB4P7gkr41Sk8=
+X-Google-Smtp-Source: ABdhPJx5C6TC1CTC3ZI4pLzUX4bW+vK98tg3hyw8GkksN3pcaONQiKgWX4RJM4Cxt/R3M5Kza1brZQUcvvb5lnQhBNU=
+X-Received: by 2002:a67:6c84:: with SMTP id
+ h126mr35660734vsc.181.1594119527826; 
+ Tue, 07 Jul 2020 03:58:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200707101642.1747944-22-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <samuel.ortiz@nokia.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+References: <20200702165901.164100-1-pierre-louis.bossart@linux.intel.com>
+ <20200702165901.164100-9-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200702165901.164100-9-pierre-louis.bossart@linux.intel.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 7 Jul 2020 19:58:10 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARV9p=TF+5kPx-MBOsGnE9mafndYTEoaWRAaieqeL5a5A@mail.gmail.com>
+Message-ID: <CAK7LNARV9p=TF+5kPx-MBOsGnE9mafndYTEoaWRAaieqeL5a5A@mail.gmail.com>
+Subject: Re: [PATCH 8/8] ASoC: uniphier: aio-core: fix kernel-doc
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.de>, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, "moderated list:ARM/UNIPHIER ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,51 +104,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Lee,
-
-On 07/07/2020 13.16, Lee Jones wrote:
-> Looks like 'w' has remained unchecked since the driver's inception.
->=20
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  sound/soc/ti/omap-mcbsp-st.c: In function =E2=80=98omap_mcbsp_st_chgai=
-n=E2=80=99:
->  sound/soc/ti/omap-mcbsp-st.c:145:6: warning: variable =E2=80=98w=E2=80=
-=99 set but not used [-Wunused-but-set-variable]
->=20
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> Cc: Samuel Ortiz <samuel.ortiz@nokia.com>
-> Cc: linux-omap@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Fri, Jul 3, 2020 at 1:59 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+> Fix W=1 warning - wrong parameter description and bad format
+>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  sound/soc/ti/omap-mcbsp-st.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.=
-c
-> index 5a32b54bbf3bb..643ef7eb68fc8 100644
-> --- a/sound/soc/ti/omap-mcbsp-st.c
-> +++ b/sound/soc/ti/omap-mcbsp-st.c
-> @@ -142,10 +142,9 @@ static void omap_mcbsp_st_fir_write(struct omap_mc=
-bsp *mcbsp, s16 *fir)
-> =20
->  static void omap_mcbsp_st_chgain(struct omap_mcbsp *mcbsp)
->  {
-> -	u16 w;
->  	struct omap_mcbsp_st_data *st_data =3D mcbsp->st_data;
-> =20
-> -	w =3D MCBSP_ST_READ(mcbsp, SSELCR);
-> +	MCBSP_ST_READ(mcbsp, SSELCR);
 
-The read can be removed at the same time.
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
->  	MCBSP_ST_WRITE(mcbsp, SGAINCR, ST_CH0GAIN(st_data->ch0gain) |
->  		       ST_CH1GAIN(st_data->ch1gain));
->=20
 
-- P=C3=A9ter
+>  sound/soc/uniphier/aio-core.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
+> index 9bcba06ba52e..b8195778953e 100644
+> --- a/sound/soc/uniphier/aio-core.c
+> +++ b/sound/soc/uniphier/aio-core.c
+> @@ -93,9 +93,9 @@ void aio_iecout_set_enable(struct uniphier_aio_chip *chip, bool enable)
+>
+>  /**
+>   * aio_chip_set_pll - set frequency to audio PLL
+> - * @chip  : the AIO chip pointer
+> - * @source: PLL
+> - * @freq  : frequency in Hz, 0 is ignored
+> + * @chip: the AIO chip pointer
+> + * @pll_id: PLL
+> + * @freq: frequency in Hz, 0 is ignored
+>   *
+>   * Sets frequency of audio PLL. This function can be called anytime,
+>   * but it takes time till PLL is locked.
+> @@ -267,7 +267,6 @@ void aio_port_reset(struct uniphier_aio_sub *sub)
+>  /**
+>   * aio_port_set_ch - set channels of LPCM
+>   * @sub: the AIO substream pointer, PCM substream only
+> - * @ch : count of channels
+>   *
+>   * Set suitable slot selecting to input/output port block of AIO.
+>   *
+> --
+> 2.25.1
+>
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
+-- 
+Best Regards
+Masahiro Yamada
