@@ -6,65 +6,65 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5A1EC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A309C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:24:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67CEE206DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:23:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C50BC206F6
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:24:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kZ/vo/ET"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67CEE206DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vkme1qGb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C50BC206F6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03E271688;
-	Tue,  7 Jul 2020 10:22:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03E271688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4103516A3;
+	Tue,  7 Jul 2020 10:23:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4103516A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594110211;
-	bh=LGvdu8UYIi2Xs+0PHr8XOMbq4etE5iIMnrFZnCo5pCc=;
+	s=default; t=1594110259;
+	bh=g+kS8wtM6zapfe8LCyRKDC+HR4/Ec0amYB+nnAw4lJY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kZ/vo/ETE+LsVIVCwZ3MAyhJahX6ngrZWW/y/Kv/NlSt9CAlShrfQs+DwCxKjhKXl
-	 AMTKt4WwRMRgFnchsb7FRq6HVMd16t1be/XVQfILYZZi1mrUS+QzKH7lxb7CSupLXJ
-	 W/L8rv5Dgt70hgL4OqzWGVW8YR/TZi8MJlPhfWmA=
+	b=vkme1qGbUQcjNi4Peo5QW13/Wx8q9USIxM7Im/FSSvxV2XjY7iGt2HEOc1uORnCl3
+	 AekbDJeYuQPxcD3jLM/SYM3+qM2OKvngVYxES2RIAGyH0pP1OPo2suMWwNANBIgFT5
+	 4iOG8HWaHzCCZZUVopHDzMXJJ7swoiNKwZyWS0Uc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04B7AF8025A;
-	Tue,  7 Jul 2020 10:21:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3C64F802A0;
+	Tue,  7 Jul 2020 10:22:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00E45F80264; Tue,  7 Jul 2020 10:21:56 +0200 (CEST)
+ id 65AADF8027C; Tue,  7 Jul 2020 10:22:10 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D3D0F800D0
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:21:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D3D0F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 415E1F8027C
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:22:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 415E1F8027C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0EE03B11F;
- Tue,  7 Jul 2020 08:21:51 +0000 (UTC)
-Date: Tue, 07 Jul 2020 10:21:50 +0200
-Message-ID: <s5hy2nvenvl.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 46580AF5C;
+ Tue,  7 Jul 2020 08:22:04 +0000 (UTC)
+Date: Tue, 07 Jul 2020 10:22:03 +0200
+Message-ID: <s5hwo3fenv8.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: Re: [PATCH v3 2/3] ALSA: hda/realtek: Enable headset mic of Acer
- C20-820 with ALC269VC
-In-Reply-To: <20200706071826.39726-2-jian-hong@endlessm.com>
+Subject: Re: [PATCH v3 3/3] ALSA: hda/realtek: Enable headset mic of Acer
+ Veriton N4660G with ALC269VC
+In-Reply-To: <20200706071826.39726-3-jian-hong@endlessm.com>
 References: <aa62a43d4f1f458fb11794c26d373528@realtek.com>
- <20200706071826.39726-2-jian-hong@endlessm.com>
+ <20200706071826.39726-3-jian-hong@endlessm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Daniel Drake <drake@endlessm.com>, linux@endlessm.com
+ linux@endlessm.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,15 +80,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 06 Jul 2020 09:18:27 +0200,
+On Mon, 06 Jul 2020 09:18:29 +0200,
 Jian-Hong Pan wrote:
 > 
-> The Acer Aspire C20-820 AIO's audio (1025:1065) with ALC269VC can't
-> detect the headset microphone until ALC269VC_FIXUP_ACER_HEADSET_MIC
+> The Acer Veriton N4660G desktop's audio (1025:1248) with ALC269VC cannot
+> detect the headset microphone until ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE
 > quirk maps the NID 0x18 as the headset mic pin.
 > 
 > Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
-> Signed-off-by: Daniel Drake <drake@endlessm.com>
 
 Applied now.  Thanks.
 
