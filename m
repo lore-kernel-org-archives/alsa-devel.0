@@ -7,97 +7,96 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8601C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F00CC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:43:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50A3B2073E
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:43:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26DAB2073E
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:43:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KiqgYVQI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fHAcXDu+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50A3B2073E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Au/NNmfQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Tihaag9j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26DAB2073E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E305A836;
-	Tue,  7 Jul 2020 16:42:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E305A836
+	by alsa0.perex.cz (Postfix) with ESMTPS id A789A84A;
+	Tue,  7 Jul 2020 16:42:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A789A84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594132991;
-	bh=mw95CkI5w7XqTqMPoY7XATVIUvRfIyizz0DHyD272so=;
+	s=default; t=1594133027;
+	bh=UeaKl4pv+RuJz2Ecee5sA+b4IurRmuXeBKL/YsV1/2E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KiqgYVQIeE1WJHsqJ7UuNTH6GfCgSW2vf717TYxh6W6xBvPpmYZheGUzUr/yECZuq
-	 zXoOJzJJh05KyDyAWnmhUNLxrvl8qayTUYNeosUKCo1FjDHA4xhwdLmNg5Os6l/r+1
-	 Ho7Da5D/5gRRRHD/SPIUC4GWg9HYCvAWQPkjjeqQ=
+	b=Au/NNmfQnqA5He31vyMelNxMErFApBsyJes2GIna0w9pSFoZSIbH6Piu+pjxUMFJ+
+	 Y+IGIiZShIGThmgC8ELPRl2Gg6IMOSA+LptL5Jee74LEjP0JPNo2lgJtxEXdloe0AW
+	 Hswlt5ur7TUbqWiMcNkuLMtfiJ9KmNPK+l4Beoxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 493C7F80304;
-	Tue,  7 Jul 2020 16:38:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13D2EF80315;
+	Tue,  7 Jul 2020 16:38:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DB05F802DC; Tue,  7 Jul 2020 16:38:04 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id 170B6F802E1; Tue,  7 Jul 2020 16:38:08 +0200 (CEST)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8F46F80216
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:37:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F46F80216
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0965AF802BD
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0965AF802BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="fHAcXDu+"
-Received: by mail-wm1-x343.google.com with SMTP id f139so46802659wmf.5
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:37:53 -0700 (PDT)
+ header.b="Tihaag9j"
+Received: by mail-wm1-x344.google.com with SMTP id f18so46801839wml.3
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=3bZAeFSvmpf6EGc1Rrn0+wIXui3QoI3bJ6wz54zb8+8=;
- b=fHAcXDu+0UDjAnGsZCpwvS2l6qqAL8KmU4/hZ2TsI5PgHIV4qOmanuD2x2pHG+neQR
- rVDB6l2WKwx9LfjnXOERwPjwChvNC3rPwvPr+IZCPGw1hiH87JNKO9AYKyl98eB2EGUz
- EaMvmCzXOLeW7e/lm3xuIV1iuSBcuhwlYAnYJWnAcibJ0GskYWUh8FAWSVx+dzSMe7Jz
- jBt66d+DjwY3WlVfNoEWnRqDkhkUdC7RN3K82BNOCWsgmoSOCy83skF07gRV0M6X9XRK
- 0HKwjDOHWQxu2qf4f+WgVopEsOm+Oursvksd+98NeUY3Xw6x/oVQqoKftaB0RuJU/SGk
- HRJw==
+ bh=HXwAK5e9O3NfsiXPR7kk8AeqU5Nw2ls4PmOWf/vu7lg=;
+ b=Tihaag9jMZwV29UerK76hQHb+DRXAFh+EUs1V7aQVmLUfa12c5Fgqr88tInVnn3Uc1
+ LOGKlmUmb+W/soV/36Apjvy+WJPjIp43OaM8ccv/ZI9kSNdijHkDH6/Gl3UPf7G6HBdf
+ xiaH7jdxISmGJOyBG2mT24keyFUnXZ4oMlos6cNb89np7R9u13rqCCPwN0VKr6W4bKj+
+ V3acj0cuYTx9DTeA41/QMR0Gn4mK+hnG7Aaa7kxv48yTjcNutHvDXt1ekAr2SXoIQr8n
+ 6YJeRmk++sSjJasxlfqA1DPJNpHwqCymdkR6TM+tEFI+jO78WkaMABQw3YGw7/etEaqx
+ 208A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=3bZAeFSvmpf6EGc1Rrn0+wIXui3QoI3bJ6wz54zb8+8=;
- b=cF4EKdkecP0/XguLPjL/ZuOsRHwBm3C2V8BUSBMjBe+5Qf2oBN3VBb+cddGNqdpbv5
- dRZ6zH+d8Nv2l3+Km7ZRh6Ss6WJlkknSTM6c0cxG6pnkFCuC6yQmzdGHULMK/card0RM
- Tx9f4yGGEeKb3ia6nhjeb+s3RDKbZUeemVDEWwdWI2HVfvSo3O8vwUAsrdEj9vrJfcFL
- P7uSLPjqQN2/ViGRTloBMF4xnKCE9aFEBXvlJwA6tPG/aWD1TUWR+c3euUe0DQCiYyv7
- +SP3Cmip5e52XGApgj2XyaR1Tvn37/EUepDFpqLUyzXCoj6tQHkDAp1YImpc+o5dZHRb
- WOVQ==
-X-Gm-Message-State: AOAM532tMnGYIaDdqkrG/WZCzVCTSSZc1iYYymSVtIORfKnuzgdhNEEx
- /WTFNSGAAtptZntqcodgDD2miQ==
-X-Google-Smtp-Source: ABdhPJxrmoWb0AoG8dtrTzwDrsrwfZ+hGey8KGQBrgisAT3KZ2gvAURvfT4TDuU3PO43BZl1AP9usg==
-X-Received: by 2002:a05:600c:2154:: with SMTP id
- v20mr4914902wml.185.1594132673269; 
- Tue, 07 Jul 2020 07:37:53 -0700 (PDT)
+ bh=HXwAK5e9O3NfsiXPR7kk8AeqU5Nw2ls4PmOWf/vu7lg=;
+ b=Ml/JAURvFBLlWzdJIFGeYTeFsnIuP8yxS7UaxA7Rdx7K3sMkw5J38zV24CUGI2mFWD
+ Uvlv+f2yRhw2HIXRJGfxnMn/iozCX9GfrpO/Oeubgz2MRxbZUZ32QwAAQC24kn0MwCug
+ +n+JwiIf7lkvHdB2BNkNGCFiUI3iwOQAilFYYRymg88mi8weYBgW3iARzXqPPQwZsKdC
+ 1gRnzsn/UBO9yXaj2osWZq/T7Q7ntyVeKFqSftNTWkZdiHtiEZCfHjkD8OCPsUME87SN
+ 0uRCDxgY9GXGxNtT0KdkuKFHQUiFckQ/z5v1R2sg1GSUSl7zSFP2oyoiKmUMA+VvBd/G
+ 7N4w==
+X-Gm-Message-State: AOAM532aqFCCYMRMzmz+V2KsNmstbwr0PAs8GU3+K+XWhQ/oBbIM/UuJ
+ M362zit6bZEn5yERgjUJODBzzQ==
+X-Google-Smtp-Source: ABdhPJxKl25fOx72TKj8zseBRL2O39bOx4sTMEBHeAZ/aj9XhWqZW3rmDeB2Wlp30lHgwCTBjVA4cg==
+X-Received: by 2002:a1c:7f82:: with SMTP id a124mr4232616wmd.132.1594132680416; 
+ Tue, 07 Jul 2020 07:38:00 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.37.52
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.37.55
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 07:37:52 -0700 (PDT)
+ Tue, 07 Jul 2020 07:37:59 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 06/28] ASoC: fsl: fsl_ssi_dbg: Demote obvious misuse of
- kerneldoc to standard comment blocks
-Date: Tue,  7 Jul 2020 15:37:20 +0100
-Message-Id: <20200707143742.2959960-7-lee.jones@linaro.org>
+Subject: [PATCH v2 08/28] ASoC: fsl: fsl_spdif: Update 'struct
+ fsl_spdif_priv's descriptions
+Date: Tue,  7 Jul 2020 15:37:22 +0100
+Message-Id: <20200707143742.2959960-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- Nicolin Chen <nicoleotsuka@gmail.com>, Markus Pargmann <mpa@pengutronix.de>,
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, alsa-devel@alsa-project.org,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
  Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -114,48 +113,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No attempt has been made to document either of the demoted functions here.
+Two descriptions for 'soc' and 'regcache_srpc' were missing.  Add them.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/fsl/fsl_ssi_dbg.c:90: warning: Function parameter or member 'flag' not described in 'SIER_SHOW'
- sound/soc/fsl/fsl_ssi_dbg.c:90: warning: Function parameter or member 'name' not described in 'SIER_SHOW'
- sound/soc/fsl/fsl_ssi_dbg.c:99: warning: Function parameter or member 's' not described in 'fsl_ssi_stats_show'
- sound/soc/fsl/fsl_ssi_dbg.c:99: warning: Function parameter or member 'unused' not described in 'fsl_ssi_stats_show'
+ sound/soc/fsl/fsl_spdif.c:125: warning: Function parameter or member 'soc' not described in 'fsl_spdif_priv'
+ sound/soc/fsl/fsl_spdif.c:125: warning: Function parameter or member 'regcache_srpc' not described in 'fsl_spdif_priv'
 
 Cc: Timur Tabi <timur@kernel.org>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Xiubo Li <Xiubo.Lee@gmail.com>
 Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>
 Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/fsl/fsl_ssi_dbg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
-index 2a20ee23dc52d..2c46c55f0a882 100644
---- a/sound/soc/fsl/fsl_ssi_dbg.c
-+++ b/sound/soc/fsl/fsl_ssi_dbg.c
-@@ -78,7 +78,7 @@ void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *dbg, u32 sisr)
- 		dbg->stats.tfe0++;
- }
- 
--/**
-+/*
-  * Show the statistics of a flag only if its interrupt is enabled
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 7aa3bdec5b6b5..f0b2375a9246f 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -83,6 +83,7 @@ struct spdif_mixer_control {
+ /**
+  * struct fsl_spdif_priv - Freescale SPDIF private data
   *
-  * Compilers will optimize it to a no-op if the interrupt is disabled
-@@ -90,7 +90,7 @@ void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *dbg, u32 sisr)
- 	} while (0)
++ * @soc: SoC specific data
+  * @fsl_spdif_control: SPDIF control data
+  * @cpu_dai_drv: cpu dai driver
+  * @pdev: platform device pointer
+@@ -100,6 +101,7 @@ struct spdif_mixer_control {
+  * @spbaclk: SPBA clock (optional, depending on SoC design)
+  * @dma_params_tx: DMA parameters for transmit channel
+  * @dma_params_rx: DMA parameters for receive channel
++ * @regcache_srpc: regcache for SRPC
+  */
+ struct fsl_spdif_priv {
+ 	const struct fsl_spdif_soc_data *soc;
+@@ -120,7 +122,6 @@ struct fsl_spdif_priv {
+ 	struct clk *spbaclk;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+-	/* regcache for SRPC */
+ 	u32 regcache_srpc;
+ };
  
- 
--/**
-+/*
-  * Display the statistics for the current SSI device
-  *
-  * To avoid confusion, only show those counts that are enabled
 -- 
 2.25.1
 
