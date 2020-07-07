@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEE7DC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 20:41:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0E3DC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 20:42:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BCD9206BE
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 20:41:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2956B206BE
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 20:42:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pgEgX2hd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BCD9206BE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A1DyemwE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2956B206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC3DB16A6;
-	Tue,  7 Jul 2020 22:41:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC3DB16A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D1EE169A;
+	Tue,  7 Jul 2020 22:41:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D1EE169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594154517;
-	bh=PCqvaGszVrkk5VUXnkoeR7yyny1UA7jXOqOtZwTP/e0=;
+	s=default; t=1594154561;
+	bh=Ta0OouKo/ebi3WGFn6ZN5ZkTJeSjvTpbfRsg+/rHSDE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pgEgX2hdnCGwUr7l6TzntC/49FW2zRL8aUVquJ+eP0vkK2PrNdVJ5I5kVEztv+Yug
-	 t6OZmgAl6Jx+KwmADid+EvT/3AK0AkgEZs8AiLE+M8pajoYkQSnYopis/lWgqy7OvY
-	 9ovM0ov1RdnU6yd4J208XBJFUzhVvsKBtW/2LgK0=
+	b=A1DyemwE9issfd4N7OV8CcL2tgk+MLU0XHDbH8gH9/piDZCim1ZlOr6pYpvRQWWL3
+	 QlLlAMUZYFvhvhlTSLnA2DSEknEiI15kYA9hkDpsm18VOXyHBWJc0U6DYoqm8sOBzg
+	 X0a/Z5+a0/qH6uo9YEt9S5h0tUrd28OxMVuFFPK8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADA22F802E2;
-	Tue,  7 Jul 2020 22:38:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4514BF802E9;
+	Tue,  7 Jul 2020 22:38:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CF64F8025A; Tue,  7 Jul 2020 22:38:37 +0200 (CEST)
+ id C85E9F802DF; Tue,  7 Jul 2020 22:38:37 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D01BEF8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABDA4F80257
  for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 22:38:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D01BEF8025A
-IronPort-SDR: /FhY8zc9ePQ1P9cgoj3nuheef/W+SgwMfz9ffRnPfj5tD2bADautOOkvcoSHwTTkr+zWmUNyzm
- pjMjVrNb86rw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="147700573"
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="147700573"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABDA4F80257
+IronPort-SDR: tnej+uOSZK3zX4jWNuFMMopVtektvtYzifXC5Y4Lh6xk9aVrk2SnFAapv620ZLMFV+lCs0SIrl
+ 1p0ruQu0F6YQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="147700570"
+X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="147700570"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 13:38:24 -0700
-IronPort-SDR: VMX1H1IlD0R8dTrnwi06I4+8mrCdxOa65BDq/7j53fPdbAL48kj5i3Ihc4/64fsYakBKqpzXRg
- OqW3snHvlO4Q==
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="483640824"
+ 07 Jul 2020 13:38:23 -0700
+IronPort-SDR: Otrtj5swxbIPn8oVrgBYx8Z9UjANBvKXwMdKnV3GgJVoDDMAm0L0AYvRaBbrT74bUB+xweVNpY
+ NA/Jsst2XSOQ==
+X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; d="scan'208";a="483640818"
 Received: from colvinch-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.229.3])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  07 Jul 2020 13:38:23 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/5] ASoC: topology: factor kfree(se) in error handling
-Date: Tue,  7 Jul 2020 15:37:48 -0500
-Message-Id: <20200707203749.113883-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/5] ASoC: topology: use break on errors, not continue
+Date: Tue,  7 Jul 2020 15:37:47 -0500
+Message-Id: <20200707203749.113883-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707203749.113883-1-pierre-louis.bossart@linux.intel.com>
 References: <20200707203749.113883-1-pierre-louis.bossart@linux.intel.com>
@@ -90,77 +90,212 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No need to repeat the same thing multiple times when it can be done in
-one location.
+Since the beginning of the topology, the code continues to the next
+object even when an error is detected.
+
+The topology should be handled with an all-or-nothing design, loading
+a partially valid topology is a sure way to get bug reports that are
+difficult to deal with.
+
+Changing the behavior may break previous solutions and expose problems
+in topology files delivered in the past, so it's probably not wise to
+add this patch to stable branches without revalidation.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/soc-topology.c | 53 +++++++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index d42f73f7038f..4004fc882912 100644
+index 6eaa00c21011..d42f73f7038f 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1055,7 +1055,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 				dev_err(tplg->dev,
+@@ -741,7 +741,8 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned int count,
+ 	struct snd_soc_tplg_bytes_control *be;
+ 	struct soc_bytes_ext *sbe;
+ 	struct snd_kcontrol_new kc;
+-	int i, err;
++	int i;
++	int err = 0;
+ 
+ 	if (soc_tplg_check_elem_count(tplg,
+ 		sizeof(struct snd_soc_tplg_bytes_control), count,
+@@ -786,7 +787,7 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned int count,
+ 		if (err) {
+ 			soc_control_err(tplg, &be->hdr, be->hdr.name);
+ 			kfree(sbe);
+-			continue;
++			break;
+ 		}
+ 
+ 		/* pass control to driver for optional further init */
+@@ -796,7 +797,7 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned int count,
+ 			dev_err(tplg->dev, "ASoC: failed to init %s\n",
+ 				be->hdr.name);
+ 			kfree(sbe);
+-			continue;
++			break;
+ 		}
+ 
+ 		/* register control here */
+@@ -806,12 +807,12 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned int count,
+ 			dev_err(tplg->dev, "ASoC: failed to add %s\n",
+ 				be->hdr.name);
+ 			kfree(sbe);
+-			continue;
++			break;
+ 		}
+ 
+ 		list_add(&sbe->dobj.list, &tplg->comp->dobj_list);
+ 	}
+-	return 0;
++	return err;
+ 
+ }
+ 
+@@ -821,7 +822,8 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 	struct snd_soc_tplg_mixer_control *mc;
+ 	struct soc_mixer_control *sm;
+ 	struct snd_kcontrol_new kc;
+-	int i, err;
++	int i;
++	int err = 0;
+ 
+ 	if (soc_tplg_check_elem_count(tplg,
+ 		sizeof(struct snd_soc_tplg_mixer_control),
+@@ -880,7 +882,7 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 		if (err) {
+ 			soc_control_err(tplg, &mc->hdr, mc->hdr.name);
+ 			kfree(sm);
+-			continue;
++			break;
+ 		}
+ 
+ 		/* create any TLV data */
+@@ -889,7 +891,7 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
+ 				mc->hdr.name);
+ 			kfree(sm);
+-			continue;
++			break;
+ 		}
+ 
+ 		/* pass control to driver for optional further init */
+@@ -900,7 +902,7 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 				mc->hdr.name);
+ 			soc_tplg_free_tlv(tplg, &kc);
+ 			kfree(sm);
+-			continue;
++			break;
+ 		}
+ 
+ 		/* register control here */
+@@ -911,13 +913,13 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 				mc->hdr.name);
+ 			soc_tplg_free_tlv(tplg, &kc);
+ 			kfree(sm);
+-			continue;
++			break;
+ 		}
+ 
+ 		list_add(&sm->dobj.list, &tplg->comp->dobj_list);
+ 	}
+ 
+-	return 0;
++	return err;
+ }
+ 
+ static int soc_tplg_denum_create_texts(struct soc_enum *se,
+@@ -997,7 +999,8 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
+ 	struct snd_soc_tplg_enum_control *ec;
+ 	struct soc_enum *se;
+ 	struct snd_kcontrol_new kc;
+-	int i, ret, err;
++	int i;
++	int err = 0;
+ 
+ 	if (soc_tplg_check_elem_count(tplg,
+ 		sizeof(struct snd_soc_tplg_enum_control),
+@@ -1053,7 +1056,7 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
  					"ASoC: could not create values for %s\n",
  					ec->hdr.name);
--				kfree(se);
- 				goto err_denum;
+ 				kfree(se);
+-				continue;
++				goto err_denum;
  			}
  			/* fall through */
-@@ -1067,7 +1066,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 				dev_err(tplg->dev,
+ 		case SND_SOC_TPLG_CTL_ENUM:
+@@ -1065,15 +1068,16 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
  					"ASoC: could not create texts for %s\n",
  					ec->hdr.name);
--				kfree(se);
- 				goto err_denum;
+ 				kfree(se);
+-				continue;
++				goto err_denum;
  			}
  			break;
-@@ -1076,7 +1074,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
+ 		default:
++			err = -EINVAL;
  			dev_err(tplg->dev,
  				"ASoC: invalid enum control type %d for %s\n",
  				ec->hdr.ops.info, ec->hdr.name);
--			kfree(se);
- 			goto err_denum;
+ 			kfree(se);
+-			continue;
++			goto err_denum;
  		}
  
-@@ -1084,7 +1081,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 		err = soc_tplg_kcontrol_bind_io(&ec->hdr, &kc, tplg);
+ 		/* map io handlers */
+@@ -1081,7 +1085,7 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
  		if (err) {
  			soc_control_err(tplg, &ec->hdr, ec->hdr.name);
--			kfree(se);
- 			goto err_denum;
+ 			kfree(se);
+-			continue;
++			goto err_denum;
  		}
  
-@@ -1094,7 +1090,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 		if (err < 0) {
+ 		/* pass control to driver for optional further init */
+@@ -1091,23 +1095,23 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
  			dev_err(tplg->dev, "ASoC: failed to init %s\n",
  				ec->hdr.name);
--			kfree(se);
- 			goto err_denum;
+ 			kfree(se);
+-			continue;
++			goto err_denum;
  		}
  
-@@ -1104,13 +1099,15 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 		if (err < 0) {
+ 		/* register control here */
+-		ret = soc_tplg_add_kcontrol(tplg,
+-			&kc, &se->dobj.control.kcontrol);
+-		if (ret < 0) {
++		err = soc_tplg_add_kcontrol(tplg,
++					    &kc, &se->dobj.control.kcontrol);
++		if (err < 0) {
  			dev_err(tplg->dev, "ASoC: could not add kcontrol %s\n",
  				ec->hdr.name);
--			kfree(se);
- 			goto err_denum;
+ 			kfree(se);
+-			continue;
++			goto err_denum;
  		}
  
  		list_add(&se->dobj.list, &tplg->comp->dobj_list);
  	}
-+	return 0;
-+
- err_denum:
-+	kfree(se);
- 	return err;
+-
+-	return 0;
++err_denum:
++	return err;
  }
  
+ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
+@@ -1361,8 +1365,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 		if (err < 0) {
+ 			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
+ 				mc->hdr.name);
+-			kfree(sm);
+-			continue;
++			goto err_sm;
+ 		}
+ 
+ 		/* pass control to driver for optional further init */
 -- 
 2.25.1
 
