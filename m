@@ -7,97 +7,95 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A36CEC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7567EC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:51:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2ECF9206DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:51:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01D7C20771
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:51:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pmjcpBuG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C+DvgwtI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2ECF9206DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="skqcn1mb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o5qFIiE6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01D7C20771
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C11781676;
-	Tue,  7 Jul 2020 16:50:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C11781676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D7C01661;
+	Tue,  7 Jul 2020 16:51:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D7C01661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594133480;
-	bh=0oTipXMewJaCzbJ8wtWE1Ge+lrrvI+OTYhKQy+wqT8I=;
+	s=default; t=1594133512;
+	bh=0FVxQneLc0kXrGDjM8rqEU0RgT4cRqOVRCGonSO3BA8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pmjcpBuGUxix83IXjjiKlOd786fvxcZlTGwHOoXJoioslaHvvccJO8w9Do+isr4TC
-	 kbiKtsXhSx0OA7Rsttvq+6OWeNHZfl30tMx3Y0EUT2QSwICK2QgzqhJII6RwrvJYJu
-	 UgL0vwOer6HnDve0mcU7cs6r/Bg2rx7qfPkfETPo=
+	b=skqcn1mb2HMtOsS8TQv0V5Ctz2pPR3jizk+vZ7qhF1gkfomqYoJGqTz91Lh+Mh6iv
+	 5jHDu8g+6DUvPr/ExLZN9QnNdOQtv1TbyBgfYE178yeubGJXg89LkYNX9s/Ycz9R4i
+	 wO8RBe8N+fCvg48diqLC8Jl1zlX4MR3d8raiKQfQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12A8AF80348;
-	Tue,  7 Jul 2020 16:38:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 210DDF8038F;
+	Tue,  7 Jul 2020 16:38:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08AA5F80360; Tue,  7 Jul 2020 16:38:30 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ id 6ACD4F8035E; Tue,  7 Jul 2020 16:38:30 +0200 (CEST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D487F80329
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D487F80329
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9ECDF802FE
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9ECDF802FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="C+DvgwtI"
-Received: by mail-wr1-x444.google.com with SMTP id o11so45442114wrv.9
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:17 -0700 (PDT)
+ header.b="o5qFIiE6"
+Received: by mail-wr1-x442.google.com with SMTP id b6so45387883wrs.11
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wlcleqYJY5jQ1OZcMa4GgQUjEFsprvthMn+zX7CdCH0=;
- b=C+DvgwtImCJiiCVNxFwI9tT6IRQA5rXY9b0UMNq/qhCDZJquNaMLx1Q027QICk1xw6
- GOcMf0ZeJzxE16mOIP1eh8YHcFNXeCt6BMeMYGeSxEzmXLFRTkUS20lyaPihXAlgOo7n
- 3wNkADF2GRmNbauV/DltdxYgl0GoSQPwvkmZyKXUOpKKk3ipTlo7/NkL4p8cA6Z6ECdJ
- ZR4HMK2QM2YJBpGt8wfV72UC6VNVFCCY4ahwb+tPnvIGzY3H8OnSZTNZYWvHp9e/gjvg
- cX0wPlpkVMbw3sBrQkauQHX6xvWLsYdN2dMTjhVYzzzbh/g01qqPoVl3KyHSgRAuL6R8
- 1IXw==
+ bh=EXLqTyUKMLj4M51ntYR1QA4V9xA1YrzmuNUETaX0PBA=;
+ b=o5qFIiE60x8cX+Bhm0rgzWF0oy0LXLTwf++5sVrWU5JMR62946RZ49b2fud+ahUxan
+ M3fyhMHkqfpuyZPTvDJ6FLSUfLQZSmxONDGQ5cEbwEnAEEIlIjX/w+B9YHhPuaO/ydBR
+ +7G31bbUN/ChKb43mdklUoqkHM2wTxewBYKlrV8Ic+LjI5zxU0xnw/9ps3p7Q/IYFkZC
+ bSPRlsbBl90eqE1Wrcaad9xHV1OArmn3GcJA4JxXnmZq9Z8XjsfwdVfYMJFL+IbYyqIP
+ ghwioQaNbFCOyXYEV0SfC7uV+2lls7XmQ01d5xuzA3RjuI1uH+nHX6DtiKjxfhFRljqM
+ ec+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wlcleqYJY5jQ1OZcMa4GgQUjEFsprvthMn+zX7CdCH0=;
- b=P/IeS/6uP35pmM7Q6n9IA51325WhVpfNWVKESp7zPqd4+rAZf9bCfctED3GdQQgjwv
- NnjMMSNUuNeNApXmBt6vMLCGh7iTCan6NsxW2hf3l/rlwIpSv8m4ZfyukZiwuQtBe8G1
- bKqA080nXygVA9QL3X2CiUONC6qhIPn+lW/Fn6Dr+hnVqmej82GNEfgjVj+c4lLss+MI
- UH1csUZR6VveXfdxN9Y0FU5WyOvHniS+4D55MVF2dUIWPz3ih+tm1ckYVUe2QVag3G+E
- JfDZA9ejIgWtSvI6yeE8P5MfYTAGuuTpNXC//tS3K+CcdykHlx37c6brSRc+Lo4Qt88n
- +i/w==
-X-Gm-Message-State: AOAM533DSCbQfKtNHY+KqI0IcsB0+FCplsKFxl/jfEAbXFKdsD76iPM8
- /w1g6ITB/FcEgmFjfUS24A0aCA==
-X-Google-Smtp-Source: ABdhPJwKOPKcRllwzqIDBY+TgIWIRPSnExaAAvyTfdJWtFOiySyUOdAS4Vf5gq6RLSb6KEqnudtfkg==
-X-Received: by 2002:adf:f10a:: with SMTP id r10mr23439173wro.406.1594132697074; 
- Tue, 07 Jul 2020 07:38:17 -0700 (PDT)
+ bh=EXLqTyUKMLj4M51ntYR1QA4V9xA1YrzmuNUETaX0PBA=;
+ b=LzjeEOSflZkQ/ol5x3gr2NXUwQD52LGJ/0NuNDWlnx8iVY68/ooDhT19Ff0ZaXji2t
+ nYAEziHa1kByH/Bs7iV+v/jSztwCOCynak6qxWDIlE+20MvsUV7WQCfcIvPYjhpMEun9
+ xtel56e2KtB+OfWoKAsG6+z0vjT+eWPe2kE0OZdA4WqwhmkEB3vEGhaNQJfId12RY9by
+ 9jztiR1rO4KPaxnn5vN4kFnXnGY5cnFID2wgK9BR070KQ6E/hhM5RRymRbV+zBhHAeBZ
+ LGsJQM9LbZj3WExamRrZriCTh6LAOPMUDOqXs9aHZYGywdErNGqwe2YxNu0hTU6PhrCa
+ eu1A==
+X-Gm-Message-State: AOAM532bP51dBT8LWmRBKYwTsq5bAbq/SP5FoPzqNqaGRpv9H73tHj6d
+ ll50v9QGIsmzb7YAoBWmmXEaaw==
+X-Google-Smtp-Source: ABdhPJyRMAvI6NkTDV7IWsTK5HtfFZ6l9B/O82Lz0Ooky54tkmtjUVeL9Ss/7Rr8kNE7uRm+HvYhCg==
+X-Received: by 2002:a05:6000:6:: with SMTP id h6mr53076969wrx.26.1594132699386; 
+ Tue, 07 Jul 2020 07:38:19 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.15
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 07:38:16 -0700 (PDT)
+ Tue, 07 Jul 2020 07:38:18 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 21/28] ASoC: ti: omap-mcbsp-st: Remove set,
- but unused variable 'w'
-Date: Tue,  7 Jul 2020 15:37:35 +0100
-Message-Id: <20200707143742.2959960-22-lee.jones@linaro.org>
+Subject: [PATCH v2 23/28] ASoC: soc-ac97: Demote seemingly unintentional
+ kerneldoc header
+Date: Tue,  7 Jul 2020 15:37:37 +0100
+Message-Id: <20200707143742.2959960-24-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <samuel.ortiz@nokia.com>,
- linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Richard Purdie <richard@openedhand.com>, alsa-devel@alsa-project.org,
+ Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,41 +111,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Looks like 'w' has remained unchecked since the driver's inception.
+This is the only use of kerneldoc in the sourcefile and no
+descriptions are provided.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/ti/omap-mcbsp-st.c: In function ‘omap_mcbsp_st_chgain’:
- sound/soc/ti/omap-mcbsp-st.c:145:6: warning: variable ‘w’ set but not used [-Wunused-but-set-variable]
+ sound/soc/soc-ac97.c:402: warning: Function parameter or member 'ops' not described in 'snd_soc_set_ac97_ops_of_reset'
+ sound/soc/soc-ac97.c:402: warning: Function parameter or member 'pdev' not described in 'snd_soc_set_ac97_ops_of_reset'
 
-Peter suggested that the whole read can be removed, so that's
-been done too.
-
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: Samuel Ortiz <samuel.ortiz@nokia.com>
-Cc: linux-omap@vger.kernel.org
+Cc: Richard Purdie <richard@openedhand.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ti/omap-mcbsp-st.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/soc-ac97.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.c
-index 5a32b54bbf3bb..0bc7d26c660aa 100644
---- a/sound/soc/ti/omap-mcbsp-st.c
-+++ b/sound/soc/ti/omap-mcbsp-st.c
-@@ -142,11 +142,8 @@ static void omap_mcbsp_st_fir_write(struct omap_mcbsp *mcbsp, s16 *fir)
- 
- static void omap_mcbsp_st_chgain(struct omap_mcbsp *mcbsp)
- {
--	u16 w;
- 	struct omap_mcbsp_st_data *st_data = mcbsp->st_data;
- 
--	w = MCBSP_ST_READ(mcbsp, SSELCR);
--
- 	MCBSP_ST_WRITE(mcbsp, SGAINCR, ST_CH0GAIN(st_data->ch0gain) |
- 		       ST_CH1GAIN(st_data->ch1gain));
+diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
+index 906106ed8ca14..af789552a9d4c 100644
+--- a/sound/soc/soc-ac97.c
++++ b/sound/soc/soc-ac97.c
+@@ -391,7 +391,7 @@ int snd_soc_set_ac97_ops(struct snd_ac97_bus_ops *ops)
  }
+ EXPORT_SYMBOL_GPL(snd_soc_set_ac97_ops);
+ 
+-/**
++/*
+  * snd_soc_set_ac97_ops_of_reset - Set ac97 ops with generic ac97 reset functions
+  *
+  * This function sets the reset and warm_reset properties of ops and parses
 -- 
 2.25.1
 
