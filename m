@@ -2,71 +2,69 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EAC8C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:17:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29F4DC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:22:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC075206C3
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:17:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C9829206DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:22:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c3FMeoJn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC075206C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mtNLVpDG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9829206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C7881672;
-	Tue,  7 Jul 2020 10:16:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C7881672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 602CD167C;
+	Tue,  7 Jul 2020 10:21:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 602CD167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594109838;
-	bh=2Vivux5IEQOaC0KyLTxRCY03ZQjlHjsK2/+drp1tmqI=;
+	s=default; t=1594110158;
+	bh=lVw1+jlNGkLFSd/bWqnEkeQPHp+F5I8wyyJdCG9vTbk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c3FMeoJnriiEADAf5TjVD9ukDsyze1u6WCTikH6UMncemfRNS0IHLHWxrofbP6Hio
-	 MWrPIbaNyc/JCewKxLKpshwdBLo6E3+jyTZNeeYxC9TzuV2V+upJ2chLw404fB5Tfv
-	 kyRaF04V0zrMsoIo9l/hMKEguFIxjKZl976Oz2O8=
+	b=mtNLVpDGH40HkLRW6h0UdTNFTmAN/LyBxO2BFv7+11JJC+u7KL5mgMaXZJaJ2LU8f
+	 wThEO2HR+RgfhuiHuOa4N5IywCQQ9XzARbz2JYMNpWE4dFG7jARedf5/VydvougBbv
+	 gvfqf/XXSGhvT1RM0baXazTb3NEqKZvwJ1OarOpg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7984F800D0;
-	Tue,  7 Jul 2020 10:16:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE7C8F801F9;
+	Tue,  7 Jul 2020 10:21:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9320AF80216; Tue,  7 Jul 2020 10:16:26 +0200 (CEST)
+ id E3D40F80216; Tue,  7 Jul 2020 10:21:45 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8694F800D0
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:16:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8694F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB2F6F800DF
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:21:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB2F6F800DF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E72D3AF3B;
- Tue,  7 Jul 2020 08:16:19 +0000 (UTC)
-Date: Tue, 07 Jul 2020 10:16:19 +0200
-Message-ID: <s5h3663g2p8.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id E5B71AF5C;
+ Tue,  7 Jul 2020 08:21:39 +0000 (UTC)
+Date: Tue, 07 Jul 2020 10:21:39 +0200
+Message-ID: <s5hzh8benvw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Benjamin Poirier <benjamin.poirier@gmail.com>
-Subject: Re: [PATCH v2 1/2] ALSA: hda/realtek - Fix Lenovo Thinkpad X1 Carbon
- 7th quirk subdevice id
-In-Reply-To: <20200703080005.8942-2-benjamin.poirier@gmail.com>
-References: <20200703080005.8942-1-benjamin.poirier@gmail.com>
- <20200703080005.8942-2-benjamin.poirier@gmail.com>
+To: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: Re: [PATCH v3 1/3] ALSA: hda/realtek - Enable audio jacks of Acer
+ vCopperbox with ALC269VC
+In-Reply-To: <20200706071826.39726-1-jian-hong@endlessm.com>
+References: <aa62a43d4f1f458fb11794c26d373528@realtek.com>
+ <20200706071826.39726-1-jian-hong@endlessm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Vincent Bernat <vincent@bernat.ch>, Even Brenden <evenbrenden@gmail.com>
+ Chris Chiu <chiu@endlessm.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, linux@endlessm.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,41 +80,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 03 Jul 2020 10:00:04 +0200,
-Benjamin Poirier wrote:
+On Mon, 06 Jul 2020 09:18:25 +0200,
+Jian-Hong Pan wrote:
 > 
-> 1)
-> In snd_hda_pick_fixup(), quirks are first matched by PCI SSID and then, if
-> there is no match, by codec SSID. The Lenovo "ThinkPad X1 Carbon 7th" has
-> an audio chip with PCI SSID 0x2292 and codec SSID 0x2293[1]. Therefore, fix
-> the quirk meant for that device to match on .subdevice == 0x2292.
+> The Acer desktop vCopperbox with ALC269VC cannot detect the MIC of
+> headset, the line out and internal speaker until
+> ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS quirk applied.
 > 
-> 2)
-> The "Thinkpad X1 Yoga 7th" does not exist. The companion product to the
-> Carbon 7th is the Yoga 4th. That device has an audio chip with PCI SSID
-> 0x2292 and codec SSID 0x2292[2]. Given the behavior of
-> snd_hda_pick_fixup(), it is not possible to have a separate quirk for the
-> Yoga based on SSID. Therefore, merge the quirks meant for the Carbon and
-> Yoga. This preserves the current behavior for the Yoga.
-> 
-> [1] This is the case on my own machine and can also be checked here
-> https://github.com/linuxhw/LsPCI/tree/master/Notebook/Lenovo/ThinkPad
-> https://gist.github.com/hamidzr/dd81e429dc86f4327ded7a2030e7d7d9#gistcomment-3225701
-> [2]
-> https://github.com/linuxhw/LsPCI/tree/master/Convertible/Lenovo/ThinkPad
-> https://gist.github.com/hamidzr/dd81e429dc86f4327ded7a2030e7d7d9#gistcomment-3176355
-> 
-> Fixes: d2cd795c4ece ("ALSA: hda - fixup for the bass speaker on Lenovo Carbon X1 7th gen")
-> Fixes: 54a6a7dc107d ("ALSA: hda/realtek - Add quirk for the bass speaker on Lenovo Yoga X1 7th gen")
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Kailang Yang <kailang@realtek.com>
-> Tested-by: Vincent Bernat <vincent@bernat.ch>
-> Tested-by: Even Brenden <evenbrenden@gmail.com>
-> Signed-off-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+> Signed-off-by: Chris Chiu <chiu@endlessm.com>
 
-Applied this one alone for now.  Let me check the second patch later.
+Applied now.  Thanks.
 
-
-thanks,
 
 Takashi
