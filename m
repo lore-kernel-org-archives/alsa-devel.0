@@ -2,95 +2,105 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3255C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:38:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66D2BC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:39:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DDF8207BB
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:38:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EBB532073E
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:39:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z9J1QDsZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Lz0nPDxc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DDF8207BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gc4cESjd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XXmCFCqQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBB532073E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BC4574C;
-	Tue,  7 Jul 2020 16:37:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BC4574C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79E9E82A;
+	Tue,  7 Jul 2020 16:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79E9E82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594132726;
-	bh=c8FVJSUbYMSrqnJQEX4avLuiByw8A/i0h1b6nWwN6ok=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Z9J1QDsZ7IgmpM+6RuFDjOBjhBi0c9T/ks6CLrt9s8QzFblp1yyKypqSdMQ7qD5KC
-	 Zg2+cewZUVZW4/pwxQZG7e8aBPBSgBYT2HVuDmDjCJxn+GVWULiR7g3ZPsQWSA8wX8
-	 NrnOM8SgQJ9aBr+AVYcQoaScTB7U7MQNLagt7tqg=
+	s=default; t=1594132779;
+	bh=bB/EsNMT3r4QSVJf/UJcZsfcfVuUyBDo8aqPvM5R5ZA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Gc4cESjdUXWR6QYnQTQNVR/4K0o3OKI5fHKjyOjKhBsZrqMSmsceE8a7vaMVzRB4p
+	 lw8eODlCuatL/B+8/e+50geW+SYNVDsCgzZtEnLl7LsroYq26unjp+bcXFIZbKVLu8
+	 yO+/1VvLEia8TPe6MZY4T2QbWi+00ZaZAVfSq4FQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D664DF80274;
-	Tue,  7 Jul 2020 16:37:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5C96F801F9;
+	Tue,  7 Jul 2020 16:38:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 911AEF80274; Tue,  7 Jul 2020 16:37:53 +0200 (CEST)
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
+ id 53CD5F802BC; Tue,  7 Jul 2020 16:37:57 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E28EF801F9
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:37:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E28EF801F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 609E4F8011F
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:37:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 609E4F8011F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Lz0nPDxc"
-Received: by mail-wm1-x341.google.com with SMTP id o2so46777554wmh.2
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:37:46 -0700 (PDT)
+ header.b="XXmCFCqQ"
+Received: by mail-wr1-x443.google.com with SMTP id f7so42387060wrw.1
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:37:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=5iF8ft+c50gpwNnzzALPrKJo/bbNCmFujAo6+tQfbag=;
- b=Lz0nPDxcqEOwOrN6zYyousamF2fXBBFMTdeR4LW8bSilPOhb/g/iLa84hhIJJFuDW6
- CHgzKjN/Ks6bLLbbMjwmjRdKIr/m4ToP0M3Ic+JLsug2W7O9eYaS4I+2X8batugOPe+M
- 3MGJM+fcDQpTnBBWXXzUKPOcLnFG6F91I0Qd3mc54oBIMtqrjBel4wjkRq+YEjKDY0Eo
- Kk7J2QqmYxBmWkviAU1EFsDPmrOhRGzyZJVWglkYX4qqXij9fyPIwAA2YwXSQL5DQ3SR
- 419aaKH6rylK9L6oSlUNULiT38rOIfwa9kWMflWB5O95h6VpS0DQQuAC098qrjCpsGfC
- +7kA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
+ b=XXmCFCqQ7/7qI24vHpYIeRwak6no+ngDN4qxhtx2B+ciF+xekdDDosz8fuWrt1r7Hu
+ SGxtSTZbjq7aFHyn1q3uOMUtuTvj5pzK+miMZjM6zYEALDDu+EV/+0HVBzbAsGhcej/8
+ GhiBeAzCFt848KYViMxL9IaPiARSHzpUEmYwvKvqRDlHvNuYou9kQvS7JUTFrpeylQdn
+ ovTftEAwgfH2tXOQOYkfUfLQOYu4j/oCtF8h1KTHKgCr+aybzMwet4dozFF+jypqljGP
+ 86/kp70dU8LvS5YTSIJ3e6T6VbpWEvZPkEhUGDabaYF1sELRkcxNFdq8rBl6tJ1AKOqS
+ /NEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=5iF8ft+c50gpwNnzzALPrKJo/bbNCmFujAo6+tQfbag=;
- b=ORW5MfwY3Gb0N2HpqyU0rD4EobqsUIA1UKsgj8dqmxOmO/sw4cv+6mGd8CmbKpHm4/
- DCUKPZ0kMm8qvkcN0mpvjJBsYbvneUmR7TqHHPfL9qF9aoVwJz2dcdoM4qiE9nSqN/2K
- 9MLisg2jvVxepiuJEHNuTVWDjJswcSG6qevJGyrj9GYTgT5WQ1WO/GbbM/wPwBr/sPLq
- 0qkZGeRr0UqL1aWH9KUveiwBoSQygKaXg273+LbSYEET+IaTzc90rcRFRu1YGeyXTU7f
- IHJoQ7aNFRt0C3p/skGxnfTRwIbC7qb8//vPAa150jsFVG43Jwwazz4exlIg6Ae7wpOS
- KPlg==
-X-Gm-Message-State: AOAM53174Nw2qIwhs7IXBB68spHUF6fp7NekQ5g/h9muAuBJHNP1dIrK
- GnL5VdScWDXyr2nNAwKvui8NmQ==
-X-Google-Smtp-Source: ABdhPJw1xINFmSvbUCOzjkbGqZ/QUUiOXhKsCkIjO0i2XygXmAlkbXkTnXKhAMio+o2WFG4v85WpSA==
-X-Received: by 2002:a1c:9e06:: with SMTP id h6mr4299319wme.45.1594132665610;
- Tue, 07 Jul 2020 07:37:45 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
+ b=AsmBnHRh+ZishfEi/digbZSuJcLJx0gw8MANBMTHo+fecdIbZM9RsIrEnlDjhX+eRZ
+ VmFJIRIqsoonvs6DpgIfhZhUOYRIKsyEsmov5xbmn2sFClU95/HVtcPeaKY0etijqxCL
+ DwklPp6lUwMDId1WEcXI/5zfTroAVm5JzRcNCqaM6UrIicq9QLwnrk0lZeUFrE6uPXSq
+ uarHNtJlvFgRshimF7OMUAtmTr5mTUDP0Hh1bcGT2yX3hyXA2I3Q1RIq6yFEfVKG3kX9
+ B/mJH+Am8+FyK+ADZ1xwEQxyJ1LlF709wkA7IeFsOjUnP+hgUeULtUxbIFypt7xUZeVo
+ Hhtg==
+X-Gm-Message-State: AOAM532AYyj3hpERFtKVm5iSLTbTbOehCyNy2w7OFy8e6Gk1KWnTaIJM
+ lUdhys1zXsVY342+MHv0GiKlGw==
+X-Google-Smtp-Source: ABdhPJx0KvnunMH4xk0hxU1AAKtAAjTTj1cxtsLaXSEvWPc8oupZRfIVKuJnEp7OVTzb9qi611+2bg==
+X-Received: by 2002:a5d:6990:: with SMTP id g16mr45393223wru.131.1594132668511; 
+ Tue, 07 Jul 2020 07:37:48 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.37.44
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.37.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 07:37:45 -0700 (PDT)
+ Tue, 07 Jul 2020 07:37:47 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 00/28] Clean-up ASoC's W=1 build warnings
-Date: Tue,  7 Jul 2020 15:37:14 +0100
-Message-Id: <20200707143742.2959960-1-lee.jones@linaro.org>
+Subject: [PATCH v2 02/28] ASoC: atmel: atmel_ssc_dai: Demote function header
+ which is clearly not kerneldoc
+Date: Tue,  7 Jul 2020 15:37:16 +0100
+Message-Id: <20200707143742.2959960-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
+References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Sedji Gaouaou <sedji.gaouaou@atmel.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Frank Mandarino <fmandarino@endrelia.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,95 +116,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+No attempt has been made to document the demoted function here.
 
-After these patches are applied, the build system no longer
-complains about any W=0 nor W=1 level warnings in sound/soc,
-when building for Arm.
+Fixes the following W=1 kernel build warning(s):
 
-Hurrah!
+ sound/soc/atmel/atmel_ssc_dai.c:892: warning: Function parameter or member 'ssc_id' not described in 'atmel_ssc_set_audio'
 
-Changelog
+Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Cc: Frank Mandarino <fmandarino@endrelia.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/atmel/atmel_ssc_dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v1 => v2:
- - Remove whole read from patch 21
-   - Suggested by Peter
-
-Lee Jones (28):
-  ASoC: atmel: atmel-pcm-dma: Demote function header which is clearly
-    not kerneldoc
-  ASoC: atmel: atmel_ssc_dai: Demote function header which is clearly
-    not kerneldoc
-  ASoC: fsl: fsl-asoc-card: Use correct format when providing struct
-    documentation
-  ASoC: fsl: fsl_asrc: Demote obvious misuse of kerneldoc to standard
-    comment blocks
-  ASoC: fsl: fsl_ssi: Demote obvious misuse of kerneldoc to standard
-    comment blocks
-  ASoC: fsl: fsl_ssi_dbg: Demote obvious misuse of kerneldoc to standard
-    comment blocks
-  ASoC: fsl: fsl_spdif: Use correct formatting when denoting struct
-    documentation
-  ASoC: fsl: fsl_spdif: Update 'struct fsl_spdif_priv's descriptions
-  ASoC: fsl: fsl_esai: Fix a bunch of kerneldoc issues
-  ASoC: fsl: fsl_esai: Add descriptions for 'tx_mask' and 'rx_mask' to
-    'fsl_esai'
-  ASoC: pxa: pxa-ssp: Demote seemingly unintentional kerneldoc header
-  ASoC: codecs: ak4458: Remove set but never checked variable 'ret'
-  ASoC: qcom: qdsp6: q6asm: Provide documentation for WMA
-    'codec_profile'
-  ASoC: samsung: pcm: Demote half-documented kerneldoc header
-  ASoC: samsung: spdif: Fix 3 misspelled struct properties
-  ASoC: sunxi: sun4i-i2s: Demote half-documented kerneldoc header
-  ASoC: uniphier: aio-core: Fix incorrectly named struct property and
-    remove another
-  ASoC: sunxi: sun4i-spdif: Fix misspelling of 'reg_dac_txdata'
-  ASoC: ux500: ux500_msp_i2s: Remove unused variables 'reg_val_DR' and
-    'reg_val_TSTDR'
-  ASoC: sti: uniperif: Mark 'uni_tdm_hw' as __maybe_unused
-  ASoC: ti: omap-mcbsp-st: Remove set, but unused variable 'w'
-  ASoC: codecs: da7210: Fix formatting issues in da7210_set_dai_pll()
-    header
-  ASoC: soc-ac97: Demote seemingly unintentional kerneldoc header
-  ASoC: codecs: jz4770: Remove defined but never used variable
-    'mic_boost_tlv'
-  ASoC: codecs: rt5631: Demote misuse of kerneldoc to standard comment
-    blocks
-  ASoC: codecs: rt5659: Remove many unused const variables
-  ASoC: codecs: tlv320aic26: Demote seemingly unintentional kerneldoc
-    header
-  ASoC: codecs: wm8400: Remove a bunch of unused variables
-
- sound/soc/atmel/atmel-pcm-dma.c |  2 +-
- sound/soc/atmel/atmel_ssc_dai.c |  2 +-
- sound/soc/codecs/ak4458.c       |  6 +++---
- sound/soc/codecs/da7210.c       | 12 ++++++-----
- sound/soc/codecs/jz4770.c       |  1 -
- sound/soc/codecs/rt5631.c       | 12 +++++------
- sound/soc/codecs/rt5659.c       | 37 ---------------------------------
- sound/soc/codecs/tlv320aic26.c  |  2 +-
- sound/soc/codecs/wm8400.c       | 12 -----------
- sound/soc/fsl/fsl-asoc-card.c   | 16 +++++++-------
- sound/soc/fsl/fsl_asrc.c        | 28 ++++++++++++-------------
- sound/soc/fsl/fsl_esai.c        | 19 ++++++++++-------
- sound/soc/fsl/fsl_spdif.c       |  5 +++--
- sound/soc/fsl/fsl_ssi.c         | 28 ++++++++++++-------------
- sound/soc/fsl/fsl_ssi_dbg.c     |  4 ++--
- sound/soc/pxa/pxa-ssp.c         |  2 +-
- sound/soc/qcom/qdsp6/q6asm.c    |  1 +
- sound/soc/samsung/pcm.c         |  2 +-
- sound/soc/samsung/spdif.c       |  6 +++---
- sound/soc/soc-ac97.c            |  2 +-
- sound/soc/sti/uniperif.h        |  2 +-
- sound/soc/sunxi/sun4i-i2s.c     |  2 +-
- sound/soc/sunxi/sun4i-spdif.c   |  2 +-
- sound/soc/ti/omap-mcbsp-st.c    |  3 ---
- sound/soc/uniphier/aio-core.c   |  7 +++----
- sound/soc/ux500/ux500_msp_i2s.c |  8 +++----
- 26 files changed, 88 insertions(+), 135 deletions(-)
-
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 0f18dfb85bfed..3a0335864034a 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -885,7 +885,7 @@ static int asoc_ssc_init(struct device *dev)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
+  */
+ int atmel_ssc_set_audio(int ssc_id)
 -- 
 2.25.1
 
