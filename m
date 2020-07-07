@@ -2,87 +2,111 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88D26C433E1
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 06:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7488AC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 07:43:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 189F420739
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 06:09:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C86BB206E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 07:43:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d8WrE2ud";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="r0Clmfh9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 189F420739
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gYyxHcHO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="S2e8YozD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZJnkQyXb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C86BB206E2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75EF01661;
-	Tue,  7 Jul 2020 08:08:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75EF01661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4621F1663;
+	Tue,  7 Jul 2020 09:43:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4621F1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594102156;
-	bh=fcOIQO5Zxn2LPIddrHQEd1e60wow43uUASOlf8/p31I=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=d8WrE2udKqCy6bItqLF1slbDL+y/zvNnzhQr2WMnfe1UKMeehmDi+hhXoPdjLSZgb
-	 6hlmPTatwaPrxb9rTTj/b/mTLXSXgF0rdYXw7M20a/ftwe7XLbCXOTZc0pFM4MRThD
-	 +zy/eVrVhsnAAlwdxLUlJcT6IX+25AGetY2OyNLU=
+	s=default; t=1594107831;
+	bh=BKj2HPPl5F3SghNaXTL6iusYB+DT/Uiga3F8iI0Pr1M=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gYyxHcHOr9oyhhWiZiSWTsmKvEkF/q6lGwiqw4xeGf07MROgg1RRchftx3tBKlKOr
+	 nlP6nJ7vDgQyQePdgFw+1Dht+TBTpFmN4WCrYkjZ4pal5L/eWdCK3H+oVBmYjL+yKj
+	 Lrc+IZa37JILrNICZVBM9FLfWZQAT+g6jOtWFt4k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01011F801F9;
-	Tue,  7 Jul 2020 08:08:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE2C0F801F9;
+	Tue,  7 Jul 2020 09:43:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7B9FF80216; Tue,  7 Jul 2020 08:08:23 +0200 (CEST)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 19CBFF80216; Tue,  7 Jul 2020 09:42:59 +0200 (CEST)
+Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com
+ [64.147.123.26])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9258F8011F
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 08:08:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9258F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A520F8011F
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 09:42:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A520F8011F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="r0Clmfh9"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
- Reply-To:Cc:Content-ID:Content-Description;
- bh=4V3LkIihmEZz3pvewklN8v/f9kZ9j33J/E7C/lspkG8=; b=r0Clmfh9v/3OeSVIQubt0lsQon
- UpFGA9ZtewIAQHj2FcjHABfZIdrkagS/kxm1q9V9mNq+Kd/JBgOvnafkB4pub//wJsRikLguL/GYR
- leMZ853pwE+0hJU+xci2JXdigkrGfBDdLt6qJIa5QqwM4cfoZJxOHF0oZcyE0TD5wT2Bo1XntGHB5
- JDuLCk0wh3ZBakBmyEQd+qiIuR/CAGa2NRmNKVKVE7006jvzXWrxdMH4I5MIO7WqJAka5EyxC24uI
- cC6WA0k7bZcHfwtYYlUhX99BcA8G5RAkjtn32j4Zwe+0v0VPhFy1MmPjLqASex3BilHFxs/6ub8wa
- jlk78dKw==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
- by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jsgm5-00029p-EC; Tue, 07 Jul 2020 06:08:14 +0000
-Subject: Re: mmotm 2020-07-06-18-53 uploaded
- (sound/soc/amd/renoir/rn-pci-acp3x.c:)
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>,
- Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
- moderated for non-subscribers <alsa-devel@alsa-project.org>,
- sfr@canb.auug.org.au
-References: <20200707015344.U9ep-OO5Z%akpm@linux-foundation.org>
- <b54188c7-47b4-b7e4-2f74-6394320df5df@infradead.org>
- <e19cd74c-df3d-9589-1fc1-55980a8d289b@amd.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2af9510e-b3fd-97d8-c2d4-1c42943180ee@infradead.org>
-Date: Mon, 6 Jul 2020 23:08:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="S2e8YozD"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="ZJnkQyXb"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailnew.west.internal (Postfix) with ESMTP id DF6FEAB6;
+ Tue,  7 Jul 2020 03:42:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Tue, 07 Jul 2020 03:42:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm3; bh=3p7X8ygQrONcSrHJ+dzFyPMuAc
+ Gioe82upxmwDopNqs=; b=S2e8YozD6edpoBaX+XcOsJKGC9lb3bIGdhfKW1NXn0
+ 60Y7hU6lGPO+ePfA36zBWnnKbiD9hNRsU+xbSkr7ROBcUnZT4EeM+gNUibK4fh2X
+ CkR1CAv9JBYrrlhKURLDqMwLKsOgMzS3kgle7fbvy/inQgOSsYXVjQduVyR9Waej
+ UFpn6xxG6/61Pwyx4zlAs8SLqb36rovjCSa1bSjzSuYR0jiVK43h0L1anAbiKuHH
+ ivInHJz0MbqSdvbYX9abQHzDhyMV3C8aa6/JNZwHpf2zOJ3M8Xdb2aADkWY3lgfh
+ nAaQ2vIToIjyKPq9hNspCuE0ELa1tHmeSygW5UGpqnHw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3p7X8ygQrONcSrHJ+
+ dzFyPMuAcGioe82upxmwDopNqs=; b=ZJnkQyXbGFPl0i9CTA5b4zv4JgQzpUqj/
+ NW7Gkq/osACIeRJDcPMP7C0FAVGlLA/KFl85Ts6OVG054+5UDh0F5ztPhK8n0BFL
+ dcYYwXOXijVDU6S1VEwIu1CSuwqB3VAXWqSrmPyLeqxnP4dRP92aouAIyjnZHNNs
+ 0VR5xwSsLavOxn2f8RfOkSY/FluK3Fs7q8+ohk+fN7z41FOtZ7RzSWiW0JYpUDBR
+ Z+oPN1QxO5DGnbS/oG0ivHC9mv38AoddOKZpP+txqv7zNiNjY2ArYetxgO1/1fWj
+ DRi59nAP2I7IDkrr8Vn1Kho6jnZzRzX3E6bsxBzu648VG4k2bY/Kw==
+X-ME-Sender: <xms:cicEXygAVgGnS4oRPQsZmgj6JgeVxpxmOUg8mRO9YDk9JqeDOy53QQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeggdduvdeiucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
+ tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+ hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
+ necukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+ hrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:cicEXzAdmPKbWqbxeD7Xb_1yjSImw4IYBXsNqzG1MRh3ItbwNrP8dg>
+ <xmx:cicEX6HlnXSkW_cLAuD5V9xNsIg9It04CrG27liaspfpeRixucpClg>
+ <xmx:cicEX7TX2Bahva1IBz1kceus9Y8Ox4OzzT-2p4MOpBskxP7C5LmFyw>
+ <xmx:cycEX2xTA_W73xh5kzDli2Se9JX59KNJErj42KGj0euXv3u0mTz_MEorBcM>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 165583280066;
+ Tue,  7 Jul 2020 03:42:41 -0400 (EDT)
+From: Maxime Ripard <maxime@cerno.tech>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: core: Remove only the registered component in devm
+ functions
+Date: Tue,  7 Jul 2020 09:42:37 +0200
+Message-Id: <20200707074237.287171-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <e19cd74c-df3d-9589-1fc1-55980a8d289b@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
+ Dave Stevenson <dave.stevenson@raspberrypi.com>, linux-kernel@vger.kernel.org,
+ Maxime Ripard <maxime@cerno.tech>, Phil Elwell <phil@raspberrypi.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,45 +122,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/6/20 11:15 PM, Mukunda,Vijendar wrote:
-> 
-> 
-> On 07/07/20 11:14 am, Randy Dunlap wrote:
->> On 7/6/20 6:53 PM, Andrew Morton wrote:
->>> The mm-of-the-moment snapshot 2020-07-06-18-53 has been uploaded to
->>>
->>>     https://nam11.safelinks.protection.outlook.com/?url=http:%2F%2Fwww.ozlabs.org%2F~akpm%2Fmmotm%2F&amp;data=02%7C01%7CVijendar.Mukunda%40amd.com%7C34f06090b5394f9ccb9d08d82238c5cf%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637296974530250787&amp;sdata=K8z5g9P5S7Ct%2BojnITdP0xuz159sYOiDWOyUy3abDpo%3D&amp;reserved=0
->>>
->>> mmotm-readme.txt says
->>>
->>> README for mm-of-the-moment:
->>>
->>> https://nam11.safelinks.protection.outlook.com/?url=http:%2F%2Fwww.ozlabs.org%2F~akpm%2Fmmotm%2F&amp;data=02%7C01%7CVijendar.Mukunda%40amd.com%7C34f06090b5394f9ccb9d08d82238c5cf%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637296974530250787&amp;sdata=K8z5g9P5S7Ct%2BojnITdP0xuz159sYOiDWOyUy3abDpo%3D&amp;reserved=0
->>>
->>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
->>> more than once a week.
->>>
->>> You will need quilt to apply these patches to the latest Linus release (5.x
->>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
->>> https://nam11.safelinks.protection.outlook.com/?url=http:%2F%2Fozlabs.org%2F~akpm%2Fmmotm%2Fseries&amp;data=02%7C01%7CVijendar.Mukunda%40amd.com%7C34f06090b5394f9ccb9d08d82238c5cf%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637296974530250787&amp;sdata=6CpbYkoZTJ%2FxqhyFKdZMjH%2BdG5kjOgogt8KqqNK%2BzSI%3D&amp;reserved=0
->>>
->>
->> on i386:
->>
->> when CONFIG_ACPI is not set/enabled:
->>
->> ../sound/soc/amd/renoir/rn-pci-acp3x.c: In function ‘snd_rn_acp_probe’:
->> ../sound/soc/amd/renoir/rn-pci-acp3x.c:222:9: error: implicit declaration of function ‘acpi_evaluate_integer’; did you mean ‘acpi_evaluate_object’? [-Werror=implicit-function-declaration]
->>     ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
-> Will add ACPI as dependency in Kconfig for Renoir ACP driver.
-> Do i need to upload new version of the patch? or should i submit the incremental patch as a fix >>           ^~~~~~~~~~~~~~~~~~~~~
->>           acpi_evaluate_object
+The ASoC devm_ functions that register a component
+(devm_snd_soc_register_component and devm_snd_dmaengine_pcm_register) will
+clean their component by running snd_soc_unregister_component.
 
-Hi,
-Not my call, but I would go with an incremental patch.
+snd_soc_unregister_component will then remove all the components for the
+device that was used to register the component in the first place.
 
+However, some drivers register several components (such as a DAI and a
+dmaengine PCM) on the same device, and if the dmaengine PCM is registered
+first, then the DAI will be cleaned up first and
+snd_dmaengine_pcm_unregister will be called next.
 
-thanks.
+snd_dmaengine_pcm_unregister will then lookup the dmaengine PCM component
+on the device, and if there's one unregister that component and release its
+dmaengine channels. That doesn't happen in practice though since the first
+call to snd_soc_unregister_component removed all the components, so we
+never get the chance to release the dmaengine channels.
+
+In order to fix this, instead of removing all the components for a given
+device, we can simply remove the component that was registered in the first
+place. We should have the same number of component registration than we
+have components, so it should work just fine.
+
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+---
+
+This was observed on a RaspberryPi that uses the vc4_hdmi driver
+(drivers/gpu/drm/vc4/vc4_hdmi.c). This driver will register a dmaengine PCM
+and two components. If the MIPI-DSI controller is enabled, it will create
+an EPROBE_DEFER across the entire display pipeline, leading to multiple
+bind/unbind cycles in the other display drivers including vc4_hdmi, leading
+to multiple warnings since we request the same dmaengine channels on the
+same device without ever releasing them.
+
+It's not really clear to me when that bug was introduced exactly, since it
+can only be seen on a rather unusual setup, and with all the drivers
+built-in (otherwise we probably wouldn't get an EPROBE_DEFER for DSI), but
+it still looks like something that should probably go to stable?
+
+Changes from v1:
+  - Rebased on top of next-20200706
+---
+ include/sound/soc.h                   |  2 ++
+ sound/soc/soc-core.c                  | 27 +++++++++++++++++++++++++++
+ sound/soc/soc-devres.c                |  8 +++++---
+ sound/soc/soc-generic-dmaengine-pcm.c |  2 +-
+ 4 files changed, 35 insertions(+), 4 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6791b7570a67..59235e553630 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -426,6 +426,8 @@ int devm_snd_soc_register_component(struct device *dev,
+ 			 const struct snd_soc_component_driver *component_driver,
+ 			 struct snd_soc_dai_driver *dai_drv, int num_dai);
+ void snd_soc_unregister_component(struct device *dev);
++void snd_soc_unregister_component_by_driver(struct device *dev,
++			 const struct snd_soc_component_driver *component_driver);
+ struct snd_soc_component *snd_soc_lookup_component_nolocked(struct device *dev,
+ 							    const char *driver_name);
+ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index adedadcb0efb..7c58e45c1c3f 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2513,6 +2513,33 @@ int snd_soc_register_component(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_register_component);
+ 
++/**
++ * snd_soc_unregister_component_by_driver - Unregister component using a given driver
++ * from the ASoC core
++ *
++ * @dev: The device to unregister
++ * @component_driver: The component driver to unregister
++ */
++void snd_soc_unregister_component_by_driver(struct device *dev,
++					    const struct snd_soc_component_driver *component_driver)
++{
++	struct snd_soc_component *component;
++
++	if (!component_driver)
++		return;
++
++	mutex_lock(&client_mutex);
++	component = snd_soc_lookup_component_nolocked(dev, component_driver->name);
++	if (!component)
++		goto out;
++
++	snd_soc_del_component_unlocked(component);
++
++out:
++	mutex_unlock(&client_mutex);
++}
++EXPORT_SYMBOL_GPL(snd_soc_unregister_component_by_driver);
++
+ /**
+  * snd_soc_unregister_component - Unregister all related component
+  * from the ASoC core
+diff --git a/sound/soc/soc-devres.c b/sound/soc/soc-devres.c
+index 11e5d7962370..4534a1c03e8e 100644
+--- a/sound/soc/soc-devres.c
++++ b/sound/soc/soc-devres.c
+@@ -48,7 +48,9 @@ EXPORT_SYMBOL_GPL(devm_snd_soc_register_dai);
+ 
+ static void devm_component_release(struct device *dev, void *res)
+ {
+-	snd_soc_unregister_component(*(struct device **)res);
++	const struct snd_soc_component_driver **cmpnt_drv = res;
++
++	snd_soc_unregister_component_by_driver(dev, *cmpnt_drv);
+ }
+ 
+ /**
+@@ -65,7 +67,7 @@ int devm_snd_soc_register_component(struct device *dev,
+ 			 const struct snd_soc_component_driver *cmpnt_drv,
+ 			 struct snd_soc_dai_driver *dai_drv, int num_dai)
+ {
+-	struct device **ptr;
++	const struct snd_soc_component_driver **ptr;
+ 	int ret;
+ 
+ 	ptr = devres_alloc(devm_component_release, sizeof(*ptr), GFP_KERNEL);
+@@ -74,7 +76,7 @@ int devm_snd_soc_register_component(struct device *dev,
+ 
+ 	ret = snd_soc_register_component(dev, cmpnt_drv, dai_drv, num_dai);
+ 	if (ret == 0) {
+-		*ptr = dev;
++		*ptr = cmpnt_drv;
+ 		devres_add(dev, ptr);
+ 	} else {
+ 		devres_free(ptr);
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 80a4e71f2d95..61844403f181 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -478,7 +478,7 @@ void snd_dmaengine_pcm_unregister(struct device *dev)
+ 
+ 	pcm = soc_component_to_pcm(component);
+ 
+-	snd_soc_unregister_component(dev);
++	snd_soc_unregister_component_by_driver(dev, component->driver);
+ 	dmaengine_pcm_release_chan(pcm);
+ 	kfree(pcm);
+ }
 -- 
-~Randy
+2.26.2
 
