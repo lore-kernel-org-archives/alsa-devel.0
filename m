@@ -7,97 +7,99 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70398C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46251C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:47:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC143206DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:47:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C20B620773
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:47:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vDnsYS+q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y0PO5kBl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC143206DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D9FG5cah";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MHGUg59+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C20B620773
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 798231673;
-	Tue,  7 Jul 2020 16:46:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 798231673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08A211677;
+	Tue,  7 Jul 2020 16:47:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08A211677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594133237;
-	bh=gH+7b8pc8fTbQo4a4WaVQHnRVG2QJ13h76m+aIGA31E=;
+	s=default; t=1594133275;
+	bh=0cXBTC4gpvSAswibk1QjXWR066hmA1WvUQJnf+4TcdQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vDnsYS+qxJ0bGVURzCRtbAz4wBtdl4gFOquHG44zJEVOwzKLRNUEmN0vaoBvsXS8W
-	 JzKDljN8UZRgXkeaM52yhmesVKFo8/0eXbPqfOSfME4msWKLT4b7dPJ1HJibgbob1G
-	 OF9Fy2oPb5Px53PIznYb77hy3c5X6aT1y2NE8X4w=
+	b=D9FG5cah7GnWnnnl8Vm+5MPL4az4XdbF8GIKlZmtCGwceRoD+9UvMKqcDaZzXQud+
+	 ghtY+3DyBZ0ffNB43Wi+8A9q+eASDD+qHtyz1anqmHh1AJ8WhBEs0PiHHCW0fQE0PQ
+	 TDr6AHktwFEREcvY+1jxcbtLMxGWcer7wyPxy6p8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4000BF8035F;
-	Tue,  7 Jul 2020 16:38:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9BC4F80329;
+	Tue,  7 Jul 2020 16:38:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49A11F8033D; Tue,  7 Jul 2020 16:38:20 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id 95589F8033F; Tue,  7 Jul 2020 16:38:20 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAB7EF802F9
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAB7EF802F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id F18CFF802F8
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F18CFF802F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="y0PO5kBl"
-Received: by mail-wr1-x441.google.com with SMTP id a6so45416769wrm.4
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:07 -0700 (PDT)
+ header.b="MHGUg59+"
+Received: by mail-wr1-x443.google.com with SMTP id z2so23134400wrp.2
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=tfKAHOC4Bqa/g3TTN2zyTgayqsyKLptRGMeCLeLAzGA=;
- b=y0PO5kBlqlUU42SbtXP1vXkvb3j/2BL0FbASY0BSoHRpU3L88y2IKVJ/9oqwLopIlz
- Mr1+MDuG4LoZEL6Ht0QCbQoOPEClwf39CLo47Q/4VJg66UWdQlIBaY1Hy4YBGaIzBbf9
- uVLgyB8ZtS/eh3QtSrUBbcObWC7kXDviDUDHKbvaGv59FZpelKcAn4Xli9lY5wh9wfkJ
- ssg8NL7DiAKLTXmuP4nBrkDuMI9mohfj/dBpAvAwQG9QFk/1vd4ennzfNc1+AxOjZqNu
- StJdHLrm0AUphNY9+g8Pzm/w6cJjVeVnhANfKw5qXTjCSxL6TR/DTW/nx2S52xpjlH5R
- MX9g==
+ bh=+qKCC8gwbOOqZ6yEPkGSkmGeka7mYOZ7iXEWMftP650=;
+ b=MHGUg59+CIiFn+a4HTqUDEaC2OOzC3fBDNG+gmNZc5Lq9ga6wt3BgEtSO4rzK1gKON
+ NN5LiJlHqnLYB1HB4rYnJh6GKCBxpjgG8h89hEH6g8xuCSdXT/X+luQoiJOLszEJ/io/
+ oouYXSL7QPMn2mAU/9wE9JCbevJrGhq8fii5XwWGCb/lQfNDoEMkT4FRjq7IvkPcQ2GU
+ Uz+cWLLyEM0fJHsdE2DuVaMkxw/M/1OSs1Rzm8rO5hmjJIZw9+SadAEK9JxOkYnBYF2z
+ +/SldD0QP9BmkNSVD4HpW10ulLY9YmbObsFRymw2yL1n3cACA26WRz+yfbdB4KgVW6Jm
+ cC2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=tfKAHOC4Bqa/g3TTN2zyTgayqsyKLptRGMeCLeLAzGA=;
- b=cyDZABIr/V3pa2Ny+MZ2TsVLRZaYO38d0e4T4KfLmvkDecY2Z0jtjinPDQF2+3lEGv
- zZ1ReGIljNKUYeImPB9kDD69A1PeERbK1HNMeeu2pwiV9HtSc0T7dS8iUSNfJZsFU1/N
- mnFuVGBd6r9ubSS9IB395WVrZPhvJ6rg90OsWOru2Ao519hnNMGPGY62xnFPJ5qe19yX
- FhBXxNiUEkRsnPg6ZAEq8SrIjRMkYZGXrvkE7p96vWyxFruEbhgcccPOfmRZ+Qq8QWE9
- mkXVb8bLFxUuynBWx288y+iEDxmnC0fEDK3zzCE4scqumyxfQmrjZ5i28aqd5Qi185j8
- inEw==
-X-Gm-Message-State: AOAM532vOSXIXmdL2v0okVD2wiUsAfBH+t3owEBGwBCRrKHOBdlRU18q
- NHnDC8HBYWPeQHaPGJEFkDq6LA==
-X-Google-Smtp-Source: ABdhPJy9WLIaGgmiEMVkgFNQzihpEyvUsYv4v0EIE+0+DVUHKbd38T2a6PzO/BRBW3OO4BQb4P/gMg==
-X-Received: by 2002:adf:e944:: with SMTP id m4mr55414369wrn.252.1594132686208; 
- Tue, 07 Jul 2020 07:38:06 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ bh=+qKCC8gwbOOqZ6yEPkGSkmGeka7mYOZ7iXEWMftP650=;
+ b=MPgVW7/pKQ1ebwqsiN01b0a9uUPSEzd990nukElecy/YZnMQjTIbgoM1xzAYR3wQ7n
+ +QMMzqY+Q8DVSTPe43KwJeKCieUUzIat+ySmj4cgerDtstpr02tghDzWc9zul6lK19vS
+ 7uSZiirVBLdA4QShVUJowjJShD+n3+TlAsA0+eLOm+x19FT8lxip5Rafwwbf0DiOr5Td
+ aRk+MvrdYBX42NDF78i9lXxLe9n6ofAb9uJnPThj/gSAGHIEG9+qbLFNHo8VGpit9wAV
+ oiYUZH/nryA4drJYAox4AvXbbXbilgO+AH6/M+hj3CT0DsEiwIrVDdl+qN0UQP5x2cDe
+ YcIg==
+X-Gm-Message-State: AOAM531TccWygYfTEODibasY08kouHcpg86kHujjxXYe9UzqN8aU8yGN
+ /DG6Lb0BUb2jstb6dTw3tiL83g==
+X-Google-Smtp-Source: ABdhPJzaV/3UQ016kv4Ag7+B7phfs4pD1pKuxhbyntXYNoHYbkT+tFXMCA/jg3bjpvj9sjSTi1yKtQ==
+X-Received: by 2002:adf:f784:: with SMTP id q4mr53880655wrp.397.1594132685030; 
  Tue, 07 Jul 2020 07:38:05 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.206])
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 07 Jul 2020 07:38:04 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 13/28] ASoC: qcom: qdsp6: q6asm: Provide documentation for
- WMA 'codec_profile'
-Date: Tue,  7 Jul 2020 15:37:27 +0100
-Message-Id: <20200707143742.2959960-14-lee.jones@linaro.org>
+Subject: [PATCH v2 12/28] ASoC: codecs: ak4458: Remove set but never checked
+ variable 'ret'
+Date: Tue,  7 Jul 2020 15:37:26 +0100
+Message-Id: <20200707143742.2959960-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ linux-kernel@vger.kernel.org,
+ Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>,
+ Mihai Serban <mihai.serban@nxp.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,31 +115,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Looks as though the result of snd_soc_update_bits() has never been checked.
+
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/qcom/qdsp6/q6asm.c:924: warning: Function parameter or member 'codec_profile' not described in 'q6asm_open_write'
+ sound/soc/codecs/ak4458.c: In function ‘ak4458_set_dai_mute’:
+ sound/soc/codecs/ak4458.c:408:16: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
 
-Cc: Patrick Lai <plai@codeaurora.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>
+Cc: Mihai Serban <mihai.serban@nxp.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/ak4458.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index ae4b2cabdf2d6..58720b18fc8c8 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -915,6 +915,7 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
-  *
-  * @ac: audio client pointer
-  * @format: audio sample format
-+ * @codec_profile: profile to use when WMA
-  * @bits_per_sample: bits per sample
-  *
-  * Return: Will be an negative value on error or zero on success
+diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+index f180cb5dfe4f1..39ae089dcd1d8 100644
+--- a/sound/soc/codecs/ak4458.c
++++ b/sound/soc/codecs/ak4458.c
+@@ -405,7 +405,7 @@ static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
+-	int nfs, ndt, ret, reg;
++	int nfs, ndt, reg;
+ 	int ats;
+ 
+ 	nfs = ak4458->fs;
+@@ -416,14 +416,14 @@ static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
+ 	ndt = att_speed[ats] / (nfs / 1000);
+ 
+ 	if (mute) {
+-		ret = snd_soc_component_update_bits(component, AK4458_01_CONTROL2,  0x01, 1);
++		snd_soc_component_update_bits(component, AK4458_01_CONTROL2,  0x01, 1);
+ 		mdelay(ndt);
+ 		if (ak4458->mute_gpiod)
+ 			gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
+ 	} else {
+ 		if (ak4458->mute_gpiod)
+ 			gpiod_set_value_cansleep(ak4458->mute_gpiod, 0);
+-		ret = snd_soc_component_update_bits(component, AK4458_01_CONTROL2, 0x01, 0);
++		snd_soc_component_update_bits(component, AK4458_01_CONTROL2, 0x01, 0);
+ 		mdelay(ndt);
+ 	}
+ 
 -- 
 2.25.1
 
