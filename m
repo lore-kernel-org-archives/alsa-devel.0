@@ -2,85 +2,74 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19AA4C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 18:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 233B6C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 18:50:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DA20206F6
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 18:29:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 853ED20672
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 18:50:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vstPuXDq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bS2w02uS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DA20206F6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EG/K1L5F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 853ED20672
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D20D84A;
-	Tue,  7 Jul 2020 20:28:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D20D84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0923B10E;
+	Tue,  7 Jul 2020 20:49:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0923B10E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594146563;
-	bh=ngXcwYmLoqqD7u5NyieDHt4iKVngwEu5B9gimN72/OM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vstPuXDqGOheaxgxLB0LpSMzNaPwYd/Y/0GnvcyA15lbI2zqLZfga4jRN33QqEYnJ
-	 EVmP4ejoWd50CdH+naF1WzIyCg0aNTx7g8kgtkNtPdJO+CguWR2nQXxcp2ExzuSHsS
-	 BGJx44aYXnh0swJWMGhPVPsIJ5E49CaCLeMHcaoI=
+	s=default; t=1594147837;
+	bh=Vl41X9sRebde4O5Nys2uteIbCyq2iWaLHWRfeBkPcdQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EG/K1L5FKjuh8iTdsrMnHvhIlC6FKu9V+NRYGC8eWx6fH6RkH752+25EhwFm1J4Nd
+	 ftbkWmN7qYmOOnxbXhNUo2X/Vn+zq5GH10/2pUusEQ8fyTq32Ii0vLKoHBKA84X108
+	 K/nIsZehxGerb6KI8PDEPfzDJHMcBDKPp/9BcKkQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE5B4F800D0;
-	Tue,  7 Jul 2020 20:28:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D0E1F801F9;
+	Tue,  7 Jul 2020 20:49:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71B75F80216; Tue,  7 Jul 2020 20:28:31 +0200 (CEST)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
+ id 1DA5CF80216; Tue,  7 Jul 2020 20:49:45 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C59CF800D0
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 20:28:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C59CF800D0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="bS2w02uS"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=HdjdBEuc09gbzMxr+upySCFBU+l5DWJracRk3eLkb5k=; b=bS2w02uSm9hW3I8+AMkkcpCEbn
- XN8pQCM13CWfkQ5uQ4ppHLpxPdZxCOI0PdbNq4Cc9uqWreqM3RSOwm/765ebRg7mHq0DgcUrBxWXj
- ZkwSeHfiVnrmqwB4gdgmDvdG+A941vlG2CSLf5OYI+2O6BEbvTX8mUCfFKpD+sV0MnoSEtEoLmcUu
- 3zBMEV/xD3Lda8CQ427aiFG1pFyXh5q4ucuFJCquMmqi9uQx/yEnDB2A1ujfwyVLlvml+/kiFKkEF
- dkzfYpdcARrhYT1Rw+HRlkT2shnPNGRgf7eKmU+mVe2Xvoq6fGs7Koa+5l0CiOuiCM+7BSBOc2+fC
- ZOcMbgJg==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
- by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jssKE-0005ig-5g; Tue, 07 Jul 2020 18:28:15 +0000
-Subject: Re: [PATCH] ASoC: amd: fixed kernel warnings
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, alsa-devel@alsa-project.org
-References: <1594147044-25582-1-git-send-email-Vijendar.Mukunda@amd.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <9f2cde61-590d-6a68-295b-62f026f729b3@infradead.org>
-Date: Tue, 7 Jul 2020 11:28:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7802F800D0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 20:49:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7802F800D0
+IronPort-SDR: p0jT+UhgDUgpD2zVD6DUSZ4wm/wM5c+d887AHlUHi/uvaE4of2j3ixdvuRWtpoITDR8FPXHUR1
+ /4i7N4lk8Sgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="135921778"
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="135921778"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jul 2020 11:49:35 -0700
+IronPort-SDR: YvbEHyinpUJYhI/E/QWUHljEhNPVKQZUpe9KXfZugJnN5UOrOF8/vDBmSb42y0XAgH+g4nQZhD
+ R+2V19ETvNIQ==
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="388594405"
+Received: from mrtorger-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.254.77.62])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jul 2020 11:49:34 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2] ALSA: usb/line6: remove 'defined but not used' warning
+Date: Tue,  7 Jul 2020 13:49:24 -0500
+Message-Id: <20200707184924.96291-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1594147044-25582-1-git-send-email-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
- open list <linux-kernel@vger.kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Alexander.Deucher@amd.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,38 +85,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/7/20 11:37 AM, Vijendar Mukunda wrote:
-> This patch will fix unused variables kernel warnings when
-> CONFIG_ACPI is disabled.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Fix W=1 warning. Variables are declared in a header file included from
+multiple C files, replace by #defines as suggested by Takashi
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+sound/usb/line6/driver.h:70:18: warning: ‘SYSEX_EXTRA_SIZE’ defined
+but not used [-Wunused-const-variable=]
+   70 | static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
+      |                  ^~~~~~~~~~~~~~~~
+sound/usb/line6/driver.h:69:18: warning: ‘SYSEX_DATA_OFS’ defined but
+   not used [-Wunused-const-variable=]
+   69 | static const int SYSEX_DATA_OFS = sizeof(line6_midi_id) + 3;
+      |                  ^~~~~~~~~~~~~~
 
-Thanks.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/usb/line6/driver.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->  sound/soc/amd/renoir/rn-pci-acp3x.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> index 165c93f..b943e59 100644
-> --- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-> +++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> @@ -168,8 +168,10 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
->  {
->  	struct acp_dev_data *adata;
->  	struct platform_device_info pdevinfo[ACP_DEVS];
-> +#if defined(CONFIG_ACPI)
->  	acpi_handle handle;
->  	acpi_integer dmic_status;
-> +#endif
->  	unsigned int irqflags;
->  	int ret, index;
->  	u32 addr;
-> 
-
-
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index 1a4e3700c80c..ec20fbec6475 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -66,8 +66,8 @@
+ 
+ extern const unsigned char line6_midi_id[3];
+ 
+-static const int SYSEX_DATA_OFS = sizeof(line6_midi_id) + 3;
+-static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
++#define SYSEX_DATA_OFS (sizeof(line6_midi_id) + 3)
++#define SYSEX_EXTRA_SIZE (sizeof(line6_midi_id) + 4)
+ 
+ /*
+ 	 Common properties of Line 6 devices.
 -- 
-~Randy
+2.25.1
+
