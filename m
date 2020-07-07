@@ -7,96 +7,97 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE748C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCA45C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:24:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DEF02065F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:24:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 46CB8206F6
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:24:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KlGuTHiE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TiDsFIcm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DEF02065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CFBMma9V";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yjtJryfp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46CB8206F6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01B6115F2;
-	Tue,  7 Jul 2020 12:23:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01B6115F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5710166E;
+	Tue,  7 Jul 2020 12:23:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5710166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594117457;
-	bh=hQ3D2xyepyWmGLcKAIv2tyIEaznOFFCmVF1LlIRGzsw=;
+	s=default; t=1594117479;
+	bh=A8RlL5xUC4mw95aZXaV138aCA5UJoiVEAsJ/Tuf+rZM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KlGuTHiE3eODCrlaj9fXm8BqbUNYD+PmieUD0PuWtGMUmVEZqnPm8gEBe/ilAVf+y
-	 udQrYC4fpTtDrq2BT2dlfwYVrVQNRfQycibfGa3m5iH3M2C7rMhtV/zfqeWnVAiOP5
-	 mHAOpZAgc7AaZJK172993A0ce8rem67VovWWJlg4=
+	b=CFBMma9Vg01mh+lX6Bu+LjYbawkKtMgopEf5a0Uknmgtbm7gOqccYptmwskRiMncL
+	 onEP8wjE0GX9KMMMPWTtv1Cg49wg8JY+uD4vqRivxdmkE75tbXAu244xuafDSHGA8G
+	 50Z3nybGJfJvWiaAlzBrZGtJkVkR1dQ+z5xi56I4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96EC6F80342;
-	Tue,  7 Jul 2020 12:17:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D6FBF80315;
+	Tue,  7 Jul 2020 12:17:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08920F80308; Tue,  7 Jul 2020 12:17:17 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id 3F311F8031A; Tue,  7 Jul 2020 12:17:18 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A0D1F802E7
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:17:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A0D1F802E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A980F8025A
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:16:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A980F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="TiDsFIcm"
-Received: by mail-wm1-x343.google.com with SMTP id l17so42690981wmj.0
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:17:02 -0700 (PDT)
+ header.b="yjtJryfp"
+Received: by mail-wr1-x443.google.com with SMTP id z2so22274944wrp.2
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:16:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=j306gyjagAnal9NO9hxv+ks7W0GYhjttqc5twDw7Zos=;
- b=TiDsFIcm82IMvKsBQX6/HNIU30n+rKxa8eOMBrBbtxHEawE+hUYaWGDqNZoQzgpzb4
- wpE/sDK5PJm5+ErIRCpPTGSUTLT2mQ4GwVCK9zcD8joRnlHa/IE4X6h8QBtW5pgd3UOg
- 2JBLfOVGlUI+hRpujRyLnkTE2sf9blsqOfFszV7jUptZQ9MVIcjeN+ARhm+N6nVTdjrv
- 5xPaYCX979M0/5uJ3eAAy0fUcI3h2hXJxoeADLr1m0Ju4iJ9a//jAnT8D9VglIw9PoGn
- 5ti+fmywLzKuP10a61cwSFPawXqydZJ/TEqUsZT3Ruw+bpOLVIRvfRrdqIg5PO9hU9hN
- hwHw==
+ bh=pNlZaQWHbaIHYTs0iyc+dtmoOXHEctaupDIvIqecIP4=;
+ b=yjtJryfpQL6B6O+GfgFViYidP0Zfm2TNnBAeSexpzgadJ0xpgfrAVW4b+dn87kGz6C
+ EZ20LZ2Ach4spz+6mWWhfonGFfs2/rcy9nw1nAUr6v3gjXQ3E0cGVWpLruB6V7BWcVKA
+ NCL298eJZDj7ZhP4xvIuCDI1BvtD35Mo5E9bGkX6iUv4iYAAQPpZP38IaOr9k6wvCT0n
+ Jauv59h1FuWhqhRbx4pA4BUC4us6dOrcZW5shkE7d6GTM45WW2uOaKGiuBEwVYlhIvDm
+ Ht9quBZq0GIUYGteKk4rPBi59T6GO0mAXIXQ0Kg0IC8E0hgNv6gc97KOTf9D6n8+RNH2
+ QigA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=j306gyjagAnal9NO9hxv+ks7W0GYhjttqc5twDw7Zos=;
- b=A0EwgJOj/XKS5XG/53EBolePPQK2vq/zPIdVijKJ0fs+xLP70t9peHiQQMjU7gUv+v
- gm3+FCAZ/Ktd4awspFaFzYwJvywBfjTOxYfbabW/5zrUbpIZyWSDmdwNj3DJhZRvykxI
- wxCJdVZOyWq+bybRV2t5ZD+jyhDtwTKWP+heX4ihuI8BtctfK00+6801Wc/bL9kjbzIr
- wola7xFp4eolwHgcJrWFhcf6G034oKiJqHJafycoJXYIPPOuf4T8uOdnSi7qVBQJkn4q
- T/hfHPkU5f01v0E1Dl6uHNkyFhf9Ka0pO4JdgkFNPzg8r3rsQJau8tQyk41KLl6aGk4H
- 8Kig==
-X-Gm-Message-State: AOAM533lGnKoWVhmtz8oCUnt5i4Y+438cBRLZw9F8FOnZL+04ENdXi41
- zbkZnPz9OaQdYO5Srb57ONcDqA==
-X-Google-Smtp-Source: ABdhPJw5fQ+cD4J6acJX9hjTuDH1yBuLxCoSudpJcORTNYjASKSRDv3BMPijf/xqeQ+Ze5JdnB5tow==
-X-Received: by 2002:a7b:c4d7:: with SMTP id g23mr3603144wmk.17.1594117022067; 
- Tue, 07 Jul 2020 03:17:02 -0700 (PDT)
+ bh=pNlZaQWHbaIHYTs0iyc+dtmoOXHEctaupDIvIqecIP4=;
+ b=RpDspkX0JTEgwPu5RrTV/MaM3zxVP/PRcm7SqR27jYlh5TDuTRibhLfexnvGS1AUXH
+ XLOzSqW5G+8e+FY2HCK/WbftInnGhWShCo9iXoKm84XB46Bom83nsU5QlyZ656HqsaFd
+ nbrd9WlU+zNp8dIzqHlkiIi++R3NHJGyHZZVv+aiZ8drRsAxxEJntAa5dl7PbhzCc8BM
+ 6OkhsBj5dqOJu7nhvw5+Zp/tEQFnQ3NXcStuap8GZCbRnJgc1corZKoUbG6e6lGjVnC8
+ 4ducagkrxFkM+54m3VJYpH1psJlkb0x5gwbg8MNTdNsUB1TbSPPELBJcOVtl39m/Rm5y
+ +zHA==
+X-Gm-Message-State: AOAM530LX9doxA5SF/iQbT8Jzl1sTgjTVU1kc2stLqf9qAtndtIZf/1C
+ 5bLt4nP2npKxwXb3a4z16/vzgw==
+X-Google-Smtp-Source: ABdhPJwPGZGh7haWMlGt/1TcC8QGkDnJP2knf1a1NGX34zsnQYiFoWMcsNgAkfwT9eECzK95dCDJuA==
+X-Received: by 2002:a5d:484b:: with SMTP id n11mr50993417wrs.320.1594117017437; 
+ Tue, 07 Jul 2020 03:16:57 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.01
+ by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 03:17:01 -0700 (PDT)
+ Tue, 07 Jul 2020 03:16:56 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH 11/28] ASoC: pxa: pxa-ssp: Demote seemingly unintentional
- kerneldoc header
-Date: Tue,  7 Jul 2020 11:16:25 +0100
-Message-Id: <20200707101642.1747944-12-lee.jones@linaro.org>
+Subject: [PATCH 07/28] ASoC: fsl: fsl_spdif: Use correct formatting when
+ denoting struct documentation
+Date: Tue,  7 Jul 2020 11:16:21 +0100
+Message-Id: <20200707101642.1747944-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>,
- linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>,
- linux-arm-kernel@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
- Daniel Mack <daniel@zonque.org>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, alsa-devel@alsa-project.org,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,34 +113,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is the only use of kerneldoc in the sourcefile and full
-descriptions are not provided.
+Kerneldoc expects struct documentation to start with "struct $NAME".
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/pxa/pxa-ssp.c:186: warning: Function parameter or member 'ssp' not described in 'pxa_ssp_set_scr'
+ sound/soc/fsl/fsl_spdif.c:104: warning: cannot understand function prototype: 'struct fsl_spdif_priv '
 
-Cc: Daniel Mack <daniel@zonque.org>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>
+Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/pxa/pxa-ssp.c | 2 +-
+ sound/soc/fsl/fsl_spdif.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 6a72cc1665b7c..d1e09ade0190d 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -178,7 +178,7 @@ static int pxa_ssp_resume(struct snd_soc_component *component)
- #define pxa_ssp_resume	NULL
- #endif
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 5b2689ae63d4d..7aa3bdec5b6b5 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -81,7 +81,7 @@ struct spdif_mixer_control {
+ };
  
--/**
-+/*
-  * ssp_set_clkdiv - set SSP clock divider
-  * @div: serial clock rate divider
-  */
+ /**
+- * fsl_spdif_priv: Freescale SPDIF private data
++ * struct fsl_spdif_priv - Freescale SPDIF private data
+  *
+  * @fsl_spdif_control: SPDIF control data
+  * @cpu_dai_drv: cpu dai driver
 -- 
 2.25.1
 
