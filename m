@@ -7,97 +7,97 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92AFCC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CA1CC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:50:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DA0D20656
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:50:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2B269206DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:50:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tq+BD1LN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QqqZZ4pE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DA0D20656
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GPF3KQIj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LShq89WJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B269206DF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B20551676;
-	Tue,  7 Jul 2020 16:49:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B20551676
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9C9C167F;
+	Tue,  7 Jul 2020 16:49:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9C9C167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594133413;
-	bh=jVoNhcdJ1bPm+8meHqz22BxhPnJbn/OPJX9JqVrw0Xk=;
+	s=default; t=1594133444;
+	bh=NdUIilMs2SXOATj0oHtQhlwcLX+HvW1huoZC1yD7qto=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tq+BD1LNBjAO/4/P4C0GZmEJppm5YIpA7HaoIH1NqV0/BzvQjDxOvlUCD4V4OmhVc
-	 wy52L0XJDq1FDCZbAc1mUM5XmZ2FtNGuA/avnVHBTi541sm3prHWcZErKcmrdEoSCr
-	 mECIcYV1hVYyzeLXgt83o58u85J3hTlFMpsskZDM=
+	b=GPF3KQIjmjptZYPtrmEedjk3K/Q2VC7kYkCa5JpW/kofKDxC8WJ61PKdMVMJlq/2j
+	 9JLguND1ijrl+H5YCc+q8obSzUnkj6nNW5wm6Uj+Jopfg4PUxO1/w7iu5hnIn8uNrU
+	 3WwcPQUdj5NK0KaBe2S1M3kBRD97q3nj6FpB5VWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C15EF8037E;
-	Tue,  7 Jul 2020 16:38:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E74DF80342;
+	Tue,  7 Jul 2020 16:38:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13A18F80350; Tue,  7 Jul 2020 16:38:29 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ id A5100F80361; Tue,  7 Jul 2020 16:38:29 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75B4CF80332
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75B4CF80332
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D986F80339
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D986F80339
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="QqqZZ4pE"
-Received: by mail-wr1-x444.google.com with SMTP id z13so45410085wrw.5
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:12 -0700 (PDT)
+ header.b="LShq89WJ"
+Received: by mail-wr1-x441.google.com with SMTP id b6so45387811wrs.11
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=i3kHcmoqkZhWZ4oxxNqqC7HGSrDg94q7cDYwU1R7wZ0=;
- b=QqqZZ4pESAuIWwDoPRnNoufHsQOPJdYeYXwBBwabjk1uLwS42wFEAqiWGt+bbkxoUW
- Dt3j7tTPi2S2uGuSN7pApq05aDzKTfIvedNoOVayX3DFlIlmVjjshralPJmUdpHAZFHT
- bC02jDQsGPGvkAYuqHMUQ7SAKmIEE5Wyv/WRDH3TsDo4+Bw+1tP3WM07zo8+K5aWDv0T
- kRTLqiFyThI4W4Ar9ywWWAc2Tw43IULOb4U6bNqk+lako8lgAWUP4Y8adbJUjgSe9ayR
- yO5vgvDWxlAskhJoxs7gLDV7z90M4c5hTTn7ZoTzaC/0ksGTuUevFdvu7htJ+Yqa37w+
- Vi9w==
+ bh=U3fyU5lC2kiQoR/Tx6i2htjANdo4PmUgTNG8kh6JAhc=;
+ b=LShq89WJxb94MrlLI3/486aK65cDtxG0oE+rhlgTmASAYfb/Np7yb+JavN6r2ft9ig
+ AwQPAs5kHPqycz2QUKlP4nkN/SKskU0kSdYnqHPC74v0/benUGDSMuVmY2/f9Kipk6RW
+ gZmZE9RA44h5S5//yiG8puSQxxYPDXovIrKY8v5f+Mu99NOeUtvlkmdl6/y/m2bq0Eze
+ 5J3TuNo5qLEoDrceDVnvkr9q/2nSp7tHNv64ApVICS1NVKPt1+GK6szIpP0evAVdgyBt
+ S8R/3ZsAgU0rXkkv/pvPnnvYjSwjwm1cv4QUDBxGcUOalIMy5y5VPw2rQ+iAfJLU5D5R
+ 5AZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=i3kHcmoqkZhWZ4oxxNqqC7HGSrDg94q7cDYwU1R7wZ0=;
- b=pQhhot/b4rBEBrpWoyksDsS86dfor6Y0wC4C0OgL2jQETask0UpZng8fvxL5Y1mTkr
- k9uywAiFZXW6J6yv1m6OEedOS4HmqkFEv51MDBk+0rvp2RjYXpvY0vJGv3OxLErONmE/
- 1SO+kNCIOqZ2F4qnLj506Hy25l5nGMrQJz3VzPBEfOd5ISSQ1XR1XtNuo6AAOgNCqgVH
- Es0iqQub8r5CP21sGGUXGCTo4sjdJkKVKo2JVFa3+0OFwRh+7+bxsgksX3Zv5TdOoTZm
- VLJlNIQJSKTpnXdmkIhtdQ1yDKLbwKoEsvNaG8dfMtUZQh5LVIanEn08/dvcGlqOQXr1
- C7sA==
-X-Gm-Message-State: AOAM530o3Q8S98EfTXy0idcdAOoO3f1NZ0ZkMNA6Gk9HpWUDZsmtNx7N
- 9y02qa2htNmGMpyTnCIqcwDOGg==
-X-Google-Smtp-Source: ABdhPJwsSC0UeTUN9Csfj74emOCu/UtJQH5pDIqnq5THkRvAxrdrQ5fybem8qUGk6n26vzyQHj4srg==
-X-Received: by 2002:a5d:6a04:: with SMTP id m4mr53013495wru.418.1594132692517; 
- Tue, 07 Jul 2020 07:38:12 -0700 (PDT)
+ bh=U3fyU5lC2kiQoR/Tx6i2htjANdo4PmUgTNG8kh6JAhc=;
+ b=uU8UZ3yGbF7Jg2fTjw0MInsywtm7lxZHV9J3gjVIpwvhxrKF40K1UmYEBn+Djv9d33
+ MOyPwBOY9/m3jMJtljuDSMxsNf4vYGMl17nZKwy1EaF89A4KpbC7TWwt9h9i96wXxi1k
+ dQ8Ae5UbKwizEgjS5kPlybANaEETO1H+cfP95vHWElqBzk9bEgkgSEMTFRiBj/WK+d99
+ prUJFRFbqnifuonhdotqo6OHizxO3vtVM/ZvCXyBEWISlGYbRPGq6TQxNTZiknRxI6lm
+ e+CZyqII0DXAIDoY+Py/m8j/Wn0WVSWtSp0XeT2nCtcC1Bn4tVM+7FSpUv80PptsHAJZ
+ D+JQ==
+X-Gm-Message-State: AOAM533JP7wl0XNkZd/3g9j09AwQKDxEskr7D8j1Y/PFiLeeY4g50sLE
+ QpM6MBkqgBAxrY4DyexMeFBFAA==
+X-Google-Smtp-Source: ABdhPJzqqvWG7oi6hsuXMzqyAR794fl+k3BzyasAa7HE9dNDChNhc30Io0ZzoSOzpgV3OPJPWurV5A==
+X-Received: by 2002:a5d:4607:: with SMTP id t7mr58171903wrq.251.1594132698293; 
+ Tue, 07 Jul 2020 07:38:18 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.11
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 07:38:11 -0700 (PDT)
+ Tue, 07 Jul 2020 07:38:17 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 18/28] ASoC: sunxi: sun4i-spdif: Fix misspelling of
- 'reg_dac_txdata'
-Date: Tue,  7 Jul 2020 15:37:32 +0100
-Message-Id: <20200707143742.2959960-19-lee.jones@linaro.org>
+Subject: [PATCH v2 22/28] ASoC: codecs: da7210: Fix formatting issues in
+ da7210_set_dai_pll() header
+Date: Tue,  7 Jul 2020 15:37:36 +0100
+Message-Id: <20200707143742.2959960-23-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Marcus Cooper <codekipper@gmail.com>,
- linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
- Andrea Venturi <be17068@iperbole.bo.it>, Chen-Yu Tsai <wens@csie.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org,
+ Support Opensource <support.opensource@diasemi.com>,
+ linux-kernel@vger.kernel.org, David Chen <Dajun.chen@diasemi.com>,
+ Kuninori Morimoto <morimoto.kuninori@renesas.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,35 +113,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Property name descriptions need to match exactly.
+Kerneldoc expects parameter documentation to be in the format '@.*: '.
+If that convention is not followed, the kerneldoc checker gets confused.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/sunxi/sun4i-spdif.c:178: warning: Function parameter or member 'reg_dac_txdata' not described in 'sun4i_spdif_quirks'
+ sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'codec_dai' not described in 'da7210_set_dai_pll'
+ sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'pll_id' not described in 'da7210_set_dai_pll'
+ sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'source' not described in 'da7210_set_dai_pll'
+ sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'fref' not described in 'da7210_set_dai_pll'
+ sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'fout' not described in 'da7210_set_dai_pll'
 
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Andrea Venturi <be17068@iperbole.bo.it>
-Cc: Marcus Cooper <codekipper@gmail.com>
+Cc: Support Opensource <support.opensource@diasemi.com>
+Cc: David Chen <Dajun.chen@diasemi.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/sunxi/sun4i-spdif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/da7210.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index 86779a99df751..326dd45e39dab 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -167,7 +167,7 @@
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index 0c99dcf242e42..159b5f0eb7100 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -971,11 +971,13 @@ static int da7210_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 
  /**
-  * struct sun4i_spdif_quirks - Differences between SoC variants.
+  * da7210_set_dai_pll	:Configure the codec PLL
+- * @param codec_dai	: pointer to codec DAI
+- * @param pll_id	: da7210 has only one pll, so pll_id is always zero
+- * @param fref		: MCLK frequency, should be < 20MHz
+- * @param fout		: FsDM value, Refer page 44 & 45 of datasheet
+- * @return int		: Zero for success, negative error code for error
++ * @codec_dai:	pointer to codec DAI
++ * @pll_id:	da7210 has only one pll, so pll_id is always zero
++ * @source:	unused
++ * @fref:	MCLK frequency, should be < 20MHz
++ * @fout:	FsDM value, Refer page 44 & 45 of datasheet
++ *
++ * Returns: Zero for success, negative error code for error
   *
-- * @reg_dac_tx_data: TX FIFO offset for DMA config.
-+ * @reg_dac_txdata: TX FIFO offset for DMA config.
-  * @has_reset: SoC needs reset deasserted.
-  * @val_fctl_ftx: TX FIFO flush bitmask.
-  */
+  * Note: Supported PLL input frequencies are 12MHz, 13MHz, 13.5MHz, 14.4MHz,
+  *       19.2MHz, 19.6MHz and 19.8MHz
 -- 
 2.25.1
 
