@@ -7,98 +7,95 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ADB9C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55E0EC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:49:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC00820773
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:48:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D516020738
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:49:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CGXqa8aT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LkB5f2KQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC00820773
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dVNsnLhX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mjsQaDQY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D516020738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C7E11677;
-	Tue,  7 Jul 2020 16:48:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C7E11677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B425167B;
+	Tue,  7 Jul 2020 16:48:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B425167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594133338;
-	bh=lfh9aVj1QHY1BY8teu2SpBfyyRekdAW4yjmlTHRQhBw=;
+	s=default; t=1594133383;
+	bh=SPzt/dr1DdPuOumqXLQ2d5wei2gZx4uoOHgiXVmILGA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CGXqa8aTZAshKlzQjeMSFjZz7f5WVtnOuXaqOuf6Chbuv3J10HRp6+CHc5sYu1UkY
-	 ikoRlzKpeKBiePBeeAb8VH0ks8EMo6tG+olxoQ+cJYxGnMdH2NzgGpDuUhvZrGl7FV
-	 3SCLjNGVHyDOyZWJk2HLIO2c/2mHBpRvFoJvifko=
+	b=dVNsnLhXzJ0TY1Vte6UYYaJZBrOHk4m1dSMTNbJUUTQUIUDMwUdYnZaDnIfXcIyu7
+	 A7Z4g4/HQf35E1sncIV63cUqVqwtvjlnNiBRvUF1fLCObk5DGfOJuMaB68CTKkzcQG
+	 4WNgK8VSIcyKcBFcw3MKEnfjIn46nA7J2T8ycTbQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD5C3F80368;
-	Tue,  7 Jul 2020 16:38:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64B5AF80372;
+	Tue,  7 Jul 2020 16:38:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55652F8033F; Tue,  7 Jul 2020 16:38:22 +0200 (CEST)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id C559BF8034A; Tue,  7 Jul 2020 16:38:26 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE1CEF80308
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE1CEF80308
+ by alsa1.perex.cz (Postfix) with ESMTPS id D305FF8031A
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D305FF8031A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="LkB5f2KQ"
-Received: by mail-wr1-x442.google.com with SMTP id z2so23135036wrp.2
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:14 -0700 (PDT)
+ header.b="mjsQaDQY"
+Received: by mail-wm1-x343.google.com with SMTP id a6so1897318wmm.0
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
- b=LkB5f2KQxj9RiMnUMCrnbNpyPWXlnW3De4WBuJl/2/6IHSiYFHZG9igGOCZ3Y6J6WK
- Gzbp0CjO+Hdh4zx8lZUoPUE8mjaqtR0sBqE1LDCGGIabjQW5F+fL8xcu83/lEJ5co343
- 1/0T8okpQOpgFedcJf3DKAC0tvKA/FHXQuFyslmQPQhp8ilQDgShlhNi6h7Xvc3BeZFW
- FhGx4DjU3wuLtkjnmBDz31yplmbsKYm6QQ63skIPj0JOBDWZ6+2n4fkjip7zWgg0uq0V
- WTsR8iE1up41/dfHe6m3cLl5RdBzy45oImEPSvr+ABdZS47BW61TAjhXhJZjDOuR6RD/
- vyBg==
+ bh=qvkfvflL72kN7LZNfXrEA+gETlAfB400MfXaywOwHac=;
+ b=mjsQaDQYPUXaqe/g2dKsXNXr+7jrGE4gHc1/ZEMmctM17H8epnfpYGpc69ciz9exAt
+ vKN8+AkaEx/gn6EHBU4QVRlYPfIlD8sgXTzscKM0wzZM+5oJ66huwErQbKU5PZhbrEah
+ Hws2v3v6fr8uOj1dv/ORfJaSw6pYCv0r8IXkBLQpmjRoqokN8O0qao4Jr8+hX/5FYrdb
+ V2kE4xzZgYRakwN/LsCwncknbGHnJaFL7XuNqsTN4VXculb3MKfwjPe4956FyA+mGSjl
+ QWzBADvD2hhEkushVerjKlac8O1Zwi+91Y/OSC/0qGkTkOO4aBJsUGT+Ta5vxSmLmFWA
+ C/ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
- b=bKmVEOEv2Fl1PrZUuKHUPaTiF/68aXxm7Nu0EuqP+7BB6IBFvY9xHnxnD2udF+1x9F
- kQYXESKPd0+tx2PP5Y968BbFCZNjRfg5BZf34uCtfZan0pSxrNe9OoQbmADiqvwXfxfU
- s2qLRYcpxVnECRYrsz7wHZRShbZlJWGzA1U3GDmGZAj3lR5dISiIJrlHcPy/Tf6Lriqz
- FQQCJK7xncxzN0JEHLFQKcSZHh7PrM+TUE+OzYJMpaIl+AX/JY9xJDSiCMZjmocpfMIA
- tlyt+SoDscdyq5enH/1AI7vnoYzdpy/N/1mI33OszP5/ejKeOvzPeyCSB5MynFe36h/M
- M8oA==
-X-Gm-Message-State: AOAM531eFURQxD1fPM6w8fFXdA8rK9v5yapTk2IAoFuAilNr/zwAsS9W
- KIY31iUFbN79fd4NNaGs8mHJqA==
-X-Google-Smtp-Source: ABdhPJynXJwfY+EJdx1C+77hx2NiUZ2uZ+tqh66Q8vQrBf76qaoHLF9FMyXrc1gAY/AjtDJ4ELHvrA==
-X-Received: by 2002:adf:c185:: with SMTP id x5mr59206892wre.403.1594132694312; 
- Tue, 07 Jul 2020 07:38:14 -0700 (PDT)
+ bh=qvkfvflL72kN7LZNfXrEA+gETlAfB400MfXaywOwHac=;
+ b=ZQrmdAd3EL2N86c5Y1R0jjEBnv+8PtAnIU91bLLgyQyZ/HgpQAuM9QhxoNGPe4CFFl
+ 4NIQifK/t616Z9+cRnQmH1s8XuZ3pPrr7WRAfDey48C4TdvPvq6IalCjzWv/1iFqOn2D
+ 20ZvFhYdZsDXsDlvVzb05K5dSERYdd7SXVNnMQaYoIQP6SeV2y4iCcu7WeUvMEVzU3lA
+ S6XM8/oZ4MNHOzFf74/LpYjPlvHBQTMdQpyZD1hP53zKK/mWhuUGDxFMPwPETlTpX0R4
+ fMLTzpxO5rtS3EjKt7yWNDqwfhnn2rFqJ8jNARDzh4GL5DJCbT3oMc6rfmcjlCvbID5T
+ VpFg==
+X-Gm-Message-State: AOAM53159Bn1SDOIeD+opYBp62nqUMBqs9KtXBAhZqEdve7p7dNON1hN
+ g2ZeFPt5XOSNZAgkH92GHNGd9w==
+X-Google-Smtp-Source: ABdhPJz2nCLsOfgeVFtOafx/HAFdZTbjjaJ2muxDQjix4kEwHujevhKyX7Gcrv0w5cFSyTNdM6S0hA==
+X-Received: by 2002:a1c:a7c4:: with SMTP id q187mr4450878wme.0.1594132691332; 
+ Tue, 07 Jul 2020 07:38:11 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.12
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 07:38:13 -0700 (PDT)
+ Tue, 07 Jul 2020 07:38:10 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 19/28] ASoC: ux500: ux500_msp_i2s: Remove unused variables
- 'reg_val_DR' and 'reg_val_TSTDR'
-Date: Tue,  7 Jul 2020 15:37:33 +0100
-Message-Id: <20200707143742.2959960-20-lee.jones@linaro.org>
+Subject: [PATCH v2 17/28] ASoC: uniphier: aio-core: Fix incorrectly named
+ struct property and remove another
+Date: Tue,  7 Jul 2020 15:37:31 +0100
+Message-Id: <20200707143742.2959960-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org,
- Roger Nilsson <roger.xr.nilsson@stericsson.com>,
- Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
- Sandeep Kaushik <sandeep.kaushik@st.com>, zhong jiang <zhongjiang@huawei.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,64 +111,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Looks like these have been unchecked since the driver's inception in 2012.
+Both issues are likely due to bitrot.  Let's bring them up-to-date.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_rx’:
- sound/soc/ux500/ux500_msp_i2s.c:398:6: warning: variable ‘reg_val_DR’ set but not used [-Wunused-but-set-variable]
- sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_tx’:
- sound/soc/ux500/ux500_msp_i2s.c:415:6: warning: variable ‘reg_val_TSTDR’ set but not used [-Wunused-but-set-variable]
+ sound/soc/uniphier/aio-core.c:107: warning: Function parameter or member 'pll_id' not described in 'aio_chip_set_pll'
+ sound/soc/uniphier/aio-core.c:107: warning: Excess function parameter 'source' description in 'aio_chip_set_pll'
+ sound/soc/uniphier/aio-core.c:279: warning: Excess function parameter 'ch' description in 'aio_port_set_ch'
 
-Cc: zhong jiang <zhongjiang@huawei.com>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>
-Cc: Roger Nilsson <roger.xr.nilsson@stericsson.com>
-Cc: Sandeep Kaushik <sandeep.kaushik@st.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_i2s.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/uniphier/aio-core.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index 394d8b2a4a161..fd0b88bb79212 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -395,7 +395,7 @@ static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
+diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
+index 9bcba06ba52ea..86eb0915d80ad 100644
+--- a/sound/soc/uniphier/aio-core.c
++++ b/sound/soc/uniphier/aio-core.c
+@@ -93,9 +93,9 @@ void aio_iecout_set_enable(struct uniphier_aio_chip *chip, bool enable)
  
- static void flush_fifo_rx(struct ux500_msp *msp)
- {
--	u32 reg_val_DR, reg_val_GCR, reg_val_FLR;
-+	u32 reg_val_GCR, reg_val_FLR;
- 	u32 limit = 32;
- 
- 	reg_val_GCR = readl(msp->registers + MSP_GCR);
-@@ -403,7 +403,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
- 
- 	reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	while (!(reg_val_FLR & RX_FIFO_EMPTY) && limit--) {
--		reg_val_DR = readl(msp->registers + MSP_DR);
-+		readl(msp->registers + MSP_DR);
- 		reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	}
- 
-@@ -412,7 +412,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
- 
- static void flush_fifo_tx(struct ux500_msp *msp)
- {
--	u32 reg_val_TSTDR, reg_val_GCR, reg_val_FLR;
-+	u32 reg_val_GCR, reg_val_FLR;
- 	u32 limit = 32;
- 
- 	reg_val_GCR = readl(msp->registers + MSP_GCR);
-@@ -421,7 +421,7 @@ static void flush_fifo_tx(struct ux500_msp *msp)
- 
- 	reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	while (!(reg_val_FLR & TX_FIFO_EMPTY) && limit--) {
--		reg_val_TSTDR = readl(msp->registers + MSP_TSTDR);
-+		readl(msp->registers + MSP_TSTDR);
- 		reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	}
- 	writel(0x0, msp->registers + MSP_ITCR);
+ /**
+  * aio_chip_set_pll - set frequency to audio PLL
+- * @chip  : the AIO chip pointer
+- * @source: PLL
+- * @freq  : frequency in Hz, 0 is ignored
++ * @chip:	the AIO chip pointer
++ * @pll_id:	PLL
++ * @freq:	frequency in Hz, 0 is ignored
+  *
+  * Sets frequency of audio PLL. This function can be called anytime,
+  * but it takes time till PLL is locked.
+@@ -267,7 +267,6 @@ void aio_port_reset(struct uniphier_aio_sub *sub)
+ /**
+  * aio_port_set_ch - set channels of LPCM
+  * @sub: the AIO substream pointer, PCM substream only
+- * @ch : count of channels
+  *
+  * Set suitable slot selecting to input/output port block of AIO.
+  *
 -- 
 2.25.1
 
