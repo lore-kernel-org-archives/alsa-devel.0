@@ -7,98 +7,95 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46251C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF96FC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:48:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C20B620773
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:47:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 379DE20738
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:48:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D9FG5cah";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MHGUg59+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C20B620773
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KBm3sPwx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IhOXTjVM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 379DE20738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08A211677;
-	Tue,  7 Jul 2020 16:47:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08A211677
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB3561673;
+	Tue,  7 Jul 2020 16:47:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB3561673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594133275;
-	bh=0cXBTC4gpvSAswibk1QjXWR066hmA1WvUQJnf+4TcdQ=;
+	s=default; t=1594133308;
+	bh=OpuTpsPUqQgNdRyulOppnnJDfOYVl4J8PGfggRev+qk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D9FG5cah7GnWnnnl8Vm+5MPL4az4XdbF8GIKlZmtCGwceRoD+9UvMKqcDaZzXQud+
-	 ghtY+3DyBZ0ffNB43Wi+8A9q+eASDD+qHtyz1anqmHh1AJ8WhBEs0PiHHCW0fQE0PQ
-	 TDr6AHktwFEREcvY+1jxcbtLMxGWcer7wyPxy6p8=
+	b=KBm3sPwxwITYYNJNvJ325muRUa+H/B0XzU9blT/Tv/3gVsNKj2AhS/15QVtJZ0MXE
+	 UyloCIg00Rj2SJBhSfIF8XlHc2xgC5GpIxCF45zQmho6NStiHPWcu8kKBE/I+x5bux
+	 3rknR4SgGOPe9I3qoebRqKMnfy1qUMZq4zAc/kV4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9BC4F80329;
-	Tue,  7 Jul 2020 16:38:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1A77F80362;
+	Tue,  7 Jul 2020 16:38:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95589F8033F; Tue,  7 Jul 2020 16:38:20 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id C1ECDF802F9; Tue,  7 Jul 2020 16:38:20 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F18CFF802F8
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F18CFF802F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DA45F802FE
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DA45F802FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="MHGUg59+"
-Received: by mail-wr1-x443.google.com with SMTP id z2so23134400wrp.2
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:05 -0700 (PDT)
+ header.b="IhOXTjVM"
+Received: by mail-wm1-x343.google.com with SMTP id l2so45291231wmf.0
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=+qKCC8gwbOOqZ6yEPkGSkmGeka7mYOZ7iXEWMftP650=;
- b=MHGUg59+CIiFn+a4HTqUDEaC2OOzC3fBDNG+gmNZc5Lq9ga6wt3BgEtSO4rzK1gKON
- NN5LiJlHqnLYB1HB4rYnJh6GKCBxpjgG8h89hEH6g8xuCSdXT/X+luQoiJOLszEJ/io/
- oouYXSL7QPMn2mAU/9wE9JCbevJrGhq8fii5XwWGCb/lQfNDoEMkT4FRjq7IvkPcQ2GU
- Uz+cWLLyEM0fJHsdE2DuVaMkxw/M/1OSs1Rzm8rO5hmjJIZw9+SadAEK9JxOkYnBYF2z
- +/SldD0QP9BmkNSVD4HpW10ulLY9YmbObsFRymw2yL1n3cACA26WRz+yfbdB4KgVW6Jm
- cC2w==
+ bh=joYuVrqjbvze3xQNhXb1qygj1A0MIp/q6w6MCrvUZ8U=;
+ b=IhOXTjVMYFUujmZaEgHv/pfMwLaNnDUdlNNgKSMoflKYkAmtWB/h0Diq5Zqy29FQBQ
+ F3vXbY5HCuGwkbT/EYmHPySO7bxH35ASeHizHBLQH1nh8gflpFpOx1g8eOLQjM0P2c63
+ HKWW8jBApZKsX8R+p811F2DJSoQCoLxnt5EVBODnXS10b/HK6sqDvByi72gsifAqvQmM
+ 1lqFcvELQOIU/9ba1F5yBI8x1CQkcuoD5wDVDCq54bRRMWhm8ua0sDhhIcwQ1/kMPwY+
+ ylGno9KJF/Uh2qp9/gCgKcIiMpheTfbCQ8x8GKQ4dBfFGnRL4n/N0y0Blxr2OymdB37K
+ ahUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=+qKCC8gwbOOqZ6yEPkGSkmGeka7mYOZ7iXEWMftP650=;
- b=MPgVW7/pKQ1ebwqsiN01b0a9uUPSEzd990nukElecy/YZnMQjTIbgoM1xzAYR3wQ7n
- +QMMzqY+Q8DVSTPe43KwJeKCieUUzIat+ySmj4cgerDtstpr02tghDzWc9zul6lK19vS
- 7uSZiirVBLdA4QShVUJowjJShD+n3+TlAsA0+eLOm+x19FT8lxip5Rafwwbf0DiOr5Td
- aRk+MvrdYBX42NDF78i9lXxLe9n6ofAb9uJnPThj/gSAGHIEG9+qbLFNHo8VGpit9wAV
- oiYUZH/nryA4drJYAox4AvXbbXbilgO+AH6/M+hj3CT0DsEiwIrVDdl+qN0UQP5x2cDe
- YcIg==
-X-Gm-Message-State: AOAM531TccWygYfTEODibasY08kouHcpg86kHujjxXYe9UzqN8aU8yGN
- /DG6Lb0BUb2jstb6dTw3tiL83g==
-X-Google-Smtp-Source: ABdhPJzaV/3UQ016kv4Ag7+B7phfs4pD1pKuxhbyntXYNoHYbkT+tFXMCA/jg3bjpvj9sjSTi1yKtQ==
-X-Received: by 2002:adf:f784:: with SMTP id q4mr53880655wrp.397.1594132685030; 
- Tue, 07 Jul 2020 07:38:05 -0700 (PDT)
+ bh=joYuVrqjbvze3xQNhXb1qygj1A0MIp/q6w6MCrvUZ8U=;
+ b=UlAePlxOQW/kqKDLACf8WdWbVfxn+4ABTeuBLaqLBwv5uy6/AS5/uU8yDzE8C1kbJy
+ bBlSqCXG8l3sR14vDtfNDeuxgyA1GSCWE4DQhHRZeQvQjh7I3BOnohJx3d8Hq9QUqVB4
+ WYFq+vR1du0dXUE8JoN6ezzdu1R0Jutlh0jbzpImvw8NNxZU00FnjR9u20lzDZONISlr
+ Wi2Qpo0QOrUxxcRCSQnBvqfCvSoo9fHjSG5Zo1hatoQK/p6qM3n9o2ZtdtZjSzy4UpC7
+ NEeeHJGfmf7ZYWS2tDCEpyySt0r7ol+jVwtR0m7D3VEtCP+SJskvhQIOaXFtQvgFm6Cr
+ d6iA==
+X-Gm-Message-State: AOAM530aQtMAKnEbbw2dfXY+FcQZlJEwuE/N8yZ+GrMe/05bmfphZM71
+ q7xOk611Az5K4eCWDScG9fI68Q==
+X-Google-Smtp-Source: ABdhPJxASJgMCHSlaAT+jnWR7OEUQ6kVVPxeeJQfiNe4Wt79qgXR6a0wnra5Mhr9+Tx8zJpe57W47g==
+X-Received: by 2002:a1c:2503:: with SMTP id l3mr4472344wml.188.1594132687466; 
+ Tue, 07 Jul 2020 07:38:07 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.03
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 07:38:04 -0700 (PDT)
+ Tue, 07 Jul 2020 07:38:06 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 12/28] ASoC: codecs: ak4458: Remove set but never checked
- variable 'ret'
-Date: Tue,  7 Jul 2020 15:37:26 +0100
-Message-Id: <20200707143742.2959960-13-lee.jones@linaro.org>
+Subject: [PATCH v2 14/28] ASoC: samsung: pcm: Demote half-documented kerneldoc
+ header
+Date: Tue,  7 Jul 2020 15:37:28 +0100
+Message-Id: <20200707143742.2959960-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org,
- Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>,
- Mihai Serban <mihai.serban@nxp.com>, Lee Jones <lee.jones@linaro.org>,
+Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>,
+ Jaswinder Singh <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzk@kernel.org>, Lee Jones <lee.jones@linaro.org>,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -115,51 +112,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Looks as though the result of snd_soc_update_bits() has never been checked.
+Ideally the author or someone 'in the know' should come back and
+provide the remainder of the documentation.  Until the kerneldoc
+checkers have been satisfied, let's just demote the header to a
+standard comment block.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/codecs/ak4458.c: In function ‘ak4458_set_dai_mute’:
- sound/soc/codecs/ak4458.c:408:16: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+ sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'lock' not described in 's3c_pcm_info'
+ sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'sclk_per_fs' not described in 's3c_pcm_info'
+ sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'idleclk' not described in 's3c_pcm_info'
+ sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'pclk' not described in 's3c_pcm_info'
+ sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'cclk' not described in 's3c_pcm_info'
 
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>
-Cc: Mihai Serban <mihai.serban@nxp.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Jaswinder Singh <jassisinghbrar@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/codecs/ak4458.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/samsung/pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index f180cb5dfe4f1..39ae089dcd1d8 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -405,7 +405,7 @@ static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
--	int nfs, ndt, ret, reg;
-+	int nfs, ndt, reg;
- 	int ats;
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index a5b1a12b34966..3116be4239f59 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -102,7 +102,7 @@
+ #define S3C_PCM_FIFOSTAT_RXFIFOFULL		(0x1 << 1)
+ #define S3C_PCM_FIFOSTAT_RXFIFOALMSTFULL	(0x1 << 0)
  
- 	nfs = ak4458->fs;
-@@ -416,14 +416,14 @@ static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
- 	ndt = att_speed[ats] / (nfs / 1000);
- 
- 	if (mute) {
--		ret = snd_soc_component_update_bits(component, AK4458_01_CONTROL2,  0x01, 1);
-+		snd_soc_component_update_bits(component, AK4458_01_CONTROL2,  0x01, 1);
- 		mdelay(ndt);
- 		if (ak4458->mute_gpiod)
- 			gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
- 	} else {
- 		if (ak4458->mute_gpiod)
- 			gpiod_set_value_cansleep(ak4458->mute_gpiod, 0);
--		ret = snd_soc_component_update_bits(component, AK4458_01_CONTROL2, 0x01, 0);
-+		snd_soc_component_update_bits(component, AK4458_01_CONTROL2, 0x01, 0);
- 		mdelay(ndt);
- 	}
- 
+-/**
++/*
+  * struct s3c_pcm_info - S3C PCM Controller information
+  * @dev: The parent device passed to use from the probe.
+  * @regs: The pointer to the device register block.
 -- 
 2.25.1
 
