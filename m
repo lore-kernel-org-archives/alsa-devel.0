@@ -2,91 +2,92 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 066F9C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:22:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82EC1C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:23:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 841E92065F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:22:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0744E20708
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:23:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ik7+KfYH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="akr9Zsp1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 841E92065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IgSvkxZH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VNmHdT5a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0744E20708
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A4491614;
-	Tue,  7 Jul 2020 12:21:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A4491614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 910BD836;
+	Tue,  7 Jul 2020 12:22:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 910BD836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594117368;
-	bh=Jp0LzCFksHxz1MhYVp50BeLiJW+G33mEBGiYvvNuW1k=;
+	s=default; t=1594117406;
+	bh=H/tdZ8ilfYBgwOZ3cM2RmrdmhVzeUghpK04gZ6y3CJM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ik7+KfYHYjsAHLiSh3KPwsYECcbjKRGGo6bRhOmcHoD1ROYBG4YgAkRzuCptuGAn5
-	 RJ5magHfiGVTsvjycE5FEa9+bichrvZAN8s10mMPqt7e22XRW8g1gn0+9VlzplcotG
-	 uf0/q6Apxy9SDlKwICJsXtUi6VocVXCvES+RbLpM=
+	b=IgSvkxZHUKTYDB1EhMD1D9ATIx7KGdN2p57HkrCEl3QEI71AI8+f+0GyYGdNuFTWV
+	 278cdCTfqige8MMrgkDRSfK27f2WfU7HYwEzSb/i7Gx463y3yrIIrKDrJQkyvcuFC2
+	 n+KVxPaTCXznK+d561GFR0qE5DJhOVfKldEBHwZw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 684E1F8032A;
-	Tue,  7 Jul 2020 12:17:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22B0FF80333;
+	Tue,  7 Jul 2020 12:17:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1837F802FD; Tue,  7 Jul 2020 12:17:13 +0200 (CEST)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id 1B49FF80307; Tue,  7 Jul 2020 12:17:16 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4ABA9F802BD
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:17:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ABA9F802BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70F35F802DB
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:17:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F35F802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="akr9Zsp1"
-Received: by mail-wr1-x442.google.com with SMTP id j4so42132060wrp.10
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:17:00 -0700 (PDT)
+ header.b="VNmHdT5a"
+Received: by mail-wr1-x441.google.com with SMTP id q5so44517657wru.6
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:17:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=YsokizqvcQrYmRK4XFUw9AfpZPmtx9CnTkzjsD5Kh2w=;
- b=akr9Zsp1R9zCusMjYHj20g4bdfxR2yvSbDS3HgPMMiM7U4jS+e7z+EtZ2c1Ikm6qSJ
- j50t7qj6FEzIYazt1dQ/z2GMn07rEoyth5ncNZ/VBMThxjPl38ULcQKS+uBtxBd5UUbN
- 2fYZzTWY2o1yX4Xhk//N/CTDnmLeaX8+cCylsZtWLK3/gQLvTJFa0lwDJgeuQCumUB+m
- Pg2eQBVR27X5w1MuozculYRrSsmF0Iw/Vd7LE93nW7MdOJGe4VWoDyqRQyyWGfpn/LK6
- LqMF5Thu9gPLoKx5rUeWRdJkOngDQOols03IREwRd6KxBITISTpO+Bmta9r6mlF8pD7W
- OmmQ==
+ bh=ceIee8YBFX9kzqJWoK/1iqOS7aaLJ7GoK8i5sFpusg4=;
+ b=VNmHdT5aOvG5QcaUjgLr53ubScedW6+ksFA4XxzupsIrEYDcgzzUzddsvpTVB9+XBd
+ Ry1c1rkjcL2OrFOHVSR5WsUH1Zte6YIqm83zgl4a8K4ORxMhKnyNnv+a+uocR+ceVe7d
+ xSvPRKPxzLXNAG8kwS1XjuRA68zvHf8U6dL/SIXIee0ZAa7JMk85f5nO7LCsI2Nw0k0P
+ Yrd5NXh0wSnDfPpx4/l6Q9a4OlDOxl6oJ1wrFcS002d6H5/bblBAdZvP2iJbJ1PiCx3s
+ 5HiwZQ/XzuOK93xWUiz73N1/WL6mKyRf1RVnJD+SfQcACuO9YfuphgOAaSE3clIFgaah
+ BH5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=YsokizqvcQrYmRK4XFUw9AfpZPmtx9CnTkzjsD5Kh2w=;
- b=POX+Yo1YLWF6yW3JqP6ht3MYgO2UxZmlj6t1Q6ki/pYFYq+mqz941Rjw6cdfLQteLQ
- Gj3BjFaRALWXN2bwMZnuemzLTBNFe+zbBaNrkFW7eFjuWbnThOxb7cedM8ChrgOvCj4U
- FYwLM/mktClN8JdwS6lQIu9A3CmFpbTZAMUr0XHQ3FfPzC6+BUmM8u/DTyv7BCx+sarb
- tvNRarxexcRdqo7qTySIvI1qhS1xitYJ4/AHlG3Kz7dO7VyC1huokjXXwBk2ZCTZ/P32
- pFFgvDWJPiOLE7wCNkPgS8SmEu4dDsMTsRVx0WUueLdbY7KDsAcRhhvS1FxI9cVWKEE7
- MEYA==
-X-Gm-Message-State: AOAM533IOJHMQeXW3YsIRp+UDa+XM/bg1nHq9QaB2WoHzR3kjirmu/s/
- vvmyrRxtZEBAwvLj/lLByJGOog==
-X-Google-Smtp-Source: ABdhPJyokynAsMCJ9KP59ioOQmggRgChTfyTqf7FPi5nBCxf7ckHFkFUgqw78HQEefo5rpFgheVoXQ==
-X-Received: by 2002:adf:f20a:: with SMTP id p10mr56349271wro.41.1594117019816; 
- Tue, 07 Jul 2020 03:16:59 -0700 (PDT)
+ bh=ceIee8YBFX9kzqJWoK/1iqOS7aaLJ7GoK8i5sFpusg4=;
+ b=KGZKm/K1JjsSZt7XXhMFDXxvA8QcekmDdEWC2mz3ALoWBZCkTvYYnfs/LtaNJ5OqUA
+ s67Tm8TzEZFkSh16ezMmm1Fgo9E02w6ceJUWARlJtjP8k1NGPBTe5bE39LzAOsi7JJkD
+ IQWxKpC+5V9MzLwI38J9yRyDqkn551i4DRc1qoXICPP013aNMIDO1UWvCuGjeXdBkSFI
+ AaADzzt7XRNfRRAIK5vB22/MuC4yoN0HlKu5BKUAh3otS3SrKNcofulOtSR+eqgTOM8+
+ nHtjkcdr9y3zoh57/dxLdgzOsujJ2nGUIcuo7gld0GiPDf9vaIAyAHNlXK8uWM6L6Rjg
+ lwRw==
+X-Gm-Message-State: AOAM531b646m7ZVBJd1Xl5vPCjVhXnlMFpaVTj42db7/e5hRfFoSRdMA
+ nS2grR/TwRVcesn74VF641oWTw==
+X-Google-Smtp-Source: ABdhPJwX2C88MDS9oCo6CUBN9iE8kRApkiJqgBaHVMS9ZR3zrmhkp/rOi+eiD5PYlCH7fNBq+FuNpQ==
+X-Received: by 2002:adf:c441:: with SMTP id a1mr52516736wrg.130.1594117020948; 
+ Tue, 07 Jul 2020 03:17:00 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.58
+ by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 03:16:59 -0700 (PDT)
+ Tue, 07 Jul 2020 03:17:00 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH 09/28] ASoC: fsl: fsl_esai: Fix a bunch of kerneldoc issues
-Date: Tue,  7 Jul 2020 11:16:23 +0100
-Message-Id: <20200707101642.1747944-10-lee.jones@linaro.org>
+Subject: [PATCH 10/28] ASoC: fsl: fsl_esai: Add descriptions for 'tx_mask' and
+ 'rx_mask' to 'fsl_esai'
+Date: Tue,  7 Jul 2020 11:16:24 +0100
+Message-Id: <20200707101642.1747944-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
@@ -112,24 +113,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Struct headers require a 'struct $NAME' title, all function parameters
-require a description and need to be in the format '@.*:', else the
-checker gets confused.  Also demote one kerneldoc header where no effort
-was made to document any of the function's params.
-
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/fsl/fsl_esai.c:30: warning: cannot understand function prototype: 'struct fsl_esai_soc_data '
- sound/soc/fsl/fsl_esai.c:61: warning: cannot understand function prototype: 'struct fsl_esai '
- sound/soc/fsl/fsl_esai.c:170: warning: Function parameter or member 'dai' not described in 'fsl_esai_divisor_cal'
- sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'dai' not described in 'fsl_esai_set_dai_sysclk'
- sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'clk_id' not described in 'fsl_esai_set_dai_sysclk'
- sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'freq' not described in 'fsl_esai_set_dai_sysclk'
- sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'dir' not described in 'fsl_esai_set_dai_sysclk'
- sound/soc/fsl/fsl_esai.c:265: warning: Excess function parameter 'Parameters' description in 'fsl_esai_set_dai_sysclk'
- sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'dai' not described in 'fsl_esai_set_bclk'
- sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'tx' not described in 'fsl_esai_set_bclk'
- sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'freq' not described in 'fsl_esai_set_bclk'
+ sound/soc/fsl/fsl_esai.c:86: warning: Function parameter or member 'tx_mask' not described in 'fsl_esai'
+ sound/soc/fsl/fsl_esai.c:86: warning: Function parameter or member 'rx_mask' not described in 'fsl_esai'
 
 Cc: Timur Tabi <timur@kernel.org>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>
@@ -138,69 +125,22 @@ Cc: Fabio Estevam <festevam@gmail.com>
 Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/fsl/fsl_esai.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index cbcb70d6f8c83..bb3c405df623c 100644
+index bb3c405df623c..3f67f4a465780 100644
 --- a/sound/soc/fsl/fsl_esai.c
 +++ b/sound/soc/fsl/fsl_esai.c
-@@ -22,7 +22,7 @@
- 				SNDRV_PCM_FMTBIT_S24_LE)
- 
- /**
-- * fsl_esai_soc_data: soc specific data
-+ * struct fsl_esai_soc_data - soc specific data
-  *
-  * @imx: for imx platform
-  * @reset_at_xrun: flags for enable reset operaton
-@@ -33,7 +33,7 @@ struct fsl_esai_soc_data {
- };
- 
- /**
-- * fsl_esai: ESAI private data
-+ * struct fsl_esai - ESAI private data
-  *
-  * @dma_params_rx: DMA parameters for receive channel
-  * @dma_params_tx: DMA parameters for transmit channel
-@@ -160,10 +160,11 @@ static irqreturn_t esai_isr(int irq, void *devid)
-  * This function is used to calculate the divisors of psr, pm, fp and it is
-  * supposed to be called in set_dai_sysclk() and set_bclk().
-  *
-+ * @dai: SoC DAI
-+ * @tx: current setting is for playback or capture
-  * @ratio: desired overall ratio for the paticipating dividers
-  * @usefp: for HCK setting, there is no need to set fp divider
-  * @fp: bypass other dividers by setting fp directly if fp != 0
-- * @tx: current setting is for playback or capture
-  */
- static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
- 				bool usefp, u32 fp)
-@@ -252,11 +253,11 @@ static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
- /**
-  * This function mainly configures the clock frequency of MCLK (HCKT/HCKR)
-  *
-- * @Parameters:
-- * clk_id: The clock source of HCKT/HCKR
-+ * @dai: SoC DAI
-+ * @clk_id: The clock source of HCKT/HCKR
-  *	  (Input from outside; output from inside, FSYS or EXTAL)
-- * freq: The required clock rate of HCKT/HCKR
-- * dir: The clock direction of HCKT/HCKR
-+ * @freq: The required clock rate of HCKT/HCKR
-+ * @dir: The clock direction of HCKT/HCKR
-  *
-  * Note: If the direction is input, we do not care about clk_id.
-  */
-@@ -357,7 +358,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	return 0;
- }
- 
--/**
-+/*
-  * This function configures the related dividers according to the bclk rate
-  */
- static int fsl_esai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+@@ -49,6 +49,8 @@ struct fsl_esai_soc_data {
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
+  * @slots: number of slots
++ * @tx_mask: tx register mask
++ * @rx_mask: rx register mask
+  * @channels: channel num for tx or rx
+  * @hck_rate: clock rate of desired HCKx clock
+  * @sck_rate: clock rate of desired SCKx clock
 -- 
 2.25.1
 
