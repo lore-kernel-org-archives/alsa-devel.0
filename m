@@ -2,67 +2,69 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE216C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:12:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E917CC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:14:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60953206C3
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:12:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 74952206C3
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:14:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RSmt2uN7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60953206C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ii8UPOfD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74952206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D87851660;
-	Tue,  7 Jul 2020 10:11:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D87851660
+	by alsa0.perex.cz (Postfix) with ESMTPS id D984D1663;
+	Tue,  7 Jul 2020 10:13:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D984D1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594109541;
-	bh=EtmiSxe0YCdi3fMUKf2F90tbpqlpfkcKLsU9UXA9VyQ=;
+	s=default; t=1594109667;
+	bh=uMA8Jpn2zsKQZEDdNquivF4VvLnEXqulhKfBX5eMUWM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RSmt2uN7XH5KhwC+6fURgUjTgJBU0exlww4pHB7l5PUXIhyF8Nu1/apJFYVpqAYcc
-	 t5hbvSGe/y9lUVKeiOa65ueQ3S3IEDuzj4tSAGQvuMRLc4Nh4mokyT0VesTUb3pm0D
-	 rN7u+ccS1K4LRG6qfRJ0cAyNaNNoX6clfotaLagU=
+	b=ii8UPOfDGv0nr5LcStNqFjeYQdgN17P9YAS1HrEzeG+B8jR3fDNu6wYCyni1eWGQk
+	 QdybEqn/9c0uiuInrmQ9WT0TY/00rzrl5D6GFlJbhvX+bTLxG02PIQg8p5gWx2baJs
+	 RMJ855tB3hWHQBN4gCwUWuGFnkBSr87dJRuPfm9E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7265DF801F9;
-	Tue,  7 Jul 2020 10:11:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F20DF801F9;
+	Tue,  7 Jul 2020 10:13:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64A55F80216; Tue,  7 Jul 2020 10:11:29 +0200 (CEST)
+ id 0F600F80216; Tue,  7 Jul 2020 10:13:36 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63156F800DF
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:11:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63156F800DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24398F800D0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:13:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24398F800D0
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0ED26AF3B;
- Tue,  7 Jul 2020 08:11:19 +0000 (UTC)
-Date: Tue, 07 Jul 2020 10:11:18 +0200
-Message-ID: <s5h7dvfg2xl.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A4D0CAF3B;
+ Tue,  7 Jul 2020 08:13:29 +0000 (UTC)
+Date: Tue, 07 Jul 2020 10:13:29 +0200
+Message-ID: <s5h5zazg2ty.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Xidong Wang <wangxidong_97@163.com>
-Subject: Re: [PATCH 1/1] ALSA: opl3: fix infoleak in opl3
-In-Reply-To: <1594006058-30362-1-git-send-email-wangxidong_97@163.com>
-References: <1594006058-30362-1-git-send-email-wangxidong_97@163.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 1/2] ALSA: hda/hdmi: fix failures at PCM open on Intel ICL
+ and later
+In-Reply-To: <20200703153818.2808592-1-kai.vehmanen@linux.intel.com>
+References: <20200703153818.2808592-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, libin.yang@linux.intel.com,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,18 +80,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 06 Jul 2020 05:27:38 +0200,
-Xidong Wang wrote:
+On Fri, 03 Jul 2020 17:38:17 +0200,
+Kai Vehmanen wrote:
 > 
-> From: xidongwang <wangxidong_97@163.com>
+> When HDMI PCM devices are opened in a specific order, with at least one
+> HDMI/DP receiver connected, ALSA PCM open fails to -EBUSY on the
+> connected monitor, on recent Intel platforms (ICL/JSL and newer). While
+> this is not a typical sequence, at least Pulseaudio does this every time
+> when it is started, to discover the available PCMs.
 > 
-> The stack object “info” in snd_opl3_ioctl() has a leaking problem.
-> It has 2 padding bytes which are not initialized and leaked via
-> “copy_to_user”.
+> The rootcause is an invalid assumption in hdmi_add_pin(), where the
+> total number of converters is assumed to be known at the time the
+> function is called. On older Intel platforms this held true, but after
+> ICL/JSL, the order how pins and converters are in the subnode list as
+> returned by snd_hda_get_sub_nodes(), was changed. As a result,
+> information for some converters was not stored to per_pin->mux_nids.
+> And this means some pins cannot be connected to all converters, and
+> application instead gets -EBUSY instead at open.
 > 
-> Signed-off-by: xidongwang <wangxidong_97@163.com>
+> The assumption that converters are always before pins in the subnode
+> list, is not really a valid one. Fix the problem in hdmi_parse_codec()
+> by introducing separate loops for discovering converters and pins.
+> 
+> BugLink: https://github.com/thesofproject/linux/issues/1978
+> BugLink: https://github.com/thesofproject/linux/issues/2216
+> BugLink: https://github.com/thesofproject/linux/issues/2217
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Applied, thanks.
+Thanks, applied.
 
 
 Takashi
