@@ -2,73 +2,75 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48569C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73518C433E1
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:22:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA7262075B
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:21:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECB0F2073E
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:22:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PEV/8mkQ";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CrEnk8ld"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA7262075B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rc31Z+Ea";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="S9GITpcS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECB0F2073E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 696B3950;
-	Tue,  7 Jul 2020 16:20:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 696B3950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CAC2820;
+	Tue,  7 Jul 2020 16:21:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CAC2820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594131698;
-	bh=/LlFcOsGpKUMnOH6IimxAh8FU5eazdHTMjv55z2HvpA=;
+	s=default; t=1594131735;
+	bh=TK5Cmeh9M/MUfKwtkEO+yW3fxeLeyY7PEeljzDxg6Ss=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PEV/8mkQmqYNnom/GNANWKvrdpqX/wk1idYRilWdYFq4id+3PN2ZhZkzaCJjlC7MP
-	 LCXK8uAvtuKZlOw+7XoaTIlRCMO/yN40B7Xq7k3pUCF/XMvN7vxjTwMEl58tItHscQ
-	 RKYdL+jTEy0dfudkc5FfrauLEQfzOXDvVjdhAQso=
+	b=rc31Z+Eak011/JwqQ+HmYJlkMWsddqMiMCDZNOqEYTSkJ2pnOY1fFbF1qqlEu/Qb/
+	 0dISacQvm+LC2b1ssjhZG5TwjaIGaL5Apm2BvuP53k977+rxVAXpD2FjlPBDXiQ5jh
+	 zgrFqCccLzgXUQDarSejSVmNDoojAyZ0diIHss6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02BAAF802E9;
-	Tue,  7 Jul 2020 16:17:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2057FF802F7;
+	Tue,  7 Jul 2020 16:17:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70791F802EA; Tue,  7 Jul 2020 16:17:38 +0200 (CEST)
+ id 715F8F802F8; Tue,  7 Jul 2020 16:17:43 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5143F802DB
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:17:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5143F802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08EE2F802E8
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:17:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08EE2F802E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CrEnk8ld"
+ header.b="S9GITpcS"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0CF2920786;
- Tue,  7 Jul 2020 14:17:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0C28220771;
+ Tue,  7 Jul 2020 14:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594131454;
- bh=/LlFcOsGpKUMnOH6IimxAh8FU5eazdHTMjv55z2HvpA=;
+ s=default; t=1594131459;
+ bh=TK5Cmeh9M/MUfKwtkEO+yW3fxeLeyY7PEeljzDxg6Ss=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=CrEnk8ldIDyr3O0s/MAIyZDuCdL2azOTU+z9tSaiYE5M5c3E/ZeDf1xO7G9XIe1um
- Xzkw4ZmmS92bZie5gV21lRfF9jXg78WjBd6sJJ+F0fTU3/Q4h9FJGjtXbTQvVtI1is
- nH6LdJsUheiO6524qA9rsQ3e3SgKabeZTmrKvMtE=
-Date: Tue, 07 Jul 2020 15:17:30 +0100
+ b=S9GITpcSEv1WJqH3IKUE+Ppu4DyA6YBHZG1krJj2NErR/mlM0kb8OXdjllSTmX+WB
+ 30TKI4qU9XgipwupbpksKfiQpKe8Y9RgZvh0ooOYlIRiuAtBlBwO2ccRvty9Ew0zbS
+ jFz8/dT3SqtISBb0Wxp4w2LJLW7ANSCuFjGXP1sg=
+Date: Tue, 07 Jul 2020 15:17:35 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
-References: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/6] ASoC: amd: remove warnings with make W=1
-Message-Id: <159413142466.34737.14025302386180733522.b4-ty@kernel.org>
-Cc: tiwai@suse.de
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+In-Reply-To: <20200707045829.10002-1-nicoleotsuka@gmail.com>
+References: <20200707045829.10002-1-nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v2] MAINTAINERS: Add Shengjiu to reviewer list of
+ sound/soc/fsl
+Message-Id: <159413142466.34737.3295058697996171604.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ shengjiu.wang@nxp.com, linuxppc-dev@lists.ozlabs.org, timur@tabi.org,
+ linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,19 +86,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Jul 2020 11:44:27 -0500, Pierre-Louis Bossart wrote:
-> Yet another cleanup series, with good findings of variables not used
-> for anything.
-> 
-> Pierre-Louis Bossart (6):
->   ASoC: amd: acp-da7219-max98357a: fix 'defined but not used' warning
->   ASoC: amd: acp-rt5645: fix 'defined but not used' warning
->   ASoC: amd: raven: acp3x-pcm-dma: fix 'set but not used' warning
->   ASoC: amd: raven: acp3x-i2s: fix 'set but not used' warning
->   ASoC: amd: raven: acp3x-pcm-dma: remove unused-but-set variable
->   ASoC: amd: raven: acp3x-i2s: remove unused-but-set variable
-> 
-> [...]
+On Mon, 6 Jul 2020 21:58:29 -0700, Nicolin Chen wrote:
+> Add Shengjiu who's actively working on the latest fsl/nxp audio drivers.
 
 Applied to
 
@@ -104,18 +95,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: amd: acp-da7219-max98357a: fix 'defined but not used' warning
-      commit: dc1aff7f0d1b79e17026e08b14d7bb60ccdae1c8
-[2/6] ASoC: amd: acp-rt5645: fix 'defined but not used' warning
-      commit: 41e4a5b32af6ccec4e11a1cbd20c5569d20faa24
-[3/6] ASoC: amd: raven: acp3x-pcm-dma: fix 'set but not used' warning
-      commit: 5ec2978f1e7494065d1b44e20b047e5840fd7ca7
-[4/6] ASoC: amd: raven: acp3x-i2s: fix 'set but not used' warning
-      commit: fadecf947a72f54843afa12c6732c52914d5024d
-[5/6] ASoC: amd: raven: acp3x-pcm-dma: remove unused-but-set variable
-      commit: 16607237f3b6a56ace8cdbd19bb793cb9bb3f18e
-[6/6] ASoC: amd: raven: acp3x-i2s: remove unused-but-set variable
-      commit: 343403e2dad897a3c6c974a43d760b4fb96b996b
+[1/1] MAINTAINERS: Add Shengjiu to reviewer list of sound/soc/fsl
+      commit: 503ed52225ed3d369c8e0dedf13556a7bc1e5c2b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
