@@ -6,61 +6,68 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 958DBC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 842B4C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:55:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 467572065F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:47:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01DF2206DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:55:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="igQdX/Th"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 467572065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UDFPJnrk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01DF2206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D428F9F6;
-	Tue,  7 Jul 2020 11:46:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D428F9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82BC574C;
+	Tue,  7 Jul 2020 11:54:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82BC574C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594115266;
-	bh=illbT2S/S0fwRdSrBm1TNQk+LIWq3ziQATCFICFNrco=;
+	s=default; t=1594115702;
+	bh=AAYQuCrNs9oioJC0XXtg5N671YWvYqoV3nGJjfZ0Wnw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=igQdX/ThCYvV2rxY021TIV0vm+E7NoQHX3wMkqj6H5rCvegWfizcYY6CHEHr8R78a
-	 IQfyVto3SFGMI0uiIjtO7sdJd3KIHG0Pl2Nx6E5S9qWTf7158rAhiW/46Z0KLOI25O
-	 to2LG2EBD4S2qXL0bJ5LR5dGjh9MCcjKQ101EXtA=
+	b=UDFPJnrky+TQhQZbJ6/q18NY514AroXXQS1nzNwiyOgzuY1Pio4dzsWf58H7+8i9F
+	 HXSE9sxhjzbSbXm5BQ5ScHyGfwxIfNqHsgBhe5mAa4dhqPMqldWygvZU+T3IWDeoRV
+	 XSTjsoqBCtUPDqgV9pKvssrD5URzq2pIHcn0k/Jo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4537AF801F9;
-	Tue,  7 Jul 2020 11:46:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EBE6CF801F9;
+	Tue,  7 Jul 2020 11:54:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B792F80216; Tue,  7 Jul 2020 11:46:54 +0200 (CEST)
+ id AE676F80216; Tue,  7 Jul 2020 11:54:10 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 822DEF801F9
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 11:46:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 822DEF801F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C906F800DF
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 11:54:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C906F800DF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 19825AC2D;
- Tue,  7 Jul 2020 09:46:48 +0000 (UTC)
-Date: Tue, 07 Jul 2020 11:46:47 +0200
-Message-ID: <s5hlfjvejy0.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 91536AC2D;
+ Tue,  7 Jul 2020 09:54:04 +0000 (UTC)
+Date: Tue, 07 Jul 2020 11:54:04 +0200
+Message-ID: <s5himezejlv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: [PATCH] Add implicit feedback quirk for RTX6001
-In-Reply-To: <822f0f20-1886-6884-a6b2-d11c685cbafa@ivitera.com>
-References: <822f0f20-1886-6884-a6b2-d11c685cbafa@ivitera.com>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v5 1/3] ALSA: compress: document the compress audio state
+ machine
+In-Reply-To: <20200629134737.105993-2-vkoul@kernel.org>
+References: <20200629134737.105993-1-vkoul@kernel.org>
+ <20200629134737.105993-2-vkoul@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,18 +83,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 03 Jul 2020 12:04:33 +0200,
-Pavel Hofman wrote:
+On Mon, 29 Jun 2020 15:47:35 +0200,
+Vinod Koul wrote:
 > 
-> USB Audio analyzer RTX6001 uses the same implicit feedback quirk
-> as other XMOS-based devices.
+> So we had some discussions of the stream states, so I thought it is a
+> good idea to document the state transitions, so add it documentation
 > 
-> Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
-> Tested-by: Pavel Hofman <pavel.hofman@ivitera.com>
+> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Applied now (with Cc to stable).
-
-thanks,
+Applied to for-next branch now.  Thanks.
 
 
 Takashi
