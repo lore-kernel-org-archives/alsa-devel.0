@@ -2,87 +2,96 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00C94C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 16:08:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D46B0C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 16:37:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C0FB2065D
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 16:08:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E18720708
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 16:37:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qZ0saoBd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C0FB2065D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BUKkNTty";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ceObNRJb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E18720708
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 141E5950;
-	Tue,  7 Jul 2020 18:07:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 141E5950
+	by alsa0.perex.cz (Postfix) with ESMTPS id C386D74C;
+	Tue,  7 Jul 2020 18:37:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C386D74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594138112;
-	bh=zPfaQ7+/qfP0sux56bqb6v4k4CoZL8HXESETSyEaadY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qZ0saoBd6TO7LZPO3CpdkgAgsNshqw00GcRcqFG0djLgbgTAoy8KvtTda99cWZh/D
-	 gP6XtSv3xxkwAd6e0ltbOzEcg+Pphe4PWuiu10M7zh6f6eN6QP+3ivyO9N0X5L+MRW
-	 3xmCGs6U0iVPbLhF5eM7SN+wDDC3ziyYaz2azHf0=
+	s=default; t=1594139875;
+	bh=pTQOsCVaGdw0VyCeU79ze1Jh99TaAMXGI5SjW+OCbYs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BUKkNTtyz/LBaOzJHypyGZpDgSVU4gUfc7cBlzfi9LlfpfFcF78oZPJ/pOVA96hlY
+	 xiw3cs3vA8OKnoao0P3zhB56JnRj3pU+NYk8ABjoc7jbKK6H1GXuFT6d75aDS1l00Y
+	 PPfl1ohka8Tulk4ZRX6JLA+MsNy1kaqwVXBhYZoQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4774F80264;
-	Tue,  7 Jul 2020 18:06:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C16EF802A0;
+	Tue,  7 Jul 2020 18:37:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37418F800DF; Tue,  7 Jul 2020 18:06:48 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E3A6DF8027C; Tue,  7 Jul 2020 18:37:02 +0200 (CEST)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04331F800D0
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 18:06:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04331F800D0
-IronPort-SDR: LplHI+hw7qJ9qby5Gae4HcZuNHtuwyEWdM6sbXfeeUVlQzambiqbX2WnCXFuF4u9zE3R2PVQ1I
- MCCEBPw61o0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="149148668"
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="149148668"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 09:06:30 -0700
-IronPort-SDR: nWzZSRwTYFqoBfaDlAkFLsCJyfwsTGyETLYfq5n1HLZ0dF0GicOQgpoHJU44M6tg9L8HxECkUI
- Lekna+wYWHUg==
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="305713010"
-Received: from stortizs-mobl1.amr.corp.intel.com (HELO [10.254.109.228])
- ([10.254.109.228])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 09:06:29 -0700
-Subject: Re: [PATCH v5] ASoC: Intel: kbl_rt5663_rt5514_max98927: Fix
- kabylake_ssp_fixup function
-To: Lukasz Majczak <lma@semihalf.com>, Jie Yang <yang.jie@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Harsha Priya <harshapriya.n@intel.com>
-References: <20200703121650.547944-1-lma@semihalf.com>
- <20200707083404.3846-1-lma@semihalf.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <4cb5ea5a-60b3-7f74-0f68-e66d2f2872bf@linux.intel.com>
-Date: Tue, 7 Jul 2020 10:47:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 124CBF80216
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 18:36:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 124CBF80216
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="ceObNRJb"
+Received: by mail-wm1-x344.google.com with SMTP id l17so43994495wmj.0
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 09:36:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=AUDtaZGuLvv+SLoR7KU3Z891RyQPf3cxC2Vk4Ft9m9A=;
+ b=ceObNRJb7swhmuIvVvg3ZWrMgV+06yjHovtpaDEvq4C3mCvWuWv+/xTa0cFjalWvb0
+ DkiDYsAW+KY+MufpoNp8ltf2iXAvP2ivhQ/eTvxOtu2Dwa7ZQSoER3vk+bBwrXO9siZ6
+ BfPqBqVmp4nDCnIA0gJQNrIXMjoAq8CZBPfpawF2hCp6x69YekTK/MSWoLa1a+Hg9+9k
+ neMSXdGgCUmyDrUxBvrtTnfYdHo+0w0wbZN+jG07dxZ9x+oaRwJc0MCZndbsta3LNw+7
+ yIbnD/2BxgAALz314G6NQD/xkZaONSuA1VH+KgTN5eR+2bFZek3ybcNA433micyY7kDx
+ z7dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=AUDtaZGuLvv+SLoR7KU3Z891RyQPf3cxC2Vk4Ft9m9A=;
+ b=L5PNBKvFqrySn8VIkVkyktpKejrLuzhxLysUE8FvWDkjMddRKa/cyMNfU+GDfhNP90
+ H5sB3M6K6dHLSr46R1I3kMx5odr3XpX/48AGwaJ2Z+FjN3ssVSfpylBMyZZg+YjMj7py
+ tqubHrC6zDs5P12SRSHL7yeUzYa8zPnfapGtz90VWS25AF2teN5LcXhpVKIqczL0fUgG
+ kh973LAYXeNVNJq6ixLGJQD9tVBbF3VzmhzTbrv4tOw1Zx5opjKzYdjBntYHtH6zaJCi
+ XrYRz/9kgDdJj0lslIlbJft6zEIWI1H1mQxp/tnpl3ypFoHb0riidJ1+YAxQXQea4mpv
+ jw1Q==
+X-Gm-Message-State: AOAM532/PSta83go7jjmT/co8YGCyoBwJZRn0d5S/LdFO0/jj9iynur+
+ JzdeGcfbJq2bG1l6nQsBaCKbFQ==
+X-Google-Smtp-Source: ABdhPJz0MNARkMW88PzV5/chhJFzWYfOvc0ROqTGi8ma2hnlG9QS9GYEPrqvZOnoNhLS0UuMXlyHeg==
+X-Received: by 2002:a7b:c218:: with SMTP id x24mr4863263wmi.109.1594139809531; 
+ Tue, 07 Jul 2020 09:36:49 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id p14sm1925874wrj.14.2020.07.07.09.36.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 07 Jul 2020 09:36:48 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH 00/11] ASoC: qdsp6: add gapless compressed audio support
+Date: Tue,  7 Jul 2020 17:36:30 +0100
+Message-Id: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20200707083404.3846-1-lma@semihalf.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Radoslaw Biernacki <rad@semihalf.com>,
- Ross Zwisler <zwisler@google.com>, linux-kernel@vger.kernel.org,
- Sathya Prakash <sathya.prakash.m.r@intel.com>, Bob Brandt <brndt@google.com>,
- Marcin Wojtas <mw@semihalf.com>, Alex Levin <levinale@chromium.org>,
- Gopal Vamshi Krishna <vamshi.krishna.gopal@intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, tiwai@suse.com,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,91 +107,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patchset adds gapless compressed audio support on q6asm.
+Gapless on q6asm is implemented using 2 streams in a single asm session.
+
+First few patches are enhacements done to q6asm interface to allow
+stream id per each command, gapless flags and silence meta data.
+Along with this there are few trivial changes which I thought are necessary!
+Last patch implements copy callback to allow finer control over buffer offsets,
+specially in partial drain cases.
+
+This patchset is tested on RB3 aka DB845c platform.
+
+Thanks,
+srini
 
 
-On 7/7/20 3:34 AM, Lukasz Majczak wrote:
-> Fix kabylake_ssp_fixup function to distinguish codecs DAIs by names,
-> as current approach, leads to crash while trying to get snd_soc_dpcm with
-> container_of() macro in kabylake_ssp_fixup().
-> The crash call path looks as below:
-> soc_pcm_hw_params()
-> snd_soc_dai_hw_params(codec_dai, substream, &codec_params);
-> rtd->dai_link->be_hw_params_fixup(rtd, params)
-> kabylake_ssp_fixup()
-> In this case, codec_params is just a copy of an internal structure and is
-> not embedded into struct snd_soc_dpcm thus we cannot use
-> container_of() on it.
-> 
-> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Srinivas Kandagatla (11):
+  ASoC: q6asm: add command opcode to timeout error report
+  ASoC: q6asm: rename misleading session id variable
+  ASoC: q6asm: make commands specific to streams
+  ASoC: q6asm: use flags directly from asm-dai
+  ASoC: q6asm: add length to write command token
+  ASoC: q6asm: add support to remove intial and trailing silence
+  ASoC: q6asm: add support to gapless flag in asm open
+  ASoC: q6asm-dai: add next track metadata support
+  ASoC: qdsp6: use dev_err instead of pr_err
+  ASoC: qdsp6-dai: add gapless support
+  ASoC: q6asm-dai: add support to copy callback
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 397 +++++++++++++++++++++++--------
+ sound/soc/qcom/qdsp6/q6asm.c     | 173 +++++++++-----
+ sound/soc/qcom/qdsp6/q6asm.h     |  48 ++--
+ 3 files changed, 458 insertions(+), 160 deletions(-)
 
-> ---
-> v1 -> v2:
-> - Extract dmic from SSP0 as every BE should have own fixup function.
-> v2 -> v3:
-> - Restore naming in the dapm route table to not confuse with other
-> drivers
-> - Fixed indentations
-> v3 -> v4:
-> - Updated code and commit description according to
-> solution proposed by Harsha
-> ---
->   .../intel/boards/kbl_rt5663_rt5514_max98927.c | 28 ++++++++-----------
->   1 file changed, 12 insertions(+), 16 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> index b34cf6cf11395..df454de40739a 100644
-> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> @@ -333,36 +333,32 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
->   {
->   	struct snd_interval *rate = hw_param_interval(params,
->   			SNDRV_PCM_HW_PARAM_RATE);
-> -	struct snd_interval *chan = hw_param_interval(params,
-> +	struct snd_interval *channels = hw_param_interval(params,
->   			SNDRV_PCM_HW_PARAM_CHANNELS);
->   	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-> -	struct snd_soc_dpcm *dpcm = container_of(
-> -			params, struct snd_soc_dpcm, hw_params);
-> -	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
-> -	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
-> +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
->   
->   	/*
->   	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
->   	 */
-> -	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
-> -	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
-> -	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
-> +
-> +	if (!strcmp(codec_dai->name, KBL_REALTEK_DMIC_CODEC_DAI)) {
-> +		if (params_channels(params) == 2 ||
-> +			DMIC_CH(dmic_constraints) == 2)
-> +			channels->min = channels->max = 2;
-> +		else
-> +			channels->min = channels->max = 4;
-> +	} else {
->   		rate->min = rate->max = 48000;
-> -		chan->min = chan->max = 2;
-> +		channels->min = channels->max = 2;
->   		snd_mask_none(fmt);
->   		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
-> -	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
-> -		if (params_channels(params) == 2 ||
-> -				DMIC_CH(dmic_constraints) == 2)
-> -			chan->min = chan->max = 2;
-> -		else
-> -			chan->min = chan->max = 4;
->   	}
->   	/*
->   	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
->   	 * thus changing the mask here
->   	 */
-> -	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
-> +	if (!strcmp(codec_dai->name, KBL_MAXIM_CODEC_DAI))
->   		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
->   
->   	return 0;
-> 
+-- 
+2.21.0
+
