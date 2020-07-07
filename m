@@ -7,78 +7,76 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76F86C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:10:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A03CBC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:10:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0569F2064C
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:10:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FF14206E9
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:10:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JTfttAPQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0569F2064C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XGN2zS3+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FF14206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FC11168B;
-	Tue,  7 Jul 2020 21:09:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FC11168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF13784A;
+	Tue,  7 Jul 2020 21:10:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF13784A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594149016;
-	bh=5+QQ/W2Gix/LimkCmxHdPUcauBPzFvhl3MtcQ0bBMwQ=;
+	s=default; t=1594149052;
+	bh=gW5TFI+86jL3xae1D8uf42Sid1UcLQOFLcwwvAlKB4o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JTfttAPQ68KnJMNmN++CEd2/ILfQdVvx6uKoNcKhjGFTUCK4BMZB5IFsrCMk4VbBK
-	 Jtz+Py84ch1npM69wm/KWLLH13FdjrgIfAp3xe5DDUEyb8VH7VY8xIX2EnqNlHzstY
-	 7eDhjBH4jcTYXQngKDerxwgUBiYalgkiJaQHPGDg=
+	b=XGN2zS3+zZD9RneXVEZETKltTpd9shYs4t6mdKsQ02xYFgP+Ud+w4XZcX8pddjSHq
+	 DqNLIYmjX8QxsMr6TbWpU9sLcZgBb0jtJfYzcNtX0zYWNCkht1EevQEm+uWl3/W6u0
+	 MoxT6LcYFQe0g2GOAZfaVXigyvYq+eNBK1Yaq1JU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74FB5F802F8;
-	Tue,  7 Jul 2020 21:06:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8280F802DF;
+	Tue,  7 Jul 2020 21:06:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B454F802E2; Tue,  7 Jul 2020 21:06:50 +0200 (CEST)
+ id A5857F802E3; Tue,  7 Jul 2020 21:06:51 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89E32F8027C
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 21:06:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89E32F8027C
-IronPort-SDR: ldvScJndgxt/8Yt6OcEnujkuPD/Awaw25EOCr5hFlRD2vBQTro3WEU3LbG3LUsQByewaRD+bLH
- 2I8b1XHfJr6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="149202907"
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="149202907"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B8C7F80264
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 21:06:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B8C7F80264
+IronPort-SDR: 1q6YvYAYkPAo4nKugsFbnwdoKODxe7mUvb4oBSiop0VOGFHv0Zm94ZoICwN4mdT9/+GqQINMUB
+ 67Mn3QAKzdGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="149202914"
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="149202914"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 12:06:39 -0700
-IronPort-SDR: 2vJWwvJIGpw2Zjp3AJVrMEONi3VM5pUMa3OkbDVnkt+kdZNWhi1K9aKBSAvxlZCJD+3Etjm7/e
- LNvxIUCP1bIg==
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="268278563"
+ 07 Jul 2020 12:06:42 -0700
+IronPort-SDR: 4zJ6Irp7x3uElHFi5lQeT+sF12n55oX7ckDDOnDHshWPzMEP9F2zKlamncBnec09LroFwX66Os
+ 83gTM3acm4Jw==
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="268278576"
 Received: from mrtorger-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.77.62])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 12:06:37 -0700
+ 07 Jul 2020 12:06:39 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v3 05/13] ASoC: uniphier: aio-core: fix kernel-doc
-Date: Tue,  7 Jul 2020 14:06:04 -0500
-Message-Id: <20200707190612.97799-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 06/13] ASoC: codecs: da7210: fix kernel-doc
+Date: Tue,  7 Jul 2020 14:06:05 -0500
+Message-Id: <20200707190612.97799-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
 References: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>,
+Cc: Support Opensource <support.opensource@diasemi.com>, tiwai@suse.de,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, broonie@kernel.org,
- Lee Jones <lee.jones@linaro.org>,
- "moderated list:ARM/UNIPHIER ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
+ Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
+ Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+ Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,39 +92,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix W=1 warning - wrong parameter description and bad format
+Fix W=1 warning, the kernel-doc syntax was probably from Doxygen?
 
-Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/uniphier/aio-core.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/da7210.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
-index 9bcba06ba52e..b8195778953e 100644
---- a/sound/soc/uniphier/aio-core.c
-+++ b/sound/soc/uniphier/aio-core.c
-@@ -93,9 +93,9 @@ void aio_iecout_set_enable(struct uniphier_aio_chip *chip, bool enable)
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index 0c99dcf242e4..2bb727dd3a20 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -971,14 +971,16 @@ static int da7210_set_dai_sysclk(struct snd_soc_dai *codec_dai,
  
  /**
-  * aio_chip_set_pll - set frequency to audio PLL
-- * @chip  : the AIO chip pointer
-- * @source: PLL
-- * @freq  : frequency in Hz, 0 is ignored
-+ * @chip: the AIO chip pointer
-+ * @pll_id: PLL
-+ * @freq: frequency in Hz, 0 is ignored
+  * da7210_set_dai_pll	:Configure the codec PLL
+- * @param codec_dai	: pointer to codec DAI
+- * @param pll_id	: da7210 has only one pll, so pll_id is always zero
+- * @param fref		: MCLK frequency, should be < 20MHz
+- * @param fout		: FsDM value, Refer page 44 & 45 of datasheet
+- * @return int		: Zero for success, negative error code for error
++ * @codec_dai: pointer to codec DAI
++ * @pll_id: da7210 has only one pll, so pll_id is always zero
++ * @source: clock source
++ * @fref: MCLK frequency, should be < 20MHz
++ * @fout: FsDM value, Refer page 44 & 45 of datasheet
   *
-  * Sets frequency of audio PLL. This function can be called anytime,
-  * but it takes time till PLL is locked.
-@@ -267,7 +267,6 @@ void aio_port_reset(struct uniphier_aio_sub *sub)
- /**
-  * aio_port_set_ch - set channels of LPCM
-  * @sub: the AIO substream pointer, PCM substream only
-- * @ch : count of channels
-  *
-  * Set suitable slot selecting to input/output port block of AIO.
-  *
+  * Note: Supported PLL input frequencies are 12MHz, 13MHz, 13.5MHz, 14.4MHz,
+  *       19.2MHz, 19.6MHz and 19.8MHz
++ *
++ * Return: Zero for success, negative error code for error
+  */
+ static int da7210_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 			      int source, unsigned int fref, unsigned int fout)
 -- 
 2.25.1
 
