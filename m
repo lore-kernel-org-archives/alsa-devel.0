@@ -7,87 +7,86 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4168C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:22:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 066F9C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:22:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33FA52065F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:22:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 841E92065F
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:22:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="audL4XIC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y0gY2Sy9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33FA52065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ik7+KfYH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="akr9Zsp1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 841E92065F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C94D8823;
-	Tue,  7 Jul 2020 12:21:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C94D8823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A4491614;
+	Tue,  7 Jul 2020 12:21:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A4491614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594117327;
-	bh=9anm3FkVKfmBb4XXKTunqBgnT6EhpaxDcnHMSeJA3mI=;
+	s=default; t=1594117368;
+	bh=Jp0LzCFksHxz1MhYVp50BeLiJW+G33mEBGiYvvNuW1k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=audL4XICXW7M5rE/7hnary5gMSHKXSGHFxm7EFjgEf2y3Py1X8p0uLuths/lG3o58
-	 /XYCUvi6Y3+y1it2CdyPEKPuWWltCXLc77ae6ihXCtktgd6OvSwwAjmyNdb3SdZcVU
-	 9SXM/v3HW0nbVsq96pyKjAcheR/bMerYHvWiQ0yY=
+	b=ik7+KfYHYjsAHLiSh3KPwsYECcbjKRGGo6bRhOmcHoD1ROYBG4YgAkRzuCptuGAn5
+	 RJ5magHfiGVTsvjycE5FEa9+bichrvZAN8s10mMPqt7e22XRW8g1gn0+9VlzplcotG
+	 uf0/q6Apxy9SDlKwICJsXtUi6VocVXCvES+RbLpM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11E72F80317;
-	Tue,  7 Jul 2020 12:17:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 684E1F8032A;
+	Tue,  7 Jul 2020 12:17:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E15DF802FE; Tue,  7 Jul 2020 12:17:12 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id F1837F802FD; Tue,  7 Jul 2020 12:17:13 +0200 (CEST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21CDBF802BE
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:16:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21CDBF802BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4ABA9F802BD
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:17:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ABA9F802BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Y0gY2Sy9"
-Received: by mail-wr1-x443.google.com with SMTP id f7so41530816wrw.1
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:16:55 -0700 (PDT)
+ header.b="akr9Zsp1"
+Received: by mail-wr1-x442.google.com with SMTP id j4so42132060wrp.10
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=8ZEmbLq4aOW35ukJy4E78RGy/Qq2YYTCi7Pk4jUv8mI=;
- b=Y0gY2Sy9AnIXxGPBMPafdM/OU+9ALGKd8+XAf10BdrSVdmVXMQ3Drjdux2AMMLpIff
- I9bHd7e1F6GPWDyeNwpRf5NJl51RBzzacMIqXloYMMCBSl8luOL9X9Vlh2wVEddLyVzH
- X/EglPfk6GL5tncqxuYjwHRyb9k89v9BbmrAsS/STklgO/FkJI/85N9CuLpAYoYifrY8
- m9rysfNJHAiL9ccDW9o8UiDwstNbizR9NdPn2J2Sl1EeTmUz+hEEOxWPUxRA1Ze5DYoF
- uvYdXCkL+aLfmYJDTbvIyEzfu1DeN08knBxZdKrkCHIPtTnNlqsFQH5mepXeDajhBjxs
- UYvw==
+ bh=YsokizqvcQrYmRK4XFUw9AfpZPmtx9CnTkzjsD5Kh2w=;
+ b=akr9Zsp1R9zCusMjYHj20g4bdfxR2yvSbDS3HgPMMiM7U4jS+e7z+EtZ2c1Ikm6qSJ
+ j50t7qj6FEzIYazt1dQ/z2GMn07rEoyth5ncNZ/VBMThxjPl38ULcQKS+uBtxBd5UUbN
+ 2fYZzTWY2o1yX4Xhk//N/CTDnmLeaX8+cCylsZtWLK3/gQLvTJFa0lwDJgeuQCumUB+m
+ Pg2eQBVR27X5w1MuozculYRrSsmF0Iw/Vd7LE93nW7MdOJGe4VWoDyqRQyyWGfpn/LK6
+ LqMF5Thu9gPLoKx5rUeWRdJkOngDQOols03IREwRd6KxBITISTpO+Bmta9r6mlF8pD7W
+ OmmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=8ZEmbLq4aOW35ukJy4E78RGy/Qq2YYTCi7Pk4jUv8mI=;
- b=cwrp8kGFL/6li0E+L52uwNvMulQBTGu18dS6e1wzgGM7EDrYu0S/2Q++4Sxc7SKUsF
- 6q43wgprK8ZYOhvud4IsbQhimVy6t84kxIo/BpdSeCnwieSIFoMPJRME52NMrNPn5iYy
- jQk71SaSytIWMCB/BJijnqDWPgap5+rdhVtwfIOFGfmh33QaMFjdhcrX5lDBUyz/YoUE
- LJgzYFNxXYupEILEU6RKPtogOnrWBuLompNoysUzl/U1s08GsvbzN8pAcIHA09TzpcOg
- c5cZlRX9GqBTV1TiIx6BK8QNiCmXexpEs7iIA6X+Fz95QHK9K8AeX9K4RCqztjiyqtr3
- UV3g==
-X-Gm-Message-State: AOAM530oSh6bVBOLTcrAhIbpPPDd1h8PFtQQYXwkOpYYUn7Ib4ljmoYC
- HQgAU44DlEZs1m09j3pRXAtPgg==
-X-Google-Smtp-Source: ABdhPJxbWYN/EZ506zCfhQGem0UtKR9JftLPkvuSL9odppwn/+9aRct/FXJzmr1kyNsbYQyI9tSEhw==
-X-Received: by 2002:adf:edc8:: with SMTP id v8mr52127368wro.125.1594117014212; 
- Tue, 07 Jul 2020 03:16:54 -0700 (PDT)
+ bh=YsokizqvcQrYmRK4XFUw9AfpZPmtx9CnTkzjsD5Kh2w=;
+ b=POX+Yo1YLWF6yW3JqP6ht3MYgO2UxZmlj6t1Q6ki/pYFYq+mqz941Rjw6cdfLQteLQ
+ Gj3BjFaRALWXN2bwMZnuemzLTBNFe+zbBaNrkFW7eFjuWbnThOxb7cedM8ChrgOvCj4U
+ FYwLM/mktClN8JdwS6lQIu9A3CmFpbTZAMUr0XHQ3FfPzC6+BUmM8u/DTyv7BCx+sarb
+ tvNRarxexcRdqo7qTySIvI1qhS1xitYJ4/AHlG3Kz7dO7VyC1huokjXXwBk2ZCTZ/P32
+ pFFgvDWJPiOLE7wCNkPgS8SmEu4dDsMTsRVx0WUueLdbY7KDsAcRhhvS1FxI9cVWKEE7
+ MEYA==
+X-Gm-Message-State: AOAM533IOJHMQeXW3YsIRp+UDa+XM/bg1nHq9QaB2WoHzR3kjirmu/s/
+ vvmyrRxtZEBAwvLj/lLByJGOog==
+X-Google-Smtp-Source: ABdhPJyokynAsMCJ9KP59ioOQmggRgChTfyTqf7FPi5nBCxf7ckHFkFUgqw78HQEefo5rpFgheVoXQ==
+X-Received: by 2002:adf:f20a:: with SMTP id p10mr56349271wro.41.1594117019816; 
+ Tue, 07 Jul 2020 03:16:59 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.52
+ by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 03:16:53 -0700 (PDT)
+ Tue, 07 Jul 2020 03:16:59 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH 05/28] ASoC: fsl: fsl_ssi: Demote obvious misuse of kerneldoc
- to standard comment blocks
-Date: Tue,  7 Jul 2020 11:16:19 +0100
-Message-Id: <20200707101642.1747944-6-lee.jones@linaro.org>
+Subject: [PATCH 09/28] ASoC: fsl: fsl_esai: Fix a bunch of kerneldoc issues
+Date: Tue,  7 Jul 2020 11:16:23 +0100
+Message-Id: <20200707101642.1747944-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
@@ -113,40 +112,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No attempt has been made to document any of the demoted functions here.
+Struct headers require a 'struct $NAME' title, all function parameters
+require a description and need to be in the format '@.*:', else the
+checker gets confused.  Also demote one kerneldoc header where no effort
+was made to document any of the function's params.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/fsl/fsl_ssi.c:380: warning: Function parameter or member 'irq' not described in 'fsl_ssi_isr'
- sound/soc/fsl/fsl_ssi.c:380: warning: Function parameter or member 'dev_id' not described in 'fsl_ssi_isr'
- sound/soc/fsl/fsl_ssi.c:406: warning: Function parameter or member 'ssi' not described in 'fsl_ssi_config_enable'
- sound/soc/fsl/fsl_ssi.c:406: warning: Function parameter or member 'tx' not described in 'fsl_ssi_config_enable'
- sound/soc/fsl/fsl_ssi.c:506: warning: Function parameter or member 'ssi' not described in 'fsl_ssi_config_disable'
- sound/soc/fsl/fsl_ssi.c:506: warning: Function parameter or member 'tx' not described in 'fsl_ssi_config_disable'
- sound/soc/fsl/fsl_ssi.c:583: warning: Function parameter or member 'ssi' not described in 'fsl_ssi_setup_regvals'
- sound/soc/fsl/fsl_ssi.c:675: warning: Function parameter or member 'substream' not described in 'fsl_ssi_set_bclk'
- sound/soc/fsl/fsl_ssi.c:675: warning: Function parameter or member 'dai' not described in 'fsl_ssi_set_bclk'
- sound/soc/fsl/fsl_ssi.c:675: warning: Function parameter or member 'hw_params' not described in 'fsl_ssi_set_bclk'
- sound/soc/fsl/fsl_ssi.c:798: warning: Function parameter or member 'substream' not described in 'fsl_ssi_hw_params'
- sound/soc/fsl/fsl_ssi.c:798: warning: Function parameter or member 'hw_params' not described in 'fsl_ssi_hw_params'
- sound/soc/fsl/fsl_ssi.c:798: warning: Function parameter or member 'dai' not described in 'fsl_ssi_hw_params'
- sound/soc/fsl/fsl_ssi.c:1003: warning: Function parameter or member 'dai' not described in 'fsl_ssi_set_dai_fmt'
- sound/soc/fsl/fsl_ssi.c:1003: warning: Function parameter or member 'fmt' not described in 'fsl_ssi_set_dai_fmt'
- sound/soc/fsl/fsl_ssi.c:1018: warning: Function parameter or member 'dai' not described in 'fsl_ssi_set_dai_tdm_slot'
- sound/soc/fsl/fsl_ssi.c:1018: warning: Function parameter or member 'tx_mask' not described in 'fsl_ssi_set_dai_tdm_slot'
- sound/soc/fsl/fsl_ssi.c:1018: warning: Function parameter or member 'rx_mask' not described in 'fsl_ssi_set_dai_tdm_slot'
- sound/soc/fsl/fsl_ssi.c:1018: warning: Function parameter or member 'slots' not described in 'fsl_ssi_set_dai_tdm_slot'
- sound/soc/fsl/fsl_ssi.c:1018: warning: Function parameter or member 'slot_width' not described in 'fsl_ssi_set_dai_tdm_slot'
- sound/soc/fsl/fsl_ssi.c:1065: warning: Function parameter or member 'substream' not described in 'fsl_ssi_trigger'
- sound/soc/fsl/fsl_ssi.c:1065: warning: Function parameter or member 'cmd' not described in 'fsl_ssi_trigger'
- sound/soc/fsl/fsl_ssi.c:1065: warning: Function parameter or member 'dai' not described in 'fsl_ssi_trigger'
- sound/soc/fsl/fsl_ssi.c:1245: warning: Function parameter or member 'ssi' not described in 'fsl_ssi_hw_init'
- sound/soc/fsl/fsl_ssi.c:1274: warning: Function parameter or member 'ssi' not described in 'fsl_ssi_hw_clean'
- sound/soc/fsl/fsl_ssi.c:1292: warning: Function parameter or member 's' not described in 'make_lowercase'
-
-Also use correct formatting when documenting structs:
-
- sound/soc/fsl/fsl_ssi.c:258: warning: cannot understand function prototype: 'struct fsl_ssi '
+ sound/soc/fsl/fsl_esai.c:30: warning: cannot understand function prototype: 'struct fsl_esai_soc_data '
+ sound/soc/fsl/fsl_esai.c:61: warning: cannot understand function prototype: 'struct fsl_esai '
+ sound/soc/fsl/fsl_esai.c:170: warning: Function parameter or member 'dai' not described in 'fsl_esai_divisor_cal'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'dai' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'clk_id' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'freq' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'dir' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Excess function parameter 'Parameters' description in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'dai' not described in 'fsl_esai_set_bclk'
+ sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'tx' not described in 'fsl_esai_set_bclk'
+ sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'freq' not described in 'fsl_esai_set_bclk'
 
 Cc: Timur Tabi <timur@kernel.org>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>
@@ -155,139 +138,69 @@ Cc: Fabio Estevam <festevam@gmail.com>
 Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 1a2fa7f181423..5717d664cde1e 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -203,7 +203,7 @@ struct fsl_ssi_soc_data {
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index cbcb70d6f8c83..bb3c405df623c 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -22,7 +22,7 @@
+ 				SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ /**
+- * fsl_esai_soc_data: soc specific data
++ * struct fsl_esai_soc_data - soc specific data
+  *
+  * @imx: for imx platform
+  * @reset_at_xrun: flags for enable reset operaton
+@@ -33,7 +33,7 @@ struct fsl_esai_soc_data {
  };
  
  /**
-- * fsl_ssi: per-SSI private data
-+ * struct fsl_ssi - per-SSI private data
+- * fsl_esai: ESAI private data
++ * struct fsl_esai - ESAI private data
   *
-  * @regs: Pointer to the regmap registers
-  * @irq: IRQ of this SSI
-@@ -373,7 +373,7 @@ static bool fsl_ssi_is_i2s_cbm_cfs(struct fsl_ssi *ssi)
- 		SND_SOC_DAIFMT_CBM_CFS;
- }
- 
--/**
-+/*
-  * Interrupt handler to gather states
+  * @dma_params_rx: DMA parameters for receive channel
+  * @dma_params_tx: DMA parameters for transmit channel
+@@ -160,10 +160,11 @@ static irqreturn_t esai_isr(int irq, void *devid)
+  * This function is used to calculate the divisors of psr, pm, fp and it is
+  * supposed to be called in set_dai_sysclk() and set_bclk().
+  *
++ * @dai: SoC DAI
++ * @tx: current setting is for playback or capture
+  * @ratio: desired overall ratio for the paticipating dividers
+  * @usefp: for HCK setting, there is no need to set fp divider
+  * @fp: bypass other dividers by setting fp directly if fp != 0
+- * @tx: current setting is for playback or capture
   */
- static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
-@@ -394,7 +394,7 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--/**
-+/*
-  * Set SCR, SIER, STCR and SRCR registers with cached values in regvals
+ static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
+ 				bool usefp, u32 fp)
+@@ -252,11 +253,11 @@ static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
+ /**
+  * This function mainly configures the clock frequency of MCLK (HCKT/HCKR)
   *
-  * Notes:
-@@ -474,7 +474,7 @@ static void fsl_ssi_config_enable(struct fsl_ssi *ssi, bool tx)
- 	ssi->streams |= BIT(dir);
- }
- 
--/**
-+/*
-  * Exclude bits that are used by the opposite stream
+- * @Parameters:
+- * clk_id: The clock source of HCKT/HCKR
++ * @dai: SoC DAI
++ * @clk_id: The clock source of HCKT/HCKR
+  *	  (Input from outside; output from inside, FSYS or EXTAL)
+- * freq: The required clock rate of HCKT/HCKR
+- * dir: The clock direction of HCKT/HCKR
++ * @freq: The required clock rate of HCKT/HCKR
++ * @dir: The clock direction of HCKT/HCKR
   *
-  * When both streams are active, disabling some bits for the current stream
-@@ -494,7 +494,7 @@ static void fsl_ssi_config_enable(struct fsl_ssi *ssi, bool tx)
- #define ssi_excl_shared_bits(vals, avals, aactive) \
- 	((vals) & _ssi_xor_shared_bits(vals, avals, aactive))
- 
--/**
-+/*
-  * Unset SCR, SIER, STCR and SRCR registers with cached values in regvals
-  *
-  * Notes:
-@@ -576,7 +576,7 @@ static void fsl_ssi_tx_ac97_saccst_setup(struct fsl_ssi *ssi)
- 	}
- }
- 
--/**
-+/*
-  * Cache critical bits of SIER, SRCR, STCR and SCR to later set them safely
+  * Note: If the direction is input, we do not care about clk_id.
   */
- static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
-@@ -660,7 +660,7 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
- 	clk_disable_unprepare(ssi->clk);
- }
- 
--/**
-+/*
-  * Configure Digital Audio Interface bit clock
-  *
-  * Note: This function can be only called when using SSI as DAI master
-@@ -781,7 +781,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+@@ -357,7 +358,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
  	return 0;
  }
  
 -/**
 +/*
-  * Configure SSI based on PCM hardware parameters
-  *
-  * Notes:
-@@ -996,7 +996,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
- 	return 0;
- }
- 
--/**
-+/*
-  * Configure Digital Audio Interface (DAI) Format
+  * This function configures the related dividers according to the bclk rate
   */
- static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-@@ -1010,7 +1010,7 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return _fsl_ssi_set_dai_fmt(ssi, fmt);
- }
- 
--/**
-+/*
-  * Set TDM slot number and slot width
-  */
- static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
-@@ -1054,7 +1054,7 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
- 	return 0;
- }
- 
--/**
-+/*
-  * Start or stop SSI and corresponding DMA transaction.
-  *
-  * The DMA channel is in external master start and pause mode, which
-@@ -1238,7 +1238,7 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
- 	.write = fsl_ssi_ac97_write,
- };
- 
--/**
-+/*
-  * Initialize SSI registers
-  */
- static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
-@@ -1267,7 +1267,7 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
- 	return 0;
- }
- 
--/**
-+/*
-  * Clear SSI registers
-  */
- static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
-@@ -1285,7 +1285,7 @@ static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
- 		regmap_update_bits(ssi->regs, REG_SSI_SCR, SSI_SCR_SSIEN, 0);
- 	}
- }
--/**
-+/*
-  * Make every character in a string lower-case
-  */
- static void make_lowercase(char *s)
+ static int fsl_esai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
 -- 
 2.25.1
 
