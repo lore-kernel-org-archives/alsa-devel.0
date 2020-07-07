@@ -2,72 +2,68 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C390FC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5CDCC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:41:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BE13206E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:01:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D5282065F
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:41:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LMd1BzV6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BE13206E2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m8qVaMIf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D5282065F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4B1216AB;
-	Tue,  7 Jul 2020 11:00:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4B1216AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C408111C;
+	Tue,  7 Jul 2020 11:40:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C408111C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594112487;
-	bh=OD9zr9VDO/He5A5dl1J6+8mB9bUB8hteyh1BDPQChVw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1594114892;
+	bh=cMSVEG2PGXhgAEYHhi1d8T/qOBMQsxoJjbWvK2E2OeM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LMd1BzV6I4jgL47aPQXqCFFWmEhdlr3O5ZmAf5G0wfgkeHJF+IR9IllQPr+XWLe44
-	 h/1AFA51bPKV4r2xUGtX1R+x8ckjgPvPwu7uSMbCgTzszQOnZdGU0Fro88hlKbZrSS
-	 O8Yp5rQa6XZqdu28BATXRGL2vGuMoQDro3DzFftQ=
+	b=m8qVaMIf++O6ts9hbi7BNN7GtaRfArKUjYjmFRpdvWjFnqzzpbyRCVs9mVT/HWadH
+	 w4tuKgo2K2WK4c6xrro4ecehlaRN4tyqFxAGe1eC9ZLN7Xrp+NpyD5UYUIYeNoP+DW
+	 qjvN5yC6m4lvLKsz4QPhlQhg4U3uzxqk0cE5J5uw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46EDFF8027C;
-	Tue,  7 Jul 2020 10:58:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 430FAF801F9;
+	Tue,  7 Jul 2020 11:40:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED6E4F80274; Tue,  7 Jul 2020 10:58:57 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B009EF80216; Tue,  7 Jul 2020 11:40:40 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F378FF801F9
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:58:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F378FF801F9
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B08D22015DF;
- Tue,  7 Jul 2020 10:58:46 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6068E2015EC;
- Tue,  7 Jul 2020 10:58:42 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C7669402F7;
- Tue,  7 Jul 2020 16:58:36 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: fsl_spdif: Add kctl for configuring TX validity bit
-Date: Tue,  7 Jul 2020 16:54:26 +0800
-Message-Id: <1594112066-31297-3-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594112066-31297-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1594112066-31297-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C935F800DF
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 11:40:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C935F800DF
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 275A3B007;
+ Tue,  7 Jul 2020 09:40:34 +0000 (UTC)
+Date: Tue, 07 Jul 2020 11:40:33 +0200
+Message-ID: <s5hmu4bek8e.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: Ignored USB-audio implicit feedback in kernel 5.8rc3
+In-Reply-To: <a9002e0a-2a89-12c3-77c6-f2b9d51db8f2@ivitera.com>
+References: <5be78c36-bca0-da9c-43ec-2e2a538948a8@ivitera.com>
+ <51a129ba-d74f-bfe3-933c-4805bc87804a@ivitera.com>
+ <5bd5efb4-66f0-955c-783e-57aff997028a@ivitera.com>
+ <a9002e0a-2a89-12c3-77c6-f2b9d51db8f2@ivitera.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,93 +79,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add one kctl for configuring TX validity bit from user
-space.
+On Fri, 03 Jul 2020 12:17:14 +0200,
+Pavel Hofman wrote:
+> 
+> 
+> Dne 02. 07. 20 v 13:28 Pavel Hofman napsal(a):
+> > 
+> > 
+> > Please is the requirement that EP OUT + EP IN implicit feedback data
+> > must be in the same interface really necessary? If such a requirement
+> > was dropped, IMO many devices could be removed from the existing
+> > set_sync_ep_implicit_fb_quirk and many devices would work out of the
+> > box, 
+> 
+> I am still thinking about the single-interface requirement. If both
+> endpoints were to be part of a single interface, could they use
+> different altsettings for different sample lengths for capture and
+> playback? E.g. to save USB bandwidth when the capture is used only for
+> implicit feedback - capturing at 16bits, playback at 32bits.
+> 
+> In the quirked XMOS devices the common clock for both directions is
+> defined by the clock feature, the altsettings for each direction (in
+> separate interfaces) are used for setting sample length.
+> 
+> Thank you very much for any insight into the issue. IMO not having to
+> add quirks before a device starts working would be advantageous for all
+> involved.
 
-The type of this kctl is boolean:
-on - Outgoing validity always set
-off - Outgoing validity always clear
+Could you check for-linus branch of my sound git tree?
+Just to be sure whether you're hitting the issue that has been already
+addressed.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 47 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 43 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 576370dc6e70..37053e8f29d0 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -776,8 +776,8 @@ static int fsl_spdif_vbit_info(struct snd_kcontrol *kcontrol,
- }
- 
- /* Get valid good bit from interrupt status register */
--static int fsl_spdif_vbit_get(struct snd_kcontrol *kcontrol,
--				struct snd_ctl_elem_value *ucontrol)
-+static int fsl_spdif_rx_vbit_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
- 	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(cpu_dai);
-@@ -791,6 +791,35 @@ static int fsl_spdif_vbit_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static int fsl_spdif_tx_vbit_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct regmap *regmap = spdif_priv->regmap;
-+	u32 val;
-+
-+	regmap_read(regmap, REG_SPDIF_SCR, &val);
-+	val = (val & SCR_VAL_MASK) >> SCR_VAL_OFFSET;
-+	val = 1 - val;
-+	ucontrol->value.integer.value[0] = val;
-+
-+	return 0;
-+}
-+
-+static int fsl_spdif_tx_vbit_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct regmap *regmap = spdif_priv->regmap;
-+	u32 val = (1 - ucontrol->value.integer.value[0]) << SCR_VAL_OFFSET;
-+
-+	regmap_update_bits(regmap, REG_SPDIF_SCR, SCR_VAL_MASK, val);
-+
-+	return 0;
-+}
-+
- /* DPLL lock information */
- static int fsl_spdif_rxrate_info(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_info *uinfo)
-@@ -948,11 +977,21 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
- 	/* Valid bit error controller */
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
--		.name = "IEC958 V-Bit Errors",
-+		.name = "IEC958 RX V-Bit Errors",
- 		.access = SNDRV_CTL_ELEM_ACCESS_READ |
- 			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
- 		.info = fsl_spdif_vbit_info,
--		.get = fsl_spdif_vbit_get,
-+		.get = fsl_spdif_rx_vbit_get,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = "IEC958 TX V-Bit",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			SNDRV_CTL_ELEM_ACCESS_WRITE |
-+			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = fsl_spdif_vbit_info,
-+		.get = fsl_spdif_tx_vbit_get,
-+		.put = fsl_spdif_tx_vbit_put,
- 	},
- 	/* DPLL lock info get controller */
- 	{
--- 
-2.21.0
+thanks,
 
+Takashi
