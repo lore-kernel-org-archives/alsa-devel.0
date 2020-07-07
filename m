@@ -6,73 +6,71 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84E18C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:19:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 866BDC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:19:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C0E2206E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:19:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 137B22073E
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:19:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YX2QlJS5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJKICZoQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C0E2206E2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J80sb6yd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1Wek/USV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 137B22073E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11F6315F2;
-	Tue,  7 Jul 2020 16:18:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11F6315F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A4EF1660;
+	Tue,  7 Jul 2020 16:19:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A4EF1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594131547;
-	bh=Bkr1sJE6MHpMBdzGYUrae/nUqd3maLrYPUOVhB4MWYs=;
+	s=default; t=1594131595;
+	bh=zLDKUUlf41eWXCK1+gWKFdhUhVl9kP8CIgS7oLy2LgQ=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YX2QlJS5RUqvb7mlZF13gjV010ce+vlDhoXHIVx469sD31pBXAsM+7vyyGRYXzpfv
-	 2aLxOYNEzCiwa0tznZ8t6rl3zGvsZ9kG0TaEI5MpaQ9NbvLC6OCFFUM0KL5HnBWXXq
-	 vFKpQsmYHHH8K0cy2Wwmz1+kEX5OYmugv4GMiVcY=
+	b=J80sb6ydBXK9dY0nPxyqUytBIUYBcLckUwXwhMrhuwvso/lfeJrZJqJzlq91bei+s
+	 4frjUELjFgea+Nij4i0aMuqlWyORQ3lPLsOlRDtfk9bbpz5+CA7+OdyZPtd+7noUwj
+	 JmMRXM83i86vLLW/0QqTai9UtW4O7xBzm1O/ndO4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40F53F80264;
-	Tue,  7 Jul 2020 16:17:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B361F802BC;
+	Tue,  7 Jul 2020 16:17:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DA03F800D0; Tue,  7 Jul 2020 16:17:22 +0200 (CEST)
+ id 115A8F8025A; Tue,  7 Jul 2020 16:17:24 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A9B4F801F9
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:17:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A9B4F801F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 104E6F80216
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:17:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 104E6F80216
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZJKICZoQ"
+ header.b="1Wek/USV"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B72A5206E2;
- Tue,  7 Jul 2020 14:17:08 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 102E9206E2;
+ Tue,  7 Jul 2020 14:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594131429;
- bh=Bkr1sJE6MHpMBdzGYUrae/nUqd3maLrYPUOVhB4MWYs=;
+ s=default; t=1594131439;
+ bh=zLDKUUlf41eWXCK1+gWKFdhUhVl9kP8CIgS7oLy2LgQ=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=ZJKICZoQrSbQqf5SOF8X8qh1ZY9PMow61xgUmYYc6dGWS+YBDxm8gvfWEIceRxhRI
- ix35QjXVhtOrKFUhATS8QUBJ0EU3P8OueIXNguNQFSsQ2FIP8B3f0ejhHbm5VRUGdC
- lklgqccDf54snCmsiLqm4m9BNC+XwM/Oaoj0GTtc=
-Date: Tue, 07 Jul 2020 15:17:04 +0100
+ b=1Wek/USVv1i9/Nl1ZMFAk2avBAKGHTALhNkHzitHtYxwzH8Hcz7fBE7hExire+9ie
+ fmqnV+aK0o+I2VaPduFIO4qT36rbdl2OPHzemUXIuGeqEHHOqhjk35+6L6BJK1QaWb
+ B1TLufBEBcHc6Xf75wrhuMbg1ooEs9CeHynR1YXY=
+Date: Tue, 07 Jul 2020 15:17:15 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Support Opensource <support.opensource@diasemi.com>,
- Sebastian Reichel <sebastian.reichel@collabora.com>
-In-Reply-To: <20200626164623.87894-1-sebastian.reichel@collabora.com>
-References: <AM6PR10MB2263094DD176499308EC8B2A80B80@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
- <20200626164623.87894-1-sebastian.reichel@collabora.com>
-Subject: Re: [PATCHv4] ASoC: da7213: add default clock handling
-Message-Id: <159413142466.34737.7602523074048381134.b4-ty@kernel.org>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, kernel@collabora.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+To: timur@kernel.org, Yi Wang <wang.yi59@zte.com.cn>
+In-Reply-To: <1594122467-11615-1-git-send-email-wang.yi59@zte.com.cn>
+References: <1594122467-11615-1-git-send-email-wang.yi59@zte.com.cn>
+Subject: Re: [PATCH] ASoC: fsl: mpc8610_hpcd: Add missing of_node_put()
+Message-Id: <159413142467.34737.7662746319065846773.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, wang.liang82@zte.com.cn,
+ Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com, xue.zhihong@zte.com.cn,
+ festevam@gmail.com, Liao Pingfang <liao.pingfang@zte.com.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,10 +86,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 26 Jun 2020 18:46:23 +0200, Sebastian Reichel wrote:
-> This adds default clock/PLL configuration to the driver
-> for usage with generic drivers like simple-card for usage
-> with a fixed rate clock.
+On Tue, 7 Jul 2020 19:47:47 +0800, Yi Wang wrote:
+> After finishing using device node got from of_find_compatible_node(),
+> of_node_put() needs to be called.
 
 Applied to
 
@@ -99,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: da7213: add default clock handling
-      commit: 5146b6a92c1194674f21def93d7025c97ed6977f
+[1/1] ASoC: fsl: mpc8610_hpcd: Add missing of_node_put()
+      commit: a5911ac5790acaf98c929b826b3f7b4a438f9759
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
