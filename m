@@ -2,78 +2,137 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC4FAC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:37:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46B26C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:38:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6412220702
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:37:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C40062065F
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:38:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nkiHu38s";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="KN3FUgW6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6412220702
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JYw3Co4B";
+	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="k+a11Y9N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C40062065F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDEBA1684;
-	Tue,  7 Jul 2020 12:37:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDEBA1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CD5116AB;
+	Tue,  7 Jul 2020 12:37:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CD5116AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594118273;
-	bh=D0ssH4e3eiJBNljyOc756aE8nfEHm9AzQ21hHdhSmjA=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
+	s=default; t=1594118305;
+	bh=jYhVSdvabcIssc/68iywPFxV9ulAQmlZ9NX1lys1dpI=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nkiHu38sPE/8nuH5lQcWnd5f/PPBeilS2BdP5UQrvf454+JGxZJyfucuxFbHrQY2m
-	 geIK3t2VTCH8EWJmHjo/bcoLBUotKp6D08JQnE5+zXa2S06BtKq23y20g5iA6RdUJY
-	 Y6KGKsUJBF58jVAr3EdVnnzvcVsy5WvrlVj9ShX4=
+	b=JYw3Co4B+2Mbbb/bDUdedZI2sk6VC0gsLB3LmBCDNDJ7wc5axwtYysEWp0qinF5K4
+	 qL/rdFwPhJ/EmEj5H13n5yGoJrQ+hh01CPwILsw3t/Ynu1HoXDcbYrNReWEY95wFIb
+	 OYS7h7IViyFru0ddVOCXc7jnt3HlMPfvyvn+VmX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB5BDF802DF;
-	Tue,  7 Jul 2020 12:34:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F021AF80257;
+	Tue,  7 Jul 2020 12:37:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B412F802E8; Tue,  7 Jul 2020 12:34:27 +0200 (CEST)
-Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+ id A8B61F8027C; Tue,  7 Jul 2020 12:37:03 +0200 (CEST)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D25EAF800D0
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:34:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D25EAF800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EF04F8011F
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:36:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EF04F8011F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
- header.b="KN3FUgW6"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
- s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
- References:In-Reply-To:Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID
- :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
- Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
- :List-Post:List-Owner:List-Archive;
- bh=0tYA2OGdalzXxQL21KHhAIsJJCzeGY/ZyL063pnitF8=; b=KN3FUgW6QQIjULY+ZifqTEGJss
- q79dtrjyz/KeIFkaPOZ/9Kx/f2W9JuFRiKIaHKa0muGYoKKNj1DBZwTsLDA5PepEQqPK4BK4BeU9A
- KdLS9ECKdLaak2OHwJjxbYcVBosjgi4Y+9buxIwiwgXDOLpYNAdmNDA8miCDXxMwZTRI=;
-Received: from [10.8.10.223] (helo=work)
- by puleglot.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
- (Exim 4.93.0.4) (envelope-from <puleglot@puleglot.ru>)
- id 1jskvY-000ePh-Ai; Tue, 07 Jul 2020 13:34:16 +0300
-Message-ID: <c233f32650a48c92a6c984db9da1f5c231df27a7.camel@tsoy.me>
-Subject: Re: Ignored USB-audio implicit feedback in kernel 5.8rc3
-From: Alexander Tsoy <alexander@tsoy.me>
-To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
-Date: Tue, 07 Jul 2020 13:34:15 +0300
-In-Reply-To: <5bd5efb4-66f0-955c-783e-57aff997028a@ivitera.com>
-References: <5be78c36-bca0-da9c-43ec-2e2a538948a8@ivitera.com>
- <51a129ba-d74f-bfe3-933c-4805bc87804a@ivitera.com>
- <5bd5efb4-66f0-955c-783e-57aff997028a@ivitera.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 
-MIME-Version: 1.0
+ dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
+ header.i=@amdcloud.onmicrosoft.com header.b="k+a11Y9N"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TdDmBjO9El0pbbzqjBGnYfHoxZW5gS+Ddwjf5Ce8oBfyZbrwU/N3mbmCa8wSNImoqoAFSN/bfygk6MFVHOuOQ1l/SIbswU/zd+GMVft3TIvVqj+tXLRUeHAtJwJuaQdRTuqE2OoAWlRkH7oydohZMVz8YPANpYmEJCKIXp740/eo85c3O8N8n4GbkpmeyjHRsO2rwyyUqHTBmpqhZ6uxNiO/MNP+S/bEQI576MmD1OltqHMbPg9EpXoesPM7RwCqQbkCTg+GmZmyDehShm4vm4t7xCm+iPbBzZXX+8CHFWE+ENf/7ZzXsPFwzDgdfdXl8m7KhQFbXhIDoeeOnOPTLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FhPYv/YUtRWTZ9nxMkm5KNoRROhH9jL0P6S2qL64FhE=;
+ b=fhRdtV9z951mAfH4vowh3X1HYlAYK+7Hg+A1+tUHL16Mfbt1azAq91G4PsRwYtVpqwkHBTwT/vQVCk9kqENrshBZDHyy4/eDQWf/VlDZYBCL22bkIIlhQ3c5OHkg6o0Mvyw06Sek8Lj8RvCJkiWwLNs8tmducoBYNCJ/BElNuLF1mFVhG7ku/3wy/Y02s2usa2/Dsl1Dc8c8ocX58ci3yikzLOdF5z5BSj+jnA2qv0HVdYXJ6siRg3JR2vYUNfy3BXSUNpTDJXUIREqlCcK9EwvgYunGmKTXPbCfAl5hDorhsYk0Y541AdgKUtLAWuXw7YOn3VrrBqCsiV1jxgMx4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FhPYv/YUtRWTZ9nxMkm5KNoRROhH9jL0P6S2qL64FhE=;
+ b=k+a11Y9NVdms6YzZ8/Hi6yc9bP27kf6I4n/vvE1kxTjdOotWaqsXj3C2nGP6+Bv0R+SRFmDWq4lIJe8Eu6DU9+ikfjJm4YU8L/tbrWU0keLRmliObu8SX2ZtoWc/HK1Zrnk+ydyj6SYV0xcg31JmvYA9Zv/IpUTZSmZ32f/0m08=
+Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR1201MB0151.namprd12.prod.outlook.com
+ (2603:10b6:910:1e::14) by CY4PR1201MB0168.namprd12.prod.outlook.com
+ (2603:10b6:910:1d::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.24; Tue, 7 Jul
+ 2020 10:36:50 +0000
+Received: from CY4PR1201MB0151.namprd12.prod.outlook.com
+ ([fe80::6d1b:3185:6bd7:31dc]) by CY4PR1201MB0151.namprd12.prod.outlook.com
+ ([fe80::6d1b:3185:6bd7:31dc%7]) with mapi id 15.20.3153.029; Tue, 7 Jul 2020
+ 10:36:50 +0000
+Subject: Re: mmotm 2020-07-06-18-53 uploaded
+ (sound/soc/amd/renoir/rn-pci-acp3x.c:)
+To: Randy Dunlap <rdunlap@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+ moderated for non-subscribers <alsa-devel@alsa-project.org>,
+ sfr@canb.auug.org.au
+References: <20200707015344.U9ep-OO5Z%akpm@linux-foundation.org>
+ <b54188c7-47b4-b7e4-2f74-6394320df5df@infradead.org>
+ <e19cd74c-df3d-9589-1fc1-55980a8d289b@amd.com>
+ <2af9510e-b3fd-97d8-c2d4-1c42943180ee@infradead.org>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <ebe0bcc3-48be-3037-1670-4d83f0f6e498@amd.com>
+Date: Tue, 7 Jul 2020 16:20:48 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+In-Reply-To: <2af9510e-b3fd-97d8-c2d4-1c42943180ee@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BM1PR01CA0149.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:68::19) To CY4PR1201MB0151.namprd12.prod.outlook.com
+ (2603:10b6:910:1e::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.129.8.176] (165.204.159.251) by
+ BM1PR01CA0149.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:68::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3174.20 via Frontend Transport; Tue, 7 Jul 2020 10:36:46 +0000
+X-Originating-IP: [165.204.159.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7a6d91f5-59e2-416c-ca10-08d82261a807
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0168:
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0168440D456878AF4ED4DA2F97660@CY4PR1201MB0168.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 0457F11EAF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hEf8wMquT3NXa3LbqoY2UJ1lmRuhQKpO1uyrvjaQk3/QwAdHURyGyVNzWovcPENjCd6u0tT2jr3Q2cp4uTbFXuhRaYrnvTn5dtiQdRRCFfYBk3uiT3aVn4V9x7E1+SuWVPkAfb/P1XSXH5nht86Hx1fLd+rYigbUvnCRorc/o0fS02GQRWJoJY+Z3d7t6JINH3TJddWsKunyRa1ti4cvp0SJ86dx/4odTBkT4jbFs00dgjFOOgpmvtoQK/H5JI8/abcTSOoHcfHuIAxoBdYYOdkKOMrh5nXUIjQBgm50JgLlP1CIS78p2DHGihxndWzpFSmDffLn5rFslPiT1laPn+n/VBOEnB62B4uLituXVF9pyfZ4R8pgdm0t9AVoUGnv5/m6Pf1dCpyNm04BCHWE/wllmSHzg+Y+cUykcp/mObdssXV182ovb6Zk2o6590zDwowSO881NxHY1w0TgcLGzk7QBQ2Fs7A8FcI1aazGNug=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:CY4PR1201MB0151.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(4636009)(376002)(136003)(366004)(39860400002)(346002)(396003)(26005)(7416002)(8936002)(86362001)(66556008)(52116002)(8676002)(66946007)(66476007)(2906002)(6486002)(16526019)(53546011)(31696002)(45080400002)(5660300002)(31686004)(966005)(16576012)(316002)(478600001)(186003)(110136005)(36756003)(2616005)(956004)(921003)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData: rW2kyMM2NAI5MHFDlgzeManY1ZP21Wa8Ifrh125kO+DdG49ZTYan5bh0AibrGE/eYD+mGObFKe5ZrCgEQ9TUp5cO2PjzMWpfXPeAYwOBMnFkifJW/7AYLk6b9XLaf442NDf6xjLf3dFIebpg3wNO/HWGNWvgF8sGyigfC9KG4Y3hJwSDvBJ92/PGkP79UmIiQHTpH+9LpvgoqbSycL/diaMw93xTtdfXkpWrAf6cmSrfiH0L5fhHekTFE2wn0sUm41PhB2Dpv0+9cFIJt4NCRfHRKnpte2Mr0gELoihm0lPOeIhg9VfITFLsj3L99wGZRGahoZta4WS2tdb3MwcLVGcUSelAlVkjImZtr2DwkCCLB4VquHzm4wMjK75NQqjXAA62b2wYhgU4qi3dod6H2yt5kvQx1MpYZ1icc8nfBOuIimBrGr+Z6r4vj3m4W87DHPMcVfdqeCHEs96BQazlW+RPD02ZLq5+zVd3RBAYSgjYE8nLJOme1JF4210ihkUO
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a6d91f5-59e2-416c-ca10-08d82261a807
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB0151.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2020 10:36:50.1708 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1cES4rOyR2otnp8wObgZkX7QWWs29VKh5ubKK1NmZrTVqDSHoD4B8ooYFBD/vwu5Ex7N7h+a7yreNy95dvMSPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0168
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,60 +148,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-В Чт, 02/07/2020 в 13:28 +0200, Pavel Hofman пишет:
-> Dne 29. 06. 20 v 17:08 Pavel Hofman napsal(a):
-> > Dne 29. 06. 20 v 13:28 Pavel Hofman napsal(a):
-> > > Audio analyzer RTX6001 (XMOS-based) is using implicit feedback,
-> > > yet the
-> > > feedback is not used by the latest kernel 5.8 rc3 (i.e. already
-> > > with the
-> > > latest implicit-feedback patches).
-> > > 
-> > > Two analyzers on two different PCs are getting clicks in duplex-
-> > > mode
-> > > loobpack, one every 10 secs, the other one every 50 secs.
-> > > 
-> 
-> I am very sure the problem is identical to that for MOTU M2/4, Solid
-> State Logic SSL2+, Fractal Audio Axe-Fx III etc.
-> https://github.com/torvalds/linux/commit/e7585db1b0b5b4e4eb1967bb1472df308f7ffcbf
-> . I will try the simple quirk, IMO it will work OK. BTW if I
-> understand
-> correctly all these devices use the XMOS.
-> 
-> However, I would like to ask, why a quirk for these devices is
-> required.
-> The comment explanation in this interesting patch
-> https://lore.kernel.org/patchwork/patch/1174179/ talks about the same
-> EP
-> numbers, but in the different direction. 0x01 EP OUT + 0x81 EP IN
-> implicit feedback data. All the devices mentioned above have this
-> numbering, just the EP IN is in a different interface than the EP
-> OUT.
-> But please are there actually any duplex implicit feedback devices
-> having EP OUT and implicit-feedback EP IN  in the same interface? The
-> explicit feedback EP IN is clear, they are in the same interface. E-
-> MU
-> 0404 USB has EP OUT + EP IN explicit feedback in interface 1,
-> together,
-> EP IN implicit feedback data in interface 2. My other soundcards,
-> adaptive OUT and async IN again each in a different interface (though
-> there is no feedback to solve).
-> 
-> Please is the requirement that EP OUT + EP IN implicit feedback data
-> must be in the same interface really necessary? If such a requirement
-> was dropped, IMO many devices could be removed from the existing
-> set_sync_ep_implicit_fb_quirk and many devices would work out of the
-> box, as they require no other quirk (unlike the MOTUs, but that's a
-> different issue).
 
-USB Audio Class specs are pretty clear about it: only one isochronous
-endpoint is allowed per interface. And it can be accompanied by the
-*explicit* feedback endpoint.
 
-I have patches that implement autodetection of implicit feedback, but I
-need to clean them up and be careful not to break Scarlett 18i8/18i20
-3rd Gen (these devices have 3 altsettings per interface and probably
-require some additional sample rates filtering, so that each sample
-rate uniquely match one single altsetting).
+On 07/07/20 11:38 am, Randy Dunlap wrote:
+> On 7/6/20 11:15 PM, Mukunda,Vijendar wrote:
+>>
+>>
+>> On 07/07/20 11:14 am, Randy Dunlap wrote:
+>>> On 7/6/20 6:53 PM, Andrew Morton wrote:
+>>>> The mm-of-the-moment snapshot 2020-07-06-18-53 has been uploaded to
+>>>>
+>>>>      https://nam11.safelinks.protection.outlook.com/?url=http:%2F%2Fwww.ozlabs.org%2F~akpm%2Fmmotm%2F&amp;data=02%7C01%7Cvijendar.mukunda%40amd.com%7C1707f719e862439351d808d8223c28f6%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637296989101868555&amp;sdata=zwcKEzTT4zHSr38qU6hHYI5qLCdid1Af0YJZsp9n8W0%3D&amp;reserved=0
+>>>>
+>>>> mmotm-readme.txt says
+>>>>
+>>>> README for mm-of-the-moment:
+>>>>
+>>>> https://nam11.safelinks.protection.outlook.com/?url=http:%2F%2Fwww.ozlabs.org%2F~akpm%2Fmmotm%2F&amp;data=02%7C01%7Cvijendar.mukunda%40amd.com%7C1707f719e862439351d808d8223c28f6%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637296989101868555&amp;sdata=zwcKEzTT4zHSr38qU6hHYI5qLCdid1Af0YJZsp9n8W0%3D&amp;reserved=0
+>>>>
+>>>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>>>> more than once a week.
+>>>>
+>>>> You will need quilt to apply these patches to the latest Linus release (5.x
+>>>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>>>> https://nam11.safelinks.protection.outlook.com/?url=http:%2F%2Fozlabs.org%2F~akpm%2Fmmotm%2Fseries&amp;data=02%7C01%7Cvijendar.mukunda%40amd.com%7C1707f719e862439351d808d8223c28f6%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637296989101868555&amp;sdata=mzNHUR0CpjfaXX6Syq4sjkR3i3JU3jGRm7CcjKxFmMc%3D&amp;reserved=0
+>>>>
+>>>
+>>> on i386:
+>>>
+>>> when CONFIG_ACPI is not set/enabled:
+>>>
+>>> ../sound/soc/amd/renoir/rn-pci-acp3x.c: In function ‘snd_rn_acp_probe’:
+>>> ../sound/soc/amd/renoir/rn-pci-acp3x.c:222:9: error: implicit declaration of function ‘acpi_evaluate_integer’; did you mean ‘acpi_evaluate_object’? [-Werror=implicit-function-declaration]
+>>>      ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
+>> Will add ACPI as dependency in Kconfig for Renoir ACP driver.
+>> Do i need to upload new version of the patch? or should i submit the incremental patch as a fix >>           ^~~~~~~~~~~~~~~~~~~~~
+>>>            acpi_evaluate_object
+> 
+> Hi,
+> Not my call, but I would go with an incremental patch.
+> 
+> 
+> thanks.
 
+Submitted fix as an incremental patch for upstream review.
+> 
