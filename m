@@ -6,65 +6,61 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A309C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03F5EC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:24:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C50BC206F6
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:24:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA2F5206DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:24:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vkme1qGb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C50BC206F6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u2yFC0kR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA2F5206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4103516A3;
-	Tue,  7 Jul 2020 10:23:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4103516A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42E571684;
+	Tue,  7 Jul 2020 10:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42E571684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594110259;
-	bh=g+kS8wtM6zapfe8LCyRKDC+HR4/Ec0amYB+nnAw4lJY=;
+	s=default; t=1594110289;
+	bh=zgj1rHSLT+Vlb8ZU5FPJD3xmb1VxUV6bMAiR0lGQHVw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vkme1qGbUQcjNi4Peo5QW13/Wx8q9USIxM7Im/FSSvxV2XjY7iGt2HEOc1uORnCl3
-	 AekbDJeYuQPxcD3jLM/SYM3+qM2OKvngVYxES2RIAGyH0pP1OPo2suMWwNANBIgFT5
-	 4iOG8HWaHzCCZZUVopHDzMXJJ7swoiNKwZyWS0Uc=
+	b=u2yFC0kR0srMyRCsovvl8nE8RyvkCrJccaMDx4l8FLOg+tsjdHig4lh3bfehOEDfy
+	 u1n+arXsARRK1to75tZOmG3rV82sJz0nH5eLNZ1oCa0PeJ3NW5nOTytffACKBjhrbl
+	 VDk0Wed265YO330zL9A2CIDAQ8MwvK1EzTWj4Tr0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3C64F802A0;
-	Tue,  7 Jul 2020 10:22:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F28B5F802BC;
+	Tue,  7 Jul 2020 10:22:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65AADF8027C; Tue,  7 Jul 2020 10:22:10 +0200 (CEST)
+ id 4B93AF802BD; Tue,  7 Jul 2020 10:22:58 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 415E1F8027C
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:22:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 415E1F8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 212EBF801F9
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:22:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 212EBF801F9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 46580AF5C;
- Tue,  7 Jul 2020 08:22:04 +0000 (UTC)
-Date: Tue, 07 Jul 2020 10:22:03 +0200
-Message-ID: <s5hwo3fenv8.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 2AB51AF5C;
+ Tue,  7 Jul 2020 08:22:52 +0000 (UTC)
+Date: Tue, 07 Jul 2020 10:22:51 +0200
+Message-ID: <s5hv9izentw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: Re: [PATCH v3 3/3] ALSA: hda/realtek: Enable headset mic of Acer
- Veriton N4660G with ALC269VC
-In-Reply-To: <20200706071826.39726-3-jian-hong@endlessm.com>
-References: <aa62a43d4f1f458fb11794c26d373528@realtek.com>
- <20200706071826.39726-3-jian-hong@endlessm.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: core: pcm_iec958: fix kernel-doc
+In-Reply-To: <20200702193842.169215-1-pierre-louis.bossart@linux.intel.com>
+References: <20200702193842.169215-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- linux@endlessm.com, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,14 +76,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 06 Jul 2020 09:18:29 +0200,
-Jian-Hong Pan wrote:
+On Thu, 02 Jul 2020 21:38:42 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> The Acer Veriton N4660G desktop's audio (1025:1248) with ALC269VC cannot
-> detect the headset microphone until ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE
-> quirk maps the NID 0x18 as the headset mic pin.
+> Fix W=1 warning. The kernel doc uses the hwparams type instead of the
+> argument name.
 > 
-> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 Applied now.  Thanks.
 
