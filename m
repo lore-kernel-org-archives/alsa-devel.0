@@ -7,95 +7,97 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF96FC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ADB9C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:49:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 379DE20738
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:48:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC00820773
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 14:48:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KBm3sPwx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IhOXTjVM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 379DE20738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CGXqa8aT";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LkB5f2KQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC00820773
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB3561673;
-	Tue,  7 Jul 2020 16:47:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB3561673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C7E11677;
+	Tue,  7 Jul 2020 16:48:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C7E11677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594133308;
-	bh=OpuTpsPUqQgNdRyulOppnnJDfOYVl4J8PGfggRev+qk=;
+	s=default; t=1594133338;
+	bh=lfh9aVj1QHY1BY8teu2SpBfyyRekdAW4yjmlTHRQhBw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KBm3sPwxwITYYNJNvJ325muRUa+H/B0XzU9blT/Tv/3gVsNKj2AhS/15QVtJZ0MXE
-	 UyloCIg00Rj2SJBhSfIF8XlHc2xgC5GpIxCF45zQmho6NStiHPWcu8kKBE/I+x5bux
-	 3rknR4SgGOPe9I3qoebRqKMnfy1qUMZq4zAc/kV4=
+	b=CGXqa8aTZAshKlzQjeMSFjZz7f5WVtnOuXaqOuf6Chbuv3J10HRp6+CHc5sYu1UkY
+	 ikoRlzKpeKBiePBeeAb8VH0ks8EMo6tG+olxoQ+cJYxGnMdH2NzgGpDuUhvZrGl7FV
+	 3SCLjNGVHyDOyZWJk2HLIO2c/2mHBpRvFoJvifko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1A77F80362;
-	Tue,  7 Jul 2020 16:38:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD5C3F80368;
+	Tue,  7 Jul 2020 16:38:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1ECDF802F9; Tue,  7 Jul 2020 16:38:20 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id 55652F8033F; Tue,  7 Jul 2020 16:38:22 +0200 (CEST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DA45F802FE
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DA45F802FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE1CEF80308
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 16:38:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE1CEF80308
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="IhOXTjVM"
-Received: by mail-wm1-x343.google.com with SMTP id l2so45291231wmf.0
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:07 -0700 (PDT)
+ header.b="LkB5f2KQ"
+Received: by mail-wr1-x442.google.com with SMTP id z2so23135036wrp.2
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 07:38:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=joYuVrqjbvze3xQNhXb1qygj1A0MIp/q6w6MCrvUZ8U=;
- b=IhOXTjVMYFUujmZaEgHv/pfMwLaNnDUdlNNgKSMoflKYkAmtWB/h0Diq5Zqy29FQBQ
- F3vXbY5HCuGwkbT/EYmHPySO7bxH35ASeHizHBLQH1nh8gflpFpOx1g8eOLQjM0P2c63
- HKWW8jBApZKsX8R+p811F2DJSoQCoLxnt5EVBODnXS10b/HK6sqDvByi72gsifAqvQmM
- 1lqFcvELQOIU/9ba1F5yBI8x1CQkcuoD5wDVDCq54bRRMWhm8ua0sDhhIcwQ1/kMPwY+
- ylGno9KJF/Uh2qp9/gCgKcIiMpheTfbCQ8x8GKQ4dBfFGnRL4n/N0y0Blxr2OymdB37K
- ahUg==
+ bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
+ b=LkB5f2KQxj9RiMnUMCrnbNpyPWXlnW3De4WBuJl/2/6IHSiYFHZG9igGOCZ3Y6J6WK
+ Gzbp0CjO+Hdh4zx8lZUoPUE8mjaqtR0sBqE1LDCGGIabjQW5F+fL8xcu83/lEJ5co343
+ 1/0T8okpQOpgFedcJf3DKAC0tvKA/FHXQuFyslmQPQhp8ilQDgShlhNi6h7Xvc3BeZFW
+ FhGx4DjU3wuLtkjnmBDz31yplmbsKYm6QQ63skIPj0JOBDWZ6+2n4fkjip7zWgg0uq0V
+ WTsR8iE1up41/dfHe6m3cLl5RdBzy45oImEPSvr+ABdZS47BW61TAjhXhJZjDOuR6RD/
+ vyBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=joYuVrqjbvze3xQNhXb1qygj1A0MIp/q6w6MCrvUZ8U=;
- b=UlAePlxOQW/kqKDLACf8WdWbVfxn+4ABTeuBLaqLBwv5uy6/AS5/uU8yDzE8C1kbJy
- bBlSqCXG8l3sR14vDtfNDeuxgyA1GSCWE4DQhHRZeQvQjh7I3BOnohJx3d8Hq9QUqVB4
- WYFq+vR1du0dXUE8JoN6ezzdu1R0Jutlh0jbzpImvw8NNxZU00FnjR9u20lzDZONISlr
- Wi2Qpo0QOrUxxcRCSQnBvqfCvSoo9fHjSG5Zo1hatoQK/p6qM3n9o2ZtdtZjSzy4UpC7
- NEeeHJGfmf7ZYWS2tDCEpyySt0r7ol+jVwtR0m7D3VEtCP+SJskvhQIOaXFtQvgFm6Cr
- d6iA==
-X-Gm-Message-State: AOAM530aQtMAKnEbbw2dfXY+FcQZlJEwuE/N8yZ+GrMe/05bmfphZM71
- q7xOk611Az5K4eCWDScG9fI68Q==
-X-Google-Smtp-Source: ABdhPJxASJgMCHSlaAT+jnWR7OEUQ6kVVPxeeJQfiNe4Wt79qgXR6a0wnra5Mhr9+Tx8zJpe57W47g==
-X-Received: by 2002:a1c:2503:: with SMTP id l3mr4472344wml.188.1594132687466; 
- Tue, 07 Jul 2020 07:38:07 -0700 (PDT)
+ bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
+ b=bKmVEOEv2Fl1PrZUuKHUPaTiF/68aXxm7Nu0EuqP+7BB6IBFvY9xHnxnD2udF+1x9F
+ kQYXESKPd0+tx2PP5Y968BbFCZNjRfg5BZf34uCtfZan0pSxrNe9OoQbmADiqvwXfxfU
+ s2qLRYcpxVnECRYrsz7wHZRShbZlJWGzA1U3GDmGZAj3lR5dISiIJrlHcPy/Tf6Lriqz
+ FQQCJK7xncxzN0JEHLFQKcSZHh7PrM+TUE+OzYJMpaIl+AX/JY9xJDSiCMZjmocpfMIA
+ tlyt+SoDscdyq5enH/1AI7vnoYzdpy/N/1mI33OszP5/ejKeOvzPeyCSB5MynFe36h/M
+ M8oA==
+X-Gm-Message-State: AOAM531eFURQxD1fPM6w8fFXdA8rK9v5yapTk2IAoFuAilNr/zwAsS9W
+ KIY31iUFbN79fd4NNaGs8mHJqA==
+X-Google-Smtp-Source: ABdhPJynXJwfY+EJdx1C+77hx2NiUZ2uZ+tqh66Q8vQrBf76qaoHLF9FMyXrc1gAY/AjtDJ4ELHvrA==
+X-Received: by 2002:adf:c185:: with SMTP id x5mr59206892wre.403.1594132694312; 
+ Tue, 07 Jul 2020 07:38:14 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.06
+ by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 07:38:06 -0700 (PDT)
+ Tue, 07 Jul 2020 07:38:13 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 14/28] ASoC: samsung: pcm: Demote half-documented kerneldoc
- header
-Date: Tue,  7 Jul 2020 15:37:28 +0100
-Message-Id: <20200707143742.2959960-15-lee.jones@linaro.org>
+Subject: [PATCH v2 19/28] ASoC: ux500: ux500_msp_i2s: Remove unused variables
+ 'reg_val_DR' and 'reg_val_TSTDR'
+Date: Tue,  7 Jul 2020 15:37:33 +0100
+Message-Id: <20200707143742.2959960-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>,
- Jaswinder Singh <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzk@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org,
+ Roger Nilsson <roger.xr.nilsson@stericsson.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+ Sandeep Kaushik <sandeep.kaushik@st.com>, zhong jiang <zhongjiang@huawei.com>,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -112,41 +114,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Ideally the author or someone 'in the know' should come back and
-provide the remainder of the documentation.  Until the kerneldoc
-checkers have been satisfied, let's just demote the header to a
-standard comment block.
+Looks like these have been unchecked since the driver's inception in 2012.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'lock' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'sclk_per_fs' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'idleclk' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'pclk' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'cclk' not described in 's3c_pcm_info'
+ sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_rx’:
+ sound/soc/ux500/ux500_msp_i2s.c:398:6: warning: variable ‘reg_val_DR’ set but not used [-Wunused-but-set-variable]
+ sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_tx’:
+ sound/soc/ux500/ux500_msp_i2s.c:415:6: warning: variable ‘reg_val_TSTDR’ set but not used [-Wunused-but-set-variable]
 
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Jaswinder Singh <jassisinghbrar@gmail.com>
+Cc: zhong jiang <zhongjiang@huawei.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: Roger Nilsson <roger.xr.nilsson@stericsson.com>
+Cc: Sandeep Kaushik <sandeep.kaushik@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/samsung/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ux500/ux500_msp_i2s.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-index a5b1a12b34966..3116be4239f59 100644
---- a/sound/soc/samsung/pcm.c
-+++ b/sound/soc/samsung/pcm.c
-@@ -102,7 +102,7 @@
- #define S3C_PCM_FIFOSTAT_RXFIFOFULL		(0x1 << 1)
- #define S3C_PCM_FIFOSTAT_RXFIFOALMSTFULL	(0x1 << 0)
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index 394d8b2a4a161..fd0b88bb79212 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -395,7 +395,7 @@ static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
  
--/**
-+/*
-  * struct s3c_pcm_info - S3C PCM Controller information
-  * @dev: The parent device passed to use from the probe.
-  * @regs: The pointer to the device register block.
+ static void flush_fifo_rx(struct ux500_msp *msp)
+ {
+-	u32 reg_val_DR, reg_val_GCR, reg_val_FLR;
++	u32 reg_val_GCR, reg_val_FLR;
+ 	u32 limit = 32;
+ 
+ 	reg_val_GCR = readl(msp->registers + MSP_GCR);
+@@ -403,7 +403,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
+ 
+ 	reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	while (!(reg_val_FLR & RX_FIFO_EMPTY) && limit--) {
+-		reg_val_DR = readl(msp->registers + MSP_DR);
++		readl(msp->registers + MSP_DR);
+ 		reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	}
+ 
+@@ -412,7 +412,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
+ 
+ static void flush_fifo_tx(struct ux500_msp *msp)
+ {
+-	u32 reg_val_TSTDR, reg_val_GCR, reg_val_FLR;
++	u32 reg_val_GCR, reg_val_FLR;
+ 	u32 limit = 32;
+ 
+ 	reg_val_GCR = readl(msp->registers + MSP_GCR);
+@@ -421,7 +421,7 @@ static void flush_fifo_tx(struct ux500_msp *msp)
+ 
+ 	reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	while (!(reg_val_FLR & TX_FIFO_EMPTY) && limit--) {
+-		reg_val_TSTDR = readl(msp->registers + MSP_TSTDR);
++		readl(msp->registers + MSP_TSTDR);
+ 		reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	}
+ 	writel(0x0, msp->registers + MSP_ITCR);
 -- 
 2.25.1
 
