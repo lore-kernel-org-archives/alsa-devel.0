@@ -2,66 +2,67 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB667C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59F53C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:29:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CA52206DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:27:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC26D206DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 08:29:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nla1E+Na"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CA52206DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mktuc9b2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC26D206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1BDF167D;
-	Tue,  7 Jul 2020 10:26:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1BDF167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68A1F1697;
+	Tue,  7 Jul 2020 10:28:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68A1F1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594110467;
-	bh=0x7NyDHJPIfCTC8qn9Dk0Scm4dRpb+N/WNbpapkXx1g=;
+	s=default; t=1594110551;
+	bh=sc/12Nc5u7PgU5UuZ+0asw2i3NVYab69GnFx+/Lck6A=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nla1E+NaY9eiS5hNO43RLvj1T3I6NDz8cbmNTxif0oDEJC02T828oubyTTpWk8XCP
-	 uQ5nkDuu0P8lOlT48bAQjD1QqwuRR+HkMzklb2mT1PmhuHQoPpHBxujQknPBGY6cP6
-	 zug1wAaKSymRO8QUvNtkTvQGbcQCYlkgiYVH3S6I=
+	b=mktuc9b236bTD++GJVY0Ur9oHf/ZvDhPQIrRRFi7vNQ7Xq2q92/5WLCqtkRoDD+YV
+	 AjZM8VLupHHA+7h+qh1vXEZkONIbGYWeMTc4VNB4WsSU3LCl3SQ/m7zVWiKP7lbzm4
+	 Jo8t2zHv9LyMOShtXo4dTGcQBZ24jSJenjtVt67s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 589A6F801F9;
-	Tue,  7 Jul 2020 10:26:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B1A9F80264;
+	Tue,  7 Jul 2020 10:28:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9258FF80216; Tue,  7 Jul 2020 10:26:55 +0200 (CEST)
+ id 76D53F80264; Tue,  7 Jul 2020 10:28:19 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33338F800DF
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:26:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33338F800DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5912F801F9
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 10:28:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5912F801F9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 36E1EB12D;
- Tue,  7 Jul 2020 08:26:49 +0000 (UTC)
-Date: Tue, 07 Jul 2020 10:26:48 +0200
-Message-ID: <s5hsge3ennb.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C11CAAFF7;
+ Tue,  7 Jul 2020 08:28:16 +0000 (UTC)
+Date: Tue, 07 Jul 2020 10:28:16 +0200
+Message-ID: <s5hr1tnenkv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH -next] sound: fix SND_HDA_GENERIC kconfig & build
-In-Reply-To: <01233744-9625-38b3-0342-1b37250dbc72@infradead.org>
-References: <01233744-9625-38b3-0342-1b37250dbc72@infradead.org>
+To: Mark Hills <mark@xwax.org>
+Subject: Re: [PATCH 1/4] echoaudio: Race conditions around "opencount"
+In-Reply-To: <2007021037270.2435@stax.localdomain>
+References: <20200701122723.17814-1-mark@xwax.org>
+ <202007020108.pW8giznF%lkp@intel.com>
+ <2007021037270.2435@stax.localdomain>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>,
- LKML <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,38 +78,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 01 Jul 2020 23:08:23 +0200,
-Randy Dunlap wrote:
+On Thu, 02 Jul 2020 11:53:51 +0200,
+Mark Hills wrote:
 > 
-> From: Randy Dunlap <rdunlap@infradead.org>
+> Takashi, my apologies, it looks like this patch broke the build of the 
+> Mona driver.
 > 
-> Fix kconfig warnings and lots of subsequent build errors by
-> adding yet another ugly select statement:
+> Thankfully the change is simple, as it just looks like a bit of confusion 
+> of responsibilies in the code for the Mona interface; the correct fix is 
+> to remove the code.
 > 
-> WARNING: unmet direct dependencies detected for LEDS_CLASS
->   Depends on [n]: NEW_LEDS [=n]
->   Selected by [y]:
->   - SND_HDA_GENERIC [=y] && SOUND [=y] && !UML && SND [=y] && SND_HDA [=y] && SND_HDA_GENERIC_LEDS [=y]
+> That is a lesson for working with only the echo3g driver enabled. Now I 
+> have done a full build of all echoaudio drivers, with no warnings or 
+> errors.
 > 
-> WARNING: unmet direct dependencies detected for LEDS_TRIGGERS
->   Depends on [n]: NEW_LEDS [=n] && LEDS_CLASS [=y]
->   Selected by [y]:
->   - SND_HDA_GENERIC [=y] && SOUND [=y] && !UML && SND [=y] && SND_HDA [=y] && SND_HDA_GENERIC_LEDS [=y]
->   Selected by [m]:
->   - MAC80211_LEDS [=y] && NET [=y] && WIRELESS [=y] && MAC80211 [=m] && LEDS_CLASS [=y]
->   - IWLWIFI_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_INTEL [=y] && IWLWIFI [=m] && (LEDS_CLASS [=y]=y || LEDS_CLASS [=y]=IWLWIFI [=m]) && (IWLMVM [=m] || IWLDVM [=m])
-> 
-> WARNING: unmet direct dependencies detected for LEDS_TRIGGER_AUDIO
->   Depends on [n]: NEW_LEDS [=n] && LEDS_TRIGGERS [=y]
->   Selected by [y]:
->   - SND_HDA_GENERIC [=y] && SOUND [=y] && !UML && SND [=y] && SND_HDA [=y] && SND_HDA_GENERIC_LEDS [=y]
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
+> Here's a patch, or it can be squashed into the original patch if 
+> necessary.
 
-Applied now.  Thanks.
+Could you rather fold the fix into the patch and resubmit the whole
+patch set?  I'm just back from travel, and it'd be better anyway if I
+receive a fresh patch set to apply.
 
+
+Thanks!
 
 Takashi
