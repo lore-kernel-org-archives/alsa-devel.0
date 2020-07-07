@@ -7,94 +7,95 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AC9AC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77D3AC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:33:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE2A82065F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:32:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0040A206B6
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 10:33:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tIxbpkR6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RJJDMHb5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE2A82065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZT3NFpkh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QoVnhhkn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0040A206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 538FC1684;
-	Tue,  7 Jul 2020 12:31:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 538FC1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85695168D;
+	Tue,  7 Jul 2020 12:32:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85695168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594117960;
-	bh=NCtYYHmh/Hk6m+9uLA0/GithztxMt6Zw9EiRAcooUf8=;
+	s=default; t=1594117990;
+	bh=n3zWAvEiKs24KPS3ygF4mWRc5qP7nr5XK3QBPFEFg+Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tIxbpkR628AlY62g/yKHo4o8J+EO2da0yDFkdPe8did0khL4cq5GvZdH9IU2SdxI9
-	 ehxHrF/isaAV7hk2JMOXtQvuD3PdYDmTu01WF0HkFql4n8y3CqVg0jMSJYfxCfsctL
-	 zuCCRQBphGQH7HLsOXeC04qWLKB1o+uRuzCi6ijs=
+	b=ZT3NFpkh2ekiSfbXvPErw4goO1Of3118/h9P5q5SJJXQ8cDJGBKxD12Iyef1+XWYZ
+	 U7BWExEeVY9DqS5IeznK3aCG3+3FdBOE8ISZ1VOPSXLy0/dv4gEkNTWmkee8j5tCrc
+	 0Ky55CIMigY2Mdejb/AyVmpcbb9ciys8cbiP9wnY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5E19F803C9;
-	Tue,  7 Jul 2020 12:18:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F023EF803CB;
+	Tue,  7 Jul 2020 12:18:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1A17F80345; Tue,  7 Jul 2020 12:17:40 +0200 (CEST)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
+ id 2F04CF80344; Tue,  7 Jul 2020 12:17:42 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B805F8031A
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:17:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B805F8031A
+ by alsa1.perex.cz (Postfix) with ESMTPS id B794EF80323
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 12:17:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B794EF80323
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="RJJDMHb5"
-Received: by mail-wm1-x342.google.com with SMTP id g75so42669565wme.5
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:17:20 -0700 (PDT)
+ header.b="QoVnhhkn"
+Received: by mail-wr1-x443.google.com with SMTP id k6so44564616wrn.3
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2020 03:17:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Uo5lua4EqbM6dOWxZ2PX5/59WiGZNeMIYC5zygYLP+w=;
- b=RJJDMHb5PseEHV13fK3dntfY0SifRUv3KOer7kIUTRvgXuZ4xlS45hcCxG5BKlewVC
- 3hP+gmb2xP8RQZ4rXrBu7OAMcj1IjYnk/Hq8f5w+JQIvyEKO1gCKJqlBEWxmNCyou+gh
- RVSC+T3bqxktFOZj/7Cj+oOt0FWUcOpX2WZL3ggGMoRNb3BBwPGNOjBsphEau4CyJlWx
- HRhZzBsx+Zeb3zzu6VHY6FFwmBLm0Xf3cA5G6VqXRm+bw6pVJKQSqdh+a+CDvFyxFPZm
- tt7mqjlndBOcwoFBaY1YXUAZ/dYDPaXolLxY/JRUFFiXiX+li4ymLYlyNAFDfkDvl0fJ
- 28eg==
+ bh=c4/atXJGhj1n0uTQI5cYV/gQNs+sjaOZMgJsAAMgfWA=;
+ b=QoVnhhknZYVxWfl9mcL1Hgta3/3Af8FucpK51zcYOzuI1LPngqjVM8rBVmQqjLgh7E
+ 1Uw5NQ/B6U3SUgvxl1hiVmj1hwCKO9EaY5U/DRBIuNUsVN/pN8KwuthGGhnUKBnKlSQB
+ a4d7SMY6AFyJbq8ZR4ADQrnNHzUMD5ziAGLPIcECCntkWmbzjXnZofBCZFbWuKIPcqcC
+ wAZxm9Rtksb3/dunSciAduuH/UVb0HHOL8I3Rsr26SmQn3plTAqH/gh7J1xC4qLizdp6
+ nnU60q8xCFLFZxL4M3qkB9cNqUBR/rnNppyXEvYp/IwKxkobwyQx6HJWu9+ptWGyT82Y
+ JKlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Uo5lua4EqbM6dOWxZ2PX5/59WiGZNeMIYC5zygYLP+w=;
- b=FBHo022GP5rYoXPnJUMRsWpcbYSjVK8cThRnoAtCEUZ4VL426sg29zKUJlDFVdVBV/
- X0lJiHdbazdgMGo4KqxRm+22POBqtcVfWt89cp1pWAusHhuKmH+eJL2cRndOOLrWNSxo
- b4qt79EVDb5I0TOcC8REVcdC0XQyacAA3CBjwyUNv1LAXaXHNbho0ioXcsi4ncBPMFIf
- ZgW2Ja+ZrFoeyB61OgdiCWkRtwoZVbtMWA5yMc3HjePirYjFEj0jK0T9KGfIuF5x+W02
- SpZHesPGamjz4iHqwNjNHfVlDbE0CTBRp/hQ2A9T6tGd870TaiWzLABBFBqOn+DMD1IQ
- a1ig==
-X-Gm-Message-State: AOAM532n1RdXXBL1FgVh/5CIBbZfps/5qbsTJpkMchKUhNq94Dw75Ik/
- tfOZoEIl5aPL8XRDF5m9TK6Z1yUW2R8=
-X-Google-Smtp-Source: ABdhPJwBZScVrLRaoB2qbt1B7gPdAiGWJE3GpDYVPkVBQkQeuhCY3G1NK1G3mX96r9YIsd6G8GLX1g==
-X-Received: by 2002:a7b:c38c:: with SMTP id s12mr3392098wmj.136.1594117039808; 
- Tue, 07 Jul 2020 03:17:19 -0700 (PDT)
+ bh=c4/atXJGhj1n0uTQI5cYV/gQNs+sjaOZMgJsAAMgfWA=;
+ b=M7MdYuJrJnQcfMekZ/EoFobD93z0g1JG/7k9ZWqdba9a/t/tJ/XM0MMZD537NKpUOA
+ UUDkoHWRj6MiDd94xvSeEOUYEMBn2s9U7SuDgwPKPOEP2wlwyamMGtfXmStLtkkjF6eE
+ xb7i7hDarpOHnxhs3AG7YQY6wJI9UB+epM/33zXwMy4UNekGwixS0arHu0j10XOafLYS
+ Tu+HMdqZDD3GToxtKckZFJUPqLyWGDp09tRaWTkpN2bq790+5uUvNgormhcPszJCnU1S
+ 9dnT5Sjyn+7xy34Ku0E34edP2PwvK/NZEag7x3jA3CjAckcfn9ehdS087cgBS1ysagIo
+ GkWA==
+X-Gm-Message-State: AOAM533j5isYTi8fCKS5m+wgTLSYY5DSysW1UXgrOqdG9AD7OBbrxmVx
+ BFtpaAklrnOY+ubR39yXynO8KA==
+X-Google-Smtp-Source: ABdhPJw9oo8pfsuehCGY22+GnK13HnMCljfQRckQGf4lIiSb36XKwJQOyruMnCDQuGqbsropcrAgFw==
+X-Received: by 2002:adf:e60e:: with SMTP id p14mr51698572wrm.31.1594117037406; 
+ Tue, 07 Jul 2020 03:17:17 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
- by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.18
+ by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2020 03:17:19 -0700 (PDT)
+ Tue, 07 Jul 2020 03:17:16 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH 26/28] ASoC: codecs: rt5659: Remove many unused const variables
-Date: Tue,  7 Jul 2020 11:16:40 +0100
-Message-Id: <20200707101642.1747944-27-lee.jones@linaro.org>
+Subject: [PATCH 24/28] ASoC: codecs: jz4770: Remove defined but never used
+ variable 'mic_boost_tlv'
+Date: Tue,  7 Jul 2020 11:16:38 +0100
+Message-Id: <20200707101642.1747944-25-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>,
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Paul Cercueil <paul@crapouillou.net>, ter Huurne <maarten@treewalker.org>,
  Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -111,124 +112,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Looks as though they've never been used.
-
 Fixes the following W=1 kernel build warning(s):
 
- In file included from  sound/soc/codecs/rt5659.c:25:
- In file included from sound/soc/codecs/rt5659.c:25:
- sound/soc/codecs/rt5659.c:1232:2: warning: ‘rt5659_ad_monor_asrc_enum’ defined but not used [-Wunused-const-variable=]
- 1232 | rt5659_ad_monor_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_R_T_SFT, 0x7,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
- include/sound/soc.h:359:24: note: in definition of macro ‘SOC_VALUE_ENUM_DOUBLE_DECL’
- 359 | const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, | ^~~~
- sound/soc/codecs/rt5659.c:1231:8: note: in expansion of macro ‘SOC_VALUE_ENUM_SINGLE_DECL’
- 1231 | static SOC_VALUE_ENUM_SINGLE_DECL(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
- sound/soc/codecs/rt5659.c:1228:2: warning: ‘rt5659_ad_monol_asrc_enum’ defined but not used [-Wunused-const-variable=]
- 1228 | rt5659_ad_monol_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_L_T_SFT, 0x7,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
- include/sound/soc.h:359:24: note: in definition of macro ‘SOC_VALUE_ENUM_DOUBLE_DECL’
- 359 | const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, | ^~~~
- sound/soc/codecs/rt5659.c:1227:8: note: in expansion of macro ‘SOC_VALUE_ENUM_SINGLE_DECL’
- 1227 | static SOC_VALUE_ENUM_SINGLE_DECL(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
- sound/soc/codecs/rt5659.c:1224:2: warning: ‘rt5659_ad_sto2_asrc_enum’ defined but not used [-Wunused-const-variable=]
- 1224 | rt5659_ad_sto2_asrc_enum, RT5659_ASRC_3, RT5659_AD_STO2_T_SFT, 0x7,
- | ^~~~~~~~~~~~~~~~~~~~~~~~
- include/sound/soc.h:359:24: note: in definition of macro ‘SOC_VALUE_ENUM_DOUBLE_DECL’
- 359 | const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, | ^~~~
- sound/soc/codecs/rt5659.c:1223:8: note: in expansion of macro ‘SOC_VALUE_ENUM_SINGLE_DECL’
- 1223 | static SOC_VALUE_ENUM_SINGLE_DECL(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
- sound/soc/codecs/rt5659.c:1220:2: warning: ‘rt5659_ad_sto1_asrc_enum’ defined but not used [-Wunused-const-variable=]
- 1220 | rt5659_ad_sto1_asrc_enum, RT5659_ASRC_2, RT5659_AD_STO1_T_SFT, 0x7,
- | ^~~~~~~~~~~~~~~~~~~~~~~~
- include/sound/soc.h:359:24: note: in definition of macro ‘SOC_VALUE_ENUM_DOUBLE_DECL’
- 359 | const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, | ^~~~
- sound/soc/codecs/rt5659.c:1219:8: note: in expansion of macro ‘SOC_VALUE_ENUM_SINGLE_DECL’
- 1219 | static SOC_VALUE_ENUM_SINGLE_DECL(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
- sound/soc/codecs/rt5659.c:1216:2: warning: ‘rt5659_da_monor_asrc_enum’ defined but not used [-Wunused-const-variable=]
- 1216 | rt5659_da_monor_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_R_T_SFT, 0x7,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
- include/sound/soc.h:359:24: note: in definition of macro ‘SOC_VALUE_ENUM_DOUBLE_DECL’
- 359 | const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, | ^~~~
- sound/soc/codecs/rt5659.c:1215:8: note: in expansion of macro ‘SOC_VALUE_ENUM_SINGLE_DECL’
- 1215 | static SOC_VALUE_ENUM_SINGLE_DECL(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
- sound/soc/codecs/rt5659.c:1212:2: warning: ‘rt5659_da_monol_asrc_enum’ defined but not used [-Wunused-const-variable=]
- 1212 | rt5659_da_monol_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_L_T_SFT, 0x7,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
- include/sound/soc.h:359:24: note: in definition of macro ‘SOC_VALUE_ENUM_DOUBLE_DECL’
- 359 | const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, | ^~~~
- sound/soc/codecs/rt5659.c:1211:8: note: in expansion of macro ‘SOC_VALUE_ENUM_SINGLE_DECL’
- 1211 | static SOC_VALUE_ENUM_SINGLE_DECL(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
- sound/soc/codecs/rt5659.c:1208:2: warning: ‘rt5659_da_sto_asrc_enum’ defined but not used [-Wunused-const-variable=]
- 1208 | rt5659_da_sto_asrc_enum, RT5659_ASRC_2, RT5659_DA_STO_T_SFT, 0x7,
- | ^~~~~~~~~~~~~~~~~~~~~~~
- include/sound/soc.h:359:24: note: in definition of macro ‘SOC_VALUE_ENUM_DOUBLE_DECL’
- 359 | const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, | ^~~~
- sound/soc/codecs/rt5659.c:1207:8: note: in expansion of macro ‘SOC_VALUE_ENUM_SINGLE_DECL’
- 1207 | static SOC_VALUE_ENUM_SINGLE_DECL(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
+ In file included from include/sound/tlv.h:10,
+ from sound/soc/codecs/jz4770.c:19:
+ sound/soc/codecs/jz4770.c:306:35: warning: ‘mic_boost_tlv’ defined but not used [-Wunused-const-variable=]
+ 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ | ^~~~~~~~~~~~~
+ include/uapi/sound/tlv.h:64:15: note: in definition of macro ‘SNDRV_CTL_TLVD_DECLARE_DB_SCALE’
+ 64 | unsigned int name[] = { | ^~~~
+ sound/soc/codecs/jz4770.c:306:14: note: in expansion of macro ‘DECLARE_TLV_DB_SCALE’
+ 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ | ^~~~~~~~~~~~~~~~~~~~
 
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Cc: Bard Liao <bardliao@realtek.com>
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: ter Huurne <maarten@treewalker.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/codecs/rt5659.c | 37 -------------------------------------
- 1 file changed, 37 deletions(-)
+ sound/soc/codecs/jz4770.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index 541fc6f1089bb..41e5917b16a5e 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -1195,43 +1195,6 @@ static const struct snd_kcontrol_new rt5659_if3_dac_swap_mux =
- static const struct snd_kcontrol_new rt5659_if3_adc_swap_mux =
- 	SOC_DAPM_ENUM("IF3 ADC Swap Source", rt5659_if3_adc_enum);
+diff --git a/sound/soc/codecs/jz4770.c b/sound/soc/codecs/jz4770.c
+index 34775aa624024..4dee585761c24 100644
+--- a/sound/soc/codecs/jz4770.c
++++ b/sound/soc/codecs/jz4770.c
+@@ -303,7 +303,6 @@ static int jz4770_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ static const DECLARE_TLV_DB_MINMAX_MUTE(dac_tlv, -3100, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_tlv, 0, 100, 0);
+ static const DECLARE_TLV_DB_MINMAX(out_tlv, -2500, 600);
+-static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ static const DECLARE_TLV_DB_SCALE(linein_tlv, -2500, 100, 0);
  
--static const char * const rt5659_asrc_clk_src[] = {
--	"clk_sysy_div_out", "clk_i2s1_track", "clk_i2s2_track",
--	"clk_i2s3_track", "clk_sys2", "clk_sys3"
--};
--
--static unsigned int rt5659_asrc_clk_map_values[] = {
--	0, 1, 2, 3, 5, 6,
--};
--
--static SOC_VALUE_ENUM_SINGLE_DECL(
--	rt5659_da_sto_asrc_enum, RT5659_ASRC_2, RT5659_DA_STO_T_SFT, 0x7,
--	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
--
--static SOC_VALUE_ENUM_SINGLE_DECL(
--	rt5659_da_monol_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_L_T_SFT, 0x7,
--	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
--
--static SOC_VALUE_ENUM_SINGLE_DECL(
--	rt5659_da_monor_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_R_T_SFT, 0x7,
--	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
--
--static SOC_VALUE_ENUM_SINGLE_DECL(
--	rt5659_ad_sto1_asrc_enum, RT5659_ASRC_2, RT5659_AD_STO1_T_SFT, 0x7,
--	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
--
--static SOC_VALUE_ENUM_SINGLE_DECL(
--	rt5659_ad_sto2_asrc_enum, RT5659_ASRC_3, RT5659_AD_STO2_T_SFT, 0x7,
--	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
--
--static SOC_VALUE_ENUM_SINGLE_DECL(
--	rt5659_ad_monol_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_L_T_SFT, 0x7,
--	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
--
--static SOC_VALUE_ENUM_SINGLE_DECL(
--	rt5659_ad_monor_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_R_T_SFT, 0x7,
--	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
--
- static int rt5659_hp_vol_put(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
+ /* Unconditional controls. */
 -- 
 2.25.1
 
