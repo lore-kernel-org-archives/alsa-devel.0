@@ -2,61 +2,60 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B1B2C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5396FC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:56:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A105A206DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:55:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C97A1206DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 09:56:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fKmYrNCE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A105A206DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TLiXBWyH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C97A1206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3342B15DC;
-	Tue,  7 Jul 2020 11:55:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3342B15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 642BE1614;
+	Tue,  7 Jul 2020 11:55:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642BE1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594115755;
-	bh=d7NZKeKZylbXhlGs91fbxuQE8uKoIIQlR+Phi9phmFs=;
+	s=default; t=1594115803;
+	bh=MWQrl/xFtzsDygiDgz64TJyl8YyZ7BXPqw4127rjJdg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fKmYrNCElqDFGEAZ/fuOWrz/3RrkLsczEcxEwps3Xz//deu5IMPkkjqXC0wzp9wEa
-	 iQENTA2eOgOYaeFPDvNqftQbVABIInk07K3vqVUxtxsg/vfKehtRx+UyJPMdYaUBNa
-	 ENaN+DSTVnu/QoHBQqiCAkrgWOfTcOtR9CftjG6Q=
+	b=TLiXBWyHRYxpwEWt99790t+rgW0CHhuZOeIkm+hdGj/HI3n1tSWSTgHitbC+P+YnM
+	 0PpF9s4ciJ3muz+PGLAVhQPZW7E+Wrkh2cg+kM1euJsezEHsHbhCoEJZDZJF7zs0ZM
+	 xK6aDS9E4tXDfU4nkb5EbQb/2RcG4hH9KNJORrHg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B121F8011F;
-	Tue,  7 Jul 2020 11:54:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 409ECF8025A;
+	Tue,  7 Jul 2020 11:55:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCCF9F80216; Tue,  7 Jul 2020 11:54:18 +0200 (CEST)
+ id 85AC8F8027C; Tue,  7 Jul 2020 11:55:24 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7184F80216
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 11:54:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7184F80216
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B529F80216
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 11:55:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B529F80216
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CE452AE2B;
- Tue,  7 Jul 2020 09:54:16 +0000 (UTC)
-Date: Tue, 07 Jul 2020 11:54:16 +0200
-Message-ID: <s5hh7ujejlj.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5FB4FAC2D;
+ Tue,  7 Jul 2020 09:55:18 +0000 (UTC)
+Date: Tue, 07 Jul 2020 11:55:17 +0200
+Message-ID: <s5hfta3ejju.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v5 2/3] ALSA: compress: document the compress gapless
- audio state machine
-In-Reply-To: <20200629134737.105993-3-vkoul@kernel.org>
+Subject: Re: [PATCH v5 3/3] ALSA: compress: fix partial_drain completion state
+In-Reply-To: <20200629134737.105993-4-vkoul@kernel.org>
 References: <20200629134737.105993-1-vkoul@kernel.org>
- <20200629134737.105993-3-vkoul@kernel.org>
+ <20200629134737.105993-4-vkoul@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -83,15 +82,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 29 Jun 2020 15:47:36 +0200,
+On Mon, 29 Jun 2020 15:47:37 +0200,
 Vinod Koul wrote:
 > 
-> Also documented the galpess transitions. Please note that these are not
-> really stream states, but show how the stream steps in gapless mode
+> On partial_drain completion we should be in SNDRV_PCM_STATE_RUNNING
+> state, so set that for partially draining streams in
+> snd_compr_drain_notify() and use a flag for partially draining streams
 > 
+> While at it, add locks for stream state change in
+> snd_compr_drain_notify() as well.
+> 
+> Fixes: f44f2a5417b2 ("ALSA: compress: fix drain calls blocking other compress functions (v6)")
+> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Applied to for-next branch.  Thanks.
+Applied this one to for-linus branch (while other two are for 5.9), as
+this is a fix.
 
+
+thanks,
 
 Takashi
