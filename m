@@ -2,80 +2,75 @@ Return-Path: <SRS0=w3Zw=AS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	SUBJECT_NEEDS_ENCODING,SUBJ_ILLEGAL_CHARS,USER_AGENT_GIT autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7191C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9BA8C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:17:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 461A4206E9
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:14:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A61A20738
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2020 19:17:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U/UNYcZL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 461A4206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lli2xFjE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A61A20738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D124116A6;
-	Tue,  7 Jul 2020 21:13:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D124116A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0B5D84A;
+	Tue,  7 Jul 2020 21:16:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0B5D84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594149283;
-	bh=v1V/hPMjDZuqEnWjkEnwJ9xXcVKQY8I8Nv2dCWsl3UM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=U/UNYcZLoNWGVXOJYmuEFt3g7ReAc8h4ASS/QmNNbQW8aGBQpOvj9ch4zXsrtC10P
-	 4f6ee01N6n85UQS3pqzuCFTKhrvK+kl+fLriUy8lPliesYevsBNEIQwcm7vqEVSn2f
-	 GzQKnT1D5OVPoPBxuHk2Myhp4WQmetWXS6mMJFcE=
+	s=default; t=1594149453;
+	bh=vWT8CZ6FDae4taf6o7JVBanGMrzuGIpk+EnurcykN1w=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Lli2xFjEhVhHrJfRea4Sl/vrvwepah276cK+ao+OCykiP59aWXHTuc2MMMHY10giJ
+	 n4gey5Cerhqu/TsWyBzPVX4T0kmosVC6YpVC4xraE8YneVS+TigVW4lZDtmhN3X2vl
+	 x1MrLmRA3UbYpsjyxrdxSGSa7TcwfCPeaELs6CU8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F691F8033E;
-	Tue,  7 Jul 2020 21:07:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ABFBF80274;
+	Tue,  7 Jul 2020 21:16:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0F3CF80339; Tue,  7 Jul 2020 21:07:08 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id AF0E1F8027C; Tue,  7 Jul 2020 21:16:40 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A73DBF80338
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 21:07:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A73DBF80338
-IronPort-SDR: LFOTS/yZPuB8dlbu/uK8Xf66/DWvIyk6Xim8U8ctto0cUJ64EaCU2HrfJbgzKOnlfSwGYYLL0I
- VdHsvz7hYMhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="212631601"
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="212631601"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DECC5F800D0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2020 21:16:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DECC5F800D0
+IronPort-SDR: 8XZQUI5LCyaNZL/HgWZ2Og1LRvxHZueQINSJKG3oI+A58KCBl5syEn3ETNDurQKJZwJAbZLQaQ
+ 9L0cd1h1X/Sw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="147690645"
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="147690645"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 12:07:02 -0700
-IronPort-SDR: uL5tR80dB418WWFzJlg7O9sCb8t4JGvTNofYdBOUzbIVSRNlDA/Vvqoy5Zu/FVUXo6ieLRIQsy
- /N4ISy0ahv5g==
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="268278702"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jul 2020 12:16:27 -0700
+IronPort-SDR: iohdinfKc84pW0NCxUKWbIF1CcLCVCrUVMedZ3gCopEqgT4yqAb7MUXCuc77aZqxP2UCpmJtmw
+ 2SE4ZWFnwnew==
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; d="scan'208";a="388601589"
 Received: from mrtorger-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.77.62])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2020 12:07:01 -0700
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jul 2020 12:16:26 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v3 13/13] ASoC: codecs: rt*: fix 'defined but not used' warning
-Date: Tue,  7 Jul 2020 14:06:12 -0500
-Message-Id: <20200707190612.97799-14-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 00/10] ASoC: Clean-up W=1 build warnings​ - part2
+Date: Tue,  7 Jul 2020 14:16:05 -0500
+Message-Id: <20200707191615.98296-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
-References: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, tiwai@suse.de,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
- Lee Jones <lee.jones@linaro.org>
+Cc: tiwai@suse.de, broonie@kernel.org, Lee Jones <lee.jones@linaro.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,109 +86,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix W=1 warning when ACPI is not defined
+Both Lee Jones and I submitted separate series, this is the second
+part of the merged result, for which no feedback was provided.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rt274.c      | 2 ++
- sound/soc/codecs/rt286.c      | 2 ++
- sound/soc/codecs/rt298.c      | 2 ++
- sound/soc/codecs/rt5660.c     | 2 ++
- sound/soc/codecs/rt5677-spi.c | 2 ++
- 5 files changed, 10 insertions(+)
+I picked Lee's patches for rt5659 and ak4458 and added the pxa and
+ux500 that I didn't fix. The rest is largely identical between our
+respective series, with the exception of the sunxi which I documented
+and Lee removed. I don't have any specific preference and will go with
+the flow on this.
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index cbb5e176d11a..40a28fb4fd09 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -1105,12 +1105,14 @@ static const struct i2c_device_id rt274_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt274_i2c_id);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt274_acpi_match[] = {
- 	{ "10EC0274", 0 },
- 	{ "INT34C2", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt274_acpi_match);
-+#endif
- 
- static int rt274_i2c_probe(struct i2c_client *i2c,
- 			   const struct i2c_device_id *id)
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 9593a9a27bf8..89b1c8b68004 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1079,11 +1079,13 @@ static const struct i2c_device_id rt286_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt286_i2c_id);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt286_acpi_match[] = {
- 	{ "INT343A", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
-+#endif
- 
- static const struct dmi_system_id force_combo_jack_table[] = {
- 	{
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 7fc7d6181630..dc0273a5a11f 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -1145,11 +1145,13 @@ static const struct i2c_device_id rt298_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt298_i2c_id);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt298_acpi_match[] = {
- 	{ "INT343A", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt298_acpi_match);
-+#endif
- 
- static const struct dmi_system_id force_combo_jack_table[] = {
- 	{
-diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
-index 78371e51bc34..9e3813f7583d 100644
---- a/sound/soc/codecs/rt5660.c
-+++ b/sound/soc/codecs/rt5660.c
-@@ -1241,12 +1241,14 @@ static const struct of_device_id rt5660_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rt5660_of_match);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5660_acpi_match[] = {
- 	{ "10EC5660", 0 },
- 	{ "10EC3277", 0 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, rt5660_acpi_match);
-+#endif
- 
- static int rt5660_parse_dt(struct rt5660_priv *rt5660, struct device *dev)
- {
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-index 7bfade8b3d6e..95ac12a5cc6b 100644
---- a/sound/soc/codecs/rt5677-spi.c
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -614,11 +614,13 @@ static int rt5677_spi_probe(struct spi_device *spi)
- 	return ret;
- }
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5677_spi_acpi_id[] = {
- 	{ "RT5677AA", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
-+#endif
- 
- static struct spi_driver rt5677_spi_driver = {
- 	.driver = {
+Lee Jones (4):
+  ASoC: pxa: pxa-ssp: Demote seemingly unintentional kerneldoc header
+  ASoC: ux500: ux500_msp_i2s: Remove unused variables 'reg_val_DR' and
+    'reg_val_TSTDR'
+  ASoC: codecs: rt5659: Remove many unused const variables
+  ASoC: codecs: ak4458: Remove set but never checked variable 'ret'
+
+Pierre-Louis Bossart (6):
+  ASoC: qcom: q6asm: fix kernel-doc
+  ASoC: sunxi: sun4i-i2s: fix kernel-doc
+  ASoC: sunxi: sun4i-spdif: fix kernel-doc
+  ASoC: sti: uniperif: fix 'defined by not used' warning
+  ASoC: codecs: rt5631: fix kernel-doc
+  ASoC: codecs: tlv320aic26: fix kernel-doc warning
+
+ sound/soc/codecs/ak4458.c       |  6 +++---
+ sound/soc/codecs/rt5631.c       |  8 +++++--
+ sound/soc/codecs/rt5659.c       | 37 ---------------------------------
+ sound/soc/codecs/tlv320aic26.c  |  2 +-
+ sound/soc/pxa/pxa-ssp.c         |  2 +-
+ sound/soc/qcom/qdsp6/q6asm.c    |  2 +-
+ sound/soc/sti/uniperif.h        |  2 +-
+ sound/soc/sunxi/sun4i-i2s.c     | 10 ++++++++-
+ sound/soc/sunxi/sun4i-spdif.c   |  2 +-
+ sound/soc/ux500/ux500_msp_i2s.c |  8 +++----
+ 10 files changed, 27 insertions(+), 52 deletions(-)
+
 -- 
 2.25.1
 
