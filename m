@@ -2,83 +2,101 @@ Return-Path: <SRS0=LwrQ=AT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0B5DC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0C78C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:59:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4915720739
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:34:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F5A72067D
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:59:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SDmy/4jN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EdfRpI1O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4915720739
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eJw87GY2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="h1W+ShGR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F5A72067D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C339D1682;
-	Wed,  8 Jul 2020 12:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C339D1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id C23421677;
+	Wed,  8 Jul 2020 12:58:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C23421677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594204451;
-	bh=AhnJoMBPbxKfUgHX720jeUrzOme8kKo3MjbmvB/JDAU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1594205940;
+	bh=sb49Lhx9GDHwB0c8xewVQKEXzyqzx3TRM/zX3M8b7Ms=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SDmy/4jNdGvg4oJmUG0xEoAe4ed7D8BvvIDNtyZ43LrWYh6nkYTv+9oBDNJETTCxF
-	 b00NqOSruf5kIQAf6q7tOHqGnPFWaxD8x/VrzRhoXQtyAWFIPqmtHOc9kAKwBhKAzC
-	 KAhJIjCzly1JSwir/coOY+CFEfGMz06Nei53BpxU=
+	b=eJw87GY2IOHlczr5dq0DT7Bz8qQSs34eBjWFJ7uZHgHGxOBFMF6dEY6QeFtPBplN2
+	 4v0nmXn2uNWeuc3clKXKTR22daMsrrVffFB8glGbwE2i+7VYD7Nv3o4oAamB/uk2dG
+	 FyWffXjgKrdnMg3RH+kKJ4z976YjYo2Xkc07jjYE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41879F8011F;
-	Wed,  8 Jul 2020 12:33:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5924BF80150;
+	Wed,  8 Jul 2020 12:58:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DFABF8015A; Wed,  8 Jul 2020 12:33:20 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 28DE9F8015A; Wed,  8 Jul 2020 12:58:09 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A137F800AE
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 12:33:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A137F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88212F800AE
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 12:57:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88212F800AE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EdfRpI1O"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4E852206F6;
- Wed,  8 Jul 2020 10:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594204386;
- bh=AhnJoMBPbxKfUgHX720jeUrzOme8kKo3MjbmvB/JDAU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=EdfRpI1OCGj1tiJyd4YF76KEhAOKiosCRz6S8D71iqM7NZYRdH3E7SJ+EN0Db1a83
- yObZEvZN6+2kxF805MnfEGD5K+lUgsguzT6g8yAsnWVZieSmcZ5kh2OfPHQq90fbCh
- zsvJSp8+oRIWVV6QQicJIi2CVqA3Q4DYLBhXRMNI=
-Date: Wed, 8 Jul 2020 11:33:01 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Rohit kumar <rohitkr@codeaurora.org>
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="h1W+ShGR"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1594205879; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=XH6S1HvL7E7qoaCSA4Oa2h+z4LdFnJsuWn/J2aZDrbY=;
+ b=h1W+ShGROOytnAjo9/9aRBJvAcFqx3SVbLehndquQklQJhfZvZt5ow0kR3kJ6q07hEVEBcDk
+ hXD8VEEdk7jcjr0UH/aiOV8W0P+i14pypM2hBsZnOmH+U6NdhbLSG+CwHNmVdDcGpxDA4WIC
+ ry+3kIZ1lOWCBmK0NafEGrFM24M=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
+ 5f05a6b355886724ffb10483 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Jul 2020 10:57:55
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 909FEC4339C; Wed,  8 Jul 2020 10:57:55 +0000 (UTC)
+Received: from [192.168.0.129] (unknown [183.83.142.110])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: rohitkr)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C084C433C8;
+ Wed,  8 Jul 2020 10:57:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C084C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=none smtp.mailfrom=rohitkr@codeaurora.org
 Subject: Re: [RESEND][PATCH v3 7/8] ASoC: qcom: lpass-sc7180: Add platform
  driver for lpass audio
-Message-ID: <20200708103301.GG4655@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>
 References: <1594185286-11323-1-git-send-email-rohitkr@codeaurora.org>
+ <20200708103301.GG4655@sirena.org.uk>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Message-ID: <e7986896-3ffd-f565-7590-0638eb6f7641@codeaurora.org>
+Date: Wed, 8 Jul 2020 16:27:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="wTWi5aaYRw9ix9vO"
-Content-Disposition: inline
-In-Reply-To: <1594185286-11323-1-git-send-email-rohitkr@codeaurora.org>
-X-Cookie: Oh Dad!  We're ALL Devo!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200708103301.GG4655@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
  tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
- bjorn.andersson@linaro.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
- Ajit Pandey <ajitp@codeaurora.org>, linux-kernel@vger.kernel.org
+ srinivas.kandagatla@linaro.org, agross@kernel.org,
+ Ajit Pandey <ajitp@codeaurora.org>, bjorn.andersson@linaro.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,34 +113,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---wTWi5aaYRw9ix9vO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/8/2020 4:03 PM, Mark Brown wrote:
+> On Wed, Jul 08, 2020 at 10:44:46AM +0530, Rohit kumar wrote:
+>> From: Ajit Pandey <ajitp@codeaurora.org>
+>>
+>> Add platform driver for configuring sc7180 lpass core I2S and
+>> DMA configuration to support playback & capture to external codecs
+>> connected over primary & secondary MI2S interfaces.
+> I only have patch 7 here, no other patches or cover letter.  What is
+> going on?
 
-On Wed, Jul 08, 2020 at 10:44:46AM +0530, Rohit kumar wrote:
-> From: Ajit Pandey <ajitp@codeaurora.org>
->=20
-> Add platform driver for configuring sc7180 lpass core I2S and
-> DMA configuration to support playback & capture to external codecs
-> connected over primary & secondary MI2S interfaces.
+Hello Mark,
 
-I only have patch 7 here, no other patches or cover letter.  What is
-going on?
+Sorry for the confusion. I posted complete patchset and resend only 7th 
+patch as
 
---wTWi5aaYRw9ix9vO
-Content-Type: application/pgp-signature; name="signature.asc"
+it had invalid mail id in Signed-off. I should have probably updated it 
+in Patch v4.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8FoNwACgkQJNaLcl1U
-h9BTIQf+Pzg18KzFR1F83jYFACOsU3RoGhxBsfnTFuUTgZk3ldcDm3SlAKiQ1uwo
-Ol2ArxJ/AJ1llEZO3q3T5yv+Xp59WZWKaGNqIqeksbcSNQIVcmKle48bDspuaq8d
-vrYuPRUmsij4QsaCBO+FZEjIFpMgN1t+hSjneIU4yvbHS5p+uphg8o485E/aqLC1
-KaGwY9njulUK+BYodMNvvLz/MctN5GYaWecf9WonuXHsy0oxg/DLluKqXQpumYWo
-vUgZBasWFJW0uwB/bdB2u0tbTUAH6p2YFuTrHcSfiaiGWXg4P9PD5gjHn3ND3QBp
-EUYKEtftH2KYxmANHezDbVwOBrJt+Q==
-=NjIB
------END PGP SIGNATURE-----
+Rohit
 
---wTWi5aaYRw9ix9vO--
+-- 
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
+
