@@ -2,81 +2,84 @@ Return-Path: <SRS0=LwrQ=AT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D0DC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD16C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:51:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6A6620720
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:43:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D4362063A
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:51:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CGsDPv83";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qJN66Ndy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6A6620720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Fa3K2j6z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+siRc6b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D4362063A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D40EB166C;
-	Wed,  8 Jul 2020 18:42:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D40EB166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D68015E5;
+	Wed,  8 Jul 2020 18:51:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D68015E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594226610;
-	bh=PtXTYUvhYp1TuGbsTeUDAcDwsA77DUzWQdDtmeDTULs=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1594227115;
+	bh=AqMKtqS/OXQk+rhorj+lXzo8EwOOu2YsoGozE3DRg5U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CGsDPv83x+bAF9uIRLxcgh0l6JOpIU4wQ7fLTV7CB1gMGZt4bAppoSFeDfDH2SLx0
-	 hVv0DQODN/95tpTaLcdbIJpTpWlHqA2alnSo3Paurk1Co+qtzAZfy7M2+3gSt/v1Up
-	 U0mceKikkr4w4a6Eja6hG++1UsyQEQsfZeu3frMs=
+	b=Fa3K2j6zz/2PyLb7+A8ZCA0C7sb3uPVzc2pWJ4ex34ONcDg5NEd/12DVUXSwiomwl
+	 EuGB9u7Iz70l0jVDP4dpxchb27EtEWD08cRFMTkSP0sn87EGwTTvsfStXnlj5qwet9
+	 ROHFwcs3uu9ubMabIdg8hiOhv1/pVuQMVOuPW/xA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4967F80269;
-	Wed,  8 Jul 2020 18:40:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29894F80150;
+	Wed,  8 Jul 2020 18:51:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D19EDF802A9; Wed,  8 Jul 2020 18:40:49 +0200 (CEST)
+ id 9A499F8015C; Wed,  8 Jul 2020 18:50:58 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D47D9F80150
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:40:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D47D9F80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7379BF8011F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7379BF8011F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qJN66Ndy"
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net
- [107.3.166.239])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ header.b="g+siRc6b"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 87BD820857;
- Wed,  8 Jul 2020 16:40:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 800802063A;
+ Wed,  8 Jul 2020 16:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594226433;
- bh=PtXTYUvhYp1TuGbsTeUDAcDwsA77DUzWQdDtmeDTULs=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qJN66Ndye2qFIHyiJrkgTdH/ifIhiwbe6VTAXwwXDZSots17O7ZP+1npYona5La6I
- E1LdabHsFPyNR8BUdckP4hJKQyONX/UDQSyqJXwe9Xnv6Y+u8NmH/n20ylLt/+KQD/
- 5Sdkno5gfMnXsS5w+S5mBxoiReJ9IRpAZBydLEEk=
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH v2 5/5] ASoC: cros_ec_codec: use sha256() instead of open
- coding
-Date: Wed,  8 Jul 2020 09:39:43 -0700
-Message-Id: <20200708163943.52071-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200708163943.52071-1-ebiggers@kernel.org>
-References: <20200708163943.52071-1-ebiggers@kernel.org>
+ s=default; t=1594227047;
+ bh=AqMKtqS/OXQk+rhorj+lXzo8EwOOu2YsoGozE3DRg5U=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=g+siRc6bJy6ezH6ZeNdz2UGNlovQfefe94DX3Ol9cFvhEvJwUWscErEJuSZWseQZS
+ esTenErVulATOMRJI3KaxHGJEZgA7pGTm/tJE0yl+fLtEBEDoedT1KdWyg5i+z02jA
+ 31gZNcFQy7WDA+YJFJGBMkhp39cfu1zw3ooqG5XE=
+Date: Wed, 8 Jul 2020 17:50:41 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Rohit kumar <rohitkr@codeaurora.org>
+Subject: Re: [PATCH v3 5/8] ASoC: qcom: lpass-platform: Replace card->dev
+ with component->dev
+Message-ID: <20200708165041.GX4655@sirena.org.uk>
+References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
+ <1594184896-10629-6-git-send-email-rohitkr@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Tzung-Bi Shih <tzungbi@google.com>,
- Guenter Roeck <groeck@chromium.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Ard Biesheuvel <ardb@kernel.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="aBaYPhOdNx+t7mr3"
+Content-Disposition: inline
+In-Reply-To: <1594184896-10629-6-git-send-email-rohitkr@codeaurora.org>
+X-Cookie: Oh Dad!  We're ALL Devo!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
+ tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+ bjorn.andersson@linaro.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
+ Ajit Pandey <ajitp@codeaurora.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,73 +95,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Eric Biggers <ebiggers@google.com>
 
-Now that there's a function that calculates the SHA-256 digest of a
-buffer in one step, use it instead of sha256_init() + sha256_update() +
-sha256_final().
+--aBaYPhOdNx+t7mr3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also simplify the code by inlining calculate_sha256() into its caller
-and switching a debug log statement to use %*phN instead of bin2hex().
+On Wed, Jul 08, 2020 at 10:38:13AM +0530, Rohit kumar wrote:
+> From: Ajit Pandey <ajitp@codeaurora.org>
+>=20
+> We are allocating dma memory for component->dev but trying to mmap
+> such memory for substream->pcm->card->dev. Replace device argument
+> in mmap with component->dev to fix this.
 
-Acked-by: Tzung-Bi Shih <tzungbi@google.com>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc: Guenter Roeck <groeck@chromium.org>
-Cc: Tzung-Bi Shih <tzungbi@google.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- sound/soc/codecs/cros_ec_codec.c | 27 ++-------------------------
- 1 file changed, 2 insertions(+), 25 deletions(-)
+This is a bug fix and should've been at the start of the series (or sent
+separately) so that it can be applied without the rest of the series.
 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index 8d45c628e988..ab009c7dfdf4 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -103,28 +103,6 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
- 	return ret;
- }
- 
--static int calculate_sha256(struct cros_ec_codec_priv *priv,
--			    uint8_t *buf, uint32_t size, uint8_t *digest)
--{
--	struct sha256_state sctx;
--
--	sha256_init(&sctx);
--	sha256_update(&sctx, buf, size);
--	sha256_final(&sctx, digest);
--
--#ifdef DEBUG
--	{
--		char digest_str[65];
--
--		bin2hex(digest_str, digest, 32);
--		digest_str[64] = 0;
--		dev_dbg(priv->dev, "hash=%s\n", digest_str);
--	}
--#endif
--
--	return 0;
--}
--
- static int dmic_get_gain(struct snd_kcontrol *kcontrol,
- 			 struct snd_ctl_elem_value *ucontrol)
- {
-@@ -782,9 +760,8 @@ static int wov_hotword_model_put(struct snd_kcontrol *kcontrol,
- 	if (IS_ERR(buf))
- 		return PTR_ERR(buf);
- 
--	ret = calculate_sha256(priv, buf, size, digest);
--	if (ret)
--		goto leave;
-+	sha256(buf, size, digest);
-+	dev_dbg(priv->dev, "hash=%*phN\n", SHA256_DIGEST_SIZE, digest);
- 
- 	p.cmd = EC_CODEC_WOV_GET_LANG;
- 	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
--- 
-2.27.0
+--aBaYPhOdNx+t7mr3
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8F+WAACgkQJNaLcl1U
+h9DYdwf/TP/V9rRaqchmnuoLr81D+iZWagfBza40aZnj6L9DmzYz9ujUAXhBwLE3
+m0qzU/Y80YabOhh+GByaGdPSPAT+34xYOcFVym6e2Iqq6iJHSIY9OWeChI+ieCKv
+1JxhQzQgOBoHjSLmCG/IM6/DaP8Gcab0uEakRbI6wzuhKbZtQ8TmCLD90Igv2Y36
+bFNfao34+aQxdmGpe1lLqScooepCZzYeL47nFGlVoXFSG9phR0h+Qwj/ed/5alhn
+ntxODL3WdwurRO+1L/TZrPhfrmMolsda9pU0G6Mm4vO2NwXK/bZuYixvckCT7H3S
+5frOF/gMTdki5Wl3SDrE8GDvOrX9/w==
+=exLA
+-----END PGP SIGNATURE-----
+
+--aBaYPhOdNx+t7mr3--
