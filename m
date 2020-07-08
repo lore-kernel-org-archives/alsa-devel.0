@@ -2,68 +2,66 @@ Return-Path: <SRS0=LwrQ=AT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB4F0C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 07:14:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED4C6C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 07:15:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DB1A20760
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 07:14:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6CF2C206DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 07:15:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IPKL0SOg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DB1A20760
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nkAatHfx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CF2C206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFFD215E5;
-	Wed,  8 Jul 2020 09:13:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFFD215E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0687D1654;
+	Wed,  8 Jul 2020 09:14:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0687D1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594192449;
-	bh=Dae+cIugq4fbH46LZEXD56zyt+w0rIXjG4/ItQi+eww=;
+	s=default; t=1594192523;
+	bh=LMvDJHRUfHOCs2R0peQE4yJ9nVl9yh0Ga3aTKWiNZzA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IPKL0SOgsabsmGX5zxw2vK0M8vPS1mPtxHtTUtfGLIQ5koYWiNBu870cmQYZ4BwgJ
-	 bPa/W3krgciV5TX6fQrBFyEzi+6IHXSsRP6ZjLs5goIfYFMt6x685/PnPDpbl5eBOH
-	 d0qKZgWOELQullrq2LtTsJxpFo4lMK0NmEGwkwPA=
+	b=nkAatHfx5cc77pyYBNlEKBZb2dYBhP0IvSlQeYoHdg4saKQ42MPJ0CJ8hddkHeqBq
+	 RszJqN/v/hnEARHJpM/ZdF1s4UGuDkmxjPpM9C5GQp4YsnPdfe7Ya1kLoP9XQJ0JDA
+	 Pk97N0+8o9dqCh1u3eBPl/h/btktWifkMlhtxarI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B962F8015A;
-	Wed,  8 Jul 2020 09:13:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EE0CF80150;
+	Wed,  8 Jul 2020 09:14:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74BBAF8015D; Wed,  8 Jul 2020 09:13:18 +0200 (CEST)
+ id 12149F8015A; Wed,  8 Jul 2020 09:14:32 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CA17F80150
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 09:13:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CA17F80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id 472A0F80115
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 09:14:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 472A0F80115
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 84907ACA0;
- Wed,  8 Jul 2020 07:13:11 +0000 (UTC)
-Date: Wed, 08 Jul 2020 09:13:10 +0200
-Message-ID: <s5htuyibhtl.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5E52CACA0;
+ Wed,  8 Jul 2020 07:14:26 +0000 (UTC)
+Date: Wed, 08 Jul 2020 09:14:25 +0200
+Message-ID: <s5hsge2bhri.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH] ALSA: Use fallthrough pseudo-keyword
-In-Reply-To: <20200707172847.GA27659@embeddedor>
-References: <20200707172847.GA27659@embeddedor>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: usb/line6: remove 'defined but not used' warning
+In-Reply-To: <20200707184924.96291-1-pierre-louis.bossart@linux.intel.com>
+References: <20200707184924.96291-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,24 +77,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 07 Jul 2020 19:28:47 +0200,
-Gustavo A. R. Silva wrote:
-> --- a/sound/isa/msnd/msnd_pinnacle_mixer.c
-> +++ b/sound/isa/msnd/msnd_pinnacle_mixer.c
-> @@ -219,8 +219,7 @@ static int snd_msndmix_set(struct snd_msnd *dev, int d, int left, int right)
->  	case MSND_MIXER_VOLUME:		/* master volume */
->  		writew(wLeft, dev->SMA + SMA_wCurrMastVolLeft);
->  		writew(wRight, dev->SMA + SMA_wCurrMastVolRight);
-> -		/* fall through */
-> -
-> +		fallthrough;
->  	case MSND_MIXER_AUX:			/* aux pot control */
->  		/* scaled by master volume */
->  		/* fall through */
+On Tue, 07 Jul 2020 20:49:24 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> Fix W=1 warning. Variables are declared in a header file included from
+> multiple C files, replace by #defines as suggested by Takashi
+> 
+> sound/usb/line6/driver.h:70:18: warning: ‘SYSEX_EXTRA_SIZE’ defined
+> but not used [-Wunused-const-variable=]
+>    70 | static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
+>       |                  ^~~~~~~~~~~~~~~~
+> sound/usb/line6/driver.h:69:18: warning: ‘SYSEX_DATA_OFS’ defined but
+>    not used [-Wunused-const-variable=]
+>    69 | static const int SYSEX_DATA_OFS = sizeof(line6_midi_id) + 3;
+>       |                  ^~~~~~~~~~~~~~
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Any reason to leave this?
+Applied, thanks.
 
-
-thanks,
 
 Takashi
