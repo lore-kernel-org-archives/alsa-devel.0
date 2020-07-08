@@ -6,97 +6,96 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF07C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 09:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07201C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 09:46:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86452206E2
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 09:45:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88CDC20771
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 09:46:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bzmKBCTX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mO2Z3EWx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86452206E2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="To6Se+nB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Fpjx3n8Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88CDC20771
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0553E1614;
-	Wed,  8 Jul 2020 11:44:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0553E1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 153691678;
+	Wed,  8 Jul 2020 11:45:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 153691678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594201525;
-	bh=+woQMTT63TYre4WqZ+iSxvnIy5nA1RW9K4IszOf3OsQ=;
+	s=default; t=1594201578;
+	bh=w0YrqsKzW2LRSvCKdn6bK7913y97WBv2dp2y/rH8GqA=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bzmKBCTXMR9rP1xw/BFPi7SuoNaSINkd93+zAWBiWRxAcFsxYie/kTftp7FEGiPg7
-	 pZHoAZ26Lhi3GcB2H2gIu7HMHXWr1AyWoDGd4dECe+Jij1qYc/vTp5pErncG2+sntR
-	 8CBeYsvM9bTOLDDbVOenjmcN7sCVZE2PBjnzMLLI=
+	b=To6Se+nB5yEiJekMvXX1mBBV2Awu9nDQnmqfwq4caqxVeVsA3OKlbn/ugwujpX+2d
+	 i9VpdSoV7uI++OgFd/R/b61p2kteMzguVgj8syxnIggGTbQho93ksgOLruY8J7aAar
+	 03b6Al8v6SixwCPX6Ofid0/Ir9SHmYmG9FkixEZ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 972D3F80150;
-	Wed,  8 Jul 2020 11:44:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1A9CF80161;
+	Wed,  8 Jul 2020 11:44:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F10A2F8011F; Wed,  8 Jul 2020 11:44:32 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id D25D5F8015D; Wed,  8 Jul 2020 11:44:32 +0200 (CEST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D64CBF80115
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 11:44:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D64CBF80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 857F3F8011F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 11:44:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 857F3F8011F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mO2Z3EWx"
-Received: by mail-wr1-x443.google.com with SMTP id o11so48197004wrv.9
- for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2020 02:44:26 -0700 (PDT)
+ header.b="Fpjx3n8Z"
+Received: by mail-wr1-x444.google.com with SMTP id q5so48118811wru.6
+ for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2020 02:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=CU3teNK4ks5V+nQ8QE1n/8I+d2JYVjp3ohi8QaUE2+A=;
- b=mO2Z3EWxs2SyDUrComTdddyIotT1xafU+QNTaEs96rLfhca1Nbi6y1EnOhWbf75ms+
- c1srnsfalQGDoomtkmtiY5uMJuMRU9ba5pPkAgvgvoOJORvy2Rsu6ckijDb2Ze7FPfNM
- AtE044uKQmWu/ZMcRp1dg6ueVYGXaHg5Zx9aFXiyDuaJof+z6X7QfhDVJe1LHRdTUvm9
- v2dRFC3afRT7GWBAYY2S/wT0Tb07Pt2Yy5Df6VmWKtMgemyXzGAP8EvPgrUPDaIYcB+2
- JPuS/OCJnWCYAFfi3SyW0oFY6w+ku3pDOzJeHRpL5syBxYUrFTO22mEZXUBkyz4EljDa
- TxZQ==
+ bh=7Jns/yX+3aClnQNyC+2ax+ymiJLw8nGPUIjOZoROxiY=;
+ b=Fpjx3n8ZM6TtASQQ3MqccK2166U6UtGHVdKdKpM3ddmRW6w37DoBJGZeWy3playtH6
+ XMn4zZPaScEpr/td03Xw+MaTulQdOgQz1sXzldnbiLDhXcQiOsS0RGVFQe6SZDzeeqGq
+ vfArGvSMPUBdeBTY0OkzS32iiNEAnprj2fXz4EoyuqeSL08SBbp84UpDl/ENkgNBihxC
+ Gd9R0zJmsL6dmFREtzOW8xeg+yoUxlnaYF+KyjfUs/3EnYuVToJ+WO0oAoecIoSQXscS
+ irB3j5n875UM7DbOon8DS4aGeQzoTG/zw6U+uwJW3wYd8Ne6/Y3YbtC9e1DsKmqC/cuK
+ XGQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=CU3teNK4ks5V+nQ8QE1n/8I+d2JYVjp3ohi8QaUE2+A=;
- b=U45xnlmhKVeibvacEkOSW3DoW7JcNHFiYSoO5+l9RAQtAKTs8ve2pjthY+6ELJNCQm
- nO1FvjD+3UidAYUo8wuvFloRUicP0IMdMyjWTFelkea9hD45WbqCylZt9f9AKrCa9KIA
- 2BnNMKVPPijKU0wAjFniDvA+T/NVWwTW56kqAi8LqlLtks3R2eh/cLDzKIeyhHYn6XCd
- ga9h+BR6tp5UhF79lKkLtI3B6c7d9VE1rz4GWzvdCNWOQzHqlHtj6iQnRGNXvnbQE1+F
- K1osHkM1cin8fNWPVwFV6kMKFVi4X+NadjT1VybNHRJtQ5/4EbdNmabbG6vSZLogbeVa
- D6lA==
-X-Gm-Message-State: AOAM531nrgE9fSvRNtCDliyRBSkgGZ5hpZ8UX7e45Y6fLQAwgCAq6Msj
- hlqR8mCAbLxDrCtlWg4EHpXFVw==
-X-Google-Smtp-Source: ABdhPJzoQSbQ3K7dl6+kZu9qeVvMuXnB1kvnRfVepdCezPHL5RgNw0zEqV1nz8vpJGK+tGX3m7noOA==
-X-Received: by 2002:a5d:6b08:: with SMTP id v8mr59916781wrw.2.1594201465666;
- Wed, 08 Jul 2020 02:44:25 -0700 (PDT)
+ bh=7Jns/yX+3aClnQNyC+2ax+ymiJLw8nGPUIjOZoROxiY=;
+ b=FRCp7Izaa35dMqTHKuVI/VsAQ16DOkTxm4HropGSc6e//BYt+HJk6SRlNui1rSDqfg
+ dekmE3aX1mCKflIX1IL2CX2WZRyVyrWp65pulAXObJsmwsRmoQCiL0Z0oFxBrZJaGbQJ
+ GLgRnr9qc0gUeRKIGrgieFl8IStaFZmzMjcka7rbDkrHEqqNun4IZXvrTgmdRjNAP2IL
+ 3KiEQZUV5WPIyeNZrUdo8ABR5/CC6dfk2E3VEar2VPFP5/Pu/v6DaAgfcmfvlgu82H1w
+ BJ9rEl/xGI50L02mUso2X2Xr24cb0bCkDAERAsz5U5qHF9JHbGBdTLo1frxYi7UnMOxk
+ eZWg==
+X-Gm-Message-State: AOAM530dntPSMfSkNsGGauaFq2wxjmAi6g4eTMnuaBKqk2WcCHDKJve5
+ N3YbI4/3stLhzoJmL8NhrB0I7Q==
+X-Google-Smtp-Source: ABdhPJyOe8hm51EM8jb8HvCuyASFEnECIqcU4tIDM0/F7Tr+eWobQ0z+voWarZPRT+sExqYKK2NL2w==
+X-Received: by 2002:adf:ef89:: with SMTP id d9mr61277066wro.124.1594201461254; 
+ Wed, 08 Jul 2020 02:44:21 -0700 (PDT)
 Received: from [192.168.86.34]
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id t4sm5443551wmf.4.2020.07.08.02.44.24
+ by smtp.googlemail.com with ESMTPSA id y77sm5640094wmd.36.2020.07.08.02.44.19
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 08 Jul 2020 02:44:25 -0700 (PDT)
-Subject: Re: [PATCH 06/11] ASoC: q6asm: add support to remove intial and
- trailing silence
+ Wed, 08 Jul 2020 02:44:20 -0700 (PDT)
+Subject: Re: [PATCH 03/11] ASoC: q6asm: make commands specific to streams
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  broonie@kernel.org
 References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
- <20200707163641.17113-7-srinivas.kandagatla@linaro.org>
- <dd0d970e-109f-9a41-f2b9-a970e4d20caa@linux.intel.com>
+ <20200707163641.17113-4-srinivas.kandagatla@linaro.org>
+ <9ff595b4-1093-36c8-f27f-f097e24657a0@linux.intel.com>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <08d9598d-2ae7-3da8-752e-b588c8ebdd61@linaro.org>
-Date: Wed, 8 Jul 2020 10:44:24 +0100
+Message-ID: <4eedae20-903f-77c6-c6e9-fbf3db209bcf@linaro.org>
+Date: Wed, 8 Jul 2020 10:44:19 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <dd0d970e-109f-9a41-f2b9-a970e4d20caa@linux.intel.com>
+In-Reply-To: <9ff595b4-1093-36c8-f27f-f097e24657a0@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -118,43 +117,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Pierre for review,
+Thanks Pierre for quick review,
 
-On 07/07/2020 17:55, Pierre-Louis Bossart wrote:
+On 07/07/2020 17:52, Pierre-Louis Bossart wrote:
 > 
 > 
 > 
->> +int q6asm_stream_remove_initial_silence(struct audio_client *ac,
->> +                    uint32_t stream_id,
->> +                    uint32_t initial_samples)
->> +{
->> +    return q6asm_stream_remove_silence(ac, stream_id,
->> +                       ASM_DATA_CMD_REMOVE_INITIAL_SILENCE,
->> +                       initial_samples);
->> +}
->> +EXPORT_SYMBOL_GPL(q6asm_stream_remove_initial_silence);
->> +
->> +int q6asm_stream_remove_trailing_silence(struct audio_client *ac, 
->> uint32_t stream_id,
->> +                     uint32_t trailing_samples)
->> +{
->> +    return q6asm_stream_remove_silence(ac, stream_id,
->> +                   ASM_DATA_CMD_REMOVE_TRAILING_SILENCE,
->> +                   trailing_samples);
->> +}
->> +EXPORT_SYMBOL_GPL(q6asm_stream_remove_trailing_silence);
+>> @@ -184,8 +186,8 @@ static void event_handler(uint32_t opcode, 
+>> uint32_t token,
+>>       switch (opcode) {
+>>       case ASM_CLIENT_EVENT_CMD_RUN_DONE:
+>>           if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>> -            q6asm_write_async(prtd->audio_client,
+>> -                   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+>> +            q6asm_write_async(prtd->audio_client, prtd->stream_id,
+>> +                   prtd->pcm_count, 0, 0, 0);
 > 
-> do you need those wrappers? Might as well call the _remove_silence() 
-> function with the right parameters, no?
+> sound/soc/qcom/qdsp6/q6asm.h:#define NO_TIMESTAMP    0xFF00
+> 
+> is the change on the previous line intentional?
 
-Intention is to abstract out the CMDs within dsp specific wrappers.
-This is how rest of the apis are also done! Also its possible that in 
-future these IDs could potentially upgraded on different versions of DSP fw.
-Making a single call would mean that either CMD IDs or some kinda of 
-other intermediate flags.
+May be not!
 
-So I would like to keep it as it is for now!
+Plan is that the users of these apis will send flags directly instead of 
+boiler plating this!
 
-Thanks,
+This change should go as part of next patch("[PATCH 04/11] ASoC: q6asm: 
+use flags directly from asm-dai") which would make it much clear!
+
+thanks,
 srini
-
