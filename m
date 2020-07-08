@@ -7,83 +7,83 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B41DAC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:05:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86EDAC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:14:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FC9220775
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:05:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2F7220739
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 10:14:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C8WIlvyo";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="pFMbAJrg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FC9220775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X/iJ0XgR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Q88zKv1Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2F7220739
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4D351661;
-	Wed,  8 Jul 2020 12:04:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4D351661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D6B31661;
+	Wed,  8 Jul 2020 12:13:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D6B31661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594202746;
-	bh=WESo8uRn89dal0Se9yediaMIdWKfPgqlwwQUi0PuOh8=;
+	s=default; t=1594203263;
+	bh=yPe6Sn1dNDUkqKd9G6KaUfJ53MUjs+1QIkwAIOtG6vI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=C8WIlvyoE1yb6Lh76cSIxagzdu7IC76vCbSmVwnPV+EGLmBoWG43ZVYVguofH1VJf
-	 NdDHcBLFsih6q+WsG0OU3yr+HG3zLHozaKh6XRnZ0rvShmplM0NLAfDFHh6qRRthsf
-	 2Ml13VM4G/lm0vf/m2PaYosU3YSUzQ6upPrnIYr8=
+	b=X/iJ0XgRHO3W62uWIEajtgDlvdNTB9qHPVVpTqieFZLyRykx4+WpoYty43IOQikdq
+	 ill+9VvnM7sPtOAjEGNBZ4QZoCLiPTBkqqD+svK79li6l+VxP25Z+pljie49kB5c9Y
+	 VvsTMDdj6UbB6CPVMhCTi2uJODZfWJXbLdrZUCuE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43943F80150;
-	Wed,  8 Jul 2020 12:04:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7FE3F80150;
+	Wed,  8 Jul 2020 12:13:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0333F8015A; Wed,  8 Jul 2020 12:04:54 +0200 (CEST)
-Received: from esa3.microchip.iphmx.com (esa3.microchip.iphmx.com
- [68.232.153.233])
+ id 3D58AF8015A; Wed,  8 Jul 2020 12:13:31 +0200 (CEST)
+Received: from esa2.microchip.iphmx.com (esa2.microchip.iphmx.com
+ [68.232.149.84])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F925F8011F
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 12:04:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F925F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id D468FF8011F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 12:13:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D468FF8011F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="pFMbAJrg"
+ header.b="Q88zKv1Z"
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1594202689; x=1625738689;
+ t=1594203205; x=1625739205;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=WESo8uRn89dal0Se9yediaMIdWKfPgqlwwQUi0PuOh8=;
- b=pFMbAJrgautGScJbFmJ/F9i9o0Nd2MaBlidQpeOwIS6Sc/1TTfNuLKux
- 6/nSRhrlgZO2pv1aWTQqsNEJFo8awnIm/CjQx7yE3/GQnBfAInwsHzIrf
- NKeByxE2UgSJTeLtRuPNDe7+5ZGMP5Vh1TulFwvnrL5WYqOVlys17pKj9
- emI1PW3MOukaXDhh7xeqvH8T/NA6gqNBRNLzgJC5s/hGomcMFxKh4bQEG
- zVcV5FmSeGw/Og0fEKsEtrpQb1DfLqBykLVkziDj8pgWPmB+/8ipZ0G2m
- zaRwdJpjogccQrcQuRPc1iiBduTTbmxCGMp61N/gf5vNozOkyWjBIB6xr w==;
-IronPort-SDR: Iap92/DhbL9SeP4/bXfxOMjNRrvLV3PF9G0itpbxzdcsllogS/vOZOcdg2G1NICaIkm1IJORLi
- DIi10cKw2UsxHRsmfllxsUPrDuZHxRPPtu/Gn9DY3HlpW3mMI87cnulgtLChwVleFJJnRP8HYu
- w++7rS8KFljmeNz8UzfnfweiyM4SWbZXrfeeZXa06NS9WsFEVz9Q/EMU3oSDK4vGVtXx+c0GDU
- ksp/wgfZ9G2KQ3fmbk5jAbt0DLwxfl95A/ZzFFx/gFrNw0o4ZFUsVA19O3YXJC9Qu2hfH7ocQy
- ILQ=
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; d="scan'208";a="82965611"
+ bh=yPe6Sn1dNDUkqKd9G6KaUfJ53MUjs+1QIkwAIOtG6vI=;
+ b=Q88zKv1Z2FcEIlKqJVB261xyswIDjdoB5i+4FUPumnSdK1C7QqvfZdom
+ ToCmP1xzeZO+cJdodlIN0XAvhv6cgq2+MXRCgMFGdphZcShkyBvBuqDzJ
+ HZGlj5I3f+TZmVSwfiEfk9NmG2TayaLHu1jIBnFvwNy2E8fYdy3MADdhF
+ +ckMSNIBMAjkPiqLfmboGCX7qgE1e1a3H4uJvkHUqKMxRwCZp4Fmziicb
+ Baup4Gx1iH820bxloYT/3OlyL29GGgSsn/ojK3W+2UUyeUdApbGGkMRsO
+ cYggxw1nlM8fSh2rx0xFz/WsnnI7V2qrEYtzLbPPArRxMmzjzkUSDNXDS A==;
+IronPort-SDR: O70QMcwbPhgHa/l5X3lhrnCVDwzvVCy6k7kEfsG1u7E4zwaX9C1D4hvNMQfq/p4apCsnesfh3f
+ aQayOMQ2rptcfOYDerYqIhQh2RWasj/oIzp2usvblYfCdVo0VRCVqoZr3LRexF1AHXSWA6zCG9
+ XBWRrpIHWZcRjUl0j++OHD0OHTETMt7dG8n+AywQZefic6nLaXDOC/Xg09hmW2+3JVJECuCM+S
+ eXbDg6it1N5bR+AY8Wdiq9qAr54HO4WRG63uoCUXMoLsQf1OvZwx9RdMSPUeoPJtdvr0HRtEFZ
+ IFc=
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; d="scan'208";a="81063248"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 08 Jul 2020 03:04:39 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 08 Jul 2020 03:13:18 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 8 Jul 2020 03:04:12 -0700
+ 15.1.1979.3; Wed, 8 Jul 2020 03:12:49 -0700
 Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 8 Jul 2020 03:03:53 -0700
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 8 Jul 2020 03:13:00 -0700
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To: <alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] ASoC: atmel-classd: remove codec component
-Date: Wed, 8 Jul 2020 13:04:09 +0300
-Message-ID: <20200708100409.2625566-1-codrin.ciubotariu@microchip.com>
+Subject: [PATCH v3] ASoC: atmel-classd: remove codec component
+Date: Wed, 8 Jul 2020 13:12:49 +0300
+Message-ID: <20200708101249.2626560-1-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -116,25 +116,20 @@ create entries for both componenets with the same name.
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
 
+Changes in v3:
+ - fixed some newlines modified by no reason;
+
 Changes in v2:
  - removed no longer used ATMEL_CLASSD_CODEC_DAI_NAME macro;
 
- sound/soc/atmel/atmel-classd.c | 134 ++++++++++++---------------------
- 1 file changed, 48 insertions(+), 86 deletions(-)
+ sound/soc/atmel/atmel-classd.c | 132 ++++++++++++---------------------
+ 1 file changed, 47 insertions(+), 85 deletions(-)
 
 diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index e98601eccfa3..24bc93c468af 100644
+index e98601eccfa3..2d35b08f0565 100644
 --- a/sound/soc/atmel/atmel-classd.c
 +++ b/sound/soc/atmel/atmel-classd.c
-@@ -5,7 +5,6 @@
-  *
-  * Author: Songjun Wu <songjun.wu@atmel.com>
-  */
--
- #include <linux/of.h>
- #include <linux/clk.h>
- #include <linux/module.h>
-@@ -120,39 +119,21 @@ static int atmel_classd_cpu_dai_startup(struct snd_pcm_substream *substream,
+@@ -120,39 +120,21 @@ static int atmel_classd_cpu_dai_startup(struct snd_pcm_substream *substream,
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
@@ -184,7 +179,7 @@ index e98601eccfa3..24bc93c468af 100644
  /* platform */
  static int
  atmel_classd_platform_configure_dma(struct snd_pcm_substream *substream,
-@@ -306,31 +287,10 @@ static int atmel_classd_component_resume(struct snd_soc_component *component)
+@@ -306,31 +288,10 @@ static int atmel_classd_component_resume(struct snd_soc_component *component)
  	return regcache_sync(dd->regmap);
  }
  
@@ -219,7 +214,7 @@ index e98601eccfa3..24bc93c468af 100644
  	u32 mask, val;
  
  	mask = CLASSD_MR_LMUTE_MASK | CLASSD_MR_RMUTE_MASK;
-@@ -373,13 +333,13 @@ static struct {
+@@ -373,13 +334,13 @@ static struct {
  };
  
  static int
@@ -237,7 +232,7 @@ index e98601eccfa3..24bc93c468af 100644
  	int fs;
  	int i, best, best_val, cur_val, ret;
  	u32 mask, val;
-@@ -417,8 +377,8 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+@@ -417,8 +378,8 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
  }
  
  static void
@@ -248,7 +243,7 @@ index e98601eccfa3..24bc93c468af 100644
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
-@@ -426,10 +386,10 @@ atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
+@@ -426,10 +387,10 @@ atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
  	clk_disable_unprepare(dd->gclk);
  }
  
@@ -262,7 +257,7 @@ index e98601eccfa3..24bc93c468af 100644
  
  	snd_soc_component_update_bits(component, CLASSD_MR,
  				CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK,
-@@ -439,10 +399,10 @@ static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
+@@ -439,10 +400,10 @@ static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
  	return 0;
  }
  
@@ -276,7 +271,7 @@ index e98601eccfa3..24bc93c468af 100644
  	u32 mask, val;
  
  	mask = CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK;
-@@ -468,19 +428,16 @@ static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
+@@ -468,19 +429,16 @@ static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
  	return 0;
  }
  
@@ -304,7 +299,7 @@ index e98601eccfa3..24bc93c468af 100644
  	.playback = {
  		.stream_name	= "Playback",
  		.channels_min	= 1,
-@@ -488,7 +445,18 @@ static struct snd_soc_dai_driver atmel_classd_codec_dai = {
+@@ -488,7 +446,18 @@ static struct snd_soc_dai_driver atmel_classd_codec_dai = {
  		.rates		= ATMEL_CLASSD_RATES,
  		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
  	},
@@ -324,13 +319,12 @@ index e98601eccfa3..24bc93c468af 100644
  };
  
  /* ASoC sound card */
-@@ -517,9 +485,10 @@ static int atmel_classd_asoc_card_init(struct device *dev,
+@@ -517,9 +486,9 @@ static int atmel_classd_asoc_card_init(struct device *dev,
  
  	dai_link->name			= "CLASSD";
  	dai_link->stream_name		= "CLASSD PCM";
 -	dai_link->codecs->dai_name	= ATMEL_CLASSD_CODEC_DAI_NAME;
 +	dai_link->codecs->dai_name	= "snd-soc-dummy-dai";
-+
  	dai_link->cpus->dai_name	= dev_name(dev);
 -	dai_link->codecs->name		= dev_name(dev);
 +	dai_link->codecs->name		= "snd-soc-dummy";
