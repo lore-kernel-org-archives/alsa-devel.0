@@ -6,81 +6,78 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 427A7C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DD97C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:00:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6149A207D0
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:59:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 19F63207DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:00:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bZbLFuMt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6149A207D0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z+Vy1gzn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19F63207DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96309950;
-	Wed,  8 Jul 2020 18:58:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96309950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 192D4166C;
+	Wed,  8 Jul 2020 18:59:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 192D4166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594227567;
-	bh=AoB6DXtO+RUOBI3dCNGxGiKDaPealoFfoomAYYQDeYg=;
+	s=default; t=1594227623;
+	bh=nbkABA7xjzZEqrtvcCaEOd9lZJXaldjUeFJcnLjs9QQ=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bZbLFuMt6LdE/OIcBkqYODv67iTegRIXPVQdiHA+phjXUXhqBQHv/2E1HeVSIjUzx
-	 MLs829J5ZMEJ4b/a3WzNZkkJZenCl4mW/p9pnDf7QrpGap+sgxN/MpnpPyl1z8UtU+
-	 eSleVh7vGZnQYFRuAvEffRa6GZ22pxFCv/xX/3LY=
+	b=Z+Vy1gznNeqm9zYIXVamVCL3R1zuTjslmHBQjSzCW3EK2elOa6U7KbdWISCmlZ0hh
+	 vFwvNdTq5E3nWvAQ3XuuccbPY2GzwiEe4ckaZV5869HRWbbciSOTH76cMsnWB6bXdj
+	 5lutGKaKzRCPgocDclHVIwlD5xBWys8wMKIkquHU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1882BF80150;
-	Wed,  8 Jul 2020 18:58:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C665F8015D;
+	Wed,  8 Jul 2020 18:59:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD96BF80115; Wed,  8 Jul 2020 18:58:35 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 92C25F80161; Wed,  8 Jul 2020 18:59:18 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79DA6F80115
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:58:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79DA6F80115
-IronPort-SDR: J7iFcazbyDtAtCpkib9J/y5YopSxUBNn87SrgAZxqOyt2QdqwNaNQ149qhCLFL3t0njKnaGn68
- JGHSgSMlxC7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="135313526"
-X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; d="scan'208";a="135313526"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 28091F8011F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:59:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28091F8011F
+IronPort-SDR: 6bwGbftZtzE3wq5g5LxEzI74D01x5P6M5jVFWEo69CnHRPPbtQ23u6ESyPN5XYYI9twDSPd/Hl
+ 1o3B2O6xnwcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="212788415"
+X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; d="scan'208";a="212788415"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jul 2020 09:58:23 -0700
-IronPort-SDR: roGAQ+C7dQ+FJJZSqTi34AQnhgyYC0DtG4s6q1coKI7tPOCpFfdRkjC2CATJp7RkOUcJVllJ5L
- f+1n0hQF6NXA==
-X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; d="scan'208";a="358162394"
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Jul 2020 09:59:07 -0700
+IronPort-SDR: kFxAkyRZGP2s9lj6bOziRFXiFM+MAvLo2tFBLf34lH7tCYQJ9/JigrBIL2ez0zWI667l1PP8Wm
+ v6lJIG+KEZ5w==
+X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; d="scan'208";a="358162602"
 Received: from sare-mobl.amr.corp.intel.com (HELO [10.251.7.246])
  ([10.251.7.246])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jul 2020 09:58:23 -0700
-Subject: Re: [PATCH 10/11] ASoC: qdsp6-dai: add gapless support
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
-References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
- <20200707163641.17113-11-srinivas.kandagatla@linaro.org>
- <62af11d3-db26-a31b-00c8-9d78b11862cc@linux.intel.com>
- <04a7f696-e23d-5563-7cc3-aedfaf2c7636@linaro.org>
- <cf9b2d33-9b63-f3d2-2e51-a88c528dad53@linux.intel.com>
- <e6d10009-d01e-d506-1aa3-a915ef42a693@linaro.org>
+ 08 Jul 2020 09:59:07 -0700
+Subject: Re: [PATCH 0/3] ASoC: more fixes for dpcm checks
+To: Mark Brown <broonie@kernel.org>
+References: <20200707210439.115300-1-pierre-louis.bossart@linux.intel.com>
+ <20200708115349.GK4655@sirena.org.uk>
+ <4290a302-e8a7-9b9b-7625-91f81a19aaf1@linux.intel.com>
+ <20200708155321.GU4655@sirena.org.uk>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b0aa1cff-33c9-a44d-b17b-d2e4e42d60f1@linux.intel.com>
-Date: Wed, 8 Jul 2020 11:58:21 -0500
+Message-ID: <d43a2721-5d21-1ed4-2ec0-b807e90dd312@linux.intel.com>
+Date: Wed, 8 Jul 2020 11:59:06 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <e6d10009-d01e-d506-1aa3-a915ef42a693@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200708155321.GU4655@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- vkoul@kernel.org
+Content-Transfer-Encoding: 7bit
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,53 +94,14 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->> right, but the key point is 'switch between streams'. That means a 
->> more complex/capable implementation that should be advertised as such 
->> to applications. This is not the default behavior assumed initially: 
->> to allow for minimal implementations in memory-constrained devices, we 
->> assumed gapless was supported with a single decoder.
->>
->> Maybe the right way to do this is extend the snd_compr_caps structure:
->>
->> /**
->>   * struct snd_compr_caps - caps descriptor
->>   * @codecs: pointer to array of codecs
->>   * @direction: direction supported. Of type snd_compr_direction
->>   * @min_fragment_size: minimum fragment supported by DSP
->>   * @max_fragment_size: maximum fragment supported by DSP
->>   * @min_fragments: min fragments supported by DSP
->>   * @max_fragments: max fragments supported by DSP
->>   * @num_codecs: number of codecs supported
->>   * @reserved: reserved field
->>   */
->> struct snd_compr_caps {
->>      __u32 num_codecs;
->>      __u32 direction;
->>      __u32 min_fragment_size;
->>      __u32 max_fragment_size;
->>      __u32 min_fragments;
->>      __u32 max_fragments;
->>      __u32 codecs[MAX_NUM_CODECS];
->>      __u32 reserved[11];
->> } __attribute__((packed, aligned(4)));
->>
->>
->> and use a reserved field to provide info on capabilities, and filter 
->> the set_codec_params() addition based this capability - i.e. return 
->> -ENOTSUP in 'traditional' implementations based on a single 
->> 'stream'/decoder instance.
 
-I think this is also what Mark was referring to earlier.
+On 7/8/20 10:53 AM, Mark Brown wrote:
+> On Wed, Jul 08, 2020 at 07:49:58AM -0500, Pierre-Louis Bossart wrote:
+> 
+>> I wasn't sure which branch to use to be honest. It's late in the cycle for
+>> 5.8, the addition of the helper is new. I am happy to resubmit for 5.8 if
+>> you prefer it this way.
+> 
+> They applied fine as-is so it's fine.
 
-> Sounds good!
-> I will give it a go and see how it ends up!
-
-Glad to see this discussion progressing.
-
-We may also want to document the 3 possible ways of supporting gapless 
-playback while we are at it:
-a) with the existing single decoder assumption
-b) with your suggested solution with a switch at the DSP level
-c) with 2 streams at the userspace level and a switch/x-fade at the DSP 
-level - which may simplify userspace quite a bit and was the initial 
-design in a non-Linux OS.
+Great, thanks!
