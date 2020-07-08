@@ -2,82 +2,95 @@ Return-Path: <SRS0=LwrQ=AT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76188C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:19:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69BFEC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:36:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F38B920786
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:19:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E38E20720
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 16:35:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fJ/wk0Ab"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F38B920786
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=siol.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WRdIJ+RL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="uFFK/x6k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E38E20720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 308A81660;
-	Wed,  8 Jul 2020 18:18:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 308A81660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6435086E;
+	Wed,  8 Jul 2020 18:35:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6435086E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594225166;
-	bh=vjXbKcKdkAFsmiJJiEZ7tBeW92sorwzPcgqtTPI1nVc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fJ/wk0Abm85k1/Hp6r/VRclfdmyBdde7czzZHj6m+5P0PqgvuqS4Qx8N6+Y0GiRfA
-	 RibAccbMz6AH5Hoo8pJkK+C2Gz8VFTa+VMj06G8pfY5U/ZGiCnPNf7S2Esvb/n9KDS
-	 2MhRChXgQ8O8ZPXQGphtd7OnjEx4qmJlzjP0viBg=
+	s=default; t=1594226155;
+	bh=IOkBko9bEusiZbj2ms5mQ1HozSObRLi+MxrhF2nGRBg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WRdIJ+RL58jMEvwvMZboc2SrhybNqrdToYw8lPMi/v9xdJSwtcaOTAwxjMV8f81ff
+	 O+uAzsAHjOOAVQD9WuET/vz3NzavPrajjB4hpGHsdQwY0FQUjvUpxdKXbYMn6ASvf3
+	 Z0uIruxJa+kTM7Akk1z5GR4j3XseSj7Dgr/6KlME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF1F5F802BC;
-	Wed,  8 Jul 2020 18:18:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6295BF80150;
+	Wed,  8 Jul 2020 18:35:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 298DCF802BD; Wed,  8 Jul 2020 18:18:11 +0200 (CEST)
-Received: from mail.siol.net (mailoutvs16.siol.net [185.57.226.207])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BD97CF8015A; Wed,  8 Jul 2020 18:34:58 +0200 (CEST)
+Received: from esa1.microchip.iphmx.com (esa1.microchip.iphmx.com
+ [68.232.147.91])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FADFF802A9
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:17:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FADFF802A9
-Received: from localhost (localhost [127.0.0.1])
- by mail.siol.net (Postfix) with ESMTP id 4A96C524C57;
- Wed,  8 Jul 2020 18:17:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
- by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new,
- port 10032)
- with ESMTP id oLEpCQVAM4I0; Wed,  8 Jul 2020 18:17:57 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
- by mail.siol.net (Postfix) with ESMTPS id D452E524C76;
- Wed,  8 Jul 2020 18:17:57 +0200 (CEST)
-Received: from jernej-laptop.localnet (cpe-194-152-20-232.static.triera.net
- [194.152.20.232]) (Authenticated sender: jernej.skrabec@siol.net)
- by mail.siol.net (Postfix) with ESMTPA id 47E03524BD7;
- Wed,  8 Jul 2020 18:17:57 +0200 (CEST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To: =?ISO-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
- Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH 08/16] arm64: dts: allwinner: h6: Add HDMI audio node
-Date: Wed, 08 Jul 2020 18:17:57 +0200
-Message-ID: <4073007.RJdR9ZcIkj@jernej-laptop>
-In-Reply-To: <20200706052937.ygjjllrsj7rvynkq@gilmour.lan>
-References: <20200704113902.336911-1-peron.clem@gmail.com>
- <20200704113902.336911-9-peron.clem@gmail.com>
- <20200706052937.ygjjllrsj7rvynkq@gilmour.lan>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C40A3F8011F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:34:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C40A3F8011F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
+ header.b="uFFK/x6k"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1594226092; x=1625762092;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=IOkBko9bEusiZbj2ms5mQ1HozSObRLi+MxrhF2nGRBg=;
+ b=uFFK/x6kXC2uoaXBvAsyccTx88oUICVmRodm2tZas8BXkiaRP9kvnZbb
+ Fihs6CKIRu67kW1d6GmcoJHVYRa1g0ER5cZvmBj83FNSvZIkqWbdxItJm
+ fofNoGSfmMDS3szgPqMiakRpcQgTVnv9ljKoLMGBMxGKBv+aES7AnBnxm
+ TCYbsJs2Y/LuUnoz+q2sSHQX3eVOaFBMyi6pCh95M0q0jSwSm1ZyIpVs7
+ bjTrXVJ0PBU3O8EC4Akiy4tju+9ffZdCPnsktPQdAUTc43ngQlnp1YFOX
+ r6Ps0pbdHDPL+Vu+XwevLo7ZyJHJD09gt4smudsK8nl/4rFLmYNcpdYB4 A==;
+IronPort-SDR: UEHAwMl2hrnt6ch3EOpxmElR1T/ekFyjvA6x7veD73swmCtheR1s/VBVi34DvqoMMYAn2OPkZS
+ IJ1zrIvjDzlba2l4CcjNdpeHI06ftOGBr0HT8PXJCqf0GSrjU3hbrT55h7YvD6tNSTK7DLNR6y
+ Af4kRbI6s1iMD2b8tqUiaj9jUSJtVDptfliRzzD1OaxdOpV+trq4Pn2VYljTexTf5pUxIlE1fV
+ wlmcX82FhJld7IkpbC3GGivUevzpGfnfBKgG+vQzsiCdUCJatj77BIUQiZSNbL+eLGJjyHhJVL
+ d8g=
+X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; d="scan'208";a="86683084"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 08 Jul 2020 09:34:31 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 8 Jul 2020 09:34:04 -0700
+Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 8 Jul 2020 09:34:14 -0700
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To: <alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ASoC: atmel-pdmic: remove codec component
+Date: Wed, 8 Jul 2020 19:33:59 +0300
+Message-ID: <20200708163359.2698696-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, linux-sunxi@googlegroups.com,
- Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>,
- Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Cc: alexandre.belloni@bootlin.com, lgirdwood@gmail.com,
+ nicolas.ferre@microchip.com, tiwai@suse.com, ludovic.desroches@microchip.com,
+ broonie@kernel.org, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,77 +106,198 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi!
+The CPU and the codec both are represented now as components, so for
+PDMIC we are registering two componenets with the same name. Since
+there is no actual codec, we will merge the codec component into the
+CPU one and use a dummy codec instead, for the DAI link.
+As a bonus, debugfs will no longer report an error when will try to
+create entries for both componenets with the same name.
 
-Dne ponedeljek, 06. julij 2020 ob 07:29:37 CEST je Maxime Ripard napisal(a):
-> Hi,
->=20
-> On Sat, Jul 04, 2020 at 01:38:54PM +0200, Cl=E9ment P=E9ron wrote:
-> > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> >=20
-> > Add a simple-soundcard to link audio between HDMI and I2S.
-> >=20
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
-> > ---
-> >=20
-> >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi index
-> > 78b1361dfbb9..ae169d07b939 100644
-> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > @@ -67,6 +67,25 @@ de: display-engine {
-> >=20
-> >  		status =3D "disabled";
-> >  =09
-> >  	};
-> >=20
-> > +	hdmi_sound: hdmi-sound {
-> > +		compatible =3D "simple-audio-card";
-> > +		simple-audio-card,format =3D "i2s";
-> > +		simple-audio-card,name =3D "sun50i-h6-hdmi";
-> > +		simple-audio-card,mclk-fs =3D <128>;
-> > +		simple-audio-card,frame-inversion;
->=20
-> Have you figured that one out?
->=20
-> > +		status =3D "disabled";
-> > +
-> > +		simple-audio-card,codec {
-> > +			sound-dai =3D <&hdmi>;
-> > +		};
-> > +
-> > +		simple-audio-card,cpu {
-> > +			sound-dai =3D <&i2s1>;
-> > +			dai-tdm-slot-num =3D <2>;
-> > +			dai-tdm-slot-width =3D <32>;
->=20
-> I'm not sure why you need to use the TDM stuff here. IIRC the HDMI
-> controller can output on up to 6 channels, so how would that work out?
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+ sound/soc/atmel/atmel-pdmic.c | 110 +++++++++++++---------------------
+ 1 file changed, 41 insertions(+), 69 deletions(-)
 
-dai-tdm-slot-width is needed to override automatic slot width selection. It=
-=20
-should always be 32 for HDMI, no matter what is actual physical sample widt=
-h.=20
-In this case this property is abused to set width also for I2S mode of=20
-operation. IMO there is no sense to duplicate code because I2S variant woul=
-d=20
-work exactly the same, except name would be different.
-
-I'm not sure about dai-tdm-slot-num. Marcus, can you explain the need for t=
-his=20
-property?
-
-Would it be better to implement separate link driver instead of using simpl=
-e-
-card to hide all this properties into the code?
-
-Best regards,
-Jernej
-
-
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 5245826cd99d..c2b639928c69 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -147,32 +147,26 @@ static int atmel_pdmic_cpu_dai_prepare(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_component *component = cpu_dai->component;
+ 	u32 val;
++	int ret;
+ 
+ 	/* Clean the PDMIC Converted Data Register */
+-	return regmap_read(dd->regmap, PDMIC_CDR, &val);
+-}
+-
+-static const struct snd_soc_dai_ops atmel_pdmic_cpu_dai_ops = {
+-	.startup	= atmel_pdmic_cpu_dai_startup,
+-	.shutdown	= atmel_pdmic_cpu_dai_shutdown,
+-	.prepare	= atmel_pdmic_cpu_dai_prepare,
+-};
++	ret = regmap_read(dd->regmap, PDMIC_CDR, &val);
++	if (ret < 0)
++		return 0;
+ 
+-#define ATMEL_PDMIC_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
++	ret = snd_soc_component_update_bits(component, PDMIC_CR,
++					    PDMIC_CR_ENPDM_MASK,
++					    PDMIC_CR_ENPDM_DIS <<
++					    PDMIC_CR_ENPDM_SHIFT);
++	if (ret < 0)
++		return ret;
+ 
+-static struct snd_soc_dai_driver atmel_pdmic_cpu_dai = {
+-	.capture = {
+-		.channels_min	= 1,
+-		.channels_max	= 1,
+-		.rates		= SNDRV_PCM_RATE_KNOT,
+-		.formats	= ATMEL_PDMIC_FORMATS,},
+-	.ops = &atmel_pdmic_cpu_dai_ops,
+-};
++	return 0;
++}
+ 
+-static const struct snd_soc_component_driver atmel_pdmic_cpu_dai_component = {
+-	.name = "atmel-pdmic",
+-};
++#define ATMEL_PDMIC_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ /* platform */
+ #define ATMEL_PDMIC_MAX_BUF_SIZE  (64 * 1024)
+@@ -355,27 +349,16 @@ static int atmel_pdmic_component_probe(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_component_driver soc_component_dev_pdmic = {
+-	.probe			= atmel_pdmic_component_probe,
+-	.controls		= atmel_pdmic_snd_controls,
+-	.num_controls		= ARRAY_SIZE(atmel_pdmic_snd_controls),
+-	.idle_bias_on		= 1,
+-	.use_pmdown_time	= 1,
+-	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+-};
+-
+-/* codec dai component */
+ #define PDMIC_MR_PRESCAL_MAX_VAL 127
+ 
+ static int
+-atmel_pdmic_codec_dai_hw_params(struct snd_pcm_substream *substream,
+-			    struct snd_pcm_hw_params *params,
+-			    struct snd_soc_dai *codec_dai)
++atmel_pdmic_cpu_dai_hw_params(struct snd_pcm_substream *substream,
++			      struct snd_pcm_hw_params *params,
++			      struct snd_soc_dai *cpu_dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
+-	struct snd_soc_component *component = codec_dai->component;
++	struct snd_soc_component *component = cpu_dai->component;
+ 	unsigned int rate_min = substream->runtime->hw.rate_min;
+ 	unsigned int rate_max = substream->runtime->hw.rate_max;
+ 	int fs = params_rate(params);
+@@ -445,21 +428,10 @@ atmel_pdmic_codec_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int atmel_pdmic_codec_dai_prepare(struct snd_pcm_substream *substream,
+-					struct snd_soc_dai *codec_dai)
+-{
+-	struct snd_soc_component *component = codec_dai->component;
+-
+-	snd_soc_component_update_bits(component, PDMIC_CR, PDMIC_CR_ENPDM_MASK,
+-			    PDMIC_CR_ENPDM_DIS << PDMIC_CR_ENPDM_SHIFT);
+-
+-	return 0;
+-}
+-
+-static int atmel_pdmic_codec_dai_trigger(struct snd_pcm_substream *substream,
+-					int cmd, struct snd_soc_dai *codec_dai)
++static int atmel_pdmic_cpu_dai_trigger(struct snd_pcm_substream *substream,
++				       int cmd, struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_component *component = codec_dai->component;
++	struct snd_soc_component *component = cpu_dai->component;
+ 	u32 val;
+ 
+ 	switch (cmd) {
+@@ -482,16 +454,16 @@ static int atmel_pdmic_codec_dai_trigger(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops atmel_pdmic_codec_dai_ops = {
+-	.hw_params	= atmel_pdmic_codec_dai_hw_params,
+-	.prepare	= atmel_pdmic_codec_dai_prepare,
+-	.trigger	= atmel_pdmic_codec_dai_trigger,
++static const struct snd_soc_dai_ops atmel_pdmic_cpu_dai_ops = {
++	.startup	= atmel_pdmic_cpu_dai_startup,
++	.shutdown	= atmel_pdmic_cpu_dai_shutdown,
++	.prepare	= atmel_pdmic_cpu_dai_prepare,
++	.hw_params	= atmel_pdmic_cpu_dai_hw_params,
++	.trigger	= atmel_pdmic_cpu_dai_trigger,
+ };
+ 
+-#define ATMEL_PDMIC_CODEC_DAI_NAME  "atmel-pdmic-hifi"
+ 
+-static struct snd_soc_dai_driver atmel_pdmic_codec_dai = {
+-	.name = ATMEL_PDMIC_CODEC_DAI_NAME,
++static struct snd_soc_dai_driver atmel_pdmic_cpu_dai = {
+ 	.capture = {
+ 		.stream_name	= "Capture",
+ 		.channels_min	= 1,
+@@ -499,7 +471,17 @@ static struct snd_soc_dai_driver atmel_pdmic_codec_dai = {
+ 		.rates		= SNDRV_PCM_RATE_KNOT,
+ 		.formats	= ATMEL_PDMIC_FORMATS,
+ 	},
+-	.ops = &atmel_pdmic_codec_dai_ops,
++	.ops = &atmel_pdmic_cpu_dai_ops,
++};
++
++static const struct snd_soc_component_driver atmel_pdmic_cpu_dai_component = {
++	.name			= "atmel-pdmic",
++	.probe			= atmel_pdmic_component_probe,
++	.controls		= atmel_pdmic_snd_controls,
++	.num_controls		= ARRAY_SIZE(atmel_pdmic_snd_controls),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
+ };
+ 
+ /* ASoC sound card */
+@@ -528,9 +510,9 @@ static int atmel_pdmic_asoc_card_init(struct device *dev,
+ 
+ 	dai_link->name			= "PDMIC";
+ 	dai_link->stream_name		= "PDMIC PCM";
+-	dai_link->codecs->dai_name	= ATMEL_PDMIC_CODEC_DAI_NAME;
++	dai_link->codecs->dai_name	= "snd-soc-dummy-dai";
+ 	dai_link->cpus->dai_name	= dev_name(dev);
+-	dai_link->codecs->name		= dev_name(dev);
++	dai_link->codecs->name		= "snd-soc-dummy";
+ 	dai_link->platforms->name	= dev_name(dev);
+ 
+ 	card->dai_link	= dai_link;
+@@ -684,16 +666,6 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	/* register codec and codec dai */
+-	atmel_pdmic_codec_dai.capture.rate_min = rate_min;
+-	atmel_pdmic_codec_dai.capture.rate_max = rate_max;
+-	ret = devm_snd_soc_register_component(dev, &soc_component_dev_pdmic,
+-				     &atmel_pdmic_codec_dai, 1);
+-	if (ret) {
+-		dev_err(dev, "could not register component: %d\n", ret);
+-		return ret;
+-	}
+-
+ 	/* register sound card */
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+ 	if (!card) {
+-- 
+2.25.1
 
