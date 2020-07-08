@@ -6,79 +6,80 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF61DC433E1
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 13:39:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 871B4C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 13:43:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2B712065F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 13:39:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0EC8C206E9
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 13:43:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SD8zwFcE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bTtsE3k3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2B712065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BEfLAJFn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mKU2MkhG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EC8C206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78F971675;
-	Wed,  8 Jul 2020 15:38:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78F971675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CDCA167C;
+	Wed,  8 Jul 2020 15:42:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CDCA167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594215580;
-	bh=EnGkxRR4AgFqq58IoGOEvs9Rex9AhBSXggTiuoTyC+M=;
+	s=default; t=1594215786;
+	bh=R9qdQMVF6jYFLBjnOTlIxsV4VC7X7oeEN/boZFtPUto=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SD8zwFcEsA5ZF9IyJnHa0kMeCD1j5lRlCVLfpHoeysmyYNyG7DY8Q1+qMios/koJM
-	 9xhC/8bgBjChs/B3/nBAf5zSpX868eHOx5iUwjV3tbysHXbCd77bGAk9C3bcPP79KG
-	 cbNDNeoiOuao/56QA/UekTYKcd7FdOXY/FJaFiJs=
+	b=BEfLAJFnctmABYD91rYZuuf1eJoMsXa3R4wtgfBqDnLriJmHiFPDtBIQclaZLzjeH
+	 SfDHvHOtkmB5rCyhH0Cvczg65W+H7TwkSkgF+NTQnzz2Qkana/j5fY4S+wrZMuOyZO
+	 P73LO4Bg4EYvjALiff8vnVi44knwJbSW6Jy5cvJ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C606F8011F;
-	Wed,  8 Jul 2020 15:38:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B672AF80150;
+	Wed,  8 Jul 2020 15:42:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48B09F80150; Wed,  8 Jul 2020 15:38:47 +0200 (CEST)
+ id 1FA2EF80150; Wed,  8 Jul 2020 15:42:12 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B95CCF800AE
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 15:38:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B95CCF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96353F800AE
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 15:42:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96353F800AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bTtsE3k3"
+ header.b="mKU2MkhG"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C62EC2065F;
- Wed,  8 Jul 2020 13:38:38 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 94973206E9;
+ Wed,  8 Jul 2020 13:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594215519;
- bh=EnGkxRR4AgFqq58IoGOEvs9Rex9AhBSXggTiuoTyC+M=;
+ s=default; t=1594215728;
+ bh=R9qdQMVF6jYFLBjnOTlIxsV4VC7X7oeEN/boZFtPUto=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=bTtsE3k3hXOG7c9nM5ouWZrhZSVontobQWZn6O007CNjsr7lPxErCAwF/VAsq57Ib
- M3iWgchqbe2wD36ZhL9/HttgqAoR5Q5Kea7WehpMIkkoBlhJnevlFLkoR5Dcs4kMQb
- j+3CSJ9Gic+UmHG+Dz8XAVJoKF31F0mQu7DFVyBg=
-Date: Wed, 8 Jul 2020 14:38:34 +0100
+ b=mKU2MkhG1wQA3vAM/QfKJ90toW+lIOZyRe50fYYgLFpYzLij/HvclaJpRakIrEbli
+ WnAKod1055cy4NWEKl26l1rWeaqIcpM7KBa1uYeSgeDISClOZq4Ows/4SxIBhtVvUJ
+ bzIv95p1MbI7Uqvxc9yn652tVyGaKK4v5Z34fYR0=
+Date: Wed, 8 Jul 2020 14:42:02 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 00/10] ASoC: =?utf-8?Q?Clean?=
- =?utf-8?Q?-up_W=3D1_build_warnings=E2=80=8B?= - part2
-Message-ID: <20200708133833.GQ4655@sirena.org.uk>
-References: <20200707191615.98296-1-pierre-louis.bossart@linux.intel.com>
- <20200708063900.GJ3500@dell>
- <93b7fb31-7a00-2c68-5096-6a3c81df881a@linux.intel.com>
- <20200708130606.GW3500@dell>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 10/11] ASoC: qdsp6-dai: add gapless support
+Message-ID: <20200708134202.GR4655@sirena.org.uk>
+References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
+ <20200707163641.17113-11-srinivas.kandagatla@linaro.org>
+ <62af11d3-db26-a31b-00c8-9d78b11862cc@linux.intel.com>
+ <04a7f696-e23d-5563-7cc3-aedfaf2c7636@linaro.org>
+ <cf9b2d33-9b63-f3d2-2e51-a88c528dad53@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="m46qSNjkc66Ye11q"
+ protocol="application/pgp-signature"; boundary="EkxpYdHiqGHPYbUt"
 Content-Disposition: inline
-In-Reply-To: <20200708130606.GW3500@dell>
+In-Reply-To: <cf9b2d33-9b63-f3d2-2e51-a88c528dad53@linux.intel.com>
 X-Cookie: Oh Dad!  We're ALL Devo!
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+ lgirdwood@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,41 +96,34 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---m46qSNjkc66Ye11q
+--EkxpYdHiqGHPYbUt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 08, 2020 at 02:06:06PM +0100, Lee Jones wrote:
-> On Wed, 08 Jul 2020, Pierre-Louis Bossart wrote:
+On Wed, Jul 08, 2020 at 08:32:02AM -0500, Pierre-Louis Bossart wrote:
 
-> > > >    ASoC: sunxi: sun4i-i2s: fix kernel-doc
-> > > >    ASoC: sunxi: sun4i-spdif: fix kernel-doc
-> > > >    ASoC: codecs: rt5631: fix kernel-doc
+> To avoid confusion I believe the capabilities would need to be extended so
+> that applications know that gapless playback is supported across unrelated
+> profiles/formats. The point is that you don't want a traditional
+> implementation to use a capability that isn't supported in hardware or will
+> lead to audio issues.
 
-> > which tools? seems pretty bad to me to rely on string uniqueness, isn't
-> > uniqueness defined by SHA1s?
+We'd also need error handling in case someone ignores the capability
+checks.
 
-> SHAs don't work across rebases/cherry-picks.
-
-> Sometimes subject lines are the most reliable way to 'match'.
-
-Note that all these patches have unique subjects due to the prefixes
-saying what they're modifying, this is a common pattern for these sorts
-of repetitive serieses doing broad cleanups.
-
---m46qSNjkc66Ye11q
+--EkxpYdHiqGHPYbUt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8FzFkACgkQJNaLcl1U
-h9DL7wf8CVfYYrlsBt8Is8/0H1obl00AQMBjjPscyiHEj59y1VO+V6bW0zjjzop/
-U2vd4fwgkEPOtFDUDinwcJrDxu4VPmslUN4KMRJLlzEjvfYzVZNaPSxGALGUBaon
-13YNLlbaeJjLcdLwrtID3uGHRORPL1K1WNqiK9GJ1JMCQPYHQB/FyY5qXb6lI8co
-I7cWwEhx9VtEjwho6fxWNIut300bGUfn1igateAD6AGrVFsbBr3v9Qq1cA92J92t
-8YVLcYxWncpIUGZSEcRwNOVFpeK123AgN4ByUPxlKlCysnFsRVy5TzKLf2W/UGln
-XV+XxEbq74tL8nxWIzB44Srtv8dZUA==
-=M77U
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8FzSkACgkQJNaLcl1U
+h9DCkgf+JEC2hdc751A8OHEKoIY50HxlCgLea4x5JZtPeQUrtnridmPh+C1aFQd/
+31k2PwzAM+xJ2nyOK0LYdlfF4f3sTA1r0ltaIr4KCpUQQ3glkkelABrHrblvUea0
+C1cFzPBU4CzQPKO7b3YQ1ORjVt/PxScuK1kxUjITFeaUSGn5bF8+VQbibW/14aO/
+TF1M6LNytypWFB86U7vO4OyhtrKv/s/QQ8wUD6mN4I1Q0ymL/0ekQsjP9UuAEJwH
+Mq3HN9IFb5cQknIZAYpthwk4xeN/Rv6QphZdjtO6aPbpMPpbG/3kFmTP9/QxnPs9
+3CSrUqp9+j06SZ4A65PFB3lf4/+olg==
+=Xb5s
 -----END PGP SIGNATURE-----
 
---m46qSNjkc66Ye11q--
+--EkxpYdHiqGHPYbUt--
