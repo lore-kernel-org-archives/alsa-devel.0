@@ -2,121 +2,104 @@ Return-Path: <SRS0=LwrQ=AT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E370C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 08:13:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E89C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 09:13:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0ECB72078A
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 08:13:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 469DF206E2
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 09:13:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EnVXqtbB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="JGrN7IAR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MqguM69H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ECB72078A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ICA9DDGc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="TO0IWmej"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 469DF206E2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DA7C1678;
-	Wed,  8 Jul 2020 10:12:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DA7C1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46A5D1614;
+	Wed,  8 Jul 2020 11:12:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46A5D1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594196029;
-	bh=Gqh11UiG2+F/LHFxJpAOq5p7jpOlo0S6qUWZwnjh2/w=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1594199591;
+	bh=GcKC1lWnDh4KC3ruzVAqCPlYFlTP/4F42dtF8lKhQ50=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EnVXqtbBNZR2QpRYfK7izjTIik2QCbHzmA93ibkEXq+aiMJz2XGDJFd56LcYA5f1d
-	 fyXKKrjZZE+HnKThvc3/rD+BPtHxZhqqRjRrGVlC1kVsZEPy6/nqJtBOwxYLblcQj9
-	 QFBPvM9aNsY8SKevT6AiqMjwHmZa7i02eq9UD9ls=
+	b=ICA9DDGcUU9f2RnXuAbuLBr4LtIZXBxMNklu2UsecEQsnse4bcxsohkitFDAZc6EY
+	 KexwjrjSLp6Ll7cHi48yUlb8INy9427TgHlhO//rujt8vmY0X2veJ8NYI+xr0JDaZi
+	 wUklFY/seyrV1XiWvCeDR1XZJ9aXSKAduRZ9STyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4A2EF8015D;
-	Wed,  8 Jul 2020 10:12:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6A21F8015A;
+	Wed,  8 Jul 2020 11:12:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13E7BF80161; Wed,  8 Jul 2020 10:12:18 +0200 (CEST)
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
- [66.111.4.221])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 64DFAF8015A; Wed,  8 Jul 2020 11:12:18 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2CDEF8015C
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 10:12:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2CDEF8015C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C218F80115
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 11:12:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C218F80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="JGrN7IAR"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="MqguM69H"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailnew.nyi.internal (Postfix) with ESMTP id 8418F5801C9;
- Wed,  8 Jul 2020 04:12:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Wed, 08 Jul 2020 04:12:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=G
- qh11UiG2+F/LHFxJpAOq5p7jpOlo0S6qUWZwnjh2/w=; b=JGrN7IARgfhBh+TYe
- spWxXGNdUcQDnVFdKyixl0fYvvH6xJE2djLhIpQoI3PaOR96xHYEKB9y7LWGuKQZ
- Wm7zqMOzf1+BMhTlzcE8XzeqGCEi+bK2b5nvOAfZL2xf+XXOv/fjw9c/pEKnzU87
- Op3zoBhLVrjR/2z3QbtXmmTP0AarXrW6b6w+MtwK4136yhs5Fme0addu/Z1mrQHT
- n0aCEWQxQnTxSwt7tQYfIooNx7qUGcB6BHJlapo40cTwRBEg2gIQK0mkzg+NSnoe
- lREucFh5AqjnYTuwk+vvfKGSt2Yz7TAiCOwGbdeuIKvzCiQVFduGlitQK1NABuv2
- o3sPQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:content-type
- :date:from:in-reply-to:message-id:mime-version:references
- :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm3; bh=Gqh11UiG2+F/LHFxJpAOq5p7jpOlo0S6qUWZwnjh2
- /w=; b=MqguM69HgwVhZ2LfdsU7p7gkgcYkwfx88zlEIjsnKU1qg+cYe812la7Dx
- 9twClAB2Busn1YMK0XKL4KD0JUtkKln/PI6eKSdQQ5UI5CjlTqbaPDFG7Qn7pk8E
- nNBz3m03oYpmTN1jnGjnU/MvuwxHUgqRw0q0w3mmTyNz843v4eLp2yXnzyGxtyQK
- 9mgu9SgHm/rNFPHnntSSVfI3iCo6cKnEzLdMx61KSp/77PjPBbr6657WZfLx0fqS
- bMuu/78tX+ccfUhyPz0CToWvlvmisfj6Rab/q2KHvOWcDU1n4iJYbmHdODifc9fQ
- cEbTIxzGqobWsI9uIzxCQ00CWiDpg==
-X-ME-Sender: <xms:1H8FX_XqiUxkF3w1npvl2KiPBXj_eaKnhwZ_mjecBfLsUOe3224xZg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudejgddtudcutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
- htvghrnhepgfejtedtjefggfffvdetuedthedtheegheeuteekfeeghfdtteejkeeludeg
- vddunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvdenuc
- frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:1H8FX3lEo9eAqzU90yHPSuQe4UhMoT9p6vjKrmqEilWV40AMB0dPiw>
- <xmx:1H8FX7Y19YTvZboPsu2qS3uYAV8aeE8lKAIIuU422hAJDAIOBgcURg>
- <xmx:1H8FX6XOVIfmPPzegoT0O_H9vMmmY1OaseE7zQIM6Y6nffXklZAgCw>
- <xmx:1H8FX_fXVuG5vBqH6T10VjYO0mtGtSNT19lkLwDCkTl7oHQPWmmi4Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
- [90.89.68.76])
- by mail.messagingengine.com (Postfix) with ESMTPA id B7227328005D;
- Wed,  8 Jul 2020 04:12:03 -0400 (EDT)
-Date: Wed, 8 Jul 2020 10:12:02 +0200
-From: Maxime Ripard <maxime@cerno.tech>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 03/10] ASoC: sunxi: sun4i-spdif: fix kernel-doc
-Message-ID: <20200708081202.2dlhr7unkdqma2gg@gilmour.lan>
+ dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="TO0IWmej"
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 06898mX7031611; Wed, 8 Jul 2020 11:12:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=iawSYaeSKNtVm44sgn49UhCmyo15meIegOqh6x74E2M=;
+ b=TO0IWmejSbgi7SHJXFFD9ycY1Yz2bJiFrKk55e7vIsjjYRhwXn01v/NE2Fg6D1XxVL0c
+ cZcHuW4kzDK+uLzkp3S3d7vB9C3sL2wEHr9JnbiBsBboeaLC3kRpPNGJ4dpZOuY5ulQ5
+ JG5Oiz+KAFYspXbJXwZe5SEaDp41aEJJY+GjCoWe/XCM7yWQkUNZDrzdZiWMl0FeRAI0
+ RghVB+2dhAf4tPKbOpJakxQGR7BmLt4s33BDj7vvbl9w0krkboSbqKP+dWD6cj5dVXNF
+ AjAws0bd/3lFDpzkFW2WK9DMR7X/8ts7aDSyyZlC/LF8iXVzRHycrestry/rhxC/hUXb BQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 322f80xfwp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 08 Jul 2020 11:12:06 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 470B910002A;
+ Wed,  8 Jul 2020 11:12:04 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0A8062222A6;
+ Wed,  8 Jul 2020 11:12:00 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.45) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
+ 2020 11:11:58 +0200
+Subject: Re: [PATCH v3 06/10] ASoC: sti: uniperif: fix 'defined by not used'
+ warning
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 References: <20200707191615.98296-1-pierre-louis.bossart@linux.intel.com>
- <20200707191615.98296-4-pierre-louis.bossart@linux.intel.com>
+ <20200707191615.98296-7-pierre-louis.bossart@linux.intel.com>
+From: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <a376393a-6a17-2836-204b-0d4ff60729c0@st.com>
+Date: Wed, 8 Jul 2020 11:11:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200707191615.98296-4-pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
- open list <linux-kernel@vger.kernel.org>,
- Masahiro Yamada <masahiroy@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, Chen-Yu Tsai <wens@csie.org>,
- broonie@kernel.org, Lee Jones <lee.jones@linaro.org>,
- "moderated list:ARM/Allwinner sunXi SoC support"
- <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20200707191615.98296-7-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235, 18.0.687
+ definitions=2020-07-08_04:2020-07-08,
+ 2020-07-08 signatures=0
+Cc: "tiwai@suse.de" <tiwai@suse.de>, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -132,12 +115,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jul 07, 2020 at 02:16:08PM -0500, Pierre-Louis Bossart wrote:
-> Fix W=3D1 warning - typo in field description
->=20
+Hi Pierre-Louis,
+
+On 7/7/20 9:16 PM, Pierre-Louis Bossart wrote:
+> Fix W=1 warning. The table uni_tdm_hw is declared in a header included
+> by multiple C file. This isn't really a good practice but for now
+> using __maybe_unused makes the following warning go away.
+> 
+> sound/soc/sti/sti_uniperif.c:12:
+> sound/soc/sti/uniperif.h:1351:38: warning: ‘uni_tdm_hw’ defined but
+> not used [-Wunused-const-variable=]
+>  1351 | static const struct snd_pcm_hardware uni_tdm_hw = {
+>       |                                      ^~~~~~~~~~
+> 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Thanks for the patch, 
+Seems that the same patch has already been proposed by Lee: 
+https://www.spinics.net/lists/arm-kernel/msg820327.html
 
-Thanks!
-Maxime
+Regards,
+Arnaud
+
+> ---
+>  sound/soc/sti/uniperif.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+> index 2dc2da5d458b..a16adeb7c1e9 100644
+> --- a/sound/soc/sti/uniperif.h
+> +++ b/sound/soc/sti/uniperif.h
+> @@ -1348,7 +1348,7 @@ struct sti_uniperiph_data {
+>  	struct sti_uniperiph_dai dai_data;
+>  };
+>  
+> -static const struct snd_pcm_hardware uni_tdm_hw = {
+> +static __maybe_unused const struct snd_pcm_hardware uni_tdm_hw = {
+>  	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>  		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
+>  		SNDRV_PCM_INFO_MMAP_VALID,
+> 
