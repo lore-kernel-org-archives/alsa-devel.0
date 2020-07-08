@@ -6,69 +6,69 @@ X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35703C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:01:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67999C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:01:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B399A2078D
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:01:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4BDC206F6
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:01:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pJmW/ixv";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uWCzLywa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B399A2078D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T0DTyVS1";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QNrkBwzC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4BDC206F6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 170161679;
-	Wed,  8 Jul 2020 19:00:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 170161679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C84D15E2;
+	Wed,  8 Jul 2020 19:01:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C84D15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594227673;
-	bh=WJGWw2GOGxEKG1Lf2nq70geUMNdU1XULEN+/0s34JEc=;
+	s=default; t=1594227713;
+	bh=HTIwv7d4sVCmjrv6qbqW5PLKQvA6dQ/cgwBOc/Sloco=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pJmW/ixvLgLXorjoVl/sE/vT7ewBzu6i4aKHDGWhI/he1sQV28sJhxYxMprROhU4Y
-	 fktdtR1CXedXHBt8RHRpx2HyZKWHbtC+NLSdCBVP3XvfGELXD0TZZd8nkETJ9qL5t2
-	 CYpmjHbPuUgzOZb/Qlju41vkZM0XaMRRuabkTc00=
+	b=T0DTyVS1QvibOdKqnhlppgMdatCMKwOplkZEMCErp6pxQj00Ef2n+fXuHwd7CJ2AE
+	 aldY4oDZ4SJNDcVC840Kl25j8CN1oRPYeefTe8twxLGzDsfdOvHo9IVaCpzo6ZmiwC
+	 s9StNNTo2MXlRgNqvgrlQzq/q4yOA2UeSwSlBytc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14142F80269;
-	Wed,  8 Jul 2020 19:00:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BAF1F802BD;
+	Wed,  8 Jul 2020 19:00:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09CDFF80269; Wed,  8 Jul 2020 19:00:00 +0200 (CEST)
+ id E3F81F8015A; Wed,  8 Jul 2020 19:00:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A727BF80150
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:59:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A727BF80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99B1BF8015A
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 18:59:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99B1BF8015A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uWCzLywa"
+ header.b="QNrkBwzC"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AAEC7206F6;
- Wed,  8 Jul 2020 16:59:52 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C3E65206F6;
+ Wed,  8 Jul 2020 16:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594227593;
- bh=WJGWw2GOGxEKG1Lf2nq70geUMNdU1XULEN+/0s34JEc=;
+ s=default; t=1594227598;
+ bh=HTIwv7d4sVCmjrv6qbqW5PLKQvA6dQ/cgwBOc/Sloco=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=uWCzLywai1Y1fFKLuQ62Ss/72sGv5tZGhq0IByKjprMJs6lMCrbwPm2CZ+WN0h7Ld
- Z9ZVSfSlKBBKdVQuzMISalSV4wHS7nHBrItIx95xEZn0uXIbYyFnnY7sRMYzlEiv+j
- OhJafdLPaBppksVuee3jH8RP4kodRdrYszHoKGUM=
-Date: Wed, 08 Jul 2020 17:59:48 +0100
+ b=QNrkBwzColl5yjG9g6JySNrWGoYTCm1e5wVmAIZ2uu9UVyXqr6WmO1w1dUFsuOST3
+ l3tYzg5Fat/RcwrEIA6UWMgzc8ckhlGo2wiz1jrsfnkQRtlcEIejaXDW7aVJ67E3Fe
+ PO9GRAw2HP8M9VF9IWg8N50k3utOXtjhFNn/n9ZU=
+Date: Wed, 08 Jul 2020 17:59:53 +0100
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200707205740.114927-1-pierre-louis.bossart@linux.intel.com>
-References: <20200707205740.114927-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/6] ASoC: codecs: add MAX98373 Soundwire driver
-Message-Id: <159422758800.28431.3605238994646318402.b4-ty@kernel.org>
-Cc: tiwai@suse.de
+In-Reply-To: <20200707210439.115300-1-pierre-louis.bossart@linux.intel.com>
+References: <20200707210439.115300-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: more fixes for dpcm checks
+Message-Id: <159422758800.28431.15762815187255264463.b4-ty@kernel.org>
+Cc: tiwai@suse.de, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,14 +84,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 7 Jul 2020 15:57:34 -0500, Pierre-Louis Bossart wrote:
-> V2 with a number of cleanups:
-> split between I2C and SoundWire modes, as done for rt5682, and updated
-> Kconfigs.
-> removed useless initializations common to both modes
-> removed idle_bias on
-> fixed register classified as volatile in error
-> fixed SPDX comments
+On Tue, 7 Jul 2020 16:04:36 -0500, Pierre-Louis Bossart wrote:
+> This is hopefully the last set of fixes to avoid probe errors due to
+> stricter checks of DAI capabilities introduced late in the 5.8 cycle.
+> 
+> Daniel Baluta (1):
+>   ASoC: SOF: imx: add min/max channels for SAI/ESAI on i.MX8/i.MX8M
+> 
+> Pierre-Louis Bossart (2):
+>   ASoC: soc-dai: set dai_link dpcm_ flags with a helper
+>   ASoC: Intel: bdw-rt5677: fix non BE conversion
 > 
 > [...]
 
@@ -101,10 +103,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: codecs: max98373: Removed superfluous volume control from chip default
-      commit: a53bacc04d7e2b813ebe0ca4dae38716c00d7953
-[2/2] ASoc: codecs: max98373: remove Idle_bias_on to let codec suspend
-      commit: 0fd3935ef888b7231fde87eba3fdf613c4923b4a
+[1/3] ASoC: soc-dai: set dai_link dpcm_ flags with a helper
+      commit: 25612477d20b522a3203707ff23575b99f639fff
+[2/3] ASoC: Intel: bdw-rt5677: fix non BE conversion
+      commit: fffebe8a8339c7e56db4126653a3bc0c0c5592cf
+[3/3] ASoC: SOF: imx: add min/max channels for SAI/ESAI on i.MX8/i.MX8M
+      commit: 4e7f8cac1171ba369a9209a8d949732a4d3b939a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
