@@ -2,93 +2,81 @@ Return-Path: <SRS0=LwrQ=AT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F875C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 11:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B750C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 11:39:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE7F02078A
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 11:36:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0122E204EC
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 11:39:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gWmIPPc2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="sPcXnGBL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE7F02078A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cFV0Ddbc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMXSreCk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0122E204EC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30CC51654;
-	Wed,  8 Jul 2020 13:35:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30CC51654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E970166E;
+	Wed,  8 Jul 2020 13:38:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E970166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594208162;
-	bh=1wI6JP3WiOKZNxaIsUKQCJAgyajuKfiFdc9wQedxcz0=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
+	s=default; t=1594208370;
+	bh=ezQlaBGQZXQXwJAowe+NnHrBPYd0tIftkbIQDBk6yyQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gWmIPPc2gsZoCmb6CpAAMulyBFcrPoSoUSHq5pe/N+dqtWAO5dvmeNMNhO6YMbSnI
-	 OQmg0UTbMzwIFUWloMvYW/RRFhRPVYy31zaJ3kVjrKk8mHqtf0ciBamsXD91TCEE2F
-	 3YGRf0RWAP8mz9+vL/WG2Su9DpFaDm6bIpyjfjjg=
+	b=cFV0Ddbc8WjSJDow8r0gsfb6KDXuTzJjI4AXvBNbFr8m6YMLMEAIOWvS2E4hMABSM
+	 EpSpf+9JZXtKD25AlykVABjCq1TPlrQfUF+NE/FDbYS1sUf8LtVOWEzbD3X6T9Fp+f
+	 tuA7g6eB1alTJMYMfGTUKJR48EKjB0qqcNhMJQBY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB5D4F802BE;
-	Wed,  8 Jul 2020 13:33:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD14DF80150;
+	Wed,  8 Jul 2020 13:38:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1864AF800AE; Wed,  8 Jul 2020 13:33:04 +0200 (CEST)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
- [IPv6:2607:f8b0:4864:20::b49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DEEE4F8015A; Wed,  8 Jul 2020 13:38:38 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4F75F80150
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 13:32:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4F75F80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0E4BF80115
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 13:38:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0E4BF80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="sPcXnGBL"
-Received: by mail-yb1-xb49.google.com with SMTP id 124so18732330ybb.5
- for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2020 04:32:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=6FhChgNsjWl6gND82XH9wwnoBKtHa/ehVm4YKI17cOw=;
- b=sPcXnGBLHEBpPbBJvUpkHZegzNgRAmYuS35JMlanSO4OXGf1no4O8LwlkN10MsXmT0
- woWxbfr8kxWXB5jN/x+fgGwjBhbek/ClIz/A1sHpu15kcPjinWcITugsqapMsQSOeuOz
- EMnUbUyYZ8hVX/3BiQL/8MI2MokaU9tixu4/Amx9WmDVfXvNX/FYwmMqZw4VXzkQM36P
- +0cYobVv2Q6eVyjCyIelbjVWY//lVn53g5HiSeWtOXv1cdrUeYXlFH5VfVVBtscikjJ6
- zjLU/VDONk7IuyQ0nAJBLWXXIHwlEpmbFhGQrCm56JzmVsxu15aiO1k3G+fmS5Y7DpFf
- TatA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=6FhChgNsjWl6gND82XH9wwnoBKtHa/ehVm4YKI17cOw=;
- b=NmB7Bgg0hQKs9rsHiZ/+LOVDaLayo6gnRrRNFHoYmSog0QtJRLk0JZjv68Bv8ire3C
- OJi3z3fv6RShx5pNzr+dwkKCHofFzIGmqltROwB1ejOIgAwsfj9gDjy85BNfhhSKmgwU
- dqTd5JsUOfQ2SJdHSJJQOmp+ujgnv5cKClMWuGr1JtIHwosdBUqNd1HIothaYcgw0Aca
- E7iquS/gXLYLypI4toQiinWTBFlRcKMY6v7SuBmGxbW2V8q9aqLg6qIOuzvSyjLUqHuB
- BE7kz2w3FZ/4ZqWOM3bKQTKgDyzRJuTL8NKvFfTvR8e8+JciE7Q+ITe6jLzm8YkuT26H
- M+sw==
-X-Gm-Message-State: AOAM533455pJZbd6b4tU/8OXVBq3nL7C/rL6i5AJLGWM+HuRaWAO3ne4
- 7usLglhc0N9UL4SrsdsPAcJwKO9wIZyl
-X-Google-Smtp-Source: ABdhPJyjfU9P0otQHIiqz1zn8C0iSCfzci2MI/wGNecYetCRSI0gPiU2S0h0PyrgUg3b/oDtQ9c6KUCNTeiM
-X-Received: by 2002:a25:8008:: with SMTP id m8mr37507113ybk.104.1594207968592; 
- Wed, 08 Jul 2020 04:32:48 -0700 (PDT)
-Date: Wed,  8 Jul 2020 19:32:31 +0800
-In-Reply-To: <20200708113233.3994206-1-tzungbi@google.com>
-Message-Id: <20200708113233.3994206-2-tzungbi@google.com>
-Mime-Version: 1.0
-References: <20200708113233.3994206-1-tzungbi@google.com>
-X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-Subject: [PATCH 1/3] ASoC: mediatek: mt8183: sort header inclusions in
- alphabetical
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org, robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, tzungbi@google.com
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lMXSreCk"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 69610204EC;
+ Wed,  8 Jul 2020 11:38:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1594208313;
+ bh=ezQlaBGQZXQXwJAowe+NnHrBPYd0tIftkbIQDBk6yyQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lMXSreCkoAD7JE+93R08fy8LdOhm3cKfn6tSm/50v1dLKBSrz7mMNE+eIm74/dwih
+ czvTqZIupbzUMMVEilWTA4NKarwcCDNlVkACiN3inc0WDE6ZSt2rqiMOEABzE+b4JJ
+ EKwwERvOtEcjPtxWsCXK8gVKevNzKlOM4jhhw+h4=
+Date: Wed, 8 Jul 2020 12:38:28 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 1/6] ASoC: codecs: max98373: split I2C and common parts
+Message-ID: <20200708113828.GI4655@sirena.org.uk>
+References: <20200707205740.114927-1-pierre-louis.bossart@linux.intel.com>
+ <20200707205740.114927-2-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="0z5c7mBtSy1wdr4F"
+Content-Disposition: inline
+In-Reply-To: <20200707205740.114927-2-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Oh Dad!  We're ALL Devo!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Rander Wang <rander.wang@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,34 +92,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sorts header inclusions in alphabetical.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--0z5c7mBtSy1wdr4F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 1fca8df109b4..8cd53403a080 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -7,13 +7,13 @@
- // Author: Shunli Wang <shunli.wang@mediatek.com>
- 
- #include <linux/module.h>
-+#include <linux/pinctrl/consumer.h>
-+#include <sound/jack.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
--#include <sound/jack.h>
--#include <linux/pinctrl/consumer.h>
- 
--#include "mt8183-afe-common.h"
- #include "../../codecs/ts3a227e.h"
-+#include "mt8183-afe-common.h"
- 
- enum PINCTRL_PIN_STATE {
- 	PIN_STATE_DEFAULT = 0,
--- 
-2.27.0.383.g050319c2ae-goog
+On Tue, Jul 07, 2020 at 03:57:35PM -0500, Pierre-Louis Bossart wrote:
+> To prepare support for SoundWire, let's first split the I2C and common
+> parts. No new functionality, just indents and formatting to make
+> checkpatch happy.
 
+You've got a couple of fixes after this patch, the fixes should've been
+first.
+
+--0z5c7mBtSy1wdr4F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8FsDMACgkQJNaLcl1U
+h9DAXwf/UKPuAKU8djRsq4JMdl4DD1MYUvFgx2ZOCegwVYmdd/p7JODYiAE94R5q
+KFNtRb9VPriJHssAPfMfczl5jDA5ezzZJR+1Rrg2gnylgdmjUG2j9eiHxP/4vA/w
+EVJq+6YgLwYHx8XtcdPQTQ9gWjdFUgGJqSos3O5kwGBQWz259fZHJAC+SPGpGW0o
+/IsR9zDImcGsbytAAxMw9Ih2uhM4yvcMo9V1eZERMEmMjfyG/RfqpLIrCq6yYl5U
+txdruVZZsOIkuIkiZgbhhP2PZuHHdJ4PkVXUMDXfFPKBuJAHKQa2tK3i3cNlI811
+Dc5b1laWRWL4ZxmvmhJ4Fdg1DK/Lbg==
+=sP6Y
+-----END PGP SIGNATURE-----
+
+--0z5c7mBtSy1wdr4F--
