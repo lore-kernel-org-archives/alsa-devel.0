@@ -2,57 +2,65 @@ Return-Path: <SRS0=LwrQ=AT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7966CC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE3B8C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:33:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D868206F6
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:32:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4611520760
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 17:33:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KaLrAaqg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D868206F6
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fgkro1xl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4611520760
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62FD39F6;
-	Wed,  8 Jul 2020 19:31:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62FD39F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FCFE1658;
+	Wed,  8 Jul 2020 19:32:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FCFE1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594229565;
-	bh=jGHOQWfyKDqh8h5fhMJLT/+PEYG6ZtICde7Szk0gtxA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1594229620;
+	bh=1rZy7xeZECGgmeuHlPAg8wyP8QmRvZQViPha/gtD/no=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KaLrAaqgFDcC9w4B34FBlVbYXQErEbs9ctvpnBbskC7LdfnQSOPRCF5oQLcUjR18z
-	 dslXjJ+0HeUiqCvIsGYUyh647THPyU7abHzrWZ7PMeHtaBGGiPSbRyHnY08pn9YUn9
-	 R+MSZGb4MTZIYf/MQDFQnI3bwA6AwM/RJfbyKuJQ=
+	b=fgkro1xlrmCBID9GMVpZmfvitqLm5PrwB1BjpuIuQEQHp/gWGmYjFwIFoPp23DhdJ
+	 sR9yN4t/Rwp+8fb8Ql2G3bTCa686es8FgC8Ha5fE1ehIP2Hzy/RJtNHiXz3fwLC00h
+	 ZnUOcd2pld95glYUS60miZDx6I4EeU5bfQkC6Zro=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3953BF8011F;
-	Wed,  8 Jul 2020 19:31:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D832F8015D;
+	Wed,  8 Jul 2020 19:32:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6888DF8011F; Wed,  8 Jul 2020 19:31:52 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id E82EEF8011F
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 19:31:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E82EEF8011F
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1594229504106674910-webhooks-bot@alsa-project.org>
-References: <1594229504106674910-webhooks-bot@alsa-project.org>
-Subject: aplay: Fix typo in error message
-Message-Id: <20200708173152.6888DF8011F@alsa1.perex.cz>
-Date: Wed,  8 Jul 2020 19:31:52 +0200 (CEST)
+ id AAE8AF80161; Wed,  8 Jul 2020 19:32:27 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F393EF8015C
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 19:32:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F393EF8015C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7EFE9AC53;
+ Wed,  8 Jul 2020 17:32:17 +0000 (UTC)
+Date: Wed, 08 Jul 2020 19:32:16 +0200
+Message-ID: <s5hk0zdap5r.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Junar Wohn <doomsheart@gmail.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Notebook Pen S
+In-Reply-To: <CAHcbMh1MPsqkAYYHk9ycq7-Mivyog_BgRJFrVT+UDVohN0bg9A@mail.gmail.com>
+References: <CAHcbMh1MPsqkAYYHk9ycq7-Mivyog_BgRJFrVT+UDVohN0bg9A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,10 +76,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #44 was opened from trebmuh:
+On Wed, 08 Jul 2020 18:24:12 +0200,
+Junar Wohn wrote:
+> 
+> Signed-off-by: Joonho Wohn <doomsheart@gmail.com>
 
-replace #43
+Could you give a bit more description about your change above the
+sign-off line?  Basically no description is a sign of a bad patch.
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/44
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/44.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+In the submission, you've put more texts in the subject line.
+Just move some texts to the patch description area.
+
+
+thanks,
+
+Takashi
