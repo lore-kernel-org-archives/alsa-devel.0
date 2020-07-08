@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FFDEC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 21:35:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29A79C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 21:44:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92B0520772
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 21:35:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5D6A206A1
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jul 2020 21:44:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="McT5lEqR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92B0520772
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uh1JPU1h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5D6A206A1
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15D77950;
-	Wed,  8 Jul 2020 23:34:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15D77950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 411DC86E;
+	Wed,  8 Jul 2020 23:43:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 411DC86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594244122;
-	bh=CE1lo+YuH068omvHJljcuDCpljxlXjdw1ydIac9WsME=;
+	s=default; t=1594244650;
+	bh=Kk9h0gPHM1gvwB0+NDIf25GCSpLEJwQPNNw1MOAkA30=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=McT5lEqRBz7HFXaFYbX8rU8quHkDbn0cZO9XRUBGZQUYY//IyFp6Unw4KCfz8NWNL
-	 xOIO577als72xWqohfKKaOynJViZL71Bmy5yube0mJU2SiRpMDyZOL+ROPrwVPKtnN
-	 //R+M0kET+vWxfJO2O3MxS0PYjsKdkkfK3vdnKns=
+	b=Uh1JPU1hrLShehsfdYEPYqKQeIRS9YK1vkKxGTBJIERLLiKmPP0EI0MMnpbEU3f5V
+	 jnD9QRbhzf915vcGUGteYn0kOxhFt/yonRyGcRwCVoyj8e0NpkjSKSG8vNzt7Rvyej
+	 zzuebBiFLWKqEaeGno0u1hFysIA0IEOMAwNeErmI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFF34F80150;
-	Wed,  8 Jul 2020 23:34:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C29EBF80150;
+	Wed,  8 Jul 2020 23:43:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C70EFF8015A; Wed,  8 Jul 2020 23:34:24 +0200 (CEST)
+ id 8B2C7F8015A; Wed,  8 Jul 2020 23:43:17 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 434D6F800AE
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 23:34:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 434D6F800AE
+ by alsa1.perex.cz (Postfix) with ESMTP id 0CE30F800AE
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2020 23:43:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CE30F800AE
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1594244056746320963-webhooks-bot@alsa-project.org>
-References: <1594244056746320963-webhooks-bot@alsa-project.org>
+In-Reply-To: <1594244589751174927-webhooks-bot@alsa-project.org>
+References: <1594244589751174927-webhooks-bot@alsa-project.org>
 Subject: ucm2: Add config for Rockchip/rk3399-gru-sound
-Message-Id: <20200708213424.C70EFF8015A@alsa1.perex.cz>
-Date: Wed,  8 Jul 2020 23:34:24 +0200 (CEST)
+Message-Id: <20200708214317.8B2C7F8015A@alsa1.perex.cz>
+Date: Wed,  8 Jul 2020 23:43:17 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,13 +68,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #39 was opened from alpernebbi:
+alsa-project/alsa-ucm-conf pull request #39 was edited from alpernebbi:
 
 This is the internal card for a number of ChromeOS devices based on the Gru board. Config is taken from ChromeOS sources [1] and modified to mostly look like Rockchip/max98090. Tested on a Samsung Chromebook Plus (rk3399-gru-kevin) running Linux 5.7+.
 
 [1] https://chromium.googlesource.com/chromiumos/overlays/board-overlays/+/75cf7da335c11469956c84ddfa4e2ca73b268441/overlay-kevin/chromeos-base/chromeos-bsp-kevin/files/audio-config/ucm-config/rk3399-gru-sound
 
-Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Signed-off-by: Alper Nebi Yasak \<alpernebiyasak@gmail.com\>
 
 ---
 
