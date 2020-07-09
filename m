@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBBC4C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 22:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41B4AC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 22:03:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4634A20720
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 22:03:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B5E232076A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 22:03:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nMV499At";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PfcBW9dD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4634A20720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i8YJxmIy";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kPwMqEXg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5E232076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD5C61612;
-	Fri, 10 Jul 2020 00:02:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD5C61612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F24D1670;
+	Fri, 10 Jul 2020 00:03:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F24D1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594332201;
-	bh=4XZXghP0KTDIIt5L05ntOBUp1suBQZqY9M5sNdVCKMQ=;
+	s=default; t=1594332237;
+	bh=yUJ6j5WjQRrE5AVdb3fA0p+w+6twBV/hlDzA98oNUVM=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nMV499At4khvtPh/nry75njtLcPgDh422xKFNWsQN/9NsdjX5sydAdcAklcKKVvif
-	 l6pT2FJ2bOVAtGzuwu1YEIjL2jKtY+RpV+eMOXEp8C/DsZw6ANHqBxFVOcQUtARmQ0
-	 2urHcnVBxRTfKExnkMFQ0NrNa2Zwan8FV2y9SjnE=
+	b=i8YJxmIyTniVI39jsSnytmFO1YxiyaNC46Knl3sjKPcsfttM7t5KQ9SqRukwKblxw
+	 3yhxfwpBXpttTKLMUkJaY7phFTYofUjJ3ol6CQgaB4ENu323qR6suRgFqwSjA9lM9W
+	 SuXIEJF6fS3CFNoR+VPhOimbExpypEXonbQqwZao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E261DF802BE;
-	Fri, 10 Jul 2020 00:00:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0556F802E3;
+	Fri, 10 Jul 2020 00:00:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC45EF8025A; Fri, 10 Jul 2020 00:00:27 +0200 (CEST)
+ id 7DDB5F802C2; Fri, 10 Jul 2020 00:00:35 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02F72F80216
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 00:00:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02F72F80216
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03C9DF8025A
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 00:00:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03C9DF8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PfcBW9dD"
+ header.b="kPwMqEXg"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2F72C2067D;
- Thu,  9 Jul 2020 22:00:23 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 08D6320774;
+ Thu,  9 Jul 2020 22:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594332023;
- bh=4XZXghP0KTDIIt5L05ntOBUp1suBQZqY9M5sNdVCKMQ=;
+ s=default; t=1594332028;
+ bh=yUJ6j5WjQRrE5AVdb3fA0p+w+6twBV/hlDzA98oNUVM=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=PfcBW9dDToPKCRJDAcJF8ViNtJzT7v1E6q4CNSxZ7y987lZWr4ZY0k+GpVo/ucDKv
- FjFAu1kSl4RVkN62T6TREjBp/FPHiRUahUMgyND5wYHZP8ecsxfHP0hkIG7AC8WUZ9
- bG2MHCY8XgrcmWn51wmYkziCPcFTAwEQNoH6RYi4=
-Date: Thu, 09 Jul 2020 23:00:18 +0100
+ b=kPwMqEXgehtuG7TAZYY+oZ2MsReJ7SsJ44mVJZT/g5qkP288wiBiiIeHjny41FApR
+ 5vheVuaTjY/HyaKRLaBKJzBKYg/ivxhZ9qy5PXZuBAtO19Cy2STALUpKDBNEf0y7p5
+ ROU7RS+V4cz+y013LPVA8VX7KJ1FBjswRiNUSTyU=
+Date: Thu, 09 Jul 2020 23:00:23 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20200709122445.1584497-1-tzungbi@google.com>
-References: <20200709122445.1584497-1-tzungbi@google.com>
-Subject: Re: [PATCH 0/5] ASoC: mediatek: mt8183-da7219: support machine driver
- for rt1015
-Message-Id: <159433200031.57213.3941224850488069645.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com,
+ Dan Murphy <dmurphy@ti.com>
+In-Reply-To: <20200709185129.10505-1-dmurphy@ti.com>
+References: <20200709185129.10505-1-dmurphy@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Add ASI enable for channel 5-8
+Message-Id: <159433200032.57213.9046850356730797696.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,16 +84,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 9 Jul 2020 20:24:40 +0800, Tzung-Bi Shih wrote:
-> This series tries to reuse mt8183-da7219-max98357.c for supporting machine
-> driver with rt1015 speaker amplifier.
-> 
-> The first 3 patches refactor the code for easier to change for subsequent
-> patches.
-> 
-> The 4th patch adds document for the new proposed compatible string.
-> 
-> [...]
+On Thu, 9 Jul 2020 13:51:28 -0500, Dan Murphy wrote:
+> Add the ALSA controls to enable the ASI for channels 5-8
 
 Applied to
 
@@ -101,16 +93,10 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: mediatek: mt8183-da7219: sort header inclusions in alphabetical
-      commit: 31add0d56e5c4964009bca8d507ff91350e17b5e
-[2/5] ASoC: mediatek: mt8183-da7219: remove forward declaration of headset_init
-      commit: cbafb2cc5f56320acca0b9bec7e4f19f15597cbe
-[3/5] ASoC: mediatek: mt8183-da7219: extract codec and DAI names
-      commit: e5d4bdffc8c89ce253e5663fecd09c893ece7eec
-[4/5] ASoC: mediatek: mt8183-da7219: add compatible string for using rt1015
-      commit: f739f2ce708cccf1b071e7a1219d932e476b26cd
-[5/5] ASoC: mediatek: mt8183-da7219: support machine driver with rt1015
-      commit: 9e30251fb22eccaf2199cdfdc02c90459f83bea7
+[1/2] ASoC: tlv320adcx140: Add ASI enable for channel 5-8
+      commit: 91cb940c2c953b9282700178b32300e4da84c636
+[2/2] ASoC: tlv320adcx140: Add tx offset slot programming
+      commit: 336c129139cd50faf5bd68acc343da817d13839b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
