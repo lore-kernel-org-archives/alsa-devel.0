@@ -2,58 +2,57 @@ Return-Path: <SRS0=mEIa=AU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F1EAC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:00:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE7EC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:00:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0197E206F6
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:00:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 89F9420760
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:00:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gAxaif1g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0197E206F6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gMOBzV9u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89F9420760
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D3591655;
-	Thu,  9 Jul 2020 03:59:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D3591655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1975D950;
+	Thu,  9 Jul 2020 03:59:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1975D950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594260010;
-	bh=wBmJ9b3LO7r4o7r6Dj+DSSbhdiZMyITHmwjNfaMVl2I=;
+	s=default; t=1594260034;
+	bh=/oVUjdJf7pOIoVJbG2qxAk1gdfbnURuazMQb8OnItN4=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gAxaif1gsiSgc4u0auqCuSxYrfhZgvWAiiEA6+l4LhoDGKqV8I1N3cCFnNcM92F23
-	 InCUBS75Dq9FHSxyhXTtBulkLys+1nIf4w7vgmE38AwDv3qUvNBVG7hZvSCbZKhi0D
-	 UwmmqzgtTe1NGJkGoO4xNWfx+a8R5pgFltRpr/3o=
+	b=gMOBzV9u2JBEUVX+riD9GGkwIHdaTyRVs4x7hCWxIYVfx5asuS2thdBwtnoRH/3oA
+	 CCu8P21muTiJjTAWIRxLxYFpKKHLbFcn+CQ+Yq8KX4dbJ54wJ1jwJNyqmjHE0knVWa
+	 LukYpuL1hZjS0tYcacdAwdQRT6LT34owwNhSvDSs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24646F802EC;
-	Thu,  9 Jul 2020 03:56:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 369AFF802F8;
+	Thu,  9 Jul 2020 03:56:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1749BF802EC; Thu,  9 Jul 2020 03:56:17 +0200 (CEST)
+ id 12332F802FB; Thu,  9 Jul 2020 03:56:22 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1F8F5F80117
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:56:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F8F5F80117
-Date: 09 Jul 2020 10:56:10 +0900
-X-IronPort-AV: E=Sophos;i="5.75,329,1589209200"; d="scan'208";a="51457197"
+ by alsa1.perex.cz (Postfix) with ESMTP id 4856AF80117
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:56:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4856AF80117
+Date: 09 Jul 2020 10:56:15 +0900
+X-IronPort-AV: E=Sophos;i="5.75,329,1589209200"; d="scan'208";a="51457205"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 09 Jul 2020 10:56:10 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 09 Jul 2020 10:56:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9C5B340E4C02;
- Thu,  9 Jul 2020 10:56:10 +0900 (JST)
-Message-ID: <878sftxxie.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C617340E4BF6;
+ Thu,  9 Jul 2020 10:56:15 +0900 (JST)
+Message-ID: <877dvdxxi8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 06/21] ASoC: meson: merge .digital_mute() into
+Subject: [PATCH v3 07/21] ASoC: atmel: merge .digital_mute() into
  .mute_stream()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -97,36 +96,41 @@ We can merge digital_mute() into mute_stream
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- sound/soc/meson/axg-spdifout.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/atmel/atmel-classd.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/meson/axg-spdifout.c b/sound/soc/meson/axg-spdifout.c
-index 7ce6aa97ddf7..e769a5ee6e27 100644
---- a/sound/soc/meson/axg-spdifout.c
-+++ b/sound/soc/meson/axg-spdifout.c
-@@ -108,7 +108,7 @@ static int axg_spdifout_trigger(struct snd_pcm_substream *substream, int cmd,
- 	}
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index e98601eccfa3..5deabb506a79 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -327,8 +327,8 @@ static int atmel_classd_codec_dai_startup(struct snd_pcm_substream *substream,
+ 	return clk_prepare_enable(dd->gclk);
  }
  
--static int axg_spdifout_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int axg_spdifout_mute(struct snd_soc_dai *dai, int mute, int direction)
+-static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
+-	int mute)
++static int atmel_classd_codec_dai_mute(struct snd_soc_dai *codec_dai,
++				       int mute, int direction)
  {
- 	struct axg_spdifout *priv = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_soc_component *component = codec_dai->component;
+ 	u32 mask, val;
+@@ -469,12 +469,13 @@ static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
+ }
  
-@@ -285,10 +285,11 @@ static void axg_spdifout_shutdown(struct snd_pcm_substream *substream,
- 
- static const struct snd_soc_dai_ops axg_spdifout_ops = {
- 	.trigger	= axg_spdifout_trigger,
--	.digital_mute	= axg_spdifout_digital_mute,
-+	.mute_stream	= axg_spdifout_mute,
- 	.hw_params	= axg_spdifout_hw_params,
- 	.startup	= axg_spdifout_startup,
- 	.shutdown	= axg_spdifout_shutdown,
+ static const struct snd_soc_dai_ops atmel_classd_codec_dai_ops = {
+-	.digital_mute	= atmel_classd_codec_dai_digital_mute,
++	.mute_stream	= atmel_classd_codec_dai_mute,
+ 	.startup	= atmel_classd_codec_dai_startup,
+ 	.shutdown	= atmel_classd_codec_dai_shutdown,
+ 	.hw_params	= atmel_classd_codec_dai_hw_params,
+ 	.prepare	= atmel_classd_codec_dai_prepare,
+ 	.trigger	= atmel_classd_codec_dai_trigger,
 +	.no_capture_mute = 1,
  };
  
- static struct snd_soc_dai_driver axg_spdifout_dai_drv[] = {
+ #define ATMEL_CLASSD_CODEC_DAI_NAME  "atmel-classd-hifi"
 -- 
 2.25.1
 
