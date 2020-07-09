@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD313C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:07:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92302C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:07:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68E1B206F6
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:07:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 206F620760
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:07:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VR6h+v+Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68E1B206F6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sNSlB6FJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 206F620760
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0CD81680;
-	Thu,  9 Jul 2020 04:06:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0CD81680
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7AD91681;
+	Thu,  9 Jul 2020 04:06:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7AD91681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594260423;
-	bh=EUXxopvnkrA447hi0mA0dduSLk+JBZ7g4PqmUXgvAC0=;
+	s=default; t=1594260459;
+	bh=VALoL14MSZH/aevzKDqxIZ7Mj07hPoALomNj855zz78=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VR6h+v+YmZKkc3McjuxQsInSM1L4fTTwnzsWL/6jkYi2ayRCQuy1pmyJ2GjcWmUN5
-	 N5ql7c6VlBtFWg0SWLJgPH4AjsEcnkgOrlDOD3aDnb/l4bc+jOG7p6QHhP7bryAzf6
-	 QWYmB85BAYmMbiUVZxJdN0V7pHeySBUP3/vc2Dk0=
+	b=sNSlB6FJtGY/dFVzneu8X2z1dGI0htQJHe6VhRQbuK5CqfloKi2apIZggLWfNBMG/
+	 povtfm/8sEPy6ZKdB1a3eCm8e+mZ7axobHz5HWfth46kRhBX8Tcv68FO9aKDYPvJP2
+	 o2IRVnDAutX/upF70zDxNegvOMCXNqX5osPFsdGg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C25BAF8025A;
-	Thu,  9 Jul 2020 03:57:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18EFDF8036C;
+	Thu,  9 Jul 2020 03:57:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59B88F80363; Thu,  9 Jul 2020 03:57:12 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6FDE7F8034E
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:57:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FDE7F8034E
-Date: 09 Jul 2020 10:57:06 +0900
-X-IronPort-AV: E=Sophos;i="5.75,329,1589209200"; d="scan'208";a="51457290"
+ id AF68BF80367; Thu,  9 Jul 2020 03:57:14 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id CC4EEF8025A
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:57:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC4EEF8025A
+Date: 09 Jul 2020 10:57:10 +0900
+X-IronPort-AV: E=Sophos;i="5.75,329,1589209200"; d="scan'208";a="51669194"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 09 Jul 2020 10:57:06 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 09 Jul 2020 10:57:10 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 11217400A8A6;
- Thu,  9 Jul 2020 10:57:06 +0900 (JST)
-Message-ID: <87r1tlwiwe.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4CA01400A8A6;
+ Thu,  9 Jul 2020 10:57:10 +0900 (JST)
+Message-ID: <87pn95wiwa.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 18/21] ASoC: codecs: cs*: merge .digital_mute() into
+Subject: [PATCH v3 19/21] ASoC: codecs: ak*: merge .digital_mute() into
  .mute_stream()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -98,230 +98,96 @@ We can merge digital_mute() into mute_stream
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/cs4265.c  | 5 +++--
- sound/soc/codecs/cs4270.c  | 5 +++--
- sound/soc/codecs/cs42l42.c | 5 +++--
- sound/soc/codecs/cs42l51.c | 5 +++--
- sound/soc/codecs/cs42l52.c | 5 +++--
- sound/soc/codecs/cs42l56.c | 5 +++--
- sound/soc/codecs/cs42xx8.c | 5 +++--
- sound/soc/codecs/cs4341.c  | 5 +++--
- sound/soc/codecs/cs4349.c  | 5 +++--
- 9 files changed, 27 insertions(+), 18 deletions(-)
+ sound/soc/codecs/ak4458.c | 5 +++--
+ sound/soc/codecs/ak4535.c | 6 ++++--
+ sound/soc/codecs/ak4641.c | 8 +++++---
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index 2fb65f246b0c..d76be44f46b4 100644
---- a/sound/soc/codecs/cs4265.c
-+++ b/sound/soc/codecs/cs4265.c
-@@ -378,7 +378,7 @@ static int cs4265_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+index f180cb5dfe4f..0c51ba8f6072 100644
+--- a/sound/soc/codecs/ak4458.c
++++ b/sound/soc/codecs/ak4458.c
+@@ -401,7 +401,7 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 
+ static const int att_speed[] = { 4080, 2040, 510, 255 };
+ 
+-static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
++static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute, int direction)
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
+@@ -495,8 +495,9 @@ static const struct snd_soc_dai_ops ak4458_dai_ops = {
+ 	.startup        = ak4458_startup,
+ 	.hw_params	= ak4458_hw_params,
+ 	.set_fmt	= ak4458_set_dai_fmt,
+-	.digital_mute	= ak4458_set_dai_mute,
++	.mute_stream	= ak4458_set_dai_mute,
+ 	.set_tdm_slot	= ak4458_set_tdm_slot,
++	.no_capture_mute = 1,
+ };
+ 
+ static struct snd_soc_dai_driver ak4458_dai = {
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index f5ad1f59eb46..91e7a57c43da 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -309,10 +309,11 @@ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
  	return 0;
  }
  
--static int cs4265_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int cs4265_mute(struct snd_soc_dai *dai, int mute, int direction)
+-static int ak4535_mute(struct snd_soc_dai *dai, int mute)
++static int ak4535_mute(struct snd_soc_dai *dai, int mute, int direction)
  {
  	struct snd_soc_component *component = dai->component;
- 
-@@ -498,9 +498,10 @@ static int cs4265_set_bias_level(struct snd_soc_component *component,
- 
- static const struct snd_soc_dai_ops cs4265_ops = {
- 	.hw_params	= cs4265_pcm_hw_params,
--	.digital_mute	= cs4265_digital_mute,
-+	.mute_stream	= cs4265_mute,
- 	.set_fmt	= cs4265_set_fmt,
- 	.set_sysclk	= cs4265_set_sysclk,
+ 	u16 mute_reg = snd_soc_component_read(component, AK4535_DAC);
++
+ 	if (!mute)
+ 		snd_soc_component_write(component, AK4535_DAC, mute_reg & ~0x20);
+ 	else
+@@ -348,8 +349,9 @@ static int ak4535_set_bias_level(struct snd_soc_component *component,
+ static const struct snd_soc_dai_ops ak4535_dai_ops = {
+ 	.hw_params	= ak4535_hw_params,
+ 	.set_fmt	= ak4535_set_dai_fmt,
+-	.digital_mute	= ak4535_mute,
++	.mute_stream	= ak4535_mute,
+ 	.set_sysclk	= ak4535_set_dai_sysclk,
 +	.no_capture_mute = 1,
  };
  
- static struct snd_soc_dai_driver cs4265_dai[] = {
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index bd17c806d543..ddd95c8269ed 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -406,7 +406,7 @@ static int cs4270_hw_params(struct snd_pcm_substream *substream,
-  * board does not have the MUTEA or MUTEB pins connected to such circuitry,
-  * then this function will do nothing.
-  */
--static int cs4270_dai_mute(struct snd_soc_dai *dai, int mute)
-+static int cs4270_dai_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct cs4270_private *cs4270 = snd_soc_component_get_drvdata(component);
-@@ -471,7 +471,8 @@ static const struct snd_soc_dai_ops cs4270_dai_ops = {
- 	.hw_params	= cs4270_hw_params,
- 	.set_sysclk	= cs4270_set_dai_sysclk,
- 	.set_fmt	= cs4270_set_dai_fmt,
--	.digital_mute	= cs4270_dai_mute,
-+	.mute_stream	= cs4270_dai_mute,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver cs4270_dai = {
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d391b5074904..210fcbedf241 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -849,7 +849,7 @@ static int cs42l42_set_sysclk(struct snd_soc_dai *dai,
- 	return 0;
+ static struct snd_soc_dai_driver ak4535_dai = {
+diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
+index 2d5b640aab58..77004cd7caa3 100644
+--- a/sound/soc/codecs/ak4641.c
++++ b/sound/soc/codecs/ak4641.c
+@@ -405,7 +405,7 @@ static int ak4641_i2s_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return snd_soc_component_write(component, AK4641_MODE1, mode1);
  }
  
--static int cs42l42_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int cs42l42_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	unsigned int regval;
-@@ -909,7 +909,8 @@ static const struct snd_soc_dai_ops cs42l42_ops = {
- 	.hw_params	= cs42l42_pcm_hw_params,
- 	.set_fmt	= cs42l42_set_dai_fmt,
- 	.set_sysclk	= cs42l42_set_sysclk,
--	.digital_mute = cs42l42_digital_mute
-+	.mute_stream	= cs42l42_mute,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver cs42l42_dai = {
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index dde9812490de..764f2ef8f59d 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -484,7 +484,7 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int cs42l51_dai_mute(struct snd_soc_dai *dai, int mute)
-+static int cs42l51_dai_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	int reg;
-@@ -511,7 +511,8 @@ static const struct snd_soc_dai_ops cs42l51_dai_ops = {
- 	.hw_params      = cs42l51_hw_params,
- 	.set_sysclk     = cs42l51_set_dai_sysclk,
- 	.set_fmt        = cs42l51_set_dai_fmt,
--	.digital_mute   = cs42l51_dai_mute,
-+	.mute_stream    = cs42l51_dai_mute,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver cs42l51_dai = {
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 2ea4cba3be2a..f772628f233e 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -784,7 +784,7 @@ static int cs42l52_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	return 0;
- }
- 
--static int cs42l52_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int cs42l52_mute(struct snd_soc_dai *dai, int mute, int direction)
+-static int ak4641_mute(struct snd_soc_dai *dai, int mute)
++static int ak4641_mute(struct snd_soc_dai *dai, int mute, int direction)
  {
  	struct snd_soc_component *component = dai->component;
  
-@@ -865,9 +865,10 @@ static int cs42l52_set_bias_level(struct snd_soc_component *component,
- 
- static const struct snd_soc_dai_ops cs42l52_ops = {
- 	.hw_params	= cs42l52_pcm_hw_params,
--	.digital_mute	= cs42l52_digital_mute,
-+	.mute_stream	= cs42l52_mute,
- 	.set_fmt	= cs42l52_set_fmt,
- 	.set_sysclk	= cs42l52_set_sysclk,
+@@ -467,15 +467,17 @@ static int ak4641_set_bias_level(struct snd_soc_component *component,
+ static const struct snd_soc_dai_ops ak4641_i2s_dai_ops = {
+ 	.hw_params    = ak4641_i2s_hw_params,
+ 	.set_fmt      = ak4641_i2s_set_dai_fmt,
+-	.digital_mute = ak4641_mute,
++	.mute_stream  = ak4641_mute,
+ 	.set_sysclk   = ak4641_set_dai_sysclk,
 +	.no_capture_mute = 1,
  };
  
- static struct snd_soc_dai_driver cs42l52_dai = {
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index ac569ab3d30f..97024a6ac96d 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -800,7 +800,7 @@ static int cs42l56_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	return 0;
- }
- 
--static int cs42l56_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int cs42l56_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 
-@@ -929,9 +929,10 @@ static int cs42l56_set_bias_level(struct snd_soc_component *component,
- 
- static const struct snd_soc_dai_ops cs42l56_ops = {
- 	.hw_params	= cs42l56_pcm_hw_params,
--	.digital_mute	= cs42l56_digital_mute,
-+	.mute_stream	= cs42l56_mute,
- 	.set_fmt	= cs42l56_set_dai_fmt,
- 	.set_sysclk	= cs42l56_set_sysclk,
+ static const struct snd_soc_dai_ops ak4641_pcm_dai_ops = {
+ 	.hw_params    = NULL, /* rates are controlled by BT chip */
+ 	.set_fmt      = ak4641_pcm_set_dai_fmt,
+-	.digital_mute = ak4641_mute,
++	.mute_stream  = ak4641_mute,
+ 	.set_sysclk   = ak4641_set_dai_sysclk,
 +	.no_capture_mute = 1,
  };
  
- static struct snd_soc_dai_driver cs42l56_dai = {
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index 94b1adb088fd..5d6ef660f851 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -362,7 +362,7 @@ static int cs42xx8_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int cs42xx8_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int cs42xx8_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct cs42xx8_priv *cs42xx8 = snd_soc_component_get_drvdata(component);
-@@ -380,7 +380,8 @@ static const struct snd_soc_dai_ops cs42xx8_dai_ops = {
- 	.set_sysclk	= cs42xx8_set_dai_sysclk,
- 	.hw_params	= cs42xx8_hw_params,
- 	.hw_free	= cs42xx8_hw_free,
--	.digital_mute	= cs42xx8_digital_mute,
-+	.mute_stream	= cs42xx8_mute,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver cs42xx8_dai = {
-diff --git a/sound/soc/codecs/cs4341.c b/sound/soc/codecs/cs4341.c
-index ade7477d04f1..f566604de78c 100644
---- a/sound/soc/codecs/cs4341.c
-+++ b/sound/soc/codecs/cs4341.c
-@@ -116,7 +116,7 @@ static int cs4341_hw_params(struct snd_pcm_substream *substream,
- 					     CS4341_MODE2_DIF, mode);
- }
- 
--static int cs4341_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int cs4341_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	int ret;
-@@ -174,7 +174,8 @@ static const struct snd_kcontrol_new cs4341_controls[] = {
- static const struct snd_soc_dai_ops cs4341_dai_ops = {
- 	.set_fmt	= cs4341_set_fmt,
- 	.hw_params	= cs4341_hw_params,
--	.digital_mute	= cs4341_digital_mute,
-+	.mute_stream	= cs4341_mute,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver cs4341_dai = {
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index 3381209a882d..fd5526319779 100644
---- a/sound/soc/codecs/cs4349.c
-+++ b/sound/soc/codecs/cs4349.c
-@@ -131,7 +131,7 @@ static int cs4349_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int cs4349_digital_mute(struct snd_soc_dai *dai, int mute)
-+static int cs4349_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	int reg;
-@@ -236,7 +236,8 @@ static const struct snd_soc_dapm_route cs4349_routes[] = {
- static const struct snd_soc_dai_ops cs4349_dai_ops = {
- 	.hw_params	= cs4349_pcm_hw_params,
- 	.set_fmt	= cs4349_set_dai_fmt,
--	.digital_mute	= cs4349_digital_mute,
-+	.mute_stream	= cs4349_mute,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver cs4349_dai = {
+ static struct snd_soc_dai_driver ak4641_dai[] = {
 -- 
 2.25.1
 
