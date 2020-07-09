@@ -2,91 +2,84 @@ Return-Path: <SRS0=mEIa=AU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E89D8C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 10:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A17C6C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 10:14:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 768E320663
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 10:09:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2EE3C20663
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 10:14:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TTcsd8yb";
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qn/Yqd4s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 768E320663
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dWP7ckPV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="FKZCpj2R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EE3C20663
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F79385D;
-	Thu,  9 Jul 2020 12:08:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F79385D
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADF1686F;
+	Thu,  9 Jul 2020 12:13:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADF1686F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594289375;
-	bh=zA21wIKrfXcYnZwppvAJTR7CtRciDmU045IerMU6Q+U=;
+	s=default; t=1594289643;
+	bh=DjxGdoEO0Wc0O9doBVGdvGDo+IPdXfYZ232IDe3j80s=;
 	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TTcsd8ybP3ZpFX8tw89PcH8jkT/y0jrQIxkT6WzoBsFiV7RYe+64HvCUqDvPVPc9l
-	 qpB8ljyW+D4QbJK4krf0YdMKharQ+b05QfH/PsvDxjpQ40oj0qlA9LUOuvHNA/tQs9
-	 nOc300ZtkgbP2uJx1uIXp+Ys0IDMkCXng+Z+D4TI=
+	b=dWP7ckPVZDtisrk6MPuEP6bsNxQsg1SPu2uGzDaV0XWpJBb8jvbPcW6V4vQho4Tnq
+	 BWsfU0uj6tshGn5/LVN4bAreiDUu0foN3NN0lTL+e8tIq8fYbQWFSRIaxCRdiLpqMj
+	 u3V9Z9d9GWe3XeNiHVLD3PxcH27fk0c9MTEHn2AY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A46B3F80264;
-	Thu,  9 Jul 2020 12:08:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35FB3F80117;
+	Thu,  9 Jul 2020 12:13:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3365F80117; Thu,  9 Jul 2020 12:08:12 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ id CACE2F801F9; Thu,  9 Jul 2020 12:13:11 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 417B8F80117
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 12:08:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 417B8F80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A7E9F80117
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 12:13:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A7E9F80117
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Qn/Yqd4s"
-Received: by mail-wr1-x444.google.com with SMTP id f2so1696271wrp.7
- for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2020 03:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:references:from:message-id:date:user-agent:mime-version
- :in-reply-to:content-language:content-transfer-encoding;
- bh=JjKVHO1k5x52mPl9MQPkeK0c6PmSLam18blFZkKOw/o=;
- b=Qn/Yqd4sMNB1Dt3OO0i55SPIfFAoJlwYB8ZQBscEDiY6iVKMZLcUhWVYnovxjTSkOi
- MVe6Ix2mUDb3Sxfgt+fL+u/h8xnSpfc7WjdzTz/YaImys+o8IOxRIcalTZCMonT9JiNU
- d4EkZ48hD0Srbjk62AUGu/4atgEaJjCLQPQ08nM5bWHGnVh7z8b87aVmhfFgXHJidVJa
- R8/ke1nR45bLvZf7o0A+Qq8RK3/dpCJDHNUD7+19cIRKx5OkW3mln8yAf//JVais7LtZ
- ziGYMXsSjPuXi9ERpNeDO6yEwtldJlV4P2LVn2czFZ2HWwKlzF2yC64Ly0XbOF4sw5Zw
- NEcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=JjKVHO1k5x52mPl9MQPkeK0c6PmSLam18blFZkKOw/o=;
- b=AhiDDoSy5s64doIXK/98v072D4qGWHawYHxO2FC4yHKF810i2TaEkhDClQCCkdZiZ2
- HiDShVx55PCWkq4NLKKCtFk9u1hkKFLQFO773uZvUeFWgrRF31aSTS/8rCEhICh76rhX
- Oul8URxXLp66hH5n4Giv5LPaKzxgZfCeHmJWtLlR0QiEE7F2ZbPbozYyihMmRPl2MyTP
- FtStSTKTQfU+R/NqIFW8y1W+BI4tuNGec67UFRhNTC7BcvcVTG9H+FzApyTNsWMqZS2B
- /9u4M9OuMfUlwyD4puiVJT5iuS4qsZD0DfnT7gkaOP+gVJf8B0McJUGQRHSAEjCQx74G
- vEHQ==
-X-Gm-Message-State: AOAM5316jac9dcjBMbO6uSwb6aoch5VDr7WMA2fNtTQZDUsCtbqWeJMx
- UsVBFh9Vs/xtDhHoo6QceBDXJA==
-X-Google-Smtp-Source: ABdhPJzsyr80M22TsA9o73abnx9q/28mo6g8jAZPiIIkKycC86esPT4I01tjiaBvuW/qUrs/Pt+xmg==
-X-Received: by 2002:adf:9524:: with SMTP id 33mr61596613wrs.156.1594289285409; 
- Thu, 09 Jul 2020 03:08:05 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id p14sm5216290wrj.14.2020.07.09.03.08.04
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 09 Jul 2020 03:08:04 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="FKZCpj2R"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1594289586; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=wWq91HAC/ZSJGdVzwMRWL+Q0WO0UCK3z/tPDOpaZ6gU=;
+ b=FKZCpj2Rvdz04VIW0/1F19AZTvlHOqpYTCO2q5O/2v/hqq+8VaiD1mL2PEzsfTlXtOcBQozm
+ PgGgtmt2WL9YBrqHKJ0Dcn02bLsyl3P5ExUI7yyUupmFiDN9yNVyIGpJmnVNX4dospOZc/72
+ OsDTDNcN8c5BI4VQ/XZVbrUNlOw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5f06ed9ec9789fa906cdc389 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 10:12:46
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id D14D6C43395; Thu,  9 Jul 2020 10:12:45 +0000 (UTC)
+Received: from [192.168.0.129] (unknown [183.83.142.110])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: rohitkr)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 437E9C433C6;
+ Thu,  9 Jul 2020 10:12:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 437E9C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=none smtp.mailfrom=rohitkr@codeaurora.org
 Subject: Re: [PATCH v3 6/8] dt-bindings: sound: lpass-cpu: Add sc7180 lpass
  cpu node
-To: Rohit Kumar <rohitkr@codeaurora.org>, agross@kernel.org,
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, agross@kernel.org,
  bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
  robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
  perex@perex.cz, tiwai@suse.com, linux-arm-msm@vger.kernel.org,
@@ -96,16 +89,17 @@ References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
  <1594184896-10629-7-git-send-email-rohitkr@codeaurora.org>
  <6b6b0e38-9c04-e065-8a43-ccfec260d60c@linaro.org>
  <430e0d24-c5c2-84ec-fe7b-b6b27192666d@codeaurora.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <de07f84b-40bc-d9ae-932d-623a5e8341e2@linaro.org>
-Date: Thu, 9 Jul 2020 11:08:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <de07f84b-40bc-d9ae-932d-623a5e8341e2@linaro.org>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Message-ID: <40ca93fe-5bf0-ace3-4f95-90624d29a409@codeaurora.org>
+Date: Thu, 9 Jul 2020 15:42:38 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <430e0d24-c5c2-84ec-fe7b-b6b27192666d@codeaurora.org>
+In-Reply-To: <de07f84b-40bc-d9ae-932d-623a5e8341e2@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,50 +116,71 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+On 7/9/2020 3:38 PM, Srinivas Kandagatla wrote:
+>
+>
+> On 09/07/2020 11:01, Rohit Kumar wrote:
+>>
+>> On 7/9/2020 2:57 PM, Srinivas Kandagatla wrote:
+>>>
+>>>
+>>> On 08/07/2020 06:08, Rohit kumar wrote:
+>>>> Add dt-bindings to support "qcom,lpass-cpu-sc7180" node.
+>>>>
+>>>> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+>>>> ---
+>>>>   Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt | 3 ++-
+>>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git 
+>>>> a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt 
+>>>> b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>>>> index 32c2cdb..04e34cc 100644
+>>>> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>>>> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>>>> @@ -4,7 +4,8 @@ This node models the Qualcomm Technologies 
+>>>> Low-Power Audio SubSystem (LPASS).
+>>>>     Required properties:
+>>>>   -- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu"
+>>>> +- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu" or
+>>>> +              "qcom,lpass-cpu-sc7180"
+>>>>   - clocks        : Must contain an entry for each entry in 
+>>>> clock-names.
+>>>>   - clock-names        : A list which must include the following 
+>>>> entries:
+>>>>                   * "ahbix-clk"
+>>>
+>>> Can you also list the clocks that are mandatory for this SoC.
+>>>
+>>> --srini
+>>>
+>> Will it be fine if I update it in patch 8 only where we have moved to 
+>> yaml format?
+>>
+> May be reverse the order, Convert to Yaml first and then add sc7180!
 
-On 09/07/2020 11:01, Rohit Kumar wrote:
-> 
-> On 7/9/2020 2:57 PM, Srinivas Kandagatla wrote:
->>
->>
->> On 08/07/2020 06:08, Rohit kumar wrote:
->>> Add dt-bindings to support "qcom,lpass-cpu-sc7180" node.
->>>
->>> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
->>> ---
->>>   Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git 
->>> a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt 
->>> b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->>> index 32c2cdb..04e34cc 100644
->>> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->>> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->>> @@ -4,7 +4,8 @@ This node models the Qualcomm Technologies Low-Power 
->>> Audio SubSystem (LPASS).
->>>     Required properties:
->>>   -- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu"
->>> +- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu" or
->>> +              "qcom,lpass-cpu-sc7180"
->>>   - clocks        : Must contain an entry for each entry in clock-names.
->>>   - clock-names        : A list which must include the following 
->>> entries:
->>>                   * "ahbix-clk"
->>
->> Can you also list the clocks that are mandatory for this SoC.
->>
->> --srini
->>
-> Will it be fine if I update it in patch 8 only where we have moved to 
-> yaml format?
-> 
-May be reverse the order, Convert to Yaml first and then add sc7180!
+Actually Mark suggested to keep yaml change at the end of patch series 
+as there
 
---srini
-> Thanks,
-> 
-> Rohit
-> 
+are pending yaml patch reviews and it might take time. If we keep yaml 
+change before sc7180
+
+change, then it will get blocked until yaml review. For now, I can 
+update in exisiting
+
+documentation. Please suggest.
+
+Thanks
+
+>
+> --srini
+>> Thanks,
+>>
+>> Rohit
 >>
 >>>
+>>>>
+-- 
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
+
