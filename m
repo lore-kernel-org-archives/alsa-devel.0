@@ -2,59 +2,59 @@ Return-Path: <SRS0=mEIa=AU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92302C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:07:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 405A4C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:08:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 206F620760
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:07:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B35D420739
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 02:08:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sNSlB6FJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 206F620760
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TZncE4nx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B35D420739
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7AD91681;
-	Thu,  9 Jul 2020 04:06:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7AD91681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D46D1655;
+	Thu,  9 Jul 2020 04:07:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D46D1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594260459;
-	bh=VALoL14MSZH/aevzKDqxIZ7Mj07hPoALomNj855zz78=;
+	s=default; t=1594260486;
+	bh=xXZJBsh1ARQFV1kxEAPiUfvZKHjQejw2MyDvEPY3Rf8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sNSlB6FJtGY/dFVzneu8X2z1dGI0htQJHe6VhRQbuK5CqfloKi2apIZggLWfNBMG/
-	 povtfm/8sEPy6ZKdB1a3eCm8e+mZ7axobHz5HWfth46kRhBX8Tcv68FO9aKDYPvJP2
-	 o2IRVnDAutX/upF70zDxNegvOMCXNqX5osPFsdGg=
+	b=TZncE4nx2dw6NmAycs2SlO4o1C3Py7lYPenECWi0QaIgv3fYk4IT1fBoqlDTirpvV
+	 lbo+5LpuRL/S9X4BmpYsS5dFCISmgD4z3/ZNvBm9URAw6YmI1j/X5b16umcUmYezug
+	 tt2+fiJrXeL0l2Q3JKmtGWNQkEx8i/3Mp2wm9j5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18EFDF8036C;
-	Thu,  9 Jul 2020 03:57:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05466F8036F;
+	Thu,  9 Jul 2020 03:57:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF68BF80367; Thu,  9 Jul 2020 03:57:14 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id CC4EEF8025A
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:57:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC4EEF8025A
-Date: 09 Jul 2020 10:57:10 +0900
-X-IronPort-AV: E=Sophos;i="5.75,329,1589209200"; d="scan'208";a="51669194"
+ id 808D6F80371; Thu,  9 Jul 2020 03:57:41 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0D6BCF8036E
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:57:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D6BCF8036E
+Date: 09 Jul 2020 10:57:18 +0900
+X-IronPort-AV: E=Sophos;i="5.75,330,1589209200"; d="scan'208";a="51457325"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 09 Jul 2020 10:57:10 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 09 Jul 2020 10:57:18 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4CA01400A8A6;
- Thu,  9 Jul 2020 10:57:10 +0900 (JST)
-Message-ID: <87pn95wiwa.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7D17B400A8A7;
+ Thu,  9 Jul 2020 10:57:18 +0900 (JST)
+Message-ID: <87mu49wiw2.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 19/21] ASoC: codecs: ak*: merge .digital_mute() into
- .mute_stream()
+Subject: [PATCH v3 21/21] ASoC: soc-core: snd_soc_dai_digital_mute() for both
+ CPU/Codec
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,115 +79,41 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-snd_soc_dai_digital_mute() is internally using both
-mute_stream() (1) or digital_mute() (2), but the difference between
-these 2 are only handling direction.
-We can merge digital_mute() into mute_stream
+snd_soc_dai_digital_mute() is used for both CPU and Codec.
+For example, soc_pcm_prepare() / soc_pcm_hw_free() are caring
+both CPU and Codec.
 
-	int snd_soc_dai_digital_mute(xxx, int direction)
-	{
-		...
-		else if (dai->driver->ops->mute_stream)
-(1)			return dai->driver->ops->mute_stream(xxx, direction);
-		else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
-			 dai->driver->ops->digital_mute)
-(2)			return dai->driver->ops->digital_mute(xxx);
-		...
-	}
+But soc_resume_deferred() / snd_soc_suspend() are not.
+This patch cares it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/ak4458.c | 5 +++--
- sound/soc/codecs/ak4535.c | 6 ++++--
- sound/soc/codecs/ak4641.c | 8 +++++---
- 3 files changed, 12 insertions(+), 7 deletions(-)
+ sound/soc/soc-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index f180cb5dfe4f..0c51ba8f6072 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -401,7 +401,7 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 7c58e45c1c3f..defd96b14c28 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -548,7 +548,7 @@ int snd_soc_suspend(struct device *dev)
+ 		if (rtd->dai_link->ignore_suspend)
+ 			continue;
  
- static const int att_speed[] = { 4080, 2040, 510, 255 };
+-		for_each_rtd_codec_dais(rtd, i, dai) {
++		for_each_rtd_dais(rtd, i, dai) {
+ 			if (snd_soc_dai_stream_active(dai, playback))
+ 				snd_soc_dai_digital_mute(dai, 1, playback);
+ 		}
+@@ -687,7 +687,7 @@ static void soc_resume_deferred(struct work_struct *work)
+ 		if (rtd->dai_link->ignore_suspend)
+ 			continue;
  
--static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
-+static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
-@@ -495,8 +495,9 @@ static const struct snd_soc_dai_ops ak4458_dai_ops = {
- 	.startup        = ak4458_startup,
- 	.hw_params	= ak4458_hw_params,
- 	.set_fmt	= ak4458_set_dai_fmt,
--	.digital_mute	= ak4458_set_dai_mute,
-+	.mute_stream	= ak4458_set_dai_mute,
- 	.set_tdm_slot	= ak4458_set_tdm_slot,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver ak4458_dai = {
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index f5ad1f59eb46..91e7a57c43da 100644
---- a/sound/soc/codecs/ak4535.c
-+++ b/sound/soc/codecs/ak4535.c
-@@ -309,10 +309,11 @@ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
--static int ak4535_mute(struct snd_soc_dai *dai, int mute)
-+static int ak4535_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	u16 mute_reg = snd_soc_component_read(component, AK4535_DAC);
-+
- 	if (!mute)
- 		snd_soc_component_write(component, AK4535_DAC, mute_reg & ~0x20);
- 	else
-@@ -348,8 +349,9 @@ static int ak4535_set_bias_level(struct snd_soc_component *component,
- static const struct snd_soc_dai_ops ak4535_dai_ops = {
- 	.hw_params	= ak4535_hw_params,
- 	.set_fmt	= ak4535_set_dai_fmt,
--	.digital_mute	= ak4535_mute,
-+	.mute_stream	= ak4535_mute,
- 	.set_sysclk	= ak4535_set_dai_sysclk,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver ak4535_dai = {
-diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
-index 2d5b640aab58..77004cd7caa3 100644
---- a/sound/soc/codecs/ak4641.c
-+++ b/sound/soc/codecs/ak4641.c
-@@ -405,7 +405,7 @@ static int ak4641_i2s_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	return snd_soc_component_write(component, AK4641_MODE1, mode1);
- }
- 
--static int ak4641_mute(struct snd_soc_dai *dai, int mute)
-+static int ak4641_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 
-@@ -467,15 +467,17 @@ static int ak4641_set_bias_level(struct snd_soc_component *component,
- static const struct snd_soc_dai_ops ak4641_i2s_dai_ops = {
- 	.hw_params    = ak4641_i2s_hw_params,
- 	.set_fmt      = ak4641_i2s_set_dai_fmt,
--	.digital_mute = ak4641_mute,
-+	.mute_stream  = ak4641_mute,
- 	.set_sysclk   = ak4641_set_dai_sysclk,
-+	.no_capture_mute = 1,
- };
- 
- static const struct snd_soc_dai_ops ak4641_pcm_dai_ops = {
- 	.hw_params    = NULL, /* rates are controlled by BT chip */
- 	.set_fmt      = ak4641_pcm_set_dai_fmt,
--	.digital_mute = ak4641_mute,
-+	.mute_stream  = ak4641_mute,
- 	.set_sysclk   = ak4641_set_dai_sysclk,
-+	.no_capture_mute = 1,
- };
- 
- static struct snd_soc_dai_driver ak4641_dai[] = {
+-		for_each_rtd_codec_dais(rtd, i, dai) {
++		for_each_rtd_dais(rtd, i, dai) {
+ 			if (snd_soc_dai_stream_active(dai, playback))
+ 				snd_soc_dai_digital_mute(dai, 0, playback);
+ 		}
 -- 
 2.25.1
 
