@@ -2,77 +2,75 @@ Return-Path: <SRS0=mEIa=AU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	SUBJECT_NEEDS_ENCODING,SUBJ_ILLEGAL_CHARS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA62C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 14:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0CE9C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 16:25:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFEBF206C3
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 14:28:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3866E207DD
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 16:25:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FxT7Zd0L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFEBF206C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H020jewq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3866E207DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 642F81607;
-	Thu,  9 Jul 2020 16:27:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642F81607
+	by alsa0.perex.cz (Postfix) with ESMTPS id A68BB950;
+	Thu,  9 Jul 2020 18:24:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A68BB950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594304894;
-	bh=PTQ+5dV+MsxUJVoUQjLiow3sI2Q9QP3GuQlJj/sJ9uA=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1594311900;
+	bh=J7fwxkGVQFCSHuqpLSDSikk1ydAmG2CWDYa1UCGQhgk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=FxT7Zd0LncRSz2tkglmKCAg6B7xiRvThWQNjaA+pJZ5c2mBh9b8CxEV2OAcTTYzmB
-	 hbI9ZNIrqPswcgcB5f6HGkbhlqARbzoxTQqqHqlPfDRVVQ30pQAOQiwLmC34omDclE
-	 DSOlTnHigH+7ALVSHH9QMzipNLxwX0UygEzhD4xM=
+	b=H020jewqFUSPcK5StgtrxWEBtHl+Aaz8ruZpqoqKRGO+73Wun1q3r0WCkZEgmL5dB
+	 I0X78r91A6f4vY/FRj5Kf/girKCfArQJCvQL/Jv71gbpi2v0RLTKAQiypWsf+vdA06
+	 1ner7AJ7X6UCAXOOQQ7fL490tcz/m7nom6WVUj7g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8A93F802EC;
-	Thu,  9 Jul 2020 16:22:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B439F802BC;
+	Thu,  9 Jul 2020 18:24:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C286F80216; Thu,  9 Jul 2020 10:59:27 +0200 (CEST)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 28FF3F802BD; Thu,  9 Jul 2020 18:24:03 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11DF0F800AE
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 10:59:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11DF0F800AE
-Received: by mail-il1-f198.google.com with SMTP id l17so842086ilj.17
- for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2020 01:59:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=LGqLODc4HGQ5xzNFpLq0IH0ZYBFoMrEw5ZuA1wUgMck=;
- b=JxJLd3q7k9FRn3NRoA+/bE0bHUxIhOFEM7//6C9tWuwTdtmgooTDWu1Y8NYiaEW01k
- xlkKvYJOwe7e1S8NDRZoT75j5MwRA4X4fPHsiFG5BnxQORqQCmZBHgEHQa++SwN7THsb
- PEcCHWKdK8Mw8kKSUDladiuYkltXEsgkSPFoECy+ujDQ++1Av1jQgMzXWQ/koGiVneL0
- PInDOYIFd8wb/nNtzObcaaROgyW6NzUv+FsyFNwdCDHPWyBJRuGZ03XpT2mL7qQdB7K7
- 01EyLX2RlLfkG6MWMFefYyCl4T0t1rdxgSfPX5dMUrbZPvb8gkoJEPULGtkbbvzzmg2x
- tPcw==
-X-Gm-Message-State: AOAM530QAg/Suls+7NTrauchR/blzGh3PbjydlObkX7X1d6Gjt6udnKb
- aYuevOIwT5OeeEBgE09pfLaO49wrDY6znVwrDb00r/+1ADmT
-X-Google-Smtp-Source: ABdhPJxNHGo6m3Iiw/201KlTC4qcTluFpu2sbu9PyrxOirwyMtJkIfnAsi4iRRiseiCwLotvOU6IAZ+dGd2QXzyR7SLNa/LeTirm
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F2DCF80117
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 18:23:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F2DCF80117
+IronPort-SDR: gPo0TQJvRHt6AVuH8gd0LM5nB+hpeqIzw5ChwZcULIFKNN4VDWlzgFXyN9k8bOtzC4Gy1vIpV1
+ WidBNcCHpnLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149515607"
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="149515607"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Jul 2020 09:23:40 -0700
+IronPort-SDR: KNlORbHmz08OtdajFft3R2u/CSdpD0n7yTuGKMoWU7wBndhyJ4xAIboMLAu9bnGVFZE92a4pi2
+ VrrNT0dGxHhQ==
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="280352959"
+Received: from mdcoakle-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.255.231.43])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Jul 2020 09:23:40 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v4 00/10] ASoC: Clean-up W=1 build warnings​ - part2
+Date: Thu,  9 Jul 2020 11:23:17 -0500
+Message-Id: <20200709162328.259586-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:4409:: with SMTP id r9mr40481641ioa.158.1594285157558; 
- Thu, 09 Jul 2020 01:59:17 -0700 (PDT)
-Date: Thu, 09 Jul 2020 01:59:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007cad8705a9fe70b6@google.com>
-Subject: KASAN: use-after-free Read in delete_and_unsubscribe_port (2)
-From: syzbot <syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com>
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
- syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Thu, 09 Jul 2020 16:22:25 +0200
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org, Lee Jones <lee.jones@linaro.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,115 +86,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+Both Lee Jones and I submitted separate series, this is the second
+part of the merged result, for which no feedback was provided.
 
-syzbot found the following crash on:
+I picked Lee's patches for rt5659 and ak4458 and added the pxa and
+ux500 that I didn't fix. The rest is largely identical between our
+respective series, with the exception of the sunxi which I documented
+and Lee removed. I don't have any specific preference and will go with
+the flow on this.
 
-HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11561e7b100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
-dashboard link: https://syzkaller.appspot.com/bug?extid=1a54a94bd32716796edd
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
+Changes since v3:
+Improved commit subjects from 'fix kernel-doc' as suggested by Lee
+Jones. In a couple of cases I just reverted to Lee's patches when the
+code was identical.
+Added a couple of CC: tags from Lee's patches.
+Added Arnaud Pouliquen's Acked-by tag in first patch.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+Lee Jones (6):
+  ASoC: sunxi: sun4i-spdif: Fix misspelling of 'reg_dac_txdata' in
+    kernel-doc
+  ASoC: pxa: pxa-ssp: Demote seemingly unintentional kerneldoc header
+  ASoC: ux500: ux500_msp_i2s: Remove unused variables 'reg_val_DR' and
+    'reg_val_TSTDR'
+  ASoC: codecs: rt5659: Remove many unused const variables
+  ASoC: codecs: tlv320aic26: Demote seemingly unintentional kerneldoc
+    header
+  ASoC: codecs: ak4458: Remove set but never checked variable 'ret'
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com
+Pierre-Louis Bossart (4):
+  ASoC: sti: uniperif: fix 'defined by not used' warning
+  ASoC: qcom: qdsp6: q6asm: Provide documentation for 'codec_profile'
+  ASoC: sunxi: sun4i-i2s: add missing clock and format arguments in
+    kernel-doc
+  ASoC: codecs: rt5631: fix spurious kernel-doc start and missing
+    arguments
 
-==================================================================
-BUG: KASAN: use-after-free in list_empty include/linux/list.h:282 [inline]
-BUG: KASAN: use-after-free in delete_and_unsubscribe_port+0x420/0x4f0 sound/core/seq/seq_ports.c:530
-Read of size 8 at addr ffff88809533de50 by task syz-executor.0/29034
-
-CPU: 0 PID: 29034 Comm: syz-executor.0 Not tainted 5.8.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- list_empty include/linux/list.h:282 [inline]
- delete_and_unsubscribe_port+0x420/0x4f0 sound/core/seq/seq_ports.c:530
- snd_seq_port_disconnect+0x433/0x5c0 sound/core/seq/seq_ports.c:610
- snd_seq_ioctl_unsubscribe_port+0x1fc/0x400 sound/core/seq/seq_clientmgr.c:1525
- snd_seq_ioctl+0x202/0x3e0 sound/core/seq/seq_clientmgr.c:2157
- snd_seq_ioctl_compat+0xdc/0x2d0 sound/core/seq/seq_compat.c:109
- __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:847
- do_syscall_32_irqs_on+0x3f/0x60 arch/x86/entry/common.c:403
- __do_fast_syscall_32 arch/x86/entry/common.c:448 [inline]
- do_fast_syscall_32+0x7f/0x120 arch/x86/entry/common.c:474
- entry_SYSENTER_compat+0x6d/0x7c arch/x86/entry/entry_64_compat.S:138
-RIP: 0023:0xf7ff0569
-Code: Bad RIP value.
-RSP: 002b:00000000f5deb0cc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000040505331
-RDX: 0000000020000200 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Allocated by task 29030:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
- kmem_cache_alloc_trace+0x14f/0x2d0 mm/slab.c:3551
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- snd_seq_port_connect+0x5d/0x520 sound/core/seq/seq_ports.c:553
- snd_seq_ioctl_subscribe_port+0x1fc/0x400 sound/core/seq/seq_clientmgr.c:1484
- snd_seq_ioctl+0x202/0x3e0 sound/core/seq/seq_clientmgr.c:2157
- snd_seq_ioctl_compat+0xdc/0x2d0 sound/core/seq/seq_compat.c:109
- __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:847
- do_syscall_32_irqs_on+0x3f/0x60 arch/x86/entry/common.c:403
- __do_fast_syscall_32 arch/x86/entry/common.c:448 [inline]
- do_fast_syscall_32+0x7f/0x120 arch/x86/entry/common.c:474
- entry_SYSENTER_compat+0x6d/0x7c arch/x86/entry/entry_64_compat.S:138
-
-Freed by task 29035:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3757
- snd_seq_port_disconnect+0x4c1/0x5c0 sound/core/seq/seq_ports.c:614
- snd_seq_ioctl_unsubscribe_port+0x1fc/0x400 sound/core/seq/seq_clientmgr.c:1525
- snd_seq_ioctl+0x202/0x3e0 sound/core/seq/seq_clientmgr.c:2157
- snd_seq_ioctl_compat+0xdc/0x2d0 sound/core/seq/seq_compat.c:109
- __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:847
- do_syscall_32_irqs_on+0x3f/0x60 arch/x86/entry/common.c:403
- __do_fast_syscall_32 arch/x86/entry/common.c:448 [inline]
- do_fast_syscall_32+0x7f/0x120 arch/x86/entry/common.c:474
- entry_SYSENTER_compat+0x6d/0x7c arch/x86/entry/entry_64_compat.S:138
-
-The buggy address belongs to the object at ffff88809533de00
- which belongs to the cache kmalloc-128 of size 128
-The buggy address is located 80 bytes inside of
- 128-byte region [ffff88809533de00, ffff88809533de80)
-The buggy address belongs to the page:
-page:ffffea000254cf40 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88809533d100
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea00029c2e48 ffffea0002257d48 ffff8880aa000700
-raw: ffff88809533d100 ffff88809533d000 000000010000000a 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88809533dd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88809533dd80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88809533de00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                 ^
- ffff88809533de80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88809533df00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+ sound/soc/codecs/ak4458.c       |  6 +++---
+ sound/soc/codecs/rt5631.c       |  8 +++++--
+ sound/soc/codecs/rt5659.c       | 37 ---------------------------------
+ sound/soc/codecs/tlv320aic26.c  |  2 +-
+ sound/soc/pxa/pxa-ssp.c         |  2 +-
+ sound/soc/qcom/qdsp6/q6asm.c    |  2 +-
+ sound/soc/sti/uniperif.h        |  2 +-
+ sound/soc/sunxi/sun4i-i2s.c     | 10 ++++++++-
+ sound/soc/sunxi/sun4i-spdif.c   |  2 +-
+ sound/soc/ux500/ux500_msp_i2s.c |  8 +++----
+ 10 files changed, 27 insertions(+), 52 deletions(-)
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: 6940701c715e193282cf8b31f970b2ea6eb26341
+-- 
+2.25.1
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
