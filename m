@@ -2,66 +2,69 @@ Return-Path: <SRS0=mEIa=AU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3141EC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:03:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FD08C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:18:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B43892076A
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:03:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0CD692076A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:18:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kVau/xRU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B43892076A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jk+Vdi0E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CD692076A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51F5615E0;
-	Thu,  9 Jul 2020 13:02:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51F5615E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87B0B86F;
+	Thu,  9 Jul 2020 13:17:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87B0B86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594292624;
-	bh=QRmRFJKNb/XOIrGcr6OLXsxae3IPgZtT2k4SGjH79XI=;
+	s=default; t=1594293519;
+	bh=Hp7HWR68ic+pIdIRCt10j6/EAbdXPcMGrckRIM1YFNc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kVau/xRUO1Kr+pkE7JpqMehz/woH3kkVIMIwSJF1CXHhB521oNu2z7Mhu/Ilk9zW5
-	 SpwYZXsshZtYqovz69OIuRac70ym3soaql4l/hM01YANXjtctDHwyGYvTfAe/zmsbS
-	 fSuxC5KvqCl6oT1DzQ3WMNT60h6kmato+VlUV16E=
+	b=jk+Vdi0EUaspnW86kviYm42FpDLXOToPgvApcYRsKPra7WtQXqWibLP3I1Xkb158Q
+	 WHtn2IBCZ0OnwXhPleBfcKzfnTDOXKOqC07jMdnoXbkWhxPJN66wjpFigcrq2jpKyf
+	 2wTO+14JzAGb4RSwtTOM9+b93UPqk5EsDCp4ihNQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58225F80257;
-	Thu,  9 Jul 2020 13:01:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E807EF800AE;
+	Thu,  9 Jul 2020 13:17:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C89EFF80257; Thu,  9 Jul 2020 13:01:13 +0200 (CEST)
+ id B5EFBF80216; Thu,  9 Jul 2020 13:17:47 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B486F80257
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 13:01:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B486F80257
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BCD8F800AE
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 13:17:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BCD8F800AE
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D423EAE2D;
- Thu,  9 Jul 2020 11:01:06 +0000 (UTC)
-Date: Thu, 09 Jul 2020 13:01:07 +0200
-Message-ID: <s5hblkp7y18.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D80FFAE2D;
+ Thu,  9 Jul 2020 11:17:39 +0000 (UTC)
+Date: Thu, 09 Jul 2020 13:17:39 +0200
+Message-ID: <s5h5zax7x9o.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 5/5] echoaudio: Address bugs in the interrupt handling
-In-Reply-To: <20200708101848.3457-5-mark@xwax.org>
-References: <2007081115280.3085@stax.localdomain>
- <20200708101848.3457-5-mark@xwax.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v2] ALSA: Use fallthrough pseudo-keyword
+In-Reply-To: <20200708203236.GA5112@embeddedor>
+References: <20200708203236.GA5112@embeddedor>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,57 +80,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 08 Jul 2020 12:18:48 +0200,
-Mark Hills wrote:
+On Wed, 08 Jul 2020 22:32:36 +0200,
+Gustavo A. R. Silva wrote:
 > 
-> Distorted audio appears occasionally, affecting either playback or
-> capture and requiring the affected substream to be closed by all
-> applications and re-opened.
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> fall-through markings when it is the case.
 > 
-> The best way I have found to reproduce the bug is to use dmix in
-> combination with Chromium, which opens the audio device multiple times
-> in threads. Anecdotally, the problems appear to have increased with
-> faster CPUs. I ruled out 32-bit counter wrapping; it often happens
-> much earlier.
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 > 
-> Since applying this patch I have not had problems, where previously
-> they would occur several times a day.
-> 
-> The patch targets the following issues:
-> 
-> * Check for progress using the counter from the hardware, not after it
->   has been truncated to the buffer.
-> 
->   This is a clean way to address a possible bug where if a whole
->   ringbuffer advances between interrupts, it goes unnoticed.
-> 
-> * Move last_period state from chip to pipe
-> 
->   This more logically belongs as part of pipe, and code is reasier to
->   read if it is "counter position last time a period elapsed".
-> 
->   Now the code has no references to period count. A period is just
->   when the regular counter crosses a threshold. This increases
->   readability and reduces scope for bugs.
-> 
-> * Treat period notification and buffer advance independently:
-> 
->   This helps to clarify what is the responsibility of the interrupt
->   handler, and what is pcm_pointer().
-> 
->   Removing shared state between these operations means race conditions
->   are fixed without introducing locks. Synchronisation is only around
->   the read of pipe->dma_counter. There may be cache line contention
->   around "struct audiopipe" but I did not have cause to profile this.
-> 
-> Pay attention to be robust where dma_counter wrapping is not a
-> multiple of period_size or buffer_size.
-> 
-> This is a revised patch based on feedback from Takashi and Giuliano.
-> 
-> Signed-off-by: Mark Hills <mark@xwax.org>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> Changes in v2:
+>  - Remove unnecessary fall-through comment.
 
-Applied now.  Thanks.
+Applied now.
 
+But I still see a few die-hard ones in other places than sound/soc, so
+I'll convert them, too.  Will submit another patches.
+
+
+thanks,
 
 Takashi
