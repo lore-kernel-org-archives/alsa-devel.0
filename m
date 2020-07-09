@@ -7,78 +7,76 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 907C1C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 16:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4AD4C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 16:26:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D7AE207F9
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 16:25:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 60166207DD
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 16:26:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mxDgtLAt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D7AE207F9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vDliALv4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60166207DD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D18B15DC;
-	Thu,  9 Jul 2020 18:25:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D18B15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF1611673;
+	Thu,  9 Jul 2020 18:25:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF1611673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594311953;
-	bh=/42enHWFYMt+3GZhZfRvPdqhhC3BG6NgnHIaCBq9EB8=;
+	s=default; t=1594312004;
+	bh=AB9DUxlap7his/1pJioffJhFp/iCyb5jVDYZu0tP9OM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mxDgtLAt92g5Zrk4/2UjOUZvM1pFKnPY3bLSoZMyABcSaIiO9DDFz7UMlVUbyKQA5
-	 vavt3uG+w9Mz+MUEDg03pBQq91p8guR5Gtxxdhg2yLeWhx5RUuoABb6ns4ZKY666ZE
-	 lqnuygcuB0DDDtOemD4ibNUvJJcfFOJs27JP9i+Y=
+	b=vDliALv4Q27o8Iddsl5tbbE9fJFbJpZS8GGsmI4FhFvb3s/KdGUgpViKIU6l22DcV
+	 v9Ym6JzELwBOtUfxNdq0IGvWaR4AchAYsWwLvvA0H96sdLPdjjDG5kqbloTnqWl4Y1
+	 Xp4yt+sqFd2PGKlKW7Y2Bd4hgZQ9bLtH+vC1ebQw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1BEEF80255;
-	Thu,  9 Jul 2020 18:24:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7DAAF802DC;
+	Thu,  9 Jul 2020 18:24:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A344F802BE; Thu,  9 Jul 2020 18:24:05 +0200 (CEST)
+ id 6813AF802BD; Thu,  9 Jul 2020 18:24:10 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73CE5F800AE
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 18:23:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73CE5F800AE
-IronPort-SDR: TQwNiz75zTqIini2gadxqHFcu7+eVjHeLSmKnwPc3PU2b5StZfMnfq3S/6yL4yCueCbpur69Uc
- nzqqiXvoDuHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149515619"
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="149515619"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C0E8F80216
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 18:23:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C0E8F80216
+IronPort-SDR: zfHdDJf5Rnv+Up8rjlGUHBUUy8B6NIwFaolVN3Q1KKaxr00Y9k8ItlJExVHg8JkJ9qd8cJsHu/
+ nsm1jtA89J8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149515612"
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="149515612"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jul 2020 09:23:44 -0700
-IronPort-SDR: o5wxybthMLOSoX8vtEzUionP4cDeJvp8FUkjdghoDd1My8WEGfmOeaBmnMztT5xOfjtzvAUs1q
- m0O98zXqCC+w==
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="280352973"
+ 09 Jul 2020 09:23:41 -0700
+IronPort-SDR: KzUGfoalURuiIxELJefwg1H+FBc3WNXrvMOf2f8zmPdhtnNVYUyYTwLZLRJA3PgutpqmK+1VIY
+ 5NpmjSl/m53g==
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="280352965"
 Received: from mdcoakle-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.231.43])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jul 2020 09:23:43 -0700
+ 09 Jul 2020 09:23:40 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 02/10] ASoC: qcom: qdsp6: q6asm: Provide documentation for
- 'codec_profile'
-Date: Thu,  9 Jul 2020 11:23:19 -0500
-Message-Id: <20200709162328.259586-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 01/10] ASoC: sti: uniperif: fix 'defined by not used'
+ warning
+Date: Thu,  9 Jul 2020 11:23:18 -0500
+Message-Id: <20200709162328.259586-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200709162328.259586-1-pierre-louis.bossart@linux.intel.com>
 References: <20200709162328.259586-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, tiwai@suse.de,
- open list <linux-kernel@vger.kernel.org>, Patrick Lai <plai@codeaurora.org>,
- Takashi Iwai <tiwai@suse.com>,
+Cc: tiwai@suse.de, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Weitao Hou <houweitaoo@gmail.com>,
- Vinod Koul <vkoul@kernel.org>, broonie@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
  Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -95,35 +93,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fixes the following W=1 kernel build warning(s):
+Fix W=1 warning. The table uni_tdm_hw is declared in a header included
+by multiple C file. This isn't really a good practice but for now
+using __maybe_unused makes the following warning go away.
 
-sound/soc/qcom/qdsp6/q6asm.c:924: warning: Function parameter or
-member 'codec_profile' not described in 'q6asm_open_write'
+sound/soc/sti/sti_uniperif.c:12:
+sound/soc/sti/uniperif.h:1351:38: warning: ‘uni_tdm_hw’ defined but
+not used [-Wunused-const-variable=]
+ 1351 | static const struct snd_pcm_hardware uni_tdm_hw = {
+      |                                      ^~~~~~~~~~
 
-Cc: Patrick Lai <plai@codeaurora.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 2 +-
+ sound/soc/sti/uniperif.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index e0983970cba9..755062eadcc8 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -912,9 +912,9 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
+diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+index 2dc2da5d458b..a16adeb7c1e9 100644
+--- a/sound/soc/sti/uniperif.h
++++ b/sound/soc/sti/uniperif.h
+@@ -1348,7 +1348,7 @@ struct sti_uniperiph_data {
+ 	struct sti_uniperiph_dai dai_data;
+ };
  
- /**
-  * q6asm_open_write() - Open audio client for writing
-- *
-  * @ac: audio client pointer
-  * @format: audio sample format
-+ * @codec_profile: compressed format profile
-  * @bits_per_sample: bits per sample
-  *
-  * Return: Will be an negative value on error or zero on success
+-static const struct snd_pcm_hardware uni_tdm_hw = {
++static __maybe_unused const struct snd_pcm_hardware uni_tdm_hw = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_MMAP_VALID,
 -- 
 2.25.1
 
