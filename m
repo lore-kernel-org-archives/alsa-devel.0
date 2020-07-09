@@ -2,58 +2,62 @@ Return-Path: <SRS0=mEIa=AU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F253C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 01:56:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7136DC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 01:57:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D16020772
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 01:56:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECFD220774
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 01:57:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XHoLOLhM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D16020772
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EbkSVgZq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECFD220774
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9112C10E;
-	Thu,  9 Jul 2020 03:55:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9112C10E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CEC415DC;
+	Thu,  9 Jul 2020 03:56:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CEC415DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594259769;
-	bh=gmboe1NvLQQfu1liJ4hWRqWVLaeG9zqmSxPjBT4sAc8=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XHoLOLhM8pdehqHTlqdqK8cCxxf7047R2fvQRo+SY6toIkqoFAs1i0VkgHo4ZU3/F
-	 LlKTzoVQYVfeFRx2Dyo+PzCDd69wmImMCd1qrmhs370KxTPAIyb3K/Uk6dJVI3477o
-	 DsvEDWsok96Jqppw4yv1zPvKO49x7sNMs7gOZ6MU=
+	s=default; t=1594259822;
+	bh=vFAucXSpMxZ+5eyTp0yxgvWfVyiORa6h/YTC4ziIT+Y=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EbkSVgZqSx64e6iEOskWBYXDPAwxIDsTr+MLqKuXi7WihS0t2TgXiUVC7CpH38pXv
+	 n9ak5civ+5axdWDff0IH46G3JZP1B5VGVfFVPzz14QEF/lpHCeL5ozOp1vNgMKgATX
+	 MDYfNt39K4ZTgOC3NA74jfpDzwl9lEnP7DStcRh8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F54FF80117;
-	Thu,  9 Jul 2020 03:55:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58DA7F8025A;
+	Thu,  9 Jul 2020 03:55:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44A4CF80216; Thu,  9 Jul 2020 03:55:17 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A6197F80117
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:55:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6197F80117
-Date: 09 Jul 2020 10:55:05 +0900
-X-IronPort-AV: E=Sophos;i="5.75,329,1589209200"; d="scan'208";a="51457091"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 09 Jul 2020 10:55:05 +0900
+ id 24A12F80257; Thu,  9 Jul 2020 03:55:45 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id B3B88F80255
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 03:55:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3B88F80255
+Date: 09 Jul 2020 10:55:36 +0900
+X-IronPort-AV: E=Sophos;i="5.75,329,1589209200"; d="scan'208";a="51669027"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 09 Jul 2020 10:55:36 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D9ADB4138B31;
- Thu,  9 Jul 2020 10:55:05 +0900 (JST)
-Message-ID: <87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 372A7400A8A2;
+ Thu,  9 Jul 2020 10:55:36 +0900 (JST)
+Message-ID: <87fta1xxjc.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 00/21] ASoC: merge .digital_mute() into .mute_stream()
+Subject: [PATCH v3 01/21] ASoC: hdmi-codec: return -ENOTSUPP for digital_mute
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com>
+References: <87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,160 +77,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v3 patch-set.
-ALSA SoC has 2 mute callbacks (= .digital_mute(), .mute_stream()).
-But the difference between these 2 are very small.
-	.digital_mute() is for Playback
-	.mute_stream()  is for Playback/Capture
+snd_soc_dai_digital_mute() will return -ENOTSUPP if driver doesn't
+support mute.
+In hdmi-codec case, hdmi_codec_digital_mute() will be used for it,
+and each driver has .digital_mute() callback.
+hdmi_codec_digital_mute() want to return -ENOTSUPP to follow it.
 
-This patch-set adds new .no_capture_mute flag and emulate
-.digital_mute() by .mute_stream().
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/codecs/hdmi-codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2 -> v3
-	- uses "xxx_mute_stream" for .mute_stream naming
-	  if it was better
-	- removed verbose Cc email address
-
-v1 -> v2
-	- return -ENOTSUPP at hdmi-codec
-	- add new .no_capture_mute flag and emulate .digital_mute()
-	  by .mute_stream()
-
-Link: https://lore.kernel.org/r/874kqy2y5t.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/87ftam37ko.wl-kuninori.morimoto.gx@renesas.com
-
-Kuninori Morimoto (21):
-  ASoC: hdmi-codec: return -ENOTSUPP for digital_mute
-  ASoC: soc-dai.c: add .no_capture_mute support
-  ASoC: hdmi-codec: merge .digital_mute() into .mute_stream()
-  ASoC: ti: merge .digital_mute() into .mute_stream()
-  ASoC: spear: merge .digital_mute() into .mute_stream()
-  ASoC: meson: merge .digital_mute() into .mute_stream()
-  ASoC: atmel: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: tlv*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: tas*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: ssm*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: pcm*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: max*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: alc*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: wm*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: es*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: da*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: cs*: merge .digital_mute() into .mute_stream()
-  ASoC: codecs: ak*: merge .digital_mute() into .mute_stream()
-  ASoC: soc-dai: remove .digital_mute
-  ASoC: soc-core: snd_soc_dai_digital_mute() for both CPU/Codec
-
- drivers/gpu/drm/bridge/sii902x.c       |  7 ++++---
- drivers/gpu/drm/exynos/exynos_hdmi.c   |  6 ++++--
- drivers/gpu/drm/i2c/tda998x_drv.c      |  7 ++++---
- drivers/gpu/drm/mediatek/mtk_hdmi.c    |  6 ++++--
- drivers/gpu/drm/rockchip/cdn-dp-core.c |  7 ++++---
- drivers/gpu/drm/sti/sti_hdmi.c         |  6 ++++--
- drivers/gpu/drm/zte/zx_hdmi.c          |  7 ++++---
- include/sound/hdmi-codec.h             |  6 +++++-
- include/sound/soc-dai.h                |  4 +++-
- sound/soc/atmel/atmel-classd.c         |  7 ++++---
- sound/soc/codecs/88pm860x-codec.c      |  8 +++++---
- sound/soc/codecs/ad193x.c              |  5 +++--
- sound/soc/codecs/adau1701.c            |  5 +++--
- sound/soc/codecs/ak4458.c              |  5 +++--
- sound/soc/codecs/ak4535.c              |  6 ++++--
- sound/soc/codecs/ak4641.c              |  8 +++++---
- sound/soc/codecs/alc5623.c             |  5 +++--
- sound/soc/codecs/alc5632.c             |  5 +++--
- sound/soc/codecs/cpcap.c               | 11 +++++++----
- sound/soc/codecs/cq93vc.c              |  5 +++--
- sound/soc/codecs/cs4265.c              |  5 +++--
- sound/soc/codecs/cs4270.c              |  5 +++--
- sound/soc/codecs/cs42l42.c             |  5 +++--
- sound/soc/codecs/cs42l51.c             |  5 +++--
- sound/soc/codecs/cs42l52.c             |  5 +++--
- sound/soc/codecs/cs42l56.c             |  5 +++--
- sound/soc/codecs/cs42xx8.c             |  5 +++--
- sound/soc/codecs/cs4341.c              |  5 +++--
- sound/soc/codecs/cs4349.c              |  5 +++--
- sound/soc/codecs/da7210.c              |  5 +++--
- sound/soc/codecs/da7213.c              |  5 +++--
- sound/soc/codecs/da9055.c              |  5 +++--
- sound/soc/codecs/es8316.c              |  5 +++--
- sound/soc/codecs/es8328.c              |  5 +++--
- sound/soc/codecs/hdmi-codec.c          | 25 +++++++++++++++++--------
- sound/soc/codecs/isabelle.c            | 15 +++++++++------
- sound/soc/codecs/jz4770.c              |  5 +++--
- sound/soc/codecs/lm49453.c             | 25 +++++++++++++++----------
- sound/soc/codecs/max98088.c            | 12 ++++++++----
- sound/soc/codecs/max98090.c            |  6 ++++--
- sound/soc/codecs/max9867.c             |  5 +++--
- sound/soc/codecs/ml26124.c             |  5 +++--
- sound/soc/codecs/nau8822.c             |  5 +++--
- sound/soc/codecs/pcm1681.c             |  5 +++--
- sound/soc/codecs/pcm1789.c             |  5 +++--
- sound/soc/codecs/pcm179x.c             |  5 +++--
- sound/soc/codecs/pcm3168a.c            |  5 +++--
- sound/soc/codecs/pcm512x.c             |  5 +++--
- sound/soc/codecs/rk3328_codec.c        |  5 +++--
- sound/soc/codecs/sgtl5000.c            |  5 +++--
- sound/soc/codecs/ssm2518.c             |  5 +++--
- sound/soc/codecs/ssm2602.c             |  5 +++--
- sound/soc/codecs/ssm4567.c             |  5 +++--
- sound/soc/codecs/sta529.c              |  5 +++--
- sound/soc/codecs/tas2552.c             |  5 +++--
- sound/soc/codecs/tas2562.c             |  5 +++--
- sound/soc/codecs/tas2770.c             |  5 +++--
- sound/soc/codecs/tas571x.c             |  5 +++--
- sound/soc/codecs/tas5720.c             |  5 +++--
- sound/soc/codecs/tas6424.c             |  5 +++--
- sound/soc/codecs/tfa9879.c             |  5 +++--
- sound/soc/codecs/tlv320aic23.c         |  5 +++--
- sound/soc/codecs/tlv320aic26.c         |  5 +++--
- sound/soc/codecs/tlv320aic31xx.c       |  6 ++++--
- sound/soc/codecs/tlv320aic32x4.c       |  5 +++--
- sound/soc/codecs/tlv320aic3x.c         |  5 +++--
- sound/soc/codecs/twl6040.c             |  5 +++--
- sound/soc/codecs/uda134x.c             |  5 +++--
- sound/soc/codecs/wm8350.c              |  5 +++--
- sound/soc/codecs/wm8400.c              |  5 +++--
- sound/soc/codecs/wm8510.c              |  5 +++--
- sound/soc/codecs/wm8580.c              |  5 +++--
- sound/soc/codecs/wm8711.c              |  5 +++--
- sound/soc/codecs/wm8728.c              |  5 +++--
- sound/soc/codecs/wm8731.c              |  5 +++--
- sound/soc/codecs/wm8741.c              |  5 +++--
- sound/soc/codecs/wm8750.c              |  5 +++--
- sound/soc/codecs/wm8753.c              |  8 +++++---
- sound/soc/codecs/wm8770.c              |  5 +++--
- sound/soc/codecs/wm8776.c              |  5 +++--
- sound/soc/codecs/wm8900.c              |  5 +++--
- sound/soc/codecs/wm8903.c              |  5 +++--
- sound/soc/codecs/wm8904.c              |  5 +++--
- sound/soc/codecs/wm8940.c              |  5 +++--
- sound/soc/codecs/wm8955.c              |  5 +++--
- sound/soc/codecs/wm8960.c              |  5 +++--
- sound/soc/codecs/wm8961.c              |  5 +++--
- sound/soc/codecs/wm8962.c              |  5 +++--
- sound/soc/codecs/wm8971.c              |  5 +++--
- sound/soc/codecs/wm8974.c              |  5 +++--
- sound/soc/codecs/wm8978.c              |  5 +++--
- sound/soc/codecs/wm8983.c              |  7 ++++---
- sound/soc/codecs/wm8985.c              |  7 ++++---
- sound/soc/codecs/wm8988.c              |  5 +++--
- sound/soc/codecs/wm8990.c              |  5 +++--
- sound/soc/codecs/wm8991.c              |  7 ++++---
- sound/soc/codecs/wm8993.c              |  5 +++--
- sound/soc/codecs/wm8994.c              |  9 ++++++---
- sound/soc/codecs/wm8995.c              |  8 +++++---
- sound/soc/codecs/wm9081.c              |  5 +++--
- sound/soc/meson/axg-spdifout.c         |  5 +++--
- sound/soc/soc-core.c                   |  4 ++--
- sound/soc/soc-dai.c                    | 12 +++++++-----
- sound/soc/spear/spdif_out.c            |  8 +++++---
- sound/soc/ti/ams-delta.c               |  9 +++++----
- 105 files changed, 390 insertions(+), 249 deletions(-)
-
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index f005751da2cc..926ab447a96b 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -566,7 +566,7 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ 		return hcp->hcd.ops->digital_mute(dai->dev->parent,
+ 						  hcp->hcd.data, mute);
+ 
+-	return 0;
++	return -ENOTSUPP;
+ }
+ 
+ static const struct snd_soc_dai_ops hdmi_codec_i2s_dai_ops = {
 -- 
 2.25.1
 
