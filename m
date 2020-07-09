@@ -6,56 +6,57 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57405C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4A10C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:02:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D84D92076A
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:02:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 885DE2074B
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2020 11:02:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jEQGGCTU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D84D92076A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LiW2cd+p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 885DE2074B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E7FE1665;
-	Thu,  9 Jul 2020 13:01:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E7FE1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 264541607;
+	Thu,  9 Jul 2020 13:01:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 264541607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594292523;
-	bh=ENh+iCnDazdjaIkKOVzUEriYbU03fExfpv9WryD8da4=;
+	s=default; t=1594292565;
+	bh=mluRWjQvf7g0zfkr+5lQ23XtHPl4aW4rdRlGlIrvkog=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jEQGGCTUk1Pq0mYgbXU7R5cUDCYFrKcWg2YLcxvD8sxs5TvI++I2EoqjPdr2AtcwP
-	 AC90+72oOfhsAcXbFMFHvxTREzaIm0mLoLyalMp7iiNQIxPpJ3pIxNWOr9kF+fRN+o
-	 Jy8ndC34kFXlqPpZJUCYJP/kafYTlNfnQ7GqZ7Yw=
+	b=LiW2cd+pMruERcci88x/EviHNbLrW5nM2muVhBR4nYHos91M6+S0/EwdGj/Otlj1B
+	 HgWbjtFaAqukmBzNXuNaUHarrbegen55rvcydTXdA4KOX1S3uVfTfcHgzBNDm1Pl0m
+	 81idKxSCtJt0sAtvYcnt+G/9LF/KtEK81G7eyNi0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0EB4F802BC;
-	Thu,  9 Jul 2020 13:00:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8BAAF802C2;
+	Thu,  9 Jul 2020 13:00:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52ABCF802BD; Thu,  9 Jul 2020 13:00:28 +0200 (CEST)
+ id D29DBF802D2; Thu,  9 Jul 2020 13:00:47 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C302F800AE
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 13:00:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C302F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4E76F802C2
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 13:00:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4E76F802C2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 72436AE44;
- Thu,  9 Jul 2020 11:00:21 +0000 (UTC)
-Date: Thu, 09 Jul 2020 13:00:21 +0200
-Message-ID: <s5hfta17y2i.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id EFFCBAE44;
+ Thu,  9 Jul 2020 11:00:36 +0000 (UTC)
+Date: Thu, 09 Jul 2020 13:00:37 +0200
+Message-ID: <s5heepl7y22.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 2/5] echoaudio: Race conditions around "opencount"
-In-Reply-To: <20200708101848.3457-2-mark@xwax.org>
+Subject: Re: [PATCH 3/5] echoaudio: Prevent races in calls to
+ set_audio_format()
+In-Reply-To: <20200708101848.3457-3-mark@xwax.org>
 References: <2007081115280.3085@stax.localdomain>
- <20200708101848.3457-2-mark@xwax.org>
+ <20200708101848.3457-3-mark@xwax.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -77,36 +78,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 08 Jul 2020 12:18:45 +0200,
+On Wed, 08 Jul 2020 12:18:46 +0200,
 Mark Hills wrote:
 > 
-> Use of atomics does not make these statements robust:
-> 
->        atomic_inc(&chip->opencount);
->        if (atomic_read(&chip->opencount) > 1 && chip->rate_set)
->                chip->can_set_rate=0;
-> 
-> and
-> 
->        if (atomic_read(&chip->opencount)) {
->                if (chip->opencount) {
->                        changed = -EAGAIN;
->                } else {
->                        changed = set_digital_mode(chip, dmode);
-> 
-> It would be necessary to atomically increment or decrement the value
-> and use the returned result. And yet we still need to prevent other
-> threads making use of "can_set_rate" while we set it.
-> 
-> However in all but one case the atomic is misleading as they are already
-> running with "mode_mutex" held.
-> 
-> Decisions are made on mode setting are often intrinsically connected
-> to "opencount" because some operations are not permitted unless
-> there is sole ownership.
-> 
-> So instead simplify this, and use "mode_mutex" as a lock for all reference
-> counting and mode setting.
+> The function uses chip->comm_page which needs locking against
+> other use at the same time.
 > 
 > Signed-off-by: Mark Hills <mark@xwax.org>
 
