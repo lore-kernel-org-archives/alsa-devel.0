@@ -7,90 +7,87 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AAF5C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:28:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BC29C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:28:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE24120720
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:28:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E83A62076A
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:28:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="owVhi8Mn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="CNGVSJ/w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE24120720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BPo2bV1h";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="VWwToPDP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E83A62076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2540E1663;
-	Fri, 10 Jul 2020 07:27:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2540E1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C85C15E5;
+	Fri, 10 Jul 2020 07:27:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C85C15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594358886;
-	bh=P2/4doVFwZYtfy2p7HkahOZXUbpYZUR1eNTwZUSvM6o=;
+	s=default; t=1594358915;
+	bh=BAtaCAuhTuY+rglUGgeJN5y4Boy7Nrfv25Jp13fvMV4=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=owVhi8MnCvPbA2j6JC4t/deYxj23OyqNX2M77KFvYJ87WO7ZObNOQoLKZo/aCplhK
-	 cxmMXoMEEYQw9PvO7AgO2v0K+7lE0UShuqfoXXKOD1vARXKUq6iOo0O/rwfRPs1/Ax
-	 HlZyda3PZDnbWyIN1PyayaAZL8Iq3kohRU8eennI=
+	b=BPo2bV1hPMIceaALPCeftlNcFIGIikpRXBJCzwyblAg40zD9NvXSLEEwy6rKc3m0P
+	 ef9kB4QaLFRgRR0ksIUAOdF8W22cJUujHx4T2gM/HyWzvvYk6gC76IuPqc5KRnJ4re
+	 0a4JQob+nUv2b23ZpJmn3R4mSMCsg1gLz1LKd7TI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81491F802A0;
-	Fri, 10 Jul 2020 07:25:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7ABEAF802C2;
+	Fri, 10 Jul 2020 07:25:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C33BF8015C; Fri, 10 Jul 2020 07:25:33 +0200 (CEST)
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com
- [IPv6:2607:f8b0:4864:20::44a])
+ id 3B922F80268; Fri, 10 Jul 2020 07:25:36 +0200 (CEST)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74A76F80150
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 07:25:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74A76F80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id D38ABF8011C
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 07:25:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D38ABF8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="CNGVSJ/w"
-Received: by mail-pf1-x44a.google.com with SMTP id g85so2925268pfb.11
- for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2020 22:25:20 -0700 (PDT)
+ header.b="VWwToPDP"
+Received: by mail-yb1-xb49.google.com with SMTP id g10so5816353ybd.0
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2020 22:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=Y3EnggORWF57ZGrCyAOh8m6NEpj3i0woYDKiuIiNxkM=;
- b=CNGVSJ/w2CjjKVrEYvQCv4OOefV+Hd1i3GxaKDWstjvFqwC2HnTNtl0+7zDdhc/KJm
- OE17u3CuJ5Ezxcznzbr/ocM8CDKE5N/1c/XmO48OP+zGI1YzFe2jKzZYW/TihiOhr/6h
- crnexX0iC8SQ2FS4OWLkf7MlSWjddZDZ31NDz2sGywrqCdAxvoy47S+ztfcpzr//DlOi
- Zv1oUq1obOyVQv0eqUFDa/5Nxd5xGX5h0YClMJ4MlOODK3yGRoVPrdINUb9mgdxnSSfQ
- SUmy8Yc1LWLuKfy0XzJdAlPk7L2VdwXqGx/2Ysrd4w58N+2n/8gyf5aUWAJgEigafIJM
- g7Bw==
+ :cc; bh=i2NhQTpZuhCYWTnxTi14iTiCHJsPokmxWx+SDqUiObw=;
+ b=VWwToPDPM0rGsgdyXx/MPzUW2/SUmATrBTK/cVKkCbVOG57hyj0/7MaNB26EhSt0J8
+ Ime7xaCK6wahKUFxUHqAPrrf5uzNNen9Pnz5GK2LmkS84Y4xZUwN2cbHM+3fpiv1tnCR
+ gJdrh1puHrnTOK19Aaa531xhgtHEtW/23Gdk/5RDzNWleHEv8BTC8wm/Qod2SR2ocr1g
+ /BZb2oPsB+2USOHWcs0mFdSboheF7YB+1KrfRrwUxdDYj4P/R3T6B6g01GhtP9AnPdn2
+ Y5qiFKx15E/18d7prk1YpciA4Js8VqJApyoKaQTd/of3WGBmtRgm1b3rUOl9XX1E/4ye
+ 4PXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=Y3EnggORWF57ZGrCyAOh8m6NEpj3i0woYDKiuIiNxkM=;
- b=uFmtbjGSQTLsc77BDMc1BTw5fP2AcrE8abUGEJV/4+Mjf1Csw3Gma7M2qhJRbmGABi
- uC/q3dqSDAc0OCuD/OjGHmAxhb9fPKiEi8uHAh2DoSD/trwNRDPRAmfCroLOHM65Br2e
- u9AFRh1w+poD09psMZllO5frZoq4ZVxmqtK6M4zv/v7YMgcolhX4IUwU/Q4eG4K2MgYG
- smuGi6+nnDxSqjKnbeta8KtLhURZnGW2CQqUS4PrI4pZu3jM9dWHNDt2OO1Ou3YB845W
- 867kg/r04pEvjV+SYYdHU/reIzLRDzzOrj9UlMG+WhQKdsk93yvF3kzN/8s79CS4s66N
- fTcA==
-X-Gm-Message-State: AOAM531Y+0505PgsHeNXsZHupeggUFcP6oZDekpjl0xksBIzsrLyJLsj
- sHgw1P2FC3J4jXStOyhqxKXOdJLw4xgC
-X-Google-Smtp-Source: ABdhPJx7Q4sBEZvytM2P7Fdfv06kQBXfBYR8li9S1VV5buJUiQWhcdM4KNipGKo3SyEuxPkBzRNSi0NV3qOW
-X-Received: by 2002:a17:902:b287:: with SMTP id
- u7mr47682560plr.107.1594358717464; 
- Thu, 09 Jul 2020 22:25:17 -0700 (PDT)
-Date: Fri, 10 Jul 2020 13:25:00 +0800
+ bh=i2NhQTpZuhCYWTnxTi14iTiCHJsPokmxWx+SDqUiObw=;
+ b=rivymRqNZo+qBjzx6EOfiul23OGYWoo2nackqcj4cGmHXoXc6OPDKF3a5M47MMfU8R
+ +vV3lzUQO0A7YtupoIdULl/E/AEk+CTqCszTDmfrcazil4K6GZ2uIB1VEXD5PvpwkO6l
+ wyCdB7Br0mHJ0v9kv/HWB9huZrZSp5SuV9BR98NLD+ZiAaXlA2uuMLhjLWhGkdNzVCeo
+ eEefxsffwgCdGi0ZsC0RKovg9TpZ0gFFpJ6urCJ2HkWqVqdm3la2tC4unqE84chP1BDV
+ yXD58EQnqWhfMo92XC1SyELL0nQzID4XLAb2cHTWwyIgF94XHs61ImNzxs/lAQrW9GH/
+ vAmA==
+X-Gm-Message-State: AOAM530AbmDq1JHcOYgWelKkXGfu/CBYIznwgnZDQk/XmzdSyI/ZySuq
+ hwvBvxOVZgeVorwmOxlJVmwCCrOiNf+v
+X-Google-Smtp-Source: ABdhPJyxdVQdC7BceZ8J2XZQ+dXvuO4Jq88o+nRWRKXh9lYZoRE6UwV4YfwXKJyNApczRBaWatW2bG5w5N0t
+X-Received: by 2002:a25:cb42:: with SMTP id b63mr45668907ybg.266.1594358725304; 
+ Thu, 09 Jul 2020 22:25:25 -0700 (PDT)
+Date: Fri, 10 Jul 2020 13:25:02 +0800
 In-Reply-To: <20200710052505.3664118-1-tzungbi@google.com>
-Message-Id: <20200710052505.3664118-2-tzungbi@google.com>
+Message-Id: <20200710052505.3664118-4-tzungbi@google.com>
 Mime-Version: 1.0
 References: <20200710052505.3664118-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-Subject: [PATCH 1/6] ASoC: dt-bindings: mt8183: add a property "mediatek,
- hdmi-codec"
+Subject: [PATCH 3/6] ASoC: mediatek: mt8183: support HDMI jack reporting
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org, robh+dt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh@kernel.org>, tzungbi@google.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, tzungbi@google.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,34 +103,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Adds an optional property "mediatek,hdmi-codec".
+Supports HDMI jack reporting.
 
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- .../bindings/sound/mt8183-mt6358-ts3a227-max98357.txt           | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/mediatek/Kconfig                    |  1 +
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 20 ++++++++++++++++++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
-index 5afd3d8dab84..5e455129eb96 100644
---- a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
-@@ -9,6 +9,7 @@ Optional properties:
- - mediatek,headset-codec: the phandles of ts3a227 codecs
- - mediatek,ec-codec: the phandle of EC codecs.
-                      See google,cros-ec-codec.txt for more details.
-+- mediatek,hdmi-codec: the phandles of HDMI codec
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 786a8d5031e4..ba120e9441d0 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -127,6 +127,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
+ 	select SND_SOC_BT_SCO
+ 	select SND_SOC_TS3A227E
+ 	select SND_SOC_CROS_EC_CODEC if CROS_EC
++	select SND_SOC_HDMI_CODEC
+ 	help
+ 	  This adds ASoC driver for Mediatek MT8183 boards
+ 	  with the MT6358 TS3A227E MAX98357A RT1015 audio codec.
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index c375e9f91a34..bd04c4bd309b 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
++#include <sound/hdmi-codec.h>
+ #include <sound/jack.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -36,7 +37,7 @@ static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
+ struct mt8183_mt6358_ts3a227_max98357_priv {
+ 	struct pinctrl *pinctrl;
+ 	struct pinctrl_state *pin_states[PIN_STATE_MAX];
+-	struct snd_soc_jack headset_jack;
++	struct snd_soc_jack headset_jack, hdmi_jack;
+ };
  
- Example:
+ static int mt8183_mt6358_i2s_hw_params(struct snd_pcm_substream *substream,
+@@ -337,6 +338,22 @@ static const struct snd_soc_ops mt8183_mt6358_ts3a227_max98357_wov_ops = {
+ 	.shutdown = mt8183_mt6358_ts3a227_max98357_wov_shutdown,
+ };
  
-@@ -16,6 +17,7 @@ Example:
- 		compatible = "mediatek,mt8183_mt6358_ts3a227_max98357";
- 		mediatek,headset-codec = <&ts3a227>;
- 		mediatek,ec-codec = <&ec_codec>;
-+		mediatek,hdmi-codec = <&it6505dptx>;
- 		mediatek,platform = <&afe>;
- 	};
- 
++static int
++mt8183_mt6358_ts3a227_max98357_hdmi_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
++		snd_soc_card_get_drvdata(rtd->card);
++	int ret;
++
++	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT,
++				    &priv->hdmi_jack, NULL, 0);
++	if (ret)
++		return ret;
++
++	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
++					  &priv->hdmi_jack);
++}
++
+ static struct snd_soc_dai_link mt8183_mt6358_ts3a227_dai_links[] = {
+ 	/* FE */
+ 	{
+@@ -499,6 +516,7 @@ static struct snd_soc_dai_link mt8183_mt6358_ts3a227_dai_links[] = {
+ 		.ignore_suspend = 1,
+ 		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
+ 		.ops = &mt8183_mt6358_tdm_ops,
++		.init = mt8183_mt6358_ts3a227_max98357_hdmi_init,
+ 		SND_SOC_DAILINK_REG(tdm),
+ 	},
+ };
 -- 
 2.27.0.383.g050319c2ae-goog
 
