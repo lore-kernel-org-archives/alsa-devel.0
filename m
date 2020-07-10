@@ -2,73 +2,77 @@ Return-Path: <SRS0=u2Q7=AV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ABA4C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 13:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A4F4C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 13:34:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 231FD206A5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 13:17:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CD43120578
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 13:34:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Zgy7pSnj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 231FD206A5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ggjV0Ts9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD43120578
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84A759F6;
-	Fri, 10 Jul 2020 15:17:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84A759F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E1B886F;
+	Fri, 10 Jul 2020 15:34:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E1B886F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594387071;
-	bh=7imNI+WN0eXBMlTTJCeJeoXozspN01FmfN6Sh0cwIFQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Zgy7pSnj7yh+YluNkmlsz/TG7G8le7vA36dY7JWHKvvWb9Rp4VlNO4Q+kOkrCCQN7
-	 vRxwbNae7diGzVj8Lw/Uz/j8yyrO1W+9WY5OtEg3kQqO7/RXELnnynj262uqXp6wht
-	 o3sr5F0xniFYz3HzHLszwv+2Q1VicxPGxkGzflKo=
+	s=default; t=1594388097;
+	bh=yDn+5sxtI0lFTBrbiB3/SA4LPIdHoUrvtTN/AFR+zfE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ggjV0Ts9+FMyPEryNxQHxjQJr06gZSECmeKZ2SSCCjNPzbvtjwWT4W11eKgEATAWj
+	 Jkd4AKCZb1S5rh5UQ+qG6EzHza5UnT+6lfQDp2n32rBetkrT0wNA0TI5QOX8QfQPpy
+	 bRK2Y6DIrru2PWycjWkpze4u6s2WeAMBrrgBAodg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0554F8011C;
-	Fri, 10 Jul 2020 15:17:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82D03F8011C;
+	Fri, 10 Jul 2020 15:34:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69542F80216; Thu,  9 Jul 2020 17:25:59 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C709AF8015A; Fri, 10 Jul 2020 15:34:04 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2422EF8011F
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2020 17:25:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2422EF8011F
-IronPort-SDR: pEAsBK1lM5Bj6arq5JOG9bkm0+K7rMOp2QZwFSBf49WVNMioPjHAvRFJkO5WA6UP1AGMCMGvzX
- liIrQWircRpQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="232891440"
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="232891440"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jul 2020 08:25:39 -0700
-IronPort-SDR: s7Ou2aW+KIup/8I7q3fjQ4nA78aLk7c/dv9orKtjQH+vbzjquHgKMJAcdjYsmt/rR0G6a2S1q0
- LAtt+DuUVupQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; d="scan'208";a="268781780"
-Received: from vamshikr-desk.iind.intel.com ([10.223.163.26])
- by fmsmga008.fm.intel.com with ESMTP; 09 Jul 2020 08:25:36 -0700
-From: vamshi.krishna.gopal@intel.com
-To: vamshi.krishna.gopal@intel.com, pierre-louis.bossart@linux.intel.com,
- lma@semihalf.com, harshapriya.n@intel.com, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: Intel: boards: eve: Fix DMIC records zero
-Date: Thu,  9 Jul 2020 20:55:26 +0530
-Message-Id: <20200709152526.15764-1-vamshi.krishna.gopal@intel.com>
-X-Mailer: git-send-email 2.17.1
-X-Mailman-Approved-At: Fri, 10 Jul 2020 15:16:59 +0200
-Cc: sathya.prakash.m.r@intel.com, brndt@google.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD288F8011C
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 15:33:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD288F8011C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id AFCA4AC9F;
+ Fri, 10 Jul 2020 13:33:51 +0000 (UTC)
+Date: Fri, 10 Jul 2020 15:33:51 +0200
+Message-ID: <s5hv9iv4hq8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Subject: Re: =?UTF-8?B?5Zue5aSNOg==?= WARNING in
+ submit_audio_out_urb/usb_submit_urb
+In-Reply-To: <s5h8sfr69yw.wl-tiwai@suse.de>
+References: <0000000000001ad77805aa024889@google.com>
+ <BYAPR11MB263211A6842402F1EE47F6F8FF650@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <s5h8sfr69yw.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "anarsoul@gmail.com" <anarsoul@gmail.com>,
+ Alan Stern <stern@rowland.harvard.edu>, "pavel@denx.de" <pavel@denx.de>,
+ "tiwai@suse.com" <tiwai@suse.com>,
+ syzbot <syzbot+c190f6858a04ea7fbc52@syzkaller.appspotmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,294 +88,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+On Fri, 10 Jul 2020 10:38:31 +0200,
+Takashi Iwai wrote:
+> 
+> On Fri, 10 Jul 2020 10:12:43 +0200,
+> Zhang, Qiang wrote:
+> > 
+> > 
+> > 
+> > ________________________________________
+> > 发件人: linux-kernel-owner@vger.kernel.org <linux-kernel-owner@vger.kernel.org> 代表 syzbot <syzbot+c190f6858a04ea7fbc52@syzkaller.appspotmail.com>
+> > 发送时间: 2020年7月9日 21:34
+> > 收件人: andreyknvl@google.com; gregkh@linuxfoundation.org; ingrassia@epigenesys.com; linux-kernel@vger.kernel.org; linux-usb@vger.kernel.org; syzkaller-bugs@googlegroups.com
+> > 主题: WARNING in submit_audio_out_urb/usb_submit_urb
+> > 
+> > Hello,
+> > 
+> > syzbot found the following crash on:
+> > 
+> > HEAD commit:    768a0741 usb: dwc2: gadget: Remove assigned but never used..
+> > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1568d11f100000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=999be4eb2478ffa5
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=c190f6858a04ea7fbc52
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=123aa2fb100000
+> > 
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+c190f6858a04ea7fbc52@syzkaller.appspotmail.com
+> > 
+> > usb 1-1: send failed (error -32)
+> > snd_usb_toneport 1-1:0.0: Line 6 TonePort GX now attached
+> > ------------[ cut here ]------------
+> > usb 1-1: BOGUS urb xfer, pipe 0 != type 3
+> > WARNING: CPU: 0 PID: 12 at drivers/usb/core/urb.c:478 usb_submit_urb+0xa17/0x13e0 drivers/usb/core/urb.c:478
+> > Kernel panic - not syncing: panic_on_warn set ...
+> > CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.8.0-rc3-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Workqueue: events line6_startup_work
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0xf6/0x16e lib/dump_stack.c:118
+> >  panic+0x2aa/0x6e1 kernel/panic.c:231
+> >  __warn.cold+0x20/0x50 kernel/panic.c:600
+> >  report_bug+0x1bd/0x210 lib/bug.c:198
+> >  handle_bug+0x41/0x80 arch/x86/kernel/traps.c:235
+> >  exc_invalid_op+0x13/0x40 arch/x86/kernel/traps.c:255
+> >  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:563
+> > RIP: 0010:usb_submit_urb+0xa17/0x13e0 drivers/usb/core/urb.c:478
+> > Code: 84 e7 04 00 00 e8 a9 10 ca fd 4c 89 ef e8 41 79 12 ff 41 89 d8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 80 a0 5d 86 e8 db 77 9e fd <0f> 0b e8 82 10 ca fd 0f b6 6c 24 08 48 c7 c6 e0 a1 5d 86 48 89 ef
+> > RSP: 0018:ffff8881da227b10 EFLAGS: 00010086
+> > RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+> > RDX: ffff8881da211900 RSI: ffffffff8129b4e3 RDI: ffffed103b444f54
+> > RBP: 0000000000000030 R08: 0000000000000001 R09: ffff8881db21fe8b
+> > R10: 0000000000000000 R11: 0000000000000004 R12: 0000000000000000
+> > R13: ffff8881d6ecd0a0 R14: ffff8881d3d8c690 R15: ffff8881d54c4000
+> >  submit_audio_out_urb+0x6d6/0x1a00 sound/usb/line6/playback.c:271
+> >  line6_submit_audio_out_all_urbs+0xc9/0x120 sound/usb/line6/playback.c:291
+> >  line6_stream_start+0x187/0x230 sound/usb/line6/pcm.c:195
+> >  line6_pcm_acquire+0x137/0x210 sound/usb/line6/pcm.c:318
+> >  line6_startup_work+0x42/0x50 sound/usb/line6/driver.c:734
+> >  process_one_work+0x94c/0x15f0 kernel/workqueue.c:2269
+> >  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+> >  kthread+0x392/0x470 kernel/kthread.c:291
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> > 
+> >  It's like Alan Stern's reply to the email titled "KASAN: use-after-free Read in line6_submit_audio_in_all_urbs."   It's also like a problem with asynchronous operations. can replace "cancel_delayed_work" with" cancel_delayed_work_sync"
+> > in "line6_disconnect" func？
+> 
+> No, this looks a different problem.  It's just a matter of the missing
+> URB type check that leads to a USB warning.  A typical issue with the
+> USB fuzzing.
+> 
+> I'll check it later.
 
-Add a dapm route to provide ssp mclk/sclk early
-for DMIC  on SSP0(rt5514) and Headset on SSP1(rt5663)
-since sclk for both codecs are different the
-struct now defines SSP0 and SSP1 mclk , sclk separately
-This change ensures the DMIC PCM port
-will not return all-zero data
+... and below is the fix patch.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Signed-off-by: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+
+Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: line6: Perform sanity check for each URB creation
+
+LINE6 drivers create stream URBs with a fixed pipe without checking
+its validity, and this may lead to a kernel WARNING at the submission
+when a malformed USB descriptor is passed.
+
+For avoiding the kernel warning, perform the similar sanity checks for
+each pipe type at creating a URB.
+
+Reported-by: syzbot+c190f6858a04ea7fbc52@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../intel/boards/kbl_rt5663_rt5514_max98927.c | 150 ++++++++++++------
- 1 file changed, 102 insertions(+), 48 deletions(-)
+ sound/usb/line6/capture.c  | 2 ++
+ sound/usb/line6/playback.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index b34cf6cf1139..584e4f9cedc2 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -53,8 +53,10 @@ struct kbl_codec_private {
- 	struct snd_soc_jack kabylake_headset;
- 	struct list_head hdmi_pcm_list;
- 	struct snd_soc_jack kabylake_hdmi[2];
--	struct clk *mclk;
--	struct clk *sclk;
-+	struct clk *ssp0_mclk;
-+	struct clk *ssp0_sclk;
-+	struct clk *ssp1_mclk;
-+	struct clk *ssp1_sclk;
- };
+diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
+index 663d608c4287..970c9bdce0b2 100644
+--- a/sound/usb/line6/capture.c
++++ b/sound/usb/line6/capture.c
+@@ -286,6 +286,8 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+ 		urb->interval = LINE6_ISO_INTERVAL;
+ 		urb->error_count = 0;
+ 		urb->complete = audio_in_callback;
++		if (usb_urb_ep_type_check(urb))
++			return -EINVAL;
+ 	}
  
- enum {
-@@ -77,13 +79,31 @@ static const struct snd_kcontrol_new kabylake_controls[] = {
- };
- 
- static int platform_clock_control(struct snd_soc_dapm_widget *w,
--			struct snd_kcontrol *k, int  event)
-+			struct snd_kcontrol *k, int event, int ssp_num)
- {
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_soc_card *card = dapm->card;
- 	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(card);
-+	struct clk *mclk, *sclk;
-+	unsigned long sclk_rate;
- 	int ret = 0;
- 
-+	switch (ssp_num) {
-+	case 0:
-+		mclk = priv->ssp0_mclk;
-+		sclk = priv->ssp0_sclk;
-+		sclk_rate = 6144000;
-+		break;
-+	case 1:
-+		mclk = priv->ssp1_mclk;
-+		sclk = priv->ssp1_sclk;
-+		sclk_rate = 3072000;
-+		break;
-+	default:
-+		dev_err(card->dev, "Invalid ssp_num %d\n", ssp_num);
-+		return -EINVAL;
-+	}
-+
- 	/*
- 	 * MCLK/SCLK need to be ON early for a successful synchronization of
- 	 * codec internal clock. And the clocks are turned off during
-@@ -91,38 +111,46 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 	 */
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-+		if (__clk_is_enabled(mclk))
-+			return 0;
-+
- 		/* Enable MCLK */
--		ret = clk_set_rate(priv->mclk, 24000000);
-+		ret = clk_set_rate(mclk, 24000000);
- 		if (ret < 0) {
--			dev_err(card->dev, "Can't set rate for mclk, err: %d\n",
--				ret);
-+			dev_err(card->dev, "Can't set rate for ssp%d_mclk, err: %d\n",
-+				ssp_num, ret);
- 			return ret;
- 		}
- 
--		ret = clk_prepare_enable(priv->mclk);
-+		ret = clk_prepare_enable(mclk);
- 		if (ret < 0) {
--			dev_err(card->dev, "Can't enable mclk, err: %d\n", ret);
-+			dev_err(card->dev, "Can't enable ssp%d_mclk, err: %d\n",
-+				ssp_num, ret);
- 			return ret;
- 		}
- 
- 		/* Enable SCLK */
--		ret = clk_set_rate(priv->sclk, 3072000);
-+		ret = clk_set_rate(sclk, sclk_rate);
- 		if (ret < 0) {
--			dev_err(card->dev, "Can't set rate for sclk, err: %d\n",
--				ret);
--			clk_disable_unprepare(priv->mclk);
-+			dev_err(card->dev, "Can't set rate for ssp%d_sclk, err: %d\n",
-+				ssp_num, ret);
-+			clk_disable_unprepare(mclk);
- 			return ret;
- 		}
- 
--		ret = clk_prepare_enable(priv->sclk);
-+		ret = clk_prepare_enable(sclk);
- 		if (ret < 0) {
--			dev_err(card->dev, "Can't enable sclk, err: %d\n", ret);
--			clk_disable_unprepare(priv->mclk);
-+			dev_err(card->dev, "Can't enable ssp%d_sclk, err: %d\n",
-+				ssp_num, ret);
-+			clk_disable_unprepare(mclk);
- 		}
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		clk_disable_unprepare(priv->mclk);
--		clk_disable_unprepare(priv->sclk);
-+		if (!__clk_is_enabled(mclk))
-+			return 0;
-+
-+		clk_disable_unprepare(mclk);
-+		clk_disable_unprepare(sclk);
- 		break;
- 	default:
- 		return 0;
-@@ -131,6 +159,18 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
  	return 0;
- }
+diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
+index 01930ce7bd75..8233c61e23f1 100644
+--- a/sound/usb/line6/playback.c
++++ b/sound/usb/line6/playback.c
+@@ -431,6 +431,8 @@ int line6_create_audio_out_urbs(struct snd_line6_pcm *line6pcm)
+ 		urb->interval = LINE6_ISO_INTERVAL;
+ 		urb->error_count = 0;
+ 		urb->complete = audio_out_callback;
++		if (usb_urb_ep_type_check(urb))
++			return -EINVAL;
+ 	}
  
-+static int platform_clock_control_ssp0(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	return platform_clock_control(w, k, event, 0);
-+}
-+
-+static int platform_clock_control_ssp1(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	return platform_clock_control(w, k, event, 1);
-+}
-+
- static const struct snd_soc_dapm_widget kabylake_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-@@ -139,15 +179,17 @@ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
- 	SND_SOC_DAPM_MIC("DMIC", NULL),
- 	SND_SOC_DAPM_SPK("HDMI1", NULL),
- 	SND_SOC_DAPM_SPK("HDMI2", NULL),
--	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
--			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
-+	SND_SOC_DAPM_SUPPLY("Platform Clock SSP0", SND_SOC_NOPM, 0, 0,
-+			platform_clock_control_ssp0, SND_SOC_DAPM_PRE_PMU |
-+			SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock SSP1", SND_SOC_NOPM, 0, 0,
-+			platform_clock_control_ssp1, SND_SOC_DAPM_PRE_PMU |
- 			SND_SOC_DAPM_POST_PMD),
--
- };
- 
- static const struct snd_soc_dapm_route kabylake_map[] = {
- 	/* Headphones */
--	{ "Headphone Jack", NULL, "Platform Clock" },
-+	{ "Headphone Jack", NULL, "Platform Clock SSP1" },
- 	{ "Headphone Jack", NULL, "HPOL" },
- 	{ "Headphone Jack", NULL, "HPOR" },
- 
-@@ -156,7 +198,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
- 	{ "Right Spk", NULL, "Right BE_OUT" },
- 
- 	/* other jacks */
--	{ "Headset Mic", NULL, "Platform Clock" },
-+	{ "Headset Mic", NULL, "Platform Clock SSP1" },
- 	{ "IN1P", NULL, "Headset Mic" },
- 	{ "IN1N", NULL, "Headset Mic" },
- 
-@@ -180,6 +222,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
- 	{ "ssp0 Rx", NULL, "Right HiFi Capture" },
- 
- 	/* DMIC */
-+	{ "DMIC", NULL, "Platform Clock SSP0" },
- 	{ "DMIC1L", NULL, "DMIC" },
- 	{ "DMIC1R", NULL, "DMIC" },
- 	{ "DMIC2L", NULL, "DMIC" },
-@@ -666,7 +709,7 @@ static int kabylake_set_bias_level(struct snd_soc_card *card,
- 	if (!component || strcmp(component->name, RT5514_DEV_NAME))
- 		return 0;
- 
--	if (IS_ERR(priv->mclk))
-+	if (IS_ERR(priv->ssp0_mclk))
- 		return 0;
- 
- 	/*
-@@ -678,17 +721,17 @@ static int kabylake_set_bias_level(struct snd_soc_card *card,
- 	case SND_SOC_BIAS_PREPARE:
- 		if (dapm->bias_level == SND_SOC_BIAS_ON) {
- 			dev_dbg(card->dev, "Disable mclk");
--			clk_disable_unprepare(priv->mclk);
-+			clk_disable_unprepare(priv->ssp0_mclk);
- 		} else {
- 			dev_dbg(card->dev, "Enable mclk");
--			ret = clk_set_rate(priv->mclk, 24000000);
-+			ret = clk_set_rate(priv->ssp0_mclk, 24000000);
- 			if (ret) {
- 				dev_err(card->dev, "Can't set rate for mclk, err: %d\n",
- 					ret);
- 				return ret;
- 			}
- 
--			ret = clk_prepare_enable(priv->mclk);
-+			ret = clk_prepare_enable(priv->ssp0_mclk);
- 			if (ret) {
- 				dev_err(card->dev, "Can't enable mclk, err: %d\n",
- 					ret);
-@@ -757,6 +800,29 @@ static struct snd_soc_card kabylake_audio_card = {
- 	.late_probe = kabylake_card_late_probe,
- };
- 
-+static int kabylake_audio_clk_get(struct device *dev, const char *id,
-+	struct clk **clk)
-+{
-+	int ret = 0;
-+
-+	if (!clk)
-+		return -EINVAL;
-+
-+	*clk = devm_clk_get(dev, id);
-+	if (IS_ERR(*clk)) {
-+		ret = PTR_ERR(*clk);
-+		if (ret == -ENOENT) {
-+			dev_info(dev, "Failed to get %s, defer probe\n", id);
-+			return -EPROBE_DEFER;
-+		}
-+
-+		dev_err(dev, "Failed to get %s with err:%d\n", id, ret);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
- static int kabylake_audio_probe(struct platform_device *pdev)
- {
- 	struct kbl_codec_private *ctx;
-@@ -777,33 +843,21 @@ static int kabylake_audio_probe(struct platform_device *pdev)
- 		dmic_constraints = mach->mach_params.dmic_num == 2 ?
- 			&constraints_dmic_2ch : &constraints_dmic_channels;
- 
--	ctx->mclk = devm_clk_get(&pdev->dev, "ssp1_mclk");
--	if (IS_ERR(ctx->mclk)) {
--		ret = PTR_ERR(ctx->mclk);
--		if (ret == -ENOENT) {
--			dev_info(&pdev->dev,
--				"Failed to get ssp1_mclk, defer probe\n");
--			return -EPROBE_DEFER;
--		}
-+	ret = kabylake_audio_clk_get(&pdev->dev, "ssp0_mclk", &ctx->ssp0_mclk);
-+	if (ret != 0)
-+		return ret;
- 
--		dev_err(&pdev->dev, "Failed to get ssp1_mclk with err:%d\n",
--								ret);
-+	ret = kabylake_audio_clk_get(&pdev->dev, "ssp0_sclk", &ctx->ssp0_sclk);
-+	if (ret != 0)
- 		return ret;
--	}
- 
--	ctx->sclk = devm_clk_get(&pdev->dev, "ssp1_sclk");
--	if (IS_ERR(ctx->sclk)) {
--		ret = PTR_ERR(ctx->sclk);
--		if (ret == -ENOENT) {
--			dev_info(&pdev->dev,
--				"Failed to get ssp1_sclk, defer probe\n");
--			return -EPROBE_DEFER;
--		}
-+	ret = kabylake_audio_clk_get(&pdev->dev, "ssp1_mclk", &ctx->ssp1_mclk);
-+	if (ret != 0)
-+		return ret;
- 
--		dev_err(&pdev->dev, "Failed to get ssp1_sclk with err:%d\n",
--								ret);
-+	ret = kabylake_audio_clk_get(&pdev->dev, "ssp1_sclk", &ctx->ssp1_sclk);
-+	if (ret != 0)
- 		return ret;
--	}
- 
- 	return devm_snd_soc_register_card(&pdev->dev, &kabylake_audio_card);
- }
+ 	return 0;
 -- 
-2.17.1
+2.16.4
 
