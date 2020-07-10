@@ -2,74 +2,72 @@ Return-Path: <SRS0=u2Q7=AV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 750EEC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 15:42:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8F1EC433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 15:43:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6AB82078B
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 15:42:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72283207BB
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 15:43:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CnyqGVzH";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dqsxumqg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6AB82078B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wbl4Wwau";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LZMhp4bX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72283207BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F2BB165E;
-	Fri, 10 Jul 2020 17:42:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F2BB165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AA86167F;
+	Fri, 10 Jul 2020 17:42:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AA86167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594395773;
-	bh=V0MxTffCGmaOnddHTfSCUdkOwgjWSlGLURFExxwvWa4=;
+	s=default; t=1594395798;
+	bh=31SRA1ojL9GpcKLyUiLwLpHPGG0dcpgvSQatvym/bPs=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CnyqGVzH9kOISDQVC/4g+UKu9Ea/Ibdgl+97l51zWZKrYsbRHWFPz7x0U1hBl00YF
-	 RUjOUXh/eDSFOfUcUVb9nt/Y4EbkY28S9tkbYBDKUJdDoSANyU7IzfUzo4cQnwBAJw
-	 ub1K/vNzhmNymoA64vJ02OJW5CwL4LMOcsOC/Ww8=
+	b=Wbl4WwauxIF1nF4sR3ZhjJJ3myGKcplurrVIXjCrs2pIlUhy7rC3uX+FsFBJwVBLv
+	 tZ+fQGOq764prYATlZAqgd4mGAHbtLSJ1a4zG+deeBu5sC6VMcYhnqCmoxk/1hXlId
+	 h3hhZ7Lncb/F4JVNNGJ81vKNU7r8pxLLB0Q9VF0w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D096F802BE;
-	Fri, 10 Jul 2020 17:40:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9A3AF802DB;
+	Fri, 10 Jul 2020 17:40:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94261F802C4; Fri, 10 Jul 2020 17:40:08 +0200 (CEST)
+ id 4292CF802C2; Fri, 10 Jul 2020 17:40:09 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AE93F80161
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 17:40:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AE93F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F6A4F802BC
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 17:40:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F6A4F802BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Dqsxumqg"
+ header.b="LZMhp4bX"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3047D2078B;
- Fri, 10 Jul 2020 15:39:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2F80C207BB;
+ Fri, 10 Jul 2020 15:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594395599;
- bh=V0MxTffCGmaOnddHTfSCUdkOwgjWSlGLURFExxwvWa4=;
+ s=default; t=1594395604;
+ bh=31SRA1ojL9GpcKLyUiLwLpHPGG0dcpgvSQatvym/bPs=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=DqsxumqgRIHMunsu1recsgEeyIYZ60a6TTOR2kIBx0AjtDK+mqMeeRWWug34Uwwll
- TaVCn0Lr4pknuDBBo1+XRnsMmERCLg9288IhTdISfrsyt/5DIk0M9e8+Begy4OB3Hu
- 3YkbaQZphfB+fp1hSO8vi2YGo46gkISC8AkMYPuc=
-Date: Fri, 10 Jul 2020 16:39:53 +0100
+ b=LZMhp4bX0rgy7ASmfQ8w6c5qwZi78zTA53J/RT7BpqPcGjen1sXLzA1Aou9pff3wT
+ ECKaLD/lzBs3Wn5/zzrSlOTYRQDPX2/4Qa4CVJfoGvkTZtm4sbJeSQ0mGjNBwGQ/3f
+ OEPXq9ouCjLqHgNvdka7TPnZ7xWZFuTCwODcsYYg=
+Date: Fri, 10 Jul 2020 16:39:58 +0100
 From: Mark Brown <broonie@kernel.org>
-To: timur@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz,
- festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
- nicoleotsuka@gmail.com, tiwai@suse.com, Xiubo.Lee@gmail.com
-In-Reply-To: <1594112066-31297-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1594112066-31297-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 0/2] ASoC: fsl_spdif: Clear the validity bit for TX
-Message-Id: <159439557864.48910.15440396587948281544.b4-ty@kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: robh+dt@kernel.org, Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20200710052505.3664118-1-tzungbi@google.com>
+References: <20200710052505.3664118-1-tzungbi@google.com>
+Subject: Re: [PATCH 0/6] ASoC: mediatek: mt8183: support DP audio
+Message-Id: <159439557864.48910.15353677231173679587.b4-ty@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +83,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 7 Jul 2020 16:54:24 +0800, Shengjiu Wang wrote:
-> Clear the validity bit for TX
-> Add kctl for configuring TX validity bit
+On Fri, 10 Jul 2020 13:24:59 +0800, Tzung-Bi Shih wrote:
+> This series is a follow up for a long time ago series
+> (https://patchwork.kernel.org/cover/11204303/).
 > 
-> Shengjiu Wang (2):
->   ASoC: fsl_spdif: Clear the validity bit for TX
->   ASoC: fsl_spdif: Add kctl for configuring TX validity bit
+> The old series bound too much on the patches of DRM bridge and ASoC
+> machine driver.  And unluckily, the dependencies
+> (https://lore.kernel.org/patchwork/patch/1126819/) have not applied.
 > 
 > [...]
 
@@ -101,10 +99,18 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: fsl_spdif: Clear the validity bit for TX
-      commit: 055b082156704b85a059770359d6cdedfb24831d
-[2/2] ASoC: fsl_spdif: Add kctl for configuring TX validity bit
-      commit: aa3fce5cd454db551a4ea1656bab9c2bacd2d1f4
+[1/6] ASoC: dt-bindings: mt8183: add a property "mediatek, hdmi-codec"
+      commit: cc07e14b149e4260075093c06b371bcb31574ccc
+[2/6] ASoC: mediatek: mt8183: use hdmi-codec
+      commit: f2024dc55fcb743469238aa11f9967e0752ac600
+[3/6] ASoC: mediatek: mt8183: support HDMI jack reporting
+      commit: 88abbf627a56efcd7f24aa119f07069d3d10bd0b
+[4/6] ASoC: dt-bindings: mt8183-da7219: add a property "mediatek, hdmi-codec"
+      commit: 5653841d1e6bace7897a0b5ca681fa37945fa11b
+[5/6] ASoC: mediatek: mt8183-da7219: use hdmi-codec
+      commit: 5bdbe977117741a6bf4958c8dfdcb6b9263e9f1c
+[6/6] ASoC: mediatek: mt8183-da7219: support HDMI jack reporting
+      commit: e25f8afd8869bd97a4d0baea5d8da730913c8541
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
