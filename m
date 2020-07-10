@@ -2,80 +2,84 @@ Return-Path: <SRS0=u2Q7=AV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1359C433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 17:52:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16818C433E3
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 19:23:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D1CB2078D
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 17:52:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B5E12076A
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 19:23:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b9ngWCsX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D1CB2078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OWvMEsRj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B5E12076A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=siol.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3D061660;
-	Fri, 10 Jul 2020 19:51:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3D061660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A1C19F6;
+	Fri, 10 Jul 2020 21:22:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A1C19F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594403531;
-	bh=FKzgQBYZv/PK/G/IUgSmwUHTgTBuy/oGk9Ug+Mz6cjw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1594409018;
+	bh=93zM+cKBgg2llhfX0pUHtu5K2QfXktbNtWQR85ZlMF4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b9ngWCsXnHJFuOTDzFg8QUxMfFUy0Djb4pnYJvMreZRPwjJi8N0KkLi+DJTKYwDTf
-	 7PRWyhuE3CvJ3NS4HharpIvqQImnKKqE8n5QyQOczjXQ0vk594ufB0zP9lqSd2yWZr
-	 53Oibu9wHtj07GJa1fT9Lzn5XwI676ZJ2At+H9ek=
+	b=OWvMEsRj0GuycoklPNhI9Iz9a371FWhX3xyEWunI599r3sTfcz554+NrGXlk0UswJ
+	 lfoqisRikcXgtrJgbocBl4QYAydAWmFu+fI9eJp9+0nxyhWiKZvTmxnXxiTaAOGCQl
+	 lxTfGF3dkkD3dxUE5dNbVh7pxljfOkyz7eO24CFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47B91F80150;
-	Fri, 10 Jul 2020 19:51:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CF23F80150;
+	Fri, 10 Jul 2020 21:22:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C84DF8015A; Fri, 10 Jul 2020 19:51:20 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8C2B6F8015A; Fri, 10 Jul 2020 21:22:45 +0200 (CEST)
+Received: from mail.siol.net (mailoutvs38.siol.net [185.57.226.229])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46896F80112
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 19:51:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46896F80112
-IronPort-SDR: 8NQg83Z9x6u57SoRwORmk6EQ4NZQDoXMG5F1h2ECpiZwl4Osf2zyn0mhY0XuzDei44GAnrHNcr
- 13dB+bvTJFUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="209791896"
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; d="scan'208";a="209791896"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2020 10:51:06 -0700
-IronPort-SDR: nQXf3tSP92kHGhdi/SqvQjlrZ9hiQ74NTkOkK9mIs16ibqheGjNiaDM9kEA1Mudn3XXZ6Hy3FX
- FOarLWB4ar2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; d="scan'208";a="484248267"
-Received: from unknown (HELO buildpc-HP-Z230) ([10.223.89.131])
- by fmsmga006.fm.intel.com with ESMTP; 10 Jul 2020 10:51:03 -0700
-Date: Fri, 10 Jul 2020 23:25:10 +0530
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH 1/1] MAINTAINERS: change SoundWire maintainer
-Message-ID: <20200710175510.GA25404@buildpc-HP-Z230>
-References: <20200703192644.751-1-sanyog.r.kale@intel.com>
- <20200708073020.GA34333@vkoul-mobl>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9FE5AF8011C
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 21:22:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FE5AF8011C
+Received: from localhost (localhost [127.0.0.1])
+ by mail.siol.net (Postfix) with ESMTP id 9A60B522763;
+ Fri, 10 Jul 2020 21:22:37 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+ by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new,
+ port 10032)
+ with ESMTP id gejh6xTW37uc; Fri, 10 Jul 2020 21:22:37 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+ by mail.siol.net (Postfix) with ESMTPS id 1D556522762;
+ Fri, 10 Jul 2020 21:22:37 +0200 (CEST)
+Received: from jernej-laptop.localnet (89-212-178-211.dynamic.t-2.net
+ [89.212.178.211]) (Authenticated sender: jernej.skrabec@siol.net)
+ by mail.siol.net (Postfix) with ESMTPA id 0D90A522763;
+ Fri, 10 Jul 2020 21:22:35 +0200 (CEST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To: peron.clem@gmail.com, Maxime Ripard <mripard@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Samuel Holland <samuel@sholland.org>
+Subject: Re: [linux-sunxi] [PATCH 01/16] ASoC: sun4i-i2s: Add support for H6
+ I2S
+Date: Fri, 10 Jul 2020 21:22:34 +0200
+Message-ID: <3787973.dVgI16VYFl@jernej-laptop>
+In-Reply-To: <72a6fddf-5e84-f050-2eee-74178d457789@sholland.org>
+References: <20200704113902.336911-1-peron.clem@gmail.com>
+ <20200704113902.336911-2-peron.clem@gmail.com>
+ <72a6fddf-5e84-f050-2eee-74178d457789@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708073020.GA34333@vkoul-mobl>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- lgirdwood@gmail.com, gregkh@linuxfoundation.org,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- yung-chuan.liao@linux.intel.com
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Marcus Cooper <codekipper@gmail.com>, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,56 +95,173 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jul 08, 2020 at 01:00:20PM +0530, Vinod Koul wrote:
-> On 04-07-20, 00:56, Sanyog Kale wrote:
-> > Add Bard as SoundWire maintainer from Intel and change Sanyog's
-> > role as reviewer.
-> 
-> Sad to see you go!
-> 
-> > 
-> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> 
-> Need ack from Bard (i think he is on vacation)
+Hi Samuel!
 
-Yes. he will be back next week.
-
-> 
-> > Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Dne petek, 10. julij 2020 ob 07:44:33 CEST je Samuel Holland napisal(a):
+> On 7/4/20 6:38 AM, Cl=E9ment P=E9ron wrote:
+> > From: Jernej Skrabec <jernej.skrabec@siol.net>
+> >=20
+> > H6 I2S is very similar to that in H3, except it supports up to 16
+> > channels.
+> >=20
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
 > > ---
-> >  MAINTAINERS | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 1c1527a34d99..9559e947bf67 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -16012,8 +16012,9 @@ F:	sound/soc/sof/
-> >  
-> >  SOUNDWIRE SUBSYSTEM
-> >  M:	Vinod Koul <vkoul@kernel.org>
-> > -M:	Sanyog Kale <sanyog.r.kale@intel.com>
-> > +M:	Bard Liao <yung-chuan.liao@linux.intel.com>
-> >  R:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > +R:	Sanyog Kale <sanyog.r.kale@intel.com>
-> 
-> Do you still want to be a reviewer, I would like folks in this to be bit
-> active for reviews etc
+> >=20
+> >  sound/soc/sunxi/sun4i-i2s.c | 227 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 227 insertions(+)
+> >=20
+> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > index d0a8d5810c0a..9690389cb68e 100644
+> > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > @@ -124,6 +124,21 @@
+> >=20
+> >  #define SUN8I_I2S_RX_CHAN_SEL_REG	0x54
+> >  #define SUN8I_I2S_RX_CHAN_MAP_REG	0x58
+> >=20
+> > +/* Defines required for sun50i-h6 support */
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK	GENMASK(21, 20)
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset)	((offset) << 20)
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL_MASK		GENMASK(19, 16)
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL(chan)		((chan - 1) << 16)
+> > +#define SUN50I_H6_I2S_TX_CHAN_EN_MASK		GENMASK(15, 0)
+> > +#define SUN50I_H6_I2S_TX_CHAN_EN(num_chan)	(((1 << num_chan) - 1))
+> > +
+> > +#define SUN50I_H6_I2S_TX_CHAN_MAP0_REG	0x44
+> > +#define SUN50I_H6_I2S_TX_CHAN_MAP1_REG	0x48
+> > +
+> > +#define SUN50I_H6_I2S_RX_CHAN_SEL_REG	0x64
+> > +#define SUN50I_H6_I2S_RX_CHAN_MAP0_REG	0x68
+> > +#define SUN50I_H6_I2S_RX_CHAN_MAP1_REG	0x6C
+> > +
+> >=20
+> >  struct sun4i_i2s;
+> > =20
+> >  /**
+> >=20
+> > @@ -466,6 +481,65 @@ static int sun8i_i2s_set_chan_cfg(const struct
+> > sun4i_i2s *i2s,>=20
+> >  	return 0;
+> > =20
+> >  }
+> >=20
+> > +static int sun50i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> > +				   const struct snd_pcm_hw_params=20
+*params)
+> > +{
+> > +	unsigned int channels =3D params_channels(params);
+> > +	unsigned int slots =3D channels;
+> > +	unsigned int lrck_period;
+> > +
+> > +	if (i2s->slots)
+> > +		slots =3D i2s->slots;
+> > +
+> > +	/* Map the channels for playback and capture */
+> > +	regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG,=20
+0x76543210);
+> > +	regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG,=20
+0x76543210);
+> > +
+> > +	/* Configure the channels */
+> > +	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+> > +			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
+> > +			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
+> > +	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
+> > +			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
+> > +			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
+> > +
+> > +	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
+> > +			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM_MASK,
+> > +			  =20
+SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM(channels));
+> > +	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
+> > +			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM_MASK,
+> > +			  =20
+SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(channels));
+> > +
+> > +	switch (i2s->format & SND_SOC_DAIFMT_FORMAT_MASK) {
+> > +	case SND_SOC_DAIFMT_DSP_A:
+> > +	case SND_SOC_DAIFMT_DSP_B:
+> > +	case SND_SOC_DAIFMT_LEFT_J:
+>=20
+> > +	case SND_SOC_DAIFMT_RIGHT_J:
+> According to the manual, LEFT_J and RIGHT_J should use the same calculati=
+on
+> as I2S, not the one for PCM/DSP.
+>=20
+> > +		lrck_period =3D params_physical_width(params) * slots;
+> > +		break;
+> > +
+> > +	case SND_SOC_DAIFMT_I2S:
+> > +		lrck_period =3D params_physical_width(params);
+> > +		break;
+> > +
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (i2s->slot_width)
+> > +		lrck_period =3D i2s->slot_width;
+> > +
+> > +	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+> > +			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+> > +			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
+>=20
+> From the description in the manual, this looks off by one. The number of
+> BCLKs per LRCK is LRCK_PERIOD + 1.
 
-Yes Vinod, will spare time to review patches.
+Are you sure? Macro SUN8I_I2S_FMT0_LRCK_PERIOD() is defined as follows:
 
-Thanks
+#define SUN8I_I2S_FMT0_LRCK_PERIOD(period)	((period - 1) << 8)
 
-> 
-> Thanks
-> 
-> >  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-> >  S:	Supported
-> >  F:	Documentation/driver-api/soundwire/
-> > -- 
-> > 2.17.1
-> 
-> -- 
-> ~Vinod
+which already lowers value by 1.
 
--- 
+Best regards,
+Jernej
+
+>=20
+> > +
+> > +	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+> > +			   SUN50I_H6_I2S_TX_CHAN_EN_MASK,
+> > +			   SUN50I_H6_I2S_TX_CHAN_EN(channels));
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >=20
+> >  static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+> > =20
+> >  			       struct snd_pcm_hw_params *params,
+> >  			       struct snd_soc_dai *dai)
+> >=20
+> > @@ -691,6 +765,108 @@ static int sun8i_i2s_set_soc_fmt(const struct
+> > sun4i_i2s *i2s,>=20
+> >  	return 0;
+> > =20
+> >  }
+> >=20
+> > +static int sun50i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+> > +				  unsigned int fmt)
+> > +{
+> > +	u32 mode, val;
+> > +	u8 offset;
+> > +
+> > +	/*
+> > +	 * DAI clock polarity
+> > +	 *
+> > +	 * The setup for LRCK contradicts the datasheet, but under a
+> > +	 * scope it's clear that the LRCK polarity is reversed
+> > +	 * compared to the expected polarity on the bus.
+> > +	 */
+>=20
+> This comment makes us sound a lot more confident than I think we actually
+> are.
+>=20
+> Regards,
+> Samuel
+
+
+
+
