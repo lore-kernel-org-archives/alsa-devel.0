@@ -2,85 +2,88 @@ Return-Path: <SRS0=u2Q7=AV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36593C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:26:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C34DC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:27:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B69E320720
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:26:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0411720720
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jul 2020 05:27:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q5S2Ktni";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="gp2t+uxT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B69E320720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hxXKIPRI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="BKscopTz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0411720720
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30B1C86F;
-	Fri, 10 Jul 2020 07:25:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30B1C86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBF2E1658;
+	Fri, 10 Jul 2020 07:26:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBF2E1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594358785;
-	bh=cikD737BKtR4L1NhnZLR0xp7+it+RjDTJ49ptI6nGW0=;
-	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Q5S2Ktnim23zozFc6L6/e19yySYbUyunWaSqH2ss+C1estuIT+txU4tZQjxYWJON/
-	 AMK8i3Xt/weGaC8p1OofNxvOnnA9CsRUGx7uXkDmXwM80KLm2mJ5h9swS0y1aBQNSW
-	 SLgByq/5bP3CQ3nMdbzJ3VPGMyr0nvaFk1bZwhbY=
+	s=default; t=1594358837;
+	bh=2UqRbmC/xGW5fDKLDLFVu+Z5aurK6jXm2JakoKJIyEM=;
+	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=hxXKIPRI8gqmYsIid8iLyCafckBADgJyYnOzf3Kpj4JOSL3EHu1Gn9bGJlfbrTBH1
+	 kr+QkpWDCLRaH4OS36DmAmCz/RROfraf+3HxvfBSrwMOXE3x3lfPU2r/YTtyflTw+r
+	 V5bf2j0o8q0KOdRFqzh2ha1c0t+thbq/kLVB7QOQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B4C9F80112;
-	Fri, 10 Jul 2020 07:25:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40434F80258;
+	Fri, 10 Jul 2020 07:25:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8541CF8015D; Fri, 10 Jul 2020 07:25:28 +0200 (CEST)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
- [IPv6:2607:f8b0:4864:20::b4a])
+ id D49BBF8015C; Fri, 10 Jul 2020 07:25:30 +0200 (CEST)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89098F8011C
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 07:25:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89098F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B37E3F80112
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2020 07:25:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B37E3F80112
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="gp2t+uxT"
-Received: by mail-yb1-xb4a.google.com with SMTP id k127so5780825ybk.11
- for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2020 22:25:16 -0700 (PDT)
+ header.b="BKscopTz"
+Received: by mail-yb1-xb49.google.com with SMTP id w35so5781327ybi.16
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2020 22:25:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=XAbjQkqFJHu/4T3iFsKodU4MZAQHWDS32dunmGjM4vA=;
- b=gp2t+uxTBmcyf3aoRt9iU1+ytBbeBlQJ4p02owquF6+K5VlJDTSW8ZT2e8pMK8z2k9
- iZPtkTBbTbqQdRQpt43Y5KWV/e123ul8Rvhv+nLppSUusntJegO4uUhnfoEjFDt6L9s1
- s56460M+apoZPOEPFK38ThhCiEt2vDHyBMVz8UxL5CgCNPTYwta7R8Pcj42wsoDuZl1g
- raxLovfS9u28TfBkb0vk/FQjFHnaD+48LziJtbLtzYQ1CxZQnR2DnHJNdEkENoWjluGw
- Lzkr30g/ShJH4Jq8JQ3/3XViktDy6gEyqIdUX1nj6O6RUdybBtdcXarUIF8Q84JWb344
- lUcA==
+ h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+ :cc; bh=waFmwNjvn8zrzF+MflfsEtX07GKV6zTcqXH2BQIDo6I=;
+ b=BKscopTznRI/6PlxNEk0SE0fxVRhoo+fn7dYCuemGdOZIADZEwhPo+ULx0QJjgfT+7
+ +PpgH+n/5j3YZS63+Z1hnzoLJIPmPncek9CugDTRvHQ23oS3U5GCn6/elW1K2CnAzUtE
+ Ud4kLm8bieJUsuWXMAKjtzaRMe2DKNe6dkj/hIPYueVn74t5rH+wd0V5VmrhoO4SCVQ7
+ TveVFJ9J1ykqLXcMNWycZAYCDgE07/HDR0qsBhiwTJPekKdVw+aiiIfFimfAzgA4TUwp
+ cNS3YrzX1BVIz4dqspdVMhiPFxB5jkBoDBDQ3BBS01WiPB/1O5eds/f/ZGZMOar1Tz+4
+ W6Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=XAbjQkqFJHu/4T3iFsKodU4MZAQHWDS32dunmGjM4vA=;
- b=iQbBvJPIRZQh88ccCK9pCNp1iU4ncUEhXOkFC4uzchwRWotq5t0sUPfOmoBUiEbt/9
- Rv3Qgd6bczyRliCN+9iogqFYbQ7rdotihyerKQn6eoQVdkIgVm0Gy1sjJDHoAW5s1tkZ
- 2HaLXKE7twq//8CA3lBZW0nDAsikrXQyun9yXXScoxyZ/jS7X1iVebPsTRs1O0a8qyLA
- OvC4aQ3QBBJn1tg5Cq3+7kxZ8KsnOuVNdnsoyy7SUcEWTO/RLXfAmajEaOUN9m6sJ2/7
- FwydKePZX8SyCmoW+2eZg3C1A+XJv0GKViYmxxZQvxcZiccesI8Qhkb2HqCmxZINsEUg
- AyhQ==
-X-Gm-Message-State: AOAM530vE8fcBhdY8DqOVgQ2AAGuSQa3iLWK3dQmSIh1sOxVp7ZbQeTV
- 1TbLxzSSS/UK25DcRvu4+rQYWZRMjdYg
-X-Google-Smtp-Source: ABdhPJyu14MmPThhBCrePZPw5xrF424Jw8O4wEbivNq60fQi2mJXFLpGbPC9WzA1L3RF0hKzfV6sXlMF487E
-X-Received: by 2002:a25:50c2:: with SMTP id
- e185mr15499758ybb.204.1594358713525; 
- Thu, 09 Jul 2020 22:25:13 -0700 (PDT)
-Date: Fri, 10 Jul 2020 13:24:59 +0800
-Message-Id: <20200710052505.3664118-1-tzungbi@google.com>
+ h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+ :references:subject:from:to:cc;
+ bh=waFmwNjvn8zrzF+MflfsEtX07GKV6zTcqXH2BQIDo6I=;
+ b=JGsxDPuwxSE3HGWoW/amltp3wMfk5PAOYeb7/5enHufujlRR3hLBTFn5le5Hs+1T42
+ HKZcna58rzCDDcg0ZGpZzpfMFy78Gey9KNUKl5OdFOsjtQZm+Td4awB15/kN8/N0YLgJ
+ DGNr8NSHcD2Av49Zdtm5ohCp0C5JMY61ic/c3kIXob+pESZ+ngTkWamh+y6zk8/KbjF5
+ MSaZBWGv9z/Wgz9w9xZuTgccl1qkRGAE0p7kTsIPafs1Yk260xs7nZaCRRouXurEQwfe
+ uCyddO4EXI13+AoElWVR4urB/0L73qGrHsr5+gT56yh6M64rBDP42Dax/UsVaS2f90rC
+ SMyA==
+X-Gm-Message-State: AOAM531tPeuPOl9BnKeFclxgp9yzqiflA+XTITqkFsCOBStep39sfpXu
+ qelF7315A5QEIdegm+PCm99hnZKuQuoj
+X-Google-Smtp-Source: ABdhPJwP7e8k+tjpxgJCNtpdCpHvOKoiQ2NdP3VBQyiLvLA0NAeFA8ZUuQe5WMXbfnvgbYoF7V2Yrys14mtZ
+X-Received: by 2002:a25:abd0:: with SMTP id v74mr23431860ybi.222.1594358721171; 
+ Thu, 09 Jul 2020 22:25:21 -0700 (PDT)
+Date: Fri, 10 Jul 2020 13:25:01 +0800
+In-Reply-To: <20200710052505.3664118-1-tzungbi@google.com>
+Message-Id: <20200710052505.3664118-3-tzungbi@google.com>
 Mime-Version: 1.0
+References: <20200710052505.3664118-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-Subject: [PATCH 0/6] ASoC: mediatek: mt8183: support DP audio
+Subject: [PATCH 2/6] ASoC: mediatek: mt8183: use hdmi-codec
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org, robh+dt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -100,42 +103,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series is a follow up for a long time ago series
-(https://patchwork.kernel.org/cover/11204303/).
+Adds DAI link to use hdmi-codec.
 
-The old series bound too much on the patches of DRM bridge and ASoC
-machine driver.  And unluckily, the dependencies
-(https://lore.kernel.org/patchwork/patch/1126819/) have not applied.
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+ .../soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Revewing the ASoC patches in the old series, I found that they could be
-decoupled from the DRM bridge patches.  And they are harmless as it is
-an optional attribute ("hdmi-codec") in DTS.
-
-This series arranges and rebases the harmless ASoC patches for
-mt8183-mt6358-ts3a227-max98357 and mt8183-da7219-max98357.
-
-The 1st and 4th patch add an optional DT property.  The 1st patch was
-acked long time ago (https://patchwork.kernel.org/patch/11204321/).
-
-The 2nd and 5th patch add DAI link for using hdmi-codec.
-
-The 3rd and 6th patch support the HDMI jack reporting.
-
-Tzung-Bi Shih (6):
-  ASoC: dt-bindings: mt8183: add a property "mediatek,hdmi-codec"
-  ASoC: mediatek: mt8183: use hdmi-codec
-  ASoC: mediatek: mt8183: support HDMI jack reporting
-  ASoC: dt-bindings: mt8183-da7219: add a property "mediatek,hdmi-codec"
-  ASoC: mediatek: mt8183-da7219: use hdmi-codec
-  ASoC: mediatek: mt8183-da7219: support HDMI jack reporting
-
- .../bindings/sound/mt8183-da7219-max98357.txt |  4 +++
- .../sound/mt8183-mt6358-ts3a227-max98357.txt  |  2 ++
- sound/soc/mediatek/Kconfig                    |  2 ++
- .../mediatek/mt8183/mt8183-da7219-max98357.c  | 29 +++++++++++++++++--
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 29 +++++++++++++++++--
- 5 files changed, 60 insertions(+), 6 deletions(-)
-
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index 964f2f821782..c375e9f91a34 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -258,7 +258,7 @@ SND_SOC_DAILINK_DEFS(i2s5,
+ 
+ SND_SOC_DAILINK_DEFS(tdm,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("TDM")),
+-	DAILINK_COMP_ARRAY(COMP_DUMMY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "i2s-hifi")),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
+ static int mt8183_mt6358_tdm_startup(struct snd_pcm_substream *substream)
+@@ -562,7 +562,7 @@ static int
+ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card;
+-	struct device_node *platform_node, *ec_codec;
++	struct device_node *platform_node, *ec_codec, *hdmi_codec;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct mt8183_mt6358_ts3a227_max98357_priv *priv;
+ 	const struct of_device_id *match;
+@@ -583,6 +583,8 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 	card->dev = &pdev->dev;
+ 
+ 	ec_codec = of_parse_phandle(pdev->dev.of_node, "mediatek,ec-codec", 0);
++	hdmi_codec = of_parse_phandle(pdev->dev.of_node,
++				      "mediatek,hdmi-codec", 0);
+ 
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		if (ec_codec && strcmp(dai_link->name, "Wake on Voice") == 0) {
+@@ -626,6 +628,9 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 			}
+ 		}
+ 
++		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0)
++			dai_link->codecs->of_node = hdmi_codec;
++
+ 		if (!dai_link->platforms->name)
+ 			dai_link->platforms->of_node = platform_node;
+ 	}
 -- 
 2.27.0.383.g050319c2ae-goog
 
