@@ -2,94 +2,67 @@ Return-Path: <SRS0=MUjV=AW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FB08C433E1
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 07:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF5A8C433E3
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 09:05:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CD14207DD
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 07:09:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 36DD0206F0
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 09:05:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LA+C6gVG";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WD5wrr46"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CD14207DD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gTKQwDgF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36DD0206F0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9950215DC;
-	Sat, 11 Jul 2020 09:08:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9950215DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 946DF1607;
+	Sat, 11 Jul 2020 11:04:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 946DF1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594451389;
-	bh=zp14fzWRa8YWjMJp4KzxBn00fVthB21eVreWFBI/NC4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LA+C6gVGndKzf2s+YtBJrFfUdKikWDuU8uE8IqZg9oRz6FBm228FU+7AdNpDdNHUS
-	 Vd1voqz6bnSra1R0tzOlslwtw1lD/2RlCSyQKasd41ACDl17GXbtpggJTNcmMAmxtD
-	 2iIFFs6wDEnYqeVGxABz66vxLQ8h++ScjJi5ZiT4=
+	s=default; t=1594458313;
+	bh=4ORzgcG0QvfUlR+ZtqVG8Zb09hKzikjMISQNwgegm6s=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gTKQwDgFC/E3NR8oVrKEZm4YRaokAGJ5IAgYkvEzvpw6FAqHhT+Uft6kxX6ifmZnL
+	 uklFSeFfwDYIOG6CJcDneC3lwQuK8FOqZO344c69iRkdknFxk1ZoUyi0rXT/Y3Dhuo
+	 jCvECXU5+Bgbk8ErEiLeYN6fxKMIySLlTgZ+vx/A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EEE7F801F9;
-	Sat, 11 Jul 2020 09:08:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16F41F801F9;
+	Sat, 11 Jul 2020 11:04:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B1A5F80216; Sat, 11 Jul 2020 09:08:57 +0200 (CEST)
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com
- [IPv6:2607:f8b0:4864:20::143])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C695FF80216; Sat, 11 Jul 2020 11:04:20 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3438DF8011C
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2020 09:08:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3438DF8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="WD5wrr46"
-Received: by mail-il1-x143.google.com with SMTP id h16so6977260ilj.11
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2020 00:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=3zaiLFbNh7L3+bFoK+wl7i5xM2TsBDsZ5cXl+f5vIV8=;
- b=WD5wrr46I1z4QIoObyt1ro0aEC7r5zKOQHU9c903/TxQOkyxxlhlIxviz5lYwf/5JK
- EFfesDnDXaffkFcOthkfV0fD0f2MpVCfKKZUntQs9jPfPv6opWoZVayzQsYcIQ0F9vkV
- LUpCEtRs5XapkrGV0fLRT4fgqSxGkN3lL2++5iRAyFuZ9DPmDn5ShbHYwahMM4m+KKl+
- Zs9BrTHUGG3fbf7Bxahk/liKjy8+wm3hCp07fNoAXC4wksLX15poHHxAVg2opHZ9bsRB
- 6fJMLzSbAbtJuH/350dCONdeSeeqg+WgP0hJKK+jtax0Bxz+4gom36xYxmMLQVHhb4l7
- 0fyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=3zaiLFbNh7L3+bFoK+wl7i5xM2TsBDsZ5cXl+f5vIV8=;
- b=AiF3fjtQO7xvPmeLo2TSa5lECrqt97r1qc4qdjtGhEyfL7VcGh4XYTcaBmllZKTXYl
- Tze83m261zlTukuA6cRWDXDqtGjYRUdpOb33O1UWs3XP9NRq+/9qTd8PyZFhdEdKnPNc
- 3W2I6gnZZLYrYu6c7bcq6pBK+7RRyHjZKwR3SlYEhZUpHHuSoURhixHKw0rPOY4ILD1H
- 0xs6r2AINpHEsDOTFOONd6veWH+F1w0a6E+hnNe4/su44l/IoKPrrS6mz6GsYmCJTj83
- 4y9i8sRHczUUcBpiSRTJuLDXN4CpU0LMCuo2nadDAwWq8JC85roLf+Kf+BXbV8HzpCYF
- z3kQ==
-X-Gm-Message-State: AOAM530UgJQqbr3xDfHjIkpj73/5mcin2H4YrypREKLrIobJB32yc3Gj
- EoqmtO8bOpVD7nM8XfuL2gM=
-X-Google-Smtp-Source: ABdhPJw9FantHw3DWTcb4xX67aNuzRPAdFkv7mM8PWkXa8Wel+7ugRwbStJKPaNhZueRIwsrpkQ0ow==
-X-Received: by 2002:a92:41d0:: with SMTP id
- o199mr22608975ila.205.1594451324621; 
- Sat, 11 Jul 2020 00:08:44 -0700 (PDT)
-Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [160.94.145.20])
- by smtp.googlemail.com with ESMTPSA id u6sm4469475ilg.32.2020.07.11.00.08.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 11 Jul 2020 00:08:44 -0700 (PDT)
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Navid Emamdoost <navid.emamdoost@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: trident: Fix a memory leak in snd_trident_create
-Date: Sat, 11 Jul 2020 02:08:30 -0500
-Message-Id: <20200711070835.4855-1-navid.emamdoost@gmail.com>
-X-Mailer: git-send-email 2.17.1
-Cc: emamd001@umn.edu, kjlu@umn.edu, smccaman@umn.edu
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D67FF8014A
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2020 11:04:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D67FF8014A
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 0C83DAAC7;
+ Sat, 11 Jul 2020 09:04:14 +0000 (UTC)
+Date: Sat, 11 Jul 2020 11:04:12 +0200
+Message-ID: <s5htuye2zjn.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Navid Emamdoost <navid.emamdoost@gmail.com>
+Subject: Re: [PATCH] ALSA: trident: Fix a memory leak in snd_trident_create
+In-Reply-To: <20200711070835.4855-1-navid.emamdoost@gmail.com>
+References: <20200711070835.4855-1-navid.emamdoost@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kjlu@umn.edu, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, emamd001@umn.edu, smccaman@umn.edu
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,32 +78,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the implementation of snd_trident_create(), the allocated trident is
-leaked if snd_trident_mixer() fails. Release via snd_trident_free().
+On Sat, 11 Jul 2020 09:08:30 +0200,
+Navid Emamdoost wrote:
+> 
+> In the implementation of snd_trident_create(), the allocated trident is
+> leaked if snd_trident_mixer() fails. Release via snd_trident_free().
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
- sound/pci/trident/trident_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+No, this patch would result in double-free.
 
-diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
-index 6e50376163a2..e98c692f6aa9 100644
---- a/sound/pci/trident/trident_main.c
-+++ b/sound/pci/trident/trident_main.c
-@@ -3582,8 +3582,11 @@ int snd_trident_create(struct snd_card *card,
- 		return err;
- 	}
- 
--	if ((err = snd_trident_mixer(trident, pcm_spdif_device)) < 0)
-+	err = snd_trident_mixer(trident, pcm_spdif_device);
-+	if (err < 0) {
-+		snd_trident_free(trident);
- 		return err;
-+	}
- 	
- 	/* initialise synth voices */
- 	for (i = 0; i < 64; i++) {
--- 
-2.17.1
+The manual release of trident object isn't needed once after it gets
+added via snd_device_new().  Then it'll be automatically released at
+the error path (via snd_trident_dev_free()).
 
+
+thanks,
+
+Takashi
+
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> ---
+>  sound/pci/trident/trident_main.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
+> index 6e50376163a2..e98c692f6aa9 100644
+> --- a/sound/pci/trident/trident_main.c
+> +++ b/sound/pci/trident/trident_main.c
+> @@ -3582,8 +3582,11 @@ int snd_trident_create(struct snd_card *card,
+>  		return err;
+>  	}
+>  
+> -	if ((err = snd_trident_mixer(trident, pcm_spdif_device)) < 0)
+> +	err = snd_trident_mixer(trident, pcm_spdif_device);
+> +	if (err < 0) {
+> +		snd_trident_free(trident);
+>  		return err;
+> +	}
+>  	
+>  	/* initialise synth voices */
+>  	for (i = 0; i < 64; i++) {
+> -- 
+> 2.17.1
+> 
