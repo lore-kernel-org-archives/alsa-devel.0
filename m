@@ -2,66 +2,100 @@ Return-Path: <SRS0=MUjV=AW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF410C433DF
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 10:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D8E8C433E1
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 10:48:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4229F20725
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 10:21:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CAB042065D
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jul 2020 10:48:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a4WV4lnZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4229F20725
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rACU0ZP9";
+	dkim=pass (2048-bit key) header.d=retarded.farm header.i=@retarded.farm header.b="l5G9BcYR";
+	dkim=pass (2048-bit key) header.d=retarded.farm header.i=@retarded.farm header.b="MQUoDcdz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAB042065D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=retarded.farm
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8E5715E5;
-	Sat, 11 Jul 2020 12:20:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8E5715E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DBDF15E5;
+	Sat, 11 Jul 2020 12:47:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DBDF15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594462899;
-	bh=slsN/0qclaneHxyZQwL3FAWNsFU0930ysM05SmHbGKE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1594464490;
+	bh=jvKaxQNaP6USqPSYWPQJ7/pfePQAidg6cHHmbfPZDjk=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a4WV4lnZk5O3PViEPbcY4mm9MT3YET0+JiNLRHhUZfEvzOv9DAu68Dls2EKOuhGaK
-	 jNlTBN4/g0BUs9xjQmpnYlvPodl30txA6GVgVmJqe0a0hDEo77GBVN4+kEK6dSYfOr
-	 FtrQRflHtJC1J64FVODKVO+WoBaDpWF3d3p68qkQ=
+	b=rACU0ZP9BBIMiZLg3TiBw3C4rSbMIEVIWs+bZT2Y/UVCqHU8xy/wpQkRpKNlcx2Nk
+	 QfdYJTtAMpyci8UOTtE7Ltuy7fb+EbWJld07qy2iXT+7j7Y6ZV9kfEdapBPQFt0BDS
+	 +kvQKVW43zMSXR3pXW4KkFK4d277qxbM6urFGq08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4563EF801F9;
-	Sat, 11 Jul 2020 12:20:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA209F80084;
+	Sat, 11 Jul 2020 12:47:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0286BF80216; Sat, 11 Jul 2020 12:20:48 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 558A8F80216; Sat, 11 Jul 2020 12:47:18 +0200 (CEST)
+Received: from mail.bin-co.de (mail.bin-co.de [IPv6:2a02:c207:3002:169::2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA897F8011C
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2020 12:20:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA897F8011C
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id EF8D1AE2D;
- Sat, 11 Jul 2020 10:20:40 +0000 (UTC)
-Date: Sat, 11 Jul 2020 12:20:40 +0200
-Message-ID: <s5hk0za2w07.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Armas Spann <zappel@retarded.farm>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CF26F80084
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2020 12:47:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CF26F80084
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=retarded.farm header.i=@retarded.farm
+ header.b="l5G9BcYR"; 
+ dkim=pass (2048-bit key) header.d=retarded.farm header.i=@retarded.farm
+ header.b="MQUoDcdz"
+Received: from localhost (localhost [127.0.0.1])
+ by mail.bin-co.de (Postfix) with ESMTP id AB4094443EB4;
+ Sat, 11 Jul 2020 12:47:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=retarded.farm;
+ s=201801; t=1594464430;
+ bh=jvKaxQNaP6USqPSYWPQJ7/pfePQAidg6cHHmbfPZDjk=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=l5G9BcYRSKppiLIwC6tyw+x3NgZWssW510Ktr79NFQNX8TWnR1yD1jWB9Pc2Bgv7j
+ hm0aRIzzlrBUYfSU1Hc3rK/xfR1azxd3K1BM7+GVozsUgqmyxiTMNqmMwJhpDzsgPD
+ Cfl0XOzUqvpiLVgiX51YNUB14LMkohiy+xHqoBjyLGzsqyxgkxhs8nqwXTUBP2meqf
+ /sPzlNf+ZI5G6Q43EkQOaUDZ/3RHWPXH/prtmwyD3LkitXxpMzF1Bzy1AjmQ9Qf+BM
+ aZ9v+IxSeg5z87P2X6Ojq8BhjWS1E2CU3ZPgRjfPhmHXLEtL43affBCLn86N0nCuGZ
+ feWms/NndsacQ==
+X-Virus-Scanned: amavisd-new at bin-co.de
+Received: from mail.bin-co.de ([127.0.0.1])
+ by localhost (mail.bin-co.de [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Gy2-TLKsa1CE; Sat, 11 Jul 2020 12:47:09 +0200 (CEST)
+Received: from deepblue.zlan.intra (unknown [90.187.13.225])
+ (Authenticated sender: zappel@retarded.farm)
+ by mail.bin-co.de (Postfix) with ESMTPSA id 726A44443EB0;
+ Sat, 11 Jul 2020 12:47:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=retarded.farm;
+ s=201801; t=1594464429;
+ bh=jvKaxQNaP6USqPSYWPQJ7/pfePQAidg6cHHmbfPZDjk=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=MQUoDcdzsFwDIOWchHeZ2q9gfsJplPSBKeIyFwcXNZSCWLRs8dPpgUHVI7dfMqipi
+ R+MdfRJ13/AqMU5UtYOsfOZSBr1kf07uZiWDcQkWS4+la3uiIyqnYlSIyz4TKR3heI
+ UHLGcfPe5CYmteJb9AAy0oJ+TiwrjVv+7Z9OPh8diOhpK3tq+2g771Da+sgaGM2H/q
+ m7OzblBzD50ynpc3o5kXL1QRydQ7LlyrA+B4YSKjH7eXilbNMrkX+Lqgk/JsOgiIIU
+ gbChkv28F1rJ7igNVCFz0WKDwaB2WkyoL4HHvOG27TxaLpOriA0X3gxaFLl8SZ6xxk
+ mSiVwSGxsHUKg==
+Message-ID: <7a0c60c4ba2ae63e369bc1f3e3d1d5e90392d624.camel@retarded.farm>
 Subject: Re: [PATCH v2] ALSA: hda/realtek: enable headset mic of ASUS ROG
  Zephyrus G14(G401) series with ALC289
-In-Reply-To: <20200711101111.13983-1-zappel@retarded.farm>
+From: Armas Spann <zappel@retarded.farm>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Sat, 11 Jul 2020 12:47:08 +0200
+In-Reply-To: <s5hk0za2w07.wl-tiwai@suse.de>
 References: <20200711101111.13983-1-zappel@retarded.farm>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5hk0za2w07.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,57 +112,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 11 Jul 2020 12:11:11 +0200,
-Armas Spann wrote:
+Am Samstag, den 11.07.2020, 12:20 +0200 schrieb Takashi Iwai:
+> On Sat, 11 Jul 2020 12:11:11 +0200,
+> Armas Spann wrote:
+> > Signed-off-by: Armas Spann <
+> > zappel@retarded.farm
+> > >
 > 
-> Signed-off-by: Armas Spann <zappel@retarded.farm>
-
-Could you give a bit more detail about what you've fixed?
-An empty patch description is always a bad sign.
-
-
-thanks,
-
-Takashi
-
-> ---
->  sound/pci/hda/patch_realtek.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+> Could you give a bit more detail about what you've fixed?
+> An empty patch description is always a bad sign.
 > 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 194ffa8c66ce..ff4f3eeedfd0 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6152,6 +6152,7 @@ enum {
->  	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
->  	ALC269VC_FIXUP_ACER_HEADSET_MIC,
->  	ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE,
-> +	ALC289_FIXUP_ASUS_G401,
->  };
->  
->  static const struct hda_fixup alc269_fixups[] = {
-> @@ -7359,6 +7360,13 @@ static const struct hda_fixup alc269_fixups[] = {
->  		.chained = true,
->  		.chain_id = ALC269_FIXUP_HEADSET_MIC
->  	},
-> +	[ALC289_FIXUP_ASUS_G401] = {
-> +		.type = HDA_FIXUP_PINS,
-> +		.v.pins = (const struct hda_pintbl[]) {
-> +			{ 0x19, 0x03a11020 }, /* headset mic with jack detect */
-> +			{ }
-> +		},
-> +	},
->  };
->  
->  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-> @@ -7539,6 +7547,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x1043, 0x1bbd, "ASUS Z550MA", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
->  	SND_PCI_QUIRK(0x1043, 0x1c23, "Asus X55U", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
->  	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
-> +	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_G401),
->  	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
->  	SND_PCI_QUIRK(0x1043, 0x831a, "ASUS P901", ALC269_FIXUP_STEREO_DMIC),
->  	SND_PCI_QUIRK(0x1043, 0x834a, "ASUS S101", ALC269_FIXUP_STEREO_DMIC),
-> -- 
-> 2.27.0
 > 
+> thanks,
+> 
+> Takashi
+> 
+> > ---
+> >  sound/pci/hda/patch_realtek.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> > index 194ffa8c66ce..ff4f3eeedfd0 100644
+> > --- a/sound/pci/hda/patch_realtek.c
+> > +++ b/sound/pci/hda/patch_realtek.c
+> > @@ -6152,6 +6152,7 @@ enum {
+> >  	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
+> >  	ALC269VC_FIXUP_ACER_HEADSET_MIC,
+> >  	ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE,
+> > +	ALC289_FIXUP_ASUS_G401,
+> >  };
+> >  
+> >  static const struct hda_fixup alc269_fixups[] = {
+> > @@ -7359,6 +7360,13 @@ static const struct hda_fixup alc269_fixups[] = {
+> >  		.chained = true,
+> >  		.chain_id = ALC269_FIXUP_HEADSET_MIC
+> >  	},
+> > +	[ALC289_FIXUP_ASUS_G401] = {
+> > +		.type = HDA_FIXUP_PINS,
+> > +		.v.pins = (const struct hda_pintbl[]) {
+> > +			{ 0x19, 0x03a11020 }, /* headset mic with jack detect */
+> > +			{ }
+> > +		},
+> > +	},
+> >  };
+> >  
+> >  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+> > @@ -7539,6 +7547,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =
+> > {
+> >  	SND_PCI_QUIRK(0x1043, 0x1bbd, "ASUS Z550MA",
+> > ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
+> >  	SND_PCI_QUIRK(0x1043, 0x1c23, "Asus X55U",
+> > ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+> >  	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
+> > +	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14",
+> > ALC289_FIXUP_ASUS_G401),
+> >  	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE",
+> > ALC256_FIXUP_ASUS_AIO_GPIO2),
+> >  	SND_PCI_QUIRK(0x1043, 0x831a, "ASUS P901", ALC269_FIXUP_STEREO_DMIC),
+> >  	SND_PCI_QUIRK(0x1043, 0x834a, "ASUS S101", ALC269_FIXUP_STEREO_DMIC),
+> > -- 
+> > 2.27.0
+> > 
+
+Yes, of course. 
+
+Sorry I thought it would have be taken from the commit message when using git
+send-email. Is it enough to have it in the conversation or must I put it into
+the patch. If it has to be inside the patch, where do I have to place the
+description? Because I think git send-mail is stripping some parts off(may be
+caused due my lack of knowledge about this)
+
+But to answer your question:
+
+The mic doesen't got recognized on the ASUS ROG Zephyrus G14(G401) notebook
+series. So I added the corresponding device/vendor id as well as a new fixup for
+setting that specific pin for the realtek ALC289 to get it work.
+
+
+Best Regards,
+Armas Spann
+
