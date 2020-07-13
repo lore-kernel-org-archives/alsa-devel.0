@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2C26C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 05:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B747C433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 05:11:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CC0820724
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 05:10:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C98F2075D
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 05:11:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KRvkJVC7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CC0820724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vyz4DfhU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C98F2075D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE1CA1665;
-	Mon, 13 Jul 2020 07:09:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE1CA1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id A26C7112;
+	Mon, 13 Jul 2020 07:10:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A26C7112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594617035;
-	bh=n2S2XCizZOyQ2XJ/eybMYAL7zv3a1cNTO3h5+rYtXq8=;
+	s=default; t=1594617065;
+	bh=+H+7g+3haVadxE5hHhLdOyeYpUeZ6iqjAixkd93Pmf4=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KRvkJVC7E19lvDAyDk8Uk2szZa9xLAJrAocWnr0v9JRtxI8X2fpCtl+C7lLHdCmOB
-	 lnVjxKYQ+5KX6Fs0GjFzcS0jp4FsmMD4kl8WITxtA+BrDIo21OmYtE/SRXlfCaf4Xr
-	 jdL7qEW/JFRQdXKzRzRw+tVblDEX4lfo79zsIvMc=
+	b=Vyz4DfhU6yqKuNkqGtvS+PYJQ2SXn2ONENlZYppkT6f45eqRypPwxw/wXQ/QKItWI
+	 YTLG2+4F3Q4e8PHD+M7ckuYoikt6Pa8xHiDU0ZURp/mLtGWdCFQGTDo9PKPMBs30mB
+	 GtTeQMnWiOmA9yNLUMmYAToDZsVomzpOtGnjvb+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B33EBF800B2;
-	Mon, 13 Jul 2020 07:08:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BF55F802BC;
+	Mon, 13 Jul 2020 07:09:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BD56F8027B; Mon, 13 Jul 2020 07:08:52 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9AA12F800B2
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 07:08:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AA12F800B2
-Date: 13 Jul 2020 14:08:44 +0900
-X-IronPort-AV: E=Sophos;i="5.75,346,1589209200"; d="scan'208";a="51746442"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 13 Jul 2020 14:08:44 +0900
+ id D6230F802BD; Mon, 13 Jul 2020 07:09:02 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 38EAEF80217
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 07:08:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38EAEF80217
+Date: 13 Jul 2020 14:08:54 +0900
+X-IronPort-AV: E=Sophos;i="5.75,346,1589209200"; d="scan'208";a="51959117"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 13 Jul 2020 14:08:54 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6CFBE400754F;
- Mon, 13 Jul 2020 14:08:44 +0900 (JST)
-Message-ID: <87o8ok3sv6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 39A504184B5A;
+ Mon, 13 Jul 2020 14:08:54 +0900 (JST)
+Message-ID: <87mu443suw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/3] ASoC: rsnd: don't use discriminatory terms for comment
+Subject: [PATCH 3/3] ASoC: fsi: don't use discriminatory terms for comment
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87r1tg3swv.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,31 +79,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-rsnd is using discriminatory terms for comment.
+fsi is using discriminatory terms for comment.
 This patch removes it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/rcar/core.c | 4 ++--
+ sound/soc/sh/fsi.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 983dece107ab..6e670b3e92a0 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -759,13 +759,13 @@ static int rsnd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 6d523d194ba1..3c574792231b 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1632,12 +1632,12 @@ static int fsi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	struct fsi_priv *fsi = fsi_get_priv_frm_dai(dai);
+ 	int ret;
  
 -	/* set master/slave audio interface */
-+	/* set clock master for audio interface */
++	/* set clock master audio interface */
  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
  	case SND_SOC_DAIFMT_CBM_CFM:
- 		rdai->clk_master = 0;
  		break;
  	case SND_SOC_DAIFMT_CBS_CFS:
--		rdai->clk_master = 1; /* codec is slave, cpu is master */
-+		rdai->clk_master = 1; /* cpu is master */
+-		fsi->clk_master = 1; /* codec is slave, cpu is master */
++		fsi->clk_master = 1; /* cpu is master */
  		break;
  	default:
  		return -EINVAL;
