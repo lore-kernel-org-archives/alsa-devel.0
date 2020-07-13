@@ -2,68 +2,73 @@ Return-Path: <SRS0=sipn=AY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD637C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 16:07:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D683C433E7
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 16:45:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D411206F0
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 16:07:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C5A1820738
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 16:45:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RRJMvakD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D411206F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vbzqQj9q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5A1820738
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=marcan.st
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E76721607;
-	Mon, 13 Jul 2020 18:06:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E76721607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 548BB886;
+	Mon, 13 Jul 2020 18:44:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 548BB886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594656461;
-	bh=t5hTJBKTrkErxxrv8MGpbjhCS5fcvE6PQgbyditwY9Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1594658748;
+	bh=Ld30GCztW6l8oAVSc8DOStp1yRmHJK50JAMW5hEiYGs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RRJMvakDTT+gAqeu+4qMDPW7ozjMxQ+KxbKdUL4i5iVAEf/K9ytR1BAvUoi8ccFBX
-	 dgDyvrgbiFFXHMrcTVmQ1+/rZdm8+NRg9YpBleOQhklVbC04toxZ07ZESQ/ZtlThM2
-	 gZBnktxN7yAE5keixyvUzoeIzuqyJ6oKjOIpaf7A=
+	b=vbzqQj9qYAZr1NfEzCAQUdFuNjOBDs0iBqeKLQV4V3JG3Xzo4WC23kHB6M+VcbGIC
+	 vi9FsFcxE/qVeC9lzo+B7Fhg4Os+gI0r/Z2RzHGEuowGQxQ86I0KzAopiqpYzu6R16
+	 YdEPK005KRg/kxp0IjXW3DxzqrHosn3qVQ2z9TN8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8401AF80227;
-	Mon, 13 Jul 2020 18:06:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C43D2F80217;
+	Mon, 13 Jul 2020 18:44:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FD84F80229; Mon, 13 Jul 2020 18:06:46 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3AF48F8021D; Mon, 13 Jul 2020 18:44:56 +0200 (CEST)
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7BF5F800B2
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 18:06:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7BF5F800B2
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id ED8F5B64D;
- Mon, 13 Jul 2020 16:06:40 +0000 (UTC)
-Date: Mon, 13 Jul 2020 18:06:38 +0200
-Message-ID: <s5hwo37wga9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v4] ALSA: line6: add hw monitor volume control for POD
- HD500
-In-Reply-To: <20200713152852.65832-1-anarsoul@gmail.com>
-References: <20200713152852.65832-1-anarsoul@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Pavel Machek <pavel@denx.de>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Kai-Heng Feng <kai.heng.feng@canonical.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89283F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 18:44:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89283F800E5
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ (Authenticated sender: marcan@marcan.st)
+ by mail.marcansoft.com (Postfix) with ESMTPSA id 4B92141A48;
+ Mon, 13 Jul 2020 16:44:43 +0000 (UTC)
+Subject: Re: [PATCH 1/3] ASoC: rsnd: don't use discriminatory terms for
+ function names
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
+References: <87r1tg3swv.wl-kuninori.morimoto.gx@renesas.com>
+ <87pn903svl.wl-kuninori.morimoto.gx@renesas.com>
+From: Hector Martin 'marcan' <marcan@marcan.st>
+Message-ID: <9819df17-228b-78e4-3de8-71344292de01@marcan.st>
+Date: Tue, 14 Jul 2020 01:44:40 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <87pn903svl.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,22 +84,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 13 Jul 2020 17:28:52 +0200,
-Vasily Khoruzhick wrote:
-> 
-> Add hw monitor volume control for POD HD500. The same change may
-> work for HD500X but I don't have it to test.
-> 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> ---
-> v4: add NULL check for kmalloc-ed buffer
-> v3: - use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL
->     - use GFP_KERNEL instead of GFP_ATOMIC for allocating a message
->     - use lower case for float lookup table
-> v2: clamp volume value to [0, ARRAY_SIZE() -1] in
->     podhd_set_monitor_level()
+On 13/07/2020 14.08, Kuninori Morimoto wrote:
+> -u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io);
+> +u32 rsnd_ssi_multi_followers_runtime(struct rsnd_dai_stream *io);
 
-Applied now.  Thanks.
+I don't have full context here, but AIUI this is about bundling 
+different links together? If so, primary/secondary or main/secondary 
+might work better than leader/follower, in my opinion. The latter 
+implies more of a "one device follows another one" scenario, like for 
+clocks.
 
+Just my 2c. Ditching the horribly ambiguous master/slave terminology is 
+a good chance to pick the replacement that best describes the situation :-)
 
-Takashi
+-- 
+Hector Martin "marcan" (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
