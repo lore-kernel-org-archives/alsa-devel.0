@@ -2,85 +2,68 @@ Return-Path: <SRS0=sipn=AY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CE63C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:14:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1115C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:45:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA5A02065F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:14:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 582B720720
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:45:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RBMEE1bq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA5A02065F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d0Jv5hlG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 582B720720
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B1421607;
-	Mon, 13 Jul 2020 08:13:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B1421607
+	by alsa0.perex.cz (Postfix) with ESMTPS id D772C84D;
+	Mon, 13 Jul 2020 08:44:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D772C84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594620843;
-	bh=ERG8B6jO/44IIAl3e+/vWjEyWXs/2/OGkpvDjy7Qz9Q=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1594622720;
+	bh=DXBklISH33TWLnCe2dRNOGztrAmGC0GF8QTE+xAr4/c=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RBMEE1bqU73eAHuN4wmci6TOZojnfA0nODlSMRI3VdvbfPfSY/+dc0/DR50V4SsNy
-	 e0VGdCQDZ8s2sBG6ASc5yJadzeeYYoOe6MmgU5MFAzm+Kg9tdIiPRVyDUg/4L0zqgq
-	 3wh9KWDVfylmpZrZ5auQ5YelAkh/5jxN79ljhX/8=
+	b=d0Jv5hlGkOUR2veIRcWg2x76UdY6bSYXKjiXFLvJ1Y/KyOmXeXFpvehVj2sLvvKrv
+	 7+C/oKR7hnuO8F8M8kVbdxwvn4ECwzL6G0/we+Axo2crnixqMmv17k5Ug1C1oJBqRZ
+	 ybiRoqSt0NRtrITW5cdmuPeDdOE9oA8ZNJA99+OY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDB22F80217;
-	Mon, 13 Jul 2020 08:13:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5372DF80217;
+	Mon, 13 Jul 2020 08:44:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEBFCF8021D; Mon, 13 Jul 2020 08:13:10 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 29E3FF8021D; Mon, 13 Jul 2020 08:44:28 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D99EBF80116
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 08:12:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D99EBF80116
-IronPort-SDR: PUN9hFwNzKjerdHpJchxBJLHYaNEcVxcQQALfvurE+6VqGeWTaADNCad1Nn1N5rlnP9lWlVQCn
- nLPxy4gLRJSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="147679954"
-X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
- d="scan'208,217";a="147679954"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2020 23:12:52 -0700
-IronPort-SDR: 4gGVodEgNaCYmAdq47HgoZzwDpn2xZGFGbdUi3c4nvP5OplmHzGtFmWGN45pp+JHP2cyh5oT4j
- 6VZhTZRYs1hg==
-X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
- d="scan'208,217";a="459176907"
-Received: from yungchua-mobl.ccr.corp.intel.com (HELO [10.252.185.206])
- ([10.252.185.206])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2020 23:12:49 -0700
-Subject: Re: [PATCH 1/1] MAINTAINERS: change SoundWire maintainer
-To: Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>
-References: <20200703192644.751-1-sanyog.r.kale@intel.com>
- <20200708073020.GA34333@vkoul-mobl> <20200710175510.GA25404@buildpc-HP-Z230>
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-Message-ID: <918aca91-8890-813e-9dea-06d09241c780@linux.intel.com>
-Date: Mon, 13 Jul 2020 14:12:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200710175510.GA25404@buildpc-HP-Z230>
-Content-Language: en-US
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- lgirdwood@gmail.com, gregkh@linuxfoundation.org,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88CFBF80116
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 08:44:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88CFBF80116
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id EAD8CAC82;
+ Mon, 13 Jul 2020 06:44:18 +0000 (UTC)
+Date: Mon, 13 Jul 2020 08:44:16 +0200
+Message-ID: <s5hr1tfzzgf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH v3] ALSA: line6: add hw monitor volume control for POD
+ HD500
+In-Reply-To: <20200713054635.58534-1-anarsoul@gmail.com>
+References: <20200713054635.58534-1-anarsoul@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Pavel Machek <pavel@denx.de>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,57 +79,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 13 Jul 2020 07:46:35 +0200,
+Vasily Khoruzhick wrote:
+> 
+> Add hw monitor volume control for POD HD500. The same change may
+> work for HD500X but I don't have it to test.
+> 
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> ---
+> v3: - use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL
+>     - use GFP_KERNEL instead of GFP_ATOMIC for allocating a message
+>     - use lower case for float lookup table
+> v2: clamp volume value to [0, ARRAY_SIZE() -1] in
+>     podhd_set_monitor_level()
 
-On 7/11/2020 1:55 AM, Sanyog Kale wrote:
-> On Wed, Jul 08, 2020 at 01:00:20PM +0530, Vinod Koul wrote:
->> On 04-07-20, 00:56, Sanyog Kale wrote:
->>> Add Bard as SoundWire maintainer from Intel and change Sanyog's
->>> role as reviewer.
->> Sad to see you go!
->>
->>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> Need ack from Bard (i think he is on vacation)
-> Yes. he will be back next week.
-
-
-Thanks Sanyog and Vinod
-
-
->
->>> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Almost good, but just a minor issue below:
 
 
-Acked-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> +static void podhd_set_monitor_level(struct usb_line6_podhd *podhd, int value)
+> +{
+(snip)
+> +	buf = kmalloc(sizeof(msg), GFP_KERNEL);
+> +	memcpy(buf, msg, sizeof(msg));
+
+Missing NULL check of buf.
+
+Could you fix and resubmit?
 
 
->>> ---
->>>   MAINTAINERS | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index 1c1527a34d99..9559e947bf67 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -16012,8 +16012,9 @@ F:	sound/soc/sof/
->>>   
->>>   SOUNDWIRE SUBSYSTEM
->>>   M:	Vinod Koul <vkoul@kernel.org>
->>> -M:	Sanyog Kale <sanyog.r.kale@intel.com>
->>> +M:	Bard Liao <yung-chuan.liao@linux.intel.com>
->>>   R:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>> +R:	Sanyog Kale <sanyog.r.kale@intel.com>
->> Do you still want to be a reviewer, I would like folks in this to be bit
->> active for reviews etc
-> Yes Vinod, will spare time to review patches.
->
-> Thanks
->
->> Thanks
->>
->>>   L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
->>>   S:	Supported
->>>   F:	Documentation/driver-api/soundwire/
->>> -- 
->>> 2.17.1
->> -- 
->> ~Vinod
+Thanks!
+
+Takashi
