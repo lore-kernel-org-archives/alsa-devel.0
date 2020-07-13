@@ -6,64 +6,64 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1115C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C72E2C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:49:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 582B720720
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:45:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A5A920720
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 06:49:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d0Jv5hlG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 582B720720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B+9P4cmr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A5A920720
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D772C84D;
-	Mon, 13 Jul 2020 08:44:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D772C84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00D6785D;
+	Mon, 13 Jul 2020 08:48:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00D6785D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594622720;
-	bh=DXBklISH33TWLnCe2dRNOGztrAmGC0GF8QTE+xAr4/c=;
+	s=default; t=1594622955;
+	bh=xtUfXWQa9dQBfkezu7MKVLNt75TmcE3sQGWal3+mZVI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d0Jv5hlGkOUR2veIRcWg2x76UdY6bSYXKjiXFLvJ1Y/KyOmXeXFpvehVj2sLvvKrv
-	 7+C/oKR7hnuO8F8M8kVbdxwvn4ECwzL6G0/we+Axo2crnixqMmv17k5Ug1C1oJBqRZ
-	 ybiRoqSt0NRtrITW5cdmuPeDdOE9oA8ZNJA99+OY=
+	b=B+9P4cmr35C4SLdru+v5gnjYv5JIrYz/2zlowFg68y6wMXMKw+JDRr8+NsiEHYiam
+	 0bmsQdnUy0pHjAVFQW6mB6e1+XUiG0Zra6hk8A3Sp1icuvnv86Fkc5+/Zq2aiOrVjd
+	 6PVZeFV3xLLIEls4t2cQrbF3DLJ9LgsM3xLk2Db0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5372DF80217;
-	Mon, 13 Jul 2020 08:44:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F2E7F80217;
+	Mon, 13 Jul 2020 08:48:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29E3FF8021D; Mon, 13 Jul 2020 08:44:28 +0200 (CEST)
+ id 5B91AF8021D; Mon, 13 Jul 2020 08:48:23 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88CFBF80116
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 08:44:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88CFBF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75114F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 08:48:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75114F800E5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id EAD8CAC82;
- Mon, 13 Jul 2020 06:44:18 +0000 (UTC)
-Date: Mon, 13 Jul 2020 08:44:16 +0200
-Message-ID: <s5hr1tfzzgf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A4290AC82;
+ Mon, 13 Jul 2020 06:48:14 +0000 (UTC)
+Date: Mon, 13 Jul 2020 08:48:11 +0200
+Message-ID: <s5hpn8zzz9w.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v3] ALSA: line6: add hw monitor volume control for POD
- HD500
-In-Reply-To: <20200713054635.58534-1-anarsoul@gmail.com>
-References: <20200713054635.58534-1-anarsoul@gmail.com>
+To: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable headset mic of Acer TravelMate
+ B311R-31 with ALC256
+In-Reply-To: <20200713060421.62435-1-jian-hong@endlessm.com>
+References: <20200713060421.62435-1-jian-hong@endlessm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Pavel Machek <pavel@denx.de>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ linux@endlessm.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,34 +79,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 13 Jul 2020 07:46:35 +0200,
-Vasily Khoruzhick wrote:
+On Mon, 13 Jul 2020 08:04:22 +0200,
+Jian-Hong Pan wrote:
 > 
-> Add hw monitor volume control for POD HD500. The same change may
-> work for HD500X but I don't have it to test.
+> The Acer TravelMate B311R-31 laptop's audio (1025:1430) with ALC256
+> cannot detect the headset microphone until
+> ALC256_FIXUP_ACER_MIC_NO_PRESENCE quirk maps the NID 0x19 as the headset
+> mic pin.
 > 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> ---
-> v3: - use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL
->     - use GFP_KERNEL instead of GFP_ATOMIC for allocating a message
->     - use lower case for float lookup table
-> v2: clamp volume value to [0, ARRAY_SIZE() -1] in
->     podhd_set_monitor_level()
+> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
 
-Almost good, but just a minor issue below:
+Applied now.  Thanks.
 
-
-> +static void podhd_set_monitor_level(struct usb_line6_podhd *podhd, int value)
-> +{
-(snip)
-> +	buf = kmalloc(sizeof(msg), GFP_KERNEL);
-> +	memcpy(buf, msg, sizeof(msg));
-
-Missing NULL check of buf.
-
-Could you fix and resubmit?
-
-
-Thanks!
 
 Takashi
