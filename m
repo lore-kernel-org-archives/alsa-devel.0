@@ -2,106 +2,91 @@ Return-Path: <SRS0=sipn=AY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C2CC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 10:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E40DCC433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 15:00:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A380C20758
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 10:54:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6DCDC20578
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 15:00:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jaTdPghG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="lxMgaEUS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A380C20758
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FIED9hAY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DCDC20578
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 163C61662;
-	Mon, 13 Jul 2020 12:53:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 163C61662
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDF56847;
+	Mon, 13 Jul 2020 16:59:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDF56847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594637683;
-	bh=/NxWqbrxqHS37kKZiHTcMOF00qUWOTU4rMNqfG9Jg9Y=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jaTdPghGLgQf0lfKq5Uld93cVRHoMwqXaPn/AwhsEs9gXN69PhawrWn4HJgAoQoaT
-	 Hz7Ed8qD6BPYVyCxIhny4I92rgeh9EvzWrbrI5s8JWLNU94EGUQcPHMgxIpvTQ5fIp
-	 pLp/emosyh8qkN+YIHIEXKHQGJSzMQIYsHXep0oU=
+	s=default; t=1594652416;
+	bh=nzASuH9Aa6QzRRlwVHAvFBo4qZ+A3sWOlJRsPr6CAsg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FIED9hAYmcEgyxshIP0B5UqUGNLhjejIY+YIC6IwbdbP52S7H73g3GFZn3KSrAl7W
+	 RJm0cQmPre1+AXWyGwNTY0HChjaPwIytO3R4QduH/PKnKLnK6yXG+0+cxnitdlhpyJ
+	 ZnGslorfr/g0tgBDRpinS1Xp/O7aARFsHshKWtmg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7BA9F8021D;
-	Mon, 13 Jul 2020 12:53:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BFCEF80217;
+	Mon, 13 Jul 2020 16:59:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0698F80229; Mon, 13 Jul 2020 12:53:51 +0200 (CEST)
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 40FEAF8021D; Mon, 13 Jul 2020 16:59:23 +0200 (CEST)
+Received: from mail-io1-f67.google.com (mail-io1-f67.google.com
+ [209.85.166.67])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FE40F80217
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 12:53:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FE40F80217
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="lxMgaEUS"
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
- by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DAqq0G170356;
- Mon, 13 Jul 2020 10:53:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=5p1H8Inq6fO6+rbbZ/c2hQS2caboJT505k68LpcR9fQ=;
- b=lxMgaEUSs+HOtpGnJ/klzw93aoEd/f5QeM85ngkYzw2c+cdYz1LnlDpO5TdR4RI1K0N+
- K8Kk/GSV30eCVnyZcYWn23AWr1RkUQzMAVeUUonrMQ6ltnh6MrQgxmXwtJyDLEh4KHlL
- E766IDCvYbfl9Lb49PkwS++JtTRTwqTvcmluLgkwj9RQtN81sh+1WABlMXO3cY/o2ZHK
- Z0iCN06gPP1PWDer6lvtuouNoewLaYi97L56EluD3HJSoSbD36Dp5nQG2XWocYkxviem
- OEyOJFjmR6LaXqWmKi48gV5V/yg1K9/isgBa+gXaHbmb1QuwypR36W93Gba+HjhGSodg ig== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by aserp2120.oracle.com with ESMTP id 3275ckx9rt-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 13 Jul 2020 10:53:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DArULv111093;
- Mon, 13 Jul 2020 10:53:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
- by aserp3020.oracle.com with ESMTP id 327qb0anau-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 13 Jul 2020 10:53:37 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
- by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06DArVkA011340;
- Mon, 13 Jul 2020 10:53:33 GMT
-Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Mon, 13 Jul 2020 03:53:30 -0700
-Date: Mon, 13 Jul 2020 13:53:24 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Jaroslav Kysela <perex@perex.cz>, Mark Hills <mark@xwax.org>
-Subject: [PATCH] ALSA: echoaudio: re-enable IRQs on failure path
-Message-ID: <20200713105324.GB251988@mwanda>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBC56F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 16:59:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBC56F800E5
+Received: by mail-io1-f67.google.com with SMTP id d18so13813608ion.0
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2020 07:59:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=5WwrQCBfCGD1oAlfh4Q+LcNaL9+7pA+S/ObwRTYKA7s=;
+ b=SltTJvqu65eCGJ/G+90mqnrX5nIO8XsqQ8445gmh7mSiDpoNaXwjTWCpD7/zkINtXh
+ sGyc0Fpr60yS54qVvwL1aHzDuPbzcs8ZzGY7HHc3VmHsytP/pTCGKIvxUhSj3K/MhhYA
+ P0CK4KEu2Xtx6IqgVYpK4g9N20XQYizr76LWG681yGeZ5WeANLViLlOcd1fiFH+xX/ba
+ xKonYKR6mLEpmlbuxPc0fY5yQkuhjalPpEp6gmnHdVl+y1bWZHBcBedN7GYxdXmkb+dy
+ XhOZtWIoyBGl+PAhkpoaxwQYt3BMJwq/jd3NLE5YoMWTRBAM1kYuYqu5M0VcUqBvXmow
+ esOA==
+X-Gm-Message-State: AOAM53103Mol5W8SDwvuhmE/fXU9498IARNmmIQYeMldfFIovwOgUuoq
+ 2xdOn2IXlYIgE1KYa2DlEQ==
+X-Google-Smtp-Source: ABdhPJzHZq+wMFL1ggb2CsSFLDEJagYQZrr2Q2lLGCkDm5iY+m/zhSLIJpn5qI8RV2IDmpYmYErCOA==
+X-Received: by 2002:a05:6638:12d2:: with SMTP id
+ v18mr502732jas.4.1594652354184; 
+ Mon, 13 Jul 2020 07:59:14 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+ by smtp.gmail.com with ESMTPSA id y12sm5507378iot.49.2020.07.13.07.59.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Jul 2020 07:59:13 -0700 (PDT)
+Received: (nullmailer pid 173994 invoked by uid 1000);
+ Mon, 13 Jul 2020 14:59:12 -0000
+Date: Mon, 13 Jul 2020 08:59:12 -0600
+From: Rob Herring <robh@kernel.org>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 1/3] ASoC: samsung: Document DT bindings for Midas sound
+ subsystem
+Message-ID: <20200713145912.GA173446@bogus>
+References: <CGME20200710173512eucas1p101c03994a728150f18428295192edf25@eucas1p1.samsung.com>
+ <20200710173500.22365-1-s.nawrocki@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680
- signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
- malwarescore=0
- mlxscore=0 spamscore=0 phishscore=0 suspectscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130082
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680
- signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- priorityscore=1501
- bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007130082
-Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
- Chuhong Yuan <hslester96@gmail.com>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20200710173500.22365-1-s.nawrocki@samsung.com>
+Cc: simon@lineageos.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+ b.zolnierkie@samsung.com, broonie@kernel.org, krzk@kernel.org,
+ robh+dt@kernel.org, m.szyprowski@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,27 +102,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This should be spin_unlock_irq() instead of spin_lock().
+On Fri, 10 Jul 2020 19:34:58 +0200, Sylwester Nawrocki wrote:
+> This patch adds documentation of DT biding for the Midas sound complex.
+> Partially based on the *txt version by Simon Shields <simon@lineageos.org>.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+>  .../bindings/sound/samsung,midas-audio.yaml        | 105 +++++++++++++++++++++
+>  1 file changed, 105 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
+> 
 
-Fixes: 6c3312544873 ("ALSA: echoaudio: Prevent races in calls to set_audio_format()")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- sound/pci/echoaudio/echoaudio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index e81f42811f45..6aeb99aa2414 100644
---- a/sound/pci/echoaudio/echoaudio.c
-+++ b/sound/pci/echoaudio/echoaudio.c
-@@ -721,7 +721,7 @@ static int pcm_prepare(struct snd_pcm_substream *substream)
- 	spin_lock_irq(&chip->lock);
- 
- 	if (snd_BUG_ON(!is_pipe_allocated(chip, pipe_index))) {
--		spin_unlock(&chip->lock);
-+		spin_unlock_irq(&chip->lock);
- 		return -EINVAL;
- 	}
- 
--- 
-2.27.0
+My bot found errors running 'make dt_binding_check' on your patch:
+
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/samsung,midas-audio.example.dt.yaml: sound: 'mic-bias-gpios', 'submic-bias-gpios' do not match any of the regexes: 'pinctrl-[0-9]+'
+
+
+See https://patchwork.ozlabs.org/patch/1327065
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
