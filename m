@@ -2,70 +2,70 @@ Return-Path: <SRS0=Ss6N=AZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E53E9C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:30:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A73EC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D8F9206F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:30:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8366D22453
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:31:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q5dF8GOk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D8F9206F5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DMHkj1bd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8366D22453
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE6911670;
-	Tue, 14 Jul 2020 14:29:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE6911670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17EB51672;
+	Tue, 14 Jul 2020 14:30:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17EB51672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594729819;
-	bh=A3hV9ouKVUG/NGJVNdQUqaU09OlHkZQX5YeGO57Nu3I=;
+	s=default; t=1594729863;
+	bh=B5v9gi6bh34SR9XaJHtUp8mYk1pGUQoVsgZNb662Fsk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q5dF8GOkLVEychreGaKYkiXjVHsEPB3SiBCocND8npWjFSTdUHYHoZlrWP5bbAT3O
-	 gpl/RCMiKs2z3P5MyCQtK70y3QK/AqjLHC3F7+dmEFE9hZq6bGbysujbmTIpmAYZgs
-	 ZLZlawL6FjRBoED6j6uERxKMF1YCfJ3t3e7AIQ/Y=
+	b=DMHkj1bdk1c47sTZCtIAApIcrY5w3WCES56LYBtA2WCZZI1Ckx/ZL/XGxVYnmWYah
+	 f+6ORV4dSRS4SOe3rhCtNiUe0Cvwq5d0iaPuohzTvCTXuIB0YT4RT9/2NVWjOzDHLE
+	 e5ZmUDigdqfKIOwPoc55tFvuBiMP0SwcBIpMD/gU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7B23F802DB;
-	Tue, 14 Jul 2020 14:26:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9ABA9F802E0;
+	Tue, 14 Jul 2020 14:27:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE507F8014E; Tue, 14 Jul 2020 14:26:46 +0200 (CEST)
+ id A8409F8027B; Tue, 14 Jul 2020 14:26:46 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3EDE9F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F9EBF8020C
  for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 14:26:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EDE9F8019B
-IronPort-SDR: RU9dYrAv1OOVUbolayTXuD3bXYUptQ8Kcv8Iiypvmkcp08nyGkzpy16vNr/tcgml1C/1i1xhFM
- 1xIJgYSbp79A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="166981787"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; d="scan'208";a="166981787"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F9EBF8020C
+IronPort-SDR: a3XK43BzHQeg4YlNIRz6gNTmJOITKE/7W7A3r5xpN3Sv6VkdoP/zgVPFf7QyXOM7uFKhql7RMq
+ zEvhGoxi1b0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="166981794"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; d="scan'208";a="166981794"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2020 05:26:31 -0700
-IronPort-SDR: xAd15Y68hVsNowzox6SzxPWdDwsDfoJFel/qR550lKFfVXeNJWZHAvXIn5dUxyTWUu5hX81W4c
- JvpdFLR2/IZQ==
+ 14 Jul 2020 05:26:34 -0700
+IronPort-SDR: VM+E7Bl6mwONDdffefmvAu7CwNwuaJnDLOoAmw3PbtwtnZeolgHiYafDi+q9C4u/zhLVHI/304
+ RCsIexfwQndw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; d="scan'208";a="485860420"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; d="scan'208";a="485860432"
 Received: from test-hp-compaq-8100-elite-cmt-pc.igk.intel.com ([10.237.149.93])
- by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2020 05:26:30 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2020 05:26:32 -0700
 From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v3 04/10] topology: decode: Add enum control texts as separate
- element
-Date: Tue, 14 Jul 2020 13:25:05 +0200
-Message-Id: <1594725911-14308-5-git-send-email-piotrx.maziarz@linux.intel.com>
+Subject: [PATCH v3 06/10] topology: decode: Change declaration of enum
+ decoding function
+Date: Tue, 14 Jul 2020 13:25:07 +0200
+Message-Id: <1594725911-14308-7-git-send-email-piotrx.maziarz@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1594725911-14308-1-git-send-email-piotrx.maziarz@linux.intel.com>
 References: <1594725911-14308-1-git-send-email-piotrx.maziarz@linux.intel.com>
@@ -85,40 +85,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Texts are separate sections that should referenced by enum control.
+Size constraints are always checked before invoking
+tplg_decode_control_enum1. There is no need to validate it twice.
+Alos moved debug print about size to invoking function, since now it's it
+responsibility to check size.
 
 Signed-off-by: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
 ---
- src/topology/ctl.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ src/topology/ctl.c        | 19 +++++--------------
+ src/topology/dapm.c       |  3 +--
+ src/topology/tplg_local.h |  2 +-
+ 3 files changed, 7 insertions(+), 17 deletions(-)
 
 diff --git a/src/topology/ctl.c b/src/topology/ctl.c
-index 02e482e..1f39846 100644
+index 1f39846..47db400 100644
 --- a/src/topology/ctl.c
 +++ b/src/topology/ctl.c
-@@ -1088,11 +1088,19 @@ int tplg_add_enum(snd_tplg_t *tplg, struct snd_tplg_enum_template *enum_ctl,
+@@ -1335,22 +1335,10 @@ int tplg_decode_control_enum1(snd_tplg_t *tplg,
+ 			      struct list_head *heap,
+ 			      struct snd_tplg_enum_template *et,
+ 			      size_t pos,
+-			      void *bin, size_t size)
++			      struct snd_soc_tplg_enum_control *ec)
+ {
+-	struct snd_soc_tplg_enum_control *ec = bin;
+ 	int i;
+ 
+-	if (size < sizeof(*ec)) {
+-		SNDERR("enum: small size %d", size);
+-		return -EINVAL;
+-	}
+-
+-	tplg_log(tplg, 'D', pos, "enum: size %d private size %d",
+-		 ec->size, ec->priv.size);
+-	if (size != ec->size + ec->priv.size) {
+-		SNDERR("enum: unexpected element size %d", size);
+-		return -EINVAL;
+-	}
+ 	if (ec->num_channels > SND_TPLG_MAX_CHAN ||
+ 	    ec->num_channels > SND_SOC_TPLG_MAX_CHAN) {
+ 		SNDERR("enum: unexpected channel count %d", ec->num_channels);
+@@ -1427,7 +1415,10 @@ next:
+ 		return -EINVAL;
  	}
  
- 	if (enum_ctl->texts != NULL) {
-+		struct tplg_elem *texts = tplg_elem_new_common(tplg, NULL,
-+						enum_ctl->hdr.name, SND_TPLG_TYPE_TEXT);
+-	err = tplg_decode_control_enum1(tplg, &heap, &et, pos, bin, size);
++	tplg_log(tplg, 'D', pos, "enum: size %d private size %d",
++		 ec->size, ec->priv.size);
 +
-+		texts->texts->num_items = num_items;
- 		for (i = 0; i < num_items; i++) {
--			if (enum_ctl->texts[i] != NULL)
--				snd_strlcpy(ec->texts[i], enum_ctl->texts[i],
--					    SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+			if (!enum_ctl->texts[i])
-+				continue;
-+			snd_strlcpy(ec->texts[i], enum_ctl->texts[i],
-+				    SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+			snd_strlcpy(texts->texts->items[i], enum_ctl->texts[i],
-+				    SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
- 		}
-+		tplg_ref_add(elem, SND_TPLG_TYPE_TEXT, enum_ctl->hdr.name);
- 	}
- 
- 	if (enum_ctl->values != NULL) {
++	err = tplg_decode_control_enum1(tplg, &heap, &et, pos, ec);
+ 	if (err >= 0) {
+ 		t.enum_ctl = &et;
+ 		err = snd_tplg_add_object(tplg, &t);
+diff --git a/src/topology/dapm.c b/src/topology/dapm.c
+index cd1a877..73a9390 100644
+--- a/src/topology/dapm.c
++++ b/src/topology/dapm.c
+@@ -972,8 +972,7 @@ next:
+ 				err = -EINVAL;
+ 				goto retval;
+ 			}
+-			err = tplg_decode_control_enum1(tplg, &heap, et, pos,
+-							bin, size2);
++			err = tplg_decode_control_enum1(tplg, &heap, et, pos, ec);
+ 			break;
+ 		case SND_SOC_TPLG_TYPE_BYTES:
+ 			bt = tplg_calloc(&heap, sizeof(*bt));
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 5ace0d1..acb01a8 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -398,7 +398,7 @@ int tplg_decode_control_enum1(snd_tplg_t *tplg,
+ 			      struct list_head *heap,
+ 			      struct snd_tplg_enum_template *et,
+ 			      size_t pos,
+-			      void *bin, size_t size);
++			      struct snd_soc_tplg_enum_control *ec);
+ int tplg_decode_control_enum(snd_tplg_t *tplg, size_t pos,
+ 			     struct snd_soc_tplg_hdr *hdr,
+ 			     void *bin, size_t size);
 -- 
 2.7.4
 
