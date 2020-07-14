@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A049C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 17:30:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11B3AC433E5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 17:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA91320663
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 17:30:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 914EB2074A
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 17:31:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EJFk3Grs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA91320663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RERHn+ad"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 914EB2074A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 526411665;
-	Tue, 14 Jul 2020 19:29:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 526411665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F84E167B;
+	Tue, 14 Jul 2020 19:30:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F84E167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594747820;
-	bh=Wpyme34OVlOG+zZlPsy4Q9nQoRs5/+eAdgK8YPylMp4=;
+	s=default; t=1594747863;
+	bh=D0REilJIvYkv8uMwpViLKngqbCsMDGY10ukiMq+BdGE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EJFk3Grsuez++AVEP1iA2l0wKHmsA4kNz58U2dT6AFlbSU0CYSwOnQCOVcLGod7Uj
-	 gxUHGbENOAjFpjWE6y3O5eVb8p+h5zjhBUSoR8Fw4LsyGpuQtXZtqd4jt+OT/lYHNG
-	 tKcnRThQ6XUZdN9sG1DhpE/gSZR2d4apMZ1k7mH0=
+	b=RERHn+adUPJfhI8nTQCjMv2qXcngpnyUKRINDxdsoEQiEYIgtKBO6aE7DfLgC1gNW
+	 TuxmT+/BjX82Y7XlRcxKmsuyNvQV1wO+3m2KGLJoBTT/HyPFtIfOJi8taBWG/+xSZM
+	 bCSjKGxR/0vm1QckiyVUvdbFf1D8s02vFap1J/lM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EB90F802E9;
-	Tue, 14 Jul 2020 19:27:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72522F802EA;
+	Tue, 14 Jul 2020 19:27:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD324F8019B; Tue, 14 Jul 2020 19:26:53 +0200 (CEST)
+ id 8C2D2F802E1; Tue, 14 Jul 2020 19:26:54 +0200 (CEST)
 Received: from mx2.suse.de (unknown [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE2B1F8019B
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 19:26:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE2B1F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 172C1F800E5
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 19:26:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 172C1F800E5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 14AF7AD5C
+ by mx2.suse.de (Postfix) with ESMTP id 59FF0AD73
  for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 17:26:38 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/10] ALSA: ac97: Replace the words white/blacklist
-Date: Tue, 14 Jul 2020 19:26:23 +0200
-Message-Id: <20200714172631.25371-3-tiwai@suse.de>
+Subject: [PATCH 07/10] ALSA: intel8x0: Replace the words white/blacklist
+Date: Tue, 14 Jul 2020 19:26:28 +0200
+Message-Id: <20200714172631.25371-8-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200714172631.25371-1-tiwai@suse.de>
 References: <20200714172631.25371-1-tiwai@suse.de>
@@ -75,70 +75,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 Follow the recent inclusive terminology guidelines and replace the
 words "whitelist" and "blacklist" appropriately.
 
-Only comment or function/variable renames, no functional changes.
+Correcting only comments, or error/module messages, no functional
+changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ac97/ac97_patch.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/pci/intel8x0.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
-index 23cb846cf8c2..52e95c39dcee 100644
---- a/sound/pci/ac97/ac97_patch.c
-+++ b/sound/pci/ac97/ac97_patch.c
-@@ -1791,10 +1791,10 @@ static const struct snd_kcontrol_new snd_ac97_ad1981x_jack_sense[] = {
- 	AC97_SINGLE("Line Jack Sense", AC97_AD_JACK_SPDIF, 12, 1, 0),
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index 675bb0da00a0..3349e455a871 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -66,7 +66,7 @@ MODULE_PARM_DESC(index, "Index value for Intel i8x0 soundcard.");
+ module_param(id, charp, 0444);
+ MODULE_PARM_DESC(id, "ID string for Intel i8x0 soundcard.");
+ module_param(ac97_clock, int, 0444);
+-MODULE_PARM_DESC(ac97_clock, "AC'97 codec clock (0 = whitelist + auto-detect, 1 = force autodetect).");
++MODULE_PARM_DESC(ac97_clock, "AC'97 codec clock (0 = allowlist + auto-detect, 1 = force autodetect).");
+ module_param(ac97_quirk, charp, 0444);
+ MODULE_PARM_DESC(ac97_quirk, "AC'97 workaround for strange hardware.");
+ module_param(buggy_semaphore, bool, 0444);
+@@ -2792,7 +2792,7 @@ static int intel8x0_in_clock_list(struct intel8x0 *chip)
+ 	wl = snd_pci_quirk_lookup(pci, intel8x0_clock_list);
+ 	if (!wl)
+ 		return 0;
+-	dev_info(chip->card->dev, "white list rate for %04x:%04x is %i\n",
++	dev_info(chip->card->dev, "allow list rate for %04x:%04x is %i\n",
+ 	       pci->subsystem_vendor, pci->subsystem_device, wl->value);
+ 	chip->ac97_bus->clock = wl->value;
+ 	return 1;
+@@ -3138,7 +3138,7 @@ static const struct snd_pci_quirk spdif_aclink_defaults[] = {
+ 	{ } /* end */
  };
  
--/* black list to avoid HP/Line jack-sense controls
-+/* deny list to avoid HP/Line jack-sense controls
-  * (SS vendor << 16 | device)
-  */
--static const unsigned int ad1981_jacks_blacklist[] = {
-+static const unsigned int ad1981_jacks_denylist[] = {
- 	0x10140523, /* Thinkpad R40 */
- 	0x10140534, /* Thinkpad X31 */
- 	0x10140537, /* Thinkpad T41p */
-@@ -1821,7 +1821,7 @@ static int check_list(struct snd_ac97 *ac97, const unsigned int *list)
- 
- static int patch_ad1981a_specific(struct snd_ac97 * ac97)
+-/* look up white/black list for SPDIF over ac-link */
++/* look up allow/deny list for SPDIF over ac-link */
+ static int check_default_spdif_aclink(struct pci_dev *pci)
  {
--	if (check_list(ac97, ad1981_jacks_blacklist))
-+	if (check_list(ac97, ad1981_jacks_denylist))
- 		return 0;
- 	return patch_build_controls(ac97, snd_ac97_ad1981x_jack_sense,
- 				    ARRAY_SIZE(snd_ac97_ad1981x_jack_sense));
-@@ -1835,10 +1835,10 @@ static const struct snd_ac97_build_ops patch_ad1981a_build_ops = {
- #endif
- };
- 
--/* white list to enable HP jack-sense bits
-+/* allow list to enable HP jack-sense bits
-  * (SS vendor << 16 | device)
-  */
--static const unsigned int ad1981_jacks_whitelist[] = {
-+static const unsigned int ad1981_jacks_allowlist[] = {
- 	0x0e11005a, /* HP nc4000/4010 */
- 	0x103c0890, /* HP nc6000 */
- 	0x103c0938, /* HP nc4220 */
-@@ -1853,7 +1853,7 @@ static const unsigned int ad1981_jacks_whitelist[] = {
- 
- static void check_ad1981_hp_jack_sense(struct snd_ac97 *ac97)
- {
--	if (check_list(ac97, ad1981_jacks_whitelist))
-+	if (check_list(ac97, ad1981_jacks_allowlist))
- 		/* enable headphone jack sense */
- 		snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11);
- }
-@@ -1877,7 +1877,7 @@ static int patch_ad1981b_specific(struct snd_ac97 *ac97)
- 
- 	if ((err = patch_build_controls(ac97, &snd_ac97_ad198x_2cmic, 1)) < 0)
- 		return err;
--	if (check_list(ac97, ad1981_jacks_blacklist))
-+	if (check_list(ac97, ad1981_jacks_denylist))
- 		return 0;
- 	return patch_build_controls(ac97, snd_ac97_ad1981x_jack_sense,
- 				    ARRAY_SIZE(snd_ac97_ad1981x_jack_sense));
+ 	const struct snd_pci_quirk *w;
 -- 
 2.16.4
 
