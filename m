@@ -7,71 +7,71 @@ X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ADC2C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 14:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CF9FC433EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 14:41:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27BA8223C6
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 14:41:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AAD3206F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 14:41:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VDI36ATe";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FMoDk3RQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27BA8223C6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZO2R375v";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SVOs+mj0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AAD3206F5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B77A1165E;
-	Tue, 14 Jul 2020 16:40:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B77A1165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B53C1847;
+	Tue, 14 Jul 2020 16:41:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B53C1847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594737663;
-	bh=CDgSlUqKPGmQBQWGQKwaip8LlKp+TzgJr12FOTDVWuc=;
+	s=default; t=1594737711;
+	bh=qMJ+jHNXRVFI1hhdcrsCKpbbmpG1K/IwSnRsQzMqwqw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VDI36ATeJfctsR67TU18ndQ4s04yrze/cZOuT7PjrWuRwFtO1t9cOGMXIiZHKj2dz
-	 /uJI5VHkghNe+JzJkfM9xn6QFlYZTSK+Wguhd9JMCM9SMkP71qRTKsE/cViqTvJqEF
-	 E40+c4f/1qmyIXL5i0UJd9lbl44WIc/N/2elEJbs=
+	b=ZO2R375v51w4u1QjgE4M2vfMuG6bschL7PZUKBuwadicevvQyYz3q4G0/s5pwCoCu
+	 NLsCBxSRgVw7i+nQxbIQqiguLtSCZyqtNjm5wXIXrrCIdEo+NLUDN5w8CCCZZ7oruP
+	 n3uuXAXdwLfp/j2E9I4WaOpTgVpjRFyx1MscU5wI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0471F801F2;
-	Tue, 14 Jul 2020 16:39:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3892FF8028A;
+	Tue, 14 Jul 2020 16:40:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 643D3F8020C; Tue, 14 Jul 2020 16:39:36 +0200 (CEST)
+ id E3726F802BC; Tue, 14 Jul 2020 16:39:56 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0D21F8016F
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 16:39:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0D21F8016F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 513BBF8026F
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 16:39:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 513BBF8026F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FMoDk3RQ"
+ header.b="SVOs+mj0"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6951A2253A;
- Tue, 14 Jul 2020 14:39:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EF7B92251F;
+ Tue, 14 Jul 2020 14:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594737568;
- bh=CDgSlUqKPGmQBQWGQKwaip8LlKp+TzgJr12FOTDVWuc=;
+ s=default; t=1594737588;
+ bh=qMJ+jHNXRVFI1hhdcrsCKpbbmpG1K/IwSnRsQzMqwqw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FMoDk3RQoGh4ouP4/Jsz+yG9Y+X5UXITWkyI7B3Ag/3JrxWpQQGAbclTOufuX8im3
- mgd4LyU1ccc+EeiHYea5jfTpKcPWOkoioai+cnDoCH7TZ4h4H8m37aX0TQgEjRUd4n
- GyU4srXa7BxGdL+RR0IVULBes+VmidV32DqptOBA=
+ b=SVOs+mj02FDt66gZk2okrUJ8dGk7WS70LfytCK+2bKnuw1RWbnIBnQtFUHjzjAGQw
+ 5ZD7IJQGlFcEthD7WTdDFU+fw0KLWwlyr9RFfnNFwewbXiuf5yn+W8HiIvCzJVz3dz
+ 2LP6v+/NmSk3q7NJyoI487QBFMVDW42lnME3B+J4=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/18] ALSA: hda/hdmi: fix failures at PCM open on
- Intel ICL and later
-Date: Tue, 14 Jul 2020 10:39:07 -0400
-Message-Id: <20200714143914.4035489-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 09/13] ALSA: hda/hdmi: fix failures at PCM open
+ on Intel ICL and later
+Date: Tue, 14 Jul 2020 10:39:33 -0400
+Message-Id: <20200714143937.4035685-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200714143914.4035489-1-sashal@kernel.org>
-References: <20200714143914.4035489-1-sashal@kernel.org>
+In-Reply-To: <20200714143937.4035685-1-sashal@kernel.org>
+References: <20200714143937.4035685-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -132,10 +132,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 23 insertions(+), 13 deletions(-)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index e78c4367b6c86..820f534a67b1c 100644
+index 419d099b5582b..1fc12e680f311 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -1817,33 +1817,43 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+@@ -1804,33 +1804,43 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
  
  static int hdmi_parse_codec(struct hda_codec *codec)
  {
