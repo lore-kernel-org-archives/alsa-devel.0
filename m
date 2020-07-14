@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC068C433E3
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 00:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B076C433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 00:10:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BE1821548
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 00:09:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BD2DC21548
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 00:10:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mF7y7ZYd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BE1821548
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PysVsKju"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD2DC21548
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC3D985D;
-	Tue, 14 Jul 2020 02:08:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC3D985D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56368167A;
+	Tue, 14 Jul 2020 02:09:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56368167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594685369;
-	bh=EWI6dZqxDNTFg7zevBsMa/k1Ly/6UfpRcIRUMYd8Kgg=;
+	s=default; t=1594685413;
+	bh=5MFSQH9Et2WEsIhSGueE7Wya7F1gxXZDHjrtKXSc6Us=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mF7y7ZYdy6VTe+yUb646pZf1JtHPMPbVnN5bSVF3iMDo0b/6TyTCZxNvwtDhO3Q2M
-	 mG4pUjodD7hlI8IARpSKbbCHnvEBjCmiA6XPg4Du+EnbYY7XdN5OIVgRNWjMm25l8o
-	 q3EhxL7SOBH0WuekVf4Ni5gWBsG5BUZcq2PpIIWg=
+	b=PysVsKju+o5sr7DARrbuvXbBnzacHgrpzOBO6d/mRvPwgFFnoMwJ4+nRFf41GpPUA
+	 U/oAVRWJs5LqjO0BOcYqSTdisFUYMmRA4aNYCiEjmbz8jFQy2VAXnjDr6BZfwav/IW
+	 D7ilEWDoeuN/nVGsp2RkxS55ybHMelqBz44rRcMo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B6D1F802E1;
-	Tue, 14 Jul 2020 02:07:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB58CF802E7;
+	Tue, 14 Jul 2020 02:07:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA9B7F802E1; Tue, 14 Jul 2020 02:07:10 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 52063F8021D
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 02:07:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52063F8021D
-Date: 14 Jul 2020 09:07:01 +0900
-X-IronPort-AV: E=Sophos;i="5.75,349,1589209200"; d="scan'208";a="51812716"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 14 Jul 2020 09:07:01 +0900
+ id 6F6EFF802E9; Tue, 14 Jul 2020 02:07:16 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9E815F802E7
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 02:07:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E815F802E7
+Date: 14 Jul 2020 09:07:09 +0900
+X-IronPort-AV: E=Sophos;i="5.75,349,1589209200"; d="scan'208";a="52025296"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jul 2020 09:07:09 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id ACE78411F2E4;
- Tue, 14 Jul 2020 09:07:01 +0900 (JST)
-Message-ID: <87d04z3qqg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3BAB740065C9;
+ Tue, 14 Jul 2020 09:07:09 +0900 (JST)
+Message-ID: <87blkj3qq9.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 4/5] ASoC: siu: don't use discriminatory terms for parameter
+Subject: [PATCH v2 5/5] ASoC: ssi: don't use discriminatory terms for debug log
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87imer3qsh.wl-kuninori.morimoto.gx@renesas.com>
@@ -78,36 +78,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-siu is using discriminatory terms for function parameter.
+ssi is using discriminatory terms for debug log.
 This patch changes it to "secondary"
-
-One note here is that it do nothing to DMA related naming
-for now, because it needs framework level modification.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/siu_pcm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sh/ssi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index 6a6ffd6d3192..bd9de77c35f3 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -281,11 +281,11 @@ static int siu_pcm_stmread_stop(struct siu_port *port_info)
- 	return 0;
- }
+diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+index 8125fa3840b6..15b01bcefca5 100644
+--- a/sound/soc/sh/ssi.c
++++ b/sound/soc/sh/ssi.c
+@@ -304,7 +304,7 @@ static int ssi_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		ssicr |= CR_SWS_MASTER | CR_SCK_MASTER;
+ 		break;
+ 	default:
+-		pr_debug("ssi: invalid master/slave configuration\n");
++		pr_debug("ssi: invalid master/secondary configuration\n");
+ 		return -EINVAL;
+ 	}
  
--static bool filter(struct dma_chan *chan, void *slave)
-+static bool filter(struct dma_chan *chan, void *secondary)
- {
--	struct sh_dmae_slave *param = slave;
-+	struct sh_dmae_slave *param = secondary;
- 
--	pr_debug("%s: slave ID %d\n", __func__, param->shdma_slave.slave_id);
-+	pr_debug("%s: secondary ID %d\n", __func__, param->shdma_slave.slave_id);
- 
- 	chan->private = &param->shdma_slave;
- 	return true;
 -- 
 2.25.1
 
