@@ -1,4 +1,4 @@
-Return-Path: <SRS0=sipn=AY=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Ss6N=AZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,65 +6,57 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1034EC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 23:14:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73352C433E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 00:06:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88B1D2145D
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jul 2020 23:14:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EDFFA217D9
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 00:06:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DO80d5n+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88B1D2145D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BOM9T207"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDFFA217D9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1005B85D;
-	Tue, 14 Jul 2020 01:14:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1005B85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75405886;
+	Tue, 14 Jul 2020 02:06:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75405886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594682096;
-	bh=gd/5Jlkk5QbG8WpZoIR9971SJrsXti5xSifovYOQa18=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DO80d5n+tRV+tW7C7TIDRWUHa1lCRVdVzIAzdBFil5Sqy1ThjuObxWUaoTDybz2l5
-	 EzuJ9wJvs7zN5g06rgPhCTzIjKy8/rgLg31Vnt1nS4A3Lro0cUZ5/9NgrnwwVrr538
-	 Rdr8pwlKMKK9+18DNrLa0Sf9NWuxA0F+3pjf692k=
+	s=default; t=1594685211;
+	bh=23VPOV3waryUxZaPIuNfanZqquXwCvhtJsA/dFQdcOk=;
+	h=Date:To:From:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BOM9T207QFXtgXYUud3Xbxc6MAbibr86jaLPUjYuEStc6yZEtUQyiMxlAl758NCXH
+	 LStpkoChGQxCcDApGpto+ra9wn22qzSn9hCTVuPeHxxi/rNI087+iPjBhZG9F5EYNX
+	 vLTK8AXMd12ghrCbWt7YTxwFEH/+8Gadeiw2iCG8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 341FFF80116;
-	Tue, 14 Jul 2020 01:14:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC155F80217;
+	Tue, 14 Jul 2020 02:06:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4B61F8021D; Tue, 14 Jul 2020 01:14:03 +0200 (CEST)
+ id D482EF8021D; Tue, 14 Jul 2020 02:05:58 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 8C044F80116
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 01:13:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C044F80116
-Date: 14 Jul 2020 08:13:53 +0900
-X-IronPort-AV: E=Sophos;i="5.75,349,1589209200"; d="scan'208";a="52020938"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 14 Jul 2020 08:13:53 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 0FDCFF800B2
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 02:05:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FDCFF800B2
+Date: 14 Jul 2020 09:05:48 +0900
+X-IronPort-AV: E=Sophos;i="5.75,349,1589209200"; d="scan'208";a="52025175"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jul 2020 09:05:48 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E7E9B410FD5E;
- Tue, 14 Jul 2020 08:13:52 +0900 (JST)
-Message-ID: <87lfjn3t71.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8F9C040078B0;
+ Tue, 14 Jul 2020 09:05:48 +0900 (JST)
+Message-ID: <87imer3qsh.wl-kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: rsnd: don't use discriminatory terms for
- function names
-In-Reply-To: <20200713171656.GD4420@sirena.org.uk>
-References: <87r1tg3swv.wl-kuninori.morimoto.gx@renesas.com>
- <87pn903svl.wl-kuninori.morimoto.gx@renesas.com>
- <9819df17-228b-78e4-3de8-71344292de01@marcan.st>
- <20200713171656.GD4420@sirena.org.uk>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 0/5] ASoC: sh: remove discriminatory terms
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Hector Martin 'marcan' <marcan@marcan.st>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,23 +73,34 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Hector, Mark
+Renesas SH drivers are using discriminatory terms.
+This patch-set removes or changes it as much as possible.
+But, because DMA related API function name, it still exists.
+I hope all these are removed someday.
 
-> > > -u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io);
-> > > +u32 rsnd_ssi_multi_followers_runtime(struct rsnd_dai_stream *io);
-> 
-> > I don't have full context here, but AIUI this is about bundling different
-> > links together? If so, primary/secondary or main/secondary might work better
-> > than leader/follower, in my opinion. The latter implies more of a "one
-> > device follows another one" scenario, like for clocks.
-> 
-> That does make sense to me.
+v1 -> v2
+	- use "secondary" instead of "follower"
+	- care siu/ssi drivers
+	- tidyup git-log
 
-Thank you for your advice.
-I will use "secondary" in v2
+Link: https://lore.kernel.org/r/87r1tg3swv.wl-kuninori.morimoto.gx@renesas.com
 
-Thank you for your help !!
+Kuninori Morimoto (5):
+  ASoC: rsnd: don't use discriminatory terms for function names
+  ASoC: rsnd: don't use discriminatory terms for comment
+  ASoC: fsi: don't use discriminatory terms for comment
+  ASoC: siu: don't use discriminatory terms for parameter
+  ASoC: ssi: don't use discriminatory terms for debug log
 
-Best regards
----
-Kuninori Morimoto
+ sound/soc/sh/fsi.c       |  4 ++--
+ sound/soc/sh/rcar/core.c |  4 ++--
+ sound/soc/sh/rcar/rsnd.h |  2 +-
+ sound/soc/sh/rcar/ssi.c  | 28 ++++++++++++++--------------
+ sound/soc/sh/rcar/ssiu.c |  6 +++---
+ sound/soc/sh/siu_pcm.c   |  6 +++---
+ sound/soc/sh/ssi.c       |  2 +-
+ 7 files changed, 26 insertions(+), 26 deletions(-)
+
+-- 
+2.25.1
+
