@@ -2,75 +2,70 @@ Return-Path: <SRS0=Ss6N=AZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91286C433E6
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 09:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE57C433E4
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 09:13:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FF9721D7B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 09:12:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A01322145D
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 09:13:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X5RBpKHJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FF9721D7B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bEKfXcPb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A01322145D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A870166E;
-	Tue, 14 Jul 2020 11:11:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A870166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 136AE846;
+	Tue, 14 Jul 2020 11:12:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 136AE846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594717926;
-	bh=ZX5JPJJgS4peBq630tqJL0Vt+R++awwyCv2XTN5c79M=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1594717999;
+	bh=O+7OviFNXgYsmWA2Pp9rGqPTQB0doFOD2+Pir7NRTwY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X5RBpKHJ8XkVNTF2P35f+r/j5OPNjDEmCG1EIFFTi48PoevwxrvW0kF8m/3aDLpEO
-	 1njpDwiPeuosX1BwsX6XLY+gYQfV/yTW/bUX9JS1kMQtwIKegE/UByIWKLcw2axfqr
-	 5k3pQ03EiDr6eFCbOShwHBOu21i/AN5ugnoprX7M=
+	b=bEKfXcPbEJfhKz3bYy9bk+sQ5sRiq/I6f1hhSx1c0Emp+OOUzX9FAk3MfULuDv4K/
+	 wWgtdNhs+UAhv92RUEi1BeIaNJDDsMCTDbcT7oAlMfwoZLftoDkQNjtLwsI4qaUxg3
+	 hRZ6wQZ7lUjhkg6Gp2QjehaIz3QqQfuqWeAnJ20U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EC1CF802D2;
-	Tue, 14 Jul 2020 11:09:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A15F0F8016F;
+	Tue, 14 Jul 2020 11:12:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14C9AF802D2; Tue, 14 Jul 2020 11:09:39 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 495F9F8016F; Tue, 14 Jul 2020 11:12:26 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C626FF801EC
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 11:09:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C626FF801EC
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3E3BF200F70;
- Tue, 14 Jul 2020 11:09:27 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B746C200179;
- Tue, 14 Jul 2020 11:09:20 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B3703402E4;
- Tue, 14 Jul 2020 17:09:12 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org,
- kuninori.morimoto.gx@renesas.com, katsuhiro@katsuster.net,
- samuel@sholland.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- devicetree@vger.kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
- Xiubo.Lee@gmail.com, festevam@gmail.com
-Subject: [PATCH 3/3] ASoC: fsl-asoc-card: Support Headphone and Microphone
- Jack detection
-Date: Tue, 14 Jul 2020 17:05:36 +0800
-Message-Id: <1594717536-5188-4-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594717536-5188-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1594717536-5188-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id BADF8F8019B
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 11:12:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BADF8F8019B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 2AD9CAAE8;
+ Tue, 14 Jul 2020 09:12:18 +0000 (UTC)
+Date: Tue, 14 Jul 2020 11:12:15 +0200
+Message-ID: <s5hr1tev4sw.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH] ALSA: hda: Enable sync-write operation as default for all
+ controllers
+In-Reply-To: <6f7a6d27-127d-9242-0638-abaf10e38410@nvidia.com>
+References: <20200618144051.7415-1-tiwai@suse.de>
+ <8fc9f086-9a34-4287-8f51-6e0ebc34928f@nvidia.com>
+ <s5hy2nmv6qv.wl-tiwai@suse.de>
+ <6f7a6d27-127d-9242-0638-abaf10e38410@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-tegra <linux-tegra@vger.kernel.org>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,139 +81,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use asoc_simple_init_jack function from simple card to implement
-the Headphone and Microphone detection.
-Register notifier to disable Speaker when Headphone is plugged in
-and enable Speaker when Headphone is unplugged.
-Register notifier to disable Digital Microphone when Analog Microphone
-is plugged in and enable DMIC when Analog Microphone is unplugged.
+On Tue, 14 Jul 2020 11:08:18 +0200,
+Jon Hunter wrote:
+> 
+> 
+> On 14/07/2020 09:30, Takashi Iwai wrote:
+> > On Tue, 14 Jul 2020 10:08:02 +0200,
+> > Jon Hunter wrote:
+> >>
+> >> Hi Takashi,
+> >>
+> >> On 18/06/2020 15:40, Takashi Iwai wrote:
+> >>> In the end we already enabled the sync-write mode for most of HD-audio
+> >>> controllers including Intel, and it's no big merit to keep the async
+> >>> write mode for the rest.  Let's make it as default and drop the
+> >>> superfluous AZX_DCAPS_SYNC_WRITE bit flag.
+> >>>
+> >>> Also, avoid to set the allow_bus_reset flag, which is a quite unstable
+> >>> and hackish behavior that was needed only for some early platforms
+> >>> (decades ago).  The straight fallback to the single cmd mode is more
+> >>> robust.
+> >>>
+> >>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> >>
+> >>
+> >> I have noticed a regression in HDA playback on our Tegra186 Jetson TX2
+> >> platform. Bisect is pointing to this patch and reverting this does
+> >> appear to fix it. Interestingly, I am not seeing any problems on other
+> >> Tegra platforms, however, Tegra186 does have the IOMMU enabled for HDA
+> >> which is one different between the other platforms.
+> >>
+> >> We can take a closer look at this for Tegra, but I am wondering if we
+> >> revert this for Tegra for now.
+> > 
+> > It's a deja vu, we (or someone else in Nvidia?) discussed it in the
+> > past?
+> > 
+> > The patch below should cure the problem temporarily, as it sets the
+> > polling mode as default for Tegra.  But it'd be appreciated if you can
+> > find the root cause.
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> > --- a/sound/pci/hda/hda_tegra.c
+> > +++ b/sound/pci/hda/hda_tegra.c
+> > @@ -394,6 +394,7 @@ static int hda_tegra_create(struct snd_card *card,
+> >  	if (err < 0)
+> >  		return err;
+> >  
+> > +	chip->bus.core.polling = 1;
+> >  	chip->bus.core.needs_damn_long_delay = 1;
+> >  
+> >  	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+> > 
+> 
+> Did you mean ...
+> 
+> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+> index 0cc5fad1af8a..5637f0129932 100644
+> --- a/sound/pci/hda/hda_tegra.c
+> +++ b/sound/pci/hda/hda_tegra.c
+> @@ -443,6 +443,7 @@ static int hda_tegra_create(struct snd_card *card,
+>         if (err < 0)
+>                 return err;
+> 
+> +       chip->bus.core.sync_write = 0;
+>         chip->bus.core.needs_damn_long_delay = 1;
+>         chip->bus.core.aligned_mmio = 1;
+> 
+> The above works for me.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/Kconfig         |  1 +
- sound/soc/fsl/fsl-asoc-card.c | 69 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 68 insertions(+), 2 deletions(-)
+Yeah, sorry, that was a wrong patch :)
+I'm fine for applying it with some more comments.
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index ea7b4787a8af..1c4ca5ec8caf 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -315,6 +315,7 @@ config SND_SOC_FSL_ASOC_CARD
- 	depends on OF && I2C
- 	# enforce SND_SOC_FSL_ASOC_CARD=m if SND_AC97_CODEC=m:
- 	depends on SND_AC97_CODEC || SND_AC97_CODEC=n
-+	select SND_SIMPLE_CARD_UTILS
- 	select SND_SOC_IMX_AUDMUX
- 	select SND_SOC_IMX_PCM_DMA
- 	select SND_SOC_FSL_ESAI
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index faac6ce9a82c..313058789ea9 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -15,6 +15,8 @@
- #endif
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/jack.h>
-+#include <sound/simple_card_utils.h>
- 
- #include "fsl_esai.h"
- #include "fsl_sai.h"
-@@ -65,6 +67,8 @@ struct cpu_priv {
- /**
-  * struct fsl_asoc_card_priv - Freescale Generic ASOC card private data
-  * @dai_link: DAI link structure including normal one and DPCM link
-+ * @hp_jack: Headphone Jack structure
-+ * @mic_jack: Microphone Jack structure
-  * @pdev: platform device pointer
-  * @codec_priv: CODEC private data
-  * @cpu_priv: CPU private data
-@@ -79,6 +83,8 @@ struct cpu_priv {
- 
- struct fsl_asoc_card_priv {
- 	struct snd_soc_dai_link dai_link[3];
-+	struct asoc_simple_jack hp_jack;
-+	struct asoc_simple_jack mic_jack;
- 	struct platform_device *pdev;
- 	struct codec_priv codec_priv;
- 	struct cpu_priv cpu_priv;
-@@ -445,6 +451,44 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
- 	return 0;
- }
- 
-+static int hp_jack_event(struct notifier_block *nb, unsigned long event,
-+			 void *data)
-+{
-+	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
-+	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
-+
-+	if (event & SND_JACK_HEADPHONE)
-+		/* Disable speaker if headphone is plugged in */
-+		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
-+	else
-+		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
-+
-+	return 0;
-+}
-+
-+static struct notifier_block hp_jack_nb = {
-+	.notifier_call = hp_jack_event,
-+};
-+
-+static int mic_jack_event(struct notifier_block *nb, unsigned long event,
-+			  void *data)
-+{
-+	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
-+	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
-+
-+	if (event & SND_JACK_MICROPHONE)
-+		/* Disable dmic if microphone is plugged in */
-+		snd_soc_dapm_disable_pin(dapm, "DMIC");
-+	else
-+		snd_soc_dapm_enable_pin(dapm, "DMIC");
-+
-+	return 0;
-+}
-+
-+static struct notifier_block mic_jack_nb = {
-+	.notifier_call = mic_jack_event,
-+};
-+
- static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
- {
- 	struct fsl_asoc_card_priv *priv = snd_soc_card_get_drvdata(card);
-@@ -745,8 +789,29 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(&priv->card, priv);
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
--	if (ret && ret != -EPROBE_DEFER)
--		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+	if (ret) {
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		goto asrc_fail;
-+	}
-+
-+	if (of_property_read_bool(np, "hp-det-gpio")) {
-+		ret = asoc_simple_init_jack(&priv->card, &priv->hp_jack,
-+					    1, NULL, "Headphone Jack");
-+		if (ret)
-+			goto asrc_fail;
-+
-+		snd_soc_jack_notifier_register(&priv->hp_jack.jack, &hp_jack_nb);
-+	}
-+
-+	if (of_property_read_bool(np, "mic-det-gpio")) {
-+		ret = asoc_simple_init_jack(&priv->card, &priv->mic_jack,
-+					    0, NULL, "Mic Jack");
-+		if (ret)
-+			goto asrc_fail;
-+
-+		snd_soc_jack_notifier_register(&priv->mic_jack.jack, &mic_jack_nb);
-+	}
- 
- asrc_fail:
- 	of_node_put(asrc_np);
--- 
-2.27.0
+Care to submit a proper patch?
 
+
+thanks,
+
+Takashi
