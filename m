@@ -3,87 +3,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42884C433E5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 11:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94133C433EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:14:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFBE122203
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 11:32:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2B10222D9
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:14:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cIJziW4f";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2ojMGVQN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFBE122203
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o6Iy8EE7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2B10222D9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 503A084A;
-	Tue, 14 Jul 2020 13:31:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 503A084A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76B9684A;
+	Tue, 14 Jul 2020 14:13:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76B9684A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594726354;
-	bh=ByDfIhzyLIF+vxT7O3HCwTlGfVoDr8iCeDZjjO1kjSE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1594728860;
+	bh=jwQk69ZDpPmHfdWoVbuYfGKZ+P3mp7GVFsH651TbHzc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cIJziW4fwNePniMIy8V4oMaO7u86vJK3PyPt5ZJ/qQDb50BKYxDIabVuDWH3xkFEn
-	 mnNi0NAfNzwls0oFmbDhvBUCfX8vEa4HXdgMIGsqfarcCTe4wplKo6OOLNUWJpHXSx
-	 5437okb8mEh4QG+97esZ70u6LEIL+beTiFGABXyA=
+	b=o6Iy8EE7YYuFXTZgV2HgDFWN7bDExiLWtFUn+VzCwxg73cGPAhdNm2YVzL0o0K2x8
+	 TLyYsR7MJNuTl4+6vWp2huWE6okv1mJ/lsglLFnw7A31SzEjreDK3ct9D47odqaQjw
+	 KWyc2Ltf5Z/d1YzBFJ0OhRkjsr9DumvVlFpvcQjA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECC17F8016F;
-	Tue, 14 Jul 2020 13:31:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DBAEF8016F;
+	Tue, 14 Jul 2020 14:13:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C95DFF8019B; Tue, 14 Jul 2020 13:31:41 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61A7CF800E5
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 13:31:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61A7CF800E5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="2ojMGVQN"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 6A387F8019B; Tue, 14 Jul 2020 14:13:27 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8D16D22203;
- Tue, 14 Jul 2020 11:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594726293;
- bh=ByDfIhzyLIF+vxT7O3HCwTlGfVoDr8iCeDZjjO1kjSE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=2ojMGVQNRvCT1i+Lq3g27M788fPIs2mQipsfzj6Dbax+imQP17p2RvPs07Esdj3KN
- n1zxv+Et6cLRWsHjPxZpKuvxqlQNRjw7H7qfiCMSh1OYaWtxm310M2qTiG+P0e2U6Z
- pMUbCrTHeYLX0E9UkKbQZVMoKLSSdzUCdQHlBb0E=
-Date: Tue, 14 Jul 2020 12:31:24 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: ASoC: Convert UniPhier EVEA codec to
- json-schema
-Message-ID: <20200714113124.GD4900@sirena.org.uk>
-References: <20200623114005.791643-1-yamada.masahiro@socionext.com>
- <20200714022252.GA1151466@bogus>
- <CAK7LNAQrdqztMrHtAHnbMkxeaDLLyBS68WVovev+zytHdD7RVQ@mail.gmail.com>
- <20200714095259.GB4900@sirena.org.uk>
- <CAK7LNARUwPRtG0uMZ4rwr7=+3wa9X1B70AXbnFL-CF1_wMvevw@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90C11F8014E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2020 14:13:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90C11F8014E
+IronPort-SDR: RQ2p6cCLKzOqh7md38aIHfJrp6oE8WxaxEyVk7NC2wNk45EIIeUKKZp3a7Ji51iiWo5BCSkXL8
+ BsXXJkQIKNBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="148015043"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; d="scan'208";a="148015043"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Jul 2020 05:13:18 -0700
+IronPort-SDR: AVQ2HeD3grSpp/1uZ/3Ewp4Gml0TpwUYb28aQaKiPlizlH01CaYqsAEcjEifLaZHOS5qkbLl6Q
+ BNilK68hcV0Q==
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; d="scan'208";a="459668727"
+Received: from pmaziarx-mobl.ger.corp.intel.com (HELO [10.249.128.98])
+ ([10.249.128.98])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Jul 2020 05:13:16 -0700
+Subject: Re: [PATCH v2 00/10] topology: decode: Various fixes
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <1594026363-30276-1-git-send-email-piotrx.maziarz@linux.intel.com>
+ <fe7b1707-d6f3-f8ad-e72d-f5840f298d6d@linux.intel.com>
+From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
+Message-ID: <dd94424f-b1c9-826d-3eaf-244f25d2fda6@linux.intel.com>
+Date: Tue, 14 Jul 2020 14:13:13 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="oj4kGyHlBMXGt3Le"
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARUwPRtG0uMZ4rwr7=+3wa9X1B70AXbnFL-CF1_wMvevw@mail.gmail.com>
-X-Cookie: Your password is pitifully obvious.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Rob Herring <robh@kernel.org>, - <alsa-devel@alsa-project.org>,
- DTML <devicetree@vger.kernel.org>, Katsuhiro Suzuki <katsuhiro@katsuster.net>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <fe7b1707-d6f3-f8ad-e72d-f5840f298d6d@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: cezary.rojewski@intel.com, amadeuszx.slawinski@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,40 +92,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 2020-07-06 22:01, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 7/6/20 4:05 AM, Piotr Maziarz wrote:
+>> This series fixes various problems with topology decoding mechanism.
+>> Some of the problems were critical like improper memory management or
+>> infinite loops that were causing undefined behaviour or program crashes,
+>> while other resulted in losing some data during conversion.
+>>
+>> Bugs found while testing with Intel SST topologies.
+>>
+>> Changelog:
+>> v2:
+>>    -Divide into more patches, critical fixes are in separate patches now
+>>    -More specific descriptions
+>>    -Fix a typo UML to UCM
+> 
+> That fix makes it even more confusing, I get that a UCM file can set 
+> values for controls defined in a topology file, but 'decoding to UCM' 
+> leaves me wondering what you are referring to.
+> 
 
---oj4kGyHlBMXGt3Le
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I meant standard ALSA configuration file format that is used also by UCM 
+files. I'll change it for more clarity.
 
-On Tue, Jul 14, 2020 at 08:08:45PM +0900, Masahiro Yamada wrote:
-> On Tue, Jul 14, 2020 at 6:53 PM Mark Brown <broonie@kernel.org> wrote:
+> Also you may want to remove all the Gerrit ChangeId before sending to 
+> the mailing list.
+> 
+>>    -Add error reporting in topology: decode: fix channel map memory
+>>     allocation
+>>    -Remove goto again in topology: Make buffer for saving dynamic size
+>>     for better readability
+>>
+>> Piotr Maziarz (10):
+>>    topology: decode: Fix channel map memory allocation
+>>    topology: decode: Fix infinite loop in decoding enum control
+>>    topology: decode: Remove decoding  values for enum control
+>>    topology: decode: Add enum control texts as separate element
+>>    topology: decode: Fix printing texts section
+>>    topology: decode: Change declaration of enum decoding function
+>>    topology: decode: Fix decoding PCM formats and rates
+>>    topology: decode: Print sig_bits field in PCM capabilities section
+>>    topology: decode: Add DAI name printing
+>>    topology: Make buffer for saving dynamic size
+>>
+>>   src/topology/ctl.c        | 51 
+>> ++++++++++++++++++++++-------------------------
+>>   src/topology/dapm.c       |  3 +--
+>>   src/topology/pcm.c        | 11 +++++++---
+>>   src/topology/save.c       | 34 ++++++++++++++++++++++++++-----
+>>   src/topology/text.c       |  2 +-
+>>   src/topology/tplg_local.h |  2 +-
+>>   6 files changed, 64 insertions(+), 39 deletions(-)
+>>
 
-> > No, bindings changes usually go through the subsystem - if there's any
-> > other work on the binding then it'll usually also involve driver
-> > changes.
-
-> OK, then please apply the following two if they look good.
-
-> https://lore.kernel.org/patchwork/patch/1261568/
-> https://lore.kernel.org/patchwork/patch/1261569/
-
-> Both got Rob's Reviewed-by.
-
-Only today...
-
---oj4kGyHlBMXGt3Le
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8Nl4sACgkQJNaLcl1U
-h9DDjQf+ICe/5B7o/Oiyd40Fde/y+G/XbqI09gtp9WstNujmZycGh1Ay9lDK6mWE
-l0GU3797amc+EOUhRKxHBvwwVnqKzNw6cDzDvskzKMzZfOW3d4OIRUF/lhy5RZiV
-9JMRdrwfadw8Wuw8wtVVN0y61xM7HsdKTFCdCIJOZnvm5fWeVweBu99fNxooHQKP
-yFIfSlOyAvA4ASbhLOyNr1ZLfKQIgpTqn3JYP2YsxSlwujGXTD2X4CrKMIcn5IES
-KSv8q4XKLlNf9rirc9U3K2ikaw3hJSbTSy55+cMsTgoy7WwjJUgBCLC4/zqyvOc6
-RDbGRwjDz/WsYtex4W5gNBgzxstL6g==
-=UlzO
------END PGP SIGNATURE-----
-
---oj4kGyHlBMXGt3Le--
