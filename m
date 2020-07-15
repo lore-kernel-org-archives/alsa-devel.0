@@ -7,73 +7,64 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8DFAC433E3
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 17:05:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6850C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 17:21:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1ECB82065E
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 17:05:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61FE92065D
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 17:21:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m5ps+Zi8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="ThOyiQIx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ECB82065E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kv47feu2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61FE92065D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F86B15E5;
-	Wed, 15 Jul 2020 19:04:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F86B15E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCB4715E5;
+	Wed, 15 Jul 2020 19:20:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCB4715E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594832743;
-	bh=xO+CZHfGaRi24KKOFEYK7t9qFgm6KC4uSFe7PiZwT4w=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
+	s=default; t=1594833687;
+	bh=Zkg15xQpavWsBDmnOSnD83V+UyXhuKj6jH7/d4xq9Tk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m5ps+Zi8dSOd9VssYlbcmEnkv/5jnv81+mhD5AJhoWzt3H4mPXovNfT3ZQg7MLOkW
-	 V4/lLGFjsbQbHOtBObUE3o7n6GKNXkLvgw22Jh2k+l+ABeCP6Aj6WCocfI9Gw2v5u6
-	 JhUpXCMCPpNkjeTJ/eMP0JPOVmigx2dR9iF2kE10=
+	b=kv47feu2owRYeIhIqWzmQSp4lcnDF1YsuvwyMXO/XVmLwJJ7kJSFHk2fDKj/RYeuD
+	 EFngILuTlYvEc6Gcm/ClcuWyteRXSZ3DbOQNNbIkoAfEZihEofBaV+0sCa8oPWNMbX
+	 Y0zg0AXyZ0NWJacmOpia3xmq47WNj4lq05ilroY0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 256D5F80113;
-	Wed, 15 Jul 2020 19:04:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DB9EF800E8;
+	Wed, 15 Jul 2020 19:20:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61432F8021D; Wed, 15 Jul 2020 19:04:51 +0200 (CEST)
-Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 128F1F8021D; Wed, 15 Jul 2020 19:20:36 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58404F80113
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 19:04:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58404F80113
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
- header.b="ThOyiQIx"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
- s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
- References:In-Reply-To:Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID
- :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
- Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
- :List-Post:List-Owner:List-Archive;
- bh=4Jh+f3MpUewvG9TjlbyiB5BjBplgAIyhzMLRAyxFtWc=; b=ThOyiQIx2gQFq+m1Sl/59B3Jrl
- aXpCyi3qqlMbhmo3b4t5JJXovkOXEzk3Y9LF2cP5TPsWxavBfg5etNB+ZCVAbewunaMC4Xh/5KAOV
- FCXiYpRgDPcCVtT120z3OL4csGwkDqx5rr3TMSjEUrCAtyu7c1Z0lSHmjW4jWVVIo3GY=;
-Received: from [10.8.10.223] (helo=work)
- by puleglot.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
- (Exim 4.93.0.4) (envelope-from <puleglot@puleglot.ru>)
- id 1jvkpj-000ynD-1Q; Wed, 15 Jul 2020 20:04:39 +0300
-Message-ID: <e1282824eaa7ab0b220b44e5573e3ed0b8c34b9e.camel@tsoy.me>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B286F800E8
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 19:20:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B286F800E8
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 07ED8AC37;
+ Wed, 15 Jul 2020 17:20:29 +0000 (UTC)
+Date: Wed, 15 Jul 2020 19:20:25 +0200
+Message-ID: <s5himeopuee.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Alexander Tsoy <alexander@tsoy.me>
 Subject: Re: [PATCH 10/10] ALSA: usb-audio: Replace blacklist word
-From: Alexander Tsoy <alexander@tsoy.me>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Date: Wed, 15 Jul 2020 20:04:37 +0300
-In-Reply-To: <20200714172631.25371-11-tiwai@suse.de>
+In-Reply-To: <e1282824eaa7ab0b220b44e5573e3ed0b8c34b9e.camel@tsoy.me>
 References: <20200714172631.25371-1-tiwai@suse.de>
  <20200714172631.25371-11-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 
-MIME-Version: 1.0
+ <e1282824eaa7ab0b220b44e5573e3ed0b8c34b9e.camel@tsoy.me>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,34 +80,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-В Вт, 14/07/2020 в 19:26 +0200, Takashi Iwai пишет:
-> Follow the recent inclusive terminology guidelines and replace the
-> word "blacklist" appropriately.
+On Wed, 15 Jul 2020 19:04:37 +0200,
+Alexander Tsoy wrote:
 > 
-> Only a comment fix, no functional changes.
+> В Вт, 14/07/2020 в 19:26 +0200, Takashi Iwai пишет:
+> > Follow the recent inclusive terminology guidelines and replace the
+> > word "blacklist" appropriately.
+> > 
+> > Only a comment fix, no functional changes.
+> > 
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >  sound/usb/quirks-table.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+> > index 4ec491011b19..336d81bb5fd1 100644
+> > --- a/sound/usb/quirks-table.h
+> > +++ b/sound/usb/quirks-table.h
+> > @@ -127,7 +127,7 @@
+> >  /*
+> >   * HP Wireless Audio
+> >   * When not ignored, causes instability issues for some users,
+> > forcing them to
+> > - * blacklist the entire module.
+> > + * skip the entire module.
 > 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/usb/quirks-table.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-> index 4ec491011b19..336d81bb5fd1 100644
-> --- a/sound/usb/quirks-table.h
-> +++ b/sound/usb/quirks-table.h
-> @@ -127,7 +127,7 @@
->  /*
->   * HP Wireless Audio
->   * When not ignored, causes instability issues for some users,
-> forcing them to
-> - * blacklist the entire module.
-> + * skip the entire module.
+> Maybe something like "disable loading" is more appropriate here?
+> "blacklist" here means literally "blacklist" option in modprobe.d
+> or modprobe.blacklist= cmdline option.
 
-Maybe something like "disable loading" is more appropriate here?
-"blacklist" here means literally "blacklist" option in modprobe.d
-or modprobe.blacklist= cmdline option.
+Well, in the end the behavior is same: the driver skips the probe and
+quits.  I don't mind much about the choice of the words, but IMO the
+difference here is too subtle to discuss.
 
->   */
->  {
->  	USB_DEVICE(0x0424, 0xb832),
 
+thanks,
+
+Takashi
