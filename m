@@ -3,88 +3,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11079C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A31C4C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:12:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94B3F206E9
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:06:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E2812078C
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:12:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SEVbHfPn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kUxdDYMr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94B3F206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FW6U2LGF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E2812078C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B8C615F2;
-	Wed, 15 Jul 2020 16:05:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B8C615F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97CA515E5;
+	Wed, 15 Jul 2020 16:11:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97CA515E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594821988;
-	bh=OsRhntqAyN9mOY8U9CdqOwYBY4i2l3Qux14A9WHRYhY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1594822347;
+	bh=Q/uSGKL1NOTk++AMDQzXWr4RKXuTXjGndrq+XVImRDs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SEVbHfPnRoD0wfMDT73gicoBshZCPQ6hvzsxsN9TfrGASnIn3u0BuvY3O3xBmDJEL
-	 wn7hm14R75OHA7VOWasGJmrJoL6W1hTdAAMm7jdgHyAl9vNC2y+J37iJ5WQP8vxUxm
-	 2N1e1IsD5LA6UnxsqhpCMCJbFqiMuZxUzhv0H534=
+	b=FW6U2LGFNNua6k9PmDAVQomxh+6q1cmS68ZxlRhyqbSdk7b9BdFy9BjJi/xfm5QgO
+	 aCDvZFCEx8jBqo0yrwCfnX/addhoKMwRtTqdyXOYxg8uVtwx2wkVqecYexT2DDEYre
+	 PyrvfmVPCWBsQrRJc2emr0Qru7arfZpQVJ92kKTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99E1EF80113;
-	Wed, 15 Jul 2020 16:05:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20B8EF80217;
+	Wed, 15 Jul 2020 16:11:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30870F8021D; Wed, 15 Jul 2020 16:05:35 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B12D9F80113
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 16:05:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B12D9F80113
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kUxdDYMr"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 60D00F8021D; Wed, 15 Jul 2020 16:11:35 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E0B6C205CB;
- Wed, 15 Jul 2020 14:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594821929;
- bh=OsRhntqAyN9mOY8U9CdqOwYBY4i2l3Qux14A9WHRYhY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=kUxdDYMrISxD5G0l2FMnWPMBLh3uWpKF5s/SbJgKqgjvDzTGAPs3JxlKjcV16/wh6
- Zg+RfOOP3sXzrq2Es0XaPWd+8TyDG0a9msLnNCGT3Cac6iOBFrkHAgza/TUMjSIA6H
- CW4oT2uw0ZQV/X3UI0Vqiv7USca/rfpN+XvUOP6g=
-Date: Wed, 15 Jul 2020 15:05:19 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 0/4] ASoC: fsl_asrc: allow selecting arbitrary clocks
-Message-ID: <20200715140519.GH5431@sirena.org.uk>
-References: <20200702142235.235869-1-arnaud.ferraris@collabora.com>
- <20200702184226.GA23935@Asurada-Nvidia>
- <3f39a0bb-a766-f646-28b3-a51cf9983c6b@collabora.com>
- <3fea8912-63df-ff27-0c29-6284a85107ab@collabora.com>
- <20200714201544.GA10501@Asurada-Nvidia>
- <20200714202753.GM4900@sirena.org.uk>
- <20200714205050.GB10501@Asurada-Nvidia>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E835F8014E
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 16:11:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E835F8014E
+IronPort-SDR: FliIxPUeii5fqzq5AAiFgHFRw093z+e9fs+tV9hjyiLrQJiwJ3bDA64ATRM7yJassc05O0pAcO
+ Q+x2dHPRwgZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="128713568"
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="128713568"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Jul 2020 07:11:27 -0700
+IronPort-SDR: kvtOHsuz0HAGIGpENCKWVi39h2mstL8kjyl/VBqzWlnCbkBoMBVqQzs1sxSGPKKxzjQbxzvryP
+ A3Lv7snNvHyw==
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="460103339"
+Received: from sjeong-mobl.amr.corp.intel.com (HELO [10.255.231.101])
+ ([10.255.231.101])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Jul 2020 07:11:26 -0700
+Subject: Re: [PATCH 7/9] soundwire: intel/cadence: merge Soundwire interrupt
+ handlers/threads
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
+ <20200623173546.21870-8-yung-chuan.liao@linux.intel.com>
+ <20200630162448.GS2599@vkoul-mobl>
+ <55fbc41e-cb41-8bdf-bdbd-1d1b76938683@linux.intel.com>
+ <20200701054224.GV2599@vkoul-mobl>
+ <MN2PR11MB4080CF23D00A3AF817AC1E7CFF6D0@MN2PR11MB4080.namprd11.prod.outlook.com>
+ <077d4430-bb76-df2c-2c39-8077998e6fdc@linux.intel.com>
+ <20200715045449.GP34333@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b9538103-4c72-722d-0abd-015f9432f17f@linux.intel.com>
+Date: Wed, 15 Jul 2020 09:11:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="5vjQsMS/9MbKYGLq"
-Content-Disposition: inline
-In-Reply-To: <20200714205050.GB10501@Asurada-Nvidia>
-X-Cookie: 40 isn't old.  If you're a tree.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Arnaud Ferraris <arnaud.ferraris@collabora.com>,
- Timur Tabi <timur@kernel.org>, alsa-devel@alsa-project.org,
- Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>, kernel@collabora.com,
- Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <20200715045449.GP34333@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "tiwai@suse.de" <tiwai@suse.de>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
+ "hui.wang@canonical.com" <hui.wang@canonical.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+ "jank@cadence.com" <jank@cadence.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Blauciak,
+ Slawomir" <slawomir.blauciak@intel.com>, "Kale,
+ Sanyog R" <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>, "Liao,
+ Bard" <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,47 +113,90 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---5vjQsMS/9MbKYGLq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jul 14, 2020 at 01:50:50PM -0700, Nicolin Chen wrote:
-> On Tue, Jul 14, 2020 at 09:27:53PM +0100, Mark Brown wrote:
+On 7/14/20 11:54 PM, Vinod Koul wrote:
+> On 02-07-20, 10:01, Pierre-Louis Bossart wrote:
+>   
+>>>> Sounds good. Now that you are already in irq thread, does it make sense
+>>>> to spawn a worker thread for this and handle it there? Why not do in the
+>>>> irq thread itself. Using a thread kind of defeats the whole point behind
+>>>> concept of irq threads
+>>>
+>>> Not sure If you are talking about cdns_update_slave_status_work().
+>>> The reason we need to spawn a worker thread in sdw_cdns_irq() is
+>>> that we will do sdw transfer which will generate an interrupt when
+>>> a slave interrupt is triggered. And the handler will not be invoked if the
+>>> previous handler is not return yet.
+>>> Please see the scenario below for better explanation.
+>>> 1. Slave interrupt arrives
+>>> 	2.1 Try to read Slave register and waiting for the transfer response
+>>> 	2.2 Get the transfer response interrupt and finish the sdw transfer.
+>>> 3. Finish the Slave interrupt handling.
+>>>
+>>> Interrupts are triggered in step 1 and 2.2, but step 2.2's handler will not be
+>>> invoked if step 1's handler is not return yet.
+>>> What we do is to spawn a worker thread to do step 2 and return from step 1.
+>>> So the handler can be invoked when the transfer response interrupt arrives.
+>>
+>> To build on Bard's correct answer, the irq thread only takes care of
+>> 'immediate' actions, such as command completion, parity or bus clash errors.
+>> The rest of the work can be split in
+>> a) changes to device state, usually for attachment and enumeration. This is
+>> rather slow and will entail regmap syncs.
+>> b) device interrupts - typically only for jack detection which is also
+>> rather slow.
+>>
+>> Since this irq thread function is actually part of the entire HDaudio
+>> controller interrupt handling, we have to defer the work for cases a) and b)
+>> and re-enable the HDaudio interrupts at the end of the irq thread function -
+>> see the code I shared earlier.
+>>
+>> In addition, both a) and b) will result  in transactions over the bus, which
+>> will trigger interrupts to signal the command completions. In other words,
+>> because of the asynchronous nature of the transactions, we need a two-level
+>> implementation. If you look at the previous solution it was the same, the
+>> commands were issued in the irq thread and the command completion was
+>> handled in the handler, since we had to make the handler minimal with a
+>> global GIE interrupt disable we kept the same hierarchy to deal with
+>> commands but move it up one level.
+>>
+>> You could argue that maybe a worker thread is not optimal and could be
+>> replaced by something better/faster. Since the jack detection is typically
+>> handled with a worker thread in all ASoC codec drivers, we didn't feel the
+>> need to optimize further. We did not see any performance impact with this
+>> change.
+>>
+>> Does this answer to your concern?
+> 
+> The point is that we are already in irq_thread which is designed to
+> handle any bottom half processing and can be given priority, spawning of
+> worker threads for another bottom half seems unnecessary to me and would
+> increase the latency for you.
+> 
+> I would have handled everything in irq_thread and returned, after all we
+> are in bottom half :)
+> 
+> Is there a reason for worker thread here, if so it is not clear to me
+> atm.
 
-> > The nominal rate might be the same but if they're in different clock
-> > domains then the actual rates might be different (hence the desire for
-> > an ASRC I guess).  I can see the system wanting to choose one clock or
-> > the other on the basis of some system specific property (quality of the
-> > clock sources, tolerances of the devices involved or something) though
-> > it's a rather fun edge case configuration :/ .
+I think we explained it at length: the irq thread deals with command 
+completion so the command initiation required for enumeration and 
+imp-def interrupt needs to be issued in *another* thread.
 
-> Thanks for the input. Fox i.MX6, I don't feel it would be that
-> drastically different though. And both SSI1 and SSI2 can simply
-> select the same root clock source to avoid that happen.
+You cannot have in the same thread a wait_for_completion() and 
+complete(), it'd be a by-design deadlock.
 
-If you've got two radios that both need to sync to some radio derived
-frequency it gets a bit more entertaining.
+Maybe a comparison would help.
 
-> Yet, in case that we need to support such an edge case, what's
-> a relatively common practice to allow system select the clock
-> source now?
+previous design for N masters
+N+2 Handlers + threads (one IPC, one stream, N SoundWire)
+each SoundWire handler takes care of command completion and wakes a 
+thread for enumeration and imp-def interrupt.
 
-Honestly for anything that fun it tends to be a custom machine driver.
-A property would seem reasonable though.
-
---5vjQsMS/9MbKYGLq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8PDR8ACgkQJNaLcl1U
-h9B3vQf/f9mEX7hrtyk9FWvaZgsqLq+mUUNALFg5rWK6DoRHzdL5zBIlHuZUkcxD
-dwIy0B20CLI43Xtu8/yIkVbPb9X5f2FfoJ0Jo9+R5I6yP6QIMR7ZVVbFwpsCoMGe
-nuf4HosTeun7cv9MbTQe/wMbF2kWdX/xPZyEN/DGDvXLs1e/vQHjg0g92LZYLK/A
-5tLPFNHJQULz/QKxzHxCdgwNKeA5jKvSZK8I6jNBa+7HKFXbZl07pUGHpSEQ6aFI
-iuvyUH8NtvVj+P9f41yHAj3er2TEmpEg98M0JEmE61dahy+oGSivEyqcmJlfKxxd
-4nn2FfBH1xDjNZn2ShW+vYcooN+k0A==
-=X4/g
------END PGP SIGNATURE-----
-
---5vjQsMS/9MbKYGLq--
+New design
+Single handler for ALL interrupt sources
+The handler masks the global interrupt and wakes a thread that deals 
+with all interrupt sources, one after the other. The SoundWire thread 
+function for each Master will take case of command completion and 
+schedules a workqueue for enumeration and imp-def interrupt. The irq 
+thread then unmask the global interrupt and returns IRQ_HANDLED.
