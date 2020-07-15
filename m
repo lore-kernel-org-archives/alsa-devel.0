@@ -6,82 +6,82 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15C44C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 22:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDD7EC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 22:11:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CD4B2065F
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 22:10:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73C8D2067D
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 22:11:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jVS7VYV1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CD4B2065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TfmM6fua"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73C8D2067D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FC791669;
-	Thu, 16 Jul 2020 00:09:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FC791669
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBF0815E5;
+	Thu, 16 Jul 2020 00:11:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBF0815E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594851033;
-	bh=DSZsjoyCOCsReRg8iiRclXuUu/fznXGewkpPC4xc62g=;
+	s=default; t=1594851116;
+	bh=93EiFIk/NdwdF/mi7fmL6xvs1z7iai9XGWJoodXPosk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jVS7VYV1hCwheEStpvKT/ChR4Bo5BYdv0CVKC7wQ54IlY3cqqsFmSCtprsohQ0SCo
-	 3H7OMrUGbdd4/ZppXsa+KmF5mSFNDoDEICY8QSjjOxi06lLHXFiQFh54NqRsBPG4sN
-	 8rMlHOnBea1Jww1KGVOBKqFg20UZOmOk5i/9Q4CA=
+	b=TfmM6fuaoqkWMul8ZmoI+GsAg5AUTKovX4g91KHGDsj44SQJfr6gmFYBXQWN7LkA1
+	 BH6ObRf1Cjy3j3NAnBLIGPwXfuQ9XjhKnwXLCYyUbxPUV/cYXxxMdFl3c9aCpLVfwt
+	 pR5imXj2Ku6xZ4liL4PHNp6gj7fO+wRZGBKB52bU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05A3FF80229;
-	Thu, 16 Jul 2020 00:09:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67AAFF8014E;
+	Thu, 16 Jul 2020 00:11:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D8A3F8023F; Thu, 16 Jul 2020 00:09:26 +0200 (CEST)
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com
- [209.85.166.49])
+ id 7D072F8021D; Thu, 16 Jul 2020 00:11:05 +0200 (CEST)
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com
+ [209.85.166.54])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7AE2F80227
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 00:09:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7AE2F80227
-Received: by mail-io1-f49.google.com with SMTP id l1so3945122ioh.5
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 15:09:23 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D71AF8014E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 00:10:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D71AF8014E
+Received: by mail-io1-f54.google.com with SMTP id v6so3954007iob.4
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 15:10:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=Xn5jIa76g7gx0OoxSi/M5tGMd+ItITsCiEbCKsIiVN8=;
- b=EIodvRBAHUz8EMYte3PnEVG0V6gI43cVIGZlhTG1lSzRpSR3ICCYUlRtgAERLgHKo3
- Fccs83q4eC2a9gfmcT9rumf29ZaqALo2TWxtiN44OJd8SwlB+kvcmiBlGz+xgn3m3QvF
- Q4mDIO0U8+2/mhn5crc1/PyC2wOlmhlCV26KFLUjQ9vxn3vKB9zhraeh6K+4fs18KY3g
- FGvsRNqaOjS0zo0fh7+05pdIDN0gZWxfNn/P8DRIGLxcQnD1NPJAL46WSBxhdOK6grRt
- mEBk9AXqYCqVlpSulaGrT9hTDwmXsbXIqYEwuDWSgpwyCt70KexAottnS34u2NwGubGa
- Dihg==
-X-Gm-Message-State: AOAM532dHH5jBmCDpmVY8+FEw62SHdnD/F1iBWA9o/30SWNR9o0ZSDu5
- pY9oO6VbfnbvTRH2wyGA/w==
-X-Google-Smtp-Source: ABdhPJyencf1AvFsxgRmIS+aOs4uA7bSB7KI2oNAVyobT/QGkMOSz+fPkhZHb17MIPS8xpxF2nFcKw==
-X-Received: by 2002:a6b:691d:: with SMTP id e29mr1420360ioc.159.1594850961741; 
- Wed, 15 Jul 2020 15:09:21 -0700 (PDT)
+ bh=bs4UvWlAUqqCoLxMvImO4Yyx0pE7t+ca9ZPzNIql2gA=;
+ b=WNePLc9Fcc/My9HXE7//AkY86NLhRBgV1ewTHPI2WBvz70RmnWNUY9HJT+Q+VS3WZm
+ 4hA1GwBBgLX24lIfTcorGsH8UuGZ0OChtHCZfBpCil1S4p4znsmZ+w2yVudJfxbhXZRM
+ 4yNrMeHe03+i9nVRH6bcgtTXcL97v7HYUAJxGFAQ5VdDovPdCOZdk25nmUiwAioKcIok
+ EI/XF5MwDu+AuSBhcSiLCw0J5GSe4mOB2JLowo7HsXmHdCBDxhNEBNLpf2ar1pN80Juj
+ z+j1fLi1s/7XbVqTWY/zv9aFC8k/88Si9dcjGiaSTL7/SAcQJJoDnFX+ahfyOOnaiKW3
+ jdeA==
+X-Gm-Message-State: AOAM531YWJK0gmf64+WmpYVEmtzXMfZlUOtvNfU4MqlhuKQjAGB+jEPd
+ tg6zXdjTrWLX/tkq6Dq0NQ==
+X-Google-Smtp-Source: ABdhPJzywfwMkAxR2QgSwYC2Kedi45mHiQTzllbo4ZvapAVObxEPmKtxc/SMvZB/mHBePWd7cSiCqw==
+X-Received: by 2002:a5d:8f0b:: with SMTP id f11mr1449175iof.200.1594851057295; 
+ Wed, 15 Jul 2020 15:10:57 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
- by smtp.gmail.com with ESMTPSA id b24sm1744162ioh.6.2020.07.15.15.09.20
+ by smtp.gmail.com with ESMTPSA id f76sm1744517ilg.62.2020.07.15.15.10.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Jul 2020 15:09:21 -0700 (PDT)
-Received: (nullmailer pid 903768 invoked by uid 1000);
- Wed, 15 Jul 2020 22:09:20 -0000
-Date: Wed, 15 Jul 2020 16:09:20 -0600
+ Wed, 15 Jul 2020 15:10:56 -0700 (PDT)
+Received: (nullmailer pid 905964 invoked by uid 1000);
+ Wed, 15 Jul 2020 22:10:55 -0000
+Date: Wed, 15 Jul 2020 16:10:55 -0600
 From: Rob Herring <robh@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH][resend] ASoC: dt-bindings: ak4613: switch to yaml base
+Subject: Re: [PATCH][resend] ASoC: dt-bindings: ak4642: switch to yaml base
  Documentation
-Message-ID: <20200715220920.GA903738@bogus>
-References: <87mu4cxlo2.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20200715221055.GA905934@bogus>
+References: <87lfjwxlna.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87mu4cxlo2.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87lfjwxlna.wl-kuninori.morimoto.gx@renesas.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 07 Jul 2020 08:35:10 +0900, Kuninori Morimoto wrote:
+On Tue, 07 Jul 2020 08:35:38 +0900, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
 > This patch switches from .txt base to .yaml base Document.
@@ -107,11 +107,11 @@ On Tue, 07 Jul 2020 08:35:10 +0900, Kuninori Morimoto wrote:
 > 
 >  - 2weeks passed, but nothing happen
 > 
->  .../devicetree/bindings/sound/ak4613.txt      | 27 ----------
->  .../devicetree/bindings/sound/ak4613.yaml     | 49 +++++++++++++++++++
->  2 files changed, 49 insertions(+), 27 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/ak4613.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/ak4613.yaml
+>  .../devicetree/bindings/sound/ak4642.txt      | 37 ------------
+>  .../devicetree/bindings/sound/ak4642.yaml     | 57 +++++++++++++++++++
+>  2 files changed, 57 insertions(+), 37 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/ak4642.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/ak4642.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
