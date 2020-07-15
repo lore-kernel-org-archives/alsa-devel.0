@@ -2,82 +2,80 @@ Return-Path: <SRS0=Rw3p=A2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D4EEC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BD85C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:50:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C02B42065E
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:49:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3E6F206E9
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:50:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S/3KUEbv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C02B42065E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TAXhailY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3E6F206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40939166E;
-	Wed, 15 Jul 2020 16:48:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40939166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E3FD1677;
+	Wed, 15 Jul 2020 16:49:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E3FD1677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594824574;
-	bh=MiQfn4ZYQD1qMIa29vI0PNI08yk4PYMu28VyDBf3hmE=;
+	s=default; t=1594824622;
+	bh=+yClnskVSFfeeGf3GDjoasrPtgoMn15H5ERXZ+tRhYE=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S/3KUEbvAZShjPpYOmMjO7XqDvQEdsITanYC8RFQWsXkYKz+tc3pRirsQvFKTYsnp
-	 JEhj43HKBrJK676mlMlH3RzU7Ao5vXlZzW2yUNA9FjREghK/ksz7G+HkDxVN40P4nG
-	 7Wl27GyPRdMBHCCSFK2r5tiomY0vcggvN3CPlbwU=
+	b=TAXhailYD+lP/GlZY1a1AZ+uaBPaiMu6dZimlnyqT+MQqRqmFXiklodW9Ti5ALttp
+	 OS+DdWxX6HcCM0EZbIFH590BIIWnjAX2Q68xSmqPjEPVWYJ7Buzd/+i92nnl/LzPAE
+	 u0Mw6mqN6PhHl9NkA1P15Lbx2vS9s/xvygAa06VE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FAC8F80229;
-	Wed, 15 Jul 2020 16:48:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E03CF80240;
+	Wed, 15 Jul 2020 16:48:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70038F8014E; Wed, 15 Jul 2020 16:47:59 +0200 (CEST)
+ id D1A26F8023F; Wed, 15 Jul 2020 16:47:59 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C80BF8014E
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 16:47:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C80BF8014E
-IronPort-SDR: R/J0YR2k2EecTVjzDDIzCpKf4EWVvRgHE6pBNw5Oenr7GbkTU6FapUoGdBVapvuyfkFoy5RPCH
- /6xL3glm58mg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="128724454"
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="128724454"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A088F80227
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 16:47:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A088F80227
+IronPort-SDR: M0YoqudEEiK8uDkqDCyppam1syx6E25WoT/ddKimgmMM7cK2uIsPVj/Ktw6duKsXD9m1bc6/lo
+ WmYxFkEd+Vew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="128724458"
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="128724458"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2020 07:47:49 -0700
-IronPort-SDR: lf6xa5xBKw91hNzg5MMjGcIskZGmuo27sggLIryHvkH0TYdaqf4WG3bjd0ubnDC8ny0vl7opp0
- 6YvItvLmguBg==
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="460114374"
+ 15 Jul 2020 07:47:51 -0700
+IronPort-SDR: 2PEY05RyeCelEeM3/hoBzsX/PD/wRwIaJOupts6VsrFw5GAlPN/WPkWJe7l97a+fZ0v4q6zYmJ
+ sUfLzTP/cKeA==
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="460114380"
 Received: from sjeong-mobl.amr.corp.intel.com (HELO [10.255.231.101])
  ([10.255.231.101])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2020 07:47:48 -0700
-Subject: Re: [PATCH 01/10] ALSA: Replace the word "slave" in vmaster API
-To: Takashi Iwai <tiwai@suse.de>
-References: <20200714172631.25371-1-tiwai@suse.de>
- <20200714172631.25371-2-tiwai@suse.de>
- <eda4df2e-d7b0-9e7e-e873-e3d8d3088174@linux.intel.com>
- <s5h5zaptgaz.wl-tiwai@suse.de>
+ 15 Jul 2020 07:47:50 -0700
+Subject: Re: [PATCH] soundwire: fix the kernel-doc comment
+To: Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org
+References: <20200715095702.1519554-1-vkoul@kernel.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a93460a3-ac0e-be0b-7c46-47b87fd611c2@linux.intel.com>
-Date: Wed, 15 Jul 2020 09:34:51 -0500
+Message-ID: <7498c581-94fe-140b-c521-786f0dea7b3d@linux.intel.com>
+Date: Wed, 15 Jul 2020 09:42:13 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <s5h5zaptgaz.wl-tiwai@suse.de>
+In-Reply-To: <20200715095702.1519554-1-vkoul@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+Cc: Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,33 +93,18 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
->> On 7/14/20 12:26 PM, Takashi Iwai wrote:
->>> Follow the recent inclusive terminology guidelines and replace the
->>> word "slave" in vmaster API.  I chose the word "replica" at this time
->>> since it seems fitting for the purpose.
->>
->> Thanks Takashi for starting this.
->>
->> For the HDaudio Volume widgets, the spec says they may have different
->> step size but use the same number of steps, so they are not copy-exact
->> versions in the usual 'replica' sense but rather follow or track the
->> master configuration.
->>
->> The internal guidance I see at Intel is to use 'replica' mainly in a
->> database/configuration management context.
->>
->> If the idea is that the 'replicas' use the same configuration as the
->> 'master', that'd be fine indeed but we may want to add a clarifying
->> comment that the end-result may be different for each 'replica'?
+On 7/15/20 4:57 AM, Vinod Koul wrote:
+> sdw_startup_stream() and sdw_shutdown_stream() argument has been updated
+> but not the comments, so update these as well to fix warning with W=1
 > 
-> I don't mind to pick up another word.
-> What could be another better alternative?
+> drivers/soundwire/stream.c:1859: warning: Function parameter or member 'sdw_substream' not described in 'sdw_startup_stream'
+> drivers/soundwire/stream.c:1859: warning: Excess function parameter 'stream' description in 'sdw_startup_stream'
+> drivers/soundwire/stream.c:1903: warning: Function parameter or member 'sdw_substream' not described in 'sdw_shutdown_stream'
+> drivers/soundwire/stream.c:1903: warning: Excess function parameter 'stream' description in 'sdw_shutdown_stream'
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-I don't have a suggestion that is really better. the usual suggestions 
-of 'secondary' or 'subordinate' are not really great in this context, 
-something like 'tracker' or 'follower' might work but are maybe more 
-vague for controls.
+After sending dozens of patches to fix those issues I added one by 
+accident, oh well. Thanks for fixing this.
 
-I am really fine with 'replica', just wanted to clarify that it's not 
-doing the same thing in multiple places but using the same configuration 
-in multiple places.
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
