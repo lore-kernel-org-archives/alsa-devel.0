@@ -2,100 +2,85 @@ Return-Path: <SRS0=Rw3p=A2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4165CC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 15:01:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 537F8C433E3
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 16:19:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFDD6206E9
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 15:01:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D55792071B
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 16:19:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n7NxSI0q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ry5LXTgb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFDD6206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jISZngyM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D55792071B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3426015F2;
-	Wed, 15 Jul 2020 17:00:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3426015F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52AC315E5;
+	Wed, 15 Jul 2020 18:18:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52AC315E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594825290;
-	bh=MkQbC8Sxl8WbztTUL2piVTrFCw6mSTRFm+RUOfTchJg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=n7NxSI0qybOCUGYt3yctblrPlTx/JYI3eFI2e3ClyF8cg6WEAS3IuV7wE494H7RbR
-	 htIjUyMKudDu+Pu3wTST5FoTzIR1cLT8HfCVgkHvD+5b9rPbfR8LaA3a4ujOKxvZ1O
-	 pff4HWcwGl0/yE17eULOpBZq21hU54l3lUMVmTgs=
+	s=default; t=1594829966;
+	bh=KZdcjMRnARqzunUlskyQFhwJQva279LhRbYoOWiC4G4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jISZngyM/rY0oOW2CGkQ7GIMs8KYHExsQdqH1YANPEWePx1WT7haCv3GoCMRlDI3o
+	 EVoPDhQ5LeZz4OJ6b+GsU4ukA2ct5ura8zLJT8Z0nU10W7+1sZOwENooj0FFTkAavZ
+	 s4UsyVaMoudFZQRLrhhQZ+EQZFCAe09xzS5m+gxo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBB77F80217;
-	Wed, 15 Jul 2020 17:00:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3FF5F80217;
+	Wed, 15 Jul 2020 18:18:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1FBDF8021D; Wed, 15 Jul 2020 17:00:37 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B4787F8021D; Wed, 15 Jul 2020 18:18:32 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B9EEF8014E
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 17:00:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B9EEF8014E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="ry5LXTgb"
-Received: by mail-wr1-x443.google.com with SMTP id z2so3095576wrp.2
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 08:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=3wqhk2njYGDUfvoMiCydF/NDRZ8ScZRwPRcCbCDujnE=;
- b=ry5LXTgbZguG/UbPzILmwKElT6GKBM5G62IceUKmo09VsGFygkrWJmWgxzQz76lEEo
- aLHL0cRraTsvdR/LF9LWJh8Nn97hMd8kAe8V9KrkvSQGoYDADP9sdQKyeuHqyLtMW4qh
- xxC3Cnlla8Xuh+J+2Lg6qknxvSzDUmlnLcpzBN4BMNtxp93AaETvkOjg4W+MEghbT+K7
- tMs8rXohsO3OmNxtnH9BrwkubgWjHesAcsO+i9SHL1vDvXB7M0P6atXH/VLCHaczu1dw
- fgFRit+KR6r3mQymLryq7vEcRXyldu5TlPdyPtlwAmp+O+asuZpqZnvlkaJrRexOm/PX
- RDBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=3wqhk2njYGDUfvoMiCydF/NDRZ8ScZRwPRcCbCDujnE=;
- b=OdEo9Q8ZQilSFX+EMD+DmyoBabhsK1E5jD3x6kYaYKR2EXkU0g3H6orToyIIRtIjs3
- Ye1GyQ8zWpqH0Nnax4uC+4j5mfHTqO6ugDoUS9NeCMeNw2sbwEQtUXzoKfeZYZd+6vv5
- f51bk6mRXyhtuPM/IcPeANHnwKTz8fdKFEpEj+47PwAGo7ZsuktVG/T7fBr+BfqqEFbL
- 7avzaLBr3aRBPpd4lw37sl4YYHAAANYHdh7BDJ45SpTkpRkj95NX3SmRumBH3WUwLKUP
- KAL5TN//CnyQ4GwX9fAoNEKB1LukD3hy84UA+iohg4Cjm9EkxiuHKBXuUG6fEI2Vx3MU
- X4mw==
-X-Gm-Message-State: AOAM532TjlU9Iasq3+AkDeHHzLWNGyeLjVkgTV8UMO5/lcxYJoThwmxY
- 3TR1gMPaCLaYU6p4uZdbe90LpA==
-X-Google-Smtp-Source: ABdhPJwl5O0qynyiyO/vc5c/ivb3JgK51iUfxXzUA/hJSpiRsmDsyxdWa2OMgLVTth8tM/eUlUgRIQ==
-X-Received: by 2002:a5d:44c7:: with SMTP id z7mr12567153wrr.226.1594825230041; 
- Wed, 15 Jul 2020 08:00:30 -0700 (PDT)
-Received: from localhost.localdomain ([2.31.163.61])
- by smtp.gmail.com with ESMTPSA id l18sm4007435wrm.52.2020.07.15.08.00.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Jul 2020 08:00:29 -0700 (PDT)
-From: Lee Jones <lee.jones@linaro.org>
-To: broonie@kernel.org,
-	lgirdwood@gmail.com
-Subject: [PATCH v2 1/1] ASoC: fsl: fsl-asoc-card: Trivial: Fix misspelling of
- 'exists'
-Date: Wed, 15 Jul 2020 16:00:09 +0100
-Message-Id: <20200715150009.407442-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B9D2F80113
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 18:18:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B9D2F80113
+IronPort-SDR: uOToo446Gfu94moEFUTN22QHFdKaL/cJi+BHcCYfF7iZrca1SqRgM2TSjikIO7bqL/D1Oa4sl7
+ x545mKr4IgBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="137323119"
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="137323119"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Jul 2020 09:18:14 -0700
+IronPort-SDR: 9ekOsRwYTBZChqxXTmFjZbcO1iGanHBPiFP5oGwaGO4kMoJDNHHyRLlsc4Yf5QVrs3FXleQQix
+ KmS9P6w99m+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="282148401"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.3.67])
+ ([10.213.3.67])
+ by orsmga003.jf.intel.com with ESMTP; 15 Jul 2020 09:18:13 -0700
+Subject: Re: [PATCH v3 07/10] topology: decode: Fix decoding PCM formats and
+ rates
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Piotr Maziarz <piotrx.maziarz@linux.intel.com>, alsa-devel@alsa-project.org
+References: <1594725911-14308-1-git-send-email-piotrx.maziarz@linux.intel.com>
+ <1594725911-14308-8-git-send-email-piotrx.maziarz@linux.intel.com>
+ <bca4e102-f734-df31-17aa-686bc1463819@linux.intel.com>
+ <37b724ff-e485-8b7a-f16d-8cf8f8ac7c9b@linux.intel.com>
+ <13ec204b-78f3-2d5d-30bc-c099a58fd789@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <163efa56-6144-30e3-98e8-e286e605937c@intel.com>
+Date: Wed, 15 Jul 2020 18:18:12 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- Nicolin Chen <nicoleotsuka@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <13ec204b-78f3-2d5d-30bc-c099a58fd789@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: amadeuszx.slawinski@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,29 +96,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- sound/soc/fsl/fsl-asoc-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2020-07-15 4:37 PM, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 7/15/20 4:37 AM, Piotr Maziarz wrote:
+>> On 2020-07-14 17:40, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>> On 7/14/20 6:25 AM, Piotr Maziarz wrote:
+>>>> Not checking _LAST format and rate, which are valid indexes in arrays,
+>>>> makes data loss while converting binary to standard ALSA configuration
+>>>> file.
+>>>
+>>> I must be really thick on this one.
+>>>
+>>> alsatplg converts from alsa-conf format to binary topology file.
+>>> The binary topology file is used by drivers.
+>>>
+>>> In which cases would you convert from binary to alsa-conf files? And 
+>>> what tool would you use?
+>>>
+>> ./alsatplg --decode topology.bin --output decoded_topology.conf,
+>> This feature was added around the end of 2019. And why to use it? For 
+>> binary topologies to which conf files are lost for example. It's 
+>> easier to analyze and edit it in conf than directly in binary.
+> 
+> I must admit I completely missed this feature, thanks for the 
+> clarification.
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index faac6ce9a82cb..dbacdd25dfe76 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -92,7 +92,7 @@ struct fsl_asoc_card_priv {
- };
- 
- /*
-- * This dapm route map exits for DPCM link only.
-+ * This dapm route map exists for DPCM link only.
-  * The other routes shall go through Device Tree.
-  *
-  * Note: keep all ASRC routes in the second half
--- 
-2.25.1
+In general, the idea is to be able to validate or debug (if necessary) 
+topology binaries provided by users when access to FE file e.g. conf, or 
+XML in our case, is not possible.
 
+In perfect world one can do the following and receive the exact same 
+results on each iteration:
+
+
+(assume FE file in XML format and FE tool e.g. itt which allows for
+converting XML into conf)
+
+XML -> itt -> UCM
+UCM -> alsatplg -> bin
+
+bin -> alsatplg -> UCM
+UCM -> itt -> XML
+
+Ability to compile and decompile was very handy in the Android world. We 
+developed a simplified approach quite a while ago and finally decided to 
+upstream the solution. Turned out Jaroslav pushed few commits lately 
+that make a stub for the idea itself. Unfortunately, as you see in the 
+series, there are several problems with the existing code rendering 
+--decode unusable. Next step, after the fixes, is to allow for custom 
+handlers to be provided (decompiling vendor's private data).
+
+Czarek
