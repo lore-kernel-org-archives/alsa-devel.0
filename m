@@ -2,104 +2,99 @@ Return-Path: <SRS0=Rw3p=A2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A9A5C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:58:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4165CC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 15:01:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8407206D5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:58:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BFDD6206E9
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 15:01:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t+8ZfH0Z";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZsjT0iHq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8407206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n7NxSI0q";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ry5LXTgb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFDD6206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 516C315E5;
-	Wed, 15 Jul 2020 16:57:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 516C315E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3426015F2;
+	Wed, 15 Jul 2020 17:00:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3426015F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594825097;
-	bh=lrNRkt13NGiLheLODHAuypzRcATSBn2PkvWyezW3ik4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=t+8ZfH0ZNcR8pHrzG7qjSGy7OqHbOB1JDcRhcILIUGU7MIpi4nbxTmolXSoQwlhse
-	 Uwp3LRzWbrvqYMch/ZPOrSDv6RcSDouigP5gBrjp10FBfp45X2patitSKpupyg9ViH
-	 5MdVe0+gCooFv9CD4Lpwpiw4Qhb0ZOpWfOTqM3pU=
+	s=default; t=1594825290;
+	bh=MkQbC8Sxl8WbztTUL2piVTrFCw6mSTRFm+RUOfTchJg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=n7NxSI0qybOCUGYt3yctblrPlTx/JYI3eFI2e3ClyF8cg6WEAS3IuV7wE494H7RbR
+	 htIjUyMKudDu+Pu3wTST5FoTzIR1cLT8HfCVgkHvD+5b9rPbfR8LaA3a4ujOKxvZ1O
+	 pff4HWcwGl0/yE17eULOpBZq21hU54l3lUMVmTgs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB6A7F80217;
-	Wed, 15 Jul 2020 16:57:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBB77F80217;
+	Wed, 15 Jul 2020 17:00:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CC18F8021D; Wed, 15 Jul 2020 16:57:25 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id B1FBDF8021D; Wed, 15 Jul 2020 17:00:37 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68C22F80217
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 16:57:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68C22F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B9EEF8014E
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 17:00:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B9EEF8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="ZsjT0iHq"
-Received: by mail-wm1-x343.google.com with SMTP id q15so5915613wmj.2
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 07:57:14 -0700 (PDT)
+ header.b="ry5LXTgb"
+Received: by mail-wr1-x443.google.com with SMTP id z2so3095576wrp.2
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 08:00:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=f2CbQp7JxGal1BdX0jNapHeOunGDBGdvrvEEUG5tMLY=;
- b=ZsjT0iHq1P3/z04/ctVDlAEdshwpCt+0LY1xJUraexpA6ESa5Cm58MH/VggfjMie2p
- DOXKxhzgpER0jwoId2TfiZ7bP2lxQamHk6c00FR8KAo3oRjGLunRTgHaTiaWwJ1RoBye
- NT2cC3p2k719f8CdUvoM00VKA07EH+SwOqplybI3qZ5o0OTFHyFwQutxrvDQFS1Fv7hX
- aiCn7Z1/PH66m09Sjab0iSZeCdbwagDQwX2flcM1C75VDJu6POrFGhk8WYATSbMbSA2F
- tCMNIbyhqfX3pLEYCnPjB/pKUTz76+kzImWY/838nep6Gfa00aA6aa3s740UTDF8Jcdd
- IxNw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=3wqhk2njYGDUfvoMiCydF/NDRZ8ScZRwPRcCbCDujnE=;
+ b=ry5LXTgbZguG/UbPzILmwKElT6GKBM5G62IceUKmo09VsGFygkrWJmWgxzQz76lEEo
+ aLHL0cRraTsvdR/LF9LWJh8Nn97hMd8kAe8V9KrkvSQGoYDADP9sdQKyeuHqyLtMW4qh
+ xxC3Cnlla8Xuh+J+2Lg6qknxvSzDUmlnLcpzBN4BMNtxp93AaETvkOjg4W+MEghbT+K7
+ tMs8rXohsO3OmNxtnH9BrwkubgWjHesAcsO+i9SHL1vDvXB7M0P6atXH/VLCHaczu1dw
+ fgFRit+KR6r3mQymLryq7vEcRXyldu5TlPdyPtlwAmp+O+asuZpqZnvlkaJrRexOm/PX
+ RDBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=f2CbQp7JxGal1BdX0jNapHeOunGDBGdvrvEEUG5tMLY=;
- b=o/57d0FiSV0yUNXzOS/9y+/0rIX4cecKpHlWEjHeIUlN7gI1XPUJRQZLeKcqXg2gHW
- E+CbuGfDuue70iRVvmcROvau+tWiHbvd870FGdfEEGcc9Kj+j0OJsYB9yXiJVc1L953p
- JwjbTd4ZcH+cLrTDOC6dGKgcMFdGncA2NBU+vXxT2Isb/Rt2RRvQH+R0TYQNtexLuJg+
- 1hzTW/gSJuJueVsnFHZWTnLjDrRNHFsbBz2W0djeKF5M/Lh0A4Qzs3le7XtmSFOP5HkL
- fA5VsDPFdeX6KpShKVA9uSInk6CwfZbCv1A2NJz/CKqmj1ou92kFYuoUc4FjsA2FahBI
- c+HA==
-X-Gm-Message-State: AOAM532kAUvRZ4A+8FumZU3emmAknZEqv/7KK+T/63u4OS4ynzE1oIMc
- FkUmGEMbxyiY+k1pyKddf4LE1A==
-X-Google-Smtp-Source: ABdhPJwcQKIqBh34jcnUoTZ3kXw7R8fUZWe+6TCuYehKA+AQH/THmFlpQIeXdrAeHkNAbd82o6RElA==
-X-Received: by 2002:a1c:5581:: with SMTP id j123mr8828248wmb.75.1594825033869; 
- Wed, 15 Jul 2020 07:57:13 -0700 (PDT)
-Received: from dell ([2.31.163.61])
- by smtp.gmail.com with ESMTPSA id a22sm3624918wmj.9.2020.07.15.07.57.12
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=3wqhk2njYGDUfvoMiCydF/NDRZ8ScZRwPRcCbCDujnE=;
+ b=OdEo9Q8ZQilSFX+EMD+DmyoBabhsK1E5jD3x6kYaYKR2EXkU0g3H6orToyIIRtIjs3
+ Ye1GyQ8zWpqH0Nnax4uC+4j5mfHTqO6ugDoUS9NeCMeNw2sbwEQtUXzoKfeZYZd+6vv5
+ f51bk6mRXyhtuPM/IcPeANHnwKTz8fdKFEpEj+47PwAGo7ZsuktVG/T7fBr+BfqqEFbL
+ 7avzaLBr3aRBPpd4lw37sl4YYHAAANYHdh7BDJ45SpTkpRkj95NX3SmRumBH3WUwLKUP
+ KAL5TN//CnyQ4GwX9fAoNEKB1LukD3hy84UA+iohg4Cjm9EkxiuHKBXuUG6fEI2Vx3MU
+ X4mw==
+X-Gm-Message-State: AOAM532TjlU9Iasq3+AkDeHHzLWNGyeLjVkgTV8UMO5/lcxYJoThwmxY
+ 3TR1gMPaCLaYU6p4uZdbe90LpA==
+X-Google-Smtp-Source: ABdhPJwl5O0qynyiyO/vc5c/ivb3JgK51iUfxXzUA/hJSpiRsmDsyxdWa2OMgLVTth8tM/eUlUgRIQ==
+X-Received: by 2002:a5d:44c7:: with SMTP id z7mr12567153wrr.226.1594825230041; 
+ Wed, 15 Jul 2020 08:00:30 -0700 (PDT)
+Received: from localhost.localdomain ([2.31.163.61])
+ by smtp.gmail.com with ESMTPSA id l18sm4007435wrm.52.2020.07.15.08.00.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Jul 2020 07:57:13 -0700 (PDT)
-Date: Wed, 15 Jul 2020 15:57:11 +0100
+ Wed, 15 Jul 2020 08:00:29 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: fsl: fsl-asoc-card: Trivial: Fix misspelling
- of 'exists'
-Message-ID: <20200715145711.GI3165313@dell>
-References: <20200715094447.3170843-1-lee.jones@linaro.org>
- <20200715142651.GA44014@sirena.org.uk>
- <20200715145516.GH3165313@dell>
+To: broonie@kernel.org,
+	lgirdwood@gmail.com
+Subject: [PATCH v2 1/1] ASoC: fsl: fsl-asoc-card: Trivial: Fix misspelling of
+ 'exists'
+Date: Wed, 15 Jul 2020 16:00:09 +0100
+Message-Id: <20200715150009.407442-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200715145516.GH3165313@dell>
 Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
  Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- Nicolin Chen <nicoleotsuka@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Lee Jones <lee.jones@linaro.org>,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -116,25 +111,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Jul 2020, Lee Jones wrote:
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Wed, 15 Jul 2020, Mark Brown wrote:
-> 
-> > On Wed, Jul 15, 2020 at 10:44:47AM +0100, Lee Jones wrote:
-> > 
-> > >  /*
-> > > - * This dapm route map exits for DPCM link only.
-> > > + * This dapm route map exists for DPCM link only.
-> > >   * The other routes shall go through Device Tree.
-> > 
-> > This doesn't apply against current code, please check and resend.
-> 
-> What is 'current code'?  It's applied against today's -next.
-
-Hmm... something went wrong.  Stand by ...
-
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index faac6ce9a82cb..dbacdd25dfe76 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -92,7 +92,7 @@ struct fsl_asoc_card_priv {
+ };
+ 
+ /*
+- * This dapm route map exits for DPCM link only.
++ * This dapm route map exists for DPCM link only.
+  * The other routes shall go through Device Tree.
+  *
+  * Note: keep all ASRC routes in the second half
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
