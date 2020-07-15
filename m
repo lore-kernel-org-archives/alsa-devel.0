@@ -7,74 +7,77 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8051CC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D4EEC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:49:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0844A2065E
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:48:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C02B42065E
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 14:49:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G0NNlsen"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0844A2065E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S/3KUEbv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C02B42065E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E5C615E5;
-	Wed, 15 Jul 2020 16:47:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E5C615E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40939166E;
+	Wed, 15 Jul 2020 16:48:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40939166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594824521;
-	bh=WcRP0p14n6EJqekhvLOZItKfAJO0M8iIY9Z6ixOns3Q=;
+	s=default; t=1594824574;
+	bh=MiQfn4ZYQD1qMIa29vI0PNI08yk4PYMu28VyDBf3hmE=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G0NNlsenQerwhZlFwQshii7AG7JoUHTSf0mlg/lbI8424r+1K5g/BxoJlZF8uZ0cN
-	 2AcxMXSZ4qDnBFpQPNlLQB5ZF3vJwOPG1ANSIZZf0TsvpiUd+hgKMlMHEAcaqTXqQk
-	 5uNN+7AX3lnEo9es6XWXU8Es9/lHCf6jxilYgKUA=
+	b=S/3KUEbvAZShjPpYOmMjO7XqDvQEdsITanYC8RFQWsXkYKz+tc3pRirsQvFKTYsnp
+	 JEhj43HKBrJK676mlMlH3RzU7Ao5vXlZzW2yUNA9FjREghK/ksz7G+HkDxVN40P4nG
+	 7Wl27GyPRdMBHCCSFK2r5tiomY0vcggvN3CPlbwU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F4128F80217;
-	Wed, 15 Jul 2020 16:47:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FAC8F80229;
+	Wed, 15 Jul 2020 16:48:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EDAE7F8021D; Wed, 15 Jul 2020 16:47:48 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 70038F8014E; Wed, 15 Jul 2020 16:47:59 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 544AEF8014E
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 16:47:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 544AEF8014E
-IronPort-SDR: LGSiFMsGl1IY1dNjjKIGqQTWw5M5Ze44GE0lBJixtn2DOOn5NFdBBN8AKTx/tR+uC7IGd0yCFf
- JLdbcT62FgZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="213920686"
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="213920686"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C80BF8014E
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 16:47:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C80BF8014E
+IronPort-SDR: R/J0YR2k2EecTVjzDDIzCpKf4EWVvRgHE6pBNw5Oenr7GbkTU6FapUoGdBVapvuyfkFoy5RPCH
+ /6xL3glm58mg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="128724454"
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="128724454"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2020 07:47:38 -0700
-IronPort-SDR: kBe+BWE34KrVLnJvMaNC2FHbXHi3WlNJPs3QDDrJ/apvIBknO0/ayTYQSakAQQ/LJS1YZdBccQ
- 8ldWyix046iw==
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="460114344"
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Jul 2020 07:47:49 -0700
+IronPort-SDR: lf6xa5xBKw91hNzg5MMjGcIskZGmuo27sggLIryHvkH0TYdaqf4WG3bjd0ubnDC8ny0vl7opp0
+ 6YvItvLmguBg==
+X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; d="scan'208";a="460114374"
 Received: from sjeong-mobl.amr.corp.intel.com (HELO [10.255.231.101])
  ([10.255.231.101])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2020 07:47:38 -0700
-Subject: Re: [PATCH v3 00/10] topology: decode: Various fixes
-To: Piotr Maziarz <piotrx.maziarz@linux.intel.com>, alsa-devel@alsa-project.org
-References: <1594725911-14308-1-git-send-email-piotrx.maziarz@linux.intel.com>
+ 15 Jul 2020 07:47:48 -0700
+Subject: Re: [PATCH 01/10] ALSA: Replace the word "slave" in vmaster API
+To: Takashi Iwai <tiwai@suse.de>
+References: <20200714172631.25371-1-tiwai@suse.de>
+ <20200714172631.25371-2-tiwai@suse.de>
+ <eda4df2e-d7b0-9e7e-e873-e3d8d3088174@linux.intel.com>
+ <s5h5zaptgaz.wl-tiwai@suse.de>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5832886d-3d6d-7513-0df5-0127e18a2f0e@linux.intel.com>
-Date: Wed, 15 Jul 2020 09:47:37 -0500
+Message-ID: <a93460a3-ac0e-be0b-7c46-47b87fd611c2@linux.intel.com>
+Date: Wed, 15 Jul 2020 09:34:51 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1594725911-14308-1-git-send-email-piotrx.maziarz@linux.intel.com>
+In-Reply-To: <s5h5zaptgaz.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: cezary.rojewski@intel.com, amadeuszx.slawinski@intel.com
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,53 +95,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 7/14/20 6:25 AM, Piotr Maziarz wrote:
-> This series fixes various problems with topology decoding mechanism.
-> Some of the problems were critical like improper memory management or
-> infinite loops that were causing undefined behaviour or program crashes,
-> while other resulted in losing some data during conversion.
+>> On 7/14/20 12:26 PM, Takashi Iwai wrote:
+>>> Follow the recent inclusive terminology guidelines and replace the
+>>> word "slave" in vmaster API.  I chose the word "replica" at this time
+>>> since it seems fitting for the purpose.
+>>
+>> Thanks Takashi for starting this.
+>>
+>> For the HDaudio Volume widgets, the spec says they may have different
+>> step size but use the same number of steps, so they are not copy-exact
+>> versions in the usual 'replica' sense but rather follow or track the
+>> master configuration.
+>>
+>> The internal guidance I see at Intel is to use 'replica' mainly in a
+>> database/configuration management context.
+>>
+>> If the idea is that the 'replicas' use the same configuration as the
+>> 'master', that'd be fine indeed but we may want to add a clarifying
+>> comment that the end-result may be different for each 'replica'?
 > 
-> Bugs found while testing with Intel SST topologies.
+> I don't mind to pick up another word.
+> What could be another better alternative?
 
-I am far from the expert on topology but the patches look fine to me, so 
-adding my tag so that others may chime in:
+I don't have a suggestion that is really better. the usual suggestions 
+of 'secondary' or 'subordinate' are not really great in this context, 
+something like 'tracker' or 'follower' might work but are maybe more 
+vague for controls.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> 
-> Changelog:
-> v2:
->    -Divide into more patches, critical fixes are in separate patches now
->    -More specific descriptions
->    -Fix a typo UML to UCM
->    -Add error reporting in topology: decode: fix channel map memory
->     allocation
->    -Remove goto again in topology: Make buffer for saving dynamic size
->     for better readability
-> 
-> v3:
->    -No functional changes
->    -Changed UCM to more descriptive standard ALSA configuration files
->    -removed Gerrit's Change-Id
->    -Added missing signed-offs
-> 
-> Piotr Maziarz (10):
->    topology: decode: Fix channel map memory allocation
->    topology: decode: Fix infinite loop in decoding enum control
->    topology: decode: Remove decoding  values for enum control
->    topology: decode: Add enum control texts as separate element
->    topology: decode: Fix printing texts section
->    topology: decode: Change declaration of enum decoding function
->    topology: decode: Fix decoding PCM formats and rates
->    topology: decode: Print sig_bits field in PCM capabilities section
->    topology: decode: Add DAI name printing
->    topology: Make buffer for saving dynamic size
-> 
->   src/topology/ctl.c        | 51 ++++++++++++++++++++++-------------------------
->   src/topology/dapm.c       |  3 +--
->   src/topology/pcm.c        | 11 +++++++---
->   src/topology/save.c       | 34 ++++++++++++++++++++++++++-----
->   src/topology/text.c       |  2 +-
->   src/topology/tplg_local.h |  2 +-
->   6 files changed, 64 insertions(+), 39 deletions(-)
-> 
+I am really fine with 'replica', just wanted to clarify that it's not 
+doing the same thing in multiple places but using the same configuration 
+in multiple places.
