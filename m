@@ -2,94 +2,76 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F6DC433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 02:29:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26416C433E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 03:05:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD4C320838
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 02:29:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8077B2076A
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 03:05:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SnqzWiX1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="pK0YzL/+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD4C320838
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L7/yoV+7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8077B2076A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43DAF825;
-	Fri, 17 Jul 2020 04:28:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43DAF825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07F9110E;
+	Fri, 17 Jul 2020 05:04:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07F9110E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594952953;
-	bh=T4SnQQwCUL1+Ws4n5qSLwbFV8PkhP5MdnwWQfIHxhKk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=SnqzWiX1rVBjoW6ASgVauN6jlg/dlvJvkveEyAl76QC0p+43MgHDocQ+4u9zEPEBM
-	 v80WrGUw08pnzCLw/mlo885c6cbHUF06zwXwkAqsnc+kya29JjQ0iGb4fYESJBnu2z
-	 Ao8U3aSCTrhNGyfJQtCcRE3rUh9XFi+hKvjBiQbk=
+	s=default; t=1594955109;
+	bh=wLCOU7SVsCweDaMEzae2EQWuThOuw8cXnEaqjyC4md0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=L7/yoV+7NcsX7t3232nf6/dcAACL07aCNxn28WduX8otKUTbEqFzHdspRGm6DrMY+
+	 Vrg/q4eVTIbCsdew+UiblG/5SABNVyKIU0i18JCuj2GEnB6Rd4Bv44DdgyhHgNx4YB
+	 oEWVMbfLZWpnveY7WA0/OvJtQpu82zNE4dm+bCsA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C52FBF801D8;
-	Fri, 17 Jul 2020 04:28:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 887EBF8021D;
+	Fri, 17 Jul 2020 05:04:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FE73F80217; Fri, 17 Jul 2020 04:28:15 +0200 (CEST)
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com
- [IPv6:2607:f8b0:4864:20::d2e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C6CE4F80227; Fri, 17 Jul 2020 05:04:15 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D66DF80110
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 04:28:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D66DF80110
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="pK0YzL/+"
-Received: by mail-io1-xd2e.google.com with SMTP id e64so8756371iof.12
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 19:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=EwKnezkZmfj9xSK2I7Np/Cq9fStgMNgGCEPRKMrkZgg=;
- b=pK0YzL/+VoEc9RbtIE4MAdPH6e/eRtYLdOsJ17ftSBoq+EC7O8ZhuWfsLPHDHrum2c
- 5+/6iKaTc+7nr4WpOApibTRbkHGe67pbIy8Wr8MnLqmdzldYIWQ562489SNqWGEXg9sY
- 9PKj0RH4KB0YBotDm5jyoBdsmTFucgtBrylogM0a6D0j4aN2ELWDR6ifYCaz2NAkIzc9
- bGCLyqe7OTJWxYM1QZfHDFZ7dMasGvjiROrF1ROv4JeULqBTb+YNS4XkUsgX3Sk8oF6+
- dcja/vjVwcoPV2z1wGuwyo0FqBycG2HWV16BSgJIobQhXbSgx7diq1588VJuQ/8AFOcO
- yIoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=EwKnezkZmfj9xSK2I7Np/Cq9fStgMNgGCEPRKMrkZgg=;
- b=OZQWLmYp1wU4pww8ruLfNc90ATecGE2uMd1QHh6LKIyXHOxnZ4cNWVL9APUZaKnKWa
- jO/DWhZYfPEqpywfWXq7gi00OpZilC7Wtl2ESYOYIOZvs30ZkczfZpWAeDV9SRn/pp+M
- P8T7DdV6H2BjaDKVWPBXbRyVKi/hIxbf82paj1UYY4n1uFJdRHcRrSaR/+rSrlKxyFWO
- pXT4LT8Ddhs2dkglQ00BQesHlT1q0eUJzUVSnDOxJ3EJqskM9oMXIcyAhwO0f3BQg7SZ
- BWZfGwMN8CXnaXe+h3ZZVgcW0pr0QusAM/caDbc9N5CFnOa80NoqVQ0Nu8o+3fJuiJy0
- iSBA==
-X-Gm-Message-State: AOAM530w8fVpYdWu+Rh1y7ZTQa+trv9mAdK6VtGoq3GjMx0iOKCxNB91
- OKY3YBFYLeBA7bCr/MZ8Wc2ODrjUg9F9DDxAofiR/Q==
-X-Google-Smtp-Source: ABdhPJwA/sVne09DkT+LeHF8Jc0F1elpnQ4UzEIOk1KUc0aKKTxI2tLk0/2H+Qv+UAbF+LC1ffXV/3jL+0/3EGvt9Ws=
-X-Received: by 2002:a6b:d301:: with SMTP id s1mr7361674iob.146.1594952882572; 
- Thu, 16 Jul 2020 19:28:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <f2ca985f-7dbd-847a-1875-dd0e1044ef02@gmail.com>
-In-Reply-To: <f2ca985f-7dbd-847a-1875-dd0e1044ef02@gmail.com>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 17 Jul 2020 10:27:51 +0800
-Message-ID: <CA+Px+wU1S1EqtW-yZH9z9aCF3ggSriBqy73SRYy8q61x0GkdQQ@mail.gmail.com>
-Subject: Re: Speaker pops with max98357a on rk3399-gru-kevin since v5.7
-To: Alper Nebi Yasak <alpernebiyasak@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Heiko Stuebner <heiko@sntech.de>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FC2FF8014E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 05:04:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FC2FF8014E
+IronPort-SDR: 2sfHNNV3fkpRfRjrVUsiyT4DXIGfMKE3lKz/jx5lZha70w8hUKZ34UI02JW7kX9usvWwkOpfpg
+ fCaYbErUHzqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="147518668"
+X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; d="scan'208";a="147518668"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Jul 2020 20:04:02 -0700
+IronPort-SDR: ywMe01TW6qSUwlNgupdvLxqbSS99qKFod0EJeccht8t5JvVg2itmSmWQ1VSFYNV67ZviM9LxNF
+ YF4LPmAOGlEA==
+X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; d="scan'208";a="460699609"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Jul 2020 20:03:58 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH v2 0/9] soundwire: intel: revisit SHIM programming
+Date: Thu, 16 Jul 2020 23:09:38 +0800
+Message-Id: <20200716150947.22119-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,26 +87,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jul 16, 2020 at 7:49 PM Alper Nebi Yasak
-<alpernebiyasak@gmail.com> wrote:
-> I have been getting "pop" sounds from the speaker on my rk3399-gru-kevin
-> for a while, and bisected it to 128f825aeab7 ("ASoC: max98357a: move
-> control of SD_MODE to DAPM"), but looks like the pops were somewhat
-> expected:
+This series does some cleanup, revisits SHIM programming sequences,
+and merges Soundwire interrupt handlers/threads.
 
-I am not convinced the pop comes from 128f825aeab7.
+changes in v2:
+ - Resume M device instead of S device in intel_master_process_wakeen_event
+   function. See the comment in intel_master_process_wakeen_event() in
+   detail.
 
-> As of v5.8-rc5 I'm still getting the speaker pops. More info below, but
-> not all pops coincide with "set sdmode" messages, and vice versa.
-> Reverting that commit stops the pops, but then the "Speakers Switch" can
-> no longer mute the speakers.
+Bard Liao (2):
+  soundwire: intel/cadence: merge Soundwire interrupt handlers/threads
+  Soundwire: intel_init: save Slave(s) _ADR info in sdw_intel_ctx
 
-(I don't have a rk3399-gru-kevin so I got another test machine with MAX98357A.)
-(I was testing with and without an audio server.)
-Observations:
-- I can hear the pop either with or without 128f825aeab7 (with and
-without sdmode-delay).
-- The pop noise is not always.  Higher probability after stopping
-playback than before starting.
-- As you also mentioned, the pop noise is not directly related to
-SD_MODE transition.
+Pierre-Louis Bossart (6):
+  soundwire: intel: reuse code for wait loops to set/clear bits
+  soundwire: intel: revisit SHIM programming sequences.
+  soundwire: intel: introduce a helper to arm link synchronization
+  soundwire: intel: introduce helper for link synchronization
+  soundwire: intel_init: add implementation of sdw_intel_enable_irq()
+  soundwire: intel_init: use EXPORT_SYMBOL_NS
+
+Rander Wang (1):
+  soundwire: intel: add wake interrupt support
+
+ drivers/soundwire/cadence_master.c  |  18 +-
+ drivers/soundwire/cadence_master.h  |   4 +
+ drivers/soundwire/intel.c           | 381 +++++++++++++++++++++-------
+ drivers/soundwire/intel.h           |   9 +
+ drivers/soundwire/intel_init.c      | 101 +++++++-
+ include/linux/soundwire/sdw_intel.h |   2 +
+ 6 files changed, 417 insertions(+), 98 deletions(-)
+
+-- 
+2.17.1
+
