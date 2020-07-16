@@ -4,78 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89018C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:34:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A12C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:41:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAF89206C1
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:34:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1BA5206C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:41:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VbWagnUD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAF89206C1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KQiDMFsh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1BA5206C1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F96B844;
-	Thu, 16 Jul 2020 09:34:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F96B844
+	by alsa0.perex.cz (Postfix) with ESMTPS id B939F852;
+	Thu, 16 Jul 2020 09:40:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B939F852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594884890;
-	bh=9ima237b/kHUcPXGxGBc/QgJ+CDbxL7bSq26JtOXTsE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VbWagnUDWBbuE+6Pri7MKQoeyIwWiYOkAWCOCZq5SR8ZvHlikx//RA2L7Ar6DMkPy
-	 RuIiQCSfzeEhO4bG6lE1hsjkAAwmx7q5FbwNEi+8ZBadOQ+7rFiR9GfcVt/e7TFS61
-	 Cv0qisr/+oWa5hVJ4lN/xGRztqgYjkCO7qo83my4=
+	s=default; t=1594885278;
+	bh=AYt75owESN5yTaSDil7vJ9Wf/shi3WaxZo5go7C+38g=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KQiDMFshLMdsCpIkA0xoOzZIq+HDNQfe4AfZwY0VkKTjw/7z6AJ8HWKKHgIov6yhm
+	 0ofOHthq7AtvdsjazPXi1wRMcffVQEQQzeLNRTvaf37JqXHZWiC1WQ0ZQ8TtW5GXJt
+	 YCIbfct2HvSDRQDunO4i3udJoPY3L/PoeA1vFFek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E097CF8016F;
-	Thu, 16 Jul 2020 09:33:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2E90F8016F;
+	Thu, 16 Jul 2020 09:40:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14981F801EC; Thu, 16 Jul 2020 09:33:59 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1D677F801EC; Thu, 16 Jul 2020 09:40:26 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F40EF8014E
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 09:33:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F40EF8014E
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06G7XjtQ6001108,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06G7XjtQ6001108
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jul 2020 15:33:45 +0800
-Received: from RTEXMB03.realtek.com.tw (172.21.6.96) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 16 Jul 2020 15:33:45 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 16 Jul 2020 15:33:45 +0800
-Received: from RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8]) by
- RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8%5]) with mapi id
- 15.01.1779.005; Thu, 16 Jul 2020 15:33:45 +0800
-From: Kailang <kailang@realtek.com>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: ASUS UX563 speaker no ouput
-Thread-Topic: ASUS UX563 speaker no ouput
-Thread-Index: AdZbQxcmPMUB02OOQDmTYA4zulwStA==
-Date: Thu, 16 Jul 2020 07:33:45 +0000
-Message-ID: <96dee3ab01a04c28a7b44061e88009dd@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.102.211]
-Content-Type: multipart/mixed;
- boundary="_002_96dee3ab01a04c28a7b44061e88009ddrealtekcom_"
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FC33F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 09:40:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FC33F8014E
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 0A033AF43;
+ Thu, 16 Jul 2020 07:40:19 +0000 (UTC)
+Date: Thu, 16 Jul 2020 09:40:15 +0200
+Message-ID: <s5htuy7oqlc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kailang <kailang@realtek.com>
+Subject: Re: ASUS UX563 speaker no ouput
+In-Reply-To: <96dee3ab01a04c28a7b44061e88009dd@realtek.com>
+References: <96dee3ab01a04c28a7b44061e88009dd@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -92,68 +76,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---_002_96dee3ab01a04c28a7b44061e88009ddrealtekcom_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+On Thu, 16 Jul 2020 09:33:45 +0200,
+Kailang wrote:
+> 
+> Hi Takashi,
+> 
+> ASUS UX563 speaker also no sound.
+> Add quirk to model ALC294_FIXUP_ASUS_HPE will solve it.
 
-Hi Takashi,
+Applied now.  Thanks.
 
-ASUS UX563 speaker also no sound.
-Add quirk to model ALC294_FIXUP_ASUS_HPE will solve it.
 
-BR,
-Kailang
-
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Thursday, July 16, 2020 3:19 PM
-> To: Kailang <kailang@realtek.com>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: Re: ASUS UX533 and UX534 speaker no ouput
->=20
-> On Thu, 16 Jul 2020 09:12:26 +0200,
-> Kailang wrote:
-> >
-> > Hi Takashi,
-> >
-> > Attach patch will solve speaker no output issue for ASUS platform.
-> > Many Thanks.
->=20
-> Pulled now.  Thanks.
->=20
->=20
-> Takashi
->=20
-> ------Please consider the environment before printing this e-mail.
-
---_002_96dee3ab01a04c28a7b44061e88009ddrealtekcom_
-Content-Type: application/octet-stream; name="0000-asus-ux563.patch"
-Content-Description: 0000-asus-ux563.patch
-Content-Disposition: attachment; filename="0000-asus-ux563.patch"; size=1197;
-	creation-date="Thu, 16 Jul 2020 07:28:30 GMT";
-	modification-date="Thu, 16 Jul 2020 07:27:18 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSAyZGM2ZDg4OTZiYTQyZjY2NDhiY2YzNTQyMTAxNjgzN2UwOWEwMTFjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFRodSwgMTYgSnVsIDIwMjAgMTU6MjE6NTkgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIEVuYWJsZSBTcGVha2VyIGZvciBBU1VTIFVYNTYzCgpBU1VTIFVYNTYz
-IHNwZWFrZXIgY2FuJ3Qgb3V0cHV0LgpBZGQgcXVpcmsgdG8gbGluayBzdWl0YWJsZSBtb2RlbCB3
-aWxsIGVuYWJsZSBpdC4KVGhpcyBtb2RlbCBhbHNvIGNvdWxkIGVuYWJsZSBoZWFkc2V0IE1pYy4K
-ClNpZ25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KCmRpZmYg
-LS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0
-Y2hfcmVhbHRlay5jCmluZGV4IGMxYTEzYzhlYWI0Ny4uZjAxNWFmZDU5MTMzIDEwMDY0NAotLS0g
-YS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNo
-X3JlYWx0ZWsuYwpAQCAtNzUzNyw2ICs3NTM3LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
-cGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9IHsKIAlTTkRfUENJX1FVSVJLKDB4MTA0Mywg
-MHgxN2QxLCAiQVNVUyBVWDQzMUZMIiwgQUxDMjk0X0ZJWFVQX0FTVVNfRFVBTF9TUEspLAogCVNO
-RF9QQ0lfUVVJUksoMHgxMDQzLCAweDE4YjEsICJBc3VzIE1KNDAxVEEiLCBBTEMyNTZfRklYVVBf
-QVNVU19IRUFEU0VUX01JQyksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MThmMSwgIkFzdXMg
-Rlg1MDVEVCIsIEFMQzI1Nl9GSVhVUF9BU1VTX0hFQURTRVRfTUlDKSwKKwlTTkRfUENJX1FVSVJL
-KDB4MTA0MywgMHgxOTRlLCAiQVNVUyBVWDU2M0ZEIiwgQUxDMjk0X0ZJWFVQX0FTVVNfSFBFKSwK
-IAlTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxOWNlLCAiQVNVUyBCOTQ1MEZBIiwgQUxDMjk0X0ZJ
-WFVQX0FTVVNfSFBFKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxOWUxLCAiQVNVUyBVWDU4
-MUxWIiwgQUxDMjk1X0ZJWFVQX0FTVVNfTUlDX05PX1BSRVNFTkNFKSwKIAlTTkRfUENJX1FVSVJL
-KDB4MTA0MywgMHgxYTEzLCAiQXN1cyBHNzNKdyIsIEFMQzI2OV9GSVhVUF9BU1VTX0c3M0pXKSwK
-
---_002_96dee3ab01a04c28a7b44061e88009ddrealtekcom_--
+Takashi
