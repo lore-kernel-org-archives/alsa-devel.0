@@ -2,67 +2,65 @@ Return-Path: <SRS0=SelE=A3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 944A2C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C828CC433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:24:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 112412067D
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:24:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76ED42067D
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:24:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ecAlM+IM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 112412067D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mawsonlakes.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GoO2cu1Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76ED42067D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 964651672;
-	Thu, 16 Jul 2020 09:23:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 964651672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08AD51686;
+	Thu, 16 Jul 2020 09:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08AD51686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594884238;
-	bh=H3/HRH+Np6p/LK2SjaZ+T3iWeGIUeOr5VEPoW3DSNTA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ecAlM+IMjWjnrDny/V4kzAlVnMC0SzQZzDJcOzbwSbOM9kRcnCk2PnMQXbvLUf83/
-	 jkel+80qzNWjTTm53UDkkWQ76tXhWYkoNosORWQK6zJmYqU9SWuZ/r5W1/+B1+s9Rg
-	 XtvByY2N1anlv/gFmbBJEZ9bScU+WBO9+XkU3Agg=
+	s=default; t=1594884289;
+	bh=CMex7/9JByP+t8mbURXhzZnBIAAAQ1v+D8wJoGKL1I8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GoO2cu1QWEfuaclWv4aCXF9OSkmAsl83U+LZV/y4xhkjc0DOfPxNUIM4JLplIvhJr
+	 nLjQo3nPNISGpZycRL0phcNvghLVKnZgGrACo+WShRdXr317sJgvvjIItdoX6QBjrU
+	 otKWkXz3CmM2aDUap36dXs0qeu/8hVgPfW6aJKcE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54B9EF802F7;
-	Thu, 16 Jul 2020 09:18:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99BF9F80317;
+	Thu, 16 Jul 2020 09:19:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43A7CF801EC; Thu, 16 Jul 2020 08:41:22 +0200 (CEST)
-Received: from ipmail03.adl2.internode.on.net (ipmail03.adl2.internode.on.net
- [150.101.137.141])
- by alsa1.perex.cz (Postfix) with ESMTP id A0ACAF8014E
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 08:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0ACAF8014E
-X-SMTP-MATCH: 0
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2B+BwBx9Q9f/5UxyQ5gHQEBPAEFBQE?=
- =?us-ascii?q?CAQkBHIFDAoNrSxSNNIV/nhkLATwBAgQBAYRGBAKCDCU3Bg4CEAEBBgEBAQE?=
- =?us-ascii?q?BBgSGVIYdCwEjI09vAQkJgyaCfKtEM4VRg2aBQIE4AYgChQmCAIERg06KMwS?=
- =?us-ascii?q?bHpoRgmeBC5hBMIELni4BLZFJoQuBezMaCCgIgyRQGQ2cdTQwNwIGCAEBAwl?=
- =?us-ascii?q?XAY9cAQE?=
-Received: from 14-201-49-149.tpgi.com.au (HELO silver.lan) ([14.201.49.149])
- by ipmail03.adl2.internode.on.net with ESMTP; 16 Jul 2020 16:11:07 +0930
-From: Paul Schulz <paul@mawsonlakes.org>
-To: Paul Schulz <paul@mawsonlakes.org>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] sound/pci/bt87x: Replaces 'blacklist' with 'no_audio_list'
-Date: Thu, 16 Jul 2020 16:11:02 +0930
-Message-Id: <20200716064102.632618-1-paul@mawsonlakes.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Thu, 16 Jul 2020 09:18:10 +0200
-Cc: Clemens Ladisch <clemens@ladisch.de>
+ id EBE2BF80321; Thu, 16 Jul 2020 09:19:39 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B076F8016F
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 09:19:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B076F8016F
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id DF48EAD4D;
+ Thu, 16 Jul 2020 07:19:28 +0000 (UTC)
+Date: Thu, 16 Jul 2020 09:19:24 +0200
+Message-ID: <s5hy2nknczn.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kailang <kailang@realtek.com>
+Subject: Re: ASUS UX533 and UX534 speaker no ouput
+In-Reply-To: <80334402a93b48e385f8f4841b59ae09@realtek.com>
+References: <80334402a93b48e385f8f4841b59ae09@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,51 +76,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch removes 'blacklist' and replaces it with
-the more descriptive 'no_audio_list'
+On Thu, 16 Jul 2020 09:12:26 +0200,
+Kailang wrote:
+> 
+> Hi Takashi,
+> 
+> Attach patch will solve speaker no output issue for ASUS platform.
+> Many Thanks.
 
-This is a functionally trivial patch and has no other effect.
+Pulled now.  Thanks.
 
-Signed-off-by: Paul Schulz <paul@mawsonlakes.org>
----
- sound/pci/bt87x.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 6567504665b9..b74b55bdb146 100644
---- a/sound/pci/bt87x.c
-+++ b/sound/pci/bt87x.c
-@@ -801,7 +801,7 @@ MODULE_DEVICE_TABLE(pci, snd_bt87x_ids);
-  * (DVB cards use the audio function to transfer MPEG data) */
- static struct {
- 	unsigned short subvendor, subdevice;
--} blacklist[] = {
-+} no_audio_list[] = {
- 	{0x0071, 0x0101}, /* Nebula Electronics DigiTV */
- 	{0x11bd, 0x001c}, /* Pinnacle PCTV Sat */
- 	{0x11bd, 0x0026}, /* Pinnacle PCTV SAT CI */
-@@ -817,7 +817,7 @@ static struct {
- 
- static struct pci_driver driver;
- 
--/* return the id of the card, or a negative value if it's blacklisted */
-+/* return the id of the card, or a negative value if it's in the no_audio_list */
- static int snd_bt87x_detect_card(struct pci_dev *pci)
- {
- 	int i;
-@@ -827,9 +827,9 @@ static int snd_bt87x_detect_card(struct pci_dev *pci)
- 	if (supported && supported->driver_data > 0)
- 		return supported->driver_data;
- 
--	for (i = 0; i < ARRAY_SIZE(blacklist); ++i)
--		if (blacklist[i].subvendor == pci->subsystem_vendor &&
--		    blacklist[i].subdevice == pci->subsystem_device) {
-+	for (i = 0; i < ARRAY_SIZE(no_audio_list); ++i)
-+		if (no_audio_list[i].subvendor == pci->subsystem_vendor &&
-+		    no_audio_list[i].subdevice == pci->subsystem_device) {
- 			dev_dbg(&pci->dev,
- 				"card %#04x-%#04x:%#04x has no audio\n",
- 				    pci->device, pci->subsystem_vendor, pci->subsystem_device);
--- 
-2.25.1
-
+Takashi
