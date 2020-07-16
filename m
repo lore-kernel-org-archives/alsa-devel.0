@@ -2,74 +2,72 @@ Return-Path: <SRS0=SelE=A3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDA4EC433F1
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0326C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:59:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BF7D20810
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:58:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4DF0E20760
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:59:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JxODtdi3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ppygDrys"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BF7D20810
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KMEtLVVX";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tupy/zbw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DF0E20760
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8A9215F9;
-	Fri, 17 Jul 2020 01:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8A9215F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEA0B166C;
+	Fri, 17 Jul 2020 01:58:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEA0B166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594943925;
-	bh=Y7YbYdRW8LuVo4MQyf5O2z9SNu58bMqNl9y5bmX9evY=;
+	s=default; t=1594943973;
+	bh=0UyQAP8tcrF94mbXpbS2Opl05OwH26HECxnpInCYxX0=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JxODtdi3VtN87bgbksmajavSBZX7nltPgWD1QYZFlVBrPfqkR7qtntsq+x/GTVxA7
-	 Bv5/4jpr+BCkTB/OYRLEx0QotoJ+WcQ3Suw9FHwmEpD3YVnLW1ZLmA8lfekj8RBgeC
-	 4fBS9vXB6taHoQ1WuT/GPrnE1fnPSrO79ixprR/Y=
+	b=KMEtLVVXAY5Bad1WhKnrCZuAdRRiGq1oHKpD7S6X5onShRWgLo2YUFSwX5UmxUHfM
+	 JS8+8VXDrMRi8jncgZM3VQHSBYvm5WBL0cJiVQVQ1O7H3ANowYk6afx4h2pfPARPO1
+	 y2dKqPupXESof0wHOBz7k8EDwT+7VVC8BG2D4KuE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D948F801EC;
-	Fri, 17 Jul 2020 01:57:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57B22F802BD;
+	Fri, 17 Jul 2020 01:57:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40FD2F8014C; Fri, 17 Jul 2020 01:57:04 +0200 (CEST)
+ id AC1ADF802BC; Fri, 17 Jul 2020 01:57:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94AA7F801EC
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 01:57:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94AA7F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D9AEF8028A
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 01:57:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D9AEF8028A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ppygDrys"
+ header.b="Tupy/zbw"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B2226207BC;
- Thu, 16 Jul 2020 23:56:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 133D62076D;
+ Thu, 16 Jul 2020 23:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594943820;
- bh=Y7YbYdRW8LuVo4MQyf5O2z9SNu58bMqNl9y5bmX9evY=;
+ s=default; t=1594943827;
+ bh=0UyQAP8tcrF94mbXpbS2Opl05OwH26HECxnpInCYxX0=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=ppygDrys7CZnZC4xycnhMNo2yXLLy48Un80UKZz/YbBf8UfKU0BkHpYanUujFgaJe
- bmRWn0VKWQsZMeQke70aYi7vgAyPVLDcwHQ8jkChuKmx7LiJT5+EscD/WbmluXY4nO
- MzPMyfkXHZ9YeOrWmlDEVqmh0RWoWwFFCUMgzRf4=
-Date: Fri, 17 Jul 2020 00:56:50 +0100
+ b=Tupy/zbwkMH5QQrLPJSc/qBA4A20C6EBpSa9jdjFhrLNYq5hsLXvgANnaIanlp7vv
+ 6DmYiErw/CZsMb56z0Xt3u/M5IFTclQlT60AxE477nP9HMiuyyaFOdVRl59pg1T50u
+ enZngjFH5PQm1gS58uXMZoWpRPwJbkFIwinUduu8=
+Date: Fri, 17 Jul 2020 00:56:57 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <87y2nk2tfd.wl-kuninori.morimoto.gx@renesas.com>
-References: <87y2nk2tfd.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v3] ASoC: dt-bindings: ak4613: switch to yaml base
- Documentation
-Message-Id: <159494380522.42174.16007156277692941427.b4-ty@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com>
+References: <87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v3 00/21] ASoC: merge .digital_mute() into .mute_stream()
+Message-Id: <159494380521.42174.12866785781053580028.b4-ty@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,8 +83,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 16 Jul 2020 09:31:01 +0900, Kuninori Morimoto wrote:
-> This patch switches from .txt base to .yaml base Document.
+On 09 Jul 2020 10:55:05 +0900, Kuninori Morimoto wrote:
+> These are v3 patch-set.
+> ALSA SoC has 2 mute callbacks (= .digital_mute(), .mute_stream()).
+> But the difference between these 2 are very small.
+> 	.digital_mute() is for Playback
+> 	.mute_stream()  is for Playback/Capture
+> 
+> This patch-set adds new .no_capture_mute flag and emulate
+> .digital_mute() by .mute_stream().
+> 
+> [...]
 
 Applied to
 
@@ -94,8 +101,48 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: ak4613: switch to yaml base Documentation
-      commit: 5b235b5522bf38f65cc76a9a008f179c37e0eb81
+[01/21] ASoC: hdmi-codec: return -ENOTSUPP for digital_mute
+        commit: e07e49c0d1e3693facf588142c4cbde45904b3f8
+[02/21] ASoC: soc-dai.c: add .no_capture_mute support
+        commit: 350d993510115e3d9e78f1b3359bff7b68e88418
+[03/21] ASoC: hdmi-codec: merge .digital_mute() into .mute_stream()
+        commit: d789710fb248df0c2279a785c7b9beb313629c0a
+[04/21] ASoC: ti: merge .digital_mute() into .mute_stream()
+        commit: 059374fe9ea5dd1e5a1d6b14741baf994dbc8dd2
+[05/21] ASoC: spear: merge .digital_mute() into .mute_stream()
+        commit: 1ff123965bd00f1aacbd4549b03a6a5b98432eaf
+[06/21] ASoC: meson: merge .digital_mute() into .mute_stream()
+        commit: f795ff78e266492a5278cbef89d3422bdcf591b0
+[07/21] ASoC: atmel: merge .digital_mute() into .mute_stream()
+        (no commit info)
+[08/21] ASoC: codecs: merge .digital_mute() into .mute_stream()
+        commit: 54b5927067dd79b58032a4938ee13b233f1a368c
+[09/21] ASoC: codecs: tlv*: merge .digital_mute() into .mute_stream()
+        commit: 960af79d31495b81bf9406f2f1fda425cb49342b
+[10/21] ASoC: codecs: tas*: merge .digital_mute() into .mute_stream()
+        commit: 38803ce7b53bd7588e8ad899a73fe21e8741723b
+[11/21] ASoC: codecs: ssm*: merge .digital_mute() into .mute_stream()
+        commit: bd63ed76890f38246a42cee715a437774bedf70b
+[12/21] ASoC: codecs: pcm*: merge .digital_mute() into .mute_stream()
+        commit: 1eb2c43d26a585bbbe196360e921c5ffe9d00fd1
+[13/21] ASoC: codecs: max*: merge .digital_mute() into .mute_stream()
+        commit: 18e028e22ebfe362656f534c540d7b3c6c094bd0
+[14/21] ASoC: codecs: alc*: merge .digital_mute() into .mute_stream()
+        commit: 4c66c2fc106f04899e778eec5f7a33a6fef4471e
+[15/21] ASoC: codecs: wm*: merge .digital_mute() into .mute_stream()
+        commit: 26d3c16e62e9f07b99d3886bec05effe5aadcbe5
+[16/21] ASoC: codecs: es*: merge .digital_mute() into .mute_stream()
+        commit: 8667d948a6185fcde88ebc89e090fa574a44c366
+[17/21] ASoC: codecs: da*: merge .digital_mute() into .mute_stream()
+        commit: f39c0540d6941b2390cea20f413b620adcc3be86
+[18/21] ASoC: codecs: cs*: merge .digital_mute() into .mute_stream()
+        commit: 03c0f1b5e1e01afdff8bca8ea6c599ff9a349ed6
+[19/21] ASoC: codecs: ak*: merge .digital_mute() into .mute_stream()
+        commit: 50891431aaadf784980f8649d676327928bce72f
+[20/21] ASoC: soc-dai: remove .digital_mute
+        (no commit info)
+[21/21] ASoC: soc-core: snd_soc_dai_digital_mute() for both CPU/Codec
+        (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
