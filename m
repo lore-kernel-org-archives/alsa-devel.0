@@ -2,77 +2,96 @@ Return-Path: <SRS0=SelE=A3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B614C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:27:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C327AC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:50:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15635206C1
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:27:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2752520775
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:50:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uBGO5r+3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNVX09NA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15635206C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FHBhl2f/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V6awRv9s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2752520775
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87C0315F9;
-	Thu, 16 Jul 2020 06:27:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87C0315F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A99D115E5;
+	Thu, 16 Jul 2020 06:49:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A99D115E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594873670;
-	bh=bF+FFWgE+UGH7juGvDA/PTU1MTQR4SpVLWq8Nubuxdc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1594875018;
+	bh=sYAFP2j0wzEXIh6Df2AcaSGES2URO+pUjY+8MTHiKe8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uBGO5r+3zkRe6k+oeh0c+DbBqI50pNJmCWdzyYdzK7osshLDqv4xIOZSswzsxm5UJ
-	 m7z73heWL+GEzXp4aI05DI0xF3Z8RtzWy4CjWpYeSMNbf/nD/d8iHe1QeT6PyN5fFQ
-	 9K9Tu4kAwJN2Hj+nlPZEKZo+o3cpLNEQbKrzjivg=
+	b=FHBhl2f/dVbI3cDYXpaX9gldnXVMNwBvrZxmItkdfUh5i/y4zXR5MrqSvJNAUTPG7
+	 HZ3qxM/+y/s8CoX5Sy95Thy0ugjroFTcinnldBVDpAaxZ8dro63QIP2Cd+dO1roXiH
+	 ukDQhuoD/cDohVRnJTAsO9mrCUnM/weGgQyIWXUg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E53B2F8016F;
-	Thu, 16 Jul 2020 06:26:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C038F8016F;
+	Thu, 16 Jul 2020 06:49:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB292F801EC; Thu, 16 Jul 2020 06:26:58 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5659EF801EC; Thu, 16 Jul 2020 06:49:26 +0200 (CEST)
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
+ [IPv6:2607:f8b0:4864:20::744])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BDE71F80110
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 06:26:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDE71F80110
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B793F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 06:49:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B793F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eNVX09NA"
-Received: from localhost (unknown [122.171.202.192])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 77F48206C1;
- Thu, 16 Jul 2020 04:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594873610;
- bh=bF+FFWgE+UGH7juGvDA/PTU1MTQR4SpVLWq8Nubuxdc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=eNVX09NA5URDN7jKMjF1skAsLSaptwzWnNx3kYpCd9S7nPO3lwp9BLu9zod5u/E3M
- Q4iSgj5UFU8TdtE/xshbgU4NuxNB0a+QzVxUj12OljVJqKWGaZDNYgs3J3Gmv0qSJW
- VWG8MuPLf+zQ5GFvSEj+BCASsBgj0y+rN7ZyzV8M=
-Date: Thu, 16 Jul 2020 09:56:46 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] soundwire: fix the kernel-doc comment
-Message-ID: <20200716042646.GA55478@vkoul-mobl>
-References: <20200715095702.1519554-1-vkoul@kernel.org>
- <7498c581-94fe-140b-c521-786f0dea7b3d@linux.intel.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="V6awRv9s"
+Received: by mail-qk1-x744.google.com with SMTP id c139so4375282qkg.12
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 21:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Xx24gMtqvTtf4HuF/EbOVN4ZFpQ4/y2jI0UB6sU6PdA=;
+ b=V6awRv9swXVxyw87nwwxAT0Hl7BJuF1gsHXns0hlPDgJ3zxcCOJNEv4Pqn+R6lLQXe
+ v5cO03vJ6JC1b2vLliuE27+n6Bql6ZGiMW9SesX2Jz1bN0yZ6PfBJdcPlMQRFy4f/ze5
+ uWOeM/3f3rvOJb+DBzpD4luO2nPdAAwMk/E5r9RbxN8Vt6XazlHeX5ZZekkE9OsXyMOe
+ PWplfHi9Ey2rKkAF8AKSBpeFBy+BeoUJKeyjiyzBtkoNYuW3ORijcodKkEOLt3mNtDT8
+ hDs8gVdMAHmywX7UIhzUoGD8k+NDUNUrCswey5ACb7UJ9Gpzt2Fo1pKcvTdHAoFmGanJ
+ ZHfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Xx24gMtqvTtf4HuF/EbOVN4ZFpQ4/y2jI0UB6sU6PdA=;
+ b=HYubcWB3SI5plr8BjMIpQ6Zq30y0iWoBxnmGXhe+v65sXz84ZbS9mzUK/EL/4389bT
+ zL2fXDqUz4uYP1yeTiMcUM983UfeiyCUMUDVLovXut0yBich/kLwMyz8kMcP7VaumHRs
+ T9GVRpQhox7mfLcU9ozn11PE9VHNoLbf80IGrzu8mvfn5OY23Gfvcl5EVYYyuc5ddf7Q
+ IXD5gFa6iCmCrQKJaog89OsTn1kmlzD/N30vuuWefxE+e/mU9OPwFPpU4GQyIs9H+e+k
+ Y8MaO66vAZbdaF9SEOdXuTvhyzYUycO+ZDgPiJ6KAJaTjHTmglyEKhfukWVdvI2j7HEG
+ va1Q==
+X-Gm-Message-State: AOAM530Fg9kKFDN4P8IendOxKLFQdrCipKzJvCXYE1XyjmDPrkZIb1Ms
+ j+Kp3gJgwlgu+JssYXaDaaxNpnzyIOHnMfzPHUY=
+X-Google-Smtp-Source: ABdhPJxoXcUYZVT+9qi7K3c3hJEUT9Rario97Q0An5IWeSreYrlbuihMsUlvUArYbBREACQ1PlALrL1JnIJBpxIrZ6w=
+X-Received: by 2002:ae9:c010:: with SMTP id u16mr2207177qkk.37.1594874954633; 
+ Wed, 15 Jul 2020 21:49:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7498c581-94fe-140b-c521-786f0dea7b3d@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>
+References: <1594871563-30088-1-git-send-email-shengjiu.wang@nxp.com>
+ <87sgds2ixs.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sgds2ixs.wl-kuninori.morimoto.gx@renesas.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Thu, 16 Jul 2020 12:49:02 +0800
+Message-ID: <CAA+D8ANH082mozu+SSsQShAzpfF8=vm_tgyPe0gERb4JsJ-sqw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: soc-component: Add missed return for
+ snd_soc_pcm_component_mmap
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,26 +107,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 15-07-20, 09:42, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 7/15/20 4:57 AM, Vinod Koul wrote:
-> > sdw_startup_stream() and sdw_shutdown_stream() argument has been updated
-> > but not the comments, so update these as well to fix warning with W=1
-> > 
-> > drivers/soundwire/stream.c:1859: warning: Function parameter or member 'sdw_substream' not described in 'sdw_startup_stream'
-> > drivers/soundwire/stream.c:1859: warning: Excess function parameter 'stream' description in 'sdw_startup_stream'
-> > drivers/soundwire/stream.c:1903: warning: Function parameter or member 'sdw_substream' not described in 'sdw_shutdown_stream'
-> > drivers/soundwire/stream.c:1903: warning: Excess function parameter 'stream' description in 'sdw_shutdown_stream'
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> 
-> After sending dozens of patches to fix those issues I added one by accident,
-> oh well. Thanks for fixing this.
-> 
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Thu, Jul 16, 2020 at 12:19 PM Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>
+>
+> Hi Shengjiu
+>
+> > Add missed return for snd_soc_pcm_component_mmap, otherwise it always
+> > return -EINVAL.
+> >
+> > Fixes: e2329eeba45f ("ASoC: soc-component: add soc_component_err()")
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+>
+> Oops, indeed.
+> Thank you for the patch.
+>
+> But it seems these functions are also missing "return"
+>         snd_soc_pcm_component_new()
+>         snd_soc_pcm_component_sync_stop()
+>
+> Can you please care these, too ?
+Ok, will send v2
 
-Thanks applied and pushed
-
--- 
-~Vinod
+best regards
+wang shengjiu
