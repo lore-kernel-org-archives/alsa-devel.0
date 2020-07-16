@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2646AC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:27:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6606AC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:27:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A303E2067D
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:27:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E56B42067D
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:27:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U3H8RasK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A303E2067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F2/D2gGj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E56B42067D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C65715F2;
-	Thu, 16 Jul 2020 19:26:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C65715F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7179C1661;
+	Thu, 16 Jul 2020 19:26:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7179C1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594920433;
-	bh=EcAFvb3yuK2fhuSlEmC8BMDdVY3Iz3Xi/s17109cU9o=;
+	s=default; t=1594920460;
+	bh=ou1A2+0xTwJE8GabY+ZfqQ2dp5JLIp9vaD5jBYsHzxA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U3H8RasKMPvgw0Pg76ivkE313VCQWSB9AGbP+GmJj8umA/WVEknaqOq3+jBJz0PkU
-	 BBFKSL9zdskYcVGZFNmycXwLlP3hjFZ/H2aDxtmhA4SqCWannQvAxN2nTtcWsSFENL
-	 TSbp0Euj61jYc0+MmR33Kf1R2YSonaGI33mB2Et0=
+	b=F2/D2gGj0kN3AZbqQC0WZdcrbus2SrcJfDnXFS9Qq8fRz9CWuxPd9lEJBlgDIkcHm
+	 PB3lmRO1E1fvRBg9jczMfvQ2fHX42dnBXiP0KQ6gZQP3jAEwYbe7JJsbZgrOxcbm/U
+	 wWzt9cgHBEtI1WMJ7o+cHlQZGnD4XCtNuxMZZLLI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E337F80337;
-	Thu, 16 Jul 2020 19:19:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9624F8033D;
+	Thu, 16 Jul 2020 19:19:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05A83F80338; Thu, 16 Jul 2020 19:19:53 +0200 (CEST)
+ id AA3B6F80339; Thu, 16 Jul 2020 19:19:55 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 476C9F80333
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 19:19:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 476C9F80333
-X-IronPort-AV: E=Sophos;i="5.75,360,1589209200"; d="scan'208";a="52107238"
+ by alsa1.perex.cz (Postfix) with ESMTP id AE002F80336
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 19:19:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE002F80336
+X-IronPort-AV: E=Sophos;i="5.75,360,1589209200"; d="scan'208";a="52107245"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 17 Jul 2020 02:19:46 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 17 Jul 2020 02:19:52 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id BE72740B55ED;
- Fri, 17 Jul 2020 02:19:41 +0900 (JST)
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3469A40B55ED;
+ Fri, 17 Jul 2020 02:19:47 +0900 (JST)
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Geert Uytterhoeven <geert+renesas@glider.be>, Jens Axboe <axboe@kernel.dk>,
  Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
@@ -62,10 +62,10 @@ To: Geert Uytterhoeven <geert+renesas@glider.be>, Jens Axboe <axboe@kernel.dk>,
  Liam Girdwood <lgirdwood@gmail.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org
-Subject: [PATCH 12/20] dt-bindings: dma: renesas,
- usb-dmac: Add binding for r8a774e1
-Date: Thu, 16 Jul 2020 18:18:27 +0100
-Message-Id: <1594919915-5225-13-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 13/20] arm64: dts: renesas: r8a774e1: Add USB-DMAC and HSUSB
+ device nodes
+Date: Thu, 16 Jul 2020 18:18:28 +0100
+Message-Id: <1594919915-5225-14-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -90,26 +90,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add binding for R8A774E1 SoC (RZ/G2H).
+Add usb dmac and hsusb device nodes to the RZ/G2H SoC dtsi.
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 ---
- Documentation/devicetree/bindings/dma/renesas,usb-dmac.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/renesas/r8a774e1.dtsi | 40 ++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/dma/renesas,usb-dmac.yaml b/Documentation/devicetree/bindings/dma/renesas,usb-dmac.yaml
-index 03aea6ae651f..ab287c652b2c 100644
---- a/Documentation/devicetree/bindings/dma/renesas,usb-dmac.yaml
-+++ b/Documentation/devicetree/bindings/dma/renesas,usb-dmac.yaml
-@@ -24,6 +24,7 @@ properties:
-           - renesas,r8a774a1-usb-dmac # RZ/G2M
-           - renesas,r8a774b1-usb-dmac # RZ/G2N
-           - renesas,r8a774c0-usb-dmac # RZ/G2E
-+          - renesas,r8a774e1-usb-dmac # RZ/G2H
-           - renesas,r8a7790-usb-dmac  # R-Car H2
-           - renesas,r8a7791-usb-dmac  # R-Car M2-W
-           - renesas,r8a7793-usb-dmac  # R-Car M2-N
+diff --git a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+index 431eea1f3b97..c2797f496e9a 100644
+--- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+@@ -838,10 +838,48 @@
+ 		};
+ 
+ 		hsusb: usb@e6590000 {
++			compatible = "renesas,usbhs-r8a774e1",
++				     "renesas,rcar-gen3-usbhs";
+ 			reg = <0 0xe6590000 0 0x200>;
++			interrupts = <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 704>, <&cpg CPG_MOD 703>;
++			dmas = <&usb_dmac0 0>, <&usb_dmac0 1>,
++			       <&usb_dmac1 0>, <&usb_dmac1 1>;
++			dma-names = "ch0", "ch1", "ch2", "ch3";
++			renesas,buswait = <11>;
++			phys = <&usb2_phy0 3>;
++			phy-names = "usb";
++			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
++			resets = <&cpg 704>, <&cpg 703>;
+ 			status = "disabled";
++		};
+ 
+-			/* placeholder */
++		usb_dmac0: dma-controller@e65a0000 {
++			compatible = "renesas,r8a774e1-usb-dmac",
++				     "renesas,usb-dmac";
++			reg = <0 0xe65a0000 0 0x100>;
++			interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "ch0", "ch1";
++			clocks = <&cpg CPG_MOD 330>;
++			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
++			resets = <&cpg 330>;
++			#dma-cells = <1>;
++			dma-channels = <2>;
++		};
++
++		usb_dmac1: dma-controller@e65b0000 {
++			compatible = "renesas,r8a774e1-usb-dmac",
++				     "renesas,usb-dmac";
++			reg = <0 0xe65b0000 0 0x100>;
++			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "ch0", "ch1";
++			clocks = <&cpg CPG_MOD 331>;
++			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
++			resets = <&cpg 331>;
++			#dma-cells = <1>;
++			dma-channels = <2>;
+ 		};
+ 
+ 		usb3_phy0: usb-phy@e65ee000 {
 -- 
 2.17.1
 
