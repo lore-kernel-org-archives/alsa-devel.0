@@ -6,91 +6,91 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D3F6C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 15:43:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 995DFC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 15:43:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DABD420787
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 15:43:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2408E2076D
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 15:43:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="udnAC9Fp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TZzTFaLg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DABD420787
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kc2gOOeC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UaFBKEA6";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5Sk5Wz7P"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2408E2076D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CE9A15DC;
-	Thu, 16 Jul 2020 17:42:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CE9A15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id B307F1675;
+	Thu, 16 Jul 2020 17:42:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B307F1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594914202;
-	bh=wzlf3Xu0uNuYrbkFi7OAkmyk8e9z4oVwEHbpctSgI/A=;
+	s=default; t=1594914223;
+	bh=rjY6PZnbUEuWmjsknYHCNdPa4D57QToXEVEgJN3qn9s=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=udnAC9FpOr30BbmCh8309lQDGmsH9PvY7aLTFWK4bHa27HiXu+gyaQZxJx5z7KvBX
-	 iPACHeSaj7fgx11Zrwa9L6keXZYmiNyjvd+4cjJ28kbDTg+5lqtyyYRJbGrsm3qff/
-	 9F3bRdA++4Ywv/1lpXOcWKt+tT416eqfIFB9EqVg=
+	b=Kc2gOOeC/TDECDH32h3B7M2qhVV1yUGqBPvgsLwdyMocpIcVteCS0HMa1ME82q3+G
+	 ks3Mtf598fNWUsgal60v8bM1mfbcrI1fQi4ltpqf9Vq3KuPI8EbX9CFm5pq70SVBbb
+	 GEJZ2abmrSBYu3iM10P+AgT23R0vIKFg1PxgrukQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94CD7F802C2;
-	Thu, 16 Jul 2020 17:40:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADD60F802C4;
+	Thu, 16 Jul 2020 17:40:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 237FFF801EC; Thu, 16 Jul 2020 09:57:54 +0200 (CEST)
-Received: from merlin.infradead.org (merlin.infradead.org
- [IPv6:2001:8b0:10b:1231::1])
+ id 27357F8014E; Thu, 16 Jul 2020 10:15:54 +0200 (CEST)
+Received: from galois.linutronix.de (Galois.linutronix.de
+ [IPv6:2a0a:51c0:0:12e:550::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5D5DF8014E
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 09:57:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5D5DF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49092F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 10:15:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49092F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="TZzTFaLg"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=GFw2paDr6x0B7btxhYa6Jgza9jDSX5w0Syg6HAfqvAU=; b=TZzTFaLgoCrDFyD2Ef7BIGlBta
- PcBSBGGB+L1ZGg/6TvwqEVkDwtJvPMwytSYQGDp70iFs3HYFtUzixiCUJBCw87DTMJBfIXHnvvfnd
- 6ameDw70kTnMCMShOJMLxtGhSyz6kY4hrpUUBjp0ui+1HVAj0Hay4YgN/lD2M/s7p7WsPZX2sJgpx
- m0smx2K4jAlv5k8raCR6nfmWAqaiI+XQ35t9LL9ZDp7G/Bd6Xv6xN/1+oU2M1YPrCDGAKZNt5KRft
- m+Xhvn6+OLAoQcGmFJfkRhrkSCPQ3enbR99hEbretKEtzPoWiv9AHO8kAFyBzSXUqnNW18hpG0dgz
- Y6UHjSQA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100]
- helo=noisy.programming.kicks-ass.net)
- by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jvylm-0001J0-AL; Thu, 16 Jul 2020 07:57:30 +0000
-Received: from hirez.programming.kicks-ass.net
- (hirez.programming.kicks-ass.net [192.168.1.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E92D2300446;
- Thu, 16 Jul 2020 09:57:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
- id AF62B23D64B97; Thu, 16 Jul 2020 09:57:18 +0200 (CEST)
-Date: Thu, 16 Jul 2020 09:57:18 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Kees Cook <keescook@chromium.org>
+ dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de
+ header.b="UaFBKEA6"; 
+ dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de
+ header.b="5Sk5Wz7P"
+Date: Thu, 16 Jul 2020 10:15:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020; t=1594887345;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Yn1umK+caUdMmMSNg+DEfBz4G3dj7XgdwXV/exFiYfQ=;
+ b=UaFBKEA6NODD9CMCeCn4AwJJl+5Kb+eLxkOEAaardBheygNhikE3rlTYEMw5vaR51/Lawq
+ 7mrw/y3Z1AkwNQOP9LPdJjqePDdaFl5hWIwglIWh3mfsb2WuyFAVQIcALQM33iIyFKGFOj
+ fa03u9uEJlrow8rG5a37UEKVEfdsK0ZmcBpclOT7xWQ9hH31YQZe7VjvBJv9FND71PPU45
+ 1K1qbauIzUgepakJxCLbRbOaMY0m7eICOmpcgqw4KVnQDM7Lkbns9Ap6g4Jqab08zfGYM1
+ yr4OtcJqxtSX1gCSMt8B+famnlapOvVi1qj2ZLSe4MQSiJXSwlds1pkhkro8Jg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020e; t=1594887345;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Yn1umK+caUdMmMSNg+DEfBz4G3dj7XgdwXV/exFiYfQ=;
+ b=5Sk5Wz7PNQjRQnpYCfpv1U5JHmR5MI/fixBOjSbTfFHFRjXeJYKxTA/HCkWq4XYLVNfwXY
+ n6eqRIBMER6pBPCA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH 0/3] Modernize tasklet callback API
-Message-ID: <20200716075718.GM10769@hirez.programming.kicks-ass.net>
+Message-ID: <20200716081538.2sivhkj4hcyrusem@linutronix.de>
 References: <20200716030847.1564131-1-keescook@chromium.org>
+ <20200716075718.GM10769@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200716030847.1564131-1-keescook@chromium.org>
-X-Mailman-Approved-At: Thu, 16 Jul 2020 17:40:13 +0200
+In-Reply-To: <20200716075718.GM10769@hirez.programming.kicks-ass.net>
+X-Mailman-Approved-At: Thu, 16 Jul 2020 17:40:15 +0200
 Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
  Oscar Carter <oscar.carter@gmx.com>, Mitchell Blank Jr <mitch@sfgoth.com>,
  kernel-hardening@lists.openwall.com, kgdb-bugreport@lists.sourceforge.net,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, alsa-devel@alsa-project.org,
- Allen Pais <allen.lkml@gmail.com>, netdev@vger.kernel.org,
- Christian Gromm <christian.gromm@microchip.com>, Will Deacon <will@kernel.org>,
- devel@driverdev.osuosl.org, Jonathan Corbet <corbet@lwn.net>,
- Daniel Thompson <daniel.thompson@linaro.org>,
+ alsa-devel@alsa-project.org, Allen Pais <allen.lkml@gmail.com>,
+ netdev@vger.kernel.org, Christian Gromm <christian.gromm@microchip.com>,
+ Will Deacon <will@kernel.org>, devel@driverdev.osuosl.org,
+ Jonathan Corbet <corbet@lwn.net>, Daniel Thompson <daniel.thompson@linaro.org>,
  "David S. Miller" <davem@davemloft.net>,
  Masahiro Yamada <masahiroy@kernel.org>, Takashi Iwai <tiwai@suse.com>,
  Julian Wiedmann <jwi@linux.ibm.com>,
@@ -98,10 +98,11 @@ Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
  Christian Borntraeger <borntraeger@de.ibm.com>,
  Nishka Dasgupta <nishkadg.linux@gmail.com>, Jiri Slaby <jslaby@suse.com>,
  Jakub Kicinski <kuba@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
- Wambui Karuga <wambui.karugax@gmail.com>, Vasily Gorbik <gor@linux.ibm.com>,
- linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
- Heiko Carstens <hca@linux.ibm.com>, linux-input@vger.kernel.org,
- Ursula Braun <ubraun@linux.ibm.com>, Stephen Boyd <swboyd@chromium.org>,
+ Wambui Karuga <wambui.karugax@gmail.com>, Kees Cook <keescook@chromium.org>,
+ Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+ linux-input@vger.kernel.org, Ursula Braun <ubraun@linux.ibm.com>,
+ Stephen Boyd <swboyd@chromium.org>,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Harald Freudenberger <freude@linux.ibm.com>,
  Thomas Gleixner <tglx@linutronix.de>, Felipe Balbi <balbi@kernel.org>,
@@ -127,39 +128,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jul 15, 2020 at 08:08:44PM -0700, Kees Cook wrote:
-> Hi,
+On 2020-07-16 09:57:18 [+0200], Peter Zijlstra wrote:
 > 
-> This is the infrastructure changes to prepare the tasklet API for
-> conversion to passing the tasklet struct as the callback argument instead
-> of an arbitrary unsigned long. The first patch details why this is useful
-> (it's the same rationale as the timer_struct changes from a bit ago:
-> less abuse during memory corruption attacks, more in line with existing
-> ways of doing things in the kernel, save a little space in struct,
-> etc). Notably, the existing tasklet API use is much less messy, so there
-> is less to clean up.
+> there appear to be hardly any users left.. Can't we stage an extinction
+> event here instead?
 
-I would _MUCH_ rather see tasklets go the way of the dodo, esp. given
-that:
+Most of the time the tasklet is scheduled from an interrupt handler. So
+we could get rid of these tasklets by using threaded IRQs.
 
->  drivers/input/keyboard/omap-keypad.c   |  2 +-
->  drivers/input/serio/hil_mlc.c          |  2 +-
->  drivers/net/wan/farsync.c              |  4 +--
->  drivers/s390/crypto/ap_bus.c           |  2 +-
->  drivers/staging/most/dim2/dim2.c       |  2 +-
->  drivers/staging/octeon/ethernet-tx.c   |  2 +-
->  drivers/tty/vt/keyboard.c              |  2 +-
->  drivers/usb/gadget/udc/snps_udc_core.c |  6 ++---
->  drivers/usb/host/fhci-sched.c          |  2 +-
->  include/linux/interrupt.h              | 37 ++++++++++++++++++++++----
->  kernel/backtracetest.c                 |  2 +-
->  kernel/debug/debug_core.c              |  2 +-
->  kernel/irq/resend.c                    |  2 +-
->  kernel/softirq.c                       | 18 ++++++++++++-
->  net/atm/pppoatm.c                      |  2 +-
->  net/iucv/iucv.c                        |  2 +-
->  sound/drivers/pcsp/pcsp_lib.c          |  2 +-
->  17 files changed, 66 insertions(+), 25 deletions(-)
-
-there appear to be hardly any users left.. Can't we stage an extinction
-event here instead?
+Sebastian
