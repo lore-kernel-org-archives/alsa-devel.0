@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7E94C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 03:10:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2DFEC433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 03:11:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 423DA2070E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 03:10:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 381212076A
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 03:11:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tGlLflkn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 423DA2070E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CGKpFnsq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 381212076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D661C1675;
-	Fri, 17 Jul 2020 05:09:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D661C1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE49F15F2;
+	Fri, 17 Jul 2020 05:10:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE49F15F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594955416;
-	bh=8XQrlEWqxzBKSbS9hG/aBEfkCuqV1Npw1VhMIN9PFbE=;
+	s=default; t=1594955460;
+	bh=GENM/UHksWUU7Vh5R7uPeqZxkDgY9jdN6OUxHl+miQs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tGlLflknJkqDRw5GZuHonGA1tnXVRYTnSj1WDHSxgBG7l8KFVNv8RIimTuJaURrI8
-	 sL6AVeOX01EDdKpiAPhjD+UQEEL2XBMxnPTewvhWl6MbFPmGxVxsWRiQNAGx37UTLZ
-	 yHr6Y8R9IIwsfkruirCMfXljegeHEvlKwBLSqgRk=
+	b=CGKpFnsqyEInfqaNgdqf73skrZXax+6pBasIOnPRbrmL1adeNNaYICRpoT8vhCC9F
+	 ofyiaTWWJoQi8Yw33wzTK4kan7tlDEV+1SFzD8tIjztwsa5m8jGsH8M5pOhYq4Ha7T
+	 IDWoZVRK/oJuIFMFhYRnS6YgvICycCtCOfAKCPt0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3DFBF80317;
-	Fri, 17 Jul 2020 05:04:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C11B3F802C2;
+	Fri, 17 Jul 2020 05:05:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B60DAF8031A; Fri, 17 Jul 2020 05:04:43 +0200 (CEST)
+ id 27863F80323; Fri, 17 Jul 2020 05:05:00 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E11FDF80306
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 05:04:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E11FDF80306
-IronPort-SDR: w+ybbw+dg5XVy9de522czb64rIsghVyXVOAwUPLCbOwMe83O4S+3jrBVFGnz4p+1ALXS5euKzY
- snQ3TPiXsxww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="147518828"
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; d="scan'208";a="147518828"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5FF9F802C2
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 05:04:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5FF9F802C2
+IronPort-SDR: WqVc1S5Nupe8mLiIRVfiDyUAfrQ7twFS9FP3EJ5mHU4Mgr7GQKNr2KNm41DS46vPRIv+ia9HZ4
+ aVVR4aiw5d5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="147518708"
+X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; d="scan'208";a="147518708"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jul 2020 20:04:39 -0700
-IronPort-SDR: T2RKwTAkLJpyJWFnA7zQrkmA/IOU/vUAoTD5L1DP24cZ0+0J2Kr+D4GbwQm23YowDTSaKbjCH5
- AOtfMhqhHN0Q==
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; d="scan'208";a="460699820"
+ 16 Jul 2020 20:04:22 -0700
+IronPort-SDR: WLEZdYxuCE05hqXjI82TnIvFXbc0/ka6352oQCOM17dqjBz4bj969r4+/ERwkPKtBWmUjYU6va
+ uJB8xTfVFaQg==
+X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; d="scan'208";a="460699701"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jul 2020 20:04:35 -0700
+ 16 Jul 2020 20:04:18 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 9/9] Soundwire: intel_init: save Slave(s) _ADR info in
- sdw_intel_ctx
-Date: Thu, 16 Jul 2020 23:09:47 +0800
-Message-Id: <20200716150947.22119-10-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 5/9] soundwire: intel_init: add implementation of
+ sdw_intel_enable_irq()
+Date: Thu, 16 Jul 2020 23:09:43 +0800
+Message-Id: <20200716150947.22119-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200716150947.22119-1-yung-chuan.liao@linux.intel.com>
 References: <20200716150947.22119-1-yung-chuan.liao@linux.intel.com>
@@ -91,59 +91,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Save ACPI information in context so that we can match machine driver
-with sdw _ADR matching tables.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+This function is required to enable all interrupts across all links.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
  drivers/soundwire/intel_init.c | 24 ++++++++++++++++++++++++
  1 file changed, 24 insertions(+)
 
 diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 8d3992f9fcdd..047252a91c9e 100644
+index f50a93130d12..d8f0c1472f1f 100644
 --- a/drivers/soundwire/intel_init.c
 +++ b/drivers/soundwire/intel_init.c
-@@ -188,7 +188,11 @@ static struct sdw_intel_ctx
- 	struct sdw_intel_link_res *link;
- 	struct sdw_intel_ctx *ctx;
- 	struct acpi_device *adev;
-+	struct sdw_slave *slave;
-+	struct list_head *node;
-+	struct sdw_bus *bus;
- 	u32 link_mask;
-+	int num_slaves = 0;
- 	int count;
- 	int i;
+@@ -142,6 +142,30 @@ sdw_intel_scan_controller(struct sdw_intel_acpi_info *info)
+ 	return 0;
+ }
  
-@@ -265,6 +269,26 @@ static struct sdw_intel_ctx
- 		link->cdns = platform_get_drvdata(pdev);
- 
- 		list_add_tail(&link->list, &ctx->link_list);
-+		bus = &link->cdns->bus;
-+		/* Calculate number of slaves */
-+		list_for_each(node, &bus->slaves)
-+			num_slaves++;
-+	}
++#define HDA_DSP_REG_ADSPIC2             (0x10)
++#define HDA_DSP_REG_ADSPIS2             (0x14)
++#define HDA_DSP_REG_ADSPIC2_SNDW        BIT(5)
 +
-+	ctx->ids = devm_kcalloc(&adev->dev, num_slaves,
-+				sizeof(*ctx->ids), GFP_KERNEL);
-+	if (!ctx->ids)
-+		goto err;
++/**
++ * sdw_intel_enable_irq() - enable/disable Intel SoundWire IRQ
++ * @mmio_base: The mmio base of the control register
++ * @enable: true if enable
++ */
++void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
++{
++	u32 val;
 +
-+	ctx->num_slaves = num_slaves;
-+	i = 0;
-+	list_for_each_entry(link, &ctx->link_list, list) {
-+		bus = &link->cdns->bus;
-+		list_for_each_entry(slave, &bus->slaves, node) {
-+			ctx->ids[i].id = slave->id;
-+			ctx->ids[i].link_id = bus->link_id;
-+			i++;
-+		}
- 	}
- 
- 	return ctx;
++	val = readl(mmio_base + HDA_DSP_REG_ADSPIC2);
++
++	if (enable)
++		val |= HDA_DSP_REG_ADSPIC2_SNDW;
++	else
++		val &= ~HDA_DSP_REG_ADSPIC2_SNDW;
++
++	writel(val, mmio_base + HDA_DSP_REG_ADSPIC2);
++}
++EXPORT_SYMBOL(sdw_intel_enable_irq);
++
+ static struct sdw_intel_ctx
+ *sdw_intel_probe_controller(struct sdw_intel_res *res)
+ {
 -- 
 2.17.1
 
