@@ -6,63 +6,63 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C52E5C433E5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:27:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77835C433E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:28:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48A6420760
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:27:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2710F20760
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 23:28:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CJCAAImS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48A6420760
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dlPx0+b9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2710F20760
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C501784A;
-	Fri, 17 Jul 2020 01:26:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C501784A
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF58415F2;
+	Fri, 17 Jul 2020 01:27:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF58415F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594942053;
-	bh=A40QTcDxlQijyxSHUO9jwYTZpzLcq/PZ5NUnVYGB+YQ=;
+	s=default; t=1594942122;
+	bh=3jEfdHwXDzG7/nFXTvfcxhM4ql6DVi4R/x2sdWuuKyA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CJCAAImSWFsnuyOwviXJMHCv0HxxJ9pvtXfDX0/q3jwuH/1a8aSqcrg8a7XfSnhL4
-	 85bgyn3+NFFkJbymMJ98kuTmz5Z0XE2vhjG46GBTOiEiUvAJkwaqvd/e47n/zlI2T6
-	 ypQjOEQwUx9YbmhHHxe23ePburQZdEn1ZED7tAvM=
+	b=dlPx0+b9BL++htzDMOKRzs4Rp64kghzMu4dfNPR+7btmWM1DOeMR2KNBIFiD4oOyJ
+	 eMPkrkgO3rCEL3eZv+vOGwocfe6ELrtS12q6CLE3fV5Aemf5joZ93G7jE0FZuUwcQn
+	 +I3s7XNLTRde/7XzH+abaIkgiTUBamSvsFnZz3oA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62325F8016F;
-	Fri, 17 Jul 2020 01:26:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24601F801F2;
+	Fri, 17 Jul 2020 01:27:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77405F801EC; Fri, 17 Jul 2020 01:26:42 +0200 (CEST)
+ id AD799F8016F; Fri, 17 Jul 2020 01:27:50 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 80DC3F80110
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 01:26:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80DC3F80110
-Date: 17 Jul 2020 08:26:33 +0900
-X-IronPort-AV: E=Sophos;i="5.75,360,1589209200"; d="scan'208";a="52124860"
+ by alsa1.perex.cz (Postfix) with ESMTP id A7332F8014C
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 01:27:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7332F8014C
+Date: 17 Jul 2020 08:27:46 +0900
+X-IronPort-AV: E=Sophos;i="5.75,360,1589209200"; d="scan'208";a="52124925"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 17 Jul 2020 08:26:33 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 17 Jul 2020 08:27:46 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 73C5C400A8A7;
- Fri, 17 Jul 2020 08:26:33 +0900 (JST)
-Message-ID: <87o8of2gb8.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 575AB400A8A7;
+ Fri, 17 Jul 2020 08:27:46 +0900 (JST)
+Message-ID: <87mu3z2g97.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: wm8962: error at soc_component_read_no_lock
-In-Reply-To: <CAOMZO5Bhhcmm6ex0nP6MnYq0Uf8EMYCMMFOMav-fCrVJvOY+vQ@mail.gmail.com>
-References: <CAOMZO5Bhhcmm6ex0nP6MnYq0Uf8EMYCMMFOMav-fCrVJvOY+vQ@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 07/21] ASoC: atmel: merge .digital_mute() into
+ .mute_stream()
+In-Reply-To: <20200716204403.GA10651@sirena.org.uk>
+References: <87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com>
+ <877dvdxxi8.wl-kuninori.morimoto.gx@renesas.com>
+ <20200716204403.GA10651@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>,
- Mark Brown <broonie@kernel.org>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,22 +79,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Fabio
+Hi Mark
 
-> wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
-> wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
->  input: WM8962 Beep Generator as
-> /devices/platform/soc/2100000.bus/21a0000.i2c/i2c-0/0-001a/input/input3
-> wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
-> wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
+> > snd_soc_dai_digital_mute() is internally using both
+> > mute_stream() (1) or digital_mute() (2), but the difference between
+> > these 2 are only handling direction.
 > 
-> Despite these errors, the codec probes fine.
-> 
-> What is the correct way to avoid such errors?
+> At least this patch needs a rebase against current code, possibly others.
 
-New component function indicates above when error.
-It seems yours couldn't read because of busy.
-I think it had been happened, but didn't indicate it before.
+I noticed it yesterday.
+OK, I will rebase and re-post v4
 
 Thank you for your help !!
 
