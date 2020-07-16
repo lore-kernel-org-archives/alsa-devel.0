@@ -1,69 +1,64 @@
-Return-Path: <SRS0=Rw3p=A2=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=SelE=A3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5AC6C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 23:29:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67575C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 00:30:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B0DA206D5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2020 23:29:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B3D792071B
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 00:30:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PF9rv0B3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B0DA206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CN/UGJFO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3D792071B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D31FA886;
-	Thu, 16 Jul 2020 01:28:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D31FA886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E217886;
+	Thu, 16 Jul 2020 02:29:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E217886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594855740;
-	bh=Zj3HmfXlVWEHE7gsoxz6I2G+dDwferR7HpQDMggS+eU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PF9rv0B3cv1AKaXZkhIv6CBrJkEfltXdSbXjvDckVMyQH2LiEWjJc2NXV98ZZSRLR
-	 Om6BnAnG3TsWs+R9FHafbegCP6t/YUjWBcVx2+zqsfhKI+jxmzQiz0+8jyOUD7rzH1
-	 BArUr0P6YAdLnaHdj7URwygKiU06Xa+QWHVDeWUk=
+	s=default; t=1594859420;
+	bh=nPq/vcMf4QPcuNZi4XEgcJ1BkgDm9pbmDg+L+xFPWUo=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CN/UGJFO3uD2QyS6C4l4y8UWUYb4kL5/mGloNRC776X/ktOo9Pm7mhWWC801aFpOT
+	 xKJ/BcuJCGf+fuK9X6tocVd7sXsj1ED5wT9ID4srjPmmRIXxfSCPlrXFv8TG7hesjm
+	 NwrnWc6k2OjTE+1OvRNuXqyU8PNtltHQLyxJQRic=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33446F80217;
-	Thu, 16 Jul 2020 01:28:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFFEEF80217;
+	Thu, 16 Jul 2020 02:29:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1D2AF8021D; Thu, 16 Jul 2020 01:28:06 +0200 (CEST)
+ id CB32FF8021D; Thu, 16 Jul 2020 02:29:25 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D9580F8014E
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 01:27:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9580F8014E
-Date: 16 Jul 2020 08:27:54 +0900
-X-IronPort-AV: E=Sophos;i="5.75,357,1589209200"; d="scan'208";a="52017879"
+ by alsa1.perex.cz (Postfix) with ESMTP id 83CFAF800E8
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 02:29:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83CFAF800E8
+Date: 16 Jul 2020 09:29:10 +0900
+X-IronPort-AV: E=Sophos;i="5.75,357,1589209200"; d="scan'208";a="52023258"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 16 Jul 2020 08:27:54 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 16 Jul 2020 09:29:10 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0A8FF40DB58D;
- Thu, 16 Jul 2020 08:27:54 +0900 (JST)
-Message-ID: <87365s4ax0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 745844149829;
+ Thu, 16 Jul 2020 09:29:10 +0900 (JST)
+Message-ID: <87zh802tif.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH][resend] ASoC: dt-bindings: ak4613: switch to yaml base
- Documentation
-In-Reply-To: <CAOMZO5BYV_3GhcWsaGXnyxT_d86wQ+3wguW3AU+kVfx7bnZUkg@mail.gmail.com>
-References: <87mu4cxlo2.wl-kuninori.morimoto.gx@renesas.com>
- <CAOMZO5BYV_3GhcWsaGXnyxT_d86wQ+3wguW3AU+kVfx7bnZUkg@mail.gmail.com>
+Subject: [PATCH v3] ASoC: dt-bindings: renesas,
+ fsi: use patternProperties for FSI-A/B
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,28 +74,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Fabio
+FSI has FSI-A and FSI-B, and has fsia-xxx/fsib-xxx properties.
+This patch uses patternProperties, and reduce verbose settings.
 
-Thank you for the review
-
-> > +examples:
-> > +  - |
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +        ak4613: ak4613@10 {
-> 
-> node names should be generic, so:
-> 
-> ak4613: codec@10 {
-
-OK, I see.
-I think ak4642 needs same fix.
-I will post v2 patch
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/87o8osxlow.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87pn9v39eo.wl-kuninori.morimoto.gx@renesas.com
 ---
-Kuninori Morimoto
+v2 -> v3
+   - add Reviewd-by
+   - add Link
+
+ .../bindings/sound/renesas,fsi.yaml           | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/renesas,fsi.yaml b/Documentation/devicetree/bindings/sound/renesas,fsi.yaml
+index 8a4406be387a..0dd3f7361399 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,fsi.yaml
++++ b/Documentation/devicetree/bindings/sound/renesas,fsi.yaml
+@@ -43,30 +43,19 @@ properties:
+   '#sound-dai-cells':
+     const: 1
+ 
+-  fsia,spdif-connection:
++patternProperties:
++  "^fsi(a|b),spdif-connection$":
+     $ref: /schemas/types.yaml#/definitions/flag
+     description: FSI is connected by S/PDIF
+ 
+-  fsia,stream-mode-support:
++  "^fsi(a|b),stream-mode-support$":
+     $ref: /schemas/types.yaml#/definitions/flag
+     description: FSI supports 16bit stream mode
+ 
+-  fsia,use-internal-clock:
++  "^fsi(a|b),use-internal-clock$":
+     $ref: /schemas/types.yaml#/definitions/flag
+     description: FSI uses internal clock when master mode
+ 
+-  fsib,spdif-connection:
+-    $ref: /schemas/types.yaml#/definitions/flag
+-    description: same as fsia
+-
+-  fsib,stream-mode-support:
+-    $ref: /schemas/types.yaml#/definitions/flag
+-    description: same as fsia
+-
+-  fsib,use-internal-clock:
+-    $ref: /schemas/types.yaml#/definitions/flag
+-    description: same as fsia
+-
+ required:
+   - compatible
+   - reg
+-- 
+2.25.1
+
