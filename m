@@ -2,75 +2,75 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 913F1C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:02:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 331F9C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:02:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E3F6206F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:02:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0F4D206F4
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:02:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SfqIKfr7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TLEinxrq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E3F6206F4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f+RYpk7C";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cJnwPT3X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0F4D206F4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D49F844;
-	Fri, 17 Jul 2020 02:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D49F844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4191B1678;
+	Fri, 17 Jul 2020 02:02:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4191B1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594944127;
-	bh=tqSXCtQMiwyHKYqnkOiUB8d1vIXUdyzeQuCAtZwzcwA=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1594944176;
+	bh=5mhLBJ7h6ElkX/0AxOdJ2+cHlZaRzaXjArcjaCDUEQE=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SfqIKfr7bRHuDkx4Ni7C77jtEMSr/uqX2VaodlXnTwcO9JAkrL08K90qmdwsxabHy
-	 ZqGN+cRG9lH67qmBa7oYVDZZh2+rNHbxIJTVNLs7NWlBPHNnlK6XmfcTx8I/xqDo89
-	 Dl/bMDnefcuM5HFXShqxrhEWisPpSAMWJY0fzx6U=
+	b=f+RYpk7CLle9NgCuMqAgcJptJeJkTSDRBDk/kPFQaSS6KPtKCw/MZ6AEuZtxC8rnw
+	 56+bpy4v4/6Tf4HPYiB/ph8Q1s7vO46AEDTP0M2kuvRnSxa1qIgLRzZ7y71mVCIK1k
+	 tAefYogofLQIyrC8mdGL5TQ+e7ilbpJyaDzu1loE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44371F802EB;
-	Fri, 17 Jul 2020 01:57:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CA40F80304;
+	Fri, 17 Jul 2020 01:57:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D55ECF802E3; Fri, 17 Jul 2020 01:57:37 +0200 (CEST)
+ id 22BE2F802FB; Fri, 17 Jul 2020 01:57:42 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9969CF802E1
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 01:57:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9969CF802E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A5DAF802EC
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 01:57:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A5DAF802EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TLEinxrq"
+ header.b="cJnwPT3X"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 72A1E20760;
- Thu, 16 Jul 2020 23:57:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 704F4207BC;
+ Thu, 16 Jul 2020 23:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594943853;
- bh=tqSXCtQMiwyHKYqnkOiUB8d1vIXUdyzeQuCAtZwzcwA=;
+ s=default; t=1594943858;
+ bh=5mhLBJ7h6ElkX/0AxOdJ2+cHlZaRzaXjArcjaCDUEQE=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=TLEinxrqka8m9BTv0FjH6e3kkytw7kZ7bIkPRQ964IYe+KLT9UPxK9OLYuJSg3EU6
- ebEVIhuD0I80Fqj196UxQ+vRAUw5QWYftf7w1/lYPKmZfsL7RARB6EcLOPmrlrBXwU
- dOZfjvUaTTW/iKirx0GeYmwL17t7HLkETwBn3wxw=
-Date: Fri, 17 Jul 2020 00:57:23 +0100
+ b=cJnwPT3X2FH6FCM6jcYgB3hpoARd40Qv3iu7c0nfDjwEDgBgGe61Qip+68Yb39Ud5
+ YhIohsWJYKHLJZ26Fig4h4IZt3QJz133+eMrfsNUkVF90NfgYQUGvBAxgBGWdn19iC
+ 9bmF8yHwcBnlFBpcKg6MmnhQ9mWee+6E0CN+OAt8=
+Date: Fri, 17 Jul 2020 00:57:28 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, tiwai@suse.com, perex@perex.cz,
- lgirdwood@gmail.com
-In-Reply-To: <1594876028-1845-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1594876028-1845-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2] ASoC: soc-component: Add missed return for calling
- soc_component_ret
-Message-Id: <159494380521.42174.17727599837039579846.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, robh+dt@kernel.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, festevam@gmail.com, timur@kernel.org,
+ nicoleotsuka@gmail.com, devicetree@vger.kernel.org, tiwai@suse.com,
+ perex@perex.cz, lgirdwood@gmail.com
+In-Reply-To: <1594822179-1849-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1594822179-1849-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2 0/3] ASoC: fsl-asoc-card: Support hp and mic detection
+Message-Id: <159494380522.42174.2922411454169889285.b4-ty@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,9 +86,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Jul 2020 13:07:08 +0800, Shengjiu Wang wrote:
-> Add missed return for calling soc_component_ret, otherwise the return
-> value is wrong.
+On Wed, 15 Jul 2020 22:09:36 +0800, Shengjiu Wang wrote:
+> Support hp and mic detection.
+> Add a parameter for asoc_simple_init_jack.
+> 
+> Shengjiu Wang (3):
+>   ASoC: simple-card-utils: Support configure pin_name for
+>     asoc_simple_init_jack
+>   ASoC: bindings: fsl-asoc-card: Support hp-det-gpio and mic-det-gpio
+>   ASoC: fsl-asoc-card: Support Headphone and Microphone Jack detection
+> 
+> [...]
 
 Applied to
 
@@ -96,8 +104,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-component: Add missed return for calling soc_component_ret
-      commit: be75db5772f93da3a6b52552f260ce9da8fbfff8
+[1/3] ASoC: simple-card-utils: Support configure pin_name for asoc_simple_init_jack
+      commit: 764aafdb985b182bce0c91503e9233cb97a2f0d7
+[2/3] ASoC: bindings: fsl-asoc-card: Support hp-det-gpio and mic-det-gpio
+      commit: c3c058aba4032a0f88a2f203472d7b5076a926b4
+[3/3] ASoC: fsl-asoc-card: Support Headphone and Microphone Jack detection
+      commit: 3b171194493c5f7b2aa9b76deb402a8e98ab510f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
