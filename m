@@ -2,78 +2,77 @@ Return-Path: <SRS0=SelE=A3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA1C4C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B614C433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:27:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F1A920775
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:19:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15635206C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 04:27:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TORYpCem"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F1A920775
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uBGO5r+3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNVX09NA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15635206C1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2B251660;
-	Thu, 16 Jul 2020 06:18:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2B251660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87C0315F9;
+	Thu, 16 Jul 2020 06:27:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87C0315F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594873147;
-	bh=GjYIXNo3TytB0kfKYpPsJA1oixGEQ0CqE4P3PAHwkGU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TORYpCemTzzIHyNfudPXoRJ5cQC78V81YGx1tA5/r3XqeonetNDFGKgKt6NctguCR
-	 BhD6uBlsFMG4InXvofR/TAdIFHOwwowX/ts7dAGD+7FX0NhW/y7nWm4wvewO6Q0E/Z
-	 O1wU9HOW2Z7XUZUsqnWaiuIOt926FKseQCD7egi4=
+	s=default; t=1594873670;
+	bh=bF+FFWgE+UGH7juGvDA/PTU1MTQR4SpVLWq8Nubuxdc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uBGO5r+3zkRe6k+oeh0c+DbBqI50pNJmCWdzyYdzK7osshLDqv4xIOZSswzsxm5UJ
+	 m7z73heWL+GEzXp4aI05DI0xF3Z8RtzWy4CjWpYeSMNbf/nD/d8iHe1QeT6PyN5fFQ
+	 9K9Tu4kAwJN2Hj+nlPZEKZo+o3cpLNEQbKrzjivg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE725F8016F;
-	Thu, 16 Jul 2020 05:01:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E53B2F8016F;
+	Thu, 16 Jul 2020 06:26:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7EF89F8019B; Thu, 16 Jul 2020 05:01:48 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ id CB292F801EC; Thu, 16 Jul 2020 06:26:58 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDE71F80110
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 06:26:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDE71F80110
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="eNVX09NA"
+Received: from localhost (unknown [122.171.202.192])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0A70F80110
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 05:01:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0A70F80110
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06G31UufC026244,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06G31UufC026244
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jul 2020 11:01:30 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 16 Jul 2020 11:01:30 +0800
-Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 16 Jul
- 2020 11:01:29 +0800
-From: Oder Chiou <oder_chiou@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt5682: Report the button event in the headset type only
-Date: Thu, 16 Jul 2020 11:01:23 +0800
-Message-ID: <20200716030123.27122-1-oder_chiou@realtek.com>
-X-Mailer: git-send-email 2.27.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 77F48206C1;
+ Thu, 16 Jul 2020 04:26:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1594873610;
+ bh=bF+FFWgE+UGH7juGvDA/PTU1MTQR4SpVLWq8Nubuxdc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=eNVX09NA5URDN7jKMjF1skAsLSaptwzWnNx3kYpCd9S7nPO3lwp9BLu9zod5u/E3M
+ Q4iSgj5UFU8TdtE/xshbgU4NuxNB0a+QzVxUj12OljVJqKWGaZDNYgs3J3Gmv0qSJW
+ VWG8MuPLf+zQ5GFvSEj+BCASsBgj0y+rN7ZyzV8M=
+Date: Thu, 16 Jul 2020 09:56:46 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] soundwire: fix the kernel-doc comment
+Message-ID: <20200716042646.GA55478@vkoul-mobl>
+References: <20200715095702.1519554-1-vkoul@kernel.org>
+ <7498c581-94fe-140b-c521-786f0dea7b3d@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMB05.realtek.com.tw (172.21.6.98) To
- RTEXMB01.realtek.com.tw (172.21.6.94)
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
- alsa-devel@alsa-project.org, cychiang@google.com, albertchen@realtek.com,
- derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7498c581-94fe-140b-c521-786f0dea7b3d@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,28 +88,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The irq work will be manipulated by resume function, and it will report
-the wrong jack type while the jack type is headphone in the button event.
+On 15-07-20, 09:42, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 7/15/20 4:57 AM, Vinod Koul wrote:
+> > sdw_startup_stream() and sdw_shutdown_stream() argument has been updated
+> > but not the comments, so update these as well to fix warning with W=1
+> > 
+> > drivers/soundwire/stream.c:1859: warning: Function parameter or member 'sdw_substream' not described in 'sdw_startup_stream'
+> > drivers/soundwire/stream.c:1859: warning: Excess function parameter 'stream' description in 'sdw_startup_stream'
+> > drivers/soundwire/stream.c:1903: warning: Function parameter or member 'sdw_substream' not described in 'sdw_shutdown_stream'
+> > drivers/soundwire/stream.c:1903: warning: Excess function parameter 'stream' description in 'sdw_shutdown_stream'
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> 
+> After sending dozens of patches to fix those issues I added one by accident,
+> oh well. Thanks for fixing this.
+> 
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5682.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks applied and pushed
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index b634e582ef7e..d7302f968a75 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -1082,7 +1082,8 @@ void rt5682_jack_detect_handler(struct work_struct *work)
- 			/* jack was out, report jack type */
- 			rt5682->jack_type =
- 				rt5682_headset_detect(rt5682->component, 1);
--		} else {
-+		} else if ((rt5682->jack_type & SND_JACK_HEADSET) ==
-+			SND_JACK_HEADSET) {
- 			/* jack is already in, report button event */
- 			rt5682->jack_type = SND_JACK_HEADSET;
- 			btn_type = rt5682_button_detect(rt5682->component);
 -- 
-2.27.0
-
+~Vinod
