@@ -2,77 +2,74 @@ Return-Path: <SRS0=SelE=A3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 637E7C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 198BEC433F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:19:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1D5020787
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:15:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95F592082F
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 17:19:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WCOY1TsB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1D5020787
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZdDm40p8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95F592082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D2BF84A;
-	Thu, 16 Jul 2020 19:14:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D2BF84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FE09852;
+	Thu, 16 Jul 2020 19:18:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FE09852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594919710;
-	bh=4lyoQPXsDqos+4BPtgy2qqY6GjpVpGeOF8pV6xNAF2M=;
+	s=default; t=1594919986;
+	bh=M2KgI4VHnGhnRs+wKxQ3dWW3WcGtFe2tBtgv6ndbQSI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=WCOY1TsBIEy1p2ZaqTIpC6Y9RFklZBRFQF2XIDfYNtJ8NwdUjjq4m0vw8KmVLyA+M
-	 LY7V9Vnsi1PbGHFCc3+4Bd4UQifiJUytqVay/QdkUIHpGVjqbOKVfhudTqs+q+HDB+
-	 i3oEdIOxbrxLV8jQp/NjK6ivCXfG0MCDvmGiOjM0=
+	b=ZdDm40p8wWHKBnY+UiJmPhf/blFKP8f5inGd0mYGIiYHza+Zfhkj8UV4DxoB4vgKS
+	 ujEx+RYjDlaU8pl8nb3akYk+Gvlr6FsyKNbJRflQ2UzybcIMdnZDi0yrOp+cML0hPp
+	 ebIV1cb8Tdyw1m0Hzf5drhGxJ5D6bEGorJgh/29I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1EEDF8016F;
-	Thu, 16 Jul 2020 19:14:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81607F801F2;
+	Thu, 16 Jul 2020 19:18:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BF5CF801EC; Thu, 16 Jul 2020 19:14:17 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5D95F80110
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 19:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5D95F80110
-IronPort-SDR: H02jpG8rzczmCfPOa3l+v0FmWFGsL3thRRtmFarYqmGdzgFxD7Tk7U5U/XuuiXkOZHzHokt8u2
- agc3OXe8kpGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="149431762"
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; d="scan'208";a="149431762"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jul 2020 10:14:07 -0700
-IronPort-SDR: 6R0t2Qz3xSDnnYjKm0gNGfTjzRigT680d016xG8ijHFG4kqpS3pVSpC4YV+DWV4U1Pt2CT/GuN
- Ad4BlzF4EQGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; d="scan'208";a="308707428"
-Received: from joycetoh-desk.sc.intel.com ([172.25.206.187])
- by fmsmga004.fm.intel.com with ESMTP; 16 Jul 2020 10:14:06 -0700
-From: Harsha Priya <harshapriya.n@intel.com>
-To: alsa-devel@alsa-project.org, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: [PATCH v6] ASoC: Intel: kbl_rt5663_rt5514_max98927: Fix
- kabylake_ssp_fixup function
-Date: Thu, 16 Jul 2020 10:13:57 -0700
-Message-Id: <1594919637-31460-1-git-send-email-harshapriya.n@intel.com>
+ id C1E12F8020C; Thu, 16 Jul 2020 19:18:54 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 891D7F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 19:18:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 891D7F8014E
+X-IronPort-AV: E=Sophos;i="5.75,360,1589209200"; d="scan'208";a="52107158"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 17 Jul 2020 02:18:41 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 75C8B40B5142;
+ Fri, 17 Jul 2020 02:18:36 +0900 (JST)
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Jens Axboe <axboe@kernel.dk>,
+ Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Mark Brown <broonie@kernel.org>, Niklas <niklas.soderlund@ragnatech.se>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org
+Subject: [PATCH 00/20] Add support for SATA/PCIe/USB2[3]/VIN/CSI on R8A774E1
+Date: Thu, 16 Jul 2020 18:18:15 +0100
+Message-Id: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.7.4
-Cc: Harsha Priya <harshapriya.n@intel.com>, yang.jie@linux.intel.com,
- rad@semihalf.com, zwisler@google.com, linux-kernel@vger.kernel.org,
- liam.r.girdwood@linux.intel.com,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- sathya.prakash.m.r@intel.com, brndt@google.com, mw@semihalf.com,
- levinale@chromium.org, lma@semihalf.com
+Cc: alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org, linux-ide@vger.kernel.org,
+ Prabhakar <prabhakar.csengg@gmail.com>, linux-i2c@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,99 +85,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+Hi All,
 
-kabylake_ssp_fixup function uses snd_soc_dpcm to identify the codecs DAIs.
-The hw parameters are changed based on the codec DAI,
-the stream is intended for. The earlier approach to get
-snd_soc_dpcm was using container_of() macro on snd_pcm_hw_params.
-The structures have been modified over time and snd_soc_dpcm does 
-not have snd_pcm_hw_params as a reference but as a copy.
-This causes the current driver to crash when used.
-This patch changes the way snd_soc_dpcm is extracted.
-The snd_soc_pcm_runtime holds 2 dpcm
-instances (one for playback and one for capture).
-The 2 codecs on this SSP are dmic and speakers.
-One is for capture and one is for playback respectively.
-Based on the direction of the stream,
-the snd_soc_dpcm is extracted from the snd_soc_pcm_runtime structure.
-Tested for all use cases of the driver.
+This patch series adds support for the following peripherals on RZ/G2H SoC
+ * PCIe
+ * SATA
+ * USB2
+ * USB3
+ * Audio
+ * VIN
+ * CSI
 
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
-Tested-by: Lukasz Majczak <lma@semihalf.com>
----
-v1 -> v2:
-- Extract dmic from SSP0 as every BE should have own fixup function.
-v2 -> v3:
-- Restore naming in the dapm route table to not confuse with other
-drivers
-- Fixed indentations
-v3 -> v4:
-- Updated code and commit description according to
-solution proposed by Harsha
-v4 -> v5:
-- Cosmetic Changes
-v5 -> v6:
-- Dmic regression seen with v4 fixed 
-- Using available routines for obtaining dpcm information
----
----
- .../intel/boards/kbl_rt5663_rt5514_max98927.c | 26 ++++++++++++-------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+Cheers,
+Prabhakar
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 584e4f9cedc2..b261b1c466a8 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -379,22 +379,30 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	struct snd_interval *chan = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
--	struct snd_soc_dpcm *dpcm = container_of(
--			params, struct snd_soc_dpcm, hw_params);
--	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
--	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
-+	struct snd_soc_dpcm *dpcm, *rtd_dpcm;
-+
-+	/*
-+	 * This macro will be called for playback stream
-+	 */
-+	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_PLAYBACK, dpcm)
-+		rtd_dpcm = dpcm;
-+	/*
-+	 * This macro will be called for capture stream
-+	 */
-+	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_CAPTURE, dpcm)
-+		rtd_dpcm = dpcm;
- 
- 	/*
- 	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
- 	 */
--	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
--	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
--	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
-+	if (!strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Port") ||
-+	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Headset Playback") ||
-+	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Capture Port")) {
- 		rate->min = rate->max = 48000;
- 		chan->min = chan->max = 2;
- 		snd_mask_none(fmt);
- 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
--	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
-+	} else if (!strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio DMIC cap")) {
- 		if (params_channels(params) == 2 ||
- 				DMIC_CH(dmic_constraints) == 2)
- 			chan->min = chan->max = 2;
-@@ -405,7 +413,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
- 	 * thus changing the mask here
- 	 */
--	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
-+	if (!strcmp(rtd_dpcm->be->dai_link->name, "SSP0-Codec"))
- 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
- 
- 	return 0;
+Lad Prabhakar (20):
+  dt-bindings: pci: rcar-pci: Add device tree support for r8a774e1
+  arm64: dts: renesas: r8a774e1: Add PCIe device nodes
+  dt-bindings: ata: renesas,rcar-sata: Add r8a774e1 support
+  arm64: dts: renesas: r8a774e1: Add SATA controller node
+  dt-bindings: phy: renesas,usb2-phy: Add r8a774e1 support
+  arm64: dts: renesas: r8a774e1: Add USB2.0 phy and host (EHCI/OHCI)
+    device nodes
+  dt-bindings: usb: renesas,usb3-peri: Document r8a774e1 support
+  dt-bindings: usb: usb-xhci: Document r8a774e1 support
+  dt-bindings: phy: renesas,usb3-phy: Add r8a774e1 support
+  arm64: dts: renesas: r8a774e1: Add USB3.0 device nodes
+  dt-bindings: usb: renesas,usbhs: Add r8a774e1 support
+  dt-bindings: dma: renesas,usb-dmac: Add binding for r8a774e1
+  arm64: dts: renesas: r8a774e1: Add USB-DMAC and HSUSB device nodes
+  dt-bindings: sound: renesas,rsnd: Document r8a774e1 bindings
+  arm64: dts: renesas: r8a774e1: Add audio support
+  dt-bindings: media: renesas,csi2: Add R8A774E1 support
+  dt-bindings: media: renesas,vin: Add R8A774E1 support
+  media: rcar-csi2: Enable support for R8A774E1
+  media: rcar-vin: Enable support for R8A774E1
+  arm64: dts: renesas: r8a774e1: Add VIN and CSI-2 nodes
+
+ .../bindings/ata/renesas,rcar-sata.yaml       |   1 +
+ .../bindings/dma/renesas,usb-dmac.yaml        |   1 +
+ .../bindings/media/renesas,csi2.yaml          |   1 +
+ .../bindings/media/renesas,vin.yaml           |   1 +
+ .../devicetree/bindings/pci/rcar-pci.txt      |   1 +
+ .../bindings/phy/renesas,usb2-phy.yaml        |   1 +
+ .../bindings/phy/renesas,usb3-phy.yaml        |   1 +
+ .../bindings/sound/renesas,rsnd.txt           |   1 +
+ .../bindings/usb/renesas,usb3-peri.yaml       |   1 +
+ .../bindings/usb/renesas,usbhs.yaml           |   1 +
+ .../devicetree/bindings/usb/usb-xhci.txt      |   1 +
+ arch/arm64/boot/dts/renesas/r8a774e1.dtsi     | 989 +++++++++++++++++-
+ drivers/media/platform/rcar-vin/rcar-core.c   |  40 +
+ drivers/media/platform/rcar-vin/rcar-csi2.c   |   4 +
+ 14 files changed, 1022 insertions(+), 22 deletions(-)
+
 -- 
 2.17.1
 
