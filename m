@@ -2,89 +2,92 @@ Return-Path: <SRS0=SelE=A3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9279C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D10D6C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:22:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C6482067D
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:21:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 58C7F2067D
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jul 2020 07:22:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vVEWeCEA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ntnEdubb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C6482067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JHRaIIPq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dTugxUNj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58C7F2067D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEC8F1670;
-	Thu, 16 Jul 2020 09:20:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEC8F1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id E29D11669;
+	Thu, 16 Jul 2020 09:21:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E29D11669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594884095;
-	bh=QzAIy3WcNYaqI1YVC6MG03iWRhYAIVKVHJ5UFwQxn7Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vVEWeCEAmJma556fH5oqkGpQn2QgQqytc0JUWMxonl2WkJId/h2fP4lKUefHo4hcB
-	 e1dsUJfzRv9XiEKVlAIwuklXCti45vGUxVt6hnBXP+92SOZMr5aZEZHWycPmrb457g
-	 XPv6GuiYssGV2kLXqBoJIQGw809RBV40TaczXaj4=
+	s=default; t=1594884140;
+	bh=kShQui1LiOLC0A8LVo0WTMxYxlLz/UfMiF9xhe9Lo1M=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JHRaIIPqWXwVD+oejf+Ynn82fppbh3TxpLDtyn7GqJu9Tikk9VYezMPnEuETcJzEw
+	 KWXK2zMRrfpLEjY2351CFeIv1A9Yv90UMeDHa5pzEDmVrLeZ4FOZG1mp0Ig9AFQ7No
+	 UPu7NkhO4ydfSnJRPANvp3PQq9olz/Qyskqk9XrI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45B79F802DB;
-	Thu, 16 Jul 2020 09:18:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5FB73F802DD;
+	Thu, 16 Jul 2020 09:18:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47815F802BC; Thu, 16 Jul 2020 05:09:00 +0200 (CEST)
+ id 1AE48F8028A; Thu, 16 Jul 2020 05:09:03 +0200 (CEST)
 Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com
  [IPv6:2607:f8b0:4864:20::1044])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36FADF8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A25BF8026A
  for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2020 05:08:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36FADF8020C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A25BF8026A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="ntnEdubb"
-Received: by mail-pj1-x1044.google.com with SMTP id mn17so4094161pjb.4
+ header.b="dTugxUNj"
+Received: by mail-pj1-x1044.google.com with SMTP id b92so3964378pjc.4
  for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2020 20:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=/eo13gw5fJCvhJnxKm6L26qmA1xy2iBEtE20aAjPg9o=;
- b=ntnEdubbdqpGPgOV96gJLeIOeDJD9bl8sWEZchgJzsbJoRlAxafbTPHiU+bBiSM9Ay
- Bb6I6dJreCIWt+SNvx3uSnD715S/LsJbtTBKRxlploZohP5A0IMBAo41xfxzSg+BNCgv
- UyZA7zqZ2jt8SIod07xOd5QbCCRaueqNa4gOI=
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=8vJxKwUVpAhdj4wYAl5b2tdLtDhCjBtUhiOv5fUux8k=;
+ b=dTugxUNjGm8SBhEVwZ0yB8FvtZrzhFOHuSpiIvNE2E3SjUjSrIE1w14I52dw3Uk8b5
+ 3VAafc7gUmjsQ/YS7Xjq8i7OhMMWVeWrbTF8mKhc0S9n4IAuIzChi1+9oaZlREtdDKow
+ 3jCsslDzAr0zlil4XVqBtq+3neBsSD18zU00A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=/eo13gw5fJCvhJnxKm6L26qmA1xy2iBEtE20aAjPg9o=;
- b=bl3nNwZ5F+vk1B16L+uTs34cu5lY58xsmp2Fdr0AR0aCTZPWgPhotmkJssMZtYSF41
- 9J74O+Q63hy3ixxNgTAXelta44JUlR3JuWWBq29HiYmNBLOz2V/g1ptrjjOOaMVci/zS
- p15fM651yi+a5zyxPGJwETIJslai8UUw0BwxkzjONGgPwOCrdeKakpcB/BAD3/i+dqfP
- bEo60oT1apR7FByQc6CmK95fMNyh68ZoXJ+whiWSRNoBrZiz7UJiCkb5QOHDjR9xVCto
- cqfg5xTB/fXMI+YjvXsSKgTFmMMiAcfy9JDdziTyaISY4LRdZXyy1dIcOyXQK/kQd0Ct
- cCnQ==
-X-Gm-Message-State: AOAM530z/QHxT49wYWWXl88/RgrPafqF6VKg+jNa3oXtxP2Y9z9gakN/
- SFJU7j2taED2NFGZ8I/mo+4CRw==
-X-Google-Smtp-Source: ABdhPJyJvjSFUmwOZKl8hOEZtdbgisML9TaMY9zA2DquJ5wPNkSNvu+LzxqBXFwknWNq3+GQp8EoZw==
-X-Received: by 2002:a17:902:ee8b:: with SMTP id
- a11mr1923650pld.26.1594868932899; 
- Wed, 15 Jul 2020 20:08:52 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=8vJxKwUVpAhdj4wYAl5b2tdLtDhCjBtUhiOv5fUux8k=;
+ b=GNR1SSYD+K5DvsfXyDDpfYeKKGfQyo60MUfYT+T72PW8/6m3wnBJaanFw2gcZs/2UZ
+ zpsjcxJLMckkB3NP/IIYigB1H92xbytqNlHJLnk8doOSm2sNw/DhxiSskd1qq2ZPnX4l
+ MLNJQT0es4xrFIFKHzRHhKrqrxcZjbYOtSRp30CKPFYszY6bMyY4wYuSdvA2g0zZjMQ2
+ 7dnFVnnlPL+k/yXYm4w2j//IAk4Qh4yC2l2pENipJx+48r0+CYiyv2Q8VZkYGUvD4aMi
+ 2xE37jOZD2Z6vQeIE30JRjX9RNZmDmqq8roqrrhV6L11jcK7MB2kXWJ+jaAFEX8fZnq1
+ ehUw==
+X-Gm-Message-State: AOAM533Kl4HxfL+68zDdT/OI8B+imW07Q0v4LvOAirbNfTw5pHZRYX1V
+ ZbY28AyAuRyRNyRoOJExDb8Lvw==
+X-Google-Smtp-Source: ABdhPJxTrfzJCqi7BCSMsLwnF0LnH2/m3v4TdrKv4bsn5z85zApyPj+eDhaQfjttTIQn/Q1hTEyF2g==
+X-Received: by 2002:a17:902:6181:: with SMTP id
+ u1mr1929746plj.205.1594868934031; 
+ Wed, 15 Jul 2020 20:08:54 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id x7sm2909172pfp.96.2020.07.15.20.08.51
+ by smtp.gmail.com with ESMTPSA id 19sm3209358pfy.193.2020.07.15.20.08.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Jul 2020 20:08:51 -0700 (PDT)
+ Wed, 15 Jul 2020 20:08:52 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 0/3] Modernize tasklet callback API
-Date: Wed, 15 Jul 2020 20:08:44 -0700
-Message-Id: <20200716030847.1564131-1-keescook@chromium.org>
+Subject: [PATCH 3/3] tasklet: Introduce new initialization API
+Date: Wed, 15 Jul 2020 20:08:47 -0700
+Message-Id: <20200716030847.1564131-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200716030847.1564131-1-keescook@chromium.org>
+References: <20200716030847.1564131-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Thu, 16 Jul 2020 09:18:09 +0200
@@ -134,61 +137,139 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+From: Romain Perier <romain.perier@gmail.com>
 
-This is the infrastructure changes to prepare the tasklet API for
-conversion to passing the tasklet struct as the callback argument instead
-of an arbitrary unsigned long. The first patch details why this is useful
-(it's the same rationale as the timer_struct changes from a bit ago:
-less abuse during memory corruption attacks, more in line with existing
-ways of doing things in the kernel, save a little space in struct,
-etc). Notably, the existing tasklet API use is much less messy, so there
-is less to clean up.
+Nowadays, modern kernel subsystems that use callbacks pass the data
+structure associated with a given callback as argument to the callback.
+The tasklet subsystem remains one which passes an arbitrary unsigned
+long to the callback function. This has several problems:
 
-It's not clear to me which tree this should go through... Greg since it
-starts with a USB clean-up, -tip for timer or interrupt, or if I should
-just carry it. I'm open to suggestions, but if I don't hear otherwise,
-I'll just carry it.
+- This keeps an extra field for storing the argument in each tasklet
+  data structure, it bloats the tasklet_struct structure with a redundant
+  .data field
 
-My goal is to have this merged for v5.9-rc1 so that during the v5.10
-development cycle the new API will be available. The entire tree of
-changes is here[1] currently, but to split it up by maintainer the
-infrastructure changes need to be landed first.
+- No type checking can be performed on this argument. Instead of
+  using container_of() like other callback subsystems, it forces callbacks
+  to do explicit type cast of the unsigned long argument into the required
+  object type.
 
-Review and Acks appreciated! :)
+- Buffer overflows can overwrite the .func and the .data field, so
+  an attacker can easily overwrite the function and its first argument
+  to whatever it wants.
 
-Thanks,
+Add a new tasklet initialization API, via DECLARE_TASKLET() and
+tasklet_setup(), which will replace the existing ones.
 
--Kees
+This work is greatly inspired by the timer_struct conversion series,
+see commit e99e88a9d2b0 ("treewide: setup_timer() -> timer_setup()")
 
-[1] https://github.com/allenpais/tasklets/commits/tasklets_V2
+To avoid problems with both -Wcast-function-type (which is enabled in
+the kernel via -Wextra is several subsystems), and with mismatched
+function prototypes when build with Control Flow Integrity enabled,
+this adds the "use_callback" member to let the tasklet caller choose
+which union member to call through. Once all old API uses are removed,
+this and the .data member will be removed as well. (On 64-bit this does
+not grow the struct size as the new member fills the hole after atomic_t,
+which is also "int" sized.)
 
-Kees Cook (2):
-  usb: gadget: udc: Avoid tasklet passing a global
-  treewide: Replace DECLARE_TASKLET() with DECLARE_TASKLET_OLD()
+Signed-off-by: Romain Perier <romain.perier@gmail.com>
+Co-developed-by: Allen Pais <allen.lkml@gmail.com>
+Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+Co-developed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/linux/interrupt.h | 24 +++++++++++++++++++++++-
+ kernel/softirq.c          | 18 +++++++++++++++++-
+ 2 files changed, 40 insertions(+), 2 deletions(-)
 
-Romain Perier (1):
-  tasklet: Introduce new initialization API
-
- drivers/input/keyboard/omap-keypad.c   |  2 +-
- drivers/input/serio/hil_mlc.c          |  2 +-
- drivers/net/wan/farsync.c              |  4 +--
- drivers/s390/crypto/ap_bus.c           |  2 +-
- drivers/staging/most/dim2/dim2.c       |  2 +-
- drivers/staging/octeon/ethernet-tx.c   |  2 +-
- drivers/tty/vt/keyboard.c              |  2 +-
- drivers/usb/gadget/udc/snps_udc_core.c |  6 ++---
- drivers/usb/host/fhci-sched.c          |  2 +-
- include/linux/interrupt.h              | 37 ++++++++++++++++++++++----
- kernel/backtracetest.c                 |  2 +-
- kernel/debug/debug_core.c              |  2 +-
- kernel/irq/resend.c                    |  2 +-
- kernel/softirq.c                       | 18 ++++++++++++-
- net/atm/pppoatm.c                      |  2 +-
- net/iucv/iucv.c                        |  2 +-
- sound/drivers/pcsp/pcsp_lib.c          |  2 +-
- 17 files changed, 66 insertions(+), 25 deletions(-)
-
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index b911196f03eb..15570b237e53 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -608,10 +608,30 @@ struct tasklet_struct
+ 	struct tasklet_struct *next;
+ 	unsigned long state;
+ 	atomic_t count;
+-	void (*func)(unsigned long);
++	bool use_callback;
++	union {
++		void (*func)(unsigned long data);
++		void (*callback)(struct tasklet_struct *t);
++	};
+ 	unsigned long data;
+ };
+ 
++#define DECLARE_TASKLET(name, _callback)		\
++struct tasklet_struct name = {				\
++	.count = ATOMIC_INIT(0),			\
++	.callback = _callback,				\
++	.use_callback = true,				\
++}
++
++#define DECLARE_TASKLET_DISABLED(name, _callback)	\
++struct tasklet_struct name = {				\
++	.count = ATOMIC_INIT(1),			\
++	.callback = _callback,				\
++}
++
++#define from_tasklet(var, callback_tasklet, tasklet_fieldname)	\
++	container_of(callback_tasklet, typeof(*var), tasklet_fieldname)
++
+ #define DECLARE_TASKLET_OLD(name, _func)		\
+ struct tasklet_struct name = {				\
+ 	.count = ATOMIC_INIT(0),			\
+@@ -691,6 +711,8 @@ extern void tasklet_kill(struct tasklet_struct *t);
+ extern void tasklet_kill_immediate(struct tasklet_struct *t, unsigned int cpu);
+ extern void tasklet_init(struct tasklet_struct *t,
+ 			 void (*func)(unsigned long), unsigned long data);
++extern void tasklet_setup(struct tasklet_struct *t,
++			  void (*callback)(struct tasklet_struct *));
+ 
+ /*
+  * Autoprobing for irqs:
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index c4201b7f42b1..292e7c2d2333 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -547,7 +547,10 @@ static void tasklet_action_common(struct softirq_action *a,
+ 				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
+ 							&t->state))
+ 					BUG();
+-				t->func(t->data);
++				if (t->use_callback)
++					t->callback(t);
++				else
++					t->func(t->data);
+ 				tasklet_unlock(t);
+ 				continue;
+ 			}
+@@ -573,6 +576,18 @@ static __latent_entropy void tasklet_hi_action(struct softirq_action *a)
+ 	tasklet_action_common(a, this_cpu_ptr(&tasklet_hi_vec), HI_SOFTIRQ);
+ }
+ 
++void tasklet_setup(struct tasklet_struct *t,
++		   void (*callback)(struct tasklet_struct *))
++{
++	t->next = NULL;
++	t->state = 0;
++	atomic_set(&t->count, 0);
++	t->callback = callback;
++	t->use_callback = true;
++	t->data = 0;
++}
++EXPORT_SYMBOL(tasklet_setup);
++
+ void tasklet_init(struct tasklet_struct *t,
+ 		  void (*func)(unsigned long), unsigned long data)
+ {
+@@ -580,6 +595,7 @@ void tasklet_init(struct tasklet_struct *t,
+ 	t->state = 0;
+ 	atomic_set(&t->count, 0);
+ 	t->func = func;
++	t->use_callback = false;
+ 	t->data = data;
+ }
+ EXPORT_SYMBOL(tasklet_init);
 -- 
 2.25.1
 
