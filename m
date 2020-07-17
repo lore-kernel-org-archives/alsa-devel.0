@@ -2,113 +2,110 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4AC8C433EA
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 13:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B5BCC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 13:43:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E90120717
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 13:20:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 868AF20734
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 13:43:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AIim9WAy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ragnatech-se.20150623.gappssmtp.com header.i=@ragnatech-se.20150623.gappssmtp.com header.b="WJr5l5M9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E90120717
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ragnatech.se
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q7weLPcm";
+	dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="mwen+FEj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 868AF20734
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF47F886;
-	Fri, 17 Jul 2020 15:19:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF47F886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03BA3886;
+	Fri, 17 Jul 2020 15:42:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03BA3886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594992004;
-	bh=rHav5ldbe1Akcr61GlrPSZhIQZfZT8jKtRE1NX7Nsjg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1594993399;
+	bh=SllTwfjehJcxPU5l6jWdnAqCuALwP/vs8xXfEdlOadI=;
+	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AIim9WAywYXr9fDGeMfhWWyIjBAOXBjlta+/Jap9Cay/ZVxuNLsxH5tGAmghBWwPo
-	 Dz9t1PuIK1zTvZQ5PzGwtQJ24/BcMOkUmrMrlfmdgViXOxmnfAl2Wn6zzwvkdZGHQJ
-	 7XyL5cKcLqoTS3tMNlGDiN4qiEI5q8w26p2+sNMA=
+	b=Q7weLPcmUb0ejJpL+JUdj08u7fmlkFj1UbpGiIW+92ZUujGCJX+X+6iUdhvf3RLAt
+	 HirgBwEqylZYAj0z+leCpo0wK4NBH79kuIFcme3L9jxvVxldJyFwgZkaHHbxDOK8Kp
+	 aGfoLF+22L+xUhyh9TYkqGA86/1qQPQLCX8Togu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 773AAF80110;
-	Fri, 17 Jul 2020 15:19:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 776EFF801D8;
+	Fri, 17 Jul 2020 15:42:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 714C3F80217; Fri, 17 Jul 2020 15:19:13 +0200 (CEST)
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com
- [IPv6:2a00:1450:4864:20::244])
+ id BF47BF80217; Fri, 17 Jul 2020 15:42:26 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A1DEF800E4
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 15:19:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A1DEF800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id A438AF80110
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 15:42:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A438AF80110
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=ragnatech-se.20150623.gappssmtp.com
- header.i=@ragnatech-se.20150623.gappssmtp.com header.b="WJr5l5M9"
-Received: by mail-lj1-x244.google.com with SMTP id q7so12638228ljm.1
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 06:19:06 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="mwen+FEj"
+Received: by mail-wm1-x343.google.com with SMTP id c80so14895450wme.0
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 06:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=npEG3Q8JCnzZnur7Cq6JNk21xogenaqhRA7YjsM9ezY=;
- b=WJr5l5M97ciW2c/gjJQoeEJGmETPzM7Qr5IRBgUn1YBScg98hUkSzHSeJTg3OUPsqN
- 2Scj6G4YGWug3QNMtbZFC3QoKcWR/SfrE+ZlfdaUJN+16ebomabpyO890QKs0TfSwssg
- GlwRJGVRacdblC9JpOlqVPmVq4YaiPWGimGKkIvrIMvoClA502INAywjscaO+jMQtYNV
- FrdLzlPp8YBw4RfuDqDeOxlxXRKz4NzqUy+mC4V9pnVDfAFmeYBYR87xX8F1retQgweA
- OtrVCgFfRj6hzdkmswIkViUTlADJQfm9E7KSYC+qLFxp8Njn3jYAupxNP8CkZ765YQba
- sztw==
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=references:user-agent:from:to:cc:subject:in-reply-to:date
+ :message-id:mime-version;
+ bh=eck2vCv/AEZSwPOZcCO5U6VxrmDTTHmJY0kZKOkL0rs=;
+ b=mwen+FEjKGjPt4ZCvlPPnSxOWIqQf17lXt85g4rcS6Xav9F1FDCSkeqEB9+LG9iCL2
+ 8d/3SnN95XmDda1ULpuSUzQWCcD9tZAMjAMN4IQs6DG3JFfY5ySc8kfj5KT2DT5dcvAH
+ cpP8GDFNczH6JepPW1tIA+G49mkWHUjUWrNArwMw1WWA39hfRLehTbjNXyVIyD9fqJeB
+ Bvk8ghOVme0P2qgRnvSHLYyg6Ay7Ab375loT0QoCvi5f6Vi1uNEnYplvX/wSHgILeKtH
+ nLcH0XMKbDHrlXfQRGPaAPh+xESLYwO9fCh4pUhI+nR2oWglVj/iS1lIBJ9XrZC4WkOy
+ /GvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=npEG3Q8JCnzZnur7Cq6JNk21xogenaqhRA7YjsM9ezY=;
- b=SbhipRzfpe9GoAx2vDQUboRo1Wa1fQfbtNisVq/9aee+r48zShBfeJQw8obsTN5D8X
- toFw4BR4eXyyoWRCr8Wf8Gd4yUr1b1jih3B622OgxaMEwQKrXbw91h/UfdclKGLxRlQd
- g6CxkQ0Pf8p/02ABDCODW5jBNSfBUxYhBzCSDlHC7f7gdWZaO9AAL+/Db5BB0S+KmB+j
- 4r8DjfZX+3V7u/AM6zfNWkbOq07ieHGIf0wBgR54xvGuVQfr7ir8Krwqiq+sfIaDQJ6v
- HxQQly+Yp0mEiUjaBlaJR+t1eaAr5GVMppWupD7XQlw7fQ3h5k8tovcsXropAc5yTeVK
- 36Tg==
-X-Gm-Message-State: AOAM5308e2QJB73GMWDxuSp1ghQjZiU1ApOh+niN8//dFip2KswR/uGD
- 5nbjdCVfIHPijotJU0M5gGP4gA==
-X-Google-Smtp-Source: ABdhPJxEMQOqJH/bssfF2AGyslt8NjbQrH6kwGSmbOflAyOcRsfWYlCaG5NnnWf5rAblr67M877IMw==
-X-Received: by 2002:a05:651c:c5:: with SMTP id 5mr4934690ljr.9.1594991945447; 
- Fri, 17 Jul 2020 06:19:05 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
- by smtp.gmail.com with ESMTPSA id y69sm1861534lfa.86.2020.07.17.06.19.04
+ h=x-gm-message-state:references:user-agent:from:to:cc:subject
+ :in-reply-to:date:message-id:mime-version;
+ bh=eck2vCv/AEZSwPOZcCO5U6VxrmDTTHmJY0kZKOkL0rs=;
+ b=H5FggekxjNUuleHK/y23s8unY+eD+/0FHSbiA+Uyzr+17EIdr4zrXRAAi2U/RXPvbH
+ sHMi6Joca5UfwxcWGoPte61Dm7lsEJZdkkHWiAe5zsRySra5CYJrgxTTg7ThXNf6/nB3
+ q9hcCYTFl6t51qcVZa9cKh4Efq3ZiKBCQuSIILySfcOFExcYktr9m+iMNtMHMmQbcNRJ
+ Y++MwggeMLaLr7m12jj1n2ym7ATum0QTseDjnW76uSUkpX9kFhyrGzaZAnOhXmAHuGio
+ jarwK5uhwPaSBcUuHWu1Sx31EsrH40jo5LaUKZJE8MCcMogcOUp2VH8uGpaDCH+t6U+Q
+ MaJA==
+X-Gm-Message-State: AOAM532U9u/iL3Z+MTIooj8dFG49H+7UDzsbUp+VSztpUXCcL+CVplPy
+ UBsZ9kQiuBGXr3VIORwNqJiv+g==
+X-Google-Smtp-Source: ABdhPJx+BdxpiFa6qzYYnL9QWcVVJ87oAvsXjNfGnUn61LMo1VaNn3Vy+Vg64FWicmS2C11MMHzwWA==
+X-Received: by 2002:a7b:c250:: with SMTP id b16mr9404924wmj.30.1594993335396; 
+ Fri, 17 Jul 2020 06:42:15 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
+ [90.63.244.31])
+ by smtp.gmail.com with ESMTPSA id p17sm13277318wma.47.2020.07.17.06.42.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Jul 2020 06:19:04 -0700 (PDT)
-Date: Fri, 17 Jul 2020 15:19:04 +0200
-From: Niklas <niklas.soderlund@ragnatech.se>
-To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH 19/20] media: rcar-vin: Enable support for R8A774E1
-Message-ID: <20200717131904.GC175137@oden.dyn.berto.se>
-References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-20-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ Fri, 17 Jul 2020 06:42:14 -0700 (PDT)
+References: <20200608194415.4663-1-pierre-louis.bossart@linux.intel.com>
+ <20200608194415.4663-2-pierre-louis.bossart@linux.intel.com>
+ <20200616085409.GA110999@gerhold.net> <20200616090210.GA111206@gerhold.net>
+ <254a667e-fa49-240a-6386-7e82df8e5c35@linux.intel.com>
+ <20200616145251.GO4447@sirena.org.uk>
+ <af973f45-59b9-ecff-7d78-97d8352ed072@linux.intel.com>
+ <20200616164255.GR4447@sirena.org.uk>
+User-agent: mu4e 1.3.3; emacs 26.3
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/4] ASoC: soc-pcm: dpcm: fix playback/capture checks
+In-reply-to: <20200616164255.GR4447@sirena.org.uk>
+Date: Fri, 17 Jul 2020 15:42:13 +0200
+Message-ID: <1j1rla9s22.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1594919915-5225-20-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-ide@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
- linux-i2c@vger.kernel.org, Marek Vasut <marek.vasut+renesas@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>, Kishon Vijay Abraham I <kishon@ti.com>,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Jens Axboe <axboe@kernel.dk>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- linux-usb@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-renesas-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org
+Content-Type: text/plain
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
+ tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -124,89 +121,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Lad,
 
-Thanks for your work.
+On Tue 16 Jun 2020 at 18:42, Mark Brown <broonie@kernel.org> wrote:
 
-On 2020-07-16 18:18:34 +0100, Lad Prabhakar wrote:
-> Add the SoC specific information for RZ/G2H (R8A774E1) SoC. Also add
-> the routing information between CSI2 and VIN (which is similar to
-> R-Car H3 except it lacks CSI41).
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> On Tue, Jun 16, 2020 at 10:05:39AM -0500, Pierre-Louis Bossart wrote:
+>> On 6/16/20 9:52 AM, Mark Brown wrote:
+>> > On Tue, Jun 16, 2020 at 09:23:25AM -0500, Pierre-Louis Bossart wrote:
+>
+>> > > Doesn't simple-card rely on DT blobs that can also be updated?
+>
+>> > DT is an ABI just like ACPI - it's just more featureful.  Many systems
+>> > can easily update their DTs but not all of them and users don't always
+>> > want to try to keep it in lock step with the kernel.  Stuff like this is
+>> > why I've been dubious about putting DPCM things in there, it's too much
+>> > of a hard coding of internal APIs.
+>
+>> ok, but is there any actual use of dpcm_playback/capture outside of C code?
+>
+>> simple-card.c and audio-graph-card do hard-code but that's done with C in
+>> the driver:
+>
+> ...
+>
+>> that that should be fixed based on the DAI format used in that dai_link - in
+>> other words we can make sure the capabilities of the dailink are aligned
+>> with the dais while parsing the DT blobs.
+>
+> Right, just heading off the idea that we can fix things by updating DTs.
 
-I do not have access to the datasheet so I can't verify the routing 
-table so I trust it is correct.
+Hi everyone,
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Getting to this a bit late in the game but ...
 
-> ---
->  drivers/media/platform/rcar-vin/rcar-core.c | 40 +++++++++++++++++++++
->  1 file changed, 40 insertions(+)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
-> index 7440c8965d27..4fb76d1df308 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-core.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-core.c
-> @@ -944,6 +944,42 @@ static const struct rvin_info rcar_info_gen2 = {
->  	.max_height = 2048,
->  };
->  
-> +static const struct rvin_group_route rcar_info_r8a774e1_routes[] = {
-> +	{ .csi = RVIN_CSI40, .channel = 0, .vin = 0, .mask = BIT(0) | BIT(3) },
-> +	{ .csi = RVIN_CSI20, .channel = 0, .vin = 0, .mask = BIT(1) | BIT(4) },
-> +	{ .csi = RVIN_CSI40, .channel = 1, .vin = 0, .mask = BIT(2) },
-> +	{ .csi = RVIN_CSI20, .channel = 0, .vin = 1, .mask = BIT(0) },
-> +	{ .csi = RVIN_CSI40, .channel = 1, .vin = 1, .mask = BIT(1) | BIT(3) },
-> +	{ .csi = RVIN_CSI40, .channel = 0, .vin = 1, .mask = BIT(2) },
-> +	{ .csi = RVIN_CSI20, .channel = 1, .vin = 1, .mask = BIT(4) },
-> +	{ .csi = RVIN_CSI20, .channel = 1, .vin = 2, .mask = BIT(0) },
-> +	{ .csi = RVIN_CSI40, .channel = 0, .vin = 2, .mask = BIT(1) },
-> +	{ .csi = RVIN_CSI20, .channel = 0, .vin = 2, .mask = BIT(2) },
-> +	{ .csi = RVIN_CSI40, .channel = 2, .vin = 2, .mask = BIT(3) },
-> +	{ .csi = RVIN_CSI20, .channel = 2, .vin = 2, .mask = BIT(4) },
-> +	{ .csi = RVIN_CSI40, .channel = 1, .vin = 3, .mask = BIT(0) },
-> +	{ .csi = RVIN_CSI20, .channel = 1, .vin = 3, .mask = BIT(1) | BIT(2) },
-> +	{ .csi = RVIN_CSI40, .channel = 3, .vin = 3, .mask = BIT(3) },
-> +	{ .csi = RVIN_CSI20, .channel = 3, .vin = 3, .mask = BIT(4) },
-> +	{ .csi = RVIN_CSI20, .channel = 0, .vin = 4, .mask = BIT(1) | BIT(4) },
-> +	{ .csi = RVIN_CSI20, .channel = 0, .vin = 5, .mask = BIT(0) },
-> +	{ .csi = RVIN_CSI20, .channel = 1, .vin = 5, .mask = BIT(4) },
-> +	{ .csi = RVIN_CSI20, .channel = 1, .vin = 6, .mask = BIT(0) },
-> +	{ .csi = RVIN_CSI20, .channel = 0, .vin = 6, .mask = BIT(2) },
-> +	{ .csi = RVIN_CSI20, .channel = 2, .vin = 6, .mask = BIT(4) },
-> +	{ .csi = RVIN_CSI20, .channel = 1, .vin = 7, .mask = BIT(1) | BIT(2) },
-> +	{ .csi = RVIN_CSI20, .channel = 3, .vin = 7, .mask = BIT(4) },
-> +	{ /* Sentinel */ }
-> +};
-> +
-> +static const struct rvin_info rcar_info_r8a774e1 = {
-> +	.model = RCAR_GEN3,
-> +	.use_mc = true,
-> +	.max_width = 4096,
-> +	.max_height = 4096,
-> +	.routes = rcar_info_r8a774e1_routes,
-> +};
-> +
->  static const struct rvin_group_route rcar_info_r8a7795_routes[] = {
->  	{ .csi = RVIN_CSI40, .channel = 0, .vin = 0, .mask = BIT(0) | BIT(3) },
->  	{ .csi = RVIN_CSI20, .channel = 0, .vin = 0, .mask = BIT(1) | BIT(4) },
-> @@ -1220,6 +1256,10 @@ static const struct of_device_id rvin_of_id_table[] = {
->  		.compatible = "renesas,vin-r8a774c0",
->  		.data = &rcar_info_r8a77990,
->  	},
-> +	{
-> +		.compatible = "renesas,vin-r8a774e1",
-> +		.data = &rcar_info_r8a774e1,
-> +	},
->  	{
->  		.compatible = "renesas,vin-r8a7778",
->  		.data = &rcar_info_m1,
-> -- 
-> 2.17.1
-> 
+This patch breaks things for me as well. The Amlogic S400 (axg-card) and
+Libretech S905x card (gx-card) are not probing anymore after this
+change. Both have some BEs handling only one direction.
 
--- 
-Regards,
-Niklas Söderlund
+Like for Stephan (and simple-card), the related cards used to set
+dpcm_capture/dpcm_playback to 1.
+
+Before this patch, these flags just applied an additionnal restiction on
+the link. So the card was setting it to 1 and let soc-pcm.c figure out
+what was actually needed. Whether it is usefull to have such flags is
+certainly up for debate ...
+
+However, with patch, the meaning of the flags changed from "retrict" to
+"require" which is something else entirely.
+
+Commit 25612477d20b ("ASoC: soc-dai: set dai_link dpcm_ flags with a
+helper") makes things worse (for me) by requiring all the elements on
+the link to support the stream direction for the direction to be enabled.
+
+This breaks platforms where there is multiple codecs with different
+capabilities on a link. For example, we may have 2 codecs on a link, one
+doing playback, the other capture. This is the case on several Amlogic
+platforms.
+
+With the new meaning of those flag, the card driver has to set something
+that ASoC core will also compute on its own, and verify it agrees with
+the card. This is redundant.
+What is the point of this ? Can't we just cut the middle man then ?
+
+The old meaning at least allowed to pass the additional information that
+a direction was to be forcefully disabled. This is also redundant with
+capture_only/playback_only though ...
+
+Can we revert this change until we figure out to do with those flags ?
+
+I could propose a patch to move on but I'm not entirely clear what it kind
+of restriction we were trying to put on Multi-CPU links
+
+IMO, on a Multi-CPU/Multi-Codec link, we should allow the direction as
+long as at least one CPU and one Codec on the link are capable of
+handling the direction (not all of them, as it seems to be set now)
+
+Cheers
+Jerome
