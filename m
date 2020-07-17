@@ -2,80 +2,80 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CB47C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:18:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 496D0C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:19:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA14620739
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:18:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6B7120739
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:19:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dF+fKEk2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA14620739
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ggLs3kge"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6B7120739
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FCDF1682;
-	Fri, 17 Jul 2020 23:17:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FCDF1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C641167A;
+	Fri, 17 Jul 2020 23:18:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C641167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595020706;
-	bh=LLi7zkxPOrxfoGbGXmRoAgSY09eegKsMbNliK+bz5SI=;
+	s=default; t=1595020756;
+	bh=PeuyiZo/pfW/1vw7sUbhNn50kJa1cdAnYXzT34nzsXg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dF+fKEk2tFSfcjcSSVqeZlnY0Cd15J2HFspPnM0lAkJ+tQQfuS8gtGfVY0PNGE+4t
-	 osy3JzXZNmOQKPqFO7PoqYiZ0Z0C7xqSEnb+OBLFpP0nLPCWFYAgZ3XczSWG3BxM2L
-	 aiWMQPqTIB8q4HYMHD/DwvMIITOHOTM+KQ9Q8mOY=
+	b=ggLs3kgeJ4S93aSdcMRcgSVbOJ0g0xonJVNyl72EOdenuyBcrgNtJ0FlcthgLStSI
+	 2XeVwgu8DCb1MM4iTEHc7H+V9TXcZal5VPDdhSsODnpLEJ6i7beVJPN+q6j60dB//F
+	 jTxFV6REusFaEXp9XPNePzgH4d42XQ6glc9e2x8A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC10DF802BC;
-	Fri, 17 Jul 2020 23:15:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01EF3F802C4;
+	Fri, 17 Jul 2020 23:16:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29BEEF802BD; Fri, 17 Jul 2020 23:15:35 +0200 (CEST)
+ id 01816F8014E; Fri, 17 Jul 2020 23:15:44 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44F15F801D8
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 23:14:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44F15F801D8
-IronPort-SDR: /tzlfzPvgbTR6Ws35p/yWXyKpzodklAbhFQLitQmY0WaEvkw/hz+Iv9Z74UYkiyz5q2DtXxHiD
- r3djCzLZCgOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="129758205"
-X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; d="scan'208";a="129758205"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBEE0F8014E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 23:14:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBEE0F8014E
+IronPort-SDR: RrDuSmfJiq3dxbZSe+ll5U51mt5AFGPp/UIPlY6sn/m5cmjA8DyCibFoYZT6yuac2vgOtnZ9hx
+ dkIP1h0OH5pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="129758209"
+X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; d="scan'208";a="129758209"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2020 14:13:48 -0700
-IronPort-SDR: 3eswPRsuaw94oumJVqd2XGiSPa9h5t2b5ZIcsHTo8wKZ7mA9QJO6wqpzE4MKFzFRqdDfmug7z9
- UCOX4YVWJmfg==
-X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; d="scan'208";a="282905783"
+ 17 Jul 2020 14:13:50 -0700
+IronPort-SDR: 0P0sylx2U2INC2+eNRYwkeZhwHrkA59aY5pvbzcuqbeAiWmz69sPZ45NOrB0aGNZZaISdtq7+H
+ ddjvLg0GwxWA==
+X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; d="scan'208";a="282905786"
 Received: from toddjdav-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.77.240])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2020 14:13:48 -0700
+ 17 Jul 2020 14:13:49 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/6] ASoC: Intel: sof_sdw_rt711: remove properties in card
- remove
-Date: Fri, 17 Jul 2020 16:13:33 -0500
-Message-Id: <20200717211337.31956-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: Intel: sof_sdw: add support for systems without
+ i915 audio
+Date: Fri, 17 Jul 2020 16:13:34 -0500
+Message-Id: <20200717211337.31956-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
 References: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+ broonie@kernel.org, Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,80 +91,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The rt711 jack detection properties are set from the machine drivers
-during the card probe, as done in other ASoC examples.
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-KASAN reports a use-after-free error when unbinding drivers due to a
-confusing sequence between the ACPI core, the device core and the
-SoundWire device cleanups.
+Extend the generic SOF Soundwire machine driver to support systems where
+iDisp HDMI/DP audio codec is disabled for some reason (i915 driver
+disabled, HDMI/DP implemented with a discrete GPU, etc). Switch codecs
+to SoC dummy in the affected DAI links. This allows to reuse existing
+topologies for this case.
 
-Rather than fixing this sequence, follow the recommendation to have
-the same caller add and remove properties, add an explicit
-device_remove_properties() in the card .remove() callback.
-
-In future patches the use of device_add/remove_properties will be
-replaced by a direct handling of a swnode, but the sequence will
-remain the same.
-
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c        |  1 +
+ sound/soc/intel/boards/sof_sdw.c        | 30 ++++++++++++++++---------
  sound/soc/intel/boards/sof_sdw_common.h |  1 +
- sound/soc/intel/boards/sof_sdw_rt711.c  | 15 +++++++++++++++
- 3 files changed, 17 insertions(+)
+ sound/soc/intel/boards/sof_sdw_hdmi.c   |  3 +++
+ 3 files changed, 24 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index be8eccb50450..9b6059905dbe 100644
+index 9b6059905dbe..2463d432bf4d 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -217,6 +217,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.direction = {true, true},
- 		.dai_name = "rt711-aif1",
- 		.init = sof_sdw_rt711_init,
-+		.exit = sof_sdw_rt711_exit,
- 	},
- 	{
- 		.id = 0x1308,
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index 426017626b16..c64c5d801d26 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -91,6 +91,7 @@ int sof_sdw_rt711_init(const struct snd_soc_acpi_link_adr *link,
- 		       struct snd_soc_dai_link *dai_links,
- 		       struct sof_sdw_codec_info *info,
- 		       bool playback);
-+int sof_sdw_rt711_exit(struct device *dev, struct snd_soc_dai_link *dai_link);
- 
- /* RT700 support */
- int sof_sdw_rt700_init(const struct snd_soc_acpi_link_adr *link,
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
-index c8f84e9a3e4e..606009fa3901 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711.c
-@@ -133,6 +133,21 @@ static int rt711_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
+@@ -699,11 +699,14 @@ static inline int get_next_be_id(struct snd_soc_dai_link *links,
+ 	return links[be_id - 1].id + 1;
  }
  
-+int sof_sdw_rt711_exit(struct device *dev, struct snd_soc_dai_link *dai_link)
-+{
-+	struct device *sdw_dev;
++#define IDISP_CODEC_MASK	0x4
 +
-+	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL,
-+					  dai_link->codecs[0].name);
-+	if (!sdw_dev)
-+		return -EINVAL;
+ static int sof_card_dai_links_create(struct device *dev,
+ 				     struct snd_soc_acpi_mach *mach,
+ 				     struct snd_soc_card *card)
+ {
+ 	int ssp_num, sdw_be_num = 0, hdmi_num = 0, dmic_num;
++	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct snd_soc_dai_link_component *idisp_components;
+ 	struct snd_soc_dai_link_component *ssp_components;
+ 	struct snd_soc_acpi_mach_params *mach_params;
+@@ -747,12 +750,15 @@ static int sof_card_dai_links_create(struct device *dev,
+ 		return ret;
+ 	}
+ 
++	if (mach_params->codec_mask & IDISP_CODEC_MASK)
++		ctx->idisp_codec = true;
 +
-+	device_remove_properties(sdw_dev);
-+	put_device(sdw_dev);
+ 	/* enable dmic01 & dmic16k */
+ 	dmic_num = (sof_sdw_quirk & SOF_SDW_PCH_DMIC) ? 2 : 0;
+ 	comp_num += dmic_num;
+ 
+ 	dev_dbg(dev, "sdw %d, ssp %d, dmic %d, hdmi %d", sdw_be_num, ssp_num,
+-		dmic_num, hdmi_num);
++		dmic_num, ctx->idisp_codec ? hdmi_num : 0);
+ 
+ 	/* allocate BE dailinks */
+ 	num_links = comp_num + sdw_be_num;
+@@ -901,13 +907,18 @@ static int sof_card_dai_links_create(struct device *dev,
+ 		if (!name)
+ 			return -ENOMEM;
+ 
+-		idisp_components[i].name = "ehdaudio0D2";
+-		idisp_components[i].dai_name = devm_kasprintf(dev,
+-							      GFP_KERNEL,
+-							      "intel-hdmi-hifi%d",
+-							      i + 1);
+-		if (!idisp_components[i].dai_name)
+-			return -ENOMEM;
++		if (ctx->idisp_codec) {
++			idisp_components[i].name = "ehdaudio0D2";
++			idisp_components[i].dai_name = devm_kasprintf(dev,
++								      GFP_KERNEL,
++								      "intel-hdmi-hifi%d",
++								      i + 1);
++			if (!idisp_components[i].dai_name)
++				return -ENOMEM;
++		} else {
++			idisp_components[i].name = "snd-soc-dummy";
++			idisp_components[i].dai_name = "snd-soc-dummy-dai";
++		}
+ 
+ 		cpu_name = devm_kasprintf(dev, GFP_KERNEL,
+ 					  "iDisp%d Pin", i + 1);
+@@ -982,6 +993,7 @@ static int mc_probe(struct platform_device *pdev)
+ 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
+ 
+ 	card->dev = &pdev->dev;
++	snd_soc_card_set_drvdata(card, ctx);
+ 
+ 	mach = pdev->dev.platform_data;
+ 	ret = sof_card_dai_links_create(&pdev->dev, mach,
+@@ -991,8 +1003,6 @@ static int mc_probe(struct platform_device *pdev)
+ 
+ 	ctx->common_hdmi_codec_drv = mach->mach_params.common_hdmi_codec_drv;
+ 
+-	snd_soc_card_set_drvdata(card, ctx);
+-
+ 	/*
+ 	 * the default amp_num is zero for each codec and
+ 	 * amp_num will only be increased for active amp
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index c64c5d801d26..12e32439ba46 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -70,6 +70,7 @@ struct sof_sdw_codec_info {
+ struct mc_private {
+ 	struct list_head hdmi_pcm_list;
+ 	bool common_hdmi_codec_drv;
++	bool idisp_codec;
+ 	struct snd_soc_jack sdw_headset;
+ };
+ 
+diff --git a/sound/soc/intel/boards/sof_sdw_hdmi.c b/sound/soc/intel/boards/sof_sdw_hdmi.c
+index 0654b38a7e0d..72316d34eed6 100644
+--- a/sound/soc/intel/boards/sof_sdw_hdmi.c
++++ b/sound/soc/intel/boards/sof_sdw_hdmi.c
+@@ -52,6 +52,9 @@ int sof_sdw_hdmi_card_late_probe(struct snd_soc_card *card)
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
+ 
++	if (!ctx->idisp_codec)
++		return 0;
 +
-+	return 0;
-+}
-+
- int sof_sdw_rt711_init(const struct snd_soc_acpi_link_adr *link,
- 		       struct snd_soc_dai_link *dai_links,
- 		       struct sof_sdw_codec_info *info,
+ 	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct hdmi_pcm,
+ 			       head);
+ 	component = pcm->codec_dai->component;
 -- 
 2.25.1
 
