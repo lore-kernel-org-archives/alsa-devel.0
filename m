@@ -2,85 +2,73 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74067C433E3
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 15:19:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 436E8C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 15:40:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F262D204EA
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 15:19:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BF16F2076A
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 15:40:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l+O5S+hP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oLrCBcii"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F262D204EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pqhhQBwz";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="J9eSijix"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF16F2076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75647844;
-	Fri, 17 Jul 2020 17:18:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75647844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E380844;
+	Fri, 17 Jul 2020 17:40:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E380844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594999153;
-	bh=RS6zSbkIqqcGrPuQyhiXMkqSgHUJmTOSt6lcBsCETjs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1595000454;
+	bh=ZbC+gDl7WuYsyoEZK9jriCDYB/kmxm2hu4oLKRUdqVE=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l+O5S+hPpXtfkBRBu8cAdF4Cnk7j6GWznhuow7U1J13zvago+wsG5drELLJwhWLrW
-	 /ZbrnEKXGEatGfc1D8mFapHMoZrBOGRxMWNHb56FvQp9NqGDeew99Ag51jYi4UNI88
-	 ZqgzvAZG7dT9GyFRji7oRUN2jAb7qOxNUZLFbrRs=
+	b=pqhhQBwztfygIShkSoK9HBCh1b8cWHk5IVyOtP+RiunQwcw3cLzhAA4pY64kn/Olp
+	 YSF1FT8WUq0PC8b4WcnnSRbvZF82WEwZBDrDGDGawri+vuaGmklfYBQNWb207w6zKm
+	 PG8bd5rKMBFRWOcYR3HTwm5eWcfV4E6F2UtGtcjE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 060B8F801D8;
-	Fri, 17 Jul 2020 17:18:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 879DBF801D8;
+	Fri, 17 Jul 2020 17:40:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF08AF80217; Fri, 17 Jul 2020 17:18:21 +0200 (CEST)
+ id 771EDF80227; Fri, 17 Jul 2020 17:40:01 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8EECF800E4
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 17:18:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8EECF800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1593DF801D8
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 17:39:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1593DF801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oLrCBcii"
+ header.b="J9eSijix"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 07735204EA;
- Fri, 17 Jul 2020 15:18:07 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D73012076A;
+ Fri, 17 Jul 2020 15:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594999088;
- bh=RS6zSbkIqqcGrPuQyhiXMkqSgHUJmTOSt6lcBsCETjs=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=oLrCBciiORmqncK64Bcq2D9T82vkHN7zZrUlDjFCoIKcbug3yhyuCXUSAycset3O2
- DiBTvjVgmkyZPX/bSP8BnCaDOS49xDlLFNQ+ZNnMCoqhUoQZDcO67op7OZgrVJ+DYD
- Ca/X4C8T9PqTPZdRutfxMzDa8bVX2TcYosgrETuQ=
-Date: Fri, 17 Jul 2020 16:17:57 +0100
+ s=default; t=1595000396;
+ bh=ZbC+gDl7WuYsyoEZK9jriCDYB/kmxm2hu4oLKRUdqVE=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=J9eSijixam3yIOX+GVYvq/o5r+fO6G10amtS3F7Io3UeLmGibf1lb8huE5gIbGIXn
+ CXr19sVSx79+//Sd2G/GdD8RpG0j0kQzheEH48g9NBzmw8prCK/d+2BbMvvCa8mGTQ
+ jGbYFBgHnPvvJvPI8J1zWTbiglvDlWKs1/j9PMak=
+Date: Fri, 17 Jul 2020 16:39:45 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: wm8962: error at soc_component_read_no_lock
-Message-ID: <20200717151757.GA36674@sirena.org.uk>
-References: <CAOMZO5Bhhcmm6ex0nP6MnYq0Uf8EMYCMMFOMav-fCrVJvOY+vQ@mail.gmail.com>
- <87o8of2gb8.wl-kuninori.morimoto.gx@renesas.com>
- <20200717112332.GB4316@sirena.org.uk>
- <CAOMZO5D1BMjNcf-2z11uzCc46yCA2-GTWh+V28Y7WhrSAM_+Cg@mail.gmail.com>
- <CAOMZO5CjMa0JHfSrMdntmj1_gHoZoqsJhdjU8xR9-1LPupcDAw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5CjMa0JHfSrMdntmj1_gHoZoqsJhdjU8xR9-1LPupcDAw@mail.gmail.com>
-X-Cookie: hipatitis:
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875zam3bmk.wl-kuninori.morimoto.gx@renesas.com>
+References: <875zam3bmk.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: soc-dai.h: don't use discriminatory terms for
+ comment
+Message-Id: <159500037996.27597.7953835559890054472.b4-ty@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,34 +84,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 17 Jul 2020 15:22:26 +0900, Kuninori Morimoto wrote:
+> soc-dai is using discriminatory terms for comment.
+> This patch renames "slave" to "secondary", thus
+> we can keep M/S initials.
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Fri, Jul 17, 2020 at 10:01:30AM -0300, Fabio Estevam wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> If I move WM8962_ADDITIONAL_CONTROL_4 to the non-volatile region, the
-> two errors related to this register are gone:
+Thanks!
 
-IIRC that register really did have some volatile bits in it, I can't
-remember what they were or if they were important though.  It's not
-fundamentally wrong and if the volatile bits don't practically matter
-for Linux it would be sensible enough.
+[1/1] ASoC: soc-dai.h: don't use discriminatory terms for comment
+      commit: ca00e66c1bc875aef7d84ec16418e08a14d0cda9
 
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8RwSQACgkQJNaLcl1U
-h9B7YQf/Z/PgQt8jy0qM0uwMXx6B0b9FMHkVQtyTGzNDN+lSZtKhFYgkd8aee3Mr
-01TT5eunx9an6vQqjBAPafaYtlny/rSHRM1G40svhhl5HV/WoKdnneTr3dZUPl+D
-5ahrihLBei6QgiQejWKqWwklgK1pMiyrrgur5cDosvNpEjPECBBBWgQ2Y17/CPwb
-JZz/tck6hSGd5vkXjOZAEThB6G2SN49fiNiDRIZYtMv9/vqHZF9hUbTGs3qerWF8
-n92d3bezd0/Zuemn19H6ONIpLIWW2DCmvGI62SRmmFe686sDf+UuNq3092fXFjKC
-5siShfjkgpjjOtnUYiAkUmM0CJWSIQ==
-=W1Ny
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---Q68bSM7Ycu6FN28Q--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
