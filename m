@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3FD7C433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 06:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA956C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 06:59:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B67120704
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 06:58:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5CFA02071A
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 06:59:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Iw3egRK5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B67120704
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WZwKONKA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CFA02071A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B070615F2;
-	Fri, 17 Jul 2020 08:57:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B070615F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C421B1673;
+	Fri, 17 Jul 2020 08:58:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C421B1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594969120;
-	bh=J9q5eTf/KbNMNKUl9QNBHlTfK1V0V/0VUJ7cmXprC6s=;
+	s=default; t=1594969179;
+	bh=9FzYT+V/PUsvJ1tOQn68EUNU0eQ+WxtGNYOOTmY2/aM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Iw3egRK5F6KrAolgEU5qBmaAsgtykqq0MykJtaCjSJUYhMcQsJwQ/6xr5jfNyvt7j
-	 EDNxyw/GQ+JdzCkctIvxzkclqkG7oUoV2SYusiUFUliCxwciE9wbbiS9NRxTLIYJQO
-	 fCdlWXaSL2g7c/FPR0DREWOQCDDu932lrMpZXCaE=
+	b=WZwKONKAft6gnetcohQ1jniDns/QzMb8jkJB74y5bE9j1t+CfWR/s9+KrAqEPlXYJ
+	 FCXRvoavvpkEg6lM5FR4lFsVNBdEujqMTOCU1NwbaFg1rkQGvKqjD+UTGjSJc8A9hS
+	 qb0gblTAzTb94uJFGV5+W54o4JR5Somtja0KHUSE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B4BCF801D8;
-	Fri, 17 Jul 2020 08:57:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11E00F802BD;
+	Fri, 17 Jul 2020 08:58:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85234F80217; Fri, 17 Jul 2020 08:57:47 +0200 (CEST)
+ id BFFC8F802BE; Fri, 17 Jul 2020 08:58:38 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 550E8F800E4
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 08:57:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 550E8F800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 631DFF802BC
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 08:58:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 631DFF802BC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 7E10AAD1E;
- Fri, 17 Jul 2020 06:57:40 +0000 (UTC)
-Date: Fri, 17 Jul 2020 08:57:35 +0200
-Message-ID: <s5hzh7yk4rk.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 50480AD32;
+ Fri, 17 Jul 2020 06:58:36 +0000 (UTC)
+Date: Fri, 17 Jul 2020 08:58:31 +0200
+Message-ID: <s5hy2nik4q0.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kaige Li <likaige@loongson.cn>
-Subject: Re: [PATCH 1/2] ALSA: hda/realtek: Fix headset mic on Loongson
- platform
-In-Reply-To: <1594954292-1703-1-git-send-email-likaige@loongson.cn>
+Subject: Re: [PATCH 2/2] ALSA: hda: Add support for Loongson 7A1000 controller
+In-Reply-To: <1594954292-1703-2-git-send-email-likaige@loongson.cn>
 References: <1594954292-1703-1-git-send-email-likaige@loongson.cn>
+ <1594954292-1703-2-git-send-email-likaige@loongson.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -79,25 +79,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Jul 2020 04:51:31 +0200,
+On Fri, 17 Jul 2020 04:51:32 +0200,
 Kaige Li wrote:
 > 
-> Add pin quirks to enable use of the headset mic on Loongson platform.
+> Add the new PCI ID 0x0014 0x7a07 to support Loongson 7A1000 controller.
 > 
 > Signed-off-by: Kaige Li <likaige@loongson.cn>
-> @@ -7654,6 +7663,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
->  	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
->  	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MACH-WX9", ALC256_FIXUP_HUAWEI_MACH_WX9_PINS),
-> +	SND_PCI_QUIRK(0x10ec, 0x0269, "Loongson HDA", ALC269_FIXUP_LOONGSON_HDA),
 
-This is basically Realtek ALC269 codec itself, so putting this here
-may hit with many other machines.
+Applied this one.  Thanks.
 
-Doesn't it has any proper PCI or codec SSID?  The lack of them usually
-means a bug of BIOS.
-
-
-thanks,
 
 Takashi
