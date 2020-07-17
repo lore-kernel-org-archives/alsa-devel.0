@@ -2,78 +2,70 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECF07C433E3
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 10:23:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 637F3C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 10:40:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 713562070E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 10:23:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFCB82076A
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 10:40:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fYtcZepi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 713562070E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qbCPHYR+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFCB82076A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2D711612;
-	Fri, 17 Jul 2020 12:22:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2D711612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5809110E;
+	Fri, 17 Jul 2020 12:39:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5809110E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594981405;
-	bh=2rp8JZIQsj447PRl623rhJ7W/xG2L4eRvURNOC/hGRU=;
+	s=default; t=1594982420;
+	bh=WvtOO9EFPMVhyiAi+yMsny8aOpvE1xV1S+DlvsX9pf8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fYtcZepiC0qkhhPnhbl797Fy8S51Ag6y6jgltwTuoNLSMCAImJzDOGeuDudkVISWb
-	 tMAClr3x8SX+zU+/bPW/R9tGyADvdCd3aTrdrWo8eqnW+ggG8YWnCJLG63I9JW6ic9
-	 kby6TsrmbLYDdHLsqKdES9cPscOP6nN8ONiLbMQg=
+	b=qbCPHYR+4ciMjUCWBTYqlYbLZP5v1Ldk7xjN3MZWtUl+XBGL6Kzupbb2UJ985LDfF
+	 N8Xc+KU0ILCsC2YGQg+3nCmsKH9h+EEuTQsSo36E0rhdZiDxRdcpmTVomWAfySlRP5
+	 NUvy+uR+Y5F2H2Llur6HpBGTuqYRikQNsKKn7m1g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 319AFF8028A;
-	Fri, 17 Jul 2020 12:21:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC3E8F801D8;
+	Fri, 17 Jul 2020 12:39:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5063FF802BC; Fri, 17 Jul 2020 12:21:01 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id BBCE1F80217; Fri, 17 Jul 2020 12:39:27 +0200 (CEST)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C73B8F80229
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 12:20:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C73B8F80229
-IronPort-SDR: cmKJ2Z/CbUwkkYmSvNysvyQ7BqrAH6Y9C0Zl5aymtilYfzcstXT64jLcp9Xibzsx0FbqC+hm9p
- i1Ebpzty2WQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="137682726"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; d="scan'208";a="137682726"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2020 03:20:49 -0700
-IronPort-SDR: M1R/fTri/KfRNkghPlwRBjLxhQahb67rygJoTHwOBknnDeD/PKn1aadRWPM8yEpi+2w5bVOjL+
- /MCrJTIL2/QA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; d="scan'208";a="282744428"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga003.jf.intel.com with ESMTP; 17 Jul 2020 03:20:47 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 3/3] ASoC: hdac_hda: fix deadlock after PCM open error
-Date: Fri, 17 Jul 2020 13:19:50 +0300
-Message-Id: <20200717101950.3885187-3-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A33DAF8014E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 12:39:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A33DAF8014E
+Received: from xps.home (unknown [IPv6:2a01:e35:2fb5:1510:c567:382e:1974:9868])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: aferraris)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B51C92A536F;
+ Fri, 17 Jul 2020 11:39:17 +0100 (BST)
+From: Arnaud Ferraris <arnaud.ferraris@collabora.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3 0/1] ASoC: fsl_asrc: always select different clocks
+Date: Fri, 17 Jul 2020 12:38:56 +0200
+Message-Id: <20200717103857.31877-1-arnaud.ferraris@collabora.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200717101950.3885187-1-kai.vehmanen@linux.intel.com>
-References: <20200717101950.3885187-1-kai.vehmanen@linux.intel.com>
+In-Reply-To: <20200716232000.GA27246@Asurada-Nvidia>
+References: <20200716232000.GA27246@Asurada-Nvidia>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Rander Wang <rander.wang@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com
+Cc: Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, kernel@collabora.com,
+ Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,68 +81,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit 5bd70440cb0a ("ASoC: soc-dai: revert all changes to DAI
-startup/shutdown sequence"), introduced a slight change of semantics
-to DAI startup/shutdown. If startup() returns an error, shutdown()
-is now called for the DAI.
+This patch fixes the automatic clock selection so it always selects
+distinct input and output clocks.
 
-This causes a deadlock in hdac_hda which issues a call to
-snd_hda_codec_pcm_put() in case open fails. Upon error, soc_pcm_open()
-will call shutdown(), and pcm_put() ends up getting called twice. Result
-is a deadlock on pcm->open_mutex, as snd_device_free() gets called from
-within snd_pcm_open(). Typical task backtrace looks like this:
+v2 -> v3:
+- Update code comment, fix formatting and add more detailed explanations
+  in commit message
 
-[  334.244627]  snd_pcm_dev_disconnect+0x49/0x340 [snd_pcm]
-[  334.244634]  __snd_device_disconnect.part.0+0x2c/0x50 [snd]
-[  334.244640]  __snd_device_free+0x7f/0xc0 [snd]
-[  334.244650]  snd_hda_codec_pcm_put+0x87/0x120 [snd_hda_codec]
-[  334.244660]  soc_pcm_open+0x6a0/0xbe0 [snd_soc_core]
-[  334.244676]  ? dpcm_add_paths.isra.0+0x491/0x590 [snd_soc_core]
-[  334.244679]  ? kfree+0x9a/0x230
-[  334.244686]  dpcm_be_dai_startup+0x255/0x300 [snd_soc_core]
-[  334.244695]  dpcm_fe_dai_open+0x20e/0xf30 [snd_soc_core]
-[  334.244701]  ? snd_pcm_hw_rule_muldivk+0x110/0x110 [snd_pcm]
-[  334.244709]  ? dpcm_be_dai_startup+0x300/0x300 [snd_soc_core]
-[  334.244714]  ? snd_pcm_attach_substream+0x3c4/0x540 [snd_pcm]
-[  334.244719]  snd_pcm_open_substream+0x69a/0xb60 [snd_pcm]
-[  334.244729]  ? snd_pcm_release_substream+0x30/0x30 [snd_pcm]
-[  334.244732]  ? __mutex_lock_slowpath+0x10/0x10
-[  334.244736]  snd_pcm_open+0x1b3/0x3c0 [snd_pcm]
+v1 -> v2:
+- compare clock indexes (and not the location in the clock table) to
+  make sure input and output clocks are different
 
-Fixes: 5bd70440cb0a ("ASoC: soc-dai: revert all changes to DAI startup/shutdown sequence")
-BugLink: https://github.com/thesofproject/linux/issues/2159
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
----
- sound/soc/codecs/hdac_hda.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ Arnaud Ferraris(1):
+   ASoC: fsl_asrc: make sure the input and output clocks are different
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index 74574b9180a5..49e6f23fc766 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -289,7 +289,6 @@ static int hdac_hda_dai_open(struct snd_pcm_substream *substream,
- 	struct hdac_hda_priv *hda_pvt;
- 	struct hda_pcm_stream *hda_stream;
- 	struct hda_pcm *pcm;
--	int ret;
- 
- 	hda_pvt = snd_soc_component_get_drvdata(component);
- 	pcm = snd_soc_find_pcm_from_dai(hda_pvt, dai);
-@@ -300,11 +299,7 @@ static int hdac_hda_dai_open(struct snd_pcm_substream *substream,
- 
- 	hda_stream = &pcm->stream[substream->stream];
- 
--	ret = hda_stream->ops.open(hda_stream, &hda_pvt->codec, substream);
--	if (ret < 0)
--		snd_hda_codec_pcm_put(pcm);
--
--	return ret;
-+	return hda_stream->ops.open(hda_stream, &hda_pvt->codec, substream);
- }
- 
- static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
--- 
-2.27.0
+ sound/soc/fsl/fsl_asrc.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
 
