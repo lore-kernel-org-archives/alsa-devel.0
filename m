@@ -2,75 +2,61 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADEA6C433EC
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:05:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AA4BC433E2
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:22:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DFBE2063A
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:05:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B08C520838
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 00:22:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VNE+sj0v";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dmrjWPZf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DFBE2063A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NejGbVln"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B08C520838
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE00E1660;
-	Fri, 17 Jul 2020 02:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE00E1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E74983D;
+	Fri, 17 Jul 2020 02:21:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E74983D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594944310;
-	bh=oFW1cl+r20hCLJ4pfkKV3RYD8Qs6TkPlxv0gjk1ZC/4=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VNE+sj0v3PYi7hxD7+OAg5XyVdLvg9QnzE+iK0tao+udqt1vON8em7s8jrJ3Pw7J5
-	 Z8OX7+BZsZD3rB8jltYkcBT+lKgRdhynoPSKxvCXCQl86XJqDX/qTxkkBKYMtsDigt
-	 1oGuqv1UTKeXw8rk3WdhAVdTjsMwJg8nE4ZEXw/o=
+	s=default; t=1594945345;
+	bh=FhgSx0oy09ZAwH2EUc+rgSNJCEa26VXdO42xZ4ycPXE=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NejGbVln01OOyfdsPGBL+/OzBbkxQSx67V0MtzxUPZ5UgKk5QVJifWAwuTvUuU22R
+	 hWHAbdIudDC0ukkLe/ni7WaT06sBIbY/UJwv5ynRJgz6sKvghkhM7iY2j7lwjqTSR8
+	 LJm4uW+2Bvm2lc7kZuhfoFpUIvUdGWOSygO5wPtE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 424D4F8032A;
-	Fri, 17 Jul 2020 01:58:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B81DFF8016F;
+	Fri, 17 Jul 2020 02:21:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59791F80331; Fri, 17 Jul 2020 01:58:02 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DC20F80329
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 01:57:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DC20F80329
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dmrjWPZf"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 85897207DD;
- Thu, 16 Jul 2020 23:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1594943878;
- bh=oFW1cl+r20hCLJ4pfkKV3RYD8Qs6TkPlxv0gjk1ZC/4=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=dmrjWPZfs03JsoBSLG00UWERkRjDmkCCpfqFocx4AtXOzxNIBEbeqfiDmulKpfhu9
- LX9QjhTPsPjfJZnyzmfPzjbT48DveeTsySr6eZSkxI9CeltjMh7N8YpbDdPa5YC6iE
- xUNuDY3L2xc+m354XKAyf1nPh7Rx4KR5rRJiM9jI=
-Date: Fri, 17 Jul 2020 00:57:48 +0100
-From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, kuninori.morimoto.gx@renesas.com,
- hdegoede@redhat.com, paul@crapouillou.net, yang.jie@linux.intel.com,
- liam.r.girdwood@linux.intel.com, cezary.rojewski@intel.com,
- Jing Xiangfeng <jingxiangfeng@huawei.com>, tiwai@suse.com, perex@perex.cz
-In-Reply-To: <20200714080918.148196-1-jingxiangfeng@huawei.com>
-References: <20200714080918.148196-1-jingxiangfeng@huawei.com>
-Subject: Re: [PATCH] ASoC: Intel: bytcht_es8316: Add missed put_device()
-Message-Id: <159494380522.42174.15064040875252381887.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ id 82A68F801EC; Fri, 17 Jul 2020 02:21:31 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C4F5DF8014E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 02:21:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4F5DF8014E
+Date: 17 Jul 2020 09:21:22 +0900
+X-IronPort-AV: E=Sophos;i="5.75,360,1589209200"; d="scan'208";a="52341414"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 17 Jul 2020 09:21:22 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2C35540078B6;
+ Fri, 17 Jul 2020 09:21:22 +0900 (JST)
+Message-ID: <87imen2drw.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v4 0/3] ASoC: merge .digital_mute() into .mute_stream()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,34 +72,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 14 Jul 2020 16:09:18 +0800, Jing Xiangfeng wrote:
-> snd_byt_cht_es8316_mc_probe() misses to call put_device() in an error
-> path. Add the missed function call to fix it.
 
-Applied to
+Hi Mark
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+These are v4 digital_mute() patch which adjusts
+to atmel which had conflict on v3.
 
-Thanks!
+v3 -> v4
+	- tidyup for atmel which had conflict
 
-[1/1] ASoC: Intel: bytcht_es8316: Add missed put_device()
-      commit: b3df80ab6d147d4738be242e1c91e5fdbb6b03ef
+v2 -> v3
+	- uses "xxx_mute_stream" for .mute_stream naming
+	  if it was better
+	- removed verbose Cc email address
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+v1 -> v2
+	- return -ENOTSUPP at hdmi-codec
+	- add new .no_capture_mute flag and emulate .digital_mute()
+	  by .mute_stream()
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Link: https://lore.kernel.org/r/87h7uhxxk6.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/874kqy2y5t.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87ftam37ko.wl-kuninori.morimoto.gx@renesas.com
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Kuninori Morimoto (3):
+  ASoC: soc-dai: remove .digital_mute
+  ASoC: soc-core: snd_soc_dai_digital_mute() for both CPU/Codec
+  ASoC: soc-xxx: add asoc_substream_to_rtd()
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+ include/sound/soc-dai.h               |  1 -
+ include/sound/soc.h                   |  2 +
+ sound/soc/soc-component.c             | 20 ++++-----
+ sound/soc/soc-core.c                  |  4 +-
+ sound/soc/soc-dai.c                   | 12 ++----
+ sound/soc/soc-dapm.c                  |  6 +--
+ sound/soc/soc-generic-dmaengine-pcm.c |  4 +-
+ sound/soc/soc-link.c                  | 12 +++---
+ sound/soc/soc-pcm.c                   | 62 +++++++++++++--------------
+ sound/soc/soc-utils.c                 |  2 +-
+ 10 files changed, 61 insertions(+), 64 deletions(-)
 
-Thanks,
-Mark
+-- 
+2.25.1
+
