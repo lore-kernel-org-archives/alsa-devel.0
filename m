@@ -3,90 +3,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A4EBC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 17:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98338C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 18:20:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78F9120717
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 17:14:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2172E206F4
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 18:20:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B+MViC8w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78F9120717
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YlaqogT2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sGJTHFHR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2172E206F4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02CCF851;
-	Fri, 17 Jul 2020 19:13:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02CCF851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BBC6843;
+	Fri, 17 Jul 2020 20:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BBC6843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595006064;
-	bh=SqYmNwC6ZSrl6wHC8kHcBV4fhxx2WSURotEFJtCDR3U=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1595010039;
+	bh=RCgNr3/xeYA3Haxzprr03CsH12nqDhWVlciVt75a4Y8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B+MViC8wExIWGEcIol4UGdgAr34F6o/uR5zw8ANeafql3SETHnx2h2uP0e7+/rXnm
-	 +/g2h0ItvVtKGtOGeLoShGpwS+kAnePFuuIL32wdkYVRGefM/rlneTDLmj7uYgeqRp
-	 TUCvW+ZyxxSnJJrLSweCNEEsLL0KqkTBtUWgLqvA=
+	b=YlaqogT2K7qZBCXqd6HkOWax6sHtfNjBlJkM9B6X+tUd1zGx6EkpOKtd9CGbMiEOh
+	 U5x+mgT8Sa0uBucQidvPYjb1jwDBvxAa6Y+p8zeKJy8AuVbCvTLgeukLZwQ4x239vA
+	 QZ31wzSM9ZwLkPUhTpHq4LhWvT3HpuyPm11GTxUA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EAFEF80110;
-	Fri, 17 Jul 2020 19:13:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 148A3F801D8;
+	Fri, 17 Jul 2020 20:19:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A687AF80217; Fri, 17 Jul 2020 19:13:32 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 93035F80217; Fri, 17 Jul 2020 20:18:56 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1500F8014E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 20:18:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1500F8014E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="sGJTHFHR"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CFFEF80110
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 19:13:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CFFEF80110
-IronPort-SDR: +Q/NUJJ741SlKuBjQf4N5a8bZcPyCuFpK39T2/kutAYsiSMEleuOdLldM7Et9GXLPjgX66wWhP
- KJLM3FIOJ7EQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="129209826"
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; d="scan'208";a="129209826"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2020 10:13:16 -0700
-IronPort-SDR: EaN2GhY6u+2P7yGhSgA+vtRIemJ/p+/VQYCdWZicF3mlqYjjT2iwlOf8S80uPgk6bbwvnSyeGs
- grWABHYHl5tA==
-X-IronPort-AV: E=Sophos;i="5.75,362,1589266800"; d="scan'208";a="460911188"
-Received: from krkamatg-mobl.amr.corp.intel.com (HELO [10.254.77.31])
- ([10.254.77.31])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2020 10:13:15 -0700
+ by mail.kernel.org (Postfix) with ESMTPSA id B2802206F4;
+ Fri, 17 Jul 2020 18:18:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1595009924;
+ bh=RCgNr3/xeYA3Haxzprr03CsH12nqDhWVlciVt75a4Y8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=sGJTHFHRCR6dQ9fHmqmDfeRj+S7nxaNqEMRM0R4kbaxlIFmm0Pn2iv9ijfghlRiMw
+ oh6A+55xXJ2epmsbBAIAYXZ9uZf05TpgBQOaTOpa6xyn7uNkDU9fhBIf1b8lgj4TO7
+ jQFC85r6EMaUT31YZiso2+Ushj+jcBP4rzyPbemg=
+Date: Fri, 17 Jul 2020 19:18:33 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH 1/4] ASoC: soc-pcm: dpcm: fix playback/capture checks
-To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>
+Message-ID: <20200717181833.GC905@sirena.org.uk>
 References: <20200608194415.4663-1-pierre-louis.bossart@linux.intel.com>
  <20200608194415.4663-2-pierre-louis.bossart@linux.intel.com>
- <20200616085409.GA110999@gerhold.net> <20200616090210.GA111206@gerhold.net>
+ <20200616085409.GA110999@gerhold.net>
+ <20200616090210.GA111206@gerhold.net>
  <254a667e-fa49-240a-6386-7e82df8e5c35@linux.intel.com>
  <20200616145251.GO4447@sirena.org.uk>
  <af973f45-59b9-ecff-7d78-97d8352ed072@linux.intel.com>
  <20200616164255.GR4447@sirena.org.uk>
  <1j1rla9s22.fsf@starbuckisacylon.baylibre.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8693bcb6-4c90-036d-79f0-87516e47f41b@linux.intel.com>
-Date: Fri, 17 Jul 2020 12:13:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <8693bcb6-4c90-036d-79f0-87516e47f41b@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1j1rla9s22.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="4ZLFUWh1odzi/v6L"
+Content-Disposition: inline
+In-Reply-To: <8693bcb6-4c90-036d-79f0-87516e47f41b@linux.intel.com>
+X-Cookie: Haste makes waste.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
  tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,50 +105,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> Commit 25612477d20b ("ASoC: soc-dai: set dai_link dpcm_ flags with a
-> helper") makes things worse (for me) by requiring all the elements on
-> the link to support the stream direction for the direction to be enabled.
-> 
-> This breaks platforms where there is multiple codecs with different
-> capabilities on a link. For example, we may have 2 codecs on a link, one
-> doing playback, the other capture. This is the case on several Amlogic
-> platforms.
-> 
-> With the new meaning of those flag, the card driver has to set something
-> that ASoC core will also compute on its own, and verify it agrees with
-> the card. This is redundant.
-> What is the point of this ? Can't we just cut the middle man then ?
-> 
-> The old meaning at least allowed to pass the additional information that
-> a direction was to be forcefully disabled. This is also redundant with
-> capture_only/playback_only though ...
+--4ZLFUWh1odzi/v6L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-My plan was to remove two of the 4 flags after all configurations were 
-checked.
+On Fri, Jul 17, 2020 at 12:13:14PM -0500, Pierre-Louis Bossart wrote:
 
-> Can we revert this change until we figure out to do with those flags ?
-> 
-> I could propose a patch to move on but I'm not entirely clear what it kind
-> of restriction we were trying to put on Multi-CPU links
-> 
-> IMO, on a Multi-CPU/Multi-Codec link, we should allow the direction as
-> long as at least one CPU and one Codec on the link are capable of
-> handling the direction (not all of them, as it seems to be set now)
+> > IMO, on a Multi-CPU/Multi-Codec link, we should allow the direction as
+> > long as at least one CPU and one Codec on the link are capable of
+> > handling the direction (not all of them, as it seems to be set now)
 
-You have a valid point Jerome. I must admit I was looking at TDM 
-configurations, where we do want all DAIs in the same dailink to be 
-consistent.
+...
 
-But when I checked older code there is indeed a precedent for some 
-KabyLake platforms with an amplifier on playback and a microphone codec 
-on capture for the same dailink.
+> If this was a feature and not a bug to have different capabilities on the
+> same link so be it. Mark, do you concur?
 
-I think your proposal of checking that at least one DAI matches the 
-dailink capabilities, and conversely changing the helper to set the 
-properties if one or more dais support a direction smay indeed be required.
+Yes.
 
-If this was a feature and not a bug to have different capabilities on 
-the same link so be it. Mark, do you concur?
+--4ZLFUWh1odzi/v6L
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8R63gACgkQJNaLcl1U
+h9D9rwf/T9lEXq9hsZ9ypWSChVcC9LzV+oob3xYsZ1nzF5SopS/YmHyXJpFQLXQy
+Q4HhydXUZT7foCvcbJpmjBLC3hWIBAm8BCXIve3H71s79nNZOPl5KEKTOA8kadWv
+EkV9wqNybqYSLuow4Hu8wAoMRU5JTWehX97CqL9UjjE3JHdOcQey7QTJd1mZq5ZF
+/lIXs1CCZUENq7CeNBEmsQ/g3Tp0jnAiaRF3+bG38ojXVv7cdcRfu2lhQYuXVF4Q
+C/IPgJ55S/ajipyiRRd0xp/xOe2wRFq+DV5U/p6TelE1ViOxn9NbUlvcegID9tS5
+G/brES7wVpKsaGOUWcbzNszA174NKw==
+=geoK
+-----END PGP SIGNATURE-----
 
+--4ZLFUWh1odzi/v6L--
