@@ -2,79 +2,80 @@ Return-Path: <SRS0=vkql=A4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 672B2C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:21:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9E70C433E5
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:50:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E96FC2076D
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:21:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6021520739
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 21:50:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Oj1iNDdl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E96FC2076D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e7qPAFJu";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2FsjmqEN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6021520739
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BD01167D;
-	Fri, 17 Jul 2020 23:20:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BD01167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99F741673;
+	Fri, 17 Jul 2020 23:49:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99F741673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595020874;
-	bh=CQpaybShSmqhWV9ZlFg+et/eP7Rr6qB1MDqBgK8iezw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Oj1iNDdlLWDfFWWzkEIDtEi8Pig1GqsmpyKlxZgqWfImiK/4SkICyjA+IrZMk+q2A
-	 yZMQk0uUoD4JMD45DG5Irf5EHhlU0brYMbL5JI9Wxb6N9q0IlDLezgUyaYzMqZFmTw
-	 jigcb1tuhViV9e4WrbhY1ZLbwLC3nc3I9j/7Ea64=
+	s=default; t=1595022634;
+	bh=d6pg/moIc4Lfqu+IfBjkbjoSoRMlnQNHmTVvs1VG1nk=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=e7qPAFJuNJT96ZKx1xpGXOD0bRM/GX48f+qYh4OqyF2NYCUpZFp70dlrTi8PycrOt
+	 Si16k/Jus+xX3afof793mCO+fz/8XCs47zqwmY7VwmshKblfJ/OMNnGGkVaxRoq5u/
+	 6L/09BVLjPW1cIvg2eujyfaAqUsgjqdmTNgdBwGM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4006F802E3;
-	Fri, 17 Jul 2020 23:16:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C6E3F801D8;
+	Fri, 17 Jul 2020 23:49:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16F1CF8021D; Fri, 17 Jul 2020 23:16:04 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id BECE0F80217; Fri, 17 Jul 2020 23:49:42 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3638F8014E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 23:49:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3638F8014E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="2FsjmqEN"
+Received: from embeddedor (unknown [201.162.167.76])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AD70F80110
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 23:14:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AD70F80110
-IronPort-SDR: UxIAAC8p8ueCgGtT4Rn7pSz+6dBXIDqeW5qOYaVupTzvKkZWtCvxoBJ5IpV9syAxVCn+r/rSDi
- Y/lLjypvD6TA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9685"; a="129758216"
-X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; d="scan'208";a="129758216"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2020 14:13:52 -0700
-IronPort-SDR: Y5z9njGoqSh2h1a/lL+/P1Eed03NZrq9jPO286u30UcrsAtya8XSbae8odFw1ZoWT4YDjNjCii
- 9ISipjKeI6CA==
-X-IronPort-AV: E=Sophos;i="5.75,364,1589266800"; d="scan'208";a="282905799"
-Received: from toddjdav-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.254.77.240])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2020 14:13:51 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/6] ASoC: intel: board: sof_rt5682: Update rt1015 pll input
- clk freq
-Date: Fri, 17 Jul 2020 16:13:36 -0500
-Message-Id: <20200717211337.31956-6-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
-References: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
+ by mail.kernel.org (Postfix) with ESMTPSA id C2EA320759;
+ Fri, 17 Jul 2020 21:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1595022573;
+ bh=d6pg/moIc4Lfqu+IfBjkbjoSoRMlnQNHmTVvs1VG1nk=;
+ h=Date:From:To:Cc:Subject:From;
+ b=2FsjmqENNaKb2fIvhkjaY9xknfwSoNvX+heeZudSyESchWojQCWTVoy5V//d1bDev
+ ssv6gOfMQnPh8DaqKaf1XzTwnYClT/4M8zjFMmX0HpN/Tkl+BDyNPM80B0ThNsNZ+M
+ K651XniFOE0QEEJcqZ8ylRUhH6Dpr38HeVLNEPC0=
+Date: Fri, 17 Jul 2020 16:55:00 -0500
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH][next] ASoC: Intel: Skylake: Avoid the use of one-element array
+Message-ID: <20200717215500.GA13910@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,47 +91,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yong Zhi <yong.zhi@intel.com>
+One-element arrays are being deprecated[1]. Replace the one-element
+array with a simple value type 'u8 reserved'[2], once it seems this
+is just a placeholder for alignment.
 
-In commit d696a61413b4 ("ASoC: rt1015: Add condition to prevent SoC
-providing bclk in ratio of 50 times of sample rate."), PLL input at 50fs
-is no longer supported, the new recommended settings at 48Khz rate are:
+[1] https://github.com/KSPP/linux/issues/79
+[2] https://github.com/KSPP/linux/issues/86
 
-PLL input       SSP bclk
-------------------------
-64fs            3.073Mhz
-100fs           4.8Mhz
-
-(bclk update is reflected in topoplogy.)
-
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested-by: kernel test robot <lkp@intel.com>
+Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/0-day/skylake-20200717.md
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index cc8b0f26f724..61a61dcca82a 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -284,8 +284,15 @@ static int sof_rt1015_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 9889f728752c..5e93ad85e06d 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -97,7 +97,7 @@ struct skl_audio_data_format {
+ 	u8 number_of_channels;
+ 	u8 valid_bit_depth;
+ 	u8 sample_type;
+-	u8 reserved[1];
++	u8 reserved;
+ } __packed;
  
- 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		/* Set tdm/i2s1 master bclk ratio */
-+		ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
-+		if (ret < 0) {
-+			dev_err(card->dev, "failed to set bclk ratio\n");
-+			return ret;
-+		}
-+
- 		ret = snd_soc_dai_set_pll(codec_dai, 0, RT1015_PLL_S_BCLK,
--					  params_rate(params) * 50,
-+					  params_rate(params) * 64,
- 					  params_rate(params) * 256);
- 		if (ret < 0) {
- 			dev_err(card->dev, "failed to set pll\n");
+ struct skl_base_cfg {
 -- 
-2.25.1
+2.27.0
 
