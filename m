@@ -7,61 +7,66 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7CEBC433E8
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 08:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1EA2C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 08:20:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34D622074B
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 08:18:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 706FA2074B
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jul 2020 08:20:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i575HKRt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34D622074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CPIM/xiD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 706FA2074B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD8BC166E;
-	Fri, 17 Jul 2020 10:17:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD8BC166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02C02167D;
+	Fri, 17 Jul 2020 10:19:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02C02167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1594973928;
-	bh=+op2cGwW9qYLwQskSYGwnPYTsnRTVlrMeig5OyUoryw=;
+	s=default; t=1594974015;
+	bh=pzUN2Ov4biKzc5lYCqS8hlrROz0sJBM+ebPZ/iKV4SI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=i575HKRtksiS4d1KNVNBoj4TxZBOFfaDX+mWCUm7+ZcElEwuHG8a5EJTFeDHBGhND
-	 vHWnhUAn14aH2aSyf1WB5PQiLET6XE4IqDAlVAP+EU79Ui8vSKA56Y/7jglWi11msQ
-	 gUhfbuIWZz06SbviljFeJmTeKAseKAXdoaQhBepE=
+	b=CPIM/xiDc/jvtgSzO59ZdH0I7zlkFE5lxY3/YAdTlPUbqKfVQ+QgFSrRYhUyAC0Kn
+	 AnFS76REkM4JbA3ksmEmxb7s2LVBahLgXZFEy2s8hRjAmRl5mlLXRXmbevLyd8NlpC
+	 hDgMrY62K42wDUaUOR7q+RlCPmd6dve/WQhLdExg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32076F801D8;
-	Fri, 17 Jul 2020 10:17:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92108F8014E;
+	Fri, 17 Jul 2020 10:19:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7656F80217; Fri, 17 Jul 2020 10:17:56 +0200 (CEST)
-Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
+ id D752DF80227; Fri, 17 Jul 2020 10:19:22 +0200 (CEST)
+Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04841F80110
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 10:17:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04841F80110
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 811CDCCE162726C141B8;
- Fri, 17 Jul 2020 16:17:39 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Jul 2020
- 16:17:28 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <perex@perex.cz>, <tiwai@suse.com>, <anarsoul@gmail.com>
-Subject: [PATCH -next] ALSA: line6: Use kmemdup in podhd_set_monitor_level()
-Date: Fri, 17 Jul 2020 16:17:10 +0800
-Message-ID: <20200717081710.39180-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9F18F801D8
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 10:19:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9F18F801D8
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 536C352A645CA3F5BF09;
+ Fri, 17 Jul 2020 16:19:10 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 17 Jul 2020 16:19:02 +0800
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+To: <jbrunet@baylibre.com>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+ <perex@perex.cz>, <tiwai@suse.com>, <khilman@baylibre.com>,
+ <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2] ASoC: meson: fixes the missed kfree() for
+ axg_card_add_tdm_loopback
+Date: Fri, 17 Jul 2020 16:22:42 +0800
+Message-ID: <20200717082242.130627-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
+X-Originating-IP: [10.175.113.25]
 X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
- linux-kernel@vger.kernel.org
+Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ jingxiangfeng@huawei.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,32 +82,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use kmemdup rather than duplicating its implementation.
+axg_card_add_tdm_loopback() misses to call kfree() in an error path. We
+can use devm_kasprintf() to fix the issue, also improve maintainability.
+So use it instead.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Fixes: c84836d7f650 ("ASoC: meson: axg-card: use modern dai_link style")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 ---
- sound/usb/line6/podhd.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/meson/axg-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 1557483ec657..eef45f7fef0d 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -293,12 +293,10 @@ static void podhd_set_monitor_level(struct usb_line6_podhd *podhd, int value)
- 	};
- 	unsigned char *buf;
+diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+index 89f7f64747cd..47f2d93224fe 100644
+--- a/sound/soc/meson/axg-card.c
++++ b/sound/soc/meson/axg-card.c
+@@ -116,7 +116,7 @@ static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
  
--	buf = kmalloc(sizeof(msg), GFP_KERNEL);
-+	buf = kmemdup(msg, sizeof(msg), GFP_KERNEL);
- 	if (!buf)
- 		return;
+ 	lb = &card->dai_link[*index + 1];
  
--	memcpy(buf, msg, sizeof(msg));
--
- 	if (value < 0)
- 		value = 0;
+-	lb->name = kasprintf(GFP_KERNEL, "%s-lb", pad->name);
++	lb->name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-lb", pad->name);
+ 	if (!lb->name)
+ 		return -ENOMEM;
  
 -- 
 2.17.1
-
 
