@@ -2,66 +2,122 @@ Return-Path: <SRS0=PkW8=A5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E370C433DF
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 10:50:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84C42C433E1
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 21:25:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E7D520724
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 10:50:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D54C20691
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 21:25:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UbG25uos"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E7D520724
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y7HjiJH4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="E2lkvmrg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ndRnP7VR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D54C20691
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07C74850;
-	Sat, 18 Jul 2020 12:49:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07C74850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88E22850;
+	Sat, 18 Jul 2020 23:24:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88E22850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595069445;
-	bh=Cp846iRFgrp6YoE7qM3nqbJgQl+iNrBkYz+Ddh9vNqM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1595107544;
+	bh=V8dtsqx+VdXEAKzL4YWyBBVo5wTmjunW7JZi/vJZIak=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UbG25uosJZqT+9/5z9D2K39PL1bUhk+gC8FXyyrBDNrEIonTY+5NO2IeTpbtKyOXh
-	 CDciBHAM3uAG4E5tT4Z9nTfVYirjuYBCoUUKvmHuEJbrWDax7/w+SYwnHwFAbkAadm
-	 1937Q8VC6PseWG1kFeOuvJU3z3gv5ZM+UFKKi3IM=
+	b=Y7HjiJH4nB3L6WlnEWz2A9OYcZ0LzHb3WNQ3Hy0CcaNwzHPcvV4eOI+W8FtLS4E88
+	 8SMvyQ2LbXpPKDdwfVyCxCFfMotvzqIqAMxMUHLqE9EELEnFkkXw5UVbn4SRw8grxy
+	 0G+CD62RVTf3MdPUyaeuRJIZ30wrN/0+rXr8DRwU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84CDBF8014E;
-	Sat, 18 Jul 2020 12:49:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FFDBF8014E;
+	Sat, 18 Jul 2020 23:24:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81BD1F8016F; Sat, 18 Jul 2020 12:49:52 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 37B88F8016F; Sat, 18 Jul 2020 23:24:52 +0200 (CEST)
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
+ [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33202F8014C
- for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 12:49:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33202F8014C
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 30347B01E;
- Sat, 18 Jul 2020 10:49:54 +0000 (UTC)
-Date: Sat, 18 Jul 2020 12:49:49 +0200
-Message-ID: <s5hmu3xgks2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Junar Wohn <doomsheart@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fixed ALC298 sound bug by adding quirk
- for Samsung Notebook Pen S
-In-Reply-To: <CAHcbMh291aWDKiWSZoxXB4-Eru6OYRwGA4AVEdCZeYmVLo5ZxQ@mail.gmail.com>
-References: <CAHcbMh291aWDKiWSZoxXB4-Eru6OYRwGA4AVEdCZeYmVLo5ZxQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74FECF800E4
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 23:24:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74FECF800E4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="E2lkvmrg"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="ndRnP7VR"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 7116D5810DE;
+ Sat, 18 Jul 2020 17:24:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute3.internal (MEProxy); Sat, 18 Jul 2020 17:24:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ subject:to:cc:references:from:message-id:date:mime-version
+ :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=s
+ HEwXJQUgU9S74Ll25+cHaTeMsTz76blspps5t8z770=; b=E2lkvmrgmOhg6jvxZ
+ ksiN+QjHqFz/aIR5jIEQu4nKeAaiJdOPbXWO6+PWp3K69+C4IZUNNOq0RNNfqpNb
+ vaIua9I/YeKqqjqEd3kVsd/rSOh72aLo+EfAufByyHWWwoguCJGe3PAFk3RND2q8
+ FPSRRRdLNRwSCs9utPGA8fZFDHdd237fUhUpMhI1KMR9zMsz3+nPhahCUX75B10O
+ ZglYNZGbvF84mP8a/FjtwBpIz8oPgfM7fCeu3JAgdZAUI4NJN03EY8uj77q07aT5
+ IM4lmy1upV6Mq75UT6WIYcKAOoQsOQfbZOHZL2vdI1Sp/eLQ5nJxXh3EQrdphiLT
+ yn08w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:content-type
+ :date:from:in-reply-to:message-id:mime-version:references
+ :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm3; bh=sHEwXJQUgU9S74Ll25+cHaTeMsTz76blspps5t8z7
+ 70=; b=ndRnP7VRrrfY+m17sgAqH47arpZhXSq2xK9XmX28JS35JQE8hwGh0dWFg
+ WINdnjad5cNeC+xYLsMhbfWNXjCXQt4d4N5d7FS+rKnwXnRN560/Q6u+AHKW+JLi
+ NBqkK9WsY0ixtEp357eD/0HXDWsOsfVpqXxlXsPvl7vZwwqT3OzWsQ21/B2zp4vq
+ X0TTYjTAqOXbzk8ntrJdBILYye4Qt7oCUPJ0htcb/sLiarYddrlzw7uJ8PdBFaa8
+ 03XR9nZDmQCjWrrHjDzbOE/Qt6a2E8EGv3mvovf9sUTCLLcRF3oJ9m+nEu/uSThE
+ Kcy9xNhfKCJfH7JX+8qdsSXxcgA6A==
+X-ME-Sender: <xms:m2gTXz-fuC_JfmSyq9uxHla6nqomR1SOEbyQk66F5pBseFK203AWsQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrfeelgdduieduucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+ vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+ ftrfgrthhtvghrnhepgfelkeduveejtdejhfeiledvhfeggeeiieeklefhfeefffffffeg
+ udetteelieejnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+ hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+ nhgurdhorhhg
+X-ME-Proxy: <xmx:m2gTX_uDuOjWGzDr24tL4I-q4DAwPx1gAej0zW-tQysaXRVx6mdAsQ>
+ <xmx:m2gTXxAM6CnlPiBfNzSGdHxAvfUhMGnVRWhQTfz8KE9gSZetpY8b2A>
+ <xmx:m2gTX_fuRpYCj37uezXant-OtPA7zgCa3Suf5DCVOmEUr0y-9XT4JA>
+ <xmx:nWgTXxn6mUUtuAVJOAqDwh3m_y3x3oeWioYGomxGkhsscAEyFIrKww>
+Received: from [192.168.50.169]
+ (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+ by mail.messagingengine.com (Postfix) with ESMTPA id DA0DF3280059;
+ Sat, 18 Jul 2020 17:24:42 -0400 (EDT)
+Subject: Re: [linux-sunxi] [PATCH 10/16] arm: dts: sunxi: h3/h5: Add DAI node
+ for HDMI
+To: peron.clem@gmail.com, Maxime Ripard <mripard@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+References: <20200704113902.336911-1-peron.clem@gmail.com>
+ <20200704113902.336911-11-peron.clem@gmail.com>
+From: Samuel Holland <samuel@sholland.org>
+Message-ID: <290468b2-8e4f-3881-1bc5-7a154c74e2a6@sholland.org>
+Date: Sat, 18 Jul 2020 16:24:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200704113902.336911-11-peron.clem@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,21 +133,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 18 Jul 2020 10:23:15 +0200,
-Junar Wohn wrote:
+Clément,
+
+On 7/4/20 6:38 AM, Clément Péron wrote:
+> From: Marcus Cooper <codekipper@gmail.com>
 > 
-> Fixed no headphone sound bug on laptop Samsung Notebook Pen S (950SBE-951SBE),
-> by using existing patch in Linus' tree, commit 14425f1f521f (ALSA: hda/
-> realtek: Add quirk for Samsung Notebook).
-> This laptop uses the same ALC298 but different subsystem id 0x144dc812.
-> I added SND_PCI_QUIRK at sound/pci/hda/patch_realtek.c
+> Add the new DAI block for I2S2 which is used for HDMI audio.
 > 
-> Signed-off-by: Joonho Wohn <doomsheart@gmail.com>
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Clément Péron <peron.clem@gmail.com>
+> ---
+>  arch/arm/boot/dts/sunxi-h3-h5.dtsi | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> index 22d533d18992..9be13378d4df 100644
+> --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> @@ -662,6 +662,19 @@ i2s1: i2s@1c22400 {
+>  			status = "disabled";
+>  		};
+>  
+> +		i2s2: i2s@1c22800 {
+> +			#sound-dai-cells = <0>;
+> +			compatible = "allwinner,sun8i-h3-i2s";
+> +			reg = <0x01c22800 0x400>;
+> +			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
+> +			clock-names = "apb", "mod";
+> +			dmas = <&dma 27>;
+> +			resets = <&ccu RST_BUS_I2S2>;
+> +			dma-names = "tx";
 
-The patch couldn't be applied cleanly due to your MUA breaking lines,
-but I applied manually now as it's a simple oneliner.
+`make dtbs_check` reports:
 
+i2s@1c22800: dma-names:0: 'rx' was expected
+i2s@1c22800: dma-names: ['tx'] is too short
+i2s@1c22800: dmas: [[28, 27]] is too short
 
-thanks,
+Regards,
+Samuel
 
-Takashi
+> +			status = "disabled";
+> +		};
+> +
+>  		codec: codec@1c22c00 {
+>  			#sound-dai-cells = <0>;
+>  			compatible = "allwinner,sun8i-h3-codec";
+> 
+
