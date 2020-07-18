@@ -2,57 +2,66 @@ Return-Path: <SRS0=PkW8=A5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36BCEC433E0
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 07:22:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E370C433DF
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 10:50:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1E002074B
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 07:22:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E7D520724
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2020 10:50:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oZoPXTTx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1E002074B
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UbG25uos"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E7D520724
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DC38166E;
-	Sat, 18 Jul 2020 09:21:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DC38166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07C74850;
+	Sat, 18 Jul 2020 12:49:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07C74850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595056936;
-	bh=OsyX/2Ni5MN9reb2buLOoRn8jZpQSHA6HP6vb/ervyM=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1595069445;
+	bh=Cp846iRFgrp6YoE7qM3nqbJgQl+iNrBkYz+Ddh9vNqM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oZoPXTTx71KMsGcEdqOIXz0hCkbbaEUx7v9bGvwYfFWJWluUsb4pCh98PeoaJQZWZ
-	 4c440lI3DYzjx64VeLaVzm6pILhShoITI0EgHKwAbzKIOSl12WEU2OUwNo94BSSSGR
-	 6+dq92gnT+rwdI5MxbKOD3aLGmGGAShbTDMsc4DU=
+	b=UbG25uosJZqT+9/5z9D2K39PL1bUhk+gC8FXyyrBDNrEIonTY+5NO2IeTpbtKyOXh
+	 CDciBHAM3uAG4E5tT4Z9nTfVYirjuYBCoUUKvmHuEJbrWDax7/w+SYwnHwFAbkAadm
+	 1937Q8VC6PseWG1kFeOuvJU3z3gv5ZM+UFKKi3IM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7FFCF8014E;
-	Sat, 18 Jul 2020 09:21:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84CDBF8014E;
+	Sat, 18 Jul 2020 12:49:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9BA2F8016F; Sat, 18 Jul 2020 09:21:21 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id DDE78F800E4
- for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 09:21:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDE78F800E4
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1595056874223562002-webhooks-bot@alsa-project.org>
-References: <1595056874223562002-webhooks-bot@alsa-project.org>
-Subject: snd_pcm_avail() returned a value that is exceptionally large
-Message-Id: <20200718072121.E9BA2F8016F@alsa1.perex.cz>
-Date: Sat, 18 Jul 2020 09:21:21 +0200 (CEST)
+ id 81BD1F8016F; Sat, 18 Jul 2020 12:49:52 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33202F8014C
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 12:49:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33202F8014C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 30347B01E;
+ Sat, 18 Jul 2020 10:49:54 +0000 (UTC)
+Date: Sat, 18 Jul 2020 12:49:49 +0200
+Message-ID: <s5hmu3xgks2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Junar Wohn <doomsheart@gmail.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Fixed ALC298 sound bug by adding quirk
+ for Samsung Notebook Pen S
+In-Reply-To: <CAHcbMh291aWDKiWSZoxXB4-Eru6OYRwGA4AVEdCZeYmVLo5ZxQ@mail.gmail.com>
+References: <CAHcbMh291aWDKiWSZoxXB4-Eru6OYRwGA4AVEdCZeYmVLo5ZxQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,32 +77,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #68 was opened from reezer:
+On Sat, 18 Jul 2020 10:23:15 +0200,
+Junar Wohn wrote:
+> 
+> Fixed no headphone sound bug on laptop Samsung Notebook Pen S (950SBE-951SBE),
+> by using existing patch in Linus' tree, commit 14425f1f521f (ALSA: hda/
+> realtek: Add quirk for Samsung Notebook).
+> This laptop uses the same ALC298 but different subsystem id 0x144dc812.
+> I added SND_PCI_QUIRK at sound/pci/hda/patch_realtek.c
+> 
+> Signed-off-by: Joonho Wohn <doomsheart@gmail.com>
 
-I hope this is the right place to report this. This occurred in relation to a crash.
-http://alsa-project.org/db/?f=52e8505d884682fc06adac4ab8ce92a4ca3e0870
+The patch couldn't be applied cleanly due to your MUA breaking lines,
+but I applied manually now as it's a simple oneliner.
 
 
-```
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: snd_pcm_avail() returned a value that is exceptionally large: 177312 bytes (923 ms).
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: snd_pcm_dump():
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: Soft volume PCM
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: Control: PCM Playback Volume
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: min_dB: -51
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: max_dB: 0
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: resolution: 256
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c: Its setup is:
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   stream       : PLAYBACK
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   access       : MMAP_INTERLEAVED
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   format       : S16_LE
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   subformat    : STD
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   channels     : 2
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   rate         : 48000
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   exact rate   : 48000 (48000/1)
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   msbits       : 16
-E: [alsa-sink-ALC887-VD Analog] alsa-util.c:   buffer_size  : 4800
-```
+thanks,
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/68
-Repository URL: https://github.com/alsa-project/alsa-lib
+Takashi
