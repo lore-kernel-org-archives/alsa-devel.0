@@ -2,79 +2,67 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A063DC433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:35:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6E8EC433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:36:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29C7720773
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:35:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 730FF2073A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:36:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WktdHDOA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29C7720773
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WJVNEKIg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 730FF2073A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=al2klimov.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A55781612;
-	Mon, 20 Jul 2020 09:35:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A55781612
+	by alsa0.perex.cz (Postfix) with ESMTPS id F25721665;
+	Mon, 20 Jul 2020 09:35:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F25721665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595230555;
-	bh=djCaiCC2susAJqcCo2p1yLs+3eV9tLGnQo+XE/ZmrIU=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1595230604;
+	bh=Pl9yMpMmaVeGq00atYTotiYrLM1BGncxlMhk4p8vY+k=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=WktdHDOAqbVzTY8Y3Kr6IpsC/Yqfw5WH1OP4d9xYKB7tcXcLkdMy1WFp01zQzTBk5
-	 DPUmy3BPqQd7Gp/E36LK6l8WAcuAxUKS/59aHiWUO1DCBlFkUP/3rvzpTxHE5B8U9U
-	 i2pLYn8R7xerUrBj1w8U+JeTIeK+Pxuty0O0Hdeo=
+	b=WJVNEKIgHXx6HTXYESFLFK8gEIqnMAJ3tEDeXlFXDKYmxGLhp8+RQ7WAuXaCOTHA9
+	 CTxaOjrq+a9MrTcMlHjGlzen1sJ7UXt6cbzTaB3KiefilUg5KFSFcjanZx7i9sz5mH
+	 Z1zZJBTZ1cPmJxi3TzZx5tKb176wKvcgLNHggM+Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2AD1F8014C;
-	Mon, 20 Jul 2020 09:34:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8348AF8015D;
+	Mon, 20 Jul 2020 09:34:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B91CFF80217; Fri, 17 Jul 2020 09:50:31 +0200 (CEST)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 303BFF8014E; Sat, 18 Jul 2020 13:09:18 +0200 (CEST)
+Received: from smtp.al2klimov.de (smtp.al2klimov.de
+ [IPv6:2a01:4f8:c0c:1465::1])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1729F80110
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 09:50:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1729F80110
-Received: by mail-io1-f69.google.com with SMTP id q207so5982625iod.21
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2020 00:50:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=K0xpYgdDbOkmDKfy09w7rceR9YlCNd4wQzw3kksCOjY=;
- b=Q7VJdvEFpZfJZfYnLLkaY4XNGJeMacgjiN9jefXcooKRti7J+YuPW8s/Tj98N67aJq
- +m2Ga2gTeC2icMqaKKLbTENzyxG3zaF3Sf2AB2E4Yx3HakHcERLPmQyiYYgSz79+6m+I
- /zloUxEX0AUfapuEXItk7/Q4AA/85+Y/LlvBxDxfO0xCO/mMz8a5Iea4kc35xvIwitzY
- ctBtMNKvz4q6ngIXdE72I6lT95za8lC8s2baQ8HdshEvNzLJZbU0MwBie02RyVE+LtQT
- ZsyO6JPQ8kc7IAvnqW5DfeMuMt4NUeJkjgJhXpBuYL1xOHgZ4JPMqdP5WB6vf0GR8fcH
- Y5nQ==
-X-Gm-Message-State: AOAM530Pu4LPccZtnmTSiodLcVpRHSpH0g4FJKke5wKTyuOfyxfWCb3E
- jhE8B3L2+wEhRj1kgqUl7kSWdDN0ptMK6TkhhL3PiP94XhwX
-X-Google-Smtp-Source: ABdhPJy9MHfJA3K/uRrEETeJS7pFj1JuWZ14huXJU7C83Yu5kG+1/OkMiBmXRvPRmu6Qid9JxiIc0lXqZr1Syi7KxAIV/9gT8Cod
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26682F80141
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 13:09:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26682F80141
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+ by smtp.al2klimov.de (Postfix) with ESMTPA id E6C44BC069;
+ Sat, 18 Jul 2020 11:09:04 +0000 (UTC)
+From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To: peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: ti: Replace HTTP links with HTTPS ones
+Date: Sat, 18 Jul 2020 13:08:57 +0200
+Message-Id: <20200718110857.11520-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:ee15:: with SMTP id i21mr8402115ioh.25.1594972217317; 
- Fri, 17 Jul 2020 00:50:17 -0700 (PDT)
-Date: Fri, 17 Jul 2020 00:50:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000070a78f05aa9e6883@google.com>
-Subject: WARNING in snd_info_get_line
-From: syzbot <syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com>
-To: adobriyan@gmail.com, akpm@linux-foundation.org, 
- alsa-devel@alsa-project.org, colin.king@canonical.com, 
- linux-kernel@vger.kernel.org, perex@perex.cz, sfr@canb.auug.org.au, 
- syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+Authentication-Results: smtp.al2klimov.de;
+ auth=pass smtp.auth=aklimov@al2klimov.de
+ smtp.mailfrom=grandmaster@al2klimov.de
 X-Mailman-Approved-At: Mon, 20 Jul 2020 09:34:10 +0200
+Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,76 +78,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-syzbot found the following issue on:
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-HEAD commit:    f8456690 Merge tag 'clk-fixes-for-linus' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11539507100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e944500a36bc4d55
-dashboard link: https://syzkaller.appspot.com/bug?extid=e42d0746c3c3699b6061
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1531c5ab100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c399c7100000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6804 at sound/core/info.c:609 snd_info_get_line+0x3d0/0x450 sound/core/info.c:609
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 6804 Comm: syz-executor373 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- panic+0x264/0x7a0 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:235
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:255
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:542
-RIP: 0010:snd_info_get_line+0x3d0/0x450 sound/core/info.c:609
-Code: 0f 85 84 00 00 00 41 c6 45 00 00 31 ed 89 e8 48 83 c4 40 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 57 8a 3b fb eb 05 e8 50 8a 3b fb <0f> 0b bd 01 00 00 00 eb da 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c a3
-RSP: 0018:ffffc90001077a38 EFLAGS: 00010293
-RAX: ffffffff86390470 RBX: 0000000000000080 RCX: ffff888096156500
-RDX: 0000000000000000 RSI: ffffc90001077b10 RDI: ffff8880a1e30600
-RBP: ffffc90001077bc8 R08: dffffc0000000000 R09: ffffed10429a6594
-R10: ffffed10429a6594 R11: 0000000000000000 R12: ffff8880a2527908
-R13: ffffc90001077b10 R14: 1ffff110143c60c0 R15: ffff8880a1e30600
- snd_mixer_oss_proc_write+0x6d/0x670 sound/core/oss/mixer_oss.c:1179
- snd_info_text_entry_release+0xdf/0x1c0 sound/core/info.c:409
- close_pdeo+0x16c/0x310 fs/proc/inode.c:244
- proc_reg_release+0x17c/0x1c0 fs/proc/inode.c:561
- __fput+0x2f0/0x750 fs/file_table.c:281
- task_work_run+0x137/0x1c0 kernel/task_work.c:135
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0x601/0x1f80 kernel/exit.c:805
- do_group_exit+0x161/0x2d0 kernel/exit.c:903
- __do_sys_exit_group+0x13/0x20 kernel/exit.c:914
- __se_sys_exit_group+0x10/0x10 kernel/exit.c:912
- __x64_sys_exit_group+0x37/0x40 kernel/exit.c:912
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43eeb8
-Code: Bad RIP value.
-RSP: 002b:00007ffce5a0e308 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043eeb8
-RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
-RBP: 00000000004be6c8 R08: 00000000000000e7 R09: ffffffffffffffd0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00000000006d0180 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ sound/soc/ti/udma-pcm.c | 2 +-
+ sound/soc/ti/udma-pcm.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/ti/udma-pcm.c b/sound/soc/ti/udma-pcm.c
+index 39830caaaf7c..2ff0f518aba5 100644
+--- a/sound/soc/ti/udma-pcm.c
++++ b/sound/soc/ti/udma-pcm.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
++ *  Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com
+  *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+  */
+ 
+diff --git a/sound/soc/ti/udma-pcm.h b/sound/soc/ti/udma-pcm.h
+index 54111e7312c1..9ed588fd79b9 100644
+--- a/sound/soc/ti/udma-pcm.h
++++ b/sound/soc/ti/udma-pcm.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- *  Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com
++ *  Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com
+  */
+ 
+ #ifndef __UDMA_PCM_H__
+-- 
+2.27.0
+
