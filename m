@@ -7,60 +7,64 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6E8EC433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:36:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8C75C433E3
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:37:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 730FF2073A
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:36:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2BDDB2073A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:37:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WJVNEKIg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 730FF2073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z7XJvpsQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BDDB2073A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=al2klimov.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F25721665;
-	Mon, 20 Jul 2020 09:35:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F25721665
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1A5E15F9;
+	Mon, 20 Jul 2020 09:36:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1A5E15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595230604;
-	bh=Pl9yMpMmaVeGq00atYTotiYrLM1BGncxlMhk4p8vY+k=;
+	s=default; t=1595230637;
+	bh=rxuif/MThSmXSFHGHZ520a/xCJ1x4CCOjuUY+TSbjfA=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=WJVNEKIgHXx6HTXYESFLFK8gEIqnMAJ3tEDeXlFXDKYmxGLhp8+RQ7WAuXaCOTHA9
-	 CTxaOjrq+a9MrTcMlHjGlzen1sJ7UXt6cbzTaB3KiefilUg5KFSFcjanZx7i9sz5mH
-	 Z1zZJBTZ1cPmJxi3TzZx5tKb176wKvcgLNHggM+Y=
+	b=Z7XJvpsQ3NRv7A18WvmYdn/+K0nAtupiqrkCiZLXk/aus5HT4pAcodppmMC8Pc57E
+	 932FuwrNXT76C7istdD30E7a8D360OtOML+1AFahc52+TWKeXATkCgOh/dScekeu2J
+	 dAypmANfth1f/wGTfJ/E5p2aOe9MNcZbaY0h5ONg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8348AF8015D;
-	Mon, 20 Jul 2020 09:34:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA77DF8024A;
+	Mon, 20 Jul 2020 09:34:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 303BFF8014E; Sat, 18 Jul 2020 13:09:18 +0200 (CEST)
+ id 03332F8014E; Sat, 18 Jul 2020 13:12:28 +0200 (CEST)
 Received: from smtp.al2klimov.de (smtp.al2klimov.de
  [IPv6:2a01:4f8:c0c:1465::1])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26682F80141
- for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 13:09:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26682F80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6525EF80141
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 13:12:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6525EF80141
 Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
- by smtp.al2klimov.de (Postfix) with ESMTPA id E6C44BC069;
- Sat, 18 Jul 2020 11:09:04 +0000 (UTC)
+ by smtp.al2klimov.de (Postfix) with ESMTPA id 214F8BC073;
+ Sat, 18 Jul 2020 11:12:15 +0000 (UTC)
 From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To: peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ti: Replace HTTP links with HTTPS ones
-Date: Sat, 18 Jul 2020 13:08:57 +0200
-Message-Id: <20200718110857.11520-1-grandmaster@al2klimov.de>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl: Replace HTTP links with HTTPS ones
+Date: Sat, 18 Jul 2020 13:12:09 +0200
+Message-Id: <20200718111209.11760-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
+X-Spamd-Bar: ++++++
 Authentication-Results: smtp.al2klimov.de;
  auth=pass smtp.auth=aklimov@al2klimov.de
  smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 X-Mailman-Approved-At: Mon, 20 Jul 2020 09:34:10 +0200
 Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -109,34 +113,38 @@ Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
  If you apply the patch, please let me know.
 
 
- sound/soc/ti/udma-pcm.c | 2 +-
- sound/soc/ti/udma-pcm.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/imx-audmix.c | 4 ++--
+ sound/soc/fsl/imx-audmux.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/ti/udma-pcm.c b/sound/soc/ti/udma-pcm.c
-index 39830caaaf7c..2ff0f518aba5 100644
---- a/sound/soc/ti/udma-pcm.c
-+++ b/sound/soc/ti/udma-pcm.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
-+ *  Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com
-  *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
+index e09b45de0efd..96980cb0497f 100644
+--- a/sound/soc/fsl/imx-audmix.c
++++ b/sound/soc/fsl/imx-audmix.c
+@@ -6,8 +6,8 @@
+  * License. You may obtain a copy of the GNU General Public License
+  * Version 2 or later at the following locations:
+  *
+- * http://www.opensource.org/licenses/gpl-license.html
+- * http://www.gnu.org/copyleft/gpl.html
++ * https://www.opensource.org/licenses/gpl-license.html
++ * https://www.gnu.org/copyleft/gpl.html
   */
  
-diff --git a/sound/soc/ti/udma-pcm.h b/sound/soc/ti/udma-pcm.h
-index 54111e7312c1..9ed588fd79b9 100644
---- a/sound/soc/ti/udma-pcm.h
-+++ b/sound/soc/ti/udma-pcm.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- *  Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com
-+ *  Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com
-  */
+ #include <linux/module.h>
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 3ce85a43e08f..25c18b9e348f 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -5,7 +5,7 @@
+ // Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
+ //
+ // Initial development of this code was funded by
+-// Phytec Messtechnik GmbH, http://www.phytec.de
++// Phytec Messtechnik GmbH, https://www.phytec.de
  
- #ifndef __UDMA_PCM_H__
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
 -- 
 2.27.0
 
