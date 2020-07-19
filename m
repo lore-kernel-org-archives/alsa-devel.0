@@ -2,57 +2,93 @@ Return-Path: <SRS0=8d/u=A6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F036C433E1
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 01:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64926C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 02:54:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1119620882
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 01:47:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE2A72076A
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 02:54:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l+efHZWg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1119620882
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OwuITPXB";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JrH+loPf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE2A72076A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66C6615F9;
-	Sun, 19 Jul 2020 03:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66C6615F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58F3215F9;
+	Sun, 19 Jul 2020 04:53:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58F3215F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595123256;
-	bh=S62L8OB28usSewvl76985h1cg1fdMCcBVXBBNdPYDwk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1595127241;
+	bh=XNN6JOaS0jMzIy0CIn7nscNAGMP9b9wU+IDPksqWs58=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l+efHZWghiNgUBVea+jS/+SFJIays1X0e2wdRP34WSGx3IH/V4ApOkjJpeoBstgOV
-	 k4++ySmunGX6FrSTzYh3Q9Db/qBpPIKuw/3Fzl67uQVCZpPSlgOSCYdQg1wxWh4TRu
-	 65tf2GSMNWKN9ZW7JYFWCxTm4wbDjumG8N8AGV20=
+	b=OwuITPXBzRNcPZ6+JMTxSbIhcM+oySnly3nhXVA8ciYntE4U6NhAc+iM0PtC4uZ89
+	 Pz6adMOmQ21pNfcPpDUZYb0f6R8y1D58sW27tIiXb6rbJR6k070cGXdu0GjcyUuq5L
+	 B6g14Z9vCjnVkDqDqehoPkAoEc+FTuR8zDfKKtK4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB0EFF80141;
-	Sun, 19 Jul 2020 03:46:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D12E0F80141;
+	Sun, 19 Jul 2020 04:53:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66F69F801F5; Sun, 19 Jul 2020 03:46:43 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 9F741F800F5
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 03:46:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F741F800F5
+ id 26092F8014C; Sun, 19 Jul 2020 04:53:09 +0200 (CEST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C324EF800BF
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 04:53:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C324EF800BF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="JrH+loPf"
+Received: by mail-wr1-x442.google.com with SMTP id f18so14699444wrs.0
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2020 19:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=O5W9bBIaSXw0wY6EC2n0SEJT3neXg6OZEcQ6GpBeLoY=;
+ b=JrH+loPfN5OfjBmTfNUtN2dbhNK0VTgsAsyNTnF0JOcCVTjZIkUlcHt9+YEFEk96rA
+ a2RCCG7noTwp/tHqYXtq6LbtCHWKeis+xFPpkeWQ1N4oudScxMTbopBm0X0XO1gcqPoB
+ HaLlJO7m7ZnQeTVCek6mqX404tQSIO1GktFoBhDybvaLqBL0HmB1TkBMwWlco8YbvpWY
+ Jeq4D9VUUYjvTcCxfYZjMVTf1/DPMafre2Z+YeUhR+d+6NgNw5FXrxgMJ4KsXwwT5kj4
+ 4tuVFQJ73BaUZa1uy0aX+tKcG8iQmZqzFzvKLVXwbu6qQJ4YcECY56kgTeI4xPfVVH+b
+ Oh0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=O5W9bBIaSXw0wY6EC2n0SEJT3neXg6OZEcQ6GpBeLoY=;
+ b=WoQF7pt+Rqf7hoQx5hWb6QEQZAN2J1mx6jtCSvoz1DTMoT+PpMsTPoq9FE9/c4V7NF
+ Og+mpfRHvphJ7WnMgOXaDrxiEWITia6s3mAf1wdegQzOly7Pg1efe0aCQonDnXOR0vCl
+ bfZwATbx+Jxj4jxHwSDY0AiKUP+WLhiOZRq3Tx25rRv+ddrgAih7kItC8ic4uVpQmhCI
+ VWBFYUJGj7KWDX2CO59JCeT+YTmrgTGKrW3qO2g1Q118L4B6xuBte8NtbnVYEAlaikUE
+ +dcv/P/lweqsVx/8IqJcX3G6VfBvWUvf9UmIp+TwD5z2+f/72mfhhmXG5JHPdt7xsHUu
+ +NMg==
+X-Gm-Message-State: AOAM531l95OGPCmOWe3XnZWX4byh6ELObxVdW3wwdtIKmSK8qv5VOa8I
+ DlTXHRwUklYp88Txg35rSB6maGSXQr5GPAb5UtI=
+X-Google-Smtp-Source: ABdhPJzVnVzX1NZLH+r/GPPA38l3J7Xp5tSHja15vP4JUQbSnu3rEeoCEgnYy6SHo1q2jhN5ovtnfX1XLfmxROfLNjc=
+X-Received: by 2002:adf:f60a:: with SMTP id t10mr17378393wrp.64.1595127179650; 
+ Sat, 18 Jul 2020 19:52:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1595123194546633959-webhooks-bot@alsa-project.org>
-References: <1595123194546633959-webhooks-bot@alsa-project.org>
-Subject: Realtek ALC892 produces low volume garbled output.
-Message-Id: <20200719014643.66F69F801F5@alsa1.perex.cz>
-Date: Sun, 19 Jul 2020 03:46:43 +0200 (CEST)
+References: <tencent_2D17145034BA02B43C169473C02C4257AF06@qq.com>
+In-Reply-To: <tencent_2D17145034BA02B43C169473C02C4257AF06@qq.com>
+From: mnlife qiao <mnlife.qiao@gmail.com>
+Date: Sun, 19 Jul 2020 10:52:48 +0800
+Message-ID: <CAGjHXR3kE00vcr04YOp1BYEHEzO-Ppdzs8qnF7_f06rNG1uxaA@mail.gmail.com>
+Subject: [PATCH] ASoC: soc-jack: calling snd_soc_jack_report causes a null
+ pointer access
+To: lgirdwood@gmail.com, Jaroslav Kysela <perex@perex.cz>, 
+ open list <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, 
+ mnlife <mnlife@foxmail.com>, mnlife qiao <mnlife.qiao@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,72 +104,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #69 was opened from RoryO:
-
-I'm sorry if this isn't the correct project for this. I don't know if this problem is relevant to the Alsa project or the Linux kernel directly and I don't know how to find that out.
-
-Personal background
-=== 
-
-Programmer, experienced. First used Linux with Red Hat Linux 6 about 20 years ago. Mostly using Linux on the server side of things since. I'm not afraid to try things so have at it.
-
-Problem
-=== 
-
-PCM audio to device heavily distorted and extremely low volume. Happens with all applications. Works flawlessly with Windows. Bypassing PulseAudio using aplay or speaker-test does not help. Interestingly, playing a raw sine wave with speaker-test works fine! Therefore it's only PCM based output causing an issue. Even using something like VLC which has it's own codecs and outputs directly to the sound buffer exhibits this issue, so it's not a system codec issue. For example, this produces a perfectly fine sounding sine wave
-
-    speaker-test -l 3 -t sine -c 2
-
-And this produces nothing
-
-    speaker-test -l 3 -t wav -c 2
-
-If I play something on Spotify or Youtube and max out the volume I can barely hear some heavily distorted, clipped noise vaguely sounding like it should.
-
-I only have powered headphones for testing, no powered external speakers.
-
-Relevant details
-===
-
-Latest KDE neon, which is Ubuntu 18.04 base with the GUI switched from Gnome to KDE Plasma.
-
-Hardware is an Asus z170 motherboard, integrated Realtek/Intel audio. Using the rear green line out jack. I think there are headphone jack headers on the board as well, they are unused.
-
-lspci output
-
-    00:1f.3 Audio device: Intel Corporation 100 Series/C230 Series Chipset Family HD Audio Controller (rev 31)
-    01:00.1 Audio device: NVIDIA Corporation GP104 High Definition Audio Controller (rev a1)
-
-kernel messages regarding snd
-
-    snd_hda_intel 0000:01:00.1: Disabling MSI
-    snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio client
-    snd_hda_codec_realtek hdaudioC0D0: autoconfig for ALC892: line_outs=3 (0x14/0x15/0x16/0x0/0x0) type:line
-    snd_hda_codec_realtek hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-    snd_hda_codec_realtek hdaudioC0D0:    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
-    snd_hda_codec_realtek hdaudioC0D0:    mono: mono_out=0x0
-    snd_hda_codec_realtek hdaudioC0D0:    dig-out=0x11/0x1e
-    snd_hda_codec_realtek hdaudioC0D0:    inputs:
-    snd_hda_codec_realtek hdaudioC0D0:      Front Mic=0x19
-    snd_hda_codec_realtek hdaudioC0D0:      Rear Mic=0x18
-    snd_hda_codec_realtek hdaudioC0D0:      Line=0x1a
-
-Output of alsa-info dumping everything it knows about
-
-https://pastebin.com/wCif6Qzv
-
-I'm stuck and don't know where to go from here. Since utilities like aplay and sound-test bypass PulseAudio I think it's a problem with Alsa or the device driver for this card. That's as far as I can discover on my own.
-
-Things I have tried
-===
-
-- Using alsamixer, confirming all volume sliders at max, none are muted. Maxing out all sliders is when I can barely make out garbled output through powered headphones.
-- Using Ubuntu Mainline Kernel Installer, signing it properly, and upgrading the kernel from 5.3.0 to 5.7.9
-- Using `hdajackretask` and overriding jack plugin detection
-- Modifying PulseAudio config to not resample and force sampling to 44.1khz
-- Playing around with `pavucontrol` and kde equivalents, disabling the unused nvidia output and trying different jack configurations 
-
-I also found some modprobe settings for Realtek devices, however usually that information was usually about 6-8 years old and didn't look relevant.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/69
-Repository URL: https://github.com/alsa-project/alsa-lib
+> From: mnlife <mnlife@foxmail.com>
+>
+> When snd_soc_card_jack_new is not called or the call fails,
+> calling this function causes a null pointer access
+>
+> Signed-off-by: mnlife <mnlife@foxmail.com>
+> ---
+>  sound/soc/soc-jack.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+> index 0f1820f36b4d..51b799ee98b7 100644
+> --- a/sound/soc/soc-jack.c
+> +++ b/sound/soc/soc-jack.c
+> @@ -44,7 +44,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
+>         unsigned int sync = 0;
+>         int enable;
+>
+> -       if (!jack)
+> +       if (!jack || !jack->jack)
+>                 return;
+>         trace_snd_soc_jack_report(jack, mask, status);
+>
+> --
+> 2.17.1
+>
+>
