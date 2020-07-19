@@ -7,71 +7,71 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8824C433E1
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16579C433E4
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:10:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5AAA62176B
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:09:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 927F320684
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:10:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MBzWBINi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SLXT6wz6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AAA62176B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uf7YEjis";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ohp3Gz9O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 927F320684
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3E48850;
-	Sun, 19 Jul 2020 20:09:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3E48850
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA20B1661;
+	Sun, 19 Jul 2020 20:09:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA20B1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595182196;
-	bh=AECm8aRo4if2Mwp2fUFroMtIu2fKm+pnJnVg8GFh9e0=;
+	s=default; t=1595182249;
+	bh=omGVsh55COPRJTe7js4am35W7GNXDD8W9P79YYMV8h0=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=MBzWBINivbfDc6bPsdaFX8wk9i+AP59WghtLrmalZXmZYgxWpBNoCGOSDg6fcge57
-	 4uGV3/SzhKvmSJgu/g+mIBRwfpG2sXhbeQraJ1hnBZnFnmkx8BUA/bAK47p3SjInnZ
-	 c0aCTIUbZ7K8fJpJqXPTtXb4oPJBUEiEdSQLwUOA=
+	b=uf7YEjisKCspY2beRR1o3gL0fLYx6p98qlXmZiaEOqERG2nIeBKPOv2KS/y31xEGE
+	 EsnV2grFnMLVerrG2Pr3o8qSVNlirUsHdxtIbxJePxEOmYbYv/1Uwc6oqLVfeOTAjf
+	 hYhqlK6aP6+LFIxDKj8zTrHd033Dct8tPhPYAHbs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F236F80141;
-	Sun, 19 Jul 2020 20:09:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A44B8F8015C;
+	Sun, 19 Jul 2020 20:09:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A88BAF800BF; Sun, 19 Jul 2020 20:09:03 +0200 (CEST)
+ id D0E2EF8015D; Sun, 19 Jul 2020 20:09:10 +0200 (CEST)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 208C2F800BF
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 20:08:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 208C2F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16C30F8015C
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 20:09:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16C30F8015C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="SLXT6wz6"
+ header.b="Ohp3Gz9O"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
  Content-Description:In-Reply-To:References;
- bh=gKFpR8jAPzcYmVRLFz/KkDA7PdkxDdgLZsiVDwET5tU=; b=SLXT6wz61CjPbZIWN1cyqrV2g/
- Ejj3ZUrfnezTDp7Q1IidCJjVt4d2dNY9RL6t2K41cpGsKTZrGwWGyp8jE1YPPAfmZyuUQPLvnSy65
- r6H/EyaaQfHdl7uHLbJTDUe7MuJKDJTepxB7KDDQAwsYtrmqq09Ple4baY5RRogICGQOANUJRYKiB
- Bv9DES0NpM2NlIoWill8700heQlds4VlERuwCpwnVnEKbgDEU2R00sZOFWpltHSyDN9PzCXhDxkqE
- zEUtZGrPqvu9ZL5wC/wuhlMBbjwC7VMPQ7AkP2QSER6QUjrfI7V/e5XMwmsbGDQpb50xgGd32zJg9
- 0f9hV/Cg==;
+ bh=iPaO1K0bu25pKqHZF+1ghwNegEI493yaKvwjy1Nvz34=; b=Ohp3Gz9OWNM5lu4juCjHWk7mQV
+ wohMQnY5qMf9gLilT3+O1ya1aJ0LN6N+vQaiFLSlmdFWbs6aEtbwgvrOTq4fL+cAS3WR3Rnt//T26
+ ybnQIontyas3pSlQrPpm2qg9PlMcFnLGnblCXQZdC42THweTmoMs0areLFnqF8Dhsb00CHnPMPCvn
+ aXpEUpioD9Zwxq/C8IBMqK5PSihOgIAq8CnXlijcDNZUU53HPeVoygkk34FLRfBq6fycAl8S9W2ux
+ 8rceBVKvmv74KV9WGKk+fHlO8UNeEw704iF7cl7fpO+Wy5Va8TpvCLToIKDnwxtDbt57queUfoSLz
+ x3ihyPzA==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxDk3-0006D6-KE; Sun, 19 Jul 2020 18:08:52 +0000
+ id 1jxDkF-0006Dj-QY; Sun, 19 Jul 2020 18:09:04 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: asihpi: delete duplicated word
-Date: Sun, 19 Jul 2020 11:08:48 -0700
-Message-Id: <20200719180848.22572-1-rdunlap@infradead.org>
+Subject: [PATCH] ASoC: wcd9335.h: fix duplicated word
+Date: Sun, 19 Jul 2020 11:09:01 -0700
+Message-Id: <20200719180901.30720-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Randy Dunlap <rdunlap@infradead.org>
+Cc: Mark Brown <broonie@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,24 +87,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Delete the doubled word "of" in a comment.
+Fix the doubled word "in" in a comment by adding punctuation
+in 3 places and capitalization.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 ---
- sound/pci/asihpi/hpi_internal.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wcd9335.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- linux-next-20200717.orig/sound/pci/asihpi/hpi_internal.h
-+++ linux-next-20200717/sound/pci/asihpi/hpi_internal.h
-@@ -53,7 +53,7 @@ If handle is invalid *pPhysicalAddr is s
- u16 hpios_locked_mem_get_phys_addr(struct consistent_dma_area
- 	*locked_mem_handle, u32 *p_physical_addr);
+--- linux-next-20200717.orig/sound/soc/codecs/wcd9335.h
++++ linux-next-20200717/sound/soc/codecs/wcd9335.h
+@@ -4,9 +4,9 @@
+ #define __WCD9335_H__
  
--/** Get the CPU address of of memory represented by LockedMemHandle.
-+/** Get the CPU address of memory represented by LockedMemHandle.
- 
- If handle is NULL *ppvVirtualAddr is set to NULL and return 1
- */
+ /*
+- * WCD9335 register base can change according to the mode it works in
+- * in slimbus mode the reg base starts from 0x800
+- * in i2s/i2c mode the reg base is 0x0
++ * WCD9335 register base can change according to the mode it works in.
++ * In slimbus mode the reg base starts from 0x800.
++ * In i2s/i2c mode the reg base is 0x0.
+  */
+ #define WCD9335_REG(pg, r)	((pg << 8) | (r))
+ #define WCD9335_REG_OFFSET(r)	(r & 0xFF)
