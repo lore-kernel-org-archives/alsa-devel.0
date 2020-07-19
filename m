@@ -2,78 +2,78 @@ Return-Path: <SRS0=8d/u=A6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99BD8C433E1
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:13:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ADF6C433E2
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:14:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22BB0207EA
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:13:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14AD2207EA
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:14:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HpvBq+YA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="LIbzgJd2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22BB0207EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iWQQX6VO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="DZEmY2yk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14AD2207EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE7381698;
-	Sun, 19 Jul 2020 07:13:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE7381698
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3E0716B8;
+	Sun, 19 Jul 2020 07:13:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3E0716B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595135633;
-	bh=FpAbqsOY4P0bxJdO1g8CIASa9ZEie+g3TFs3jCexvXs=;
+	s=default; t=1595135651;
+	bh=+EgUVDHCSBSZBQX4c+4uwWS9p6/vzvnjGmGioBHKQbI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HpvBq+YAhpOBHML5l0dXpibExH9Kjn9Io8jCldusnmQMd7wr33jaBXAQ4j2fudrrf
-	 4vnq+LnEHFULoiLRiN1rNtFHvHoyeqiezwEpGP7tZAPfnBBVD7MXqG7v1/aJw3BTE7
-	 /NsOvmzY2Xw2Xk5gSCLdvyisrS6djFM3mITS8yKo=
+	b=iWQQX6VO0q9LykqREPdqSvLjvEuGr1gu2lgWHO9pQZx7YB27MkCdsJ5reANLEBmGp
+	 2xKtKT6KpAxHUpaQw3W0wuCHB+ZRjiWr0LgI0Q/0ze0H66Ja7EknORmJKi2L/f0xkK
+	 tftENRZ/MeqsjqVZo/wg2knYboRUvtkJdp+xRNcI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E958F802C2;
-	Sun, 19 Jul 2020 07:11:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 688B2F802C3;
+	Sun, 19 Jul 2020 07:11:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EACD3F802C3; Sun, 19 Jul 2020 07:10:58 +0200 (CEST)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
+ id 270BFF802DD; Sun, 19 Jul 2020 07:11:07 +0200 (CEST)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8207AF802BE
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 07:10:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8207AF802BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4285F802C3
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 07:11:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4285F802C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="LIbzgJd2"
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5f13d5a10000>; Sat, 18 Jul 2020 22:09:53 -0700
+ header.b="DZEmY2yk"
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5f13d5d60000>; Sat, 18 Jul 2020 22:10:46 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate102.nvidia.com (PGP Universal service);
- Sat, 18 Jul 2020 22:10:53 -0700
+ by hqpgpgate101.nvidia.com (PGP Universal service);
+ Sat, 18 Jul 2020 22:10:59 -0700
 X-PGP-Universal: processed;
- by hqpgpgate102.nvidia.com on Sat, 18 Jul 2020 22:10:53 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 19 Jul
- 2020 05:10:53 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sun, 19 Jul 2020 05:10:53 +0000
+ by hqpgpgate101.nvidia.com on Sat, 18 Jul 2020 22:10:59 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 19 Jul
+ 2020 05:10:58 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sun, 19 Jul 2020 05:10:58 +0000
 Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by
  hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
- id <B5f13d5d80002>; Sat, 18 Jul 2020 22:10:53 -0700
+ id <B5f13d5dd0000>; Sat, 18 Jul 2020 22:10:58 -0700
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
  <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
  <lgirdwood@gmail.com>
-Subject: [PATCH 03/10] ASoC: audio-graph: Support Codec with multiple endpoints
-Date: Sun, 19 Jul 2020 10:40:10 +0530
-Message-ID: <1595135417-16589-4-git-send-email-spujar@nvidia.com>
+Subject: [PATCH 04/10] ASoC: audio-graph: Support for empty end point
+Date: Sun, 19 Jul 2020 10:40:11 +0530
+Message-ID: <1595135417-16589-5-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
 References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
@@ -81,16 +81,16 @@ X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1595135393; bh=IQlK96/RLPdpEAiXfNPlP7nM1ld3WcJT6cego6KI2FA=;
+ t=1595135446; bh=HkkxSZUXnkgEAR4RIV6F9Lzbhbv2UzpeAGbctAXt9Ns=;
  h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
  In-Reply-To:References:X-NVConfidentiality:MIME-Version:
  Content-Type;
- b=LIbzgJd2p1LajQMZBTEYpLmcVs0GFAoawdRHl4VRVjAeBxatmdM5Ue5Th8E4E1VtO
- 0w1wxE16PmmQKIKDvLpYDE+Bk/euGPN65RgJv4A8yZkPDc9rLlfCfBmZJpo+7XJjzc
- 3qKF3ujedOVaINW0M3+oOYc60Ta91FsBgBZq67an6si1pTQdpQbw7X7xmAaO6Uyb7F
- qRQ2JyyBim2xGdqtU4G3x6LA00pCGtG6/Ty+729AcZ45nKhYRl0wzLtXl1i2yoSEnr
- 9DT0vaShq3QN7IqChWy+9RgbTm+WBYHaMxO47GZLsEaokhMnqVKEx0bGmUQEKR3YUg
- 0GPanwvJla+Kw==
+ b=DZEmY2ykCS8Ubg6zVBozW7F66VBiQWtvkLp+n1WZ6UBf2oYh/Sz+BB5210VG4vgrA
+ PRjrVyPESh5+Rf6ELlIV3Em/MAAfabAKzhPDuF56tjqKvRL47eBJY9Fw7nGWBJ73yw
+ nhpPiy3g6ZJo6PtQLk61mixb83ioSOfeMc6W3cjYauAwOP+4QpZW258Sd69Hp0nOTM
+ Egl83BDq0i9HjO66/DqEWlXgjKEQLIFlKt66tvSDv5pxEkm6E6EaE0OXjEvIrvFIwF
+ pWcpIvAfTnczcLiAvdR3NTwOwkK4MOGVUT/yPkt0FrbjziEx/Ak+GrRFEcYKIl/5r1
+ WfwMFb3Hkbp/w==
 Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, swarren@nvidia.com,
  Sameer Pujar <spujar@nvidia.com>, nwartikar@nvidia.com,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, viswanathl@nvidia.com,
@@ -112,100 +112,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If a Codec port has multiple endpoints, only first endpoint gets parsed
-and remaining are ignored. This can be fixed by removing 'dup_codec' flag
-passed to graph_dai_link_of_dpcm() and thus it loops over all endpoints
-of Codec. Similarly graph_count_dpcm() is updated as well.
+For open platforms, which can support pluggable audio cards, Codec
+endpoint is not fixed always. It actually depends on the compatible
+HW module that is going to be connected. From SoC side the given I/O
+interface is always available. Hence such links have fixed CPU endpoint
+but no Codec endpoint. This patch helps to support such links where
+user can populate Codec endpoint only and its fields in Platform DT
+depending on the plugged HW.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/generic/audio-graph-card.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 1e20562..b1903f9 100644
+index b1903f9..caa8a77 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -201,8 +201,7 @@ static void graph_parse_mclk_fs(struct device_node *top,
- static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 				  struct device_node *cpu_ep,
- 				  struct device_node *codec_ep,
--				  struct link_info *li,
--				  int dup_codec)
-+				  struct link_info *li)
- {
- 	struct device *dev = simple_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
-@@ -217,10 +216,6 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+@@ -216,6 +216,14 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
  	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
  	int ret;
  
--	/* Do it all CPU endpoint, and 1st Codec endpoint */
--	if (!li->cpu && dup_codec)
--		return 0;
--
++	/*
++	 * Codec endpoint can be NULL for pluggable audio HW.
++	 * Platform DT can populate the Codec endpoint depending on the
++	 * external codec.
++	 */
++	if (!ep)
++		return 0;
++
  	port	= of_get_parent(ep);
  	ports	= of_get_parent(port);
  	node	= of_graph_get_port_parent(ep);
-@@ -415,7 +410,7 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- 			int (*func_dpcm)(struct asoc_simple_priv *priv,
- 					 struct device_node *cpu_ep,
- 					 struct device_node *codec_ep,
--					 struct link_info *li, int dup_codec))
-+					 struct link_info *li))
- {
- 	struct of_phandle_iterator it;
- 	struct device *dev = simple_priv_to_dev(priv);
-@@ -424,7 +419,6 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- 	struct device_node *cpu_ep;
- 	struct device_node *codec_ep;
- 	struct device_node *codec_port;
--	struct device_node *codec_port_old = NULL;
- 	struct asoc_simple_data adata;
- 	uintptr_t dpcm_selectable = (uintptr_t)of_device_get_match_data(dev);
- 	int rc, ret;
-@@ -457,8 +451,7 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- 			if (dpcm_selectable &&
- 			    ((of_get_child_count(codec_port) > 1) ||
- 			     adata.convert_rate || adata.convert_channels))
--				ret = func_dpcm(priv, cpu_ep, codec_ep, li,
--						(codec_port_old == codec_port));
-+				ret = func_dpcm(priv, cpu_ep, codec_ep, li);
- 			/* else normal sound */
- 			else
- 				ret = func_noml(priv, cpu_ep, codec_ep, li);
-@@ -468,8 +461,6 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- 
- 			if (ret < 0)
- 				return ret;
--
--			codec_port_old = codec_port;
- 		}
- 	}
- 
-@@ -532,19 +523,18 @@ static int graph_count_noml(struct asoc_simple_priv *priv,
- static int graph_count_dpcm(struct asoc_simple_priv *priv,
- 			    struct device_node *cpu_ep,
- 			    struct device_node *codec_ep,
--			    struct link_info *li,
--			    int dup_codec)
-+			    struct link_info *li)
- {
- 	struct device *dev = simple_priv_to_dev(priv);
- 
-+	/* CPU */
- 	li->link++; /* 1xCPU-dummy */
+@@ -532,9 +540,11 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
  	li->dais++; /* 1xCPU */
  
--	if (!dup_codec) {
--		li->link++; /* 1xdummy-Codec */
--		li->conf++; /* 1xdummy-Codec */
--		li->dais++; /* 1xCodec */
--	}
-+	/* Codec */
-+	li->link++; /* 1xdummy-Codec */
-+	li->conf++; /* 1xdummy-Codec */
-+	li->dais++; /* 1xCodec */
+ 	/* Codec */
+-	li->link++; /* 1xdummy-Codec */
+-	li->conf++; /* 1xdummy-Codec */
+-	li->dais++; /* 1xCodec */
++	if (codec_ep) {
++		li->link++; /* 1xdummy-Codec */
++		li->conf++; /* 1xdummy-Codec */
++		li->dais++; /* 1xCodec */
++	}
  
  	dev_dbg(dev, "Count As DPCM\n");
  
