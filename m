@@ -2,76 +2,67 @@ Return-Path: <SRS0=8d/u=A6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3A5DC433E2
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 365F0C433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:51:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 347DB20684
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:11:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AF05C208DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:51:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h+pY0le5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="a4lS0k+G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 347DB20684
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vAUAfyKl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF05C208DB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC6081673;
-	Sun, 19 Jul 2020 20:10:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC6081673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27EB7825;
+	Sun, 19 Jul 2020 20:50:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27EB7825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595182297;
-	bh=cZTeVh42HTvFTJ1V8ck6Z80hfY8e3VwHYXm5QSKDf6o=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=h+pY0le5Jrc3oajgS0ZrfgE3pfpXAps1UHn6cDfmFJjsjExgamUmXCkbHy2YDgjuf
-	 6j6dJR+/5DratVTsSb2C4aZtNOVtmp8lt3ugRXucC1aR1Xiu7PlPYsnrxldYX6Q8Ap
-	 pEKeAzGFhaIa9olq52T0+SoJ1w8COvqT4Knpmvyg=
+	s=default; t=1595184688;
+	bh=AU0xv7WS1CLQomwyhynuLz27irEfF51zLtgfFTUAn4o=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=vAUAfyKlTPV2saVYN3pA5KTgaG8oO37cL9NZ0cMi/u8FEixpe1HQmQJ8kwuD6pouk
+	 wcwHASzc1fys3mt4PfnuizLAqjqVQZerTbXZ8haf80sttXHQ16iJIZ//vuv0ELLFeL
+	 Fh2zk7u007hUdVchYflQkMJya3rZgTMn1Reb0/jQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB0B5F801F5;
-	Sun, 19 Jul 2020 20:09:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9ADBFF80141;
+	Sun, 19 Jul 2020 20:50:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8242F80161; Sun, 19 Jul 2020 20:09:28 +0200 (CEST)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C4BB3F8014C; Sun, 19 Jul 2020 20:50:35 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3341EF80161
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 20:09:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3341EF80161
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="a4lS0k+G"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=G2g4Ceb7iWRskTszXh5u/2+ZaJlCDCsfgNYhSicznHw=; b=a4lS0k+GTcKGcQ0AilLiU1+vgJ
- q8FcMUxsztwUZTY6eoNtCDa18NjmGUf/a4dzysFju4jYG2WcOlyX/qCyRG7yN2mdkLRb7hjh3sWSe
- hHW8fToSdOkM3hq/0eLPc7hzbGC2KTzTFaNcuzqVoq0CH7JkkQ8mxv8Q1WtLH+Qmqfp3ZdOoNLaZ8
- RqGiokGkt8Ct5lhlPKXZIdWcl8oStBvMkb+c975sDsSeDFlJuRCiw2xgEzq9ZdxcVFxKY/wmU3qby
- uR5TRaB9ZOtF5Bpk8GVNy/G3k99yftRmtaLQFwdpQB9ioTe3WOhEJds4hTLOrgsuxC/iaVIFejJyv
- eiPmWF6Q==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
- by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxDkS-0006EF-P7; Sun, 19 Jul 2020 18:09:17 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: tegra20_das.h: delete duplicated words
-Date: Sun, 19 Jul 2020 11:09:12 -0700
-Message-Id: <20200719180912.30770-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Stephen Warren <swarren@nvidia.com>, alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id B02A5F800F5
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 20:50:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B02A5F800F5
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 6957EAAC7;
+ Sun, 19 Jul 2020 18:50:34 +0000 (UTC)
+Date: Sun, 19 Jul 2020 20:50:28 +0200
+Message-ID: <s5hft9ngwzv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: Re: [PATCH for v5.9] ALSA: Replace HTTP links with HTTPS ones
+In-Reply-To: <20200719151705.59624-1-grandmaster@al2klimov.de>
+References: <20200719151705.59624-1-grandmaster@al2klimov.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, andrew@adoakley.name, corbet@lwn.net,
+ linux-kernel@vger.kernel.org, gustavo@embeddedor.com,
+ linux-doc@vger.kernel.org, chris@boyle.name, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,32 +78,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Delete the doubled word "to" in two comments.
+On Sun, 19 Jul 2020 17:17:05 +0200,
+Alexander A. Klimov wrote:
+> 
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely
+>  or at least not (just) HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+>  Sorry again to all maintainers who complained about subject lines.
+>  Now I realized that you want an actually perfect prefixes,
+>  not just subsystem ones.
+>  I tried my best...
+>  And yes, *I could* (at least half-)automate it.
+>  Impossible is nothing! :)
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Stephen Warren <swarren@nvidia.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/tegra/tegra20_das.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied this one now.  Thanks!
 
---- linux-next-20200717.orig/sound/soc/tegra/tegra20_das.h
-+++ linux-next-20200717/sound/soc/tegra/tegra20_das.h
-@@ -91,14 +91,14 @@ struct tegra20_das {
-  */
- 
- /*
-- * Connect a DAP to to a DAC
-+ * Connect a DAP to a DAC
-  * dap_id: DAP to connect: TEGRA20_DAS_DAP_ID_*
-  * dac_sel: DAC to connect to: TEGRA20_DAS_DAP_SEL_DAC*
-  */
- extern int tegra20_das_connect_dap_to_dac(int dap_id, int dac_sel);
- 
- /*
-- * Connect a DAP to to another DAP
-+ * Connect a DAP to another DAP
-  * dap_id: DAP to connect: TEGRA20_DAS_DAP_ID_*
-  * other_dap_sel: DAP to connect to: TEGRA20_DAS_DAP_SEL_DAP*
-  * master: Is this DAP the master (1) or slave (0)
+
+Takashi
