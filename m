@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8398C433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3A58C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:17:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31563207EA
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:12:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 54FAD2065F
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:17:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NgasNOOJ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="ByEz/6BE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31563207EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mOAqDsEz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="QdXOS+uA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54FAD2065F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB35A1698;
-	Sun, 19 Jul 2020 07:11:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB35A1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAECF1667;
+	Sun, 19 Jul 2020 07:16:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAECF1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595135550;
-	bh=A1o5qKgVYKJ/xkUDkOFROFNGzgFed098PGhOJMTiZBM=;
+	s=default; t=1595135837;
+	bh=9mkcj1R3uUvyN2JJubu0dIh2XOMsOHFzWP4vNfBAXu8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NgasNOOJnhsK099tnP2bOgHNnDOtuPNJRJb2aR5zylqeA62kqS3pKfXh6IdJRKF7c
-	 Int8CZVjcJhvLEDkAAHimT9tCGP2mMRKcnUnPsoYrLD3aGQn58z773X5mfGZdYQl4F
-	 V2C8ZVmLbgWCm1H3mSFV6xI0sK67aLmbKn/BPaSo=
+	b=mOAqDsEzX+33qyrK1Desn5xOnYgBxKEzz0wYI8JjQXNtVmova3yBf6IzYh56Z7l+q
+	 wjzWTYhmUio++nX/rhAopTsE3g9ji81iKbpLJHTXyVgmt9PzYcqg8pjB99HNQsVcrX
+	 YLCRIhiEVS1PTg8OQK5kDw3pMOGVVptKgJj9XIFo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 266ECF80161;
-	Sun, 19 Jul 2020 07:10:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 603B0F802EC;
+	Sun, 19 Jul 2020 07:11:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25A69F80161; Sun, 19 Jul 2020 07:10:48 +0200 (CEST)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 3E1AAF80315; Sun, 19 Jul 2020 07:11:30 +0200 (CEST)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BF30F800BF
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 07:10:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BF30F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF08AF802EC
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 07:11:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF08AF802EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="ByEz/6BE"
+ header.b="QdXOS+uA"
 Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5f13d55d0000>; Sat, 18 Jul 2020 22:08:45 -0700
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5f13d5f00001>; Sat, 18 Jul 2020 22:11:12 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
  by hqpgpgate101.nvidia.com (PGP Universal service);
- Sat, 18 Jul 2020 22:10:43 -0700
+ Sat, 18 Jul 2020 22:11:25 -0700
 X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Sat, 18 Jul 2020 22:10:43 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 19 Jul
- 2020 05:10:43 +0000
+ by hqpgpgate101.nvidia.com on Sat, 18 Jul 2020 22:11:25 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 19 Jul
+ 2020 05:11:24 +0000
 Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sun, 19 Jul 2020 05:10:43 +0000
+ Transport; Sun, 19 Jul 2020 05:11:24 +0000
 Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by
  hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
- id <B5f13d5ce0000>; Sat, 18 Jul 2020 22:10:42 -0700
+ id <B5f13d5f70002>; Sat, 18 Jul 2020 22:11:24 -0700
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
  <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
  <lgirdwood@gmail.com>
-Subject: [PATCH 01/10] ASoC: soc-core: Fix component name_prefix parsing
-Date: Sun, 19 Jul 2020 10:40:08 +0530
-Message-ID: <1595135417-16589-2-git-send-email-spujar@nvidia.com>
+Subject: [PATCH 09/10] arm64: tegra: Audio graph header for Tegra210
+Date: Sun, 19 Jul 2020 10:40:16 +0530
+Message-ID: <1595135417-16589-10-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
 References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
@@ -81,16 +81,16 @@ X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1595135325; bh=5y7aZKckpYdh2GS8YUFzzQYZi2h0v7YK3voGlENG0MQ=;
+ t=1595135472; bh=BoqMFeYeBIo2NN4Un+oGYe1Z1EDA0N/2i1ZnSzyjBec=;
  h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
  In-Reply-To:References:X-NVConfidentiality:MIME-Version:
  Content-Type;
- b=ByEz/6BE7eJm2OFQa6CL2MPwS/fluhiCesbfw2n9XrsFvDGjY2W6UNBaUAX3a++Qs
- kYrdjldoOctwjLA7psAqQMSHMoUYwvHYVrM0PIWC0pd2Llh3Co1b7tqATkbXqn54UF
- hSMpmxMA/YHH0LPSYeVC/6aRShbQva6tasPFl1eff1K8IvvM448PWgYGd53uhuhJsU
- v7HoJEgv0hPFqNjE4Q84jOK0jpCvLnxCEBr6BkNFrFW7G/TQTf4ZzUYZGLL5+JROuP
- 5mgSci5XZsLqd71aJKqDo0ER+A5Cjka3jArfzEeI+fTgxB/feud3RZFNaFHQzMQFAK
- C/XMg618Lw5Ow==
+ b=QdXOS+uA1JlhOToyqsSc9yVmKtupqvdYyiyANhpm9E0N2+ei2QWjbpuqJiAwqREI7
+ bVq7O8xZ3Pzow7QYxn+B5dNKS6XquCaI/cdooiKCbJl5OCmGMK4gqco9oQ4etJlrD0
+ OteEhDsrq7G7rEwsyfn2I8SltHhCXw96LGZYU4IR2bF2ncljOhP3NykUVsImA5exmx
+ dlAAIXrew186U0uA7LhlJQB7DgkileL0k5Z1NR2gIp5yzET9qwQrInCLltzof0FdIj
+ CTuwDTXQ/cE7I21GWVvD+AcOBU8NKk/GyAiiR4nWTlBqRn/cmXhpogd/NeGejdM8gx
+ 0qQiylvmBIhXw==
 Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, swarren@nvidia.com,
  Sameer Pujar <spujar@nvidia.com>, nwartikar@nvidia.com,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, viswanathl@nvidia.com,
@@ -112,31 +112,143 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The "prefix" can be defined in DAI link node or it can be specified as
-part of the component node itself. Currently "sound-name-prefix" defined
-in a component is not taking effect. Actually the property is not getting
-parsed. It can be fixed by parsing "sound-name-prefix" property whenever
-"prefix" is missing in DAI link Codec node.
+Expose a header which describes DT bindings required to use audio-graph
+based sound card. All Tegra210 based platforms can include this header
+and add platform specific information. Currently, from SoC point of view,
+all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/soc-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 120 +++++++++++++++++++++
+ 1 file changed, 120 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7c58e45..a4efcbe 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1110,7 +1110,8 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
- 	for (i = 0; i < card->num_configs; i++) {
- 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
- 
--		if (snd_soc_is_matching_component(&map->dlc, component)) {
-+		if (snd_soc_is_matching_component(&map->dlc, component) &&
-+		    map->name_prefix) {
- 			component->name_prefix = map->name_prefix;
- 			return;
- 		}
+diff --git a/arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi b/arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
+new file mode 100644
+index 0000000..1cf2c87
+--- /dev/null
++++ b/arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/ {
++	tegra_sound {
++		status = "disabled";
++
++		compatible = "audio-graph-cc-card";
++
++		clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
++			 <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
++			 <&tegra_car TEGRA210_CLK_EXTERN1>;
++		clock-names = "pll_a", "plla_out0", "aud_mclk";
++
++		assigned-clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
++				  <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
++				  <&tegra_car TEGRA210_CLK_EXTERN1>;
++		assigned-clock-parents = <0>, <0>, <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
++		assigned-clock-rates = <368640000>, <49152000>, <12288000>;
++	};
++};
++
++&tegra_admaif {
++	admaif_port: port {
++		admaif0: endpoint@0 {
++			remote-endpoint = <&xbar_admaif0>;
++		};
++		admaif1: endpoint@1 {
++			remote-endpoint = <&xbar_admaif1>;
++		};
++		admaif2: endpoint@2 {
++			remote-endpoint = <&xbar_admaif2>;
++		};
++		admaif3: endpoint@3 {
++			remote-endpoint = <&xbar_admaif3>;
++		};
++		admaif4: endpoint@4 {
++			remote-endpoint = <&xbar_admaif4>;
++		};
++		admaif5: endpoint@5 {
++			remote-endpoint = <&xbar_admaif5>;
++		};
++		admaif6: endpoint@6 {
++			remote-endpoint = <&xbar_admaif6>;
++		};
++		admaif7: endpoint@7 {
++			remote-endpoint = <&xbar_admaif7>;
++		};
++		admaif8: endpoint@8 {
++			remote-endpoint = <&xbar_admaif8>;
++		};
++		admaif9: endpoint@9 {
++			remote-endpoint = <&xbar_admaif9>;
++		};
++	};
++};
++
++&tegra_ahub {
++	port@0 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		/*
++		 * Audio Crossbar Codec endpoints.
++		 * Connected with FE endpoints.
++		 */
++
++		xbar_admaif0: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&admaif0>;
++		};
++		xbar_admaif1: endpoint@1 {
++			reg = <1>;
++			remote-endpoint = <&admaif1>;
++		};
++		xbar_admaif2: endpoint@2 {
++			reg = <2>;
++			remote-endpoint = <&admaif2>;
++		};
++		xbar_admaif3: endpoint@3 {
++			reg = <3>;
++			remote-endpoint = <&admaif3>;
++		};
++		xbar_admaif4: endpoint@4 {
++			reg = <4>;
++			remote-endpoint = <&admaif4>;
++		};
++		xbar_admaif5: endpoint@5 {
++			reg = <5>;
++			remote-endpoint = <&admaif5>;
++		};
++		xbar_admaif6: endpoint@6 {
++			reg = <6>;
++			remote-endpoint = <&admaif6>;
++		};
++		xbar_admaif7: endpoint@7 {
++			reg = <7>;
++			remote-endpoint = <&admaif7>;
++		};
++		xbar_admaif8: endpoint@8 {
++			reg = <8>;
++			remote-endpoint = <&admaif8>;
++		};
++		xbar_admaif9: endpoint@9 {
++			reg = <9>;
++			remote-endpoint = <&admaif9>;
++		};
++	};
++
++	xbar_port: port@1 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		/*
++		 * Audio crossbar CPU endpoints:
++		 * Describe connections to HW accelerators (which will
++		 * be addded going forward) and I/O interfaces (which
++		 * are specified in Platform DT files).
++		 */
++	};
++};
 -- 
 2.7.4
 
