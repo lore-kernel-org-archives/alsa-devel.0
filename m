@@ -2,102 +2,76 @@ Return-Path: <SRS0=8d/u=A6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62427C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8824C433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:09:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF37F2065F
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 05:17:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AAA62176B
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2020 18:09:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kCLq8xZN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="c6Y2RE15"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF37F2065F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MBzWBINi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SLXT6wz6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AAA62176B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7712C169F;
-	Sun, 19 Jul 2020 07:16:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7712C169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3E48850;
+	Sun, 19 Jul 2020 20:09:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3E48850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595135862;
-	bh=XkN2GztU65g62cRxVfTtmhz3xEjKMnr0wmcGBB23nzE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=kCLq8xZNtSPnMkq95o/z/S+W8ygiPSEHDI8spz8Lp+OwfKPR5M9qo924nf4Kp9rcV
-	 K7JMtmVxKpl3I6L+hIF0cCq8KUgXABiVR4BwjTP1GCEVJOd/kiHKVnh6AzsTH5T1gC
-	 T6umxCbFkuHgvpjc+9QmiEdZk7rIE6FSBcw8qBSg=
+	s=default; t=1595182196;
+	bh=AECm8aRo4if2Mwp2fUFroMtIu2fKm+pnJnVg8GFh9e0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MBzWBINivbfDc6bPsdaFX8wk9i+AP59WghtLrmalZXmZYgxWpBNoCGOSDg6fcge57
+	 4uGV3/SzhKvmSJgu/g+mIBRwfpG2sXhbeQraJ1hnBZnFnmkx8BUA/bAK47p3SjInnZ
+	 c0aCTIUbZ7K8fJpJqXPTtXb4oPJBUEiEdSQLwUOA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EF5BF8031A;
-	Sun, 19 Jul 2020 07:11:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F236F80141;
+	Sun, 19 Jul 2020 20:09:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C223F80321; Sun, 19 Jul 2020 07:11:35 +0200 (CEST)
-Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
- [216.228.121.65])
+ id A88BAF800BF; Sun, 19 Jul 2020 20:09:03 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00107F80308
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 07:11:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00107F80308
+ by alsa1.perex.cz (Postfix) with ESMTPS id 208C2F800BF
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 20:08:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 208C2F800BF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="c6Y2RE15"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5f13d5f50000>; Sat, 18 Jul 2020 22:11:17 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Sat, 18 Jul 2020 22:11:30 -0700
-X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Sat, 18 Jul 2020 22:11:30 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 19 Jul
- 2020 05:11:30 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sun, 19 Jul 2020 05:11:30 +0000
-Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by
- hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
- id <B5f13d5fd0000>; Sat, 18 Jul 2020 22:11:29 -0700
-From: Sameer Pujar <spujar@nvidia.com>
-To: <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
- <lgirdwood@gmail.com>
-Subject: [PATCH 10/10] arm64: tegra: Audio graph sound card for Jetson Nano
- and TX1
-Date: Sun, 19 Jul 2020 10:40:17 +0530
-Message-ID: <1595135417-16589-11-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
-References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
-X-NVConfidentiality: public
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="SLXT6wz6"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=gKFpR8jAPzcYmVRLFz/KkDA7PdkxDdgLZsiVDwET5tU=; b=SLXT6wz61CjPbZIWN1cyqrV2g/
+ Ejj3ZUrfnezTDp7Q1IidCJjVt4d2dNY9RL6t2K41cpGsKTZrGwWGyp8jE1YPPAfmZyuUQPLvnSy65
+ r6H/EyaaQfHdl7uHLbJTDUe7MuJKDJTepxB7KDDQAwsYtrmqq09Ple4baY5RRogICGQOANUJRYKiB
+ Bv9DES0NpM2NlIoWill8700heQlds4VlERuwCpwnVnEKbgDEU2R00sZOFWpltHSyDN9PzCXhDxkqE
+ zEUtZGrPqvu9ZL5wC/wuhlMBbjwC7VMPQ7AkP2QSER6QUjrfI7V/e5XMwmsbGDQpb50xgGd32zJg9
+ 0f9hV/Cg==;
+Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jxDk3-0006D6-KE; Sun, 19 Jul 2020 18:08:52 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] sound: asihpi: delete duplicated word
+Date: Sun, 19 Jul 2020 11:08:48 -0700
+Message-Id: <20200719180848.22572-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1595135477; bh=7jOO8qtQ+67irHoTVwSaVNxkwxk1t+NtkaWFSQHqTpA=;
- h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
- In-Reply-To:References:X-NVConfidentiality:MIME-Version:
- Content-Type;
- b=c6Y2RE15QRDjlXsVjo+wXE1ds/7X7mlHRx8RZ7b+Cy2QJws9dW2HhD7ICvhgsprCe
- bdP+0PHdJAqFDUJbxDLAXQDd70wF0iK6YreWfWlFcvJY8QOcTmlayr18YMmtaROrP1
- gFSijCQ4gmajz98AjBxyOURG/xm6HB9Fv5MXHi3LXurUSxCqF47s3vJF/dnaAS/5Xq
- AvO9vNOZtK1yWkHSReRi/ZtMD/FgNe+bb/7Nl56TKnnbO8Y6qhYLLo0Y3WrZEJUq6m
- I3Ngg4VPhN1GQ+bq1GdLUTgZ8VCaToZEVz2krsnydoqs58dDzoChhhTvtpURIyANDl
- dQxFVCuR5PKSQ==
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, swarren@nvidia.com,
- Sameer Pujar <spujar@nvidia.com>, nwartikar@nvidia.com,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, viswanathl@nvidia.com,
- sharadg@nvidia.com, thierry.reding@gmail.com, atalambedu@nvidia.com,
- linux-tegra@vger.kernel.org, rlokhande@nvidia.com, mkumard@nvidia.com,
- dramesh@nvidia.com
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ Randy Dunlap <rdunlap@infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,357 +87,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Enable support for audio-graph based sound card on Jetson-Nano and
-Jetson-TX1. Depending on the platform, required I/O interfaces are
-enabled.
+Delete the doubled word "of" in a comment.
 
- * Jetson-Nano: Enable I2S3, I2S4, DMIC1 and DMIC2.
- * Jetson-TX1: Enable all I2S and DMIC interfaces.
-
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 ---
- arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 196 +++++++++++++++++++++
- arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 110 ++++++++++++
- 2 files changed, 306 insertions(+)
+ sound/pci/asihpi/hpi_internal.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-index 56adf28..d228f02 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-@@ -3,6 +3,7 @@
+--- linux-next-20200717.orig/sound/pci/asihpi/hpi_internal.h
++++ linux-next-20200717/sound/pci/asihpi/hpi_internal.h
+@@ -53,7 +53,7 @@ If handle is invalid *pPhysicalAddr is s
+ u16 hpios_locked_mem_get_phys_addr(struct consistent_dma_area
+ 	*locked_mem_handle, u32 *p_physical_addr);
  
- #include "tegra210-p2180.dtsi"
- #include "tegra210-p2597.dtsi"
-+#include "tegra210-audio-graph.dtsi"
+-/** Get the CPU address of of memory represented by LockedMemHandle.
++/** Get the CPU address of memory represented by LockedMemHandle.
  
- / {
- 	model = "NVIDIA Jetson TX1 Developer Kit";
-@@ -126,4 +127,199 @@
- 			status = "okay";
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		dais = /* FE */
-+		       <&admaif_port>,
-+		       /* Router */
-+		       <&xbar_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s1_port>, <&i2s2_port>, <&i2s3_port>, <&i2s4_port>, <&i2s5_port>,
-+		       <&dmic1_port>, <&dmic2_port>, <&dmic3_port>;
-+
-+		label = "jetson-tx1-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	port@1 {
-+		xbar_i2s1: endpoint@a {
-+			reg = <0xa>;
-+			remote-endpoint = <&i2s1_cif>;
-+		};
-+		xbar_i2s2: endpoint@b {
-+			reg = <0xb>;
-+			remote-endpoint = <&i2s2_cif>;
-+		};
-+		xbar_i2s3: endpoint@c {
-+			reg = <0xc>;
-+			remote-endpoint = <&i2s3_cif>;
-+		};
-+		xbar_i2s4: endpoint@d {
-+			reg = <0xd>;
-+			remote-endpoint = <&i2s4_cif>;
-+		};
-+		xbar_i2s5: endpoint@e {
-+			reg = <0xe>;
-+			remote-endpoint = <&i2s5_cif>;
-+		};
-+		xbar_dmic1: endpoint@f {
-+			reg = <0xf>;
-+			remote-endpoint = <&dmic1_cif>;
-+		};
-+		xbar_dmic2: endpoint@10 {
-+			reg = <0x10>;
-+			remote-endpoint = <&dmic2_cif>;
-+		};
-+		xbar_dmic3: endpoint@11 {
-+			reg = <0x11>;
-+			remote-endpoint = <&dmic3_cif>;
-+		};
-+	};
-+};
-+
-+&tegra_i2s1 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s1_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_i2s1>;
-+		};
-+	};
-+
-+	i2s1_port: port@1 {
-+		i2s1_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s2 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s2_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_i2s2>;
-+		};
-+	};
-+
-+	i2s2_port: port@1 {
-+		i2s2_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s3_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_i2s3>;
-+		};
-+	};
-+
-+	i2s3_port: port@1 {
-+		i2s3_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s4_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_i2s4>;
-+		};
-+	};
-+
-+	i2s4_port: port@1 {
-+		i2s4_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s5 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s5_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_i2s5>;
-+		};
-+	};
-+
-+	i2s5_port: port@1 {
-+		i2s5_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic1_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_dmic1>;
-+		};
-+	};
-+
-+	dmic1_port: port@1 {
-+		dmic1_dap: endpoint@0 {
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic2_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_dmic2>;
-+		};
-+	};
-+
-+	dmic2_port: port@1 {
-+		dmic2_dap: endpoint@0 {
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic3 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic3_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_dmic3>;
-+		};
-+	};
-+
-+	dmic3_port: port@1 {
-+		dmic3_dap: endpoint@0 {
-+			/* Placeholder for external Codec */
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-index 0325fc0..0226297 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-@@ -6,6 +6,7 @@
- #include <dt-bindings/mfd/max77620.h>
- 
- #include "tegra210.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson Nano Developer Kit";
-@@ -818,4 +819,113 @@
- 			status = "okay";
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		dais = /* FE */
-+		       <&admaif_port>,
-+		       /* Router */
-+		       <&xbar_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s3_port>, <&i2s4_port>,
-+		       <&dmic1_port>, <&dmic2_port>;
-+
-+		label = "jetson-nano-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	port@1 {
-+		xbar_i2s3: endpoint@c {
-+			reg = <0xc>;
-+			remote-endpoint = <&i2s3_cif>;
-+		};
-+		xbar_i2s4: endpoint@d {
-+			reg = <0xd>;
-+			remote-endpoint = <&i2s4_cif>;
-+		};
-+		xbar_dmic1: endpoint@f {
-+			reg = <0xf>;
-+			remote-endpoint = <&dmic1_cif>;
-+		};
-+		xbar_dmic2: endpoint@10 {
-+			reg = <0x10>;
-+			remote-endpoint = <&dmic2_cif>;
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s3_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_i2s3>;
-+		};
-+	};
-+
-+	i2s3_port: port@1 {
-+		i2s3_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s4_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_i2s4>;
-+		};
-+	};
-+
-+	i2s4_port: port@1 {
-+		i2s4_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic1_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_dmic1>;
-+		};
-+	};
-+
-+	dmic1_port: port@1 {
-+		dmic1_dap: endpoint@0 {
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic2_cif: endpoint@0 {
-+			remote-endpoint = <&xbar_dmic2>;
-+		};
-+	};
-+
-+	dmic2_port: port@1 {
-+		dmic2_dap: endpoint@0 {
-+			/* Placeholder for external Codec */
-+		};
-+	};
- };
--- 
-2.7.4
-
+ If handle is NULL *ppvVirtualAddr is set to NULL and return 1
+ */
