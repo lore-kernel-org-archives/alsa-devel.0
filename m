@@ -2,79 +2,82 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42A4AC433F2
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 18:33:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD986C4363F
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 21:39:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC4FE208E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 18:33:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE0E2207FC
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 21:39:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="brOioLIv";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sdanfMuc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC4FE208E4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MLusjYYu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="l2czx97x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE0E2207FC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F966825;
-	Mon, 20 Jul 2020 20:32:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F966825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 427AA83B;
+	Mon, 20 Jul 2020 23:38:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 427AA83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595270010;
-	bh=t4+05mibEZ+aDp0FtlRv6Y3GC0ImLq2uAQxAErCD2ds=;
-	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=brOioLIv6TD/ft4lROLyLXX+toDVrkEItwrDmHMU4QIzW/2xFBLwcVJcyHoqAYZAL
-	 ORUYxz8v2YEIOFfW+gWlNcniEZuuatvhi8Y8DvnSxguS8+15QtiB2KLoubsTDygAIA
-	 n+E/SgMtxJEDan/zceryCONc68FRlWu5Oa4WjKTE=
+	s=default; t=1595281139;
+	bh=BOKO7t/Dev2HgUzW5nquzFUNM4FL7ZyT25MzW3MvQis=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MLusjYYuSO2OnzBWQPgGxqq9iLZYfLqrenOnWMFgZqxO7+5ejPE0D3d/EW4X1vDC4
+	 voVWFW/3CirBYdenvA/gApbu32FvgjE2pZzAjnoPTB3RRCBiJFc1Qp9uq0K4Pc8spl
+	 SSYVRZJdRiZ9Z8VWVfEfv5Asq4MYc7oKV05m6c44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0E47F800E0;
-	Mon, 20 Jul 2020 20:32:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3C0FF800E0;
+	Mon, 20 Jul 2020 23:38:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3A91F800F5; Mon, 20 Jul 2020 20:32:37 +0200 (CEST)
-Received: from merlin.infradead.org (merlin.infradead.org
- [IPv6:2001:8b0:10b:1231::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0D53EF800CE; Mon, 20 Jul 2020 23:38:07 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB65FF800C1
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 20:32:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB65FF800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE61DF800CE
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 23:37:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE61DF800CE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="sdanfMuc"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=HoGrcROsDuFcW0fQ11PlXtvMHOgYzwDunvP1JOcV8PQ=; b=sdanfMuc5tnQdlqxthXRAubDTz
- CT3zBJb9O2ncHQkJuZ7vxecYPcwykfj/WhR4xv8t/KROkeBlW50LHYPJyNAmhMwkNeJsuxeaZ0Hsk
- Pbw7SFGXwEhVevtHGto8/x8sGc1kM2Fs59Bw31MAI9sBaP17Ge+Gc1dzOdsPefsLTtIpJt1VBYQC5
- i8JC7vclNSpf0Dld0TjlY9fYC31qRDUks2NvHE3FJYfP5bZAMowYqgOtJMl5TKUeFhcaNwGfQ6ooi
- jKRKII8xPxzCM7MM6q8h0UnSzCf7F/Ud5sGje9am7CLQEIC9PX4YRNwskGEcw04gKbb86bKhw3DgR
- OiW/Q/Fw==;
-Received: from [2601:1c0:6280:3f0::19c2]
- by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jxaaO-0001Ij-8i; Mon, 20 Jul 2020 18:32:24 +0000
-To: LKML <linux-kernel@vger.kernel.org>,
- moderated for non-subscribers <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] ASoC: ti: fix SND_SOC_J721E_EVM warnings & errors
-Message-ID: <e74c690c-c7f8-fd42-e461-4f33571df4ef@infradead.org>
-Date: Mon, 20 Jul 2020 11:32:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="l2czx97x"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9017922CAF;
+ Mon, 20 Jul 2020 21:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1595281075;
+ bh=BOKO7t/Dev2HgUzW5nquzFUNM4FL7ZyT25MzW3MvQis=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=l2czx97xN29lK1x51gvSJA+u3udRcggAWE7NhV4c/M+j45FQrjcjK0Z8Wef299wmI
+ Psn4xeXkoDCH0yILdmBbIu+8GkuI1T7AQ1ScHUTcsIBrI/Npr71SUZtw/FQto8Fxq8
+ yeK59yLB1sOiNKEMnCo7vrGeCuFlepM/TydBSw0Y=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 32/40] ALSA: hda/realtek - fixup for yet another
+ Intel reference board
+Date: Mon, 20 Jul 2020 17:37:07 -0400
+Message-Id: <20200720213715.406997-32-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200720213715.406997-1-sashal@kernel.org>
+References: <20200720213715.406997-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, PeiSen Hou <pshou@realtek.com.tw>,
+ alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,44 +93,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: PeiSen Hou <pshou@realtek.com.tw>
 
-SND_SOC_J721E_EVM should not select SND_SOC_PCM3168A_I2C when I2C
-is not enabled. That causes build errors, so make this driver's
-symbol depend on I2C.
+[ Upstream commit 5734e509d5d515c187f642937ef2de1e58d7715d ]
 
-WARNING: unmet direct dependencies detected for SND_SOC_PCM3168A_I2C
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && I2C [=n]
-  Selected by [m]:
-  - SND_SOC_J721E_EVM [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && (DMA_OMAP [=y] || TI_EDMA [=m] || TI_K3_UDMA [=n] || COMPILE_TEST [=y]) && (ARCH_K3_J721E_SOC [=n] || COMPILE_TEST [=y])
+Add headset_jack for the intel reference board support with
+10ec:1230.
 
-../sound/soc/codecs/pcm3168a-i2c.c:59:1: warning: data definition has no type or storage class
- module_i2c_driver(pcm3168a_i2c_driver);
- ^~~~~~~~~~~~~~~~~
-../sound/soc/codecs/pcm3168a-i2c.c:59:1: error: type defaults to ‘int’ in declaration of ‘module_i2c_driver’ [-Werror=implicit-int]
-../sound/soc/codecs/pcm3168a-i2c.c:59:1: warning: parameter names (without types) in function declaration
-../sound/soc/codecs/pcm3168a-i2c.c:49:26: warning: ‘pcm3168a_i2c_driver’ defined but not used [-Wunused-variable]
- static struct i2c_driver pcm3168a_i2c_driver = {
-                          ^~~~~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
-
-
-Fixes: 6748d0559059 ("ASoC: ti: Add custom machine driver for j721e EVM (CPB and IVI)")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: PeiSen Hou <pshou@realtek.com.tw>
+Link: https://lore.kernel.org/r/20200716090134.9811-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/ti/Kconfig |    1 +
+ sound/pci/hda/patch_realtek.c | 1 +
  1 file changed, 1 insertion(+)
 
---- linux-next-20200720.orig/sound/soc/ti/Kconfig
-+++ linux-next-20200720/sound/soc/ti/Kconfig
-@@ -222,6 +222,7 @@ config SND_SOC_DM365_VOICE_CODEC_MODULE
- config SND_SOC_J721E_EVM
- 	tristate "SoC Audio support for j721e EVM"
- 	depends on ARCH_K3_J721E_SOC || COMPILE_TEST
-+	depends on I2C
- 	select SND_SOC_PCM3168A_I2C
- 	select SND_SOC_DAVINCI_MCASP
- 	help
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 16ecc8515db8e..1470321bf31ef 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7523,6 +7523,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10cf, 0x1629, "Lifebook U7x7", ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
+ 	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
++	SND_PCI_QUIRK(0x10ec, 0x1230, "Intel Reference board", ALC225_FIXUP_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x10f7, 0x8338, "Panasonic CF-SZ6", ALC269_FIXUP_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+-- 
+2.25.1
 
