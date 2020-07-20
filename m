@@ -2,58 +2,58 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E04C9C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FA8FC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:26:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C31D208B3
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:25:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EBE0320B1F
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:26:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l5AANw8D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C31D208B3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="doEwDFRx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBE0320B1F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03B061615;
-	Mon, 20 Jul 2020 03:25:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03B061615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D13F10E;
+	Mon, 20 Jul 2020 03:25:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D13F10E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595208353;
-	bh=kVGrT/0JNMYZ8at4OH3uwHyLD3hX4J5pwSiPAUS4i4o=;
+	s=default; t=1595208386;
+	bh=7BQqOJYrPycviwSBLYAf6iTninLaxtthCCzUbu6nOFw=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l5AANw8D/ciAEAMiU/vaW2+BSWQDkChRM26RaHN7fLWCgV7MHbiiqKXjbAFuOKQhC
-	 sPl82klyg5vou0/HuXYBz9/XxVG8ifliB56X1fFJhLrNtRrhOVpwGiQ31NDuuSH+a8
-	 o1fts05XHA6FHW3B7Ib3MVx9m2ER1Y5kmifptKd8=
+	b=doEwDFRxsKagpDbzYVBYr1Pt3V/Nx7EtHn1MW3JkfQHqs4KiuomiM1hQlFr/GI783
+	 rQfrzvj/LjkUJCqLGv87xLYZEH2/MRFLmbfN/38bW5DgZ/YcdwwAFNY8UEnEJZT3x9
+	 gxZyqUtgJWjlgaIXNworEsM+AU2oGPIBDmqCJyRM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61BC9F8033F;
-	Mon, 20 Jul 2020 03:18:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93764F80343;
+	Mon, 20 Jul 2020 03:18:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A797F80340; Mon, 20 Jul 2020 03:18:34 +0200 (CEST)
+ id 94E15F80344; Mon, 20 Jul 2020 03:18:38 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C2F0EF80336
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:18:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2F0EF80336
-Date: 20 Jul 2020 10:18:28 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52330228"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2020 10:18:28 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id C9FF6F80341
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:18:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9FF6F80341
+Date: 20 Jul 2020 10:18:34 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52330254"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2020 10:18:34 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 87E004002623;
- Mon, 20 Jul 2020 10:18:28 +0900 (JST)
-Message-ID: <87h7u30yu1.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 61A0E415CFEA;
+ Mon, 20 Jul 2020 10:18:34 +0900 (JST)
+Message-ID: <87ft9n0ytv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 12/29] ASoC: rockchip: use asoc_substream_to_rtd()
+Subject: [PATCH 13/29] ASoC: amd: use asoc_substream_to_rtd()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
@@ -84,105 +84,182 @@ let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/rockchip/rk3288_hdmi_analog.c | 2 +-
- sound/soc/rockchip/rk3399_gru_sound.c   | 8 ++++----
- sound/soc/rockchip/rockchip_i2s.c       | 2 +-
- sound/soc/rockchip/rockchip_max98090.c  | 2 +-
- sound/soc/rockchip/rockchip_rt5645.c    | 2 +-
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 12 ++++++------
+ sound/soc/amd/acp-pcm-dma.c          |  2 +-
+ sound/soc/amd/acp-rt5645.c           |  2 +-
+ sound/soc/amd/acp3x-rt5682-max9836.c |  8 ++++----
+ sound/soc/amd/raven/acp3x-i2s.c      |  2 +-
+ sound/soc/amd/raven/acp3x-pcm-dma.c  |  6 +++---
+ 6 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
-index 01078155a914..33a00774746d 100644
---- a/sound/soc/rockchip/rk3288_hdmi_analog.c
-+++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
-@@ -66,7 +66,7 @@ static int rk_hw_params(struct snd_pcm_substream *substream,
- 			struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index 7d8986379d80..a7702e64ec51 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -99,7 +99,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ static int da7219_clk_enable(struct snd_pcm_substream *substream)
  {
  	int ret = 0;
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int mclk;
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 9539b0d024fe..66d17089793f 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -51,7 +51,7 @@ static const struct snd_kcontrol_new rockchip_controls[] = {
- static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/*
+ 	 * Set wclk to 48000 because the rate constraint of this driver is
+@@ -146,7 +146,7 @@ static const struct snd_pcm_hw_constraint_list constraints_channels = {
+ static int cz_da7219_play_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+@@ -167,7 +167,7 @@ static int cz_da7219_play_startup(struct snd_pcm_substream *substream)
+ static int cz_da7219_cap_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+@@ -189,7 +189,7 @@ static int cz_da7219_cap_startup(struct snd_pcm_substream *substream)
+ static int cz_max_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+@@ -210,7 +210,7 @@ static int cz_max_startup(struct snd_pcm_substream *substream)
+ static int cz_dmic0_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+@@ -231,7 +231,7 @@ static int cz_dmic0_startup(struct snd_pcm_substream *substream)
+ static int cz_dmic1_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index f54beb7f39a8..143155a840ac 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -840,7 +840,7 @@ static int acp_dma_hw_params(struct snd_soc_component *component,
+ 	u32 val = 0;
+ 	struct snd_pcm_runtime *runtime;
+ 	struct audio_substream_data *rtd;
+-	struct snd_soc_pcm_runtime *prtd = substream->private_data;
++	struct snd_soc_pcm_runtime *prtd = asoc_substream_to_rtd(substream);
+ 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
+ 	struct snd_soc_card *card = prtd->card;
+ 	struct acp_platform_info *pinfo = snd_soc_card_get_drvdata(card);
+diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
+index 87f0060e771f..d6ba94677ac2 100644
+--- a/sound/soc/amd/acp-rt5645.c
++++ b/sound/soc/amd/acp-rt5645.c
+@@ -47,7 +47,7 @@ static int cz_aif1_hw_params(struct snd_pcm_substream *substream,
  			     struct snd_pcm_hw_params *params)
+ {
+ 	int ret = 0;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 
+ 	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5645_PLL1_S_MCLK,
+diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+index f745b42dfd23..6009e444b858 100644
+--- a/sound/soc/amd/acp3x-rt5682-max9836.c
++++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+@@ -105,7 +105,7 @@ static int acp3x_5682_init(struct snd_soc_pcm_runtime *rtd)
+ static int rt5682_clk_enable(struct snd_pcm_substream *substream)
+ {
+ 	int ret = 0;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 
+ 	/* RT5682 will support only 48K output with 48M mclk */
+ 	clk_set_rate(rt5682_dai_wclk, 48000);
+@@ -147,7 +147,7 @@ static const struct snd_pcm_hw_constraint_list constraints_channels = {
+ static int acp3x_5682_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+@@ -165,7 +165,7 @@ static int acp3x_5682_startup(struct snd_pcm_substream *substream)
+ static int acp3x_max_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+@@ -181,7 +181,7 @@ static int acp3x_max_startup(struct snd_pcm_substream *substream)
+ 
+ static int acp3x_ec_dmic0_startup(struct snd_pcm_substream *substream)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	unsigned int mclk;
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
+diff --git a/sound/soc/amd/raven/acp3x-i2s.c b/sound/soc/amd/raven/acp3x-i2s.c
+index c3eb9b347eaa..5bc028692fcf 100644
+--- a/sound/soc/amd/raven/acp3x-i2s.c
++++ b/sound/soc/amd/raven/acp3x-i2s.c
+@@ -80,7 +80,7 @@ static int acp3x_i2s_hwparams(struct snd_pcm_substream *substream,
+ 	u32 val;
+ 	u32 reg_val, frmt_reg;
+ 
+-	prtd = substream->private_data;
++	prtd = asoc_substream_to_rtd(substream);
+ 	rtd = substream->runtime->private_data;
+ 	card = prtd->card;
+ 	adata = snd_soc_dai_get_drvdata(dai);
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index 17290c829c4b..417cda24030c 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -217,7 +217,7 @@ static int acp3x_dma_open(struct snd_soc_component *component,
  	int ret;
  
-@@ -70,7 +70,7 @@ static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substrea
- static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	unsigned int mclk;
-@@ -102,7 +102,7 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
- static int rockchip_sound_da7219_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int mclk, ret;
-@@ -200,7 +200,7 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
- static int rockchip_sound_dmic_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	unsigned int mclk;
- 	int ret;
+ 	runtime = substream->runtime;
+-	prtd = substream->private_data;
++	prtd = asoc_substream_to_rtd(substream);
+ 	component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
+ 	adata = dev_get_drvdata(component->dev);
+ 	i2s_data = kzalloc(sizeof(*i2s_data), GFP_KERNEL);
+@@ -258,7 +258,7 @@ static int acp3x_dma_hw_params(struct snd_soc_component *component,
+ 	struct i2s_dev_data *adata;
+ 	u64 size;
  
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 61c984f10d8e..d1438753edb4 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -272,7 +272,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
- 	struct rk_i2s_dev *i2s = to_info(dai);
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	unsigned int val = 0;
- 	unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
+-	prtd = substream->private_data;
++	prtd = asoc_substream_to_rtd(substream);
+ 	card = prtd->card;
+ 	pinfo = snd_soc_card_get_drvdata(card);
+ 	adata = dev_get_drvdata(component->dev);
+@@ -340,7 +340,7 @@ static int acp3x_dma_close(struct snd_soc_component *component,
+ 	struct i2s_dev_data *adata;
+ 	struct i2s_stream_instance *ins;
  
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 1f527d3763ce..9acfd024aa5d 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -145,7 +145,7 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
- 	int ret = 0;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int mclk;
-diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
-index 0617ccf4e42c..16ca2ad92426 100644
---- a/sound/soc/rockchip/rockchip_rt5645.c
-+++ b/sound/soc/rockchip/rockchip_rt5645.c
-@@ -55,7 +55,7 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
- 	int ret = 0;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int mclk;
+-	prtd = substream->private_data;
++	prtd = asoc_substream_to_rtd(substream);
+ 	component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
+ 	adata = dev_get_drvdata(component->dev);
+ 	ins = substream->runtime->private_data;
 -- 
 2.25.1
 
