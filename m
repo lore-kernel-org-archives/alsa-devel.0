@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12A15C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06FD8C433E5
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:26:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B6812080D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:26:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 826632080D
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 07:26:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F4npp5F9";
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="SciYgYrV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B6812080D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kv8crvFf";
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="R/JXEVmQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 826632080D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AC3715F9;
-	Mon, 20 Jul 2020 09:25:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AC3715F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1040583B;
+	Mon, 20 Jul 2020 09:25:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1040583B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595229972;
-	bh=GuIoZPtDfCMtbLb+m8a7jIDKTby80hUsmPwpL/6Vd9c=;
+	s=default; t=1595229992;
+	bh=VH9h6kujXGzsgGPV0xRJI89npBS0vGy1bvQysHbsZ4Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F4npp5F9RaQWDu+ZUxK+GMn9+h3oY3FoEcG41RV/PVxHsSENJ0qQfXK+FGCnY4wud
-	 /7J+HlPaBC9dJhyWfmiq/CnC4hNjAxknsd75o2gx+UCoeEZz5iklD79twNrzdq5r4E
-	 v2bDDqhB4mABLs7UIAWwvcTAhlM6jcHEqRCgB2wg=
+	b=Kv8crvFfCV0aXoQ0f8dOm0Nj7eUn9itXL6E1EAlxxwdbrdoqQuEv32I4QBIB8NeSp
+	 FSakkWAtiM4WqXT2CsfZe3dWbz9R7+cDEFBDQ5Yjf2d8xxc3Eh1m3DrE5W2zPTnuQO
+	 CWuFfLaHDl1PPqcJutsnH6cwidXN+FdzeitL1pYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77559F802E2;
-	Mon, 20 Jul 2020 09:21:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81FD3F802FD;
+	Mon, 20 Jul 2020 09:21:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A195F8015A; Mon, 20 Jul 2020 09:21:44 +0200 (CEST)
+ id 0AF93F802DF; Mon, 20 Jul 2020 09:21:48 +0200 (CEST)
 Received: from EUR04-DB3-obe.outbound.protection.outlook.com
  (mail-eopbgr60061.outbound.protection.outlook.com [40.107.6.61])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 431D3F8015A
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 09:21:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 431D3F8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAC49F801F5
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 09:21:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC49F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="SciYgYrV"
+ header.i=@NXP1.onmicrosoft.com header.b="R/JXEVmQ"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TxB2t7DmxC21AKIDXwcTg5MnR2n7Pg1TmcthsZWE4T9ozjeCURR4bxmUG6MAf0MCMuMCS2ByEEMLTit7I0XYaFoHFrg3nmA00b5fyqSokK9l9imK0DWACw4R8aqli2EaRtrSpUgT/SHw0NShPoaIOpk2Tl9aqFPD4dAl6z7y/OW7GV6VJxSw5AObUcjmtOUceHttPJR9rrZGMW4tinOVPFfMRXBcasT9xO+TGigtsMh3lGCD1hU9PykjRAmbVBnrIMxv+LVv+N0svUab3/9boVQ+xqTcYFot6uT3UPEc9A6t1vMTVC628AzuEF/k6Nvkhzsr6LMQ79OO6xN9vgz+4Q==
+ b=NnGzGZxzfjElFx7FAIZyCITwP8oHVCpmlEWqE3M3O40pgDENMaH6xFx3u74ThVTR9NGAiafr0ABJBXbiRvK4w1Q/4d1VUp//f8xwYcrRorjx1EdV8FjOHeR5f6gcLJtXHHCYG7+VtqMrOWYj3oTAXoHQm+FJwtQh72wBoisyY97PBDrnKWuFB3BTTODKetQkIQAFZ2Z9cSAme2zB4gux1YCgM9lVVPpvXdJUT60vvzgQJeNO6klca9Er1o3BQy+pSVQ9yksNdGxKZOcq11+MdE9d2jbb9f9i/7IFDFFzdDB5A42WVdnnx6OLDj+FA1FqwrLnHE7oowb4uOgk8e+ERQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RPerqZdB8ZRuhINmAG0H9T5I4wQjHd9CoVe4inm//8g=;
- b=Ql4spEkCNbMp3NTJaT7L03RuI6xVXoi85ffRxfIl192U55fD7pn37dVIbXJE1LZYqoO9ClZP6yzAmTFNrtK7HGflhncHmExev8o21Sf/JV1FjZIaFL3myLkVVzPxrBl8zyAHzMx0Vmadpu07Q0bWTNnQAUkz3nPVeMFjrWJAhuQso7DHriyN6896TVZ3tHUzYMq9jRdn5EZFdpfNgsdb0r70PEYVci4BEsO6Pon2CCJl8UTJ8k5govmY7HRFpVSeh+gNxsBHj9+CCU2DdpAV3l+u3nJXQFH0UeLuMWMlP77fsYwfyljtZJi1l+kcHqJB//rNxabujoyHJTs2/pTaVw==
+ bh=GXhWISAtUg/VB3boXVA4OYfWfWB3AQBw12ZzUd7ceyQ=;
+ b=IyIiW03IYis7quggAF+ZWYnObzJ1YJko5Mp52TeYPZqxCuDcKCOC71tsLij7als/yzHN/AMnxRlA93GAgM4P9hw4HAOyc6f9atP98IgWnV0WlXOoCWoWlzRduw3d3sVMCACQxtXhDPRxvI+8Je9uiArguQFNNHJP4WuCmwwe+XAPNp4Jysn3L6A+k74BTdnIgucDzOTIWHE5omFQuMBO4fKrOAn/gZY+uXsAYIMDhq+oO9sw2UQgfRAMezpGGg5zzfsihz3prsxlKNyt8bWRd+Aj1puo2iI0L5/MtOTQgcS+HVmCHW2cNVRl1405flPev+r3/+ErnJuXI+Isc+3heQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RPerqZdB8ZRuhINmAG0H9T5I4wQjHd9CoVe4inm//8g=;
- b=SciYgYrVUWFk/j03+UTIygotmQB7DPsajLkS/CROVEuT3OUTFaEp1abY2R1IBSBvsV3lB5q9Op6xIyJMDQwX4FwJF/T3kk6rvmy50RXf09ymw78s9i1Fs32UG8uibJtBBuGDa81TX1IFqzPzfjiWRoz6OfWTBvYnwgCj+Yd8jL4=
+ bh=GXhWISAtUg/VB3boXVA4OYfWfWB3AQBw12ZzUd7ceyQ=;
+ b=R/JXEVmQoqOD8zYsa6pIb3B725v+hSrNa48tte4u2OGzXKha61qx2ycrsYtzflNCLV46nSYmUFe4Qo2ZBM5WHvIeLcV7lKYKCO8YTwllb++0YMuBfrd48PjMHhl+ofeBSTj6I9iCbiZXTXXbnWG+KiRumnFia9yKhKg3aR6NXQo=
 Authentication-Results: alsa-project.org; dkim=none (message not signed)
  header.d=none;alsa-project.org; dmarc=none action=none
  header.from=oss.nxp.com;
@@ -72,17 +72,17 @@ Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
  (2603:10a6:800:2e::19) by VI1PR0402MB3344.eurprd04.prod.outlook.com
  (2603:10a6:803:10::16) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Mon, 20 Jul
- 2020 07:21:33 +0000
+ 2020 07:21:36 +0000
 Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
  ([fe80::6888:5014:6c94:6711]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
  ([fe80::6888:5014:6c94:6711%5]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
- 07:21:33 +0000
+ 07:21:36 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 5/7] ASoC: SOF: imx8: Add SAI dai driver for i.MX/i.MX8X
-Date: Mon, 20 Jul 2020 10:20:44 +0300
-Message-Id: <20200720072046.8152-6-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 7/7] ASoC: SOF: pcm: Update rate/channels for SAI/ESAI DAIs
+Date: Mon, 20 Jul 2020 10:20:46 +0300
+Message-Id: <20200720072046.8152-8-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200720072046.8152-1-daniel.baluta@oss.nxp.com>
 References: <20200720072046.8152-1-daniel.baluta@oss.nxp.com>
@@ -95,35 +95,35 @@ X-MS-Exchange-MessageSentRepresentingType: 1
 Received: from fsr-ub1864-103.ro-buh02.nxp.com (83.217.231.2) by
  AM0PR07CA0023.eurprd07.prod.outlook.com (2603:10a6:208:ac::36) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3216.14 via Frontend Transport; Mon, 20 Jul 2020 07:21:32 +0000
+ 15.20.3216.14 via Frontend Transport; Mon, 20 Jul 2020 07:21:35 +0000
 X-Mailer: git-send-email 2.17.1
 X-Originating-IP: [83.217.231.2]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d4fb3213-d776-466b-0f84-08d82c7d87dc
+X-MS-Office365-Filtering-Correlation-Id: 7cbad908-1cb7-4401-afaa-08d82c7d893c
 X-MS-TrafficTypeDiagnostic: VI1PR0402MB3344:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB33441DEF5E26CA4FB2BCF386B87B0@VI1PR0402MB3344.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:323;
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3344E1E79570AB2B420C3A1BB87B0@VI1PR0402MB3344.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rgWlLOiB50g2t2y8GoJYEaMK1DBJj2GLPnY0F2FUjxoa3G23YveZhyl63ShFbLNR0b7t8W6K/lKlPy4TtdGLG+cPvDDYs6Vo0hM2IP80yCV/hctc2suhcC7ymlBDyN8gB0zqYYPLqSosXQDN8iW+z87ypZAdsIEATv+bcMj7b4TtkxpOysYLNnTXGG1Zrs93A+NM0EFJxoM87CIWHAMrfPAPRUjnmeuz26tydtXMoJBlpHpL9qD5VGd2RnIlc3IdVtXSSquf+1HiLZUWGkGO5+MC1ALona1S2LoPx2l0WeB8HxoaUvB3tZNdEWo9Kz+VH5MZHes0GZctPB3QDlLV+w==
+X-Microsoft-Antispam-Message-Info: LZFHf/cQ1TuLkm9jfm+VziNbPjfzu027+ULSJFucZml27K6dkiHBWS6N2qfTXLpO/I5i1xYhoQ+Dd46zTaBjLdhp5X6xUCv8ZDliO2TDsd+8JUwMIHBV0DmlsdUHnalG9kWNpJNBIa+o73S7Sr7s/DW8rzNcW51OzUmg+4oH2NfQjTrHiUzzadkMBtEd3HDeVk9hjbrJY1l3c93x1kyqospNYp8TfEcv9+lspgglV3uFMfo3De8H3c5lO556vKDGUcSh8V7jE3ZCMkILz0+6KucvUcBXBWh0zrzPH9U0KfSQGTkD9A9qH/IdGkJ/LnI+yHzbSyrvfc2xqEe1KhCoMQ==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR0401MB2287.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
  SFTY:;
  SFS:(4636009)(366004)(396003)(39860400002)(376002)(346002)(136003)(316002)(6512007)(66476007)(66946007)(4326008)(66556008)(6666004)(186003)(6486002)(2906002)(52116002)(86362001)(8936002)(44832011)(26005)(1076003)(956004)(478600001)(8676002)(16526019)(6506007)(2616005)(5660300002);
  DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData: AqC10o12gx6AWPdRsBUG0uBFAM/dz4VH9n/V/JZMI5S4Xlkdu46X2Q1r9QqRmF22PJ2ZltDJsQkSsX1KUfFqflBfruaVUMzaoi0zS1jBxq6hc5P957czLv6fa2hjBLQA5eQgG1iFAU62/Mirxvkp1xRb1txmr0kZN2Z7NGwaSAXTl6f3S9tTkZlyW1RFrMh/SorXI9FWbMxcRmEDuK3UFAlvkP/ObJMiEcYtTbi67qYQ10Y2Yj6Vim99KqMkVD2fvYwLj2EUow40PNsqtJbZiSJ/PC1Fw37Uv4nEkg9jucEYH3GYi21QgjytvdsgL81S+FJGtY5McUgSyX0Dlv1pQ/XsnJKZCk5gxKMJeLu1Z1ogcYv0aj0C26RaaqjpkLccraEvQMWNkPvZgO1YWRexlgtretJKz1vewUO1Ngjeb+8u/q608lNbIuz8nsb7C+hkOV4Os9Q9Tkt/lhX8/ZuEMdgjMfmfbmTsJdz3D0fxeos=
+X-MS-Exchange-AntiSpam-MessageData: 7amuy1bCSliXJGQSirdtSASELA3plvoWIpIT/9dQ+NSg85IxsSHIkFRyc/AqWgAKWvytfigwUokccGDvSoSdA1wvDaYEE4YwwTPiHFagE47gFS58lQikRq4mI/R8bdvMeCWAAmwUZh7Igtwlr5fQd9HXElIr9GGuwf5U1trYvHYwos1dcsPLNgDL7EwC80QxWJBBCMtKnfWanT6c/qAXyQDG5WZ7OvHPVOLviUnyJBRrQ/Ybdb2HInzTCQ65NZC+IG0Hnd7fuI7cDkcPv1eVeZJXQImBF63BBXZfWZ5Li4231ZibX82+zpfaQeOU01Q9zGkRO38978xCYDWdSijakasm5qvVBrFh+6FoEe41v3UGYVKIaMOPB0lU2K5Us7PlG/+WQI1ltGiXQU6jSMikoPn0s2zejELzMAYJiLQ41BNAihkVQuIpRIuv/5cO5q+4xHKpjqCTHenr9xDGGclmPN8NZPAgk0VH2AdRJRf1N1o=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4fb3213-d776-466b-0f84-08d82c7d87dc
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7cbad908-1cb7-4401-afaa-08d82c7d893c
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 07:21:33.7674 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 07:21:35.9914 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U+wfLscFPdLsFeckGpRjynMTqe6Gk+mrwa3xPFtAHdDvIGQXhccVkdfa0HdFb0MuY3UTms6oXdizpuZwJYCV9A==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Dpjh49I+n8ZvF1+Q/Lde0PActmcbQGCjp91BrQO4z33togpWfw6F3XMiUdLf7p3txKGLgwTKrsnCy9nmIoP6Ug==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3344
 Cc: shengjiu.wang@nxp.com, festevam@gmail.com, linux-imx@nxp.com,
  linux-kernel@vger.kernel.org
@@ -144,41 +144,46 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Daniel Baluta <daniel.baluta@nxp.com>
 
-With SOF we support 1 ESAI interface and 1 SAI interface.
-This patch adds SAI1 interface support existing on i.MX8/i.MX8X
-boards.
+Fixup BE DAI links rate/channels parameters to match any values
+from topology.
 
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/imx/imx8.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/sof/pcm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index f1308824e2cd..bc0628c7b88c 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -384,6 +384,17 @@ static struct snd_soc_dai_driver imx8_dai[] = {
- 		.channels_max = 8,
- 	},
- },
-+{
-+	.name = "sai1",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 32,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 32,
-+	},
-+},
- };
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 22fe9d5e932b..5cfd2611b252 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -718,17 +718,25 @@ static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		/* do nothing for ALH dai_link */
+ 		break;
+ 	case SOF_DAI_IMX_ESAI:
++		rate->min = dai->dai_config->esai.fsync_rate;
++		rate->max = dai->dai_config->esai.fsync_rate;
+ 		channels->min = dai->dai_config->esai.tdm_slots;
+ 		channels->max = dai->dai_config->esai.tdm_slots;
  
- /* i.MX8 ops */
++		dev_dbg(component->dev,
++			"rate_min: %d rate_max: %d\n", rate->min, rate->max);
+ 		dev_dbg(component->dev,
+ 			"channels_min: %d channels_max: %d\n",
+ 			channels->min, channels->max);
+ 		break;
+ 	case SOF_DAI_IMX_SAI:
++		rate->min = dai->dai_config->sai.fsync_rate;
++		rate->max = dai->dai_config->sai.fsync_rate;
+ 		channels->min = dai->dai_config->sai.tdm_slots;
+ 		channels->max = dai->dai_config->sai.tdm_slots;
+ 
++		dev_dbg(component->dev,
++			"rate_min: %d rate_max: %d\n", rate->min, rate->max);
+ 		dev_dbg(component->dev,
+ 			"channels_min: %d channels_max: %d\n",
+ 			channels->min, channels->max);
 -- 
 2.17.1
 
