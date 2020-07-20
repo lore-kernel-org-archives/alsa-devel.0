@@ -7,71 +7,71 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD986C4363F
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 21:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 029E8C2D0A9
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 21:39:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE0E2207FC
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 21:39:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7623D207FC
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 21:39:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MLusjYYu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="l2czx97x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE0E2207FC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AQqwjAMQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKiVcvBO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7623D207FC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 427AA83B;
-	Mon, 20 Jul 2020 23:38:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 427AA83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2437850;
+	Mon, 20 Jul 2020 23:39:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2437850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595281139;
-	bh=BOKO7t/Dev2HgUzW5nquzFUNM4FL7ZyT25MzW3MvQis=;
+	s=default; t=1595281193;
+	bh=I3fzA3MRh6tQ1Zd+nKQcuJyA8OBl76Ep+agNP6A3b98=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MLusjYYuSO2OnzBWQPgGxqq9iLZYfLqrenOnWMFgZqxO7+5ejPE0D3d/EW4X1vDC4
-	 voVWFW/3CirBYdenvA/gApbu32FvgjE2pZzAjnoPTB3RRCBiJFc1Qp9uq0K4Pc8spl
-	 SSYVRZJdRiZ9Z8VWVfEfv5Asq4MYc7oKV05m6c44=
+	b=AQqwjAMQwYi+ljDQRQLSRN7RzTXQvdpJgpYxkGpI4DZJ2T7TdyMwGCpRo+ni0aWBv
+	 VCiyp1BJkCK8Z5r6eYuE4P4kH7wVZz5ZcHgbrEUocmJSB7i8tk1KdFY3eN7/6PNg9B
+	 puarpgqDJBciK+YXXsUwqS4QyvoAs8mBVABw3fmM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3C0FF800E0;
-	Mon, 20 Jul 2020 23:38:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53E87F80125;
+	Mon, 20 Jul 2020 23:39:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D53EF800CE; Mon, 20 Jul 2020 23:38:07 +0200 (CEST)
+ id CBF29F8014C; Mon, 20 Jul 2020 23:38:55 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE61DF800CE
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 23:37:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE61DF800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 153B6F80125
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 23:38:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 153B6F80125
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="l2czx97x"
+ header.b="RKiVcvBO"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9017922CAF;
- Mon, 20 Jul 2020 21:37:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D233D22C7B;
+ Mon, 20 Jul 2020 21:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595281075;
- bh=BOKO7t/Dev2HgUzW5nquzFUNM4FL7ZyT25MzW3MvQis=;
+ s=default; t=1595281120;
+ bh=I3fzA3MRh6tQ1Zd+nKQcuJyA8OBl76Ep+agNP6A3b98=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=l2czx97xN29lK1x51gvSJA+u3udRcggAWE7NhV4c/M+j45FQrjcjK0Z8Wef299wmI
- Psn4xeXkoDCH0yILdmBbIu+8GkuI1T7AQ1ScHUTcsIBrI/Npr71SUZtw/FQto8Fxq8
- yeK59yLB1sOiNKEMnCo7vrGeCuFlepM/TydBSw0Y=
+ b=RKiVcvBOcBH/j0HLibggflGkSfsssXc3R+jKsKpPFTJ8vTYxPimroGkCIER+/4A1g
+ K720E9MPbq05Yaf4oj8LlqLjVV/0mEoHFFA+YfMW8v8wnK4499hlzWuC2C6nCiv8PG
+ 4U6h1r6VHuAMIXXRVZLap4XToXt1z53AJIoxyKBY=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 32/40] ALSA: hda/realtek - fixup for yet another
+Subject: [PATCH AUTOSEL 5.4 27/34] ALSA: hda/realtek - fixup for yet another
  Intel reference board
-Date: Mon, 20 Jul 2020 17:37:07 -0400
-Message-Id: <20200720213715.406997-32-sashal@kernel.org>
+Date: Mon, 20 Jul 2020 17:38:00 -0400
+Message-Id: <20200720213807.407380-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200720213715.406997-1-sashal@kernel.org>
-References: <20200720213715.406997-1-sashal@kernel.org>
+In-Reply-To: <20200720213807.407380-1-sashal@kernel.org>
+References: <20200720213807.407380-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -109,7 +109,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 16ecc8515db8e..1470321bf31ef 100644
+index 160e00e8007aa..c46651207a0ca 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
 @@ -7523,6 +7523,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
