@@ -2,63 +2,64 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E025C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 04:52:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17D9CC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 05:14:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DADB20758
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 04:52:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9205822BEF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 05:14:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t1DeNsAf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DADB20758
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p4vAL40z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9205822BEF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BCB583E;
-	Mon, 20 Jul 2020 06:51:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BCB583E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AC9683E;
+	Mon, 20 Jul 2020 07:13:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AC9683E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595220734;
-	bh=HH3S66ldCtCBAWvPG9r+MYJHj2uXvZ601Hb7P+suEBQ=;
+	s=default; t=1595222084;
+	bh=zlyYwFn3+Nc6/YaYjdvsiimhUIiPVbViqkUr9WwZFRc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t1DeNsAfPFMalzt83H4bJgoyRGLifYG+yGFRkj/z3EVde9FEEzN2THEzWccDy/oiS
-	 QRwCJhfnUtT6ZxJAZRSsCKa8AzOTOIyrxvcuyIGw0hhdskRco0rzhE2sWBaGHlPrBU
-	 zXcS5IUna0GW/GG/SJ2/ZfR70J03QUFNCvv6LtSU=
+	b=p4vAL40zBz1xIWMoMFDwSihW6cXBIeLqR+PcjStaOGjGEVbK25PxF5HUzxx2Q5BuH
+	 uZYicGr6HYdJKGzQ22fvPIH+vYzKedbYibnd6+VmBhVAvpv0t7U8d8SccX1pZ2BD7h
+	 CGIsL/Z5lmL6JrLO5N39X5rbJJsAgXUksQc6nAzU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11FC4F800CE;
-	Mon, 20 Jul 2020 06:51:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CD8CF800E0;
+	Mon, 20 Jul 2020 07:13:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03666F800F5; Mon, 20 Jul 2020 06:51:20 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 23374F800CE
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 06:51:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23374F800CE
-Date: 20 Jul 2020 13:51:10 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52351128"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2020 13:51:10 +0900
+ id 33EE4F800F5; Mon, 20 Jul 2020 07:13:52 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 386C4F800BF
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 07:13:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 386C4F800BF
+Date: 20 Jul 2020 14:13:35 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52564349"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 14:13:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A87C041B098C;
- Mon, 20 Jul 2020 13:51:10 +0900 (JST)
-Message-ID: <87pn8qzt6n.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8018B400753D;
+ Mon, 20 Jul 2020 14:13:35 +0900 (JST)
+Message-ID: <87o8oazs5a.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH 09/10] arm64: tegra: Audio graph header for Tegra210
-In-Reply-To: <b5484f5d-6ed4-e04b-3e62-8f4f3893ed67@nvidia.com>
+Subject: Re: [PATCH 03/10] ASoC: audio-graph: Support Codec with multiple
+ endpoints
+In-Reply-To: <870feaf2-3aa2-dbb8-f883-9b6cfcb36d82@nvidia.com>
 References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
- <1595135417-16589-10-git-send-email-spujar@nvidia.com>
- <871rl72gjb.wl-kuninori.morimoto.gx@renesas.com>
- <b5484f5d-6ed4-e04b-3e62-8f4f3893ed67@nvidia.com>
+ <1595135417-16589-4-git-send-email-spujar@nvidia.com>
+ <87365n2i2z.wl-kuninori.morimoto.gx@renesas.com>
+ <870feaf2-3aa2-dbb8-f883-9b6cfcb36d82@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -86,38 +87,55 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-> >> +&tegra_admaif {
-> >> +     admaif_port: port {
-> >> +             admaif0: endpoint@0 {
-> >> +                     remote-endpoint = <&xbar_admaif0>;
-> >> +             };
-> >> +             admaif1: endpoint@1 {
-> >> +                     remote-endpoint = <&xbar_admaif1>;
-> >> +             };
-> > (snip)
-> >> +             admaif8: endpoint@8 {
-> >> +                     remote-endpoint = <&xbar_admaif8>;
-> >> +             };
-> >> +             admaif9: endpoint@9 {
-> >> +                     remote-endpoint = <&xbar_admaif9>;
-> >> +             };
-> >> +     };
-> >> +};
-> > I'm not familiar with your system, so, one question.
-> > Does this ADMAIF has total 10 interface which is used in the same time ?
-> > or select one of 10 connections when use ?
+> >> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+> >> index 1e20562..b1903f9 100644
+> >> --- a/sound/soc/generic/audio-graph-card.c
+> >> +++ b/sound/soc/generic/audio-graph-card.c
+> >> @@ -201,8 +201,7 @@ static void graph_parse_mclk_fs(struct device_node *top,
+> >>   static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+> >>                                  struct device_node *cpu_ep,
+> >>                                  struct device_node *codec_ep,
+> >> -                               struct link_info *li,
+> >> -                               int dup_codec)
+> >> +                               struct link_info *li)
+> > This patch breaks DPCM connection which is used for MIXer
 > 
-> One ore more ADMAIF interfaces can be used simultaneously. In fact all
-> of them can be used at the same time.
+> Could you please elaborate a bit more as to what is broken with this?
+> The problem I am trying to solve here is to have multiple endpoints
+> for Codec port.
 
-Ah, sorry my questoin was not correct.
-I want to clarify was that below.
+For example MIXer, it is like below.
+If you removes "dup_codec", it breaks MIXer and/or TDM split mode.
 
-In my understanding, 
-if your system has 10 interfaces,
-you need to create 10 ports, not 10 endpoints.
-If your system has 1 interface, but is connected from 10
-devices, it has 1 port 10 endpoints.
+	CPU0  ---+---- DAI
+	         |
+	CPU1  ---+
+
+	cpu {
+		ports {
+			port@0 {
+				cpu_0: endpoint {
+					remote-endpoint = <&codec_0>;
+				};
+			};
+			port@1 {
+				cpu_1: endpoint {
+					remote-endpoint = <&codec_1>;
+				};
+			};
+		};
+	};
+
+	codec {
+		port {
+			codec_0: endpoint {
+				remote-endpoint = <&cpu_0>;
+			};
+			codec_1: endpoint {
+				remote-endpoint = <&cpu_1>;
+			};
+		}
+	};
 
 Thank you for your help !!
 
