@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00E65C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AF26C433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:34:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C49E208B3
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:33:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8EDA9208B3
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:34:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I1ixDjQz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C49E208B3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FiPpcC4F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EDA9208B3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 099851657;
-	Mon, 20 Jul 2020 03:32:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 099851657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C51D167A;
+	Mon, 20 Jul 2020 03:33:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C51D167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595208804;
-	bh=S0ZoTidWCcvbVQavlf5KeWJpss7HaHpAGKmqqODAkBA=;
+	s=default; t=1595208840;
+	bh=pWMi2LllVpNRD4LH0t21RFj5nrl0AmqdnurlbtE3PYQ=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I1ixDjQzBRwtZEDYxKET94wEI8TW6OolDMGZk4ZOneZdb1WjS/Dxvp9m1VRq0iJXK
-	 AqHOFJQMEE8OU42n+ITm/nYCCs5iYWx02/EOkGiUBqwHsM3sBbFLKTERI8cefBFFzY
-	 TYZPp3WKmjqDFfUoe9Z60QQxex0RfWyU8EeVfB0g=
+	b=FiPpcC4FZVkvlECTjod2n68UQvR2q+MpNMMBRaIpUuL1KHJkQDmACijXUjD8cv6W4
+	 sQfeQiDsJWOCi8z+fO1TMCSnsGmFfRsuoHEt35DoLDQ6GhzW1ddt/BZiY8lTcrYZWT
+	 i+FJm+bzNNQfIRSToYK/u5td7rWrMN71b1sRlPtk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B32A2F803AE;
-	Mon, 20 Jul 2020 03:19:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78F4FF803CA;
+	Mon, 20 Jul 2020 03:19:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B48CCF803CA; Mon, 20 Jul 2020 03:19:43 +0200 (CEST)
+ id D9D16F803CB; Mon, 20 Jul 2020 03:19:45 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 75779F803BC
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75779F803BC
-Date: 20 Jul 2020 10:19:37 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52330339"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2020 10:19:37 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 14317F80393
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:19:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14317F80393
+Date: 20 Jul 2020 10:19:41 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52330347"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2020 10:19:41 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1D47440083F8;
- Mon, 20 Jul 2020 10:19:37 +0900 (JST)
-Message-ID: <87y2nfyoes.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8A356415D190;
+ Mon, 20 Jul 2020 10:19:41 +0900 (JST)
+Message-ID: <87wo2zyoeo.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 25/29] ASoC: sprd: use asoc_substream_to_rtd()
+Subject: [PATCH 26/29] ASoC: kirkwood: use asoc_substream_to_rtd()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
@@ -84,22 +84,22 @@ let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sprd/sprd-pcm-dma.c | 2 +-
+ sound/soc/kirkwood/armada-370-db.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-index 5074123f8855..5e3a96d4793c 100644
---- a/sound/soc/sprd/sprd-pcm-dma.c
-+++ b/sound/soc/sprd/sprd-pcm-dma.c
-@@ -190,7 +190,7 @@ static int sprd_pcm_hw_params(struct snd_soc_component *component,
+diff --git a/sound/soc/kirkwood/armada-370-db.c b/sound/soc/kirkwood/armada-370-db.c
+index 4f66b011f1b4..8e44ae37ad1e 100644
+--- a/sound/soc/kirkwood/armada-370-db.c
++++ b/sound/soc/kirkwood/armada-370-db.c
+@@ -18,7 +18,7 @@
+ static int a370db_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sprd_pcm_dma_params *dma_params;
- 	size_t totsize = params_buffer_bytes(params);
- 	size_t period = params_period_bytes(params);
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	unsigned int freq;
+ 
 -- 
 2.25.1
 
