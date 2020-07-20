@@ -2,73 +2,57 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F2ADC433EC
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 15:34:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 680CDC433EC
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 16:01:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB0CF22C9D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 15:34:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 192E220773
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 16:01:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PoCcKGYN";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="it1bk0iG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB0CF22C9D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FSZqGYEq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 192E220773
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A63B83B;
-	Mon, 20 Jul 2020 17:33:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A63B83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8512F41;
+	Mon, 20 Jul 2020 18:00:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8512F41
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595259265;
-	bh=U8BjP3XmZshFoqQV0oQtOilzNMqlfZ6xzp4J71jzAdw=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1595260858;
+	bh=EYfBaIjIOpzZHvvQ+MD4m3uHIzjqs86SG2UGu6VzTaY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PoCcKGYNNuFSztgwQ/ynhPH6tbW76hyzpPYTom4cE7yVXuT0rxNGcsV00bQW+MPg/
-	 2FwYtEFVtF1U6M8ZZF55/0gWLZtVKXuIJ/1MM9kYS39wmTXhRNOK5hUoJZVmDr1T/b
-	 WFxYZoTSqFxmgZFjTzH8D3Ud3eh2ULXkmoTS/gK0=
+	b=FSZqGYEqzYbs1K/8frscDqtMl446KBcfVQ1LZESNtDPzWh7ECArpSKn33/BKlD0AR
+	 YqJnguIRkmbFrmOYfuA3MZO0B059Go/LSdoJ4lb2i+kylv2TBUzdao+zZlATYTS7zu
+	 lO7qGCKgN8JmKUox+Z3qMs5Eo4CSD9Cv2YMHFjBo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06003F800E0;
-	Mon, 20 Jul 2020 17:33:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5497F800BF;
+	Mon, 20 Jul 2020 18:00:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F29CCF800F5; Mon, 20 Jul 2020 17:33:28 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77BDEF800BF
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 17:33:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77BDEF800BF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="it1bk0iG"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1946822482;
- Mon, 20 Jul 2020 15:32:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595259176;
- bh=U8BjP3XmZshFoqQV0oQtOilzNMqlfZ6xzp4J71jzAdw=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=it1bk0iGaEVdc5HKpt4vqw8MFp7eiAcLERL0su/keoLMfXHsOIXZRWGPW3ZBh0wGW
- oUO6KAgw1QrqB6aevz58ek7Ulzk0yhf1kVUWxY/3zqeeKp1s8yiAVdk8EuK0RouDAy
- S0IstsZij9h4Cf5mUX34gX7FFB1EGQrjcTMwNX54=
-Date: Mon, 20 Jul 2020 16:32:44 +0100
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
-References: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/6] ASoC: Intel: machine driver updates for 5.9
-Message-Id: <159525916427.51283.12850898284536870609.b4-ty@kernel.org>
-Cc: tiwai@suse.de
+ id 3E146F800F5; Mon, 20 Jul 2020 17:59:56 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 89CCFF800CE
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 17:59:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89CCFF800CE
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1595260775861229897-webhooks-bot@alsa-project.org>
+References: <1595260775861229897-webhooks-bot@alsa-project.org>
+Subject: S/PDIF fix for Asus Xonar SE Output
+Message-Id: <20200720155956.3E146F800F5@alsa1.perex.cz>
+Date: Mon, 20 Jul 2020 17:59:56 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,49 +68,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Jul 2020 16:13:31 -0500, Pierre-Louis Bossart wrote:
-> Small patchset to harden the SoundWire machine driver, change bad
-> HIDs, update PLL settings and avoid memory leaks. Given that the
-> SoundWire core parts are not upstream it's probably not necessary to
-> provide the patches to stable branches.
-> 
-> Bard Liao (1):
->   ASoC: Intel: sof_sdw_rt711: remove hard-coded codec name
-> 
-> [...]
+alsa-project/alsa-lib pull request #70 was opened from Odzinic:
 
-Applied to
+The ASUS Xonar SE soundcard (ID 0b05:189d ASUSTek Computer, Inc. Xonar SoundCard) defaults to the first device for S/PDIF when it should actually use the third for its digital output.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+This fix was discussed in this AskUbuntu post: https://askubuntu.com/a/1210401/117741.
 
-Thanks!
+Signed-off by: Omar Dzinic <odzinic@gmail.com>
 
-[1/5] ASoC: Intel: sof_sdw_rt711: remove hard-coded codec name
-      commit: 1f891055c7d0ce665247c09e97db927f2db37ce7
-[2/5] ASoC: Intel: sof_sdw_rt711: remove properties in card remove
-      commit: cf0418cd06ce42fcf35beb33e315b5a77e596926
-[3/5] ASoC: Intel: sof_sdw: add support for systems without i915 audio
-      commit: 15ef2ea035db7bcb9a9d0bf3747fbb7dde67dd97
-[4/5] ASoC: Intel: sof_sdw: avoid crash if invalid DSP topology loaded
-      commit: 6b540ac763e9d11506ec1eb6b0fadc70292bb4a6
-[5/5] ASoC: intel: board: sof_rt5682: Update rt1015 pll input clk freq
-      commit: 0d95d06a7aae38f3bd61582e00f0cc06b35ca0ab
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/70
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/70.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
