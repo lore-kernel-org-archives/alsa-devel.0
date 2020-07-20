@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 074E9C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:28:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59001C433E4
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:29:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 845F520B1F
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:28:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFC0B208B3
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:29:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WdtRdmYz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 845F520B1F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VNcpiTvG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFC0B208B3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2509D1612;
-	Mon, 20 Jul 2020 03:27:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2509D1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 604CE166E;
+	Mon, 20 Jul 2020 03:28:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 604CE166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595208493;
-	bh=AwxLiUkVbDNBc1H0sKEjN2sPTMETDQVYbCtBdFbi1Ic=;
+	s=default; t=1595208562;
+	bh=QWTTr19VS31zKReKmv7jwPrCUysmr605OGLzu6F+8d8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WdtRdmYzI/QQyJtZkWHIZjmwL6xCKm0NXXfPSAcScHA7MUaZPCLVRMWR+Bo+NJmjh
-	 LspUw4eE1LhGxQcqbYnoh302uGosbNmB7rsICwCFINt262LA1lz9ipjcSQ1F+PkoOV
-	 KNiY9Gg9srxetva36o2MLUlcH5TDcJlpi1qs76Bw=
+	b=VNcpiTvGPQDfxfyIbuFjVK4ojGkNG4KBP/CyQxfu9IaVJ15YxpQWkxQ0TPpFb/FG4
+	 fD7nIN5QSZ5A/FxzXtO6muc05VTC3B7MLpDXJyTwT8fpjXsiEvvbl9zBoyGeuXqFFR
+	 LVewaqVBzZLbmTZOkf1eYAMqQ+aGE5lIiOI8u9zw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A2D8F80361;
-	Mon, 20 Jul 2020 03:19:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1EF6F8036D;
+	Mon, 20 Jul 2020 03:19:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE880F8035E; Mon, 20 Jul 2020 03:18:56 +0200 (CEST)
+ id BF71FF80212; Mon, 20 Jul 2020 03:19:13 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 2B385F8034C
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:18:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B385F8034C
-Date: 20 Jul 2020 10:18:52 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52541461"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 10:18:52 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id CFF79F8036D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:19:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFF79F8036D
+Date: 20 Jul 2020 10:19:05 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52541475"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 10:19:05 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id B92FB415CA93;
- Mon, 20 Jul 2020 10:18:52 +0900 (JST)
-Message-ID: <87blkb0ytd.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 854AC4002623;
+ Mon, 20 Jul 2020 10:19:05 +0900 (JST)
+Message-ID: <878sff0yt0.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 16/29] ASoC: atmel: use asoc_substream_to_rtd()
+Subject: [PATCH 18/29] ASoC: dwc: use asoc_substream_to_rtd()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
@@ -84,150 +84,22 @@ let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/atmel/atmel-classd.c  |  8 ++++----
- sound/soc/atmel/atmel-pcm-dma.c |  4 ++--
- sound/soc/atmel/atmel-pcm-pdc.c |  2 +-
- sound/soc/atmel/atmel-pdmic.c   | 10 +++++-----
- sound/soc/atmel/atmel_wm8904.c  |  2 +-
- 5 files changed, 13 insertions(+), 13 deletions(-)
+ sound/soc/dwc/dwc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index 0469f50a0366..b1a28a9382fb 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -118,7 +118,7 @@ static const struct snd_pcm_hardware atmel_classd_hw = {
- static int atmel_classd_cpu_dai_startup(struct snd_pcm_substream *substream,
- 					struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
- 	int err;
- 
-@@ -141,7 +141,7 @@ atmel_classd_platform_configure_dma(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params,
- 	struct dma_slave_config *slave_config)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
- 
- 	if (params_physical_width(params) != 16) {
-@@ -338,7 +338,7 @@ atmel_classd_cpu_dai_hw_params(struct snd_pcm_substream *substream,
- 			       struct snd_pcm_hw_params *params,
- 			       struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_component *component = cpu_dai->component;
- 	int fs;
-@@ -381,7 +381,7 @@ static void
- atmel_classd_cpu_dai_shutdown(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
- 
- 	clk_disable_unprepare(dd->gclk);
-diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-index 0a2e956232af..e597e35459ce 100644
---- a/sound/soc/atmel/atmel-pcm-dma.c
-+++ b/sound/soc/atmel/atmel-pcm-dma.c
-@@ -53,7 +53,7 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
- static void atmel_pcm_dma_irq(u32 ssc_sr,
- 	struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_pcm_dma_params *prtd;
- 
- 	prtd = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
-@@ -78,7 +78,7 @@ static void atmel_pcm_dma_irq(u32 ssc_sr,
- static int atmel_pcm_configure_dma(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct dma_slave_config *slave_config)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_pcm_dma_params *prtd;
- 	struct ssc_device *ssc;
- 	int ret;
-diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
-index a8daebcbf6c8..704f700013d3 100644
---- a/sound/soc/atmel/atmel-pcm-pdc.c
-+++ b/sound/soc/atmel/atmel-pcm-pdc.c
-@@ -205,7 +205,7 @@ static int atmel_pcm_hw_params(struct snd_soc_component *component,
+diff --git a/sound/soc/dwc/dwc-pcm.c b/sound/soc/dwc/dwc-pcm.c
+index 9868e7373d36..9f25631d43d3 100644
+--- a/sound/soc/dwc/dwc-pcm.c
++++ b/sound/soc/dwc/dwc-pcm.c
+@@ -139,7 +139,7 @@ static int dw_pcm_open(struct snd_soc_component *component,
+ 		       struct snd_pcm_substream *substream)
  {
  	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct atmel_runtime_data *prtd = runtime->private_data;
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
  
- 	/* this may get called several times by oss emulation
- 	 * with different params */
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index c2b639928c69..8e1d8230b180 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -104,7 +104,7 @@ static struct atmel_pdmic_pdata *atmel_pdmic_dt_init(struct device *dev)
- static int atmel_pdmic_cpu_dai_startup(struct snd_pcm_substream *substream,
- 					struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
- 	int ret;
- 
-@@ -132,7 +132,7 @@ static int atmel_pdmic_cpu_dai_startup(struct snd_pcm_substream *substream,
- static void atmel_pdmic_cpu_dai_shutdown(struct snd_pcm_substream *substream,
- 					struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
- 
- 	/* Disable the overrun error interrupt */
-@@ -145,7 +145,7 @@ static void atmel_pdmic_cpu_dai_shutdown(struct snd_pcm_substream *substream,
- static int atmel_pdmic_cpu_dai_prepare(struct snd_pcm_substream *substream,
- 					struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_component *component = cpu_dai->component;
- 	u32 val;
-@@ -191,7 +191,7 @@ atmel_pdmic_platform_configure_dma(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct dma_slave_config *slave_config)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
- 	int ret;
- 
-@@ -356,7 +356,7 @@ atmel_pdmic_cpu_dai_hw_params(struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params,
- 			      struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_component *component = cpu_dai->component;
- 	unsigned int rate_min = substream->runtime->hw.rate_min;
-diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
-index 148c943cb538..9e237580afa9 100644
---- a/sound/soc/atmel/atmel_wm8904.c
-+++ b/sound/soc/atmel/atmel_wm8904.c
-@@ -26,7 +26,7 @@ static const struct snd_soc_dapm_widget atmel_asoc_wm8904_dapm_widgets[] = {
- static int atmel_asoc_wm8904_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int ret;
- 
+ 	snd_soc_set_runtime_hwparams(substream, &dw_pcm_hardware);
 -- 
 2.25.1
 
