@@ -6,69 +6,68 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12A76C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:42:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B4E5C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:41:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9287922482
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:42:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFBA122B4D
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:41:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sbox5IjQ";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XK/xeZv3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9287922482
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BWscNeBC";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k4CcmkKa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFBA122B4D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B199165E;
-	Mon, 20 Jul 2020 16:42:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B199165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 717111614;
+	Mon, 20 Jul 2020 16:41:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 717111614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595256175;
-	bh=+WvfaW/LxcgFPTrBL+EfFYzz7ctpjxkmyhhSoyAN57E=;
+	s=default; t=1595256111;
+	bh=X2LRtrjy0ZD8br3AOM4dhUe7N7ZAD27D37HYWNVITWY=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sbox5IjQjWnYTecWGBGxp22GZt06iu5AYN8seKEkHDDdnhjHVtYyli/AMC+gDVLWT
-	 8PJO8yQDHnnVTRYuYPuaG9Q8AU8mrT3OBWN+K3gh87B0wykgd9M/jJaXmJXEARgu0S
-	 6fWe9iPYNo8e0jUGAoGepvdekNSWlMSuOVUJmvIw=
+	b=BWscNeBCyPGhBJnApQSEix8ei4HlEpgZCwZVvLqQ1kTPLgjpoTF3SFbVMaTahYwrj
+	 NRXacQpr92hIbVtQDcVt91GcEorhjYlJRbuhzNgC9tsphjhgBd6xl8c/s/+wqfDWYg
+	 izpgIDzXniapCASIxThK026wionwhHuqcUw49hS8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8B78F802C2;
-	Mon, 20 Jul 2020 16:39:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73280F80274;
+	Mon, 20 Jul 2020 16:38:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DAB6AF802C2; Mon, 20 Jul 2020 16:39:03 +0200 (CEST)
+ id EBF67F80274; Mon, 20 Jul 2020 16:38:53 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EADCEF80279
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 16:38:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EADCEF80279
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C0AAF800F5
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 16:38:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C0AAF800F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XK/xeZv3"
+ header.b="k4CcmkKa"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0518222CB1;
- Mon, 20 Jul 2020 14:38:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0FCD122B4D;
+ Mon, 20 Jul 2020 14:38:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595255936;
- bh=+WvfaW/LxcgFPTrBL+EfFYzz7ctpjxkmyhhSoyAN57E=;
+ s=default; t=1595255921;
+ bh=X2LRtrjy0ZD8br3AOM4dhUe7N7ZAD27D37HYWNVITWY=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=XK/xeZv3Y8B8mt+X9PcZSHufP5b3Stxuh1zzFY5JjjUVnbNykR6nF+5M4zwkOnLBT
- DC+6bEzZqmVVgNdvx6cBRHezQCM24exvcbtmMoroamhGxdBfJhfPHQ+MM4M64UxieN
- dQxbumgZOdCfkUyEFn3Dsy/SLvY+KjQ9J6CiWsEo=
-Date: Mon, 20 Jul 2020 15:38:44 +0100
+ b=k4CcmkKaOvP+8bV8Ky8i9NPGZZWxUeIls3Cc42KpoNkgeknIp3wq+yoQKjqk5GcxF
+ 0UqZxTqUjdObTFaElcD3Th8gboRgseUYb/no7KH89tAFXTAV+JyWYcIR3W2l8HzkwS
+ 9VbeDMM7017lMDGOVsOrwOCXVddgtvIvB4PhzEl4=
+Date: Mon, 20 Jul 2020 15:38:29 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
-References: <20200717211337.31956-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/6] ASoC: Intel: machine driver updates for 5.9
-Message-Id: <159525589434.6792.2400800009292925244.b4-ty@kernel.org>
-Cc: tiwai@suse.de
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20200719180901.30720-1-rdunlap@infradead.org>
+References: <20200719180901.30720-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] ASoC: wcd9335.h: fix duplicated word
+Message-Id: <159525589435.6792.17128171130773560089.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,16 +83,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Jul 2020 16:13:31 -0500, Pierre-Louis Bossart wrote:
-> Small patchset to harden the SoundWire machine driver, change bad
-> HIDs, update PLL settings and avoid memory leaks. Given that the
-> SoundWire core parts are not upstream it's probably not necessary to
-> provide the patches to stable branches.
-> 
-> Bard Liao (1):
->   ASoC: Intel: sof_sdw_rt711: remove hard-coded codec name
-> 
-> [...]
+On Sun, 19 Jul 2020 11:09:01 -0700, Randy Dunlap wrote:
+> Fix the doubled word "in" in a comment by adding punctuation
+> in 3 places and capitalization.
 
 Applied to
 
@@ -101,18 +93,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: Intel: sof_sdw_rt711: remove hard-coded codec name
-      (no commit info)
-[2/6] ASoC: Intel: sof_sdw_rt711: remove properties in card remove
-      (no commit info)
-[3/6] ASoC: Intel: sof_sdw: add support for systems without i915 audio
-      (no commit info)
-[4/6] ASoC: Intel: sof_sdw: avoid crash if invalid DSP topology loaded
-      (no commit info)
-[5/6] ASoC: intel: board: sof_rt5682: Update rt1015 pll input clk freq
-      (no commit info)
-[6/6] ASoC: Intel: common: change match table ehl-rt5660
-      commit: 58ef60025a1263e78de01b135d05784996383611
+[1/1] ASoC: wcd9335.h: fix duplicated word
+      commit: 09e5209087294f444efa7af07442faf886fcc6b9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
