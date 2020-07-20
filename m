@@ -2,91 +2,57 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB07AC433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 18:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2CA7C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 18:20:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47B6222B4E
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 18:14:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 986852070A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 18:20:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lubOFDtK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kMmJlhlJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47B6222B4E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZceSTKia"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 986852070A
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16FC1165E;
-	Mon, 20 Jul 2020 20:13:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16FC1165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19D9D83B;
+	Mon, 20 Jul 2020 20:19:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19D9D83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595268851;
-	bh=Ws3I8aIOahjdO7sI9GVkTH71vRV27xHdSz6hogjODMQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1595269231;
+	bh=WC7/iyRLAT/g1zlr1jhJn3MfOtbTgzrcimsw7CRAUrQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lubOFDtKznDYlrI3daHf9+MEsmQbrLvluUAgoLAshZYeJqFHEjvn6PwtuIHkPWPt5
-	 BU+uSeCIXuclG61h+fepCtGPcNs/Y5KfQvR6ljBjt+H7aTtNnrAmeRfWquWwpK9xSz
-	 4oJHAZaqi5WP1196NUatfrMQp92RYxBIJZMUnBuY=
+	b=ZceSTKiayNQAwQrVjLhtu/nZAR00KhGlKbZQfpuDnTyuzcIlxPAXjbZbxBQNMrTjg
+	 eBZD4M3Wrv8IhKko7oMKvK9MJfpMUEbUlQIFm49S7qJS+ANiMoue1MvHGLtHcV9Vqy
+	 811jiEc3uF5okxhorRDm6w+XF0inWg6WwLmhrQG8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF83DF800CE;
-	Mon, 20 Jul 2020 20:12:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94CA6F800C1;
+	Mon, 20 Jul 2020 20:19:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5BAAF8014C; Mon, 20 Jul 2020 20:12:45 +0200 (CEST)
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41FABF800CE
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 20:12:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41FABF800CE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kMmJlhlJ"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06KICESd057699;
- Mon, 20 Jul 2020 13:12:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1595268734;
- bh=7tyvgaL+fW83SAUmCUViLrsnXQp4Obzw1ixykaV8ISI=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=kMmJlhlJy1WGDQkBsH0rhk1gjbXR46eDnqxStJo9yR8e4XCwYmGToZAVzASCBP1ap
- Zwj8fcEuBSfB/3IQDcbdF9NkrjPeF52a626LqwoKSRehTDiA4uIhQBdUQaBVHwieZk
- VPR3y0MW1Qc98QUs6Vm/0vqk5piLefkipNQiQux0=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KICE8Q091024;
- Mon, 20 Jul 2020 13:12:14 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 20
- Jul 2020 13:12:14 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 20 Jul 2020 13:12:14 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06KICEuK064305;
- Mon, 20 Jul 2020 13:12:14 -0500
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>
-Subject: [PATCH v3 2/2] ASoC: tas2770: Fix reset gpio property name
-Date: Mon, 20 Jul 2020 13:12:02 -0500
-Message-ID: <20200720181202.31000-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720181202.31000-1-dmurphy@ti.com>
-References: <20200720181202.31000-1-dmurphy@ti.com>
+ id B09BBF800F5; Mon, 20 Jul 2020 20:19:33 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 52A4BF800C1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 20:19:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52A4BF800C1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1595269155833822012-webhooks-bot@alsa-project.org>
+References: <1595269155833822012-webhooks-bot@alsa-project.org>
+Subject: Compile with debugging symbols
+Message-Id: <20200720181933.B09BBF800F5@alsa1.perex.cz>
+Date: Mon, 20 Jul 2020 20:19:33 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,30 +68,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix the reset property name when allocating the GPIO descriptor.
-The gpiod_get_optional appends either the -gpio or -gpios suffix to the
-name.
+alsa-project/alsa-lib issue #71 was opened from project-owner:
 
-Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- sound/soc/codecs/tas2770.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi, how can I compile the alsa-lib with debugging symbols enabled? Thank you!
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 4538b2d0216f..1eb9b77439eb 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -759,8 +759,7 @@ static int tas2770_i2c_probe(struct i2c_client *client,
- 		}
- 	}
- 
--	tas2770->reset_gpio = devm_gpiod_get_optional(tas2770->dev,
--							  "reset-gpio",
-+	tas2770->reset_gpio = devm_gpiod_get_optional(tas2770->dev, "reset",
- 						      GPIOD_OUT_HIGH);
- 	if (IS_ERR(tas2770->reset_gpio)) {
- 		if (PTR_ERR(tas2770->reset_gpio) == -EPROBE_DEFER) {
--- 
-2.27.0
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/71
+Repository URL: https://github.com/alsa-project/alsa-lib
