@@ -2,58 +2,58 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A28D8C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AA4FC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:25:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29F5D2177B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:24:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EEFDC2177B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:25:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KJVR2sGb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29F5D2177B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mZnrgNln"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEFDC2177B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B594B1615;
-	Mon, 20 Jul 2020 03:23:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B594B1615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A5461672;
+	Mon, 20 Jul 2020 03:24:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A5461672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595208288;
-	bh=Y0xIgg3+h5wS+DUvWmHGg/FYvi4kpIJ7jnAfUOR0/8o=;
+	s=default; t=1595208312;
+	bh=iFD0tHY6jQS7iMaoG4Y/6WWYzWTprLSk9uWZNfW1ck8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KJVR2sGbawsZSvyKwtc7CltuQStfMTUwppjI0v1tY4GcqeBoObBft9v3jry58avSz
-	 PzWxE8R3Lnz7P6NZRfWqjDB2114CultsfFqSx0zfhjdpJZ0imot6HAsmYJLTmjHly4
-	 TMrLaUCsuANqb3+EllXdZnmmYW05QrAzLgYQWwhU=
+	b=mZnrgNlno3zXhe8iypWH+rN67NaIzw6C+HenRD70sx7MZqtyvoBGeDU7kPhSyhMvK
+	 fqeKTSX+xyXPeUTUuUDPE9frziTIDYXX5msvfnW3lJLpOXpVkpBFPon2sBIhg6jLYg
+	 AxoDWSjdgqYjN6d0zsXo8pMG38N0x8xmGp8UMJc8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 522A3F80331;
-	Mon, 20 Jul 2020 03:18:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDDA4F80338;
+	Mon, 20 Jul 2020 03:18:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2C20F80321; Mon, 20 Jul 2020 03:18:26 +0200 (CEST)
+ id 85E7DF80328; Mon, 20 Jul 2020 03:18:28 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 636E3F80141
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:18:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 636E3F80141
-Date: 20 Jul 2020 10:18:20 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52541395"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 10:18:20 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id B29B5F80307
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:18:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B29B5F80307
+Date: 20 Jul 2020 10:18:24 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52541402"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 10:18:24 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 092904002627;
- Mon, 20 Jul 2020 10:18:20 +0900 (JST)
-Message-ID: <87k0yz0yua.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4760C415CA8B;
+ Mon, 20 Jul 2020 10:18:24 +0900 (JST)
+Message-ID: <87imej0yu5.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 10/29] ASoC: pxa: use asoc_substream_to_rtd()
+Subject: [PATCH 11/29] ASoC: cirrus: use asoc_substream_to_rtd()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
@@ -84,221 +84,36 @@ let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/pxa/brownstone.c | 2 +-
- sound/soc/pxa/corgi.c      | 4 ++--
- sound/soc/pxa/hx4700.c     | 2 +-
- sound/soc/pxa/imote2.c     | 2 +-
- sound/soc/pxa/magician.c   | 6 +++---
- sound/soc/pxa/mmp-pcm.c    | 2 +-
- sound/soc/pxa/poodle.c     | 4 ++--
- sound/soc/pxa/pxa2xx-i2s.c | 2 +-
- sound/soc/pxa/spitz.c      | 4 ++--
- sound/soc/pxa/tosa.c       | 2 +-
- sound/soc/pxa/z2.c         | 2 +-
- sound/soc/pxa/zylonite.c   | 2 +-
- 12 files changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/cirrus/edb93xx.c     | 2 +-
+ sound/soc/cirrus/snappercl15.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
-index 016a91199485..f310a8e91bbf 100644
---- a/sound/soc/pxa/brownstone.c
-+++ b/sound/soc/pxa/brownstone.c
-@@ -43,7 +43,7 @@ static const struct snd_soc_dapm_route brownstone_audio_map[] = {
- static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
+index ccf65f087ea6..7b6cdc9c8a23 100644
+--- a/sound/soc/cirrus/edb93xx.c
++++ b/sound/soc/cirrus/edb93xx.c
+@@ -22,7 +22,7 @@
+ static int edb93xx_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
  	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
  	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int freq_out, sspa_mclk, sysclk;
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index 6fbef9a0afa7..8ee2dea25a8d 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -96,7 +96,7 @@ static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
- 
- static int corgi_startup(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	/* check the jack status at stream startup */
- 	corgi_ext_control(&rtd->card->dapm);
-@@ -115,7 +115,7 @@ static void corgi_shutdown(struct snd_pcm_substream *substream)
- static int corgi_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	unsigned int clk = 0;
-diff --git a/sound/soc/pxa/hx4700.c b/sound/soc/pxa/hx4700.c
-index b4da9a9a6521..7334fac758de 100644
---- a/sound/soc/pxa/hx4700.c
-+++ b/sound/soc/pxa/hx4700.c
-@@ -53,7 +53,7 @@ static struct snd_soc_jack_gpio hs_jack_gpio = {
- static int hx4700_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int ret = 0;
-diff --git a/sound/soc/pxa/imote2.c b/sound/soc/pxa/imote2.c
-index 3014e8244ab4..a575676508b3 100644
---- a/sound/soc/pxa/imote2.c
-+++ b/sound/soc/pxa/imote2.c
-@@ -11,7 +11,7 @@
- static int imote2_asoc_hw_params(struct snd_pcm_substream *substream,
+ 	int err;
+diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
+index cb133e80b7c3..c4b112921661 100644
+--- a/sound/soc/cirrus/snappercl15.c
++++ b/sound/soc/cirrus/snappercl15.c
+@@ -22,7 +22,7 @@
+ static int snappercl15_hw_params(struct snd_pcm_substream *substream,
  				 struct snd_pcm_hw_params *params)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
  	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
  	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	unsigned int clk = 0;
-diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
-index e4c818f4cd62..a5f326c97af2 100644
---- a/sound/soc/pxa/magician.c
-+++ b/sound/soc/pxa/magician.c
-@@ -68,7 +68,7 @@ static void magician_ext_control(struct snd_soc_dapm_context *dapm)
- 
- static int magician_startup(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	/* check the jack status at stream startup */
- 	magician_ext_control(&rtd->card->dapm);
-@@ -82,7 +82,7 @@ static int magician_startup(struct snd_pcm_substream *substream)
- static int magician_playback_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	unsigned int width;
-@@ -120,7 +120,7 @@ static int magician_playback_hw_params(struct snd_pcm_substream *substream,
- static int magician_capture_hw_params(struct snd_pcm_substream *substream,
- 				      struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int ret = 0;
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 3fe6c4c5a3ab..53fc49e32fbc 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -110,7 +110,7 @@ static bool filter(struct dma_chan *chan, void *param)
- static int mmp_pcm_open(struct snd_soc_component *component,
- 			struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct platform_device *pdev = to_platform_device(component->dev);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct mmp_dma_data dma_data;
-diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index 287984a564c8..323ba3e23039 100644
---- a/sound/soc/pxa/poodle.c
-+++ b/sound/soc/pxa/poodle.c
-@@ -68,7 +68,7 @@ static void poodle_ext_control(struct snd_soc_dapm_context *dapm)
- 
- static int poodle_startup(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	/* check the jack status at stream startup */
- 	poodle_ext_control(&rtd->card->dapm);
-@@ -89,7 +89,7 @@ static void poodle_shutdown(struct snd_pcm_substream *substream)
- static int poodle_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	unsigned int clk = 0;
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 03102e938ba1..5301859a8453 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -95,7 +95,7 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_in = {
- static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 
- 	if (IS_ERR(clk_i2s))
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index 6d8174f62935..7c1384a869ca 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -105,7 +105,7 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- 
- static int spitz_startup(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	/* check the jack status at stream startup */
- 	spitz_ext_control(&rtd->card->dapm);
-@@ -116,7 +116,7 @@ static int spitz_startup(struct snd_pcm_substream *substream)
- static int spitz_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	unsigned int clk = 0;
-diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
-index b429db25f884..3b40b5fa5de7 100644
---- a/sound/soc/pxa/tosa.c
-+++ b/sound/soc/pxa/tosa.c
-@@ -72,7 +72,7 @@ static void tosa_ext_control(struct snd_soc_dapm_context *dapm)
- 
- static int tosa_startup(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	/* check the jack status at stream startup */
- 	tosa_ext_control(&rtd->card->dapm);
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index 6eee1aefc89a..edf2b9eec5b8 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -33,7 +33,7 @@ static struct snd_soc_card snd_soc_z2;
- static int z2_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	unsigned int clk = 0;
-diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
-index 447b59b8bd33..bb89a53f4ab1 100644
---- a/sound/soc/pxa/zylonite.c
-+++ b/sound/soc/pxa/zylonite.c
-@@ -75,7 +75,7 @@ static int zylonite_wm9713_init(struct snd_soc_pcm_runtime *rtd)
- static int zylonite_voice_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	unsigned int wm9713_div = 0;
+ 	int err;
 -- 
 2.25.1
 
