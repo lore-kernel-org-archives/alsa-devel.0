@@ -2,104 +2,102 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F553C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 02:48:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A2A0C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 04:15:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE1BE20758
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 02:48:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D936E20672
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 04:15:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="szEyc2Vk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="EYSOJPSh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE1BE20758
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MSXdVQD/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="TZQQOzD1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D936E20672
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F06983B;
-	Mon, 20 Jul 2020 04:47:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F06983B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66B5483E;
+	Mon, 20 Jul 2020 06:14:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66B5483E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595213289;
-	bh=X0pmiNlgsCR2u6MpUmRHLA994qnLeragWZt9zHCrojs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1595218516;
+	bh=D1W/TJBSRYNLqMmfHtigTPJ5uQo12q/u7w8uTwreA3M=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=szEyc2VkSQc36cZwrsxI9VwFp7KKWk56c5DY/Ooq8FbLdgPK8xZoXsXuwNkeZ+VGz
-	 X7/DLAuVN9uvy4olCpikdBkJ50OhQ9k8Wy96HGzjhwYFGpRrX6O74evpQy5QBiXkG0
-	 McUJBMPuXvD5FCNT95eMc548VyVWNFU+Y4Fvuyqk=
+	b=MSXdVQD/hVftPFu08t6K5kAXfDwQ7HFjqFhWrPKRxs/ZBaxbyCdpeiniV4RwHt0Qe
+	 Un8EgZr0h18UUuN3VCoOcE36CTjdP0CgNPjw351OIxDC0WzTdpUkGSwP1j0wIOf/rP
+	 vBomBhbIsbW3IESDo9H5yv20dzcLLpbGNmVGuPGA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BFB8F800E0;
-	Mon, 20 Jul 2020 04:47:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8529F800E0;
+	Mon, 20 Jul 2020 06:14:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F2C5F800F5; Mon, 20 Jul 2020 04:47:16 +0200 (CEST)
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
- [IPv6:2607:f8b0:4864:20::d44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2BBF0F800F5; Mon, 20 Jul 2020 06:14:23 +0200 (CEST)
+Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
+ [216.228.121.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5FF7F800CE
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 04:47:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5FF7F800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98DD8F800C1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 06:14:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98DD8F800C1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="EYSOJPSh"
-Received: by mail-io1-xd44.google.com with SMTP id c16so16032831ioi.9
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 19:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=td6BerRuIm6Osr5k4KANv/zOEQY+Vf9NqOqMaPkayYo=;
- b=EYSOJPShDEjAvUeQAIslmRzXW8sF/c7GhHhfjJo/2SwWsOP3nKF/IzQ0cjkPVvxfU3
- Cnqd1vXWqG0+iPuQUIEY53o1zuqeakzsDG8rlCeUd1kMT42Ebqz++T/stGUjv7DaHYsO
- ik5VgLtXjCn4S4KUR/GfP+hCqNQneWiX8a5fgNAQa60MDwF/l3o/q0YtpyDE4xUa8r1X
- pQa//lGRWICp0GkSPJfIauUvAXXAApnahmzpdiVVI1uNIR0Tli+Ufk4O4jEm3JFWDbPd
- 5B9UmVMCBs6sQB4pOrB7kGY7zXWtYmcfCqi5qIuO2bNdg59PPJ0E70k6aak38NDlyfLy
- kTvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=td6BerRuIm6Osr5k4KANv/zOEQY+Vf9NqOqMaPkayYo=;
- b=TE7w6IIY3KU+hK11sE2aPy8w1B4RTr+4kL4OiZ1aoZlnbqP53BnMyzCT8wnvQ9rZHn
- Nnn6zbN0p9VfTdGUSjPz4b1PdzZQw87Dsqci4T8BDbikN7jx8y5mzNaLuGVpIFxzrgGH
- jP4gX6CKt3Kv98/G1GHaezRaN0G4oAOyR3gc+U449bMOHtwBLl0ZLNPLXvsMDbrGhuAq
- zrvbZ66MB/hbyy3EgXfWuHKApkr+gGCe6Apz8qkgJS4pH3ngHbsvJIIbY82lOT4MlDch
- xCqRQugDBZuW3crsDDz9JXlWWvkW8HkcbzngiJxh6/BTCwCt+vCZ+TO5UKnZZl2YlKTw
- 9GRg==
-X-Gm-Message-State: AOAM531bGxaN3a5k2npEiPL+rYHDKNMFB3e/7631IiK4UEAa9OCr4a5l
- Ipw6VGt2YQH/nqvKqzwJ1YQ0f5F+g2+lal/2xCGfoA==
-X-Google-Smtp-Source: ABdhPJzTyYx8+W9PEUhbmpm/S1Z6Algx0mLobofGyjcCATOwB1r364ddF/4JxLNvDkrpQWdc3h5V4ESoBYtuYAH3KgA=
-X-Received: by 2002:a6b:d301:: with SMTP id s1mr20615004iob.146.1595213225672; 
- Sun, 19 Jul 2020 19:47:05 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="TZQQOzD1"
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5f1519d70000>; Sun, 19 Jul 2020 21:13:11 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate102.nvidia.com (PGP Universal service);
+ Sun, 19 Jul 2020 21:14:12 -0700
+X-PGP-Universal: processed;
+ by hqpgpgate102.nvidia.com on Sun, 19 Jul 2020 21:14:12 -0700
+Received: from [10.25.99.163] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Jul
+ 2020 04:14:05 +0000
+Subject: Re: [PATCH 03/10] ASoC: audio-graph: Support Codec with multiple
+ endpoints
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
+ <1595135417-16589-4-git-send-email-spujar@nvidia.com>
+ <87365n2i2z.wl-kuninori.morimoto.gx@renesas.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <870feaf2-3aa2-dbb8-f883-9b6cfcb36d82@nvidia.com>
+Date: Mon, 20 Jul 2020 09:44:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200717120207.3471030-1-cychiang@chromium.org>
- <20200717120207.3471030-2-cychiang@chromium.org>
-In-Reply-To: <20200717120207.3471030-2-cychiang@chromium.org>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 20 Jul 2020 10:46:54 +0800
-Message-ID: <CA+Px+wV211AhRVTecU7OS6uP2AQw7v7Gu5x41L4dgW3xR8mA-A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: qcom: sc7180: Add machine driver for sound card
- registration
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Taniya Das <tdas@codeaurora.org>, devicetree@vger.kernel.org,
- Tzung-Bi Shih <tzungbi@chromium.org>,
- Banajit Goswami <bgoswami@codeaurora.org>,
- ALSA development <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
- Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>,
- Andy Gross <agross@kernel.org>, Douglas Anderson <dianders@chromium.org>,
- Ajit Pandey <ajitp@codeaurora.org>, dgreid@chromium.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <87365n2i2z.wl-kuninori.morimoto.gx@renesas.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1595218391; bh=nx5lAIYmOjDB4BduiFhtKmLRJSU6RRYMWVlTJDi4E/g=;
+ h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+ Content-Language;
+ b=TZQQOzD1ItvuulsVlIa1WUJnL2CkhNwOS7poO+6Z3JLe7mfSuyw4hSfeMpFQd21CS
+ JJ3HoVHvh+iE6GRADC1p22/9vIGbMcunNC1+048hYcRz0J22zowoilNrZoxfNXZfd+
+ tbchL+aGMtAZ7Ju8oaNI3XV7rEEdiOiKWRzqk3qyuYSVvvq50KxqfvzHtQ1J62rbiD
+ TWW/BTWpr8Jshg0aNzRe6UvMNcB+VjYF4BrD4WdoD2HgF0cY/xmSfjRqqo2l6DtDrX
+ RwD6efyaI4vgy198gRaVOn68x1Qh4jzZsjGqZs6d4/x8ERbWFQbj8P4rMUiuqasSZi
+ BBgS3IvXcCZJA==
+Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
+ atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
+ spujar@nvidia.com, nwartikar@nvidia.com, lgirdwood@gmail.com,
+ robh+dt@kernel.org, tiwai@suse.com, viswanathl@nvidia.com, sharadg@nvidia.com,
+ broonie@kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
+ rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,206 +113,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Jul 17, 2020 at 8:02 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
-> diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-> new file mode 100644
-> index 000000000000..cbe6b487d432
-> --- /dev/null
-> +++ b/sound/soc/qcom/sc7180.c
-> @@ -0,0 +1,410 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + *
-> + * sc7180.c -- ALSA SoC Machine driver for SC7180
-> + */
-Use "//" for all lines (see https://lkml.org/lkml/2020/5/14/332).
-
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/of_device.h>
-> +#include <sound/core.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/jack.h>
-> +#include <sound/soc.h>
-> +#include <uapi/linux/input-event-codes.h>
-> +#include <dt-bindings/sound/sc7180-lpass.h>
-> +#include "../codecs/rt5682.h"
-> +#include "common.h"
-> +#include "lpass.h"
-Insert a blank line in between <...> and "..." and sort the list
-alphabetically to make it less likely to conflict.
-
-> +static int sc7180_snd_hw_params(struct snd_pcm_substream *substream,
-> +                               struct snd_pcm_hw_params *params)
-> +{
-Dummy function?  Or is it still work in progress?
-
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +       int ret = 0;
-> +
-> +       switch (cpu_dai->id) {
-> +       case MI2S_PRIMARY:
-> +               break;
-> +       case MI2S_SECONDARY:
-> +               break;
-> +       default:
-> +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
--EINVAL.
-
-> +static int sc7180_dai_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +       struct snd_soc_component *component;
-> +       struct snd_soc_card *card = rtd->card;
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> +       struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
-> +       struct snd_jack *jack;
-> +       int rval;
-> +
-> +       if (!pdata->jack_setup) {
-> +               rval = snd_soc_card_jack_new(
-> +                               card, "Headset Jack",
-> +                               SND_JACK_HEADSET |
-> +                               SND_JACK_HEADPHONE |
-> +                               SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-> +                               SND_JACK_BTN_2 | SND_JACK_BTN_3,
-> +                               &pdata->jack, NULL, 0);
-> +
-> +               if (rval < 0) {
-> +                       dev_err(card->dev, "Unable to add Headphone Jack\n");
-> +                       return rval;
-> +               }
-> +
-> +               jack = pdata->jack.jack;
-> +
-> +               snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-> +               snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> +               snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> +               snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-> +               pdata->jack_setup = true;
-This block is something I don't expect to be in "dai_init" (i.e. there
-is only 1 headset jack, why do we need to run the code for n times).
-
-> +       switch (cpu_dai->id) {
-> +       case MI2S_PRIMARY:
-> +               jack  = pdata->jack.jack;
-> +               component = codec_dai->component;
-> +
-> +               jack->private_data = component;
-> +               jack->private_free = sc7180_jack_free;
-> +               rval = snd_soc_component_set_jack(component,
-> +                                                 &pdata->jack, NULL);
-> +               if (rval != 0 && rval != -EOPNOTSUPP) {
-> +                       dev_warn(card->dev, "Failed to set jack: %d\n", rval);
-> +                       return rval;
-> +               }
-> +               break;
-> +       case MI2S_SECONDARY:
-> +               break;
-> +       default:
-> +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
--EINVAL.
-
-> +static int sc7180_snd_startup(struct snd_pcm_substream *substream)
-> +{
-> +       unsigned int codec_dai_fmt = SND_SOC_DAIFMT_CBS_CFS;
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_card *card = rtd->card;
-> +       struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> +       int ret;
-> +
-> +       switch (cpu_dai->id) {
-> +       case MI2S_PRIMARY:
-> +               codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S;
-If the format is fixed, could it put somewhere statically?
-
-> +               if (++data->pri_mi2s_clk_count == 1) {
-Don't it need to be atomic?
-
-> +                       snd_soc_dai_set_sysclk(cpu_dai,
-> +                                              LPASS_MCLK0,
-> +                                              DEFAULT_MCLK_RATE,
-> +                                              SNDRV_PCM_STREAM_PLAYBACK);
-> +               }
-> +               snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
-> +
-> +               /* Configure PLL1 for codec */
-> +               ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
-> +                                         DEFAULT_MCLK_RATE, RT5682_PLL1_FREQ);
-> +               if (ret < 0) {
-> +                       dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-> +                       return ret;
-> +               }
-> +
-> +               /* Configure sysclk for codec */
-> +               ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
-> +                                            RT5682_PLL1_FREQ,
-> +                                            SND_SOC_CLOCK_IN);
-> +               if (ret < 0)
-> +                       dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n",
-> +                               ret);
-> +
-> +               break;
-> +       case MI2S_SECONDARY:
-> +               break;
-> +       default:
-> +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
--EINVAL.
-
-> +static void  sc7180_snd_shutdown(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_card *card = rtd->card;
-> +       struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +
-> +       switch (cpu_dai->id) {
-> +       case MI2S_PRIMARY:
-> +               if (--data->pri_mi2s_clk_count == 0) {
-Atomic?
-
-> +                       snd_soc_dai_set_sysclk(cpu_dai,
-> +                                              LPASS_MCLK0,
-> +                                              0,
-> +                                              SNDRV_PCM_STREAM_PLAYBACK);
-> +               }
-> +               break;
-> +       case MI2S_SECONDARY:
-> +               break;
-> +       default:
-> +               pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
--EINVAL.
-
-> +static int sc7180_snd_platform_probe(struct platform_device *pdev)
-> +{
-> +       struct snd_soc_card *card;
-> +       struct sc7180_snd_data *data;
-> +       struct device *dev = &pdev->dev;
-> +       int ret;
-> +
-> +       card = kzalloc(sizeof(*card), GFP_KERNEL);
-> +       if (!card)
-> +               return -ENOMEM;
-Looks like you don't need to allocate the card in runtime.  Also you
-need to use the devm version if needed.
-
-> +       /* Allocate the private data */
-> +       data = kzalloc(sizeof(*data), GFP_KERNEL);
-Use devm.
-
-> +       card->dapm_widgets = sc7180_snd_widgets;
-> +       card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets);
-Can the struct snd_soc_card allocate statically?
-
-> +       sc7180_add_ops(card);
-> +       ret = snd_soc_register_card(card);
-devm.
 
 
-I didn't dive into the logic too much.  Would need another round
-review if any newer version.
+On 7/20/2020 5:07 AM, Kuninori Morimoto wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Hi Sameer
+>
+>> If a Codec port has multiple endpoints, only first endpoint gets parsed
+>> and remaining are ignored. This can be fixed by removing 'dup_codec' flag
+>> passed to graph_dai_link_of_dpcm() and thus it loops over all endpoints
+>> of Codec. Similarly graph_count_dpcm() is updated as well.
+>>
+>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>> ---
+>>   sound/soc/generic/audio-graph-card.c | 28 +++++++++-------------------
+>>   1 file changed, 9 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+>> index 1e20562..b1903f9 100644
+>> --- a/sound/soc/generic/audio-graph-card.c
+>> +++ b/sound/soc/generic/audio-graph-card.c
+>> @@ -201,8 +201,7 @@ static void graph_parse_mclk_fs(struct device_node *top,
+>>   static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+>>                                  struct device_node *cpu_ep,
+>>                                  struct device_node *codec_ep,
+>> -                               struct link_info *li,
+>> -                               int dup_codec)
+>> +                               struct link_info *li)
+> This patch breaks DPCM connection which is used for MIXer
+
+Could you please elaborate a bit more as to what is broken with this? 
+The problem I am trying to solve here is to have multiple endpoints for 
+Codec port.
+
+>
+> Thank you for your help !!
+>
+> Best regards
+> ---
+> Kuninori Morimoto
+
