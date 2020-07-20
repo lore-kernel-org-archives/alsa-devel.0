@@ -2,73 +2,90 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17D9CC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 05:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BFFAC433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 06:36:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9205822BEF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 05:14:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A344820709
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 06:36:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p4vAL40z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9205822BEF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rt1d5LRr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z/NGDlcG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A344820709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AC9683E;
-	Mon, 20 Jul 2020 07:13:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AC9683E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2532583E;
+	Mon, 20 Jul 2020 08:35:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2532583E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595222084;
-	bh=zlyYwFn3+Nc6/YaYjdvsiimhUIiPVbViqkUr9WwZFRc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1595226980;
+	bh=dSA7isO+QYUdRXlFaO4ozzuMLnDndmLPst08UeF/CSs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p4vAL40zBz1xIWMoMFDwSihW6cXBIeLqR+PcjStaOGjGEVbK25PxF5HUzxx2Q5BuH
-	 uZYicGr6HYdJKGzQ22fvPIH+vYzKedbYibnd6+VmBhVAvpv0t7U8d8SccX1pZ2BD7h
-	 CGIsL/Z5lmL6JrLO5N39X5rbJJsAgXUksQc6nAzU=
+	b=rt1d5LRrH+nhVoV+SVoBdlTzSpiJXCNDNUcfv/6w/q3AfkV39+ZV/ywIvNs7Ku105
+	 d4x+YXFG17I2SgtxL08ZB/vt3VUby4UxTosRikJPk6PTJVb7fS7/3odaoumg/C3CMR
+	 ZC04rmE1HV4BG/EOEZFrOP1CRFTXEJAM/NnMe6I4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CD8CF800E0;
-	Mon, 20 Jul 2020 07:13:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72D23F800E0;
+	Mon, 20 Jul 2020 08:35:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33EE4F800F5; Mon, 20 Jul 2020 07:13:52 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 386C4F800BF
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 07:13:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 386C4F800BF
-Date: 20 Jul 2020 14:13:35 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52564349"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 14:13:35 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8018B400753D;
- Mon, 20 Jul 2020 14:13:35 +0900 (JST)
-Message-ID: <87o8oazs5a.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH 03/10] ASoC: audio-graph: Support Codec with multiple
- endpoints
-In-Reply-To: <870feaf2-3aa2-dbb8-f883-9b6cfcb36d82@nvidia.com>
-References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
- <1595135417-16589-4-git-send-email-spujar@nvidia.com>
- <87365n2i2z.wl-kuninori.morimoto.gx@renesas.com>
- <870feaf2-3aa2-dbb8-f883-9b6cfcb36d82@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
- nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
- viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
+ id A8D03F800F5; Mon, 20 Jul 2020 08:35:27 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B54BEF800C1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 08:35:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B54BEF800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Z/NGDlcG"
+Received: from localhost (unknown [122.171.202.192])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 56B17208E4;
+ Mon, 20 Jul 2020 06:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1595226915;
+ bh=dSA7isO+QYUdRXlFaO4ozzuMLnDndmLPst08UeF/CSs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Z/NGDlcGEobtMUBV/xHUm8KvVSv34AW/RTRspaqsEkIiTcdnw63M2D3nWWQh5mq4q
+ z96XQ4Ue0gvvpj1wEoBWc2Prhjp2nRpoOvan2Fkl8qcLs2slpX3TPFzKfjDJg2If+m
+ 37PT2JCk1J8diRsM8Y3YsBc1WxMK7WQ3mLMmQeDc=
+Date: Mon, 20 Jul 2020 12:05:11 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH 05/20] dt-bindings: phy: renesas,usb2-phy: Add r8a774e1
+ support
+Message-ID: <20200720063511.GE12965@vkoul-mobl>
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-6-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594919915-5225-6-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+ linux-i2c@vger.kernel.org, Marek Vasut <marek.vasut+renesas@gmail.com>,
+ Magnus Damm <magnus.damm@gmail.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ Niklas <niklas.soderlund@ragnatech.se>, Rob Herring <robh+dt@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ linux-usb@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ dmaengine@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,61 +101,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 16-07-20, 18:18, Lad Prabhakar wrote:
+> Document SoC specific bindings for RZ/G2H (r8a774e1) SoC.
 
-Hi Sameer
+Applied, thanks
 
-> >> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-> >> index 1e20562..b1903f9 100644
-> >> --- a/sound/soc/generic/audio-graph-card.c
-> >> +++ b/sound/soc/generic/audio-graph-card.c
-> >> @@ -201,8 +201,7 @@ static void graph_parse_mclk_fs(struct device_node *top,
-> >>   static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
-> >>                                  struct device_node *cpu_ep,
-> >>                                  struct device_node *codec_ep,
-> >> -                               struct link_info *li,
-> >> -                               int dup_codec)
-> >> +                               struct link_info *li)
-> > This patch breaks DPCM connection which is used for MIXer
-> 
-> Could you please elaborate a bit more as to what is broken with this?
-> The problem I am trying to solve here is to have multiple endpoints
-> for Codec port.
-
-For example MIXer, it is like below.
-If you removes "dup_codec", it breaks MIXer and/or TDM split mode.
-
-	CPU0  ---+---- DAI
-	         |
-	CPU1  ---+
-
-	cpu {
-		ports {
-			port@0 {
-				cpu_0: endpoint {
-					remote-endpoint = <&codec_0>;
-				};
-			};
-			port@1 {
-				cpu_1: endpoint {
-					remote-endpoint = <&codec_1>;
-				};
-			};
-		};
-	};
-
-	codec {
-		port {
-			codec_0: endpoint {
-				remote-endpoint = <&cpu_0>;
-			};
-			codec_1: endpoint {
-				remote-endpoint = <&cpu_1>;
-			};
-		}
-	};
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
+-- 
+~Vinod
