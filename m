@@ -6,74 +6,74 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 189F8C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E60C433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:42:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98AC822482
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:41:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 155E322B4D
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 14:42:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QO2omH45";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qcIP39ho"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98AC822482
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I7U9LTPK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="djWD4X4L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 155E322B4D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 397A41667;
-	Mon, 20 Jul 2020 16:40:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 397A41667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93C8F1674;
+	Mon, 20 Jul 2020 16:41:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93C8F1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595256074;
-	bh=EcWTvV7FvjC152CSceUX6DbHmfJye4qaDwlHiHugiZU=;
+	s=default; t=1595256128;
+	bh=+auK55a4lJcssKkr7Cej4IkQyyeqOsJrBcmvKvm9b2M=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QO2omH45WzJHUlYI+6yB05Vc4YFbP+5iIs3wkfP+/TPIlDYI32U+bQ3KTvkMbMClD
-	 ekMeMpawsIOwa8bMD7XICkCTfcHGZmnj5Ps3mm9zSyJAx/BNOpMvHcjGz0Z4dSaYoG
-	 TLfvmxVsuyqFr8KUFRyKtt/pGMMfKbrmFzAfJCNA=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B28E5F800C1;
-	Mon, 20 Jul 2020 16:38:51 +0200 (CEST)
+	b=I7U9LTPKnuGaLFZKyFfvpeNganbGbUppVKy0c5BT8N+qpvk0B/iuO6p6xLVGE25p/
+	 RwLdMjlnSzQdbtsIi31AW3YyaMAsQSbj2IzSCjR+VwcImcj1IDDB1/HUQxu/vkxPT4
+	 7PGI99WRbuQmDQujLhv9CBxCp2ouKM8gd8sFnUjU=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id BAF69F80290;
+	Mon, 20 Jul 2020 16:39:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3336F8015A; Mon, 20 Jul 2020 16:38:41 +0200 (CEST)
+ id BBD92F802BD; Mon, 20 Jul 2020 16:39:00 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED785F800E0
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 16:38:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED785F800E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05136F800F5
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 16:38:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05136F800F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qcIP39ho"
+ header.b="djWD4X4L"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EE9EE22482;
- Mon, 20 Jul 2020 14:38:35 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 094DE22B4D;
+ Mon, 20 Jul 2020 14:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595255916;
- bh=EcWTvV7FvjC152CSceUX6DbHmfJye4qaDwlHiHugiZU=;
+ s=default; t=1595255931;
+ bh=+auK55a4lJcssKkr7Cej4IkQyyeqOsJrBcmvKvm9b2M=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=qcIP39hoNUAdVJQvhVryEPqSGKvUM/CCT0Bl6NtT2kHxXjUmV4Y3iqt8KckyulIt2
- RAIxVA7zlh0CSdmwmNuPVE0vL1qOyord1P2Mu7d56rZlV/0Yh0uXrNR9bD2hfYF8Vf
- jI34YufHG9n7Ss1g6bJtFQWwZqNGUjmQza3rmFZI=
-Date: Mon, 20 Jul 2020 15:38:24 +0100
+ b=djWD4X4Lcf415yldlZd+jRvzOVMBSvuXUMPmz7QKB4+OdKYT2tTvgTyT/Op9SM/qB
+ 4zVGFRCxneiDRsodjXiqU21i23Yz27pU+LkJa3x/H5gov5QpmAycTYG1hVe3t8bRae
+ ONCNYfColjJ4PrOpldU9g6tpwEjnfz56ZrXjdfF8=
+Date: Mon, 20 Jul 2020 15:38:39 +0100
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
- Sameer Pujar <spujar@nvidia.com>, kuninori.morimoto.gx@renesas.com,
- tiwai@suse.com
-In-Reply-To: <1595134890-16470-1-git-send-email-spujar@nvidia.com>
-References: <1595134890-16470-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH v5 00/11] Add ASoC AHUB components for Tegra210 and later
-Message-Id: <159525589435.6792.708136378511410418.b4-ty@kernel.org>
-Cc: viswanathl@nvidia.com, alsa-devel@alsa-project.org, swarren@nvidia.com,
- nwartikar@nvidia.com, linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
- nicoleotsuka@gmail.com, sharadg@nvidia.com, thierry.reding@gmail.com,
- atalambedu@nvidia.com, linux-tegra@vger.kernel.org, digetx@gmail.com,
- rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
+To: Jaroslav Kysela <perex@perex.cz>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>
+In-Reply-To: <20200717215500.GA13910@embeddedor>
+References: <20200717215500.GA13910@embeddedor>
+Subject: Re: [PATCH][next] ASoC: Intel: Skylake: Avoid the use of one-element
+ array
+Message-Id: <159525589434.6792.8045971060889896063.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,15 +89,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 19 Jul 2020 10:31:19 +0530, Sameer Pujar wrote:
-> Overview
-> ========
-> Audio Processing Engine (APE) comprises of Audio DMA (ADMA) and Audio
-> Hub (AHUB) unit. AHUB is a collection of hardware accelerators for audio
-> pre-processing and post-processing. It also includes a programmable full
-> crossbar for routing audio data across these accelerators.
+On Fri, 17 Jul 2020 16:55:00 -0500, Gustavo A. R. Silva wrote:
+> One-element arrays are being deprecated[1]. Replace the one-element
+> array with a simple value type 'u8 reserved'[2], once it seems this
+> is just a placeholder for alignment.
 > 
-> [...]
+> [1] https://github.com/KSPP/linux/issues/79
+> [2] https://github.com/KSPP/linux/issues/86
 
 Applied to
 
@@ -105,18 +103,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: dt-bindings: tegra: Add DT bindings for Tegra210
-      commit: 665308c0b44a37339b9b3368f1dd61eb66acde87
-[2/6] ASoC: tegra: Add support for CIF programming
-      commit: 1c3b89fb7e4a78ddcd627e3f218a216e2136ae9b
-[3/6] ASoC: tegra: Add Tegra210 based DMIC driver
-      commit: 8c8ff982e9e2b2eb9255fc393f938915b0ddc127
-[4/6] ASoC: tegra: Add Tegra210 based I2S driver
-      commit: c0bfa98349d1796fe754dfac7f7f505bb60dcd83
-[5/6] ASoC: tegra: Add Tegra210 based AHUB driver
-      commit: 16e1bcc2caf446fa3e1daa040b59fd6f6272a766
-[6/6] ASoC: tegra: Add Tegra186 based DSPK driver
-      commit: 327ef64702668bb754eeea80ce402454d7a1302a
+[1/1] ASoC: Intel: Skylake: Avoid the use of one-element array
+      commit: 23f8d964f15a21991a166f0d1a7cf3cf8e4bfc9b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
