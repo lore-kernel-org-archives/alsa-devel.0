@@ -2,58 +2,58 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A019C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:20:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E04C9C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:25:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00F972250E
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:20:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C31D208B3
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:25:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DqdrqAuZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00F972250E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l5AANw8D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C31D208B3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AC731665;
-	Mon, 20 Jul 2020 03:19:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AC731665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03B061615;
+	Mon, 20 Jul 2020 03:25:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03B061615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595208047;
-	bh=obo0BoTeguvDEYlUa5Pe/tTUfnWt2f3X9nboB+LnRJI=;
+	s=default; t=1595208353;
+	bh=kVGrT/0JNMYZ8at4OH3uwHyLD3hX4J5pwSiPAUS4i4o=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DqdrqAuZMKMN2f/lk64D4xNQDBIKP8B1Kqixiq5vldrCeUXOI8BHruRtn2Ff51icz
-	 MnumHS02FaEWG/kMp/6FCENXw0YcAX/jqvsO3+t4W3BsOVSyH0y2a0G4SmRTaak80e
-	 RVoXKTTInYrln4yMNi3N1r35vIR758I/oqswEuwE=
+	b=l5AANw8D/ciAEAMiU/vaW2+BSWQDkChRM26RaHN7fLWCgV7MHbiiqKXjbAFuOKQhC
+	 sPl82klyg5vou0/HuXYBz9/XxVG8ifliB56X1fFJhLrNtRrhOVpwGiQ31NDuuSH+a8
+	 o1fts05XHA6FHW3B7Ib3MVx9m2ER1Y5kmifptKd8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CE12F802DC;
-	Mon, 20 Jul 2020 03:17:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61BC9F8033F;
+	Mon, 20 Jul 2020 03:18:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0E53F80161; Mon, 20 Jul 2020 03:17:56 +0200 (CEST)
+ id 2A797F80340; Mon, 20 Jul 2020 03:18:34 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0932DF80161
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:17:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0932DF80161
-Date: 20 Jul 2020 10:17:48 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52330161"
+ by alsa1.perex.cz (Postfix) with ESMTP id C2F0EF80336
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:18:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2F0EF80336
+Date: 20 Jul 2020 10:18:28 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52330228"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2020 10:17:48 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2020 10:18:28 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8941F40083F8;
- Mon, 20 Jul 2020 10:17:48 +0900 (JST)
-Message-ID: <87tuy30yv5.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 87E004002623;
+ Mon, 20 Jul 2020 10:18:28 +0900 (JST)
+Message-ID: <87h7u30yu1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 03/29] ASoC: ti: use asoc_substream_to_rtd()
+Subject: [PATCH 12/29] ASoC: rockchip: use asoc_substream_to_rtd()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
@@ -84,229 +84,105 @@ let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/ti/davinci-evm.c      | 6 +++---
- sound/soc/ti/davinci-vcif.c     | 4 ++--
- sound/soc/ti/j721e-evm.c        | 6 +++---
- sound/soc/ti/n810.c             | 4 ++--
- sound/soc/ti/omap-abe-twl6040.c | 4 ++--
- sound/soc/ti/omap-mcbsp.c       | 4 ++--
- sound/soc/ti/omap-twl4030.c     | 2 +-
- sound/soc/ti/omap3pandora.c     | 2 +-
- sound/soc/ti/osk5912.c          | 2 +-
- sound/soc/ti/rx51.c             | 4 ++--
- 10 files changed, 19 insertions(+), 19 deletions(-)
+ sound/soc/rockchip/rk3288_hdmi_analog.c | 2 +-
+ sound/soc/rockchip/rk3399_gru_sound.c   | 8 ++++----
+ sound/soc/rockchip/rockchip_i2s.c       | 2 +-
+ sound/soc/rockchip/rockchip_max98090.c  | 2 +-
+ sound/soc/rockchip/rockchip_rt5645.c    | 2 +-
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
-index 2cfbeebdfb41..105e56ab9cdc 100644
---- a/sound/soc/ti/davinci-evm.c
-+++ b/sound/soc/ti/davinci-evm.c
-@@ -28,7 +28,7 @@ struct snd_soc_card_drvdata_davinci {
- 
- static int evm_startup(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
+index 01078155a914..33a00774746d 100644
+--- a/sound/soc/rockchip/rk3288_hdmi_analog.c
++++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
+@@ -66,7 +66,7 @@ static int rk_hw_params(struct snd_pcm_substream *substream,
+ 			struct snd_pcm_hw_params *params)
  {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *soc_card = rtd->card;
- 	struct snd_soc_card_drvdata_davinci *drvdata =
- 		snd_soc_card_get_drvdata(soc_card);
-@@ -41,7 +41,7 @@ static int evm_startup(struct snd_pcm_substream *substream)
- 
- static void evm_shutdown(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *soc_card = rtd->card;
- 	struct snd_soc_card_drvdata_davinci *drvdata =
- 		snd_soc_card_get_drvdata(soc_card);
-@@ -53,7 +53,7 @@ static void evm_shutdown(struct snd_pcm_substream *substream)
- static int evm_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_card *soc_card = rtd->card;
-diff --git a/sound/soc/ti/davinci-vcif.c b/sound/soc/ti/davinci-vcif.c
-index ee4d3ef821a1..f810123cc407 100644
---- a/sound/soc/ti/davinci-vcif.c
-+++ b/sound/soc/ti/davinci-vcif.c
-@@ -41,7 +41,7 @@ struct davinci_vcif_dev {
- 
- static void davinci_vcif_start(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct davinci_vcif_dev *davinci_vcif_dev =
- 			snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
- 	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
-@@ -60,7 +60,7 @@ static void davinci_vcif_start(struct snd_pcm_substream *substream)
- 
- static void davinci_vcif_stop(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct davinci_vcif_dev *davinci_vcif_dev =
- 			snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
- 	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-index 174306cf53ad..cb074af47a7d 100644
---- a/sound/soc/ti/j721e-evm.c
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -249,7 +249,7 @@ static int j721e_rule_rate(struct snd_pcm_hw_params *params,
- 
- static int j721e_audio_startup(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct j721e_priv *priv = snd_soc_card_get_drvdata(rtd->card);
- 	unsigned int domain_id = rtd->dai_link->id;
- 	struct j721e_audio_domain *domain = &priv->audio_domains[domain_id];
-@@ -300,7 +300,7 @@ static int j721e_audio_startup(struct snd_pcm_substream *substream)
- static int j721e_audio_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct j721e_priv *priv = snd_soc_card_get_drvdata(card);
- 	unsigned int domain_id = rtd->dai_link->id;
-@@ -367,7 +367,7 @@ static int j721e_audio_hw_params(struct snd_pcm_substream *substream,
- 
- static void j721e_audio_shutdown(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct j721e_priv *priv = snd_soc_card_get_drvdata(rtd->card);
- 	unsigned int domain_id = rtd->dai_link->id;
- 	struct j721e_audio_domain *domain = &priv->audio_domains[domain_id];
-diff --git a/sound/soc/ti/n810.c b/sound/soc/ti/n810.c
-index a1672b479cb7..2802a33b9c5f 100644
---- a/sound/soc/ti/n810.c
-+++ b/sound/soc/ti/n810.c
-@@ -84,7 +84,7 @@ static void n810_ext_control(struct snd_soc_dapm_context *dapm)
- static int n810_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	snd_pcm_hw_constraint_single(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2);
- 
-@@ -100,7 +100,7 @@ static void n810_shutdown(struct snd_pcm_substream *substream)
- static int n810_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int err;
- 
-diff --git a/sound/soc/ti/omap-abe-twl6040.c b/sound/soc/ti/omap-abe-twl6040.c
-index 61e45fea5dd8..16ea039ff865 100644
---- a/sound/soc/ti/omap-abe-twl6040.c
-+++ b/sound/soc/ti/omap-abe-twl6040.c
-@@ -45,7 +45,7 @@ static struct platform_device *dmic_codec_dev;
- static int omap_abe_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_card *card = rtd->card;
- 	struct abe_twl6040 *priv = snd_soc_card_get_drvdata(card);
-@@ -77,7 +77,7 @@ static const struct snd_soc_ops omap_abe_ops = {
- static int omap_abe_dmic_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
  	int ret = 0;
- 
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-index 32e3ccdbb7a2..6025b30bbe77 100644
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -731,7 +731,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
- static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream,
- 		unsigned int packet_size)
- {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
  	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
- 	int words;
-@@ -896,7 +896,7 @@ static snd_pcm_sframes_t omap_mcbsp_dai_delay(
- 			struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
- 	u16 fifo_use;
-diff --git a/sound/soc/ti/omap-twl4030.c b/sound/soc/ti/omap-twl4030.c
-index 92dbe2c67290..b3ae7e9cb055 100644
---- a/sound/soc/ti/omap-twl4030.c
-+++ b/sound/soc/ti/omap-twl4030.c
-@@ -38,7 +38,7 @@ struct omap_twl4030 {
- static int omap_twl4030_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	unsigned int fmt;
- 
- 	switch (params_channels(params)) {
-diff --git a/sound/soc/ti/omap3pandora.c b/sound/soc/ti/omap3pandora.c
-index b04146311b31..a287e9747c2a 100644
---- a/sound/soc/ti/omap3pandora.c
-+++ b/sound/soc/ti/omap3pandora.c
-@@ -31,7 +31,7 @@ static struct regulator *omap3pandora_dac_reg;
- static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
  	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	int mclk;
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 9539b0d024fe..66d17089793f 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -51,7 +51,7 @@ static const struct snd_kcontrol_new rockchip_controls[] = {
+ static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	unsigned int mclk;
  	int ret;
-diff --git a/sound/soc/ti/osk5912.c b/sound/soc/ti/osk5912.c
-index e01485cc51a1..40e29dda7e7a 100644
---- a/sound/soc/ti/osk5912.c
-+++ b/sound/soc/ti/osk5912.c
-@@ -38,7 +38,7 @@ static void osk_shutdown(struct snd_pcm_substream *substream)
- static int osk_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *params)
+ 
+@@ -70,7 +70,7 @@ static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substrea
+ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
  	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int err;
- 
-diff --git a/sound/soc/ti/rx51.c b/sound/soc/ti/rx51.c
-index 2a714a004163..2176a95201bf 100644
---- a/sound/soc/ti/rx51.c
-+++ b/sound/soc/ti/rx51.c
-@@ -90,7 +90,7 @@ static void rx51_ext_control(struct snd_soc_dapm_context *dapm)
- static int rx51_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 
- 	snd_pcm_hw_constraint_single(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2);
-@@ -102,7 +102,7 @@ static int rx51_startup(struct snd_pcm_substream *substream)
- static int rx51_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
+ 	unsigned int mclk;
+@@ -102,7 +102,7 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ static int rockchip_sound_da7219_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
  	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	int mclk, ret;
+@@ -200,7 +200,7 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ static int rockchip_sound_dmic_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	unsigned int mclk;
+ 	int ret;
  
- 	/* Set the codec system clock for DAC and ADC */
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 61c984f10d8e..d1438753edb4 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -272,7 +272,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct rk_i2s_dev *i2s = to_info(dai);
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	unsigned int val = 0;
+ 	unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
+ 
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 1f527d3763ce..9acfd024aa5d 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -145,7 +145,7 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+ 	int ret = 0;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	int mclk;
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index 0617ccf4e42c..16ca2ad92426 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -55,7 +55,7 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+ 	int ret = 0;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	int mclk;
 -- 
 2.25.1
 
