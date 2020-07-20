@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24E6AC433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 472E3C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:32:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D6EA2177B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:31:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDB57208B3
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:32:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HU8K8xY2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D6EA2177B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BoeV3+oz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDB57208B3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28F2014E;
-	Mon, 20 Jul 2020 03:30:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28F2014E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 523E61684;
+	Mon, 20 Jul 2020 03:31:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 523E61684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595208703;
-	bh=71Y7uycCGV9DhcpxxjEQBoFkunNZruz/MNnExW62zjE=;
+	s=default; t=1595208742;
+	bh=53PuPHLExHbqF3vVwF/VlX+W8oBuxjAzq/HdAMt6Q4Y=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HU8K8xY2sTotvBP+2pWvzRrDRxjqJ6GUTsZrD1s27azqNW05aMvWRFMU6NHcT3uH9
-	 z3UJ7aWVsEKE8x2pR2Wujuoh4eHBXH1C1AxINSQCte0gkilE8Z7si75+4iczXHTeuc
-	 HQz0ll9tH7OcOU+iw+H+GTBa3/mtEBLzQkmz6juw=
+	b=BoeV3+ozRnfmgBLf4WTFMx6RqP+fQGKZbOCrXbvRfhYJ3eIPgDu7EIjaEBjwEDK9j
+	 RPIqHMO8hZqqDrIPPQLbWLoYzF7oeWkl1GiyLfzin7gW7dJoftu+3lAI2DaI8FCEwR
+	 pR2yGhqp4JaRGhr4mpoW4JEKhH1INAm9YRDNY5Yg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D45BF80391;
-	Mon, 20 Jul 2020 03:19:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF77CF803A6;
+	Mon, 20 Jul 2020 03:19:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2EAC1F8038F; Mon, 20 Jul 2020 03:19:28 +0200 (CEST)
+ id 66FBBF803AD; Mon, 20 Jul 2020 03:19:35 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 38245F80371
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:19:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38245F80371
-Date: 20 Jul 2020 10:19:23 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52541497"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 10:19:23 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 53061F8038F
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:19:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53061F8038F
+Date: 20 Jul 2020 10:19:27 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52541505"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 10:19:27 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id C4D32415D3D9;
- Mon, 20 Jul 2020 10:19:23 +0900 (JST)
-Message-ID: <87365n0ysi.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id E052240083F8;
+ Mon, 20 Jul 2020 10:19:27 +0900 (JST)
+Message-ID: <871rl70yse.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 22/29] ASoC: bcm: use asoc_substream_to_rtd()
+Subject: [PATCH 23/29] ASoC: codecs: use asoc_substream_to_rtd()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
@@ -84,144 +84,31 @@ let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/bcm/bcm63xx-pcm-whistler.c | 12 ++++++------
- sound/soc/bcm/cygnus-pcm.c           | 16 ++++++++--------
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ sound/soc/codecs/rt5677-spi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/bcm/bcm63xx-pcm-whistler.c b/sound/soc/bcm/bcm63xx-pcm-whistler.c
-index b7a1efc7406e..7ec8559d53a2 100644
---- a/sound/soc/bcm/bcm63xx-pcm-whistler.c
-+++ b/sound/soc/bcm/bcm63xx-pcm-whistler.c
-@@ -45,7 +45,7 @@ static int bcm63xx_pcm_hw_params(struct snd_soc_component *component,
- 				 struct snd_pcm_hw_params *params)
- {
- 	struct i2s_dma_desc *dma_desc;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
- 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-@@ -64,7 +64,7 @@ static int bcm63xx_pcm_hw_free(struct snd_soc_component *component,
- 			struct snd_pcm_substream *substream)
- {
- 	struct i2s_dma_desc	*dma_desc;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	dma_desc = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
- 	kfree(dma_desc);
-@@ -81,7 +81,7 @@ static int bcm63xx_pcm_trigger(struct snd_soc_component *component,
- 	struct bcm_i2s_priv *i2s_priv;
- 	struct regmap   *regmap_i2s;
- 
--	rtd = substream->private_data;
-+	rtd = asoc_substream_to_rtd(substream);
- 	i2s_priv = dev_get_drvdata(asoc_rtd_to_cpu(rtd, 0)->dev);
- 	regmap_i2s = i2s_priv->regmap_i2s;
- 
-@@ -148,7 +148,7 @@ static int bcm63xx_pcm_prepare(struct snd_soc_component *component,
- 	struct i2s_dma_desc	*dma_desc;
- 	struct regmap		*regmap_i2s;
- 	struct bcm_i2s_priv	*i2s_priv;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	uint32_t regaddr_desclen, regaddr_descaddr;
- 
-@@ -267,7 +267,7 @@ static irqreturn_t i2s_dma_isr(int irq, void *bcm_i2s_priv)
- 	if (int_status & I2S_RX_DESC_OFF_INTR_EN_MSK) {
- 		substream = i2s_priv->capture_substream;
- 		runtime = substream->runtime;
--		rtd = substream->private_data;
-+		rtd = asoc_substream_to_rtd(substream);
- 		prtd = runtime->private_data;
- 		dma_desc = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
- 
-@@ -315,7 +315,7 @@ static irqreturn_t i2s_dma_isr(int irq, void *bcm_i2s_priv)
- 	if (int_status & I2S_TX_DESC_OFF_INTR_EN_MSK) {
- 		substream = i2s_priv->play_substream;
- 		runtime = substream->runtime;
--		rtd = substream->private_data;
-+		rtd = asoc_substream_to_rtd(substream);
- 		prtd = runtime->private_data;
- 		dma_desc = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
- 
-diff --git a/sound/soc/bcm/cygnus-pcm.c b/sound/soc/bcm/cygnus-pcm.c
-index f96d27c8b301..7ad07239f99c 100644
---- a/sound/soc/bcm/cygnus-pcm.c
-+++ b/sound/soc/bcm/cygnus-pcm.c
-@@ -207,7 +207,7 @@ static u64 cygnus_dma_dmamask = DMA_BIT_MASK(32);
- static struct cygnus_aio_port *cygnus_dai_get_dma_data(
- 				struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
-+	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
- 
- 	return snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(soc_runtime, 0), substream);
- }
-@@ -353,7 +353,7 @@ static void enable_intr(struct snd_pcm_substream *substream)
- 
- static void disable_intr(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index 95ac12a5cc6b..8f3993a4c1cc 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -112,7 +112,7 @@ static int rt5677_spi_pcm_close(
+ 		struct snd_soc_component *component,
+ 		struct snd_pcm_substream *substream)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct cygnus_aio_port *aio;
- 	u32 set_mask;
- 
-@@ -581,7 +581,7 @@ static irqreturn_t cygnus_dma_irq(int irq, void *data)
- static int cygnus_pcm_open(struct snd_soc_component *component,
- 			   struct snd_pcm_substream *substream)
+ 	struct snd_soc_component *codec_component =
+ 			snd_soc_rtdcom_lookup(rtd, "rt5677");
+ 	struct rt5677_priv *rt5677 =
+@@ -158,7 +158,7 @@ static int rt5677_spi_prepare(
+ 		struct snd_soc_component *component,
+ 		struct snd_pcm_substream *substream)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct cygnus_aio_port *aio;
- 	int ret;
-@@ -618,7 +618,7 @@ static int cygnus_pcm_open(struct snd_soc_component *component,
- static int cygnus_pcm_close(struct snd_soc_component *component,
- 			    struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct cygnus_aio_port *aio;
- 
- 	aio = cygnus_dai_get_dma_data(substream);
-@@ -640,7 +640,7 @@ static int cygnus_pcm_hw_params(struct snd_soc_component *component,
- 				struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct cygnus_aio_port *aio;
- 
-@@ -656,7 +656,7 @@ static int cygnus_pcm_hw_params(struct snd_soc_component *component,
- static int cygnus_pcm_hw_free(struct snd_soc_component *component,
- 			      struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct cygnus_aio_port *aio;
- 
- 	aio = cygnus_dai_get_dma_data(substream);
-@@ -669,7 +669,7 @@ static int cygnus_pcm_hw_free(struct snd_soc_component *component,
- static int cygnus_pcm_prepare(struct snd_soc_component *component,
- 			      struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct cygnus_aio_port *aio;
- 	unsigned long bufsize, periodsize;
-@@ -733,7 +733,7 @@ static snd_pcm_uframes_t cygnus_pcm_pointer(struct snd_soc_component *component,
- static int cygnus_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- {
- 	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_dma_buffer *buf = &substream->dma_buffer;
- 	size_t size;
- 
+ 	struct snd_soc_component *rt5677_component =
+ 			snd_soc_rtdcom_lookup(rtd, "rt5677");
+ 	struct rt5677_priv *rt5677 =
 -- 
 2.25.1
 
