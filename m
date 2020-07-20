@@ -6,66 +6,61 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50EB3C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 00:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B47AC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 00:24:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C52C220738
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 00:11:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA85320B1F
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 00:24:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N0RBjmp3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C52C220738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KoCl6+bO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA85320B1F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52C0C844;
-	Mon, 20 Jul 2020 02:10:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52C0C844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E164844;
+	Mon, 20 Jul 2020 02:23:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E164844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595203908;
-	bh=iavxdGB0/SDEt/1M9HHzNdR4Vtvpzcc8Mn3nnT4EKu0=;
+	s=default; t=1595204675;
+	bh=e8MpZVzpHvMYVOmjKx+UQrtDA/z+trwaguwPTei6MpQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N0RBjmp3rRB+t58S98M/OECkzodfQWCuKunqZ27Ge4fLMT9CMRZyljezQYQEF3YEN
-	 v7A5lUG3Ae7J8je5hjpv6mAQ9XeYnCfqqbDvl23cNfSLar7KWTLwGGbv7lnE/JokZz
-	 YLtCPqRFQ5Kn06/xj+KW+RIvUSiuI64E14IVyfDw=
+	b=KoCl6+bO36AL8LMPqqriJ+VmovTk9PndZ8nkXQZGCLtegd+01wwvS5jvQBsg0E4Yc
+	 MUnxz6BI9EP0KMQgMwg0N4NlP4e7PVm7OUjyG+2R31xsYLZtDtIuEuQHHQTcjCdiFY
+	 lK/TMVvqTpiv/S67JVI73EueHgC8xynK1MjT9ZVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D130DF80141;
-	Mon, 20 Jul 2020 02:10:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3ECEF80141;
+	Mon, 20 Jul 2020 02:23:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C9CDF8014C; Mon, 20 Jul 2020 02:10:56 +0200 (CEST)
+ id 682E8F8014C; Mon, 20 Jul 2020 02:23:43 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 0C460F800C1
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 02:10:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C460F800C1
-Date: 20 Jul 2020 09:10:46 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52534087"
+ by alsa1.perex.cz (Postfix) with ESMTP id 9831BF800C1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 02:23:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9831BF800C1
+Date: 20 Jul 2020 09:23:36 +0900
+X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52535356"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 09:10:46 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 09:23:36 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4FFE04137903;
- Mon, 20 Jul 2020 09:10:46 +0900 (JST)
-Message-ID: <871rl72gjb.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 46318413FEC4;
+ Mon, 20 Jul 2020 09:23:36 +0900 (JST)
+Message-ID: <87zh7v11dh.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH 09/10] arm64: tegra: Audio graph header for Tegra210
-In-Reply-To: <1595135417-16589-10-git-send-email-spujar@nvidia.com>
-References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
- <1595135417-16589-10-git-send-email-spujar@nvidia.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 0/3] ASoC: merge .digital_mute() into .mute_stream()
+In-Reply-To: <87d04v2dky.wl-kuninori.morimoto.gx@renesas.com>
+References: <87imen2drw.wl-kuninori.morimoto.gx@renesas.com>
+ <87d04v2dky.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
- nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
- viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,29 +77,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Sameer
+Hi Mark
 
-> +&tegra_admaif {
-> +	admaif_port: port {
-> +		admaif0: endpoint@0 {
-> +			remote-endpoint = <&xbar_admaif0>;
-> +		};
-> +		admaif1: endpoint@1 {
-> +			remote-endpoint = <&xbar_admaif1>;
-> +		};
-(snip)
-> +		admaif8: endpoint@8 {
-> +			remote-endpoint = <&xbar_admaif8>;
-> +		};
-> +		admaif9: endpoint@9 {
-> +			remote-endpoint = <&xbar_admaif9>;
-> +		};
-> +	};
-> +};
+> > These are v4 digital_mute() patch which adjusts
+> > to atmel which had conflict on v3.
+> 
+> I'm sorry but my posted patch has strange numbers.
+> The correct order is
+> 
+> 	[3/3] ASoC: soc-core: snd_soc_dai_digital_mute() for both CPU/Codec
+> 	[2/3] ASoC: soc-dai: remove .digital_mute
+> 	[1/3] ASoC: atmel: merge .digital_mute() into .mute_stream()
 
-I'm not familiar with your system, so, one question.
-Does this ADMAIF has total 10 interface which is used in the same time ?
-or select one of 10 connections when use ?
+Maybe because of my above fault,
+it seems "[2/3] ASoC: soc-dai: remove .digital_mute" patch is not applied
+on for-5.9 branch
 
 Thank you for your help !!
 
