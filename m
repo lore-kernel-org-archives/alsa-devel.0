@@ -2,65 +2,89 @@ Return-Path: <SRS0=gPEE=A7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98A0CC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26EF5C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:36:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22941208B3
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:30:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A17FB20674
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2020 01:36:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KuZC36zN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22941208B3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gaY6LyoI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="m0axqFZG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A17FB20674
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DA0D1687;
-	Mon, 20 Jul 2020 03:29:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DA0D1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3532E1683;
+	Mon, 20 Jul 2020 03:35:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3532E1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595208644;
-	bh=VHa5aaujzaW5ou2I18VCA9RuXdu9Nx99l0ZCJcF3vqE=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KuZC36zN1MDcUmpCKT62euYisN2sb9bPIYvGTuz6udHTRcca3Sq+tLGxgWtBFrr41
-	 A894T0RgDDbzWuUsXJvG93RtqikfccoDKL+ddt71jDWaIwaS9urX8Ctffop5JQ0f+b
-	 4Mt+iNkjBM2ZQTk3rwoBVDFITcfB9Mp8FMhgPdGQ=
+	s=default; t=1595208982;
+	bh=6je3QWE8V9pxoPlkFkgAMFpNqQe0+G7m8vUNe1WS10Y=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gaY6LyoIkheAAQlUwdbbaT1Onps2afOofoTYOxqtcaZe1u1RQ/CdrNjTylCCx/7ln
+	 iR/pKRu6p+jMBeYLFnHFnZ2iwnX/2G5KXK4jbGtGMekjOpQvklFG1bYsM4+wq+bbOM
+	 9nffr86L1UWyLgmIpDX7vnEsvJQNcWlU0aswwtyY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2B9CF8037E;
-	Mon, 20 Jul 2020 03:19:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B47B9F80141;
+	Mon, 20 Jul 2020 03:26:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F90FF8037D; Mon, 20 Jul 2020 03:19:23 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 1163AF8036E
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:19:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1163AF8036E
-Date: 20 Jul 2020 10:19:14 +0900
-X-IronPort-AV: E=Sophos;i="5.75,373,1589209200"; d="scan'208";a="52541487"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jul 2020 10:19:14 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9BAA5415D190;
- Mon, 20 Jul 2020 10:19:14 +0900 (JST)
-Message-ID: <875zaj0ysr.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 20/29] ASoC: meson: use asoc_substream_to_rtd()
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
-References: <87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ id 6C5CDF80141; Mon, 20 Jul 2020 03:26:10 +0200 (CEST)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51A53F800CE
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 03:26:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51A53F800CE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="m0axqFZG"
+Received: by mail-yb1-xb49.google.com with SMTP id p22so19790629ybg.21
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2020 18:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=6xEFxhwqbE933+kZdll1nGcQWLb87bebM1cUcv1Qfmg=;
+ b=m0axqFZGWdAOGkFiF53VZF1anhTk3fhx0t7todzZ3r67rYvoXNjwlDk7P3rqRP+feA
+ s3dXCzWbLdDuF//7Gs6qALJC4OXAR41rQc9zQ7JlR73qOjy70M6zrXsny+hbTkFjH0/I
+ 3Go7lBeBPywZ0mbeeuiQdpbJTMEUXZIsAZjpBWOmIGsSiHXC5QC/mQW18hgZZaixvfNB
+ N4GqEGwj+0wEWgIFIvp7G/5pV+latcpLBqeYF8+KSochRbnqqVrS05R2Bfgj05yGMB+T
+ Y0hKyK2tGF6N1MPZtpAVgib8BYNBB1JXN6eEF8E/uibbC5843kzzi0XGAe/G7QkJKC+O
+ wKTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=6xEFxhwqbE933+kZdll1nGcQWLb87bebM1cUcv1Qfmg=;
+ b=Uo+lRGn6lApoedPwKwanc7/ZwzaEzcGyMiJC7W6kpOKEgzEFAEB/VyRyC6gbbag41H
+ EVG9ktGBXgHLuV0FNhOq00S6M7KNUU1jMFlms9BGixIC3ibmgnAcjIiiHnJw0l/kxl1T
+ WrGwFRalGMs4VHUzujRBDX4x0YA4EOrf2dhkgMZTmdqPOaq8judA3SZcpG16nMiwIqLK
+ LU+oJN4cwpKWr8m3W5SzuNdoCyGaaJHgdbP0kWo297hIQIDA6sVn9myXp4lWRUv/MI7M
+ HuW5TuGsB5dO9vvkOvWCzyj5CO65bTksmfdDzOZn2xLRWyIPY/a07HWSC6BZoo4ftPF0
+ HHvw==
+X-Gm-Message-State: AOAM532EGYGvS6GEdKsZwDnbuWoSAKEslZ+Eie7/UKYZ0AdN6fnm+JVD
+ aMCASDUnlWZu3bEOJQAZg/0FP+9zZMDU
+X-Google-Smtp-Source: ABdhPJzbCipTqIGkmM8DOqRqTrTCRn8aP0QJ432lZL/fVi01aPhGe8ROKhwyqUiuY6c6CFjeSITIcqn01/mz
+X-Received: by 2002:a5b:992:: with SMTP id c18mr61375ybq.252.1595208364790;
+ Sun, 19 Jul 2020 18:26:04 -0700 (PDT)
+Date: Mon, 20 Jul 2020 09:25:56 +0800
+Message-Id: <20200720012559.906088-1-tzungbi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
+Subject: [PATCH 0/3] ASoC: mediatek: mt8183: support machine driver for
+ max98357b
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,72 +100,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The series re-uses mt8183-mt6358-ts3a227-max98357.c to support machine driver
+with max98357b.
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+The 1st patch enables left justified format from mt8183 audio platform.
 
-Now we can use asoc_substream_to_rtd() macro,
-let's use it.
+The 2nd patch adds document for the new proposed compatible string for
+max98357b.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/meson/axg-card.c         | 2 +-
- sound/soc/meson/gx-card.c          | 2 +-
- sound/soc/meson/meson-card-utils.c | 2 +-
- sound/soc/meson/meson-codec-glue.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+The 3rd patch supports machine driver with max98357b and uses left justified
+format for it.
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 89f7f64747cd..0ec16844f224 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -40,7 +40,7 @@ static const struct snd_soc_pcm_stream codec_params = {
- static int axg_card_tdm_be_hw_params(struct snd_pcm_substream *substream,
- 				     struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct meson_card *priv = snd_soc_card_get_drvdata(rtd->card);
- 	struct axg_dai_link_tdm_data *be =
- 		(struct axg_dai_link_tdm_data *)priv->link_data[rtd->num];
-diff --git a/sound/soc/meson/gx-card.c b/sound/soc/meson/gx-card.c
-index 4abf7efb7eac..6da8535f4dd2 100644
---- a/sound/soc/meson/gx-card.c
-+++ b/sound/soc/meson/gx-card.c
-@@ -29,7 +29,7 @@ static const struct snd_soc_pcm_stream codec_params = {
- static int gx_card_i2s_be_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct meson_card *priv = snd_soc_card_get_drvdata(rtd->card);
- 	struct gx_dai_link_i2s_data *be =
- 		(struct gx_dai_link_i2s_data *)priv->link_data[rtd->num];
-diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-index 5a4a91c88734..29b601a0e274 100644
---- a/sound/soc/meson/meson-card-utils.c
-+++ b/sound/soc/meson/meson-card-utils.c
-@@ -13,7 +13,7 @@ int meson_card_i2s_set_sysclk(struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params,
- 			      unsigned int mclk_fs)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai;
- 	unsigned int mclk;
- 	int ret, i;
-diff --git a/sound/soc/meson/meson-codec-glue.c b/sound/soc/meson/meson-codec-glue.c
-index 524a33472337..d07270d17cee 100644
---- a/sound/soc/meson/meson-codec-glue.c
-+++ b/sound/soc/meson/meson-codec-glue.c
-@@ -98,7 +98,7 @@ EXPORT_SYMBOL_GPL(meson_codec_glue_input_set_fmt);
- int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
- 				    struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct meson_codec_glue_input *in_data =
- 		meson_codec_glue_output_get_input_data(dai->capture_widget);
- 
+Tzung-Bi Shih (3):
+  ASoC: mediatek: mt8183: support left justified format for I2S
+  ASoC: dt-bindings: mt8183: add compatible string for using max98357b
+  ASoC: mediatek: mt8183: support machine driver with max98357b
+
+ .../sound/mt8183-mt6358-ts3a227-max98357.txt  |  1 +
+ sound/soc/mediatek/mt8183/mt8183-dai-i2s.c    | 59 ++++++++++++++++---
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 22 ++++++-
+ 3 files changed, 73 insertions(+), 9 deletions(-)
+
 -- 
-2.25.1
+2.28.0.rc0.105.gf9edc3c819-goog
 
