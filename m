@@ -5,93 +5,93 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DDD4C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7439EC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 16:57:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 177A22065D
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:02:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F42292073A
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 16:57:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kJz7Vg4t";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AbnVVS1e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 177A22065D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N6Lq7FsQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="upiA6fr7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F42292073A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A6A41676;
-	Tue, 21 Jul 2020 19:01:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A6A41676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D8091672;
+	Tue, 21 Jul 2020 18:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D8091672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595350925;
-	bh=LxhNlFgwErGjD/Okb3KP+IQQpvW9uORXRny2Mwjqjs8=;
+	s=default; t=1595350662;
+	bh=9fs74iRco12j8hO5Gp8+cxEesGwe2VxdYSm+jzTxgzM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kJz7Vg4tlYSzy1gtsTezTuZx5WTaPPksK5sr5yWQjJpTRcbgXC5jPz5W7Y/O9G/Uf
-	 I5Kx1wpmu9HIRo6OIfTXl69JEVeUbxBLXBh7sTiBaXVUB21OlyTnaw2crJ0s21Kvm6
-	 cIht6uPEx/DvepiP8WU7YZ+6tm1gkmiFe8Qs4RDE=
+	b=N6Lq7FsQSWvQw48sTUqaKZjOiOsnE6b/Hm+AqpN9QFOjjWw7PTPeY6C7E/rE3Fo40
+	 8T0AADRssPjiVm7iCXtBy/FxKi71xyjj4o2hS9H5qjzT+hiDlUm2MGd7aqktPxJysh
+	 b8jjUHhl/u+mSzzRS83hNeeitzi/ohYzAcIdNYSs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A828BF802C2;
-	Tue, 21 Jul 2020 19:00:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FD89F8024A;
+	Tue, 21 Jul 2020 18:53:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77D37F802C2; Tue, 21 Jul 2020 19:00:27 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id 65680F802DB; Tue, 21 Jul 2020 18:53:38 +0200 (CEST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2BF3F8024A
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 19:00:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2BF3F8024A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F193F8028B
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 18:53:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F193F8028B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="AbnVVS1e"
-Received: by mail-wm1-x343.google.com with SMTP id 9so130393wmj.5
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 10:00:17 -0700 (PDT)
+ header.b="upiA6fr7"
+Received: by mail-wr1-x442.google.com with SMTP id b6so21865044wrs.11
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 09:53:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=cX30zM4NBo9NgJKdwCaDNO5IgDHp7txiav7RhZ1wYnQ=;
- b=AbnVVS1ePUqx9ZPvRol7dMY9NmY2pLxSYSuFxd7YPIgzDHhZ3v8kpF1QZ3NJtL6kIK
- i0Y2uIL8P6oqP1sjFslcqU+M0EmVuj8Rbq6mJWXcOwrA7OHTLIkG5vL0V2q1S6L1g2+O
- G4YFGPSucmloC+6HSvQRDkY3sYdb44fR62hM1u/eLxMTAfkUzXeDTSw+B92btBFVLoNH
- Sj0oZOseF9TALG3GGtnYqm1bneG0Z34Bti25JMNs3oYDo9DpwSj69TRKxNa/fZaPbzOj
- GPnkiOuHr2yLQIiFAVkS2OGDmbMaGnNjQ7ENLTtWXJUZi/aXos7jg0pOzXhnz0x63/nk
- Fnqg==
+ bh=fdPCJ0r4pAFvhKy/aJH+HSqNEzc4ORQDPhTx4mOph9I=;
+ b=upiA6fr7fWef4eXwE0+hK7HGl2gIyiAo2pzkBvVMmS3W+Vh0yJOrvKJdPgo/CAPQVh
+ QRYYdyXrB6w9XSMCkMkD93XcqWGYrUo0YWrETPuCibOge0b9sLFCh1MLXBYWTlAltCEr
+ W4xW6522EOvZ0ibsQXbR5rCqxNRWIvfX/d26kBZslpOZeJOpBfxv4Z0bQDdKHKOvsccj
+ haJ/CMHj0h7cUbQNTxJA2C8BlUjM3Huk/4+PWNy7vmkbnxEklYhjnJH1lXI+z93c6cna
+ /FtW3yvq5njXyJ6SMl+BKzAuYDo2MnOYxL59ObNTUJJOrHiDircHJY2G9y/6n2Nz6YuJ
+ sFzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=cX30zM4NBo9NgJKdwCaDNO5IgDHp7txiav7RhZ1wYnQ=;
- b=YBZRoGGjYcyr2OBNGgJigNoaCbRUIKAUpBXvgiHN+0zVI9cV6/FXkjXqXqP8bk3MD8
- JWZnonzvjytyDOS6IP/x7EJZm9RMFeioxvG4NrcUMGSiYMvAQE/+W0HFS7AhOgoPApYF
- uzGR4AYtLhYczjjcAUyzgeIL6clFaavEe2rudkYLzuZkwCG5ivTn1K79aqXMyik3quw1
- PW/Vkgrm3mJHtpwOLsLykRFuZEs4ARivQMlncNfpAcjZoSlGu9vq6Sd0tIKU5MtnWtHl
- U07BO9RWWyV3Z9PuSDLsUcdeF/1x4u4npGK2o18JJ1WuAqNTRm+KrqJ9h+Th64rKgTbV
- 7ZbA==
-X-Gm-Message-State: AOAM532geZ6TIg/GHE0sXLZjqWOAQAn31SGIqCmuNGg+ndBXloKHDztK
- LGheaspoFfRLsw8TZc52ivQlyg==
-X-Google-Smtp-Source: ABdhPJxXHRQU8c3AC4+4CNVvMYSBeNRcIY6fllLgC7+JpgeWNr20AAE6+Lrw5aOotX5A5Ot5n8tUMA==
-X-Received: by 2002:a7b:c5c5:: with SMTP id n5mr4872179wmk.103.1595350816319; 
- Tue, 21 Jul 2020 10:00:16 -0700 (PDT)
+ bh=fdPCJ0r4pAFvhKy/aJH+HSqNEzc4ORQDPhTx4mOph9I=;
+ b=Zt3rdugvswZwhwz2Vv2ns11drZKLWXo3WfkMmkujWMw5x8Ucf4v+OpRGYqaXWhepJB
+ f8H8hD23sVlKVATDYtxaJW7G48rrJVvfMBnMjh9BLvF5tDCACQsVEABbnCSWsFvfwWhM
+ IRATV2bdkD28v/rk0KGbppSUSH3P18oG3KgG4NutWal/a0zFKoGjUaesJ0VUhLNVnqBG
+ wFPUeXpGzwNtsv/v5GBeVPAYKLjoT7CEIQrHrRDgDHB39TMuUk4xTFUPPYr7wvJig8xJ
+ LVOwZurMaFaGjIHperTst7dQpTSj+ftIdgMiG1xl1qapK9fSw5cbDKLOE9ukNTr4YcHz
+ 7gkw==
+X-Gm-Message-State: AOAM531eQC7ioGWIE7nHr1868fMZhFLNm+WUtQmTRjE9ogNOKS36xY6v
+ wTOBP/VWazmyX6NUOzAzrr/xhw==
+X-Google-Smtp-Source: ABdhPJyJvLH6PEqLYBgiHJM7NLc5orRiT+DOc60Cybemhzgdpex54JO59l//QKyViOBHoN3EJql2jA==
+X-Received: by 2002:adf:f784:: with SMTP id q4mr27300836wrp.397.1595350408516; 
+ Tue, 21 Jul 2020 09:53:28 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id h11sm15526327wrb.68.2020.07.21.10.00.15
+ by smtp.gmail.com with ESMTPSA id c25sm4058648wml.18.2020.07.21.09.53.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jul 2020 10:00:15 -0700 (PDT)
+ Tue, 21 Jul 2020 09:53:27 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [RFC PATCH v2 3/6] ALSA: compress: add flags to snd_compr_caps to
- expose dsp caps
-Date: Tue, 21 Jul 2020 18:00:04 +0100
-Message-Id: <20200721170007.4554-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 5/9] ASoC: q6asm: add support to remove intial and trailing
+ silence
+Date: Tue, 21 Jul 2020 17:53:02 +0100
+Message-Id: <20200721165306.29082-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
-References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
+References: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, tiwai@suse.com,
@@ -112,91 +112,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some of the DSPs like Qualcomm QDSP has ablity to change decoders
-dynamically on a single stream, This could be used for features
-like Cross Fade or gapless with different codec profile tracks.
-
-Exposing such features in flags variable of compress caps descriptor
-would provide userspace more flexibity in usings dsp features.
-
-For now only one flag of switching decoders is added which is used
-in subsequent patches.
+This patch adds support to ASM_DATA_CMD_REMOVE_INITIAL_SILENCE
+and ASM_DATA_CMD_REMOVE_TRAILING_SILENCE q6asm command to support
+compressed metadata for gapless playback.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/uapi/sound/compress_offload.h |  7 ++++++-
- sound/core/compress_offload.c         | 20 ++++++++++++++++++++
- 2 files changed, 26 insertions(+), 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6asm.c | 53 ++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.h |  6 ++++
+ 2 files changed, 59 insertions(+)
 
-diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
-index c46286113a4b..43c78cdf492c 100644
---- a/include/uapi/sound/compress_offload.h
-+++ b/include/uapi/sound/compress_offload.h
-@@ -88,6 +88,9 @@ enum snd_compr_direction {
- 	SND_COMPRESS_CAPTURE
- };
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index 205453d1c1fc..14ec7dad5b65 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -51,6 +51,8 @@
+ #define ASM_STREAM_CMD_OPEN_READWRITE_V2        0x00010D8D
+ #define ASM_MEDIA_FMT_ALAC			0x00012f31
+ #define ASM_MEDIA_FMT_APE			0x00012f32
++#define ASM_DATA_CMD_REMOVE_INITIAL_SILENCE	0x00010D67
++#define ASM_DATA_CMD_REMOVE_TRAILING_SILENCE	0x00010D68
  
-+/* DSP can switch decoder in a single Stream while doing gapless */
-+#define SND_COMPR_CAP_FLAGS_DSP_CAN_SWITCH_DECODER	((__u32) 0x00000001)
-+
- /**
-  * struct snd_compr_caps - caps descriptor
-  * @codecs: pointer to array of codecs
-@@ -97,6 +100,7 @@ enum snd_compr_direction {
-  * @min_fragments: min fragments supported by DSP
-  * @max_fragments: max fragments supported by DSP
-  * @num_codecs: number of codecs supported
-+ * @flags: flags to expose various DSP capabilities
-  * @reserved: reserved field
-  */
- struct snd_compr_caps {
-@@ -107,7 +111,8 @@ struct snd_compr_caps {
- 	__u32 min_fragments;
- 	__u32 max_fragments;
- 	__u32 codecs[MAX_NUM_CODECS];
--	__u32 reserved[11];
-+	__u32 flags;
-+	__u32 reserved[10];
- } __attribute__((packed, aligned(4)));
  
- /**
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 184722643c97..abebd5fee2d2 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -590,12 +590,32 @@ static int snd_compress_check_input(struct snd_compr_params *params)
- 
+ #define ASM_LEGACY_STREAM_SESSION	0
+@@ -639,6 +641,8 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
+ 		case ASM_STREAM_CMD_OPEN_READWRITE_V2:
+ 		case ASM_STREAM_CMD_SET_ENCDEC_PARAM:
+ 		case ASM_DATA_CMD_MEDIA_FMT_UPDATE_V2:
++		case ASM_DATA_CMD_REMOVE_INITIAL_SILENCE:
++		case ASM_DATA_CMD_REMOVE_TRAILING_SILENCE:
+ 			if (result->status != 0) {
+ 				dev_err(ac->dev,
+ 					"cmd = 0x%x returned error = 0x%x\n",
+@@ -1324,6 +1328,55 @@ int q6asm_stream_media_format_block_ape(struct audio_client *ac,
  }
+ EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_ape);
  
-+static bool snd_compr_can_dsp_switch_decoder(struct snd_compr_stream *stream)
++static int q6asm_stream_remove_silence(struct audio_client *ac, uint32_t stream_id,
++				       uint32_t cmd,
++				       uint32_t num_samples)
 +{
-+	struct snd_compr_caps caps;
++	uint32_t *samples;
++	struct apr_pkt *pkt;
++	void *p;
++	int rc, pkt_size;
 +
-+	if (!stream->ops->get_caps)
-+		return false;
++	pkt_size = APR_HDR_SIZE + sizeof(uint32_t);
++	p = kzalloc(pkt_size, GFP_ATOMIC);
++	if (!p)
++		return -ENOMEM;
 +
-+	memset(&caps, 0, sizeof(caps));
-+	if (stream->ops->get_caps(stream, &caps))
-+		return false;
++	pkt = p;
++	samples = p + APR_HDR_SIZE;
 +
-+	if (caps.flags & SND_COMPR_CAP_FLAGS_DSP_CAN_SWITCH_DECODER)
-+		return true;
++	q6asm_add_hdr(ac, &pkt->hdr, pkt_size, true, stream_id);
 +
-+	return false;
++	pkt->hdr.opcode = cmd;
++	*samples = num_samples;
++	rc = apr_send_pkt(ac->adev, pkt);
++	if (rc == pkt_size)
++		rc = 0;
++
++	kfree(pkt);
++
++	return rc;
 +}
 +
- static int snd_compr_set_codec_params(struct snd_compr_stream *stream,
- 				      unsigned long arg)
- {
- 	struct snd_codec *params;
- 	int retval;
- 
-+	if (!snd_compr_can_dsp_switch_decoder(stream))
-+		return -ENOTSUPP;
++int q6asm_stream_remove_initial_silence(struct audio_client *ac,
++					uint32_t stream_id,
++					uint32_t initial_samples)
++{
++	return q6asm_stream_remove_silence(ac, stream_id,
++					   ASM_DATA_CMD_REMOVE_INITIAL_SILENCE,
++					   initial_samples);
++}
++EXPORT_SYMBOL_GPL(q6asm_stream_remove_initial_silence);
 +
- 	if (!stream->ops->set_codec_params)
- 		return -EPERM;
- 
++int q6asm_stream_remove_trailing_silence(struct audio_client *ac, uint32_t stream_id,
++					 uint32_t trailing_samples)
++{
++	return q6asm_stream_remove_silence(ac, stream_id,
++				   ASM_DATA_CMD_REMOVE_TRAILING_SILENCE,
++				   trailing_samples);
++}
++EXPORT_SYMBOL_GPL(q6asm_stream_remove_trailing_silence);
++
+ /**
+  * q6asm_enc_cfg_blk_pcm_format_support() - setup pcm configuration for capture
+  *
+diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
+index 0379580f0742..e315f7ff5e54 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.h
++++ b/sound/soc/qcom/qdsp6/q6asm.h
+@@ -135,6 +135,12 @@ int q6asm_run(struct audio_client *ac, uint32_t stream_id, uint32_t flags,
+ 	      uint32_t msw_ts, uint32_t lsw_ts);
+ int q6asm_run_nowait(struct audio_client *ac, uint32_t stream_id,
+ 		     uint32_t flags, uint32_t msw_ts, uint32_t lsw_ts);
++int q6asm_stream_remove_initial_silence(struct audio_client *ac,
++					uint32_t stream_id,
++					uint32_t initial_samples);
++int q6asm_stream_remove_trailing_silence(struct audio_client *ac,
++					 uint32_t stream_id,
++					 uint32_t trailing_samples);
+ int q6asm_cmd(struct audio_client *ac, uint32_t stream_id,  int cmd);
+ int q6asm_cmd_nowait(struct audio_client *ac, uint32_t stream_id,  int cmd);
+ int q6asm_get_session_id(struct audio_client *ac);
 -- 
 2.21.0
 
