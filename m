@@ -2,57 +2,81 @@ Return-Path: <SRS0=ClfJ=BA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 582C7C433E5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 09:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37557C433E3
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 09:35:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB2702072E
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 09:29:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B48BE20720
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 09:35:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oYQq3MIQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB2702072E
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ixc6p9rm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VUwFh+ak"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B48BE20720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AD5C166E;
-	Tue, 21 Jul 2020 11:28:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AD5C166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35F231667;
+	Tue, 21 Jul 2020 11:34:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35F231667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595323787;
-	bh=QWHtwJKUU3ADAtwe27vfJdV515swBvaETRbDIi7y3kI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1595324113;
+	bh=wRyOkf5BPZx5EhcERYgIJKjB6OMOn8b6JxT3/6io1uU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oYQq3MIQW/o/UWdbaECa1aS08zCljMSzAg7qXR4LuCBXybF5Y7aZyUkhrpNJQGiIT
-	 zFsgM1on6wWn9F2cxFE/dTT6paOXbUgN/XlQsFeJJBSSxB4igU5koHFB2SrkvufyXD
-	 mkxiS30odRcjhHinFnorbwpNmeYW6V/DpiIrMzvk=
+	b=ixc6p9rmzFToyPNZzD45w//gDeB3XaMS4taLQgz8Dh0OtAfvQvC9dw0myYIoXBxCn
+	 iXfe3F5dLA1Uetmh6y12EOvL3SjcX4bo0PElhXEnhGReUo7rs9DeRTiY26f2pu6OLI
+	 CPlzS+8mVHqKj2wLvqT3gFfEUUlX+HllZuujAb08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB5E1F80212;
-	Tue, 21 Jul 2020 11:28:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3123F80212;
+	Tue, 21 Jul 2020 11:34:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03D21F8024A; Tue, 21 Jul 2020 11:28:53 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 6743EF80087
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 11:28:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6743EF80087
+ id 6F534F8024A; Tue, 21 Jul 2020 11:34:20 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED42FF80087
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 11:34:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED42FF80087
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="VUwFh+ak"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 826942070A;
+ Tue, 21 Jul 2020 09:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1595324052;
+ bh=wRyOkf5BPZx5EhcERYgIJKjB6OMOn8b6JxT3/6io1uU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=VUwFh+akV6bxsDn1GyNoMZEn5p+yDLf684CgGe64T4TJEu3GBLxg5yF/U6lpq/WaL
+ GQLmWOpZNlWyaNxTNb5pzRNCM4xaf1PoLs8EXchYcY2Vf3N1gibdrtQ6s4beURmhaj
+ tFa6EcHUBwm2QtdO6rG3ewL86ougrM7mBa6nSOls=
+Date: Tue, 21 Jul 2020 10:33:58 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: tas2770: Convert tas2770 binding to
+ yaml
+Message-ID: <20200721093358.GA4845@sirena.org.uk>
+References: <20200720181202.31000-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1595323724796334982-webhooks-bot@alsa-project.org>
-References: <1595323724796334982-webhooks-bot@alsa-project.org>
-Subject: amd/renoir/acp: use the machine driver's name for top-level's conf
-Message-Id: <20200721092853.03D21F8024A@alsa1.perex.cz>
-Date: Tue, 21 Jul 2020 11:28:53 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Content-Disposition: inline
+In-Reply-To: <20200720181202.31000-1-dmurphy@ti.com>
+X-Cookie: I'm also against BODY-SURFING!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,13 +92,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #41 was opened from jason77-wang:
 
-On the machines with amd renoir audio, the /sys/class/sound/card2/
-device/driver links to /sys/bus/platform/drivers/acp_pdm_mach.
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+On Mon, Jul 20, 2020 at 01:12:01PM -0500, Dan Murphy wrote:
+> Convert the tas2770 binding to yaml format.
+> Add in the reset-gpio to the binding as it is in the code but not
+> documented in the binding.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/41
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/41.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+What's new about this version?
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8WtoYACgkQJNaLcl1U
+h9DBiwf/VkRD3CE9qEXZu/H6d/cKccK78cdx+xjg+aPRtBQUNd1d0VuGIfe0j6MQ
+Prpam9rnYKQkVwea4g84t9758PLwMQquSokeMUBhOEAF4a1opT33TKEZxIe9LR2V
+43HK6V5NZX/ybjlw3Oeos7OWvJmMfpACqL5C4ceQQ2phEPGpe3TuAKx2+o/Dnk0Y
+7EHHI+RqWZB82rpeOCngyKUWjxaetSBt+k9k8QxvP9ubgbQzXvn40rJt0VivIuna
+uBqdWKRTHHaev3IGr+cpBRRiH/TTZzZroQhVN7ydhYdtXsikuGBKg2/Xd9OJ+L/J
+3vTgCaWBlVkpMLU6PaREZwy7rvUS3g==
+=LJIg
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
