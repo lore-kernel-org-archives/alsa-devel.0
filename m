@@ -7,89 +7,88 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 913DFC433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DDD4C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:02:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20A9C2073A
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:01:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 177A22065D
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:02:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KkJrHun7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xUCw3RVo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20A9C2073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kJz7Vg4t";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AbnVVS1e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 177A22065D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFF671669;
-	Tue, 21 Jul 2020 19:00:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFF671669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A6A41676;
+	Tue, 21 Jul 2020 19:01:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A6A41676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595350877;
-	bh=kzmAqPPxibceeYYrnSClV1X0tTj1jQnUEjOh7vlv9v4=;
+	s=default; t=1595350925;
+	bh=LxhNlFgwErGjD/Okb3KP+IQQpvW9uORXRny2Mwjqjs8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KkJrHun7OVluR4xckOJ3xgDDBBDkz0q590hLRM+MmsqdK44GEhI9mlM/j9ffL/MZ9
-	 w84LVgkR7FZPXWhJtumT4CEYXx1An+PkDTB0XNv5QA/NJy1VJTd7jSX2LAcqhVVMEt
-	 3mpjOzmxlunRtZQTwyC6nQ/Oi4ib/ISayNWiUPpw=
+	b=kJz7Vg4tlYSzy1gtsTezTuZx5WTaPPksK5sr5yWQjJpTRcbgXC5jPz5W7Y/O9G/Uf
+	 I5Kx1wpmu9HIRo6OIfTXl69JEVeUbxBLXBh7sTiBaXVUB21OlyTnaw2crJ0s21Kvm6
+	 cIht6uPEx/DvepiP8WU7YZ+6tm1gkmiFe8Qs4RDE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44A24F802BD;
-	Tue, 21 Jul 2020 19:00:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A828BF802C2;
+	Tue, 21 Jul 2020 19:00:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45D8FF8028C; Tue, 21 Jul 2020 19:00:22 +0200 (CEST)
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
+ id 77D37F802C2; Tue, 21 Jul 2020 19:00:27 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BF8AF800CE
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 19:00:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BF8AF800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2BF3F8024A
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 19:00:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2BF3F8024A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="xUCw3RVo"
-Received: by mail-wm1-x341.google.com with SMTP id 17so3605280wmo.1
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 10:00:15 -0700 (PDT)
+ header.b="AbnVVS1e"
+Received: by mail-wm1-x343.google.com with SMTP id 9so130393wmj.5
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 10:00:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=29yfJ1iVy+Hi6g3ZFLKBYwMLLHqUdPID3gr+X5nhlQE=;
- b=xUCw3RVo9rgBVXxyK05KyzX+F+UEoCmKIdZ/zHQJDYM2hP4Z+669hm5koy0s34lI2B
- IV9kS+QFWRnLLNHlCEmI6QiCgV0euvZmz6ldotibeSGKE/ScbaHBTGNckYjtF9vKq0Wv
- 8njmiz3BcPLCGI/e3NZ4Zi7TuzbsFwqOky/dKWuXgZVtHsIagRXvYQl/bXzhlYP991a0
- yOdi5hpvIoZJDqDCEDX+C0Aue50qp1MaeYxGtQP0dMZItXbB2/2ev5CUcEEyShXOry6L
- hsdOdLFc5HArkLtNWcd8JrPQ2cKrzrWNZesGbEqLp2wsu6IaIH95o4JJUDfsNnXjzFjy
- EoHw==
+ bh=cX30zM4NBo9NgJKdwCaDNO5IgDHp7txiav7RhZ1wYnQ=;
+ b=AbnVVS1ePUqx9ZPvRol7dMY9NmY2pLxSYSuFxd7YPIgzDHhZ3v8kpF1QZ3NJtL6kIK
+ i0Y2uIL8P6oqP1sjFslcqU+M0EmVuj8Rbq6mJWXcOwrA7OHTLIkG5vL0V2q1S6L1g2+O
+ G4YFGPSucmloC+6HSvQRDkY3sYdb44fR62hM1u/eLxMTAfkUzXeDTSw+B92btBFVLoNH
+ Sj0oZOseF9TALG3GGtnYqm1bneG0Z34Bti25JMNs3oYDo9DpwSj69TRKxNa/fZaPbzOj
+ GPnkiOuHr2yLQIiFAVkS2OGDmbMaGnNjQ7ENLTtWXJUZi/aXos7jg0pOzXhnz0x63/nk
+ Fnqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=29yfJ1iVy+Hi6g3ZFLKBYwMLLHqUdPID3gr+X5nhlQE=;
- b=olb+d7fABzwW7dzQdP4bHTrNBLbKhb68+QymUvCLqgMgk3aBhYOrIQUREnwKOULIkn
- iedzr+Z/49SLT7+eMzrcJRq4V2mvSkHOjrPXwXnnnp2UGE6FY/KW6sZEWBiXINJHqpZE
- sRHCmkGXVM/eCJ48IuYKyPdqwFVW/0GSzg73Cwh7x9VGlb3T3rWOSJJ/LHCwGSPNNboa
- qJqTwhk+oKQv2vQgGKeDkJcEyK/pcFBrMYo9QxKL8RNa2d6fjsTPIlaIBaBDvfD8Y316
- CNY0Yur0MRh3DMinVWVA0o4ogndRVViMYOUT6bFQEj2vjj5hLpUffgOKQK5QMNsqEDyl
- wMfQ==
-X-Gm-Message-State: AOAM531OAl6MRKUSx+amL5bgUMy4b/GhonsPZ/M1xVoB9Mn7VLP1vu8M
- 2WnwQKlSaJYVrxlypD7NZPG3smKncx8=
-X-Google-Smtp-Source: ABdhPJxd9qOgR1HG0URRCj3/zigqsoR04LiAQhM1WvcGVT/Zw5yPyzOn4ePe9YMuRmMcbgOc/oKw+w==
-X-Received: by 2002:a05:600c:414f:: with SMTP id
- h15mr5200889wmm.82.1595350813907; 
- Tue, 21 Jul 2020 10:00:13 -0700 (PDT)
+ bh=cX30zM4NBo9NgJKdwCaDNO5IgDHp7txiav7RhZ1wYnQ=;
+ b=YBZRoGGjYcyr2OBNGgJigNoaCbRUIKAUpBXvgiHN+0zVI9cV6/FXkjXqXqP8bk3MD8
+ JWZnonzvjytyDOS6IP/x7EJZm9RMFeioxvG4NrcUMGSiYMvAQE/+W0HFS7AhOgoPApYF
+ uzGR4AYtLhYczjjcAUyzgeIL6clFaavEe2rudkYLzuZkwCG5ivTn1K79aqXMyik3quw1
+ PW/Vkgrm3mJHtpwOLsLykRFuZEs4ARivQMlncNfpAcjZoSlGu9vq6Sd0tIKU5MtnWtHl
+ U07BO9RWWyV3Z9PuSDLsUcdeF/1x4u4npGK2o18JJ1WuAqNTRm+KrqJ9h+Th64rKgTbV
+ 7ZbA==
+X-Gm-Message-State: AOAM532geZ6TIg/GHE0sXLZjqWOAQAn31SGIqCmuNGg+ndBXloKHDztK
+ LGheaspoFfRLsw8TZc52ivQlyg==
+X-Google-Smtp-Source: ABdhPJxXHRQU8c3AC4+4CNVvMYSBeNRcIY6fllLgC7+JpgeWNr20AAE6+Lrw5aOotX5A5Ot5n8tUMA==
+X-Received: by 2002:a7b:c5c5:: with SMTP id n5mr4872179wmk.103.1595350816319; 
+ Tue, 21 Jul 2020 10:00:16 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id h11sm15526327wrb.68.2020.07.21.10.00.12
+ by smtp.gmail.com with ESMTPSA id h11sm15526327wrb.68.2020.07.21.10.00.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jul 2020 10:00:13 -0700 (PDT)
+ Tue, 21 Jul 2020 10:00:15 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [RFC PATCH v2 1/6] ALSA: compress: move codec parameter check to a
- function
-Date: Tue, 21 Jul 2020 18:00:02 +0100
-Message-Id: <20200721170007.4554-2-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH v2 3/6] ALSA: compress: add flags to snd_compr_caps to
+ expose dsp caps
+Date: Tue, 21 Jul 2020 18:00:04 +0100
+Message-Id: <20200721170007.4554-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
 References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
@@ -113,54 +112,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move codec parameter checking to dedicated function so that other
-callers do not duplicate it. This is in preparedness for adding
-snd_compr_set_codec_params() support.
+Some of the DSPs like Qualcomm QDSP has ablity to change decoders
+dynamically on a single stream, This could be used for features
+like Cross Fade or gapless with different codec profile tracks.
+
+Exposing such features in flags variable of compress caps descriptor
+would provide userspace more flexibity in usings dsp features.
+
+For now only one flag of switching decoders is added which is used
+in subsequent patches.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/core/compress_offload.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ include/uapi/sound/compress_offload.h |  7 ++++++-
+ sound/core/compress_offload.c         | 20 ++++++++++++++++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index c46286113a4b..43c78cdf492c 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -88,6 +88,9 @@ enum snd_compr_direction {
+ 	SND_COMPRESS_CAPTURE
+ };
+ 
++/* DSP can switch decoder in a single Stream while doing gapless */
++#define SND_COMPR_CAP_FLAGS_DSP_CAN_SWITCH_DECODER	((__u32) 0x00000001)
++
+ /**
+  * struct snd_compr_caps - caps descriptor
+  * @codecs: pointer to array of codecs
+@@ -97,6 +100,7 @@ enum snd_compr_direction {
+  * @min_fragments: min fragments supported by DSP
+  * @max_fragments: max fragments supported by DSP
+  * @num_codecs: number of codecs supported
++ * @flags: flags to expose various DSP capabilities
+  * @reserved: reserved field
+  */
+ struct snd_compr_caps {
+@@ -107,7 +111,8 @@ struct snd_compr_caps {
+ 	__u32 min_fragments;
+ 	__u32 max_fragments;
+ 	__u32 codecs[MAX_NUM_CODECS];
+-	__u32 reserved[11];
++	__u32 flags;
++	__u32 reserved[10];
+ } __attribute__((packed, aligned(4)));
+ 
+ /**
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 0e53f6f31916..af5824113246 100644
+index 184722643c97..abebd5fee2d2 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -566,6 +566,18 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
- 	return 0;
+@@ -590,12 +590,32 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+ 
  }
  
-+static int snd_compress_check_codec_params(struct snd_codec *codec)
++static bool snd_compr_can_dsp_switch_decoder(struct snd_compr_stream *stream)
 +{
-+	/* now codec parameters */
-+	if (codec->id == 0 || codec->id > SND_AUDIOCODEC_MAX)
-+		return -EINVAL;
++	struct snd_compr_caps caps;
 +
-+	if (codec->ch_in == 0 || codec->ch_out == 0)
-+		return -EINVAL;
++	if (!stream->ops->get_caps)
++		return false;
 +
-+	return 0;
++	memset(&caps, 0, sizeof(caps));
++	if (stream->ops->get_caps(stream, &caps))
++		return false;
++
++	if (caps.flags & SND_COMPR_CAP_FLAGS_DSP_CAN_SWITCH_DECODER)
++		return true;
++
++	return false;
 +}
 +
- static int snd_compress_check_input(struct snd_compr_params *params)
+ static int snd_compr_set_codec_params(struct snd_compr_stream *stream,
+ 				      unsigned long arg)
  {
- 	/* first let's check the buffer parameter's */
-@@ -574,14 +586,8 @@ static int snd_compress_check_input(struct snd_compr_params *params)
- 	    params->buffer.fragments == 0)
- 		return -EINVAL;
+ 	struct snd_codec *params;
+ 	int retval;
  
--	/* now codec parameters */
--	if (params->codec.id == 0 || params->codec.id > SND_AUDIOCODEC_MAX)
--		return -EINVAL;
-+	return snd_compress_check_codec_params(&params->codec);
++	if (!snd_compr_can_dsp_switch_decoder(stream))
++		return -ENOTSUPP;
++
+ 	if (!stream->ops->set_codec_params)
+ 		return -EPERM;
  
--	if (params->codec.ch_in == 0 || params->codec.ch_out == 0)
--		return -EINVAL;
--
--	return 0;
- }
- 
- static int
 -- 
 2.21.0
 
