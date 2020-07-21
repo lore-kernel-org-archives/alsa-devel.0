@@ -5,100 +5,105 @@ X-Spam-Level:
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39220C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 13:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E811C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 13:32:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B82F9206E9
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 13:26:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 07ACA21702
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 13:32:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="szLlIUlP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VAWOAHFF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B82F9206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iZ1lQbX8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R2MkfsCQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07ACA21702
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B455825;
-	Tue, 21 Jul 2020 15:25:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B455825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75E9414E;
+	Tue, 21 Jul 2020 15:31:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75E9414E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595337980;
-	bh=+ohX8rYELNIi8CTBLxy80dJqVfrxR/YRil9qu76Rg4I=;
+	s=default; t=1595338365;
+	bh=Pt+GzWkxP1A5ATQGkWe9PChiAPBJRw+/ivN92QlY3LM=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=szLlIUlPzOwDZtISc3fpX4bibnBUoZoecK+9njOcVcWkHVC+Nbeu5pKUlvegbfd5K
-	 Pt0i8/hRNc+OaqYBhLHPTXcohuVwD5N+k7vU1pzowa8l3yhcHxhuFvP2WbnAuVg9UA
-	 FAGe/bY3c8shm3gxLXcjxdsn7S4XGrQexn1dcYmM=
+	b=iZ1lQbX83LGXDLX7XhGrER/5z1qfC9wBBL910sK2YiSevy+uOeCXAqqN8NDoHtt9r
+	 rtaueiXnO+ItzrR4uJz3rGNPCPZtCIKqy8X7Ht277tkYBWU7E1hTK4SRpjgJYMsSzW
+	 Tyay7dL6Y5Yv0xsvFIWVMj0L4t50h679Opel2wxw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9031F80212;
-	Tue, 21 Jul 2020 15:25:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5DCAF80087;
+	Tue, 21 Jul 2020 15:31:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C579CF8024A; Tue, 21 Jul 2020 15:25:27 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id 2B8DEF8024A; Tue, 21 Jul 2020 15:31:52 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6270CF80117
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 15:25:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6270CF80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F2C2F80117
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 15:31:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F2C2F80117
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="VAWOAHFF"
-Received: by mail-wr1-x441.google.com with SMTP id q5so21189919wru.6
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 06:25:16 -0700 (PDT)
+ header.b="R2MkfsCQ"
+Received: by mail-wm1-x343.google.com with SMTP id c80so2862449wme.0
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 06:31:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=+ohX8rYELNIi8CTBLxy80dJqVfrxR/YRil9qu76Rg4I=;
- b=VAWOAHFFea0az8RxVdl1NOdH0WZqZLKcvKV2vxxXUwrjr9J0BISM/7VKWGnfDA4vv8
- BcaGOuRu+BNgvUvhyGTHul3L7QPfwqDNfrk0INgA3Pfx2VplyMzb3iaHrOUEuUmivaAX
- ECxTpfshHL4B1wOZibVnu8BsLt+5U5lAQ0vEDw//SyE0h3PSM9EivO0c6XpYupdRt0nh
- 091u6KkWR3DzBk++t21K428wi3XOnTAGg+9LjgtFrW39aLj8uRZh+A61LYWVveMv07WZ
- TAM+UplfahYUZCW+6/Unm+3Hj2UMQXPVmD3j6SrTinCgiP4UI2OHtFoQ71opUOvSkvJG
- aerA==
+ bh=uyBU0n93mYL4MPnVZSrUf3hQRNa7z/RTZ/TKuAjq3Q8=;
+ b=R2MkfsCQuYWzdV3pwRrLaT8N1kzRpNcsFvr6wnqUiJrQk9jaPTpAwG9/BxmKH0fg4e
+ csnBNsmMOvVrz/CJ+WpUAIOUa92I9kRfRCKd33NJX/RQ5DALtKWGB9IV/8y5YuU/FEGm
+ ABQSVM09Kd1gfUDLlBqWcP6KdrcFWArxsSp6AkHFMYr/bnYPxQntffyf8B9orCvGnSZD
+ kpIz2FAvQ6MLmX+RfADxPxmtyzNZ4rFR5tmSwBCK0I9/l1n0ZDpLwFbwZ9tSpvPX0XTL
+ LQHQMEMxDFZ0U2xD6mGRCERCgYTrwUvl8rhc9PPSgVVavx2jLMlCN/QIytxMBrCHlFab
+ 81Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=+ohX8rYELNIi8CTBLxy80dJqVfrxR/YRil9qu76Rg4I=;
- b=EyEEZlYBQskMket3r2zbwJpPkmind6CX+4EIS5sA6rCLy4DRB32o53qATM84yHIkbL
- TELd+Ho2nNsuWQKd5tf1oyYJuW+i5Sm/Ao6B7a7GHX6dxv8qjVLhB4YXSTjQNO4GWWuu
- 75rNgmW2Zd4GOHBuskS8Fu0hNcojDPAAhC3gRObvLTJgfiZqsNy6B/aks+x063farLUb
- 4tbG5lynjS+vtt4K1PJ1HdYAr8B1429ZsrnczNJ4NCUZsijIYC/HRaQXuQN9k51aOubp
- Gbefu1GB/2ZbPQpDGgSTO9szPoyKY7aHno+gryigJbmcatXkh15rdrZreXo3rAZXsiZY
- BbLQ==
-X-Gm-Message-State: AOAM531Jq1D7C3qnDOakoQ3ZwJt71jL62oPDWp8ztIP6NsDf0JAA1dTH
- xleDLvIZDkYc0JoLDhxmLtc=
-X-Google-Smtp-Source: ABdhPJwu/oefual4vwgdJi+RyGWrDRJNgL4P+c61UcaHx+0+/5VYuFeQE8dOhM/6CZCvtwKHg2Zn1w==
-X-Received: by 2002:adf:f542:: with SMTP id j2mr26774447wrp.61.1595337915848; 
- Tue, 21 Jul 2020 06:25:15 -0700 (PDT)
+ bh=uyBU0n93mYL4MPnVZSrUf3hQRNa7z/RTZ/TKuAjq3Q8=;
+ b=stEW3Q0GaRj8OY8pn8RXhngk9sCp+4ZEkO0+W07x2dPfKdULiFoQ/QPOl5Q+T8NSYO
+ j7A8q0h6XJdIKsKU/DL+WTDUEsEIzkK6NvFINQAXhrVQnVbtay7qnQR38zkNhv/Plqlc
+ Pvm4zka0RRe2+BYVYW8DYPT8iIN6B6QsrappYBiOFvTgohPigMMaeg7WoL0iB7BCbu+G
+ BTMI9RCBGN7CxXKJGgKoKzUMu8GlzcBi160DCpf/rC0SVd1cadw1NcBbxZn1xzRWdMVc
+ mBavVI3wP8mgNHFXvyJMW84ePc0pwKxKh3JwtDRu08c5VYPgC/wXGwMKD8v5M1MCxfpX
+ 67hg==
+X-Gm-Message-State: AOAM533tGWtjOKLioVotvMaB61uYo71IJ+fEnmbs5wB4AQja+W/sqrTq
+ rZFbVZA3o3U1vXBvGpoFzOU=
+X-Google-Smtp-Source: ABdhPJzuacQT/Evp2PHZb0CQXYblt0HAY+Bj+IAqC14Rd4DQUDuO+4iTsHjhrA3NqW8RBRIhAaQjlw==
+X-Received: by 2002:a1c:5453:: with SMTP id p19mr3983422wmi.41.1595338296463; 
+ Tue, 21 Jul 2020 06:31:36 -0700 (PDT)
 Received: from [192.168.0.74] ([178.233.178.9])
- by smtp.gmail.com with ESMTPSA id j24sm7814455wrb.49.2020.07.21.06.25.14
+ by smtp.gmail.com with ESMTPSA id j8sm21924758wrd.85.2020.07.21.06.31.34
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 21 Jul 2020 06:25:15 -0700 (PDT)
-Subject: Re: [PATCH] ASoC: max98357a: move control of SD_MODE back to DAI ops
-To: Tzung-Bi Shih <tzungbi@google.com>, broonie@kernel.org
-References: <20200721114232.2812254-1-tzungbi@google.com>
+ Tue, 21 Jul 2020 06:31:35 -0700 (PDT)
+Subject: Re: Speaker pops with max98357a on rk3399-gru-kevin since v5.7
+To: Tzung-Bi Shih <tzungbi@google.com>
+References: <f2ca985f-7dbd-847a-1875-dd0e1044ef02@gmail.com>
+ <CA+Px+wU1S1EqtW-yZH9z9aCF3ggSriBqy73SRYy8q61x0GkdQQ@mail.gmail.com>
+ <846feea6-e2b6-3a0e-b05f-d70e898f9ea5@gmail.com>
+ <CA+Px+wUhAHAx-qmAEWy_8Jy40NDTAHH-TNYtPtMfwocMHQ=AbA@mail.gmail.com>
 From: Alper Nebi Yasak <alpernebiyasak@gmail.com>
-Message-ID: <035e41c8-15f9-c4ee-3707-17f3c2819d5c@gmail.com>
-Date: Tue, 21 Jul 2020 16:25:11 +0300
+Message-ID: <ba020dd4-167c-f67e-5cf7-5e4e60a71919@gmail.com>
+Date: Tue, 21 Jul 2020 16:31:31 +0300
 User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200721114232.2812254-1-tzungbi@google.com>
+In-Reply-To: <CA+Px+wUhAHAx-qmAEWy_8Jy40NDTAHH-TNYtPtMfwocMHQ=AbA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- cychiang@google.com
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Heiko Stuebner <heiko@sntech.de>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,17 +119,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21/07/2020 14:42, Tzung-Bi Shih wrote:
-> This patch addresses the reported issue in the thread
-> https://lkml.org/lkml/2020/7/16/427
+On 21/07/2020 14:46, Tzung-Bi Shih wrote:
+> Hi, I got a rk3399-gru-kevin and can reproduce the issue.
+> 
+> Could you take a try on the proposed patch here
+> https://patchwork.kernel.org/patch/11675533/ to see if it fixes?
 
-I can confirm this patch eliminates the pop sounds I mentioned in that
-thread. Thanks for working on it.
+It does eliminate the pops, thanks.
 
-It looks like toggling "Speaker Switch" during playback doesn't take
-effect until playback finishes, but I found that PulseAudio (a version
-from a merge request with a custom UCM config) can switch between
-Speakers and Headphones immediately, so I don't really think it'll be a
-problem.
-
-Tested-By: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+(I've replied to the patch, I am sending this for completeness as the Cc
+list isn't exactly the same.)
