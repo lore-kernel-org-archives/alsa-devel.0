@@ -2,95 +2,96 @@ Return-Path: <SRS0=ClfJ=BA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 309B9C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBE50C433E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:01:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A84EC20792
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:00:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 708432073A
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:01:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EdK7Mrlc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LcdyzJ1L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A84EC20792
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jlMXc+kL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TZagcxsv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 708432073A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33E881615;
-	Tue, 21 Jul 2020 18:59:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E881615
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE443950;
+	Tue, 21 Jul 2020 19:00:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE443950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595350799;
-	bh=JLCL/N90X9hWB1UTPFMinm67/VDoyquCZwQMSrQ1w1A=;
+	s=default; t=1595350874;
+	bh=YMnAksjozOvtrXHj901rcOAgbXaE3yeQCEv80kWAZN0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EdK7Mrlc90JDJytFYbW9Ynb0S4L/bFhM4kCN1VnYF6/r61KARbHMEqSLhWOHPLEGb
-	 s2mQDfkRgV1YzAXeYa7klYOg4asx6u/wDvFE9QfFPHYlq/R2H9KD9g5r8gPa/iy+d7
-	 alaQjcJMyrVpAaXuVcafqkjzye7juItMQ8wA0glM=
+	b=jlMXc+kLOaCx+b2c80bGNupm2yv2Bs7nu/vjdyKoU5Kc6yKYcxZTpCs/fBeTRAJYP
+	 P+Olf6zREdDQbLgAlfGcwKeVF5X70C6QlMMk6NQnwiWABVuSXPizv2sA8ugji5RJk+
+	 Ns6+a7pkJ94F7T28c+iVU2T3ONIhRRbBfgQz1qIA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9C70F80305;
-	Tue, 21 Jul 2020 18:53:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79DF7F80212;
+	Tue, 21 Jul 2020 19:00:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47304F802EC; Tue, 21 Jul 2020 18:53:45 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ id B1F25F8028D; Tue, 21 Jul 2020 19:00:21 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6843F80274
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 18:53:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6843F80274
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86ECBF80087
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 19:00:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86ECBF80087
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="LcdyzJ1L"
-Received: by mail-wm1-x330.google.com with SMTP id c80so3525804wme.0
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 09:53:32 -0700 (PDT)
+ header.b="TZagcxsv"
+Received: by mail-wm1-x343.google.com with SMTP id q15so3530951wmj.2
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 10:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=VmuP26pFXhq32+z5mcBmskWxvyaip5dpiXSHlITuiYI=;
- b=LcdyzJ1L9NT7IlmRky2XGOi2dgCFGrHMpH9KW3K0KDnm9PRj9VQy05ZL/O1QsS621d
- qBffdUU1ScWZ4v1PuOw+0KJfXsvDnbuqmzB4ueaSGEEOJQfY7hdgB4eF8/1s7j56IBTZ
- mKUq3unYHA0D4FBQ4B0fp+K8W2rpfcaU6f7Ac3bD3WBW/FuxDaESlvDdZA95MmxQWF0v
- RVKVjvl1EOtfxBBo5fAsnWy8EueV2i+KigQBiuPn4U0qXRHVzbAHDGzIhCOZu2p+OaQl
- RQ7DzP6g7rTmMFGbEg2eRRuYLy2rWXHHoaFS5vyP1RHvY1ZWmpxpqQ9fb2/PM+UpQjs9
- yXdA==
+ bh=4rU3b/gziRzoNApIuUQOhBISC1QXxPCmKcl+VrCyHfM=;
+ b=TZagcxsvvNWcs1yVY+CL7AodCrhUI/pwmVvVHQ9kkofoOakLyDuKZtIFEtBtRO9dgP
+ cJOjbRXbeXx9+8Xw9m64/gA039nNk9U6Z7cX1Qc/HXOypUPEvFYyhVhAlekkTaH0l9St
+ 8sFwOc6zbcKRy/fkJWbpQBFZBAzBoQY9Lo/X9CrMfcyShVCa7tCF5Ynnu/Mat1fss7WX
+ Cbc8tUPGjA3a0HkOX2kamp+Ljuea6rSkwUmvQxJSGV0qbDoQ3yfzT26J0YKaKQvi3dkh
+ 2sXJ2sE/kryAhEghs/yRO58y13MmX424/RNqLBodl/gijjcF9h+QncDOikOoeAJ0dDuF
+ mcPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=VmuP26pFXhq32+z5mcBmskWxvyaip5dpiXSHlITuiYI=;
- b=gCFB9Tb5zaawkVL+KXBi/ID4AOte9LER8dX7ZtY7s+Zsq0XcLUg+8PWJbE8fkTO3aO
- HGeS0XFYB0IeWJ/PgZ7wIU9/HEz/1hr080FoaKAREkowmjFAxEaPZz6thKtrZSMJw4An
- adR7DVcWM7eaf2U8262GTSrxyVy3PxXQ8B4z1dZTgbrfpg01QOX18Uqe6s2OwnMcEhs6
- JF70+bEUBSWU9daOT3lim9fo0lfdcfkOZu62wsmvht3aWBtlUEjEQ9qHrzUZx3e8HJSm
- Ps6skS0MnXYhIEZfNeuFNzcK7k7qgmj2/MVabl7QgTBRPi/9zafBze8k1ZvQipZ/C+zJ
- tcMQ==
-X-Gm-Message-State: AOAM5323f4kR5F1UGfL8GAjMTV4t7HURIvI3hDK65jTDZt/wMZrFyLI6
- R2l9mVU8k4rrBOIzApCKXWxz1A==
-X-Google-Smtp-Source: ABdhPJy1BZSc/XQ0qyoKoKoKDVWcSK8KAWiqlSbx6Vi2eEAQs2S9ZN6lynnWU9MMZ6w8cilLW1ffvQ==
-X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr5147693wma.66.1595350411794; 
- Tue, 21 Jul 2020 09:53:31 -0700 (PDT)
+ bh=4rU3b/gziRzoNApIuUQOhBISC1QXxPCmKcl+VrCyHfM=;
+ b=Tomf6xL8F7NM8xwrbzTUwuTdWdQwI1s1oSbB+8Hh9V2E/54NrsVoog9psuzWSV9eyZ
+ sgLf76XQqZ8W2j9aAKFbmWI1x4XiTs61worWGA0mWM9RHc9n0LE33A/dG1FnRxww74fz
+ eLrCf9ki2QGKIQWxiP48a2jl0q7jzIwrawvUj9ljtDecz9B6rYqVKy1cY3sKoRQ7vRrH
+ swlZ2LL6j4020oYpJOLXMhdJr1rRcVG2qygJx+awbsd7CPe9GwCnDTZhyTDVCjo2EZ8B
+ avTyxZHw9PsCRb3IV0gdEePuKlB7RVIAFXImELrIRnfFO59TmtBZICv0OZyVwwkuavZ1
+ iITg==
+X-Gm-Message-State: AOAM533CWopxScXYwa+QZoUlugKvT9o0l5U8Bf7K1tDRNoLqBBwKOXWM
+ W22yXX1WmtOJt9L1hv5g7l0Rhw==
+X-Google-Smtp-Source: ABdhPJx0378L3JEh/bfdLm1mDah0uO18+EojpgndTJjXLnsvs9BnTrzTyeSkmbdU9xwu4rDx2IOyBg==
+X-Received: by 2002:a1c:7d56:: with SMTP id y83mr5150904wmc.154.1595350814996; 
+ Tue, 21 Jul 2020 10:00:14 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id c25sm4058648wml.18.2020.07.21.09.53.30
+ by smtp.gmail.com with ESMTPSA id h11sm15526327wrb.68.2020.07.21.10.00.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jul 2020 09:53:31 -0700 (PDT)
+ Tue, 21 Jul 2020 10:00:14 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 7/9] ASoC: q6asm-dai: add next track metadata support
-Date: Tue, 21 Jul 2020 17:53:04 +0100
-Message-Id: <20200721165306.29082-8-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH v2 2/6] ALSA: compress: add new ioctl for setting codec
+ parameters
+Date: Tue, 21 Jul 2020 18:00:03 +0100
+Message-Id: <20200721170007.4554-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
-References: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
+References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, tiwai@suse.com,
@@ -111,63 +112,131 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds support to metadata required to do a gapless playback.
+For gapless playback it is possible that each track can have different
+codec profile with same decoder, for example we have WMA album,
+we may have different tracks as WMA v9, WMA v10 and so on
+
+Or if DSP's like QDSP have abililty to switch decoders on single stream
+for each track, then this call could be used to set new codec parameters.
+
+Existing code does not allow to change this profile while doing gapless
+playback.
+
+This patch adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL to allow
+userspace to set this new parameters required for new codec profile.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ .../sound/designs/compress-offload.rst        |  6 ++++
+ include/sound/compress_driver.h               |  5 +++
+ include/uapi/sound/compress_offload.h         |  1 +
+ sound/core/compress_offload.c                 | 34 +++++++++++++++++++
+ 4 files changed, 46 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index a493350c8cc2..c4b4684b7824 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -71,6 +71,8 @@ struct q6asm_dai_rtd {
- 	uint32_t stream_id;
- 	uint16_t session_id;
- 	enum stream_state state;
-+	uint32_t initial_samples_drop;
-+	uint32_t trailing_samples_drop;
- };
+diff --git a/Documentation/sound/designs/compress-offload.rst b/Documentation/sound/designs/compress-offload.rst
+index 935f325dbc77..305ccc7bfdd9 100644
+--- a/Documentation/sound/designs/compress-offload.rst
++++ b/Documentation/sound/designs/compress-offload.rst
+@@ -128,6 +128,12 @@ set_params
+   cases decoders will ignore other fields, while encoders will strictly
+   comply to the settings
  
- struct q6asm_dai_data {
-@@ -869,6 +871,28 @@ static int q6asm_dai_compr_set_params(struct snd_soc_component *component,
- 	return 0;
++set_codec_params
++  This routine is very much simillar to set_params but exculding stream
++  information. Only codec related information is set as part of this.
++  It is used in gapless playback where its required to change decoder
++  or its parameters for next track. This is optional.
++
+ get_params
+   This routines returns the actual settings used by the DSP. Changes to
+   the settings should remain the exception.
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 70cbc5095e72..d9c00bcfce9b 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -93,6 +93,9 @@ struct snd_compr_stream {
+  * @set_params: Sets the compressed stream parameters, mandatory
+  * This can be called in during stream creation only to set codec params
+  * and the stream properties
++ * @set_codec_params: Sets the compressed stream codec parameters, Optional
++ * This can be called in during gapless next track codec change only to set
++ * codec params
+  * @get_params: retrieve the codec parameters, mandatory
+  * @set_metadata: Set the metadata values for a stream
+  * @get_metadata: retrieves the requested metadata values from stream
+@@ -112,6 +115,8 @@ struct snd_compr_ops {
+ 	int (*free)(struct snd_compr_stream *stream);
+ 	int (*set_params)(struct snd_compr_stream *stream,
+ 			struct snd_compr_params *params);
++	int (*set_codec_params)(struct snd_compr_stream *stream,
++			struct snd_codec *params);
+ 	int (*get_params)(struct snd_compr_stream *stream,
+ 			struct snd_codec *params);
+ 	int (*set_metadata)(struct snd_compr_stream *stream,
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index 7184265c0b0d..c46286113a4b 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -172,6 +172,7 @@ struct snd_compr_metadata {
+ 						 struct snd_compr_metadata)
+ #define SNDRV_COMPRESS_GET_METADATA	_IOWR('C', 0x15,\
+ 						 struct snd_compr_metadata)
++#define SNDRV_COMPRESS_SET_CODEC_PARAMS	_IOW('C', 0x16, struct snd_codec)
+ #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
+ #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
+ #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index af5824113246..184722643c97 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -590,6 +590,37 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+ 
  }
  
-+static int q6asm_dai_compr_set_metadata(struct snd_compr_stream *stream,
-+					struct snd_compr_metadata *metadata)
++static int snd_compr_set_codec_params(struct snd_compr_stream *stream,
++				      unsigned long arg)
 +{
-+	struct snd_compr_runtime *runtime = stream->runtime;
-+	struct q6asm_dai_rtd *prtd = runtime->private_data;
-+	int ret = 0;
++	struct snd_codec *params;
++	int retval;
 +
-+	switch (metadata->key) {
-+	case SNDRV_COMPRESS_ENCODER_PADDING:
-+		prtd->trailing_samples_drop = metadata->value[0];
-+		break;
-+	case SNDRV_COMPRESS_ENCODER_DELAY:
-+		prtd->initial_samples_drop = metadata->value[0];
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
++	if (!stream->ops->set_codec_params)
++		return -EPERM;
 +
-+	return ret;
++	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
++		return -EPERM;
++
++	/* codec params can be only set when next track has been signalled */
++	if (stream->next_track == false)
++		return -EPERM;
++
++	params = memdup_user((void __user *)arg, sizeof(*params));
++	if (IS_ERR(params))
++		return PTR_ERR(params);
++
++	retval = snd_compress_check_codec_params(params);
++	if (retval)
++		goto out;
++
++	retval = stream->ops->set_codec_params(stream, params);
++
++out:
++	kfree(params);
++	return retval;
 +}
 +
- static int q6asm_dai_compr_trigger(struct snd_soc_component *component,
- 				   struct snd_compr_stream *stream, int cmd)
+ static int
+ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
  {
-@@ -985,6 +1009,7 @@ static struct snd_compress_ops q6asm_dai_compress_ops = {
- 	.open		= q6asm_dai_compr_open,
- 	.free		= q6asm_dai_compr_free,
- 	.set_params	= q6asm_dai_compr_set_params,
-+	.set_metadata	= q6asm_dai_compr_set_metadata,
- 	.pointer	= q6asm_dai_compr_pointer,
- 	.trigger	= q6asm_dai_compr_trigger,
- 	.get_caps	= q6asm_dai_compr_get_caps,
+@@ -973,6 +1004,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
+ 		retval = snd_compr_get_params(stream, arg);
+ 		break;
++	case _IOC_NR(SNDRV_COMPRESS_SET_CODEC_PARAMS):
++		retval = snd_compr_set_codec_params(stream, arg);
++		break;
+ 	case _IOC_NR(SNDRV_COMPRESS_SET_METADATA):
+ 		retval = snd_compr_set_metadata(stream, arg);
+ 		break;
 -- 
 2.21.0
 
