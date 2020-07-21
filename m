@@ -2,70 +2,103 @@ Return-Path: <SRS0=ClfJ=BA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58C97C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 03:47:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82385C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 06:50:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5EA22176B
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 03:47:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B2D5206E3
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 06:50:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RuoROzKa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5EA22176B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Px5kT67t";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eH4pjgWa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B2D5206E3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5753E15F9;
-	Tue, 21 Jul 2020 05:47:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5753E15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8060A10E;
+	Tue, 21 Jul 2020 08:49:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8060A10E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595303276;
-	bh=bSJyBu1TwQ4mVDLG2a6R4zOM7vZOSEEVCTdnKauV24g=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RuoROzKaLUgFYgmZ21mSgMyB2aN0bWgVhfoxyNuUDSP3l448ehMsZCh/o1muZ9xlz
-	 CBeOcQ4qpx4JazceyOM4eI3V/83k4McjMQFPg6t4jaLZDHhxPdSVcc+jt0fGyPPSOu
-	 ixgd2r7f7igo6oJ2qXmfnZHojjagTjy14kRwVWtU=
+	s=default; t=1595314202;
+	bh=+6+CfJqTCRjYGjSy43hSsRiEdEgGbBK6CFZvPjWV5MA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Px5kT67twt1JorbkrI6niFCwHGpp+zwv/lzeSqGgblkjyDn5UtPoBwmEBZ1v34J/n
+	 w9KKFIh06iyTn0qaJCbXmSoNBpc23Rz42f3P22SvMEzo8KwOdUpfDtwdHr+xN7+Gql
+	 IoKpjFXFUXf+AFIZ6OFUmsaBk6YGc6r+x4pN4pLI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1100F80278;
-	Tue, 21 Jul 2020 05:46:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11EE2F80212;
+	Tue, 21 Jul 2020 08:49:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49950F80087; Tue, 21 Jul 2020 05:46:06 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BBD7AF80278; Tue, 21 Jul 2020 08:49:10 +0200 (CEST)
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com
+ [IPv6:2a00:1450:4864:20::543])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE773F80087
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 05:45:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE773F80087
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 61DC12003A3;
- Tue, 21 Jul 2020 05:45:58 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 25F1720038B;
- Tue, 21 Jul 2020 05:45:53 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id CA01C4030C;
- Tue, 21 Jul 2020 11:27:10 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 1/2] ASoC: fsl-asoc-card: Support configuring dai fmt from DT
-Date: Tue, 21 Jul 2020 11:41:49 +0800
-Message-Id: <1595302910-19688-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BD64F80212
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 08:48:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BD64F80212
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="eH4pjgWa"
+Received: by mail-ed1-x543.google.com with SMTP id z17so14484302edr.9
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2020 23:48:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=aN8gWAp/VGPW89W/9uqgp3LhRn0j8k9haJPNfjwa9HI=;
+ b=eH4pjgWadMy2t2kdMoU3YopcQ3REM30aYXlS3ovvYTvrixCzCNJQTge0jK29DGhYc0
+ JsFu7/bbb6QolT74uvM4E3hleC1/mMb7/cVYmg5imrTWTHB5Va7/pwi4SB6pt18sJQ7P
+ P1TKN6jkerWsKAkfitg28yoMqIqXKqcEBs3Cp6x4qC5jiELBDJM7OJe+2gREB9qOlG9P
+ GJ2h/zToj4cIgXxnfTDKZeBKb1F3BENbKPuzyh6XsysYpjSH05sT2vEeyJKLcCQtDsiT
+ cXg5TJREH4z4DqBve9TNFgmtsGh7AwC917C/j97IkZjqTzVDZ8R9wkSxB0dKnTVtn62n
+ E5+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=aN8gWAp/VGPW89W/9uqgp3LhRn0j8k9haJPNfjwa9HI=;
+ b=c41QyS0ts5ds3O8YqLZgxNJp1lEthtLAzAbhVSRsan0GeI7EolR++hLVkBXOJ6bdJ8
+ sHWqC91JZkeOObLSpNQcKpxRGVzOQkMH9ssaUC8/QhxsLiHSXFeCHDDf4y7qth0jbPLx
+ d+wQjJUIkdNGsn1CaxBaFftj/DMGlrg+bYWXEw1k/RBG7m2ct7yN2SMJIwi/lqp6dOD5
+ jZpxzCOzJWjVI0zZgopAigvOTzGwWxpNTgJ7Wv3icPMsuc6Nwo+tEAWNqlnV5LqXceEA
+ rytEXIA4BM/lMXd9pEUuVovZjYd2QEBj4EZOy7pKT/PKQtlLsaH2GXlNqaQGqHTX3azs
+ AyHg==
+X-Gm-Message-State: AOAM533y4k2iM+sLm+P7OOdpm5rzuIxUg6TjJgCWgxRAZTxeSl8h9+pg
+ eFdpIVvAyY9Ac+s2eL237R054n367BClaQ==
+X-Google-Smtp-Source: ABdhPJyzp68sBFcK9KuC2RjLjmMJJXrE8e7Y7oQ0Eq3eEiJSG4LkzLVd4PFzmtlj6fgkFeSIzyAb/g==
+X-Received: by 2002:aa7:de05:: with SMTP id h5mr23771142edv.275.1595314136302; 
+ Mon, 20 Jul 2020 23:48:56 -0700 (PDT)
+Received: from t5500.home (94-212-53-22.cable.dynamic.v4.ziggo.nl.
+ [94.212.53.22])
+ by smtp.gmail.com with ESMTPSA id yj16sm16334176ejb.122.2020.07.20.23.48.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Jul 2020 23:48:55 -0700 (PDT)
+Received: by t5500.home (Postfix, from userid 1000)
+ id A8E9BA82E44; Tue, 21 Jul 2020 08:48:53 +0200 (CEST)
+From: =?UTF-8?q?Ren=C3=A9=20Herman?= <rene.herman@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/3] snd-usb-6fire: Pulseaudio needs
+ snd_pcm_hardware.channels_min > 1
+Date: Tue, 21 Jul 2020 08:48:52 +0200
+Message-Id: <20200721064853.9516-3-rene.herman@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200721064853.9516-1-rene.herman@gmail.com>
+References: <20200721064853.9516-1-rene.herman@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Torsten Schenk <torsten.schenk@zoho.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,67 +114,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Support same propeties as simple card for configuring fmt
-from DT.
-In order to make this change compatible with old DT, these
-properties are optional.
+Pulseaudio with snd_pcm_hardware.channels_min=1 creates a mono device
+only.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: René Herman <rene.herman@gmail.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index ee80d02b56c6..4848ba61d083 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -531,11 +531,14 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	struct device_node *cpu_np, *codec_np, *asrc_np;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct platform_device *asrc_pdev = NULL;
-+	struct device_node *bitclkmaster = NULL;
-+	struct device_node *framemaster = NULL;
- 	struct platform_device *cpu_pdev;
- 	struct fsl_asoc_card_priv *priv;
- 	struct device *codec_dev = NULL;
- 	const char *codec_dai_name;
- 	const char *codec_dev_name;
-+	unsigned int daifmt;
- 	u32 width;
- 	int ret;
+diff --git a/pcm.c b/pcm.c
+index 88ac1c4..cce1312 100644
+--- a/pcm.c
++++ b/pcm.c
+@@ -58,7 +58,7 @@ static const struct snd_pcm_hardware pcm_hw = {
  
-@@ -667,6 +670,31 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		goto asrc_fail;
- 	}
- 
-+	/* Format info from DT is optional. */
-+	daifmt = snd_soc_of_parse_daifmt(np, NULL,
-+					 &bitclkmaster, &framemaster);
-+	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-+	if (bitclkmaster || framemaster) {
-+		if (codec_np == bitclkmaster)
-+			daifmt |= (codec_np == framemaster) ?
-+				SND_SOC_DAIFMT_CBM_CFM : SND_SOC_DAIFMT_CBM_CFS;
-+		else
-+			daifmt |= (codec_np == framemaster) ?
-+				SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
-+
-+		/* Override dai_fmt with value from DT */
-+		priv->dai_fmt = daifmt;
-+	}
-+
-+	/* Change direction according to format */
-+	if (priv->dai_fmt & SND_SOC_DAIFMT_CBM_CFM) {
-+		priv->cpu_priv.sysclk_dir[TX] = SND_SOC_CLOCK_IN;
-+		priv->cpu_priv.sysclk_dir[RX] = SND_SOC_CLOCK_IN;
-+	}
-+
-+	of_node_put(bitclkmaster);
-+	of_node_put(framemaster);
-+
- 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
- 		dev_err(&pdev->dev, "failed to find codec device\n");
- 		ret = -EPROBE_DEFER;
+ 	.rate_min = 44100,
+ 	.rate_max = 192000,
+-	.channels_min = 1,
++	.channels_min = 2,
+ 	.channels_max = 0, /* set in pcm_open, depending on capture/playback */
+ 	.buffer_bytes_max = MAX_BUFSIZE,
+ 	.period_bytes_min = PCM_N_PACKETS_PER_URB * (PCM_MAX_PACKET_SIZE - 4),
 -- 
-2.27.0
+2.17.1
 
