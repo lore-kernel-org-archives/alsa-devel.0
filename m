@@ -2,96 +2,92 @@ Return-Path: <SRS0=ClfJ=BA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7439EC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 16:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D67C433E5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:03:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F42292073A
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 16:57:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0660B2073A
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jul 2020 17:03:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N6Lq7FsQ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="upiA6fr7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F42292073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PXreQ+Z1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PVIhzoPM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0660B2073A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D8091672;
-	Tue, 21 Jul 2020 18:56:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D8091672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92849167E;
+	Tue, 21 Jul 2020 19:02:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92849167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595350662;
-	bh=9fs74iRco12j8hO5Gp8+cxEesGwe2VxdYSm+jzTxgzM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N6Lq7FsQSWvQw48sTUqaKZjOiOsnE6b/Hm+AqpN9QFOjjWw7PTPeY6C7E/rE3Fo40
-	 8T0AADRssPjiVm7iCXtBy/FxKi71xyjj4o2hS9H5qjzT+hiDlUm2MGd7aqktPxJysh
-	 b8jjUHhl/u+mSzzRS83hNeeitzi/ohYzAcIdNYSs=
+	s=default; t=1595350978;
+	bh=zHtjEMOkxtUP/lYNqNvvBlSCRoRZRejH3l9nj0Gk1dU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PXreQ+Z1tZAnqFg9pZk61xwOZeu5fte2JoB+4OB0EgPiukTMKnW9pLRoLKLbRyyDv
+	 dzyV1nZx2x1ywmNmzxdpnz2j3hisAr5xqhNVLiWWk6r0UIczjRpmEuxmDal0R/2Ywp
+	 TiN417l8IKxDDTeLWjqbKCC0EwiaTHEPWtM5CbRA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FD89F8024A;
-	Tue, 21 Jul 2020 18:53:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B257EF802D2;
+	Tue, 21 Jul 2020 19:00:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65680F802DB; Tue, 21 Jul 2020 18:53:38 +0200 (CEST)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id 08564F802D2; Tue, 21 Jul 2020 19:00:31 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F193F8028B
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 18:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F193F8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05CA4F80274
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 19:00:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05CA4F80274
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="upiA6fr7"
-Received: by mail-wr1-x442.google.com with SMTP id b6so21865044wrs.11
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 09:53:29 -0700 (PDT)
+ header.b="PVIhzoPM"
+Received: by mail-wm1-x333.google.com with SMTP id w3so3586282wmi.4
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2020 10:00:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=fdPCJ0r4pAFvhKy/aJH+HSqNEzc4ORQDPhTx4mOph9I=;
- b=upiA6fr7fWef4eXwE0+hK7HGl2gIyiAo2pzkBvVMmS3W+Vh0yJOrvKJdPgo/CAPQVh
- QRYYdyXrB6w9XSMCkMkD93XcqWGYrUo0YWrETPuCibOge0b9sLFCh1MLXBYWTlAltCEr
- W4xW6522EOvZ0ibsQXbR5rCqxNRWIvfX/d26kBZslpOZeJOpBfxv4Z0bQDdKHKOvsccj
- haJ/CMHj0h7cUbQNTxJA2C8BlUjM3Huk/4+PWNy7vmkbnxEklYhjnJH1lXI+z93c6cna
- /FtW3yvq5njXyJ6SMl+BKzAuYDo2MnOYxL59ObNTUJJOrHiDircHJY2G9y/6n2Nz6YuJ
- sFzg==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=3xJrlFMWKxatZWph59ICW46ox2+7HmmvvIn3EeO3FeI=;
+ b=PVIhzoPM3gEKKNEvTDPU2WIGtUhV/u/A5vb8GkfStZQGTn5fcZQkHF6bSvbbjOFuHE
+ PNG8+7cf3SGbqoCPqe/L8csJj60z6FNPKmFUdUwcrqda34gCifbx293ULH1RaGg9ckO4
+ Eu60QSn4tK2vo6FgCVTTnenXJbXQfJ65WcIAC0yGHxPc0FNte+6/QtoFx9rQj33rZhMO
+ hiz1AFhtgOSevd/zk7EZopgPPPMW16xbfBtwwUXW4ehgOHzRqLHcnfauSatP+DALT6Vj
+ RHSSmYa+I43Xew+DutleOWZYfiNZqnpDUecTJ9nAz+VAlBB/770ICyBDps78iz5cstTF
+ /swA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=fdPCJ0r4pAFvhKy/aJH+HSqNEzc4ORQDPhTx4mOph9I=;
- b=Zt3rdugvswZwhwz2Vv2ns11drZKLWXo3WfkMmkujWMw5x8Ucf4v+OpRGYqaXWhepJB
- f8H8hD23sVlKVATDYtxaJW7G48rrJVvfMBnMjh9BLvF5tDCACQsVEABbnCSWsFvfwWhM
- IRATV2bdkD28v/rk0KGbppSUSH3P18oG3KgG4NutWal/a0zFKoGjUaesJ0VUhLNVnqBG
- wFPUeXpGzwNtsv/v5GBeVPAYKLjoT7CEIQrHrRDgDHB39TMuUk4xTFUPPYr7wvJig8xJ
- LVOwZurMaFaGjIHperTst7dQpTSj+ftIdgMiG1xl1qapK9fSw5cbDKLOE9ukNTr4YcHz
- 7gkw==
-X-Gm-Message-State: AOAM531eQC7ioGWIE7nHr1868fMZhFLNm+WUtQmTRjE9ogNOKS36xY6v
- wTOBP/VWazmyX6NUOzAzrr/xhw==
-X-Google-Smtp-Source: ABdhPJyJvLH6PEqLYBgiHJM7NLc5orRiT+DOc60Cybemhzgdpex54JO59l//QKyViOBHoN3EJql2jA==
-X-Received: by 2002:adf:f784:: with SMTP id q4mr27300836wrp.397.1595350408516; 
- Tue, 21 Jul 2020 09:53:28 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=3xJrlFMWKxatZWph59ICW46ox2+7HmmvvIn3EeO3FeI=;
+ b=BfO/gDtaIYfcd44amhWCYqqXbLRvNO1U8uDGdE7F2z80VPE7CyPyw7CjsX/adCdBc1
+ Y4sc9/gU5Df7dkSuYgna/pcyx+9vBZg5Z6fhuPkFOJP/2vc3mwWGRbsuZ09dvMIm6lim
+ 5BbkyK1+u99xnQ6u1zSCLkyLUDk4ngDAii9o2vxxJFjydnHQbCN2jBnRY51UPDLp37G0
+ MPiLRN907b8dhzHJOKOq1rD3ujTLEohO7/P+DfPRBSQuY04U23hidWRjedDuVBR/S1ZD
+ e7L+xz27j1iJ9IjlC3F/f+oH3GSk2kdcpfcyeQ1vOPvGQn7ECVIwau3/IXIGE0ZTK8mP
+ Zovw==
+X-Gm-Message-State: AOAM531XGfQX+bENnJApKZZKtAAQNze7QAbh5apGNGQ2EgNteTseGf1+
+ AkucJVdKM9YgmefP/Q64dVjD9Q==
+X-Google-Smtp-Source: ABdhPJyYZBuQBKApyeCyxRx1114Gjkuf5aLBbKXX19WAtdt2tYwrr6tlGYAxkvYG3bw+HoqMbUAAAQ==
+X-Received: by 2002:a1c:7311:: with SMTP id d17mr4798367wmb.60.1595350812765; 
+ Tue, 21 Jul 2020 10:00:12 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id c25sm4058648wml.18.2020.07.21.09.53.26
+ by smtp.gmail.com with ESMTPSA id h11sm15526327wrb.68.2020.07.21.10.00.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jul 2020 09:53:27 -0700 (PDT)
+ Tue, 21 Jul 2020 10:00:11 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 5/9] ASoC: q6asm: add support to remove intial and trailing
- silence
-Date: Tue, 21 Jul 2020 17:53:02 +0100
-Message-Id: <20200721165306.29082-6-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH v2 0/6] ALSA: compress: add support to change codec
+ profile in gapless playback
+Date: Tue, 21 Jul 2020 18:00:01 +0100
+Message-Id: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
-References: <20200721165306.29082-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, tiwai@suse.com,
@@ -112,111 +108,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds support to ASM_DATA_CMD_REMOVE_INITIAL_SILENCE
-and ASM_DATA_CMD_REMOVE_TRAILING_SILENCE q6asm command to support
-compressed metadata for gapless playback.
+For gapless playback it is possible that each track can have different
+codec profile with same decoder, for example we have WMA album,
+we may have different tracks as WMA v9, WMA v10 and so on
+Or if DSP's like QDSP have abililty to switch decoders on single stream
+for each track, then this call could be used to set new codec parameters.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6asm.c | 53 ++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6asm.h |  6 ++++
- 2 files changed, 59 insertions(+)
+Existing code does not allow to change this profile while doing gapless
+playback.
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 205453d1c1fc..14ec7dad5b65 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -51,6 +51,8 @@
- #define ASM_STREAM_CMD_OPEN_READWRITE_V2        0x00010D8D
- #define ASM_MEDIA_FMT_ALAC			0x00012f31
- #define ASM_MEDIA_FMT_APE			0x00012f32
-+#define ASM_DATA_CMD_REMOVE_INITIAL_SILENCE	0x00010D67
-+#define ASM_DATA_CMD_REMOVE_TRAILING_SILENCE	0x00010D68
- 
- 
- #define ASM_LEGACY_STREAM_SESSION	0
-@@ -639,6 +641,8 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
- 		case ASM_STREAM_CMD_OPEN_READWRITE_V2:
- 		case ASM_STREAM_CMD_SET_ENCDEC_PARAM:
- 		case ASM_DATA_CMD_MEDIA_FMT_UPDATE_V2:
-+		case ASM_DATA_CMD_REMOVE_INITIAL_SILENCE:
-+		case ASM_DATA_CMD_REMOVE_TRAILING_SILENCE:
- 			if (result->status != 0) {
- 				dev_err(ac->dev,
- 					"cmd = 0x%x returned error = 0x%x\n",
-@@ -1324,6 +1328,55 @@ int q6asm_stream_media_format_block_ape(struct audio_client *ac,
- }
- EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_ape);
- 
-+static int q6asm_stream_remove_silence(struct audio_client *ac, uint32_t stream_id,
-+				       uint32_t cmd,
-+				       uint32_t num_samples)
-+{
-+	uint32_t *samples;
-+	struct apr_pkt *pkt;
-+	void *p;
-+	int rc, pkt_size;
-+
-+	pkt_size = APR_HDR_SIZE + sizeof(uint32_t);
-+	p = kzalloc(pkt_size, GFP_ATOMIC);
-+	if (!p)
-+		return -ENOMEM;
-+
-+	pkt = p;
-+	samples = p + APR_HDR_SIZE;
-+
-+	q6asm_add_hdr(ac, &pkt->hdr, pkt_size, true, stream_id);
-+
-+	pkt->hdr.opcode = cmd;
-+	*samples = num_samples;
-+	rc = apr_send_pkt(ac->adev, pkt);
-+	if (rc == pkt_size)
-+		rc = 0;
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+
-+int q6asm_stream_remove_initial_silence(struct audio_client *ac,
-+					uint32_t stream_id,
-+					uint32_t initial_samples)
-+{
-+	return q6asm_stream_remove_silence(ac, stream_id,
-+					   ASM_DATA_CMD_REMOVE_INITIAL_SILENCE,
-+					   initial_samples);
-+}
-+EXPORT_SYMBOL_GPL(q6asm_stream_remove_initial_silence);
-+
-+int q6asm_stream_remove_trailing_silence(struct audio_client *ac, uint32_t stream_id,
-+					 uint32_t trailing_samples)
-+{
-+	return q6asm_stream_remove_silence(ac, stream_id,
-+				   ASM_DATA_CMD_REMOVE_TRAILING_SILENCE,
-+				   trailing_samples);
-+}
-+EXPORT_SYMBOL_GPL(q6asm_stream_remove_trailing_silence);
-+
- /**
-  * q6asm_enc_cfg_blk_pcm_format_support() - setup pcm configuration for capture
-  *
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index 0379580f0742..e315f7ff5e54 100644
---- a/sound/soc/qcom/qdsp6/q6asm.h
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -135,6 +135,12 @@ int q6asm_run(struct audio_client *ac, uint32_t stream_id, uint32_t flags,
- 	      uint32_t msw_ts, uint32_t lsw_ts);
- int q6asm_run_nowait(struct audio_client *ac, uint32_t stream_id,
- 		     uint32_t flags, uint32_t msw_ts, uint32_t lsw_ts);
-+int q6asm_stream_remove_initial_silence(struct audio_client *ac,
-+					uint32_t stream_id,
-+					uint32_t initial_samples);
-+int q6asm_stream_remove_trailing_silence(struct audio_client *ac,
-+					 uint32_t stream_id,
-+					 uint32_t trailing_samples);
- int q6asm_cmd(struct audio_client *ac, uint32_t stream_id,  int cmd);
- int q6asm_cmd_nowait(struct audio_client *ac, uint32_t stream_id,  int cmd);
- int q6asm_get_session_id(struct audio_client *ac);
+This patchset adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL along with
+flags in capablity structure to allow userspace to set this new
+parameters required which switching codec profile, either for gapless
+or cross fade usecase.
+
+thanks,
+srini
+
+
+Changes since v1:
+- split patch into smaller chuncks,
+- bump up the version
+- added flags in compress capablity structure 
+- added user for this new functionality.
+- add this new call in Documentation.
+
+
+Srinivas Kandagatla (6):
+  ALSA: compress: move codec parameter check to a function
+  ALSA: compress: add new ioctl for setting codec parameters
+  ALSA: compress: add flags to snd_compr_caps to expose dsp caps
+  ASoC: compress: add snd_soc_dai_compr_set_codec_params()
+  ALSA: compress: bump the version
+  ASoC: q6asm-dai: add support to set_codec_params
+
+ .../sound/designs/compress-offload.rst        |  6 ++
+ include/sound/compress_driver.h               |  5 ++
+ include/sound/soc-component.h                 |  3 +
+ include/sound/soc-dai.h                       |  5 ++
+ include/uapi/sound/compress_offload.h         | 10 ++-
+ sound/core/compress_offload.c                 | 72 +++++++++++++++++--
+ sound/soc/qcom/qdsp6/q6asm-dai.c              | 33 +++++++++
+ sound/soc/soc-compress.c                      | 30 ++++++++
+ sound/soc/soc-dai.c                           | 14 ++++
+ 9 files changed, 170 insertions(+), 8 deletions(-)
+
 -- 
 2.21.0
 
