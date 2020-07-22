@@ -2,80 +2,72 @@ Return-Path: <SRS0=/CfY=BB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B12C433F1
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 13:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EEF5C433E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 13:46:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8547D207E8
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 13:45:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BD61A2064C
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 13:46:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="txgWz3OO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JtEvPKKk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8547D207E8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cARbjXgf";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gN+M0Ngv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD61A2064C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6BF5839;
-	Wed, 22 Jul 2020 15:44:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6BF5839
+	by alsa0.perex.cz (Postfix) with ESMTPS id B92EB852;
+	Wed, 22 Jul 2020 15:45:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B92EB852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595425545;
-	bh=laniH5UgS3DrsXSeVguJDybYLw25gKEKrpalctaeV8A=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1595425597;
+	bh=TGwGtl4hnSuAa0lA1jAL1oK0QKXm5nHXnNhEo7w5Eu8=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=txgWz3OODHsgd5Ccj9gonEnaLQNS6up9CCzXa2To6VVMYhCLA3hWJ3mbuF6q5Ww5u
-	 2XrErQvcKY86WyUu7EerV1od2T4UBRJuTSJe/gdqXsofqqYsPR2o87oLcEZo9QhUBk
-	 Vt+z4HL9fmEXjtkcbXfs4daCjj1IZgiVj0rkLe2o=
+	b=cARbjXgf7N2vsjGwWwIxSee/VtlAJZT0UtWY7g/9a1aly0DiBxbNdy77DKT7rEuts
+	 f5JAhDEVEk4r+Ih7Q9XmGPkb2K4DF2ZDKSmjUhQQ8xSNVE141Y7wuBfHKtDc9CDFeR
+	 UCb3hvZEn3hWYdxHgulCFzzf2pfgzDwpA224wYLc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E74CF80141;
-	Wed, 22 Jul 2020 15:44:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2222AF8015A;
+	Wed, 22 Jul 2020 15:45:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFA58F8014C; Wed, 22 Jul 2020 15:44:52 +0200 (CEST)
+ id 856E8F801F5; Wed, 22 Jul 2020 15:45:00 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EC11F80139
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2020 15:44:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EC11F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B18EF80150
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2020 15:44:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B18EF80150
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JtEvPKKk"
+ header.b="gN+M0Ngv"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 349E62071A;
- Wed, 22 Jul 2020 13:44:47 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4E9CF20729;
+ Wed, 22 Jul 2020 13:44:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595425487;
- bh=laniH5UgS3DrsXSeVguJDybYLw25gKEKrpalctaeV8A=;
+ s=default; t=1595425492;
+ bh=TGwGtl4hnSuAa0lA1jAL1oK0QKXm5nHXnNhEo7w5Eu8=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=JtEvPKKk9ePwlbsUXe8JIGCNQffTKaHbDfykpD21/3zHX3D3gT0MMTXMr7SBk5bpS
- wQdGbvtpZT0xMqxLYHHRwk4cEyamAcnmxybYuGW04ts+28PbaXmStFP1+WQDJF+09F
- EUmnIcSkI84ICarie4DxC6YUhrDV+O44MfHCfpHw=
-Date: Wed, 22 Jul 2020 14:44:34 +0100
+ b=gN+M0NgvkHhpabJCkc6BjoIbynDIBQn954c4mMAbcS+BOgNAKZpz+0gbW7P60Fosx
+ tZZttzu+zW/VMIV82ItK85Rc59r8XrA9SlkRQNoHIZ+LyqoTd/CtMrvpnacb9bDpvZ
+ +NxDvV+BN78fYWauyerDontCuqGCHpVweRYoRkT4=
+Date: Wed, 22 Jul 2020 14:44:39 +0100
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, shifu0704@thundersoft.com,
- nikita.yoush@cogentembedded.com, rikard.falkeborn@gmail.com,
- devicetree@vger.kernel.org, yuehaibing@huawei.com,
- kuninori.morimoto.gx@renesas.com, corbet@lwn.net, cychiang@chromium.org,
- l.stach@pengutronix.de, dinghao.liu@zju.edu.cn, jbrunet@baylibre.com,
- perex@perex.cz, dmurphy@ti.com, linux-doc@vger.kernel.org, afd@ti.com,
- robh+dt@kernel.org, lkp@intel.com, pankaj.laxminarayan.bharadiya@intel.com,
- colin.king@canonical.com, tiwai@suse.com,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>, alsa-devel@alsa-project.org,
- keescook@chromium.org, tzungbi@google.com, linux-kernel@vger.kernel.org
-In-Reply-To: <20200719153822.59788-1-grandmaster@al2klimov.de>
-References: <20200719153822.59788-1-grandmaster@al2klimov.de>
-Subject: Re: [PATCH for v5.9] ASoC: Replace HTTP links with HTTPS ones
-Message-Id: <159542547441.19620.12700618394214218697.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20200717101950.3885187-1-kai.vehmanen@linux.intel.com>
+References: <20200717101950.3885187-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 1/3] ASoC: hdac_hda: call patch_ops.free() on probe error
+Message-Id: <159542547442.19620.8026322678999646660.b4-ty@kernel.org>
+Cc: pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,21 +83,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 19 Jul 2020 17:38:22 +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
+On Fri, 17 Jul 2020 13:19:48 +0300, Kai Vehmanen wrote:
+> Add error handling for patch_ops in hdac_hda_codec_probe().
 
 Applied to
 
@@ -113,8 +92,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Replace HTTP links with HTTPS ones
-      commit: 5856d8bd308f9467cefa65d04e184a56a3977559
+[1/3] ASoC: hdac_hda: call patch_ops.free() on probe error
+      commit: 640f835cd052bba403f955db15130ff813be78d2
+[2/3] ASoC: hdac_hda: fix memleak on module unload
+      commit: c3ec8ac82105e9589dcd72636b6fd114db690d55
+[3/3] ASoC: hdac_hda: fix deadlock after PCM open error
+      commit: 06f07e2365378d51eddd0b5bf23506e1237662b0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
