@@ -2,67 +2,91 @@ Return-Path: <SRS0=/CfY=BB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5998BC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 10:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EDBCC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 10:33:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3FAA206F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 10:12:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 114B6207DD
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 10:33:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gKeL1jnz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3FAA206F5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XAQhuTI6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="KgVBh13B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 114B6207DD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60271839;
-	Wed, 22 Jul 2020 12:11:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60271839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FF0C83A;
+	Wed, 22 Jul 2020 12:32:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FF0C83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595412755;
-	bh=e5DcvdLl61O0UbDD+TeVj5wWg/A7NQ0ln8MjMcAET84=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gKeL1jnzBsK/ZknWsJ9wPj4Eugfeog7KqVAuD7KHWYXqySDKetmRGJievz+b3tu4N
-	 82FbD4tk6wKnWZc6lxp7To2KAdzwR439xFeukqLGTrNgz77KFEWvvOJmzxNuPMcwFi
-	 d0Hdht92g3v2zvfw+6z8Lwl9C76Sd8zkBc9IruBY=
+	s=default; t=1595414013;
+	bh=wQk1K4q7mzOfU5e4l58VVW8nKJYgH+WRRAxxsK6UNPw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XAQhuTI6tqiw7q/3B49L1ODjbuq/8X5/c6VUrAjEx+s5Y53NzoeDXXw3i0L7f57J0
+	 Sl6eKDSCQti/ZRfdvvUNx631c7JOEm3ESmeLH23VAtO9GD2tIhI/2hKx25yKC0/obm
+	 TN/RmBHoFsnrYj6MUkkVulDrUqhqXeYykECJ1Y2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D51BAF80141;
-	Wed, 22 Jul 2020 12:11:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0863AF80087;
+	Wed, 22 Jul 2020 12:32:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8983BF8014C; Wed, 22 Jul 2020 12:11:43 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 0B6EDF8014C; Wed, 22 Jul 2020 12:32:42 +0200 (CEST)
+Received: from mail29.static.mailgun.info (mail29.static.mailgun.info
+ [104.130.122.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BF09F800CE
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2020 12:11:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BF09F800CE
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E45ABAD0B;
- Wed, 22 Jul 2020 10:11:39 +0000 (UTC)
-Date: Wed, 22 Jul 2020 12:11:32 +0200
-Message-ID: <s5hft9jvoyz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dmitry Pavlushko <dpavlushko@gmail.com>
-Subject: Re: Fwd: Fwd: [PATCH] Add implicit feedback quirk for SSL2. (from
- laurie@tratt.net)
-In-Reply-To: <958bbdf1-5a97-72ac-b7f0-01bda32add70@gmail.com>
-References: <20200615093639.p74zvyupivfxou4b@overdrive.tratt.net>
- <958bbdf1-5a97-72ac-b7f0-01bda32add70@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EE94F800CE
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2020 12:32:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EE94F800CE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="KgVBh13B"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1595413954; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=wDVfiFLz8Bt9wOyiO9QdnWfu6iohpkpROaAy4Q28ldA=;
+ b=KgVBh13BJ1Q4ljneOPpGvcm4dg2llYALQbCinyFg2tqhjiATzHrsTkgEQq25tRe5PuJxosuD
+ t0djPc85MD1kMTBN1s4CQ/jRK4zr6CMnpqUUKR7uuSRrV3lIakHQuGhnO8diiL1SoB2DA5Gx
+ Ta2iDo6+0y5dK8K26TEBIEcRprc=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n19.prod.us-west-2.postgun.com with SMTP id
+ 5f1815aeeef925b6946d3d47 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 22 Jul 2020 10:32:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 98AD7C433CB; Wed, 22 Jul 2020 10:32:13 +0000 (UTC)
+Received: from rohkumar-linux.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: rohitkr)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B121C433CA;
+ Wed, 22 Jul 2020 10:32:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3B121C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=none smtp.mailfrom=rohitkr@codeaurora.org
+From: Rohit kumar <rohitkr@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/12] ASoC: qcom: Add support for SC7180 lpass variant
+Date: Wed, 22 Jul 2020 16:01:43 +0530
+Message-Id: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,76 +102,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jul 2020 07:06:12 +0200,
-Dmitry Pavlushko wrote:
-> 
-> Hi devs,
-> 
-> Sorry for the interruption. Any chance you can push the line for SSL2
-> usb id?
+This patch chain add audio support for SC7180 soc by doing the required
+modification in existing common lpass-cpu/lpass-platform driver.
+This also fixes some concurrency issue.
 
-It seems that the resubmitted patch from Laurence didn't reach to my
-inbox by some reason.  Now I salvaged from lore.kernel.org and
-applied to for-linus branch.
+Changes since v3:
+	- Fixed yaml documentation comments and make dt_binding_check issues.
+	- Moved general fixes out of sc7180 specific patches as suggested by Srinivas.
+	- Update clock-names to make it same as existing platforms.
 
+Ajit Pandey (4):
+  ASoC: qcom: Add common array to initialize soc based core clocks
+  ASoC: qcom: lpass-platform: Replace card->dev with component->dev
+  include: dt-bindings: sound: Add sc7180-lpass bindings header
+  ASoC: qcom: lpass-sc7180: Add platform driver for lpass audio
 
-thanks,
+Rohit kumar (8):
+  ASoC: qcom: lpass-cpu: Move ahbix clk to platform specific function
+  ASoC: qcom: lpass-platform: fix memory leak
+  ASoC: qcom: lpass: Use regmap_field for i2sctl and dmactl registers
+  ASoC: qcom: lpass-cpu: fix concurrency issue
+  dt-bindings: sound: lpass-cpu: Add sc7180 lpass cpu node
+  ASoC: qcom: lpass-cpu: Use platform_get_resource
+  ASoC: qcom: lpass-platform: Use platform_get_irq
+  dt-bindings: sound: lpass-cpu: Move to yaml format
 
-Takashi
+ .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  79 --------
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 185 ++++++++++++++++++
+ include/dt-bindings/sound/sc7180-lpass.h           |  10 +
+ sound/soc/qcom/Kconfig                             |   5 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/lpass-apq8016.c                     |  86 ++++++--
+ sound/soc/qcom/lpass-cpu.c                         | 204 ++++++++++---------
+ sound/soc/qcom/lpass-ipq806x.c                     |  67 +++++++
+ sound/soc/qcom/lpass-lpaif-reg.h                   | 157 ++++++++-------
+ sound/soc/qcom/lpass-platform.c                    | 155 +++++++++++----
+ sound/soc/qcom/lpass-sc7180.c                      | 216 +++++++++++++++++++++
+ sound/soc/qcom/lpass.h                             |  63 +++++-
+ 12 files changed, 930 insertions(+), 299 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+ create mode 100644 include/dt-bindings/sound/sc7180-lpass.h
+ create mode 100644 sound/soc/qcom/lpass-sc7180.c
 
-> 
-> Thanks,
-> 
-> Dmitry
-> 
-> 
-> -------- Forwarded Message --------
-> Subject: 	Fwd: [PATCH] Add implicit feedback quirk for
-> SSL2. (from laurie@tratt.net)
-> Date: 	Mon, 15 Jun 2020 10:36:39 +0100
-> From: 	Laurence Tratt <laurie@tratt.net>
-> To: 	dpavlushko@gmail.com
-> 
-> 
-> 
-> I forgot to CC you. Sorry!
-> 
-> 
-> Laurie
-> 
-> ----- Forwarded message from Laurence Tratt <laurie@tratt.net> -----
-> 
-> From: Laurence Tratt <laurie@tratt.net>
-> To: alsa-devel@alsa-project.org
-> Date: Mon, 15 Jun 2020 08:30:23 +0100
-> Subject: [PATCH] Add implicit feedback quirk for SSL2.
-> 
-> As expected, this requires the same quirk as the SSL2+ in order for the
-> clock to sync. This was suggested by, and tested on an SSL2, by Dmitry.
-> 
-> Signed-off-by: Dmitry <dpavlushko@gmail.com>
-> Signed-off-by: Laurence Tratt <laurie@tratt.net>
-> ---
-> sound/usb/pcm.c | 1 +
-> 1 file changed, 1 insertion(+)
-> 
-> diff --git sound/usb/pcm.c sound/usb/pcm.c
-> index 84c0ae4319..dc1608bdf6 100644
-> --- sound/usb/pcm.c
-> +++ sound/usb/pcm.c
-> @@ -367,6 +367,7 @@ static int set_sync_ep_implicit_fb_quirk(struct
-> snd_usb_substream *subs,
-> ifnum = 0;
-> goto add_sync_ep_from_ifnum;
-> case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
-> + case USB_ID(0x31e9, 0x0001): /* Solid State Logic SSL2 */
-> case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
-> ep = 0x81;
-> ifnum = 2;
-> 
-> -- 
-> 2.27.0
-> 
-> 
-> ----- End forwarded message -----
-> 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
