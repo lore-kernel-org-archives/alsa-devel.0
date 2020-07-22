@@ -7,72 +7,73 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E9D8C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 19:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A16ECC433E3
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 19:05:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C588D20781
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 19:00:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 28EA520714
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jul 2020 19:05:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WMRjlTba"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C588D20781
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qTJMnRq6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28EA520714
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2916F851;
-	Wed, 22 Jul 2020 20:59:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2916F851
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9097851;
+	Wed, 22 Jul 2020 21:04:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9097851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595444407;
-	bh=1+5giqJxmqUEEQjjQ6pcWWIu4TEqcIJn4C21ZpM5fiw=;
+	s=default; t=1595444728;
+	bh=anCmUF6py5vVsUJzlR60OY1ZmQP5ulODdm7EeXIyzXM=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WMRjlTbaULhkWe+eMYZDLW57hP8o9yttkX8PQQ5phHI7FmvZLmp2J4ql4LGWXM9fl
-	 Ws3o104Nr7XlOXRzrwsNzhIXq/kzDBtQ3EJR2MDoncG7JFNQjycvVkK4pnHgUWA1GV
-	 95o9AY73bt1yQQ+b4NtAWwDZu3DfRapC8P+pJVS8=
+	b=qTJMnRq6q9iCJGFRNqrAiaXofuUmHMTZd8ETpIRcJoKXJKZPkbCb38ac6GPByBAB1
+	 DevzoN8PjJEOhqv/Uo22rPyHQTQx8Z5CXVL3SerrXUcfMtwJAaAiw+1y3Zo/zGM304
+	 yZI+HCwddMLy8t4piJD3OFd28rqbjUJIyX1DvmZY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD821F80141;
-	Wed, 22 Jul 2020 20:59:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36FB2F80141;
+	Wed, 22 Jul 2020 21:04:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FED2F8014C; Wed, 22 Jul 2020 20:59:14 +0200 (CEST)
+ id CC769F8014C; Wed, 22 Jul 2020 21:04:36 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4B47F800CE
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2020 20:59:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4B47F800CE
-IronPort-SDR: nCOXsoSOdgxt3xQnbPURKfDysjgsN4He70L2+PsMpAAVY/3y71s/QzC/AcNKQeMsIlFzSE6BxG
- KUZpGXXZlGlw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="129970113"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; d="scan'208";a="129970113"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16283F80139
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2020 21:04:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16283F80139
+IronPort-SDR: mBluGPpByYSDyY84d/a8JDc2adfvw8JNggz/nFvdP4QySEyj0N2bBxHPkiJsU6PiHcoKLCn8WO
+ C4yFsA5mJ5Jw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="129970919"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; d="scan'208";a="129970919"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Jul 2020 11:59:07 -0700
-IronPort-SDR: bBqd56HJe+NmVFrt+eeHg7uxSh0BHu5L+2+QWjeZ+AFr7fh8yr0p4IPe+mexTiTddqsbAqvR8u
- z1up+DOAvdRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; d="scan'208";a="310737918"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.22.112])
- ([10.213.22.112])
- by fmsmga004.fm.intel.com with ESMTP; 22 Jul 2020 11:59:06 -0700
+ 22 Jul 2020 12:04:30 -0700
+IronPort-SDR: kjOdNe34MxGHhBfYi7CYUQ7aGm0xVqeqxEhsGsCYGHzT5ismlre7JmSiC6CJH0T5qUXuyE7+zF
+ lIw1HLARN4gw==
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; d="scan'208";a="462565371"
+Received: from aadl-mobl.amr.corp.intel.com (HELO [10.254.77.197])
+ ([10.254.77.197])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jul 2020 12:04:29 -0700
 Subject: Re: [PATCH] ASoC: Intel: skl_hda_dsp_generic: Fix NULLptr dereference
  in autosuspend delay
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
 References: <20200722173524.30161-1-mateusz.gorski@linux.intel.com>
  <2674621e-1546-3048-3ba2-f8fe1265d6e1@linux.intel.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <014d8a2f-1ba7-1872-73b2-2384d908de79@intel.com>
-Date: Wed, 22 Jul 2020 20:59:05 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ <014d8a2f-1ba7-1872-73b2-2384d908de79@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <edc0c832-c92b-ab95-c5e5-6bea2cf12973@linux.intel.com>
+Date: Wed, 22 Jul 2020 14:04:28 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <2674621e-1546-3048-3ba2-f8fe1265d6e1@linux.intel.com>
+In-Reply-To: <014d8a2f-1ba7-1872-73b2-2384d908de79@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -93,33 +94,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-07-22 8:24 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 7/22/20 12:35 PM, Mateusz Gorski wrote:
->> Different modules for HDMI codec are used depending on the
->> "hda_codec_use_common_hdmi" option being enabled or not. Driver private
->> context for both of them is different.
->> This leads to null-pointer dereference error when driver tries to set
->> autosuspend delay for HDMI codec while the option is off (hdac_hdmi
->> module is used for HDMI).
->>
->> Change the string in conditional statement to "ehdaudio0D0" to ensure
->> that only the HDAudio codec is handled by this function.
-> 
-> I am not sure this is correct.
-> 
-> I may be wrong, but my understanding is the following:
-> 
-> Before 5bf73b1b1dec, the driver would use the first dailink of the card, 
-> and in the case of devices without an HDaudio codec (e.g. Up2 board) it 
-> would set the auto suspend delay using that first dailink. See the code 
-> in skl_hda_fill_card_info(), it reorders the dailinks when HDaudio 
-> codecs are not present so if you test for 'edhaudio00' you no longer 
-> allow for this HDMI-only case to be handled with autosuspend.
-> 
-> Kai would need to review this, so this will have to wait I am afraid.
-> 
 
-So, for_each_card_rtds needs to be context aware (hdmi type). Right now, 
-introduced _autosuspend_delay is causing kernel panics.
+>>> Change the string in conditional statement to "ehdaudio0D0" to ensure
+>>> that only the HDAudio codec is handled by this function.
+>>
+>> I am not sure this is correct.
+>>
+>> I may be wrong, but my understanding is the following:
+>>
+>> Before 5bf73b1b1dec, the driver would use the first dailink of the 
+>> card, and in the case of devices without an HDaudio codec (e.g. Up2 
+>> board) it would set the auto suspend delay using that first dailink. 
+>> See the code in skl_hda_fill_card_info(), it reorders the dailinks 
+>> when HDaudio codecs are not present so if you test for 'edhaudio00' 
+>> you no longer allow for this HDMI-only case to be handled with 
+>> autosuspend.
+>>
+>> Kai would need to review this, so this will have to wait I am afraid.
+>>
+> 
+> So, for_each_card_rtds needs to be context aware (hdmi type). Right now, 
+> introduced _autosuspend_delay is causing kernel panics.
+
+The code before 5bf73b1b1dec would use an HDMI dailink when HDaudio 
+codecs are not present, so I don't really see the point on being context 
+aware. Either this never worked or there's a side effect. In both cases, 
+I would kindly ask that this does not get merged before Kai is back.
