@@ -6,70 +6,70 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AD6BC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:25:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F35AAC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:25:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B55442065F
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:25:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70AA1206E3
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:25:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XUNB77Sq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hf0XD6+L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B55442065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qCOqzyvl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eI2iZ+bP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70AA1206E3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DB311682;
-	Thu, 23 Jul 2020 22:24:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DB311682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A84D168E;
+	Thu, 23 Jul 2020 22:24:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A84D168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595535909;
-	bh=WLDe8p+A/CpQf5/6gq8TVOgNo0NwPqUHogMr+bFuRAw=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1595535948;
+	bh=78hQl5KUO1Gn565TFq0EiLyGKeKiV2pAj9ARRZGNUsc=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XUNB77SqjRWTUu4C3BGFXGd7kaXU/pFSj8Tzao/gbXImeOxEn/67+vu+vhDrX2k5U
-	 qiO633VEel9AYOK/zvufcpoJ/2dFo5QW5L3y+kqAC1qzdY+cFIzNpV1Vz+AUAR3E4+
-	 ZDjvkdx1lNincXlUBy3ECYeMnZJ02TqMu4Q87H5Y=
+	b=qCOqzyvlA2GmoTXvm390VI4uM/h1aDh4fiBiIQ4RQi6q4lfT5M6vk5HvpGP6yoJow
+	 sUlUsF3ESHMsB/8Ang6qTvBUvzstpmEkTSy76VZ8pVh/2lOxXXm6bqUg0O+iMTqoso
+	 PVsL9wPJCEJ6MwhJa2PjkgMYJMRSzM0gDT1ZKoAA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF661F802EB;
-	Thu, 23 Jul 2020 22:20:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93932F802FF;
+	Thu, 23 Jul 2020 22:20:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 000BBF802FE; Thu, 23 Jul 2020 22:20:30 +0200 (CEST)
+ id 240A6F80305; Thu, 23 Jul 2020 22:20:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99745F802EB
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 22:20:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99745F802EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94E17F802FF
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 22:20:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94E17F802FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Hf0XD6+L"
+ header.b="eI2iZ+bP"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 73B5A20B1F;
- Thu, 23 Jul 2020 20:20:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B6AA8206E3;
+ Thu, 23 Jul 2020 20:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595535627;
- bh=WLDe8p+A/CpQf5/6gq8TVOgNo0NwPqUHogMr+bFuRAw=;
+ s=default; t=1595535632;
+ bh=78hQl5KUO1Gn565TFq0EiLyGKeKiV2pAj9ARRZGNUsc=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Hf0XD6+LeWC+wP6ISweQEjefDPwEoG0pmVg1WZ5pQscc75fWWmHrmL53k7Hod/Wvs
- SgSWCTbWHINmRuH7QXaOeghUz/+2zm5S9/yu8s6YNXlZ452dCjxEetWpwmA11LR/2a
- lrhoNY+QjgS1cFscMjJspwQeD+GHPPq/fuXtPPRE=
-Date: Thu, 23 Jul 2020 21:20:11 +0100
+ b=eI2iZ+bPR+hc2ODo9wOxYYYsE0Ws4LOmX782GrTwbRNURH/BlgQH2XosT/UsKuv0B
+ w157IJNk+BatYXuvS9IXbSTxdpOZ6ybS6gGgAN+ovd7+I28FiHVg+fd//5if+dcos1
+ nCaJfJRwvPto+DNW3OCjv57iOFGY7tp3vzmagj7U=
+Date: Thu, 23 Jul 2020 21:20:17 +0100
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, perex@perex.cz,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>, jarkko.nikula@bitmer.com,
- tiwai@suse.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- lgirdwood@gmail.com, peter.ujfalusi@ti.com
-In-Reply-To: <20200718112403.13709-1-grandmaster@al2klimov.de>
-References: <20200718112403.13709-1-grandmaster@al2klimov.de>
-Subject: Re: [PATCH] ASoC: omap: Replace HTTP links with HTTPS ones
-Message-Id: <159553557415.41908.1856023334882832244.b4-ty@kernel.org>
+To: perex@perex.cz, nicoleotsuka@gmail.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, festevam@gmail.com, Xiubo.Lee@gmail.com,
+ tiwai@suse.com, alsa-devel@alsa-project.org, timur@kernel.org
+In-Reply-To: <1595476808-28927-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1595476808-28927-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: add IRQF_SHARED for devm_request_irq
+Message-Id: <159553557414.41908.17763476955607586934.b4-ty@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,21 +85,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 18 Jul 2020 13:24:03 +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
+On Thu, 23 Jul 2020 12:00:08 +0800, Shengjiu Wang wrote:
+> ESAI interfaces may share same interrupt line with EDMA on
+> some platforms (e.g. i.MX8QXP, i.MX8QM).
+> Add IRQF_SHARED flag to allow sharing the irq among several
+> devices
 
 Applied to
 
@@ -107,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: omap: Replace HTTP links with HTTPS ones
-      commit: 3323a148fd79a6c6c8809bb793708bcfa626081d
+[1/1] ASoC: fsl_esai: add IRQF_SHARED for devm_request_irq
+      commit: c8361757a712dff4db49e18b736635e367b0f473
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
