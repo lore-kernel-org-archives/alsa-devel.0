@@ -2,94 +2,88 @@ Return-Path: <SRS0=vWr5=BC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
+	BODY_QUOTE_MALF_MSGID,DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F29C5C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:00:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9E8AC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:19:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AA082067D
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:00:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6FFC0207BB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 20:19:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C9kM7XYd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oLwDDYuF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AA082067D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kZI9fFSy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FFC0207BB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AB2E167F;
-	Thu, 23 Jul 2020 21:59:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AB2E167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E739B1681;
+	Thu, 23 Jul 2020 22:18:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E739B1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595534436;
-	bh=zP3Fc33PffOt8kcMr6zvgvJDbsiHE4yEx/MJxaBNdNY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1595535567;
+	bh=OKaS1P28nJxxtCAWZB+HdxF8uwxJI3GOsJdAJpz1Wb8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C9kM7XYd58GKL2W5/Ze3m+V8QR3mTiAQOzyvJvj4R4fLLpmtJ57sqUEiEM0NEkOd8
-	 C+0WHDjpJe1TMZj3+s9tAyJxhVjcYHqHscjGYOrL5vgdiWDR5l6c2ZVJOTf5g4HmU7
-	 Gi3DNoQyjIAU3Z6YFbBdEqHb8VfPg8toopGSLBL4=
+	b=kZI9fFSyv2KYrKd9sVPcms239pf50NeUm0QqDBhm7+IJ/dSaGMGTZh4B16fqtjmP2
+	 ic8U5HzwtN1PsbALL7wiM/WYT3Zy6h7NizojaVB2iTyzVpCj3i9ZEZFLpbEpZoNTTE
+	 5JB0bQ+vODAtC8GuovUDo/qu3djsSogpmdsxhDIs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A2E9F8020D;
-	Thu, 23 Jul 2020 21:59:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E87FF80212;
+	Thu, 23 Jul 2020 22:18:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37B45F80212; Thu, 23 Jul 2020 21:59:44 +0200 (CEST)
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com
- [IPv6:2a00:1450:4864:20::141])
+ id 6A70CF80268; Thu, 23 Jul 2020 22:18:35 +0200 (CEST)
+Received: from mail-io1-f65.google.com (mail-io1-f65.google.com
+ [209.85.166.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F7A0F80090
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 21:59:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F7A0F80090
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="oLwDDYuF"
-Received: by mail-lf1-x141.google.com with SMTP id y18so3935586lfh.11
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 12:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=zP3Fc33PffOt8kcMr6zvgvJDbsiHE4yEx/MJxaBNdNY=;
- b=oLwDDYuF2y8WRlgjUVI1jCJ5eaqIXOFo4k5e9OcFMSYwQCLW9/EpJGOc7M2Hfzf9Et
- X1Jd9Wt1COUcK9QPMyWTfDjvmiX9MlaOJ+6CJrDohPMk15yBB4LC+i7FqbVjBkAnqY3D
- QQuY9Mfl6Yq2cqFCUAk416lYl6Fzrro8dZFipGndkU8v6VJBRUbpyno1KsgIhahWFbsk
- 748JdnCVcSGGeMjxHbRS+PT6rO7cVSJNDsh5uvSetRAks15naLfAqm2UF1VljFeOPzUZ
- 2LAZay7gGHpxPP9x1gkL55raoEpUmz9+G5NZkEHVuJM0Ee+Q8V29fz40xggfY0banfYq
- GHRA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22223F80090
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 22:18:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22223F80090
+Received: by mail-io1-f65.google.com with SMTP id s189so369342iod.2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 13:18:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=zP3Fc33PffOt8kcMr6zvgvJDbsiHE4yEx/MJxaBNdNY=;
- b=blgJa4olvkffcjqp7j1e/bzyX2wF3w5h01L67XR4Pv2/+oz90okPPReBtJ3zE1Bkiq
- c1D+T+nvX73a3mqn5+CxAMAnb+6fSk5jafn1rX97O7QNaye4fifsjeexGG4OC5am7re0
- ro6127AjlTV1olpD1WKMqyWNl4QHviFBDEXW7J+wAEXrnY7gvFhMp0Uq0lRJb0AdJsIL
- xbkP0QbMLsRrf+d+c42bJGYie1RR3Fax39Zy5hqtqVdnmXBjPzbDHiRYMkiuj7wilxix
- XDPHDh4fKEaFvhihcG4NnN2wBxPWkcicU3xPrfeMkxo5DbnwLzeanPH7FZFHof6+1R2Z
- sMGQ==
-X-Gm-Message-State: AOAM530pT0tlnTsMsCIOV9iwhSPLnQcN4Fo6W6Br2E7TifmmolbBaY2o
- tsLDyhM9jm/xKquIJzSMCtiaPLimIh8/uOWS8LU=
-X-Google-Smtp-Source: ABdhPJx0j/0j7rtnkMI9ke3ZTXABaFXfQgw9C5W6OuPl+ZebLuH8U7u1IkbNptWTWBe1MY5VAkCglNu2JOD4wNpIb8U=
-X-Received: by 2002:a19:c3d0:: with SMTP id t199mr3090614lff.56.1595534376214; 
- Thu, 23 Jul 2020 12:59:36 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=A+bs3OlS8UQmhllIUhonZMM/+IfllG/gM+l8StXXg04=;
+ b=bslVgQr+hVX0uxqxsTxE3OIDAdy/uqwi80ZWFOypyJ0hUereaqPLO27zvM+SoKaQOB
+ mNAOzUA5PfCFpYNIqY6W+O+OucRyY9Lt/YgVomOh2/GnI6hPl7XWXHQEuzpFLsgRGs+I
+ VQ4Dpj2QWm4XWI7cgmQwy5lxZzN2Ih3DEwDLn1x1xr62BBh/h+ZKeJfG7Gi0Gcx7KN91
+ 1wfTMav8E5D7ry1DGGv3uYbnNEa0oUJ6bpBThripNhb7wr2ReklGlNj8XRDmcmzxgc8d
+ U7sOIqp+BMjrojnmEwyJVzVd/VfQMbbmIaW9CdmiOWPz6NfAdLcF3wut16yB6K7hj4Be
+ cS7g==
+X-Gm-Message-State: AOAM5339NsfaIers1iZn51c/4HQcjA4mpUxKKGCgjhnBLPJGaAz9I8Te
+ DiuwOGN/nejo9V8YX8am5Q==
+X-Google-Smtp-Source: ABdhPJx40znh6EFlcwp+i/5XHaqEwUcM8wAzVExw4KY1VjVYL+2q03d6mC37eNjFzhZiBelEbH+gdA==
+X-Received: by 2002:a02:7786:: with SMTP id g128mr4182617jac.45.1595535502832; 
+ Thu, 23 Jul 2020 13:18:22 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+ by smtp.gmail.com with ESMTPSA id u65sm2019040iod.45.2020.07.23.13.18.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 23 Jul 2020 13:18:21 -0700 (PDT)
+Received: (nullmailer pid 793895 invoked by uid 1000);
+ Thu, 23 Jul 2020 20:18:19 -0000
+Date: Thu, 23 Jul 2020 14:18:19 -0600
+From: Rob Herring <robh@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: tas2562: Convert the tas2562 binding
+ to yaml
+Message-ID: <20200723201819.GA783613@bogus>
+References: <20200722154706.9657-1-dmurphy@ti.com>
 MIME-Version: 1.0
-References: <20200717135959.19212-1-festevam@gmail.com>
- <20200723092140.GB10899@ediswmail.ad.cirrus.com>
-In-Reply-To: <20200723092140.GB10899@ediswmail.ad.cirrus.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 23 Jul 2020 16:59:24 -0300
-Message-ID: <CAOMZO5DvR1CNwR2fG_e48Kv9FPdXj-UrboPpAbA9tTakOdpw6A@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: wm8962: Do not access WM8962_GPIO_BASE
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, Mark Brown <broonie@kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722154706.9657-1-dmurphy@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,29 +99,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Charles,
+On Wed, Jul 22, 2020 at 10:47:05AM -0500, Dan Murphy wrote:
+> Convert the TAS2562 text file to yaml format.
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+> 
+> v2 - Updated the shutdown-gpio to shutdown-gpios and fixed licensing to be
+> GPL-2.0-only.
+> 
+>  .../devicetree/bindings/sound/tas2562.yaml    | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+> new file mode 100644
+> index 000000000000..8d75a798740b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+> @@ -0,0 +1,69 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2019 Texas Instruments Incorporated
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/sound/tas2562.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Texas Instruments TAS2562 Smart PA
+> +
+> +maintainers:
+> +  - Dan Murphy <dmurphy@ti.com>
+> +
+> +description: |
+> +  The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
+> +  efficiently driving high peak power into small loudspeakers.
+> +  Integrated speaker voltage and current sense provides for
+> +  real time monitoring of loudspeaker behavior.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,tas2562
+> +      - ti,tas2563
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: |
+> +       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
+> +
+> +  shut-down-gpios:
+> +    description: GPIO used to control the state of the device.
+> +    deprecated: true
 
-On Thu, Jul 23, 2020 at 6:21 AM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
+I think you should just remove this given it never worked with any 
+released kernel. Otherwise,
 
-> Ah ok I think I can see what is going on here, you get an EBUSY
-> if the regmap is in cache only and you try to read a register
-> which isn't in the cache. Is that what you are seeing?
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-After adding some debug info I got:
-
-************ register is 512
-wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
-
-************ register is 515
-wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
-
-Both register 512 and 515 do not exist as per the WM8962 datasheet, so
-the driver should not try to access them, right?
-
-This patch avoids reading from these unexisting registers, which makes
-sense IMHO.
-
-Do you have any other suggestions to avoid these errors?
-
-Thanks
+> +
+> +  shutdown-gpios:
+> +    description: GPIO used to control the state of the device.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  ti,imon-slot-no:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: TDM TX current sense time slot.
+> +
+> +  '#sound-dai-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +   #include <dt-bindings/gpio/gpio.h>
+> +   i2c0 {
+> +     #address-cells = <1>;
+> +     #size-cells = <0>;
+> +     codec: codec@4c {
+> +       compatible = "ti,tas2562";
+> +       reg = <0x4c>;
+> +       #sound-dai-cells = <1>;
+> +       interrupt-parent = <&gpio1>;
+> +       interrupts = <14>;
+> +       shutdown-gpios = <&gpio1 15 0>;
+> +       ti,imon-slot-no = <0>;
+> +     };
+> +   };
+> +
+> -- 
+> 2.27.0
+> 
