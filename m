@@ -7,70 +7,83 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 715B4C433E5
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E40DFC433E8
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:41:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC51920714
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:07:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70244208E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:41:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rOszH/LI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC51920714
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="faUlB7fh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="a+qAt40s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70244208E4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53447167A;
-	Thu, 23 Jul 2020 20:06:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53447167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AF90168D;
+	Thu, 23 Jul 2020 20:40:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AF90168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595527620;
-	bh=A98z8pU0bKIKlUsN/pxESQeVL+YpM/qWMTxFspAnFS0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rOszH/LIh1DfCkO9sRNxXCBxSmVph9n34kotyenJdatWQ9zuzHgICK5F1MONBNi0D
-	 LP01DrlGpbFBjFui48Uf21hkv1WV6X3U2FpiMpb/B4OEeZ3zgMgo754MekHufDxOHq
-	 J9H+SsSc99adhIk6g6mMCgCC2N7geohj0lPf5W7A=
+	s=default; t=1595529675;
+	bh=qIQa+mn+31BRzmSFUUteAq0orLC4NPAWivmYKYi6wKA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=faUlB7fh8HmeK2lD7UEH5iJWAPiQC35fncU3J0aAbBbmhNyo4Fux3wYn/G3nwfoal
+	 jqYlKYSGYK7gCKv3NW3HMEBkRFrypwQ2fwl6C8BYoIU5RYmPAYkHR6ql4Uvj5kOQiD
+	 CBW+tFgbO/sZSkC9U0ht161Y24V5RNa43RdmNsWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D450BF8020D;
-	Thu, 23 Jul 2020 20:06:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B001F8011F;
+	Thu, 23 Jul 2020 20:39:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 883ACF80212; Thu, 23 Jul 2020 20:06:06 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 76F04F8028C; Thu, 23 Jul 2020 20:39:31 +0200 (CEST)
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
+ [85.215.255.82])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1FA4F800CE
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 20:05:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1FA4F800CE
-IronPort-SDR: k1Xu+7mi/TwkgBwBgmDCHGOQgz/Uy1zjLMah+Qn8A+hoQb0sFflPNJDUOtyFMGa5Xl4OKjNpyu
- YpzSX1xz0gOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="168729321"
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; d="scan'208";a="168729321"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Jul 2020 11:05:48 -0700
-IronPort-SDR: UBB0Y+kenxJSXKDoO64CeXMSZ6fFh8cgvgS0luQ5jtTNVaVpsTLj0+3/j6Ozv9ixbMzjEqtrBv
- VZzd4Se60wqQ==
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; d="scan'208";a="462947765"
-Received: from tbae-mobl.gar.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.255.230.144])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Jul 2020 11:05:48 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: core: use less strict tests for dailink capabilities
-Date: Thu, 23 Jul 2020 13:05:33 -0500
-Message-Id: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51B40F8020D
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 20:39:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51B40F8020D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="a+qAt40s"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1595529564;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=IPhq+JQHymy5t9BAg8bCj3SRGxYzGHSxJyIMhV286WU=;
+ b=a+qAt40s3Dhzb6hDbn8XV6CVwyv6qh9I7X6OGiS/jDU2G8/w09KczaebleWclPdeIj
+ 8P0lUyyhJRuzt9d4iidPevtGemvtxqAGZtZUjq2y0bZj2ccOkHs7oBZUrfClfNsSqzAN
+ E65SRw0Lcem28mSX1Boo9HHf0dxCcUYenbjTLtNpaasl0XscWtEn0fQEHlXhIebNrLjT
+ kl8DiKxAx0SiilPuL5xEEYu/+8QZf38wtkqzyh8FaQHy171H6akd+h9aM+ahlc8SpKq6
+ 90aFI5OGNhaYsVz8gl5tWr7jI1Q7lNam6JkFwwBaPDpopIGCvIGhfWCForgCT0aXdlqG
+ ShIg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4W6OBfnv"
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain
+ by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+ with ESMTPSA id Y0939ew6NIdL5IL
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Thu, 23 Jul 2020 20:39:21 +0200 (CEST)
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5/7] ASoC: qcom: common: Parse properties with "qcom," prefix
+Date: Thu, 23 Jul 2020 20:39:02 +0200
+Message-Id: <20200723183904.321040-6-stephan@gerhold.net>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200723183904.321040-1-stephan@gerhold.net>
+References: <20200723183904.321040-1-stephan@gerhold.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Stephan Gerhold <stephan@gerhold.net>, Patrick Lai <plai@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,131 +99,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Previous updates to set dailink capabilities and check dailink
-capabilities were based on a flawed assumption that all dais support
-the same capabilities as the dailink. This is true for TDM
-configurations but existing configurations use an amplifier and a
-capture device on the same dailink, and the tests would prevent the
-card from probing.
+The apq8016_sbc device tree binding uses a "qcom," vendor prefix
+for all device tree properties, while qcom_snd_parse_of() uses the
+same properties without a prefix.
 
-This patch modifies the snd_soc_dai_link_set_capabilities()
-helper so that the dpcm_playback (resp. dpcm_capture) dailink
-capabilities are set if at least one dai supports playback (resp. capture).
+In the future it would be nice to make this consistent, however,
+for backwards compatibility we need to parse both names to allow
+apq8016_sbc to use the common qcom_snd_parse_of() function.
 
-Likewise the checks are modified so that an error is reported only
-when dpcm_playback (resp. dpcm_capture) is set but none of the CPU
-DAIs support playback (resp. capture).
-
-Fixes: 25612477d20b5 ('ASoC: soc-dai: set dai_link dpcm_ flags with a helper')
-Fixes: b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
-Suggested-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- sound/soc/soc-dai.c | 16 +++++++++-------
- sound/soc/soc-pcm.c | 42 ++++++++++++++++++++++++------------------
- 2 files changed, 33 insertions(+), 25 deletions(-)
+ sound/soc/qcom/common.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 98f0c98b06bb..ef1700e5e1bf 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -402,28 +402,30 @@ void snd_soc_dai_link_set_capabilities(struct snd_soc_dai_link *dai_link)
- 	struct snd_soc_dai_link_component *codec;
- 	struct snd_soc_dai *dai;
- 	bool supported[SNDRV_PCM_STREAM_LAST + 1];
-+	bool supported_cpu;
-+	bool supported_codec;
- 	int direction;
- 	int i;
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 54f5bc60246f..84dba0d69e6b 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -18,6 +18,9 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 	int ret, num_links;
  
- 	for_each_pcm_streams(direction) {
--		supported[direction] = true;
-+		supported_cpu = false;
-+		supported_codec = false;
+ 	ret = snd_soc_of_parse_card_name(card, "model");
++	if (ret == 0 && !card->name)
++		/* Deprecated, only for compatibility with old device trees */
++		ret = snd_soc_of_parse_card_name(card, "qcom,model");
+ 	if (ret) {
+ 		dev_err(dev, "Error parsing card name: %d\n", ret);
+ 		return ret;
+@@ -25,8 +28,13 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
  
- 		for_each_link_cpus(dai_link, i, cpu) {
- 			dai = snd_soc_find_dai(cpu);
--			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
--				supported[direction] = false;
-+			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
-+				supported_cpu = true;
- 				break;
- 			}
- 		}
--		if (!supported[direction])
--			continue;
- 		for_each_link_codecs(dai_link, i, codec) {
- 			dai = snd_soc_find_dai(codec);
--			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
--				supported[direction] = false;
-+			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
-+				supported_codec = true;
- 				break;
- 			}
- 		}
-+		supported[direction] = supported_cpu && supported_codec;
+ 	/* DAPM routes */
+ 	if (of_property_read_bool(dev->of_node, "audio-routing")) {
+-		ret = snd_soc_of_parse_audio_routing(card,
+-				"audio-routing");
++		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
++		if (ret)
++			return ret;
++	}
++	/* Deprecated, only for compatibility with old device trees */
++	if (of_property_read_bool(dev->of_node, "qcom,audio-routing")) {
++		ret = snd_soc_of_parse_audio_routing(card, "qcom,audio-routing");
+ 		if (ret)
+ 			return ret;
  	}
- 
- 	dai_link->dpcm_playback = supported[SNDRV_PCM_STREAM_PLAYBACK];
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index f2c7c85ad40c..aac61df0c50e 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2743,30 +2743,36 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		if (rtd->dai_link->dpcm_playback) {
- 			stream = SNDRV_PCM_STREAM_PLAYBACK;
- 
--			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
--				if (!snd_soc_dai_stream_valid(cpu_dai,
--							      stream)) {
--					dev_err(rtd->card->dev,
--						"CPU DAI %s for rtd %s does not support playback\n",
--						cpu_dai->name,
--						rtd->dai_link->stream_name);
--					return -EINVAL;
-+			for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-+				if (snd_soc_dai_stream_valid(cpu_dai, stream)) {
-+					playback = 1;
-+					break;
- 				}
--			playback = 1;
-+			}
-+
-+			if (!playback) {
-+				dev_err(rtd->card->dev,
-+					"No CPU DAIs support playback for stream %s\n",
-+					rtd->dai_link->stream_name);
-+				return -EINVAL;
-+			}
- 		}
- 		if (rtd->dai_link->dpcm_capture) {
- 			stream = SNDRV_PCM_STREAM_CAPTURE;
- 
--			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
--				if (!snd_soc_dai_stream_valid(cpu_dai,
--							      stream)) {
--					dev_err(rtd->card->dev,
--						"CPU DAI %s for rtd %s does not support capture\n",
--						cpu_dai->name,
--						rtd->dai_link->stream_name);
--					return -EINVAL;
-+			for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-+				if (snd_soc_dai_stream_valid(cpu_dai, stream)) {
-+					capture = 1;
-+					break;
- 				}
--			capture = 1;
-+			}
-+
-+			if (!capture) {
-+				dev_err(rtd->card->dev,
-+					"No CPU DAIs support capture for stream %s\n",
-+					rtd->dai_link->stream_name);
-+				return -EINVAL;
-+			}
- 		}
- 	} else {
- 		/* Adapt stream for codec2codec links */
 -- 
-2.25.1
+2.27.0
 
