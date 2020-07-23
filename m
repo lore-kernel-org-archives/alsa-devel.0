@@ -7,73 +7,74 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91265C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C008C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:44:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1455020737
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:43:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DBC6C20737
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 18:44:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qj2mMvNP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="TGWYhzQl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1455020737
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d9ePNcDa";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="lU7j/DBW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBC6C20737
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8DCB1696;
-	Thu, 23 Jul 2020 20:42:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8DCB1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E8DC1683;
+	Thu, 23 Jul 2020 20:43:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E8DC1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595529821;
-	bh=V1fZKq3cMhf7z02hPHanh3UaH0Sg2fgQ+UvpkngDURI=;
+	s=default; t=1595529857;
+	bh=Fh87hb0Gad1Dxo/Uv90kDIGMuVab4aYbAasASoiC8ro=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qj2mMvNPbKTUa9vTt4SsJmgUURshgTSo3i8kxSE0oOTGABuDIlf3zunS+gZPJvHf7
-	 LojtwHo1F0I5R9DNCh/wU67lOfEdSLipziDYMnFqG82XxJt6JrJHMjnBAaK162crke
-	 r9B57CwZcSuxi7s1oP/YD1ILpq4Dy1+qQp+SDQOQ=
+	b=d9ePNcDaKyj8e8cclqnxJbDckY6LjYua9qTDaqpr4z/vlbndviSvcBinQze8mHL8W
+	 SShJQBrjzcOknuUrRgjty4oQk63Xh+1lh7lhX2p3vzNgVboKmbnuPuDmuDkViLm1Bm
+	 OdG6S5+zemNAH/6+G96FLg4TrhT56D1HGIZjyk/c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C18F4F802E0;
-	Thu, 23 Jul 2020 20:39:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5729F802E3;
+	Thu, 23 Jul 2020 20:39:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33DFFF8024A; Thu, 23 Jul 2020 20:39:38 +0200 (CEST)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [85.215.255.53])
+ id 7CF57F8024A; Thu, 23 Jul 2020 20:39:38 +0200 (CEST)
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
+ [81.169.146.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED6A3F80268
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 20:39:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED6A3F80268
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA2C2F80274
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 20:39:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA2C2F80274
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="TGWYhzQl"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1595529562;
+ header.b="lU7j/DBW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1595529564;
  s=strato-dkim-0002; d=gerhold.net;
  h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
  X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=cPoSiHtgbmarw/+BaFcos5QPxK1SZPDZtzA9G8JDsUk=;
- b=TGWYhzQlLSaOAXk62bmSboEc/vP4xION/PiWTkXs0dkXZfXCvJf54XJ3kcThNDftyQ
- GmsKjov7Q+iZxvyHEj2NaxPN8XifDwjUjk0g+gQZIEcFAl28bu01upcB1jY5sI6qKA+D
- CDwWqh0Z8XP+d//ztNR6VCPB24EtE+Y6XqO/MAYU9Mj/O1aNhSmzsMBGOjmO2OAx2pdm
- 8SacLVtQ2UDYOXTh0joQgNHfTMWjBub8ZEXm7VNCW4Z/lPoiIBesNOSDer547bhJfrKz
- H4DiO1vCxL/2YDGZZDqmNeKJOZKe8SIz5mIkDEPd5pTOkXiBMFrPG8ugiZ499P9O1MBA
- rnQg==
+ bh=36mZrS5hCVfH9Dj/e1VKggw9G17HGuzh5g5Kqq1w5iQ=;
+ b=lU7j/DBWR0BKWqTEcy/vG8xRFqg9/mAhagjy67JZ+7pF+YfvxxtTbj1u6oLs9oyof4
+ qlWqNRsLkDQJsXMOTlg+SlTiEiuq511thT60iUHqCER+usqjCxkuYLd225xXloqjf5JM
+ wNtGXXIE9bMOVvGLBoHX0oTxaeXwyrhcGOmWeHqLVCKvo7izq68IVTzVUQ+86OzCgK5p
+ mi1OApwcybmFgK2XecjyUfz3FdiY99D4ewP2DgRztHKKhrFWFfw+GGvZlexRcGxa95f6
+ hxR885fp2YWxcrtxFOPOH6FGGQ2PpHaEuOEio6kte6hFDC18wP0wJBMKpJ4L+7tza7U+
+ bnMw==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4W6OBfnv"
 X-RZG-CLASS-ID: mo00
 Received: from localhost.localdomain
  by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
- with ESMTPSA id Y0939ew6NIdI5IG
+ with ESMTPSA id Y0939ew6NIdM5IN
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
  (Client did not present a certificate);
- Thu, 23 Jul 2020 20:39:18 +0200 (CEST)
+ Thu, 23 Jul 2020 20:39:22 +0200 (CEST)
 From: Stephan Gerhold <stephan@gerhold.net>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/7] ASoC: qcom: Use devm for resource management
-Date: Thu, 23 Jul 2020 20:38:58 +0200
-Message-Id: <20200723183904.321040-2-stephan@gerhold.net>
+Subject: [PATCH 7/7] ASoC: qcom: common: Avoid printing errors for
+ -EPROBE_DEFER
+Date: Thu, 23 Jul 2020 20:39:04 +0200
+Message-Id: <20200723183904.321040-8-stephan@gerhold.net>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200723183904.321040-1-stephan@gerhold.net>
 References: <20200723183904.321040-1-stephan@gerhold.net>
@@ -99,168 +100,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Simplify the machine drivers for newer SoCs a bit by using the
-devm_* function calls that automatically release the resources
-when the driver is removed or when probing fails.
+qcom_snd_parse_of() tends to produce lots of error messages during bootup:
+
+	MultiMedia1: error getting cpu dai name
+
+This happens because the DAIs are not probed until the ADSP remoteproc
+has booted, which takes a while. Until it is ready, snd_soc_of_get_dai_name()
+returns -EDEFER_PROBE to retry probing later. This is perfectly normal,
+so cleanup the kernel log a bit by not printing in case of -EPROBE_DEFER.
 
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- sound/soc/qcom/apq8096.c | 28 +++-------------------------
- sound/soc/qcom/common.c  |  3 +--
- sound/soc/qcom/sdm845.c  | 40 ++++++----------------------------------
- 3 files changed, 10 insertions(+), 61 deletions(-)
+ sound/soc/qcom/common.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 287ad2aa27f3..134f5a81df7f 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -109,7 +109,7 @@ static int apq8096_platform_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	int ret;
- 
--	card = kzalloc(sizeof(*card), GFP_KERNEL);
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
- 	if (!card)
- 		return -ENOMEM;
- 
-@@ -117,31 +117,10 @@ static int apq8096_platform_probe(struct platform_device *pdev)
- 	dev_set_drvdata(dev, card);
- 	ret = qcom_snd_parse_of(card);
- 	if (ret)
--		goto err;
-+		return ret;
- 
- 	apq8096_add_be_ops(card);
--	ret = snd_soc_register_card(card);
--	if (ret)
--		goto err_card_register;
--
--	return 0;
--
--err_card_register:
--	kfree(card->dai_link);
--err:
--	kfree(card);
--	return ret;
--}
--
--static int apq8096_platform_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = dev_get_drvdata(&pdev->dev);
--
--	snd_soc_unregister_card(card);
--	kfree(card->dai_link);
--	kfree(card);
--
--	return 0;
-+	return devm_snd_soc_register_card(dev, card);
- }
- 
- static const struct of_device_id msm_snd_apq8096_dt_match[] = {
-@@ -153,7 +132,6 @@ MODULE_DEVICE_TABLE(of, msm_snd_apq8096_dt_match);
- 
- static struct platform_driver msm_snd_apq8096_driver = {
- 	.probe  = apq8096_platform_probe,
--	.remove = apq8096_platform_remove,
- 	.driver = {
- 		.name = "msm-snd-apq8096",
- 		.of_match_table = msm_snd_apq8096_dt_match,
 diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-index 8ada4ecba847..d677e83828af 100644
+index 84dba0d69e6b..5194d90ddb96 100644
 --- a/sound/soc/qcom/common.c
 +++ b/sound/soc/qcom/common.c
-@@ -36,7 +36,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 	num_links = of_get_child_count(dev->of_node);
+@@ -88,7 +88,9 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
  
- 	/* Allocate the DAI link array */
--	card->dai_link = kcalloc(num_links, sizeof(*link), GFP_KERNEL);
-+	card->dai_link = devm_kcalloc(dev, num_links, sizeof(*link), GFP_KERNEL);
- 	if (!card->dai_link)
- 		return -ENOMEM;
+ 		ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
+ 		if (ret) {
+-			dev_err(card->dev, "%s: error getting cpu dai name\n", link->name);
++			if (ret != -EPROBE_DEFER)
++				dev_err(card->dev, "%s: error getting cpu dai name: %d\n",
++					link->name, ret);
+ 			goto err;
+ 		}
  
-@@ -143,7 +143,6 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 	of_node_put(cpu);
- 	of_node_put(codec);
- 	of_node_put(platform);
--	kfree(card->dai_link);
- 	return ret;
- }
- EXPORT_SYMBOL(qcom_snd_parse_of);
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 68e9388ff46f..580acfaf38e7 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -543,16 +543,14 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	int ret;
+@@ -108,7 +110,9 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 		if (codec) {
+ 			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
+ 			if (ret < 0) {
+-				dev_err(card->dev, "%s: codec dai not found\n", link->name);
++				if (ret != -EPROBE_DEFER)
++					dev_err(card->dev, "%s: codec dai not found: %d\n",
++						link->name, ret);
+ 				goto err;
+ 			}
  
--	card = kzalloc(sizeof(*card), GFP_KERNEL);
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
- 	if (!card)
- 		return -ENOMEM;
- 
- 	/* Allocate the private data */
--	data = kzalloc(sizeof(*data), GFP_KERNEL);
--	if (!data) {
--		ret = -ENOMEM;
--		goto data_alloc_fail;
--	}
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
- 
- 	card->dapm_widgets = sdm845_snd_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(sdm845_snd_widgets);
-@@ -560,38 +558,13 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 	dev_set_drvdata(dev, card);
- 	ret = qcom_snd_parse_of(card);
- 	if (ret)
--		goto parse_dt_fail;
-+		return ret;
- 
- 	data->card = card;
- 	snd_soc_card_set_drvdata(card, data);
- 
- 	sdm845_add_ops(card);
--	ret = snd_soc_register_card(card);
--	if (ret) {
--		dev_err(dev, "Sound card registration failed\n");
--		goto register_card_fail;
--	}
--	return ret;
--
--register_card_fail:
--	kfree(card->dai_link);
--parse_dt_fail:
--	kfree(data);
--data_alloc_fail:
--	kfree(card);
--	return ret;
--}
--
--static int sdm845_snd_platform_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = dev_get_drvdata(&pdev->dev);
--	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
--
--	snd_soc_unregister_card(card);
--	kfree(card->dai_link);
--	kfree(data);
--	kfree(card);
--	return 0;
-+	return devm_snd_soc_register_card(dev, card);
- }
- 
- static const struct of_device_id sdm845_snd_device_id[]  = {
-@@ -604,7 +577,6 @@ MODULE_DEVICE_TABLE(of, sdm845_snd_device_id);
- 
- static struct platform_driver sdm845_snd_driver = {
- 	.probe = sdm845_snd_platform_probe,
--	.remove = sdm845_snd_platform_remove,
- 	.driver = {
- 		.name = "msm-snd-sdm845",
- 		.of_match_table = sdm845_snd_device_id,
 -- 
 2.27.0
 
