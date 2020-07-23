@@ -2,83 +2,102 @@ Return-Path: <SRS0=vWr5=BC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C289C433E3
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 04:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FA77C433E5
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 05:33:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF63120768
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 04:48:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE9F720768
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 05:33:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="muA8JGpl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="P3CZDCC9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF63120768
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BK7b/K+N";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWSfNpBy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE9F720768
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A96686F;
-	Thu, 23 Jul 2020 06:47:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A96686F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51065851;
+	Thu, 23 Jul 2020 07:32:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51065851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595479719;
-	bh=fy1TB8rjpKHadG1jVEEzeFm3kN+ZDLJr33KVmJVqxI0=;
+	s=default; t=1595482414;
+	bh=SwNVbMLd5Elq4GGu9mLPqXXE8JPIdl45tv89rJhGyzI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=muA8JGplqngxUWrfgnz+lfz0iJXRtqnl8fdPxU073pQ7DQlZxRuKTAlq7VIaYfMkm
-	 rmdG0nL54G+snvuLfynZ/Wprp5j9dZgclb+Xc+WOBTK9UL5KQ6R806QMZ6VlzpZbtr
-	 MCdhA+Oga62BcP97kJ2Z4ZUaDrsUGpfjxCul4Tfo=
+	b=BK7b/K+N49k/LX6O/gbnScAIY4CZFIdtfFZrCmawIM4CwhgxCpkECjCAn+B1/8j97
+	 nSO0BnG4I/14Kj883BqLCwENzUEPvbU33ZWlcIsiljKm8ccjbEMAWXU1Z+157JLL/7
+	 y9V3qWgxvKjcUD5XOlW6ak7tTy+3xDfDfm1YFUv8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0697F800CE;
-	Thu, 23 Jul 2020 06:47:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 700E1F8020D;
+	Thu, 23 Jul 2020 07:32:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE6A9F80212; Thu, 23 Jul 2020 06:47:45 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B702AF80212; Thu, 23 Jul 2020 07:32:40 +0200 (CEST)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B71F0F800CE
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 06:47:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B71F0F800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A4D1F8011F
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 07:32:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A4D1F8011F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="P3CZDCC9"
-Received: from localhost (unknown [122.171.202.192])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0807420768;
- Thu, 23 Jul 2020 04:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595479659;
- bh=fy1TB8rjpKHadG1jVEEzeFm3kN+ZDLJr33KVmJVqxI0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=P3CZDCC9pU2t1v8t9bgg/NiGEiQ5K9OLbJysPolh2dVRXRZ65RtzNQ7g/Jx1H77FS
- sYMxkgq1ENZwdSKE11kKhcvq/iSanNA2W8V+GXCHSoLzhb44bgCE8za+4CmxQO1HuQ
- xqt/5HZRkAqWwUwGZr52fpPOiocS1eHLvmR8goZE=
-Date: Thu, 23 Jul 2020 10:17:34 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH v2 2/6] ALSA: compress: add new ioctl for setting
- codec parameters
-Message-ID: <20200723044734.GU12965@vkoul-mobl>
-References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
- <20200721170007.4554-3-srinivas.kandagatla@linaro.org>
- <ee2dc239-c1a7-f48f-c6f0-ec6e61ccdda6@linux.intel.com>
- <9bbfebf9-9a70-46e3-1808-413d04aa6b2c@linaro.org>
- <19cfe3fe-4b99-0976-679d-28523d7b9990@linux.intel.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="YWSfNpBy"
+Received: by mail-pl1-x642.google.com with SMTP id 72so2050273ple.0
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2020 22:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=Azbmlb+o4Fr+IIKuyAGgLbUxH3riL3SrFDqan1+Q4+M=;
+ b=YWSfNpBy8DiSuE3KFCrrd51VFavpYZSf4IehxS6pt8vfV3qMCkCsreyShiAT+R6fLD
+ 6qcazoBPEvtCcEetZPDLBMsmAkp/v04ZW2cFFN/fKnHjv5h5IrzMocedHYgsxY0o/h1B
+ uPSIU/Hf/OjdnrB+uczzCWgglf1A18DgHCT2oE2nzSi0LbZfLC+RYMLZWZnHPXRkklNE
+ Z4lYNPZPXOTM5HoPTmTowANjCDl5E8vWiEVQkrN2qXyWmD5lNLX6pdb9HBxeuqsKshjL
+ Ap/eOsPLMJZ5hTQECt33KdoA71jPCi+qMVdRx97wTmDFnSSjPPqn8LGMYYaU17giriRU
+ Q8LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=Azbmlb+o4Fr+IIKuyAGgLbUxH3riL3SrFDqan1+Q4+M=;
+ b=lSh7cAjNfJmSj/X/AoEFhywrNdaVpIFsRiN3sIBFnxzk6ZPRxKqYluM6cVAfHYgWv9
+ g5B+xB2sbgdnV+KA2iCRpMnhT5861ISfrKDjV16aGw2H7sPXn7kQiyrht2nvnRCmya/0
+ m9MATWABbwSxJQAZquaYmrqk4ckJKgsV3zM5j9dtGKCAfTj1uaxjMJR90DYbLOEF3A8C
+ kfeSqzFwevL+bI4l569RfstvHHU1clF8kDoTonHsawbQY73PvriZNwjDt3VOuSK7MarA
+ cAAwlCIycdZRHWEpxOyZvnpD6EhpGeh5jR48JpWlUi2JcTQQVoH0zYzlqVi/693qC1HF
+ uiwg==
+X-Gm-Message-State: AOAM533GF7m2PEWb505AhTiJPmIZWPaA6wWSZgUXeCDlOTNSlca/pERW
+ vtKeawZCk674l4K2reP4VMI=
+X-Google-Smtp-Source: ABdhPJy3Ixe5NDssWl2gkYZjneUuDd6lti+TH8cvo414EnOoMUuOEVvaFkXJt4jj5434vavQPR0Wcg==
+X-Received: by 2002:a17:90b:3715:: with SMTP id
+ mg21mr2603075pjb.113.1595482345592; 
+ Wed, 22 Jul 2020 22:32:25 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+ by smtp.gmail.com with ESMTPSA id y65sm1438245pfb.75.2020.07.22.22.32.25
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Wed, 22 Jul 2020 22:32:25 -0700 (PDT)
+Date: Wed, 22 Jul 2020 22:31:50 -0700
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: add IRQF_SHARED for devm_request_irq
+Message-ID: <20200723053150.GA5476@Asurada-Nvidia>
+References: <1595476808-28927-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <19cfe3fe-4b99-0976-679d-28523d7b9990@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, tiwai@suse.com,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <1595476808-28927-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, broonie@kernel.org,
+ festevam@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,30 +113,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 22-07-20, 10:36, Pierre-Louis Bossart wrote:
+On Thu, Jul 23, 2020 at 12:00:08PM +0800, Shengjiu Wang wrote:
+> ESAI interfaces may share same interrupt line with EDMA on
+> some platforms (e.g. i.MX8QXP, i.MX8QM).
+> Add IRQF_SHARED flag to allow sharing the irq among several
+> devices
 > 
-> > > >    * and the stream properties
-> > > > + * @set_codec_params: Sets the compressed stream codec
-> > > > parameters, Optional
-> > > > + * This can be called in during gapless next track codec change
-> > > > only to set
-> > > > + * codec params
-> > > 
-> > > Would it be clearer if this was called set_next_codec_params()? or
-> > > set_next_track_codec_params()?
-> > > 
-> > > Having set_params() and set_codec_params() is a bit confusing since
-> > > the semantic difference is not captured in the callback name.
-> > 
-> > set_next_track_codec_params seems more sensible as its next track params.
-> > Will change this in next version!
-> 
-> maybe set_params() and set_next_track_params() are enough, not sure if the
-> codec reference helps?
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 
-params typically refers to whole set of compress parameters which
-includes buffer information and codec parameters, so codec reference
-would help.
-
--- 
-~Vinod
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
