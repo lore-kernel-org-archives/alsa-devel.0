@@ -7,81 +7,79 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 068B0C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 16:09:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1B5CC433E5
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 16:10:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8277720714
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 16:09:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3229622B43
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2020 16:10:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ik7HzOqn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="euR4/39W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8277720714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MmSBglKA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="C0nj4Eke"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3229622B43
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 110B4167E;
-	Thu, 23 Jul 2020 18:08:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 110B4167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0F171683;
+	Thu, 23 Jul 2020 18:09:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0F171683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595520588;
-	bh=+i2sOnpVY0VqRNXiqsxxrVqbbNga2Bv0f9I3RhWqSkY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ik7HzOqn7BGCdxgZd5mCZmV3PWfNBqFIzw8oQgCUfJ2fm1xPhJJVrmOpubbH+rhuc
-	 6MA+62gpys2Bs2xdItynpPu3vwKcuHjENWi9eQRfRC9pqqnkx68pV/Js2/tSpq97Mm
-	 I/7ChmWsa8RAlTB0aVTADjdd9dvak4nCkbs23T/A=
+	s=default; t=1595520640;
+	bh=67+I9rV2CRyhAc4T1aCMSgR1gX1CX7g28hJKo0orWWQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MmSBglKAC/jpYOONcMRFeZKSXM7o5iOhpoArwPvEwpDvOdkHvxdWv7+qg9OrKSMBT
+	 qyN+PgSvp4L3L9SJEACcQeK509jP9fztOyW59BrdxeiOu9Yqiee7dVO/Qy/9xR8iXA
+	 XA0lPAa1ZAXbxtwqeUTnevufbEu+9U5g9N4hM4o4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91CDAF80090;
-	Thu, 23 Jul 2020 18:08:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29557F80268;
+	Thu, 23 Jul 2020 18:09:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A2D9F8011F; Thu, 23 Jul 2020 18:08:54 +0200 (CEST)
+ id 81593F8020D; Thu, 23 Jul 2020 18:08:54 +0200 (CEST)
 Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8CDAF8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id D66E7F8011F
  for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2020 18:08:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8CDAF8020D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D66E7F8011F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="euR4/39W"
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06NG8iCf021775;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="C0nj4Eke"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06NG8i0c021763;
  Thu, 23 Jul 2020 11:08:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
  s=ti-com-17Q1; t=1595520524;
- bh=nA7a4nlfdC+eYe8JsjKg4KWcz0j3ZopXtCp88J/O3P0=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=euR4/39WbozRW1r7GbT2HDVPCvSUH2yFYWfHGy27Yn9014B1wnkPsaA2PwrreS21s
- yNJAFQlXGWMmV+WP6b4qE7gQMwsWCjOTNiBxTjMAy0GV8161hQZ3OIydo2US0I9yUR
- hZKYLzo++yIX0kp9WZCI2fMOL5UjOkOMXLjsE0a8=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06NG8iu8000716
+ bh=uP42COOHI/Gb4zZlyWVEyG3GF7JuWum+Uudtqa+M438=;
+ h=From:To:CC:Subject:Date;
+ b=C0nj4EkeRMpoGFNE/j6P9HXwL0H1YiPzKFjxv0zRFEiH9wiJLayHYhHIr+id3Tg5s
+ dADze4YYT+SkKCA3DTbG/8UfjnZGH5Wqm+8AFvnnrcpY6CWONOOBGAMRZdmV0WZwZi
+ 2LJOf5XJCQegBNdpi9jeSspaFw2OWVQJtCCrL00A=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06NG8iH7103767
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
  Thu, 23 Jul 2020 11:08:44 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 23
- Jul 2020 11:08:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2020 11:08:43 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 23 Jul 2020 11:08:44 -0500
+ Frontend Transport; Thu, 23 Jul 2020 11:08:43 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06NG8iVg049221;
- Thu, 23 Jul 2020 11:08:44 -0500
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06NG8hsm002451;
+ Thu, 23 Jul 2020 11:08:43 -0500
 From: Dan Murphy <dmurphy@ti.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <robh@kernel.org>
-Subject: [PATCH v3 2/2] ASoC: tas2562: Update shutdown GPIO property
-Date: Thu, 23 Jul 2020 11:08:38 -0500
-Message-ID: <20200723160838.9738-2-dmurphy@ti.com>
+Subject: [PATCH v3 1/2] dt-bindings: tas2562: Convert the tas2562 binding to
+ yaml
+Date: Thu, 23 Jul 2020 11:08:37 -0500
+Message-ID: <20200723160838.9738-1-dmurphy@ti.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200723160838.9738-1-dmurphy@ti.com>
-References: <20200723160838.9738-1-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -103,50 +101,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update the shutdown GPIO property to be shutdown from shut-down.
+Convert the TAS2562 text file to yaml format.
 
-Fixes: c173dba44c2d2 ("ASoC: tas2562: Introduce the TAS2562 amplifier")
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- sound/soc/codecs/tas2562.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ .../devicetree/bindings/sound/tas2562.yaml    | 69 +++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
 
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index e74628061040..99920c691d28 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -680,13 +680,26 @@ static int tas2562_parse_dt(struct tas2562_data *tas2562)
- 	struct device *dev = tas2562->dev;
- 	int ret = 0;
- 
--	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shut-down",
--						    GPIOD_OUT_HIGH);
-+	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shutdown", GPIOD_OUT_HIGH);
- 	if (IS_ERR(tas2562->sdz_gpio)) {
--		if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER) {
--			tas2562->sdz_gpio = NULL;
-+		if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER)
- 			return -EPROBE_DEFER;
--		}
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+new file mode 100644
+index 000000000000..8d75a798740b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2019 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/tas2562.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+		tas2562->sdz_gpio = NULL;
-+	}
++title: Texas Instruments TAS2562 Smart PA
 +
-+	/*
-+	 * The shut-down property is deprecated but needs to be checked for
-+	 * backwards compatibility.
-+	 */
-+	if (tas2562->sdz_gpio == NULL) {
-+		tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shut-down",
-+							      GPIOD_OUT_HIGH);
-+		if (IS_ERR(tas2562->sdz_gpio))
-+			if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER)
-+				return -EPROBE_DEFER;
++maintainers:
++  - Dan Murphy <dmurphy@ti.com>
 +
-+		tas2562->sdz_gpio = NULL;
- 	}
- 
- 	ret = fwnode_property_read_u32(dev->fwnode, "ti,imon-slot-no",
++description: |
++  The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
++  efficiently driving high peak power into small loudspeakers.
++  Integrated speaker voltage and current sense provides for
++  real time monitoring of loudspeaker behavior.
++
++properties:
++  compatible:
++    enum:
++      - ti,tas2562
++      - ti,tas2563
++
++  reg:
++    maxItems: 1
++    description: |
++       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
++
++  shut-down-gpios:
++    description: GPIO used to control the state of the device.
++    deprecated: true
++
++  shutdown-gpios:
++    description: GPIO used to control the state of the device.
++
++  interrupts:
++    maxItems: 1
++
++  ti,imon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX current sense time slot.
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c0 {
++     #address-cells = <1>;
++     #size-cells = <0>;
++     codec: codec@4c {
++       compatible = "ti,tas2562";
++       reg = <0x4c>;
++       #sound-dai-cells = <1>;
++       interrupt-parent = <&gpio1>;
++       interrupts = <14>;
++       shutdown-gpios = <&gpio1 15 0>;
++       ti,imon-slot-no = <0>;
++     };
++   };
++
 -- 
 2.27.0
 
