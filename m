@@ -2,88 +2,100 @@ Return-Path: <SRS0=4jWs=BD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D727EC433E5
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 07:08:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7939C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 08:32:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C9352073E
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 07:08:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4FCDF2074A
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 08:32:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mFKeY84C";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="deXjA9hP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C9352073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pDss49sY";
+	dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="UGGWx3pH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FCDF2074A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE67E1680;
-	Fri, 24 Jul 2020 09:07:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE67E1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF62B1680;
+	Fri, 24 Jul 2020 10:31:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF62B1680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595574520;
-	bh=0B8PL1burz9qgIqdqABnDhtRKH4mXVi1zGHQ6FbyvIo=;
-	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mFKeY84CaIXv8J+scrQjqQgIOhHKL4wcmMGNXlG2Yh+QcBQ91/2pjToN5MN/QFnk0
-	 9prvlexhWOzmN0C8LueHSVqqTcBgOBeR57ut5nmHiaVqKElR+/kNeMij1oqFfQHWvf
-	 B8JW8pfrjZ8hYyCMR6+qBDj4S5sE+0j3S9nGstEU=
+	s=default; t=1595579569;
+	bh=FzFdMx256j8gIkvc/vasmW5sucGF3CMHBR3czxRFry0=;
+	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pDss49sYlF8fVjdFxjsDsa/F9bQMR+HV8Uk/+iDza7XO2Nu/yyMqom07WaOpC682M
+	 jMmbu1JDhu9+ULXrAXBP3qc2T0D+xYzSVw1FcpXmTMVKgDApBvVd3RBom6WhvrV9V8
+	 Ko3eFmK09DcuVQC7lyD2Av57zvCpWcNzSs3HPUrA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6816CF80141;
-	Fri, 24 Jul 2020 09:07:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2313CF80141;
+	Fri, 24 Jul 2020 10:31:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 314E6F800CE; Fri, 24 Jul 2020 09:07:47 +0200 (CEST)
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com
- [IPv6:2607:f8b0:4864:20::f49])
+ id EB70EF8014C; Fri, 24 Jul 2020 10:31:57 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8A61F800CE
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 09:07:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8A61F800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19959F8011F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 10:31:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19959F8011F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="deXjA9hP"
-Received: by mail-qv1-xf49.google.com with SMTP id l12so5228781qvu.21
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 00:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=r/rAmoQsTdsTViUYbqX2XptN21p3L49kWCsxVj66Ap4=;
- b=deXjA9hPyDqlLjfQanuydAygiTjLrMDEQXU1g2zEiL8h7NIiDBRwqSnF32FZR3GK2M
- 7u9b58eKOPqVlezJkOijiF40s/2DX+mFBWThAdVTW7YCpO98U8thR2WhzHJPVJBySA5i
- q0k2TC9DlHVM6DvlqTT4oyGve3uvCv04XXWdLfy76Li0Rjmz6il4xNnpXuQAIkBV9cbS
- KZMTXMDkSZ9GxNWdR1YoiN7caLIrU2PLKs41OsTZeCeTG5m9CktV0Xmoo/n9b1JCy3F0
- 9VVvYYpVy5e2BzgcGmWS3v/+WIQt/bdg4JHs/+vdbrKCQCSYqfkG7auePajDQDbsLyaX
- u7KA==
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="UGGWx3pH"
+Received: by mail-wr1-x441.google.com with SMTP id a15so7504469wrh.10
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 01:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=references:user-agent:from:to:cc:subject:in-reply-to:date
+ :message-id:mime-version;
+ bh=t8iw4vG22j4Hao1CpzPmsHZ84TvzdNOkMSscONpNECU=;
+ b=UGGWx3pHKB8YyPxib62i/AKRxYgRLj1xiO/3B0yq/irmtrvdipTPKgscVL/Y0FrfHe
+ HAIRVto00WXG6v5iVU7Xl9MpIxDW12tviCgZBABZu+btVXXTXZBo0bsce0Oj3UUfBH3I
+ KuJFRfbE2VJ0cJlsYS04OmCUH+9TF/H/ehFYhP1XXm+W4au424DneoF1DvOxnZ1V2MnA
+ 2DQ+qsB3xWO5zFn+2gTndiiby1eydxZKWIwF7UrJkD7mfeiowT4cNO84+lR7/yXMxRks
+ ZJIHc2on9cRZK2hz9A++Kc53bgAjBzZX9W8Nu5Kv+DVRIzm3nAVpdMvIQSTgBmPNmr9Z
+ FAYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=r/rAmoQsTdsTViUYbqX2XptN21p3L49kWCsxVj66Ap4=;
- b=WCRhGyu3Xj9FHasIPQ9aKOt9+lwaIeaAz2ZtpYS5nVDH5exg3P59FbQ82vRQ8pb1jK
- /gVet6HC7lF/5+rdA1qwm1Al4rI90rtMP3Qnv6Wkrt8F6e7kI5QyJNeLOo4PXUelor12
- YBYFPyh+o79nNjNTfY+3bteKLHTyZhd5s8k9AtK75JQTmh61hjnvBtXhGHxV5dt05Xvz
- gpRG+FNv8u08I41UxPBByFUjHDzJgGUF2o9vT3flo7raXw5mao3NEZkY3KwAjvFZRUxu
- SckrOpJEtmh3nQt/yOmnGKxoR4Xab3vpE+w+LuBZiI3J9l+mU6S9ZAU1CD8yTkxe3NrU
- iuWA==
-X-Gm-Message-State: AOAM5339b7hz0Ys3GWvsIMKp78Qfn5sFIHBEEA8eZdhxu6oMufh8gUXV
- MdH1pSlANkjq4gyG8jyFV7ikNl0Fv3iS
-X-Google-Smtp-Source: ABdhPJyRH3jG4t4Dn6OTcnh/F6zlSIJhuA2JjAt2PWmoF6K+Qo9i6Um1mOf00pZGD58/x2rNfIblXKzg1pJU
-X-Received: by 2002:a0c:f307:: with SMTP id j7mr8314268qvl.55.1595574455629;
- Fri, 24 Jul 2020 00:07:35 -0700 (PDT)
-Date: Fri, 24 Jul 2020 15:07:31 +0800
-Message-Id: <20200724070731.451377-1-tzungbi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-Subject: [PATCH] ASoC: dapm: don't call pm_runtime_* on card device
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org
+ h=x-gm-message-state:references:user-agent:from:to:cc:subject
+ :in-reply-to:date:message-id:mime-version;
+ bh=t8iw4vG22j4Hao1CpzPmsHZ84TvzdNOkMSscONpNECU=;
+ b=FkrGlE4CfopWn5PXkiGJrhACCZYit1dTJ1D2sa4asU9L26/Suilfq4KZ1xtqwOijwc
+ IVp87bk7lcrrrPMnfWIM5t5seBF4R5zq0Y48WCCvCHejie9ZCBoaboXj2KAFivBc21hn
+ YHI7S9r1aJmWa3hrekyyYj6dDfWjc1DUOzG+7PE+Y+y6HcsDoMiGc9+sIPmtl+OCEI9u
+ NfH+4aY51g+F0yDpkVp1C+/WgYJYEJtubrxCSv62Jc0ltQVZAVMi7+EvLYho4PhqlyZC
+ vYOPNPx7ayv8V19T4DNOtdn4N6/TwSlB5S+aY/Tj1fq3NYCviQPNOdpUv6jzh4HHuEs1
+ rquQ==
+X-Gm-Message-State: AOAM5300OJDnaTQGT/48TAJaOOmRxf0pOGHnsgdJ3wSSopDocd6z6K/W
+ nFgHgXTr14QScdc6O4MOJ7qnyQ==
+X-Google-Smtp-Source: ABdhPJwo92Ml987SOXqo3Hg5X5dvXjOOHBvreb7VKrOSdO29x2/W88mUB+4bii6cT9rc7frNzGNAEQ==
+X-Received: by 2002:adf:e647:: with SMTP id b7mr1040040wrn.220.1595579505157; 
+ Fri, 24 Jul 2020 01:31:45 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
+ [90.63.244.31])
+ by smtp.gmail.com with ESMTPSA id v1sm429378wro.83.2020.07.24.01.31.43
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 24 Jul 2020 01:31:44 -0700 (PDT)
+References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: core: use less strict tests for dailink capabilities
+In-reply-to: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
+Date: Fri, 24 Jul 2020 10:31:43 +0200
+Message-ID: <1jlfj98gb4.fsf@starbuckisacylon.baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: tiwai@suse.de, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,64 +111,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-runtime_usage of sound card has been observed to grow without bound.
-For example:
-$ cat /sys/devices/platform/sound/power/runtime_usage
-46
-$ sox -n -t s16 -r 48000 -c 2 - synth 1 sine 440 vol 0.1 | \
-  aplay -q -D hw:0,0 -f S16_LE -r 48000 -c 2
-$ cat /sys/devices/platform/sound/power/runtime_usage
-52
 
-Commit 4e872a46823c ("ASoC: dapm: Don't force card bias level to be
-updated") stops to force update bias_level on card.  If card doesn't
-provide set_bias_level callback, the snd_soc_dapm_set_bias_level()
-is equivalent to NOP for card device.
+On Thu 23 Jul 2020 at 20:05, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
 
-As a result, dapm_pre_sequence_async() doesn't change the bias_level of
-card device correctly.  Thus, pm_runtime_get_sync() would be called in
-dapm_pre_sequence_async() without symmetric pm_runtime_put() in
-dapm_post_sequence_async().
+> Previous updates to set dailink capabilities and check dailink
+> capabilities were based on a flawed assumption that all dais support
+> the same capabilities as the dailink. This is true for TDM
+> configurations
 
-Don't call pm_runtime_* on card device.
+Actually it is not true for TDM either, having codecs with different
+playback/capture caps is valid with TDM as well
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/soc-dapm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> but existing configurations use an amplifier and a
+> capture device on the same dailink, and the tests would prevent the
+> card from probing.
+>
+> This patch modifies the snd_soc_dai_link_set_capabilities()
+> helper so that the dpcm_playback (resp. dpcm_capture) dailink
+> capabilities are set if at least one dai supports playback (resp. capture).
+>
+> Likewise the checks are modified so that an error is reported only
+> when dpcm_playback (resp. dpcm_capture) is set but none of the CPU
+> DAIs support playback (resp. capture).
 
-Hi,
-I'm not very sure if the patch makes sense.
+This was not is the original proposal you sent ...
 
-I was considering:
-(1) update the bias_level of card device correctly
-(2) skip pm_runtime_* for card device
+>
+> Fixes: 25612477d20b5 ('ASoC: soc-dai: set dai_link dpcm_ flags with a helper')
+> Fixes: b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
+> Suggested-by: Jerome Brunet <jbrunet@baylibre.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/soc/soc-dai.c | 16 +++++++++-------
+>  sound/soc/soc-pcm.c | 42 ++++++++++++++++++++++++------------------
+>  2 files changed, 33 insertions(+), 25 deletions(-)
+>
+> diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+> index 98f0c98b06bb..ef1700e5e1bf 100644
+> --- a/sound/soc/soc-dai.c
+> +++ b/sound/soc/soc-dai.c
+> @@ -402,28 +402,30 @@ void snd_soc_dai_link_set_capabilities(struct snd_soc_dai_link *dai_link)
+>  	struct snd_soc_dai_link_component *codec;
+>  	struct snd_soc_dai *dai;
+>  	bool supported[SNDRV_PCM_STREAM_LAST + 1];
+> +	bool supported_cpu;
+> +	bool supported_codec;
+>  	int direction;
+>  	int i;
+>  
+>  	for_each_pcm_streams(direction) {
+> -		supported[direction] = true;
+> +		supported_cpu = false;
+> +		supported_codec = false;
+>  
+>  		for_each_link_cpus(dai_link, i, cpu) {
+>  			dai = snd_soc_find_dai(cpu);
+> -			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
+> -				supported[direction] = false;
+> +			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
+> +				supported_cpu = true;
+>  				break;
+>  			}
+>  		}
+> -		if (!supported[direction])
+> -			continue;
+>  		for_each_link_codecs(dai_link, i, codec) {
+>  			dai = snd_soc_find_dai(codec);
+> -			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
+> -				supported[direction] = false;
+> +			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
+> +				supported_codec = true;
+>  				break;
+>  			}
+>  		}
+> +		supported[direction] = supported_cpu && supported_codec;
+>  	}
+>  
+>  	dai_link->dpcm_playback = supported[SNDRV_PCM_STREAM_PLAYBACK];
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index f2c7c85ad40c..aac61df0c50e 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2743,30 +2743,36 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+>  		if (rtd->dai_link->dpcm_playback) {
+>  			stream = SNDRV_PCM_STREAM_PLAYBACK;
+>  
+> -			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
+> -				if (!snd_soc_dai_stream_valid(cpu_dai,
+> -							      stream)) {
+> -					dev_err(rtd->card->dev,
+> -						"CPU DAI %s for rtd %s does not support playback\n",
+> -						cpu_dai->name,
+> -						rtd->dai_link->stream_name);
+> -					return -EINVAL;
+> +			for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+> +				if (snd_soc_dai_stream_valid(cpu_dai, stream)) {
+> +					playback = 1;
+> +					break;
+>  				}
+> -			playback = 1;
+> +			}
+> +
+> +			if (!playback) {
+> +				dev_err(rtd->card->dev,
+> +					"No CPU DAIs support playback for stream %s\n",
+> +					rtd->dai_link->stream_name);
+> +				return -EINVAL;
+> +			}
 
-Per commit message on 4e872a46823c, I believe there is some context
-I'm not aware of it.  Thus, the patch adopts (2).
+Again, this is changing the original meaning of the flag from "playback
+allowed" to "playback required".
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5076299abf37..3273161e2787 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1798,7 +1798,7 @@ static void dapm_pre_sequence_async(void *data, async_cookie_t cookie)
- 	/* If we're off and we're not supposed to go into STANDBY */
- 	if (d->bias_level == SND_SOC_BIAS_OFF &&
- 	    d->target_bias_level != SND_SOC_BIAS_OFF) {
--		if (d->dev)
-+		if (d->dev && cookie)
- 			pm_runtime_get_sync(d->dev);
- 
- 		ret = snd_soc_dapm_set_bias_level(d, SND_SOC_BIAS_STANDBY);
-@@ -1845,7 +1845,7 @@ static void dapm_post_sequence_async(void *data, async_cookie_t cookie)
- 			dev_err(d->dev, "ASoC: Failed to turn off bias: %d\n",
- 				ret);
- 
--		if (d->dev)
-+		if (d->dev && cookie)
- 			pm_runtime_put(d->dev);
- 	}
- 
--- 
-2.28.0.rc0.142.g3c755180ce-goog
+This patch (or the orignal) does not explain why this change of meaning
+is necessary ? The point I was making here [0] still stands.
+
+If your evil plan is to get rid of 2 of the 4 flags, why go through the
+trouble of the changing the meaning and effect of one them ?
+
+[0]: https://lore.kernel.org/r/1j1rla9s22.fsf@starbuckisacylon.baylibre.com
+
+>  		}
+>  		if (rtd->dai_link->dpcm_capture) {
+>  			stream = SNDRV_PCM_STREAM_CAPTURE;
+>  
+> -			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
+> -				if (!snd_soc_dai_stream_valid(cpu_dai,
+> -							      stream)) {
+> -					dev_err(rtd->card->dev,
+> -						"CPU DAI %s for rtd %s does not support capture\n",
+> -						cpu_dai->name,
+> -						rtd->dai_link->stream_name);
+> -					return -EINVAL;
+> +			for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+> +				if (snd_soc_dai_stream_valid(cpu_dai, stream)) {
+> +					capture = 1;
+> +					break;
+>  				}
+> -			capture = 1;
+> +			}
+> +
+> +			if (!capture) {
+> +				dev_err(rtd->card->dev,
+> +					"No CPU DAIs support capture for stream %s\n",
+> +					rtd->dai_link->stream_name);
+> +				return -EINVAL;
+> +			}
+>  		}
+>  	} else {
+>  		/* Adapt stream for codec2codec links */
 
