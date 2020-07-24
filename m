@@ -2,67 +2,72 @@ Return-Path: <SRS0=4jWs=BD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82D24C433EB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D0A5C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:39:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 369D5206D8
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:29:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC17D206F0
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:39:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ryl25Cwy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 369D5206D8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NQC2x2rS";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ht6Cxb2w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC17D206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0BBF168B;
-	Fri, 24 Jul 2020 18:28:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0BBF168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EA6E167C;
+	Fri, 24 Jul 2020 18:38:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EA6E167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595608163;
-	bh=aYl/2SZ5ky5KEF5SIwYy/sUA48fpE514Q5MIWkFkws0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1595608764;
+	bh=/dpiFz2l5O+PCf1PxK2zR0IuHD/tsdryFmScoFmGFao=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ryl25CwyGLXZJ3ISFOvhIb77AsurhZQ1BpBazp8y22acfgFbm1qHgnHlYaTima0S5
-	 bg+fI6MezZDq1ZHmyArzC883ooV/sy0xBkJnwNnEwcDNI4OEHgBf+8KGqyK386LzZt
-	 m0C2sv7M+VyoX/oPte6GKYZRlQJp0UCEiFdY6nhk=
+	b=NQC2x2rSVZNBaKwm43VaMWnqdcGo6Lo0D9p9lullzbTGj1UqAjjG+27mgL6aPBCzr
+	 Fwm7GrGDYw7yacMvpGFvL/2YQz3sgiiuvAAgy5W5wK7a4b98aYAGj/8pUWKNkb5twZ
+	 QgzHg3ScLJdAMqC5XRd9lksuGlXeooYwgbRfaAgU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F6AEF8015A;
-	Fri, 24 Jul 2020 18:27:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9DE9F80141;
+	Fri, 24 Jul 2020 18:38:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3320AF80161; Fri, 24 Jul 2020 18:27:50 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 961A8F8014C; Fri, 24 Jul 2020 18:38:32 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7120EF80150
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 18:27:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7120EF80150
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 56F0CAD33;
- Fri, 24 Jul 2020 16:27:52 +0000 (UTC)
-Date: Fri, 24 Jul 2020 18:27:44 +0200
-Message-ID: <s5hft9gop33.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Armas Spann <zappel@retarded.farm>
-Subject: Re: [PATCH v1] ALSA: hda/realtek: typo_fix: enable headset mic of
- ASUS ROG Zephyrus G14(GA401) series with ALC289
-In-Reply-To: <20200724140837.302763-1-zappel@retarded.farm>
-References: <20200724140837.302763-1-zappel@retarded.farm>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id DAFB4F8011F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 18:38:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAFB4F8011F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Ht6Cxb2w"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 20A34206EB;
+ Fri, 24 Jul 2020 16:38:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1595608707;
+ bh=/dpiFz2l5O+PCf1PxK2zR0IuHD/tsdryFmScoFmGFao=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=Ht6Cxb2wGBnVsR2nT9pbEru6D/EKRg3+CKzmkcb8IdaXMICv6rpYnXRZv4yOOAg5E
+ lL2kx25CkZ5rOHzObMamo5G44RN0sTaQ52XA5jF6oVyUQT8ElwHd6VRSPcOPCTYQh/
+ k/PUTtjVgVn9JLhvHiKIssIn0l01ZKmcoJbi42Hc=
+Date: Fri, 24 Jul 2020 17:38:12 +0100
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20200724070731.451377-1-tzungbi@google.com>
+References: <20200724070731.451377-1-tzungbi@google.com>
+Subject: Re: [PATCH] ASoC: dapm: don't call pm_runtime_* on card device
+Message-Id: <159560869258.13885.2587647460945976195.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,14 +83,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 24 Jul 2020 16:08:37 +0200,
-Armas Spann wrote:
+On Fri, 24 Jul 2020 15:07:31 +0800, Tzung-Bi Shih wrote:
+> runtime_usage of sound card has been observed to grow without bound.
+> For example:
+> $ cat /sys/devices/platform/sound/power/runtime_usage
+> 46
+> $ sox -n -t s16 -r 48000 -c 2 - synth 1 sine 440 vol 0.1 | \
+>   aplay -q -D hw:0,0 -f S16_LE -r 48000 -c 2
+> $ cat /sys/devices/platform/sound/power/runtime_usage
+> 52
 > 
-> This patch fixes a small typo I accidently submitted with the initial patch. The board should be named GA401 not G401.
-> 
-> Signed-off-by: Armas Spann <zappel@retarded.farm>
+> [...]
 
-Applied, thanks.
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Takashi
+Thanks!
+
+[1/1] ASoC: dapm: don't call pm_runtime_* on card device
+      commit: 3aecfc72d7ad73330e7a6ebd0005738a8fd417ab
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
