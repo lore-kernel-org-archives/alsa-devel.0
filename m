@@ -6,71 +6,70 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D44C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 14:38:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23A21C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 14:39:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5AF420674
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 14:38:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A129E20674
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 14:39:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YASYVhIi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eVK6Dlsn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5AF420674
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TwnaYcFo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZAlWr5O+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A129E20674
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C2A71680;
-	Fri, 24 Jul 2020 16:37:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C2A71680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 209CC1685;
+	Fri, 24 Jul 2020 16:38:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 209CC1685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595601508;
-	bh=kuhbtK/xgw6S+iffhFWjMTNgQZBQEum2vNOAOqlhFXI=;
+	s=default; t=1595601561;
+	bh=Y3rRNtfg71nMx6qz6rx66JXD55K1Y0yFf+scRNRURBs=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YASYVhIi7Kvtj2APrC9ZGPlfVTmrZMnXTlENrsM2NcCU4KvKuuhTcl18d/ZbjIQu9
-	 GMEOvR2FLs2wfI3U7CmuugQ8lSBQe17P5HmqVz8J4xr6zTZTGq95mD+GUe6GYRdw1k
-	 x1cNPWVCyNq3IZJV8RyOQFuBIjCzwhWktsL5uxJs=
+	b=TwnaYcFohdfvW2W6jjgqQbBAOF9Wm64Dc2AcxFgDf2sdWjTksrAGABboVENogYC1E
+	 lL/F+FqKNyQJulFAAK4iAzqdbErgn5o57wxvmVna0qDwTUzMUvzCeJ4Fyqb60PMHlJ
+	 6pplp2hNwnMCLhNLXM+sSGuQJ8dEazg4V+u+ohQU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5808F800DF;
-	Fri, 24 Jul 2020 16:37:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55B74F80161;
+	Fri, 24 Jul 2020 16:37:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0EE77F80150; Fri, 24 Jul 2020 16:37:36 +0200 (CEST)
+ id 845F4F8014C; Fri, 24 Jul 2020 16:37:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8BD40F8011F
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 16:37:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BD40F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D778F800DF
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 16:37:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D778F800DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eVK6Dlsn"
+ header.b="ZAlWr5O+"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 38E952065C;
- Fri, 24 Jul 2020 14:37:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 542FF20674;
+ Fri, 24 Jul 2020 14:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595601446;
- bh=kuhbtK/xgw6S+iffhFWjMTNgQZBQEum2vNOAOqlhFXI=;
+ s=default; t=1595601451;
+ bh=Y3rRNtfg71nMx6qz6rx66JXD55K1Y0yFf+scRNRURBs=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=eVK6DlsnirpsoMElQq0X8wZ62fM1oJJJxTIs8fcHafFDKVGbybZUNuXxQJnn7paR8
- 0BNSpnD0TuntNk+sfMyA00xTzIPGtBisAlkbc7OsJwvid3Ra1ZAdCU0yHqmSo3txK+
- O3bIEJmLn1FOGs6wyj/6h0duCWAEp3EPVMb2zxyk=
-Date: Fri, 24 Jul 2020 15:37:11 +0100
+ b=ZAlWr5O+XTfG91n0rqwmKp3rshphbA6EIBLmuQCyb8izj8jCMReYWja4yrnPq6RYd
+ tcrzxLEoNG6tNr+r9BYGi93QBbwbJscxNs1A5nxmIqgTjor/Mewkq9ihkkhFtf3eYP
+ QihSAcIqt3ewMLFv2S61Lz0msGDRp+q7xneMvyRc=
+Date: Fri, 24 Jul 2020 15:37:16 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-In-Reply-To: <20200723183904.321040-1-stephan@gerhold.net>
-References: <20200723183904.321040-1-stephan@gerhold.net>
-Subject: Re: [PATCH 0/7] ASoC: qcom: Use qcom_snd_parse_of() for apq8016_sbc
-Message-Id: <159560143160.13017.5020230116568554217.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- ~postmarketos/upstreaming@lists.sr.ht, Cheng-Yi Chiang <cychiang@chromium.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20200723142020.1338740-1-jbrunet@baylibre.com>
+References: <20200723142020.1338740-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: soc-component: don't report of_xlate_dai_name
+ failures
+Message-Id: <159560143160.13017.4077278524631889799.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,14 +85,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Jul 2020 20:38:57 +0200, Stephan Gerhold wrote:
-> At the moment we have two separate functions to parse the sound card
-> properties from the device tree: qcom_snd_parse_of() for DPCM and
-> apq8016_sbc_parse_of() without DPCM. These functions are almost identical
-> except for a few minor differences.
+On Thu, 23 Jul 2020 16:20:20 +0200, Jerome Brunet wrote:
+> With commit e2329eeba45f ("ASoC: soc-component: add soc_component_err()")
+> every error different for ENOTSUPP or EPROBE_DEFER will log an error.
 > 
-> This patch set extends qcom_snd_parse_of() to handle links without DPCM,
-> so that we can use one common function for all (qcom) machine drivers.
+> However, as explained in snd_soc_get_dai_name(), this callback may error
+> to indicate that the DAI is not matched by the component tested. If the
+> device provides other components, those may still match. Logging an error
+> in this case is misleading.
 > 
 > [...]
 
@@ -103,20 +102,8 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: qcom: Use devm for resource management
-      commit: ed3b53e7ffe91c32a1277de435e3fcb3ad5e852a
-[2/7] ASoC: qcom: common: Use snd_soc_dai_link_set_capabilities()
-      commit: 627ab55d745b2a413e0a2856f2ad2e422a697971
-[3/7] ASoC: q6afe: Remove unused q6afe_is_rx_port() function
-      commit: 0a8c336a1e020be3832b02e1ddbb92d61da87512
-[4/7] ASoC: qcom: common: Support parsing links without DPCM
-      commit: 47ea88488209226e03559bb8baaa0156b4025fee
-[5/7] ASoC: qcom: common: Parse properties with "qcom," prefix
-      commit: f0d67fdba5dcf48865fc79f2d63b49bd75d36671
-[6/7] ASoC: qcom: apq8016_sbc: Use qcom_snd_parse_of()
-      commit: 118205d241ef6fec395086c34f85717a41a8b4a1
-[7/7] ASoC: qcom: common: Avoid printing errors for -EPROBE_DEFER
-      commit: a63419beafd4edf20761c37dbefd639a0b1b481e
+[1/1] ASoC: soc-component: don't report of_xlate_dai_name failures
+      commit: cc4d8cebbf2a1239aab71a8077fbe20f24ec2165
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
