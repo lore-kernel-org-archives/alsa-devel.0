@@ -2,72 +2,83 @@ Return-Path: <SRS0=4jWs=BD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D0A5C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15D6DC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:44:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC17D206F0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:39:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 920A3206F6
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:44:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NQC2x2rS";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ht6Cxb2w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC17D206F0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qznm0p3k";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="J9L+IJIc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 920A3206F6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EA6E167C;
-	Fri, 24 Jul 2020 18:38:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EA6E167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26C46167C;
+	Fri, 24 Jul 2020 18:43:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26C46167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595608764;
-	bh=/dpiFz2l5O+PCf1PxK2zR0IuHD/tsdryFmScoFmGFao=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1595609039;
+	bh=LFdJwHelCPUb1xduFalB8+JYOGx/M3VqbZ/ygzyO5Ps=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NQC2x2rSVZNBaKwm43VaMWnqdcGo6Lo0D9p9lullzbTGj1UqAjjG+27mgL6aPBCzr
-	 Fwm7GrGDYw7yacMvpGFvL/2YQz3sgiiuvAAgy5W5wK7a4b98aYAGj/8pUWKNkb5twZ
-	 QgzHg3ScLJdAMqC5XRd9lksuGlXeooYwgbRfaAgU=
+	b=qznm0p3k2btPdv28EO0y/GPnHoeJDV/5TV1RxGZ5YExGRhCbIIeMl2xctPsiCI1Bn
+	 22mAZaMIEBKz+jiw39jNJP+/wyPtBsZpuMSS8Sk3cB1qnlI3BUPmpjudT5LDi2TWG7
+	 3cbtvwZ8A0C4EB7SvK3JMk4NV13wR86lmTHK41NA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9DE9F80141;
-	Fri, 24 Jul 2020 18:38:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A67D0F80141;
+	Fri, 24 Jul 2020 18:43:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 961A8F8014C; Fri, 24 Jul 2020 18:38:32 +0200 (CEST)
+ id 3E0A4F8014C; Fri, 24 Jul 2020 18:43:07 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAFB4F8011F
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 18:38:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAFB4F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DD4CF8011F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 18:42:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DD4CF8011F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ht6Cxb2w"
+ header.b="J9L+IJIc"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 20A34206EB;
- Fri, 24 Jul 2020 16:38:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 459AB206F0;
+ Fri, 24 Jul 2020 16:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595608707;
- bh=/dpiFz2l5O+PCf1PxK2zR0IuHD/tsdryFmScoFmGFao=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Ht6Cxb2wGBnVsR2nT9pbEru6D/EKRg3+CKzmkcb8IdaXMICv6rpYnXRZv4yOOAg5E
- lL2kx25CkZ5rOHzObMamo5G44RN0sTaQ52XA5jF6oVyUQT8ElwHd6VRSPcOPCTYQh/
- k/PUTtjVgVn9JLhvHiKIssIn0l01ZKmcoJbi42Hc=
-Date: Fri, 24 Jul 2020 17:38:12 +0100
+ s=default; t=1595608975;
+ bh=LFdJwHelCPUb1xduFalB8+JYOGx/M3VqbZ/ygzyO5Ps=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=J9L+IJIcDu08FPqK1tgKsZ+PhwTJhZUsqtv7ysifDeFoXN094YQF5im7vynJ5hju2
+ GrnbzbrYFLuLHg4599tUP/RGqAxHlNAl/yC+0i1BqyeOxyWKUfH6+jxKbHOp86P8Hs
+ 9LB2Xi7krCHTGzw6HZcQ+xaXpKtkbOXowWXsIHYs=
+Date: Fri, 24 Jul 2020 17:42:40 +0100
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20200724070731.451377-1-tzungbi@google.com>
-References: <20200724070731.451377-1-tzungbi@google.com>
+To: Tzung-Bi Shih <tzungbi@google.com>
 Subject: Re: [PATCH] ASoC: dapm: don't call pm_runtime_* on card device
-Message-Id: <159560869258.13885.2587647460945976195.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Message-ID: <20200724164240.GH5664@sirena.org.uk>
+References: <20200724070731.451377-1-tzungbi@google.com>
+ <20200724111634.GB5664@sirena.org.uk>
+ <CA+Px+wU-R2qOFK8RhLzTXTqDheZhzOyKuiR-1S9qXj02QdruAA@mail.gmail.com>
+ <20200724130151.GG5664@sirena.org.uk>
+ <CA+Px+wVteAt5_QrGmRXcPVHJ5bEtXn9RiXH-bgcRiY_OezFj9w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="lrvsYIebpInmECXG"
+Content-Disposition: inline
+In-Reply-To: <CA+Px+wVteAt5_QrGmRXcPVHJ5bEtXn9RiXH-bgcRiY_OezFj9w@mail.gmail.com>
+X-Cookie: You will wish you hadn't.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,42 +94,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 24 Jul 2020 15:07:31 +0800, Tzung-Bi Shih wrote:
-> runtime_usage of sound card has been observed to grow without bound.
-> For example:
-> $ cat /sys/devices/platform/sound/power/runtime_usage
-> 46
-> $ sox -n -t s16 -r 48000 -c 2 - synth 1 sine 440 vol 0.1 | \
->   aplay -q -D hw:0,0 -f S16_LE -r 48000 -c 2
-> $ cat /sys/devices/platform/sound/power/runtime_usage
-> 52
-> 
-> [...]
 
-Applied to
+--lrvsYIebpInmECXG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Jul 24, 2020 at 10:41:41PM +0800, Tzung-Bi Shih wrote:
 
-Thanks!
+> The challenge I'm facing: (&card->dapm)->bias_level is always
+> SND_SOC_BIAS_OFF.  Commit 4e872a46823c stops to update it.  It has
+> nowhere to add the missing puts().
 
-[1/1] ASoC: dapm: don't call pm_runtime_* on card device
-      commit: 3aecfc72d7ad73330e7a6ebd0005738a8fd417ab
+> Ideally, if the bias_level goes away SND_SOC_BIAS_OFF in
+> dapm_pre_sequence_async(), it calls pm_runtime_get().  If the
+> bias_level goes into SND_SOC_BIAS_OFF in dapm_post_sequence_async(),
+> it calls pm_runtime_put().
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Right, I see the problem now.  This is probably fine.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--lrvsYIebpInmECXG
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8bD38ACgkQJNaLcl1U
+h9ACagf9FqEWTNUCGKkk5ImVEUn4UDW+uzpzhfg4Hh1leoD6HPPLZlsLYbsTE6Ra
+9ohyLXIkytq+Us/Vt7h69RXPSgn0B3oPwx0PhWHo/4zRaOmPWalup/RBZOrNPpZ0
+ftDumZj3U8NLL8mYF4p6KJwdM2Wptu78LBaZ9czijFu6MGsT2fXPLq87nJmbMmX3
+UZmTCFQ/tM/PYQCLs8bihRZEovNDgbPpl/dXaBeUXLZUf3ZP0qJ8DpsVxJLaWZLC
+fgdeq8NA+NrgUBYHf5Vuh7Gt/Mim6gNugOzf8kxc7AbxJkgJWHeN7KdCvm+02tBr
+K42HOwvU9Xj/cqeyOIoedD600QH3IA==
+=i2uL
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
+--lrvsYIebpInmECXG--
