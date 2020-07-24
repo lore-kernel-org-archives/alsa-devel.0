@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B411BC433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:28:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82D24C433EB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:29:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61C19206D8
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:28:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 369D5206D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 16:29:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qUk9BFpw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61C19206D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ryl25Cwy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 369D5206D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD630167C;
-	Fri, 24 Jul 2020 18:27:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD630167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0BBF168B;
+	Fri, 24 Jul 2020 18:28:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0BBF168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595608110;
-	bh=u4nXyV/j810BHNxClmYCQYBUZobu4E9jN72sNXvrOP8=;
+	s=default; t=1595608163;
+	bh=aYl/2SZ5ky5KEF5SIwYy/sUA48fpE514Q5MIWkFkws0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qUk9BFpwnDkYRQigpPQiKau951mExudZYVMmbXfqoGllyiTpeJWmsX6/N/xJpUxI3
-	 0OJYFGPRV/uO74+bamfcnGo/MnwbGAADEoUOKjWprIZvhQSDTKIkDZfscVnwaeFZjl
-	 P63CE3KcCpciIU53g20Zjwi94RFHCm8BqLz19CQw=
+	b=Ryl25CwyGLXZJ3ISFOvhIb77AsurhZQ1BpBazp8y22acfgFbm1qHgnHlYaTima0S5
+	 bg+fI6MezZDq1ZHmyArzC883ooV/sy0xBkJnwNnEwcDNI4OEHgBf+8KGqyK386LzZt
+	 m0C2sv7M+VyoX/oPte6GKYZRlQJp0UCEiFdY6nhk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E78CF80141;
-	Fri, 24 Jul 2020 18:27:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F6AEF8015A;
+	Fri, 24 Jul 2020 18:27:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FF75F8014C; Fri, 24 Jul 2020 18:27:38 +0200 (CEST)
+ id 3320AF80161; Fri, 24 Jul 2020 18:27:50 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7297F8011F
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 18:27:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7297F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7120EF80150
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 18:27:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7120EF80150
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 32EE4AC48;
- Fri, 24 Jul 2020 16:27:40 +0000 (UTC)
-Date: Fri, 24 Jul 2020 18:27:31 +0200
-Message-ID: <s5hh7twop3g.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 56F0CAD33;
+ Fri, 24 Jul 2020 16:27:52 +0000 (UTC)
+Date: Fri, 24 Jul 2020 18:27:44 +0200
+Message-ID: <s5hft9gop33.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Armas Spann <zappel@retarded.farm>
-Subject: Re: [PATCH v1] ALSA: hda/realtek: enable headset mic of ASUS ROG
- Zephyrus G15(GA502) series with ALC289
-In-Reply-To: <20200724140616.298892-1-zappel@retarded.farm>
-References: <20200724140616.298892-1-zappel@retarded.farm>
+Subject: Re: [PATCH v1] ALSA: hda/realtek: typo_fix: enable headset mic of
+ ASUS ROG Zephyrus G14(GA401) series with ALC289
+In-Reply-To: <20200724140837.302763-1-zappel@retarded.farm>
+References: <20200724140837.302763-1-zappel@retarded.farm>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,14 +78,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 24 Jul 2020 16:06:16 +0200,
+On Fri, 24 Jul 2020 16:08:37 +0200,
 Armas Spann wrote:
 > 
-> This patch adds support for headset mic to the ASUS ROG Zephyrus
-> G15(GA502) notebook series by adding the corresponding
-> vendor/pci_device id, as well as adding a new fixup for the used
-> realtek ALC289. The fixup stets the correct pin to get the headset mic
-> correctly recognized on audio-jack.
+> This patch fixes a small typo I accidently submitted with the initial patch. The board should be named GA401 not G401.
 > 
 > Signed-off-by: Armas Spann <zappel@retarded.farm>
 
