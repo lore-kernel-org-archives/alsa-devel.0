@@ -2,95 +2,79 @@ Return-Path: <SRS0=4jWs=BD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8476BC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 14:42:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 696ADC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 15:51:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BBF4206D8
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 14:42:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E45292063A
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 15:51:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="erzIHQKl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="AnKoQ0sD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BBF4206D8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MDs80G5Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E45292063A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=katsuster.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74A4F83B;
-	Fri, 24 Jul 2020 16:42:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74A4F83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BA7E167C;
+	Fri, 24 Jul 2020 17:50:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BA7E167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595601776;
-	bh=zxq5ya50Yenu1hFtTFFcwLrG9temY2sEvcVLzp79Q6w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1595605903;
+	bh=Pghl02DljHuvxryYBapYtHx2hSa90wBMiTMLmKS2vdI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=erzIHQKlBTjhfISKcufJaLEcWFykeKPxeRurEYiQRSfzeFmGRgiTmBQiuqxCtioar
-	 9ysAzO972zCD47hR5aYLS1N9z+FHUJNaKxGoMD4VkKGHWtCmcskpaHsiTm23E/Xuh1
-	 x2E5cQZDFgRk8gFx1tPdqZSV/eFLJ5V2x4o/QNZ4=
+	b=MDs80G5Yb6tBsOFmhoJA470zmre5tFNBHrIGgbFrHuPo5QBoDz0q197bCnTDD6DYz
+	 9Q+4rak1q9DXty1owW8FCt21Yybv1e7nPNso4cy1ql8c8Za6CrgrQbHQgCAxf7VHAN
+	 CpWPcZzw7F0lFblHZj0xqZtDbR/rIrtYbi8Y/ZIc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EF4AF80141;
-	Fri, 24 Jul 2020 16:42:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3B47F80141;
+	Fri, 24 Jul 2020 17:50:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 547BCF8014C; Fri, 24 Jul 2020 16:42:05 +0200 (CEST)
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
- [IPv6:2607:f8b0:4864:20::d43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 537C8F8014C; Fri, 24 Jul 2020 17:50:51 +0200 (CEST)
+Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D174F8011F
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 16:41:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D174F8011F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="AnKoQ0sD"
-Received: by mail-io1-xd43.google.com with SMTP id k23so9971881iom.10
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 07:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=OdGcM/MOvp2upn+g+OVHoMDFxJN5s+fb2Bt1u2fSUkI=;
- b=AnKoQ0sD2UH95E5LEBsMVppF9H9U7IPlUejdwPAg9uMMGYd9gNxgg0lJ4hNb0BV5Ys
- UceKyyDpNNALJDbLnHMuhRY+oMJAbwp1tzsb1CW5jyjhOW92SWYbaosg6dA2n1JAnZnU
- ZtgWzGZHUXSr9FxO7B5TnkHSIywcaMYnpavmIkBXatqi90eSgb9NkV7ScAg5tc7+1/Pk
- Pp+cDcJq1m4EoeI1JQ5OyOYv3LQnCSDNJMemy7FABtyIo/y5JJR1SLj2WkDXAPteWBsy
- 3TfUVwRjIaKl9VefG73DkyRpKr3R+0ckcK2F9hxK8XcGWMSocSxqH+pPknVVBpEiBlWj
- +3EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=OdGcM/MOvp2upn+g+OVHoMDFxJN5s+fb2Bt1u2fSUkI=;
- b=DpL65nVe0MHXVUi1tRHXb9TYZsIZM6mfELoboeCTyP833W7o0RjmSCscftbFdB8bw1
- 4AD9Oxz0Wa9SKptdrQhsjaHdZ74BOLlH1U99oB6Q/xavZVbi9oPWq3NXfqLsAHzAs3er
- /VVThtb/76RNCgP99dEp9H7926GgU5InDP4P5QXyDgA3MGeAWQFiMNTkdYvMrIV2Ng7N
- E+ozJVWCKpt//qN7NPIhk4JzA9ReoR2GeHnysv7LqL95yhwuq1nK0/i8jaKJs0EeFsVt
- SG+3J0gwnXxao0uWLDtLgORv8nhAgM0jIGx9Z5SYLCOeZssXXOSyP82RGyOAQVNSG9hz
- 9VWg==
-X-Gm-Message-State: AOAM531k9Q9FRtz8MJjU1nRNWl4q7Rh6bWua6T0g3aVSZND/7m7ahipj
- 69EHlanYiAiVGdiNcLW9mJvVKizlhO90Nx7cKpYQ6w==
-X-Google-Smtp-Source: ABdhPJwfGUyrGelHC3DZLgiaBQXtOJNXUS0j5mfhmtyvaae4iUET52Do4rpivcwsM3+ABof16oAe9xm6imRgYsRttZ0=
-X-Received: by 2002:a05:6638:1513:: with SMTP id
- b19mr10813859jat.109.1595601712402; 
- Fri, 24 Jul 2020 07:41:52 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1AAFF800CE
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 17:50:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1AAFF800CE
+Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06OFoYMS078994;
+ Sat, 25 Jul 2020 00:50:34 +0900 (JST)
+ (envelope-from katsuhiro@katsuster.net)
+Received: from www1102.sakura.ne.jp (219.94.129.142)
+ by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
+ Sat, 25 Jul 2020 00:50:34 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
+Received: from [192.168.1.2] (121.252.232.153.ap.dti.ne.jp [153.232.252.121])
+ (authenticated bits=0)
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06OFoXpE078987
+ (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+ Sat, 25 Jul 2020 00:50:34 +0900 (JST)
+ (envelope-from katsuhiro@katsuster.net)
+Subject: Re: [PATCH] dt-bindings: sound: convert Everest ES8316 binding to yaml
+To: Rob Herring <robh@kernel.org>
+References: <20200722180728.993812-1-katsuhiro@katsuster.net>
+ <20200723212623.GA882284@bogus>
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Message-ID: <58f31856-226b-41d5-deae-593e90d03598@katsuster.net>
+Date: Sat, 25 Jul 2020 00:50:33 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200724070731.451377-1-tzungbi@google.com>
- <20200724111634.GB5664@sirena.org.uk>
- <CA+Px+wU-R2qOFK8RhLzTXTqDheZhzOyKuiR-1S9qXj02QdruAA@mail.gmail.com>
- <20200724130151.GG5664@sirena.org.uk>
-In-Reply-To: <20200724130151.GG5664@sirena.org.uk>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 24 Jul 2020 22:41:41 +0800
-Message-ID: <CA+Px+wVteAt5_QrGmRXcPVHJ5bEtXn9RiXH-bgcRiY_OezFj9w@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: dapm: don't call pm_runtime_* on card device
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20200723212623.GA882284@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,28 +90,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Jul 24, 2020 at 9:02 PM Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jul 24, 2020 at 08:26:13PM +0800, Tzung-Bi Shih wrote:
-> > On Fri, Jul 24, 2020 at 7:16 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > Why is this a good fix, as opposed to only skipping the set_bias_level()
-> > > bit?
->
-> > Did you mean: skip to call snd_soc_dapm_set_bias_level() in
-> > dapm_pre_sequence_async() and dapm_post_sequence_async()?
->
-> No, I mean why not just add the missing puts which are currently being
-> skipped due to being caught up with the bias level changes.
+Hello Rob,
 
-The challenge I'm facing: (&card->dapm)->bias_level is always
-SND_SOC_BIAS_OFF.  Commit 4e872a46823c stops to update it.  It has
-nowhere to add the missing puts().
+Thank you for review.
 
-Ideally, if the bias_level goes away SND_SOC_BIAS_OFF in
-dapm_pre_sequence_async(), it calls pm_runtime_get().  If the
-bias_level goes into SND_SOC_BIAS_OFF in dapm_post_sequence_async(),
-it calls pm_runtime_put().
+On 2020/07/24 6:26, Rob Herring wrote:
+> On Thu, Jul 23, 2020 at 03:07:28AM +0900, Katsuhiro Suzuki wrote:
+>> This patch converts Everest Semiconductor ES8316 low power audio
+>> CODEC binding to DT schema.
+>>
+>> Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+>> ---
+>>   .../bindings/sound/everest,es8316.txt         | 23 ---------
+>>   .../bindings/sound/everest,es8316.yaml        | 49 +++++++++++++++++++
+>>   2 files changed, 49 insertions(+), 23 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/sound/everest,es8316.txt
+>>   create mode 100644 Documentation/devicetree/bindings/sound/everest,es8316.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/everest,es8316.txt b/Documentation/devicetree/bindings/sound/everest,es8316.txt
+>> deleted file mode 100644
+>> index 1bf03c5f2af4..000000000000
+>> --- a/Documentation/devicetree/bindings/sound/everest,es8316.txt
+>> +++ /dev/null
+>> @@ -1,23 +0,0 @@
+>> -Everest ES8316 audio CODEC
+>> -
+>> -This device supports both I2C and SPI.
+>> -
+>> -Required properties:
+>> -
+>> -  - compatible  : should be "everest,es8316"
+>> -  - reg : the I2C address of the device for I2C
+>> -
+>> -Optional properties:
+>> -
+>> -  - clocks : a list of phandle, should contain entries for clock-names
+>> -  - clock-names : should include as follows:
+>> -         "mclk" : master clock (MCLK) of the device
+>> -
+>> -Example:
+>> -
+>> -es8316: codec@11 {
+>> -	compatible = "everest,es8316";
+>> -	reg = <0x11>;
+>> -	clocks = <&clks 10>;
+>> -	clock-names = "mclk";
+>> -};
+>> diff --git a/Documentation/devicetree/bindings/sound/everest,es8316.yaml b/Documentation/devicetree/bindings/sound/everest,es8316.yaml
+>> new file mode 100644
+>> index 000000000000..b713404dac4f
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/everest,es8316.yaml
+>> @@ -0,0 +1,49 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/sound/everest,es8316.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Everest ES8316 audio CODEC
+>> +
+>> +maintainers:
+>> +  - Mark Brown <broonie@kernel.org>
+> 
+> Should be someone who knows and cares about the h/w which is not Mark.
+> 
 
-I tried to revert commit 4e872a46823c but it seems to screw the card state up.
+OK, so set first committer Daniel and me (I can check codes on real device)
+to maintainers.
 
-Would you have any suggestions?
+Best Regards,
+Katsuhiro Suzuki
+
+
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: everest,es8316
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: clock for master clock (MCLK)
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: mclk
+>> +
+>> +  "#sound-dai-cells":
+>> +    const: 0
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - "#sound-dai-cells"
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    i2c0 {
+>> +      #address-cells = <1>;
+>> +      #size-cells = <0>;
+>> +      es8316: codec@11 {
+>> +        compatible = "everest,es8316";
+>> +        reg = <0x11>;
+>> +        clocks = <&clks 10>;
+>> +        clock-names = "mclk";
+>> +        #sound-dai-cells = <0>;
+>> +      };
+>> +    };
+>> -- 
+>> 2.27.0
+>>
+
