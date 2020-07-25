@@ -1,81 +1,82 @@
-Return-Path: <SRS0=4jWs=BD=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Kg3Q=BE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D487DC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 19:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5630C433DF
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jul 2020 04:08:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5CE87206F0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jul 2020 19:56:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 246BC20789
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jul 2020 04:08:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I1GRdqkd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CE87206F0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MENf1nMp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 246BC20789
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC06A167C;
-	Fri, 24 Jul 2020 21:55:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC06A167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 967CB167D;
+	Sat, 25 Jul 2020 06:07:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 967CB167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595620565;
-	bh=5KQ1WmKzCidLjZQN8WjCeZPm47gWSDcRvLDn0Qp0hKg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=I1GRdqkdkvMfjFmeN5184FqLd7ETDX2wz69n+k/dkX+GKggZaRzGxZhccs8OTMNyF
-	 jArk6/wAcrvgAvcU/iVygC2srJYBV8GM6xO0F2rHzEPHeokGYbfGRoXn8Hsa8BEym0
-	 27vcvoCeMpbH47sdxsgKXQ1UoMiaw97khDZSqgRk=
+	s=default; t=1595650104;
+	bh=l1FB+E4ffyOBvGfvMIi0SLzoLcvrOV7u7XQ+AMop7Ss=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MENf1nMp3SNMK/9fwngZFtCrNicDJsAWsCOeOhdorF+CL5Ml/6yBnYd9YpA8K70f5
+	 xcHjEtgGU5ZN5HGTbxH5Upxxx7ezBtSEyTjSDiOHZ9a/HZy5uYFikWp3TWv6uCHi+z
+	 Vwz1j96PtqIhCE8ABVNgQ9amfRSr2G/GNlLdqBXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47415F80141;
-	Fri, 24 Jul 2020 21:55:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D1A2F8020D;
+	Sat, 25 Jul 2020 06:07:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74574F8014C; Fri, 24 Jul 2020 21:55:13 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 37E30F80212; Sat, 25 Jul 2020 06:07:30 +0200 (CEST)
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.132])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1354F800DF
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2020 21:55:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1354F800DF
-IronPort-SDR: qYHNOl9RW8V37yyjmaCOVJCxxDFF7JdSS/uqnK4UoswKxoSfXUaSSy+gTIaaUQsv2BPPIcJ3Ji
- JP09zNvG28HQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="168904457"
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; d="scan'208";a="168904457"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jul 2020 12:55:04 -0700
-IronPort-SDR: K9HoBDnheYlwXP2NIAqdfWqqtaNbqJ9pv48dA92xjJ0gxc/Ldofx0HulkWkgjkzAvVAXUmML7Y
- zl8OTcA6c1Rw==
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; d="scan'208";a="289090696"
-Received: from tuanado-mobl1.amr.corp.intel.com (HELO [10.254.79.47])
- ([10.254.79.47])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jul 2020 12:55:03 -0700
-Subject: Re: [PATCH] ASoC: core: use less strict tests for dailink capabilities
-To: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org
-References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
- <1jlfj98gb4.fsf@starbuckisacylon.baylibre.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <576823fb-a8a8-1f74-b7e2-d33b734022a7@linux.intel.com>
-Date: Fri, 24 Jul 2020 14:05:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1jlfj98gb4.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, broonie@kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEF9DF800DE
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2020 06:07:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEF9DF800DE
+Received: from localhost (unknown [192.168.167.13])
+ by lucky1.263xmail.com (Postfix) with ESMTP id 11EEEEC493;
+ Sat, 25 Jul 2020 12:01:58 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [111.204.108.116])
+ by smtp.263.net (postfix) whith ESMTP id
+ P5979T140275804518144S1595649718262681_; 
+ Sat, 25 Jul 2020 12:01:58 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <8979ef735d1a662965749e452507493a>
+X-RL-SENDER: penghao@uniontech.com
+X-SENDER: penghao@uniontech.com
+X-LOGIN-NAME: penghao@uniontech.com
+X-FST-TO: perex@perex.cz
+X-SENDER-IP: 111.204.108.116
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From: penghao <penghao@uniontech.com>
+To: perex@perex.cz, tiwai@suse.com, gregkh@linuxfoundation.org,
+ alsa-devel@alsa-project.org
+Subject: [PATCH 14216/14216] ALSA: usb-audio: This patch for prevent auto
+ wakeup from s3 trig by usb disconnect signal from Lenovo Thinkcentre
+ TI024Gen3 USB-audio.
+Date: Sat, 25 Jul 2020 12:01:55 +0800
+Message-Id: <20200725040155.27648-1-penghao@uniontech.com>
+X-Mailer: git-send-email 2.11.0
+Cc: "penghao@deepin.com" <penghao@deepin.com>, phz0008@163.com,
+ linux-kernel@vger.kernel.org, penghao@uniontech.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,27 +92,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: "penghao@deepin.com" <penghao@deepin.com>
 
-> Again, this is changing the original meaning of the flag from "playback
-> allowed" to "playback required".
-> 
-> This patch (or the orignal) does not explain why this change of meaning
-> is necessary ? The point I was making here [0] still stands.
-> 
-> If your evil plan is to get rid of 2 of the 4 flags, why go through the
-> trouble of the changing the meaning and effect of one them ?
+ TI024Gen3 USB-audio is controlled by TI024Gen3,when TI024Gens
+ enter sleep mode, USB-audio will disconnect from USB bus port,
+ so disabled the /sys/bus/usb/*/power/wakeup Fixesimmediately
+ wakup form s3 state
 
-My intent was to have a non-ambiguous definition.
+Signed-off-by: penghao@uniontech.com <penghao@uniontech.com>
+Signed-off-by: penghao@deepin.com <penghao@deepin.com>
+---
+ sound/usb/card.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-I don't know 'playback allowed' means. What is the point of using this 
-flag if it may or may not accurately describe what is actually 
-implemented? And how can we converge the use of flags since in the 
-contrary 'playback_only' is actually a clear indication of what the link 
-does. We've got to align on the semantics, and I really don't see the 
-point of watering-down definitions. When things are optional or poorly 
-defined, the confusion continues.
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 2644a5ae2b75..969c3809e051 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -640,6 +640,12 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 		}
+ 	}
+ 	dev_set_drvdata(&dev->dev, chip);
++	/*
++	 * ALSA: usb-audio: Add prevent wakeup from s3 state trig by lenovo
++	 * ThinkCentre TI024Gen3 USB-audio
++	 */
++	if ((usb_id->idVendor == 0x17ef) && (usb_id->idProduct == 0xa012))
++		device_set_wakeup_enable(&dev->dev, 0);
+ 
+ 	/*
+ 	 * For devices with more than one control interface, we assume the
+@@ -914,3 +920,4 @@ static struct usb_driver usb_audio_driver = {
+ };
+ 
+ module_usb_driver(usb_audio_driver);
++
+-- 
+2.11.0
 
-WFIW, my 'evil' plan was to rename 'dpcm_playback' as 'can_playback' 
-(same for capture) and replace 'playback_only' by 'can_playback = 1; 
-can_capture = 0'. So this first step was really to align them on the 
-expected behavior and minimal requirements.
+
+
