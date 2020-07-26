@@ -2,105 +2,110 @@ Return-Path: <SRS0=gzS/=BF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8145AC433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:54:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DF40C433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:55:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0851C206D7
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:54:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A964D2064B
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:55:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rD/4J9oh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="DGdIlHZp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E1Yezqie"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0851C206D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LGIbDLQO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="UPc74rNY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bIvw+fvT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A964D2064B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A28D1678;
-	Sun, 26 Jul 2020 04:53:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A28D1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83891168D;
+	Sun, 26 Jul 2020 04:54:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83891168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595732077;
-	bh=IDMH81WIRsDjga3aE3NauFJKm1C/jdwnQmQnL4ueMIM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rD/4J9oh43MNN9dqZ/8sgOUuS2gYoPAIOKJbATiCWN/z2aBWoFffhn1r1EzL1Yj/+
-	 VYbg3ZZKDKbHM1FN+p+SzQ79hwIEvvVOjaX8mx5ADoGeQVmzKW4w87wTOleVg3cGT1
-	 B5K/q57s/3UN54hbqdko2QYJGd9K+QVQKH/O+Kt8=
+	s=default; t=1595732129;
+	bh=CMBpmTeQtOqRjQ5RNPf3pVPdb8PMX/csHTzoYKweOhQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LGIbDLQOOTWLPTGK1y8+z6dSeipW3BhjrFJzV1BSDPEbX5Ocd+zYVS0u0GqUDgHAV
+	 ahb48wSrxA9QYY+af+10A7cLDGGgNL6W0tdwk9HfngdhYPYIxiFHjKq2rPnfVfq+M4
+	 df+zyvZsGQkiQaXRCJ14JuXJ6ck78uQoGlTMVnk8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0387AF8029A;
-	Sun, 26 Jul 2020 04:53:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31553F8021C;
+	Sun, 26 Jul 2020 04:53:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25739F8029B; Sun, 26 Jul 2020 04:53:44 +0200 (CEST)
+ id 44951F802BE; Sun, 26 Jul 2020 04:53:47 +0200 (CEST)
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
  [66.111.4.229])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5B46F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id AFCACF8021E
  for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 04:53:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5B46F801F7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFCACF8021E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="DGdIlHZp"; 
+ header.b="UPc74rNY"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="E1Yezqie"
+ header.i=@messagingengine.com header.b="bIvw+fvT"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id 9EEB5580428;
- Sat, 25 Jul 2020 22:53:36 -0400 (EDT)
+ by mailnew.nyi.internal (Postfix) with ESMTP id 634E85804FE;
+ Sat, 25 Jul 2020 22:53:37 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:36 -0400
+ by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm3; bh=f1ggifv2qgcXmIBc8IkyaYFUQ+
- xQAPJcNHBoK/4x6GQ=; b=DGdIlHZpufK70xhAOzazoy2zcD96Q3GW5iGSyLA4mg
- NFIZl/uP6yodeDrgnVkEW8rimFZge9u856d5XIyxLvhuZh4OCkIf2SxvZykIPi/w
- 31Muif3RoSMwTsILd5qnShu4Y3j2nIpDV/zKpFaQCjA5XRu/ez7JuSq84LWDJogF
- o1QhPbDIE19YC4Y1DjhsxDienwb43Ism1EpzY7Qi4SRBRfgzZOtFmKV/iinIfKAy
- 1wCJhhtvCZ7leirG/38EhoECR2B75lfkjbRE2VS/VNAiQ+f4U5gGfhNcncTNTFdm
- NCGkEJjsuIJzhs4P39xc9jIwNMap5g0gaAr+QB5CZ2Nw==
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm3; bh=o4vewBk05R45o
+ M+OvTaQj/HGmu35Pzpji2XDJh8Je4Y=; b=UPc74rNYonRFihpEhI/SoPPoE2OLf
+ 3AOMXp57DIeOVPYCX1WlM6gRAbVqx482EFpKwuLQnkEPg1Q8sCLVh6wBtvL1IX7p
+ 8CbK2M9oTbaKvPYj8ihWdZJDDtH6Hv16i3JKDz6EYQ6ZTWsPNo7UO915I2Ipasl8
+ 8coU1Md4Vs4WaF8FhUbDYPCp7TjxxKD/DLzAyweVtvD6QWYnT0dBL9VG5MD5AXPk
+ rcwfDN/NphKNy7elFheXhBe8mL8dr6WXk3qxB0wMqIyFqNVbl0bkRz01QfFsipxA
+ CF4C3uKShZwtGQkkH4Z4HkmklBe47fVwZ65kg8Bn79dpop7UymuuAMH+Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=f1ggifv2qgcXmIBc8
- IkyaYFUQ+xQAPJcNHBoK/4x6GQ=; b=E1YezqiewiNurCuxe5NhRkz14JBoQjxru
- v0E8BSeC+mJMKiJOIf8elkAs8AXRY19DUgZyOF97IvSdbaWcUgSd7fYfmJ9UkODE
- HUaWahd2PmTL94RFeh8i0uit5ZHI05MGxAkuSZ18BTmkgjL6loekrq2gq9F18Vca
- uTmy7kjRubVRoeSU2tG2fNUBqYnvaE4Ff7pNFFChcxkn/W2cWb/bNzdNUgGhix9T
- PCZ10XMysxpd1CfDISyRA8UQi7woCcYLo69fLHHUR1UkDj6WWgaZduFoU0VBnFPv
- 6M5oEHDucDUOvvkAb3Ev4yK+LO5OxwyuWtUkSnozVf9wPBR+Bs0Xg==
-X-ME-Sender: <xms:L_AcX1qaQZloYaNCIOK-q2UERnpBfBLjXfH0R411WxV1NSZK4NlAvw>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=o4vewBk05R45oM+OvTaQj/HGmu35Pzpji2XDJh8Je4Y=; b=bIvw+fvT
+ AVF01DPo42q4U6Z1YHQipuXJnLaKpINLoBkHu9xurylnZ3lf1hMsJSgRgWi4HHQ0
+ 2zUz+DdJ3kMjdePz+Roc1526vPYlW1oQbAfnT2oAJmWiIk2GXvqgkvtmK6tHEPMi
+ 9CQYp5O0R/ZjStagw6nj8kqe00hKokFHHLCeZBmqeufBXXLOxgN5MZSC2cDsKS/U
+ oELJu8UepEySMo0I3Qu7TC2gcvYoZ3IN60qJKvPN01wqEn8hAvQ2GdpfeNGzZoq/
+ WZfQWHb8WWn74+bRCcDGM/RxYOtDRz7XReBNZ32oj8ZYc/+Julj0xLlgH7+hiUUF
+ jBq8+tPG5T7yvg==
+X-ME-Sender: <xms:MfAcX5MXasn16JIcM4KEI_ovjZw-Wu3Fz1zHGNQUkkmccC93jp6n4Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
- ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
- htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
- tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
- dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
- rhhg
-X-ME-Proxy: <xmx:L_AcX3qwidCk6rwxszrRXQ23DURSYgn33SmLoB8rkgwiHvfRLSajXw>
- <xmx:L_AcXyMYBvMfQrVDX5rJExI_B4kvD8pvNgqveAHlLx2APOFyFv_6oQ>
- <xmx:L_AcXw4lb9LYcdvIS1AmFmRDnyTSDC0d-bYoD74ZNCXuFYfozK_EKA>
- <xmx:MPAcXzZNCLDDdndCY6f5kxqmnuepiAmrPEqRd-_-FJEKtfwyF_0eVw>
+ fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
+ ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
+ grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
+ jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
+ gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+ rdhorhhg
+X-ME-Proxy: <xmx:MfAcX7831JAwFG5oi6PRXaNtG3NV3hrkzo1aMnn2oFHstkrSLtx0vw>
+ <xmx:MfAcX4Su5VHXbtv8y43oph__249XTC9PPBdcVTcQDu1JJemabgvo9w>
+ <xmx:MfAcX1tSKdhcZatclbPDREhdkeeEmOVfRZPtW2NzAsca-X7Dpvq7pA>
+ <xmx:MfAcX7svR0O5hB8tv9GJHLAH9qVg6dsKCT1o8dzmAWMLExLjYD11iQ>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id D5A2D3280063;
- Sat, 25 Jul 2020 22:53:34 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id C357C328005A;
+ Sat, 25 Jul 2020 22:53:36 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH v2 0/8] ASoC: sun50i-codec-analog: Cleanup and power management
-Date: Sat, 25 Jul 2020 21:53:26 -0500
-Message-Id: <20200726025334.59931-1-samuel@sholland.org>
+Subject: [PATCH v2 4/8] ASoC: sun50i-codec-analog: Make headphone routes stereo
+Date: Sat, 25 Jul 2020 21:53:30 -0500
+Message-Id: <20200726025334.59931-5-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200726025334.59931-1-samuel@sholland.org>
+References: <20200726025334.59931-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
@@ -121,27 +126,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series performs some minor cleanup on the driver for the analog
-codec in the Allwinner A64, and hooks up the existing mute switches to
-DAPM widgets, in order to provide improved power management.
+This matches the hardware more accurately, and is necessary for
+including the (stereo) headphone mute switch in the DAPM graph.
 
-Changes since v1:
-  - Collected Acked-by/Reviewed-by tags
-  - Used SOC_MIXER_NAMED_CTL_ARRAY to avoid naming a widget "Earpiece"
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ sound/soc/sunxi/sun50i-codec-analog.c | 28 +++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
-Samuel Holland (8):
-  ASoC: sun50i-codec-analog: Fix duplicate use of ADC enable bits
-  ASoC: sun50i-codec-analog: Gate the amplifier clock during suspend
-  ASoC: sun50i-codec-analog: Group and sort mixer routes
-  ASoC: sun50i-codec-analog: Make headphone routes stereo
-  ASoC: sun50i-codec-analog: Enable DAPM for headphone switch
-  ASoC: sun50i-codec-analog: Make line out routes stereo
-  ASoC: sun50i-codec-analog: Enable DAPM for line out switch
-  ASoC: sun50i-codec-analog: Enable DAPM for earpiece switch
-
- sound/soc/sunxi/sun50i-codec-analog.c | 176 ++++++++++++++++----------
- 1 file changed, 111 insertions(+), 65 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
+index 17165f1ddb63..f98851067f97 100644
+--- a/sound/soc/sunxi/sun50i-codec-analog.c
++++ b/sound/soc/sunxi/sun50i-codec-analog.c
+@@ -311,9 +311,15 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 	 */
+ 
+ 	SND_SOC_DAPM_REGULATOR_SUPPLY("cpvdd", 0, 0),
+-	SND_SOC_DAPM_MUX("Headphone Source Playback Route",
++	SND_SOC_DAPM_MUX("Left Headphone Source",
+ 			 SND_SOC_NOPM, 0, 0, sun50i_codec_hp_src),
+-	SND_SOC_DAPM_OUT_DRV("Headphone Amp", SUN50I_ADDA_HP_CTRL,
++	SND_SOC_DAPM_MUX("Right Headphone Source",
++			 SND_SOC_NOPM, 0, 0, sun50i_codec_hp_src),
++	SND_SOC_DAPM_OUT_DRV("Left Headphone Amp",
++			     SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_OUT_DRV("Right Headphone Amp",
++			     SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Headphone Amp", SUN50I_ADDA_HP_CTRL,
+ 			     SUN50I_ADDA_HP_CTRL_HPPA_EN, 0, NULL, 0),
+ 	SND_SOC_DAPM_OUTPUT("HP"),
+ 
+@@ -405,13 +411,19 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "Right ADC", NULL, "Right ADC Mixer" },
+ 
+ 	/* Headphone Routes */
+-	{ "Headphone Source Playback Route", "DAC", "Left DAC" },
+-	{ "Headphone Source Playback Route", "DAC", "Right DAC" },
+-	{ "Headphone Source Playback Route", "Mixer", "Left Mixer" },
+-	{ "Headphone Source Playback Route", "Mixer", "Right Mixer" },
+-	{ "Headphone Amp", NULL, "Headphone Source Playback Route" },
++	{ "Left Headphone Source", "DAC", "Left DAC" },
++	{ "Left Headphone Source", "Mixer", "Left Mixer" },
++	{ "Left Headphone Amp", NULL, "Left Headphone Source" },
++	{ "Left Headphone Amp", NULL, "Headphone Amp" },
++	{ "HP", NULL, "Left Headphone Amp" },
++
++	{ "Right Headphone Source", "DAC", "Right DAC" },
++	{ "Right Headphone Source", "Mixer", "Right Mixer" },
++	{ "Right Headphone Amp", NULL, "Right Headphone Source" },
++	{ "Right Headphone Amp", NULL, "Headphone Amp" },
++	{ "HP", NULL, "Right Headphone Amp" },
++
+ 	{ "Headphone Amp", NULL, "cpvdd" },
+-	{ "HP", NULL, "Headphone Amp" },
+ 
+ 	/* Microphone Routes */
+ 	{ "Mic1 Amplifier", NULL, "MIC1"},
 -- 
 2.26.2
 
