@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85F66C433EC
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:56:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18F3DC433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:56:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0DA8620700
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:56:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 957732065F
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:56:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X4VcTCxx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="csu6giCg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="p0Uqd2BR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DA8620700
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wxeq7iV2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="pfFh4ueo";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="h+TZ/BQh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 957732065F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75892169B;
-	Sun, 26 Jul 2020 04:55:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75892169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F2EE1687;
+	Sun, 26 Jul 2020 04:56:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F2EE1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595732178;
-	bh=A47WfdrVghYXogX4aCpmFEcNqDVWvtJl7sviXbYF3Y4=;
+	s=default; t=1595732213;
+	bh=yYIBeQFmh8i35q6KyzVV7E7bMgwEkiJYykDLmLwRhvI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X4VcTCxxhx3hVeruJwFYnO7vUaLO59wIUSpOLBjR/xuZuQ7yA62ZSo723MUPI99UN
-	 NfYzGhmabZ/LJ56f+3fZNB6IIxVNgJgJ5wGecXEqlA2+WQYL09+SfSNwGyjUYogCxz
-	 Ctr9QlZkqYPGZ4IGdoVkQOx0/pMEmuQsQKuvXQ5Q=
+	b=Wxeq7iV219w5NlA+BzO/jvOqsnVcwSvqVYLQAgfk8ghZepPcjfiQB/8Nk/3/gkz3Q
+	 aDesdhwz2bPB4/LP9RGvDtdkhjGYjGLVjESlpokIKD+claD53VQ3USa5WBj83+dvmV
+	 A5aDtCvOgPX+fr9BW2/+eiE7io3L8mhWPTuHh8u8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5D70F80227;
-	Sun, 26 Jul 2020 04:53:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0C99F802BE;
+	Sun, 26 Jul 2020 04:53:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4F3AF802BD; Sun, 26 Jul 2020 04:53:51 +0200 (CEST)
+ id B881CF8021E; Sun, 26 Jul 2020 04:53:51 +0200 (CEST)
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
  [66.111.4.229])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0DA4F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA519F8020B
  for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 04:53:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0DA4F8013C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA519F8020B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="csu6giCg"; 
+ header.b="pfFh4ueo"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="p0Uqd2BR"
+ header.i=@messagingengine.com header.b="h+TZ/BQh"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id A0985580449;
+ by mailnew.nyi.internal (Postfix) with ESMTP id A171B5804F6;
  Sat, 25 Jul 2020 22:53:36 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
  by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=UYJXF3xSl7ipV
- 0HUn2XdFBiDjB2DIQJX8lpSmrLgaWI=; b=csu6giCgLI37nW7y5wp5bo0lnQyLz
- /2LXD/sziBdl5MzMFK9kp3/OdjEcfoB6Mivanl5lVtODvuyN1Fm3+FqG4V1y9RFW
- jdcC+0gsQqYuqW7WqqlUeehGwpQHCkMyfFvuxAuiwdnb6GNmOb6KLIGw+ltE0R27
- e2i6I1T4+avr7TDGaCnhPPV798ZlnyF0qDrcRvro/uW6GTcuUwgxBVH8RJtkMSuO
- JR+h2fbiyIg2w0o5pHEyLf5r+HvlCkFkGRj/Gd8ZFAGaqYlTa3kzrK9W+kjaQ2VN
- /K4htkZxX7YaSIntm0sZJnA3jwcpLa8T/I7ZXjnqflY03GAHs4sbIgldg==
+ :mime-version:content-transfer-encoding; s=fm3; bh=R4wOLyBerCdsk
+ WWpBq4a90wQHWbcAHkrC0l6Mao/Ahc=; b=pfFh4ueo3eQ97wv/M33CDFMLNvTXN
+ sNsWRNnqcU6xA5BD/s4MJYSY0pamEMJcmicvBxiLczN90Z+J0QDVtqVXDCdaFDRR
+ IGP7IciQXWA7zx8c6XMpp/wNAFqknPoOvTnQlczdTuSbPS5hHGmIlc549tV+2Av0
+ TB/3bS9SjDHhuKtENIRKEuBCobwnCzlkNlT25tzP0ifNk36ZSSWYoqAu5uns4M6Q
+ /403tUTIVILzKRNnpwGqEndxvVEb2Ctr2m5chiUscJJBple7zF7f+q9b4lXNbEgu
+ vcGO664oBU6ThMHRZ1yGkZg1L7muWQx+inG2uiw0/nrOKKiMjS+cGFMpA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=UYJXF3xSl7ipV0HUn2XdFBiDjB2DIQJX8lpSmrLgaWI=; b=p0Uqd2BR
- /L1EKqjGApnXl0vJon5q8YE3Ci8ORRowLJPl2M79vRKklqVyOtd9RvMLT6ZcEKvh
- MSuSJzSH1NCZEc5LSyTTwY7ear5OdQtTT7cn/J7AHGJ0GhlKUd7yqMMavVRdyYoj
- b5siLmaO2ehi/sI4ZLm/nUQhyN3a6/5kAfsKo5mSVLG3/kLjCW0e76jqBQLdRfP3
- jRKfqzpUiyzIMNTT/VAyE0Ms+huZqdUiIVuDtssxVovTE1irur4nHMKi0bv5bqLj
- CIZXxT2Bw4qZKn4wVncCkpHy4ScfgeULNQMpyA4otBbU8mb2zLZAkhYcwWKKGs0z
- QN36aXOPmDwT2Q==
-X-ME-Sender: <xms:MPAcX7tj0HDGaitZrEgscfX36mdDi4-Lg0kxsfZT4Ctk49OxmwwMYQ>
+ fm3; bh=R4wOLyBerCdskWWpBq4a90wQHWbcAHkrC0l6Mao/Ahc=; b=h+TZ/BQh
+ T+DEQnIuzPsLYxDDD82DlW3G5+cGHKgrK7HF9zZk7aSVEXRRZDENyi80UEQsrBfB
+ 8ohqznERdaKg9cFGLRrGrVJr2bSOS9yTNsjpP1YAbkcgYAiLUVsAdNwbxfUQZjth
+ R7xiuWktV9zOTe3QdBRaJB0aqFTM5ypCW4pm34yAwRYB5KTaQBzRW2EG2dbOh7FZ
+ cJ1lwsA1yhzric4njx7mBMBSuLTiD0A5hbMub03srVeuyhjteM01GBSM42ledXy4
+ lQmhOghTfdjHTcMuIiSHVYj19CbaywjzMujHAiMjVlYJn9y2lEKYF9cPpKOicoyz
+ rR51HhHFRE0s2A==
+X-ME-Sender: <xms:L_AcX5cLYckrxRkVQV0p-8eoD466hk_aWtP5wuFZguZyLQExNthPPw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -88,22 +88,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdote
  jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
  gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
  rdhorhhg
-X-ME-Proxy: <xmx:MPAcX8eUrqTBJuXIioab-8NVccQlwhqM_Ry8D0bPsJdi-5VnUG89FA>
- <xmx:MPAcX-x61KhOaOeZ5vMC1mACA2RvklxaB4DqLWR3fTECE9bmil_xOQ>
- <xmx:MPAcX6PKWwf8zXyzLLvTEzn9hnI-jLpkZJRmZLwgvZXSQ5l6M2XbhQ>
- <xmx:MPAcX8PeEirb3iRscPekq7tURSU5nFIyJ8YE-sYx9xbrBpNAVcJGqg>
+X-ME-Proxy: <xmx:L_AcX3O15dfNRy7Evs61vTshyzGsa4swMkJljV18r4rdh-ZcQCOE-g>
+ <xmx:L_AcXyjsN0Xwtwk8US6WQ3a9QgjqjyqY5srWuhqw_gHcPiZRtXwn4w>
+ <xmx:L_AcXy_pvmDSXwTFP4mwTWhO7GbHtvAoABkJ3xlRJUx1_DRN9hhjDw>
+ <xmx:MPAcX2-CQ-eBqOxhmggjIfET7yx0wmkUkPuIb_hjqMzsMmiUfJDbEA>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id CFB23328005A;
+ by mail.messagingengine.com (Postfix) with ESMTPA id 58D9D3280060;
  Sat, 25 Jul 2020 22:53:35 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH v2 2/8] ASoC: sun50i-codec-analog: Gate the amplifier clock
- during suspend
-Date: Sat, 25 Jul 2020 21:53:28 -0500
-Message-Id: <20200726025334.59931-3-samuel@sholland.org>
+Subject: [PATCH v2 1/8] ASoC: sun50i-codec-analog: Fix duplicate use of ADC
+ enable bits
+Date: Sat, 25 Jul 2020 21:53:27 -0500
+Message-Id: <20200726025334.59931-2-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200726025334.59931-1-samuel@sholland.org>
 References: <20200726025334.59931-1-samuel@sholland.org>
@@ -127,50 +127,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The clock must be running for the zero-crossing mute functionality.
-However, it must be gated for VDD-SYS to be turned off during system
-suspend. Disable it in the suspend callback, after everything has
-already been muted, to avoid pops when muting/unmuting outputs.
+The same enable bits are currently used for both the "Left/Right ADC"
+and the "Left/Right ADC Mixer" widgets. This happens to work in practice
+because the widgets are always enabled/disabled at the same time, but
+each register bit should only be associated with a single widget.
 
+To keep symmetry with the DAC widgets, keep the bits on the ADC widgets,
+and remove them from the ADC Mixer widgets.
+
+Fixes: 42371f327df0 ("ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path controls")
+Reported-by: Ondrej Jirman <megous@megous.com>
 Acked-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun50i-codec-analog.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/sunxi/sun50i-codec-analog.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index cbdb31c3b7bd..4ad262c2e59b 100644
+index f5b7069bcca2..cbdb31c3b7bd 100644
 --- a/sound/soc/sunxi/sun50i-codec-analog.c
 +++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -438,6 +438,19 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	{ "EARPIECE", NULL, "Earpiece Amp" },
+@@ -363,12 +363,10 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 			   SUN50I_ADDA_MIX_DAC_CTRL_RMIXEN, 0,
+ 			   sun50i_a64_codec_mixer_controls,
+ 			   ARRAY_SIZE(sun50i_a64_codec_mixer_controls)),
+-	SND_SOC_DAPM_MIXER("Left ADC Mixer", SUN50I_ADDA_ADC_CTRL,
+-			   SUN50I_ADDA_ADC_CTRL_ADCLEN, 0,
++	SND_SOC_DAPM_MIXER("Left ADC Mixer", SND_SOC_NOPM, 0, 0,
+ 			   sun50i_codec_adc_mixer_controls,
+ 			   ARRAY_SIZE(sun50i_codec_adc_mixer_controls)),
+-	SND_SOC_DAPM_MIXER("Right ADC Mixer", SUN50I_ADDA_ADC_CTRL,
+-			   SUN50I_ADDA_ADC_CTRL_ADCREN, 0,
++	SND_SOC_DAPM_MIXER("Right ADC Mixer", SND_SOC_NOPM, 0, 0,
+ 			   sun50i_codec_adc_mixer_controls,
+ 			   ARRAY_SIZE(sun50i_codec_adc_mixer_controls)),
  };
- 
-+static int sun50i_a64_codec_suspend(struct snd_soc_component *component)
-+{
-+	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
-+				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE),
-+				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
-+}
-+
-+static int sun50i_a64_codec_resume(struct snd_soc_component *component)
-+{
-+	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
-+				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE), 0);
-+}
-+
- static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
- 	.controls		= sun50i_a64_codec_controls,
- 	.num_controls		= ARRAY_SIZE(sun50i_a64_codec_controls),
-@@ -445,6 +458,8 @@ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(sun50i_a64_codec_widgets),
- 	.dapm_routes		= sun50i_a64_codec_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(sun50i_a64_codec_routes),
-+	.suspend		= sun50i_a64_codec_suspend,
-+	.resume			= sun50i_a64_codec_resume,
- };
- 
- static const struct of_device_id sun50i_codec_analog_of_match[] = {
 -- 
 2.26.2
 
