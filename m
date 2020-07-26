@@ -1,87 +1,118 @@
-Return-Path: <SRS0=Kg3Q=BE=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=gzS/=BF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB65CC433E1
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jul 2020 10:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65403C433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 01:27:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7599B206EB
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jul 2020 10:21:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DF6DF2070C
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 01:27:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OPgAwtSg";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NwDdQfBl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7599B206EB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JDAumvjp";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="lHVvSAw1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="o561a/MA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF6DF2070C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0336167D;
-	Sat, 25 Jul 2020 12:21:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0336167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DA7D82A;
+	Sun, 26 Jul 2020 03:26:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DA7D82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595672511;
-	bh=Cx30daHQvDW29UUOYle7IdZkVt861pyWQsnZWs8IAxw=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=OPgAwtSg8R8IxgIhnnsBqSZVBP6WQpYN4rp6WM4RI5b0CCziz3HY1Nq2I6emu5NPi
-	 4PMpd9zNvr7GVbhrZy12j4QEtffmUvq/T4NNAn9QH9ymmxmxGeLym+D5ZhDEYW7zYp
-	 TdOGIMcuC6HgBtPYPkDTRmSjtZAKCjGI/U3BFnqo=
+	s=default; t=1595726824;
+	bh=S2BAxCY7XZ2P897PVTA3VmjfM2ZdpNLH7S3Ji5kGsl0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JDAumvjpc7wbUIQlbwUcuWYLohzJXZnrHPr4dgHZ1nCn3p7kd2ARw9CzZNg0gNy9c
+	 9dodYk7VxwjBpjNSmO3/q2zU3XixFKBd4uj0TtC9vJflEvgoitSU7RvlQp1iYCwtWk
+	 huOp89ltem3CV3wA9CvR8p9aajtrWnLiyldvcO28=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F3DFF800DE;
-	Sat, 25 Jul 2020 12:21:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAE31F8020D;
+	Sun, 26 Jul 2020 03:26:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24902F800DE; Sat, 25 Jul 2020 12:20:59 +0200 (CEST)
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com
- [IPv6:2607:f8b0:4864:20::d32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 97444F8028D; Sun, 26 Jul 2020 03:26:10 +0200 (CEST)
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
+ [66.111.4.229])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77597F800DE
- for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2020 12:20:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77597F800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 910BCF8011F
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 03:26:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 910BCF8011F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="NwDdQfBl"
-Received: by mail-io1-xd32.google.com with SMTP id s189so5034823iod.2
- for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2020 03:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=37n7QaWOYkrlns9TnvU32tm+M/AN4tL2ffSDuwW/ifs=;
- b=NwDdQfBl0XPVJzzcgmsdG9R/kxoSt3EQc5amA1TDK5VNVcOkhHtstui/AtyOoyxrOp
- b6/cALneCOFuujBA4DV9Ybe3eWVg9Hw+nU0XbQlt1n7o1sWdReTpNUJ8n0PaPV0h3o2W
- LGkQHcI4k9T7B3BAsKQZxCwBeJRivOIh+QNIHqBr0vUJLuRhopkwT6TcgN8k5VHp+IhS
- 8YZJ6+XQFM0l2rAjCEqMVqd8Y6hVny2tn0jNf/O0Q46uWtOD2eLAK/Z2aEhtQGSJoVFJ
- CN5JR9iCuwkeBGMzaSjQlanZYXW+i2xyaz9Y4SmzQEu3FpIZ+MxmmGZrR2RtmQANQwfy
- 0X5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=37n7QaWOYkrlns9TnvU32tm+M/AN4tL2ffSDuwW/ifs=;
- b=YL/xT4v7JHszs8SDBQr8oWOMB7GcxEIO5VJ/I+f1gPYsR5UjwGvbSdAnZUeKcifgS6
- fwuofuOQClEFflEwH4tbPHrwTO0frsBZCsv96GCxJ5A2a0Vhd3LN32z7z5KZ8nHyqrDR
- hsdlvEy2FNnPAXzfRxtlYk9sT1Mi2W6V/OObBQI7Ryt6dNnIrM37+taXXcmvyPk1wXeZ
- fwCo2yz0p7Qye4RuDTbQuuN3MscjlYLhqt7ZXzPUDn36CxNIEsaUUFkUi9/gVWjSYKlx
- THr8smNhrJugAjoiW/pMIADdb2m8pOrJMjFu/QLEDCKHP0EvpeJM7+WEQvVbxdXd+lfO
- noPw==
-X-Gm-Message-State: AOAM530nGop6sLzVjWGtOQqGnNTyFTU4KZbg5Fw4iB8QHIFLj5dIXjYO
- bdqaFM4Zl+Ppq5r3Uc7uQTYN59w95l8iUd3KqPMmoZ70ueg=
-X-Google-Smtp-Source: ABdhPJxJB3lde80dxPOF8LwXZalvWsttdLApmuPqdcikak4u0WIKVeijyeBWOYAMCYMcVRBZHLGZjcCh51A1k2E8vls=
-X-Received: by 2002:a02:3c08:: with SMTP id m8mr15139035jaa.107.1595672451854; 
- Sat, 25 Jul 2020 03:20:51 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="lHVvSAw1"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="o561a/MA"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 7384A58014B;
+ Sat, 25 Jul 2020 21:26:00 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute3.internal (MEProxy); Sat, 25 Jul 2020 21:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm3; bh=Bc+s0nLaRpZIx
+ yCBvQ4oj1VwkiAzKp+9hlsJuhGXWAM=; b=lHVvSAw1ZVEQfJMC1pDEJsvgNHUQC
+ ToktL4COHMq/yhL+CXinpvhwck8N7ckpGHJoXgZAYW4+ZX+EACJHnGOZDE8N8dCu
+ V8saNvMyvYjMsdCHLAorj2rKQZ6lU5hxsQvRIgt6DiBKLjfsOhwo+V+yqwdHNadP
+ WFv9UrMrcwDiLgoJWK0pztN8TeivUK2wQQjrf2gNSZKnYF+IHvv3+tMRkfEV8WKF
+ Ppx5V9wNX1el4R++U4QFa5GXmQ8gkl5cQ/qZygVTSTVayfQdakT39q5wuzGNilf7
+ H/4Ex92+OvtrRIbnFNpL3HquZRt+rWhmwGr5dpUQYWDM4rDQp1mFnTyEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=Bc+s0nLaRpZIxyCBvQ4oj1VwkiAzKp+9hlsJuhGXWAM=; b=o561a/MA
+ JTGnE42PW2YjZgncOVPhgWjXBBRDNPrA1jPhpaM+PahPWgglJvDF8F1CZCGB0dBK
+ B3VEEGZzmjJG6rYW/P5T83fOTqnzHQyIGLXZ3OrDjxNSVnwHL7ygazZoUItBOQ1k
+ zG391ZxWp0MGbFe0GvD7xgrJfI+6lEVEQHTuY+XhuXsTz8PxXFmIS793bMxuQJ0Y
+ jko94yEe56rowUcECducoVe4KeTWeScfvlYLMK5rBaPqDBd2bRL5vyPx41IfuJ+O
+ nmmvyBFtoRTQUx2q4UmTZUgf9pi61eW5er3hI3vPttPso+/6e4ug939s0UsCbHE+
+ WavsLeGyMD87Mg==
+X-ME-Sender: <xms:p9scX6QxgGqbunpekQBTatw5eZIHwmitByMoW1-uhaDl3BLMN2SwMA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdegfecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
+ ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
+ grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
+ jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
+ gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+ rdhorhhg
+X-ME-Proxy: <xmx:p9scX_yWVMgMMUn_Fe5R6YbGcjJxFfzI3QqyQmYquCbxdsu4ZzJp4w>
+ <xmx:p9scX30JW_vZ9B0qbbut9WlqEOlb4LVRFTx1vV4k3CBjW7pex6Xj2w>
+ <xmx:p9scX2DEaDqJW1M2axr7KmV1Y0446X32Nealw3SmpcZfnqyGYJk8Cg>
+ <xmx:qNscX2pC0afVfIF804Gnm4lhCY4u0ZoXlGf6inmLtdE4lEpeZeWThA>
+Received: from titanium.stl.sholland.net
+ (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+ by mail.messagingengine.com (Postfix) with ESMTPA id BFEF8306005F;
+ Sat, 25 Jul 2020 21:25:58 -0400 (EDT)
+From: Samuel Holland <samuel@sholland.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 1/7] ASoC: dt-bindings: Add a new compatible for the A64 codec
+Date: Sat, 25 Jul 2020 20:25:51 -0500
+Message-Id: <20200726012557.38282-2-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200726012557.38282-1-samuel@sholland.org>
+References: <20200726012557.38282-1-samuel@sholland.org>
 MIME-Version: 1.0
-From: Yasushi SHOJI <yasushi.shoji@gmail.com>
-Date: Sat, 25 Jul 2020 19:20:41 +0900
-Message-ID: <CAELBRWJ7oL1+v1eX_rZ6gPkC2ykbms-rcyGMQZ+MTmOKMVnJSQ@mail.gmail.com>
-Subject: Lenovo X270 with HDA ALC298
-To: alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Samuel Holland <samuel@sholland.org>,
+ linux-kernel@vger.kernel.org, Vasily Khoruzhick <anarsoul@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,43 +128,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+The audio codecs in the A33 and A64 are both integrated variants of the
+X-Powers AC100 codec. However, there are some differences between them
+that merit having a separate compatible:
+ - The A64 has a second DRC block, not present in the AC100 or A33.
+ - The A33 has some extra muxing options for AIF1/2/3 in the
+   AIF3_SGP_CTRL register, which are not present in the AC100 or A64.
+ - The A33 is missing registers providing jack detection functionality.
+ - The A33 is claimed to invert LRCK, but this is not seen on A64.
 
-I noticed that my 3 years old Lenovo X270 with Intel HDA & RealTek
-ALC298 doesn't work with 3.5 mm audio combo jack with 4 pole CTIA. A
-bit of googling showed me that `snd-hda-intel` module can take some
-options like `model` to run some fix ups. and I have found that
-`model=alc298-dell1` seems to at least work. But its gain is way too
-low.  It's mostly just noise.  It sounds like my mic is on the
-line-in.
+Since the driver will continue to work on the A64 using the A33
+compatible, albeit without jack detection functionality and with
+possibly inverted channels, as it does now, allow the A33 compatible
+to be used as a fallback.
 
-So, I opened `patch_realtek.c` to see what's going on. I found the
-following but not sure what the values for `.v.pins` are for.
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ .../bindings/sound/allwinner,sun8i-a33-codec.yaml           | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-```
-[ALC298_FIXUP_DELL1_MIC_NO_PRESENCE] = {
-.type = HDA_FIXUP_PINS,
-.v.pins = (const struct hda_pintbl[]) {
-{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-{ 0x1a, 0x01a1913d }, /* use as headphone mic, without its own jack detect */
-{ }
-},
-.chained = true,
-.chain_id = ALC269_FIXUP_HEADSET_MODE
-},
-```
-
-In `apply_fix(), these `.v.pins` values are passed to
-`snd_hda_apply_pincfgs()` but I can't find what values mean.  Would
-someone please enlighten me?
-
-My questions are
-
-1) How can I found out which pin goes where.  There is x270 schematics
-   on the net but not sure it's correct.
-
-2) What does the value, ie, 0x01a1913d, represent?
-
-Thanks,
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+index 55d28268d2f4..67405e6d8168 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+@@ -15,7 +15,11 @@ properties:
+     const: 0
+ 
+   compatible:
+-    const: allwinner,sun8i-a33-codec
++    oneOf:
++      - items:
++          - const: allwinner,sun50i-a64-codec
++          - const: allwinner,sun8i-a33-codec
++      - const: allwinner,sun8i-a33-codec
+ 
+   reg:
+     maxItems: 1
 -- 
-              yashi
+2.26.2
+
