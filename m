@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49715C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:57:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EB09C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:57:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3FFA2065F
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:57:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D96BF20700
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:57:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DSMWsG0t";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="Y1kA1pm9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X205fPC6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3FFA2065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ki7eS5ak";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="WNTqREg2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SuQ5Ms0U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D96BF20700
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6894D169D;
-	Sun, 26 Jul 2020 04:56:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6894D169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F7FA168F;
+	Sun, 26 Jul 2020 04:57:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F7FA168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595732230;
-	bh=emNVAjlDNwaKUwK5iG1yTH0QrmA0wyhRQZrAM0YLo4U=;
+	s=default; t=1595732276;
+	bh=Mf513qq4uV5yDAv0b5IVOSiXpkcHWUGdmpsKK6fefVk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DSMWsG0tUlbMv4g+O2pqqhBn3xyg//17xXiauCFrm0ZfBH48jMe0+WDXu3zMOpt+N
-	 bVi0VOJR224B19r66mvR5v/OujRiURTkUh7PXNReW1pInQ1g1XeQV20te0k+zF4uaE
-	 OQ21iGNLV31d4EKpTmDjgdnpW2TT1YEFhI4TNUtM=
+	b=Ki7eS5akAo4Un5rzM7o5qbztEfA+Fq+W5/CLhol8zUm/rBdmqF0neR5aSVUL8wJTb
+	 ZKL3U5nwMAaqEu92Fi9K4PQpMS/22cb0Qy3a887PqFwGpdlWeR22zTnAjlt/Sj2qRR
+	 NocSqun0bgWo2pw9EVdAUmKd9pvy3X3LR6XVxfG4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD44DF802D2;
-	Sun, 26 Jul 2020 04:53:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B4FCF802DC;
+	Sun, 26 Jul 2020 04:54:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C883F8020B; Sun, 26 Jul 2020 04:53:52 +0200 (CEST)
+ id E102FF80256; Sun, 26 Jul 2020 04:53:51 +0200 (CEST)
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
  [66.111.4.229])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD450F8021C
- for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 04:53:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD450F8021C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 797B1F80227
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 04:53:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 797B1F80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="Y1kA1pm9"; 
+ header.b="WNTqREg2"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="X205fPC6"
+ header.i=@messagingengine.com header.b="SuQ5Ms0U"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id E44A15804FB;
- Sat, 25 Jul 2020 22:53:36 -0400 (EDT)
+ by mailnew.nyi.internal (Postfix) with ESMTP id 50F0458050B;
+ Sat, 25 Jul 2020 22:53:39 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:36 -0400
+ by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=EWGgSuNfoXkgq
- 73IQIruj8n5iO5IxWJSFMyIpdf6H4g=; b=Y1kA1pm9VpCqZwlBktwKnD6axa3Oq
- Q1ONj7J2gFEhYCRyipaI1Y9n58YEq4eaBU7f3zQNfcqxP35hiBfinbX+6rC3MwZj
- aQT+yzHQUN6t6v1e/MloYiRhM41D0UCzpEc2Jkflz8yF9WPSpcFEGvaWzd7mkGqz
- eLisbtMthJC8qPeO16XMqzXFKZdQrIcuOMgtmqWt35LAqiQD2molzlg7jI0ZyRd7
- BK7ty1KL1/yTV8r+cpLN1dLEIhZjdqodSsPOxg7xz+krQShptyJBeJjxH2rb8DWS
- 4pNxUOo0Z2dy8oIfzv5M13F1zflHyPW8u6FwrCi0o6fkyTmfNiLd68VFA==
+ :mime-version:content-transfer-encoding; s=fm3; bh=mJuPaeFZ/TtUC
+ wF3A6FAm7Kyf5fli2VKl5DI4MtgM7E=; b=WNTqREg2V1HmtJOPrziyiFG10Nzyr
+ IH/X0U81dmphQGcSn4/JwMdSTqferhALQlOr+H5Yu7zyRiI+2hrtsvQs13ZAd00E
+ pqSSnQ9jhpneaahWSa3bapwe/OEYDetDKy0RMxR4QQQOl6L/v/wwZf/QQ4Lz406K
+ XUYZNDl83RpiDKTasC77vgzerLXtiIk6Y2ifMFtURIgvhcNsrE6RfLqusr7I/3oH
+ EJyMO4cxAfRK7F8MAhz6TaicQyLVgjU2FrDaTArkE8XyLAfcKmhLmsn0NzK0yIGL
+ m9HZsnSjGBrXv2onSu41wZermPlFrKWxKlm2RgG4YN+qGwjioxT+kom0w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=EWGgSuNfoXkgq73IQIruj8n5iO5IxWJSFMyIpdf6H4g=; b=X205fPC6
- bdNXcUJh0SJ0W7HkfEApXlXJYQxoxrZX0NCu7G6iAliSh5/UlLH3PJO3LBUM0joF
- Xv4M4q8ah4A/dRop37BQTNDAxf/frKzOOa6mo9G39aUBvNcVG3nYwrTE44IBqKqg
- dWlBl7oFhpfSl9KfMxE2o5PF3Sb7MkYOH4r5DU51G3f8Ku1JxLoaTP/PNhvG5MA3
- RCUnUC+ozbCZtl64PJNQVd7ewqq0PwwdWd6Sdj3NC1V7SC0G6tGwRFWqdhq8BgzA
- er97+NNd9aTkC6/wMvVqqGtA39mn31DhIbgXz7IWDMnr4OW3XL87C5rmgDTDDdS5
- aYzafxk7KFFsaQ==
-X-ME-Sender: <xms:MPAcX1RZ5kxNOqioW9U3p6xbMKaxj7rHtMVtKRfRxsyl4OQf0CTTPw>
+ fm3; bh=mJuPaeFZ/TtUCwF3A6FAm7Kyf5fli2VKl5DI4MtgM7E=; b=SuQ5Ms0U
+ i9ozBbJUnIazU6JZ/2zoCAvoYyiJhDTg6bgWd2ugh0fWw3RsgU1TsaDRDkt0UICw
+ PCGQ3nONZKPD4XhCG6qnpR6cL09LG9B2AuFGouzVZ9rHHe1S09BNouXNWpFkV27y
+ LpY4KFIXssStn5bVvKXAcYYPWFhy7EtRgKKmsksZaFwXbo7kXG8agS+uoNqB1Z0i
+ Ja98j2k5dr9azwgi8Hiq2I2mFUsSlk6EuNDimRGNelmPypBlWH+VXTa/PiZ+7HsQ
+ VZLZLa54IxDeLio3L9tu7bgcRE8Zvx7pJmNSgdBf7l1XAlcBpCKkgLlwlP8vfI6Y
+ iDIsBqweyXDuWg==
+X-ME-Sender: <xms:M_AcX7TNm4SmwFX-l60DrJIIQ03UC7muRrmsLB-Ckqvvn7O2QbM8uQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -88,21 +88,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdote
  jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
  gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
  rdhorhhg
-X-ME-Proxy: <xmx:MPAcX-ycuyt4BzL5Ck3D4Z27q3kBG-kprR1TQt59Gy3d87sLY11yMw>
- <xmx:MPAcX60wznZ0zwjjZZ7TyL-FoIVRYuICOwfXW_C1Sf1A64wf2irzQg>
- <xmx:MPAcX9CT5f-2Bpyzgfnu9fRmNpamGj7oVbTXD46sF2FGAxkhtaJflw>
- <xmx:MPAcXyg6Nh8JBEV4Dkfr-h2NpTIEcZ_2Bnfnxhli6qkAHsbsAuqiNg>
+X-ME-Proxy: <xmx:M_AcX8xpDHMvdqSCfdlLtf5tzXmvXmZ_Cifq5xn4W5qCsQohHlHf9w>
+ <xmx:M_AcXw2sxoolvxZmJcpu_W4XHsWtDq2IhuHJQSTaP2_jI1VEm1hrtw>
+ <xmx:M_AcX7BbCryvX-sM5ZZc2Ev4xRoCTraFxTWNYT29qKQDBNOKFmgL_Q>
+ <xmx:M_AcXwj_07HdimxH3-lEYAPYrc5qQC9oFnap59VWldwT7ln-EqXfTA>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 50AFD328005D;
- Sat, 25 Jul 2020 22:53:36 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id AF3A3328005A;
+ Sat, 25 Jul 2020 22:53:38 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH v2 3/8] ASoC: sun50i-codec-analog: Group and sort mixer routes
-Date: Sat, 25 Jul 2020 21:53:29 -0500
-Message-Id: <20200726025334.59931-4-samuel@sholland.org>
+Subject: [PATCH v2 8/8] ASoC: sun50i-codec-analog: Enable DAPM for earpiece
+ switch
+Date: Sat, 25 Jul 2020 21:53:34 -0500
+Message-Id: <20200726025334.59931-9-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200726025334.59931-1-samuel@sholland.org>
 References: <20200726025334.59931-1-samuel@sholland.org>
@@ -126,142 +127,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sort the controls in the same order as the bits in the register. Then
-group the routes by sink, and sort them in the same order as the
-controls. This makes it much easier to verify that all mixer inputs are
-accounted for.
+By including the earpiece mute switch in the DAPM graph, both the
+earpiece amplifier and the Mixer/DAC inputs can be powered off when
+the earpiece is muted.
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+While the widget is really just a simple switch, it is represented
+as a "mixer with named controls" to avoid including the widget name
+in the kcontrol name. Otherwise, it is not possible to give the widget
+an accurate, descriptive name without changing the kcontrol name
+seen by userspace (which should be stable).
+
+The mute switch is between the source selection and the amplifier,
+as per the diagram in the SoC manual.
+
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun50i-codec-analog.c | 58 +++++++++++++--------------
- 1 file changed, 28 insertions(+), 30 deletions(-)
+ sound/soc/sunxi/sun50i-codec-analog.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index 4ad262c2e59b..17165f1ddb63 100644
+index 84bb76cad74f..a41e25ad0aaf 100644
 --- a/sound/soc/sunxi/sun50i-codec-analog.c
 +++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -121,50 +121,50 @@
- 
- /* mixer controls */
- static const struct snd_kcontrol_new sun50i_a64_codec_mixer_controls[] = {
--	SOC_DAPM_DOUBLE_R("DAC Playback Switch",
-+	SOC_DAPM_DOUBLE_R("Mic1 Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_DACL, 1, 0),
--	SOC_DAPM_DOUBLE_R("DAC Reversed Playback Switch",
-+			  SUN50I_ADDA_OL_MIX_CTRL_MIC1, 1, 0),
-+	SOC_DAPM_DOUBLE_R("Mic2 Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_DACR, 1, 0),
-+			  SUN50I_ADDA_OL_MIX_CTRL_MIC2, 1, 0),
- 	SOC_DAPM_DOUBLE_R("Line In Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
- 			  SUN50I_ADDA_OL_MIX_CTRL_LINEINL, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic1 Playback Switch",
-+	SOC_DAPM_DOUBLE_R("DAC Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_MIC1, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic2 Playback Switch",
-+			  SUN50I_ADDA_OL_MIX_CTRL_DACL, 1, 0),
-+	SOC_DAPM_DOUBLE_R("DAC Reversed Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_MIC2, 1, 0),
-+			  SUN50I_ADDA_OL_MIX_CTRL_DACR, 1, 0),
- };
- 
- /* ADC mixer controls */
- static const struct snd_kcontrol_new sun50i_codec_adc_mixer_controls[] = {
--	SOC_DAPM_DOUBLE_R("Mixer Capture Switch",
-+	SOC_DAPM_DOUBLE_R("Mic1 Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRL, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mixer Reversed Capture Switch",
-+			  SUN50I_ADDA_L_ADCMIX_SRC_MIC1, 1, 0),
-+	SOC_DAPM_DOUBLE_R("Mic2 Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRR, 1, 0),
-+			  SUN50I_ADDA_L_ADCMIX_SRC_MIC2, 1, 0),
- 	SOC_DAPM_DOUBLE_R("Line In Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
- 			  SUN50I_ADDA_L_ADCMIX_SRC_LINEINL, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic1 Capture Switch",
-+	SOC_DAPM_DOUBLE_R("Mixer Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_MIC1, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic2 Capture Switch",
-+			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRL, 1, 0),
-+	SOC_DAPM_DOUBLE_R("Mixer Reversed Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_MIC2, 1, 0),
-+			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRR, 1, 0),
- };
- 
- static const DECLARE_TLV_DB_SCALE(sun50i_codec_out_mixer_pregain_scale,
-@@ -373,24 +373,32 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
- 
- static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	/* Left Mixer Routes */
-+	{ "Left Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
-+	{ "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
-+	{ "Left Mixer", "Line In Playback Switch", "LINEIN" },
- 	{ "Left Mixer", "DAC Playback Switch", "Left DAC" },
- 	{ "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
--	{ "Left Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
- 
- 	/* Right Mixer Routes */
-+	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
-+	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
-+	{ "Right Mixer", "Line In Playback Switch", "LINEIN" },
- 	{ "Right Mixer", "DAC Playback Switch", "Right DAC" },
- 	{ "Right Mixer", "DAC Reversed Playback Switch", "Left DAC" },
--	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
- 
- 	/* Left ADC Mixer Routes */
-+	{ "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
-+	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
-+	{ "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
- 	{ "Left ADC Mixer", "Mixer Capture Switch", "Left Mixer" },
- 	{ "Left ADC Mixer", "Mixer Reversed Capture Switch", "Right Mixer" },
--	{ "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
- 
- 	/* Right ADC Mixer Routes */
-+	{ "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
-+	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
-+	{ "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
- 	{ "Right ADC Mixer", "Mixer Capture Switch", "Right Mixer" },
- 	{ "Right ADC Mixer", "Mixer Reversed Capture Switch", "Left Mixer" },
--	{ "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
- 
- 	/* ADC Routes */
- 	{ "Left ADC", NULL, "Left ADC Mixer" },
-@@ -410,16 +418,6 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 
- 	/* Microphone Routes */
- 	{ "Mic2 Amplifier", NULL, "MIC2"},
--	{ "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
--	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
--	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
--	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
+@@ -232,11 +232,6 @@ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
+ 		       SUN50I_ADDA_EARPIECE_CTRL1,
+ 		       SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL, 0x1f, 0,
+ 		       sun50i_codec_earpiece_vol_scale),
 -
--	/* Line-in Routes */
--	{ "Left Mixer", "Line In Playback Switch", "LINEIN" },
--	{ "Right Mixer", "Line In Playback Switch", "LINEIN" },
--	{ "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
--	{ "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
+-	SOC_SINGLE("Earpiece Playback Switch",
+-		   SUN50I_ADDA_EARPIECE_CTRL1,
+-		   SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE, 1, 0),
+-
+ };
  
- 	/* Line-out Routes */
- 	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
+ static const char * const sun50i_codec_hp_src_enum_text[] = {
+@@ -295,6 +290,12 @@ static const struct snd_kcontrol_new sun50i_codec_earpiece_src[] = {
+ 		      sun50i_codec_earpiece_src_enum),
+ };
+ 
++static const struct snd_kcontrol_new sun50i_codec_earpiece_switch[] = {
++	SOC_DAPM_SINGLE("Earpiece Playback Switch",
++			SUN50I_ADDA_EARPIECE_CTRL1,
++			SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE, 1, 0),
++};
++
+ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 	/* DAC */
+ 	SND_SOC_DAPM_DAC("Left DAC", NULL, SUN50I_ADDA_MIX_DAC_CTRL,
+@@ -341,6 +342,9 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 
+ 	SND_SOC_DAPM_MUX("Earpiece Source Playback Route",
+ 			 SND_SOC_NOPM, 0, 0, sun50i_codec_earpiece_src),
++	SOC_MIXER_NAMED_CTL_ARRAY("Earpiece Switch",
++				  SND_SOC_NOPM, 0, 0,
++				  sun50i_codec_earpiece_switch),
+ 	SND_SOC_DAPM_OUT_DRV("Earpiece Amp", SUN50I_ADDA_EARPIECE_CTRL1,
+ 			     SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN, 0, NULL, 0),
+ 	SND_SOC_DAPM_OUTPUT("EARPIECE"),
+@@ -462,7 +466,8 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "Earpiece Source Playback Route", "DACR", "Right DAC" },
+ 	{ "Earpiece Source Playback Route", "Left Mixer", "Left Mixer" },
+ 	{ "Earpiece Source Playback Route", "Right Mixer", "Right Mixer" },
+-	{ "Earpiece Amp", NULL, "Earpiece Source Playback Route" },
++	{ "Earpiece Switch", "Earpiece Playback Switch", "Earpiece Source Playback Route" },
++	{ "Earpiece Amp", NULL, "Earpiece Switch" },
+ 	{ "EARPIECE", NULL, "Earpiece Amp" },
+ };
+ 
 -- 
 2.26.2
 
