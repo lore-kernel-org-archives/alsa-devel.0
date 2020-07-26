@@ -2,61 +2,67 @@ Return-Path: <SRS0=gzS/=BF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C665DC433E1
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 11:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0F4DC433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 11:41:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52186206E3
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 11:40:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 398E4206E3
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 11:41:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ijPzk4/d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52186206E3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YmZHDJUK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 398E4206E3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=inria.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAC8A1678;
-	Sun, 26 Jul 2020 13:39:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAC8A1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id B88451688;
+	Sun, 26 Jul 2020 13:40:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B88451688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595763647;
-	bh=NgR1VU9zUu+EWkyINLBclnKNKMNCysSmw3r7lqO8O+Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ijPzk4/dUNrZbQCm8X1aly2xsdqgyG2zE+xmooAu/AgokrJL8R9AxJo9JsDFkIrcY
-	 r2w4Xayj3ES2II7XCR830ZbPXSmKZVJ5j2M9+xgSyySf94mZRMUMPTeWAiGIDq75FQ
-	 8KgUFTDaQQ92qwr5r3YZW2GFcc6gaxdPVM8qG4ZE=
+	s=default; t=1595763700;
+	bh=4hdAcZePNBj18K3RhQYnDwKuthplAr7kREReNad/OoY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YmZHDJUKF3bltF8n8RAOOBMYQLnySM1KerYLSGjhh0R6IiFd1jcRiHUwtfY6Ax5Xc
+	 MF+0/LoC4SMORp0ebPhMtjSMyw5yvWVG9T7ORaTxZfRm9CIZ12XtRvcwrMx0OKmIbt
+	 syJxJF5W5OanIOuAHaDLkey4N9qQSfYESaPCWT1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EEBAF8021C;
-	Sun, 26 Jul 2020 13:39:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 881D3F8021E;
+	Sun, 26 Jul 2020 13:40:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73568F8021C; Sun, 26 Jul 2020 13:39:55 +0200 (CEST)
+ id 2F0EEF8013C; Sun, 26 Jul 2020 13:39:57 +0200 (CEST)
 Received: from mail3-relais-sop.national.inria.fr
  (mail3-relais-sop.national.inria.fr [192.134.164.104])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A82ACF80134
- for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 13:39:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A82ACF80134
-X-IronPort-AV: E=Sophos;i="5.75,398,1589234400"; d="scan'208";a="355309542"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1464F8013C
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 13:39:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1464F8013C
+X-IronPort-AV: E=Sophos;i="5.75,398,1589234400"; d="scan'208";a="355309543"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256;
  26 Jul 2020 13:39:47 +0200
 From: Julia Lawall <Julia.Lawall@inria.fr>
-To: linux-rdma@vger.kernel.org
-Subject: [PATCH 0/7] drop unnecessary list_empty
-Date: Sun, 26 Jul 2020 12:58:25 +0200
-Message-Id: <1595761112-11003-1-git-send-email-Julia.Lawall@inria.fr>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 1/7] ASoC: Intel: drop unnecessary list_empty
+Date: Sun, 26 Jul 2020 12:58:26 +0200
+Message-Id: <1595761112-11003-2-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1595761112-11003-1-git-send-email-Julia.Lawall@inria.fr>
+References: <1595761112-11003-1-git-send-email-Julia.Lawall@inria.fr>
 Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+ Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,126 +78,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The various list iterators are able to handle an empty list.
-The only effect of avoiding the loop is not initializing some
-index variables.
+list_for_each_entry_safe is able to handle an empty list.
+The only effect of avoiding the loop is not initializing the
+index variable.
 Drop list_empty tests in cases where these variables are not
 used.
 
-The semantic patch that makes these changes is as follows:
-(http://coccinelle.lip6.fr/)
+Note that list_for_each_entry_safe is defined in terms of
+list_first_entry, which indicates that it should not be used on an
+empty list.  But in list_for_each_entry_safe, the element obtained by
+list_first_entry is not really accessed, only the address of its
+list_head field is compared to the address of the list head, so the
+list_first_entry is safe.
+
+The semantic patch that makes this change is as follows (with another
+variant for the no brace case): (http://coccinelle.lip6.fr/)
 
 <smpl>
-@@
-expression x,e;
-iterator name list_for_each_entry;
-statement S;
-identifier i;
-@@
-
--if (!(list_empty(x))) {
-   list_for_each_entry(i,x,...) S
-- }
- ... when != i
-? i = e
-
 @@
 expression x,e;
 iterator name list_for_each_entry_safe;
 statement S;
 identifier i,j;
 @@
-
 -if (!(list_empty(x))) {
    list_for_each_entry_safe(i,j,x,...) S
 - }
- ... when != i
-     when != j
-(
-  i = e;
-|
-? j = e;
-)
-
-@@
-expression x,e;
-iterator name list_for_each;
-statement S;
-identifier i;
-@@
-
--if (!(list_empty(x))) {
-   list_for_each(i,x) S
-- }
- ... when != i
-? i = e
-
-@@
-expression x,e;
-iterator name list_for_each_safe;
-statement S;
-identifier i,j;
-@@
-
--if (!(list_empty(x))) {
-   list_for_each_safe(i,j,x) S
-- }
- ... when != i
-     when != j
-(
-  i = e;
-|
-? j = e;
-)
-
-// -------------------
-
-@@
-expression x,e;
-statement S;
-identifier i;
-@@
-
--if (!(list_empty(x)))
-   list_for_each_entry(i,x,...) S
- ... when != i
-? i = e
-
-@@
-expression x,e;
-statement S;
-identifier i,j;
-@@
-
--if (!(list_empty(x)))
-   list_for_each_entry_safe(i,j,x,...) S
- ... when != i
-     when != j
-(
-  i = e;
-|
-? j = e;
-)
-
-@@
-expression x,e;
-statement S;
-identifier i;
-@@
-
--if (!(list_empty(x)))
-   list_for_each(i,x) S
- ... when != i
-? i = e
-
-@@
-expression x,e;
-statement S;
-identifier i,j;
-@@
-
--if (!(list_empty(x)))
-   list_for_each_safe(i,j,x) S
  ... when != i
      when != j
 (
@@ -201,16 +113,68 @@ identifier i,j;
 )
 </smpl>
 
----
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
- drivers/media/pci/saa7134/saa7134-core.c                      |   14 ++---
- drivers/media/usb/cx231xx/cx231xx-core.c                      |   16 ++----
- drivers/media/usb/tm6000/tm6000-core.c                        |   24 +++-------
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_matcher.c |   13 ++---
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c    |    5 --
- drivers/net/ethernet/sfc/ptp.c                                |   20 +++-----
- drivers/net/wireless/ath/dfs_pattern_detector.c               |   15 ++----
- sound/soc/intel/atom/sst/sst_loader.c                         |   10 +---
- sound/soc/intel/skylake/skl-pcm.c                             |    8 +--
- sound/soc/intel/skylake/skl-topology.c                        |    5 --
- 10 files changed, 53 insertions(+), 77 deletions(-)
+---
+ sound/soc/intel/atom/sst/sst_loader.c  |   10 ++++------
+ sound/soc/intel/skylake/skl-pcm.c      |    8 +++-----
+ sound/soc/intel/skylake/skl-topology.c |    5 ++---
+ 3 files changed, 9 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
+index 8ad0ca7..fc91a30 100644
+--- a/sound/soc/intel/atom/sst/sst_loader.c
++++ b/sound/soc/intel/atom/sst/sst_loader.c
+@@ -276,12 +276,10 @@ void sst_memcpy_free_resources(struct intel_sst_drv *sst_drv_ctx)
+ 	struct sst_memcpy_list *listnode, *tmplistnode;
+ 
+ 	/* Free the list */
+-	if (!list_empty(&sst_drv_ctx->memcpy_list)) {
+-		list_for_each_entry_safe(listnode, tmplistnode,
+-				&sst_drv_ctx->memcpy_list, memcpylist) {
+-			list_del(&listnode->memcpylist);
+-			kfree(listnode);
+-		}
++	list_for_each_entry_safe(listnode, tmplistnode,
++				 &sst_drv_ctx->memcpy_list, memcpylist) {
++		list_del(&listnode->memcpylist);
++		kfree(listnode);
+ 	}
+ }
+ 
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 89dcccd..9e15b06 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1509,11 +1509,9 @@ int skl_platform_unregister(struct device *dev)
+ 	struct skl_dev *skl = bus_to_skl(bus);
+ 	struct skl_module_deferred_bind *modules, *tmp;
+ 
+-	if (!list_empty(&skl->bind_list)) {
+-		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
+-			list_del(&modules->node);
+-			kfree(modules);
+-		}
++	list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
++		list_del(&modules->node);
++		kfree(modules);
+ 	}
+ 
+ 	kfree(skl->dais);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index b9aab47..b7d2d97 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3773,9 +3773,8 @@ void skl_tplg_exit(struct snd_soc_component *component, struct hdac_bus *bus)
+ 	struct skl_dev *skl = bus_to_skl(bus);
+ 	struct skl_pipeline *ppl, *tmp;
+ 
+-	if (!list_empty(&skl->ppl_list))
+-		list_for_each_entry_safe(ppl, tmp, &skl->ppl_list, node)
+-			list_del(&ppl->node);
++	list_for_each_entry_safe(ppl, tmp, &skl->ppl_list, node)
++		list_del(&ppl->node);
+ 
+ 	/* clean up topology */
+ 	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
+
