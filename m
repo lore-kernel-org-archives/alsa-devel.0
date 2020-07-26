@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 974DFC433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:58:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E9EDC433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:59:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FD9320700
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:58:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADB27206D7
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jul 2020 02:59:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sGm1r1da";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="k+91HlrU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Yz+Vq2vO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FD9320700
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M4Nn9n+h";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="UCMep3/v";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jl1VQu+F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADB27206D7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93BB81698;
-	Sun, 26 Jul 2020 04:57:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93BB81698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49E6C1696;
+	Sun, 26 Jul 2020 04:58:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49E6C1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595732311;
-	bh=KgvYx79xmWVCL0lhRm4FO9UNiO4V87soEICrnYAG2GE=;
+	s=default; t=1595732374;
+	bh=6tnB6oJgj6Fu2Ca8YEaAlbtrA6l3q+cPDW9zopfo1cU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sGm1r1daW5xr3wi/80AYfinHGB9WXzGx7BxGdgSSAwnWs4mgoyZHTTeujfMPSTJm0
-	 Mg9gZvR53SpHPAGhMueYSnfdk/IWMdVf9NYAnE/ZiS4I12ODKs6QyWQP0ossMK3xmN
-	 79NnbUt8Ut1a5NPjZ0nsqF7jgUfPcEHtU1rjPHEo=
+	b=M4Nn9n+hy4VtCpUeVwbhUjldJeI/H20NpNw6xZKKQSptgE07pPY4TIUAjyrsow/At
+	 UcOL77Cu9Rmz3itzr5e8r14U2PPO7y9rQAOCWNKWXw8Ec2czWWyqZCQBKPBdZrW76X
+	 wRSPqn9iOH3+gD07ntjHoQMwq/NOqxzly5ls136Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88502F802E3;
-	Sun, 26 Jul 2020 04:54:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0F19F802EB;
+	Sun, 26 Jul 2020 04:54:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30D9DF80256; Sun, 26 Jul 2020 04:53:54 +0200 (CEST)
+ id 7523FF8020B; Sun, 26 Jul 2020 04:53:55 +0200 (CEST)
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
  [66.111.4.229])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F75FF800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 716C7F80246
  for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2020 04:53:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F75FF800DE
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 716C7F80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="k+91HlrU"; 
+ header.b="UCMep3/v"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="Yz+Vq2vO"
+ header.i=@messagingengine.com header.b="jl1VQu+F"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id D2043580507;
+ by mailnew.nyi.internal (Postfix) with ESMTP id 5B0A4580500;
  Sat, 25 Jul 2020 22:53:38 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
  by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=MOrJ615q194DX
- kXl1mAThMKZ3keTG/kbxtIiMlFjtUU=; b=k+91HlrUArcRtkNKxwTcpmmHnDGtX
- sSHDnVrZMh3ZNV5DRr5sE5a/IZKpYfaZrDUukT4728qJmWa1k7vAP5rozKWqTfg9
- g1ujvxqiF1NL8PDtIcHkN9Nak2nY9/aBi+4Q7pQwh/97zT+TRTk1KRU1MguzKhwY
- M7JFu6GV/NrGqGD1HIxFmRxrVygD16HgU9VCGV1OX5r6G2hAkZkChA99gpfrYCXF
- iwkLhS52BjxDt4y7WChx/ZO6mHDG2jgUO82VT5D/88p6Iupt7M1fopRbWDoRyI/c
- XDuet38K/GWrLQ1UyfCsl6PjKkfHg0y6kQypgkxrNp0VFYfEz7lj5FJYA==
+ :mime-version:content-transfer-encoding; s=fm3; bh=ERAIJp5xBaLI/
+ ZcZmq1IesLhocpBhAj61ykp0NYJOa4=; b=UCMep3/vYhc63V/s/TI9Js1vSx2DE
+ wRutsQ8k4Uwx39LHKb6utjKHql8UEPM+E/T4iA9/xprafe3lel9+ZWVSTGLov8KW
+ 6sBV8N5dWpqprIhBo8XCzlJkDCzppVyIa81GTu6A5lxPnLGBldivEolU1TezY/At
+ 4F7w4DLP6D81KXnBhpXMM12WRkCrvzDYrczmsi9jSk6RKR008kbL9hCIfUTGaOOz
+ R8knBzMu7DDzTeC+NxQ0cdiWKYou5Dz3JALjrw/oSWe0lfx01vpCFVmOK5bGQIuq
+ cfnX9fc7LUEq31oquqcClhFZVrweE+HYBnvBxcyppFF8cMo1hEVdqdT/w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=MOrJ615q194DXkXl1mAThMKZ3keTG/kbxtIiMlFjtUU=; b=Yz+Vq2vO
- c2BSM1gIqjHe/iN2Cb2MoKDT/i41WeMYe6dZhOezCRPs/EQ0dOy2KS5njQylr03v
- mYhQEOGUSQJRbYeuJkZqtZcgFCM3jr21zqeDSn8RE8QuwPeSPGV+j3sZ8+yGUJwp
- ZEB61Kw7gABErNQAH+F2H/bV+maKTTTxSYbdov2mlXOPa5a0/+YicDLq0N1trgyH
- V5FlT9dpVUHTxtcpOHt3CwFSw3gJtvspLy9JIKrnWFji1j6G4dF5bA7nSGHvfyn6
- Nyd0ILUcJpK2oYA35lLxKrO2PpCh9BcnuMq0c2H1499zJtK6+ozPp+4yh1f/lRCx
- gBJ8DhFOiIeNNQ==
-X-ME-Sender: <xms:MvAcX6Uygu26XKNm1-xaFlxAM90K78nbpojX1IhrphZ67WSdd6sUcw>
+ fm3; bh=ERAIJp5xBaLI/ZcZmq1IesLhocpBhAj61ykp0NYJOa4=; b=jl1VQu+F
+ 6eC4RDrWGnfpzVg8Z+3kTTJKelnwKTyk2gdQbqsfpPTAKFgm8A3dr8f5Zg4CC9Ko
+ kOHHONqtcweYl4JkYVs4AyGQg3M0WBE2W0vrOVShy+ikuiELow6+l0PbP/RseI3d
+ n2C28Tm0OjgsW2wibPbgzUlS9A2cllBkwgVfNfj2JAdTFXKva49AQL2ThKbQsnJS
+ 8pcy/B1/HZk9B51bvaDL5wwKESJp1+swLrjrD5HCaKpr4gnhbjk5lW7B9DZw9Jqk
+ usiOyiKtCHDimxRlbv80XEWmJ2zCEHusb51w/aQvoXra11S73mgW/4Ljf3gMViL7
+ mAPp8i1pNiKvHA==
+X-ME-Sender: <xms:MvAcX6DsMRJEbHu-tG6j_cJONnfTqptWihe_N7yD_iXrJze5h0SxLw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -88,22 +88,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdote
  jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
  gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
  rdhorhhg
-X-ME-Proxy: <xmx:MvAcX2nqASgxphIm7at3XnLFFWyaPhMpNfLmo_SDzPyDaaDuHSIB5g>
- <xmx:MvAcX-Z8l9_VkGr37qmpMgR_UJf3suBrxniK8RwA-Zr9pQXrnwr01w>
- <xmx:MvAcXxU-oira9iMwhIeTW3odXblmaULPDe1W_nr1zlsW38-_6syhng>
- <xmx:MvAcX-XgTrY_rQPU4goukO5q66FIdWyTmKT2WkO5h951cHYpin--Zw>
+X-ME-Proxy: <xmx:MvAcX0icT8X4aSilTgKNJP4MYWPk4I_-JkqFhoXghFaz9jTS4HgxyA>
+ <xmx:MvAcX9mSDgMFEyP5y5EKbgiapmBSFmj-jy9aqG1-_pgEjvG5LjgW9A>
+ <xmx:MvAcX4zoEjj547Zps2EmhjB3F2NxztkHst2FskU2A1_yjcEffGZssw>
+ <xmx:MvAcX4TIeHuMtIr86JYcNuPfnHKIB7sXCxu-DIF9M9Jgjsxft2qvmA>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 3B71A328005E;
- Sat, 25 Jul 2020 22:53:38 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id BA55F328005A;
+ Sat, 25 Jul 2020 22:53:37 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH v2 7/8] ASoC: sun50i-codec-analog: Enable DAPM for line out
- switch
-Date: Sat, 25 Jul 2020 21:53:33 -0500
-Message-Id: <20200726025334.59931-8-samuel@sholland.org>
+Subject: [PATCH v2 6/8] ASoC: sun50i-codec-analog: Make line out routes stereo
+Date: Sat, 25 Jul 2020 21:53:32 -0500
+Message-Id: <20200726025334.59931-7-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200726025334.59931-1-samuel@sholland.org>
 References: <20200726025334.59931-1-samuel@sholland.org>
@@ -127,78 +126,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-By including the line out mute switch in the DAPM graph, the
-Mixer/DAC inputs can be powered off when the line output is muted.
-
-The line outputs have an unusual routing scheme. The left side mute
-switch is between the source selection and the amplifier, as usual.
-The right side source selection comes *after* its amplifier (and
-after the left side amplifier), and its mute switch controls
-whichever source is currently selected. This matches the diagram in
-the SoC manual.
+This matches the hardware more accurately, and is necessary for
+including the (stereo) line out mute switch in the DAPM graph.
 
 Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun50i-codec-analog.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ sound/soc/sunxi/sun50i-codec-analog.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index df39f6ffe25a..84bb76cad74f 100644
+index 176d6658d099..df39f6ffe25a 100644
 --- a/sound/soc/sunxi/sun50i-codec-analog.c
 +++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -228,11 +228,6 @@ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
- 		       SUN50I_ADDA_LINEOUT_CTRL1_VOL, 0x1f, 0,
- 		       sun50i_codec_lineout_vol_scale),
+@@ -328,7 +328,9 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 			     SUN50I_ADDA_HP_CTRL_HPPA_EN, 0, NULL, 0),
+ 	SND_SOC_DAPM_OUTPUT("HP"),
  
--	SOC_DOUBLE("Line Out Playback Switch",
--		   SUN50I_ADDA_LINEOUT_CTRL0,
--		   SUN50I_ADDA_LINEOUT_CTRL0_LEN,
--		   SUN50I_ADDA_LINEOUT_CTRL0_REN, 1, 0),
--
- 	SOC_SINGLE_TLV("Earpiece Playback Volume",
- 		       SUN50I_ADDA_EARPIECE_CTRL1,
- 		       SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL, 0x1f, 0,
-@@ -280,6 +275,12 @@ static const struct snd_kcontrol_new sun50i_codec_lineout_src[] = {
- 		      sun50i_codec_lineout_src_enum),
- };
- 
-+static const struct snd_kcontrol_new sun50i_codec_lineout_switch =
-+	SOC_DAPM_DOUBLE("Line Out Playback Switch",
-+			SUN50I_ADDA_LINEOUT_CTRL0,
-+			SUN50I_ADDA_LINEOUT_CTRL0_LEN,
-+			SUN50I_ADDA_LINEOUT_CTRL0_REN, 1, 0);
-+
- static const char * const sun50i_codec_earpiece_src_enum_text[] = {
- 	"DACR", "DACL", "Right Mixer", "Left Mixer",
- };
-@@ -332,6 +333,10 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+-	SND_SOC_DAPM_MUX("Line Out Source Playback Route",
++	SND_SOC_DAPM_MUX("Left Line Out Source",
++			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
++	SND_SOC_DAPM_MUX("Right Line Out Source",
  			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
- 	SND_SOC_DAPM_MUX("Right Line Out Source",
- 			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
-+	SND_SOC_DAPM_SWITCH("Left Line Out Switch",
-+			    SND_SOC_NOPM, 0, 0, &sun50i_codec_lineout_switch),
-+	SND_SOC_DAPM_SWITCH("Right Line Out Switch",
-+			    SND_SOC_NOPM, 0, 0, &sun50i_codec_lineout_switch),
  	SND_SOC_DAPM_OUTPUT("LINEOUT"),
  
- 	SND_SOC_DAPM_MUX("Earpiece Source Playback Route",
-@@ -444,10 +449,12 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	{ "Left Line Out Source", "Stereo", "Left Mixer" },
- 	{ "Left Line Out Source", "Mono Differential", "Left Mixer" },
- 	{ "Left Line Out Source", "Mono Differential", "Right Mixer" },
--	{ "LINEOUT", NULL, "Left Line Out Source" },
-+	{ "Left Line Out Switch", "Line Out Playback Switch", "Left Line Out Source" },
-+	{ "LINEOUT", NULL, "Left Line Out Switch" },
+@@ -439,12 +441,14 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "Mic2 Amplifier", NULL, "MIC2"},
  
--	{ "Right Line Out Source", "Stereo", "Right Mixer" },
--	{ "Right Line Out Source", "Mono Differential", "Left Line Out Source" },
-+	{ "Right Line Out Switch", "Line Out Playback Switch", "Right Mixer" },
-+	{ "Right Line Out Source", "Stereo", "Right Line Out Switch" },
-+	{ "Right Line Out Source", "Mono Differential", "Left Line Out Switch" },
- 	{ "LINEOUT", NULL, "Right Line Out Source" },
+ 	/* Line-out Routes */
+-	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
+-	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
+-	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
+-	{ "Line Out Source Playback Route", "Mono Differential",
+-		"Right Mixer" },
+-	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
++	{ "Left Line Out Source", "Stereo", "Left Mixer" },
++	{ "Left Line Out Source", "Mono Differential", "Left Mixer" },
++	{ "Left Line Out Source", "Mono Differential", "Right Mixer" },
++	{ "LINEOUT", NULL, "Left Line Out Source" },
++
++	{ "Right Line Out Source", "Stereo", "Right Mixer" },
++	{ "Right Line Out Source", "Mono Differential", "Left Line Out Source" },
++	{ "LINEOUT", NULL, "Right Line Out Source" },
  
  	/* Earpiece Routes */
+ 	{ "Earpiece Source Playback Route", "DACL", "Left DAC" },
 -- 
 2.26.2
 
