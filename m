@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68EF1C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:38:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB3F7C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:39:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9D0720729
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:38:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A45D2074F
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:39:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZRI62ri/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9D0720729
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YbETboMc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A45D2074F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02EFF169C;
-	Mon, 27 Jul 2020 20:37:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02EFF169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 097A416AD;
+	Mon, 27 Jul 2020 20:38:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 097A416AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595875105;
-	bh=Y3omj8qKiDuXAZErmouwtDGo8K1X1M+S1ldUDMy9vSA=;
+	s=default; t=1595875153;
+	bh=i7Jkl4pxWVL6zc+YfsztV3CTe+UtY6rZXV7PTffr9qM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZRI62ri/jaLvKSnLubI8TMnaR58gI5B+d9vEka5XJ/zeqKOGPUVKLjQrwOihaui1S
-	 WxJ2wxZTdig7nRamW2cMpLYng9AfKSR+GML1CjxjV1FFtkMwtEVx17/LHJ9Me/Afo+
-	 AWWxmXLWhEviec3nwnO3ppyR72JoCUS+o/G+zauw=
+	b=YbETboMc8CWvmELUdPn17IC65qKF4UoC7eB3vz1SaIBxAkka7TbaPYOZKtB2I2oyr
+	 dCCagIlaDP0dAHGdT93Ky0x99j5VfMDf8bOhsRMZCVF04I9dbCuShgKaRN7GXk2eVo
+	 caqSkkMYjn26jamUx/GYxTa8E6N94m9xKx8h+tAs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7CB6F800DE;
-	Mon, 27 Jul 2020 20:36:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3762F80246;
+	Mon, 27 Jul 2020 20:36:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1757EF801F7; Mon, 27 Jul 2020 20:36:45 +0200 (CEST)
+ id 5F493F801F7; Mon, 27 Jul 2020 20:36:45 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90A17F800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2DC3F80171
  for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 20:36:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90A17F800DE
-IronPort-SDR: E/Ru2aCQuP2cc6okNWMFqDLYDx2/4QQ39j4ZbitR5uTnTPm4U+VD9nvAysUX7GWJYW2MOZujMi
- WmPt4iDYyEqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="148562196"
-X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; d="scan'208";a="148562196"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2DC3F80171
+IronPort-SDR: rEY4xv7rmWmwmYj3arsAbskD6UFy2vEbpPFCbyYJuMOu/0G54be/UMlH4Zzf5QnrbH1hbrI/NT
+ ApmxuEQuablg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="148562204"
+X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; d="scan'208";a="148562204"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2020 11:36:34 -0700
-IronPort-SDR: O4nZx78Hvqr19DGNQzvkK1DzlAtH6/zI7C7ukWcb/RUnj4YgfxWPrh0Fzy4nan8dI0r/YD4urD
- 9Wr+kyr1vTyw==
-X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; d="scan'208";a="490063003"
+ 27 Jul 2020 11:36:36 -0700
+IronPort-SDR: 8H5OTjkGRfH8Yzi1Q9ssWKCx2CRSHUH5Lh4vHFcmmiFJso9hcegoEWCIfGdxcQzVyNFcJmzz+8
+ 3lBcZhT5LXlg==
+X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; d="scan'208";a="490063013"
 Received: from rkbasco-mobl1.amr.corp.intel.com (HELO
  ranjani-desktop.localdomain) ([10.251.147.18])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2020 11:36:34 -0700
+ 27 Jul 2020 11:36:36 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ASoC: SOF: Intel: fix the suspend procedure to support
- s0ix entry
-Date: Mon, 27 Jul 2020 11:36:12 -0700
-Message-Id: <20200727183613.1419005-2-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: SOF: Intel: disable traces when switching to S0Ix
+ D0I3
+Date: Mon, 27 Jul 2020 11:36:13 -0700
+Message-Id: <20200727183613.1419005-3-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200727183613.1419005-1-ranjani.sridharan@linux.intel.com>
 References: <20200727183613.1419005-1-ranjani.sridharan@linux.intel.com>
@@ -94,13 +94,10 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
 
-This patch fixes the suspend & resume procedure to allow entry into the
-low power states with some streams being active as a wake source - wake on
-voice is a perfect example. The current implementation does not stop
-the CORB/RIRB DMA and does not power down the HDA links. With firmware's
-help, the platform has been able to still enter s0ix state on older
-platforms, but the sequence is still incorrect, and the additional
-driver actions are needed to ensure correct s0ix behaviour.
+We should always disable DMA trace on S0Ix. When staying at S0-D0I3,
+we should enable DMA trace while both DMA Trace debug is enabled and
+hda_enable_trace_D0I3_S0 is set. This commit corrects the existed
+logic errors about that.
 
 Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
@@ -108,71 +105,31 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dsp.c | 38 +++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ sound/soc/sof/intel/hda-dsp.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 4a40944acaef..89961397010a 100644
+index 89961397010a..ed4d65a29d3a 100644
 --- a/sound/soc/sof/intel/hda-dsp.c
 +++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -696,12 +696,35 @@ int hda_dsp_resume(struct snd_sof_dev *sdev)
- 		.state = SOF_DSP_PM_D0,
- 		.substate = SOF_HDA_DSP_PM_D0I0,
- 	};
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct hdac_ext_link *hlink = NULL;
-+#endif
- 	int ret;
+@@ -408,11 +408,13 @@ static int hda_dsp_set_D0_state(struct snd_sof_dev *sdev,
+ 		value = SOF_HDA_VS_D0I3C_I3;
  
- 	/* resume from D0I3 */
- 	if (sdev->dsp_power_state.state == SOF_DSP_PM_D0) {
- 		hda_codec_i915_display_power(sdev, true);
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+		/* power up links that were active before suspend */
-+		list_for_each_entry(hlink, &bus->hlink_list, list) {
-+			if (hlink->ref_count) {
-+				ret = snd_hdac_ext_bus_link_power_up(hlink);
-+				if (ret < 0) {
-+					dev_dbg(sdev->dev,
-+						"error %x in %s: failed to power up links",
-+						ret, __func__);
-+					return ret;
-+				}
-+			}
-+		}
-+
-+		/* set up CORB/RIRB buffers if was on before suspend */
-+		if (bus->cmd_dma_state)
-+			snd_hdac_bus_init_cmd_io(bus);
-+#endif
-+
- 		/* Set DSP power state */
- 		ret = snd_sof_dsp_set_power_state(sdev, &target_state);
- 		if (ret < 0) {
-@@ -808,6 +831,21 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, u32 target_state)
- 						HDA_VS_INTEL_EM2_L1SEN,
- 						HDA_VS_INTEL_EM2_L1SEN);
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+		/* stop the CORB/RIRB DMA if it is On */
-+		if (bus->cmd_dma_state)
-+			snd_hdac_bus_stop_cmd_io(bus);
-+
-+		/* no link can be powered in s0ix state */
-+		ret = snd_hdac_ext_bus_link_power_down_all(bus);
-+		if (ret < 0) {
-+			dev_dbg(sdev->dev,
-+				"error %d in %s: failed to power down links",
-+				ret, __func__);
-+			return ret;
-+		}
-+#endif
-+
- 		/* enable the system waking up via IPC IRQ */
- 		enable_irq_wake(pci->irq);
- 		pci_save_state(pci);
+ 		/*
+-		 * Trace DMA is disabled by default when the DSP enters D0I3.
+-		 * But it can be kept enabled when the DSP enters D0I3 while the
+-		 * system is in S0 for debug.
++		 * Trace DMA need to be disabled when the DSP enters
++		 * D0I3 for S0Ix suspend, but it can be kept enabled
++		 * when the DSP enters D0I3 while the system is in S0
++		 * for debug purpose.
+ 		 */
+-		if (hda_enable_trace_D0I3_S0 &&
++		if (!sdev->dtrace_is_supported ||
++		    !hda_enable_trace_D0I3_S0 ||
+ 		    sdev->system_suspend_target != SOF_SUSPEND_NONE)
+ 			flags = HDA_PM_NO_DMA_TRACE;
+ 	} else {
 -- 
 2.25.1
 
