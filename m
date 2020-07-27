@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8747CC433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 19:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AD1DC433E3
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 19:58:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ACF7A2075A
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 19:20:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E5652074F
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 19:58:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ib2eKOEc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACF7A2075A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kSIsWRMw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E5652074F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E273F169B;
-	Mon, 27 Jul 2020 21:19:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E273F169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6C6B1694;
+	Mon, 27 Jul 2020 21:57:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6C6B1694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595877623;
-	bh=2my0ICbM8rGVfI8b1/w7HEaYH2zS9OkgaqWk9oTVwZA=;
+	s=default; t=1595879912;
+	bh=+GvxDeqs/DgCv8TmMT4WApH+FYgC/8/P6n83UdIhFf8=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ib2eKOEcoHWcnQsfWc8ZnPRjocVl4mJDO+w815reHMEjMqBE1R7vXka94FKVwPA3P
-	 +WcknYfqeDB89crtGwLog7UH4VguNy6+rXvlTytlN6xXqEq4Rro59/WmhWsT3gZQuY
-	 71esHMFxYh8chpGHDLCefUNIF1bkIVFblPPIbVdU=
+	b=kSIsWRMwo1o8pgEGvSo3wuqZf/jo5y0eyHA7S7SEFLNDb1cPWGEThNnBqKUEbqKKN
+	 NxKF85XIjRiyO7Qn7Q+QuLIn7sHCywkNiK8iLbjjLlkuKZHi/muhMJv4D3QLgZmiNa
+	 zSFn/K6EfLUGfNOhEPu2mWGCykaJyvI7jGlP3UUI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 702FEF80158;
-	Mon, 27 Jul 2020 21:19:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AFFBF8013C;
+	Mon, 27 Jul 2020 21:57:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 017F3F80171; Mon, 27 Jul 2020 21:19:30 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 0483EF80171; Mon, 27 Jul 2020 21:57:40 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD8BBF800AD
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 21:19:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD8BBF800AD
-IronPort-SDR: 1mWjO4Y8mP01EfgD0c4jayogignPAjCLR/Ch6x5NLO4Tigez1764oxFzbYgcFPzFBfBFJIIojA
- e+gStZl7mbwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="215632149"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F0B3F8013C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 21:57:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F0B3F8013C
+IronPort-SDR: QkE0LBq6mQ5NxTJywb2tcJGVb+Vja6bRgHmKNy2Tl2gSco/RiRL8WzpQ6rlsKLINc8t+ArWQ+P
+ Mz73NLSp4zgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="212627451"
 X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; 
- d="gz'50?scan'50,208,50";a="215632149"
+ d="gz'50?scan'50,208,50";a="212627451"
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2020 12:19:20 -0700
-IronPort-SDR: 1gEtWu7xvg4vzhSujjt6yi/p6b7DIWFnHse/Y+hkLBhzJb+2ciqQJhTInBs7QnokqATJZ4kxDL
- J8G1OYLZ7BdA==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jul 2020 12:57:26 -0700
+IronPort-SDR: UW2zq5IbchkQNgqZ1T6hh7eVEy8KffzL/pl12XV/5d4PUIOyJ6ol0EJMIp7HePh5htujyPaqM7
+ hgzKKQJwG1uw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; 
- d="gz'50?scan'50,208,50";a="321920799"
+ d="gz'50?scan'50,208,50";a="364236262"
 Received: from lkp-server01.sh.intel.com (HELO df0563f96c37) ([10.239.97.150])
- by fmsmga002.fm.intel.com with ESMTP; 27 Jul 2020 12:19:15 -0700
+ by orsmga001.jf.intel.com with ESMTP; 27 Jul 2020 12:57:22 -0700
 Received: from kbuild by df0563f96c37 with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1k08eY-00021R-J9; Mon, 27 Jul 2020 19:19:14 +0000
-Date: Tue, 28 Jul 2020 03:18:47 +0800
+ id 1k09FS-00021y-6R; Mon, 27 Jul 2020 19:57:22 +0000
+Date: Tue, 28 Jul 2020 03:56:39 +0800
 From: kernel test robot <lkp@intel.com>
 To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Subject: Re: [PATCH 2/6] ASoC: amd: Passing card structure based on codec
-Message-ID: <202007280323.0guRPv1S%lkp@intel.com>
-References: <20200727145840.25142-2-Vishnuvardhanrao.Ravulapati@amd.com>
+Subject: Re: [PATCH 6/6] ASoC: amd: Added hw_params support for ALC1015
+Message-ID: <202007280308.NOBB47Ex%lkp@intel.com>
+References: <20200727145840.25142-6-Vishnuvardhanrao.Ravulapati@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="T4sUOijqQbZv57TR"
+Content-Type: multipart/mixed; boundary="NzB8fVQJ5HfG6fxh"
 Content-Disposition: inline
-In-Reply-To: <20200727145840.25142-2-Vishnuvardhanrao.Ravulapati@amd.com>
+In-Reply-To: <20200727145840.25142-6-Vishnuvardhanrao.Ravulapati@amd.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
  <alsa-devel@alsa-project.org>, kbuild-all@lists.01.org,
@@ -101,16 +101,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---T4sUOijqQbZv57TR
+--NzB8fVQJ5HfG6fxh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 Hi Ravulapati,
 
-Thank you for the patch! Perhaps something to improve:
+Thank you for the patch! Yet something to improve:
 
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on next-20200727]
+[auto build test ERROR on asoc/for-next]
+[also build test ERROR on next-20200727]
 [cannot apply to v5.8-rc7]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
@@ -127,36 +127,72 @@ reproduce (this is a W=1 build):
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
->> sound/soc/amd/acp3x-rt5682-max9836.c:329:7: warning: no previous prototype for 'soc_is_rltk_max' [-Wmissing-prototypes]
-     329 | void *soc_is_rltk_max(struct device *dev)
+   sound/soc/amd/acp3x-rt5682-max9836.c: In function 'acp3x_1015_hw_params':
+>> sound/soc/amd/acp3x-rt5682-max9836.c:140:17: error: 'struct snd_soc_pcm_runtime' has no member named 'codec_dais'
+     140 |   if (strcmp(rtd->codec_dais[i]->name, "rt1015-aif"))
+         |                 ^~
+   sound/soc/amd/acp3x-rt5682-max9836.c:142:18: error: 'struct snd_soc_pcm_runtime' has no member named 'codec_dais'
+     142 |   codec_dai = rtd->codec_dais[i];
+         |                  ^~
+   sound/soc/amd/acp3x-rt5682-max9836.c: At top level:
+   sound/soc/amd/acp3x-rt5682-max9836.c:433:7: warning: no previous prototype for 'soc_is_rltk_max' [-Wmissing-prototypes]
+     433 | void *soc_is_rltk_max(struct device *dev)
          |       ^~~~~~~~~~~~~~~
 
-vim +/soc_is_rltk_max +329 sound/soc/amd/acp3x-rt5682-max9836.c
+vim +140 sound/soc/amd/acp3x-rt5682-max9836.c
 
-   328	
- > 329	void *soc_is_rltk_max(struct device *dev)
-   330	{
-   331		const struct acpi_device_id *match;
-   332	
-   333		match = acpi_match_device(dev->driver->acpi_match_table, dev);
-   334		if (!match)
-   335			return NULL;
-   336		return (void *)match->driver_data;
-   337	}
-   338	
+   128	
+   129	static int acp3x_1015_hw_params(struct snd_pcm_substream *substream,
+   130						struct snd_pcm_hw_params *params)
+   131	{
+   132		struct snd_soc_pcm_runtime *rtd = substream->private_data;
+   133		struct snd_soc_dai *codec_dai;
+   134		int srate, i, ret;
+   135	
+   136		ret = 0;
+   137		srate = params_rate(params);
+   138	
+   139		for (i = 0; i < rtd->num_codecs; i++) {
+ > 140			if (strcmp(rtd->codec_dais[i]->name, "rt1015-aif"))
+   141				continue;
+   142			codec_dai = rtd->codec_dais[i];
+   143	
+   144			ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
+   145			if (ret < 0) {
+   146				dev_err(codec_dai->dev,
+   147					"codec_dai bclk ratio not set\n");
+   148				return ret;
+   149			}
+   150			ret = snd_soc_dai_set_pll(codec_dai, 0, RT1015_PLL_S_BCLK,
+   151							64 * srate, 256 * srate);
+   152			if (ret < 0) {
+   153				dev_err(codec_dai->dev, "codec_dai PLL not set\n");
+   154				return ret;
+   155			}
+   156			ret = snd_soc_dai_set_sysclk(codec_dai, RT1015_SCLK_S_PLL,
+   157						256 * srate, SND_SOC_CLOCK_IN);
+   158			if (ret < 0) {
+   159				dev_err(codec_dai->dev,
+   160						"codec_dai sys clock not set\n");
+   161				return ret;
+   162			}
+   163		}
+   164		return ret;
+   165	}
+   166	
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---T4sUOijqQbZv57TR
+--NzB8fVQJ5HfG6fxh
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICGchH18AAy5jb25maWcAlDzJdty2svt8RR9nkyySK8my4px3tABJsBtukqABsAdtcBS5
+H4sICDcrH18AAy5jb25maWcAlDzJdty2svt8RR9nkyySK8my4px3tABJsBtukqABsAdtcBS5
 7eg8W/LVcK/9968K4FAA0YqfF4lYVZgLNaN//unnBXt+uv9y/XR7c/358/fFp8Pd4eH66fBh
 8fH28+F/FoVcNNIseCHM70Bc3d49f/vXt7cX9uJ88eb3t7+f/PZw88difXi4O3xe5Pd3H28/
 PUP72/u7n37+KZdNKZY2z+2GKy1kYw3fmctXn25ufvtz8Utx+Ov2+m7x5++voZvT81/9X69I
@@ -1548,4 +1584,4 @@ E1j6qUkU9BONDU1fU6WX2VGxaxsErw4eRTL2SqMvHX3koX1ai9TKpUTwqcO60NeQW5qNNt2H
 ZyFsaH2nvlbebeNSm6rwPKXBVFtEPAZO3KpBNoj35bLOiGIMvEKzv4GpvG0lNj2kO6mbOD4M
 +WsWffarA5ujK7si1KsJrjP/D3HmFBB30QQA
 
---T4sUOijqQbZv57TR--
+--NzB8fVQJ5HfG6fxh--
