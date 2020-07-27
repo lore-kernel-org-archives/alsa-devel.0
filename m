@@ -2,67 +2,73 @@ Return-Path: <SRS0=KPAB=BG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D1C1C433E5
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:14:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 265C5C433E3
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:37:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D462B20714
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:14:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A80F320729
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 18:37:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y2d/zVze"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D462B20714
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fjVa04zP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A80F320729
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6539F1697;
-	Mon, 27 Jul 2020 20:13:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6539F1697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3138D1697;
+	Mon, 27 Jul 2020 20:36:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3138D1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595873687;
-	bh=XdiKch0/CM8A88scNP44PF4KwoxiQMlWD48TTb8e8A8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Y2d/zVze2dAd3tPvCMqN/XgRPjUKAqrt9GjyZ38MVpUOIfRDzfrtYgNx38eB29Ru3
-	 TSp8s79n/34SiqV4OAYxyEvI1ATpaWQKIZGO3/E/q8/uKiw3vNTzkzhgvfoSKi74MR
-	 72z5C+2A8uFRaen+4eiYKI8hpqpdsICjuR4tDL4Q=
+	s=default; t=1595875052;
+	bh=SRpPGS8ocAz2pFyo7NkeLt4EZJjNb5xisyaW0cy0hYU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fjVa04zPW85H/To/USP39MCX5Ng3FA+qi6rdRDC0NylVkEvt0IIOoiJWCjcq/qTIk
+	 qd+xQw+yZb6cedDc9w3GG0EXKg8L1oxpzWc1Z3Hhn0lp+xrNJ7AkLXq4c3Ud1GWppz
+	 h6zkHSoIEvmMFUHTS1231ge3TZU+4avIErLdiKB4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF19AF80158;
-	Mon, 27 Jul 2020 20:13:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C46FEF80158;
+	Mon, 27 Jul 2020 20:36:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32403F80171; Mon, 27 Jul 2020 20:13:55 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 61B65F801EB; Mon, 27 Jul 2020 20:36:40 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE85AF800DE
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 20:13:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE85AF800DE
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B9ECFAC66;
- Mon, 27 Jul 2020 18:13:55 +0000 (UTC)
-Date: Mon, 27 Jul 2020 20:13:45 +0200
-Message-ID: <s5ho8o0j06e.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: Workaround for spurious wakeups on some Intel
- platforms
-In-Reply-To: <ad7b6d05-4266-a04e-5d21-31fb835a7d95@linux.intel.com>
-References: <20200727164443.4233-1-tiwai@suse.de>
- <ad7b6d05-4266-a04e-5d21-31fb835a7d95@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8C95F800AD
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 20:36:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8C95F800AD
+IronPort-SDR: hpe0K/emhhjgEIHFUj4wyW5uMBioMjUh5raT89CcNLnEh+ee1gD2duBQa/VLTCluMzu+Bqu9qP
+ KQH51aRuXU1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="148562187"
+X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; d="scan'208";a="148562187"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jul 2020 11:36:33 -0700
+IronPort-SDR: 86jOxJmiWjBpONAmC9Tz0+3ucyRn6TOUt4MEi/MeZPjJqlt8SzaAWYP6RK3yPFkgga43hbucSn
+ H1RJ9Ox6/Q7A==
+X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; d="scan'208";a="490062994"
+Received: from rkbasco-mobl1.amr.corp.intel.com (HELO
+ ranjani-desktop.localdomain) ([10.251.147.18])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jul 2020 11:36:33 -0700
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/2] SOF Fixes for S0iX suspend/resume sequence 
+Date: Mon, 27 Jul 2020 11:36:11 -0700
+Message-Id: <20200727183613.1419005-1-ranjani.sridharan@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,54 +84,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Jul 2020 20:05:06 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> 
-> 
-> On 7/27/20 11:44 AM, Takashi Iwai wrote:
-> > We've received a regression report on Intel HD-audio controller that
-> > wakes up immediately after S3 suspend.  The bisection leads to the
-> > commit c4c8dd6ef807 ("ALSA: hda: Skip controller resume if not
-> > needed").  This commit replaces the system-suspend to use
-> > pm_runtime_force_suspend() instead of the direct call of
-> > __azx_runtime_suspend().  However, by some really mysterious reason,
-> > pm_runtime_force_suspend() causes a spurious wakeup (although it calls
-> > the same __azx_runtime_suspend() internally).
-> 
-> Right, but __azx_runtime_suspend() is called after enabling a wake-up
-> event, which is fine for pm_runtime but probably not so good for S3?
+This set of patches is required for facilitating system S0ix
+entry when the DSP is in D0I3. This first patch adds the missing
+CORB/RIRB DMA stop and restart to the suspend/resume sequence along
+with powering up/down the links. The second patch ensures that the
+FW traces are disabled when the system enters S0ix with the DSP in D0I3.
 
-That's what I doubted at the first place, too, but unfortunately no,
-it isn't the cause.
+Marcin Rajwa (2):
+  ASoC: SOF: Intel: fix the suspend procedure to support s0ix entry
+  ASoC: SOF: Intel: disable traces when switching to S0Ix D0I3
 
-> static int azx_runtime_suspend(struct device *dev)
-> {
-> 	struct snd_card *card = dev_get_drvdata(dev);
-> 	struct azx *chip;
-> 
-> 	if (!azx_is_pm_ready(card))
-> 		return 0;
-> 	chip = card->private_data;
-> 
-> 	/* enable controller wake up event */
-> 	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
-> 		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
-> 			   STATESTS_INT_MASK);
-> 	}
+ sound/soc/sof/intel/hda-dsp.c | 48 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 44 insertions(+), 4 deletions(-)
 
-The code above contains the check of the current power state to
-SNDRV_CTL_POWER_D0.  And azx_suspend() sets the power state to D3hot
-before calling pm_runtime_force_suspend(), hence this WAKEEN shouldn't
-be called.
+-- 
+2.25.1
 
-And we tried to comment out this WAKEEN call completely, but the
-spurious wakeup still happened.  Also, even after clearing WAKKEN
-explicitly, the wakeup happened.  Last but not least, it happened even
-after disabling the runtime PM (i.e. the pm state change happens at
-first at azx_suspend() call).
-
-So it's really mysterious.
-
-
-Takashi
