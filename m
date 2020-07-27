@@ -2,63 +2,59 @@ Return-Path: <SRS0=KPAB=BG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67594C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 01:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7763AC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 01:08:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3CEC2070B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 01:10:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E89D320715
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 01:08:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eNrMZzBv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3CEC2070B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="liJco9Gs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E89D320715
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 802B716A8;
-	Mon, 27 Jul 2020 03:09:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 802B716A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C6271685;
+	Mon, 27 Jul 2020 03:08:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C6271685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595812235;
-	bh=JTb2Sgt9C6c0/sFnP/No6v/mGCf5YIIx7DWPdUBv9ys=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eNrMZzBvYOn5iO5eddo57OPq07lBMPi89E01N3zw2gQrrRLRR2IH1LVw4izIpUvvc
-	 0BjSyN5pAg31A+uZWBRuUk0omFDQfZnWbknUvJsYZ11lh1GaUj0fxrzzdkoaQIZJqh
-	 hVD4qE9YdUX0Em31Llv4Wwy+26+kT0VQBdX2jFio=
+	s=default; t=1595812132;
+	bh=g0UfkK9L6oWcyUNY+VB0FidHWFQ228DJzlGvvKiZPWI=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=liJco9Gsu+nv6OoemFbIUCtdPEG+nX3hEVSfrD4LOOYuQl1CCu10WcJU+s1HP9hRo
+	 l0AaXCVAihS9sGIrZLk/v7vDX1uP6VujxX8503kMY9ExUr2kT6IkTRv7tTrQz341+x
+	 PtgSgaTRkkQWm738p+9Q49w8ppX9z+Rd/bsUwlg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 368EDF8029B;
-	Mon, 27 Jul 2020 03:08:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECF5DF801F7;
+	Mon, 27 Jul 2020 03:08:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CEDAF802C4; Mon, 27 Jul 2020 03:08:50 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B40CDF8029B
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 03:08:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B40CDF8029B
-Date: 27 Jul 2020 10:08:42 +0900
-X-IronPort-AV: E=Sophos;i="5.75,400,1589209200"; d="scan'208";a="52874289"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 27 Jul 2020 10:08:42 +0900
+ id 59AD6F8020B; Mon, 27 Jul 2020 03:08:00 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3CE18F80134
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 03:07:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CE18F80134
+Date: 27 Jul 2020 10:07:49 +0900
+X-IronPort-AV: E=Sophos;i="5.75,400,1589209200"; d="scan'208";a="53085953"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 27 Jul 2020 10:07:49 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 06C3141289E5;
- Mon, 27 Jul 2020 10:08:42 +0900 (JST)
-Message-ID: <87tuxtydcz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8027640083D7;
+ Mon, 27 Jul 2020 10:07:49 +0900 (JST)
+Message-ID: <87wo2pydeg.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/2] ASoC: intel: use asoc_substream_to_rtd()
+Subject: [PATCH 0/2] ASoC: intel: use asoc_substream_to_rtd()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <87wo2pydeg.wl-kuninori.morimoto.gx@renesas.com>
-References: <87wo2pydeg.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -78,239 +74,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi Mark
 
-Now we can use asoc_substream_to_rtd() macro,
-let's use it.
+I have posted "ASoC: add asoc_substream_to_rtd() macro"
+patch-set to ALSA SoC ML (= see Link), and then Pierre-Louis
+wanted that Intel patch was separated for boards.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/atom/sst-mfld-platform-pcm.c |  6 +++---
- sound/soc/intel/baytrail/sst-baytrail-pcm.c  | 16 ++++++++--------
- sound/soc/intel/haswell/sst-haswell-pcm.c    | 12 ++++++------
- sound/soc/intel/keembay/kmb_platform.c       |  2 +-
- sound/soc/intel/skylake/skl-pcm.c            |  8 ++++----
- 5 files changed, 22 insertions(+), 22 deletions(-)
+The patches which are not for Intel were already accepted.
+This is for Intel, and Intel boards.
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 8817eaae6bb7..49b9f18472bc 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -274,7 +274,7 @@ static int sst_platform_init_stream(struct snd_pcm_substream *substream)
- {
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	int ret_val;
- 
- 	dev_dbg(rtd->dev, "setting buffer ptr param\n");
-@@ -582,7 +582,7 @@ static int sst_soc_trigger(struct snd_soc_component *component,
- 	int ret_val = 0, str_id;
- 	struct sst_runtime_stream *stream;
- 	int status;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	dev_dbg(rtd->dev, "%s called\n", __func__);
- 	if (substream->pcm->internal)
-@@ -630,7 +630,7 @@ static snd_pcm_uframes_t sst_soc_pointer(struct snd_soc_component *component,
- 	struct sst_runtime_stream *stream;
- 	int ret_val, status;
- 	struct pcm_stream_info *str_info;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	stream = substream->runtime->private_data;
- 	status = sst_get_stream_status(stream);
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index 53383055c8dc..54a66cc6db89 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -62,7 +62,7 @@ static int sst_byt_pcm_hw_params(struct snd_soc_component *component,
- 				 struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
- 	struct sst_byt *byt = pdata->byt;
-@@ -121,7 +121,7 @@ static int sst_byt_pcm_hw_params(struct snd_soc_component *component,
- 
- static int sst_byt_pcm_restore_stream_context(struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
-@@ -155,7 +155,7 @@ static void sst_byt_pcm_work(struct work_struct *work)
- static int sst_byt_pcm_trigger(struct snd_soc_component *component,
- 			       struct snd_pcm_substream *substream, int cmd)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
- 	struct sst_byt *byt = pdata->byt;
-@@ -197,7 +197,7 @@ static u32 byt_notify_pointer(struct sst_byt_stream *stream, void *data)
- 	struct sst_byt_pcm_data *pcm_data = data;
- 	struct snd_pcm_substream *substream = pcm_data->substream;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_byt *byt = pdata->byt;
-@@ -219,7 +219,7 @@ static u32 byt_notify_pointer(struct sst_byt_stream *stream, void *data)
- static snd_pcm_uframes_t sst_byt_pcm_pointer(struct snd_soc_component *component,
- 					     struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
-@@ -232,7 +232,7 @@ static snd_pcm_uframes_t sst_byt_pcm_pointer(struct snd_soc_component *component
- static int sst_byt_pcm_open(struct snd_soc_component *component,
- 			    struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
- 	struct sst_byt *byt = pdata->byt;
-@@ -260,7 +260,7 @@ static int sst_byt_pcm_open(struct snd_soc_component *component,
- static int sst_byt_pcm_close(struct snd_soc_component *component,
- 			     struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
- 	struct sst_byt *byt = pdata->byt;
-@@ -286,7 +286,7 @@ static int sst_byt_pcm_mmap(struct snd_soc_component *component,
- 			    struct snd_pcm_substream *substream,
- 			    struct vm_area_struct *vma)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 
- 	dev_dbg(rtd->dev, "PCM: mmap\n");
- 	return snd_pcm_lib_default_mmap(substream, vma);
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index 16ac16f5a641..b8d86c74c53d 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -462,7 +462,7 @@ static int hsw_pcm_hw_params(struct snd_soc_component *component,
- 			     struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
-@@ -652,7 +652,7 @@ static int hsw_pcm_hw_params(struct snd_soc_component *component,
- static int hsw_pcm_trigger(struct snd_soc_component *component,
- 			   struct snd_pcm_substream *substream, int cmd)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw_stream *sst_stream;
-@@ -695,7 +695,7 @@ static u32 hsw_notify_pointer(struct sst_hsw_stream *stream, void *data)
- 	struct hsw_pcm_data *pcm_data = data;
- 	struct snd_pcm_substream *substream = pcm_data->substream;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
-@@ -760,7 +760,7 @@ static u32 hsw_notify_pointer(struct sst_hsw_stream *stream, void *data)
- static snd_pcm_uframes_t hsw_pcm_pointer(struct snd_soc_component *component,
- 					 struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
-@@ -785,7 +785,7 @@ static snd_pcm_uframes_t hsw_pcm_pointer(struct snd_soc_component *component,
- static int hsw_pcm_open(struct snd_soc_component *component,
- 			struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
-@@ -818,7 +818,7 @@ static int hsw_pcm_open(struct snd_soc_component *component,
- static int hsw_pcm_close(struct snd_soc_component *component,
- 			 struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
-diff --git a/sound/soc/intel/keembay/kmb_platform.c b/sound/soc/intel/keembay/kmb_platform.c
-index 2ce21336c06b..44798832c2f9 100644
---- a/sound/soc/intel/keembay/kmb_platform.c
-+++ b/sound/soc/intel/keembay/kmb_platform.c
-@@ -191,7 +191,7 @@ static int kmb_pcm_open(struct snd_soc_component *component,
- 			struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct kmb_i2s_info *kmb_i2s;
- 
- 	kmb_i2s = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 89dcccdfb1cd..268ba1662f69 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -544,7 +544,7 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *link_dev;
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct skl_pipe_params p_params = {0};
- 	struct hdac_ext_link *link;
-@@ -634,7 +634,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct hdac_ext_stream *link_dev =
- 				snd_soc_dai_get_dma_data(dai, substream);
- 	struct hdac_ext_link *link;
-@@ -1071,7 +1071,7 @@ int skl_dai_load(struct snd_soc_component *cmp, int index,
- static int skl_platform_soc_open(struct snd_soc_component *component,
- 				 struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
- 
- 	dev_dbg(asoc_rtd_to_cpu(rtd, 0)->dev, "In %s:%s\n", __func__,
-@@ -1225,7 +1225,7 @@ static int skl_platform_soc_mmap(struct snd_soc_component *component,
- static u64 skl_adjust_codec_delay(struct snd_pcm_substream *substream,
- 				u64 nsec)
- {
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	u64 codec_frames, codec_nsecs;
- 
+Link: https://lore.kernel.org/r/87y2nf0yw2.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/877duz0ysw.wl-kuninori.morimoto.gx@renesas.com
+
+Kuninori Morimoto (2):
+  ASoC: intel/boards: use asoc_substream_to_rtd()
+  ASoC: intel: use asoc_substream_to_rtd()
+
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c     |  6 +++---
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c      | 16 ++++++++--------
+ sound/soc/intel/boards/bdw-rt5650.c              |  2 +-
+ sound/soc/intel/boards/bdw-rt5677.c              |  4 ++--
+ sound/soc/intel/boards/broadwell.c               |  2 +-
+ sound/soc/intel/boards/bxt_rt298.c               |  2 +-
+ sound/soc/intel/boards/byt-rt5640.c              |  2 +-
+ sound/soc/intel/boards/bytcht_da7213.c           |  4 ++--
+ sound/soc/intel/boards/bytcr_rt5640.c            |  2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c            |  2 +-
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c     |  2 +-
+ sound/soc/intel/boards/cht_bsw_nau8824.c         |  2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c          |  2 +-
+ sound/soc/intel/boards/cht_bsw_rt5672.c          |  2 +-
+ sound/soc/intel/boards/cml_rt1011_rt5682.c       |  4 ++--
+ sound/soc/intel/boards/ehl_rt5660.c              |  2 +-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c    |  2 +-
+ sound/soc/intel/boards/haswell.c                 |  2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c     |  8 ++++----
+ sound/soc/intel/boards/kbl_rt5660.c              |  2 +-
+ sound/soc/intel/boards/kbl_rt5663_max98927.c     |  4 ++--
+ .../intel/boards/kbl_rt5663_rt5514_max98927.c    |  4 ++--
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c  |  2 +-
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c    |  2 +-
+ sound/soc/intel/boards/skl_rt286.c               |  2 +-
+ sound/soc/intel/boards/sof_da7219_max98373.c     |  2 +-
+ sound/soc/intel/boards/sof_maxim_common.c        |  4 ++--
+ sound/soc/intel/boards/sof_pcm512x.c             |  4 ++--
+ sound/soc/intel/boards/sof_rt5682.c              |  4 ++--
+ sound/soc/intel/boards/sof_sdw_rt1308.c          |  2 +-
+ sound/soc/intel/boards/sof_wm8804.c              |  2 +-
+ sound/soc/intel/haswell/sst-haswell-pcm.c        | 12 ++++++------
+ sound/soc/intel/keembay/kmb_platform.c           |  2 +-
+ sound/soc/intel/skylake/skl-pcm.c                |  8 ++++----
+ 34 files changed, 62 insertions(+), 62 deletions(-)
+
 -- 
 2.25.1
 
