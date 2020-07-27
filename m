@@ -2,101 +2,92 @@ Return-Path: <SRS0=KPAB=BG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A5B8C433E8
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29FE4C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:46:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7B57206D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:45:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A963120786
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:46:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sn76f9/y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vw6yarDL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7B57206D7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t1uSh+tz";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBy/eUft"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A963120786
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42EA116A1;
-	Mon, 27 Jul 2020 11:44:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42EA116A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 477CF1683;
+	Mon, 27 Jul 2020 11:45:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 477CF1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595843137;
-	bh=do+ymEc6x7jNBfb2HyiVf9db82PWdPx0NKSvCx/pTNI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1595843162;
+	bh=fkGVbnShUP51LN+3IACG0mjf31jsgv6QXnyYBo6FVlM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sn76f9/yzmVPIGMwRiWZFxoQIhX6mR0jbccCmp3LeYcf2UtYHyDoCQIzg9cUiT3Hy
-	 DjQzpDXgkEL2CI7G0z6Tsj675uj9yLOObc/oZ7RBqMj7TQ0kurjtzW9SjB/wJVJrnW
-	 8Nqt4o/RW0LH/VO9ilQUf5HPxY5itmTXc8L6Cal8=
+	b=t1uSh+tzFZen2+LmBuQouT+LROCG//7+HYBeyZkJMkx5Nh3Uw9Iee4BWtN2rKJ8Us
+	 JzARo1czoig21h1jps24xwx75MFSi36Kx48DT4bzFaGDBDzQB1jlQa3tbzyMWG18lB
+	 naVPGiOC1iuTu3kVjhcxvr9wvyCc4NGXWQJeP9Bc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7060F80336;
-	Mon, 27 Jul 2020 11:38:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE177F80158;
+	Mon, 27 Jul 2020 11:40:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC2B3F802FE; Mon, 27 Jul 2020 11:38:37 +0200 (CEST)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
+ id EC99DF801EB; Mon, 27 Jul 2020 11:40:38 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DD43F802DB
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 11:38:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DD43F802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33441F8013C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 11:40:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33441F8013C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Vw6yarDL"
-Received: by mail-wm1-x344.google.com with SMTP id c80so13522717wme.0
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 02:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=4g6JTg8tTLO2020Bjhn7eVLu84pNN3Ez/f+4ZOHp8Mw=;
- b=Vw6yarDLp7xE5sbxpiPl8n3EAmtDzjFJyzaxBiABIvnzdUP3KkAKxeSlW3W6SbgrD/
- T8G7ahhsdn4L46scDkPbfQNIgJNSP6CaS0LYZulaFbUhXCCYczSPNesaE0p/7s6JkX2S
- jN/wwL3RZHOsvs8MGt+5PES+T28h68H+FWZhvCnKJzWCpZ44CyL45Xq/dsNreXeeUzfb
- dna9uutJEsLRCEUHj0zu6x2o+XlnH/TelUuUpPM0755es32CmTyoidh+tmanI99WuYKS
- HM1S7BM4gG2jA8PU+Z8LzAPJIIbofzSB3eJRSuAPnVjUHwOPlC3xpJvHJAhUwe5R9FOA
- FXmg==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="QBy/eUft"
+Received: by mail-wr1-x42d.google.com with SMTP id f7so14189279wrw.1
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 02:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=SAslkRLwWI359lOgsWgFWFLEOu0zBogs11vp59ytjkk=;
+ b=QBy/eUftfWpLXnXVPSMLenDStk1Ax3iki65llBQCKleXm+DXeT9W7GBighHaUWWecg
+ pziHl+zGORr07TyOzlgaSnpjVQeoxv7kcnfG6pkJp1p44VeO7M46NglNPTiwxkS8DbLT
+ J1NIKmsYvOyHw/1Ecn/A1yNW3k84AYwAm72q60mSmQV81gDRNWrIKGyJIAkCVoJzXnsv
+ GNlB/kbbmlxlJxMVin7+dw9t9Dp9Jh+5PbU6femYZXIgK6GqE3e+Wo6kdj5OQy4DABLH
+ NEB6K7GttLj4IqCe4Mhl77DV68hsg7M0Jj1ubbRe2QttkDMhHHZdD/Okkw19d49lNmSI
+ q8aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=4g6JTg8tTLO2020Bjhn7eVLu84pNN3Ez/f+4ZOHp8Mw=;
- b=rTKuvdQ/ucuRW7Rw0YQrFftoSWcUkkIxcGXyaKIh1JvGvAOBr2sS8mlCL1EOy9AGlz
- GOy5tiZ2A7z5SjMt9dnTB9eBZppR2niwHeCyfpCL3pVCpa48LfKzFFqbEpJaAJqsVnAd
- tufsSnrupeuQB+gyi0mnumj+d6Pg9CMt/frwLHaX8vxUGDTgdlf7S8RL8BSFZDYCsI7w
- moX//20IR8wIo2mBdwDuoaKIhyEm5H/oCtjM1LylrBxt4ZseH+70Acvo2HtGjGX0T3uJ
- v1zBCsV5L3Mv4yndp2nEVZZWKKPBcIA60z+aw7f+F4DGGL+98QuiAhFxLZxkNATfaspo
- cVXw==
-X-Gm-Message-State: AOAM530BFqkmu5Mv9OR5Fnkglt1vDXMrqu4DVsJp1IlM99ucODEtspqf
- JistYvxHKB16Sf4RyKoDkq5HLA==
-X-Google-Smtp-Source: ABdhPJwBe0He/oPMtUrF31nAwEubsSn+/sRTYsIOCKuy3A0IoW5Yzj6VbAPKKsNGEWXBQ4/mz68dtQ==
-X-Received: by 2002:a1c:f016:: with SMTP id a22mr18737295wmb.47.1595842706597; 
- Mon, 27 Jul 2020 02:38:26 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id y189sm20566099wmd.27.2020.07.27.02.38.25
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Jul 2020 02:38:25 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v3 10/10] ASoC: q6asm-dai: add support to copy callback
-Date: Mon, 27 Jul 2020 10:38:06 +0100
-Message-Id: <20200727093806.17089-11-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
-References: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=SAslkRLwWI359lOgsWgFWFLEOu0zBogs11vp59ytjkk=;
+ b=VnqR+lv57AuX9D5zRyY3xQAKaNa2tmvKjXJnIGAlmUFf6lVJmeksOMc9hMQ4EemvNm
+ JFS0c6r1LZKYs/giS2kjkK2703lpnIN1ndj7BZCTB2bRnnFfdo8KwgfA9jEo8VcpsQdi
+ hGYhpYMf4lb8pRsjmNHvDHwRZ4RZ7pd29B92PvIBhwLBrrzSmsaxzTKVv8p+vVlHbYPT
+ Oq6Zqgwy951w8cYh5hXZW8fp8Gfpg+PUjO/NurTIgYIxt0pZrnNAQGiSq8rtw49f3cEG
+ Tckmzmpwt3MgecIdx+J7cQiCD2QManUqr4LA8eo/r0rt1n2QvntO4r39qPQ5HKQUZPfm
+ Gl8A==
+X-Gm-Message-State: AOAM531leGWGer9+PB/6CNrMyUHSzJL4A8Da+y6PwJgyorRv3BMNDeLt
+ a3/kNtqgh/LchHx/zdhxchCSjA3fFF7McA19QVCcMM5oo9Q=
+X-Google-Smtp-Source: ABdhPJxpMIlmI837NhOg9b3HhX5PqwmbMeJ5kDLNMSt7en7mSjpnTpWFxBfEJtn7R/2IawSZjrsTZyXNIeOIbgw4roA=
+X-Received: by 2002:adf:e902:: with SMTP id f2mr10865664wrm.174.1595842827497; 
+ Mon, 27 Jul 2020 02:40:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- ckeepax@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, vkoul@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+References: <CAEnQRZC4FNrLSbasRH4Au=W_tHyQUV_y0WOn-RDZboEhnf0e+g@mail.gmail.com>
+ <877duqylh5.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877duqylh5.wl-kuninori.morimoto.gx@renesas.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Mon, 27 Jul 2020 12:40:15 +0300
+Message-ID: <CAEnQRZC4=PkWSe9A-+_1JJg9GmhAv9ph=Q3t_rjd+Fmj0SU8oQ@mail.gmail.com>
+Subject: Re: snd_soc_component_driver substream ops
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,106 +103,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-During gapless playback, its possible for previous track to
-end at unaligned boundary, starting next track on the same
-boundary can lead to unaligned address exception in dsp.
+On Mon, Jul 27, 2020 at 1:13 AM Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>
+>
+> Hi Daniel
+>
+> Thank you for asking
+> And sorry for late response, Japan was holiday.
+>
+> > Looking at snd_soc_component_driver I see there
+> > are some operations like: open, close, hw_params, hw_free. (1)
+> >
+> > Now, snd_soc_component_driver has snd_compress_ops.
+> >
+> > Do you think it is worth it to group operations from (1) in a similar structure
+> > maybe snd_<xyz>_ops.
+>
+> It seems snd_soc_component_driver is using many functions and flags.
+> Keeping these in the some structure is better, IMO.
+>
+> I think separating "component" and "compress" is better cleaning ?
+>
+>         struct snd_compress_ops {
+>                 ...
+>         };
+>
+>         struct snd_soc_component_driver {
+>                 ...
+> -               const struct snd_compress_ops *compress_ops;
+>                 ...
+>         };
+>
+>         struct snd_soc_component {
+>                 ...
+>                 struct snd_soc_component_driver *driver;
+> +               const struct snd_compress_ops *compress_ops;
+>                 ...
+>         };
+>
 
-So implement copy callback for finer control on the buffer offsets.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6asm-dai.c | 65 +++++++++++++++++++++++++++++---
- 1 file changed, 60 insertions(+), 5 deletions(-)
+Hi Morimoto-san,
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 4ecf9cb658ae..648a64e11188 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -1055,16 +1055,71 @@ static int q6asm_dai_compr_pointer(struct snd_soc_component *component,
- 	return 0;
- }
- 
--static int q6asm_dai_compr_ack(struct snd_soc_component *component,
--			       struct snd_compr_stream *stream,
--			       size_t count)
-+static int q6asm_compr_copy(struct snd_soc_component *component,
-+			    struct snd_compr_stream *stream, char __user *buf,
-+			    size_t count)
- {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
- 	unsigned long flags;
-+	u32 wflags = 0;
-+	int avail, bytes_in_flight = 0;
-+	void *dstn;
-+	size_t copy;
-+	u32 app_pointer;
-+	u32 bytes_received;
-+
-+	bytes_received = prtd->bytes_received;
-+
-+	/**
-+	 * Make sure that next track data pointer is aligned at 32 bit boundary
-+	 * This is a Mandatory requirement from DSP data buffers alignment
-+	 */
-+	if (prtd->next_track)
-+		bytes_received = ALIGN(prtd->bytes_received, prtd->pcm_count);
-+
-+	app_pointer = bytes_received/prtd->pcm_size;
-+	app_pointer = bytes_received -  (app_pointer * prtd->pcm_size);
-+	dstn = prtd->dma_buffer.area + app_pointer;
-+
-+	if (count < prtd->pcm_size - app_pointer) {
-+		if (copy_from_user(dstn, buf, count))
-+			return -EFAULT;
-+	} else {
-+		copy = prtd->pcm_size - app_pointer;
-+		if (copy_from_user(dstn, buf, copy))
-+			return -EFAULT;
-+		if (copy_from_user(prtd->dma_buffer.area, buf + copy,
-+				   count - copy))
-+			return -EFAULT;
-+	}
- 
- 	spin_lock_irqsave(&prtd->lock, flags);
--	prtd->bytes_received += count;
-+
-+	bytes_in_flight = prtd->bytes_received - prtd->copied_total;
-+
-+	if (prtd->next_track) {
-+		prtd->next_track = false;
-+		prtd->copied_total = ALIGN(prtd->copied_total, prtd->pcm_count);
-+		prtd->bytes_sent = ALIGN(prtd->bytes_sent, prtd->pcm_count);
-+	}
-+
-+	prtd->bytes_received = bytes_received + count;
-+
-+	/* Kick off the data to dsp if its starving!! */
-+	if (prtd->state == Q6ASM_STREAM_RUNNING && (bytes_in_flight == 0)) {
-+		uint32_t bytes_to_write = prtd->pcm_count;
-+
-+		avail = prtd->bytes_received - prtd->bytes_sent;
-+
-+		if (avail < prtd->pcm_count)
-+			bytes_to_write = avail;
-+
-+		q6asm_write_async(prtd->audio_client, prtd->stream_id,
-+				  bytes_to_write, 0, 0, wflags);
-+		prtd->bytes_sent += bytes_to_write;
-+	}
-+
- 	spin_unlock_irqrestore(&prtd->lock, flags);
- 
- 	return count;
-@@ -1127,7 +1182,7 @@ static struct snd_compress_ops q6asm_dai_compress_ops = {
- 	.get_caps	= q6asm_dai_compr_get_caps,
- 	.get_codec_caps	= q6asm_dai_compr_get_codec_caps,
- 	.mmap		= q6asm_dai_compr_mmap,
--	.ack		= q6asm_dai_compr_ack,
-+	.copy		= q6asm_compr_copy,
- };
- 
- static int q6asm_dai_pcm_new(struct snd_soc_component *component,
--- 
-2.21.0
+Thanks for your answer.
 
+Although I still have many months ahead to understand ASoC framework, I don't
+think moving compress_ops out of snd_soc_component_driver it is a good idea.
+
+For me it looks like snd_soc_component_driver abstracts the functionality of a
+component so operations should still stay under snd_soc_component_driver.
+
+Indeed snd_soc_component_driver has a lot of operations and flags, I think we
+can group the operations as follows:
+
+* operations on PCM substreams (e.g: open(component,substream))
+* operations on DT nodes (e.g: of_xlate_dai_id(component, device_node)
+* component operations: (e.g: set_pll(component)
+* constructor / destructor.
+
+I think a first step would be to create an equivalent of
+snd_compress_ops for PCM substreams.
+The name ideally would be snd_pcm_ops and all the functions will have
+a component and a PCM
+substream.
+
+Anyhow, snd_pcm_ops already exists and acts only on a component.
+
+So, I think those operations should be called:
+* for PCM: snd_substream_pcm_ops
+* for Compress: rename snd_compr_ops with snd_stream_compr_ops.
+
+Another thing I don't understand is why PCM uses 'substream' term
+while compress uses 'stream' term.
+
+I must admit that my head hurts every time I try to understand ASoC related
+stuff. Thanks a lot for taking your time to clean it up and make the code
+easier to understand.
