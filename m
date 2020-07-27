@@ -2,75 +2,77 @@ Return-Path: <SRS0=KPAB=BG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44ED4C433EA
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:54:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF0CC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:58:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B92512075D
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:54:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0695620786
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 09:58:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bPi6TMSJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B92512075D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R2/Mkq9N";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="rDo+GOoJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0695620786
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F44E1668;
-	Mon, 27 Jul 2020 11:53:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F44E1668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EFE31668;
+	Mon, 27 Jul 2020 11:57:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EFE31668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595843689;
-	bh=YFLLvOYMY78sApCcbxSNBh9U64P0d/iwcHbQ1VjC8yw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bPi6TMSJvd8hyV2xXkfQA9hNy5s6TzARJvwv3Ys2bd8qzifEOd7tFFHxPsFw2lK9t
-	 mEaHrFgCIi+fPIQbGCNvlqnkNti5ivHtSiAgfwEws0jYidIFc9kd3623fcGvPvKQpM
-	 EerLp/EdISAYyCc5w1xT6agDFCwrRe6jnp10nGj0=
+	s=default; t=1595843905;
+	bh=zTItE3Jdg3eO8Q2WbvkezrybFL286JjzowFktuYuc0Y=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=R2/Mkq9Nt40no9PRkciLDBkhLPgGgvm2hQnKk9R1BWwA1phV1Rbqwq5NDX82SZ43q
+	 JB/E0XcZI4fnJiC6rKTV7ys46f19V2I3d822gfiPfRtTZU6bNU0jPXil2D2b/WeX+V
+	 yEzXhuR6h6L469eLHQu2pyg1Wc1GG+d2uxacLBzo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E04D3F80171;
-	Mon, 27 Jul 2020 11:53:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26FD8F80158;
+	Mon, 27 Jul 2020 11:57:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2BA8F801D9; Mon, 27 Jul 2020 11:53:57 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 770CBF80171; Mon, 27 Jul 2020 11:57:33 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2647F80158
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 11:53:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2647F80158
-IronPort-SDR: YWVoLJJTQTh9CUva4opbqQwimrvsMhMoM6Yy3ZIb5TpCYyX+ijVp0V7BFkEOZ6NKbG9MGExzPa
- gs4icTQ3L2/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="139017014"
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; d="scan'208";a="139017014"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2020 02:53:39 -0700
-IronPort-SDR: zPLjLoPPCMGlnfEV1YyScGhCR59QqS54CiI/jGC6iZ93zkwfw58CmCY3TO+EcxU32hIj0C4IrZ
- 9hG5IoLXN3lw==
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; d="scan'208";a="464006917"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2020 02:53:34 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH v2] soundwire: master: enable pm runtime
-Date: Mon, 27 Jul 2020 05:59:45 +0800
-Message-Id: <20200726215945.3119-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06CB4F8013C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 11:57:18 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 49738A003F;
+ Mon, 27 Jul 2020 11:57:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 49738A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1595843837; bh=TUE+p9+MZtipz7IyxCseV7k2APG5Vl17jk8eurOOB+o=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=rDo+GOoJIm1uk35OwP5QkP//U2yuYRGFq2tSJ5U1EeEaHoASdDKIDfPUm7l3R5UdJ
+ oUiUGnmFUpzzL3UauXg2pVmxbUxFT0izL6aQ4xfbgTRxdXP9o4Y20/VhEk9F9X9eM4
+ sn7wgjPn/IQEhzo+oynnoNSH4QRCLVnpmLH0MZDs=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon, 27 Jul 2020 11:57:15 +0200 (CEST)
+Subject: Re: [PATCH] alsaucm: Fix ending with quotes commands
+To: Cheng Yueh <cyueh@chromium.org>, alsa-devel@alsa-project.org
+References: <20200709062412.348-1-cyueh@chromium.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <1fba0c16-4c8c-faf5-f532-1107690ab228@perex.cz>
+Date: Mon, 27 Jul 2020 11:57:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200709062412.348-1-cyueh@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,43 +88,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The hierarchy of soundwire devices is platform device -> M device -> S
-device. A S device is physically attached on the platform device. So the
-platform device should be resumed when a S device is resumed. As the
-bridge of platform device and S device, we have to implement runtime pm
-on M driver. We have set runtime pm ops in M driver already, but still
-need to enable runtime pm.
+Dne 09. 07. 20 v 8:24 Cheng Yueh napsal(a):
+> If we use 'alsaucm -n -b -' with 'get "CapturePCM/Internal Mic"' then
+> the alsaucm will report error and stop immediately. The reason is that
+> the parse_line in usecase.c appends an empty argument if a command ends
+> with quotes.
+> 
+> This change adds a patch to fix the parse_line function in usecase.c.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Applied. Thank you.
 
----
+					Jaroslav
 
-Changes in v2:
- - Edit the commit message to explain why we need the patch. 
----
- drivers/soundwire/master.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
-index 5f0b2189defe..3488bb824e84 100644
---- a/drivers/soundwire/master.c
-+++ b/drivers/soundwire/master.c
-@@ -154,6 +154,7 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
- 	bus->dev = &md->dev;
- 	bus->md = md;
- 
-+	pm_runtime_enable(&bus->md->dev);
- device_register_err:
- 	return ret;
- }
-@@ -166,6 +167,7 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
-  */
- int sdw_master_device_del(struct sdw_bus *bus)
- {
-+	pm_runtime_disable(&bus->md->dev);
- 	device_unregister(bus->dev);
- 
- 	return 0;
 -- 
-2.17.1
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
