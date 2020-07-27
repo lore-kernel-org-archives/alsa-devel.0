@@ -2,143 +2,89 @@ Return-Path: <SRS0=KPAB=BG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB970C433E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 17:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22660C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 17:49:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37F6820719
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 17:36:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC1A120714
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jul 2020 17:49:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CUqpjH8f";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="nA8ll4ov"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37F6820719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mw0sTXMg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="cvU1zYSn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC1A120714
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C33461698;
-	Mon, 27 Jul 2020 19:35:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C33461698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C8F31697;
+	Mon, 27 Jul 2020 19:48:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C8F31697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595871362;
-	bh=3KhX4gTSTTYi080pnBPjvvigHVL5ay3Crc2gyhTtCz0=;
-	h=Subject:To:From:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CUqpjH8fDx7teaMwGLG4VNgp9DqZqaK88fjy4umULIu1kINYRohRaaV1N8L7CYNKQ
-	 lZQbYpRcILOr9AiQU1ikhlDKGaObkHUMkF1WqQ+3V2KI3iQgoftv8IQk+Iz3LYjeS8
-	 QE58iBv0VJRfTsAVoOA0F1Y7lZjxDVROFCIjDfM8=
+	s=default; t=1595872146;
+	bh=LSJU3X5A9YcZD/wAGRBlsn4lUm/2qrC4q+4OL1NgTZ0=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Mw0sTXMgmKcfuiEAEiDqkFfmJM/xx6AZ5WEZ9GwxEsBzrwzNOq44BpOYwFt6PGgYo
+	 j6NhBWHXE2Ms6crqsFSEqy0Ard2C/0bBc0v+NmAI+MXLw2lULvc+0iMKBN7fIc67cd
+	 lwGWvzN5D4OR0XKWw6rNyB+3xX6mKNmhDQIFjHYw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 499DEF80158;
-	Mon, 27 Jul 2020 19:35:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C36BCF80158;
+	Mon, 27 Jul 2020 19:48:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C73AF80171; Mon, 27 Jul 2020 19:35:09 +0200 (CEST)
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
- [210.118.77.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A5771F80171; Mon, 27 Jul 2020 19:48:14 +0200 (CEST)
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com
+ [IPv6:2607:f8b0:4864:20::52d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67B1BF800DE
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 19:34:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67B1BF800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 726FAF800DE
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 19:48:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 726FAF800DE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="nA8ll4ov"
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
- by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id
- 20200727173454euoutp0243204afe325d3892365080cffd47d89a~lrHzDfMke1899018990euoutp02j
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 17:34:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com
- 20200727173454euoutp0243204afe325d3892365080cffd47d89a~lrHzDfMke1899018990euoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1595871294;
- bh=DPIsTcFj/GmRHGK9eB6V1JsDF43BAwnQ4GrYpgFXVlc=;
- h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
- b=nA8ll4ovg1vQ18csql6HRLL4ru1Qb3J1wdYZu+XVXTj5b/OIQKQxad3+SBwb3KGiS
- /0/GdVrVcazgK2l15Gdjp9ktxTRW2hpS4qeVaPGDrEMjsgwudKW46hCWrmt7apljp9
- hGPQJhdbjKRrTzYLhIS73lmks3QA3skcrD0YkXrI=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
- eucas1p1.samsung.com (KnoxPortal) with ESMTP id
- 20200727173454eucas1p1f10194a61bc0a961a599411d778e7f2f~lrHysoQSO0766507665eucas1p1d;
- Mon, 27 Jul 2020 17:34:54 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
- eusmges2new.samsung.com (EUCPMTA) with SMTP id 65.D0.05997.E301F1F5; Mon, 27
- Jul 2020 18:34:54 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
- eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
- 20200727173453eucas1p20c8335a997c175d8a2694b7557f218ee~lrHyOs7I60366203662eucas1p2u;
- Mon, 27 Jul 2020 17:34:53 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
- eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20200727173453eusmtrp1f655b19d9b162ac1c075163ae6f734e0~lrHyOF66m1928319283eusmtrp1k;
- Mon, 27 Jul 2020 17:34:53 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-32-5f1f103e40e8
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
- eusmgms2.samsung.com (EUCPMTA) with SMTP id 3C.F8.06017.D301F1F5; Mon, 27
- Jul 2020 18:34:53 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
- eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
- 20200727173453eusmtip145a05451e07e1c8b885c219ccc0684d6~lrHxaFs3g2983629836eusmtip1S;
- Mon, 27 Jul 2020 17:34:53 +0000 (GMT)
-Subject: Re: [PATCH v2 1/3] ASoC: samsung: Document DT bindings for Midas
- sound subsystem
-To: Krzysztof Kozlowski <krzk@kernel.org>
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <0045d784-2dd2-1e0e-7495-fa335a32e46f@samsung.com>
-Date: Mon, 27 Jul 2020 19:34:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="cvU1zYSn"
+Received: by mail-pg1-x52d.google.com with SMTP id l63so10198191pge.12
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2020 10:48:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=LSJU3X5A9YcZD/wAGRBlsn4lUm/2qrC4q+4OL1NgTZ0=;
+ b=cvU1zYSnBLaWSbLmsr5/VkSuyl3IzBzi+JWK4FHRmlLvPuIvH2dNmX0vTxEJfrKJ43
+ tX4Sebvg2jzc5nJqSSgLIdy2D2AvGilRpYfaqv4Kr+1B+tK3AyvIMmykOItpqAG5oOWR
+ aMwWg9CRE7253Agtw6gpXQgxES3nu8OWozOR/FIK7i/CAKanpBLTkyt4i9Ny+UHq5Yah
+ YLh32w5ccM/96IKjaW73x4nKmfXWehzwwMUh2SJ9wBMy9mqQt6ooQHeuj6dMeJ4JdlNL
+ qWs4UDHAwPzl1pX8QUW+v8N2B/14rQCR2dxjAhn5Jlm7CPwfvc03nvX5Ibta88aaxMg1
+ UhFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=LSJU3X5A9YcZD/wAGRBlsn4lUm/2qrC4q+4OL1NgTZ0=;
+ b=ppsfzwY+EP+ze3bjmj/IEz7HY/eg1jnzYclfVZEdmZ/pmKVAIU7VF0/fOYh9PhgWjY
+ mp2COiwwOapQBDtrGXv3NSrEPR+tETq1vFhPvO9IMpL3YSGD8yM7v1JyVspA5I7a6P2m
+ IXeO6scWJZyNqAa8rUgx+q+8CL6kY41U8q3A522dajiNUJKwHp8mnJ8QL1R52NRRN27/
+ jbwNhPfdCHqV/WiRDKeZMWldIvUlJUq5YR7YXmVCV5RVppASG7Aao/Pgak9uN2CyKeMO
+ uNpbtG86Z68HKhvqNRxFUA1TurNTsbU7Rzc++z0ylwn/FtaG1jlzmzcQR+D0XiwbQCHR
+ +QFg==
+X-Gm-Message-State: AOAM5327iBqp7vji6HAb3D67lgg1fwNbWCWplga1NBCZIb6jsOMRjCRF
+ k/tc9hFsW1ND1eQxvjxKNMEvAEeGo15WVRj3+wcFmw==
+X-Google-Smtp-Source: ABdhPJxdY6ON9/mRPO49l2bxNq7NSlaofKRFaGXv+4CGVL78LNl6z47HFLDdAa8UCDbsZlixv4QX6wDYpvVD9uTQaiI=
+X-Received: by 2002:a63:2241:: with SMTP id t1mr20624120pgm.440.1595872085215; 
+ Mon, 27 Jul 2020 10:48:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200727171520.GB3507@kozik-lap>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SaUhUYRTtm/fmzZvJ0ee4XSwXhqSF0kx/PChsQXD6U+qvUNRGfYySG/Nc
- 84/kUi6pZKIObhiYTJo6mZqp0TjlMjlTKCiahTBEmpahUS4tznxF/jvn3nu451wuTch6hO50
- Yko6p05RJskpCdn7ctN8IojxijnZv+XKTr/RC9ju2k4hW71oodgmg0nIms1dIrbWPCxgOwwL
- IrZwyCBie17NU+fEiq71G5RCpy2mFAWdOkpR3qNFinWdZ6gwQnImnktKzOTUfkFXJQmrG8NE
- Wq8gO78iPA9ZUAmiaWACobH+SAmS0DKmDcH7e49EmGwgWJn5SGGyjmBiZ3OXiG2Kx0VmIW7c
- R/CpeJTE5CuC9i81yDrlxERCQ8dNm8KZOQozP7/bFAQzhaBqbI2wNijGH26/KLcJpEwQ6Efq
- bJhkfGDQoCOt2IWJhs6lPgGecYTxOgtpNS5mfKH0G28tE4wbzFmaBBh7Qd9qPWHdBYxeBF2b
- gwS2HQzdU2UIYydYHu0RYXwQjFVlJBbkIyh7Oi/CpHL3HKPNfxWn4a1pi7JuJnbjdA744fJ5
- 2Kg1CfEl7WF21RGbsIc7vTUELkvhVpEMTx+CbW2NAGN3KLX8JiuRXLMnmWZPHM2eOJr/e5sR
- qUVuXAafrOL4Uylcli+vTOYzUlS+canJOrT7S8Zfoxv9aGAnVo8YGsntpAnPPGNkQmUmn5Os
- R0ATcmfphUljtEwar8y5zqlTY9QZSRyvRwdoUu4mDWhZipIxKmU6d43j0jj1v66AFrvnIfG+
- 1OnJgLOHc1ea7Def3A2e8Bj7zG+Htz9vW27wsCucyBspbv0QlxYWOB4R5Z3oEXE57ErrcfNs
- Vdq7rZAt1dwalEYV1O2PkYek85rXF6vzHIa0O1S/JdB4SeXUaKxoySIeKEPlDyPNE96Lsa4L
- HT8aTA5GXXxukU9DNmEKcJGTfILS/xih5pV/AF0pbhFHAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xu7q2AvLxBhPOGllcuXiIyWLjjPWs
- FlMfPmGzmH/kHKvF+fMb2C1mnN/HZLH2yF12i9a9R9gttpy5zebA6bHhcxObx6ZVnWweLes3
- sXn0bVnF6PF5k1wAa5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpq
- TmZZapG+XYJextsv+5gLtjFVNPcHNTA+Yexi5OSQEDCR2Np2nrWLkYtDSGApo8S+GxvZuhg5
- gBJSEvNblCBqhCX+XOtig6h5zygx7855sGZhgWiJuWvb2UBsEQFNiet/v4MNYha4zChx6clS
- JoiOTYwSN86sAKtiEzCU6D3aB9bNK2AncejwTDCbRUBVYs+RTSwgtqhAnMTyLfPZIWoEJU7O
- fMICchGngJ5E99dikDCzgLrEn3mXmCFscYlbT+YzQdjyEtvfzmGewCg0C0n3LCQts5C0zELS
- soCRZRWjSGppcW56brGRXnFibnFpXrpecn7uJkZgHG479nPLDsaud8GHGAU4GJV4eA8clIsX
- Yk0sK67MPcQowcGsJMLrdPZ0nBBvSmJlVWpRfnxRaU5q8SFGU6DfJjJLiSbnA1NEXkm8oamh
- uYWlobmxubGZhZI4b4fAwRghgfTEktTs1NSC1CKYPiYOTqkGxutqb+/VF2vGBF0vq7+bpD0/
- x4/5dMaO9D+TVhavWhy4cr2W4M3HWZf7nXtu3uEtc7TqqmjYevJOm9j3OLu0+e9fejfnzlj0
- 5cefvmMnprX7veT5r1xULn6hrmvmzobl2yZ23hB3+Wkh+u3OHMWYtQ43NkR+sP37wdsn/DuH
- f+OP7Bm1Jkua1JRYijMSDbWYi4oTASgWb8LZAgAA
-X-CMS-MailID: 20200727173453eucas1p20c8335a997c175d8a2694b7557f218ee
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200727163139eucas1p17420a06923fb625331b2ea867f75bb7e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200727163139eucas1p17420a06923fb625331b2ea867f75bb7e
-References: <CGME20200727163139eucas1p17420a06923fb625331b2ea867f75bb7e@eucas1p1.samsung.com>
- <20200727163027.9242-1-s.nawrocki@samsung.com>
- <20200727171520.GB3507@kozik-lap>
-Cc: simon@lineageos.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
- b.zolnierkie@samsung.com, robh+dt@kernel.org, broonie@kernel.org,
- m.szyprowski@samsung.com
+From: Andrey Konovalov <andreyknvl@google.com>
+Date: Mon, 27 Jul 2020 19:47:54 +0200
+Message-ID: <CAAeHK+wM6_3tS9Of8GDpxGBX=XqHDTW042=EYbmagFaZ0o228Q@mail.gmail.com>
+Subject: /dev/sequencer descriptions
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org,
+ Nazime Hande Harputluoglu <handeharputlu@google.com>,
+ syzkaller <syzkaller@googlegroups.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -154,17 +100,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27.07.2020 19:15, Krzysztof Kozlowski wrote:
->> +  cpu:
->> +    type: object
->> +    properties:
->> +      sound-dai:
->> +        $ref: /schemas/types.yaml#/definitions/phandle-array
+Hi Takashi,
 
-> I think it is just a phandle, not an array?
+We're working on syzkaller descriptions for /dev/sequencer [1], but
+have some troubles understanding its functionality. The main question
+is: is sound/synth/emux/ code reachable when tested in a VM (we're
+using QEMU with -soundhw all), or does it require some specific
+hardware to be present?
 
-Yes, indeed. I will fix it and resend.
+In our setup (with Debian Stretch userspace image) we have
+/dev/sequencer with SNDRV_MINOR_OSS_SEQUENCER and /dev/sequencer2 with
+SNDRV_MINOR_OSS_MUSIC. For the former, there are no synth devices as
+reported by SNDCTL_SEQ_NRSYNTHS. For the latter, synth devices are
+there, but the load_patch() callback is not reachable as this check
+[2] fails.
 
--- 
-Thanks,
-Sylwester
+Is that code impossible to test in a VM at all? Or are there some
+specific kernel options/drivers that need to be enabled?
+
+Thanks!
+
+[1] https://github.com/google/syzkaller/pull/1952
+
+[2] https://elixir.bootlin.com/linux/v5.7.8/source/sound/core/seq/oss/seq_oss_synth.c#L452
