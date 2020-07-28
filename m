@@ -2,73 +2,73 @@ Return-Path: <SRS0=2FB+=BH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0290CC433F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D24FBC433E8
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:32:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85050207F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:31:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4E5C52074F
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:32:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mTzOw15l";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sypy9P7C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85050207F5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZQ8naIQY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1YLaHe37"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E5C52074F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DC7516E7;
-	Tue, 28 Jul 2020 18:31:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DC7516E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC9D616F5;
+	Tue, 28 Jul 2020 18:31:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC9D616F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595953912;
-	bh=QH/fNpriLdWfgqzqml0LW6l6Cmgll/uf1nxBcMvnPWc=;
+	s=default; t=1595953964;
+	bh=fu8BQVTYRHqSDmcTdXV9xFLRNxBetsC48Rb8C5QDh1I=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mTzOw15lDrmdXSLUfba4kXCEGMd7tiPI5mo2MPkrfxKbVvjnvKRjVYsM8l/OsLfSz
-	 hEHtlThYQ/t5lj0Vv07QrgcnOKHgc+3uDOYmwOI8v4eStYtv1Hvb2CkdZfRg87A9DN
-	 7s3druHDGdBEpqfZkk1W2OfiZsY7uKw//Gsa1cYw=
+	b=ZQ8naIQYEd46yFXDbQRtoBm6jpt5ziOY/iL8AikMJgG2azPnFLcQ1Pmg08B9V1a3c
+	 udp3ZOb7NwVHU/TlDstjBJGNTc7jswT+zTS5lCUsiZUp9r7n/Wr1Eiw56ydZNpXTbQ
+	 VTU8MbzqUmWsmxQpxCYuiXU0WERR1vCNM+gzb+P4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82691F8021C;
-	Tue, 28 Jul 2020 18:31:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CCEDF80240;
+	Tue, 28 Jul 2020 18:31:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 778C3F800AD; Tue, 28 Jul 2020 18:30:59 +0200 (CEST)
+ id D224CF8021E; Tue, 28 Jul 2020 18:31:00 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69F9EF800AD
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 18:30:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69F9EF800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48C8FF8021C
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 18:30:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48C8FF8021C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Sypy9P7C"
+ header.b="1YLaHe37"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 62FCD2074F;
- Tue, 28 Jul 2020 16:30:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9AB31207F5;
+ Tue, 28 Jul 2020 16:30:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595953848;
- bh=QH/fNpriLdWfgqzqml0LW6l6Cmgll/uf1nxBcMvnPWc=;
+ s=default; t=1595953856;
+ bh=fu8BQVTYRHqSDmcTdXV9xFLRNxBetsC48Rb8C5QDh1I=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Sypy9P7CThuG/PVUmHOtNiWyyBtkreQbISYFIhWCpycCFVMaVPwsc0h6ZsNglEMiQ
- 59R+yIvDg3i3ReGH2Vr8W4TYXvMRyCfwzRCMSOfBlybDtl+e7B3/zVQe9oVhQ52foV
- 7FwVZCT3nNCAvN2bNSn9uQoHxnYW8ckN1Bna32ps=
-Date: Tue, 28 Jul 2020 17:30:31 +0100
+ b=1YLaHe372Df4C+OmkxB5LvO5WUv8a1r0Fc2ygts+NDilE1mBLB0Qa2mew3erHtD/a
+ znZjKHMvBz8onC8sp0PX72hzzzT09WCgvyw9UYf4RQYPUOa4m3UsPF0dh3LwDrMd7g
+ lzVZ14g6bA1GRiI9uEyt97Yskg9kGXN5f+tefu6k=
+Date: Tue, 28 Jul 2020 17:30:37 +0100
 From: Mark Brown <broonie@kernel.org>
 To: robh@kernel.org, perex@perex.cz, Dan Murphy <dmurphy@ti.com>,
  lgirdwood@gmail.com, tiwai@suse.com
-In-Reply-To: <20200612171412.25423-1-dmurphy@ti.com>
-References: <20200612171412.25423-1-dmurphy@ti.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: tas2562: Convert the tas2562 binding
+In-Reply-To: <20200723160838.9738-1-dmurphy@ti.com>
+References: <20200723160838.9738-1-dmurphy@ti.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: tas2562: Convert the tas2562 binding
  to yaml
-Message-Id: <159595383112.15027.8364475369374911747.b4-ty@kernel.org>
+Message-Id: <159595383113.15027.14495128108452214806.b4-ty@kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,7 +86,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Jun 2020 12:14:11 -0500, Dan Murphy wrote:
+On Thu, 23 Jul 2020 11:08:37 -0500, Dan Murphy wrote:
 > Convert the TAS2562 text file to yaml format.
 
 Applied to
@@ -95,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/2] dt-bindings: tas2562: Convert the tas2562 binding to yaml
-      (no commit info)
+[1/2] ASoC: tas2562: Convert the tas2562 binding to yaml
+      commit: e35cf9f5edb18fd9daf1c6ba7a89f463334526c4
 [2/2] ASoC: tas2562: Update shutdown GPIO property
       commit: f78a97003b8babb1c49e2e4a6b46f15ac31ecf49
 
