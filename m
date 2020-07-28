@@ -2,147 +2,90 @@ Return-Path: <SRS0=2FB+=BH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBFAFC433EA
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:10:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF4CCC433E3
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:11:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A0872065C
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:10:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B09F20792
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:11:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cd7b61Vy";
-	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="IhFtprQg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A0872065C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MGiYFZT6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pCBjWdRa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B09F20792
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF11816FF;
-	Tue, 28 Jul 2020 18:09:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF11816FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA06116ED;
+	Tue, 28 Jul 2020 18:10:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA06116ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595952626;
-	bh=t9qNB7uMKwpjMPn8TntS1MQM3l6ygNtuvF4Jzzra9+o=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cd7b61VySXo82UnG+oaCSxuY6fs9XhUHhUUYQthEHF6uOevukgDaBKuS1SQsuRcw2
-	 qNV4udoCgpO4JNjOXySseWNfp1la3XEhMEbgmUdXflCZu8piTbVIkv4jaJvH7tQ/yD
-	 6xbSNi2oSNcItaYtZpRtlrPXcxkg4LzR1M8dOPI4=
+	s=default; t=1595952661;
+	bh=TQgj8Zfuxonz23CLRu3YxUXJgNk85BnS4CaWL43yyio=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MGiYFZT67U3hWQYlCnrsd45AhYf7A8MTWDdmuIciR4AqoEUaOiTtcuoQFO0OS1pZH
+	 tWSWz5ZaZ/frugOkHMoYWwl3ZnMkZQ4NEhiRY+z64xi2FjtHuvl1QeiugE8ulOkQGI
+	 e7DVocJMDgnm6kU0WTi/LaqiAK0GIbQ5plgGqRG0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A768F80240;
-	Tue, 28 Jul 2020 18:07:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F857F802C2;
+	Tue, 28 Jul 2020 18:08:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A66EF802E8; Tue, 28 Jul 2020 18:07:45 +0200 (CEST)
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com
- (mail-eopbgr770078.outbound.protection.outlook.com [40.107.77.78])
+ id 652A6F802C2; Tue, 28 Jul 2020 18:08:52 +0200 (CEST)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5676FF8021C
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 18:07:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5676FF8021C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25D4CF800AD
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 18:08:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25D4CF800AD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="IhFtprQg"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CAoj85SkXzl3UCLX8B7sK5tF3XDTZUiXhzQzs47PotBeXnGlecmVEdM39UlAkzWEvAHWZkukeBC8XsfwgIaOfTRsjgWGEqWXqvxQWBVMhgcZzsiekGs5Z7a/Gm4Rgj3WLtnKOx7g+8Priw7ixpNgao8mZflqT6bo+TPn+nxu1hUoZMo3im3b+awr05H3TMZlFI3XH1pHH6Ka98KEp5JYb2IFG8+Yf2gQPhnROzgou+ja3GjUfKUSTujPDaA+e1+XwaU9LoQnzpaQf6rsFJyUDhaAT/Vnj2VR+tkTEkij5/F6y63qC/vr07Yzh+k+DcnkGOqd3rVoRYX+Awx9+CT6Ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zEkczVNO0HrT0CFuTOKrW+xHvnxLTwPjo3atDKYT87o=;
- b=aQ/8+1KxXA35msC6GSmI2IAdt28z0ofAu3y+KrBZgx6NSbpBiKQi9h/2zi2KyE9ywWdgdH8bmteHDasvoIm69Duh+VEP02Ry1fTscjpDWNHiYlbwc9OCDEcagY0HpW6uZM1GQs/IA4G06cWhE8f/bF2cUoDpIPFV4KIXfvZq8ALNJhSwuEBcIODU7WawNCxvvEU7IvjQZp2XZwOmSFnfFunUN/qQ+rLJylwQ+97XYpqSGMWoy3YEiQd4OCNBtvsZNbN7w3GUQmFtvBX3D/cbKlLxhB/ZYGBIHQpNehygEsTUXN/yVqhhWsbsEDedd94ecPFLTF0iGgHrQkZFyUXiIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zEkczVNO0HrT0CFuTOKrW+xHvnxLTwPjo3atDKYT87o=;
- b=IhFtprQg6aEpH/suv21LIy/5H7vaRrhD3KWmlJHv5x0z8EHe+iye0mWdLBZrDXrA77F62CVybMGRCLoEL258pf6Nf2yVF8+8VCKrAAHHTAg7ztLa7O4jWLw0rsv45fqLtEQxplU0Hv5qlXPuZKnXFgf74KV5dvo5k0i6W+ZUCn8=
-Received: from CO2PR18CA0064.namprd18.prod.outlook.com (2603:10b6:104:2::32)
- by BN8PR12MB3201.namprd12.prod.outlook.com (2603:10b6:408:6c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.33; Tue, 28 Jul
- 2020 16:07:09 +0000
-Received: from CO1NAM11FT007.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:2:cafe::63) by CO2PR18CA0064.outlook.office365.com
- (2603:10b6:104:2::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24 via Frontend
- Transport; Tue, 28 Jul 2020 16:07:08 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=permerror action=none header.from=amd.com;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- CO1NAM11FT007.mail.protection.outlook.com (10.13.174.131) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3216.10 via Frontend Transport; Tue, 28 Jul 2020 16:07:08 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 28 Jul
- 2020 11:06:43 -0500
-Received: from SATLEXMB01.amd.com (10.181.40.142) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 28 Jul
- 2020 11:06:42 -0500
-Received: from vishnu-All-Series.amd.com (10.180.168.240) by
- SATLEXMB01.amd.com (10.181.40.142) with Microsoft SMTP Server id 15.1.1713.5
- via Frontend Transport; Tue, 28 Jul 2020 11:06:38 -0500
-From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-To: 
-Subject: [PATCH v2 3/5] ASoC: amd: Adding support for ALC1015 codec in machine
- driver
-Date: Tue, 28 Jul 2020 21:32:53 +0530
-Message-ID: <20200728160255.31020-4-Vishnuvardhanrao.Ravulapati@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200728160255.31020-1-Vishnuvardhanrao.Ravulapati@amd.com>
-References: <20200728160255.31020-1-Vishnuvardhanrao.Ravulapati@amd.com>
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pCBjWdRa"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SG8dA1088165;
+ Tue, 28 Jul 2020 11:08:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1595952519;
+ bh=jH/FfVEnikUTSnMw2PAY6KDVMFYv6J1+LWUGiztMq0U=;
+ h=From:To:CC:Subject:Date;
+ b=pCBjWdRaFi4WpowH2bq5c1Mr663qG5o4KvQ6J7j5jhNx+SoP1dOFlVwKa8TtJTxwZ
+ nIENgCtzibsL+bx7gEJteOdA5KPKuh8q/MBP7ngwBcIHQ9BhgCMzd5AyW+W04TGy1e
+ ME6rBc3xpRddcKxsD4TK0oJPHfwwJgQvaDDQYTJU=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06SG8dxK014086
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 28 Jul 2020 11:08:39 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Jul 2020 11:08:39 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Jul 2020 11:08:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SG8dWm080108;
+ Tue, 28 Jul 2020 11:08:39 -0500
+From: Dan Murphy <dmurphy@ti.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [PATCH 1/2] dt-bindings: tlv320adcx140: Add GPO config and drive
+ config
+Date: Tue, 28 Jul 2020 11:08:32 -0500
+Message-ID: <20200728160833.24130-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fbeeff1e-a729-4732-45cd-08d833104782
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3201:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB3201BF00C79603652C25FF5CE7730@BN8PR12MB3201.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ed9T6JJiLlKG9v7tP57dIgqOLR3l3SeDPJW6zgccuKmYHC7gjPunN2QmIXjBfzULmRMfznNHux2UilMZTDWWjAI1xltXcLO+fE6YONQ7xQY+KbvZWJl2qoyCSsbtOonpS7fsI+M/Z7pZfT4rIannArDVEkR2OoLzYhGtqQwhc6oYR9TMUjzwN+yvtSashk/9jKA31mHGCtRGo1s6JTTNh1l05p8c/nzfMHHmZnrBAOjs0lgrgOF0NYV5xxPkUnZRBo9ggBiT2FN3GHAPXNVFoFZnVo9EdctzARggAxPhncpdiuixN7E6OeQE6nQuEuMelby87o4R4dvt0FeyFiPS3VKUlNm2KMrwoP6hERLu0neHtHxqom6spqyUgRy8SJnnXrgx1FS7WmT/F+YyhkLlhR4ry11S1fA/oKzOn4rZPO4=
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SATLEXMB01.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFTY:;
- SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(46966005)(5660300002)(4326008)(26005)(316002)(70206006)(186003)(70586007)(8936002)(54906003)(7416002)(8676002)(478600001)(7696005)(36756003)(47076004)(82740400003)(356005)(81166007)(83380400001)(426003)(336012)(6666004)(109986005)(2616005)(86362001)(1076003)(2906002)(82310400002)(266003);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 16:07:08.3529 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fbeeff1e-a729-4732-45cd-08d833104782
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT007.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3201
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "moderated list:SOUND - SOC LAYER /
- DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Arnd Bergmann <arnd@arndb.de>, open list <linux-kernel@vger.kernel.org>,
- YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>, Enric
- Balletbo i Serra <enric.balletbo@collabora.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
- Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Alexander.Deucher@amd.com, Akshu Agrawal <akshu.agrawal@amd.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -158,134 +101,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Adding support for ALC1015 RTK codec in machine driver.
-Passing specific card structure based on its ACPI ID.
+Add properties for configuring the General Purpose Outputs (GPO). The
+GPOs. There are 2 settings for each GPO, configuration and the output drive
+type.
 
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- sound/soc/amd/Kconfig                |  1 +
- sound/soc/amd/acp3x-rt5682-max9836.c | 63 ++++++++++++++++++++++++++--
- 2 files changed, 60 insertions(+), 4 deletions(-)
+ .../bindings/sound/tlv320adcx140.yaml         | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index e37cf72f2bab..a6ce000fac3f 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -33,6 +33,7 @@ config SND_SOC_AMD_RV_RT5682_MACH
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_CROS_EC_CODEC
- 	select I2C_CROS_EC_TUNNEL
-+	select SND_SOC_RT1015
- 	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
- 	help
- 	 This option enables machine driver for RT5682 and MAX9835.
-diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
-index 2c672657d139..015b6a3312f5 100644
---- a/sound/soc/amd/acp3x-rt5682-max9836.c
-+++ b/sound/soc/amd/acp3x-rt5682-max9836.c
-@@ -21,6 +21,7 @@
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+index 2e6ac5d2ee96..0950eb69f2b2 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -108,6 +108,32 @@ properties:
+       maximum: 7
+     default: [0, 0, 0, 0]
  
- #include "raven/acp3x.h"
- #include "../codecs/rt5682.h"
-+#include "../codecs/rt1015.h"
- 
- #define PCO_PLAT_CLK 48000000
- #define RT5682_PLL_FREQ (48000 * 512)
-@@ -247,7 +248,18 @@ SND_SOC_DAILINK_DEF(cros_ec,
- SND_SOC_DAILINK_DEF(platform,
- 	DAILINK_COMP_ARRAY(COMP_PLATFORM("acp3x_rv_i2s_dma.0")));
- 
--static struct snd_soc_dai_link acp3x_dai_5682_98357[] = {
-+static struct snd_soc_codec_conf rt1015_conf[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF("i2c-10EC1015:00"),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF("i2c-10EC1015:01"),
-+		.name_prefix = "Right",
-+	},
-+};
++patternProperties:
++ '^ti,gpo-config-[1-4]$':
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: |
++       Defines the configuration and output driver for the general purpose
++       output pins (GPO).  These values are pairs, the first value is for the
++       configuration type and the second value is for the output drive type.
++       The array is defined as <GPO_CFG GPO_DRV>
 +
-+static struct snd_soc_dai_link acp3x_dai[] = {
- 	{
- 		.name = "acp3x-5682-play",
- 		.stream_name = "Playback",
-@@ -317,8 +329,8 @@ static const struct snd_kcontrol_new acp3x_5682_mc_controls[] = {
- static struct snd_soc_card acp3x_5682 = {
- 	.name = "acp3xalc5682m98357",
- 	.owner = THIS_MODULE,
--	.dai_link = acp3x_dai_5682_98357,
--	.num_links = ARRAY_SIZE(acp3x_dai_5682_98357),
-+	.dai_link = acp3x_dai,
-+	.num_links = ARRAY_SIZE(acp3x_dai),
- 	.dapm_widgets = acp3x_5682_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(acp3x_5682_widgets),
- 	.dapm_routes = acp3x_5682_audio_route,
-@@ -327,6 +339,47 @@ static struct snd_soc_card acp3x_5682 = {
- 	.num_controls = ARRAY_SIZE(acp3x_5682_mc_controls),
- };
- 
-+static const struct snd_soc_dapm_widget acp3x_1015_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MUX("Dmic Mux", SND_SOC_NOPM, 0, 0,
-+			 &acp3x_dmic_mux_control),
-+	SND_SOC_DAPM_SPK("Left Spk", NULL),
-+	SND_SOC_DAPM_SPK("Right Spk", NULL),
-+};
++       GPO output configuration can be one of the following:
 +
-+static const struct snd_soc_dapm_route acp3x_1015_route[] = {
-+	{"Headphone Jack", NULL, "HPOL"},
-+	{"Headphone Jack", NULL, "HPOR"},
-+	{"IN1P", NULL, "Headset Mic"},
-+	{"Dmic Mux", "Front Mic", "DMIC"},
-+	{"Dmic Mux", "Rear Mic", "DMIC"},
-+	{"Left Spk", NULL, "Left SPO"},
-+	{"Right Spk", NULL, "Right SPO"},
-+};
++       0 - (default) disabled
++       1 - GPOX is configured as a general-purpose output (GPO)
++       2 - GPOX is configured as a device interrupt output (IRQ)
++       3 - GPOX is configured as a secondary ASI output (SDOUT2)
++       4 - GPOX is configured as a PDM clock output (PDMCLK)
 +
-+static const struct snd_kcontrol_new acp3x_mc_1015_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Left Spk"),
-+	SOC_DAPM_PIN_SWITCH("Right Spk"),
-+};
++       GPO output drive configuration for the GPO pins can be one of the following:
 +
-+static struct snd_soc_card acp3x_1015 = {
-+	.name = "acp3xalc56821015",
-+	.owner = THIS_MODULE,
-+	.dai_link = acp3x_dai,
-+	.num_links = ARRAY_SIZE(acp3x_dai),
-+	.dapm_widgets = acp3x_1015_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(acp3x_1015_widgets),
-+	.dapm_routes = acp3x_1015_route,
-+	.num_dapm_routes = ARRAY_SIZE(acp3x_1015_route),
-+	.codec_conf = rt1015_conf,
-+	.num_configs = ARRAY_SIZE(rt1015_conf),
-+	.controls = acp3x_mc_1015_controls,
-+	.num_controls = ARRAY_SIZE(acp3x_mc_1015_controls),
-+};
++       0d - (default) Hi-Z output
++       1d - Drive active low and active high
++       2d - Drive active low and weak high
++       3d - Drive active low and Hi-Z
++       4d - Drive weak low and active high
++       5d - Drive Hi-Z and active high
 +
- void *soc_is_rltk_max(struct device *dev)
- {
- 	const struct acpi_device_id *match;
-@@ -375,6 +428,7 @@ static int acp3x_probe(struct platform_device *pdev)
- 
- static const struct acpi_device_id acp3x_audio_acpi_match[] = {
- 	{ "AMDI5682", (unsigned long)&acp3x_5682},
-+	{ "AMDI1015", (unsigned long)&acp3x_1015},
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, acp3x_audio_acpi_match);
-@@ -391,5 +445,6 @@ static struct platform_driver acp3x_audio = {
- module_platform_driver(acp3x_audio);
- 
- MODULE_AUTHOR("akshu.agrawal@amd.com");
--MODULE_DESCRIPTION("ALC5682 & MAX98357 audio support");
-+MODULE_AUTHOR("Vishnuvardhanrao.Ravulapati@amd.com");
-+MODULE_DESCRIPTION("ALC5682 ALC1015 & MAX98357 audio support");
- MODULE_LICENSE("GPL v2");
+ required:
+   - compatible
+   - reg
+@@ -124,6 +150,8 @@ examples:
+         ti,mic-bias-source = <6>;
+         ti,pdm-edge-select = <0 1 0 1>;
+         ti,gpi-config = <4 5 6 7>;
++        ti,gpo-config-1 = <0 0>;
++        ti,gpo-config-2 = <0 0>;
+         reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+       };
+     };
 -- 
-2.17.1
+2.28.0
 
