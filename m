@@ -2,81 +2,66 @@ Return-Path: <SRS0=2FB+=BH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD5A2C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:56:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35F88C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 17:06:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4656C2074F
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 16:56:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B42ED20786
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 17:06:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iVx2Hjs0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wphuh2vg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4656C2074F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LjI0g1LY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B42ED20786
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFA05170A;
-	Tue, 28 Jul 2020 18:55:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFA05170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C5C71713;
+	Tue, 28 Jul 2020 19:05:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C5C71713
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595955380;
-	bh=rJVDQqY5WUvFsOu1EgRX9G1KnNLENwbxshwoQwQR3p4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1595955960;
+	bh=HJPSQD63CmYKFhXLZwHZPMkZR1gwNLCvXDxZjAkWuaY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iVx2Hjs04epFxnrriM9UcXgeaewD308kdhUhfC+JIOeJY1rvNTeluj5kA6fSlT4At
-	 U216iRBT4hqOduEjxVgrHXpswoLijMRJ+T7Qp0BNAkrKbmUclwY8EKzlzdGBYeVHhJ
-	 eJ4rWNOBCXBSmn8E/sGk0+k2nh5UsMrBCcKhFRzk=
+	b=LjI0g1LYeeUaN4DPsVjoRGv8Y4l43ByRQZbArtYVdWukoW+X42bAzXkqNidZFA1Ys
+	 KLwiPhrgBhWlNFbJaHvLrxSGDh6qmpwgtsvT7LkltbrMedRhOurXgXcve7mJBRLJsM
+	 UFUOwaI1zRBdqo2EQC2ggAIcADnbIOzbl+CM+TRo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47F50F8021C;
-	Tue, 28 Jul 2020 18:55:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D048DF8021C;
+	Tue, 28 Jul 2020 19:05:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A27EAF8021C; Tue, 28 Jul 2020 18:55:28 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 4079AF80227; Tue, 28 Jul 2020 19:05:08 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB36EF800AD
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 18:55:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB36EF800AD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="wphuh2vg"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C20702053B;
- Tue, 28 Jul 2020 16:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1595955316;
- bh=rJVDQqY5WUvFsOu1EgRX9G1KnNLENwbxshwoQwQR3p4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=wphuh2vgRP2NmEjnKL/5WhUCKFXp+LcT7YqJVHmw80vzlb5hYsg1+TCnZNO1xijV3
- ff3mBUbM5YPw7DzfyjG55DZ5fKlsnV7zhOQm6hOxsiIaLs7EcdXUiB4yoQjM3s8ouI
- CBtWyKxHVMqPKp5uH2ReQkcjAPv3ltdxZ9Zb+XUk=
-Date: Tue, 28 Jul 2020 17:54:58 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3] ASoC: dt-bindings: ak4613: switch to yaml base
- Documentation
-Message-ID: <20200728165458.GC24701@sirena.org.uk>
-References: <87y2nk2tfd.wl-kuninori.morimoto.gx@renesas.com>
- <CAL_JsqJ8PyuZLXj4bLwyConb+GdH83hjPPj2mHbqNy=w9m-joA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="zCKi3GIZzVBPywwA"
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJ8PyuZLXj4bLwyConb+GdH83hjPPj2mHbqNy=w9m-joA@mail.gmail.com>
-X-Cookie: You will be misunderstood by everyone.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E824DF800AD
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 19:04:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E824DF800AD
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 67D5FB155;
+ Tue, 28 Jul 2020 17:05:08 +0000 (UTC)
+Date: Tue, 28 Jul 2020 19:04:57 +0200
+Message-ID: <s5hd04ffu4m.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: pcm_meter.c issue at s16_update
+In-Reply-To: <9957e124-be4b-cdc9-ffad-579b631455df@ivitera.com>
+References: <f56d6a67-014a-e562-c253-830c0ec03717@ivitera.com>
+ <9957e124-be4b-cdc9-ffad-579b631455df@ivitera.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,32 +77,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 28 Jul 2020 18:46:00 +0200,
+Pavel Hofman wrote:
+> 
+> 
+> Dne 26. 07. 20 v 20:20 Pavel Hofman napsal(a):
+> > Hi,
+> > 
+> > I am debugging the following problem with the PCM METER API:
+> > 
+> > An application with meter/scope configured in .asoundrc hits a high CPU
+> > load sometimes when a new playback stream is opened. E.g. in MPD when
+> > opening a new radio stream. The 100% CPU core load takes tens of seconds.
+> > ...........
+> > 
+> > TL;DR: at decrease of [status.appl_ptr - status.delay] between
+> > consequent runs the size of buffer to convert by the built-in s16 scope
+> > is set from usual 100s to huge value of pcm->boundary (1.5G), causing a
+> > very long processing at 100% core load.
+> > 
+> > The debug around the event looks like this, suddenly meter->now drops down:
+> > 
+> > s16_update 1: meter->now 2567498, s16->old 2566593, size 905
+> > s16_update 1: meter->now 2568401, s16->old 2567498, size 903
+> > s16_update 1: meter->now 20786, s16->old 20786, size 0
+> > s16_update 1: meter->now 1065, s16->old 20786, size -19721
+> > s16_update 1: meter->now 24839, s16->old 24838, size 1
+> > s16_update 1: meter->now 701, s16->old 24839, size -24138
+> > s16_update 1: meter->now 1253162, s16->old 701, size 1252461
+> > s16_update 1: meter->now 1255148, s16->old 1253162, size 1986
+> > 
+> > ..........
+> > 
+> > s16_update 1: meter->now 11136, s16->old 10261, size 875
+> > s16_update 1: meter->now 22525, s16->old 22524, size 1
+> > s16_update 1: meter->now 963, s16->old 22525, size -21562
+> > s16_update 1: meter->now 1270914, s16->old 963, size 1269951
+> > s16_update 1: meter->now 1272917, s16->old 1270914, size 2003
+> > 
+> 
+> I think the problem is that s16->old is not reset when status.appl_ptr
+> is zeroed and starts running again. There is a call
+> 
+> static void s16_reset(snd_pcm_scope_t *scope)
+> {
+> 	snd_pcm_scope_s16_t *s16 = scope->private_data;
+> 	snd_pcm_meter_t *meter = s16->pcm->private_data;
+> 	s16->old = meter->now;
+> }
+> 
+> but I do not know when this method is called and whether the meter->now
+> is already assigned to the newly zeroed status.appl_ptr.
 
---zCKi3GIZzVBPywwA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Would adding atomic_add(&meter->reset, 1) in snd_pcm_meter_reset()
+help?
 
-On Mon, Jul 27, 2020 at 08:39:23AM -0600, Rob Herring wrote:
 
-> I haven't seen any follow-up to my audio-graph-card.yaml comments, so
-> please revert this.
+Takashi
 
-OK, Morimoto-san please resubmit as a series with the audio-graph-card
-when you get back to that.
 
---zCKi3GIZzVBPywwA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8gWGEACgkQJNaLcl1U
-h9DjEgf/flTiTV9yDbY8qM8OA6yHxLt7VbCKxsA1FUtPKBoCgMfbawzKmYcVLArI
-aamcAdgU1VXbJivony07qipiIF2I4fND1DcK5h1tjgH4UmRGe/4geoZfSJ8xxlTJ
-5FnL0ojGnsCuM2hi20XAFHBNoRAcAD0irnyOUR/HXrRA6N1r6Jlhih1tkP9FH740
-FFZwwyGtlBZ09/nPdig1dzfkxqqtkgupTRxdBmaA3WNAFU9y5XL1QQ7Bhlu8f4yM
-ibjmpePvAYbcUqIYp5q5VH6PgDzmhwUtd/mC2SGedAlVpq2kiocMgpnKbScApN7W
-+iwbD1kRjKBsHeI4rCdUxkdAhMDnBA==
-=Evbh
------END PGP SIGNATURE-----
-
---zCKi3GIZzVBPywwA--
+> 
+> Please at which method should I reset s16->old = 0?
+> * s16_reset
+> * s16_enable
+> * s16_start
+> * snd_pcm_scope_s16_open
+> 
+> 
+> Thanks a lot for any help,
+> 
+> Pavel.
+> 
