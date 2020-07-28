@@ -2,58 +2,62 @@ Return-Path: <SRS0=2FB+=BH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C3A9C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 06:58:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE7EBC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 06:59:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 065C6207F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 06:58:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59362207F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2020 06:59:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A9J9B7qh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 065C6207F5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KCBve8lz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59362207F5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 849891699;
-	Tue, 28 Jul 2020 08:57:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 849891699
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65B1716AA;
+	Tue, 28 Jul 2020 08:58:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65B1716AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595919504;
-	bh=PHvVDPW0tOdkZocFRR5Y3Zzjk4HoEITwIK2VGclAbv0=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=A9J9B7qhblIf4s6/kgXkgkFBFhN67AyZFxuiCEuXaDROdvsOk67OE7ICU9RzKqFv4
-	 +fXAXjY5uTkLxzdVvLvE5KPFrx3les24IBFOCmVykntWlETIhl+8pQhxxYtG2tIyKc
-	 JEng3noOEOVkAU5BtMDMQIrCYsCFLKMXOzOh2DKg=
+	s=default; t=1595919557;
+	bh=kTsqkkSsjw0uUR8rOMZNZ28TC55CoQg+PsvNqpgGMqg=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KCBve8lzFzUzbeHVqMBrqLBvLLYiYm1ExIBGjx71Vyi7MUfejOEkS0OObvSHWFCQW
+	 8QVAS8gIWv1oYlcC20TY1PbwGUiVoUCSA47NKJnNkFZ3PIiAfa+a0NWwF3Udk0jKQL
+	 59ZemSaxQ6oCkur6nkT0IK62Ft0pA4uYGMB/24mc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04375F800DE;
-	Tue, 28 Jul 2020 08:57:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42D3DF80240;
+	Tue, 28 Jul 2020 08:57:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03055F8021E; Tue, 28 Jul 2020 08:57:32 +0200 (CEST)
+ id 3A457F80254; Tue, 28 Jul 2020 08:57:40 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id AB5DBF800DE
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 08:57:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB5DBF800DE
-Date: 28 Jul 2020 15:57:10 +0900
-X-IronPort-AV: E=Sophos;i="5.75,405,1589209200"; d="scan'208";a="53011606"
+ by alsa1.perex.cz (Postfix) with ESMTP id E0A2AF800AD
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 08:57:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0A2AF800AD
+Date: 28 Jul 2020 15:57:29 +0900
+X-IronPort-AV: E=Sophos;i="5.75,405,1589209200"; d="scan'208";a="53011632"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 28 Jul 2020 15:57:10 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 28 Jul 2020 15:57:29 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8E0144004927;
- Tue, 28 Jul 2020 15:57:10 +0900 (JST)
-Message-ID: <87wo2oku0m.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 41BF74004922;
+ Tue, 28 Jul 2020 15:57:29 +0900 (JST)
+Message-ID: <87v9i8ku04.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/7] ASoC: merge soc_pcm_open() rollback and soc_pcm_close()
+Subject: [PATCH 1/7] ASoC: soc-dai: add mark for snd_soc_dai_startup/shutdown()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87wo2oku0m.wl-kuninori.morimoto.gx@renesas.com>
+References: <87wo2oku0m.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -72,8 +76,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 soc_pcm_open() does rollback when failed (A),
 but, it is almost same as soc_pcm_close().
@@ -95,30 +98,151 @@ but, it is almost same as soc_pcm_close().
  v		return ret;
 	}
 
+The difference is
+soc_pcm_close() is for all dai/component/substream,
+rollback        is for succeeded part only.
+
 This kind of duplicated code can be a hotbed of bugs,
-thus, this patch-set share soc_pcm_close() and rollback.
+thus, we want to share soc_pcm_close() and rollback.
 
-Kuninori Morimoto (7):
-  ASoC: soc-dai: add mark for snd_soc_dai_startup/shutdown()
-  ASoC: soc-link: add mark for snd_soc_link_startup/shutdown()
-  ASoC: soc-component: add mark for soc_pcm_components_open/close()
-  ASoC: soc-component: add mark for snd_soc_pcm_component_pm_runtime_get/put()
-  ASoC: soc-pcm: add soc_pcm_clean() and call it from soc_pcm_open/close()
-  ASoC: soc-pcm: remove unneeded dev_err() for snd_soc_dai_startup()
-  ASoC: soc-pcm: remove unneeded dev_err() for snd_soc_component_module/open()
+Now, soc_pcm_open/close() are handling
+=>	1) snd_soc_dai_startup/shutdown()
+	2) snd_soc_link_startup/shutdown()
+	3) snd_soc_component_module_get/put()
+	4) snd_soc_component_open/close()
+	5) pm_runtime_put/get()
 
- include/sound/soc-component.h |  28 +++++---
- include/sound/soc-dai.h       |   5 +-
- include/sound/soc-link.h      |   3 +-
- include/sound/soc.h           |   3 +
- sound/soc/soc-component.c     |  73 ++++++++++++++++++++-
- sound/soc/soc-compress.c      |  30 +++------
- sound/soc/soc-dai.c           |  21 +++++-
- sound/soc/soc-dapm.c          |   4 +-
- sound/soc/soc-link.c          |  21 +++++-
- sound/soc/soc-pcm.c           | 120 ++++++++++++----------------------
- 10 files changed, 190 insertions(+), 118 deletions(-)
+This patch is for 1) snd_soc_dai_startup/shutdown(),
+and adds new substream mark.
+It will mark substream when startup was suceeded.
+If rollback happen *after* that, it will check rollback flag
+and marked substream.
 
+It cares *previous* startup() only now,
+but we might want to check *whole* marked substream in the future.
+This patch is using macro so that it can be easily adjust to it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/soc-dai.h |  5 ++++-
+ sound/soc/soc-dai.c     | 21 ++++++++++++++++++++-
+ sound/soc/soc-dapm.c    |  4 ++--
+ sound/soc/soc-pcm.c     |  4 ++--
+ 4 files changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 776a60529e70..86411f503c1c 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -153,7 +153,7 @@ void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
+ int snd_soc_dai_startup(struct snd_soc_dai *dai,
+ 			struct snd_pcm_substream *substream);
+ void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
+-			  struct snd_pcm_substream *substream);
++			  struct snd_pcm_substream *substream, int rollback);
+ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+ 				    struct snd_pcm_substream *substream);
+ void snd_soc_dai_suspend(struct snd_soc_dai *dai);
+@@ -388,6 +388,9 @@ struct snd_soc_dai {
+ 
+ 	struct list_head list;
+ 
++	/* function mark */
++	struct snd_pcm_substream *mark_startup;
++
+ 	/* bit field */
+ 	unsigned int probed:1;
+ };
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index 693893420bf0..4f9f73800ab0 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -32,6 +32,14 @@ static inline int _soc_dai_ret(struct snd_soc_dai *dai,
+ 	return ret;
+ }
+ 
++/*
++ * We might want to check substream by using list.
++ * In such case, we can update these macros.
++ */
++#define soc_dai_mark_push(dai, substream, tgt)	((dai)->mark_##tgt = substream)
++#define soc_dai_mark_pop(dai, substream, tgt)	((dai)->mark_##tgt = NULL)
++#define soc_dai_mark_match(dai, substream, tgt)	((dai)->mark_##tgt == substream)
++
+ /**
+  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
+  * @dai: DAI
+@@ -348,15 +356,26 @@ int snd_soc_dai_startup(struct snd_soc_dai *dai,
+ 	    dai->driver->ops->startup)
+ 		ret = dai->driver->ops->startup(substream, dai);
+ 
++	/* mark substream if succeeded */
++	if (ret == 0)
++		soc_dai_mark_push(dai, substream, startup);
++
+ 	return soc_dai_ret(dai, ret);
+ }
+ 
+ void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
+-			 struct snd_pcm_substream *substream)
++			  struct snd_pcm_substream *substream,
++			  int rollback)
+ {
++	if (rollback && !soc_dai_mark_match(dai, substream, startup))
++		return;
++
+ 	if (dai->driver->ops &&
+ 	    dai->driver->ops->shutdown)
+ 		dai->driver->ops->shutdown(substream, dai);
++
++	/* remove marked substream */
++	soc_dai_mark_pop(dai, substream, startup);
+ }
+ 
+ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 3273161e2787..980f2c330b87 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3968,14 +3968,14 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		snd_soc_dapm_widget_for_each_source_path(w, path) {
+ 			source = path->source->priv;
+ 			snd_soc_dai_deactivate(source, substream->stream);
+-			snd_soc_dai_shutdown(source, substream);
++			snd_soc_dai_shutdown(source, substream, 0);
+ 		}
+ 
+ 		substream->stream = SNDRV_PCM_STREAM_PLAYBACK;
+ 		snd_soc_dapm_widget_for_each_sink_path(w, path) {
+ 			sink = path->sink->priv;
+ 			snd_soc_dai_deactivate(sink, substream->stream);
+-			snd_soc_dai_shutdown(sink, substream);
++			snd_soc_dai_shutdown(sink, substream, 0);
+ 		}
+ 		break;
+ 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 10f703986be3..ae7e648cd21c 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -682,7 +682,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	snd_soc_runtime_deactivate(rtd, substream->stream);
+ 
+ 	for_each_rtd_dais(rtd, i, dai)
+-		snd_soc_dai_shutdown(dai, substream);
++		snd_soc_dai_shutdown(dai, substream, 0);
+ 
+ 	snd_soc_link_shutdown(substream);
+ 
+@@ -813,7 +813,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 
+ config_err:
+ 	for_each_rtd_dais(rtd, i, dai)
+-		snd_soc_dai_shutdown(dai, substream);
++		snd_soc_dai_shutdown(dai, substream, 1);
+ 
+ 	snd_soc_link_shutdown(substream);
+ rtd_startup_err:
 -- 
 2.25.1
 
