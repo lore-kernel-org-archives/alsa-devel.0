@@ -6,68 +6,69 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F74FC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 13:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09EC6C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 13:54:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 281F622DCC
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 13:53:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8680B22D37
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 13:54:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jQJGy+1V";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDJLImNE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 281F622DCC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QBoV8Ph+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aIkjo0Ix"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8680B22D37
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97B7C16E6;
-	Wed, 29 Jul 2020 15:52:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97B7C16E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A0E316FA;
+	Wed, 29 Jul 2020 15:53:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A0E316FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596030812;
-	bh=CiATFAX2ENWtL7XGl9y/KMHm4CWjbPuuZ50kAWq9B10=;
+	s=default; t=1596030865;
+	bh=olcPQYLRhZ6J89WgrrA4eEkN7VMmNsAbPiHflKRaWSw=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jQJGy+1VaCvss0CFaTpL8hkEowulJRqmP9UftzsEq1NritUghvnD2kSDmNpX6Tb7x
-	 4nXxkOs401NZMLX8vJbtJiRpUxOsqeADJPkQLh/f6OxIt+AHQPkw9qUzq42DAB5MfZ
-	 8kbSfAu0GJZqLkqN7T4hmrxQhh5CPLdbzxS+nX+E=
+	b=QBoV8Ph+1gOrALwjZejaClNkeCRS04cvwcqJTRGQfPVqi/fgXNKCRSGGkvrHuI4WK
+	 PjROq4oJeq0/kGXzWOqKjvnee4NdVCT4fkJP73IO7+V/kW6VTYdVvCqTZNf1QgP69b
+	 cARlxqOwVlXlb2Z/kKxwtD/S9wczScA95/FSFKQE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E8A2F80171;
-	Wed, 29 Jul 2020 15:52:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78F28F801EB;
+	Wed, 29 Jul 2020 15:52:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99283F801A3; Wed, 29 Jul 2020 15:52:40 +0200 (CEST)
+ id A7ECAF800DE; Wed, 29 Jul 2020 15:52:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB794F80125
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 15:52:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB794F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B734F800DE
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 15:52:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B734F800DE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UDJLImNE"
+ header.b="aIkjo0Ix"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BE98F22D2C;
- Wed, 29 Jul 2020 13:52:30 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C902122D37;
+ Wed, 29 Jul 2020 13:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596030751;
- bh=CiATFAX2ENWtL7XGl9y/KMHm4CWjbPuuZ50kAWq9B10=;
+ s=default; t=1596030758;
+ bh=olcPQYLRhZ6J89WgrrA4eEkN7VMmNsAbPiHflKRaWSw=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=UDJLImNE4Xj/OlhPe4563hYtrS8TlH+R8bnJLI4807Xs7LrHfNCLwyCVpUldjJtq2
- M/mTkvncT4sultxlZnB9PX6ZGV2LXR59QEjxhKDUb0/ANLT13Odivzt6Rht4dOqTz/
- 3F3jpc8J1T80+YrZWDK8cuXG18jtccFiWAL7OFXo=
-Date: Wed, 29 Jul 2020 14:52:12 +0100
+ b=aIkjo0IxD6Tl6LoSB4teA8rDDrjPOIBXOOpiVpSrpbRXdtrXJJdBzmxAH3SrUVPgR
+ iEuUay9sqUuis43Q43X0M332jVmgwOKsCAnccfgKrWrhCfm80uYmI4cgwTLzGwqExd
+ 88eH6H8D9rCeow13arEyI8R67G0LuYWRblsVGeo8=
+Date: Wed, 29 Jul 2020 14:52:19 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Dan Murphy <dmurphy@ti.com>, perex@perex.cz, tiwai@suse.com,
  lgirdwood@gmail.com
-In-Reply-To: <20200728164339.16841-1-dmurphy@ti.com>
-References: <20200728164339.16841-1-dmurphy@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320adcx140: Fix various style errors and warnings
-Message-Id: <159603073223.46331.3803625262961660773.b4-ty@kernel.org>
+In-Reply-To: <20200728160833.24130-1-dmurphy@ti.com>
+References: <20200728160833.24130-1-dmurphy@ti.com>
+Subject: Re: [PATCH 1/2] dt-bindings: tlv320adcx140: Add GPO config and drive
+ config
+Message-Id: <159603073224.46331.10451608793293246650.b4-ty@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,9 +85,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Jul 2020 11:43:39 -0500, Dan Murphy wrote:
-> Fix white space issues and remove else case where it was not needed.
-> Convert "static const char *" to "static const char * const"
+On Tue, 28 Jul 2020 11:08:32 -0500, Dan Murphy wrote:
+> Add properties for configuring the General Purpose Outputs (GPO). The
+> GPOs. There are 2 settings for each GPO, configuration and the output drive
+> type.
 
 Applied to
 
@@ -94,8 +96,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320adcx140: Fix various style errors and warnings
-      commit: e5448d7ec656e6c5ed59f4adfc979742fd1f9b07
+[1/2] dt-bindings: tlv320adcx140: Add GPO config and drive config
+      commit: 63b0383f3c1c32d7ff958bf3a58c58a84cbd7450
+[2/2] ASoC: tlv320adcx140: Add GPO configuration and drive output config
+      commit: 6617cff6a05e7e7a679499cb1d5cd2d3bc6390c3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
