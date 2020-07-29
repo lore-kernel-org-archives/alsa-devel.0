@@ -2,69 +2,89 @@ Return-Path: <SRS0=75ci=BI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4ADAC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 16:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88F2EC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 16:25:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3ECDB20809
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 16:07:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15AAC2075D
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 16:25:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OGkIZy52"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3ECDB20809
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RzNuTzlH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15AAC2075D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B42D21707;
-	Wed, 29 Jul 2020 18:06:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B42D21707
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C093170F;
+	Wed, 29 Jul 2020 18:24:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C093170F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596038844;
-	bh=xMGNiPd9oOoY0TqF7HmJ6+TmULvYjmMOhHM5l0BvRLM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1596039911;
+	bh=bb4zuQGhtPo9xAh3UaRQ5Q1apxoMxdA4XPIwcRvHT/E=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OGkIZy52ifK5PpkZ6wYv8RIYAt/Gkdzkh9JW5PtP5nfSm7D/aKDUC1+aUZVTfY8C8
-	 dhXGVifzDSLJ6s2hLi/oweqhvyp5GOhUVQv6ZN1VeyV9Uen4sbML2R7DaAeCLAl3SQ
-	 RnGRNVA0R18+mX0WIgOPTOyRSctrQyGrYBEjd7q0=
+	b=RzNuTzlHiqsoxA27rGfRJQJrkGvjejwc6Diie82cCdveonP+Ho4gVJ4DGS7rIZkxZ
+	 TzSLpOAGzi7b77QHA8/C9g8AmT19VeutfwpzhJTxFLn5jpSl0fAmaAyPZzuecQJGzg
+	 b+CbRnUYhdj3cddLqjjuWmeCemOI/ESokkXIT6r4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 215AAF8012F;
-	Wed, 29 Jul 2020 18:06:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16675F8012F;
+	Wed, 29 Jul 2020 18:24:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93754F801A3; Wed, 29 Jul 2020 18:06:32 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2D0B7F801A3; Wed, 29 Jul 2020 18:24:19 +0200 (CEST)
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com
+ [209.85.208.68])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3A06F800DE
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 18:06:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3A06F800DE
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 62D0DAF8D;
- Wed, 29 Jul 2020 16:06:37 +0000 (UTC)
-Date: Wed, 29 Jul 2020 18:06:25 +0200
-Message-ID: <s5hft9ae266.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: fix NULL pointer dereference during suspend
-In-Reply-To: <862d7184dac6dea172d94b83f2ca7dd29136d2df.camel@linux.intel.com>
-References: <20200728231011.1454066-1-ranjani.sridharan@linux.intel.com>
- <s5hzh7iep8n.wl-tiwai@suse.de>
- <862d7184dac6dea172d94b83f2ca7dd29136d2df.camel@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: yong.zhi@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE0B0F80125
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 18:24:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE0B0F80125
+Received: by mail-ed1-f68.google.com with SMTP id o10so8173645edh.6
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 09:24:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=cS3+221AHZYDhz8vJwUJuKP1AL5RGbuh31j+wmF7oUU=;
+ b=Xz1ITpV5+43tMJ5S1wehOsXHssP7GNrLfY31dvTik6teOTRS1jv1muh9gF4Y8+3amH
+ UsTTInzrPADql3+hzvetaad9JF2doHmS9C9gk217cxuAS5DfoGvFX9YUZ/lOOssqru5Y
+ 1+1lHJrG2EUZ2GhzqEEM3VTAhiPxAFiQ/CZmxL9B9MWThkLC2QCI7/61J9YGBKpG9Oat
+ b+4H6zAbnM+G9/s+iyd06mmokz4hkrbeY7EulU6D2qF2VHvHmEYz1AUrE4BUEwbfpLTW
+ VR9RpHAPNyVJSbARaaTs9tOap8/iU6eHfL2puUzJdl3RBRZftbEj5cRqe+Gw10Xq2k6M
+ aDzQ==
+X-Gm-Message-State: AOAM5326LMMRTLVjqhtIKo4ZQw9blwL9nQbsrLBDc3OPnQI6LECN1M1c
+ H/6TDJXUYLPS3ijY8lN02lk=
+X-Google-Smtp-Source: ABdhPJzrXVWpA0e/54O+SdDq9PueVFgMc6upBS6jL4XfQLfXkn58bf/2j89VIVWgToUmT/t20TgnfQ==
+X-Received: by 2002:aa7:d58c:: with SMTP id r12mr33304657edq.160.1596039847872; 
+ Wed, 29 Jul 2020 09:24:07 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+ by smtp.googlemail.com with ESMTPSA id dh16sm2193450edb.3.2020.07.29.09.24.06
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Wed, 29 Jul 2020 09:24:07 -0700 (PDT)
+Date: Wed, 29 Jul 2020 18:24:05 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH v3 1/3] ASoC: samsung: Document DT bindings for Midas
+ sound subsystem
+Message-ID: <20200729162405.GA5302@kozik-lap>
+References: <CGME20200728131126eucas1p16365622c52f91104373a2cd3e0ebb619@eucas1p1.samsung.com>
+ <20200728131111.14334-1-s.nawrocki@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200728131111.14334-1-s.nawrocki@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: simon@lineageos.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+ b.zolnierkie@samsung.com, robh+dt@kernel.org, broonie@kernel.org,
+ m.szyprowski@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,53 +100,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Jul 2020 17:03:22 +0200,
-Ranjani Sridharan wrote:
+On Tue, Jul 28, 2020 at 03:11:09PM +0200, Sylwester Nawrocki wrote:
+> This patch adds documentation of DT biding for the Midas sound complex.
+> Partially based on the *txt version by Simon Shields <simon@lineageos.org>.
 > 
-> On Wed, 2020-07-29 at 09:48 +0200, Takashi Iwai wrote:
-> > On Wed, 29 Jul 2020 01:10:11 +0200,
-> > Ranjani Sridharan wrote:
-> > > When the ASoC card registration fails and the codec component
-> > > driver
-> > > never probes, the codec device is not initialized and therefore
-> > > memory for codec->wcaps is not allocated. This results in a NULL
-> > > pointer
-> > > dereference when the codec driver suspend callback is invoked
-> > > during
-> > > system suspend. Fix this by returning without performing any
-> > > actions
-> > > during codec suspend/resume if the card was not registered
-> > > successfully.
-> > > 
-> > > Reviewed-by: Pierre-Louis Bossart <
-> > > pierre-louis.bossart@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com
-> > > >
-> > 
-> > The code changes look OK to apply, but I still wonder how the runtime
-> > PM gets invoked even if the device is not instantiated properly?
-> Hi Takashi,
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes for v3:
+>  - change the sound-dai property type in cpu, codec nodes from
+>    phandle-array to phandle
 > 
-> Its not runtime PM suspend but rather the system PM suspend callback
-> that is invoked when the system is suspended that ends up callling the
-> the runtime PM callback. So, the sequence is:
-> hda_codec_pm_suspend()
->    -> pm_runtime_force_suspend()
->           -> hda_codec_runtime_suspend()
+> Changes for v2:
+>  - fix wrong *-gpios entries in the example,
+>  - mark sound-dai properties as required.
+> ---
+>  .../bindings/sound/samsung,midas-audio.yaml        | 108 +++++++++++++++++++++
+>  1 file changed, 108 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
 
-OK, but the problem is still same.  The basic problem is that the
-hda_codec_driver_probe() is called for the hda_codec object that
-hasn't been initialized and bypasses to ext_ops.hdev_attach.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-So, we can factor out the fundamental part of
-snd_hda_codec_device_new() that is irrelevant with the card object and
-call it in hdac_hda_dev_probe().  Most of the legacy HD-audio codec
-can work without the card object, including suspend/resume.
-
-But this will be a more intensive surgery, and maybe not much worth
-for the corner case, so I already applied your patch as is.
-
-
-thanks,
-
-Takashi
+Best regards,
+Krzysztof
