@@ -2,97 +2,76 @@ Return-Path: <SRS0=75ci=BI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 260F2C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 05:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50D3CC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 07:39:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B70020786
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 05:08:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF52A2076E
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 07:39:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="suwkGIRg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SkGAKM4v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B70020786
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="COlrLwHE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF52A2076E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B9151739;
-	Wed, 29 Jul 2020 07:07:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B9151739
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44199173D;
+	Wed, 29 Jul 2020 09:38:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44199173D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1595999282;
-	bh=BwjSfX/YxefcBgthq91u6kobE7WXGIlKds5ofmSiV9Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1596008353;
+	bh=vldQV8blBjs3qvSfMB6/SlyJPatZDKeM/Ez3R77AgxU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=suwkGIRg2Liks9LYZixEOsAXl9xIsKi3lbC04e78EvOOuSXqqeKYMC/LGcNCoQ2cs
-	 yLXqzwwid2yWwOhU2edxYsDHrBbu9u4pEXEglL6G1NRn0iS+oeVupVul+/tn8kFt10
-	 U4m+hyCnTO80JlFO8+EUdwxbysdlOq1/2ixeIEyQ=
+	b=COlrLwHEw9nu16XiUUehF3/DJn6jUaIGh0Fqrm7epLIfJ/zGSwcEm4QcFXAo5FLCZ
+	 SGSYBBmckH0rHXjAbVyB7cSDYlQKp5iMAhozCKTI7K9Y9a9bvGT+Kti6GIXkCtPTCe
+	 NXkvzldCE4UNFK5OgLlIrQqHAgKiJhMgER0NZFt0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77B57F800DE;
-	Wed, 29 Jul 2020 07:07:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C240EF801D9;
+	Wed, 29 Jul 2020 09:38:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55432F801A3; Wed, 29 Jul 2020 07:07:09 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B5985F8012F; Wed, 29 Jul 2020 09:38:20 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AF52F80125
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 07:07:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AF52F80125
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="SkGAKM4v"
-Received: by mail-wr1-x441.google.com with SMTP id b6so20289350wrs.11
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2020 22:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=7GpifdEc6/Oc47TVBKpBwXB5I1TE7MgsWaCzxZQmbVY=;
- b=SkGAKM4vmqg3Msrjk1lw+Z0tzr2H1O4AexEGpm1tkin8xvNP/5Y9RvAEmEjQrLa65U
- SbmI/Uo/tDJXmOJfmxH7xW5Jm+vVXpRPWQzRVnORHeFwhcyZd44wtmnd1ABDD7dW4CiB
- TTyrnTWqZJVt+A+yfI96ySNQv7mCbULcoyDM0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=7GpifdEc6/Oc47TVBKpBwXB5I1TE7MgsWaCzxZQmbVY=;
- b=ATFEYLBQ3pZY+HmCFqRdDBnsSWaCiES3EEtqd2A32NycD8te5o0hSVyHZuiYfc4fTU
- GJl5KFtyC0qyY5zKvau/jDuyRNwlmiU9JiUkkKnKPLLdJ2HgG9uOHM15cyaXjsdpytve
- tr1qYGtx7ClBiqoZTpV7ODlAM0i2xL2zN103SueW/1IZbo/NjotAKd16Y0vVv5TEEaS3
- 1kEP4/pAZ2azOHkTn1m6FHhOndFA+/mTNIrb6H8P8z6CBzZfy4O059f84iuW1SOZYGp4
- 9CnECH9L9F3zrRHSmCR9oEIusz7Y4sUrQVyMZkF0lN0blXha4CTorhP3s2v/2S7r3ds/
- DWfQ==
-X-Gm-Message-State: AOAM531P8LjzVbZPDbo7MZHp1CD0zU2kn60ikqB8gDb9Ed/azQU9unc0
- PYJ2ldaNpglFc2WNOkpuFHiaMlb6qgFOLlhQbSsyiw==
-X-Google-Smtp-Source: ABdhPJxbnyDe18hT7bjCWGNi5c5AT3QkDh5H/5AFBe0xvxZwMfVY1VwpKS/VFk6Ivj9WACTb+i1bEnsFK4MGE1RYQkk=
-X-Received: by 2002:a5d:5588:: with SMTP id i8mr27809549wrv.177.1595999219359; 
- Tue, 28 Jul 2020 22:06:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <1595779727-31404-1-git-send-email-brent.lu@intel.com>
- <7dec7fcd-0381-d279-4dac-77c27ea5f6fe@linux.intel.com>
- <DM6PR11MB3642BE84A5C91504D6AF4ECB97730@DM6PR11MB3642.namprd11.prod.outlook.com>
- <14fde5e9-a11a-077d-b533-1e6db4b7a262@linux.intel.com>
- <DM6PR11MB3642AF0905E0CF57B094906297730@DM6PR11MB3642.namprd11.prod.outlook.com>
- <216b86eb-aec6-dab9-7901-9e0f2cc5af7f@linux.intel.com>
-In-Reply-To: <216b86eb-aec6-dab9-7901-9e0f2cc5af7f@linux.intel.com>
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Date: Wed, 29 Jul 2020 13:06:32 +0800
-Message-ID: <CAFv8NwLEHf=3ejrr1m74cRSjiX3mOKfx0oRyu51ENo6mktEgEQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: Intel: Atom: use hardware counter to update hw_ptr
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jie Yang <yang.jie@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, "Lu, Brent" <brent.lu@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C635F8012F
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 09:38:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C635F8012F
+IronPort-SDR: uJtLdGogO88OsoxKuek/SmzjlWfDMDXRlImEqLuCSp7m2lt8QQx4vQC/1dncik6/cZpguvY/41
+ oKFzKNQ49x7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="149216424"
+X-IronPort-AV: E=Sophos;i="5.75,409,1589266800"; d="scan'208";a="149216424"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jul 2020 00:38:04 -0700
+IronPort-SDR: 6euRkXTDPs/R52sbmg2Ef5t3DThkJnC7qs3rg/oadWmjcwVH63Txgy1+HhUsjwblax+d/uXpV8
+ Rsn8+qH7Mwdw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,409,1589266800"; d="scan'208";a="434604212"
+Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
+ by orsmga004.jf.intel.com with ESMTP; 29 Jul 2020 00:38:02 -0700
+From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/3] ASoC: codec: tlv3204: Enable 24 bit audio support
+Date: Wed, 29 Jul 2020 15:32:54 +0800
+Message-Id: <20200729073256.24028-2-michael.wei.hong.sit@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200729073256.24028-1-michael.wei.hong.sit@intel.com>
+References: <20200729073256.24028-1-michael.wei.hong.sit@intel.com>
+Cc: cezary.rojewski@intel.com, a-estrada@ti.com, andriy.shevchenko@intel.com,
+ zakkaye@ti.com, tiwai@suse.com, jee.heng.sia@intel.com,
+ pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ broonie@kernel.org, dmurphy@ti.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,55 +87,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jul 29, 2020 at 1:31 AM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->
->
-> On 7/28/20 12:02 PM, Lu, Brent wrote:
-> >>
-> >> So if there are already quirks in atom machine drivers to change the period
-> >> size, why is this patch necessary?
-> >>
-> >
-> > The story is: google implemented the constraint but doesn't know why it works
-> > so asked us to explain. After checking the two counters I realized the increase of
-> > ring buffer pointer follows the period size setting in hw_param (256) but the
-> > period of interrupt is always 5ms instead of 5.33 so it's running little bit too fast.
-> > It seems the LPE keeps tracking the difference of two counters. When the
-> > difference exceeds 2160 samples, the next interrupt will be canceled so the
-> > hardware counter could catch up a little.
-> >
-> > [   43.208299] intel_sst_acpi 808622A8:00: mrfld ring_buffer_counter 107520 hardware_counter 98880 pcm delay 8640 (in bytes)
-> > [   43.208306] intel_sst_acpi 808622A8:00: buffer ptr 26880 pcm_delay rep: 2160
-> > [   43.208321] sound pcmC1D0p: [Q] pos 26880 hw_ptr 26880 appl_ptr 40000 avail 191680
-> > => one interrupt is skipped.
-> > [   43.218299] intel_sst_acpi 808622A8:00: mrfld ring_buffer_counter 108544 hardware_counter 100800 pcm delay 7744 (in bytes)
-> > [   43.218307] intel_sst_acpi 808622A8:00: buffer ptr 27136 pcm_delay rep: 1936
-> > [   43.218336] sound pcmC1D0p: [Q] pos 27136 hw_ptr 27136 appl_ptr 40000 avail 191936
-> >
-> > So I think why not using the hardware counter? It increases 240 samples every 5ms
-> > perfectly match the 48000 sample rate. The test result is good but I know there must
-> > be a reason for the original designer to use ring buffer counter instead of hardware
-> > counter. I uploaded this patch to see if anyone still remember the reason and share
-> > some insight with me.
-> >
-> > I totally agree that we shouldn't touch this part of design. Do you think it make sense
-> > to add a constraint to enforce the period size in machine driver? If yes then I would
-> > upload patches for Chrome atom machines for google.
->
-> I think it'd make sense to add this constraint, either in the machine
-> driver or in the platform driver, so that we don't change the position
-> updates and introduce more issues by accident by doing so. As you
-> rightly said, I don't think anyone tested periods multiple of 256
-> samples so it's not a regression, more aligning with the internal design.
+Enable 24 bit in 32 bit container audio support.
+Using the params_physical_width to differentiate
+24 bit in 32 bit container and 24 bit in 24 bit container modes.
+Use the sample rate, bit depth and channel parameters to
+calculate the bit clock needed.
 
-Thanks for the explanation and discussion.
-A slight correction in this thread is that CRAS does not set period size to 256.
-It just uses whatever value that driver wants to use, which happens to be 256.
-If the driver can limit the selection to only correct values that
-would be the best.
-Adding constraints in the machine driver or platform driver looks
-good. Prefer to adding in platform driver so we don't need to add for
-each machine driver.
-Thanks!
+Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+Reviewed-by: Sia Jee Heng <jee.heng.sia@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/tlv320aic32x4.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index d087f3b20b1d..8534f9006e6a 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -665,7 +665,8 @@ static int aic32x4_set_processing_blocks(struct snd_soc_component *component,
+ }
+ 
+ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+-				unsigned int sample_rate)
++			unsigned int sample_rate, unsigned int channel,
++			unsigned int bit_depth)
+ {
+ 	u8 aosr;
+ 	u16 dosr;
+@@ -753,7 +754,8 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ 							dosr);
+ 
+ 						clk_set_rate(clocks[5].clk,
+-							sample_rate * 32);
++							sample_rate * channel *
++							bit_depth);
+ 						return 0;
+ 					}
+ 				}
+@@ -775,9 +777,11 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
+ 	u8 iface1_reg = 0;
+ 	u8 dacsetup_reg = 0;
+ 
+-	aic32x4_setup_clocks(component, params_rate(params));
++	aic32x4_setup_clocks(component, params_rate(params),
++			     params_channels(params),
++			     params_physical_width(params));
+ 
+-	switch (params_width(params)) {
++	switch (params_physical_width(params)) {
+ 	case 16:
+ 		iface1_reg |= (AIC32X4_WORD_LEN_16BITS <<
+ 				   AIC32X4_IFACE1_DATALEN_SHIFT);
+@@ -862,7 +866,8 @@ static int aic32x4_set_bias_level(struct snd_soc_component *component,
+ 
+ #define AIC32X4_RATES	SNDRV_PCM_RATE_8000_192000
+ #define AIC32X4_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE \
+-			 | SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
++			 | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_3LE \
++			 | SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops aic32x4_ops = {
+ 	.hw_params = aic32x4_hw_params,
+-- 
+2.17.1
+
