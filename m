@@ -7,90 +7,89 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D8B8C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:47:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76138C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:48:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99286207E8
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:47:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F1542207E8
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:48:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LagK9kWj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="R6e6hElL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99286207E8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qMnzjTom";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="XaVnRFyy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1542207E8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35A301706;
-	Wed, 29 Jul 2020 17:47:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35A301706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D818170A;
+	Wed, 29 Jul 2020 17:47:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D818170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596037673;
-	bh=j75Ufk8Egi1Vpzv0vDbXVsIi/Xcb7y+I3/5IPo9BDQc=;
+	s=default; t=1596037714;
+	bh=/4ShZvpN/MLkatzay/lTalbUNEjR64BhaCe2fXkgm6c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LagK9kWjUIzAl/a1fzl91Opwq01m+n7OQspno+O8J34Cn+8aqdFBKz7Kvg/BmQvwZ
-	 70rnNPh6wwW1wGCry0jyeWgu1/BlG9Pv8gIJike0Krlfo/yJDe2Z96gcFo1CZ0TRFL
-	 ViskdnNeImR7FeFj+mGYuY7sOZTQgJ4WxwKS1qY0=
+	b=qMnzjTomVg646Wd3InmiP2YzQPIPgGkokZIGsMdXRjnI4zajlhbrQMEofbOT5179D
+	 jxNTcV2nCclp6iROn7AvI6Q6BWvxDnH6gqdElDfCeBO3MJh95j4pSEdJjkxP4Hoovw
+	 t4mF1OrPKyIJsdN+2pdMEI/RHpp+/Al+jVT8KM7k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7A39F802D2;
-	Wed, 29 Jul 2020 17:45:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB85AF802C4;
+	Wed, 29 Jul 2020 17:45:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27038F8029B; Wed, 29 Jul 2020 17:45:25 +0200 (CEST)
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
+ id EA6E0F802DC; Wed, 29 Jul 2020 17:45:27 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84F9DF801EB
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 17:45:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84F9DF801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 936ADF801F7
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 17:45:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 936ADF801F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="R6e6hElL"
-Received: by mail-wm1-x341.google.com with SMTP id k8so3451002wma.2
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 08:45:18 -0700 (PDT)
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="XaVnRFyy"
+Received: by mail-wm1-x343.google.com with SMTP id k8so3450826wma.2
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 08:45:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=baylibre-com.20150623.gappssmtp.com; s=20150623;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=FWqyEKTC/HJjMKifmyPTB4RZCmPL+DNrii7Si5MfMvM=;
- b=R6e6hElLlc+cKRmwfD9negfPjHCnH1BoA3KEGyKUVu+4cXtnt3BZD57hM2PlEEHmI/
- sqd2gXZg6qgdERDcATkW1xvA2BW9ApWfymSmV2YB6nEbHiIMBJJDmrsI+BaHWWeG/Us5
- U5Sm96lEvo7l/QRv4D6UEIgelIEez1Ks7QNRWZ1C/D8Cu5whCC7FoPyMb2z3BhRG2qgy
- FnBLSmNJOF1c50vViNF9o6VQ7a4k8Cx1fyQCIiNcYpM1c9YgLxXz7T+LYBgIxVV/A6Rw
- KkgIGG2I94TbAxr15mGQj9KGOCXZ8j9Xy0OLXIE2Z7A/ceEyEaCYB0q9i2y1J9ZGF17h
- 1iRA==
+ bh=odKL8nfgi2JfYFNsaHMY4SKWdmff32MEW/xIQyAYpOU=;
+ b=XaVnRFyyLv/CDI3rNrvt+N1NR94GoD23fiy/1/aev0VHbn3oeX9+0gLViXcHzcPViC
+ mwlIFOWJmaj7nZtyvHYwX0VYgYAWhYlilB06hqnszYmsJEMA/ptUEBCYejYVctWNmLvG
+ DaXtxBbRu5szTpoi/tqJKw0GDefnpfkG2ef3NB7uRsoJKp358/WBuGwCaFgmhWSEt1Xb
+ TdyN1A3/uSX2bqsM9cPHzZ0isZY56UvuXLD7Dfz5VjSyrzzma3a0D2RYNurND6ap+y6s
+ vdzrI/4KXtoIAm5gIupf2DJq9ssRajx8xEWOiGD5gNisR6FFXhdyhHxyuvBdWbPxj3Rl
+ LPjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=FWqyEKTC/HJjMKifmyPTB4RZCmPL+DNrii7Si5MfMvM=;
- b=KEpkySg1WK1zO1tvdDUHe7cCEBAsVKKCedbs1azJ4S976oolV3nE1YbydTneuOiiFk
- foMsrzMxoZEWf6cVWCNXcSCsVpc/tAYwyt8Q3R7/ASUFhNo1sDy9jhPyWsKLmkDKr55Q
- HcaVv87kQvCiV4Olc//M784FPB1LTgw4PIizS71hyhIRrF4soaE6VKsICQXMrD2v+0Vh
- 1QpHfAHOQU0+dBQqrKyfuUGfnwB7UeC2uJxuoBAUqcrbkri3pPrDutP9Sv3WiW6cvqq7
- hti1GuZvPn2GCBZd2wrUlrsP3uQkvkYbWz3OAMiUmdZiymQFITIixM9es4FtL5cRJ1L1
- /dXw==
-X-Gm-Message-State: AOAM530+wAMGHbPnUXkTT9E7COW23jA6P6jzEgEqkjDtZoFY52p1EulL
- aNKTAeGkThnTSHmuMh4MycitNQ==
-X-Google-Smtp-Source: ABdhPJxgGC9nboToZyRcUcXbiOSxER7K3hBnDiXzlzkgzlpkoRrJEvHRzVMhiuKp6ZHByGydbFxnFg==
-X-Received: by 2002:a1c:2109:: with SMTP id h9mr9082184wmh.174.1596037517108; 
- Wed, 29 Jul 2020 08:45:17 -0700 (PDT)
+ bh=odKL8nfgi2JfYFNsaHMY4SKWdmff32MEW/xIQyAYpOU=;
+ b=uQyaGqGtZvlj1atcj+FOQR+B9s/tYkN1RgyHN5cJ9wjaK2AluX3jxt+izcqEWM/vTu
+ eHUZiY2X45Tt5ubW379Knb312xs2233QQudyzvjDq+AyKDqxMldK6uOK320DwLepwBoj
+ BFC6Le/3jhDG4YGQQWVbqSxjhIHwG588A7fOHzzqBIIY+aQwR05ovERmckV9oOOf5UdX
+ KfjOBxd29iCCDlklDunWJiaSI74JaYDqnSgFoSQSEXXEc6oX6pieoAz/6bK1Il3zlUmW
+ t3GONgGjRprrRGBKiBkCXErY2N7Peen8hFgu01tDKbyh6U+Otri7LQdSpRvAwuqYgWJp
+ XcPg==
+X-Gm-Message-State: AOAM531rhecX7WnBlYuCUGvARPEqcVKWjO5sYxWWu3L3oDj8osW7F91d
+ n5pofqVGc5ebz7aqRuq0B5rr3g==
+X-Google-Smtp-Source: ABdhPJwJufUM+fr/ccstncgAq56W2HRh9FWgpXsZ5IRILScKbhvt1s8lTYaYBt7VHezKJF6mEIM+8w==
+X-Received: by 2002:a7b:c057:: with SMTP id u23mr8667635wmc.167.1596037515187; 
+ Wed, 29 Jul 2020 08:45:15 -0700 (PDT)
 Received: from starbuck.baylibre.local
  (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
- by smtp.googlemail.com with ESMTPSA id k10sm5950967wrm.74.2020.07.29.08.45.16
+ by smtp.googlemail.com with ESMTPSA id k10sm5950967wrm.74.2020.07.29.08.45.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jul 2020 08:45:16 -0700 (PDT)
+ Wed, 29 Jul 2020 08:45:14 -0700 (PDT)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 4/4] ASoC: meson: cards: remove DT_PREFIX for standard daifmt
- properties
-Date: Wed, 29 Jul 2020 17:44:56 +0200
-Message-Id: <20200729154456.1983396-5-jbrunet@baylibre.com>
+Subject: [PATCH 2/4] ASoC: meson: axg-tdmin: fix g12a skew
+Date: Wed, 29 Jul 2020 17:44:54 +0200
+Message-Id: <20200729154456.1983396-3-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200729154456.1983396-1-jbrunet@baylibre.com>
 References: <20200729154456.1983396-1-jbrunet@baylibre.com>
@@ -115,28 +114,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Standard dai format property don't need the "amlogic," prefix.
-There nothing amlogic specific about them. Just remove it.
+After carefully checking the result provided by the TDMIN on the g12a and
+sm1 SoC families, the TDMIN skew offset appears to be 3 instead of 2 on the
+axg.
 
-Fixes: 435857e015dc ("ASoC: meson: align axg card driver with DT bindings documentation")
+Fixes: f01bc67f58fd ("ASoC: meson: axg-tdm-formatter: rework quirks settings")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/meson-card-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/meson/axg-tdmin.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-index 29b601a0e274..f9ce03f3921f 100644
---- a/sound/soc/meson/meson-card-utils.c
-+++ b/sound/soc/meson/meson-card-utils.c
-@@ -119,7 +119,7 @@ unsigned int meson_card_parse_daifmt(struct device_node *node,
- 	struct device_node *framemaster = NULL;
- 	unsigned int daifmt;
+diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
+index 973d4c02ef8d..3d002b4eb939 100644
+--- a/sound/soc/meson/axg-tdmin.c
++++ b/sound/soc/meson/axg-tdmin.c
+@@ -233,10 +233,26 @@ static const struct axg_tdm_formatter_driver axg_tdmin_drv = {
+ 	},
+ };
  
--	daifmt = snd_soc_of_parse_daifmt(node, DT_PREFIX,
-+	daifmt = snd_soc_of_parse_daifmt(node, "",
- 					 &bitclkmaster, &framemaster);
- 	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
- 
++static const struct axg_tdm_formatter_driver g12a_tdmin_drv = {
++	.component_drv	= &axg_tdmin_component_drv,
++	.regmap_cfg	= &axg_tdmin_regmap_cfg,
++	.ops		= &axg_tdmin_ops,
++	.quirks		= &(const struct axg_tdm_formatter_hw) {
++		.invert_sclk	= false,
++		.skew_offset	= 3,
++	},
++};
++
+ static const struct of_device_id axg_tdmin_of_match[] = {
+ 	{
+ 		.compatible = "amlogic,axg-tdmin",
+ 		.data = &axg_tdmin_drv,
++	}, {
++		.compatible = "amlogic,g12a-tdmin",
++		.data = &g12a_tdmin_drv,
++	}, {
++		.compatible = "amlogic,sm1-tdmin",
++		.data = &g12a_tdmin_drv,
+ 	}, {}
+ };
+ MODULE_DEVICE_TABLE(of, axg_tdmin_of_match);
 -- 
 2.25.4
 
