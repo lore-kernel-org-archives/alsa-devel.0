@@ -2,105 +2,83 @@ Return-Path: <SRS0=75ci=BI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C739C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F02FC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:57:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE7102173E
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:49:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1A3C206D4
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 15:57:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SeOUDQ5r";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="n+OxTPRi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE7102173E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EnpZCrBU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1A3C206D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15A34170A;
-	Wed, 29 Jul 2020 17:48:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15A34170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B4F11704;
+	Wed, 29 Jul 2020 17:56:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B4F11704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596037774;
-	bh=2y8Szq1p9ZuIx3YIkpgZkNXHivLB1upuhNzZbeJYJUA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1596038235;
+	bh=ypKljuw+rWHc8pjVYuOK8ExU6hHd7bIlhR7AstImwLo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SeOUDQ5rjdW8nClz440u5pU1kdDLu0aQMZEiW/begj7ontAuU3Kd+GGsuWKT+dXMm
-	 Eb4KLK62Oh7tY6Te/2c0ikiTj805JhvK0JDjVmKyHAFNe6wdSK86Gei/yL+UKFzyvT
-	 PcBCfxDO2qSQQBH3wHrsOh5b1c+5H1Fz2uvKDu2k=
+	b=EnpZCrBUWvHFwn5hMtwGVlUxxcmJietUIwp57n0jQRLGXc/TgzQ8HmPHSRheDtocL
+	 XIQqQe011XnygclVHbXoaGxxic76ZHY0m/e3sM/LA11Xod+4IIhFWKkmxk0orv2s54
+	 G7c8IdR9yZVHidmQ0in4EsfLrJMNAncNELC0uyJQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75217F801D9;
-	Wed, 29 Jul 2020 17:48:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 950B9F8012F;
+	Wed, 29 Jul 2020 17:56:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E93AAF801EB; Wed, 29 Jul 2020 17:48:12 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 60997F801A3; Wed, 29 Jul 2020 17:56:23 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA4E7F80171
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 17:48:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA4E7F80171
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="n+OxTPRi"
-Received: by mail-wr1-x443.google.com with SMTP id b6so22099635wrs.11
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 08:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=36JMClzoi7h93LvxaQw3joeoIat/KioNOebe1PCxRfY=;
- b=n+OxTPRilig3haxEVJ5AhEQGmEPmRUF1YiywGsBdl5Z+XrM+gmIBqBlJw6szHy+r2A
- wuuM3o0C5jxjVER9hXK/E9j+AWnICQXWRAVe3M0VfvHE45ZgFE8ixPDfuLGsZgmaQziM
- Sqir7xV7BPs1bG13tLiBw1wwQOG8oGgoP7IejuwPWVa2zKp7+qgGxcYFzmDHye5Obg/K
- Bgsq6xYOiRMDuPU5bBPYXtaUpByB0ilY0FtTffIUubB7vuRRwNe5jFtEwjt8691LkdEz
- bfkADdUcJyZ24AizWb9313N2o3wNGuuLzOnY4T2WdPx3Dd23zfy4uxlH7EvBNYvL/lqB
- znTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=36JMClzoi7h93LvxaQw3joeoIat/KioNOebe1PCxRfY=;
- b=g38eK0cMut2vjQCuDugT4ibB13rxvsrCjuWGmeQLd5Tv+XtWf9uX7HmapJHAKxIEpq
- GHCk0BqBkvgJUZh6Z1fPIz6VYGFTbPIum98fZRq1OWfirnss9zHfx69WlQuJUD/+E3CJ
- SvBJBTadf2C/6soEjPxf/XVcOcN6ZwA2XnTetTNMl0wc6GRtNhZoouAaMZD+BYpWQ6Hq
- xKh/r/fEpCUQUbDYaMijzrH8bixJSM6oCOe7x3hnG/usqJTcVCgwRHI7AHJpEoN4dRqP
- sNtD6I4yyXvnXUi4GrVzHQfhPKajElnq6Fj4Eh/19/e0cVff1GiL0FDy40hmtLkGDKvp
- 50xw==
-X-Gm-Message-State: AOAM532riR35BjuRZKKk3e7HVpFurS4dhLdiZXV+0QdaYOcYKmJZBjJl
- 4A4qL7lyVGm2W9B5ZcDuYAKalQ==
-X-Google-Smtp-Source: ABdhPJyrcNry8P8JgzRYvpG5FsopA4iFS5SUa/WXhOO/PIw8l2gzCtCcunQ+sUCAiMde/GxaIvpDdg==
-X-Received: by 2002:a5d:5486:: with SMTP id h6mr28823589wrv.136.1596037684667; 
- Wed, 29 Jul 2020 08:48:04 -0700 (PDT)
-Received: from starbuck.baylibre.local
- (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
- by smtp.googlemail.com with ESMTPSA id t2sm6224808wmb.28.2020.07.29.08.48.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jul 2020 08:48:04 -0700 (PDT)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: core: restore dpcm flags semantics
-Date: Wed, 29 Jul 2020 17:46:39 +0200
-Message-Id: <20200729154639.1983854-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B91F5F800DE
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 17:56:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B91F5F800DE
+IronPort-SDR: 5U7TwJ+j97pL2sCVQ+fG+tkchLf5M7bWAKvDT9C+FzbxoUNY+SgBl4rAexxCz0PMuMgMeVibCp
+ HtTMvvYCNhXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="215936396"
+X-IronPort-AV: E=Sophos;i="5.75,410,1589266800"; d="scan'208";a="215936396"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jul 2020 08:56:10 -0700
+IronPort-SDR: IDiwGItDXIzja3qJHXtAQwZsgkfdvjN51ZFJYyn4gETjqIXmWP3NNyN85itVh4GNZZCNBIn5O4
+ HqvTijKzaFgQ==
+X-IronPort-AV: E=Sophos;i="5.75,410,1589266800"; d="scan'208";a="322594221"
+Received: from vmlivin-mobl1.amr.corp.intel.com (HELO [10.209.108.29])
+ ([10.209.108.29])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jul 2020 08:56:08 -0700
+Subject: Re: [PATCH] ASoC: core: restore dpcm flags semantics
+To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
 References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
+ <20200729154639.1983854-1-jbrunet@baylibre.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <2ad13f95-434d-376a-bc38-b209623b461e@linux.intel.com>
+Date: Wed, 29 Jul 2020 10:56:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200729154639.1983854-1-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
  Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- zhangn1985@outlook.com, linux-amlogic@lists.infradead.org,
- Jerome Brunet <jbrunet@baylibre.com>
+ zhangn1985@outlook.com, linux-amlogic@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,75 +94,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-commit b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
-changed dpcm_playback and dpcm_capture semantic by throwing an error if
-these flags are not aligned with DAIs capabilities on the link.
 
-The former semantic did not force the flags and DAI caps to be aligned.
-The flag previously allowed card drivers to disable a stream direction on
-a link (whether or not such feature is deemed useful).
 
-With change ('ASoC: core: use less strict tests for dailink capabilities')
-an error is thrown if the flags and and the DAI caps are not aligned. Those
-parameters were not meant to aligned initially. No technical reason was
-given about why cards should now be considered "broken" in such condition
-is not met, or why it should be considered to be an improvement to enforce
-that.
+On 7/29/20 10:46 AM, Jerome Brunet wrote:
+> commit b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
+> changed dpcm_playback and dpcm_capture semantic by throwing an error if
+> these flags are not aligned with DAIs capabilities on the link.
+> 
+> The former semantic did not force the flags and DAI caps to be aligned.
+> The flag previously allowed card drivers to disable a stream direction on
+> a link (whether or not such feature is deemed useful).
+> 
+> With change ('ASoC: core: use less strict tests for dailink capabilities')
+> an error is thrown if the flags and and the DAI caps are not aligned. Those
+> parameters were not meant to aligned initially. No technical reason was
+> given about why cards should now be considered "broken" in such condition
+> is not met, or why it should be considered to be an improvement to enforce
+> that.
+> 
+> Forcing the flags to be aligned with DAI caps just make the information
+> the flag carry redundant with DAI caps, breaking a few cards along the way.
+> 
+> This change drops the added error conditions and restore the initial flag
+> semantics.
 
-Forcing the flags to be aligned with DAI caps just make the information
-the flag carry redundant with DAI caps, breaking a few cards along the way.
+or rather lack thereof.
 
-This change drops the added error conditions and restore the initial flag
-semantics.
+I am ok to move dev_err to dev_warn and remove the return -EINVAL, but I 
+maintain that we have to reach a point where configurations make sense 
+before we can clean them up. If we implicitly push issues under the rug 
+by not even being aware of them we'll never make progress.
 
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
-
- Hi Mark,
-
- Because b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
- introduced more than one problem, the change
- "ASoC: core: use less strict tests for dailink capabilities" [0] is still
- necessary but the change of semantic remains a problem with it.
-
- This patch applies on top of it.
-
- sound/soc/soc-pcm.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 00ac1cbf6f88..2e205b738eae 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2749,13 +2749,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 					break;
- 				}
- 			}
--
--			if (!playback) {
--				dev_err(rtd->card->dev,
--					"No CPU DAIs support playback for stream %s\n",
--					rtd->dai_link->stream_name);
--				return -EINVAL;
--			}
- 		}
- 		if (rtd->dai_link->dpcm_capture) {
- 			stream = SNDRV_PCM_STREAM_CAPTURE;
-@@ -2766,13 +2759,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 					break;
- 				}
- 			}
--
--			if (!capture) {
--				dev_err(rtd->card->dev,
--					"No CPU DAIs support capture for stream %s\n",
--					rtd->dai_link->stream_name);
--				return -EINVAL;
--			}
- 		}
- 	} else {
- 		/* Adapt stream for codec2codec links */
--- 
-2.25.4
-
+> 
+> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+> 
+>   Hi Mark,
+> 
+>   Because b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
+>   introduced more than one problem, the change
+>   "ASoC: core: use less strict tests for dailink capabilities" [0] is still
+>   necessary but the change of semantic remains a problem with it.
+> 
+>   This patch applies on top of it.
+> 
+>   sound/soc/soc-pcm.c | 14 --------------
+>   1 file changed, 14 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 00ac1cbf6f88..2e205b738eae 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2749,13 +2749,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+>   					break;
+>   				}
+>   			}
+> -
+> -			if (!playback) {
+> -				dev_err(rtd->card->dev,
+> -					"No CPU DAIs support playback for stream %s\n",
+> -					rtd->dai_link->stream_name);
+> -				return -EINVAL;
+> -			}
+>   		}
+>   		if (rtd->dai_link->dpcm_capture) {
+>   			stream = SNDRV_PCM_STREAM_CAPTURE;
+> @@ -2766,13 +2759,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+>   					break;
+>   				}
+>   			}
+> -
+> -			if (!capture) {
+> -				dev_err(rtd->card->dev,
+> -					"No CPU DAIs support capture for stream %s\n",
+> -					rtd->dai_link->stream_name);
+> -				return -EINVAL;
+> -			}
+>   		}
+>   	} else {
+>   		/* Adapt stream for codec2codec links */
+> 
