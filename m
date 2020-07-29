@@ -2,68 +2,81 @@ Return-Path: <SRS0=75ci=BI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9774C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 07:49:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 241DFC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 09:40:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33AEB20838
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 07:49:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A0C6B206D4
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2020 09:40:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ApkWUAiA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33AEB20838
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Zt3RPRoH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bkE06mJt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0C6B206D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1F8A1745;
-	Wed, 29 Jul 2020 09:48:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1F8A1745
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15EE316DF;
+	Wed, 29 Jul 2020 11:39:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15EE316DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596008947;
-	bh=04vUzhvtyGYrMJ+omFDX8FtTionI1laOLHNEVzm8cvY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1596015630;
+	bh=Q/bPIK4oE9XYe1CAwYtajXqieS96RSPoCR4+Pdo5+Vw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ApkWUAiAkJXrqiKYrq4IaWeTYf00/1zj8ZF1hHtFE5bmUF/6QwmJpsZxv/rqQIn4X
-	 WwkjtCYhrf7F2cfNl/oVHW3knVpVVnhNjV9VCPBoE1ljGNWPdyJVdt+4WxGxc0FAnQ
-	 apIhyrB9gHs2c48r7ULAF9N7BcYFVnk+RKGNp/1Q=
+	b=Zt3RPRoHATnrzXHrWVinsOkqWJrwfXH9ILlmGd+igI/ahEaPIMTSOLKbHVodVFwJz
+	 M5ssY2Nbcl+mKTRcYZlH/i2E8DKVFJXjUB3R9zv81xQ/khX5KGFdkqSDjgT4aZupMc
+	 y2lrwPdiuUyRM15jLl3PvuJY/5iAbBTKxYpsNIrs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46812F80171;
-	Wed, 29 Jul 2020 09:48:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 755ACF80125;
+	Wed, 29 Jul 2020 11:39:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C0F0F801A3; Wed, 29 Jul 2020 09:48:15 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id AB838F801A3; Wed, 29 Jul 2020 11:39:37 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D790F80125
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 09:48:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D790F80125
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C1799ACA0;
- Wed, 29 Jul 2020 07:48:19 +0000 (UTC)
-Date: Wed, 29 Jul 2020 09:48:08 +0200
-Message-ID: <s5hzh7iep8n.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36F82F800DE
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 11:39:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36F82F800DE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="bkE06mJt"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 86F222075D;
+ Wed, 29 Jul 2020 09:39:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1596015564;
+ bh=Q/bPIK4oE9XYe1CAwYtajXqieS96RSPoCR4+Pdo5+Vw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=bkE06mJtJPSmOrtN640jmBAXYbTBczyrxK2TzpIreq6MPovwChwaZcWw6XajvZDi8
+ 2Rppd6aCl70tGBHWEm+TwCjRtOA8ebyy2/G2VwIjfLry9lwd46E+XP4gUyooQIxjuZ
+ d1VipBnI2Bjpo8gIXQ3JVoDFxJCKJs2P4ty6SnKQ=
+Date: Wed, 29 Jul 2020 10:39:05 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH] ALSA: hda: fix NULL pointer dereference during suspend
-In-Reply-To: <20200728231011.1454066-1-ranjani.sridharan@linux.intel.com>
+Message-ID: <20200729093905.GA5612@sirena.org.uk>
 References: <20200728231011.1454066-1-ranjani.sridharan@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5hzh7iep8n.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
+Content-Disposition: inline
+In-Reply-To: <s5hzh7iep8n.wl-tiwai@suse.de>
+X-Cookie: May all your PUSHes be POPped.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
- yong.zhi@intel.com
+ alsa-devel@alsa-project.org, yong.zhi@intel.com,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,57 +92,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Jul 2020 01:10:11 +0200,
-Ranjani Sridharan wrote:
-> 
-> When the ASoC card registration fails and the codec component driver
-> never probes, the codec device is not initialized and therefore
-> memory for codec->wcaps is not allocated. This results in a NULL pointer
-> dereference when the codec driver suspend callback is invoked during
-> system suspend. Fix this by returning without performing any actions
-> during codec suspend/resume if the card was not registered successfully.
-> 
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-The code changes look OK to apply, but I still wonder how the runtime
-PM gets invoked even if the device is not instantiated properly?
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Wed, Jul 29, 2020 at 09:48:08AM +0200, Takashi Iwai wrote:
 
-thanks,
+> The code changes look OK to apply, but I still wonder how the runtime
+> PM gets invoked even if the device is not instantiated properly?
 
-Takashi
+The components are registered and active at the device model level even
+if they never get incorporated into a card.
 
-> ---
->  sound/pci/hda/hda_codec.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> index 3576e2d8452f..9b1f387d18e5 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -2936,6 +2936,10 @@ static int hda_codec_runtime_suspend(struct device *dev)
->  	struct hda_codec *codec = dev_to_hda_codec(dev);
->  	unsigned int state;
->  
-> +	/* Nothing to do if card registration fails and the component driver never probes */
-> +	if (!codec->card)
-> +		return 0;
-> +
->  	cancel_delayed_work_sync(&codec->jackpoll_work);
->  	state = hda_call_codec_suspend(codec);
->  	if (codec->link_down_at_suspend ||
-> @@ -2950,6 +2954,10 @@ static int hda_codec_runtime_resume(struct device *dev)
->  {
->  	struct hda_codec *codec = dev_to_hda_codec(dev);
->  
-> +	/* Nothing to do if card registration fails and the component driver never probes */
-> +	if (!codec->card)
-> +		return 0;
-> +
->  	codec_display_power(codec, true);
->  	snd_hdac_codec_link_up(&codec->core);
->  	hda_call_codec_resume(codec);
-> -- 
-> 2.25.1
-> 
+--7AUc2qLy4jB3hD7Z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8hQ7UACgkQJNaLcl1U
+h9D08Af/d+6qCsJx32Yi7QB3lMlPBEcx/Zi3vg6L6tXIhQFl3kGd6Wsw8x0+blGg
+CwAmUduVFr8kKqOvyZME+ivbXFlUFLnUBKVoG9mrua4Ansvd9dSIWnQ8ujTY0ofs
+IoKgRBfdb3+30JmShqhyOTJFtONGbZGBwKQLH6Qo5izUlVAoTBXqpk6Fp3/RnTjc
+6aOZ3GoawgkBXBi2CAcS6lU8L7Gp4VICtQMafU9WSwjdWNPt8SYqU9DCZR8PL7IP
+oTEnQ8B0yTHwOK3DPEPzQ9za9+VFby9MGerR0Az7SPmskUAIff6SYuve0HfgkPsE
+nRhlUCJEET/xw3u01T0J0r62RHidTQ==
+=tXGq
+-----END PGP SIGNATURE-----
+
+--7AUc2qLy4jB3hD7Z--
