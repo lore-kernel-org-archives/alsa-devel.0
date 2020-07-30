@@ -2,67 +2,92 @@ Return-Path: <SRS0=sGsA=BJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B92C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 01:32:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18A2FC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 02:10:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92D132072A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 01:32:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 94FBE20FC3
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 02:10:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NfBuINKC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92D132072A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LmTxKxKk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k4XpWvZa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94FBE20FC3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00787172C;
-	Thu, 30 Jul 2020 03:31:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00787172C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5437172E;
+	Thu, 30 Jul 2020 04:09:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5437172E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596072758;
-	bh=cM8ud17van0hliOGjFP0e8Vg3i+25oa5TPekBcEa3/4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NfBuINKCAEjGwxGdbY0dI/PwFMnIicnie//mdczakFMSbgY3prsY0nH8FX1fj3FnV
-	 ct+2TqExmnVqRWKEcePzPuAXzKEOV7JKH1Be4o66iuJ5DVZ6wfKiXgiNs2lFOzXlIh
-	 TKhiAwDlnJYCcCy+idprgpX2gm50BLo6H5OhUMN0=
+	s=default; t=1596075040;
+	bh=X/09oUjhz98VclAWvc0r/oKf50MFfsglwwLmYGPeUNE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LmTxKxKk62Fq4mfA4dsYcTjMs0qyFsUxCLl0a79jE80P0JYu6KJzIU4X8rHuStNah
+	 GCJ6wfw4tHvxc/oWfp+CASH01zBlGjS9NYxgsjGtdEjOt5c8XT6fk8iRh1hjSthS4x
+	 F+HIFjmBrTTSDrz7w+H9PoT3OxtLlW/9D1y6QT64=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FF0AF80171;
-	Thu, 30 Jul 2020 03:31:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 716A9F8021C;
+	Thu, 30 Jul 2020 04:09:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94D6EF801A3; Thu, 30 Jul 2020 03:31:45 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 653D7F800DE
- for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 03:31:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 653D7F800DE
-Date: 30 Jul 2020 10:31:35 +0900
-X-IronPort-AV: E=Sophos;i="5.75,412,1589209200"; d="scan'208";a="53394161"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 30 Jul 2020 10:31:35 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6B3EC400C45A;
- Thu, 30 Jul 2020 10:31:35 +0900 (JST)
-Message-ID: <877dulbxim.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 1/7] ASoC: soc-dai: add mark for
- snd_soc_dai_startup/shutdown()
-In-Reply-To: <3ec084ee58b6e3490c668295370b58a9eeb986e8.camel@linux.intel.com>
-References: <87wo2oku0m.wl-kuninori.morimoto.gx@renesas.com>
- <87v9i8ku04.wl-kuninori.morimoto.gx@renesas.com>
- <3ec084ee58b6e3490c668295370b58a9eeb986e8.camel@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+ id 9B8BAF8021E; Thu, 30 Jul 2020 04:09:47 +0200 (CEST)
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
+ [IPv6:2607:f8b0:4864:20::841])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3054F80111
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 04:09:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3054F80111
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="k4XpWvZa"
+Received: by mail-qt1-x841.google.com with SMTP id s23so19237220qtq.12
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2020 19:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=Fs1DcfP+Rf98tWaIkqVPfKHWBrVish3r8O2xuyzbm6o=;
+ b=k4XpWvZa7P0kmHBBZy4eIL/OTnFpcSu/A+lvHDx/I/Crsu6bs4H9neGQBrPUktSItv
+ 2f2CqGpBvdvKmTIxtf2SXAei1LcxGSVyvPa9spHPPoz17jCHiDcL6X6Hzo0JvISi07Vt
+ F19vr4V9Gk/14PvVscm1nxKASmpwPCFlbTS9eMs26EGVYcV+cpC3SJVEhpE777Wb7l8e
+ dJgxJTmAig0yr74uav2AghmqxwavguBjtIY+jU0KZfcmEqyM28uNB8HwYYGTKX83YEkI
+ P9LqobwNbTQa50pfZ3fu3sbHAUp4LQXRnDHEk2kRPveeUmybvlXWBykH1hw/ftwYa29/
+ uVAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=Fs1DcfP+Rf98tWaIkqVPfKHWBrVish3r8O2xuyzbm6o=;
+ b=MFDbUZPXokbjc0EmKb5kBjhCq/72ynYoXbLABg4hPk+E5j1s3Ov22Pu1AnFPiiUcml
+ HaA08gzcCzvoIJcDjWP99S9s+wkiulfvDsmGWIVl9W6PQ5/LZIsM+JIN4hCIk08waxAY
+ HmtNS8samVacDuA3rPbyP36JSH7ncdO58q7gxwnGF4k1a7fqZKbepgeUyV6ym2dm0OVe
+ vV1crQlYuASoyOIKxn03BW0E2meHTDuMy0ogHdPvvMiIvEt1IEfFKGlKlAbAuBMcj6L6
+ lJHEv17T4oZmHDJm57Z4gZti0f/q3lVF89Ffx276GDoAADcfkwakFK73Mjx0ELOQhaLM
+ sZVg==
+X-Gm-Message-State: AOAM5321W5kVyAe/9dIuOIcIhUhA5QtnU1Ojo84NZkWE4rL3K2ItLrZM
+ Cy51O8oKN7moHOOth6TN38Y=
+X-Google-Smtp-Source: ABdhPJylNhIjwTCQJYrU0Llv0FEIStRbUm1xnVkFdzNvp1q2ZPgrCDWMA+hbRTKhaXGLdbyBwy890Q==
+X-Received: by 2002:aed:29a4:: with SMTP id o33mr900765qtd.66.1596074978963;
+ Wed, 29 Jul 2020 19:09:38 -0700 (PDT)
+Received: from localhost.localdomain ([177.194.72.74])
+ by smtp.gmail.com with ESMTPSA id 8sm3259706qkh.77.2020.07.29.19.09.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Jul 2020 19:09:37 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: broonie@kernel.org
+Subject: [PATCH RESEND] ASoC: wm8962: Do not access WM8962_GPIO_BASE
+Date: Wed, 29 Jul 2020 23:07:18 -0300
+Message-Id: <20200730020718.31700-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
+Cc: Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org,
+ ckeepax@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,82 +103,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+According to the WM8962 datasheet, there is no register at address 0x200.
 
-Hi Ranjani
+WM8962_GPIO_BASE is just a base address for the GPIO registers and not a
+real register, so remove it from wm8962_readable_register().
 
-Thank you for your review
+Also, Register 515 (WM8962_GPIO_BASE + 3) does not exist, so skip
+its access.
 
-> >  void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
-> > -			 struct snd_pcm_substream *substream)
-> > +			  struct snd_pcm_substream *substream,
-> > +			  int rollback)
-> >  {
-> > +	if (rollback && !soc_dai_mark_match(dai, substream, startup))
-> > +		return;
-> Morimoto-san,
-> Im having a hard time undersdtanding why we need the second check? When
-> will it ever be the case that this match will fail?
+This fixes the following errors:
 
-	for_each_rtd_dais(...) {
-		ret = snd_soc_dai_startup(dai, substream);
-		if (ret < 0)
-			goto config_err;
-		...
-	}
-	...
-config_err:
-        for_each_rtd_dais(rtd, i, dai)
-		snd_soc_dai_shutdown(dai, substream, 1);
+wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
+wm8962 0-001a: ASoC: error at soc_component_read_no_lock on wm8962.0-001a: -16
 
-For example, if rtd had 10 DAIs, and .startup() failed at 3rd DAI,
-the mark will be
-     
-	/* xxx here means unknown */
-	dai[0].mark_startup = substream;
-	dai[1].mark_startup = substream;
-	dai[2].mark_startup = substream;
-	dai[3].mark_startup = xxx;
-	...
-	dai[7].mark_startup = xxx;
-	dai[8].mark_startup = xxx;
-	dai[9].mark_startup = xxx;
-
-Then, we need to call .shutdown() is for dai[0] - dai[2],
-In such case, .shutdown() will be called with rollback flag.
-if's second check will be failed on dai[3] - dai[9].
-But please double check.
-
-> I think if we want to roll-back in case of errors , we could simply
-> have a bool in snd_soc_dai to indicate that the dai has been started up
-> already and check that here to decide whether we should shut it down or
-> not.
-
-Yes, my v1 patch was that.
-But someone (I don't remember who was he) indicated that
-it is not enough if same DAI was called many times.
-
-In my understanding, for example, if same DAI is used for 2xPlaybacks,
-and 1st Playback was successed, 2nd Playback was failed,
-and if it was using bool instead of pointer,
-
-2nd Playback rollback doesn't need to call shutdown,
-but it has successed bit of 1st Playback.
-Then, 2nd Playback rollback will call unneeded shutdown,
-and 1st Playback's necessary shutdown will not be called.
-
-We can avoid such things if we use pointer instead of bool.
-But please double check.
-
-> Also, push/pop are associated with stacks and we're only really dealing
-> with one object here. So it is a bit misleading nomemclature-wise. 
-
-Yes maybe.
-The reason why I used push/pop was that it might be updated to handle
-pointer list instead of single pointer (and maybe Pierre-Louis want it :).
-I think I indicated it on git log and comment.
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
-Kuninori Morimoto
+ sound/soc/codecs/wm8962.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index df8cdc71357d..8159a3866cde 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -956,7 +956,6 @@ static bool wm8962_readable_register(struct device *dev, unsigned int reg)
+ 	case WM8962_EQ39:
+ 	case WM8962_EQ40:
+ 	case WM8962_EQ41:
+-	case WM8962_GPIO_BASE:
+ 	case WM8962_GPIO_2:
+ 	case WM8962_GPIO_3:
+ 	case WM8962_GPIO_5:
+@@ -3437,7 +3436,13 @@ static int wm8962_probe(struct snd_soc_component *component)
+ 	/* Save boards having to disable DMIC when not in use */
+ 	dmicclk = false;
+ 	dmicdat = false;
+-	for (i = 0; i < WM8962_MAX_GPIO; i++) {
++	for (i = 1; i < WM8962_MAX_GPIO; i++) {
++		/*
++		 * Register 515 (WM8962_GPIO_BASE + 3) does not exist,
++		 * so skip its access
++		 */
++		if (i == 3)
++			continue;
+ 		switch (snd_soc_component_read(component, WM8962_GPIO_BASE + i)
+ 			& WM8962_GP2_FN_MASK) {
+ 		case WM8962_GPIO_FN_DMICCLK:
+-- 
+2.17.1
+
