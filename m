@@ -2,67 +2,63 @@ Return-Path: <SRS0=sGsA=BJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A942C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 02:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90034C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 04:29:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 10A122083E
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 02:17:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1750D2072A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 04:29:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z6pbYgty"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10A122083E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F02TlA+E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1750D2072A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93DB21724;
-	Thu, 30 Jul 2020 04:17:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93DB21724
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FD46173C;
+	Thu, 30 Jul 2020 06:28:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FD46173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596075473;
-	bh=ZiGPGg2RQVDwdYB3piiUlZo2PnRheMEAoo64O0sY5Jo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Z6pbYgtyyNSWXCIck9/xnzbSRROGD3XJTuTSoLwLHFhl1Pe005oIIapnuAOuZ9xJd
-	 f2FuCoSPkBAf+aCAAw6/o2KLp3X+XjJDJ4Ik0ZA7nGKwVEsb3lPSewUXrHDN+S1xRv
-	 cUWCf07++xbCo6zWkjp2aPi5pVyYj8IW6g9hP6/U=
+	s=default; t=1596083389;
+	bh=7Zq5Hu2G2tZJpmQyD8MGxuRFIMibFnfHNTrg3IeRh7E=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=F02TlA+EuujW5W4bgb8YDjjg4NtWwR1ERGi7n67NTH7fMQz4iMJaLxALSjE+iGLqC
+	 gBDw5dFbz8VOTVjrMwYdGTQPAoSGQd4qw+Z++gBkuDnQIE9ogyy5KUgx+juyM0dlhd
+	 ESxgPeDaC60ZPI2IAaJExEkIR001IzkW4EsGCegs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1653AF8021C;
-	Thu, 30 Jul 2020 04:17:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD22DF800C9;
+	Thu, 30 Jul 2020 06:28:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65049F8021E; Thu, 30 Jul 2020 04:17:01 +0200 (CEST)
+ id 3459EF8021E; Thu, 30 Jul 2020 06:28:53 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 763DAF80111
- for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 04:16:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 763DAF80111
-Date: 30 Jul 2020 11:16:53 +0900
-X-IronPort-AV: E=Sophos;i="5.75,412,1589209200"; d="scan'208";a="53400689"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 30 Jul 2020 11:16:53 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 4D4EBF800C9
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 06:28:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D4EBF800C9
+Date: 30 Jul 2020 13:28:37 +0900
+X-IronPort-AV: E=Sophos;i="5.75,413,1589209200"; d="scan'208";a="53413898"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 30 Jul 2020 13:28:37 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3190B4178AA4;
- Thu, 30 Jul 2020 11:16:53 +0900 (JST)
-Message-ID: <875za5bvf4.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 98DAC4009425;
+ Thu, 30 Jul 2020 13:28:37 +0900 (JST)
+Message-ID: <873659bpbk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/7] ASoC: soc-dai: add mark for
- snd_soc_dai_startup/shutdown()
-In-Reply-To: <5d7e4b05-4900-f276-b7d2-ac7c01ad730b@linux.intel.com>
-References: <87wo2oku0m.wl-kuninori.morimoto.gx@renesas.com>
- <87v9i8ku04.wl-kuninori.morimoto.gx@renesas.com>
- <5d7e4b05-4900-f276-b7d2-ac7c01ad730b@linux.intel.com>
+Subject: [PATCH v4] ASoC: dt-bindings: ak4613: switch to yaml base
+ Documentation
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,84 +74,122 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Pierre-Louis
+This patch switches from .txt base to .yaml base Document.
 
-Thank you for your review.
-
-> > +#define soc_dai_mark_push(dai, substream, tgt)	((dai)->mark_##tgt = substream)
-> 
-> we may want a check that detects if the pointer is NULL before
-> assigning it, otherwise we won't be able to detect bad configuration
-> where a pointer is overwritten by 2 mark_push() calls on the same
-> object?
-
-One assumption here is that open() / close() pair are called same number of times.
-open() / close() unbalance is not mentioned here, it is other problem.
-
-My expectation for this mark is that it will be used only for rollback.
-The necessary things in such case is that marked pointer is match to
-current pointer, or not when rollback case.
-Thus, overwritten is not problem in my understanding.
-
-> I am a bit concerned here about the case of a bi-directional DAI, it's
-> my understanding that the .startup() callback could be called for each
-> direction?
-> 
-> soc-dapm.c:		ret = snd_soc_dai_startup(source, substream);
-> soc-dapm.c:		ret = snd_soc_dai_startup(sink, substream);
-> 
-> To convince myself of this, I added a dummy startup routine and I do
-> see it called when I do playback and capture at the same time:
-> 
-> [  179.057494] plb: ssp2 startup stream 0
-> [  183.976963] plb: ssp2 startup stream 1
-> 
-> That makes me nervous about having a single pointer and unbalanced
-> calls between startup and shutdown.
-> 
-> We had such issues in the past so I may be on the paranoid side here...
-
-Thank you for sharing your experience.
-As I mentioned above, this mark is used only for rollback of open(),
-not related to close().
-
-But hmm.. I now double checked the code, 1 concern is mutex_lock().
-In final step, the soc_pcm_open() will be
-
-	static int soc_pcm_open()
-	{
-		...
-(1)		mutex_lock_nested(...);
-		...
-		for_each_rtd_dais(rtd, i, dai) {
-(A)			ret = snd_soc_dai_startup(dai, substream);
-			...
-		}
-		...
-	err:
-(2)		mutex_unlock(&rtd->card->pcm_mutex);
-
-		if (ret < 0)
-(B)			soc_pcm_clean(substream, 1);
-		...
-	}
-
-(A) is called under (1) lock, but it will be unlocked at (2),
-and (B) is called if rollback.
-
-If
-	- 2 x soc_pcm_open() were called in the same time
-	- 1st soc_pcm_open() was failed
-	- 2nd soc_pcm_open() was called between 1st soc_pcm_open()'s (2) and (B)
-
-Indeed single pointer is not good...
-!?
-But, soc_pcm_open() itself is called under othere mutex_lock() of pcm_native.c
-Above issue never happen ?
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/87mu4cxlo2.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87o8pf3923.wl-kuninori.morimoto.gx@renesas.com
 ---
-Kuninori Morimoto
+v3 -> v4
+
+	- rebase v2 patch
+	- use generic node name
+
+Hi Mark, Rob
+
+I posted ak4613 3 times (= v1 - v3), and v2 patch got Reviewed-by from Rob
+(= https://lore.kernel.org/r/20200715220920.GA903738@bogus).
+But in the same time, it got review from Fabio to use generic node name.
+Then, I used v1 for v3 somehow and everything becoming wrong.
+This patch should be OK. I added Rob's Reviewed-by on this patch, too.
+
+ .../devicetree/bindings/sound/ak4613.txt      | 27 ----------
+ .../devicetree/bindings/sound/ak4613.yaml     | 49 +++++++++++++++++++
+ 2 files changed, 49 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/ak4613.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/ak4613.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/ak4613.txt b/Documentation/devicetree/bindings/sound/ak4613.txt
+deleted file mode 100644
+index 49a2e74fd9cb..000000000000
+--- a/Documentation/devicetree/bindings/sound/ak4613.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-AK4613 I2C transmitter
+-
+-This device supports I2C mode only.
+-
+-Required properties:
+-
+-- compatible : "asahi-kasei,ak4613"
+-- reg : The chip select number on the I2C bus
+-
+-Optional properties:
+-- asahi-kasei,in1-single-end	: Boolean. Indicate input / output pins are single-ended.
+-- asahi-kasei,in2-single-end	  rather than differential.
+-- asahi-kasei,out1-single-end
+-- asahi-kasei,out2-single-end
+-- asahi-kasei,out3-single-end
+-- asahi-kasei,out4-single-end
+-- asahi-kasei,out5-single-end
+-- asahi-kasei,out6-single-end
+-
+-Example:
+-
+-&i2c {
+-	ak4613: ak4613@10 {
+-		compatible = "asahi-kasei,ak4613";
+-		reg = <0x10>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/sound/ak4613.yaml b/Documentation/devicetree/bindings/sound/ak4613.yaml
+new file mode 100644
+index 000000000000..ef4055ef0ccd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ak4613.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/ak4613.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: AK4613 I2C transmitter Device Tree Bindings
++
++maintainers:
++  - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++
++properties:
++  compatible:
++    const: asahi-kasei,ak4613
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++patternProperties:
++  "^asahi-kasei,in[1-2]-single-end$":
++    description: Input Pin 1 - 2.
++    $ref: /schemas/types.yaml#/definitions/flag
++
++  "^asahi-kasei,out[1-6]-single-end$":
++    description: Output Pin 1 - 6.
++    $ref: /schemas/types.yaml#/definitions/flag
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        ak4613: codec@10 {
++            compatible = "asahi-kasei,ak4613";
++            reg = <0x10>;
++        };
++    };
+-- 
+2.25.1
+
