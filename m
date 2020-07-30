@@ -6,64 +6,63 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF92EC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 00:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B92C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 01:32:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D8E12075D
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 00:58:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 92D132072A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 01:32:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ApnCa9Q+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D8E12075D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NfBuINKC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92D132072A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DE3E1728;
-	Thu, 30 Jul 2020 02:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DE3E1728
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00787172C;
+	Thu, 30 Jul 2020 03:31:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00787172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596070714;
-	bh=CgQYGPT+GO2PlpTLoK323ii4uDE/3+t3Gxfg8IGmrN8=;
+	s=default; t=1596072758;
+	bh=cM8ud17van0hliOGjFP0e8Vg3i+25oa5TPekBcEa3/4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ApnCa9Q+vPagfEEOGA7yx+8rW7gLUkTV+F9LVaWPCBDDqU0h0xAju2Dk5tbn8Z9Vp
-	 lXhzhRxYg5t109sMnhLGdkl92383+lQ0X4VUZe8MMxKSNIQLUZFhnR05t9NtXDzdf6
-	 8/QWseKvFzU0AnN49rPNNcH7YEcKlKNJV3VSB3Q8=
+	b=NfBuINKCAEjGwxGdbY0dI/PwFMnIicnie//mdczakFMSbgY3prsY0nH8FX1fj3FnV
+	 ct+2TqExmnVqRWKEcePzPuAXzKEOV7JKH1Be4o66iuJ5DVZ6wfKiXgiNs2lFOzXlIh
+	 TKhiAwDlnJYCcCy+idprgpX2gm50BLo6H5OhUMN0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3B35F80171;
-	Thu, 30 Jul 2020 02:57:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FF0AF80171;
+	Thu, 30 Jul 2020 03:31:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35434F801A3; Thu, 30 Jul 2020 02:57:42 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 745DCF800DE
- for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 02:57:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 745DCF800DE
-Date: 30 Jul 2020 09:57:30 +0900
-X-IronPort-AV: E=Sophos;i="5.75,412,1589209200"; d="scan'208";a="53177530"
+ id 94D6EF801A3; Thu, 30 Jul 2020 03:31:45 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 653D7F800DE
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 03:31:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 653D7F800DE
+Date: 30 Jul 2020 10:31:35 +0900
+X-IronPort-AV: E=Sophos;i="5.75,412,1589209200"; d="scan'208";a="53394161"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 30 Jul 2020 09:57:30 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 30 Jul 2020 10:31:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 24D6D400C424;
- Thu, 30 Jul 2020 09:57:30 +0900 (JST)
-Message-ID: <878sf1bz3f.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6B3EC400C45A;
+ Thu, 30 Jul 2020 10:31:35 +0900 (JST)
+Message-ID: <877dulbxim.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: dt-bindings: ak4613: switch to yaml base
- Documentation
-In-Reply-To: <20200728165458.GC24701@sirena.org.uk>
-References: <87y2nk2tfd.wl-kuninori.morimoto.gx@renesas.com>
- <CAL_JsqJ8PyuZLXj4bLwyConb+GdH83hjPPj2mHbqNy=w9m-joA@mail.gmail.com>
- <20200728165458.GC24701@sirena.org.uk>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 1/7] ASoC: soc-dai: add mark for
+ snd_soc_dai_startup/shutdown()
+In-Reply-To: <3ec084ee58b6e3490c668295370b58a9eeb986e8.camel@linux.intel.com>
+References: <87wo2oku0m.wl-kuninori.morimoto.gx@renesas.com>
+ <87v9i8ku04.wl-kuninori.morimoto.gx@renesas.com>
+ <3ec084ee58b6e3490c668295370b58a9eeb986e8.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Rob Herring <robh+dt@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,19 +79,78 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+Hi Ranjani
 
-> > I haven't seen any follow-up to my audio-graph-card.yaml comments, so
-> > please revert this.
-> 
-> OK, Morimoto-san please resubmit as a series with the audio-graph-card
-> when you get back to that.
+Thank you for your review
 
-Oops, it was my fault.
-My current plan is that 1st ak4613 YAML Doc doesn't support audio-graph-card.
-It will be added later.
-Just removing audio-graph-card part only is enough for ak4613, I think.
-I will fixup and repost today.
+> >  void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
+> > -			 struct snd_pcm_substream *substream)
+> > +			  struct snd_pcm_substream *substream,
+> > +			  int rollback)
+> >  {
+> > +	if (rollback && !soc_dai_mark_match(dai, substream, startup))
+> > +		return;
+> Morimoto-san,
+> Im having a hard time undersdtanding why we need the second check? When
+> will it ever be the case that this match will fail?
+
+	for_each_rtd_dais(...) {
+		ret = snd_soc_dai_startup(dai, substream);
+		if (ret < 0)
+			goto config_err;
+		...
+	}
+	...
+config_err:
+        for_each_rtd_dais(rtd, i, dai)
+		snd_soc_dai_shutdown(dai, substream, 1);
+
+For example, if rtd had 10 DAIs, and .startup() failed at 3rd DAI,
+the mark will be
+     
+	/* xxx here means unknown */
+	dai[0].mark_startup = substream;
+	dai[1].mark_startup = substream;
+	dai[2].mark_startup = substream;
+	dai[3].mark_startup = xxx;
+	...
+	dai[7].mark_startup = xxx;
+	dai[8].mark_startup = xxx;
+	dai[9].mark_startup = xxx;
+
+Then, we need to call .shutdown() is for dai[0] - dai[2],
+In such case, .shutdown() will be called with rollback flag.
+if's second check will be failed on dai[3] - dai[9].
+But please double check.
+
+> I think if we want to roll-back in case of errors , we could simply
+> have a bool in snd_soc_dai to indicate that the dai has been started up
+> already and check that here to decide whether we should shut it down or
+> not.
+
+Yes, my v1 patch was that.
+But someone (I don't remember who was he) indicated that
+it is not enough if same DAI was called many times.
+
+In my understanding, for example, if same DAI is used for 2xPlaybacks,
+and 1st Playback was successed, 2nd Playback was failed,
+and if it was using bool instead of pointer,
+
+2nd Playback rollback doesn't need to call shutdown,
+but it has successed bit of 1st Playback.
+Then, 2nd Playback rollback will call unneeded shutdown,
+and 1st Playback's necessary shutdown will not be called.
+
+We can avoid such things if we use pointer instead of bool.
+But please double check.
+
+> Also, push/pop are associated with stacks and we're only really dealing
+> with one object here. So it is a bit misleading nomemclature-wise. 
+
+Yes maybe.
+The reason why I used push/pop was that it might be updated to handle
+pointer list instead of single pointer (and maybe Pierre-Louis want it :).
+I think I indicated it on git log and comment.
 
 Thank you for your help !!
 
