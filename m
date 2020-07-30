@@ -2,79 +2,73 @@ Return-Path: <SRS0=sGsA=BJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AA30C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 22:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEB97C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 22:30:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8447F2083B
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 22:29:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EE8A20809
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 22:30:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rqOg1ebQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ccE/9pTa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8447F2083B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ez5344dB";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RnZjZySU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EE8A20809
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A718F16A2;
-	Fri, 31 Jul 2020 00:28:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A718F16A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69FDB16A1;
+	Fri, 31 Jul 2020 00:29:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69FDB16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596148187;
-	bh=Oeyh74HxiGgRjXiOD6SLqRmC7a5ZmDzaNWynafKQomk=;
+	s=default; t=1596148236;
+	bh=hanNiH5TZaQQDzljGBMxyRT5Fb9dhVIQP7cLm7Gn7EU=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rqOg1ebQumIoT53TRFdJMeZ6huh71fuwxFRkpAARmuv0R5hZdjY6MX0qDHzOAOH6a
-	 VwwwIn/7fbvxv5vKN9+KEqfz+X9Hfy7LM8jlfpw9Oonmi1arhThjbthV83K/Ghw+lG
-	 ZqgtjcttueQQUS0yb9eF08QgyYOFHs5LDX6RPBmQ=
+	b=Ez5344dBziQD29AXfzFOWKWfVIUe3gQhuipC99gPDMDyzXpBbz9cMxzyyc4/gt9s+
+	 DdaUpFKV3Z2MxzwrbgIShxpU5yvDLRtwB1TCvot5jXnAZ/gYaR/MXbAFBFspedrSUB
+	 4VlViJbnxqmmLJDicZjNYY2DaPupX4L4A0SSWdZ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C90AF80256;
-	Fri, 31 Jul 2020 00:27:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 242E8F802BD;
+	Fri, 31 Jul 2020 00:28:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA1F3F8021E; Fri, 31 Jul 2020 00:27:56 +0200 (CEST)
+ id 23062F802BD; Fri, 31 Jul 2020 00:28:10 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14DD9F80111
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 00:27:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14DD9F80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFF73F80292
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 00:28:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFF73F80292
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ccE/9pTa"
+ header.b="RnZjZySU"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CB6FD20829;
- Thu, 30 Jul 2020 22:27:51 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 83DED20838;
+ Thu, 30 Jul 2020 22:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596148072;
- bh=Oeyh74HxiGgRjXiOD6SLqRmC7a5ZmDzaNWynafKQomk=;
+ s=default; t=1596148080;
+ bh=hanNiH5TZaQQDzljGBMxyRT5Fb9dhVIQP7cLm7Gn7EU=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=ccE/9pTaRyjTtAmFUwlMuRSB7ANa3eKAvc7DYlV88u+A7x10Nfzo5tEXoZH6hfuGV
- JvQJ/E27fcZIDVX0HQW0BMi3seBXR2mtpKhdiU3AskCSaHGQD1lzmbwreKbNPuFIKo
- 82iSe4NDABQiksP+GPb2voo3/nstn4NaA5L1IC4s=
-Date: Thu, 30 Jul 2020 23:27:31 +0100
+ b=RnZjZySUVVIjDJv5WePEKMOmOPA2H4FKz7pFT/+4TTAyS3LFKfJ4Upp4oKvgG4rjZ
+ Gl6JqvRW0fgW9V9HCQIqPN4U9osx66aln762v9IXGikslPyFF/N7HhhtNa6OjD68Ja
+ QuMhOk5+0hgX8wD9WdaOA8SPCax8Ql5cvmgBkI8c=
+Date: Thu, 30 Jul 2020 23:27:39 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-In-Reply-To: <20200728160255.31020-2-Vishnuvardhanrao.Ravulapati@amd.com>
-References: <20200728160255.31020-1-Vishnuvardhanrao.Ravulapati@amd.com>
- <20200728160255.31020-2-Vishnuvardhanrao.Ravulapati@amd.com>
-Subject: Re: [PATCH v2 1/5] ASoC: amd: Renaming snd-soc-card structure and
- fields
-Message-Id: <159614804535.1473.8457456333395054937.b4-ty@kernel.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>,
- Akshu Agrawal <akshu.agrawal@amd.com>, Alexander.Deucher@amd.com
+To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ Dan Murphy <dmurphy@ti.com>
+In-Reply-To: <20200730142419.28205-1-dmurphy@ti.com>
+References: <20200730142419.28205-1-dmurphy@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Fix GPO register start address
+Message-Id: <159614804535.1473.15036781071494882878.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,9 +84,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Jul 2020 21:32:51 +0530, Ravulapati Vishnu vardhan rao wrote:
-> As in future our machine driver supports multiple codecs
-> So changing naming convention of snd_soc_card struct and its fields.
+On Thu, 30 Jul 2020 09:24:18 -0500, Dan Murphy wrote:
+> The header was updated to align with the data sheet to start the GPO_CFG
+> at GPO_CFG0.  The code was not updated to the change and therefore the
+> GPO_CFG0 register was not written to.
 
 Applied to
 
@@ -100,16 +95,10 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: amd: Renaming snd-soc-card structure and fields
-      commit: 9c04b5a48fca1facff07f28ba6d87de900238beb
-[2/5] ASoC: amd: Passing card structure based on codec
-      commit: 0fe4b561f7df6c338c6f4c95ba949fc5abe5c4e5
-[3/5] ASoC: amd: Adding support for ALC1015 codec in machine driver
-      commit: 414e3cab7d3e60395d23f76acdf95d5d81425b48
-[4/5] ASoC: amd: Adding DAI LINK for rt1015 codec
-      commit: f7b2651b96717f54d666a61aa3fa0b3d4e79d81a
-[5/5] ASoC: amd: Added hw_params support for ALC1015
-      commit: c3936ba9e0e4f472221320c33e20be3a8b795616
+[1/2] ASoC: tlv320adcx140: Fix GPO register start address
+      commit: 806a8afedef82c5f156b1c9b1de1205f9abfd21e
+[2/2] ASoC: tlv320adcx140: Move device reset to before programming
+      commit: 982f4a4134893cd48c466e7a56422d7c65837d10
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
