@@ -2,69 +2,77 @@ Return-Path: <SRS0=sGsA=BJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E26FC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 14:58:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDF7CC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 15:04:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAD392070B
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 14:58:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61E872070B
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jul 2020 15:04:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MKC9fBlI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAD392070B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C+Ij+Vmk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61E872070B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C19E178C;
-	Thu, 30 Jul 2020 16:58:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C19E178C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC9241798;
+	Thu, 30 Jul 2020 17:03:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC9241798
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596121135;
-	bh=oygK+uAOE9Y3yKievpKEsaOp1Uipbt32oKYZYCgMQlU=;
+	s=default; t=1596121479;
+	bh=WAs2WLaj+2vfYg60kSEVcvsbcykpM0uIGwTV/TrFo1Q=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MKC9fBlIiJVZuvMvwlKE0p0vGCcdBbAXa6iPSsPU+A+tSksUY0OZs33dzB/YfIv9H
-	 WrxtAHRXQF42DQk2U9BrgGXWiF6I+/6FmlHoz+OjRl9ZqnLHS2sJr/JZFtZ6eWBh+2
-	 zPHwhkNJmlTMMtJcGoFMJ6cDYDtkheFbKmc2SMaw=
+	b=C+Ij+Vmk7C8qeUICA6FzaWKdf/kbmqhfJcaxRfLoTjToqUctWiIyydclAgWy/qea+
+	 wgXjXSRzvr4IYLFktvUGSttFL+AQpdG0qcl2l0rzntdkhzKfIi3MYaLeEDq1imGLIR
+	 pxmZPL0W/Feg+Or7K5R5KdoMPTppensJet2qmV58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5B1BF8021C;
-	Thu, 30 Jul 2020 16:58:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 688F5F8021C;
+	Thu, 30 Jul 2020 17:03:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 711EAF8021E; Thu, 30 Jul 2020 16:58:03 +0200 (CEST)
+ id 92570F8021E; Thu, 30 Jul 2020 17:03:47 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06B99F800C9
- for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 16:57:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06B99F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 370E0F8012F
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2020 17:03:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 370E0F8012F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CC8C3ACA0;
- Thu, 30 Jul 2020 14:58:03 +0000 (UTC)
-Date: Thu, 30 Jul 2020 16:57:51 +0200
-Message-ID: <s5ha6zhcaog.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5D927B57A;
+ Thu, 30 Jul 2020 15:03:53 +0000 (UTC)
+Date: Thu, 30 Jul 2020 17:03:40 +0200
+Message-ID: <s5h8sf1caer.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH][next] ALSA: vmaster: Use flex_array_size() helper in
- memcpy()
-In-Reply-To: <96ea053c-f4c9-56dd-0d44-b627b067405f@embeddedor.com>
-References: <20200729221829.GA10623@embeddedor> <s5h1rkte6ni.wl-tiwai@suse.de>
- <96ea053c-f4c9-56dd-0d44-b627b067405f@embeddedor.com>
+To: Brent Lu <brent.lu@intel.com>
+Subject: Re: [PATCH v2 0/2] Add period size constraint for Atom Chromebook
+In-Reply-To: <1596096815-32043-1-git-send-email-brent.lu@intel.com>
+References: <1596096815-32043-1-git-send-email-brent.lu@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Sam McNally <sammc@chromium.org>, Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Stuart <daniel.stuart14@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Yu-Hsuan Hsu <yuhsuan@chromium.org>, Damian van Soelen <dj.vsoelen@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,58 +88,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 30 Jul 2020 15:12:33 +0200,
-Gustavo A. R. Silva wrote:
+On Thu, 30 Jul 2020 10:13:33 +0200,
+Brent Lu wrote:
 > 
+> Two different constraints are implemented: one is in platform's CPU
+> DAI to enforce period sizes which are already used in Android BSP. The
+> other is in Atom Chromebook's machine driver to use 240 as period size.
 > 
-> 
-> On 7/30/20 03:41, Takashi Iwai wrote:
-> > On Thu, 30 Jul 2020 00:18:29 +0200,
-> > Gustavo A. R. Silva wrote:
-> >>
-> >> Make use of the flex_array_size() helper to calculate the size of a
-> >> flexible array member within an enclosing structure.
-> >>
-> >> This helper offers defense-in-depth against potential integer overflows
-> >> and makes it explicitly clear that we are dealing with a flexible array
-> >> member.
-> >>
-> >> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> >> ---
-> >>  sound/core/vmaster.c | 3 ++-
-> >>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
-> >> index ab36f9898711..21ce4082cb5f 100644
-> >> --- a/sound/core/vmaster.c
-> >> +++ b/sound/core/vmaster.c
-> >> @@ -262,7 +262,8 @@ int _snd_ctl_add_follower(struct snd_kcontrol *master,
-> >>  		return -ENOMEM;
-> >>  	srec->kctl = follower;
-> >>  	srec->follower = *follower;
-> >> -	memcpy(srec->follower.vd, follower->vd, follower->count * sizeof(*follower->vd));
-> >> +	memcpy(srec->follower.vd, follower->vd, flex_array_size(srec, follower.vd,
-> >> +								srec->follower.count));
-> > 
-> > Changing from follower->count to srec->follower.count isn't obvious,
-> > so it should have been mentioned in the log; other than that, the code
-> > change looks good.
-> > 
-> 
-> Yeah; you're right. I'll include that in the changelog text.
+> Changes since v1:
+> -Add comma at the end of media_period_size array declaration.
 
-OK, then I'll wait for the v2 for merging.
+Is it a hardware restriction?  Unless it's a must for some hardware
+issues, enforcing such a small period size is nothing but a drawback
+for a system without CRAS.
 
-> > But since the API isn't in Linus tree yet, I'll postpone the merge
-> > until the API reaches to upstream.  Maybe I can merge this during RC1
-> > merge window, as those are trivial.
-> > 
-> 
-> The API is already in mainline, see:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/overflow.h#n320
 
-Ah, thanks, I didn't expect that the API change comes after rc1 into
-mainline.  Then I can merge later the commits based on the late rc.
-
+thanks,
 
 Takashi
+
+> 
+> Brent Lu (1):
+>   ASoC: intel: atom: Add period size constraint
+> 
+> Yu-Hsuan Hsu (1):
+>   ASoC: Intel: Add period size constraint on strago board
+> 
+>  sound/soc/intel/atom/sst-mfld-platform-pcm.c | 15 +++++++++++++++
+>  sound/soc/intel/boards/cht_bsw_max98090_ti.c | 14 +++++++++++++-
+>  sound/soc/intel/boards/cht_bsw_rt5645.c      | 14 +++++++++++++-
+>  3 files changed, 41 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.7.4
+> 
