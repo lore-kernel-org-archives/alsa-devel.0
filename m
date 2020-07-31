@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB1E0C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 18:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB4E8C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 18:58:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5475822B3F
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 18:57:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7C8992076B
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 18:58:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ukjOaxZ4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="14qsg1bv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5475822B3F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QodKyXWt";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QNFJgObY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C8992076B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E43541687;
-	Fri, 31 Jul 2020 20:56:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E43541687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 120B01666;
+	Fri, 31 Jul 2020 20:57:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 120B01666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596221867;
-	bh=PCVI7it4La+iAm7gLF858FWk5mugOv7XiT+zX461Eec=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1596221909;
+	bh=+xU/zGr9p9UKZSvfjf8EIJYsHz2XUQUOU9KvSiGg7y4=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ukjOaxZ49O8IEinGTvQU+x3MJRMM0FOxFSuNv0w+VfDKbLMgYcy2SlUUI+wU0M4R6
-	 pEjXk5iplXvAi9io8YRwVPuAxbhPRr+H38pHveL2BJm3glqwAigjqH8KqqAkJFKNfM
-	 h2QFatfP9Uz1cuvRcL5kTHpC3Uz2reCRvQMiiPZU=
+	b=QodKyXWtpckfltluTFtD8+7D80D/j8Aj9yo5566nn/PZvEIcxiqJ2lJNX2RJS615F
+	 C1n0erpj+mzW3ZxSMgJKSr2pk5DFdGUsTWNzP7uopEt5s+lnxu3NfVzWOSz++ELXje
+	 0ZgRYz+f2lvft1FLf0F4tkXYsOztUE+JPw3JX324=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48628F802DD;
-	Fri, 31 Jul 2020 20:55:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F880F802E2;
+	Fri, 31 Jul 2020 20:55:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BB52F802DF; Fri, 31 Jul 2020 20:55:15 +0200 (CEST)
+ id D051BF802E3; Fri, 31 Jul 2020 20:55:21 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53D75F802DB
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 20:55:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53D75F802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71233F802DF
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 20:55:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71233F802DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="14qsg1bv"
+ header.b="QNFJgObY"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1A4852076B;
- Fri, 31 Jul 2020 18:55:10 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 52FF222B3F;
+ Fri, 31 Jul 2020 18:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596221711;
- bh=PCVI7it4La+iAm7gLF858FWk5mugOv7XiT+zX461Eec=;
+ s=default; t=1596221718;
+ bh=+xU/zGr9p9UKZSvfjf8EIJYsHz2XUQUOU9KvSiGg7y4=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=14qsg1bvHyQrGBtkg+IFfouvo5V7ZnNYZYqAPL7/NgB1WEf71l+lp6A63xGiutdYx
- 3UBXiqEQULvrO5duCdpKGMiBKoIq9/v4GjgR/CD+wrnXOwX3T8hsq08IQ+O2I3j7df
- GA6cIqt96HhvB6GzGwM4vR6XDpOC86ue0WmstkFM=
-Date: Fri, 31 Jul 2020 19:54:51 +0100
+ b=QNFJgObYyX4FblpuMYxk7M9urwBCuba4qsg6jEuN4L3xtMtBqu6N5zsMh0vpz3HK/
+ XBE+LuPGI2DK0YUn71+MpR6f7rS/Caab6fuMidYj1jMTnDjCAJe/TDOIj7pYm0N5Gd
+ 1CvnVq6neDHZ3oTkyxtML5uEE9uzLQsvs1dM5+3Y=
+Date: Fri, 31 Jul 2020 19:54:57 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, tiwai@suse.com, nicoleotsuka@gmail.com,
- linux-kernel@vger.kernel.org, festevam@gmail.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, linuxppc-dev@lists.ozlabs.org,
- Xiubo.Lee@gmail.com, lgirdwood@gmail.com, perex@perex.cz, timur@kernel.org
-In-Reply-To: <1596176895-28724-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1596176895-28724-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Fix value of FSL_SAI_CR1_RFW_MASK
-Message-Id: <159622167150.22822.11843570099946716811.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
+In-Reply-To: <20200731144146.6678-1-cezary.rojewski@intel.com>
+References: <20200731144146.6678-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH 0/3] ASoC: core: Two step component registration
+Message-Id: <159622167150.22822.11913322083367514297.b4-ty@kernel.org>
+Cc: lars@metafoo.de, olivier.moysan@st.com, alexandre.torgue@st.com,
+ tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, mcoquelin.stm32@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +85,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 31 Jul 2020 14:28:15 +0800, Shengjiu Wang wrote:
-> The fifo_depth is 64 on i.MX8QM/i.MX8QXP, 128 on i.MX8MQ, 16 on
-> i.MX7ULP.
+On Fri, 31 Jul 2020 16:41:43 +0200, Cezary Rojewski wrote:
+> Provide a mechanism for true two-step component registration. This
+> mimics device registration flow where initialization is the first step
+> while addition goes as second in line. Drivers may choose to modify
+> component's fields before registering component to ASoC subsystem via
+> snd_soc_add_component.
 > 
-> Original FSL_SAI_CR1_RFW_MASK value 0x1F is not suitable for
-> these platform, the FIFO watermark mask should be updated
-> according to the fifo_depth.
+> Patchset achieves status quo - behavior of snd_soc_register_component
+> remains unchanged.
+> 
+> [...]
 
 Applied to
 
@@ -99,8 +103,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_sai: Fix value of FSL_SAI_CR1_RFW_MASK
-      commit: 5aef1ff2397d021f93d874b57dff032fdfac73de
+[1/3] ASoC: core: Relocate and expose snd_soc_component_initialize
+      commit: 08ff7209faf21daa01bf66c91c321ce52d4b4bdb
+[2/3] ASoC: core: Simplify snd_soc_component_initialize declaration
+      commit: 7274d4cd8506bbff9bf2d7c2f73b2febff99abef
+[3/3] ASoC: core: Two step component registration
+      commit: ea029dd8d0124fcd5db1c7003e87a7bd4ddb3bad
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
