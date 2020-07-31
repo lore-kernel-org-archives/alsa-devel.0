@@ -2,77 +2,81 @@ Return-Path: <SRS0=4tTe=BK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDCFEC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 14:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE38DC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 15:08:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 754C822B3F
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 14:45:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4DDC921744
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 15:08:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RGAYjdvW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 754C822B3F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bWBDxbDL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DDC921744
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 145A71657;
-	Fri, 31 Jul 2020 16:44:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 145A71657
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBD6985D;
+	Fri, 31 Jul 2020 17:07:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBD6985D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596206746;
-	bh=LdLyQpZhCRzmIKlBnQuB2s+3sKDKL6Wmdk5qYHZfyqw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1596208112;
+	bh=Z+i/wkSyRQ/kz/tLETIUiuDZqWoJIDr+cM7qjr7kYfw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RGAYjdvWCfyxcAkHDhDEn07E4+a9sQlE9Ui/ye8bon7wEZVgEh9k+i63CjcPCviPb
-	 DjNJaiyO8DQz8ygD4aT7gztwm+eypHtaTFjZSifskgvshEFKwxa2K4J2jFOJfYHaPl
-	 Rh6p2nRlHuJqdfNuE0gcIrWwD8d+vaZo+LZQ7Ya8=
+	b=bWBDxbDLpOOUUrBR2v7lZyJlOaPt0VcCwof4JBEnml2QFbMA+fU0AVqsCZ2cNuO+e
+	 ZPywJHy+ER5eJYaG53m2ws9QqcmwQq+zyw97SefjOFyvtsMZ+dJtyEykvkQ4dw3tXO
+	 f1RBqUTGlMs9SDpfaoJI8Jm1oVXsr4zuuB7wsmDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2605F802C2;
-	Fri, 31 Jul 2020 16:42:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E374F80161;
+	Fri, 31 Jul 2020 17:07:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CD80F8028D; Fri, 31 Jul 2020 16:42:42 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id BB201F8011C; Fri, 31 Jul 2020 17:07:40 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84DA0F8015C
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 16:42:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84DA0F8015C
-IronPort-SDR: 9Ui5BiCmE9Fco2nC1cUoqA0uEpiobJZTnEvooC4CEFGRCZpWqg12diTx6MjkFxZiFPAmZfkG20
- 5AGUGpwf/jTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="131352479"
-X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; d="scan'208";a="131352479"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 736C1F8011C
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 17:07:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 736C1F8011C
+IronPort-SDR: dGJD7s0MFmx2wbNn9yxagHmer+lz9J4RqmckT69Oa5O+pun9hrp4NSDN7+L05/7jPB4r/IXVVg
+ u/s2Gq75a8Og==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="151762081"
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; d="scan'208";a="151762081"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2020 07:42:31 -0700
-IronPort-SDR: OfL+I5sLrmC26koglryeIMQ4E1w7sHB2a7JjgHDrmxNlUt5rjC2Z+0Tphu5BEbPXA2MGTAl/ME
- khS12aq6O/MA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; d="scan'208";a="491505215"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 31 Jul 2020 07:42:28 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: core: Two step component registration
-Date: Fri, 31 Jul 2020 16:41:46 +0200
-Message-Id: <20200731144146.6678-4-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200731144146.6678-1-cezary.rojewski@intel.com>
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2020 08:07:25 -0700
+IronPort-SDR: kQjfLGrbDL3tO9Cl6DgN+IkPWBuEPdLIcMLkd+zQEOnTUcEMvzdflgoOGQwbkPRDySWGBOOjsq
+ Uc9v/SrUlWRg==
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; d="scan'208";a="435417978"
+Received: from yashroff-mobl.amr.corp.intel.com (HELO [10.251.25.37])
+ ([10.251.25.37])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2020 08:07:24 -0700
+Subject: Re: [PATCH 0/3] ASoC: core: Two step component registration
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20200731144146.6678-1-cezary.rojewski@intel.com>
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, lars@metafoo.de,
- olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com,
- arnaud.pouliquen@st.com, lgirdwood@gmail.com, broonie@kernel.org,
- mcoquelin.stm32@gmail.com
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <1828f3a2-f198-e6cd-ca6c-c66dc1ef82d1@linux.intel.com>
+Date: Fri, 31 Jul 2020 10:07:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200731144146.6678-1-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: lars@metafoo.de, olivier.moysan@st.com, alexandre.torgue@st.com,
+ lgirdwood@gmail.com, arnaud.pouliquen@st.com, tiwai@suse.com,
+ broonie@kernel.org, mcoquelin.stm32@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,165 +92,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Modify snd_soc_add_component so it calls snd_soc_component_initialize
-no longer and thus providing true two-step registration. Drivers may
-choose to change component's fields before actually adding it to ASoC
-subsystem.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- include/sound/soc.h                   |  8 +++-----
- sound/soc/soc-core.c                  | 27 +++++++++++++--------------
- sound/soc/soc-generic-dmaengine-pcm.c | 14 +++++++++-----
- sound/soc/stm/stm32_adfsdm.c          |  9 +++++++--
- 4 files changed, 32 insertions(+), 26 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 787374362f83..5e3919ffb00c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -417,11 +417,9 @@ int snd_soc_poweroff(struct device *dev);
- int snd_soc_component_initialize(struct snd_soc_component *component,
- 				 const struct snd_soc_component_driver *driver,
- 				 struct device *dev);
--int snd_soc_add_component(struct device *dev,
--		struct snd_soc_component *component,
--		const struct snd_soc_component_driver *component_driver,
--		struct snd_soc_dai_driver *dai_drv,
--		int num_dai);
-+int snd_soc_add_component(struct snd_soc_component *component,
-+			  struct snd_soc_dai_driver *dai_drv,
-+			  int num_dai);
- int snd_soc_register_component(struct device *dev,
- 			 const struct snd_soc_component_driver *component_driver,
- 			 struct snd_soc_dai_driver *dai_drv, int num_dai);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f528367bc3be..2fe1b2ec7c8f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2463,22 +2463,16 @@ int snd_soc_component_initialize(struct snd_soc_component *component,
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_initialize);
- 
--int snd_soc_add_component(struct device *dev,
--			struct snd_soc_component *component,
--			const struct snd_soc_component_driver *component_driver,
--			struct snd_soc_dai_driver *dai_drv,
--			int num_dai)
-+int snd_soc_add_component(struct snd_soc_component *component,
-+			  struct snd_soc_dai_driver *dai_drv,
-+			  int num_dai)
- {
- 	int ret;
- 	int i;
- 
- 	mutex_lock(&client_mutex);
- 
--	ret = snd_soc_component_initialize(component, component_driver, dev);
--	if (ret)
--		goto err_free;
--
--	if (component_driver->endianness) {
-+	if (component->driver->endianness) {
- 		for (i = 0; i < num_dai; i++) {
- 			convert_endianness_formats(&dai_drv[i].playback);
- 			convert_endianness_formats(&dai_drv[i].capture);
-@@ -2487,7 +2481,8 @@ int snd_soc_add_component(struct device *dev,
- 
- 	ret = snd_soc_register_dais(component, dai_drv, num_dai);
- 	if (ret < 0) {
--		dev_err(dev, "ASoC: Failed to register DAIs: %d\n", ret);
-+		dev_err(component->dev, "ASoC: Failed to register DAIs: %d\n",
-+			ret);
- 		goto err_cleanup;
- 	}
- 
-@@ -2505,7 +2500,7 @@ int snd_soc_add_component(struct device *dev,
- err_cleanup:
- 	if (ret < 0)
- 		snd_soc_del_component_unlocked(component);
--err_free:
-+
- 	mutex_unlock(&client_mutex);
- 
- 	if (ret == 0)
-@@ -2521,13 +2516,17 @@ int snd_soc_register_component(struct device *dev,
- 			int num_dai)
- {
- 	struct snd_soc_component *component;
-+	int ret;
- 
- 	component = devm_kzalloc(dev, sizeof(*component), GFP_KERNEL);
- 	if (!component)
- 		return -ENOMEM;
- 
--	return snd_soc_add_component(dev, component, component_driver,
--				     dai_drv, num_dai);
-+	ret = snd_soc_component_initialize(component, component_driver, dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snd_soc_add_component(component, dai_drv, num_dai);
- }
- EXPORT_SYMBOL_GPL(snd_soc_register_component);
- 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index d17b4bf1dbe3..fb95c1464e66 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -424,6 +424,7 @@ static void dmaengine_pcm_release_chan(struct dmaengine_pcm *pcm)
- int snd_dmaengine_pcm_register(struct device *dev,
- 	const struct snd_dmaengine_pcm_config *config, unsigned int flags)
- {
-+	const struct snd_soc_component_driver *driver;
- 	struct dmaengine_pcm *pcm;
- 	int ret;
- 
-@@ -442,12 +443,15 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 		goto err_free_dma;
- 
- 	if (config && config->process)
--		ret = snd_soc_add_component(dev, &pcm->component,
--					    &dmaengine_pcm_component_process,
--					    NULL, 0);
-+		driver = &dmaengine_pcm_component_process;
- 	else
--		ret = snd_soc_add_component(dev, &pcm->component,
--					    &dmaengine_pcm_component, NULL, 0);
-+		driver = &dmaengine_pcm_component;
-+
-+	ret = snd_soc_component_initialize(&pcm->component, driver, dev);
-+	if (ret)
-+		goto err_free_dma;
-+
-+	ret = snd_soc_add_component(&pcm->component, NULL, 0);
- 	if (ret)
- 		goto err_free_dma;
- 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index c1433c20b08b..ec27c13af04f 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -344,12 +344,17 @@ static int stm32_adfsdm_probe(struct platform_device *pdev)
- 	component = devm_kzalloc(&pdev->dev, sizeof(*component), GFP_KERNEL);
- 	if (!component)
- 		return -ENOMEM;
-+
-+	ret = snd_soc_component_initialize(component,
-+					   &stm32_adfsdm_soc_platform,
-+					   &pdev->dev);
-+	if (ret < 0)
-+		return ret;
- #ifdef CONFIG_DEBUG_FS
- 	component->debugfs_prefix = "pcm";
- #endif
- 
--	ret = snd_soc_add_component(&pdev->dev, component,
--				    &stm32_adfsdm_soc_platform, NULL, 0);
-+	ret = snd_soc_add_component(component, NULL, 0);
- 	if (ret < 0)
- 		dev_err(&pdev->dev, "%s: Failed to register PCM platform\n",
- 			__func__);
--- 
-2.17.1
+On 7/31/20 9:41 AM, Cezary Rojewski wrote:
+> Provide a mechanism for true two-step component registration. This
+> mimics device registration flow where initialization is the first step
+> while addition goes as second in line. Drivers may choose to modify
+> component's fields before registering component to ASoC subsystem via
+> snd_soc_add_component.
 
+I must admit I don't see where this might be used for Intel platforms, 
+we've been happily using snd_soc_register_component() without hitting 
+limitations.
+
+Also the only two uses of snd_soc_add_component() seem mainly driven by 
+memory allocation - and avoiding a devm_kzalloc in 
+snd_soc_register_component().
+
+Out of curiosity, can you provide an example where this two-step would 
+be required or beneficial? Thanks!
+
+> Patchset achieves status quo - behavior of snd_soc_register_component
+> remains unchanged.
+> 
+> Cezary Rojewski (3):
+>    ASoC: core: Relocate and expose snd_soc_component_initialize
+>    ASoC: core: Simplify snd_soc_component_initialize declaration
+>    ASoC: core: Two step component registration
+> 
+>   include/sound/soc-component.h         |  3 --
+>   include/sound/soc.h                   | 11 +++---
+>   sound/soc/soc-component.c             | 16 ---------
+>   sound/soc/soc-core.c                  | 52 +++++++++++++++++----------
+>   sound/soc/soc-generic-dmaengine-pcm.c | 14 +++++---
+>   sound/soc/stm/stm32_adfsdm.c          |  9 +++--
+>   6 files changed, 55 insertions(+), 50 deletions(-)
+> 
