@@ -6,103 +6,165 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73935C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 12:17:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 668CCC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 12:30:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F087422BF3
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 12:17:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3709206FA
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 12:30:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bc9b4tS1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="guQm0pLx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F087422BF3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cDFHbhrS";
+	dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com header.i=@intel.onmicrosoft.com header.b="Yuu+TKKT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3709206FA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 716681607;
-	Fri, 31 Jul 2020 14:16:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 716681607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E7F8168F;
+	Fri, 31 Jul 2020 14:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E7F8168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596197868;
-	bh=QAqmxzW0jBfFRkg0WAhuxHqNirH7ZsUBicFo6mCNL94=;
-	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
+	s=default; t=1596198606;
+	bh=2o7ccAqjf9e2hR8NN9Y5xH5/g5XTgNzvCSEITTq9Eog=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bc9b4tS1aE5H49Nhrz3j5ZVQ/i2dI3HMZDQcALxXIuoDPhCRHqZtFuUhHzap/M/gc
-	 5kFKNsZp5SKD9CiLpJRqoT9q3y+P7A22YfPlWoinBNV+WycHripZeR3sjqXZRhMxu9
-	 nMytSGs/LlfKiAKAPVdVvOT9s2DCSa+y4eM3nbaY=
+	b=cDFHbhrSA5g3AQ7/Hb9Dr1Eqa7MEkSptGJHCQZRWDkbChbaKcMcId+YEC3VG+eWsH
+	 18U0ZqJAmDRTO1FOFu0TudMTpfqQuInSz1KeLEpPEAIZYxWhaw0dbtICkm8HEhOkvx
+	 uqOGIyuDc3LS/rj0GYjKtdrbG2MevETrdd2DdzRU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0673F8015C;
-	Fri, 31 Jul 2020 14:16:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C0C1F80161;
+	Fri, 31 Jul 2020 14:29:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 187ECF80171; Fri, 31 Jul 2020 14:16:56 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8D3F0F80171; Fri, 31 Jul 2020 14:29:12 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3F29F8015C
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 14:16:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3F29F8015C
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE33CF8015C
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 14:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE33CF8015C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="guQm0pLx"
-Received: by mail-wr1-x444.google.com with SMTP id z18so24243595wrm.12
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 05:16:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=references:user-agent:from:to:cc:subject:in-reply-to:date
- :message-id:mime-version;
- bh=xABj9o/+LF58yiAkW0qlTl8H60o66EHmFAlpoGa2r4s=;
- b=guQm0pLxZhuiFMgT/YoFDq1qAQEhYLykNn383MHzp5vyWxpMrZ36YkRNI78Ke5XpUO
- wq1Q16/L+GkWgoNJLEf/o9HsPCU4002b1qrN9oB5YQTivbxhsh1zAj0g5r0ZMwxbvFs1
- txNvI+MFOaQIhzLW6qF79AjMywqpt6i/uYmN/8D2yUkRL2lcCo6Gkf0uBOCa2BbXDEao
- 4qz9YkoQ+hEyjr96b5l/hRkD13LxOen7ADjs35KCziHBvXijJ+P1sTq5917Lqjz9Qhls
- GuhtcRBBoFrYjiEniyu6H5zZ+JPnAkF9+FBAarSjzbmGdrE9u2Ki04mtXhJ06YEYcu5m
- yA3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject
- :in-reply-to:date:message-id:mime-version;
- bh=xABj9o/+LF58yiAkW0qlTl8H60o66EHmFAlpoGa2r4s=;
- b=DCLrpi1Jbnb9/9lB2rO8f3AludaPJxustv6TEjijIvHFHZi0WV4T/ZWKkz+XOShKJ3
- 7mEiy02hJ7R7iT7bpezQ4YkF03hNFF4pSCWVNeG3m4FD4JW3e3ryHBERsqSr4PwAlZMG
- DKPmXfdG7qpnimBO0uuRfUT12zZKVC7zUqz+R3ZpHBDRLgnpeaTuTS117KbE2s85OoAe
- ibB3FIELY/gE7v5G1aEBfxbjaoOuLGl1S/btFUauTmrZXmInx9hQ/Pj90NHju9SqyBMX
- fgGRqSSxhAImVTXhES6Mi7B1XE4YWY6FFLsbhqBaVod5vOpvPNKDa4tdWCD4ES1Lymy0
- Rkuw==
-X-Gm-Message-State: AOAM533upPJTdulN2762OCsiFziQxAI1RDk90fQ9v5zx27qYp4KdouvX
- uOwAp5DodIG4Qkc1XAu/F6RdPw==
-X-Google-Smtp-Source: ABdhPJwnWi9tvSXSrHuqSUu1kDUIIUV324uwyEKL0/F8EHAeFwamGr+7Nm01PLL6fMFhOXcprj35Sg==
-X-Received: by 2002:adf:e6cc:: with SMTP id y12mr3266378wrm.391.1596197804388; 
- Fri, 31 Jul 2020 05:16:44 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
- [90.63.244.31])
- by smtp.gmail.com with ESMTPSA id g126sm12527702wme.16.2020.07.31.05.16.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 31 Jul 2020 05:16:43 -0700 (PDT)
-References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
- <20200729154639.1983854-1-jbrunet@baylibre.com>
- <2ad13f95-434d-376a-bc38-b209623b461e@linux.intel.com>
- <1jft998jbe.fsf@starbuckisacylon.baylibre.com>
- <936d6e37-0ad0-b0d7-814a-1ace12087746@linux.intel.com>
- <20200730185229.GH5055@sirena.org.uk>
-User-agent: mu4e 1.3.3; emacs 26.3
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: core: restore dpcm flags semantics
-In-reply-to: <20200730185229.GH5055@sirena.org.uk>
-Date: Fri, 31 Jul 2020 14:16:43 +0200
-Message-ID: <1j7duj98wk.fsf@starbuckisacylon.baylibre.com>
+ dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
+ header.i=@intel.onmicrosoft.com header.b="Yuu+TKKT"
+IronPort-SDR: jGH0HM35hEJXpTmJc2MzL0/+eQFTkWA6gxFtEqsruRwjftG41Gp25skFldOLtIcdRh8pAIDJD+
+ GyJNcO6F+Hdg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="169877605"
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; d="scan'208";a="169877605"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2020 05:28:58 -0700
+IronPort-SDR: j9GBagD5ZhUBg6kPFWqy08KLtR7Ch/ZWSsxU2t3me4CoJbpTXTsOtYAzqW5W43D5Nhd4AlhWpW
+ f57s2ZjT3r2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; d="scan'208";a="321387833"
+Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
+ by orsmga008.jf.intel.com with ESMTP; 31 Jul 2020 05:28:57 -0700
+Received: from fmsmsx158.amr.corp.intel.com (10.18.116.75) by
+ fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 31 Jul 2020 05:28:57 -0700
+Received: from FMSEDG002.ED.cps.intel.com (10.1.192.134) by
+ fmsmsx158.amr.corp.intel.com (10.18.116.75) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 31 Jul 2020 05:28:57 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
+ by edgegateway.intel.com (192.55.55.69) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Fri, 31 Jul 2020 05:28:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L2bMMiDXPYsiKKV0iGiBaNJYi13Piq6YCQxv0pcafpwcTGzDmTYKnDKZ8XVB7IAFn/kURfbuSaiUshyuzgGUtnHQ7OxfuAGVDN9t/5LWSMnqnSo+pcbmcX2YB+S2U38+OWJHl16AfEpht8REDLpmkL7zIFqz0xwAnIyjM6uiFdnFe4Xn+EXqM++Xc1iwM5vyJdsjM3cUkoBx1rDmE7WoTHncELnj6N6I4a6IDxsqku/uqcYD2c6Y+n4aPAHhWO37/vj1DrzhaKzUNNBvgDh7rHfG+Egteyte0ujSQncO4MTt4w4eI6anfI67bxAKVMR2cdw/f3A01z3+Iknw7Crr+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/0pjH/SJ0xfooYs+lJx0kg46sN9GlD2gLHq4CXpbso4=;
+ b=EzXeNfmA37BcWY/9t+nWeGnnXikPA8wbsO2nmi+NlQTW5s6zA3eZFNzG5zVY7PIrNcqJ9Z22fah+jARlAXNZjB0489nFvJxzhbQOU9wBOs4e9wa20+iMuYgwAPqLP+VBTSpQPrqLx5wpRadSqqxweAJJm49kE7TbSJA0atmR3JAvcQ6Tfx29d/EOtFZOtYjKi5DUkaCI7J2PTt/MXgLk8MmUK/Jc5uSSmG8DCtj6xWPGcYXPRnextVtNQYGQpDHjrpAaA+F3qLqMnXMYsSgcBCosgQOXNYJSibx6scGU4aKlg0+qdWeZ5GBHmNvyZLa0S3mx0m3jXflF7odAG1A/zg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/0pjH/SJ0xfooYs+lJx0kg46sN9GlD2gLHq4CXpbso4=;
+ b=Yuu+TKKTSoxzZfCTljQhAqXkHGA6og0sBwgoPn7k+p9b9ar8jGXvMnM08tBTXjJede/MbA24l2mwvdqzYhNHerjxNPKWt81ia1+K/t2L4QMqk/7DqGjAGFeNY7fKKX4WrmhcRb7VNxoMUAkMXAoz57a1GJ0Bu3Mhy2o0tGdyjMQ=
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
+ by DM6PR11MB3785.namprd11.prod.outlook.com (2603:10b6:5:13f::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Fri, 31 Jul
+ 2020 12:28:53 +0000
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f043:4bdc:ef57:1b41]) by DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f043:4bdc:ef57:1b41%5]) with mapi id 15.20.3239.019; Fri, 31 Jul 2020
+ 12:28:53 +0000
+From: "Lu, Brent" <brent.lu@intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>
+Subject: RE: [PATCH 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+Thread-Topic: [PATCH 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+Thread-Index: AQHWZZiWhH0ib4T+aUeOy2BFXbTqlKkemFEAgAErLkCAAH1RAIAAGJyAgAFHf7A=
+Date: Fri, 31 Jul 2020 12:28:53 +0000
+Message-ID: <DM6PR11MB364247C4C6F5B310F3E1E652974E0@DM6PR11MB3642.namprd11.prod.outlook.com>
+References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
+ <1596020585-11517-3-git-send-email-brent.lu@intel.com>
+ <4fe97f63-e552-3b2f-803c-53894b196bfd@linux.intel.com>
+ <DM6PR11MB36421D9A808D401416B72D2D97710@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <f1386a05-8866-9251-c751-21c9109aa35f@linux.intel.com>
+ <s5hy2n1aqn0.wl-tiwai@suse.de>
+In-Reply-To: <s5hy2n1aqn0.wl-tiwai@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [36.230.210.226]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8acd0fd9-ca6b-4be5-2274-08d8354d4972
+x-ms-traffictypediagnostic: DM6PR11MB3785:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB37855D66CF86418D0905E788974E0@DM6PR11MB3785.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eTeQdnGYSEgixG0qF2emqehrZ2GKjVFmdX5jwxTilD5Rcw3Ic4ajramDDVN5Bi0HA6D3cHpkvG/YCOZXFSjqYh0+V8UV2aau/9ZLpR4trsjy6zH9p/5e44xXUXzS3SFlUu3NY+B+lDn8cQ9uzCx1lonU8ooKotFw9h4E63JKFa2U3r1m6x+GsP986xbQJMflfOH+YGsx1hWLGLNlC3mkz6DccdNqk/z8dK0T+AwuSek4DllnyRsLKf/TOcLCf8uEFI7XhZn8nJXK7DlpHv8TjlrzsltMmiHC3Wc64EQxgAUtNxzNv7+taS5iEmrjImDZ
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM6PR11MB3642.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(26005)(33656002)(76116006)(186003)(2906002)(54906003)(66946007)(8676002)(55016002)(558084003)(9686003)(8936002)(5660300002)(86362001)(4326008)(478600001)(52536014)(316002)(66556008)(71200400001)(66476007)(66446008)(7696005)(6506007)(7416002)(64756008)(110136005);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: 104KWf4as863x57Jj4ol0LqNulyEKiXoPNf+0r0i1WGTOgbrnGizmJavGsWSOjyteZ3ZL6PFQhHfGPMsnlgfQ5F4Sb0CXcKdXeSwqn1KOMT2Yi2ehp8teqCamcOAfddMbLUFKh01AARhgHJ8BtrUIo4iEuaAnrcWhOSqDM8rvhSPAgPMgB7m6Up60Y9wDr6TiXl+7ts458Jym/PmxPtBZpd+4YA49sdJnrXugBoSyRezLqQHCTj85YtQTyaLI5iDCd46SCuqJCn6CeUN/do167uVGgznAe5PBYaXr9Pyk3epgmtQ1dNh3+EsnjQuBTEULqcP/ATq2O50lkO7wBk748Iks1UL2KFCGDgdgwqENvMdmHMGZoY2QfTsCgOVZDv4CH9Ffsjg8npNXAqxdrBA2L68UvLE0X2QPLag+scY9wjb+fhuPSzUwADKEoNAyOyPD1sQfXxbU1SyvHKQ3MGToJZlkFNdFq6Tv2sS56hi5cOtK8x1MpxqYwK4QIvz3dgmJKZgbBOg1llFxHL/9sXNCu5LE4Gmxg9JZWWB+6yHwOB9n8ij2ABKDlF/ZwIOITG9s5D8G8ivNrM1EvgrsPFx4Bgde0XflHpexWFHKvq3/keM39LocJHY9bcJLSIOC2A2WRYj8MSNReAt3nSueARiyA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
- Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, zhangn1985@outlook.com,
- linux-amlogic@lists.infradead.org
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8acd0fd9-ca6b-4be5-2274-08d8354d4972
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2020 12:28:53.3216 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OSJv6TuYtVE15VCpdceesGNZ4aVDGbB/pteWxre+43B3j5QQkvqvL2eThsE+HH0D6aHaC9+rRwgeBp90Nxvhfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3785
+X-OriginatorOrg: intel.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jie Yang <yang.jie@linux.intel.com>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Sam McNally <sammc@chromium.org>, Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Stuart <daniel.stuart14@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Yu-Hsuan Hsu <yuhsuan@chromium.org>, Damian van Soelen <dj.vsoelen@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,63 +180,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+>=20
+> If the 1ms alignment is the condition, it can be better with a different
+> hw_params constraint.  We can use
+> snd_pcm_hw_constraint_step() for such a purpose.
+Will fix. Thanks.
 
-On Thu 30 Jul 2020 at 20:52, Mark Brown <broonie@kernel.org> wrote:
-
-> On Thu, Jul 30, 2020 at 11:06:23AM -0500, Pierre-Louis Bossart wrote:
->> On 7/30/20 4:04 AM, Jerome Brunet wrote:
->> > On Wed 29 Jul 2020 at 17:56, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
->> > > On 7/29/20 10:46 AM, Jerome Brunet wrote:
->
->> > > > The flag previously allowed card drivers to disable a stream direction on
->> > > > a link (whether or not such feature is deemed useful).
->
-> Right, and I can see a use case for this if someone has a board that
-> for some reason didn't physically connect one of the directions for some
-> reason - perhaps they were running out of pins or something.  It's not
-> clear if anyone's actually doing that though.
->
->> > > > Forcing the flags to be aligned with DAI caps just make the information
->> > > > the flag carry redundant with DAI caps, breaking a few cards along the way.
->
->> > > > This change drops the added error conditions and restore the initial flag
->> > > > semantics.
->
-> I'm not 100% clear, have we actually found cases where the flags are
-> used or is this something found through inspection and review?
-
-One last thing I'd like to understand. Is this behavior of throwing an
-error going to applied to the non-DPCM case as well ? so at least thing
-are consistent between both cases ?
-
-IOW:
- * An error is now throw if dpcm_capture is set on the link and the CPU
- DAI support playback_only
- * on non-DPCM links, will an error be thrown as well if playback_only
- is not set and the CPU on the link happen to not support capture ?
- 
->
->> >   * It worked for every user of DPCM so a far.
->
->> Not completely true, when Morimoto-san added snd_soc_dai_stream_valid() it
->> exposed tons of cases where the information on direction was not provided in
->> a reliable at the DAI level. I will assert that we are still finding out
->> cases with broken DAI configurations, and as a result we will also find
->> broken dailink configurations. Your picture of DPCM as a perfectly
->> functional system that I broke is a distortion of reality.
->
->> The reality is that we have to work in steps, first make sure all DAIs are
->> properly described, then work on the dailinks and optimize at a later point.
->> we will need warnings to find out what the problem cases are, and move
->> slowly.
->
-> This was all triggered by Morimoto-san's changes like you say.  DPCM has
-> quite a lot of problems in general, here IIRC the issues were that we
-> had multiple different ways of doing similar things which it wasn't
-> quite clear if people were even using.  The intention with the warnings
-> was to remove them one way or another, they're mainly intended to flush
-> out actual active usage of the flags as opposed to redundant usage of
-> them which could be confused/broken.
->
-> This could definitely have been clearer in the changelogs though.
-
+Regards,
+Brent
+>=20
+>=20
+> thanks,
+>=20
+> Takashi
