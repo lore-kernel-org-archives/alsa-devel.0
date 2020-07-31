@@ -2,90 +2,92 @@ Return-Path: <SRS0=4tTe=BK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA41C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 08:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EEC9C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 08:42:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2616E20838
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 08:41:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 25D4A20838
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 08:42:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nYUvCu1I";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kLtktgDT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2616E20838
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZrMrXhYF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MOhgr/rC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25D4A20838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98F8F1686;
-	Fri, 31 Jul 2020 10:40:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98F8F1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id A054E1687;
+	Fri, 31 Jul 2020 10:41:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A054E1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596184900;
-	bh=1pWA9vInJ1hR/hwUHbANhCnxu18DNGtvrheXFFb39MI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nYUvCu1IkBB2dLvj0OBuXNBkznV1YhMkwsK4KXZij0s+DtMdWEdONzvwXR0UQ38k/
-	 lAig6QPAjXbJF4LtqE+kZKThH+l+HISBDJBnnSfSOx8Yw0t4JXUb9Z9k9Hog69uA0N
-	 o9YRLgaSIvoROGq6ZMxzoWHPZ+09McKOcWK7bDsw=
+	s=default; t=1596184953;
+	bh=tMw0DJIzAJa9OgKBFtrCKtOdH/Cys5BM/+daI3o+JzU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZrMrXhYF9oQutVx7HMR3K5MTWHOz32TURv/wGZzNDM7YI7DhKOc+dZ25WJ9pJUgQ0
+	 g5SsRQ3gu/P2DYRmLGwMR+arIE0eq+yD+FvJMQPavnq0K+4F83t7h8pFjqoYY9EQ0a
+	 lAAIapQkOi7e5674xCTCOTCeXxVS/mr3hpVYW0AA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CCFEF8011C;
-	Fri, 31 Jul 2020 10:40:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1A0DF801EB;
+	Fri, 31 Jul 2020 10:40:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98A14F80171; Fri, 31 Jul 2020 10:40:47 +0200 (CEST)
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com
- [IPv6:2607:f8b0:4864:20::1044])
+ id BAA47F801ED; Fri, 31 Jul 2020 10:40:58 +0200 (CEST)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
+ [IPv6:2607:f8b0:4864:20::1043])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B918F8011C
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 10:40:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B918F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C579F801D9
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 10:40:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C579F801D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="kLtktgDT"
-Received: by mail-pj1-x1044.google.com with SMTP id t6so3355475pjr.0
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 01:40:36 -0700 (PDT)
+ header.b="MOhgr/rC"
+Received: by mail-pj1-x1043.google.com with SMTP id k1so6741610pjt.5
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 01:40:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=hLoyOTSzLDQ51ZbDgjh9dBtvJJhP5tr3Wm8F7z1KJp4=;
- b=kLtktgDT7wK6kb+GRIVgYIgjMj1Q9zyL3263W8/hcM8IocBdBKdKdeUWIuG2YcWJuw
- owIX3/G2px/aecdN3/RT5vBPi5W7AXvDXV4aF4lOivG0ZpLsy2bLJW6qhwXCELjewcVU
- 76iWJ4aNwDz09t9sM9bHrlyBWuEtn1gagW/Vg=
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=NIzfJh8T5wa5GwVtEriaAG+RkPfrW2T7ykJIcihGjlM=;
+ b=MOhgr/rC/RSWF73gWEq40/BYQohycUznx2d/6Zk8WrjVGuxsY8FGS/NYO/7RzAdTOt
+ Dpg2irL3d+rb2V7VGdXH/PlJiDZZc24s+CDVG07CgrcRcURH8XCCg3jEkASUj6u8w3Jq
+ EhkS60lWZW4FE7iPvg/Y7hcmxWB5rusNzXHec=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=hLoyOTSzLDQ51ZbDgjh9dBtvJJhP5tr3Wm8F7z1KJp4=;
- b=KEQKheVGhq/HRw5SqKGm8Hay8RXiHRH5FBS/lvt9vPXSmW5CQCgiapT5WSZmmwSuZU
- XrH69rssFW1i2uRb6G496cbtqb0iNq81++xtFuCPxlS/XyXOlvSBtUu45F1JCaqD+wo4
- y+z06kkmmCnUat/oK48ClCEHnqidhkK0l9R91D4eQd0thDR0P37OM3HVowytaGuaVxtq
- V0EQ5tTEJ0LScL7gdmpoTz7PA4Z8RI6O/2a4CJlDlT8GDK9AZfxxI3Dcnx0ALYbPDDCW
- wiQi2T8HEOq4/q2VNohOBq8mgxF1V6L+dUxgk2xGCJTBSs7pb9eof8BpNFnqk98+OgkR
- OAsQ==
-X-Gm-Message-State: AOAM533myWLQhWXcbxxSjv9s1ZCs3gF8MmIfkEQ0d/GgqgXaPTwh+5LH
- XnBRrrERGzbPRvGdT7REhYeYZw==
-X-Google-Smtp-Source: ABdhPJxis69iyu05nHzc4VnRq1YCk+CFnP8XU11HDYI1OHzqsIuE+QhGaGTRXtID4jo9NYYZYlLyAw==
-X-Received: by 2002:a17:90a:a60a:: with SMTP id
- c10mr3247968pjq.117.1596184835298; 
- Fri, 31 Jul 2020 01:40:35 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=NIzfJh8T5wa5GwVtEriaAG+RkPfrW2T7ykJIcihGjlM=;
+ b=rctQ9rPguZESNclX4/aUbpepi2Vghy0WetMa0XGoub+FxT0StvpJANZ64w+a2Foqub
+ KmRtg/IdaHsVBtApatGZoQyXXFeWXQ8bcriyzn6ESmJi0Itno6Uy5WJfYoXaOb0ilDDk
+ uUVb17m/qqqrsx6a7SMbYATDZUfxs13lMktxalY1b0I84t4yVkW/W9GcSr+qj3LU+ZxZ
+ ZAzJVY6v6udh0ZfgLRZo1TnTT29afH/p2/dQb8TJIcDx/4Z0YfYsoEkRn6gv2qID+Hrp
+ kTMpITYb0eWMPFQKWqx6oo7ik5bJch0OF5xbi1W1k5AmPtz+RJt1/W+1JUVRKnGDo03U
+ nXGQ==
+X-Gm-Message-State: AOAM532UDgQb+uOcEVrNZ56TvjY9HrisFHBhfTIXrQ9JKLzHzF5gWGEM
+ r48VAh4u9qs1eo6Dj4KakOo2Sw==
+X-Google-Smtp-Source: ABdhPJyRoMIwdPxNIs97ZW15pfn3HhdNwjkFFIWLN02NWZAUtvGEPnnpMVHcyoFTzdJO0kGOteRhwg==
+X-Received: by 2002:a17:902:aa91:: with SMTP id
+ d17mr1223925plr.27.1596184849385; 
+ Fri, 31 Jul 2020 01:40:49 -0700 (PDT)
 Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
- by smtp.gmail.com with ESMTPSA id x10sm8856411pgp.47.2020.07.31.01.40.30
+ by smtp.gmail.com with ESMTPSA id n25sm9228625pff.51.2020.07.31.01.40.45
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 31 Jul 2020 01:40:34 -0700 (PDT)
+ Fri, 31 Jul 2020 01:40:48 -0700 (PDT)
 From: Cheng-Yi Chiang <cychiang@chromium.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/2] Add documentation and machine driver for SC7180 sound
- card
-Date: Fri, 31 Jul 2020 16:40:21 +0800
-Message-Id: <20200731084023.2678931-1-cychiang@chromium.org>
+Subject: [PATCH v3 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+Date: Fri, 31 Jul 2020 16:40:22 +0800
+Message-Id: <20200731084023.2678931-2-cychiang@chromium.org>
 X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+In-Reply-To: <20200731084023.2678931-1-cychiang@chromium.org>
+References: <20200731084023.2678931-1-cychiang@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Taniya Das <tdas@codeaurora.org>, devicetree@vger.kernel.org,
@@ -113,51 +115,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Note:
-- The machine driver patch depends on LPASS patch series so it is not ready to be merged now.
-  ASoC: qcom: Add support for SC7180 lpass variant https://patchwork.kernel.org/cover/11678133/
-- The machine driver patch is made by the collaboration of
-  Cheng-Yi Chiang <cychiang@chromium.org>
-  Rohit kumar <rohitkr@codeaurora.org>
-  Ajit Pandey <ajitp@codeaurora.org>
-  But Ajit has left codeaurora.
+Add devicetree bindings documentation file for sc7180 sound card.
 
-Changes from v1 to v2:
-- Ducumentation: Addressed all suggestions from Doug.
-- Machine driver:
-  - Fix comment style for license.
-  - Sort includes.
-  - Remove sc7180_snd_hw_params.
-  - Remove sc7180_dai_init and use aux device instead for headset jack registration.
-  - Statically define format for Primary MI2S.
-  - Atomic is not a concern because there is mutex in card to make sure
-    startup and shutdown happen sequentially.
-  - Fix missing return -EINVAL in startup.
-  - Use static sound card.
-  - Use devm_kzalloc to avoid kfree.
-
-Changes from v2 to v3:
-- Ducumentation: Addressed suggestions from Srini.
-- Machine driver:
-  - Reuse qcom_snd_parse_of to parse properties.
-  - Remove playback-only and capture-only.
-  - Misc fixes to address comments.
-
-Thanks for the review!
-Ajit Pandey (1):
-  ASoC: qcom: sc7180: Add machine driver for sound card registration
-
-Cheng-Yi Chiang (1):
-  ASoC: qcom: dt-bindings: Add sc7180 machine bindings
-
- .../bindings/sound/qcom,sc7180.yaml           | 113 ++++++++
- sound/soc/qcom/Kconfig                        |  12 +
- sound/soc/qcom/Makefile                       |   2 +
- sound/soc/qcom/sc7180.c                       | 244 ++++++++++++++++++
- 4 files changed, 371 insertions(+)
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+---
+ .../bindings/sound/qcom,sc7180.yaml           | 113 ++++++++++++++++++
+ 1 file changed, 113 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
- create mode 100644 sound/soc/qcom/sc7180.c
 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+new file mode 100644
+index 000000000000..ce8a5a2d9df9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+@@ -0,0 +1,113 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
++
++maintainers:
++  - Rohit kumar <rohitkr@codeaurora.org>
++  - Cheng-Yi Chiang <cychiang@chromium.org>
++
++description:
++  This binding describes the SC7180 sound card which uses LPASS for audio.
++
++definitions:
++
++  dai:
++    type: object
++    properties:
++      sound-dai:
++        maxItems: 1
++        $ref: /schemas/types.yaml#/definitions/phandle-array
++        description: phandle array of the codec or CPU DAI
++
++    required:
++      - sound-dai
++
++properties:
++  compatible:
++    contains:
++      const: qcom,sc7180-sndcard
++
++  audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source.
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  aux-dev:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: phandle of the codec for headset detection
++
++patternProperties:
++  "^dai-link(@[0-9]+)?$":
++    description:
++      Each subnode represents a dai link. Subnodes of each dai links would be
++      cpu/codec dais.
++
++    type: object
++
++    properties:
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
++      cpu:
++        $ref: "#/definitions/dai"
++
++      codec:
++        $ref: "#/definitions/dai"
++
++    required:
++      - link-name
++      - cpu
++      - codec
++
++    additionalProperties: false
++
++examples:
++
++  - |
++    sound {
++        compatible = "qcom,sc7180-sndcard";
++        model = "sc7180-snd-card";
++
++        audio-routing =
++                    "Headphone Jack", "HPOL",
++                    "Headphone Jack", "HPOR";
++
++        aux-dev = <&alc5682>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dai-link@0 {
++            link-name = "MultiMedia0";
++            cpu {
++                sound-dai = <&lpass_cpu 0>;
++            };
++
++            codec {
++                sound-dai = <&alc5682 0>;
++            };
++        };
++
++        dai-link@1 {
++            link-name = "MultiMedia1";
++            cpu {
++                sound-dai = <&lpass_cpu 1>;
++            };
++
++            codec {
++                sound-dai = <&max98357a>;
++            };
++        };
++    };
 -- 
 2.28.0.163.g6104cc2f0b6-goog
 
