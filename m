@@ -2,88 +2,97 @@ Return-Path: <SRS0=4tTe=BK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AD95C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 17:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A615BC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 18:28:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC52C2083B
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 17:43:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A7DB22BEA
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 18:28:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UxK5iFW6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1Gn+rYBx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC52C2083B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UazbAO6R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A7DB22BEA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 565B215E2;
-	Fri, 31 Jul 2020 19:42:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 565B215E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9BF31657;
+	Fri, 31 Jul 2020 20:27:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9BF31657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596217412;
-	bh=1RBJrByuU1/4YwH7R7c4LoRXyjsSYMzkPBOWevrI01g=;
+	s=default; t=1596220098;
+	bh=0eqxh09ZP94CYeqLKpIF+pTKJVrdYDpmTViNSv/5i6o=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UxK5iFW6aFaMVk8VM/LrzcWm7whUHYA6vOTF6v3NMvCzg1akj3ITHNTSBMIbA5KOn
-	 uM4DNClCJoHEemrXwLmUp1ppgvVkrGFPwGh5j+5PzJV4eUqlAgsF6ncBUDtNpMQhic
-	 y98P2CFdBp0Rk7jBfWvkf8MoBQYyP2F1+ZDIXB4U=
+	b=UazbAO6RWTH1Ll1oJHlG8OuuC0Ejz5LIxPG04yfJTXw8FqP31H/Vc2Yqa7OY2wupl
+	 hZJ2Jl6zxiod1LjvyuMlTI0mwYCMIKbyv7UIyXNYzZSEez0LSwKdQENAMV8nAb81AC
+	 ZNEQd/zsLBkU/UlnXF6DbTkUWaS3T/+Jhf5I4FGE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1CB3F80111;
-	Fri, 31 Jul 2020 19:42:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 586C0F8015C;
+	Fri, 31 Jul 2020 20:27:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B825BF80171; Fri, 31 Jul 2020 19:42:39 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 01E95F80171; Fri, 31 Jul 2020 20:27:27 +0200 (CEST)
+Received: from mail-il1-f194.google.com (mail-il1-f194.google.com
+ [209.85.166.194])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC7E1F8015C
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 19:42:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC7E1F8015C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="1Gn+rYBx"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1620D2083B;
- Fri, 31 Jul 2020 17:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596217348;
- bh=1RBJrByuU1/4YwH7R7c4LoRXyjsSYMzkPBOWevrI01g=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=1Gn+rYBxy/1RR7v0EzwvHkDTLU3XQqh+OPCnvh/csSGj/3+GWe+7hjTF+3qa4xilB
- Xy7aqJY5CtRnyLrJA6QcmvjxrgpO6op0Q2fVH0eaomPAFXnf0nsDUOQwnblR33tvTc
- CoAEdiePSFluw00g8kTPlbfIHXYbOWeXwcp1X1sk=
-Date: Fri, 31 Jul 2020 18:42:07 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: core: restore dpcm flags semantics
-Message-ID: <20200731174207.GC4510@sirena.org.uk>
-References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
- <20200729154639.1983854-1-jbrunet@baylibre.com>
- <2ad13f95-434d-376a-bc38-b209623b461e@linux.intel.com>
- <1jft998jbe.fsf@starbuckisacylon.baylibre.com>
- <936d6e37-0ad0-b0d7-814a-1ace12087746@linux.intel.com>
- <20200730185229.GH5055@sirena.org.uk>
- <1j7duj98wk.fsf@starbuckisacylon.baylibre.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8AB5F8015C
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 20:27:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8AB5F8015C
+Received: by mail-il1-f194.google.com with SMTP id s21so26104330ilk.5
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 11:27:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=oaGd/EIUlumWQy9Pm41SRzZ2KAZopmVPZLx/MEhynr0=;
+ b=GdxCSMnSeCD2U8XUitNUpeyNqjKgPS4O7s+Y1+VqnowVNSyXtNsQRD95AD072mhuv+
+ utaSxWQgql3SJOjN0RrOfw5sRI/zxwMn2hilVCs+TkwKGNpDO/yV6/psd+zanAux9+gz
+ Bx2hSauyRrlczBRIADg/yg1hdr1AcnKT6ZodKP0TNcG5bCOabNazW3UqADZH7hFfIjye
+ ZZTn+PehhxoAy+knTyi61dKdJn88GpIVDLxezNmJSlaeFQ2u14zH6ZbKat1KMHE9JUUC
+ T60jhsIfSeVoD/meIEJxr2JCOvF+QNCdfHHp93sS+gJ7GW7ENElK8x19FhpfASryHjqV
+ wtDA==
+X-Gm-Message-State: AOAM5336jlUX2iv5ThDVeiZmh9zKyMz4NjOKras1K6WbKJsBEoAOuGqq
+ cHx+KB55QanSor7jOfAyFA==
+X-Google-Smtp-Source: ABdhPJwhIJ+PDeIEqoO3CED9uAsxszMYrDBCUOFn0M8IR4v2vZ7/a/swVVxxCF7eIePjl8Q3S2U52Q==
+X-Received: by 2002:a92:660e:: with SMTP id a14mr5080012ilc.262.1596220037143; 
+ Fri, 31 Jul 2020 11:27:17 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+ by smtp.gmail.com with ESMTPSA id u6sm5014967ilk.13.2020.07.31.11.27.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 31 Jul 2020 11:27:16 -0700 (PDT)
+Received: (nullmailer pid 531811 invoked by uid 1000);
+ Fri, 31 Jul 2020 18:27:12 -0000
+Date: Fri, 31 Jul 2020 12:27:12 -0600
+From: Rob Herring <robh@kernel.org>
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v3 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine
+ bindings
+Message-ID: <20200731182712.GA531472@bogus>
+References: <20200731084023.2678931-1-cychiang@chromium.org>
+ <20200731084023.2678931-2-cychiang@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="QRj9sO5tAVLaXnSD"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1j7duj98wk.fsf@starbuckisacylon.baylibre.com>
-X-Cookie: Some optional equipment shown.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
- Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>,
- linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- zhangn1985@outlook.com, linux-amlogic@lists.infradead.org
+In-Reply-To: <20200731084023.2678931-2-cychiang@chromium.org>
+Cc: Taniya Das <tdas@codeaurora.org>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-kernel@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
+ Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+ dianders@chromium.org, tzungbi@chromium.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Andy Gross <agross@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>,
+ dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,41 +108,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 31 Jul 2020 16:40:22 +0800, Cheng-Yi Chiang wrote:
+> Add devicetree bindings documentation file for sc7180 sound card.
+> 
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> ---
+>  .../bindings/sound/qcom,sc7180.yaml           | 113 ++++++++++++++++++
+>  1 file changed, 113 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> 
 
---QRj9sO5tAVLaXnSD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Jul 31, 2020 at 02:16:43PM +0200, Jerome Brunet wrote:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-> One last thing I'd like to understand. Is this behavior of throwing an
-> error going to applied to the non-DPCM case as well ? so at least thing
-> are consistent between both cases ?
+Documentation/devicetree/bindings/sound/qcom,sc7180.example.dts:32.24-41.15: Warning (unit_address_vs_reg): /example-0/sound/dai-link@0: node has a unit name, but no reg or ranges property
+Documentation/devicetree/bindings/sound/qcom,sc7180.example.dts:43.24-52.15: Warning (unit_address_vs_reg): /example-0/sound/dai-link@1: node has a unit name, but no reg or ranges property
 
-> IOW:
->  * An error is now throw if dpcm_capture is set on the link and the CPU
->  DAI support playback_only
 
-We should definitely complain about that.
+See https://patchwork.ozlabs.org/patch/1339316
 
->  * on non-DPCM links, will an error be thrown as well if playback_only
->  is not set and the CPU on the link happen to not support capture ?
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-I think we should move towards not needing to do that for DPCM.
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
---QRj9sO5tAVLaXnSD
-Content-Type: application/pgp-signature; name="signature.asc"
+Please check and re-submit.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8kV+8ACgkQJNaLcl1U
-h9B67Af+MxqJXiRcEr3b1wsfZYNzZAmN8zNYmZH8ubxUHrcXWUMDl5SAjY/+aEMq
-JL+V4yKWh6qgn0fB5NoCNak05vKjZ12E3RpBZu7zN5q620XE3DXC45b+2pv91DCn
-FBVrTazkRYfe2IOp2odw47F5Mfnd4x4yfiTuIgGgolmmC8uXeTIZ5TIUGzrPwKoX
-aZESOyB5mglx21aMK4JqHah0Lo/fzYIxjdejoAG2yClR11CdHKgPxI6JQA6+/FQr
-17Xx+Xd2pd4rhdOIJ91Shgmd5jIyroODzlU3k7PIiNPGeCMP7MlzwUv6ehBOPUGU
-n+e6KyufvWAE7FCqi86jv6GQFhguPQ==
-=9eeM
------END PGP SIGNATURE-----
-
---QRj9sO5tAVLaXnSD--
