@@ -2,81 +2,88 @@ Return-Path: <SRS0=4tTe=BK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD98DC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 20:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 391EFC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 21:31:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D42521744
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 20:43:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B53512087C
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jul 2020 21:31:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lnvElk/1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Im3+k8u+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D42521744
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T6ApAMoC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B53512087C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C67181689;
-	Fri, 31 Jul 2020 22:42:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C67181689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E8741689;
+	Fri, 31 Jul 2020 23:30:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E8741689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596228193;
-	bh=TGDv3Frj4rCMmzqFPlTvoVIycIJIp6yYmbKH/jOE9mc=;
+	s=default; t=1596231100;
+	bh=NHsr3aFIVXcbgVNcABj+122r90mMVIkb6+W2zQXbddw=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lnvElk/1JlfWEzZy4SW/5yPqcSpEVxxmhS/uUFDgdgvUUE5KoIpsj9kTrgv8W25of
-	 PT5Ziak2s1Q2Icwf+eWjQ1wsL7Q9kQOEBd7B8MvU6PxEkp+IjL5b9eel2cp3rLuvXr
-	 MLTVJ2d8a6pf0a4nG2WqEnkkgZ+Pw35uXHk8Bj24=
+	b=T6ApAMoCvX1sOG+10QW+lkp+buyK3dP7HcxBuLX0YDIzchUQJrzBqDEChzJw1N2xr
+	 tNhBQDbn+fkSG7NrAGBZQgGdG2oP3Pcb1UoGuYTpd+Zy7bdx9n2imothNKkTnT8yuv
+	 XfpNZ/l12WJzOSt2rq3IB0nJI6HjJ3fRo9R8hKn8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44183F80161;
-	Fri, 31 Jul 2020 22:42:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE590F80161;
+	Fri, 31 Jul 2020 23:30:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F556F80171; Fri, 31 Jul 2020 22:42:21 +0200 (CEST)
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
- [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 87E9FF80171; Fri, 31 Jul 2020 23:30:47 +0200 (CEST)
+Received: from mail-io1-f66.google.com (mail-io1-f66.google.com
+ [209.85.166.66])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACC3FF8015C
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 22:42:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACC3FF8015C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com
- header.b="Im3+k8u+"
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi
- [81.175.216.236])
- by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB6D353C;
- Fri, 31 Jul 2020 22:42:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
- s=mail; t=1596228136;
- bh=TGDv3Frj4rCMmzqFPlTvoVIycIJIp6yYmbKH/jOE9mc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Im3+k8u+Yxa3c9UDV4VQq4DNQKg69ugyaC0/L5DmB2fFrkduhebVB6KTRG6iVWOXa
- egFJ/d36EO5mvPkd5KwvF3DNugdzJwhUdIkiLFzsp02rX3vkq8SC/KwnGOV1ia4eVw
- Bs2wh5kDTRDxiPEdhX1Rhc3bov2XSPe5p41MPOfk=
-Date: Fri, 31 Jul 2020 23:42:06 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2 0/3] Fix Kconfig dependency issue with DMAENGINES
- selection
-Message-ID: <20200731204206.GC24315@pendragon.ideasonboard.com>
-References: <20200731152433.1297-1-laurent.pinchart@ideasonboard.com>
- <20200731164744.GF12965@vkoul-mobl>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BBF0F80111
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 23:30:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BBF0F80111
+Received: by mail-io1-f66.google.com with SMTP id k23so32995644iom.10
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2020 14:30:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=+1TGdSM7ebRYhzsfJccNqgk5kV9sG3dUDdM4DYu83Fw=;
+ b=cuv6zQxGSYau4GwhyX9MFkB+Moxn/wMaXORx3vnrUWmfmhK4kAvv9yBSC4mJ2/K+mz
+ iSDtmJjxG43iyXKit0bbmyEnx/CsSqjNtYdRquZ/EEMxasIacXBvxBP3eJUXeiI5Etj/
+ ylI26o7QgZ7VJthnIjOuh+ohu9bYsc5aCmzwLGvJjJHN8SHO/OLpR4lKFlgutL77N72i
+ Hu6l9vL8ATFQrMZY7qESxQQN5tCxUcjg2Mf9jPo/plrERh3tbMgATl/Mt3VArOpXn2d1
+ Nrro/jEvqoqaEblB7LuV/++0KFw5kuDBotF/kCFNScQtfC9oHmfGTV9IVAxZDzbIW2rH
+ gpXw==
+X-Gm-Message-State: AOAM533x97LBr6cxifVKQutR5SY66aS09z2Lza/d3znt5UYcCH5cQ6Kv
+ vkocgzOvtaxhvkhdmudF8w==
+X-Google-Smtp-Source: ABdhPJxXeVS0jZueBStQpy+cdWH/c/tpvRGzhw0OjxjNfquqY5ZbETuEj8pXTjXPXY5xHhqTIYPArg==
+X-Received: by 2002:a02:84ac:: with SMTP id f41mr2890486jai.56.1596231030696; 
+ Fri, 31 Jul 2020 14:30:30 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+ by smtp.gmail.com with ESMTPSA id i9sm5682020ile.48.2020.07.31.14.30.28
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 31 Jul 2020 14:30:30 -0700 (PDT)
+Received: (nullmailer pid 827984 invoked by uid 1000);
+ Fri, 31 Jul 2020 21:30:28 -0000
+Date: Fri, 31 Jul 2020 15:30:28 -0600
+From: Rob Herring <robh@kernel.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: sound: add DT bindings for Microchip
+ S/PDIF TX Controller
+Message-ID: <20200731213028.GA824739@bogus>
+References: <20200729101922.3033616-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731164744.GF12965@vkoul-mobl>
-Cc: alsa-devel@alsa-project.org, Hyun Kwon <hyun.kwon@xilinx.com>,
- Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
- dri-devel@lists.freedesktop.org, Michal Simek <michal.simek@xilinx.com>,
- Alexandre Bounine <alex.bou9@gmail.com>, Mark Brown <broonie@kernel.org>,
- dmaengine@vger.kernel.org, Matt Porter <mporter@kernel.crashing.org>
+In-Reply-To: <20200729101922.3033616-1-codrin.ciubotariu@microchip.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ alexandre.belloni@bootlin.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ lgirdwood@gmail.com, ludovic.desroches@microchip.com, broonie@kernel.org,
+ linux-arm-kernel@lists.infradead.org, nicolas.ferre@microchip.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,47 +99,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Vinod,
-
-On Fri, Jul 31, 2020 at 10:17:44PM +0530, Vinod Koul wrote:
-> On 31-07-20, 18:24, Laurent Pinchart wrote:
-> > Hello,
-> > 
-> > This small series fixes a Kconfig dependency issue with the recently
-> > merged Xilixn DPSUB DRM/KMS driver. The fix is in patch 3/3, but
-> > requires a separate fixes in patches 1/3 and 2/3 to avoid circular
-> > dependencies:
-> > 
-> >         drivers/i2c/Kconfig:8:error: recursive dependency detected!
-> >         drivers/i2c/Kconfig:8:  symbol I2C is selected by FB_DDC
-> >         drivers/video/fbdev/Kconfig:63: symbol FB_DDC depends on FB
-> >         drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
-> >         drivers/gpu/drm/Kconfig:80:     symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
-> >         drivers/gpu/drm/Kconfig:74:     symbol DRM_KMS_HELPER is selected by DRM_ZYNQMP_DPSUB
-> >         drivers/gpu/drm/xlnx/Kconfig:1: symbol DRM_ZYNQMP_DPSUB depends on DMA_ENGINE
-> >         drivers/dma/Kconfig:44: symbol DMA_ENGINE depends on DMADEVICES
-> >         drivers/dma/Kconfig:6:  symbol DMADEVICES is selected by SND_SOC_SH4_SIU
-> >         sound/soc/sh/Kconfig:30:        symbol SND_SOC_SH4_SIU is selected by SND_SIU_MIGOR
-> >         sound/soc/sh/Kconfig:60:        symbol SND_SIU_MIGOR depends on I2C
-> >         For a resolution refer to Documentation/kbuild/kconfig-language.rst
-> >         subsection "Kconfig recursive dependency limitations"
-> > 
-> > Due to the DPSUB driver being merged in v5.9, this is a candidate fix
-> > for v5.9 as well. 1/3 and 2/3 can be merged independently, 3/3 depends
-> > on the first two. What's the best course of action, can I merge this all
-> > in a single tree, or should the rapidio and ASoC patches be merged
-> > independently early in the -rc cycle, and the DRM patch later on top ? I
-> > don't expect conflicts (especially in 2/3 and 3/3), so merging the whole
-> > series in one go would be simpler in my opinion.
+On Wed, Jul 29, 2020 at 01:19:21PM +0300, Codrin Ciubotariu wrote:
+> This patch adds DT bindings for the new Microchip S/PDIF TX Controller
+> embedded inside sama7g5 SoCs.
 > 
-> Acked-By: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> ---
+> 
+> Changes in v2:
+>  - replaced https with http
+>  - reworked example, included bindings;
+> 
+>  .../bindings/sound/mchp,spdiftx.yaml          | 80 +++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml b/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
+> new file mode 100644
+> index 000000000000..2b7c27391f0d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/mchp,spdiftx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip S/PDIF Tx Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> +
+> +description:
+> +        The Microchip Sony/Philips Digital Interface Transmitter is a
+> +        serial port compliant with the IEC-60958 standard.
+> +
+> +properties:
+> +  "#sound-dai-cells":
+> +    const: 0
+> +
+> +  compatible:
+> +    oneOf:
+> +      - const: microchip,sama7g5-spdiftx
 
-Thank you.
+No need for 'oneOf' when only 1 entry.
 
-As Mark as queued the sound fix in his for-next branch for v5.9, could
-you queue the dmaengine fix for v5.9 too ?
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Peripheral Bus Clock
+> +      - description: Generic Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pclk
+> +      - const: gclk
+> +
+> +  dmas:
+> +    description: TX DMA Channel
 
--- 
-Regards,
+How many? (maxItems: 1)
 
-Laurent Pinchart
+> +
+> +  dma-names:
+> +    const: tx
+> +
+> +  pinctrl-0: true
+> +
+> +  pinctrl-names:
+> +    const: default
+
+You can drop pinctrl props. They are always allowed.
+
+> +
+> +required:
+> +  - "#sound-dai-cells"
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - dmas
+> +  - dma-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/at91.h>
+> +    #include <dt-bindings/dma/at91.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    spdiftx@e1618000 {
+> +        #sound-dai-cells = <0>;
+> +        compatible = "microchip,sama7g5-spdiftx";
+> +        reg = <0xe1618000 0x4000>;
+> +        interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
+> +        dmas = <&dma0 AT91_XDMAC_DT_PERID(50)>;
+> +        dma-names = "tx";
+> +        clocks = <&pmc PMC_TYPE_PERIPHERAL 85>, <&pmc PMC_TYPE_GCK 85>;
+> +        clock-names = "pclk", "gclk";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pinctrl_spdiftx_default>;
+> +    };
+> -- 
+> 2.25.1
+> 
