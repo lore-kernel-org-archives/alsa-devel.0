@@ -2,100 +2,70 @@ Return-Path: <SRS0=KW3j=BN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC0B7C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 05:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23CE1C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 06:13:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 369F1206E2
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 05:41:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9F47C20672
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 06:13:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GfabT20C";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K186TuiU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 369F1206E2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UScFn/6i"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F47C20672
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3882B1657;
-	Mon,  3 Aug 2020 07:41:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3882B1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id B09814E;
+	Mon,  3 Aug 2020 08:12:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B09814E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596433314;
-	bh=ASwIW8Y65N21eQHyWXKJPpkl/HLpoVkJnsfB0pxQHnU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1596435218;
+	bh=zFvfD0+Of9uTfwTg7QjafsSX7hHK5ajaMffbH182s4s=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GfabT20CIMWD+N30286jzetApkxPhcgxrfwfdryBXPAI4o7g8KvMjA4zSplcmClnf
-	 Yi48iX1GtP0T/G+2xwYqNqfIt8MLwKGpVES9cdpD/EFI9GmqLtL4ldwYR2HVm1o3vX
-	 y2FAW+WFQvmvJAJZGmPKsBUOdDY6qWyURr4J2ccg=
+	b=UScFn/6iMVfXVehUDpJKAPAzzrLjMpqCEAbDV/+nGMP0oeHZkIGIVmPob5eYPws8b
+	 /IF1+EVLuMWTYqIIApNvzXq4ICIIZZMQBas7gixpQrPGmoZ9HsFBlwf0KjkVbRLoAD
+	 V18EyFGXuNk5r6LJbnTNHaWvlxjQWEU+WyGvyCP8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0CA7F801F7;
-	Mon,  3 Aug 2020 07:41:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D109F80148;
+	Mon,  3 Aug 2020 08:12:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BF07F80218; Mon,  3 Aug 2020 07:41:01 +0200 (CEST)
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C1963F80218; Mon,  3 Aug 2020 08:12:46 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A69C1F80148
- for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 07:40:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A69C1F80148
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="K186TuiU"
-Received: by mail-pf1-x444.google.com with SMTP id j20so17575458pfe.5
- for <alsa-devel@alsa-project.org>; Sun, 02 Aug 2020 22:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=FhbpD1GOOiuI1h2KLYGhIc+Q4nrSHyP4h81W7KBJFqA=;
- b=K186TuiUMKQPdqAxCXhqtmALF9pZVrrem7PSJKHN2TVp6X/DGU7ghf9/BJMgBlUhh9
- jS5/KukDzLHwp2Tdh4NSv/i8naoGe9A3lUIZtoYE8DaWtRKIWGLC17qgWRsBuZ3JbkXD
- oI8zW7cC4xb3BZI+vs/9AmJvJY9r0ii6/sp00L/jDAKIi60G5674s+5a07y3LVR+IYv+
- deXVnc3aHNRNX7yQY4FFTNiSAUxBcTIDHNsWd3W3SkG+OiQQgnX8qlAqr3PJu9juma9t
- ZOSyPHOQaDxAdPbVnDMa/p63b0pwNeNG3aWsDaeHmhNXIVHXLUvlwT1LaFoiZtLXcwQy
- s+PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=FhbpD1GOOiuI1h2KLYGhIc+Q4nrSHyP4h81W7KBJFqA=;
- b=fB2dd3eT7vpmA+4GjGKCJQyhcf+vzGJ2b5Vlstdy8O/GfuFrAsGs4mrz/49cukcNtf
- f0voE+uHDHok09VUh4OComLkwfTN6JOGrHzSjWKPPLPp1j2+QpjwCbNhU1c6OcFZ3NNY
- CwowBuFWHRoCVYWJ2yKTmypoSiaJ4bMh2AEwqkbkpKXQSlyAu97XAI4tTfr4mroLqtqc
- YFHWzBrCHzI7t6dzvP5k/ScNLRJBbFMD85lDDPdmHy5CMmyrg+I4bbbEwsQep08tzy1f
- KS1ZNypjUR9+O64c3G5eDLkPKlJuuvRH4jCjIeU0tx8xxbjoZe+8aUf6+P+Mg4Y6jOhb
- mBHw==
-X-Gm-Message-State: AOAM533YJCDIOlZjyAwDGOk16bR+83qutY8z4mt3HGrmYUPz5BANazfF
- /9lv0GSZ18Zs574xeOM8p8g=
-X-Google-Smtp-Source: ABdhPJwtNZAtl8+czzRAcH8w3sZ9OYQlR+w7v7GG79nlmxqjy27pa7NblOV/FHvTJ6hTl+lyzxlnOg==
-X-Received: by 2002:a63:444b:: with SMTP id t11mr13955435pgk.134.1596433249969; 
- Sun, 02 Aug 2020 22:40:49 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id m190sm16926096pfm.89.2020.08.02.22.40.48
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Sun, 02 Aug 2020 22:40:49 -0700 (PDT)
-Date: Sun, 2 Aug 2020 22:40:37 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Clean code for synchronize mode
-Message-ID: <20200803054037.GA1056@Asurada-Nvidia>
-References: <1596424674-32127-1-git-send-email-shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596424674-32127-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
- broonie@kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAF22F80148
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 08:12:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAF22F80148
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 67953ABE2;
+ Mon,  3 Aug 2020 06:12:54 +0000 (UTC)
+Date: Mon, 03 Aug 2020 08:12:38 +0200
+Message-ID: <s5hh7tk6yw9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: [PATCH 1/3] ALSA: hda/ca0132 - Fix ZxR Headphone gain control get
+ value.
+In-Reply-To: <20200803002928.8638-1-conmanx360@gmail.com>
+References: <20200803002928.8638-1-conmanx360@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Geoffrey Allott <geoffrey@allott.email>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?UTF-8?B?TWljaGE=?= =?UTF-8?B?xYIgTWlyb3PFgmF3?= <mirq-linux@rere.qmqm.pl>,
+ =?UTF-8?B?UGF3ZcWC?= Rekowski <p.rekowski@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,45 +81,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Aug 03, 2020 at 11:17:54AM +0800, Shengjiu Wang wrote:
-> TX synchronous with RX: The RMR is no need to be changed when
-> Tx is enabled, the other configuration in hw_params() is enough for
+On Mon, 03 Aug 2020 02:29:25 +0200,
+Connor McAdams wrote:
+> 
+> When the ZxR headphone gain control was added, the ca0132_switch_get
+> function was not updated, which meant that the changes to the control
+> state were not saved when entering/exiting alsamixer.
+> 
+> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 
-Probably you should explain why RMR can be removed, like what
-it really does so as to make it clear that there's no such a
-relationship between RMR and clock generating.
+Applied, thanks.
 
-Anyway, this is against the warning comments in the driver:
-	/*
-	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
-	 * generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
-	 * RCR5(TCR5) and RMR(TMR) for playback(capture), or there will be sync
-	 * error.
-	 */
 
-So would need to update it.
-
-> clock generation. The TCSR.TE is no need to enabled when only RX
-> is enabled.
-
-You are correct if there's only RX running without TX joining.
-However, that's something we can't guarantee. Then we'd enable
-TE after RE is enabled, which is against what RM recommends:
-
-# From 54.3.3.1 Synchronous mode in IMX6SXRM
-# If the receiver bit clock and frame sync are to be used by
-# both the transmitter and receiver, it is recommended that
-# the receiver is the last enabled and the first disabled.
-
-I remember I did this "ugly" design by strictly following what
-RM says. If hardware team has updated the RM or removed this
-limitation, please quote in the commit logs.
-
-> +		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
-> +			regmap_update_bits(sai->regmap, FSL_SAI_xCSR((!tx), ofs),
-> +					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
-> +		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
-> +			regmap_update_bits(sai->regmap, FSL_SAI_xCSR((!tx), ofs),
-> +					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
-
-Two identical regmap_update_bits calls -- both on !tx (RX?)
+Takashi
