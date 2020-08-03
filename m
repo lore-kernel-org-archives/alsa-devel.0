@@ -2,93 +2,97 @@ Return-Path: <SRS0=KW3j=BN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D50A1C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 11:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A1D3C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 11:59:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6015D2076C
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 11:56:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6C362076C
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 11:59:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WESqs2EY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfeTdm/1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6015D2076C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bkw2ChsY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uXTgwroY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6C362076C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85CD0950;
-	Mon,  3 Aug 2020 13:55:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85CD0950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A3831657;
+	Mon,  3 Aug 2020 13:59:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A3831657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596455806;
-	bh=OUpY1jbei1vfyE44090MOuweMYbVPr0kiyoLzO1Mai8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WESqs2EYon58/XaeQ/IZaWodniCPTF8sAvEchHHmJTVUepu3rmPAiOXGeUnfLp86Q
-	 ke1Bzokj3IXGu1frij95K9S2uVUxG5PkzmICTJ58CJPq/fSzCkwIszJJu3u8It0MMq
-	 YznMzd38q+6A947ObQuvaQ3Ld0DuL9fJK+PY4ahI=
+	s=default; t=1596455992;
+	bh=swGGTo+bHvK/rt142wGfznO9IEgVPLIKNyOWYDUHy50=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bkw2ChsYNycrfKJcFYqsdoNyOck0ZHQkybNfMD+Rsc54Ta5f+ThmHc9LoX8bWFVDM
+	 qg3zvNkp7Q5sma9yY23tbKtm3as81YhlHILZFFvOGq9J91bhfkt6Z2QRTZDqE5kg3n
+	 uLBciJLQ68SgrHDf2y/g29sZW9oQh5t8DCyW2Tfo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E33BF801F7;
-	Mon,  3 Aug 2020 13:55:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED096F801F7;
+	Mon,  3 Aug 2020 13:59:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14242F80218; Mon,  3 Aug 2020 13:55:53 +0200 (CEST)
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com
- [IPv6:2607:f8b0:4864:20::f44])
+ id 74D58F80218; Mon,  3 Aug 2020 13:58:59 +0200 (CEST)
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com
+ [IPv6:2a00:1450:4864:20::144])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23808F800BD
- for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 13:55:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23808F800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CF0FF800BD
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 13:58:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CF0FF800BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JfeTdm/1"
-Received: by mail-qv1-xf44.google.com with SMTP id o2so17124971qvk.6
- for <alsa-devel@alsa-project.org>; Mon, 03 Aug 2020 04:55:49 -0700 (PDT)
+ header.b="uXTgwroY"
+Received: by mail-lf1-x144.google.com with SMTP id s9so20334103lfs.4
+ for <alsa-devel@alsa-project.org>; Mon, 03 Aug 2020 04:58:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=5vBkDKoACkQ2A0d3jhkAsa0pWmFtHWlj6+CEzAIFgtA=;
- b=JfeTdm/1dLwMa6PupMeE+b6AYFoXFeAAaSehUc7g/ZDKppjAZmNzYUeS+Dx+H3MrD9
- lFlZeRG/iFaDBK2huglUjGvEOKQyB5EkVcTogiSUT1r9BKpm5HcBBhtiXuRVBf5qaBg6
- xlDUScWe8Fz9Ze1fcIP1KBY67jDFrzLx+vXRlk+v1+gyD1tmtJVVgFMtDjG3kmep5j4Z
- uz1SYkO/S6acJP5bbwqJ2XeSIcpuxD+eRlZAHPxjhfgoxXPN4AXSsgzYiaRx+u8mN1kB
- FZ4Nb+/+banLKukV4alr0y6fmRWkisSwGngpxqEdWXwjLWX4x3J5nNlT9pa1uWJUgGIv
- aFPw==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=KvnlsttOP//2ODg8mN3tFkG+IukS91oGcszjnX8nUmE=;
+ b=uXTgwroY4nemVJflAL7WFDGRNR0a0IJKvE/ClN+HA+FoF2FCuo3/islDqlqVTyeH5D
+ 8Dt2QZ9DoHpWsSlJGR97SC0gmfOZ8jDEnk0JkQAZH0NCJ3bXzNRXWxLeF5qHIqgmhOj5
+ cePGNxol6e4lyZmdSDWTc/Sb/Bvb//TZgap8GBVROD+RPBqjzCtMt6+J5hBe+nhT0No9
+ KDIOhYtHgm2Rf+EtaKn0H7DWmwN4nE0Xv+VXd7hhl+GM3VAj0kL8Jffbh1D0HcKZj9O0
+ Y/mfIbZSZDhKaip3O+Y3Ki0GCphu7zt+ePRZkCpKh6VjcqubB9uOqJg8mfXhH+yOt+Pa
+ 4xAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=5vBkDKoACkQ2A0d3jhkAsa0pWmFtHWlj6+CEzAIFgtA=;
- b=Mzs1lv9U9uwneFWxzOChR3DfxldQufCpxAiquRlDa7MvHKUSrvgsQ9FC6VLDNMA6Nf
- z6bRWB1YlJ5Xx2nKRG6VEzK1EGBWxYqsUwQLG4KSZjAQr/ZjsjqQJ7XJ4um9KiQRbsa6
- 6KoxT6ZAtaJ9bNkFBFuX0mlRoFaLBkJEeAHHCYHrnqvAatLUvBDAy2KIF2cqx9GgteFb
- Y14GXGh/8MOvfM/5C36Su5qWHskOd9UHjJZZZJv3qPToTo45JzbrTDsakB+mnx514L5y
- rCf+cAwc8+uI6yilP0BEHhUJLq6KTRgI7WuT05RmbeUvBLLgAFbBZx4dJav8sOD13AZ0
- ww5g==
-X-Gm-Message-State: AOAM530Aprvs1l6yQ1Vh89Qcy3joPcO3dmxFcWqpBKoXg/tEXwGkmVWD
- iue+VdgbEjKQ1vaa9AZXrK0=
-X-Google-Smtp-Source: ABdhPJzrckX4DiRjP8XdEFcXk6cBiATHM21g0f5ME3ouRUmxTw+30jOhw10IVtB/DL0W+amF/ucD8A==
-X-Received: by 2002:a0c:da07:: with SMTP id x7mr16600215qvj.66.1596455747674; 
- Mon, 03 Aug 2020 04:55:47 -0700 (PDT)
-Received: from localhost.localdomain ([177.194.72.74])
- by smtp.gmail.com with ESMTPSA id n6sm19114344qkh.74.2020.08.03.04.55.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 03 Aug 2020 04:55:46 -0700 (PDT)
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=KvnlsttOP//2ODg8mN3tFkG+IukS91oGcszjnX8nUmE=;
+ b=BaJqu9RU7TG+FpqaqyF2ZeOJUARqpgCLR6gKQxHXyVjv5dHs1jPi9YSgoDP8zb0SiV
+ tRv5vatbpdUL2hgIjjbLiTkJmQlg0jfF+Guy++9YB1Oq8DpfENVOHegKk5cCVJtiwi3p
+ 9YbE0ChsqbIQR3j+Kp+WOR5E1k7rmX0Cj9gpKCQnrNsnIyuA547aQQ3YoAyJaLO2BZN6
+ ohhFaxcuahLXWIfFfiF0swF/cMC4VxVMHkM41nev8HLPZGUZWvb2MDUXhCg8TXKHSSbo
+ lqUS2XBQJeRKJ/m744X09gxcpREdGezYDscH6CzMuHUwoBwNhWsgRgLrWoFQhYMlCZ26
+ f3vA==
+X-Gm-Message-State: AOAM530CiJ1WaVGHpew8at4BRmUudLgxMj2tyTgsH/yQgxioNdY2Za9Z
+ cNNEYZV4Z+p4hz2C9RAWsV1ycpcNl9btzYJNVgc=
+X-Google-Smtp-Source: ABdhPJyRFSBrs6xHljo7z6SRDkqm2EvdA1xdCD4OQaJp79PjllwpDp7YKmPGJP5OD1k+P50zSfu2kF9oa9mllBOpbXY=
+X-Received: by 2002:a05:6512:281:: with SMTP id
+ j1mr8384648lfp.214.1596455928551; 
+ Mon, 03 Aug 2020 04:58:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200717135959.19212-1-festevam@gmail.com>
+ <CAA+D8AM8EKowXs_0nyNKMa0odyEAF=Sgu8y2n48pGFnEbE0Mpg@mail.gmail.com>
+ <20200803105122.GC4502@sirena.org.uk>
+In-Reply-To: <20200803105122.GC4502@sirena.org.uk>
 From: Fabio Estevam <festevam@gmail.com>
-To: broonie@kernel.org
-Subject: [PATCH] ASoC: wm8962: Do not remove ADDITIONAL_CONTROL_4 from
- readable register list
-Date: Mon,  3 Aug 2020 08:52:33 -0300
-Message-Id: <20200803115233.19034-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
-Cc: Fabio Estevam <festevam@gmail.com>, shengjiu.wang@nxp.com,
- ckeepax@opensource.cirrus.com, alsa-devel@alsa-project.org
+Date: Mon, 3 Aug 2020 08:58:37 -0300
+Message-ID: <CAOMZO5BCuyzXZkHtKJ5oOtjTqgVthqBFruWtMvnhALTkjucfow@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: wm8962: Do not access WM8962_GPIO_BASE
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,43 +108,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Removing ADDITIONAL_CONTROL_4 from the list of readable registers cause
-audio distortion.
+Hi Mark,
 
-This change was sent as a comment below the --- line when submitting
-commit 658bb297e393 ("ASoC: wm8962: Do not access WM8962_GPIO_BASE"), so
-it was not supposed to get merged.
+On Mon, Aug 3, 2020 at 7:51 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Aug 03, 2020 at 10:07:06AM +0800, Shengjiu Wang wrote:
+>
+> > WM8962_ADDITIONAL_CONTROL_4 should not be removed
+> > from the readable registers,  after this change, there is distortion
+> > on output sound. but this patch has been merged.
+>
+> If there's an issue please submit an incremental patch fixing this.
 
-Keep WM8962_ADDITIONAL_CONTROL_4 inside wm8962_readable_register() to
-fix the regression.
+I have just sent a fix.
 
-Fixes: 658bb297e393 ("ASoC: wm8962: Do not access WM8962_GPIO_BASE")
-Reported-by: Shengjiu Wang <shengjiu.wang@gmail.com>
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
- sound/soc/codecs/wm8962.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The patch I submitted originally did not touch the
+WM8962_ADDITIONAL_CONTROL_4 register:
+https://www.spinics.net/lists/alsa-devel/msg112549.html
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 317916cb4e27..0623a2251084 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -151,7 +151,6 @@ static const struct reg_default wm8962_reg[] = {
- 	{ 40, 0x0000 },   /* R40    - SPKOUTL volume */
- 	{ 41, 0x0000 },   /* R41    - SPKOUTR volume */
- 
--	{ 48, 0x0000 },   /* R48    - Additional control(4) */
- 	{ 49, 0x0010 },   /* R49    - Class D Control 1 */
- 	{ 51, 0x0003 },   /* R51    - Class D Control 2 */
- 
-@@ -842,6 +841,7 @@ static bool wm8962_readable_register(struct device *dev, unsigned int reg)
- 	case WM8962_SPKOUTL_VOLUME:
- 	case WM8962_SPKOUTR_VOLUME:
- 	case WM8962_THERMAL_SHUTDOWN_STATUS:
-+	case WM8962_ADDITIONAL_CONTROL_4:
- 	case WM8962_CLASS_D_CONTROL_1:
- 	case WM8962_CLASS_D_CONTROL_2:
- 	case WM8962_CLOCKING_4:
--- 
-2.17.1
+The part that touched this register was below the --- line and it was
+just a comment, not supposed to get merged.
 
+Maybe this confused git. Sorry about that.
