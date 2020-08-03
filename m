@@ -1,97 +1,106 @@
-Return-Path: <SRS0=sz3D=BM=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=KW3j=BN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D42AC433E0
-	for <alsa-devel@archiver.kernel.org>; Sun,  2 Aug 2020 17:51:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A18CC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 00:30:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A259420738
-	for <alsa-devel@archiver.kernel.org>; Sun,  2 Aug 2020 17:51:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDD442070A
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 00:30:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nUZUkH/q";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b="Ggu77o7/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b="HHsUxdaO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A259420738
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l2yrsaTS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZnPYnbh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDD442070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15F0A839;
-	Sun,  2 Aug 2020 19:51:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15F0A839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 915D315E2;
+	Mon,  3 Aug 2020 02:29:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 915D315E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596390713;
-	bh=Fap6mDs2FFmWo3/3V/YY056tGbS9sDLVb/TztDMbfz8=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1596414637;
+	bh=0R/h9u46Tj5hYVXR64MDrJkicSzQD68C8mUa5PZa0uI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nUZUkH/qtCQXI4wVgm7H9ZU7SKAgzUjGZ7OVK+Me33hw26uUWBX2gAeaa36w40/Pf
-	 WO5CwzQ6pN/ES/cpmbSqmePTXlcRySZBJpRAOB+asuYjql8PMAOjAypL+YLciuTHzs
-	 1p+NXqnAhkkHjR6q0oXOG6bwSVzGNdjchohM4wl0=
+	b=l2yrsaTSpwLPrxFnNQOfKU0Z0zDi5Q9JbCq7xFI1nJgqoOWO+2dxoUZc98MfmdZ5i
+	 zPx1FgyLiqVXjgnFmfY7OI71CnYGfmZqbGI0SqI0giyRi/40RUwC6BEQVpkllD7QYw
+	 ZbysqqtK5HmW+mIgN98hmf4ZyOfmvsPGdWOxl9oE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97E91F8014C;
-	Sun,  2 Aug 2020 19:51:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30340F80141;
+	Mon,  3 Aug 2020 02:29:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D8B0F80150; Sun,  2 Aug 2020 19:51:00 +0200 (CEST)
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 82D53F8015A; Mon,  3 Aug 2020 02:29:44 +0200 (CEST)
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
+ [IPv6:2607:f8b0:4864:20::743])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1685F8011C
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2020 19:50:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1685F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F0AAF80141
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 02:29:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F0AAF80141
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="Ggu77o7/"; 
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="HHsUxdaO"
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 14756A1F79870;
- Sun,  2 Aug 2020 19:50:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1596390655; bh=Fap6mDs2FFmWo3/3V/YY056tGbS9sDLVb/TztDMbfz8=;
- h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
- b=Ggu77o7/Gwlf/2EFn/qEqGS96CisigYHeQj/6B2dOfBi7eFNH2dlgsNFuWJlSvWid
- EB3IAXelLEUhu+SQlHRcyJS4+2qDlEvrvaDziXaAKumu2vD6ltlDlQNEJsUaoj53do
- aG8BkLiMS6ggo5g1gIPqmElG0OjBDLNv1r2CDV2U=
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id ZRg8H1Jb1NEV; Sun,  2 Aug 2020 19:50:49 +0200 (CEST)
-Received: from [192.168.105.151] (ip28.insite.cz [81.0.237.28])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id F04CAA1F30493;
- Sun,  2 Aug 2020 19:50:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1596390649; bh=Fap6mDs2FFmWo3/3V/YY056tGbS9sDLVb/TztDMbfz8=;
- h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
- b=HHsUxdaO9YeKXcxkQNe25ZSemjnt4dGGFs9vU7lXLm39eCM+5UT7mSgmGGNGo4iOX
- iknCpoo4IDSsm5fPlwgkxeCu80LlAmTAascgHfiAXWvZr0TcwW3tb4LR17Abyxf7So
- jqEqXUUNz9Vjuja4BB9AJZtGwiqis8U7tYPb0q/8=
-Subject: Re: pcm_meter.c issue at s16_update
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-To: Takashi Iwai <tiwai@suse.de>
-References: <f56d6a67-014a-e562-c253-830c0ec03717@ivitera.com>
- <9957e124-be4b-cdc9-ffad-579b631455df@ivitera.com>
- <s5hd04ffu4m.wl-tiwai@suse.de>
- <fd493c4d-797e-d76d-771d-7c7483ffdea7@ivitera.com>
- <1cd5de43-5f67-78d3-f5e1-bbbaa8856873@ivitera.com>
-Message-ID: <9bad013a-0306-90e4-adc5-547ebcac1b55@ivitera.com>
-Date: Sun, 2 Aug 2020 19:50:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="kZnPYnbh"
+Received: by mail-qk1-x743.google.com with SMTP id j187so33772254qke.11
+ for <alsa-devel@alsa-project.org>; Sun, 02 Aug 2020 17:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=wbEGrIvZnD3c5e9YLVsP9l3cXHWv/XnjtutRuXBXv2Y=;
+ b=kZnPYnbhyn4b0RUOJvuHY816xQkFRnbusqzvbEsBIywM9J6tMQozU+auwAFsgXDvkW
+ Z1wwjHkEnsQ+4AsmYEntMY5HsJOlgTr9m0ydGIyzN75pVl8+pb1vrEqS8UXVQ2Z1mylf
+ ouYo5TDRvGc756JR+azL7yqDiducTqb09NP0iMusiEvjxXJiWULAqu0IUHlj9uPgvUvM
+ 4ydmKFZVIa7dx1Mjo1SUSaf60MlZr6XdsNGUmdDnKNaD5egsl4CFQHFBPA9XFzaK963j
+ nD/hLuKov+eaD1QySN9G6TophreFTJYELd5bTMbwl3I0VrV0I8sxI1lsD0MSsvB+YXof
+ hU/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=wbEGrIvZnD3c5e9YLVsP9l3cXHWv/XnjtutRuXBXv2Y=;
+ b=lq214kOxkyeyHC3j4v1qlJv2Sq8cGW1AUshcPlEStjfpLjBg3FS/JxSKoYIyzVh17p
+ Sx/9Qisz3HQ4Px0GR/taYkw83oQknsZz1h1o0wAlrrWfXO9sgfMgwM2ST7dwthcSPGYe
+ IuUI7qFi+OE4HOE/HQHMgpEXA0KQgxAAx5DIUvrWlnD7pvxWr7mk2xlTRUwXZcLoYKF0
+ Azi21lj1ICTiYBRyj0sY9bDEhzi4oTud+dFiLOIEp/0wSKFEYL6SuE9q8gM/bIj9pzvA
+ w+MEFk/EHqyT/ecV6xjSaLRxuvVEDSuqwSh14DGywrZdw4SkjTd/zijx+huWji3M9Uk8
+ SkjQ==
+X-Gm-Message-State: AOAM532L6xY3JHndk7T5VMiArffAQsXCiB2XKR4pT2MaK8Bzo8CkfsnL
+ llCgqd3MZXk1pIseC0Lv6x4=
+X-Google-Smtp-Source: ABdhPJxT/YVhLXF97DW1ZpYjJmuQrmDDCsUH8rSWcK8mvU3A1R/Ju0jerejM4AM0S2Rt2IdmmQ8Mpw==
+X-Received: by 2002:a05:620a:4d9:: with SMTP id
+ 25mr13611430qks.411.1596414577758; 
+ Sun, 02 Aug 2020 17:29:37 -0700 (PDT)
+Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
+ [71.65.111.223])
+ by smtp.googlemail.com with ESMTPSA id e23sm18261614qto.15.2020.08.02.17.29.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 02 Aug 2020 17:29:37 -0700 (PDT)
+From: Connor McAdams <conmanx360@gmail.com>
+To: 
+Subject: [PATCH 2/3] ALSA: hda/ca0132 - Add new quirk ID for Recon3D.
+Date: Sun,  2 Aug 2020 20:29:26 -0400
+Message-Id: <20200803002928.8638-2-conmanx360@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200803002928.8638-1-conmanx360@gmail.com>
+References: <20200803002928.8638-1-conmanx360@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1cd5de43-5f67-78d3-f5e1-bbbaa8856873@ivitera.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Geoffrey Allott <geoffrey@allott.email>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>,
+ =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+ conmanx360@gmail.com, =?UTF-8?q?Pawe=C5=82=20Rekowski?= <p.rekowski@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,89 +116,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add a new quirk ID for the Recon3D, as tested by me.
 
-Dne 28. 07. 20 v 20:54 Pavel Hofman napsal(a):
-> 
-> Dne 28. 07. 20 v 20:04 Pavel Hofman napsal(a):
->> Dne 28. 07. 20 v 19:04 Takashi Iwai napsal(a):
->>> Would adding atomic_add(&meter->reset, 1) in snd_pcm_meter_reset()
->>> help?
->>>
->> Unfortunately not.
->>
->> s16_reset is called correctly, setting s16->old = meter->now;  But at
->> that time meter->now is still 22751, setting s16->old to the same value.
->>
->> s16_update 1: meter->now 22751, s16->old 22751, size 0
->>
->> However, in the next update call meter->now comes from the freshly
->> started application pointer:
->>
->> s16_update 1: meter->now 839, s16->old 22751, size -21912
->>
->>
->> Of course this helps:
->>
->> -       if (size < 0)
->> -               size += spcm->boundary;
->> +       if (size < 0) {
->> +               size = meter->now;
->> +               s16->old = 0;
->> +       }
->>
->> But I understand this is not a solution because:
->>
->> * it will not work at reaching spcm->boundary (after thousands of hours?)
->> * it will cause the same problem when the stream is rewound (which is
->> the problem now too) - size will equal to large meter->now (length from
->> the beginning of the stream minus the rewound = large number).
->>
-> 
-> IMHO there are two cases of the [application pointer + delay] drop
-> compared to the previous run:
-> 
-> * stream start, rewinding => s16->old = meter->now; size =0, i.e.
-> skipping the samples to show
-> * wrapping at spcm->boundary => size += spcm->boundary, i.e. showing the
-> wrapped samples
-> 
-> Optionally the second case could be handled just like the first case by
-> resetting s16->old, assuming the boundary wrap occurs very infrequently.
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The following patch is tested to work OK, no CPU peaks and no meter
-output glitches when the size < 0 condition occurs:
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 2cbe01d59c16..40fa9d82ef95 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -1182,6 +1182,7 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1458, 0xA036, "Gigabyte GA-Z170X-Gaming 7", QUIRK_R3DI),
+ 	SND_PCI_QUIRK(0x3842, 0x1038, "EVGA X99 Classified", QUIRK_R3DI),
+ 	SND_PCI_QUIRK(0x1102, 0x0013, "Recon3D", QUIRK_R3D),
++	SND_PCI_QUIRK(0x1102, 0x0018, "Recon3D", QUIRK_R3D),
+ 	SND_PCI_QUIRK(0x1102, 0x0051, "Sound Blaster AE-5", QUIRK_AE5),
+ 	{}
+ };
+-- 
+2.20.1
 
-diff --git a/src/pcm/pcm_meter.c b/src/pcm/pcm_meter.c
-index 20b41876..48df5945 100644
---- a/src/pcm/pcm_meter.c
-+++ b/src/pcm/pcm_meter.c
-@@ -1098,8 +1098,15 @@ static void s16_update(snd_pcm_scope_t *scope)
-        snd_pcm_sframes_t size;
-        snd_pcm_uframes_t offset;
-        size = meter->now - s16->old;
--       if (size < 0)
--               size += spcm->boundary;
-+       if (size < 0) {
-+               /**
-+                * Application pointer adjusted for delay (meter->now)
-has dropped compared
-+                * to the previous update cycle. Either spcm->boundary
-wraparound, pcm rewinding,
-+                * or pcm restart without s16->old properly reset.
-+                * In any case the safest solution is skipping this
-conversion cycle.
-+                */
-+               size = 0;
-+       }
-        offset = s16->old % meter->buf_size;
-        while (size > 0) {
-                snd_pcm_uframes_t frames = size;
-
-
-
-Please will you accept this (workaround) bugfix? If so, I would send a
-proper patch.
-
-Thanks a lot,
-
-Pavel.
