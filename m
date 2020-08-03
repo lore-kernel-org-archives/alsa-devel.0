@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D597C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 14:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B1BC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 14:21:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A02720678
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 14:20:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8B8C20825
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 14:21:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o+0cauJt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A02720678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QRUYvdiv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8B8C20825
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14F241663;
-	Mon,  3 Aug 2020 16:19:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14F241663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 352381672;
+	Mon,  3 Aug 2020 16:20:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 352381672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596464443;
-	bh=VJPI7XRLltjBW4LXoNG7pzyn34oFaqsLy12l4I5LyR0=;
+	s=default; t=1596464491;
+	bh=jQ9SFkuYlcaQXnncjz+aL5FX/4a2x3KeBaBnOiobPG8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o+0cauJt7vg/wCPSuZ5zWVZ3zHpWa4oFf1Ag8SVkRFT6qBn/Z6+f9xWrX2uhq0gTy
-	 eGphhVOD5RL9CQ6+Tg3tRQgA6F8FpXZDPcYTm6BvfbujMJwjT+Fz8CSRs5q/VEOW8K
-	 GwVn2HPX3sphMxuJ7s+uuDZh+SIxXI7KjaI+sFbs=
+	b=QRUYvdivYrmCSiJj/MhfzOYiYH6K9J9GddTl/QXerP9eqBQ6IQAajZv/EiVoR/GMX
+	 79gHjMhMF2ttx7tyXK9ngamKZ3UiqfYwAJRY7EXHBGJmKz7hXdgN2psnOLhGpsNait
+	 NCKQS/uwooPSda55XwltK1yksv3eNGKVDcEJRKEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72988F802BE;
-	Mon,  3 Aug 2020 16:19:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0AB7F80218;
+	Mon,  3 Aug 2020 16:19:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FB07F80148; Mon,  3 Aug 2020 16:18:58 +0200 (CEST)
+ id 125F3F802C4; Mon,  3 Aug 2020 16:19:05 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31508F80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id 399A3F80218
  for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 16:18:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31508F80148
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 399A3F80218
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C6B2BB66E;
+ by mx2.suse.de (Postfix) with ESMTP id B9921B609;
  Mon,  3 Aug 2020 14:19:06 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/5] ASoC: tegra: tegra210_admaif: Fix compile warning with
+Subject: [PATCH 1/5] ASoC: tegra: tegra186_dspk: Fix compile warning with
  CONFIG_PM=n
-Date: Mon,  3 Aug 2020 16:18:47 +0200
-Message-Id: <20200803141850.23713-3-tiwai@suse.de>
+Date: Mon,  3 Aug 2020 16:18:46 +0200
+Message-Id: <20200803141850.23713-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200803141850.23713-1-tiwai@suse.de>
 References: <20200803141850.23713-1-tiwai@suse.de>
@@ -76,37 +76,37 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Fix trivial compile warnings wrt unused functions by adding
 __maybe_unused prefix:
-  sound/soc/tegra/tegra210_admaif.c:232:12: warning: 'tegra_admaif_runtime_resume' defined but not used [-Wunused-function]
-  sound/soc/tegra/tegra210_ahub.c:567:12: warning: 'tegra_ahub_runtime_suspend' defined but not used [-Wunused-function]
+  sound/soc/tegra/tegra186_dspk.c:74:12: warning: 'tegra186_dspk_runtime_suspend' defined but not used [-Wunused-function]
+  sound/soc/tegra/tegra186_dspk.c:86:12: warning: 'tegra186_dspk_runtime_resume' defined but not used [-Wunused-function]
 
-Fixes: f74028e159bb ("ASoC: tegra: Add Tegra210 based ADMAIF driver")
+Fixes: 327ef6470266 ("ASoC: tegra: Add Tegra186 based DSPK driver")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/tegra/tegra210_admaif.c | 4 ++--
+ sound/soc/tegra/tegra186_dspk.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra210_admaif.c b/sound/soc/tegra/tegra210_admaif.c
-index 4894e8e6ee7f..1268046b345d 100644
---- a/sound/soc/tegra/tegra210_admaif.c
-+++ b/sound/soc/tegra/tegra210_admaif.c
-@@ -219,7 +219,7 @@ static const struct regmap_config tegra186_admaif_regmap_config = {
- 	.cache_type		= REGCACHE_FLAT,
- };
- 
--static int tegra_admaif_runtime_suspend(struct device *dev)
-+static int __maybe_unused tegra_admaif_runtime_suspend(struct device *dev)
- {
- 	struct tegra_admaif *admaif = dev_get_drvdata(dev);
- 
-@@ -229,7 +229,7 @@ static int tegra_admaif_runtime_suspend(struct device *dev)
+diff --git a/sound/soc/tegra/tegra186_dspk.c b/sound/soc/tegra/tegra186_dspk.c
+index fe7117171a0e..0cbe31e2c7e9 100644
+--- a/sound/soc/tegra/tegra186_dspk.c
++++ b/sound/soc/tegra/tegra186_dspk.c
+@@ -71,7 +71,7 @@ static int tegra186_dspk_put_control(struct snd_kcontrol *kcontrol,
  	return 0;
  }
  
--static int tegra_admaif_runtime_resume(struct device *dev)
-+static int __maybe_unused tegra_admaif_runtime_resume(struct device *dev)
+-static int tegra186_dspk_runtime_suspend(struct device *dev)
++static int __maybe_unused tegra186_dspk_runtime_suspend(struct device *dev)
  {
- 	struct tegra_admaif *admaif = dev_get_drvdata(dev);
+ 	struct tegra186_dspk *dspk = dev_get_drvdata(dev);
  
+@@ -83,7 +83,7 @@ static int tegra186_dspk_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int tegra186_dspk_runtime_resume(struct device *dev)
++static int __maybe_unused tegra186_dspk_runtime_resume(struct device *dev)
+ {
+ 	struct tegra186_dspk *dspk = dev_get_drvdata(dev);
+ 	int err;
 -- 
 2.16.4
 
