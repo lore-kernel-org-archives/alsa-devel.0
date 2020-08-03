@@ -2,71 +2,68 @@ Return-Path: <SRS0=KW3j=BN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1359BC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 06:15:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F5A1C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 06:17:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE74B20672
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 06:15:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0FB822B42
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 06:17:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Sr1RqrJN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE74B20672
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z7i1wtJz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0FB822B42
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E34F21682;
-	Mon,  3 Aug 2020 08:14:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E34F21682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D8D01657;
+	Mon,  3 Aug 2020 08:16:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D8D01657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596435322;
-	bh=w/hBtfV9uPlme7jxoxqaB89jSzgvh7c5FOaEkiGnF8s=;
+	s=default; t=1596435442;
+	bh=Rz47aRq2Ono/01JUZ1/gZ+uJP7GgaNmCOY5beW2e4LM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sr1RqrJNe45R3P1iS3YzZMd4GygB0wsptu7/qTPcoZglWyuSoYaRLWpVTxst9EiM5
-	 jPsfNRiuHFK+EYWwutXxdmInv4iF5+kCynOD1oVGNCXKbUFARoIRrB4CRUQbMXnuOM
-	 wYtgIKtyczCPo/5yLq7H61K9UTEF7y2/1S1fO4lI=
+	b=Z7i1wtJz7noIhHa6ppCQxHmaXTeYZs8f0PeaEaQBAQuJ2HAQrjczCFBuRJNTFfcq4
+	 ESR25dV4Hye12ANYZ0NLSDBKt3EmA4w4KzMJSBwN0eOS5d9euG6mzUB9HeI45HlkpW
+	 2AFFFDWrJ/8KBSDYwBe2ywjEIl1wZkw9IVvEY49k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B67DF802DB;
-	Mon,  3 Aug 2020 08:13:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD351F801F7;
+	Mon,  3 Aug 2020 08:16:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A85FF802DC; Mon,  3 Aug 2020 08:13:02 +0200 (CEST)
+ id B3F39F80218; Mon,  3 Aug 2020 08:16:30 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AC29F802D2
- for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 08:13:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AC29F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 067D6F80148
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 08:16:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 067D6F80148
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C2BBFB597;
- Mon,  3 Aug 2020 06:13:14 +0000 (UTC)
-Date: Mon, 03 Aug 2020 08:12:59 +0200
-Message-ID: <s5heeoo6yvo.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 64D6BAF38;
+ Mon,  3 Aug 2020 06:16:35 +0000 (UTC)
+Date: Mon, 03 Aug 2020 08:16:20 +0200
+Message-ID: <s5hd0486yq3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH 3/3] ALSA: hda/ca0132 - Fix AE-5 microphone selection
- commands.
-In-Reply-To: <20200803002928.8638-3-conmanx360@gmail.com>
-References: <20200803002928.8638-1-conmanx360@gmail.com>
- <20200803002928.8638-3-conmanx360@gmail.com>
+To: "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Subject: Re: =?UTF-8?B?5Zue5aSNOg==?= [PATCH] ALSA: seq: KASAN:
+ use-after-free Read in delete_and_unsubscribe_port
+In-Reply-To: <BYAPR11MB2632746756E574DE66BAC427FF4D0@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20200801062403.8005-1-qiang.zhang@windriver.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
- =?UTF-8?B?UGF3ZcWC?= Rekowski <p.rekowski@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "tiwai@suse.com" <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +79,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 03 Aug 2020 02:29:27 +0200,
-Connor McAdams wrote:
+On Mon, 03 Aug 2020 03:35:05 +0200,
+Zhang, Qiang wrote:
 > 
-> The ca0113 command had the wrong group_id, 0x48 when it should've been
-> 0x30. The front microphone selection should now work.
+> >Thanks for the patch.  But I'm afraid that this change would break the
+> >existing behavior and might have a bad side-effect.
 > 
-> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+> >It's likely the same issue as reported in another syzkaller report
+> >("KASAN: invalid-free in snd_seq_port_disconnect"), and Hillf's patch
+> >below should covert this as well.  Could you check whether it works?
+> 
+> yes It's should same issue, add mutex lock in odev_ioctl, ensure serialization.
+> however, it should not be necessary to mutually exclusive with open and close.
 
-Applied, thanks.
+That's a big-hammer approach indeed, but it should be more reasonable
+in this case.  It makes the patch shorter and simpler, while the OSS
+sequencer is an ancient interface that wasn't considered much for the
+concurrency, and this might also cover the case where the access to
+another sequencer object that is being to be closed.
 
+So, it'd be great if you can confirm that the patch actually works.
+Then we can brush up and merge it for 5.9-rc1.
+
+
+thanks,
 
 Takashi
+
+> 
+> 
+> 
+> >thanks,
+> 
+> >Takashi
+> 
+> >---
+> >--- a/sound/core/seq/oss/seq_oss.c
+> >+++ b/sound/core/seq/oss/seq_oss.c
+> >@@ -167,11 +167,17 @@ odev_write(struct file *file, const char
+>  >static long
+>  >odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>  >{
+> >+       long rc;
+> >      struct seq_oss_devinfo *dp;
+> >+
+> >+       mutex_lock(&register_mutex);
+> >       dp = file->private_data;
+> >        if (snd_BUG_ON(!dp))
+> >-               return -ENXIO;
+> >-       return snd_seq_oss_ioctl(dp, cmd, arg);
+> >+               rc = -ENXIO;
+> >+       else
+> >+               rc = snd_seq_oss_ioctl(dp, cmd, arg);
+> >+       mutex_unlock(&register_mutex);
+> >+       return rc;
+>  >}
+> 
+>  >#ifdef CONFIG_COMPAT
