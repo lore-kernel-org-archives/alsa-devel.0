@@ -2,60 +2,74 @@ Return-Path: <SRS0=KW3j=BN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A68C1C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 14:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88AC3C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 15:53:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5963C206D7
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 14:47:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0F1C02072A
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2020 15:53:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RWrXb2Qo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5963C206D7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kbOqRQ0N";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tnud3Ozh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F1C02072A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9E1C827;
-	Mon,  3 Aug 2020 16:46:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9E1C827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AB521657;
+	Mon,  3 Aug 2020 17:52:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AB521657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596466052;
-	bh=vrUL6SNJm9bMwyWsTxm9pHDMyyuF5mgM0bMnxH5O1lg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RWrXb2QoHGw4j3OZSU8MjOFADEbN1uicIYcREsk4LahHqfNumOIIALnIHnL2mD019
-	 4OY+7RXLfSb7Etfy+CyQz2SMOY5GDXKBqa/gvPvhLH7CXaYWDLf7+lkU7X3d070B6i
-	 r1Qp6y15XEcaL6z40AjsV0UIU0QVUMwVt+ort35w=
+	s=default; t=1596470026;
+	bh=0iWsV1WaTVwN8U1EJ20zgze+6oCHd3om09hk1PDSxwI=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kbOqRQ0NLHvjnkn6ZU8R9qTknmw3OM1nQHLVHFjxDf2fkPefGJIvjJVrypdxEPkSs
+	 gLHecjykozFQ74RaUL4wK4EVpUk526L03QF6DZ1Z1vmSmEOR1mmhuF+wVVe7RBp7aR
+	 dc0f3I10wFiYgPf1KBybpmWNuDvEa5KYggSc9j7s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E6EFF801F7;
-	Mon,  3 Aug 2020 16:46:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D480EF80218;
+	Mon,  3 Aug 2020 17:52:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC7BEF80218; Mon,  3 Aug 2020 16:46:41 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 3ABE0F80234; Mon,  3 Aug 2020 17:52:54 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07CE4F80148
- for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 16:46:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07CE4F80148
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 09BCEAC24;
- Mon,  3 Aug 2020 14:46:47 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: fsl: Fix unused variable warning
-Date: Mon,  3 Aug 2020 16:46:30 +0200
-Message-Id: <20200803144630.9615-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2221F80148
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2020 17:52:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2221F80148
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Tnud3Ozh"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B1FE22076C;
+ Mon,  3 Aug 2020 15:52:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1596469966;
+ bh=0iWsV1WaTVwN8U1EJ20zgze+6oCHd3om09hk1PDSxwI=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=Tnud3OzherBkJe6Zh1v+vPIuyIH17i0o5KbccCus9tmdoxBBDl8N1b/uZDs0VxtMO
+ kx8YygsBhW6QjhFHbTgFUULr+vAI0I/LbcI6AwQbM2gzJiyZUh3lIY2CIfiProDSqQ
+ qty8KxocOsTV+8kT4yvKrcgDqM9MP6AVrrdQeZN4=
+Date: Mon, 03 Aug 2020 16:52:26 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org,
+ Vijendar.Mukunda@amd.com
+In-Reply-To: <20200730123138.5659-1-hui.wang@canonical.com>
+References: <20200730123138.5659-1-hui.wang@canonical.com>
+Subject: Re: [PATCH v2] ASoC: amd: renoir: restore two more registers during
+ resume
+Message-Id: <159646994088.2524.17974008545850176515.b4-ty@kernel.org>
+Cc: stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,30 +85,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The variable rtd was left unused in psc_dma_free(), even unnoticed
-during conversion to a new style:
-  sound/soc/fsl/mpc5200_dma.c:342:30: warning: unused variable 'rtd' [-Wunused-variable]
+On Thu, 30 Jul 2020 20:31:38 +0800, Hui Wang wrote:
+> Recently we found an issue about the suspend and resume. If dmic is
+> recording the sound, and we run suspend and resume, after the resume,
+> the dmic can't work well anymore. we need to close the app and reopen
+> the app, then the dmic could record the sound again.
+> 
+> For example, we run "arecord -D hw:CARD=acp,DEV=0 -f S32_LE -c 2
+> -r 48000 test.wav", then suspend and resume, after the system resume
+> back, we speak to the dmic. then stop the arecord, use aplay to play
+> the test.wav, we could hear the sound recorded after resume is weird,
+> it is not what we speak to the dmic.
+> 
+> [...]
 
-Drop the superfluous one.
+Applied to
 
-Fixes: 6d1048bc1152 ("ASoC: fsl: mpc5200_dma: remove snd_pcm_ops")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/fsl/mpc5200_dma.c | 1 -
- 1 file changed, 1 deletion(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index 9e4f66b6b92b..231984882176 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -339,7 +339,6 @@ static int psc_dma_new(struct snd_soc_component *component,
- static void psc_dma_free(struct snd_soc_component *component,
- 			 struct snd_pcm *pcm)
- {
--	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
- 	struct snd_pcm_substream *substream;
- 	int stream;
- 
--- 
-2.16.4
+Thanks!
 
+[1/1] ASoC: amd: renoir: restore two more registers during resume
+      commit: ccff7bd468d5e0595176656a051ef67c01f01968
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
