@@ -2,92 +2,82 @@ Return-Path: <SRS0=lfZM=BO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66264C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 03:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA007C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 03:24:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B92C20738
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 03:01:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C2FF2068F
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 03:24:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z9zE1xhn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E6lz/F0l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B92C20738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VIzjRQnd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sBAiU3Zc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C2FF2068F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63CFC165E;
-	Tue,  4 Aug 2020 05:00:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63CFC165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE7D086F;
+	Tue,  4 Aug 2020 05:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE7D086F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596510081;
-	bh=D5lAMx7J1cBhP7BsuDoBhHY4PANx5bkrpU9XjqqhpR4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1596511465;
+	bh=vF+m1Rymu+Y6G0SRXtgCZcpEIH5NA0KAfQOMACPq3RQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z9zE1xhnZ64p3dds8nR6/pFf1V67A0VT47ys4Q8WHIWSNPeUPK/9PnirCiCF3xM2k
-	 e2XYu3Q9nt5IGGkx7PUVpAGzs5LaaigSqaX+/r5Rfg0xkmfiRndL60sm6qABXjbFAx
-	 pb4WG3mew2rQuoo/ulUXLnYyXs/LcarqYVxwrdSM=
+	b=VIzjRQndZ6UQxCeVTaOdC4fmkgMbR8MMvTHBU6k3II8Oqyn8HthRx3JBKKxcuuaHz
+	 qvVI+YSBCix9/sQOKAWkhrVFjm5Z0h8mhssHLWGAhd6B/Bd2XJPA2cf9NIw+/XSBiO
+	 T49PO25jqHyPtavEE6IybMz8Sdv994QfV3kwohmM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEB24F8014C;
-	Tue,  4 Aug 2020 05:00:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64B3DF8014C;
+	Tue,  4 Aug 2020 05:23:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78DF3F80150; Tue,  4 Aug 2020 05:00:28 +0200 (CEST)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
+ id 2155AF80150; Tue,  4 Aug 2020 05:23:33 +0200 (CEST)
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
+ [IPv6:2607:f8b0:4864:20::844])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 935FFF800B7
- for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2020 05:00:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 935FFF800B7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B8A7F80148
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2020 05:23:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B8A7F80148
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="E6lz/F0l"
-Received: by mail-pj1-x1043.google.com with SMTP id kr4so1212580pjb.2
- for <alsa-devel@alsa-project.org>; Mon, 03 Aug 2020 20:00:20 -0700 (PDT)
+ header.b="sBAiU3Zc"
+Received: by mail-qt1-x844.google.com with SMTP id c12so20916922qtn.9
+ for <alsa-devel@alsa-project.org>; Mon, 03 Aug 2020 20:23:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=I/S5vrlNulwp45H+XxtQvmflrkKxTEGHdqIBJtU71UM=;
- b=E6lz/F0loOMWpzwzL9EL5uI8uRE19tRQP8x66a03pEQA0uuyi7toqSi6AoaweZG9K5
- kdGBp5YQODii2KyuK6QSITM5ArS23MuRPv9wtCeM+iFwogJdPooAtuBAD3kl7rBkul3Z
- R574Ut7X2gu4Fp4ggfuY4Tp19hbBgM/cyON+33LrsuHrhR+DMqGp+4VaFCINEnqz63ZH
- SU+QivAajBxArpmeh+oDTzNtjVD6xiliQbWJhcg1lb1tGoBPXM4m1lMUKH4lk3a7Um20
- bqFef/sVT2SphtvqJRmrZQ/S1K9XhN5acH4havK7QeGCXf7JFUlZS1upKs7BOrgz7HLI
- yqYA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=OJVhQMYihY+NvN1RkvZ0SjRkXEzhAUPHpJk8gf7XSoA=;
+ b=sBAiU3ZcXSjalUW9WrVeJ2OfbjDdEBGSBgTOtZUWwMJCUVV26vPbx2WTiLEtTnrOUT
+ shPiIFjVpACXcoivs0KjZmrWiOLNzwML1Ua7WyV2bXsLGbXyFGwl3qz4RuP12Wdb9DOE
+ dKiGggDR9kXJm7iUS+MP1QMO9VJDHGsJS41dEwTvyJISNEH4xxIWI9H+HdgyKWV4vIBE
+ fHvzhBIS4YyFjhsqig4PoC5pjKEQH55GpIp4IsM95gp4jes59+bnfD9CrHpZyvEMFY54
+ sY588EVvT9VAkEUKYZfaVCZhcLNToWXlS1U0fxuFHjQXNiy3eVcIOeTQaARbbo2q6oFJ
+ ITxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=I/S5vrlNulwp45H+XxtQvmflrkKxTEGHdqIBJtU71UM=;
- b=JwxRopcauvWR8uXEdUMDJoivnRb/TZolIVeff67juPZVcCIlKbAylWEsmMS1f7+pSc
- xWVPHFLhl/v+GokKlzQTObS0nolcaNTUuM5p7nl3ml9gx28gbRHus/U/Pf4kgCzMouKk
- lMbjTV8OIaNh61GeORfBRf6aM5NPqUVCZTf5OK6xgxoJWxxbvu4LdxRe4yqY+9lf+T/H
- /rmxcEnRKtAv1hVy9YxhYgqwiA2XN47pcoFP5lKnFEM2xoXlgTTKOMk2d+Fm6IIlXhvZ
- heiwAQ9lnP7WlxwvIpg8Vlg2PuslwA8IXoqU8xq6VhnMg8nckzYXbvBVpd4WrsTxVGUe
- IXNg==
-X-Gm-Message-State: AOAM530XIXnxcrAzTiBLjtZaS7DwVBF3lWJF2xaUnRAzQqRBocL5OTLH
- NqjDlewDRpDNlMeGk8JQxq8=
-X-Google-Smtp-Source: ABdhPJx1+9OQ1P10b47ZvUn/LDad5t2VFaOqWhE2dXRFv7b+mWMz8VgTzGFprojAaDIAxuyGHT5M3Q==
-X-Received: by 2002:a17:90b:3652:: with SMTP id
- nh18mr2298790pjb.30.1596510017980; 
- Mon, 03 Aug 2020 20:00:17 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id j142sm21055148pfd.100.2020.08.03.20.00.17
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 03 Aug 2020 20:00:17 -0700 (PDT)
-Date: Mon, 3 Aug 2020 20:00:05 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Clean code for synchronize mode
-Message-ID: <20200804030004.GA27028@Asurada-Nvidia>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=OJVhQMYihY+NvN1RkvZ0SjRkXEzhAUPHpJk8gf7XSoA=;
+ b=ZphiQ2WI7MDCT/XSk0GoPB3EHFDfiHPQ0pJwiYdFHguSpBTqhCO0t/aRSPTCB+wTRh
+ yt7UK72C9ac9TJy3rcCUjcAC2UlDysHLZ58zw8TOc5Xq/inr4ssMrpfCHCq3i182/eyN
+ N2RMX7N72zX4ZmHab4XCl+clE0RCLYEDrv7JnZZpizT2Ys/CS67CEXvuFhu+gG33XCs2
+ iJ79pdstyjBsfjuFe/GSS6vc266YGGuhVMQo+MrwL5hRGh18jOXNyw7pO/9vTJmOxobM
+ i4LLC0q8VayMy8joQWt0gVId/Uxq3Q3eS7Dxi9iId6qOWp0EmiGQlcZ+9+Q66X/FLA7k
+ fKSQ==
+X-Gm-Message-State: AOAM533bz6KtRwlyEmyBDYYUIfcQY8ZAQW3AtaW5fAhKIeo0PSBmWu2v
+ 6PvuP3wei5Duq/lPM/ARDONCneZvpyplLcWvCkE=
+X-Google-Smtp-Source: ABdhPJzlDtQ693Xz7R9IlMrE4fi0XcKTYMO+46NJJ0pRzPdLUk0ADOBBGZM2zpDBY1o9xKlUGQ3OoQgvUqPJju9vHJo=
+X-Received: by 2002:aed:2946:: with SMTP id s64mr19963873qtd.204.1596511405886; 
+ Mon, 03 Aug 2020 20:23:25 -0700 (PDT)
+MIME-Version: 1.0
 References: <1596424674-32127-1-git-send-email-shengjiu.wang@nxp.com>
  <20200803054037.GA1056@Asurada-Nvidia>
  <CAA+D8AOGF44UUq=P1S-M5TUwDUaOnqVmHJKPDBM9DAzt1nVzmQ@mail.gmail.com>
@@ -95,11 +85,14 @@ References: <1596424674-32127-1-git-send-email-shengjiu.wang@nxp.com>
  <CAA+D8ANQxnvR2bOyHVRs5h2NJhMeVh4gjLPknaz7aQ86MtL0sQ@mail.gmail.com>
  <20200804021114.GA15390@Asurada-Nvidia>
  <CAA+D8ANagfMXPAkK4-vBDY9rZMukVUXs8FfBCHS0avXt57pekA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA+D8ANagfMXPAkK4-vBDY9rZMukVUXs8FfBCHS0avXt57pekA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+ <20200804030004.GA27028@Asurada-Nvidia>
+In-Reply-To: <20200804030004.GA27028@Asurada-Nvidia>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Tue, 4 Aug 2020 11:23:14 +0800
+Message-ID: <CAA+D8ANuLQuUO+VsABjt2t1ccK+LGayq13d6EEcV18=4KNaC+w@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Clean code for synchronize mode
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>,
  Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
  Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
@@ -120,66 +113,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Aug 04, 2020 at 10:35:12AM +0800, Shengjiu Wang wrote:
-> On Tue, Aug 4, 2020 at 10:11 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> >
-> > On Tue, Aug 04, 2020 at 09:39:44AM +0800, Shengjiu Wang wrote:
-> > > On Tue, Aug 4, 2020 at 5:57 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> > > >
-> > > > On Mon, Aug 03, 2020 at 04:04:23PM +0800, Shengjiu Wang wrote:
-> > > >
-> > > > > > > clock generation. The TCSR.TE is no need to enabled when only RX
-> > > > > > > is enabled.
-> > > > > >
-> > > > > > You are correct if there's only RX running without TX joining.
-> > > > > > However, that's something we can't guarantee. Then we'd enable
-> > > > > > TE after RE is enabled, which is against what RM recommends:
-> > > > > >
-> > > > > > # From 54.3.3.1 Synchronous mode in IMX6SXRM
-> > > > > > # If the receiver bit clock and frame sync are to be used by
-> > > > > > # both the transmitter and receiver, it is recommended that
-> > > > > > # the receiver is the last enabled and the first disabled.
-> > > > > >
-> > > > > > I remember I did this "ugly" design by strictly following what
-> > > > > > RM says. If hardware team has updated the RM or removed this
-> > > > > > limitation, please quote in the commit logs.
-> > > > >
-> > > > > There is no change in RM and same recommandation.
-> > > > >
-> > > > > My change does not violate the RM. The direction which generates
-> > > > > the clock is still last enabled.
-> > > >
-> > > > Using Tx syncing with Rx clock for example,
-> > > > T1: arecord (non-stop) => set RE
-> > > > T2: aplay => set TE then RE (but RE is already set at T1)
-> > > >
-> > > > Anything that I am missing?
+On Tue, Aug 4, 2020 at 11:00 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> On Tue, Aug 04, 2020 at 10:35:12AM +0800, Shengjiu Wang wrote:
+> > On Tue, Aug 4, 2020 at 10:11 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 > > >
-> > > This is a good example.
-> > > We have used this change locally for a long time, so I think it is
-> > > safe to do this change, a little different with the recommandation.
+> > > On Tue, Aug 04, 2020 at 09:39:44AM +0800, Shengjiu Wang wrote:
+> > > > On Tue, Aug 4, 2020 at 5:57 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Aug 03, 2020 at 04:04:23PM +0800, Shengjiu Wang wrote:
+> > > > >
+> > > > > > > > clock generation. The TCSR.TE is no need to enabled when only RX
+> > > > > > > > is enabled.
+> > > > > > >
+> > > > > > > You are correct if there's only RX running without TX joining.
+> > > > > > > However, that's something we can't guarantee. Then we'd enable
+> > > > > > > TE after RE is enabled, which is against what RM recommends:
+> > > > > > >
+> > > > > > > # From 54.3.3.1 Synchronous mode in IMX6SXRM
+> > > > > > > # If the receiver bit clock and frame sync are to be used by
+> > > > > > > # both the transmitter and receiver, it is recommended that
+> > > > > > > # the receiver is the last enabled and the first disabled.
+> > > > > > >
+> > > > > > > I remember I did this "ugly" design by strictly following what
+> > > > > > > RM says. If hardware team has updated the RM or removed this
+> > > > > > > limitation, please quote in the commit logs.
+> > > > > >
+> > > > > > There is no change in RM and same recommandation.
+> > > > > >
+> > > > > > My change does not violate the RM. The direction which generates
+> > > > > > the clock is still last enabled.
+> > > > >
+> > > > > Using Tx syncing with Rx clock for example,
+> > > > > T1: arecord (non-stop) => set RE
+> > > > > T2: aplay => set TE then RE (but RE is already set at T1)
+> > > > >
+> > > > > Anything that I am missing?
+> > > >
+> > > > This is a good example.
+> > > > We have used this change locally for a long time, so I think it is
+> > > > safe to do this change, a little different with the recommandation.
+> > >
+> > > Any reason for we have to go against the recommendation?
 > >
-> > Any reason for we have to go against the recommendation?
-> 
-> Previous code will enable TE and RE  together even for asynchronous
-> mode.
-> And for recommendation, previous code just consider the RX sync with
-> TX, but still violates the recommendation for TX sync with RX case.
-> So at least this new change is some kind of improvement.
+> > Previous code will enable TE and RE  together even for asynchronous
+> > mode.
+> > And for recommendation, previous code just consider the RX sync with
+> > TX, but still violates the recommendation for TX sync with RX case.
+> > So at least this new change is some kind of improvement.
+>
+> Okay. Let's change it then. Please make sure to update/remove
+> those old comments in the trigger(). And it's probably better
+> to mention that what we do now is a bit different from RM:
+>         /*
+>          * Enable the opposite direction for synchronous mode
+>          * 1. Tx sync with Rx: only set RE for Rx; set TE & RE for Tx
+>          * 2. Rx sync with Tx: only set TE for Tx; set RE & TE for Rx
+>          *
+>          * RM recommends to enable RE after TE for case 1 and to enable
+>          * TE after RE for case 2, but we here may not always guarantee
+>          * that happens: "arecord 1.wav; aplay 2.wav" in case 1 enables
+>          * TE after RE, which is against what RM recommends but should
+>          * be safe to do, judging by years of testing results.
+>          */
 
-Okay. Let's change it then. Please make sure to update/remove
-those old comments in the trigger(). And it's probably better
-to mention that what we do now is a bit different from RM:
-	/*
-	 * Enable the opposite direction for synchronous mode
-	 * 1. Tx sync with Rx: only set RE for Rx; set TE & RE for Tx
-	 * 2. Rx sync with Tx: only set TE for Tx; set RE & TE for Rx
-	 *
-	 * RM recommends to enable RE after TE for case 1 and to enable
-	 * TE after RE for case 2, but we here may not always guarantee
-	 * that happens: "arecord 1.wav; aplay 2.wav" in case 1 enables
-	 * TE after RE, which is against what RM recommends but should
-	 * be safe to do, judging by years of testing results.
-	 */
+Thank you for the agreement.
 
-Btw, do we need similar change for TRIGGER_STOP?
+>
+> Btw, do we need similar change for TRIGGER_STOP?
+
+This is a good question. It is better to do change for STOP,
+but I am afraid that there is no much test to guarantee the result.
+
+best regards
+wang shengjiu
