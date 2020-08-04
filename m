@@ -2,103 +2,67 @@ Return-Path: <SRS0=lfZM=BO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E65C6C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 15:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2790DC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 15:59:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A9FF207FC
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 15:37:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE86F208A9
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 15:59:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hCkcXA4l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A9FF207FC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MVbTMHIk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE86F208A9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE91D165E;
-	Tue,  4 Aug 2020 17:36:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE91D165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EBAD844;
+	Tue,  4 Aug 2020 17:59:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EBAD844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596555441;
-	bh=baQdIACpFgTosn3b8omAUf5wZxdvnmgVQzp1OPoL9Kc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hCkcXA4lljPv9xmK6LtXvypnNzPoPAOllIloPdRt6ZEh1ARazQEU3VbtpiroALD9C
-	 cVIMlwnEsEbf47mfdDWlzET/xvY0gavccOJ1A+kDRnRNBrBlKp3ZwjYaIyuuAbTl19
-	 q46vEfloK+SbwRN+sX3Y3dA6zs8z1Yc4Y88wfYMI=
+	s=default; t=1596556791;
+	bh=U9coy98fLpcPeE5265R70U9Aix5jb9H0+iD5YTKHSGM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MVbTMHIks7KMEz9/YcbiS5YLgWPqXigbjv0q6HUGPMAs4a0KtyN6+I8GmeZxTLI45
+	 //A7+BENy0sRoJWbT7T+cAC1n9ypvCFUcM+1BLw/DITxdhfuMWnanKmSP1+eYch4HE
+	 fzzvgbH4SJ5zyuntRKhzso3p4s4c+WMhSNFbVXHU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 970E2F8015C;
-	Tue,  4 Aug 2020 17:35:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4132EF80148;
+	Tue,  4 Aug 2020 17:59:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A479F8015D; Tue,  4 Aug 2020 17:35:47 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0E21DF8014C; Tue,  4 Aug 2020 17:58:59 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36E8CF800B7
- for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2020 17:35:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36E8CF800B7
-IronPort-SDR: M3rWva0JJBMnPwpjihnQ/n89/He5AyABM78OS429K2q89/9SUDlK1AgDftQu+UJyeRtKuPiF1T
- XY9iEtcKGGrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="150127504"
-X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; d="scan'208";a="150127504"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Aug 2020 08:35:42 -0700
-IronPort-SDR: JpDZzfp+0iIkXsi8g7rRgEZzjD9nahjbHNdVjADLj0+eMaV568fu/6U0GZlTecg4lcA9B0BwDU
- rRZdPfLw5rVg==
-X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; d="scan'208";a="288602863"
-Received: from gggmerek-mobl.amr.corp.intel.com (HELO [10.212.131.193])
- ([10.212.131.193])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Aug 2020 08:35:40 -0700
-Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
- board
-To: "Lu, Brent" <brent.lu@intel.com>, Takashi Iwai <tiwai@suse.de>
-References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
- <1596198365-10105-1-git-send-email-brent.lu@intel.com>
- <1596198365-10105-3-git-send-email-brent.lu@intel.com>
- <s5h5za3ajvb.wl-tiwai@suse.de>
- <DM6PR11MB3642AE90DF98956CCEDE6C2F974F0@DM6PR11MB3642.namprd11.prod.outlook.com>
- <s5hd04a90o4.wl-tiwai@suse.de>
- <DM6PR11MB3642B5BC2E1E0708088526D8974D0@DM6PR11MB3642.namprd11.prod.outlook.com>
- <63bca214-3434-16c6-1b60-adf323aec554@linux.intel.com>
- <DM6PR11MB3642D9BE1E5DAAB8B78B84B0974D0@DM6PR11MB3642.namprd11.prod.outlook.com>
- <s5hpn873by6.wl-tiwai@suse.de>
- <DM6PR11MB36423A9D28134811AD5A911F974A0@DM6PR11MB3642.namprd11.prod.outlook.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <6466847a-8aae-24f7-d727-36ba75e95f98@linux.intel.com>
-Date: Tue, 4 Aug 2020 09:24:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB36423A9D28134811AD5A911F974A0@DM6PR11MB3642.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72D8DF800B7
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2020 17:58:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72D8DF800B7
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
+ helo=localhost) by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>)
+ id 1k2zKs-0004U5-7b; Tue, 04 Aug 2020 15:58:42 +0000
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: tiwai@suse.com
+Subject: [PATCH v3] ALSA: hda/hdmi: Add quirk to force connectivity
+Date: Tue,  4 Aug 2020 23:58:34 +0800
+Message-Id: <20200804155836.16252-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
+Cc: Nikhil Mahale <nmahale@nvidia.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "Rojewski,
- Cezary" <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "yuhsuan@google.com" <yuhsuan@google.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Sam McNally <sammc@chromium.org>, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Stuart <daniel.stuart14@gmail.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Yu-Hsuan Hsu <yuhsuan@chromium.org>, Damian van Soelen <dj.vsoelen@gmail.com>
+ Aaron Plattner <aplattner@nvidia.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,47 +78,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+HDMI on some platforms doesn't enable audio support because its Port
+Connectivity [31:30] is set to AC_JACK_PORT_NONE:
+Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0b000094: OUT Detect HBR HDMI DP
+  Pin Default 0x58560010: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Devices: 0
+  Connection: 3
+     0x02 0x03* 0x04
 
+For now, use a quirk to force connectivity based on SSID. If there are
+more platforms affected by the same issue, we can eye for a more generic
+solution.
 
-On 8/3/20 11:33 PM, Lu, Brent wrote:
->>
->> For avoid further misunderstanding: it's fine that CRAS *uses* such a short
->> period.  It's often required for achieving a short latency.
->>
->> However, the question is whether the driver can set *only* this value for
->> making it working.  IOW, if we don't have this constraint, what actually
->> happens?  If the driver gives the period size alignment, wouldn't CRAS
->> choose 240?
-> 
-> It won't. Without the constraint it becomes 432. Actually CRAS does not set
-> period size specifically so the value depends on the constraint rules.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v3:
+ - Move the flag into hdmi_spec.
+v2:
+ - Use a quirk list instead.
 
-I don't get this. If the platform driver already stated 240 and 960 
-samples why would 432 be chosen? Doesn't this mean the constraint is not 
-applied?
+ sound/pci/hda/patch_hdmi.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-> [   52.011146] sound pcmC1D0p: hw_param
-> [   52.011152] sound pcmC1D0p:   ACCESS 0x1
-> [   52.011155] sound pcmC1D0p:   FORMAT 0x4
-> [   52.011158] sound pcmC1D0p:   SUBFORMAT 0x1
-> [   52.011161] sound pcmC1D0p:   SAMPLE_BITS [16:16]
-> [   52.011164] sound pcmC1D0p:   FRAME_BITS [32:32]
-> [   52.011167] sound pcmC1D0p:   CHANNELS [2:2]
-> [   52.011170] sound pcmC1D0p:   RATE [48000:48000]
-> [   52.011173] sound pcmC1D0p:   PERIOD_TIME [9000:9000]
-> [   52.011176] sound pcmC1D0p:   PERIOD_SIZE [432:432]
-> [   52.011179] sound pcmC1D0p:   PERIOD_BYTES [1728:1728]
-> [   52.011182] sound pcmC1D0p:   PERIODS [474:474]
-> [   52.011185] sound pcmC1D0p:   BUFFER_TIME [4266000:4266000]
-> [   52.011188] sound pcmC1D0p:   BUFFER_SIZE [204768:204768]
-> [   52.011191] sound pcmC1D0p:   BUFFER_BYTES [819072:819072]
-> [   52.011194] sound pcmC1D0p:   TICK_TIME [0:0]
-> 
-> Regards,
-> Brent
-> 
->>
->>
->> Takashi
-> 
-> 
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index cd46247988e4..b62cd3abb827 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -160,6 +160,7 @@ struct hdmi_spec {
+ 
+ 	bool use_acomp_notifier; /* use eld_notify callback for hotplug */
+ 	bool acomp_registered; /* audio component registered in this driver */
++	bool force_connect; /* force connectivity */
+ 	struct drm_audio_component_audio_ops drm_audio_ops;
+ 	int (*port2pin)(struct hda_codec *, int); /* reverse port/pin mapping */
+ 
+@@ -1701,7 +1702,8 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ 	 * all device entries on the same pin
+ 	 */
+ 	config = snd_hda_codec_get_pincfg(codec, pin_nid);
+-	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
++	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE &&
++	    !spec->force_connect)
+ 		return 0;
+ 
+ 	/*
+@@ -1803,11 +1805,18 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+ 	return 0;
+ }
+ 
++static const struct snd_pci_quirk force_connect_list[] = {
++	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
++	{}
++};
++
+ static int hdmi_parse_codec(struct hda_codec *codec)
+ {
++	struct hdmi_spec *spec = codec->spec;
+ 	hda_nid_t start_nid;
+ 	unsigned int caps;
+ 	int i, nodes;
++	const struct snd_pci_quirk *q;
+ 
+ 	nodes = snd_hda_get_sub_nodes(codec, codec->core.afg, &start_nid);
+ 	if (!start_nid || nodes < 0) {
+@@ -1815,6 +1824,11 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 
++	q = snd_pci_quirk_lookup(codec->bus->pci, force_connect_list);
++
++	if (q && q->value)
++		spec->force_connect = true;
++
+ 	/*
+ 	 * hdmi_add_pin() assumes total amount of converters to
+ 	 * be known, so first discover all converters
+-- 
+2.17.1
+
