@@ -2,71 +2,59 @@ Return-Path: <SRS0=lfZM=BO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1D2FC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 18:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 467BEC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 18:59:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58ABC207FC
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 18:56:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6FE2207FC
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2020 18:59:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T40OzAl5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58ABC207FC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cpcNvHhO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6FE2207FC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C321684A;
-	Tue,  4 Aug 2020 20:55:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C321684A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53F9684D;
+	Tue,  4 Aug 2020 20:58:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53F9684D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596567359;
-	bh=DVso/Y+jUAZ2UdeVARvqSzllz3fwMqCTY/x9uX7HCHk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T40OzAl5bd1IXQ+nuxi8sISriDgEmVHf7QEhTTXyidK3E1GetPOuxz3e7K5oFiEUK
-	 2klENbzhUYmnNAXnl3NP6bSMcMnCTZ/394JP0ZCJ/Cdy2RuH0SXpDH+xgM2VnT8Vyd
-	 P/TyPHUSMUSGqjJw7xkEWQYFEcdhvOcxH/zuHSP0=
+	s=default; t=1596567556;
+	bh=u08wsvr7mKkDh9MHEJ5CUppEj8loPp3QFLFqcHZ60gk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cpcNvHhOYz8+ALBqs+531yRp9qBjNn+kmVeBN5InzRfejxJr+ku2Xb4E9OI6PQulw
+	 sAL7c2K8YVl6RzO61wXZEQxgGVPZ81aBuAGVDJspyP4su3vXHeLi/wkd1D80MDlEbr
+	 A/f83OTv5e2qENriPb4k0uMeRKlwaOtpxNnqMIDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63906F8014C;
-	Tue,  4 Aug 2020 20:55:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEAB8F80150;
+	Tue,  4 Aug 2020 20:58:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9FDDF80150; Tue,  4 Aug 2020 20:55:07 +0200 (CEST)
+ id 47A6EF8015A; Tue,  4 Aug 2020 20:58:24 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C671DF8014C
- for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2020 20:55:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C671DF8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56CE7F80124
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2020 20:58:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56CE7F80124
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D1417AC52;
- Tue,  4 Aug 2020 18:55:15 +0000 (UTC)
-Date: Tue, 04 Aug 2020 20:54:59 +0200
-Message-ID: <s5himdyxmv0.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B5B44AD77;
+ Tue,  4 Aug 2020 18:58:33 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v3] ALSA: hda/hdmi: Add quirk to force connectivity
-In-Reply-To: <20200804155836.16252-1-kai.heng.feng@canonical.com>
-References: <20200804155836.16252-1-kai.heng.feng@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Nikhil Mahale <nmahale@nvidia.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Aaron Plattner <aplattner@nvidia.com>,
- open list <linux-kernel@vger.kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: seq: oss: Serialize ioctls
+Date: Tue,  4 Aug 2020 20:58:15 +0200
+Message-Id: <20200804185815.2453-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: Hillf Danton <hdanton@sina.com>, Zhang Qiang <qiang.zhang@windriver.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,38 +70,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 04 Aug 2020 17:58:34 +0200,
-Kai-Heng Feng wrote:
-> 
-> HDMI on some platforms doesn't enable audio support because its Port
-> Connectivity [31:30] is set to AC_JACK_PORT_NONE:
-> Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x00 0x00]
->   Pincap 0x0b000094: OUT Detect HBR HDMI DP
->   Pin Default 0x58560010: [N/A] Digital Out at Int HDMI
->     Conn = Digital, Color = Unknown
->     DefAssociation = 0x1, Sequence = 0x0
->   Pin-ctls: 0x40: OUT
->   Unsolicited: tag=00, enabled=0
->   Power states:  D0 D3 EPSS
->   Power: setting=D0, actual=D0
->   Devices: 0
->   Connection: 3
->      0x02 0x03* 0x04
-> 
-> For now, use a quirk to force connectivity based on SSID. If there are
-> more platforms affected by the same issue, we can eye for a more generic
-> solution.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v3:
->  - Move the flag into hdmi_spec.
-> v2:
->  - Use a quirk list instead.
+Some ioctls via OSS sequencer API may race and lead to UAF when the
+port create and delete are performed concurrently, as spotted by a
+couple of syzkaller cases.  This patch is an attempt to address it by
+serializing the ioctls with the existing register_mutex.
 
-Applied now.  Thanks!
+Basically OSS sequencer API is an obsoleted interface and was designed
+without much consideration of the concurrency.  There are very few
+applications with it, and the concurrent performance isn't asked,
+hence this "big hammer" approach should be good enough.
 
+Reported-by: syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com
+Reported-by: syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com
+Suggested-by: Hillf Danton <hdanton@sina.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/oss/seq_oss.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Takashi
+diff --git a/sound/core/seq/oss/seq_oss.c b/sound/core/seq/oss/seq_oss.c
+index 17f913657304..c8b9c0b315d8 100644
+--- a/sound/core/seq/oss/seq_oss.c
++++ b/sound/core/seq/oss/seq_oss.c
+@@ -168,10 +168,16 @@ static long
+ odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	struct seq_oss_devinfo *dp;
++	long rc;
++
+ 	dp = file->private_data;
+ 	if (snd_BUG_ON(!dp))
+ 		return -ENXIO;
+-	return snd_seq_oss_ioctl(dp, cmd, arg);
++
++	mutex_lock(&register_mutex);
++	rc = snd_seq_oss_ioctl(dp, cmd, arg);
++	mutex_unlock(&register_mutex);
++	return rc;
+ }
+ 
+ #ifdef CONFIG_COMPAT
+-- 
+2.16.4
+
