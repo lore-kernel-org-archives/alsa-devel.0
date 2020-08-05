@@ -2,104 +2,96 @@ Return-Path: <SRS0=cqJl=BP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34806C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 06:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD11DC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 08:49:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9846C22B45
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 06:56:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 583C622BF3
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 08:49:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t+clpxU+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eB7I0ztJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9846C22B45
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cHN+br+k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 583C622BF3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1473384A;
-	Wed,  5 Aug 2020 08:55:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1473384A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA95D84A;
+	Wed,  5 Aug 2020 10:48:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA95D84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596610591;
-	bh=jMYVOjqaYrOwn8Z3P+uJ7+3CixuSe8b/ighwG2pHXnA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1596617382;
+	bh=chTkhsGhAv39w6if+IiAek6y2650PEopFO42uNZ5fxI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t+clpxU+zftozAIiJUbTt25uHoH4S1Pfot2eAyNogex2Eb30N3S6RAnRFO+KohUeV
-	 /EUcRqH7rfZjPSLJaoIWQ7x4l//YAvK9/IgO1RKqaAiTVFDJ9XkTNyzS5QHNk3OccG
-	 BAtCXvjKrr+VofYp0CpOZmjOx/Rw+cSDg/LWI3vg=
+	b=cHN+br+k2Auw/AqqOIq9Qtn23Begy0nrbPbLrMHvgXhKunxiEj1uSW7wXDvL89w1J
+	 BUBOWFJ0okjoq89P6TT8EWnd1fJt1zgre+tVEvJRNALVfiNLeKel1N1OJyNga4ZkHc
+	 5du0o4hOhw6jsujsEUJD+u3ZBwlFyVLkRIKNjcF0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA4E9F801F7;
-	Wed,  5 Aug 2020 08:55:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F7E5F801F7;
+	Wed,  5 Aug 2020 10:48:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57A9CF80218; Wed,  5 Aug 2020 08:55:39 +0200 (CEST)
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com
- [IPv6:2607:f8b0:4864:20::1042])
+ id DEDA8F80218; Wed,  5 Aug 2020 10:48:49 +0200 (CEST)
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
+ [209.85.167.193])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30FBBF80112
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 08:55:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30FBBF80112
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="eB7I0ztJ"
-Received: by mail-pj1-x1042.google.com with SMTP id d4so3765981pjx.5
- for <alsa-devel@alsa-project.org>; Tue, 04 Aug 2020 23:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=SGZKUpYTKCkpMjR2/gp6H6g/7u9i9ZZGE+6qybYiQ1Y=;
- b=eB7I0ztJTU4WSthYXqaqoUu5nSugYMxc2h5yrlbERDylgNa5sZlC76hDkZJW/uGdnY
- ryKSBxW9gyHVLeTlXc6NsDiakiPlYlrOyMvJ/xlp1jS23dc0hXzSpa4Cl8FGA2UIilYA
- xGMU+MW5UDmVHJoqO/4M1gy3YcmzlczR8Qs7pwBwCQYHulXFSBfKNUF6DAjG7tHwurKS
- 7hWQMmdU4QDHD8vWyntNOXjcA3mFqaj6QqyYjBEkYf1TZi4lLIy+F25pU0WA1Rj6B2y7
- ueSqb9UzN5PuY4e2y/IURP+J0HzudC0TfY1mYMtZYIEsE+gjxsAiOLOeySmE5XCqXHBz
- MfGA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1891F80112
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 10:48:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1891F80112
+Received: by mail-oi1-f193.google.com with SMTP id k4so38943276oik.2
+ for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2020 01:48:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=SGZKUpYTKCkpMjR2/gp6H6g/7u9i9ZZGE+6qybYiQ1Y=;
- b=U4ZuIU445L1nTPTIbsn5UpaqbcGOSNLX1toZ9kz4HCKKG+ieTj1WrP4TO3wbenwW7K
- ptIBLY/+vTIowtmu8Dq1SQXz+mycU6RwSXB0cNNRZzkdR5dZYcn7IK9WBPZ1r8+8YyBp
- 5BZ1dUXVxsssE3svC4+beADjiB29eoLdIQcqazTwlkRGE5PC3spBoTawYwgtKP37sVBY
- O3uIP1nJ1kWU4L63JCx4AJnYURfn/aHdUeukR3BMKQgRYXQV+9POkAy2NdbqFRJHY/dD
- OZIeSY8c1cIQy/vbxhjAnLtyq/kLhUPbvpOqScxcVqgTp1BlTWnf0/1CT5JcO/hqGTVY
- sK8A==
-X-Gm-Message-State: AOAM533/ehq87ur8D/y+YYdmwhb13rOsJuEobrcHL2dlntKThNPL0euU
- LzOo9KFJM+sBOChANwotR3k=
-X-Google-Smtp-Source: ABdhPJx4V/D/s9pzIYwlx+8snhleVdhwnfP6tP4uC6/N2c5q73hqwxsDv7A3bUhT6kOfk3YclbwQTg==
-X-Received: by 2002:a17:90a:c58b:: with SMTP id
- l11mr1847841pjt.195.1596610526653; 
- Tue, 04 Aug 2020 23:55:26 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id h5sm1835143pfq.146.2020.08.04.23.55.25
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 04 Aug 2020 23:55:26 -0700 (PDT)
-Date: Tue, 4 Aug 2020 23:55:12 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v3 3/3] ASoC: fsl_sai: Replace synchronous check with
- fsl_sai_dir_is_synced
-Message-ID: <20200805065511.GA1131@Asurada-Nvidia>
-References: <20200805063413.4610-1-shengjiu.wang@nxp.com>
- <20200805063413.4610-4-shengjiu.wang@nxp.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=1mrXzxi9uxOAW3sW2InYWxrD30ehGwVVOP3HqfzhRdk=;
+ b=Ux4dI3WboRSOF7N63sOy4Ho2tifD9N1PNbWWswPFefcoCB4qW7GrO/svKqXCjMeWJk
+ KXP/wC6S050gRPtGdrVXyoeHAaWNDsDMw6Bf2Qg13FIp3Mcj9x7Mf0n5lqo8zjP8KQX7
+ eaVf0KO5w+fJtKJK5w3m+bvJ6vfAONYKZ/oDvM47tI0wVgUqnrgqftHaDgXmM0UZ2wDm
+ PFofhevgPYnX/+2T5DnShigAkTcvdGsfMMnqNq6us+k0zimEdCuf9MwYpPrSVZwaukQO
+ QkfDJ3ptQM1uC1TwPPaYPSklJ7mwEcLjbRMxgc9I6uZHgEom0qX04s/G7nMY5gzXpt2D
+ mg0w==
+X-Gm-Message-State: AOAM530EVYe1EBRwpQvc7pIdvD/DvLZHbMHbA5CV1lzTMJKQJtgr8gDK
+ BbcEBTpd4YzRZWZUAJn1YwIeI+Fb6gPCYaLnaSQ=
+X-Google-Smtp-Source: ABdhPJytnGMFscI/4Vj10JBqUQ7Wgi/Lqycodf6cBlV8PTnw+Znw95/OXOULRQVW5Ng30YOlYqbpGAXWXSVGKdV5pP0=
+X-Received: by 2002:aca:adc4:: with SMTP id w187mr1785208oie.153.1596617320906; 
+ Wed, 05 Aug 2020 01:48:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805063413.4610-4-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
- broonie@kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594919915-5225-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 5 Aug 2020 10:48:29 +0200
+Message-ID: <CAMuHMdXOvVkbhXXmaugHe4fo5vUK3x7bYFHPYHESPWqVdDJBjg@mail.gmail.com>
+Subject: Re: [PATCH 03/20] dt-bindings: ata: renesas,
+ rcar-sata: Add r8a774e1 support
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ linux-pci <linux-pci@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-ide@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>,
+ Magnus Damm <magnus.damm@gmail.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Niklas <niklas.soderlund@ragnatech.se>,
+ Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ USB list <linux-usb@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+ dmaengine <dmaengine@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,13 +107,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Aug 05, 2020 at 02:34:13PM +0800, Shengjiu Wang wrote:
-> As new function fsl_sai_dir_is_synced is included for checking if
-> stream is synced by the opposite stream, then replace the existing
-> synchronous checking with this new function.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+On Thu, Jul 16, 2020 at 7:19 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Document SATA support for the RZ/G2H, no driver change required.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Nice, thanks!
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
