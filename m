@@ -2,87 +2,91 @@ Return-Path: <SRS0=cqJl=BP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0727C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 09:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53A38C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 09:55:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63ECB2076E
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 09:54:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3E2C2076E
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 09:55:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TooGKQcx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="BWBMWt6Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63ECB2076E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o604Ul4h";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="Ozfzo0Ez"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3E2C2076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 674AB1669;
-	Wed,  5 Aug 2020 11:53:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 674AB1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 717411677;
+	Wed,  5 Aug 2020 11:54:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 717411677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596621282;
-	bh=2bufS4QL/WSzPhgO2bDyW+E2dnqpRdje1tx7oAgaQw0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TooGKQcxpp0vZYwxdeWilOqM6e/Ok3R8GpjnC7oo9d7+YUeIbO6QY18PfvxmK/6lV
-	 LmLoHMWPG0Vh5p5yeQSciYrZ4iUCLDGNfzjBnRNYL8ga95zfOMnOt4C86vFLg7bCDE
-	 Mo1vT8z840nRSmQizvsvAwjlfyWZ/6T2UQjXV/MQ=
+	s=default; t=1596621333;
+	bh=25R3OHi9xC4REBXxWQYPbHPIehqz5E+kAP+Z1NRJzkw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=o604Ul4huThXbh6iSCU9amV50p9skFkold1tc7F2mJNnncy0YbgVJkX20w5PiNupC
+	 E9lktppYiC5r1xvyQEI2QyaGrmZ4q4LBt/ADrvJFQpzGMsPDcW1UIzxnv9gxqshbTI
+	 b/VKVHrO5haCQw9YzTBU2P3xCcTNqbN9fNO+XopA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00764F80249;
-	Wed,  5 Aug 2020 11:53:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4FF2F80234;
+	Wed,  5 Aug 2020 11:53:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8CFDF80259; Wed,  5 Aug 2020 11:52:56 +0200 (CEST)
-Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
- [216.228.121.65])
+ id B10BFF802DD; Wed,  5 Aug 2020 11:53:01 +0200 (CEST)
+Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
+ [216.228.121.143])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0FF5F801F7
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 11:52:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0FF5F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE290F80124
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 11:52:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE290F80124
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="BWBMWt6Q"
+ header.b="Ozfzo0Ez"
 Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5f2a815f0000>; Wed, 05 Aug 2020 02:52:31 -0700
+ hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5f2a810f0000>; Wed, 05 Aug 2020 02:51:11 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
  by hqpgpgate101.nvidia.com (PGP Universal service);
- Wed, 05 Aug 2020 02:52:45 -0700
+ Wed, 05 Aug 2020 02:52:50 -0700
 X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Wed, 05 Aug 2020 02:52:45 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 5 Aug
- 2020 09:52:45 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 5 Aug 2020 09:52:44 +0000
+ by hqpgpgate101.nvidia.com on Wed, 05 Aug 2020 02:52:50 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 5 Aug
+ 2020 09:52:49 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 5 Aug 2020 09:52:49 +0000
 Received: from mkumard.nvidia.com (Not Verified[10.24.34.162]) by
  hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
- id <B5f2a816a0000>; Wed, 05 Aug 2020 02:52:44 -0700
+ id <B5f2a816f0003>; Wed, 05 Aug 2020 02:52:49 -0700
 From: Mohan Kumar <mkumard@nvidia.com>
 To: <tiwai@suse.com>, <perex@perex.cz>
-Subject: [PATCH v2 0/3]  Tegra Specific fixes
-Date: Wed, 5 Aug 2020 15:22:18 +0530
-Message-ID: <20200805095221.5476-1-mkumard@nvidia.com>
+Subject: [PATCH v2 2/3] ALSA: hda: Add dma stop delay variable
+Date: Wed, 5 Aug 2020 15:22:20 +0530
+Message-ID: <20200805095221.5476-3-mkumard@nvidia.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200805095221.5476-1-mkumard@nvidia.com>
+References: <20200805095221.5476-1-mkumard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1596621151; bh=n1dlz8iyQVQn9u37McbzKI0W09GdeF2ZXWm7kj2D8ro=;
+ t=1596621071; bh=cAI69jqs7EoiWGpTZf5j8qW2hGEhCdiawWF5rWnA2DY=;
  h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
- MIME-Version:Content-Type;
- b=BWBMWt6QVMLMuh32CQv7EbgOGFYLt4B1kJkv4Q2FjTIqnRzzSczyZt51aN0DmDSUG
- W00eF6NWgZc4saNzaisPb8Lx/k7wsfXRUw6zDcunG2jTPLThr/hBmWiHj8Q8ZOLOiX
- SEpA0QeeFRYq6GWyI0aNR3+3O+iJF90IgwuU9IPxSxNRsT7QihuaXdKuXSoKSpz0co
- QrS92fAO+DLM3SQSwaI/jTG5Umc/uY77DjaEYnR7eWjsUHWqAlLZzYZExDXEQcjCFg
- PKEln59tCG4H/vRBp2C0Bj/FSYPX9c+CSbTVAXUXw79wwtmMofbUPXq/udTPZr2aor
- fvgTSksTu8scA==
+ In-Reply-To:References:MIME-Version:Content-Type;
+ b=Ozfzo0EzAYvJ55O+ZCLIdD/eoIbmaVchC/ISaRm8GMmXxsHQpYg04exA6Wq2SB4LC
+ t+nAvOd0ZXmdLy2Crtn2CSlKGfW5VMeHlT95I8O+aoNIF9bMFZhkwoLpyKY6LAkTaI
+ j6rIx2WF+Jksd8rpFS/QnBXPLbwSxiM+2IjupQZnGZ39JAQ9YXm16B7PUcXlggAPG6
+ mgFtybQDRw/PeNwh3axyN0E/kUBnOjkx1KTzHO0Lt7QPJO/X7f3e35NzoX0fZaY0/0
+ CiNP1Vkt+o/sBOJUQ2pNCsbpRAucTQROdUu1VcjmfwOvZ8BUBGbzTyroKUBNu520Vy
+ ZyxAhkQNvPV3w==
 Cc: alsa-devel@alsa-project.org, spujar@nvidia.com, jonathanh@nvidia.com,
  linux-tegra@vger.kernel.org, treding@nvidia.com,
  Mohan Kumar <mkumard@nvidia.com>
@@ -101,22 +105,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series proposes following fixes to Tegra HDA driver.
-* Align the buffer to 128 bytes for Tegra.
-* Add new behavior flag dma_stop_delay in hdac_bus structure.
-* Add 100us as dma stop delay for Tegra.
+A variable dma_stop_delay is added as a new member in hdac_bus
+structure to avoid memory decode error incase DMA RUN bit is not
+disabled in the given timeout from snd_hdac_stream_sync function and
+followed by stream reset which results in memory decode error between
+reset set and clear operation.
 
+Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+---
+ include/sound/hdaudio.h | 3 +++
+ sound/hda/hdac_stream.c | 7 +++++++
+ 2 files changed, 10 insertions(+)
 
-Mohan Kumar (3):
-  ASoC: hda/tegra: Set buffer alignment to 128 bytes
-  ALSA: hda: Add dma stop delay variable
-  ALSA: hda/tegra: Add 100us dma stop delay
-
- include/sound/hdaudio.h   | 3 +++
- sound/hda/hdac_stream.c   | 7 +++++++
- sound/pci/hda/hda_tegra.c | 3 +++
- 3 files changed, 13 insertions(+)
-
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index c1f78d9a6e47..6eed61e6cf8a 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -347,6 +347,9 @@ struct hdac_bus {
+ 
+ 	int bdl_pos_adj;		/* BDL position adjustment */
+ 
++	/* delay time in us for dma stop */
++	unsigned int dma_stop_delay;
++
+ 	/* locks */
+ 	spinlock_t reg_lock;
+ 	struct mutex cmd_mutex;
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index a38a2af1654f..abe7a1b16fe1 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -150,9 +150,12 @@ void snd_hdac_stream_reset(struct hdac_stream *azx_dev)
+ {
+ 	unsigned char val;
+ 	int timeout;
++	int dma_run_state;
+ 
+ 	snd_hdac_stream_clear(azx_dev);
+ 
++	dma_run_state = snd_hdac_stream_readb(azx_dev, SD_CTL) & SD_CTL_DMA_START;
++
+ 	snd_hdac_stream_updateb(azx_dev, SD_CTL, 0, SD_CTL_STREAM_RESET);
+ 	udelay(3);
+ 	timeout = 300;
+@@ -162,6 +165,10 @@ void snd_hdac_stream_reset(struct hdac_stream *azx_dev)
+ 		if (val)
+ 			break;
+ 	} while (--timeout);
++
++	if (azx_dev->bus->dma_stop_delay && dma_run_state)
++		udelay(azx_dev->bus->dma_stop_delay);
++
+ 	val &= ~SD_CTL_STREAM_RESET;
+ 	snd_hdac_stream_writeb(azx_dev, SD_CTL, val);
+ 	udelay(3);
 -- 
 2.17.1
 
