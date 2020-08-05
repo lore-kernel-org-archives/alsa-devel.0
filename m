@@ -7,71 +7,73 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DDE6C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 11:17:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E857EC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 11:20:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 872C022D04
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 11:17:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 726B62177B
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 11:20:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mbqRBKLp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 872C022D04
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dwQ2tD7h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 726B62177B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DE2E1678;
-	Wed,  5 Aug 2020 13:16:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DE2E1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6BAF84A;
+	Wed,  5 Aug 2020 13:19:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6BAF84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596626239;
-	bh=jJDiegGYStph4esep+ESqZxz/sgp9SrrZEHX4+XFcDM=;
+	s=default; t=1596626414;
+	bh=J43/zMWUFRlLb7WthBK0QHN+L/A4G7AC0bCDyWVuQ0w=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mbqRBKLpo2WqPEAlUaOUP5NtBInetKI3uqTCQQXbT47tFUkn4F0xd9BoQKQ9lXn0E
-	 cqw6Of6zLqjNMKBChZTRuHw+MmgaGNAp4cd5rKQPVHX4fAkECNjxjIH75sjLLDBNEQ
-	 XccUp7+fU1Sn64QGHz/jS+pMph72VF4SnG0Qiuf4=
+	b=dwQ2tD7hWT6NXL0u029C6BEZ7he9K1KPdSIWNfEld7RaJR2jE2Txp6DCU2Rj7IN+4
+	 A23h4gkGg/+0rpZPigMJLw2DYMQ431gXK/ecK0/eUcZCYZsSNk2FMF6zI3ddFBylSm
+	 oap+aoQj9ft82mLN0mEd1spJkif4mWYwB9ArWsgE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 779CCF802C3;
-	Wed,  5 Aug 2020 13:16:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95F0BF801F7;
+	Wed,  5 Aug 2020 13:19:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B78AF802D2; Wed,  5 Aug 2020 13:16:15 +0200 (CEST)
-Received: from mail-oo1-f68.google.com (mail-oo1-f68.google.com
- [209.85.161.68])
+ id DAB4DF80218; Wed,  5 Aug 2020 13:19:21 +0200 (CEST)
+Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com
+ [209.85.210.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F5E9F80234
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 13:16:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F5E9F80234
-Received: by mail-oo1-f68.google.com with SMTP id z11so1899024oon.5
- for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2020 04:16:07 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59176F80112
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 13:19:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59176F80112
+Received: by mail-ot1-f65.google.com with SMTP id h22so3787897otq.11
+ for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2020 04:19:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=tpO2xc5Co4QKfwe/fUkQqUFFAe1WeeGtz1oyCqUMySo=;
- b=pYyQTwAc8uU1fFlhVUvvT+cozB75QFnKHjiOk2gPxf1RfvYvGeKfI2YugYWHdC5eue
- qJBfuPn7Th9jMUXHqHV62YnmIAx2iLGV8LKMSy03Fjw4AKH++4PPCB7pQ5F1o+a4a+Bn
- onkd1LAgii1e2rGCpY5RF00rCsstRsYl/9hUzF+4uQFBHLaRdssqzAziC92FndSssBNI
- hgW3J52uyd02/fBSQqCOc4vVQsgtMyPeL+p+aK++uOaNoF00CCATGPfr/cXhleLMW98m
- ubePdj0RKU96d1d/RYjAjyBkw3nYTyAsvLXSJya+ce1DroBr6i6vEDal9VncXlgsIJTG
- KjYw==
-X-Gm-Message-State: AOAM533DjLkclIdT7uvmhCNuygUlkY1WGVfbiU0dDxL7BBq39BdoxMrI
- L6Zp4T0xkCJxiyOENu019QmOhE/MohduZ3mjjN8=
-X-Google-Smtp-Source: ABdhPJxign8Uk2fIcUs7RpIodong0uS1bWU72pwITdrYewzbK7L9StNz09TcvScLc02ZC/yaUnpVr8Fq/+75ppivh0g=
-X-Received: by 2002:a4a:9d19:: with SMTP id w25mr2320144ooj.11.1596626166283; 
- Wed, 05 Aug 2020 04:16:06 -0700 (PDT)
+ bh=AXKpgsbLcw7z2C6ljXHBYtvVN+NDPtHizk0roOICInI=;
+ b=BCdnMhjgWSq3UvUEYdjvua9uIi7FoWmFbjcyDnkKQPVT2njnGKQO6YuJqUY2SsWlHW
+ ab2XpvgXixHOOgKgF3yhGe+mZ3NpkBXfq8HjEpbsPYWp8+VjcxZALOsMldlSAEOUiue+
+ kTYFjwQD9X21TT8iWE/LyjIf2Rg8V8Bt1C26024t2bxWiHNUzY54/O8wHhSRss20jHBu
+ D51g2GBA7P8qZQf2SOZjY88Eg20J1o+d1M+oiPM/o54Fq+bx/znJeC/ZPaCOw7DChP5J
+ LuBMTbXgjvA0PRNK69alM7nfhnTLg8E9SPFhkAkFEKOdkleet8oOkaUwCO13j+Y1Bh3a
+ MhXQ==
+X-Gm-Message-State: AOAM533vYalBDiAXxP89+GtTtAQb2iwGIhmrkhHAqSZrxfCbftlEMcTJ
+ rrIR7tdykpg0nQMIhvbCWEj9Rw62q5JzoVwoOvY=
+X-Google-Smtp-Source: ABdhPJwV3n8tOAcfpMHynj9j+mQfpTpf9DYt0YtMCyg/CBd6L07ZVwpSWSi6SSwkA6/AmBSX9QS/9q9S3w/0cDUPDdY=
+X-Received: by 2002:a05:6830:1b79:: with SMTP id
+ d25mr2057730ote.107.1596626350552; 
+ Wed, 05 Aug 2020 04:19:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-16-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594919915-5225-16-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594919915-5225-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 5 Aug 2020 13:15:54 +0200
-Message-ID: <CAMuHMdWzwQpjhOeVDkj1b1L7mJuxnLpVMO-3WMMLF3oJMzgAmg@mail.gmail.com>
-Subject: Re: [PATCH 15/20] arm64: dts: renesas: r8a774e1: Add audio support
+Date: Wed, 5 Aug 2020 13:18:59 +0200
+Message-ID: <CAMuHMdVriWnPK8-=w=0mq8yj9+1jbsg9yH8aV=ygyHsQ0f-CQQ@mail.gmail.com>
+Subject: Re: [PATCH 20/20] arm64: dts: renesas: r8a774e1: Add VIN and CSI-2
+ nodes
 To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
@@ -107,21 +109,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Prabhakar,
+
 On Thu, Jul 16, 2020 at 7:20 PM Lad Prabhakar
 <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add sound support for the RZ/G2H SoC (a.k.a. R8A774E1).
+> Add VIN and CSI-2 nodes to RZ/G2H (R8A774E1) SoC dtsi.
 >
 > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
+
+However, before I queue this in renesas-devel for v5.10, I'd like to
+have some clarification about the issue below.
+
+> --- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+
+> +               vin4: video@e6ef4000 {
+> +                       compatible = "renesas,vin-r8a774e1";
+> +                       reg = <0 0xe6ef4000 0 0x1000>;
+> +                       interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> +                       clocks = <&cpg CPG_MOD 807>;
+> +                       power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
+> +                       resets = <&cpg 807>;
+> +                       renesas,id = <4>;
+> +                       status = "disabled";
+> +
+> +                       ports {
+> +                               #address-cells = <1>;
+> +                               #size-cells = <0>;
+> +
+> +                               port@1 {
+> +                                       #address-cells = <1>;
+> +                                       #size-cells = <0>;
+
+"make dtbs W=1" says:
+
+    arch/arm64/boot/dts/renesas/r8a774e1.dtsi:1562.12-1572.7: Warning
+(graph_child_address): /soc/video@e6ef4000/ports/port@1: graph node
+has single child node 'endpoint@0', #address-cells/#size-cells are not
+necessary
+
+(same for vin5-7 below)
+
+> +
+> +                                       reg = <1>;
+> +
+> +                                       vin4csi20: endpoint@0 {
+> +                                               reg = <0>;
+> +                                               remote-endpoint = <&csi20vin4>;
+> +                                       };
 
 Gr{oetje,eeting}s,
 
                         Geert
 
--- 
+--
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
