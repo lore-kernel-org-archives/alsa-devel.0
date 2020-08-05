@@ -7,72 +7,72 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 957EDC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 08:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0D1CC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 09:00:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 264E022B40
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 08:58:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C54422CA0
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2020 09:00:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q7UbJXPZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 264E022B40
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J//ih7aW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C54422CA0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A670984C;
-	Wed,  5 Aug 2020 10:57:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A670984C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B688284A;
+	Wed,  5 Aug 2020 10:59:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B688284A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596617885;
-	bh=KuMRZItE2N6uS2GlGWGYq0vagTMyGlGg7sw5OpZ+IxA=;
+	s=default; t=1596618003;
+	bh=FcJXYfATTe6mXsgb7i9nLb8BZsNn2ZPoTs9/chlQtZM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q7UbJXPZmcS7zxfl1++3ZN0QrfuODVv96gDsF4WTk62yH2PiJLseSMiN2kA5pK4XE
-	 g8Mhb91Bq5e6//ZkczCrRZqAt2h6rvko/jESXiFq34sGjaOxoqkZrIiMjs0j0S+AL7
-	 bbCJL2MPaVvVx1Xwb06wvNQsEeRA/J6UK8K4QOG4=
+	b=J//ih7aWY5s7j24QNyByxrr74Bq/xJ/Zqflo3KK8u9MJwUNkvIWayNelSKR4iQNe1
+	 DgFh7cbL5Q/cnDGRdrpTMGJivfmM1/b8ksZiq/QZ0WL2Ru/8xkUERFl9yZpuYfDcfz
+	 ifwcOPb34EfLuPPpXK5ARg0LLgjZ/NhUuWkHybJw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DAFDF80218;
-	Wed,  5 Aug 2020 10:57:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59F1CF800B7;
+	Wed,  5 Aug 2020 10:59:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5954DF80218; Wed,  5 Aug 2020 10:57:14 +0200 (CEST)
-Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
- [209.85.167.193])
+ id C00CEF80218; Wed,  5 Aug 2020 10:59:11 +0200 (CEST)
+Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
+ [209.85.167.194])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D15C4F80112
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 10:57:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D15C4F80112
-Received: by mail-oi1-f193.google.com with SMTP id b22so13002759oic.8
- for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2020 01:57:06 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3446F80112
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2020 10:59:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3446F80112
+Received: by mail-oi1-f194.google.com with SMTP id o21so18219305oie.12
+ for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2020 01:59:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=0C2QPNz+RkDu9YLa9Z+rHGCS+ZeukaWrCXpvcs7hr4E=;
- b=pDigCtt2L/JhLx11DKyWYsgqAoa8BvboeWqAMFY0jVmUs5sNmZfXH13OAI3ey+d6Ly
- OjRF9rrbWsXRaonYgBrUex0xDiJ846xoMKeuMPZs3vV/e/uWsepQjbjfU3SFOGrc1m2B
- ++4lcuWRuocoYvCX+GcSGwLRgZQQBCK5uQekDn3kpLdtdhO3fVtTTDd5kWW9cHIa8Slf
- DkYhyfl6c82ZPfs1/1/uiU+TTaaUg/LqlwXOUo3VFIPp3sRajLRJPtAuPaNkyzPEJp5V
- IrtFDmIlxd32RQLZ5poLo4XWV1i3VUZdN7EIEV0hHv4uWQ/kxQBpdQcrzGBfTnAxO0OO
- Af0g==
-X-Gm-Message-State: AOAM531vjYNroMq0vejYb7KkWJ2J6tKoT5Yg5xHioXpzNk39LbbW77Sc
- L/UahSoRRM4IFjo705n8Xeh5rz9siDKYjpJEFA4=
-X-Google-Smtp-Source: ABdhPJxig6iQpzRHDmYA2Ws2f12T50P8nQRPHOJgk/4ruGyeAaxQzJ5ap2HuOZ2wGBDZe+u8z4eTqSdXfbOD8P2Z2Ws=
-X-Received: by 2002:aca:4b54:: with SMTP id y81mr1895464oia.54.1596617825204; 
- Wed, 05 Aug 2020 01:57:05 -0700 (PDT)
+ bh=3PEPkOHX4GNS8S5Rg4NoX/0Kkpu8DKvfoDJJeWRfc+c=;
+ b=RINqIWqbGDV13LbbYI77mizzQ6fbI2ksJiMev6BUYIpTnT8f9KKIsdt9rVUafCcrge
+ 7pSRBmG/FZYX5xBLoQE1pDcgFdVmtcp0tb6aaYnL2vKjL3kdxli9U35TQtuWPcHzondM
+ y7U0111UW2Bv5tDx+JdT9IGrUjYJ/g6iDLHn99b0G8nxGXK/wOOYUg6im6btXH0X9iD0
+ EPHHoYBm9xJxHJPLGQw6/kDL4JYVvhfOX4RmQy3Uoh815lHHAXN1v+MnVM2RkJcRA5fc
+ 958ncb8TEgck+r+6MiJLt7AsqgooPCfAYhPSmqcNeUQFLS1mjs1hu9O4Yw1HqV7cLK2k
+ tv4A==
+X-Gm-Message-State: AOAM533wry43gLL8kP3dWSJ1xn9hyj4FQ/b7d/aEbXtFDUx7JR8z0H9l
+ z7vGlaCYicoTjoexBPiz/Mv/Yi6NK3M6DPuMv/A=
+X-Google-Smtp-Source: ABdhPJxOPpR3dk7VDSXYx6KKvjnoJv5/4tMZbEd2TqXt4CKHnoMUzx0WD2+9YVb/X64OZIidpkxnwCi/O01k1qJCr/c=
+X-Received: by 2002:aca:b742:: with SMTP id h63mr1809112oif.148.1596617943136; 
+ Wed, 05 Aug 2020 01:59:03 -0700 (PDT)
 MIME-Version: 1.0
 References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-8-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594919915-5225-8-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-9-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594919915-5225-9-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 5 Aug 2020 10:56:54 +0200
-Message-ID: <CAMuHMdXzGQe2Ov3uFUtZ+c+x1ftDWGu0q=YyD3J0QM_560Aw=A@mail.gmail.com>
-Subject: Re: [PATCH 07/20] dt-bindings: usb: renesas,usb3-peri: Document
- r8a774e1 support
+Date: Wed, 5 Aug 2020 10:58:51 +0200
+Message-ID: <CAMuHMdVzVGmc=2d5B4AZ4-G--gvkF4H3D-PVxhj6o5mq875fig@mail.gmail.com>
+Subject: Re: [PATCH 08/20] dt-bindings: usb: usb-xhci: Document r8a774e1
+ support
 To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
@@ -110,11 +110,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On Thu, Jul 16, 2020 at 7:19 PM Lad Prabhakar
 <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Document RZ/G2H (R8A774E1) SoC bindings.
+> Document r8a774e1 xhci support. The driver will use the fallback
+> compatible string "renesas,rcar-gen3-xhci", therefore no driver
+> change is needed.
 >
 > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> ---
+>  Documentation/devicetree/bindings/usb/usb-xhci.txt | 1 +
 
+In the mean time, this file has been converted to dt-schema in Rob's
+tree: Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
+
+> --- a/Documentation/devicetree/bindings/usb/usb-xhci.txt
+> +++ b/Documentation/devicetree/bindings/usb/usb-xhci.txt
+> @@ -13,6 +13,7 @@ Required properties:
+>      - "renesas,xhci-r8a774a1" for r8a774a1 SoC
+>      - "renesas,xhci-r8a774b1" for r8a774b1 SoC
+>      - "renesas,xhci-r8a774c0" for r8a774c0 SoC
+> +    - "renesas,xhci-r8a774e1" for r8a774e1 SoC
+>      - "renesas,xhci-r8a7790" for r8a7790 SoC
+>      - "renesas,xhci-r8a7791" for r8a7791 SoC
+>      - "renesas,xhci-r8a7793" for r8a7793 SoC
+
+For the logical change:
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Gr{oetje,eeting}s,
