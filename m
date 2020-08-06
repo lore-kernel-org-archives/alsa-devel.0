@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8165BC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:54:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C75AFC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:58:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2868722CF7
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:54:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 79A49221E2
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:58:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sdXBSEcM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2868722CF7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tR/Azcpi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79A49221E2
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 898B641;
-	Thu,  6 Aug 2020 13:53:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 898B641
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB32211C;
+	Thu,  6 Aug 2020 13:57:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB32211C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596714878;
-	bh=A6xkKaxFfY+DyF4Lv2eKfuP/S7t14MPNNP9R7LE9IMA=;
+	s=default; t=1596715103;
+	bh=XIf/G9KxDNh4XbyHkzhBFyPdbYtUreVMqTfHzPrzVsI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sdXBSEcMWjU2zthcddDwWHcwWgDI1l7gY0gkYuUrC8JLy32lj0KcdnZAXwmHZO9dl
-	 5L1pM7fbP1CU5opDM3rEi4ML3Pix8D8zxWWpZ0sfJOdcXewUACpTng41nNZtD/ksnK
-	 9S/QNBF/q5L0WNyaOP28dnjTee5JunZ8iFcnHBEI=
+	b=tR/AzcpiQoUViLQtjpI7XpOrhkdgQmEggy+9JvAh9DybR+7newN7n8c7TtdFqKrds
+	 XuXpWiBNdPWJFwCDimlp5UXHiADE3pXOUpD/JZEN2mKto6B9f7D+XdLLhb8fHb1GQI
+	 VdJ+tk/5T2a7+F1ss/c9q0L1H1Tx74neF9yRWwm4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F1DDF80150;
-	Thu,  6 Aug 2020 13:53:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F37BF800B7;
+	Thu,  6 Aug 2020 13:57:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7FB3F80159; Thu,  6 Aug 2020 13:53:46 +0200 (CEST)
+ id 5262DF80159; Thu,  6 Aug 2020 13:57:31 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 2F6CEF800B7
- for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2020 13:53:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F6CEF800B7
+ by alsa1.perex.cz (Postfix) with ESMTP id 70D22F80086
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2020 13:57:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70D22F80086
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1596714815273674965-webhooks-bot@alsa-project.org>
-References: <1596714815273674965-webhooks-bot@alsa-project.org>
-Subject: Correct conflicting mic in max98090
-Message-Id: <20200806115346.D7FB3F80159@alsa1.perex.cz>
-Date: Thu,  6 Aug 2020 13:53:46 +0200 (CEST)
+In-Reply-To: <1596715043455965996-webhooks-bot@alsa-project.org>
+References: <1596715043455965996-webhooks-bot@alsa-project.org>
+Subject: Microphone selection logic not working for max98090
+Message-Id: <20200806115731.5262DF80159@alsa1.perex.cz>
+Date: Thu,  6 Aug 2020 13:57:31 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,12 +68,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #43 was opened from jacobopantoja:
+alsa-project/alsa-ucm-conf issue #44 was opened from jacobopantoja:
 
-'mic' was conflicting 'mic' instead of 'headset', thus preventing correct configuration regarding microphones.
+An incorrect conflicting device is set for internal mic. See PR #43 and commit #73 and commit 73fac5b1 for proposed solution.
 
-With this corrected, introducing a headset enables 'headset' mic and disables internal 'mic', whereas releasing the headset disables 'headset' mic and enables internal 'mic'
+Adding this issue for traceability purposes
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/43
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/43.patch
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/44
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
