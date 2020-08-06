@@ -2,81 +2,139 @@ Return-Path: <SRS0=T8Ko=BQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E9E3C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:09:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3288AC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:16:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E334822CA1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:09:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EBA9E206B5
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 11:16:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oAzNq1d5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LBkShuRw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E334822CA1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LNIgw7Nb";
+	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="Zxy6kdsh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBA9E206B5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 226571661;
-	Thu,  6 Aug 2020 13:08:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 226571661
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACDFF1663;
+	Thu,  6 Aug 2020 12:20:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACDFF1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596712155;
-	bh=15Y36StYY4iLXnVd4QQeJi/iwqwtVIubaSLXu/Ed4wM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oAzNq1d5EjSOg+5Cy1x1sI1/sdFkiT6OL8YWiWL36+kyz7H1Wj5C2tUJi+9Qhtncg
-	 WFBnsVoisqhI1FAoRYknMs4rFZqFlU8aKF3E6AtlnFKBQcH9suOZDivSqiwB09i14K
-	 /aeNjlvwmLq3gsZNg3L9o9gxCpE0lMY1sAJY5DqM=
+	s=default; t=1596709298;
+	bh=gbRXDJElZZBqAwDqQ2RCDiEc7IUh/rjVOdxT9bUAUxg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LNIgw7Nb043XIxnQ8KMuI3hDnfRLfb8Ftzjkc7BMcFLsz7GX0RSecbCZa+RD+4ck8
+	 G2b+OYliHcH0N98sn/vun6RHOJeMTZKA7DVcEO9wBWIVUipQ+IzUz6bWWI7fBCI1Iw
+	 YDNf70MlncpVwSeRaAVnN3u3TSQ/ahP/Iv/TgpNY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5E4DF80150;
-	Thu,  6 Aug 2020 13:08:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35DF6F80150;
+	Thu,  6 Aug 2020 12:20:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05707F80159; Thu,  6 Aug 2020 13:08:23 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 886DEF80086
- for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2020 13:08:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 886DEF80086
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LBkShuRw"
-Received: from localhost (unknown [122.171.202.192])
+ id 64E2AF80159; Thu,  6 Aug 2020 12:20:46 +0200 (CEST)
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com
+ (mail-eopbgr690075.outbound.protection.outlook.com [40.107.69.75])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5111A204FD;
- Thu,  6 Aug 2020 11:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596712097;
- bh=15Y36StYY4iLXnVd4QQeJi/iwqwtVIubaSLXu/Ed4wM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=LBkShuRw6J2te4O6AWDiRukKL6OXnClqE3VYlOty5A/1jwasG88skIcK9vcLcxNo4
- EKhghtFudkl9hziFOQReHfutbJ6HULIXRcj+IJs8Estw4LurSyWAElN1TD+1r6bDw+
- lDDVlhgQmXQPaeiBnJKQu9I/YKO05WwiH6sIIC5o=
-Date: Thu, 6 Aug 2020 16:38:13 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [RFC PATCH v2 0/6] ALSA: compress: add support to change codec
- profile in gapless playback
-Message-ID: <20200806043010.GC12965@vkoul-mobl>
-References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
- <s5hpn8mqudq.wl-tiwai@suse.de> <20200723130522.GB12965@vkoul-mobl>
- <s5hlfjaqsk7.wl-tiwai@suse.de> <20200723155612.GC12965@vkoul-mobl>
- <s5hy2naotsa.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54E02F800B7
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2020 12:20:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54E02F800B7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
+ header.i=@amdcloud.onmicrosoft.com header.b="Zxy6kdsh"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fTae+7Sj+AGN2g7GR/qRZcWL54z1zSWWhgrNawmOJQvR9eZldE3Dxvji9fUC5hmX4nPxVjFUrDVqbQKv6HJ8IVPdjWLrtvwgxkdI6k5CaEZ/8ohrFHx/p1sE+TBkjUVKnyo/9/zm/YJg+bJTC0lQxtBPfD2BPFUoEgOPYwZaIhyKBFHN9MWKNgXGfzOgHhJCl7RjVjpGCgmSrFVoqFr5hWlSYMph6E9wCU5Zv5KBCOG4UPRWnqImYc8XqoxZoNcrlv71gk7fuuYYIxTf4xxvMzVgLyIPscDsZXdFtuF9FDx9Urza2dq3hnY7TIhgpn95R+Eu01nNfF7ZaLsvKLHrcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3VyfaXDNa7Hma5eJuOzSgefADULYJJJwfduBrclNEME=;
+ b=nUOfpRpKRsqIW5BgvYIxqjsae0pCJ6/ilhVVus2p2gA/MD3xvQxXS906Nvcx5J9OzZHngaWT5zyOGZBNh/F0FYc3ipcDDPNnZXcXE7pcuCAYoDLrklGiCXh+expPUVnJ+bclMApLzFoaVivV6l39oVX4mkYXDIMUHvFtP8UV/9ojm0511gzxXl23i8b8Xuv9nrWgG7Q5H50AoKhcZcQXZSdclG5TNRvC3Ume3mgF7xYLX1A5x6EQ1brMEzSEGIbAhXPAYnkgXrDtThi42DlQ8z/863fC+jqQgmIxikQZFR31npZWs82Bd7hGl3CQonvj0GFqxyosn4MBPTOqLax2zA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com;
+ dmarc=permerror action=none header.from=amd.com; dkim=none (message not
+ signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3VyfaXDNa7Hma5eJuOzSgefADULYJJJwfduBrclNEME=;
+ b=Zxy6kdshfws6qOdKz0Y+bOyd/1GYy9A7hyIY6FxIANP2060GM/McppGaJGlGEe/+YpE20cmvRm6lYcOIlPhjOal4fXMpnGf2YusY/+5ZgAmXGOE1McT0JhvffLWBSlWJjiP1VGGIrdMMQdiO1OSP4wGFAi6KtmcKc0OjPP+pDyA=
+Received: from BN6PR13CA0061.namprd13.prod.outlook.com (2603:10b6:404:11::23)
+ by BN6PR1201MB2499.namprd12.prod.outlook.com (2603:10b6:404:b2::8)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18; Thu, 6 Aug
+ 2020 10:20:20 +0000
+Received: from BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:11:cafe::90) by BN6PR13CA0061.outlook.office365.com
+ (2603:10b6:404:11::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.13 via Frontend
+ Transport; Thu, 6 Aug 2020 10:20:20 +0000
+X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=permerror action=none header.from=amd.com;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+Received: from SATLEXMB01.amd.com (165.204.84.17) by
+ BN8NAM11FT018.mail.protection.outlook.com (10.13.176.89) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3261.16 via Frontend Transport; Thu, 6 Aug 2020 10:20:20 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB01.amd.com
+ (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 6 Aug 2020
+ 05:20:20 -0500
+Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 6 Aug 2020
+ 05:20:20 -0500
+Received: from vishnu-All-Series.amd.com (10.180.168.240) by
+ SATLEXMB02.amd.com (10.181.40.143) with Microsoft SMTP Server id 15.1.1713.5
+ via Frontend Transport; Thu, 6 Aug 2020 05:20:13 -0500
+From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+To: 
+Subject: [PATCH] ASoC: amd: Replacing component->name with codec_dai->name
+Date: Thu, 6 Aug 2020 15:44:12 +0530
+Message-ID: <20200806101451.7918-1-Vishnuvardhanrao.Ravulapati@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hy2naotsa.wl-tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
- broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 807df74e-d080-4a60-8765-08d839f252c5
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB2499:
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB2499B00BD57B72053857CA97E7480@BN6PR1201MB2499.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1122;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VNEE8EYIWloaO8Xb37+TP9MAuhKuO/ACUM1ZCpPa9WJpyEmv5ijgCq3DuSq/96OouIIdZR84TrXc/JD5pFp6Kn3fRPK3yom/H+lEeTBWs4W1O/68BJ93kuOstfCv750u0Ie+ace9+JqbJiZdHDCPxflRuJoFfnG81TOEUc/mSxSKqSjOJojjWa6P+E8YJKIvhOzmfe4mu0sXZdRA+mkE8DZiQJ8s+a1dQa52a8sraLt8U+009bdUVwuCvaMbhyAt5XMlUm2cmXbNwyOUZ1jm25yuOfdXocGNfr8oHKDfTntxtYNkvmtzEwICeRkOi3+b6HylRJSoo7fpTQOSAcQCgss5UAYBkHSJxn941P0UHC6W3VmkmscxUx0y/0jykNiH0K31+07Pu3w8lsYF+yR4r24JSHHMcTKDnb3TIUPmdIM=
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SATLEXMB01.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFTY:;
+ SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(46966005)(82310400002)(356005)(47076004)(186003)(7696005)(81166007)(336012)(26005)(2906002)(86362001)(478600001)(83380400001)(82740400003)(109986005)(426003)(54906003)(1076003)(316002)(8936002)(5660300002)(70206006)(70586007)(4744005)(4326008)(8676002)(2616005)(36756003)(266003);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2020 10:20:20.6031 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 807df74e-d080-4a60-8765-08d839f252c5
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB01.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB2499
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>,
+ Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>,
+ Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,60 +150,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 23-07-20, 22:33, Takashi Iwai wrote:
-> On Thu, 23 Jul 2020 17:56:12 +0200,
-> Vinod Koul wrote:
-> > 
-> > On 23-07-20, 15:17, Takashi Iwai wrote:
-> > > On Thu, 23 Jul 2020 15:05:22 +0200,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > On 23-07-20, 14:38, Takashi Iwai wrote:
-> > > > > On Tue, 21 Jul 2020 19:00:01 +0200,
-> > > > > Srinivas Kandagatla wrote:
-> > > > > > 
-> > > > > > For gapless playback it is possible that each track can have different
-> > > > > > codec profile with same decoder, for example we have WMA album,
-> > > > > > we may have different tracks as WMA v9, WMA v10 and so on
-> > > > > > Or if DSP's like QDSP have abililty to switch decoders on single stream
-> > > > > > for each track, then this call could be used to set new codec parameters.
-> > > > > > 
-> > > > > > Existing code does not allow to change this profile while doing gapless
-> > > > > > playback.
-> > > > > > 
-> > > > > > This patchset adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL along with
-> > > > > > flags in capablity structure to allow userspace to set this new
-> > > > > > parameters required which switching codec profile, either for gapless
-> > > > > > or cross fade usecase.
-> > > > > 
-> > > > > One idea that came up at the previous audio conference regarding this
-> > > > > implementation was to just allow SET_PARAMS during the stream is
-> > > > > running (only if the driver sets the capability) instead of
-> > > > > introducing yet a new ioctl and an ops.
-> > > > > Would it make sense?
-> > > > 
-> > > > That does sound good but only issue would be that we need to somehow
-> > > > mark/document that buffer info is useless and would be discarded, how do
-> > > > we do that?
-> > > 
-> > > Yes, the buffer and no_wake_mode can be ignored in the gapless
-> > > re-setup.  Is your concern only about the documentation?  Or something
-> > > else needs to be changed significantly?  It's a new scheme in anyway,
-> > > so the documentation update is required...
-> > 
-> > My concern is potential abuse of API down the road, if you feel it is
-> > okay, I am okay with the proposal
-> 
-> If this can be potentially dangerous, it shouldn't be used, of course.
-> What kind of scenario could it be?
+Replacing string compare with codec_dai->name instead of comparing with
+codec_dai->component->name in hw_params.
 
-I can think of users trying to invoke this incorrectly, right now we
-would reject this.
+Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+---
+ sound/soc/amd/acp3x-rt5682-max9836.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Maybe, we can add checks like, if next_track is set and then copy the
-codec params only to prevent any misuse.
-
-Do you think that would be okay?
-
+diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+index 55815fdaa1aa..406526e79af3 100644
+--- a/sound/soc/amd/acp3x-rt5682-max9836.c
++++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+@@ -138,7 +138,7 @@ static int acp3x_1015_hw_params(struct snd_pcm_substream *substream,
+ 	srate = params_rate(params);
+ 
+ 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+-		if (strcmp(codec_dai->component->name, "rt1015-aif"))
++		if (strcmp(codec_dai->name, "rt1015-aif"))
+ 			continue;
+ 		ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
+ 		if (ret < 0)
 -- 
-~Vinod
+2.17.1
+
