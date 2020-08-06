@@ -2,67 +2,71 @@ Return-Path: <SRS0=T8Ko=BQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B430C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 16:26:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3863C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 16:29:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C9A923119
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 16:26:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E948C23117
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2020 16:29:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="in+iS0YE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C9A923119
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ijqrF3dD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E948C23117
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22D4011C;
-	Thu,  6 Aug 2020 18:25:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22D4011C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AAEE820;
+	Thu,  6 Aug 2020 18:28:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AAEE820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596731201;
-	bh=c2exnppyTuMniIC8rV9sd+iaQS7W+K5sosz02CtyIYE=;
+	s=default; t=1596731375;
+	bh=hhVGYXwY9MaiNl/GLP7CPW/eSRF8zQKTgsrMRbJSqmI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=in+iS0YEUAdwUybVllx7caqadkYwlvKPlfAbgWZwgluCYbhpnAZRTVHm9i3TRzfZk
-	 wvR6r2KoSbzvk/bR35RIc0YWc3pBzbx6BF8BXMaHQJAMhlSdFYZZXxFa9lehxLptMS
-	 C9C5Iivaq+zNsvxvdvC/Ehx+gyeBpy71wCEO8lb0=
+	b=ijqrF3dDy/GdU/hD2RNr2Jp3DcEzyAhX7hSii62n1xCnXJBcCCoFHmRiBpp40DEa1
+	 vJom6JlkaSgZCVwADIFsIQQOdB8YKdjBKA8Lw07ZeQESgf2cE3huZhxx5jQCklmGja
+	 DV4tZp7KA44KsbHNEwGTYC1ft+Zb5UF/TJkORf1s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F660F80150;
-	Thu,  6 Aug 2020 18:25:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96C02F80150;
+	Thu,  6 Aug 2020 18:28:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 484BAF80159; Thu,  6 Aug 2020 18:25:49 +0200 (CEST)
+ id D6854F80159; Thu,  6 Aug 2020 18:28:41 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 873FDF80086
- for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2020 18:25:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 873FDF80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2F07F80124
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2020 18:28:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2F07F80124
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9FC7EACF6;
- Thu,  6 Aug 2020 16:25:55 +0000 (UTC)
-Date: Thu, 06 Aug 2020 18:25:38 +0200
-Message-ID: <s5hk0ybbv25.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1BF2BAC48;
+ Thu,  6 Aug 2020 16:28:48 +0000 (UTC)
+Date: Thu, 06 Aug 2020 18:28:30 +0200
+Message-ID: <s5himdvbuxd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH] ALSA: usb: fix spelling mistake "buss" -> "bus"
-In-Reply-To: <20200806105134.46447-1-colin.king@canonical.com>
-References: <20200806105134.46447-1-colin.king@canonical.com>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [RFC PATCH v2 0/6] ALSA: compress: add support to change codec
+ profile in gapless playback
+In-Reply-To: <20200806043010.GC12965@vkoul-mobl>
+References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
+ <s5hpn8mqudq.wl-tiwai@suse.de> <20200723130522.GB12965@vkoul-mobl>
+ <s5hlfjaqsk7.wl-tiwai@suse.de> <20200723155612.GC12965@vkoul-mobl>
+ <s5hy2naotsa.wl-tiwai@suse.de> <20200806043010.GC12965@vkoul-mobl>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
+ broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,17 +82,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 06 Aug 2020 12:51:34 +0200,
-Colin King wrote:
+On Thu, 06 Aug 2020 13:08:13 +0200,
+Vinod Koul wrote:
 > 
-> From: Colin Ian King <colin.king@canonical.com>
+> On 23-07-20, 22:33, Takashi Iwai wrote:
+> > On Thu, 23 Jul 2020 17:56:12 +0200,
+> > Vinod Koul wrote:
+> > > 
+> > > On 23-07-20, 15:17, Takashi Iwai wrote:
+> > > > On Thu, 23 Jul 2020 15:05:22 +0200,
+> > > > Vinod Koul wrote:
+> > > > > 
+> > > > > On 23-07-20, 14:38, Takashi Iwai wrote:
+> > > > > > On Tue, 21 Jul 2020 19:00:01 +0200,
+> > > > > > Srinivas Kandagatla wrote:
+> > > > > > > 
+> > > > > > > For gapless playback it is possible that each track can have different
+> > > > > > > codec profile with same decoder, for example we have WMA album,
+> > > > > > > we may have different tracks as WMA v9, WMA v10 and so on
+> > > > > > > Or if DSP's like QDSP have abililty to switch decoders on single stream
+> > > > > > > for each track, then this call could be used to set new codec parameters.
+> > > > > > > 
+> > > > > > > Existing code does not allow to change this profile while doing gapless
+> > > > > > > playback.
+> > > > > > > 
+> > > > > > > This patchset adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL along with
+> > > > > > > flags in capablity structure to allow userspace to set this new
+> > > > > > > parameters required which switching codec profile, either for gapless
+> > > > > > > or cross fade usecase.
+> > > > > > 
+> > > > > > One idea that came up at the previous audio conference regarding this
+> > > > > > implementation was to just allow SET_PARAMS during the stream is
+> > > > > > running (only if the driver sets the capability) instead of
+> > > > > > introducing yet a new ioctl and an ops.
+> > > > > > Would it make sense?
+> > > > > 
+> > > > > That does sound good but only issue would be that we need to somehow
+> > > > > mark/document that buffer info is useless and would be discarded, how do
+> > > > > we do that?
+> > > > 
+> > > > Yes, the buffer and no_wake_mode can be ignored in the gapless
+> > > > re-setup.  Is your concern only about the documentation?  Or something
+> > > > else needs to be changed significantly?  It's a new scheme in anyway,
+> > > > so the documentation update is required...
+> > > 
+> > > My concern is potential abuse of API down the road, if you feel it is
+> > > okay, I am okay with the proposal
+> > 
+> > If this can be potentially dangerous, it shouldn't be used, of course.
+> > What kind of scenario could it be?
 > 
-> There is a spelling mistake in a usb_audio_dbg debug message. Also
-> replace "param" with "parameter".  Fix these.
+> I can think of users trying to invoke this incorrectly, right now we
+> would reject this.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Maybe, we can add checks like, if next_track is set and then copy the
+> codec params only to prevent any misuse.
+> 
+> Do you think that would be okay?
 
-Applied, thanks.
+Yes, it's the same condition check that was proposed for the new
+ioctl.
 
 
 Takashi
