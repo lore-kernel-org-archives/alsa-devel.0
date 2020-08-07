@@ -2,84 +2,102 @@ Return-Path: <SRS0=pDBX=BR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 179CAC433E1
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 09:51:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 704EAC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 10:36:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 971AA2177B
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 09:51:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF0722075D
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 10:36:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tiE+BD69"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 971AA2177B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HXA7OyWJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="d2ullFlR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF0722075D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F388F11C;
-	Fri,  7 Aug 2020 11:50:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F388F11C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7246711C;
+	Fri,  7 Aug 2020 12:35:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7246711C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596793885;
-	bh=VWcSr1DpWpf5tMFOTXCPQGxJ51EnKrxLyvkNXrGvqkw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1596796598;
+	bh=bOq48I3pMWe/wg0j4YBpYeOzskafEDL4ZPh6aPpcCxU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tiE+BD69PrnXSp1zV8aUmuWwBHUAdGSp5w/el3U9JVuK6Ah6rC4nOPlSSmkLChq68
-	 FPzWkYFgh+yZSDkKDUUdsjr7vYhyRRvc8mVzHU0VngV7SU0rlaYWALtOqr/wEZarkH
-	 LVHO+54pvzmsHFr4dUnNJYdfVRSmEyQinYSsx+mw=
+	b=HXA7OyWJuqH6R8HsYJ6yzS+tvsQ3JSEyKdHQAXaVkS5aD9210gqIRf3/0wQpcC2mL
+	 WdXNE8koH6jAZwJzc9WBU64GuyIO/UJ00wRatTsKHeREA8/szhMdjaj25w/EeU8s0M
+	 LIWiahttmt7LcxsvNUKqJL6PUhEcEqx7Wh7PA3z8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F31BF8020B;
-	Fri,  7 Aug 2020 11:50:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04533F8020B;
+	Fri,  7 Aug 2020 12:35:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9260DF80218; Fri,  7 Aug 2020 11:50:32 +0200 (CEST)
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
- by alsa1.perex.cz (Postfix) with ESMTP id D254AF800B7
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 11:50:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D254AF800B7
-Received: by ajax-webmail-mail-app3 (Coremail) ; Fri, 7 Aug 2020 17:50:13
- +0800 (GMT+08:00)
-X-Originating-IP: [210.32.144.186]
-Date: Fri, 7 Aug 2020 17:50:13 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: dinghao.liu@zju.edu.cn
-To: "Takashi Iwai" <tiwai@suse.de>
-Subject: Re: Re: [PATCH] ALSA: usb-audio: Fix memleak in scarlett2_add_new_ctl
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <s5htuxeanl2.wl-tiwai@suse.de>
-References: <20200807071229.9533-1-dinghao.liu@zju.edu.cn>
- <s5htuxeanl2.wl-tiwai@suse.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+ id 57E2BF80218; Fri,  7 Aug 2020 12:35:46 +0200 (CEST)
+Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
+ [216.228.121.143])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A4BFF800AB
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 12:35:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A4BFF800AB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="d2ullFlR"
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5f2d2e110001>; Fri, 07 Aug 2020 03:33:53 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate102.nvidia.com (PGP Universal service);
+ Fri, 07 Aug 2020 03:35:34 -0700
+X-PGP-Universal: processed;
+ by hqpgpgate102.nvidia.com on Fri, 07 Aug 2020 03:35:34 -0700
+Received: from [10.26.73.183] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Aug
+ 2020 10:35:29 +0000
+Subject: Re: [PATCH v5 10/11] arm64: tegra: Enable ACONNECT, ADMA and AGIC on
+ Jetson Nano
+To: Sameer Pujar <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>, 
+ <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
+ <lgirdwood@gmail.com>
+References: <1595134890-16470-1-git-send-email-spujar@nvidia.com>
+ <1595134890-16470-11-git-send-email-spujar@nvidia.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <09d7a726-6340-b2cc-ab0f-65be9e3cf625@nvidia.com>
+Date: Fri, 7 Aug 2020 11:35:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <2632689f.4acd5.173c853f824.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgAH0t7VIy1fY10wAg--.31871W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgECBlZdtPbBHgAHsW
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbXIS07vEb7Iv0x
- C_JF4lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
- bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
- CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
- z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
- xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
- 07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
- AFwI0_Jr0_Jr4lV2xY6cIj6I8E87Iv67AKxVWUJVW8JwCS07vEOx8S6xCaFVCjc4AY6r1j
- 6r4UMIAIbVCjxxvEw4WlV2xY6xkIecxEwVAFwVW8uwCS07vEc2IjII80xcxEwVAKI48JMI
- AIbVCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1lV2xY6xCjnVCjjxCrMIAIbVCFx2IqxVCF
- s4IE7xkEbVWUJVW8JwCS07vEx2IqxVAqx4xG67AKxVWUJVWUGwCS07vEx2IqxVCjr7xvwV
- AFwI0_JrI_JrWlV2xY6I8E67AF67kF1VAFwI0_JF0_Jw1lV2xY6IIF0xvE2Ix0cI8IcVAF
- wI0_Jr0_JF4lV2xY6IIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCS07vEIxAIcVCF04
- k26cxKx2IYs7xG6rW3Jr0E3s1lV2xY6IIF0xvEx4A2jsIE14v26r1j6r4UMIAIbVCI42IY
- 6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73U
-Cc: alsa-devel@alsa-project.org, kjlu@umn.edu, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, "Geoffrey D. Bennett" <g@b4.vu>
+In-Reply-To: <1595134890-16470-11-git-send-email-spujar@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1596796433; bh=1t9Lg31PNb6XgN83QFj6fug+yIbeZ1/mCbboRHs0D18=;
+ h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Language:
+ Content-Transfer-Encoding;
+ b=d2ullFlRAfwSJMzTLBl0fmRpQzeBryodd0uxwMZQZxggiuX1Qd25tesr8vm+CYakN
+ GrxJlNDqvSjTGXz4C8eu61Cn5irFxTWpmeUVhV3VfG7UyOvQcDrQ1IihrtclsxqeCU
+ 8Df17oWERLpRorPP/GMG6t0b8ottL3gos6p5bWUktrJN7zI6EqX0P6O4/l5J68Ar/c
+ 5PPFLKP5pU3lW33vPiNXARF/b9mMR4uaueqOY+x6PG4L340RqMB06J4izfS/D9qi1m
+ xC0hk5hbOyvhEG7aZ+hHvQLsgYob9cFtI5Y4LAxx9puzswneEVm8DoTKBP4P57stwY
+ RtRnmmA85U3zg==
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, swarren@nvidia.com,
+ nwartikar@nvidia.com, linux-kernel@vger.kernel.org, atalambedu@nvidia.com,
+ viswanathl@nvidia.com, sharadg@nvidia.com, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org, digetx@gmail.com, rlokhande@nvidia.com,
+ mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,12 +113,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CgomcXVvdDtUYWthc2hpIEl3YWkmcXVvdDsgJmx0O3Rpd2FpQHN1c2UuZGUmZ3Q75YaZ6YGT77ya
-Cj4gT24gRnJpLCAwNyBBdWcgMjAyMCAwOToxMjoyNyArMDIwMCwKPiBEaW5naGFvIExpdSB3cm90
-ZToKPiA+IAo+ID4gV2hlbiBzbmRfdXNiX21peGVyX2FkZF9jb250cm9sKCkgZmFpbHMsIGVsZW0g
-bmVlZHMgdG8gYmUKPiA+IGZyZWVkIGp1c3QgbGlrZSB3aGVuIHNuZF9jdGxfbmV3MSgpIGZhaWxz
-LiBIb3dldmVyLCBjdXJyZW50Cj4gPiBjb2RlIGlzIHJldHVybmluZyBkaXJlY3RseSBhbmQgZW5k
-cyB1cCBsZWFraW5nIG1lbW9yeS4KPiAKPiBObywgdGhpcyB3b3VsZCBsZWFkIHRvIGRvdWJsZS1m
-cmVlLiAgc25kX2N0bF9hZGQoKSBzaG93cyBhIGtpbmQgb2YKPiBzcGVjaWFsIGJlaGF2aW9yLCBp
-dCBhbHJlYWR5IHJlbGVhc2VzIHRoZSBvYmplY3QgYXQgaXRzIGVycm9yIHBhdGguCj4gCgpJdCdz
-IGNsZWFyIHRvIG1lLCB0aGFua3MhCgpSZWdhcmRzLApEaW5naGFvCg==
+
+On 19/07/2020 06:01, Sameer Pujar wrote:
+> These devices are required for audio sub system and current patch
+> ensures probe path of these devices gets tested. Later sound card
+> support would be added which can use these devices at runtime.
+> 
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+>  arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
+> index 9b63469..0325fc0 100644
+> --- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
+> +++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
+> @@ -806,4 +806,16 @@
+>  
+>  		vin-supply = <&avdd_1v05_pll>;
+>  	};
+> +
+> +	aconnect@702c0000 {
+> +		status = "okay";
+> +
+> +		dma@702e2000 {
+> +			status = "okay";
+> +		};
+> +
+> +		interrupt-controller@702f9000 {
+> +			status = "okay";
+> +		};
+> +	};
+>  };
+> 
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+
+Thanks!
+Jon
+
+-- 
+nvpublic
