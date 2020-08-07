@@ -3,83 +3,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F52CC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:52:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93600C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:55:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B42972075D
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:52:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 183252075D
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:55:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UXrKaS47";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HEftQRvX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B42972075D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eAl3RW3C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SLO03/FO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 183252075D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 267C3112;
-	Fri,  7 Aug 2020 13:52:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 267C3112
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99EF310E;
+	Fri,  7 Aug 2020 13:54:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99EF310E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596801175;
-	bh=cKfNzVoedQVmKvHvqaEn1VyOBUd+uYh5+G/kG05O8i0=;
+	s=default; t=1596801338;
+	bh=ZtA3NUxNT+VUCjbXoK3nwC7HwEhIkp1OwgDmyeuzGSo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UXrKaS479Ouahmh3Ve67dLyYPV6QSZWCJllOGqjE7Jf4RCFRY7Jr73NDk7sp3TBVJ
-	 IIvKukg4ir/kNwkaat379yYjC3A9jEDbzUie5d23IuRf5U8/B5C5repCzo096hdQyt
-	 btUUUm6nsvotD1A5G1bxCKM75sIXMc+0Vod57WDo=
+	b=eAl3RW3CkdI/aq9XYoPzCJaaOWDRRDx54vuOMcXn5Vjvpdjb+mPLSJ+nyI17Ma5dS
+	 AiFLPiXnJExp5EFZ0VXJo2XUT0vv+b4X5Jt7mlfs3vFMbldOPGEplKjxYHHo6Fhh2V
+	 zXupj273jqo8mYRbPgXVa2xJaL2F4uEpf7jd0Vpg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97662F8020B;
-	Fri,  7 Aug 2020 13:52:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BA29F8020B;
+	Fri,  7 Aug 2020 13:54:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B16EBF80218; Fri,  7 Aug 2020 13:52:02 +0200 (CEST)
+ id C6950F80218; Fri,  7 Aug 2020 13:54:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93887F801F7
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 13:51:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93887F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB8C2F801F7
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 13:54:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB8C2F801F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HEftQRvX"
+ header.b="SLO03/FO"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C1BDB2075D;
- Fri,  7 Aug 2020 11:51:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id CB2B02075D;
+ Fri,  7 Aug 2020 11:54:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596801110;
- bh=cKfNzVoedQVmKvHvqaEn1VyOBUd+uYh5+G/kG05O8i0=;
+ s=default; t=1596801279;
+ bh=ZtA3NUxNT+VUCjbXoK3nwC7HwEhIkp1OwgDmyeuzGSo=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HEftQRvX29huLFXq9+TWsNE8Qe8nvmo3X6O+cCG15qzk3KbIHm1/xYVzzdOQOTNAb
- /NrTFQqRiYzNbASVAiDemSygf9K4zF/2u8pqVJIEv4GdrdxciPSEbYj6D0ZpgueVAF
- sxeWJt2cvD2K9Qo6/01yY0iBndmuMSPXg2ZVlPVA=
-Date: Fri, 7 Aug 2020 12:51:25 +0100
+ b=SLO03/FOcrfNQ+qPTkxU1dgQGEhJFM2Ul9fpJa3e1SEXb3rQ+sKtvBXRHbjiseWu3
+ 1M4zGkfTAnUAIgaFLhVHAHs+Jg70ApN+OXLpv3F8ZDZtcmJ1X6x9iqRPL6ivYYqiSA
+ ZGu8A2dvW5JwdJDq7Pe0y77lWF6FVtAvxNeYErRM=
+Date: Fri, 7 Aug 2020 12:54:14 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 28/41] ARM: s3c24xx: move iis pinctrl config into boards
-Message-ID: <20200807115125.GG5435@sirena.org.uk>
-References: <20200806181932.2253-1-krzk@kernel.org>
- <20200806182059.2431-28-krzk@kernel.org>
+To: "RAVULAPATI, VISHNU VARDHAN RAO" <Vishnuvardhanrao.Ravulapati@amd.com>
+Subject: Re: [PATCH] ASoC: amd: Replacing component->name with codec_dai->name
+Message-ID: <20200807115414.GI5435@sirena.org.uk>
+References: <20200806101451.7918-1-Vishnuvardhanrao.Ravulapati@amd.com>
+ <20200806112831.GA6442@sirena.org.uk>
+ <BY5PR12MB429286C315F66F7E2E5EA501E7490@BY5PR12MB4292.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="5L6AZ1aJH5mDrqCQ"
+ protocol="application/pgp-signature"; boundary="mhOzvPhkurUs4vA9"
 Content-Disposition: inline
-In-Reply-To: <20200806182059.2431-28-krzk@kernel.org>
+In-Reply-To: <BY5PR12MB429286C315F66F7E2E5EA501E7490@BY5PR12MB4292.namprd12.prod.outlook.com>
 X-Cookie: Disposable, use only once.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>,
- Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
- Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ open list <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,35 +96,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---5L6AZ1aJH5mDrqCQ
+--mhOzvPhkurUs4vA9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 06, 2020 at 08:20:45PM +0200, Krzysztof Kozlowski wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The s3c_gpio_cfgall_range() function is an internal interface of the
-> samsung gpio driver and should not be called directly by drivers, so
-> move the iis pin initialization into the boards.
+On Fri, Aug 07, 2020 at 08:36:25AM +0000, RAVULAPATI, VISHNU VARDHAN RAO wr=
+ote:
+> On Thu, Aug 06, 2020 at 03:44:12PM +0530, Ravulapati Vishnu vardhan rao w=
+rote:
 
-Well, it is now - that wasn't the case at the time.
+> > Replacing string compare with codec_dai->name instead of comparing=20
+> > with codec_dai->component->name in hw_params.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+> >Why?
 
---5L6AZ1aJH5mDrqCQ
+> Here the component name for codec RT1015 is "i2c-10EC1015:00" and will ne=
+ver be "rt1015-aif1"
+> As it is codec-dai->name so the strcmp always compares and fails to set t=
+he sysclk,pll,bratio of expected codec-dai
+
+This should be in the changelog so people can understand why the change
+was made.
+
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
+
+--mhOzvPhkurUs4vA9
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8tQD0ACgkQJNaLcl1U
-h9CqCwf+JA5FnrUTEVVBDbW47geQe42Qnc9Xm8NStwfOPmjgajYfUNeCXBA/hmac
-FXu0yRKfw64NF52gC92PURaKRq+ZVG+3zWYf+jfKxABUiS5FZGLgQjQ7pUEtrZMc
-FxspnPqX4H57ZJXAg+q3Eq76iR132c4eX7s20jBiHJrEfEnIc86n4R5+aZ+F1HSM
-kYVzZacjdpEzter1onhkgDbwAR+HT9RdPsyefvCKxtrdgW1h28TvjI9s2XgNHgAz
-J5BNRa7ohL/qZnXYd9Z041846uXa6CQcoU51hejVbDSkXk9hprkwVwsrkGCBar2n
-58ZhRIsY5a+CLanhjLZCZoMPR6GFAQ==
-=U67M
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8tQOUACgkQJNaLcl1U
+h9AMEwf9EjG0TW7IazqtWGPRye237mVP6Pc8k9MNOPeSCB+0NwICOZWMa+bT2dr9
+YAUGqvVRrbSFzqgPXlUvSP9WQoYXbnx9vyu/eNYinHy1P5ij0JMafTb79TekTqbW
+QlaRNBdesjDQPuoFnHncAQZY8hddYW9OwKQ/dEGA3uvM9q86dGLgH5LrOhl9sRXp
+zywg8qYT1oQkfj1gvfj3OgqjJHo6g65l6Ei7QQ1oNXk7lq+cxJGebjpTOVcVW6pA
+pxwbi4r/fyemXLhJ/YvF62wZ6YVarLh2zWAn6sKBTRY+1owvQ/nOKpRAC/Ie+2WF
+P8ojsr5EIog/QduiVBCAs2MV7ModLg==
+=ml31
 -----END PGP SIGNATURE-----
 
---5L6AZ1aJH5mDrqCQ--
+--mhOzvPhkurUs4vA9--
