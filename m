@@ -2,67 +2,67 @@ Return-Path: <SRS0=pDBX=BR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 752D2C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 08:03:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 776B9C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 08:05:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A8FC221E5
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 08:03:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EDA6E20866
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 08:05:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ljtyg7ro"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A8FC221E5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mH4Td9lO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDA6E20866
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E14C415F9;
-	Fri,  7 Aug 2020 10:02:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E14C415F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A95D852;
+	Fri,  7 Aug 2020 10:04:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A95D852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596787415;
-	bh=4xukLKhXGJpzoSrfMZcHsc2nfeILPnL3GkMppEu/elU=;
+	s=default; t=1596787545;
+	bh=Kzpc2N0yE6SF8gdD6ZaI/2PNVzraCIE7ZR0e6s9yLKE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ljtyg7rocYRFH+UnMEPHZUcdwBuVMC4ewDJHdxEyrtEW/uiJlhUMTMvte5d24AxyA
-	 xLsFi/BqPFN4kSSlFwYyH5VpKsx4WFT18kiT88CyuJVe3wZPXc+1iCFdnpiES8j7Jz
-	 z37v6n9BUrLpRbkLXdzKn+3U/bV0RbMVluyB1L+8=
+	b=mH4Td9lOjJX9Dmv6v+OYkfHkLJtcH7uKE9HVtl7bnJx2MJmi7vK7Ttbkj++qjuSJk
+	 GG9kcfrx6IoQg6i2Q8MJBXNPorJrsClqb7mhHGyJURbOb4Gsjp320IKMAdcdpHPa3C
+	 jt3wW/kgvjjUhk9Uv12USa3Y06kK7tym5tOLX6aY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83F07F80234;
-	Fri,  7 Aug 2020 10:02:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28782F8020B;
+	Fri,  7 Aug 2020 10:04:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 160B0F8023E; Fri,  7 Aug 2020 10:02:44 +0200 (CEST)
+ id 9EDE5F80218; Fri,  7 Aug 2020 10:04:53 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FC9BF800B7
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 10:02:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FC9BF800B7
+ by alsa1.perex.cz (Postfix) with ESMTPS id C108CF800AB
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 10:04:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C108CF800AB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1EAAAAB7D;
- Fri,  7 Aug 2020 08:02:55 +0000 (UTC)
-Date: Fri, 07 Aug 2020 10:02:37 +0200
-Message-ID: <s5hv9huanoi.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C8921AB7D;
+ Fri,  7 Aug 2020 08:05:00 +0000 (UTC)
+Date: Fri, 07 Aug 2020 10:04:41 +0200
+Message-ID: <s5htuxeanl2.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: request for missing access permission to libhinawa repository
-In-Reply-To: <e45a2bc4-af63-3996-35f6-6558261c9106@perex.cz>
-References: <20200807051853.GA453546@workstation>
- <e45a2bc4-af63-3996-35f6-6558261c9106@perex.cz>
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix memleak in scarlett2_add_new_ctl
+In-Reply-To: <20200807071229.9533-1-dinghao.liu@zju.edu.cn>
+References: <20200807071229.9533-1-dinghao.liu@zju.edu.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, kjlu@umn.edu, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, "Geoffrey D. Bennett" <g@b4.vu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,29 +78,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 07 Aug 2020 09:52:36 +0200,
-Jaroslav Kysela wrote:
+On Fri, 07 Aug 2020 09:12:27 +0200,
+Dinghao Liu wrote:
 > 
-> Dne 07. 08. 20 v 7:18 Takashi Sakamoto napsal(a):
-> > Hi Iwai-san,
-> > 
-> > As Jaroslav is absent so long[1] (summer vacation?), I would like you to
-> > arrange some team/repository settings for libhinawa.
-> > 
-> > I lost my write permission to libhinawa repository[2] since Jaroslav's
-> > arrangement for github team. You are an owner of 'alsa-project' team in
-> > github.com, and I guess you have enough permission to configure below items:
-> > 
-> > 1. setting enough permission for my account to libhinawa repository
-> > 2. add libhinawa repository to 'GObject Introspection' team[2]
-> 
-> Oops. The permissions are fixed now. Sorry for the long delay.
-> 
-> 						Jaroslav
+> When snd_usb_mixer_add_control() fails, elem needs to be
+> freed just like when snd_ctl_new1() fails. However, current
+> code is returning directly and ends up leaking memory.
 
-Ah, you already fixed, that's why I didn't find anything wrong :)
+No, this would lead to double-free.  snd_ctl_add() shows a kind of
+special behavior, it already releases the object at its error path.
 
 
 thanks,
 
 Takashi
+
+> 
+> Fixes: 9e4d5c1be21f0 ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  sound/usb/mixer_scarlett_gen2.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+> index 74c00c905d24..4b2da0866cdc 100644
+> --- a/sound/usb/mixer_scarlett_gen2.c
+> +++ b/sound/usb/mixer_scarlett_gen2.c
+> @@ -964,8 +964,10 @@ static int scarlett2_add_new_ctl(struct usb_mixer_interface *mixer,
+>  	strlcpy(kctl->id.name, name, sizeof(kctl->id.name));
+>  
+>  	err = snd_usb_mixer_add_control(&elem->head, kctl);
+> -	if (err < 0)
+> +	if (err < 0) {
+> +		kfree(elem);
+>  		return err;
+> +	}
+>  
+>  	if (kctl_return)
+>  		*kctl_return = kctl;
+> -- 
+> 2.17.1
+> 
