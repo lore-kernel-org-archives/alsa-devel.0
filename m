@@ -2,103 +2,84 @@ Return-Path: <SRS0=pDBX=BR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC379C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:37:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F52CC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:52:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3013A22CAE
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:37:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B42972075D
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 11:52:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I6BTFHxO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3013A22CAE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UXrKaS47";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HEftQRvX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B42972075D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B4461663;
-	Fri,  7 Aug 2020 13:37:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B4461663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 267C3112;
+	Fri,  7 Aug 2020 13:52:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 267C3112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596800277;
-	bh=2vifmn4McR9qoEJw//OiO3BiekmcKVk7Q558//RI+BM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1596801175;
+	bh=cKfNzVoedQVmKvHvqaEn1VyOBUd+uYh5+G/kG05O8i0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I6BTFHxOeiNbxGYbP8U77hcnOI0SGapaRokgTbDvz2q3aPAX/te6T2YiSZMzvaEer
-	 S3UM6ZslewMM0kwgbbLXZmZtE/Zf5i+SPfk7r9urJWE1MqJlUJzcBRxTKOaRxnyVge
-	 E/GQmWcOqJkBbP+CuaYck9QKBJmKiiiVaFtAli2g=
+	b=UXrKaS479Ouahmh3Ve67dLyYPV6QSZWCJllOGqjE7Jf4RCFRY7Jr73NDk7sp3TBVJ
+	 IIvKukg4ir/kNwkaat379yYjC3A9jEDbzUie5d23IuRf5U8/B5C5repCzo096hdQyt
+	 btUUUm6nsvotD1A5G1bxCKM75sIXMc+0Vod57WDo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32A84F80234;
-	Fri,  7 Aug 2020 13:37:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97662F8020B;
+	Fri,  7 Aug 2020 13:52:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D801CF8023E; Fri,  7 Aug 2020 13:37:05 +0200 (CEST)
-Received: from mail-oo1-f67.google.com (mail-oo1-f67.google.com
- [209.85.161.67])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B16EBF80218; Fri,  7 Aug 2020 13:52:02 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AC5FF800B7
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 13:36:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AC5FF800B7
-Received: by mail-oo1-f67.google.com with SMTP id p137so356395oop.4
- for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2020 04:36:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=XXMM2VmPbdzScEgaWzC2c7QfQOtrLAuTY8gvz9Vc4VA=;
- b=L93tKPaffMJ55Bvq1hRWOQuLykNCof3qhpAp9skqVri/7hqj1e5Duxp15sF5PGque6
- Lb6gZE1WUEg+5mmojEbsKKMRHkblk5reI9iJwP0aTdhWHezGwzsLaJfGdgYzhCuUbu4u
- NpQy8mZr/t/JvLgL83BSvFDT7Ocp1RCZcnDUVIveMoDEk7ASCZ81iYictns3KcpUB4F8
- GuiIGCA9LjUaUh7Y83FTLqK5ixFNQRXVMZxzNJ3ZDiO/qoEfxa/CDLJaqina20z1mCGB
- JIvFmh9hrxLv3EN0U2FeO00k3nXz6kr2EF33ZAaNfV08H6i25f68XBiFL0HiSO52zwJO
- 5/0g==
-X-Gm-Message-State: AOAM531HfZVlkObyEZvVmBncptDetx4R5zREY8jXAR2FoCGvKh1uzPJF
- myhYQJyBkTAHO6qznWuNp/JYgpFJRbdnaAflGfg=
-X-Google-Smtp-Source: ABdhPJzvkXusENrHFbx7Z4UeU5tcAYrWmu2wMgV9PP1LU7MWabSySITzZd9SeQneUYYb9H/JEkRsCIws54cijEZ+u5w=
-X-Received: by 2002:a4a:4201:: with SMTP id h1mr12077660ooj.1.1596800217309;
- Fri, 07 Aug 2020 04:36:57 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93887F801F7
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 13:51:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93887F801F7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="HEftQRvX"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C1BDB2075D;
+ Fri,  7 Aug 2020 11:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1596801110;
+ bh=cKfNzVoedQVmKvHvqaEn1VyOBUd+uYh5+G/kG05O8i0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=HEftQRvX29huLFXq9+TWsNE8Qe8nvmo3X6O+cCG15qzk3KbIHm1/xYVzzdOQOTNAb
+ /NrTFQqRiYzNbASVAiDemSygf9K4zF/2u8pqVJIEv4GdrdxciPSEbYj6D0ZpgueVAF
+ sxeWJt2cvD2K9Qo6/01yY0iBndmuMSPXg2ZVlPVA=
+Date: Fri, 7 Aug 2020 12:51:25 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 28/41] ARM: s3c24xx: move iis pinctrl config into boards
+Message-ID: <20200807115125.GG5435@sirena.org.uk>
+References: <20200806181932.2253-1-krzk@kernel.org>
+ <20200806182059.2431-28-krzk@kernel.org>
 MIME-Version: 1.0
-References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVriWnPK8-=w=0mq8yj9+1jbsg9yH8aV=ygyHsQ0f-CQQ@mail.gmail.com>
- <CA+V-a8vXjhV-EeQb=bBhoRmuVA=0GSuFiV33N9nkhi39VNN6oA@mail.gmail.com>
- <CAMuHMdXie+GfKBO22mFrn4oG_y7YUxU9ekQdWnp1hn-6z2mLuQ@mail.gmail.com>
- <20200807112754.GC3387836@oden.dyn.berto.se>
-In-Reply-To: <20200807112754.GC3387836@oden.dyn.berto.se>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 7 Aug 2020 13:36:46 +0200
-Message-ID: <CAMuHMdW1Ofjouj4P+bdg2VWmYohD73=si8R6ivZ4QiZps6=HAQ@mail.gmail.com>
-Subject: Re: [PATCH 20/20] arm64: dts: renesas: r8a774e1: Add VIN and CSI-2
- nodes
-To: =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- linux-pci <linux-pci@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-ide@vger.kernel.org, "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
- Linux I2C <linux-i2c@vger.kernel.org>,
- Marek Vasut <marek.vasut+renesas@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>, Kishon Vijay Abraham I <kishon@ti.com>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Jens Axboe <axboe@kernel.dk>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- USB list <linux-usb@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
- dmaengine <dmaengine@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="5L6AZ1aJH5mDrqCQ"
+Content-Disposition: inline
+In-Reply-To: <20200806182059.2431-28-krzk@kernel.org>
+X-Cookie: Disposable, use only once.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>,
+ Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+ Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,125 +95,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Niklas,
 
-On Fri, Aug 7, 2020 at 1:27 PM Niklas S=C3=B6derlund
-<niklas.soderlund@ragnatech.se> wrote:
-> On 2020-08-06 13:47:58 +0200, Geert Uytterhoeven wrote:
-> > On Thu, Aug 6, 2020 at 1:17 PM Lad, Prabhakar
-> > <prabhakar.csengg@gmail.com> wrote:
-> > > On Wed, Aug 5, 2020 at 12:19 PM Geert Uytterhoeven <geert@linux-m68k.=
-org> wrote:
-> > > > On Thu, Jul 16, 2020 at 7:20 PM Lad Prabhakar
-> > > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > > > Add VIN and CSI-2 nodes to RZ/G2H (R8A774E1) SoC dtsi.
-> > > > >
-> > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas=
-.com>
-> > > > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@=
-bp.renesas.com>
-> > > >
-> > > > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > >
-> > > > However, before I queue this in renesas-devel for v5.10, I'd like t=
-o
-> > > > have some clarification about the issue below.
-> > > >
-> > > > > --- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-> > > > > +++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-> > > >
-> > > > > +               vin4: video@e6ef4000 {
-> > > > > +                       compatible =3D "renesas,vin-r8a774e1";
-> > > > > +                       reg =3D <0 0xe6ef4000 0 0x1000>;
-> > > > > +                       interrupts =3D <GIC_SPI 174 IRQ_TYPE_LEVE=
-L_HIGH>;
-> > > > > +                       clocks =3D <&cpg CPG_MOD 807>;
-> > > > > +                       power-domains =3D <&sysc R8A774E1_PD_ALWA=
-YS_ON>;
-> > > > > +                       resets =3D <&cpg 807>;
-> > > > > +                       renesas,id =3D <4>;
-> > > > > +                       status =3D "disabled";
-> > > > > +
-> > > > > +                       ports {
-> > > > > +                               #address-cells =3D <1>;
-> > > > > +                               #size-cells =3D <0>;
-> > > > > +
-> > > > > +                               port@1 {
-> > > > > +                                       #address-cells =3D <1>;
-> > > > > +                                       #size-cells =3D <0>;
-> > > >
-> > > > "make dtbs W=3D1" says:
-> > > >
-> > > >     arch/arm64/boot/dts/renesas/r8a774e1.dtsi:1562.12-1572.7: Warni=
-ng
-> > > > (graph_child_address): /soc/video@e6ef4000/ports/port@1: graph node
-> > > > has single child node 'endpoint@0', #address-cells/#size-cells are =
-not
-> > > > necessary
-> > > >
-> > > > (same for vin5-7 below)
-> > > >
-> > > Referring to commit 5e53dbf4edb4d ("arm64: dts: renesas: r8a77990: Fi=
-x
-> > > VIN endpoint numbering") we definitely need endpoint numbering.
-> > > Probably the driver needs to be fixed to handle such cases.
-> >
-> > > > > +
-> > > > > +                                       reg =3D <1>;
-> > > > > +
-> > > > > +                                       vin4csi20: endpoint@0 {
-> > > > > +                                               reg =3D <0>;
-> > > > > +                                               remote-endpoint =
-=3D <&csi20vin4>;
-> >
-> > On R-Car E3, the single endpoint is at address 2, so "make dtbs W=3D1"d=
-oesn't
-> > complain. Here it is at address 0.
-> >
-> > Niklas?
->
-> First the R-Car VIN driver makes decisions based on which endpoint is
-> described, each endpoint 0-3 represents a different CSI-2 block on the
-> other end (0: CSI20, 1: CSI21, 2: CSI40 and 3: CSI41).
+--5L6AZ1aJH5mDrqCQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That's my understanding, too.
+On Thu, Aug 06, 2020 at 08:20:45PM +0200, Krzysztof Kozlowski wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> The s3c_gpio_cfgall_range() function is an internal interface of the
+> samsung gpio driver and should not be called directly by drivers, so
+> move the iis pin initialization into the boards.
 
-> Then how to handle the warning I'm not sure. I can only really see 2
-> options.
->
-> 1. Ignore the warning.
-> 2. Remove #address-cells, #size-cells and reg properties from port@ if
->    the only endpoint described is endpoint@0.
->
-> I would prefers option 2. that is what we do in other cases (for example
-> on Gen2 boards that only have a single parallel sensor in some early DTS
-> files we don't have the ports node and just describe a single port with
-> the same reasoning.
->
-> We are not at risk at someone describing a second CSI-2 bock as an
-> overlay so I see no real harm in option 2.
+Well, it is now - that wasn't the case at the time.
 
-Yeah, no overlay possible for on-SoC wiring ;-)
+Acked-by: Mark Brown <broonie@kernel.org>
 
-> What are your thoughts Geert?
-> You know more about DT then me.
+--5L6AZ1aJH5mDrqCQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You have too much faith in me ;-)
+-----BEGIN PGP SIGNATURE-----
 
-AFAIK we don't get this warning for e.g. SPI buses, which can have a
-single device at address 0, and #{address,size}-cells is mandatory
-there. So endpoints (or SPI?) are treated special?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8tQD0ACgkQJNaLcl1U
+h9CqCwf+JA5FnrUTEVVBDbW47geQe42Qnc9Xm8NStwfOPmjgajYfUNeCXBA/hmac
+FXu0yRKfw64NF52gC92PURaKRq+ZVG+3zWYf+jfKxABUiS5FZGLgQjQ7pUEtrZMc
+FxspnPqX4H57ZJXAg+q3Eq76iR132c4eX7s20jBiHJrEfEnIc86n4R5+aZ+F1HSM
+kYVzZacjdpEzter1onhkgDbwAR+HT9RdPsyefvCKxtrdgW1h28TvjI9s2XgNHgAz
+J5BNRa7ohL/qZnXYd9Z041846uXa6CQcoU51hejVbDSkXk9hprkwVwsrkGCBar2n
+58ZhRIsY5a+CLanhjLZCZoMPR6GFAQ==
+=U67M
+-----END PGP SIGNATURE-----
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+--5L6AZ1aJH5mDrqCQ--
