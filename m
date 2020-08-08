@@ -1,86 +1,78 @@
-Return-Path: <SRS0=pDBX=BR=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=nyeS=BS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E2B5C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 20:18:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEEF2C433DF
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Aug 2020 01:23:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0586A2075A
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2020 20:18:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 509142177B
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Aug 2020 01:23:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PBK9wgMm";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TKFpExx2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0586A2075A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HsaBvnOn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NodTcolu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 509142177B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D3EF852;
-	Fri,  7 Aug 2020 22:17:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D3EF852
+	by alsa0.perex.cz (Postfix) with ESMTPS id A56B711C;
+	Sat,  8 Aug 2020 03:22:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A56B711C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1596831490;
-	bh=FTGX8V3BOAmBXKLEXLdqfDBeFt3UQfICsLUdU64xJiE=;
-	h=In-Reply-To:References:Subject:From:To:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PBK9wgMmfm/IpY3SXSaYW5vFDdAvaqkKqWHIEO703GT+7R01xA3L50RGR1QW3cK+m
-	 kwaBZCBTnrds42/rRccvZG1ADfmjHqu5Jrl7V4tgMU0mlzJ3Vf1h7VxDprFSxUVAU9
-	 YTBhvFEXhj7kis4vtbDfRnLmua0DTQ/1V+GfC5Ws=
+	s=default; t=1596849778;
+	bh=ejgo1k1AGPs+IczL8IQ7qYbIjvwOaHXJeXTvIep6scE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HsaBvnOnFR3OhhMnlLQ/7QXPBGSL6g+GANzgwaGKe4SrEbJd7aIEq09vf3N2dCOE/
+	 sEgM7xijS1vdwCEjc+4MfzbKu3Iz6sMtMbksQZcxKfh2XPHYwSjtFaxbunIM1HQrkY
+	 5O0+G8VUXsZGYy1J5HCSooEZqIxapfXATtefzGmw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 189F3F8020B;
-	Fri,  7 Aug 2020 22:17:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FBA6F8020B;
+	Sat,  8 Aug 2020 03:22:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 123BFF801F7; Fri,  7 Aug 2020 22:17:19 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4287EF801F7
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2020 22:17:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4287EF801F7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TKFpExx2"
-Received: from kernel.org (unknown [104.132.0.74])
+ id C0107F80218; Sat,  8 Aug 2020 03:22:04 +0200 (CEST)
+Received: from merlin.infradead.org (merlin.infradead.org
+ [IPv6:2001:8b0:10b:1231::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A66C12075A;
- Fri,  7 Aug 2020 20:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1596831430;
- bh=FTGX8V3BOAmBXKLEXLdqfDBeFt3UQfICsLUdU64xJiE=;
- h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
- b=TKFpExx251qL5pZuFJCespYGYMaO91U5zGyMF51r/UcvnqdQ2cu4NxBi6+9zjiCGf
- lmcvOhlGpRNU36TuvI3XAqLhDBjrcVHwrZS9+IsIfeeMR3reH68iZAasoSq+1g2tBH
- VusTYqJ1btk2P+wMSfIVfmFwXYmkU1ME6O/jKw20=
-Content-Type: text/plain; charset="utf-8"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09772F800B7
+ for <alsa-devel@alsa-project.org>; Sat,  8 Aug 2020 03:21:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09772F800B7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="NodTcolu"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=kj/TToLcJ4MZ4DSCFCc73HaSywbCEpwgumzWbAteKWw=; b=NodTcoluF+cVQR1Dznu5pYqr9Z
+ m4eh1cbcGYn+ysAvsKmVqOI2N4Z+RccveAQLTgMt08eGLqqYokoC07HaJG4LuRSdS/tdqzQdgmT5Y
+ z/vOvKXZbeqAHBLOPpycsd7oAfoqAtcRb8VyiloA3LYXIUH1FNzW36b64h/7VivE1xQNnyCbJ1z3f
+ 2dBHV+VZuD8E1sCsYJhiedUCfHIEefOwj8TI8GSGYZDEmQw3pb9qsYHu7G3iQy27HjMpgmj7tiNxy
+ NYxUFQXFP0T/y4RAKpfVXwmhMJrJbqBi3QVDYOG5oCxhW00KmoOnZ1e7CArztVm4qpHiJKQxD5bUT
+ RNp5r0Bg==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+ (helo=smtpauth.infradead.org)
+ by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k4DYU-0001Eu-8S; Sat, 08 Aug 2020 01:21:50 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codecs: delete repeated words in comments
+Date: Fri,  7 Aug 2020 18:21:43 -0700
+Message-Id: <20200808012143.10777-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <989f1d99-3cd0-e725-3f6d-43facf1ec04d@codeaurora.org>
-References: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org>
- <1595413915-17867-2-git-send-email-rohitkr@codeaurora.org>
- <159667391634.1360974.15763918681460437981@swboyd.mtv.corp.google.com>
- <989f1d99-3cd0-e725-3f6d-43facf1ec04d@codeaurora.org>
-Subject: Re: [PATCH v4 01/12] ASoC: qcom: Add common array to initialize soc
- based core clocks
-From: Stephen Boyd <sboyd@kernel.org>
-To: Rohit Kumar <rohitkr@codeaurora.org>, agross@kernel.org,
- alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- bjorn.andersson@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org,
- lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
- robh+dt@kernel.org, srinivas.kandagatla@linaro.org, tiwai@suse.com
-Date: Fri, 07 Aug 2020 13:17:09 -0700
-Message-ID: <159683142954.1360974.1307064087263696126@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
-Cc: Ajit Pandey <ajitp@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+Cc: Mark Brown <broonie@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,32 +88,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Rohit Kumar (2020-08-05 20:59:48)
-> Thanks Stephen for reviewing.
->=20
-> On 8/6/2020 6:01 AM, Stephen Boyd wrote:
-> > Quoting Rohit kumar (2020-07-22 03:31:44)
-> >> From: Ajit Pandey <ajitp@codeaurora.org>
-> >>
-> >> LPASS variants have their own soc specific clocks that needs to be
-> >> enabled for MI2S audio support. Added a common variable in drvdata to
-> >> initialize such clocks using bulk clk api. Such clock names is
-> >> defined in variants specific data and needs to fetched during init.
-> > Why not just get all the clks and not even care about the names of them?
-> > Use devm_clk_bulk_get_all() for that, unless some clks need to change
-> > rates?
->=20
-> There is ahbix clk which needs clk rate to be set. Please check below=20
-> patch in
->=20
-> the series for reference
->=20
-> [PATCH v5 02/12] ASoC: qcom: lpass-cpu: Move ahbix clk to platform=20
-> specific function
->=20
+Drop the repeated words {start, it, the} in comments.
 
-Alright. I wonder if we could make the API better or the binding better
-and always have the rate settable clk first and then
-devm_clk_bulk_get_all() could be used along with clk_set_rate() on some=20
-array element 0 or something. Anyway, don't mind me, I'm just thinking
-how to make this simpler.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/codecs/nau8825.c |    2 +-
+ sound/soc/codecs/tas5086.c |    2 +-
+ sound/soc/codecs/wm9713.c  |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+--- linux-next-20200807.orig/sound/soc/codecs/nau8825.c
++++ linux-next-20200807/sound/soc/codecs/nau8825.c
+@@ -251,7 +251,7 @@ static const unsigned short logtable[256
+  *
+  * Acquires the semaphore without jiffies. Try to acquire the semaphore
+  * atomically. Returns 0 if the semaphore has been acquired successfully
+- * or 1 if it it cannot be acquired.
++ * or 1 if it cannot be acquired.
+  */
+ static int nau8825_sema_acquire(struct nau8825 *nau8825, long timeout)
+ {
+--- linux-next-20200807.orig/sound/soc/codecs/tas5086.c
++++ linux-next-20200807/sound/soc/codecs/tas5086.c
+@@ -487,7 +487,7 @@ static int tas5086_init(struct device *d
+ 	/*
+ 	 * If any of the channels is configured to start in Mid-Z mode,
+ 	 * configure 'part 1' of the PWM starts to use Mid-Z, and tell
+-	 * all configured mid-z channels to start start under 'part 1'.
++	 * all configured mid-z channels to start under 'part 1'.
+ 	 */
+ 	if (priv->pwm_start_mid_z)
+ 		regmap_write(priv->regmap, TAS5086_PWM_START,
+--- linux-next-20200807.orig/sound/soc/codecs/wm9713.c
++++ linux-next-20200807/sound/soc/codecs/wm9713.c
+@@ -755,7 +755,7 @@ static void pll_factors(struct snd_soc_c
+ 	u64 Kpart;
+ 	unsigned int K, Ndiv, Nmod, target;
+ 
+-	/* The the PLL output is always 98.304MHz. */
++	/* The PLL output is always 98.304MHz. */
+ 	target = 98304000;
+ 
+ 	/* If the input frequency is over 14.4MHz then scale it down. */
