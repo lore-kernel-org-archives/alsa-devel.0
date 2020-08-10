@@ -2,99 +2,68 @@ Return-Path: <SRS0=hypa=BU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76DC1C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97329C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:17:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F144B2073A
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:14:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13DD92075D
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:17:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PsjnPit0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="a9sOniDg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F144B2073A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SBe3U1Ya"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13DD92075D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87CC915F2;
-	Mon, 10 Aug 2020 10:13:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87CC915F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AD7615F2;
+	Mon, 10 Aug 2020 10:16:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AD7615F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597047277;
-	bh=8JVxd0LfquvEwFWlVzm0eoYFyTaACuRCRqytuLnTbGs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PsjnPit04ELXZrBFQN5zov9rbg7Qb+77m0yeZ1369Fpsdd1P0K0DsLnumZ2qsJkNj
-	 fdj7fs056Cd8q9j3JBf6o3b3CoBzuhJJ0HAwAUcMrNiZz+S4hLfrdsP96Ox5ycWL2A
-	 jZcAjPcih9H3B1I5+oy51feobyXk+a0/RhPjCC0E=
+	s=default; t=1597047463;
+	bh=Y8iel5pRL+wjeQIBtPHrzmoh2hxijDM4YSAnM26bTqw=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=SBe3U1YaImyYIGfu7IR5DnoY0UacHBAe1CU2vKb4C9tqBRLw0uCi5M4Cpz+1KBM1o
+	 t/tKT1PyI9XYBtXUc0BfdpZBQj9SS6CM8+iiKeKWlT7fjUldnSNUCImCUleDdxzesn
+	 FbdCh+XvrQAQSuRs+5CTa8N09/HPq3klWfKYH9YU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3207F801DB;
-	Mon, 10 Aug 2020 10:13:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F44BF801DB;
+	Mon, 10 Aug 2020 10:16:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CED9F8022B; Mon, 10 Aug 2020 10:13:45 +0200 (CEST)
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com
- [IPv6:2607:f8b0:4864:20::12c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 26AC7F8022B; Mon, 10 Aug 2020 10:16:51 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BB86F800BC
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 10:13:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BB86F800BC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="a9sOniDg"
-Received: by mail-il1-x12c.google.com with SMTP id c6so6796259ilo.13
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 01:13:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=8JVxd0LfquvEwFWlVzm0eoYFyTaACuRCRqytuLnTbGs=;
- b=a9sOniDgn+OX3mKLx8wyRn8G/5nz6p0EI+n+UIFh/JhVHrGaGWBfyBK8qTpZW46Zms
- hdRV6io4qZc/g8y8ufYqkof85s+/NTHPQKA02wTMCODPBydcjrwfgTE/IQWKIP+lzmSv
- wxHMVmyC+DZgK/X7uZx3FZSFhYr6wD7qgFNMt+R3KNmdSIRH7CU3OLWUrTVEpOW8Qme6
- myEN8Tpphf6T40JIWhx5Jm7DMOwy8WNGedfxBcBWj9iuiTzAD+M2nwzQN30h4V+LIOyv
- d4viMILdQO9wDAxaDrPZ9AcpRy9j3NTDK6hoVLQaNrijwaUe7Ex1jdY/o8+7qa8OzqVM
- eQMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=8JVxd0LfquvEwFWlVzm0eoYFyTaACuRCRqytuLnTbGs=;
- b=pILrMAE+mbYh09LY9CWxvynHKc++Ms+se77oHTqzg5BbSSBFk0iWIPWA7F0fMmB3GP
- QPlQ9qOQqe8XfIAJVvvUmkhUO+lt5RLNMu7nbyFtnvRFxN/jhBnP4wEWCoxFRGuZnLRE
- cN5iEpe0EOBKlFUEWIqvB34l7X4zTD/MVDm95z/CmzYq4T1LT+Pf/Q8wZSV6t7Zr//CX
- htpgcjo6m1V+srz/RAryGYF7VSJRSNa+rmJBd/DO4EFlTwmohLrjwfoEdGqp6eoMLWHP
- pio32BnqS5M6HW5X82BVBEnHmg3N4+dT99m06DfsPzGd/z9Qln2DVJD0ua0UImQVDR5U
- 3jWQ==
-X-Gm-Message-State: AOAM5324ciNR/3uDSmWURPOgkWi193p+4edGFnjiYxTDSD1kqHhDXDvK
- u/HSKTh2SN/DMDLJEU3Q1ZP2JsVyHlw2viFOPXm4wA==
-X-Google-Smtp-Source: ABdhPJysEFivEl0vYFplJC98GA9zeoDMNIxEa41sPvOq3HRZb2utcdXYgn2Zdo1CLZ1S13FPxCHpNSCIioXFwjPxw9I=
-X-Received: by 2002:a05:6e02:1387:: with SMTP id
- d7mr16832113ilo.140.1597047211233; 
- Mon, 10 Aug 2020 01:13:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <1597028754-7732-1-git-send-email-jiaxin.yu@mediatek.com>
- <1597028754-7732-2-git-send-email-jiaxin.yu@mediatek.com>
-In-Reply-To: <1597028754-7732-2-git-send-email-jiaxin.yu@mediatek.com>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 10 Aug 2020 16:13:20 +0800
-Message-ID: <CA+Px+wUkL7XwkppMA745cP_foNweaBLOSs0=BVzcDr0PEC+_Ew@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: mediatek: mt6359: add codec driver
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>, howie.huang@mediatek.com,
- Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- shane.chien@mediatek.com, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, eason.yen@mediatek.com,
- Matthias Brugger <matthias.bgg@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C109F800CE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 10:16:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C109F800CE
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CAFC3201779;
+ Mon, 10 Aug 2020 10:16:39 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4E6912011A9;
+ Mon, 10 Aug 2020 10:16:35 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7A8A0402D2;
+ Mon, 10 Aug 2020 10:16:29 +0200 (CEST)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: fsl-asoc-card: Get "extal" clock rate by clk_get_rate
+Date: Mon, 10 Aug 2020 16:11:43 +0800
+Message-Id: <1597047103-6863-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,12 +79,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Aug 10, 2020 at 11:11 AM Jiaxin Yu <jiaxin.yu@mediatek.com> wrote:
->
-> Add the mt6359 codec driver.
->
-> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+On some platform(.e.g. i.MX8QM MEK), the "extal" clock is different
+with the mclk of codec, then the clock rate is also different.
+So it is better to get clock rate of "extal" rate by clk_get_rate,
+don't reuse the clock rate of mclk.
 
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v2
+- add defer probe handler
 
-This patch also reviewed few rounds on https://crrev.com/c/2299951
+ sound/soc/fsl/fsl-asoc-card.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 52adedc03245..32f8f756e6bb 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -696,6 +696,17 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 			goto asrc_fail;
+ 		}
+ 	} else if (of_node_name_eq(cpu_np, "esai")) {
++		struct clk *esai_clk = clk_get(&cpu_pdev->dev, "extal");
++
++		if (!IS_ERR(esai_clk)) {
++			priv->cpu_priv.sysclk_freq[TX] = clk_get_rate(esai_clk);
++			priv->cpu_priv.sysclk_freq[RX] = clk_get_rate(esai_clk);
++			clk_put(esai_clk);
++		} else if (PTR_ERR(esai_clk) == -EPROBE_DEFER) {
++			ret = -EPROBE_DEFER;
++			goto asrc_fail;
++		}
++
+ 		priv->cpu_priv.sysclk_id[1] = ESAI_HCKT_EXTAL;
+ 		priv->cpu_priv.sysclk_id[0] = ESAI_HCKR_EXTAL;
+ 	} else if (of_node_name_eq(cpu_np, "sai")) {
+-- 
+2.27.0
+
