@@ -7,63 +7,61 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97329C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:17:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B533C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:25:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 13DD92075D
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:17:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E18D32075D
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 08:25:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SBe3U1Ya"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13DD92075D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l8TIfmLp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E18D32075D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=marcan.st
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AD7615F2;
-	Mon, 10 Aug 2020 10:16:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AD7615F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AAC315F2;
+	Mon, 10 Aug 2020 10:24:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AAC315F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597047463;
-	bh=Y8iel5pRL+wjeQIBtPHrzmoh2hxijDM4YSAnM26bTqw=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1597047920;
+	bh=2I9SDIqqVVIf7bNDgIMLZde/Y/OpDUkHNu8pRpuG/3o=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=SBe3U1YaImyYIGfu7IR5DnoY0UacHBAe1CU2vKb4C9tqBRLw0uCi5M4Cpz+1KBM1o
-	 t/tKT1PyI9XYBtXUc0BfdpZBQj9SS6CM8+iiKeKWlT7fjUldnSNUCImCUleDdxzesn
-	 FbdCh+XvrQAQSuRs+5CTa8N09/HPq3klWfKYH9YU=
+	b=l8TIfmLpv5FLzrgRAKHIlcej5hpPl/cQ20ov8bXP4oz1pSWbXoG613rVVun/8tXut
+	 nCxGSIuObW4YqfCEOux7jNUaiweJZJjk9FJwTVZqF8GN5CroTwVdWrOpFoKor+YCpc
+	 z01y1O2OmDers5T6ETTLgzd0S1wdrWHvjLmBFBXs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F44BF801DB;
-	Mon, 10 Aug 2020 10:16:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC0B8F801DB;
+	Mon, 10 Aug 2020 10:24:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26AC7F8022B; Mon, 10 Aug 2020 10:16:51 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CB8BBF800BC; Mon, 10 Aug 2020 10:24:27 +0200 (CEST)
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C109F800CE
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 10:16:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C109F800CE
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CAFC3201779;
- Mon, 10 Aug 2020 10:16:39 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4E6912011A9;
- Mon, 10 Aug 2020 10:16:35 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7A8A0402D2;
- Mon, 10 Aug 2020 10:16:29 +0200 (CEST)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: fsl-asoc-card: Get "extal" clock rate by clk_get_rate
-Date: Mon, 10 Aug 2020 16:11:43 +0800
-Message-Id: <1597047103-6863-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id D84E0F800BC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 10:24:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D84E0F800BC
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ (Authenticated sender: hector@marcansoft.com)
+ by mail.marcansoft.com (Postfix) with ESMTPSA id 0878141A78;
+ Mon, 10 Aug 2020 08:24:13 +0000 (UTC)
+From: Hector Martin <marcan@marcan.st>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: work around streaming quirk for MacroSilicon
+ MS2109
+Date: Mon, 10 Aug 2020 17:24:00 +0900
+Message-Id: <20200810082400.225858-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, Hector Martin <marcan@marcan.st>,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,41 +77,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On some platform(.e.g. i.MX8QM MEK), the "extal" clock is different
-with the mclk of codec, then the clock rate is also different.
-So it is better to get clock rate of "extal" rate by clk_get_rate,
-don't reuse the clock rate of mclk.
+Further investigation of the L-R swap problem on the MS2109 reveals that
+the problem isn't that the channels are swapped, but rather that they
+are swapped and also out of phase by one sample. In other words, the
+issue is actually that the very first frame that comes from the hardware
+is a half-frame containing only the right channel, and after that
+everything becomes offset.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+So introduce a new quirk field to drop the very first 2 bytes that come
+in after the format is configured and a capture stream starts. This puts
+the channels in phase and in the correct order.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
-changes in v2
-- add defer probe handler
+ sound/usb/card.h   | 1 +
+ sound/usb/pcm.c    | 6 ++++++
+ sound/usb/quirks.c | 3 +++
+ sound/usb/stream.c | 1 +
+ 4 files changed, 11 insertions(+)
 
- sound/soc/fsl/fsl-asoc-card.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 52adedc03245..32f8f756e6bb 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -696,6 +696,17 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 			goto asrc_fail;
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index de43267b9c8a..5351d7183b1b 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -137,6 +137,7 @@ struct snd_usb_substream {
+ 	unsigned int tx_length_quirk:1;	/* add length specifier to transfers */
+ 	unsigned int fmt_type;		/* USB audio format type (1-3) */
+ 	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */
++	unsigned int stream_offset_adj;	/* Bytes to drop from beginning of stream (for non-compliant devices) */
+ 
+ 	unsigned int running: 1;	/* running status */
+ 
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 415bfec49a01..5600751803cf 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1420,6 +1420,12 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 			// continue;
  		}
- 	} else if (of_node_name_eq(cpu_np, "esai")) {
-+		struct clk *esai_clk = clk_get(&cpu_pdev->dev, "extal");
-+
-+		if (!IS_ERR(esai_clk)) {
-+			priv->cpu_priv.sysclk_freq[TX] = clk_get_rate(esai_clk);
-+			priv->cpu_priv.sysclk_freq[RX] = clk_get_rate(esai_clk);
-+			clk_put(esai_clk);
-+		} else if (PTR_ERR(esai_clk) == -EPROBE_DEFER) {
-+			ret = -EPROBE_DEFER;
-+			goto asrc_fail;
+ 		bytes = urb->iso_frame_desc[i].actual_length;
++		if (subs->stream_offset_adj > 0) {
++			unsigned int adj = min(subs->stream_offset_adj, bytes);
++			cp += adj;
++			bytes -= adj;
++			subs->stream_offset_adj -= adj;
 +		}
-+
- 		priv->cpu_priv.sysclk_id[1] = ESAI_HCKT_EXTAL;
- 		priv->cpu_priv.sysclk_id[0] = ESAI_HCKR_EXTAL;
- 	} else if (of_node_name_eq(cpu_np, "sai")) {
+ 		frames = bytes / stride;
+ 		if (!subs->txfr_quirk)
+ 			bytes = frames * stride;
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index c551141f337e..abf99b814a0f 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1495,6 +1495,9 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+ 	case USB_ID(0x2b73, 0x000a): /* Pioneer DJ DJM-900NXS2 */
+ 		pioneer_djm_set_format_quirk(subs);
+ 		break;
++	case USB_ID(0x534d, 0x2109): /* MacroSilicon MS2109 */
++		subs->stream_offset_adj = 2;
++		break;
+ 	}
+ }
+ 
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 4d1e6579e54d..ca76ba5b5c0b 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -94,6 +94,7 @@ static void snd_usb_init_substream(struct snd_usb_stream *as,
+ 	subs->tx_length_quirk = as->chip->tx_length_quirk;
+ 	subs->speed = snd_usb_get_speed(subs->dev);
+ 	subs->pkt_offset_adj = 0;
++	subs->stream_offset_adj = 0;
+ 
+ 	snd_usb_set_pcm_ops(as->pcm, stream);
+ 
 -- 
 2.27.0
 
