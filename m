@@ -2,70 +2,68 @@ Return-Path: <SRS0=hypa=BU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BEBBC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 06:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5AE6C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 07:00:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8607A206B5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 06:59:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BBA6206B5
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 07:00:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SKTRfsyq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8607A206B5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZsOiYUor"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BBA6206B5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 190B615F2;
-	Mon, 10 Aug 2020 08:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 190B615F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 097401616;
+	Mon, 10 Aug 2020 08:59:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 097401616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597042748;
-	bh=yDr2m04lVEokCCnBfj4wdWeAl2KYr/akw1PFoWqKHjg=;
+	s=default; t=1597042830;
+	bh=OjJVR/lBQhTmFz91xLMpvdqHZEB60zPgTOrqnClJhd8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SKTRfsyqcq01g5/mgQ78Bh6TaIy+QC9GIwqyUVA8i3pL1AtyF3kdMHKrN/E0y4Bx8
-	 r8cFK0/R2Z7Tj2ZUwxEgGjB//AYQDaCqOXQUhu6vDrNDLMEVzl5BtOP3HnZUU/K9Tb
-	 Cb8i9V0CXBCi8TpAotR7gkkht7mcWJfUWMu4rP7E=
+	b=ZsOiYUorFCYsNZJzfHpsbLZIGIIx8FkEzzeddsyB0DPocKw1XlBaYS4dkyTQGLVmp
+	 12xdUG5LKY7ZH+c09XXIZ7XCb5fKDyC7/ZqLmm7zRszMqt23JbqzDyeRKLW3clOiZb
+	 q7F5W9tjZkJVMU/CjPculK1Bn0bRLgiax9z7I4Js=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEDC6F801DB;
-	Mon, 10 Aug 2020 08:58:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5AFAF8022D;
+	Mon, 10 Aug 2020 08:59:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74DF3F8022B; Mon, 10 Aug 2020 08:58:16 +0200 (CEST)
+ id DA44EF801DB; Mon, 10 Aug 2020 08:59:37 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74860F800BC
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 08:58:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74860F800BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B4D2F801DB
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 08:59:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B4D2F801DB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 20914ACA7;
- Mon, 10 Aug 2020 06:58:30 +0000 (UTC)
-Date: Mon, 10 Aug 2020 08:58:09 +0200
-Message-ID: <s5h5z9r6l8e.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C33C0AC1D;
+ Mon, 10 Aug 2020 06:59:51 +0000 (UTC)
+Date: Mon, 10 Aug 2020 08:59:31 +0200
+Message-ID: <s5h4kpb6l64.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Subject: Re: [PATCH] ALSA: pci/asihpi: Fix memory leak in
- snd_card_asihpi_capture_open()
-In-Reply-To: <20200810063957.13692-1-dinghao.liu@zju.edu.cn>
-References: <20200810063957.13692-1-dinghao.liu@zju.edu.cn>
+To: Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH v2] ALSA: usb-audio: fix overeager device match for
+ MacroSilicon MS2109
+In-Reply-To: <20200810045319.128745-1-marcan@marcan.st>
+References: <d0567d6f-a5f6-9d3f-e5a9-cebdba7d1fa0@marcan.st>
+ <20200810045319.128745-1-marcan@marcan.st>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kjlu@umn.edu,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>,
- Eliot Blennerhassett <eblennerhassett@audioscience.com>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,44 +79,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 10 Aug 2020 08:39:55 +0200,
-Dinghao Liu wrote:
+On Mon, 10 Aug 2020 06:53:19 +0200,
+Hector Martin wrote:
 > 
-> When snd_pcm_hw_constraint_pow2() fails, dpcm should be freed
-> just like when hpi_instream_open()  fails.
+> Matching by device matches all interfaces, which breaks the video/HID
+> portions of the device depending on module load order.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-It will be cleaned up via runtime->private_free call in the caller
-side (snd_pcm_open -> snd_pcm_release_substream ->
-snd_pcm_detach_substream), hence this would result in double-free.
+Thanks, applied now.
 
-
-thanks,
 
 Takashi
-
-> 
-> Fixes: 719f82d3987aa ("ALSA: Add support of AudioScience ASI boards")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  sound/pci/asihpi/asihpi.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-> index 023c35a2a951..736eceacd3d0 100644
-> --- a/sound/pci/asihpi/asihpi.c
-> +++ b/sound/pci/asihpi/asihpi.c
-> @@ -1244,8 +1244,10 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
->  	if (card->can_dma)
->  		err = snd_pcm_hw_constraint_pow2(runtime, 0,
->  					SNDRV_PCM_HW_PARAM_BUFFER_BYTES);
-> -	if (err < 0)
-> +	if (err < 0) {
-> +		kfree(dpcm);
->  		return err;
-> +	}
->  
->  	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
->  		card->update_interval_frames);
-> -- 
-> 2.17.1
-> 
