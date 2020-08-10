@@ -2,69 +2,69 @@ Return-Path: <SRS0=hypa=BU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7F22C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 06:52:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C005AC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 06:55:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68125206B5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 06:52:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 49AA5206B5
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 06:55:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L6KSG2h3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68125206B5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vlpdSKAv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49AA5206B5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4F4D15F9;
-	Mon, 10 Aug 2020 08:51:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4F4D15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C801C11C;
+	Mon, 10 Aug 2020 08:54:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C801C11C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597042322;
-	bh=c7VzIPtG7ivLLDLpDrlDi63HZLs7AnX9GfoEMFr2Yyk=;
+	s=default; t=1597042518;
+	bh=nwvYmwHHWN1zVi6mo6pCUss39Zr+VOVDWNy9Z5bTUuM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L6KSG2h3vPGVfUuQXvOdti4YPIGXWvE16PDn4ttwJ4A2d8Ztr2a73osguCobZQZvv
-	 M0mRTnz97AUQDFjnS/Euu4twr42as1E2GoeZ0460CrNQBFd8cJtoxnjXVkD9QOS5lU
-	 SaQZw7lmmyJoxhtUKqjwhdKNhGE2b3FpS8fm0XuY=
+	b=vlpdSKAv3d1Idi3b8I6dehcvcRdcjmx1UCa2Qf52zqfvdhVl0oxlBuDdzhyTo5Bgx
+	 HKokRvPcYUx8O4FGDsWLI568kp2pSRhp8s1erDS0pVU5LJukylWKhXPdHkNhpNXYrK
+	 w5ffUdoi8R/pkkjQy1TmoogbmpVpO0VzRO/EU4gE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CD6FF801DB;
-	Mon, 10 Aug 2020 08:51:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F2A1F801DB;
+	Mon, 10 Aug 2020 08:54:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1C19F8022B; Mon, 10 Aug 2020 08:51:10 +0200 (CEST)
+ id A381FF8022B; Mon, 10 Aug 2020 08:54:26 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68B18F80085
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 08:51:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68B18F80085
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1B8EF800BC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 08:54:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1B8EF800BC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id F0FC8ACA7;
- Mon, 10 Aug 2020 06:51:23 +0000 (UTC)
-Date: Mon, 10 Aug 2020 08:51:03 +0200
-Message-ID: <s5ha6z36lk8.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 90DD3AC1D;
+ Mon, 10 Aug 2020 06:54:35 +0000 (UTC)
+Date: Mon, 10 Aug 2020 08:54:15 +0200
+Message-ID: <s5h7du76lew.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - fix the micmute led status for Lenovo
- ThinkCentre AIO
-In-Reply-To: <c8ca5bd3-d9a1-6269-e088-6bc6e3936876@canonical.com>
-References: <20200810021659.7429-1-hui.wang@canonical.com>
- <s5hd03z6min.wl-tiwai@suse.de>
- <c8ca5bd3-d9a1-6269-e088-6bc6e3936876@canonical.com>
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Subject: Re: [PATCH] ALSA: echoaudio: Fix memory leak in snd_echo_resume()
+In-Reply-To: <20200810061500.9329-1-dinghao.liu@zju.edu.cn>
+References: <20200810061500.9329-1-dinghao.liu@zju.edu.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-kernel@vger.kernel.org, kjlu@umn.edu, Takashi Iwai <tiwai@suse.com>,
+ Mark Hills <mark@xwax.org>, Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,28 +80,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 10 Aug 2020 08:34:36 +0200,
-Hui Wang wrote:
+On Mon, 10 Aug 2020 08:14:58 +0200,
+Dinghao Liu wrote:
 > 
+> When restore_dsp_rettings() fails, chip should be freed
+> just like when init_hw() and request_irq() fails.
 > 
-> On 2020/8/10 下午2:30, Takashi Iwai wrote:
-> > On Mon, 10 Aug 2020 04:16:59 +0200,
-> > Hui Wang wrote:
-> >> After installing the Ubuntu Linux, the micmute led status is not
-> >> correct. Users expect that the led is on if the capture is disabled,
-> >> but with the current kernel, the led is off with the capture disabled.
-> >>
-> >> We tried the old linux kernel like linux-4.15, there is no this issue.
-> >> It looks like we introduced this issue when switching to the led_cdev.
-> > The behavior can be controlled via "Mic Mute-LED Mode" enum kcontrol.
-> > Which value does it have now?  If it's "Follow Capture", that's the
-> > correct behavior.  OTOH, if it's "Follow Mute", the LED polarity is
-> > indeed wrong.
-> 
-> It is "Follow Mute",  if I change it to "Follow Capture" manually, the
-> led status becomes correct.
+> Fixes: 47b5d028fdce8 ("ALSA: Echoaudio - Add suspend support #2")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-OK, thanks for confirmation.  Applied now.
+Actually it's rather wrong to call snd_echo_free() in the resume error
+path.  This may lead to an Oops at the next time the system goes to
+resume.  That said, we should drop snd_echo_free() calls in other
+error paths in snd_echo_resume() instead.
 
+
+thanks,
 
 Takashi
+
+
+> ---
+>  sound/pci/echoaudio/echoaudio.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+> index 6aeb99aa2414..2aa183fe5dc1 100644
+> --- a/sound/pci/echoaudio/echoaudio.c
+> +++ b/sound/pci/echoaudio/echoaudio.c
+> @@ -2226,6 +2226,7 @@ static int snd_echo_resume(struct device *dev)
+>  	chip->pipe_alloc_mask = pipe_alloc_mask;
+>  	if (err < 0) {
+>  		kfree(commpage_bak);
+> +		snd_echo_free(chip);
+>  		return err;
+>  	}
+>  
+> -- 
+> 2.17.1
+> 
