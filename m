@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83272C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 14:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74534C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 14:13:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 068F1207BB
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 14:04:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26DCC20771
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 14:13:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g+C//i9u"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 068F1207BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QNBRSkU0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26DCC20771
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81535827;
-	Mon, 10 Aug 2020 16:03:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81535827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9074C827;
+	Mon, 10 Aug 2020 16:12:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9074C827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597068258;
-	bh=qN7rsUuO9E0BEzPDD5F7ivUhZ74zuYUuM4+hQ9buqTE=;
+	s=default; t=1597068802;
+	bh=Lt0R05hMkGdp8c85aBBMVforR6wmICg7Zxm65+BGP/k=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g+C//i9uNM01B26XJ+uvEmk13VYrl/E+XFCrCjchvy4Uo/tMzO4WHU70DldEyHrtx
-	 YaUHtf3KD/QdwMb0WePkFwqyRivhPWe5oATdFTnkCPhP5grzOrZWhKOSvkjMywS/cK
-	 /i/qwTqbNaFrSkXVDpG6UE0TOW8n89u7Zm6GSfEc=
+	b=QNBRSkU0c+jc2KdQmeAJhsAYUnfEeFX0EbgvM0oG9FNBh/bKiJz5tuhPLUDo7ncle
+	 44UPIvRoczSJM+upCOEivMTAPReZYN4teqmeDJdiZoqmESKMze1K75ZMuVb4kVR25Z
+	 9/gR0NsDMwrIvXBaSiNWEN/4ABv1F3kcCLYjpV58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C391F801DB;
-	Mon, 10 Aug 2020 16:03:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F20A9F80085;
+	Mon, 10 Aug 2020 16:12:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81505F800BC; Mon, 10 Aug 2020 16:03:26 +0200 (CEST)
+ id 3B0DCF8022B; Mon, 10 Aug 2020 16:12:30 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7F8BF800BC
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 16:03:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7F8BF800BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37E78F80085
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 16:12:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37E78F80085
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B7627ADCD;
- Mon, 10 Aug 2020 14:03:39 +0000 (UTC)
-Date: Mon, 10 Aug 2020 16:03:19 +0200
-Message-ID: <s5hh7ta4mzc.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id EDBBCB1E5;
+ Mon, 10 Aug 2020 14:12:43 +0000 (UTC)
+Date: Mon, 10 Aug 2020 16:12:23 +0200
+Message-ID: <s5heeoe4mk8.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Disable Lenovo P620 Rear line-in volume
- control
-In-Reply-To: <20200810133108.31580-1-kai.heng.feng@canonical.com>
-References: <20200810133108.31580-1-kai.heng.feng@canonical.com>
+To: Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH] alsaseq: fix constant objects in Python 3
+In-Reply-To: <20200805154243.64485-1-marcan@marcan.st>
+References: <20200805154243.64485-1-marcan@marcan.st>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Andrew Oakley <andrew@adoakley.name>, open list <linux-kernel@vger.kernel.org>,
- Chris Boyle <chris@boyle.name>, tiwai@suse.com,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,19 +76,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 10 Aug 2020 15:31:06 +0200,
-Kai-Heng Feng wrote:
+On Wed, 05 Aug 2020 17:42:43 +0200,
+Hector Martin wrote:
 > 
-> The USB device (0x17aa:0x1046) that support Lenovo P620 rear panel
-> line-in claim to support volume control, but it doens't seem to have an
-> AMP, so when line-in volume lowers below 80, nothing gets recorded
-> anymore.
+> In Py3 everything is a long, so we can't get away with duplicating the
+> integer object layout any more. Properly subclass PyLong_Type instead,
+> with a bit of a hack to add an extra name field after the variable-sized
+> data section.
 > 
-> Disable the volume control to workaround the issue.
+> Also get rid of the enum type stuff, which seems to be unused cruft, and
+> the numprotocol stuff, because the base type can take care of that (and
+> we can't map arbitrary arithmetic results back to constants anyway).
 > 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-Thanks, applied.
+Applied now.  Thanks.
 
 
 Takashi
