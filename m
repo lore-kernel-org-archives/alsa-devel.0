@@ -2,60 +2,70 @@ Return-Path: <SRS0=hypa=BU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F0F0C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 13:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83272C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 14:04:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2737020734
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 13:54:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 068F1207BB
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 14:04:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pq3K/hF8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2737020734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g+C//i9u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 068F1207BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D974211C;
-	Mon, 10 Aug 2020 15:53:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D974211C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81535827;
+	Mon, 10 Aug 2020 16:03:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81535827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597067655;
-	bh=PC98xNmhmsI9wyv05GetDCtA+H0GjWnJwH7i6+gkPQs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pq3K/hF8FgfItiMVTFzgx1DiVJb9ADE7liV2hfgnfZpATtBDwpfV4OFWh72wVHgY0
-	 39e8gBQ9y72c31K/ngbVYiWMZYvwypR/8u7DttqZPMpNtoJKyPIsICv/BY4DXsD7Pk
-	 6JUmTnWpi4Z17Lv05cQrhPEbQ7I3CsaSRy73UW5M=
+	s=default; t=1597068258;
+	bh=qN7rsUuO9E0BEzPDD5F7ivUhZ74zuYUuM4+hQ9buqTE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=g+C//i9uNM01B26XJ+uvEmk13VYrl/E+XFCrCjchvy4Uo/tMzO4WHU70DldEyHrtx
+	 YaUHtf3KD/QdwMb0WePkFwqyRivhPWe5oATdFTnkCPhP5grzOrZWhKOSvkjMywS/cK
+	 /i/qwTqbNaFrSkXVDpG6UE0TOW8n89u7Zm6GSfEc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71801F801DB;
-	Mon, 10 Aug 2020 15:53:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C391F801DB;
+	Mon, 10 Aug 2020 16:03:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A557F8022B; Mon, 10 Aug 2020 15:53:23 +0200 (CEST)
+ id 81505F800BC; Mon, 10 Aug 2020 16:03:26 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 857D2F80085
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 15:53:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 857D2F80085
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7F8BF800BC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 16:03:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7F8BF800BC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CB700AC2F;
- Mon, 10 Aug 2020 13:53:32 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id B7627ADCD;
+ Mon, 10 Aug 2020 14:03:39 +0000 (UTC)
+Date: Mon, 10 Aug 2020 16:03:19 +0200
+Message-ID: <s5hh7ta4mzc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: Make soc_component_read() returning an error code again
-Date: Mon, 10 Aug 2020 15:46:31 +0200
-Message-Id: <20200810134631.19742-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: alsa-devel@alsa-project.org, John Stultz <john.stultz@linaro.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Disable Lenovo P620 Rear line-in volume
+ control
+In-Reply-To: <20200810133108.31580-1-kai.heng.feng@canonical.com>
+References: <20200810133108.31580-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Andrew Oakley <andrew@adoakley.name>, open list <linux-kernel@vger.kernel.org>,
+ Chris Boyle <chris@boyle.name>, tiwai@suse.com,
+ "Alexander A. Klimov" <grandmaster@al2klimov.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,43 +81,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Along with the recent unification of snd_soc_component_read*()
-functions, the behavior of snd_soc_component_read() was changed
-slightly; namely it returns the register read value directly, and even
-if an error happens, it returns zero (but it prints an error
-message).  That said, the caller side can't know whether it's an error
-or not any longer.
+On Mon, 10 Aug 2020 15:31:06 +0200,
+Kai-Heng Feng wrote:
+> 
+> The USB device (0x17aa:0x1046) that support Lenovo P620 rear panel
+> line-in claim to support volume control, but it doens't seem to have an
+> AMP, so when line-in volume lowers below 80, nothing gets recorded
+> anymore.
+> 
+> Disable the volume control to workaround the issue.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Ideally this shouldn't matter much, but in practice this seems causing
-a regression, as John reported.  And, grepping the tree revealed that
-there are still plenty of callers that do check the error code, so
-we'll need to deal with them in anyway.
+Thanks, applied.
 
-As a quick band-aid over the regression, this patch changes the return
-value of snd_soc_component_read() again to the negative error code.
-It can't work, obviously, for 32bit register values, but it should be
-enough for the known regressions, so far.
 
-Fixes: cf6e26c71bfd ("ASoC: soc-component: merge snd_soc_component_read() and snd_soc_component_read32()")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/soc-component.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index f0b4f4bc44a4..5504b92946e3 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -406,7 +406,7 @@ static unsigned int soc_component_read_no_lock(
- 		ret = -EIO;
- 
- 	if (ret < 0)
--		soc_component_ret(component, ret);
-+		return soc_component_ret(component, ret);
- 
- 	return val;
- }
--- 
-2.16.4
-
+Takashi
