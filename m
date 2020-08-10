@@ -2,68 +2,80 @@ Return-Path: <SRS0=hypa=BU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 143ABC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 15:04:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82132C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 17:39:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86CB420772
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 15:04:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 031D020885
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2020 17:39:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AXRemayR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86CB420772
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a9ufVswg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CJ32tAiB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 031D020885
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEF9015F2;
-	Mon, 10 Aug 2020 17:03:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEF9015F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ECBD15F9;
+	Mon, 10 Aug 2020 19:38:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ECBD15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597071852;
-	bh=0bOVDpB9qt+zETAUkQt4qvXmsPCSDq4X20UTZdguKZU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1597081182;
+	bh=yRdCKJP+WI2M34o9eT71YkcI0TK2EPbAInBAcPP4Hp8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AXRemayRTDOu3gExLZT35u6HnwVxXxenIC1BgP6PTzIorbcxx2RVVLLmB8wqrw5/N
-	 iylXf9EoI6AkukKdZJdPH+/umdqExuk+j63VH8sMsl4hKPUo/ijApBEL1Y55+oApg3
-	 jGSvVofBh2/ZsceI7KKdv4+iqSXBLNlEnXc5sNZU=
+	b=a9ufVswgbLAJyUajB9eVQ7u/MnF0yxAxqnxl86zWzUK2qcDDLtWjJ4CP2MuFxx1oW
+	 bY2jWeBGEyc40gX5WhXS3BQT7p2iUuZrL5fydF/CWfCeo1v3wTJ2KKzzi5PEv+ZKo2
+	 m8thFmMYzTqLH5hKCFccNKtIfvlALApXmgr6JkmI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C89AF801DB;
-	Mon, 10 Aug 2020 17:03:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2A3AF801DB;
+	Mon, 10 Aug 2020 19:38:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 897A8F8022B; Mon, 10 Aug 2020 17:03:19 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D06CCF8022B; Mon, 10 Aug 2020 19:38:49 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92C2CF800CE
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 17:03:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92C2CF800CE
-IronPort-SDR: 3QHo/JABmSpS/NkEb4Kuz7sV2FN0qsyiSYheldTSQwrV3pxc9FlApy0FXOKXWpU/zTP9AkrWU3
- W55uxWOsx9fg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9708"; a="171585776"
-X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; d="scan'208";a="171585776"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Aug 2020 08:03:09 -0700
-IronPort-SDR: 12GPmA8BCeQKGz3X7oWrHdalm2jYaMpo7RLVvb4zhfL6Ek6UshgXWdDmlDGRZyMjLYfytOv4Ny
- v8l1ys7ZGACg==
-X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; d="scan'208";a="438722426"
-Received: from schen8-mobl.amr.corp.intel.com (HELO [10.212.235.58])
- ([10.212.235.58])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Aug 2020 08:03:07 -0700
-Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
- board
-To: "Lu, Brent" <brent.lu@intel.com>, Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E3ABF800BC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 19:38:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E3ABF800BC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="CJ32tAiB"
+Received: by mail-wm1-x342.google.com with SMTP id c80so306351wme.0
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2020 10:38:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=EcJDg2O7xIbOjM5eLQ8gCplwOfat/XZVzxZppSuBFXA=;
+ b=CJ32tAiBMpba2lWqmucba2kWsAmrucVE+nHFEbLfe7F/yDIu8a5GsC+aKvXiXYYyjH
+ p6tY4SvZEFynuVENJxRY4zfZMk55Q8+jalMCUt5LbX15hB2LNARaGtL//JDIXpveJBnq
+ U97ZMz+k45sAX4uHdrKeocRzAh6Iaba1kKKm8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=EcJDg2O7xIbOjM5eLQ8gCplwOfat/XZVzxZppSuBFXA=;
+ b=tIWgWIzBUWXRKOvch+e0TseESBwn4Lz0CpaIaetVEFEDB2xbzqPcWPrzFZ+zjLnxT9
+ JDost0Npn3pJB2lrEHj5xZlNjsI74IRqVLQoQxf6uLiMWb/xXrRswbHvzx2t72H02uAT
+ 4UrCsqhdzp0vHS4jdWfpzRTFIMAVXjAIov7hqcGHW1FFyh5XfgqxiRYv8qtwZc/8LQxv
+ hA6QaTbszKsHIY+1hdwOsrdbMFQ1rakPVdVlK5LAjgXfc/le9biW7VErWtIho9l/1/gt
+ Qu7DOi7YECBRrtKcNykS8Q2w7O7xEgCMLcBb8saYI1cX2iKapoGGxFuqnetyW2zKkoZI
+ eedQ==
+X-Gm-Message-State: AOAM532Lal5ZQ7AytHYTjWWn65aAGQafnxsvYbh8NiNqp8hlQbqh4enE
+ jDWag6QPGcZ6FQgq1GCNXos9h0EeuDIokOR0Qr+KKw==
+X-Google-Smtp-Source: ABdhPJxWy126EoPeXn68o0RtdQ9AM8iu0r0roUOi2/tEIALG8XKSfLdRwQWvkOSSkWppyvAfQ/KenjZMRMb5iSGO57w=
+X-Received: by 2002:a05:600c:2302:: with SMTP id
+ 2mr325053wmo.151.1597081117897; 
+ Mon, 10 Aug 2020 10:38:37 -0700 (PDT)
+MIME-Version: 1.0
 References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
  <1596198365-10105-1-git-send-email-brent.lu@intel.com>
  <1596198365-10105-3-git-send-email-brent.lu@intel.com>
@@ -77,21 +89,21 @@ References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
  <DM6PR11MB36423A9D28134811AD5A911F974A0@DM6PR11MB3642.namprd11.prod.outlook.com>
  <6466847a-8aae-24f7-d727-36ba75e95f98@linux.intel.com>
  <DM6PR11MB364259049769F6EF3B84AABD97480@DM6PR11MB3642.namprd11.prod.outlook.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
-Date: Mon, 10 Aug 2020 10:03:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB364259049769F6EF3B84AABD97480@DM6PR11MB3642.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
+In-Reply-To: <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Tue, 11 Aug 2020 01:38:26 +0800
+Message-ID: <CAGvk5PohOP0Yv22tb53EX=ZLB9_vOMb=iujTh64OvHmjC1d4mg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Jie Yang <yang.jie@linux.intel.com>, "Rojewski,
  Cezary" <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
@@ -99,7 +111,7 @@ Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  Sam McNally <sammc@chromium.org>, Mark Brown <broonie@kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Daniel Stuart <daniel.stuart14@gmail.com>,
- "yuhsuan@google.com" <yuhsuan@google.com>, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+ "yuhsuan@google.com" <yuhsuan@google.com>, "Lu, Brent" <brent.lu@intel.com>,
  Damian van Soelen <dj.vsoelen@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -116,31 +128,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> =E6=96=BC
+2020=E5=B9=B48=E6=9C=8810=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8811:=
+03=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+>
+>
+> On 8/6/20 11:41 AM, Lu, Brent wrote:
+> >>
+> >> I don't get this. If the platform driver already stated 240 and 960 sa=
+mples why
+> >> would 432 be chosen? Doesn't this mean the constraint is not applied?
+> >
+> > Hi Pierre,
+> >
+> > Sorry for late reply. I used following constraints in V3 patch so any p=
+eriod which
+> > aligns 1ms would be accepted.
+> >
+> > +     /*
+> > +      * Make sure the period to be multiple of 1ms to align the
+> > +      * design of firmware. Apply same rule to buffer size to make
+> > +      * sure alsa could always find a value for period size
+> > +      * regardless the buffer size given by user space.
+> > +      */
+> > +     snd_pcm_hw_constraint_step(substream->runtime, 0,
+> > +                        SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 48);
+> > +     snd_pcm_hw_constraint_step(substream->runtime, 0,
+> > +                        SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 48);
+>
+> 432 samples is 9ms, I don't have a clue why/how CRAS might ask for this
+> value.
+>
+> It'd be a bit odd to add constraints just for the purpose of letting
+> userspace select a sensible value.
 
+Sorry for the late reply. CRAS does not set the period size when using it.
+The default period size is 256, which consumes the samples
+quickly(about 49627 fps when the rate is 48000 fps) at the beginning
+of the playback.
+Since CRAS write samples with the fixed frequency, it triggers
+underruns immidiately.
 
-On 8/6/20 11:41 AM, Lu, Brent wrote:
->>
->> I don't get this. If the platform driver already stated 240 and 960 samples why
->> would 432 be chosen? Doesn't this mean the constraint is not applied?
-> 
-> Hi Pierre,
-> 
-> Sorry for late reply. I used following constraints in V3 patch so any period which
-> aligns 1ms would be accepted.
-> 
-> +	/*
-> +	 * Make sure the period to be multiple of 1ms to align the
-> +	 * design of firmware. Apply same rule to buffer size to make
-> +	 * sure alsa could always find a value for period size
-> +	 * regardless the buffer size given by user space.
-> +	 */
-> +	snd_pcm_hw_constraint_step(substream->runtime, 0,
-> +			   SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 48);
-> +	snd_pcm_hw_constraint_step(substream->runtime, 0,
-> +			   SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 48);
+According to Brent, the DSP is using 240 period regardless the
+hw_param. If the period size is 256, DSP will read 256 samples each
+time but only consume 240 samples until the ring buffer of DSP is
+full. This behavior makes the samples in the ring buffer of kernel
+consumed quickly. (Not sure whether the explanation is correct. Need
+Brent to confirm it.)
 
-432 samples is 9ms, I don't have a clue why/how CRAS might ask for this 
-value.
+Unfortunately, we can not change the behavior of DSP. After some
+experiments, we found that the issue can be fixed if we set the period
+size to 240. With the same frequency as the DSP, the samples are
+consumed stably. Because everyone can trigger this issue when using
+the driver without setting the period size, we think it is a general
+issue that should be fixed in the kernel.
 
-It'd be a bit odd to add constraints just for the purpose of letting 
-userspace select a sensible value.
+Thanks,
+Yu-Hsuan
