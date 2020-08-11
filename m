@@ -2,75 +2,73 @@ Return-Path: <SRS0=37Wv=BV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC8F0C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 09:05:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 802DCC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 09:23:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F7A7207DE
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 09:05:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 081CD2076B
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 09:23:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MTzIZwcN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F7A7207DE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aN2Dsu09"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 081CD2076B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F56A1612;
-	Tue, 11 Aug 2020 11:04:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F56A1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 803AC84B;
+	Tue, 11 Aug 2020 11:22:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 803AC84B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597136708;
-	bh=65wMe/vrbxH6QWAg42a9TL/u93FxqoQnbCzoo4WOEEg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1597137810;
+	bh=dY+LU8Urr/9OhJ0RCKeaaiRus7bq9mGRJLZ+XjGQdUo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MTzIZwcNn3G5WhiSVCEuOwrhbAqfTY8Vdyo/z2xSJzJOgAn4g3BzsxQCa58wh6keQ
-	 JdHobFVdJ9pd7/vRvhtbzlAXZdK0K1HixbPXBV1J50sqnR29QxZh/xK2l+GoJq1mdO
-	 AccwOWhvxOgq0VVB+s8r1VBfctxRhCcOsFJoVLks=
+	b=aN2Dsu09/7b5226GT2VBd4ZQSfEAArGIncw3s015MroU7bUesU4+HK7q1rNvYXycY
+	 uR5jh+118oxCwOPNBV2IH1Z+b/RRmaJ05wFKDwGDhnUU+sR8Rb6h5Oby7M3fpLH95o
+	 +mW7UqKVju4E2f+gUWdok9IcI0tDlGQKGAdOquWg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C298F8014C;
-	Tue, 11 Aug 2020 11:04:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23708F800D3;
+	Tue, 11 Aug 2020 11:22:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 645A2F8015B; Tue, 11 Aug 2020 11:04:16 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 937C6F8015B; Tue, 11 Aug 2020 11:22:38 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC17CF800D3
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 11:04:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC17CF800D3
-Received: from 1.general.hwang4.us.vpn ([10.172.67.16])
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1k5QCR-0002qD-5f; Tue, 11 Aug 2020 09:04:03 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2E26F800D3
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 11:22:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2E26F800D3
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7C59DACB5;
+ Tue, 11 Aug 2020 09:22:48 +0000 (UTC)
+Date: Tue, 11 Aug 2020 11:22:27 +0200
+Message-ID: <s5hk0y535bg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hui Wang <hui.wang@canonical.com>
 Subject: Re: [PATCH] ALSA: hda - fix the micmute led status for Lenovo
  ThinkCentre AIO
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>, Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <36899086-0e36-5b9f-42cd-745e0c717871@canonical.com>
 References: <20200810021659.7429-1-hui.wang@canonical.com>
  <s5hd03z6min.wl-tiwai@suse.de>
  <c8ca5bd3-d9a1-6269-e088-6bc6e3936876@canonical.com>
  <s5ha6z36lk8.wl-tiwai@suse.de>
  <01D08974-C4EB-4820-9870-42B633DC19B3@canonical.com>
-From: Hui Wang <hui.wang@canonical.com>
-Message-ID: <36899086-0e36-5b9f-42cd-745e0c717871@canonical.com>
-Date: Tue, 11 Aug 2020 17:03:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <01D08974-C4EB-4820-9870-42B633DC19B3@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ <36899086-0e36-5b9f-42cd-745e0c717871@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- stable@vger.kernel.org
+ Kai-Heng Feng <kai.heng.feng@canonical.com>, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,66 +84,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 11 Aug 2020 11:03:55 +0200,
+Hui Wang wrote:
+> 
+> 
+> On 2020/8/11 下午4:56, Kai-Heng Feng wrote:
+> > Hi,
+> >
+> >> On Aug 10, 2020, at 14:51, Takashi Iwai <tiwai@suse.de> wrote:
+> >>
+> >> On Mon, 10 Aug 2020 08:34:36 +0200,
+> >> Hui Wang wrote:
+> >>>
+> >>> On 2020/8/10 下午2:30, Takashi Iwai wrote:
+> >>>> On Mon, 10 Aug 2020 04:16:59 +0200,
+> >>>> Hui Wang wrote:
+> >>>>> After installing the Ubuntu Linux, the micmute led status is not
+> >>>>> correct. Users expect that the led is on if the capture is disabled,
+> >>>>> but with the current kernel, the led is off with the capture disabled.
+> >>>>>
+> >>>>> We tried the old linux kernel like linux-4.15, there is no this issue.
+> >>>>> It looks like we introduced this issue when switching to the led_cdev.
+> >>>> The behavior can be controlled via "Mic Mute-LED Mode" enum kcontrol.
+> >>>> Which value does it have now?  If it's "Follow Capture", that's the
+> >>>> correct behavior.  OTOH, if it's "Follow Mute", the LED polarity is
+> >>>> indeed wrong.
+> >>> It is "Follow Mute",  if I change it to "Follow Capture" manually, the
+> >>> led status becomes correct.
+> >> OK, thanks for confirmation.  Applied now.
+> > I wonder if it's because how brightness value passed to gpio_mute_led_set() and micmute_led_set():
+> >
+> > static int gpio_mute_led_set(struct led_classdev *led_cdev,
+> >                               enum led_brightness brightness)
+> > {
+> >          struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
+> >          struct alc_spec *spec = codec->spec;
+> >
+> >          alc_update_gpio_led(codec, spec->gpio_mute_led_mask,
+> >                              spec->mute_led_polarity, !brightness);
+> >          return 0;
+> > }
+> >
+> > static int micmute_led_set(struct led_classdev *led_cdev,
+> >                             enum led_brightness brightness)
+> > {
+> >          struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
+> >          struct alc_spec *spec = codec->spec;
+> >
+> >          alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
+> >                              spec->micmute_led_polarity, !!brightness);
+> >          return 0;
+> > }
+> >
+> > Maybe we should let micmute_led_set() match gpio_mute_led_set() so the micmute polarity can be removed?
+> 
+> This will impact many many machines, I don't know if the current code
+> could work correctly or not on other machines.
 
-On 2020/8/11 下午4:56, Kai-Heng Feng wrote:
-> Hi,
->
->> On Aug 10, 2020, at 14:51, Takashi Iwai <tiwai@suse.de> wrote:
->>
->> On Mon, 10 Aug 2020 08:34:36 +0200,
->> Hui Wang wrote:
->>>
->>> On 2020/8/10 下午2:30, Takashi Iwai wrote:
->>>> On Mon, 10 Aug 2020 04:16:59 +0200,
->>>> Hui Wang wrote:
->>>>> After installing the Ubuntu Linux, the micmute led status is not
->>>>> correct. Users expect that the led is on if the capture is disabled,
->>>>> but with the current kernel, the led is off with the capture disabled.
->>>>>
->>>>> We tried the old linux kernel like linux-4.15, there is no this issue.
->>>>> It looks like we introduced this issue when switching to the led_cdev.
->>>> The behavior can be controlled via "Mic Mute-LED Mode" enum kcontrol.
->>>> Which value does it have now?  If it's "Follow Capture", that's the
->>>> correct behavior.  OTOH, if it's "Follow Mute", the LED polarity is
->>>> indeed wrong.
->>> It is "Follow Mute",  if I change it to "Follow Capture" manually, the
->>> led status becomes correct.
->> OK, thanks for confirmation.  Applied now.
-> I wonder if it's because how brightness value passed to gpio_mute_led_set() and micmute_led_set():
->
-> static int gpio_mute_led_set(struct led_classdev *led_cdev,
->                               enum led_brightness brightness)
-> {
->          struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
->          struct alc_spec *spec = codec->spec;
->
->          alc_update_gpio_led(codec, spec->gpio_mute_led_mask,
->                              spec->mute_led_polarity, !brightness);
->          return 0;
-> }
->
-> static int micmute_led_set(struct led_classdev *led_cdev,
->                             enum led_brightness brightness)
-> {
->          struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
->          struct alc_spec *spec = codec->spec;
->
->          alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
->                              spec->micmute_led_polarity, !!brightness);
->          return 0;
-> }
->
-> Maybe we should let micmute_led_set() match gpio_mute_led_set() so the micmute polarity can be removed?
+True.  But we should rather fix this, the current flag is illogical.
+I forgot about this problem while I also noticed during working on the
+led cdev conversion.
 
-This will impact many many machines, I don't know if the current code 
-could work correctly or not on other machines.
+I guess most of configurations can be verified with hda-emu or such.
+Let's see...
 
-Thanks,
 
-Hui.
-
->
-> Kai-Heng
->
->>
->> Takashi
+Takashi
