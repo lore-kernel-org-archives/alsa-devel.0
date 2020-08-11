@@ -2,81 +2,102 @@ Return-Path: <SRS0=37Wv=BV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD9E5C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 11:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEA01C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 11:17:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C5F02075D
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 11:05:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 77F3620768
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 11:17:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oFFmXBBV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="d5H6E6+x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C5F02075D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nKviaNk1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SATSNvRF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77F3620768
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B23031614;
-	Tue, 11 Aug 2020 13:04:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B23031614
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEE7810E;
+	Tue, 11 Aug 2020 13:17:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEE7810E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597143919;
-	bh=cCgrk9TPuvbYs4UoP/71ihEu3FGORv8rSn0s+PU8D50=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1597144670;
+	bh=A3p9+G5zJXV1JlMo/YZprkNoaFh7Dk1h67GItQJ7rmI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oFFmXBBVDfuc7uLUJyi+w8Wnl61s3XFiQ559XW43gLjqQbRYhKmCQJOBtOJSUmhMT
-	 jDMS58JysYrAtb6ng3ojcBNm5uQ8sP1uIsrGAvlW2IJjoeQ82tYNAk36wa3MZzFUMc
-	 4h4yRqdHtwfkrz0xKWWhUx9d+l05jWYnJFx2wer8=
+	b=nKviaNk1dyKUYgMVvgnaEZF1u9JfUYu911OwePOP30zf6B4mLEEu5JaUeYe2BZLJn
+	 wCK+xoSttzPFzN6bUwhBx5y6xR5g3TGW95jY3E8YbwRpTuRAPr4E99lDqMPTOPOLtZ
+	 DoP0kuJC3NkcULCzvZnnlwgJrSchq7UDX/9ftZzE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40BD5F80118;
-	Tue, 11 Aug 2020 13:04:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E02AF8014C;
+	Tue, 11 Aug 2020 13:17:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2587EF8014C; Tue, 11 Aug 2020 13:04:28 +0200 (CEST)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [81.169.146.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BBCDBF8015B; Tue, 11 Aug 2020 13:16:58 +0200 (CEST)
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
+ [IPv6:2a00:1450:4864:20::542])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDEE4F800D3
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 13:04:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDEE4F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07F8AF80118
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 13:16:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07F8AF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="d5H6E6+x"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1597143864;
- s=strato-dkim-0002; d=gerhold.net;
- h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=zmGqtyvDjnPl9SF3eHck7clcf6r4U0VaDRO31hZb3o4=;
- b=d5H6E6+xioQHUWuGUTsAbtpplFjuk/+hDVSAQ4JaHLf8KvwniPaxjFdS3F0xrzes41
- ECx3B0j/ky3R36bTH1dFMoCUVcf7063o9IYum5LRY6qRyF3rzIzudUXobJhl3eBYbZ4M
- oY/p2cxtyfo7UhgzP/i+FzW7SrHgrsd0ClFJGw6PQYNP7kmjdTTYXBi/aWJiTCS5RSUe
- kXXFnmeKh5YdF9/7rqEDJ9q5RsVKnr4iEo7MCQSqR/Yx6VOKYDq6hEytQ9b6nQpdPgrz
- 6Vxu6HSkB7m3akq/UWSwAcF5TebP237a0Im5PrmycmgyZ9sughF6CZuZRYeuPthqoDZp
- scRg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j9IczHboo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
- with ESMTPSA id Y0939ew7BB4HjIj
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 11 Aug 2020 13:04:17 +0200 (CEST)
-Date: Tue, 11 Aug 2020 13:04:09 +0200
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="SATSNvRF"
+Received: by mail-ed1-x542.google.com with SMTP id ba10so8765976edb.3
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 04:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=6cufjOFrT/hcspnN5aAafTE/4pFcFv+P9DAHTf0Alws=;
+ b=SATSNvRFgruxKUzD1yxGTGH+w8XpGtxSqpnYC97tFqgvs27XA4hgyY3OPtsy65a/ip
+ XU+sYFd0BpCB4dDedbItsxRYNDin7SE/FiWOvMjE2ij2a8NJCfpfLxoFXTvrPBvo0ycF
+ QxJ8wm5WDamdoXUT+N1c3MFzyK3om2H3xOLqqCF4l8yfjsu3GIQ8trgq2Gk3nfvJ3xdw
+ R7D4tRi8gCQ4TZc1F37UPcsYyqWUw6tBErctFtEq8si0A8UyP+iHkiwTNhhe4bP10Rk7
+ nzPgZz+fnX5oBuyzgvKF+n7uGHzjCZTFxbAtAD3D7wA1OUcej+bIOfqr49fgO85BsrqZ
+ CXEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=6cufjOFrT/hcspnN5aAafTE/4pFcFv+P9DAHTf0Alws=;
+ b=Ly6u+IEebtakYRzponHhoWUTIy9ukdCH3o1ifkF3rzTXvPtHtiPOVv34Q80SSWoO85
+ 2cKsMKHZRCuebbYWXoU+RtuXamOBY+hw56dliy08Rjceasb40z4MeY/WC/NEleTUuDst
+ XJIlAFTEAP3/uyaGNizEe1HunIxaQrnf0w8Xr8R21KD3qbZCynikDgZkQfv2yfulyZ6U
+ pj0pJAlgLu4SPaUxuCdu/D3A+QjBTh8ZQcrOykRy8wF8+ocZ1QKA9Az1ZbX71gIpYT9C
+ +Y1NdASqjZHMGdF3yRaQf/Utyh4PU9Lsr2HwlpbmQ8CH50GjvV17lGPJgy4rCpShLVEO
+ +cfg==
+X-Gm-Message-State: AOAM533fORSTNn5TGum0tEEu+CDcx2YYOfzaz1i9iYO5e13ZEMbOECFm
+ a/U/H78IC6rLh81QC3UIEdPSFA==
+X-Google-Smtp-Source: ABdhPJz486z2bZFpt1XUVZO12LzbgOKzz74hODxz1NU+0tiv1qSPZYMBXRqHUusPMC0lIUDz8INZkQ==
+X-Received: by 2002:aa7:dd94:: with SMTP id g20mr24838626edv.238.1597144607755; 
+ Tue, 11 Aug 2020 04:16:47 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id u4sm14245784edy.18.2020.08.11.04.16.46
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 11 Aug 2020 04:16:47 -0700 (PDT)
 Subject: Re: [PATCH 1/2] ASoC: q6afe-dai: add dummy register read function
-Message-ID: <20200811110409.GA1481@gerhold.net>
+To: Stephan Gerhold <stephan@gerhold.net>
 References: <20200811102552.26975-1-srinivas.kandagatla@linaro.org>
+ <20200811110409.GA1481@gerhold.net>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <002fa321-93ca-07a6-abc2-bd1d7433f98b@linaro.org>
+Date: Tue, 11 Aug 2020 12:16:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811102552.26975-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200811110409.GA1481@gerhold.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
  linux-kernel@vger.kernel.org, broonie@kernel.org, john.stultz@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -94,28 +115,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Aug 11, 2020 at 11:25:51AM +0100, Srinivas Kandagatla wrote:
-> Most of the DAPM widgets for DSP ASoC components reuse reg field
-> of the widgets for its internal calculations, however these are not
-> real registers. So read/writes to these numbers are not really
-> valid. However ASoC core will read these registers to get default
-> state during startup.
+
+
+On 11/08/2020 12:04, Stephan Gerhold wrote:
+> On Tue, Aug 11, 2020 at 11:25:51AM +0100, Srinivas Kandagatla wrote:
+>> Most of the DAPM widgets for DSP ASoC components reuse reg field
+>> of the widgets for its internal calculations, however these are not
+>> real registers. So read/writes to these numbers are not really
+>> valid. However ASoC core will read these registers to get default
+>> state during startup.
+>>
 > 
+> Actually q6afe-dai does not seem to make use of the register number.
+> The DAPM widgets all look like
+> 
+>    SND_SOC_DAPM_AIF_IN("HDMI_RX",  NULL,   0,    0,     0,      0),
+>                    /* (wname,    stname, wchan, wreg, wshift, winvert)
+> 
+> Wouldn't it be better to replace wreg = 0 with SND_SOC_NOPM in this case
+> so the read/write won't happen at all?
+That should work, let me try that!
 
-Actually q6afe-dai does not seem to make use of the register number.
-The DAPM widgets all look like
+--srini
+> 
+> q6routing on the other hand does make use of wreg, so this would not
+> work there...
+> 
+> Also: If I remember correctly the ASoC core will also attempt to write
+> to these "registers" when starting to play some audio, so you might also
+> need to implement component->write().
 
-  SND_SOC_DAPM_AIF_IN("HDMI_RX",  NULL,   0,    0,     0,      0),
-                  /* (wname,    stname, wchan, wreg, wshift, winvert)
-
-Wouldn't it be better to replace wreg = 0 with SND_SOC_NOPM in this case
-so the read/write won't happen at all?
-
-q6routing on the other hand does make use of wreg, so this would not
-work there...
-
-Also: If I remember correctly the ASoC core will also attempt to write
-to these "registers" when starting to play some audio, so you might also
-need to implement component->write().
-
-Stephan
+> 
+> Stephan
+> 
