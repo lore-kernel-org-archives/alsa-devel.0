@@ -4,89 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0632C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAE01C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:36:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E2F720656
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:27:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 719C92075D
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:36:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oGnNNu0U";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pe3SJSUZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E2F720656
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CKVLTc3Y";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FaYh00uP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 719C92075D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0C0A1664;
-	Tue, 11 Aug 2020 12:27:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0C0A1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id E864F1616;
+	Tue, 11 Aug 2020 12:35:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E864F1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597141671;
-	bh=BUzmREVehIQXAPp1s8dcl/qEUXhxb8gkKPmpDykaTFM=;
+	s=default; t=1597142171;
+	bh=PnIsAgseScuuaujleqYaGPmk7PwvxiPyEEPaKjLhew8=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=oGnNNu0U+5S6Umxdjmcjwa2ru1sb8n1CbMo5UKNgU2JI5oL2P/oVZbys1xHGU0oVe
-	 MymAuuY4BmbYZXkOg7hFd8RGgra9KnozvDKCYiYRgzgw+IqIHtrZDwHhiVQWkBtjZ4
-	 KaG31OOKeLOvwk9lso5/TXW/V2KrFxYe1dCzTM0o=
+	b=CKVLTc3Y6btUcOOptfx5Gw03nmktTgUOuBwtfHk8xmmC2fpVghax2G3dtG/BQI/Vi
+	 smkyj53HFFhtHvdeioXSD0YD0FCyRScJhq7G9+m2lR9y9r1SB5CkjVivufVu+AVoLE
+	 nDCaW6sfb7Ur/Sxkl0udS/RRA1kbL/f+hncxZxZ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CB06F80161;
-	Tue, 11 Aug 2020 12:26:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84A67F8014C;
+	Tue, 11 Aug 2020 12:35:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5261BF801A3; Tue, 11 Aug 2020 12:26:10 +0200 (CEST)
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com
- [IPv6:2a00:1450:4864:20::544])
+ id 46F4AF80161; Tue, 11 Aug 2020 12:35:19 +0200 (CEST)
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com
+ [IPv6:2a00:1450:4864:20::541])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 334EAF800D3
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 12:25:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 334EAF800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5447F80118
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 12:35:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5447F80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Pe3SJSUZ"
-Received: by mail-ed1-x544.google.com with SMTP id i6so8662084edy.5
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 03:25:59 -0700 (PDT)
+ header.b="FaYh00uP"
+Received: by mail-ed1-x541.google.com with SMTP id di22so8665136edb.12
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 03:35:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=CE2Owqviue/VQIXGk6mVLnEvDF33jGGXHgxlHjLuh/g=;
- b=Pe3SJSUZ+vkfgPFgS5Ata/faB6BErqPNLSX71PgTg6EpmCYHXqzuuYILr082+uF+Vh
- 3MxncsZE+KaWFYMdBfFtn4E6YLavtrALT+MztOdCtwWgkqciIUFChZK1tbDGkWnCL42z
- 52fCBFF4F/gRMALt5efXhPqirlwsYS4Bdmlczd5tqtxFOH2Rg2K/Ccw4siRbYjbuJtqN
- ulh7S+8c2thaMXICdmY/xBGL4vzOUoJUZ+T9/G+LOSdan0uSEZtYD0Vt6EPweZJhEOKz
- I9yH/e/qfPE5/mWDFC//nO3s1gO6lshMezP5wp0yU5QWRQiOUM+D9VjFvGwn3dkAMNkp
- W2fg==
+ bh=uRwIOipcItrxEdvc73BAciFxrjXyyFnJHwCmi01GD6k=;
+ b=FaYh00uPA0inU6V6X2XtdZN53s+We0TQUPc9IhKJ3DbWywQJQ+i0UAQxlILma4ALQo
+ IyOcKDSGziasn+GtzETnNfBUyQdbmIgZmGVvuf0HFrvQdgW/zE+hYMYiMGZAJsF+ThPs
+ siOxI+L5Ibaa8SCuUr4vQXMPPziiyCHH+YPXyRsN4inm8UUENDKzhOlRPiSTymjY3SQ2
+ VDdyS9wWP7/pBtZRewKvOJ69hnPNpzC6MkhXVjeZvW9NWZeguZjak6jl/vpwlXRa8Y8w
+ irs1XnmomSkDKmr88V1QU74osUol2sTOfAgb21IMXAGgjc251BsYZPdpb9Puc2jGEvPm
+ XwSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=CE2Owqviue/VQIXGk6mVLnEvDF33jGGXHgxlHjLuh/g=;
- b=iXynbpKHqufhQq1S4weapunXIWqygCaDaVYyryroiHuX8lRo+Asql5ENzzr7+WxzFA
- jXLPv0tGm/3hrEHhRKAlrygGzIxd0hY0GOdbqJp4DUqNjfJeI5oSPbUaPa3pg4oCDmzd
- 1+NlBb6uBMYggANrDztwJYN2X3tGf5WqTzjKK68ggBu2r+OA2ladenrLzW20r6ckog3V
- Qv4j92Idf43OFdQm1JwtNJAQcWyvxuVnWuW2yN+Jlp6sDVymtcgiVc0UDC5mjZmKA79j
- osF1zhALgHxjAQlJEUeuGfmJFOsZelc9SchSgUkRZxvNIRLB368HbDD/WPtir+Gvh8Ya
- L98g==
-X-Gm-Message-State: AOAM533hSJPUzekQKpSqNra1PCuMlnnBNfVMqEPrImpVkK9Lik6aRHsE
- rX0WHuQQGFhHZJjtv96P4g6xtA==
-X-Google-Smtp-Source: ABdhPJwyjbinnjY6qvExiC6LJv5rawE65Y9qVNsEqu/7UT4pEtUrxKdedoviaZuV8xcdXXlgUM1IvA==
-X-Received: by 2002:aa7:dc44:: with SMTP id g4mr25707392edu.273.1597141557638; 
- Tue, 11 Aug 2020 03:25:57 -0700 (PDT)
+ bh=uRwIOipcItrxEdvc73BAciFxrjXyyFnJHwCmi01GD6k=;
+ b=T+xZ3Qhn0+WRBgIhy1l+TcIVD7MJCFoGr5wuMUS+zFa+FtUzCM03hmkW7eLjGckSW9
+ nWfhfunWLljQRsq5PoAZ8LcOQ36IJspInDaVzhfmPfZ6iXSxSXsT7y9KcaMtxAHfdHVi
+ 601Pb5u/dhPmtNAgkbkwA8yoCVeQi5PTUpmXL1DiewHqFRHHGXgIwO0YKitT9shhvkFj
+ 7Tt53Dh+oEX8nCHfoRcoBDK5qWjq0xHTjJ+4/EZsyCiiKzb8EemYJIfV7ZfjYlpgPqAP
+ sSEh26LXC6qidJpiOBOWms0UMiq76exCwl0Ih/s6hb4DSvQLosm60ZeRHqy4AUuoHwcH
+ ippQ==
+X-Gm-Message-State: AOAM533Xx5bnWa/+AX610BliZv9xD0NkJyrqTd58RQSWPsJcjGkDVqn7
+ vAd0p1qMSsJ07juFrL7SXIdf6vjbbao=
+X-Google-Smtp-Source: ABdhPJy8ApjorAKEGaNyUAsmOZgPX5uvHrh5fbCJQl0ALsJMNqZQ4GtLfP/Z4GNVsouofKCKA2PxnA==
+X-Received: by 2002:a50:fc0e:: with SMTP id i14mr24919687edr.346.1597142108347; 
+ Tue, 11 Aug 2020 03:35:08 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id v14sm14864196ejb.63.2020.08.11.03.25.56
+ by smtp.gmail.com with ESMTPSA id q2sm14639997edb.82.2020.08.11.03.35.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 11 Aug 2020 03:25:56 -0700 (PDT)
+ Tue, 11 Aug 2020 03:35:07 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 1/2] ASoC: q6afe-dai: add dummy register read function
-Date: Tue, 11 Aug 2020 11:25:51 +0100
-Message-Id: <20200811102552.26975-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH] ASoC: msm8916-wcd-analog: fix register Interrupt offset
+Date: Tue, 11 Aug 2020 11:34:52 +0100
+Message-Id: <20200811103452.20448-1-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -108,52 +108,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Most of the DAPM widgets for DSP ASoC components reuse reg field
-of the widgets for its internal calculations, however these are not
-real registers. So read/writes to these numbers are not really
-valid. However ASoC core will read these registers to get default
-state during startup.
+For some reason interrupt set and clear register offsets are
+not set correctly.
+This patch corrects them!
 
-With recent changes to ASoC core, every register read/write
-failures are reported very verbosely. Prior to this fails to reads
-are totally ignored, so we never saw any error messages.
-
-To fix this add dummy read function to return default value.
-
-Reported-by: John Stultz <john.stultz@linaro.org>
-Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
+Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index 2a5302f1db98..492bdbaf13c4 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -1352,6 +1352,13 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
- 	SND_SOC_DAPM_AIF_OUT("DISPLAY_PORT_RX", "NULL", 0, 0, 0, 0),
- };
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 4428c62e25cf..3ddd822240e3 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -19,8 +19,8 @@
  
-+static unsigned int q6afe_reg_read(struct snd_soc_component *component,
-+				   unsigned int reg)
-+{
-+	/* default value */
-+	return 0;
-+}
-+
- static const struct snd_soc_component_driver q6afe_dai_component = {
- 	.name		= "q6afe-dai-component",
- 	.dapm_widgets = q6afe_dai_widgets,
-@@ -1359,7 +1366,7 @@ static const struct snd_soc_component_driver q6afe_dai_component = {
- 	.dapm_routes = q6afe_dapm_routes,
- 	.num_dapm_routes = ARRAY_SIZE(q6afe_dapm_routes),
- 	.of_xlate_dai_name = q6afe_of_xlate_dai_name,
--
-+	.read = q6afe_reg_read,
- };
- 
- static void of_q6afe_parse_dai_data(struct device *dev,
+ #define CDC_D_REVISION1			(0xf000)
+ #define CDC_D_PERPH_SUBTYPE		(0xf005)
+-#define CDC_D_INT_EN_SET		(0x015)
+-#define CDC_D_INT_EN_CLR		(0x016)
++#define CDC_D_INT_EN_SET		(0xf015)
++#define CDC_D_INT_EN_CLR		(0xf016)
+ #define MBHC_SWITCH_INT			BIT(7)
+ #define MBHC_MIC_ELECTRICAL_INS_REM_DET	BIT(6)
+ #define MBHC_BUTTON_PRESS_DET		BIT(5)
 -- 
 2.21.0
 
