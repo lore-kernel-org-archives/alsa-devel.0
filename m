@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 269B0C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C84BEC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:10:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 865B72075D
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:10:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FCE62054F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 10:10:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IKWOUwLz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 865B72075D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M5W9pMZT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FCE62054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C271166C;
-	Tue, 11 Aug 2020 12:09:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C271166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B785A1612;
+	Tue, 11 Aug 2020 12:09:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B785A1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597140605;
-	bh=9h3hRVfe9KkqJWziVhiVDdAyKxhhmO6XJJX75wwpQ+8=;
+	s=default; t=1597140649;
+	bh=pUp2qjTBHdwSr7Cis4uwxJJj8R/M1wbYJ2trqO2DMDc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IKWOUwLz/ZNJcqhhl7xbrPtc2LQ/rUurCoLM1cMcEMJHxJqc0Qcz4TxH3KtJ1CUYq
-	 ii9UoVxjw88qu4uPd7ul1tfSEv1AM6D76ur5WiBmiuLKCCAbPzraqzBi9kK6nQJZvT
-	 vfw2Y82BwuRWmYCxjbERitMuGHEloZtjWCxF50EY=
+	b=M5W9pMZTLGu5/3LkCAPB0JhpWXj5bPt69GOGf7rxIls8i6MhPOHuE7NKzTIepMbUt
+	 1Pf11KHX557qGvZniY5DWUJP5dsGwxg2qO3flI8jt6p0gLO4TOmbPp8iB8zMe1Nzq3
+	 qexdlrax05YbEKEwjr63iknPIklkfTSHjsCY/h1Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E22E8F8034E;
-	Tue, 11 Aug 2020 12:01:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A809BF80363;
+	Tue, 11 Aug 2020 12:01:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5B43F8034F; Tue, 11 Aug 2020 12:01:41 +0200 (CEST)
+ id B44EEF80367; Tue, 11 Aug 2020 12:01:45 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 953F3F80349
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 12:01:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 953F3F80349
-IronPort-SDR: b2wG7LHNX7d8F2npauUoPL1hcUg4KZ69rz3+8Pfz5jWWp19bo9OJ8qdTIP1ESdWKjpbMkvJTHP
- eHa11XO+4Kfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9709"; a="152924863"
-X-IronPort-AV: E=Sophos;i="5.75,460,1589266800"; d="scan'208";a="152924863"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3DE66F8034A
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 12:01:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DE66F8034A
+IronPort-SDR: AI7rgeTlSX4E65Bu+L2moThAlFrbcJVf6brnEOY8sz1OeBkEHRC0pB3ChKLHGOBQrNWtKA2ocN
+ tagtQU9fivhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9709"; a="152924870"
+X-IronPort-AV: E=Sophos;i="5.75,460,1589266800"; d="scan'208";a="152924870"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Aug 2020 03:01:35 -0700
-IronPort-SDR: S02/8tE1CoGBH9gzvf0+lsEeOwkJ1CqhUQ3d+UJ+/lbx2/i/ZEeWToh5iIeKAZBgGAflUUEj/X
- iaqNCAzwsKBw==
+ 11 Aug 2020 03:01:38 -0700
+IronPort-SDR: AOpw/xkX8PfApZsWn+2ER27L+oRjPzc5FlA0lZPJaTC92ScrZX9nR9NLaEF538FRj8VinB4N17
+ MroTPPJloBfQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,460,1589266800"; d="scan'208";a="494625409"
+X-IronPort-AV: E=Sophos;i="5.75,460,1589266800"; d="scan'208";a="494625415"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga006.fm.intel.com with ESMTP; 11 Aug 2020 03:01:30 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 11 Aug 2020 03:01:34 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 12/13] ASoC: Intel: bdw-5650: Remove haswell-solution
+Subject: [PATCH v2 13/13] ASoC: Intel: bdw-5677: Remove haswell-solution
  specific code
-Date: Tue, 11 Aug 2020 12:00:33 +0200
-Message-Id: <20200811100034.6875-13-cezary.rojewski@intel.com>
+Date: Tue, 11 Aug 2020 12:00:34 +0200
+Message-Id: <20200811100034.6875-14-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200811100034.6875-1-cezary.rojewski@intel.com>
 References: <20200811100034.6875-1-cezary.rojewski@intel.com>
@@ -97,42 +97,39 @@ definition to provide seamless transition to catpt solution.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/boards/bdw-rt5650.c | 36 -----------------------------
- 1 file changed, 36 deletions(-)
+ sound/soc/intel/boards/bdw-rt5677.c | 33 -----------------------------
+ 1 file changed, 33 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
-index ce7320916b22..c5820787c53e 100644
---- a/sound/soc/intel/boards/bdw-rt5650.c
-+++ b/sound/soc/intel/boards/bdw-rt5650.c
-@@ -16,9 +16,6 @@
- #include <sound/soc.h>
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index 86e427e3822f..4451957fc170 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -17,9 +17,6 @@
+ #include <sound/jack.h>
  #include <sound/soc-acpi.h>
  
 -#include "../common/sst-dsp.h"
 -#include "../haswell/sst-haswell-ipc.h"
 -
- #include "../../codecs/rt5645.h"
+ #include "../../codecs/rt5677.h"
  
- struct bdw_rt5650_priv {
-@@ -138,30 +135,6 @@ static struct snd_soc_ops bdw_rt5650_ops = {
- 	.hw_params = bdw_rt5650_hw_params,
+ struct bdw_rt5677_priv {
+@@ -201,27 +198,6 @@ static const struct snd_soc_ops bdw_rt5677_dsp_ops = {
+ 	.hw_params = bdw_rt5677_dsp_hw_params,
  };
  
 -#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
--static int bdw_rt5650_rtd_init(struct snd_soc_pcm_runtime *rtd)
+-static int bdw_rt5677_rtd_init(struct snd_soc_pcm_runtime *rtd)
 -{
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
 -	struct sst_pdata *pdata = dev_get_platdata(component->dev);
 -	struct sst_hsw *broadwell = pdata->dsp;
 -	int ret;
 -
--	/* Set ADSP SSP port settings
--	 * clock_divider = 4 means BCLK = MCLK/5 = 24MHz/5 = 4.8MHz
--	 */
+-	/* Set ADSP SSP port settings */
 -	ret = sst_hsw_device_set_config(broadwell, SST_HSW_DEVICE_SSP_0,
 -		SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
--		SST_HSW_DEVICE_TDM_CLOCK_MASTER, 4);
+-		SST_HSW_DEVICE_CLOCK_MASTER, 9);
 -	if (ret < 0) {
 -		dev_err(rtd->dev, "error: failed to set device config\n");
 -		return ret;
@@ -143,33 +140,33 @@ index ce7320916b22..c5820787c53e 100644
 -#endif
 -
  static const unsigned int channels[] = {
- 	2, 4,
+ 	2,
  };
-@@ -251,10 +224,8 @@ SND_SOC_DAILINK_DEF(platform,
+@@ -333,10 +309,8 @@ SND_SOC_DAILINK_DEF(platform,
  SND_SOC_DAILINK_DEF(be,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5650:00", "rt5645-aif1")));
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RT5677CE:00", "rt5677-aif1")));
  
 -#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
  SND_SOC_DAILINK_DEF(ssp0_port,
  	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
 -#endif
  
- static struct snd_soc_dai_link bdw_rt5650_dais[] = {
- 	/* Front End DAI links */
-@@ -263,9 +234,6 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
- 		.stream_name = "System Playback",
+ /* Wake on voice interface */
+ SND_SOC_DAILINK_DEFS(dsp,
+@@ -350,9 +324,6 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
+ 		.name = "System PCM",
+ 		.stream_name = "System Playback/Capture",
  		.dynamic = 1,
- 		.ops = &bdw_rt5650_fe_ops,
 -#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
--		.init = bdw_rt5650_rtd_init,
+-		.init = bdw_rt5677_rtd_init,
 -#endif
  		.trigger = {
  			SND_SOC_DPCM_TRIGGER_POST,
  			SND_SOC_DPCM_TRIGGER_POST
-@@ -289,11 +257,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
- 		.dpcm_playback = 1,
+@@ -387,11 +358,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
  		.dpcm_capture = 1,
- 		.init = bdw_rt5650_init,
+ 		.init = bdw_rt5677_init,
+ 		.exit = bdw_rt5677_exit,
 -#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
 -		SND_SOC_DAILINK_REG(dummy, be, dummy),
 -#else
