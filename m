@@ -2,104 +2,135 @@ Return-Path: <SRS0=37Wv=BV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CED71C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 16:55:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4F90C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 16:58:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 512F82076B
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 16:55:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39AE52076C
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2020 16:58:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="maDWbrBG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 512F82076B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JGGLf0+L";
+	dkim=pass (1024-bit key) header.d=dialogsemiconductor.onmicrosoft.com header.i=@dialogsemiconductor.onmicrosoft.com header.b="HDKlERFU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39AE52076C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=diasemi.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 975621614;
-	Tue, 11 Aug 2020 18:54:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 975621614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8050E83D;
+	Tue, 11 Aug 2020 18:57:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8050E83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597164949;
-	bh=lxmc9DXaN8Dxl4oww7Cb/ch/PTcz0Rl7FJyUH20ZR9I=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1597165111;
+	bh=ddTf7pBqce+Gw8FU4fRMr6xexrWkEn03ctH9iqu2q2s=;
+	h=In-Reply-To:References:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=maDWbrBGddv4WohlEOpvow6HhiuTQfuc2+Mp/8c1/vPOOvM3AvIZkMwtHKDRxh002
-	 GBHiZUbTZx8kbN0Lr1VcsYqd3bWYnHOew5ykHsoVJXyoDesMdd1wsrWUPF3WKE3dNk
-	 YlJ6UOEZ8Vj0F5PXDtuTfeFaG80/SaQPlSlMXF7o=
+	b=JGGLf0+Lo2KN3xOKKiWqpT7+/1yvxJVjQJC+gl/8y+pdR82Xqnk+Wi54DZ/trvxRs
+	 jhwts4erA9GWaWQf0KuIAYcTsFG/Jzfh8nEvgAS4h7pT+GSxh0PHnNTvYu1yAAm/pS
+	 aWAqCSpq1sIS95MeudDGxbKaMeY/lpg16l2/SHsY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E47BF8014C;
-	Tue, 11 Aug 2020 18:54:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93D22F8014C;
+	Tue, 11 Aug 2020 18:57:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7196CF8015B; Tue, 11 Aug 2020 18:54:57 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id B9B1FF801A3; Tue, 11 Aug 2020 18:57:38 +0200 (CEST)
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr130043.outbound.protection.outlook.com [40.107.13.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 441D3F80118
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 18:54:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 441D3F80118
-IronPort-SDR: ElBcUIu1r8pbrZiWDblmzD1U3wYkOeXYYHVEqHuYs1uyDDTRbqQmYEg/A2q4kVvpIOEs/qpXrD
- 7qMz0///XbRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="151446947"
-X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; d="scan'208";a="151446947"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Aug 2020 09:54:41 -0700
-IronPort-SDR: R+rgW4VXEi6GPdVsNSPPelRJdde1YATjsp7hTZyCXnQW5hDkJKLhGtxzcFZx76HOtN6UvBV43J
- NaFi2AsXBeTA==
-X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; d="scan'208";a="495211140"
-Received: from lwhitehe-mobl.amr.corp.intel.com (HELO [10.212.97.49])
- ([10.212.97.49])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Aug 2020 09:54:39 -0700
-Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
- board
-To: Mark Brown <broonie@kernel.org>, Yu-Hsuan Hsu <yuhsuan@chromium.org>
-References: <6466847a-8aae-24f7-d727-36ba75e95f98@linux.intel.com>
- <DM6PR11MB364259049769F6EF3B84AABD97480@DM6PR11MB3642.namprd11.prod.outlook.com>
- <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
- <CAGvk5PohOP0Yv22tb53EX=ZLB9_vOMb=iujTh64OvHmjC1d4mg@mail.gmail.com>
- <DM6PR11MB3642AC7F8EC47EB48B384D4797450@DM6PR11MB3642.namprd11.prod.outlook.com>
- <CAGvk5PogmqfEnFRA8hzby+AGgbOSvbELamh_1=eA9KTpyBMPYQ@mail.gmail.com>
- <s5htux939x1.wl-tiwai@suse.de>
- <CAGvk5PpcmkZ2HarqeCDaXm4id=84wYs-u4vWxJunHaf09gj66g@mail.gmail.com>
- <s5ho8nh37br.wl-tiwai@suse.de>
- <CAGvk5PphzkdiNfW8hiDuqX+2eQO2FvrpzA0qR3=3VvqM3GBhAA@mail.gmail.com>
- <20200811145353.GG6967@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d78f9adc-d583-f0f2-ce38-3c9175c939b8@linux.intel.com>
-Date: Tue, 11 Aug 2020 11:54:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA442F8014C
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 18:57:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA442F8014C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=dialogsemiconductor.onmicrosoft.com
+ header.i=@dialogsemiconductor.onmicrosoft.com header.b="HDKlERFU"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nwr4KZgUZGWZViAVN7S8TI4PoESYn8lgdPoLqT2768Y0UEOGJYg61IJ7wAu0IoPhcNnSp7rFz58Rz8KBaSKRDT9TOrT4pJEW1akzeYXWEDTt0bxkx4xrgrAxnYZERVx40kpBtb1TUZXsdPL8B3i/EU7zGIkA/xz4szhGYpIqKug2J6Iq2r0USqGayBQl4adrgD9bDGH6YcTNmu8oJ9q5PfEBwsXA05MnSJuH8ScxfGt+8kHsI968jlZI2XmN/hdSDuGx32ye/PeO7jMDOceySzF49yJr89sZGIMD0RY8p7DviPTgCwyfuN6hUMKwlCr/IJV/q9k6nFyq9Jer2JDBwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kF9EcLxD1hz4JHRjWWbm7O1KzgQzRYAqlH+/+v+HmfE=;
+ b=mwySn27/Y6DNXlrbup8JNufjnC+utBgX1BlPBRd38FNUUGe1pI7UmXIUn9aPJqpOrm6a1QJ2I6QudMdn7svgkqSmnSbEsTGLGIwvtKyKZjH6hjP+qr9EQPbla3yiNcI177jtQD5ZtojcyT0b43XHoPgAjD0rOoRzpLh0551tx1bCW+8MxCLOpa26qS4Pr8IT9QRbffswj5Q2iq3nqYM3nSiKak/usVwdLf+xXLvaIn6gsm8hiqpADJekbhhZdVJl/SluEunH9tNLX2qTxHy7fEKCh5EVJ8iv+Wx23C1NP5W5XQEXCZ2G5EDgtcx7SQHlkRz75iv48PKYMghltzfDRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 193.240.239.45) smtp.rcpttodomain=perex.cz smtp.mailfrom=diasemi.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kF9EcLxD1hz4JHRjWWbm7O1KzgQzRYAqlH+/+v+HmfE=;
+ b=HDKlERFUh7H7gi2D+55yfoj5ChsrWbVltbWICfSl7BLzvEbwR4va6zOjTi0Z3f6eqaZgLMcUWxVMQ4lh3t/LZrjFhaYwnJs+7RAxWrKI7xv27M97hZWJ9XRrWUg7wA/zb1vF+izbvVux8C6DDLVeWkbh0r4z380acLvTSI5gFSA=
+Received: from AM6PR02CA0023.eurprd02.prod.outlook.com (2603:10a6:20b:6e::36)
+ by DB6PR1001MB1015.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:4:65::23)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15; Tue, 11 Aug
+ 2020 16:57:26 +0000
+Received: from HE1EUR02FT053.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:20b:6e:cafe::83) by AM6PR02CA0023.outlook.office365.com
+ (2603:10a6:20b:6e::36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19 via Frontend
+ Transport; Tue, 11 Aug 2020 16:57:26 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; perex.cz; dkim=none (message not
+ signed) header.d=none;perex.cz; dmarc=fail action=none
+ header.from=diasemi.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ diasemi.com discourages use of 193.240.239.45 as permitted sender)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ HE1EUR02FT053.mail.protection.outlook.com (10.152.11.109) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3261.16 via Frontend Transport; Tue, 11 Aug 2020 16:57:26 +0000
+Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Tue, 11 Aug 2020 18:57:23 +0200
+Received: by swsrvapps-01.diasemi.com (Postfix, from userid 22379)	id
+ C53E13FB96; Tue, 11 Aug 2020 17:57:23 +0100 (BST)
+Message-ID: <7a9a2ead6e37820a6025c0a62dc45952d5032ab7.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <cover.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
+References: <cover.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Tue, 11 Aug 2020 17:57:23 +0100
+Subject: [PATCH 1/3] ASoC: da7219: Move required devm_* allocations to device
+ level code
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200811145353.GG6967@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Takashi Iwai <tiwai@suse.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jie Yang <yang.jie@linux.intel.com>, "Rojewski,
- Cezary" <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Sam McNally <sammc@chromium.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Stuart <daniel.stuart14@gmail.com>,
- "yuhsuan@google.com" <yuhsuan@google.com>, "Lu, Brent" <brent.lu@intel.com>,
- Damian van Soelen <dj.vsoelen@gmail.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8bbd5ac6-b942-4bbe-3e6a-08d83e17a013
+X-MS-TrafficTypeDiagnostic: DB6PR1001MB1015:
+X-Microsoft-Antispam-PRVS: <DB6PR1001MB101512C6F1E1B1D82F8910DEA7450@DB6PR1001MB1015.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:119;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AzO7zrVRFuispZdXo+lttTAjt9TrTAaIU7Fn20eTWIkon6DIBTlo7TiTAlHXxh2zpQ8h0OHkFbaoO/cRYITELxbjw1pxOQ1tT9dZUxVrPG9pRBNbLdmc5N/UYvMbfV3QVysWKnkvA7raCwjVluRX++CwRuvlIghBPDmS3hLAX9tglXH4EY7LciWb6XH85fjzqML8PzYAxTxepJGkRou327Lods2nHSuk0AjSMoJ2gq9DE+C/wYvE6GbRjU6S8p4r+rVI7gKEmlx+M50Kv/exo5rbaxTTQpQo98Ewl6fHQl5/eJaWdYS/cxtGtBpWGhwDtDRS3xBYsIxmYipnuDo0FLRqI5IsAyZ2ngT2EUr+FQFf37jEx36Th1+ogdxIPahXFKfEUFDd8IgdACSQzY3mmKdpJmbrb8PeJtBbRT9Mu9U0pcFla9Htu7nHG347fQwJw6/YyGY0KwB43yMe3Ev0AA==
+X-Forefront-Antispam-Report: CIP:193.240.239.45; CTRY:GB; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mailrelay1.diasemi.com; PTR:InfoDomainNonexistent;
+ CAT:NONE; SFTY:;
+ SFS:(4636009)(39850400004)(136003)(376002)(346002)(396003)(46966005)(26005)(82310400002)(83380400001)(70586007)(186003)(54906003)(107886003)(70206006)(356005)(81166007)(33310700002)(82740400003)(2906002)(47076004)(36756003)(6266002)(8936002)(110136005)(36906005)(86362001)(30864003)(42186006)(5660300002)(4326008)(316002)(426003)(478600001)(336012)(2616005)(8676002)(136400200001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2020 16:57:26.0822 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bbd5ac6-b942-4bbe-3e6a-08d83e17a013
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c; Ip=[193.240.239.45];
+ Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT053.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR1001MB1015
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Support Opensource <support.opensource@diasemi.com>,
+ Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,92 +146,362 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+In preparation for cleanup of device level and codec level probe
+funcitonality, all necessary devm_* allocations and fw retrieval
+functions are moved to the I2C probe level code.
 
->>> ... Why only 240?  That's the next logical question.
->>> If you have a clarification for it, it may be the rigid reason to
->>> introduce such a hw constraint.
-> 
->> According to Brent, the DSP is using 240 period regardless the
->> hw_param. If the period size is 256, DSP will read 256 samples each
->> time but only consume 240 samples until the ring buffer of DSP is
->> full. This behavior makes the samples in the ring buffer of kernel
->> consumed quickly.
-> 
->> Not sure whether the explanation is correct. Hi Brent, can you confirm it?
-> 
-> This seems to be going round and round in circles.  Userspace lets the
-> kernel pick the period size, if the period size isn't 240 (or a multiple
-> of it?) the DSP doesn't properly pay attention to that apparently due to
-> internal hard coding in the DSP firmware which we can't change so the
-> constraint logic needs to know about this DSP limitation - it seems like
-> none of this is going to change without something new going into the
-> mix?  We at least need a new question to ask about the DSP firmware I
-> think.
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+---
+ sound/soc/codecs/da7219-aad.c | 85 +++++++++++++++++++++++++------------------
+ sound/soc/codecs/da7219-aad.h |  3 ++
+ sound/soc/codecs/da7219.c     | 30 ++++++++-------
+ 3 files changed, 70 insertions(+), 48 deletions(-)
 
-I just tested aplay -Dhw: on a Cyan Chromebook with the Ubuntu kernel 
-5.4, and I see no issues with the 240 sample period. Same with 432, 960, 
-9600, etc.
-
-I also tried just for fun what happens with 256 samples, and I don't see 
-any underflows thrown either, so I am wondering what exactly the problem 
-is? Something's not adding up. I would definitively favor multiple of 
-1ms periods, since it's the only case that was productized, but there's 
-got to me something a side effect of how CRAS programs the hw_params.
-
-root@chrx:~# aplay -Dhw:0,0 --period-size=240 --buffer-size=480 -v 1.wav
-Playing WAVE '1.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-Hardware PCM card 0 'chtmax98090' device 0 subdevice 0
-Its setup is:
-   stream       : PLAYBACK
-   access       : RW_INTERLEAVED
-   format       : S16_LE
-   subformat    : STD
-   channels     : 2
-   rate         : 48000
-   exact rate   : 48000 (48000/1)
-   msbits       : 16
-   buffer_size  : 480
-   period_size  : 240
-   period_time  : 5000
-   tstamp_mode  : NONE
-   tstamp_type  : MONOTONIC
-   period_step  : 1
-   avail_min    : 240
-   period_event : 0
-   start_threshold  : 480
-   stop_threshold   : 480
-   silence_threshold: 0
-   silence_size : 0
-   boundary     : 8646911284551352320
-   appl_ptr     : 0
-   hw_ptr       : 0
-
-root@chrx:~# aplay -Dhw:0,0 --period-size=256 --buffer-size=512 -v 1.wav
-Playing WAVE '1.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-Hardware PCM card 0 'chtmax98090' device 0 subdevice 0
-Its setup is:
-   stream       : PLAYBACK
-   access       : RW_INTERLEAVED
-   format       : S16_LE
-   subformat    : STD
-   channels     : 2
-   rate         : 48000
-   exact rate   : 48000 (48000/1)
-   msbits       : 16
-   buffer_size  : 512
-   period_size  : 256
-   period_time  : 5333
-   tstamp_mode  : NONE
-   tstamp_type  : MONOTONIC
-   period_step  : 1
-   avail_min    : 256
-   period_event : 0
-   start_threshold  : 512
-   stop_threshold   : 512
-   silence_threshold: 0
-   silence_size : 0
-   boundary     : 4611686018427387904
-   appl_ptr     : 0
-   hw_ptr       : 0
-
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 4f2a96e..3827734 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -460,7 +460,7 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+  */
+ 
+ static enum da7219_aad_micbias_pulse_lvl
+-	da7219_aad_fw_micbias_pulse_lvl(struct snd_soc_component *component, u32 val)
++	da7219_aad_fw_micbias_pulse_lvl(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 2800:
+@@ -468,13 +468,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	case 2900:
+ 		return DA7219_AAD_MICBIAS_PULSE_LVL_2_9V;
+ 	default:
+-		dev_warn(component->dev, "Invalid micbias pulse level");
++		dev_warn(dev, "Invalid micbias pulse level");
+ 		return DA7219_AAD_MICBIAS_PULSE_LVL_OFF;
+ 	}
+ }
+ 
+ static enum da7219_aad_btn_cfg
+-	da7219_aad_fw_btn_cfg(struct snd_soc_component *component, u32 val)
++	da7219_aad_fw_btn_cfg(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 2:
+@@ -492,13 +492,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	case 500:
+ 		return DA7219_AAD_BTN_CFG_500MS;
+ 	default:
+-		dev_warn(component->dev, "Invalid button config");
++		dev_warn(dev, "Invalid button config");
+ 		return DA7219_AAD_BTN_CFG_10MS;
+ 	}
+ }
+ 
+ static enum da7219_aad_mic_det_thr
+-	da7219_aad_fw_mic_det_thr(struct snd_soc_component *component, u32 val)
++	da7219_aad_fw_mic_det_thr(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 200:
+@@ -510,13 +510,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	case 1000:
+ 		return DA7219_AAD_MIC_DET_THR_1000_OHMS;
+ 	default:
+-		dev_warn(component->dev, "Invalid mic detect threshold");
++		dev_warn(dev, "Invalid mic detect threshold");
+ 		return DA7219_AAD_MIC_DET_THR_500_OHMS;
+ 	}
+ }
+ 
+ static enum da7219_aad_jack_ins_deb
+-	da7219_aad_fw_jack_ins_deb(struct snd_soc_component *component, u32 val)
++	da7219_aad_fw_jack_ins_deb(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 5:
+@@ -536,13 +536,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	case 1000:
+ 		return DA7219_AAD_JACK_INS_DEB_1S;
+ 	default:
+-		dev_warn(component->dev, "Invalid jack insert debounce");
++		dev_warn(dev, "Invalid jack insert debounce");
+ 		return DA7219_AAD_JACK_INS_DEB_20MS;
+ 	}
+ }
+ 
+ static enum da7219_aad_jack_det_rate
+-	da7219_aad_fw_jack_det_rate(struct snd_soc_component *component, const char *str)
++	da7219_aad_fw_jack_det_rate(struct device *dev, const char *str)
+ {
+ 	if (!strcmp(str, "32ms_64ms")) {
+ 		return DA7219_AAD_JACK_DET_RATE_32_64MS;
+@@ -553,13 +553,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	} else if (!strcmp(str, "256ms_512ms")) {
+ 		return DA7219_AAD_JACK_DET_RATE_256_512MS;
+ 	} else {
+-		dev_warn(component->dev, "Invalid jack detect rate");
++		dev_warn(dev, "Invalid jack detect rate");
+ 		return DA7219_AAD_JACK_DET_RATE_256_512MS;
+ 	}
+ }
+ 
+ static enum da7219_aad_jack_rem_deb
+-	da7219_aad_fw_jack_rem_deb(struct snd_soc_component *component, u32 val)
++	da7219_aad_fw_jack_rem_deb(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 1:
+@@ -571,13 +571,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	case 20:
+ 		return DA7219_AAD_JACK_REM_DEB_20MS;
+ 	default:
+-		dev_warn(component->dev, "Invalid jack removal debounce");
++		dev_warn(dev, "Invalid jack removal debounce");
+ 		return DA7219_AAD_JACK_REM_DEB_1MS;
+ 	}
+ }
+ 
+ static enum da7219_aad_btn_avg
+-	da7219_aad_fw_btn_avg(struct snd_soc_component *component, u32 val)
++	da7219_aad_fw_btn_avg(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 1:
+@@ -589,13 +589,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	case 8:
+ 		return DA7219_AAD_BTN_AVG_8;
+ 	default:
+-		dev_warn(component->dev, "Invalid button average value");
++		dev_warn(dev, "Invalid button average value");
+ 		return DA7219_AAD_BTN_AVG_2;
+ 	}
+ }
+ 
+ static enum da7219_aad_adc_1bit_rpt
+-	da7219_aad_fw_adc_1bit_rpt(struct snd_soc_component *component, u32 val)
++	da7219_aad_fw_adc_1bit_rpt(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 1:
+@@ -607,14 +607,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	case 8:
+ 		return DA7219_AAD_ADC_1BIT_RPT_8;
+ 	default:
+-		dev_warn(component->dev, "Invalid ADC 1-bit repeat value");
++		dev_warn(dev, "Invalid ADC 1-bit repeat value");
+ 		return DA7219_AAD_ADC_1BIT_RPT_1;
+ 	}
+ }
+ 
+-static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component *component)
++static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct device *dev)
+ {
+-	struct device *dev = component->dev;
+ 	struct i2c_client *i2c = to_i2c_client(dev);
+ 	struct fwnode_handle *aad_np;
+ 	struct da7219_aad_pdata *aad_pdata;
+@@ -634,7 +633,7 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component
+ 	if (fwnode_property_read_u32(aad_np, "dlg,micbias-pulse-lvl",
+ 				     &fw_val32) >= 0)
+ 		aad_pdata->micbias_pulse_lvl =
+-			da7219_aad_fw_micbias_pulse_lvl(component, fw_val32);
++			da7219_aad_fw_micbias_pulse_lvl(dev, fw_val32);
+ 	else
+ 		aad_pdata->micbias_pulse_lvl = DA7219_AAD_MICBIAS_PULSE_LVL_OFF;
+ 
+@@ -643,31 +642,31 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component
+ 		aad_pdata->micbias_pulse_time = fw_val32;
+ 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,btn-cfg", &fw_val32) >= 0)
+-		aad_pdata->btn_cfg = da7219_aad_fw_btn_cfg(component, fw_val32);
++		aad_pdata->btn_cfg = da7219_aad_fw_btn_cfg(dev, fw_val32);
+ 	else
+ 		aad_pdata->btn_cfg = DA7219_AAD_BTN_CFG_10MS;
+ 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,mic-det-thr", &fw_val32) >= 0)
+ 		aad_pdata->mic_det_thr =
+-			da7219_aad_fw_mic_det_thr(component, fw_val32);
++			da7219_aad_fw_mic_det_thr(dev, fw_val32);
+ 	else
+ 		aad_pdata->mic_det_thr = DA7219_AAD_MIC_DET_THR_500_OHMS;
+ 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,jack-ins-deb", &fw_val32) >= 0)
+ 		aad_pdata->jack_ins_deb =
+-			da7219_aad_fw_jack_ins_deb(component, fw_val32);
++			da7219_aad_fw_jack_ins_deb(dev, fw_val32);
+ 	else
+ 		aad_pdata->jack_ins_deb = DA7219_AAD_JACK_INS_DEB_20MS;
+ 
+ 	if (!fwnode_property_read_string(aad_np, "dlg,jack-det-rate", &fw_str))
+ 		aad_pdata->jack_det_rate =
+-			da7219_aad_fw_jack_det_rate(component, fw_str);
++			da7219_aad_fw_jack_det_rate(dev, fw_str);
+ 	else
+ 		aad_pdata->jack_det_rate = DA7219_AAD_JACK_DET_RATE_256_512MS;
+ 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,jack-rem-deb", &fw_val32) >= 0)
+ 		aad_pdata->jack_rem_deb =
+-			da7219_aad_fw_jack_rem_deb(component, fw_val32);
++			da7219_aad_fw_jack_rem_deb(dev, fw_val32);
+ 	else
+ 		aad_pdata->jack_rem_deb = DA7219_AAD_JACK_REM_DEB_1MS;
+ 
+@@ -692,13 +691,13 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component
+ 		aad_pdata->c_mic_btn_thr = 0x3E;
+ 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,btn-avg", &fw_val32) >= 0)
+-		aad_pdata->btn_avg = da7219_aad_fw_btn_avg(component, fw_val32);
++		aad_pdata->btn_avg = da7219_aad_fw_btn_avg(dev, fw_val32);
+ 	else
+ 		aad_pdata->btn_avg = DA7219_AAD_BTN_AVG_2;
+ 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,adc-1bit-rpt", &fw_val32) >= 0)
+ 		aad_pdata->adc_1bit_rpt =
+-			da7219_aad_fw_adc_1bit_rpt(component, fw_val32);
++			da7219_aad_fw_adc_1bit_rpt(dev, fw_val32);
+ 	else
+ 		aad_pdata->adc_1bit_rpt = DA7219_AAD_ADC_1BIT_RPT_1;
+ 
+@@ -887,21 +886,13 @@ void da7219_aad_resume(struct snd_soc_component *component)
+ int da7219_aad_init(struct snd_soc_component *component)
+ {
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+-	struct da7219_aad_priv *da7219_aad;
++	struct da7219_aad_priv *da7219_aad = da7219->aad;
+ 	u8 mask[DA7219_AAD_IRQ_REG_MAX];
+ 	int ret;
+ 
+-	da7219_aad = devm_kzalloc(component->dev, sizeof(*da7219_aad), GFP_KERNEL);
+-	if (!da7219_aad)
+-		return -ENOMEM;
+-
+-	da7219->aad = da7219_aad;
+ 	da7219_aad->component = component;
+ 
+ 	/* Handle any DT/ACPI/platform data */
+-	if (da7219->pdata && !da7219->pdata->aad_pdata)
+-		da7219->pdata->aad_pdata = da7219_aad_fw_to_pdata(component);
+-
+ 	da7219_aad_handle_pdata(component);
+ 
+ 	/* Disable button detection */
+@@ -947,6 +938,30 @@ void da7219_aad_exit(struct snd_soc_component *component)
+ }
+ EXPORT_SYMBOL_GPL(da7219_aad_exit);
+ 
++/*
++ * AAD related I2C probe handling
++ */
++
++int da7219_aad_probe(struct i2c_client *i2c)
++{
++	struct da7219_priv *da7219 = i2c_get_clientdata(i2c);
++	struct device *dev = &i2c->dev;
++	struct da7219_aad_priv *da7219_aad;
++
++	da7219_aad = devm_kzalloc(dev, sizeof(*da7219_aad), GFP_KERNEL);
++	if (!da7219_aad)
++		return -ENOMEM;
++
++	da7219->aad = da7219_aad;
++
++	/* Retrieve any DT/ACPI/platform data */
++	if (da7219->pdata && !da7219->pdata->aad_pdata)
++		da7219->pdata->aad_pdata = da7219_aad_fw_to_pdata(dev);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(da7219_aad_probe);
++
+ MODULE_DESCRIPTION("ASoC DA7219 AAD Driver");
+ MODULE_AUTHOR("Adam Thomson <Adam.Thomson.Opensource@diasemi.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/da7219-aad.h b/sound/soc/codecs/da7219-aad.h
+index cfa46fb..f48a120 100644
+--- a/sound/soc/codecs/da7219-aad.h
++++ b/sound/soc/codecs/da7219-aad.h
+@@ -212,4 +212,7 @@ struct da7219_aad_priv {
+ int da7219_aad_init(struct snd_soc_component *component);
+ void da7219_aad_exit(struct snd_soc_component *component);
+ 
++/* I2C Probe */
++int da7219_aad_probe(struct i2c_client *i2c);
++
+ #endif /* __DA7219_AAD_H */
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index f83a6ea..82d35bc 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1751,9 +1751,8 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ }
+ 
+-static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *component)
++static struct da7219_pdata *da7219_fw_to_pdata(struct device *dev)
+ {
+-	struct device *dev = component->dev;
+ 	struct da7219_pdata *pdata;
+ 	const char *of_str;
+ 	u32 of_val32;
+@@ -2289,10 +2288,6 @@ static int da7219_probe(struct snd_soc_component *component)
+ 	}
+ 
+ 	/* Handle DT/ACPI/Platform data */
+-	da7219->pdata = dev_get_platdata(component->dev);
+-	if (!da7219->pdata)
+-		da7219->pdata = da7219_fw_to_pdata(component);
+-
+ 	da7219_handle_pdata(component);
+ 
+ 	/* Check if MCLK provided */
+@@ -2569,11 +2564,12 @@ static bool da7219_volatile_register(struct device *dev, unsigned int reg)
+ static int da7219_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
++	struct device *dev = &i2c->dev;
+ 	struct da7219_priv *da7219;
+ 	unsigned int system_active, system_status;
+ 	int i, ret;
+ 
+-	da7219 = devm_kzalloc(&i2c->dev, sizeof(struct da7219_priv),
++	da7219 = devm_kzalloc(dev, sizeof(struct da7219_priv),
+ 			      GFP_KERNEL);
+ 	if (!da7219)
+ 		return -ENOMEM;
+@@ -2583,7 +2579,7 @@ static int da7219_i2c_probe(struct i2c_client *i2c,
+ 	da7219->regmap = devm_regmap_init_i2c(i2c, &da7219_regmap_config);
+ 	if (IS_ERR(da7219->regmap)) {
+ 		ret = PTR_ERR(da7219->regmap);
+-		dev_err(&i2c->dev, "regmap_init() failed: %d\n", ret);
++		dev_err(dev, "regmap_init() failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -2618,12 +2614,20 @@ static int da7219_i2c_probe(struct i2c_client *i2c,
+ 
+ 	regcache_cache_bypass(da7219->regmap, false);
+ 
+-	ret = devm_snd_soc_register_component(&i2c->dev,
+-				     &soc_component_dev_da7219,
+-				     &da7219_dai, 1);
++	/* Retrieve DT/ACPI/Platform data */
++	da7219->pdata = dev_get_platdata(dev);
++	if (!da7219->pdata)
++		da7219->pdata = da7219_fw_to_pdata(dev);
++
++	/* AAD */
++	ret = da7219_aad_probe(i2c);
++	if (ret)
++		return ret;
++
++	ret = devm_snd_soc_register_component(dev, &soc_component_dev_da7219,
++					      &da7219_dai, 1);
+ 	if (ret < 0) {
+-		dev_err(&i2c->dev, "Failed to register da7219 component: %d\n",
+-			ret);
++		dev_err(dev, "Failed to register da7219 component: %d\n", ret);
+ 	}
+ 	return ret;
+ }
+-- 
+1.9.1
 
