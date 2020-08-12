@@ -2,73 +2,110 @@ Return-Path: <SRS0=lB/p=BW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE2DAC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 15:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A97CC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 15:55:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37F01207F7
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 15:48:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF807207F7
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 15:55:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i/s7hijP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37F01207F7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bjLGloZD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF807207F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC48D1663;
-	Wed, 12 Aug 2020 17:48:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC48D1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E1211662;
+	Wed, 12 Aug 2020 17:54:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E1211662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597247337;
-	bh=1TmtjWAldmgE3qP60cOi+2iR/YHfOzkWIXyTs/L3Q74=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1597247740;
+	bh=Le5Nfb5PUj5X/uBADCdRYKcYjZ8ZsFrm6yPslphSMaA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i/s7hijPIPVJLP68/rpfyesyh8wSF6F1BmMvcaUFFpec2aaGuz4Zasn9osYWxKMR1
-	 +oY8FHgFIUjIoelfWabjqbY57X5G7cd93zsHTxUCn3srwadaTWynqXvbiJTETq6HP3
-	 tNuEaPyhPPlGeX6YYEgnzseQ08+EeoD0kK7kytPo=
+	b=bjLGloZDUO8cC7Aqik6wSq6womDt3Mlsj7JE6nkCyhJd8mAk+HkqT1m3mOYkrcLcs
+	 260jjVngoc4EKwroKrFBmpN6liiFZlNmLv0zOnibKoCzMKq7KV6MhS7y/o1lpExa4v
+	 TwopB5FvLuK0H4TSxNnvsT3FjfaroHZrEEq6K9Xw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E468F80147;
-	Wed, 12 Aug 2020 17:48:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C707FF801DB;
+	Wed, 12 Aug 2020 17:54:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F1E6F8022B; Wed, 12 Aug 2020 17:48:05 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AA5FAF8022B; Wed, 12 Aug 2020 17:54:48 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56194F800D3
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 17:47:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56194F800D3
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4B1A5AF21;
- Wed, 12 Aug 2020 15:48:16 +0000 (UTC)
-Date: Wed, 12 Aug 2020 17:47:54 +0200
-Message-ID: <s5ho8nfx3v9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/hdmi: Use force connectivity quirk on another
- HP desktop
-In-Reply-To: <44573652-9ECF-4EC5-A234-DBB21FC90CC7@canonical.com>
-References: <20200811095336.32396-1-kai.heng.feng@canonical.com>
- <44573652-9ECF-4EC5-A234-DBB21FC90CC7@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Nikhil Mahale <nmahale@nvidia.com>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41569F800D3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 17:54:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41569F800D3
+IronPort-SDR: Ya5clZ4LWAJmWJaXX4TYSdyrJDv7/BVxRmcBR98Tq3EAhBzm+WXiQdLhwsesJ0Ktm+KPfZD5ha
+ 41vpzFlhRHkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="155111182"
+X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; d="scan'208";a="155111182"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Aug 2020 08:54:34 -0700
+IronPort-SDR: D+QUvdwEtf6cbV7gegrOvx5tQQPff11Wy+K1Y4rvg6YYj12jUsZTn8OHPKa04ZNRcXPIwXXcD7
+ qT6i8sXoF05g==
+X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; d="scan'208";a="495553516"
+Received: from mbharapa-mobl.amr.corp.intel.com (HELO [10.212.31.62])
+ ([10.212.31.62])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Aug 2020 08:54:31 -0700
+Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+To: Takashi Iwai <tiwai@suse.de>
+References: <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
+ <DM6PR11MB3642AC7F8EC47EB48B384D4797450@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <CAGvk5PogmqfEnFRA8hzby+AGgbOSvbELamh_1=eA9KTpyBMPYQ@mail.gmail.com>
+ <s5htux939x1.wl-tiwai@suse.de>
+ <CAGvk5PpcmkZ2HarqeCDaXm4id=84wYs-u4vWxJunHaf09gj66g@mail.gmail.com>
+ <s5ho8nh37br.wl-tiwai@suse.de>
+ <CAGvk5PphzkdiNfW8hiDuqX+2eQO2FvrpzA0qR3=3VvqM3GBhAA@mail.gmail.com>
+ <20200811145353.GG6967@sirena.org.uk>
+ <d78f9adc-d583-f0f2-ce38-3c9175c939b8@linux.intel.com>
+ <20200811172209.GM6967@sirena.org.uk>
+ <CAGvk5PqGi7cXthLHFi4NyypxFiGnoHvD9vp+5nJdH-_VkVvcKw@mail.gmail.com>
+ <s5hr1scz908.wl-tiwai@suse.de>
+ <CAGvk5Pp+Gk5Uk-iLdhVPWuCL0FiL9OhsaAtwkotay5JAYUNxdQ@mail.gmail.com>
+ <s5hlfikz6y8.wl-tiwai@suse.de>
+ <CAGvk5Pq3rEGJX=WjriPfWg_sEAVWHGZ9S=4iySNfYaHX7Xcw0g@mail.gmail.com>
+ <s5h8sekz4ox.wl-tiwai@suse.de>
+ <e4cc6231-8b19-c145-1b18-91d3a00131d3@linux.intel.com>
+ <s5hv9hnx6am.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <be45d821-57c6-6ca5-0864-ac3aa521d82e@linux.intel.com>
+Date: Wed, 12 Aug 2020 10:54:30 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <s5hv9hnx6am.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Aaron Plattner <aplattner@nvidia.com>, Harsha Priya <harshapriya.n@intel.com>,
- open list <linux-kernel@vger.kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Sam McNally <sammc@chromium.org>, Mark Brown <broonie@kernel.org>,
+ "yuhsuan@google.com" <yuhsuan@google.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Stuart <daniel.stuart14@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Lu,
+ Brent" <brent.lu@intel.com>, Damian van Soelen <dj.vsoelen@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,50 +121,107 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 12 Aug 2020 17:43:27 +0200,
-Kai-Heng Feng wrote:
-> 
-> Hi,
-> 
-> > On Aug 11, 2020, at 17:53, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
-> > 
-> > There's another HP desktop has buggy BIOS which flags the Port
-> > Connectivity bit as no connection.
-> > 
-> > Apply force connectivity quirk to enable DP/HDMI audio.
-> > 
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> 
-> I guess this patch was omitted as well...
-
-Not omitted but applied to a wrong internal branch, sorry.
-Now I rebased to the proper branch and pushed out.
 
 
-thanks,
+On 8/12/20 9:55 AM, Takashi Iwai wrote:
+> On Wed, 12 Aug 2020 16:46:40 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>>
+>>>>>>>> After doing some experiments, I think I can identify the problem more precisely.
+>>>>>>>> 1. aplay can not reproduce this issue because it writes samples
+>>>>>>>> immediately when there are some space in the buffer. However, you can
+>>>>>>>> add --test-position to see how the delay grows with period size 256.
+>>>>>>>>> aplay -Dhw:1,0 --period-size=256 --buffer-size=480 /dev/zero -d 1 -f dat --test-position
+>>>>>>>> Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
+>>>>>>>> Hz, Stereo
+>>>>>>>> Suspicious buffer position (1 total): avail = 0, delay = 2064, buffer = 512
+>>>>>>>> Suspicious buffer position (2 total): avail = 0, delay = 2064, buffer = 512
+>>>>>>>> Suspicious buffer position (3 total): avail = 0, delay = 2096, buffer = 512
+>>>>>>>> ...
+>>>>>>>
+>>>>>>> Isn't this about the alignment of the buffer size against the period
+>>>>>>> size, not the period size itself?  i.e. in the example above, the
+>>>>>>> buffer size isn't a multiple of period size, and DSP can't handle if
+>>>>>>> the position overlaps the buffer size in a half way.
+>>>>>>>
+>>>>>>> If that's the problem (and it's an oft-seen restriction), the right
+>>>>>>> constraint is
+>>>>>>>     snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+>>>>>>>
+>>>>>>>
+>>>>>>> Takashi
+>>>>>> Oh sorry for my typo. The issue happens no matter what buffer size is
+>>>>>> set. Actually, even if I want to set 480, it will change to 512
+>>>>>> automatically.
+>>>>>> Suspicious buffer position (1 total): avail = 0, delay = 2064, buffer
+>>>>>> = 512 <-this one is the buffer size
+>>>>>
+>>>>> OK, then it means that the buffer size alignment is already in place.
+>>>>>
+>>>>> And this large delay won't happen if you use period size 240?
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>> Yes! If I set the period size to 240, it will not print "Suspicious
+>>>> buffer position ..."
+>>>
+>>> So it sounds like DSP handles the delay report incorrectly.
+>>> Then it comes to another question: the driver supports both SOF and
+>>> SST.  Is there the behavior difference between both DSPs wrt this
+>>> delay issue?
+>>
+>> I still don't get what the issue is. The two following cases work fine
+>> with the SST/Atom driver:
+>>
+>> root@chrx:~# aplay -Dhw:0,0 --period-size=240 --buffer-size=480
+>> /dev/zero -d 2 -f dat --test-position
+>> Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
+>> Hz, Stereo
+>> root@chrx:~# aplay -Dhw:0,0 --period-size=960 --buffer-size=4800
+>> /dev/zero -d 2 -f dat --test-position
+>> Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
+>> Hz, Stereo
+> 
+> What if with --period-size=256 --buffer-size=512 and --test-position?
+> Can you reproduce the problem in your side?
 
-Takashi
+Yes indeed with the existing driver:
 
+root@chrx:~# aplay -Dhw:0,0 --period-size=256 --buffer-size=512 
+/dev/zero -d 2 -f dat --test-position
+Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000 
+Hz, Stereo
+underrun!!! (at least 0.312 ms long)
+underrun!!! (at least 0.326 ms long)
+Suspicious buffer position (1 total): avail = 0, delay = 2064, buffer = 512
+Suspicious buffer position (2 total): avail = 0, delay = 2064, buffer = 512
+Suspicious buffer position (3 total): avail = 0, delay = 2080, buffer = 512
+Suspicious buffer position (4 total): avail = 0, delay = 2080, buffer = 512
+Suspicious buffer position (5 total): avail = 0, delay = 2096, buffer = 512
+Suspicious buffer position (6 total): avail = 0, delay = 2096, buffer = 512
+
+but the new constraint to force a 1ms step added in the patch1 should 
+preclude this from happening.
+
+>> The existing code has this:
+>>
+>> 	/* Make sure, that the period size is always even */
+>> 	snd_pcm_hw_constraint_step(substream->runtime, 0,
+>> 			   SNDRV_PCM_HW_PARAM_PERIODS, 2);
+>>
+>> 	return snd_pcm_hw_constraint_integer(runtime,
+>> 			 SNDRV_PCM_HW_PARAM_PERIODS);
+>>
+>> and with the addition of period size being a multiple of 1ms all
+>> requirements should be met?
 > 
-> Kai-Heng
+> I also wonder what's really missing, too :)
 > 
-> > ---
-> > sound/pci/hda/patch_hdmi.c | 1 +
-> > 1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> > index 4bbd12d3b1b5..b8c8490e568b 100644
-> > --- a/sound/pci/hda/patch_hdmi.c
-> > +++ b/sound/pci/hda/patch_hdmi.c
-> > @@ -1863,6 +1863,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
-> > }
-> > 
-> > static const struct snd_pci_quirk force_connect_list[] = {
-> > +	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
-> > 	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
-> > 	{}
-> > };
-> > -- 
-> > 2.17.1
-> > 
-> 
+> BTW, I took a look back at the thread, and CRAS seems using a very
+> large buffer, namely:
+> [   52.434791] sound pcmC1D0p:   PERIOD_SIZE [240:240]
+> [   52.434802] sound pcmC1D0p:   BUFFER_SIZE [204480:204480]
+
+yes, that's 852 periods and 4.260 seconds. Never seen such values :-)
+
