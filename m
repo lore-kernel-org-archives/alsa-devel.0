@@ -2,94 +2,113 @@ Return-Path: <SRS0=lB/p=BW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BD12C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 02:07:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACF6EC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 03:11:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88867206DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 02:07:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 348DC206C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 03:11:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dKIu+ZpW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hRwaGE62"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88867206DA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AihSETLi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ngSRzlum"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 348DC206C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06A9A1614;
-	Wed, 12 Aug 2020 04:06:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06A9A1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 938781662;
+	Wed, 12 Aug 2020 05:10:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 938781662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597198036;
-	bh=Bd+FnW2nhzgCq8ve9wofALLEcDiU3JqVX/3MCQf9CPQ=;
+	s=default; t=1597201868;
+	bh=CFnxBPNDgtE44pHXI+KFL0dwjYiqKviACre/vH4lS4Y=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dKIu+ZpWZE9pYmqdN1nCaBUZwJPea9uxHX+jPvIwo6hIskA1R2fHIBeebgwPyV/z5
-	 o/V/MxvCV9vqDKMBQXAHi5JQwUoV1okuSTu6lnVLUlMD3xgB87g7BwzwyF7aAEXKWt
-	 YVwJyEAepp6XL3YBDpcIFqzDRUsNBfeyjGy1TbC8=
+	b=AihSETLiYbsxnC3c1kNJEKQrToXunlXwoQ+1q2EP9u3SVhMdxD5B3QUdQcI9RkGUT
+	 oD4WNIb9UADrE9ilwI/wKBl5eC+bIDT6k+PhH/ZYnTZNsAJRLcibq3f+7TS7b4m76Q
+	 h60yYWjA4cazglkLyD6YqKCWT28s7duXuOocbaJc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8789DF80147;
-	Wed, 12 Aug 2020 04:06:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01156F80147;
+	Wed, 12 Aug 2020 05:10:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5C16F8022B; Wed, 12 Aug 2020 04:06:23 +0200 (CEST)
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com
- [IPv6:2607:f8b0:4864:20::241])
+ id 348B1F8022B; Wed, 12 Aug 2020 05:10:15 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17F42F80147
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 04:06:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17F42F80147
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5690FF800D3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 05:10:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5690FF800D3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="hRwaGE62"
-Received: by mail-oi1-x241.google.com with SMTP id h3so449290oie.11
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 19:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="ngSRzlum"
+Received: by mail-wm1-x343.google.com with SMTP id c19so3300272wmd.1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2020 20:10:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=lbC/xnk+zoIlMr8AR4zX7C8E5HyHt5wuUCG1GuQ26BI=;
- b=hRwaGE62EJNwc8VprIWo2PXefmpSvqiIQ71e1bUZyJmlKFzMCBnlDmvJMTCr053w7Z
- Eq0SMtGmiJocJ/qjUXdNWxaJDGT/SKGCBFQ3I/1sJxQgpkT8wJQ+3s6tJsTq9OH2PQ5e
- rmGgfhGza3n/PNEgW0nbBGZHNH9f95SXLDRWhkKJ+Y0J9a4ouwjE5/762kLRnkbEwfxe
- +eA/xOLBAAdziLo7YsIl3v33kuMgRiCdVF/4ac6PMcB3wnTNC3wseY/E9DIUfp4Hk867
- wBgTPVpRQsuUfO/dwJ1w7Rdfor2DuNzyr+CeyD+ld4g8jwnZnquOdJFr2LgFCIi/aXV2
- ewiA==
+ :cc:content-transfer-encoding;
+ bh=3hkg0qu6P9KQ5oYfn7DTQjSamGImaGuetOUyRL9DWkY=;
+ b=ngSRzlumHkb0IDY4Pr87hg0ZwDwyroTE0Ld40lvNSNKIijgNhqQpnM6zRj84dIcXj4
+ qQ0YIrqSSAk94RpkV98/z5snP7OuL/YSL97sskrxvMAJUeecU/LwDCYHJLTkNbYY6y4S
+ ag4+ErdhG3PO6Aaz/J7vZZktVSkGJgZVvQCYE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=lbC/xnk+zoIlMr8AR4zX7C8E5HyHt5wuUCG1GuQ26BI=;
- b=gHF08hspx3TfG1+abi3faBzx9JPQn5objIqfGsCxrjWAYHOLi/kIPsK57YdBgfEg+0
- lsOmdbgkOn8J9ASvpcVnuiB8hya4sJYJBgjTPL20kerh1y4+yfHTJody/EuJSVDiCStr
- DDl6sqO8n4z87/fB7XqPYgle3hfuY40icybTviB7JPgm0pINdGHXBvr8+xGBLlxWjMLA
- e9N8WPThS/PEYgBtG2PGM4G+XwFx0JtyuJxnzg7x+hd5ZH/EIU5HqD6tN3wSrC/7aUGt
- 5nPPIU83MxWqnq3dXo0Tlu6X8Fj5bnlpXKFsG3d4skeA1p0aes0LKK44+WEnZwiUKFj7
- EQ5Q==
-X-Gm-Message-State: AOAM530rEUFMjEP4d/VQRRfOiAc9eGq8ZDXrG8xDWPfa67ct6FNo+jxY
- LfYtuVfedM55Gtl0eUIv3F5UkpR3AiQ6eduYyBARkg==
-X-Google-Smtp-Source: ABdhPJx3TRX0Gwz1ar78DLMWbgZMau4UKE7Ax6fe96u9FtrMFQJJlyTadKZitcKb3lkK7CwNTVc3hbZeSHmn8RGqg60=
-X-Received: by 2002:aca:b50b:: with SMTP id e11mr6080825oif.10.1597197974841; 
- Tue, 11 Aug 2020 19:06:14 -0700 (PDT)
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=3hkg0qu6P9KQ5oYfn7DTQjSamGImaGuetOUyRL9DWkY=;
+ b=ebgwbTtN7/dKByMoug8OUUQ1E7eFrA8D5HsyUlPQK+w0L7xEb9yPh2R12fpuXtdx09
+ cTAEz5SPUpMx19Cghgv6o6tr+kRVZOFoEHqOmOSHsCwkQIkxVbCp9RzJKYd56ePIy41T
+ tySjziDNruWFrI7sHjUa9ZW19RK17pOksMVAuImxyH7RnVKc03vjHiDRyLQUezKE7/vH
+ NI7uN1HWIjw2JVLMyMFV5DYNi6NxVb1QkvkjfWOe9eP9zne5PEpQ6YBTQV9XbyYCzK5c
+ tpFO+wYdR3vzHF/9oI4yT29smC8xJSSGRw4YpgOg2SgF0uj54nDwTBWrOrOW9s4R9KZE
+ tU1w==
+X-Gm-Message-State: AOAM530f5Q4KTfdOOrnp4vzWAij0dXpWia2Yq+DRmu7P+ieYGrp4cXDz
+ R+SsB3s7bqgOvflrVnzvZ4fa9EaRuTYjYeAfa0PGDw==
+X-Google-Smtp-Source: ABdhPJxDOFrYjfmnL/EFseUjo4ptWPav8xuJ2FzYhPDiA/AQYuCzo4N45IBYUvbTgXJuvFyhWdUUCw3z9AyGGUry5Yc=
+X-Received: by 2002:a7b:c7c6:: with SMTP id z6mr6825647wmk.17.1597201809730;
+ Tue, 11 Aug 2020 20:10:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200811120205.21805-1-srinivas.kandagatla@linaro.org>
-In-Reply-To: <20200811120205.21805-1-srinivas.kandagatla@linaro.org>
-From: John Stultz <john.stultz@linaro.org>
-Date: Tue, 11 Aug 2020 19:06:03 -0700
-Message-ID: <CALAqxLUdMpnhHfLDYw-z0QEHdp+UtvdSt-m3+KqMUgcXP+PSNg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: q6afe-dai: mark all widgets registers as
- SND_SOC_NOPM
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+References: <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
+ <CAGvk5PohOP0Yv22tb53EX=ZLB9_vOMb=iujTh64OvHmjC1d4mg@mail.gmail.com>
+ <DM6PR11MB3642AC7F8EC47EB48B384D4797450@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <CAGvk5PogmqfEnFRA8hzby+AGgbOSvbELamh_1=eA9KTpyBMPYQ@mail.gmail.com>
+ <s5htux939x1.wl-tiwai@suse.de>
+ <CAGvk5PpcmkZ2HarqeCDaXm4id=84wYs-u4vWxJunHaf09gj66g@mail.gmail.com>
+ <s5ho8nh37br.wl-tiwai@suse.de>
+ <CAGvk5PphzkdiNfW8hiDuqX+2eQO2FvrpzA0qR3=3VvqM3GBhAA@mail.gmail.com>
+ <20200811145353.GG6967@sirena.org.uk>
+ <d78f9adc-d583-f0f2-ce38-3c9175c939b8@linux.intel.com>
+ <20200811172209.GM6967@sirena.org.uk>
+In-Reply-To: <20200811172209.GM6967@sirena.org.uk>
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Wed, 12 Aug 2020 11:09:58 +0800
+Message-ID: <CAGvk5PqGi7cXthLHFi4NyypxFiGnoHvD9vp+5nJdH-_VkVvcKw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+To: Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Stephan Gerhold <stephan@gerhold.net>, lkml <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Sam McNally <sammc@chromium.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Stuart <daniel.stuart14@gmail.com>,
+ "yuhsuan@google.com" <yuhsuan@google.com>, "Lu, Brent" <brent.lu@intel.com>,
+ Damian van Soelen <dj.vsoelen@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,30 +124,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Aug 11, 2020 at 5:02 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
+Mark Brown <broonie@kernel.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8812=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:22=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> Looks like the q6afe-dai dapm widget registers are set as "0",
-> which is a not correct.
+> On Tue, Aug 11, 2020 at 11:54:38AM -0500, Pierre-Louis Bossart wrote:
 >
-> As this registers will be read by ASoC core during startup
-> which will throw up errors, Fix this by making the registers
-> as SND_SOC_NOPM as these should be never used.
+> > > constraint logic needs to know about this DSP limitation - it seems l=
+ike
+> > > none of this is going to change without something new going into the
+> > > mix?  We at least need a new question to ask about the DSP firmware I
+> > > think.
 >
-> With recent changes to ASoC core, every register read/write
-> failures are reported very verbosely. Prior to this fails to reads
-> are totally ignored, so we never saw any error messages.
+> > I just tested aplay -Dhw: on a Cyan Chromebook with the Ubuntu kernel 5=
+.4,
+> > and I see no issues with the 240 sample period. Same with 432, 960, 960=
+0,
+> > etc.
 >
-> Reported-by: John Stultz <john.stultz@linaro.org>
-> Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
-> Changes since v1:
->         - replaced reg 0 with SND_SOC_NOPM and removed read callback
+> > I also tried just for fun what happens with 256 samples, and I don't se=
+e any
+> > underflows thrown either, so I am wondering what exactly the problem is=
+?
+> > Something's not adding up. I would definitively favor multiple of 1ms
+> > periods, since it's the only case that was productized, but there's got=
+ to
+> > me something a side effect of how CRAS programs the hw_params.
 >
+> Is it something that goes wrong with longer playbacks possibly (eg,
+> someone watching a feature film or something)?
 
-For both patches:
-Tested-by: John Stultz <john.stultz@linaro.org>
+Thanks for testing!
 
-thanks!
--john
+After doing some experiments, I think I can identify the problem more preci=
+sely.
+1. aplay can not reproduce this issue because it writes samples
+immediately when there are some space in the buffer. However, you can
+add --test-position to see how the delay grows with period size 256.
+> aplay -Dhw:1,0 --period-size=3D256 --buffer-size=3D480 /dev/zero -d 1 -f =
+dat --test-position
+Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
+Hz, Stereo
+Suspicious buffer position (1 total): avail =3D 0, delay =3D 2064, buffer =
+=3D 512
+Suspicious buffer position (2 total): avail =3D 0, delay =3D 2064, buffer =
+=3D 512
+Suspicious buffer position (3 total): avail =3D 0, delay =3D 2096, buffer =
+=3D 512
+...
+
+2. Since many samples are moved to DSP(delay), the measured rate of
+the ring-buffer is high. (I measured it by alsa_conformance_test,
+which only test the sampling rate in the ring buffer of kernel not
+DSP)
+
+3. Since CRAS writes samples with a fixed frequency, this behavior
+will take all samples from the ring buffer, which is seen as underrun
+by CRAS. (It seems that it is not a real underrun because that avail
+does not larger than buffer size. Maybe CRAS should also take dalay
+into account.)
+
+4. In spite of it is not a real underrun, the large delay is still a
+big problem. Can we apply the constraint to fix it? Or any better
+idea?
+
+Thanks,
+Yu-Hsuan
