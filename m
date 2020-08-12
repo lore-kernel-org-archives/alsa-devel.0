@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64DB3C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 21:04:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1EBCC433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 21:04:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E42272080C
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 21:04:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39018207F7
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 21:04:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UUy3OIwU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42272080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cV9Pyu7C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39018207F7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81434166F;
-	Wed, 12 Aug 2020 23:03:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81434166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A573F1665;
+	Wed, 12 Aug 2020 23:03:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A573F1665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597266255;
-	bh=iJPhLvKheZwvVUyqvU/hflgQlhuR1S6KLIFIqDDgcT4=;
+	s=default; t=1597266274;
+	bh=dziJlIGt8YSAaXFOlbgrPRQ0vz6X9KjbN2RJ9k38khE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UUy3OIwULFXOAux9s8pO1thBB2fu2QTggNSQX4mY0IbFI4KM2qI7IWlkWOSCgwpFp
-	 IUfElQ2HAQ5c+28frDcc3PDIlJuwArsjkaLN2S9xNohCZWe0T12gbIUtKisUHwyeEP
-	 c3UZ+3rCjHhmCMVwjK9Z5C/+7moiWZrRjYHAd/qM=
+	b=cV9Pyu7CrkecH/FfBbZ+45qTh1i7qaOYQ+nsIc6jARaXu/maV4ruB45NoY74DLeJm
+	 pHhTuH9tBk2lqAl+5Um1ILaHa7PbR4MIRRjTROK9neCY4Yzx21YXSzeG+kZNBkU9Fi
+	 Y21481xNbyKVIGbngBMOlwC0K8xkbztolK6CxUsI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9F49F80333;
-	Wed, 12 Aug 2020 22:58:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 081D1F80329;
+	Wed, 12 Aug 2020 22:59:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26149F80333; Wed, 12 Aug 2020 22:58:58 +0200 (CEST)
+ id 1EFB1F80337; Wed, 12 Aug 2020 22:59:02 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A68EF80317
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 22:58:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A68EF80317
-IronPort-SDR: +BiNUxXsIsulUs1xzEviug0kfxJ9YVU+oW+AiXfskEMsk4BOntnblyF0au8DdSP7kl6A4w1Exj
- 2TlqPCk/jrFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="133607709"
-X-IronPort-AV: E=Sophos;i="5.76,305,1592895600"; d="scan'208";a="133607709"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3687F80329
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 22:58:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3687F80329
+IronPort-SDR: sXMDEVNO+Zrov9lgVurrhNpBukTDJncn+llfcDFx5cBZGAstsW5QGD1knbwS80Ic2foRzf7EL3
+ c/jPo4s17qeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="133607745"
+X-IronPort-AV: E=Sophos;i="5.76,305,1592895600"; d="scan'208";a="133607745"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2020 13:58:51 -0700
-IronPort-SDR: 7UrzrSrA/Q2MGdT36C1hjYNaYXS3MaS75dctx1Jc3Xx2dz824dBpI6aBw5ApuyIIPFyEVinPwQ
- qksWxqgASHWw==
+ 12 Aug 2020 13:58:56 -0700
+IronPort-SDR: JKtsatL8OB82GIpCI9Z7XrzWprMQ+eOI/Ia9q43+bsQcobLSrOcS6/zeQz84VKA5oxWTLMNEVv
+ d8MNACQuDEWw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,305,1592895600"; d="scan'208";a="308837292"
+X-IronPort-AV: E=Sophos;i="5.76,305,1592895600"; d="scan'208";a="308837325"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 12 Aug 2020 13:58:45 -0700
+ by orsmga002.jf.intel.com with ESMTP; 12 Aug 2020 13:58:51 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 07/13] ASoC: Intel: catpt: Event tracing
-Date: Wed, 12 Aug 2020 22:57:47 +0200
-Message-Id: <20200812205753.29115-8-cezary.rojewski@intel.com>
+Subject: [PATCH v4 08/13] ASoC: Intel: catpt: Simple sysfs attributes
+Date: Wed, 12 Aug 2020 22:57:48 +0200
+Message-Id: <20200812205753.29115-9-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200812205753.29115-1-cezary.rojewski@intel.com>
 References: <20200812205753.29115-1-cezary.rojewski@intel.com>
@@ -91,104 +91,101 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define tracing macros for easy catpt debug. These cover all IPC message
-types: requests, replies and notifications.
+Add sysfs entries for displaying version of FW currently in use as well
+as binary dump of entire version info, including build and log providers
+hashes.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/catpt/trace.h | 83 +++++++++++++++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
- create mode 100644 sound/soc/intel/catpt/trace.h
+ sound/soc/intel/catpt/fs.c | 79 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
+ create mode 100644 sound/soc/intel/catpt/fs.c
 
-diff --git a/sound/soc/intel/catpt/trace.h b/sound/soc/intel/catpt/trace.h
+diff --git a/sound/soc/intel/catpt/fs.c b/sound/soc/intel/catpt/fs.c
 new file mode 100644
-index 000000000000..bb3d627dbeaf
+index 000000000000..d73493687f4a
 --- /dev/null
-+++ b/sound/soc/intel/catpt/trace.h
-@@ -0,0 +1,83 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2020 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Cezary Rojewski <cezary.rojewski@intel.com>
-+ */
++++ b/sound/soc/intel/catpt/fs.c
+@@ -0,0 +1,79 @@
++// SPDX-License-Identifier: GPL-2.0-pcm
++//
++// Copyright(c) 2020 Intel Corporation. All rights reserved.
++//
++// Author: Cezary Rojewski <cezary.rojewski@intel.com>
++//
 +
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM intel_catpt
++#include <linux/pm_runtime.h>
++#include "core.h"
 +
-+#if !defined(__SND_SOC_INTEL_CATPT_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define __SND_SOC_INTEL_CATPT_TRACE_H
++static ssize_t fw_version_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
++{
++	struct catpt_dev *cdev = dev_get_drvdata(dev);
++	struct catpt_fw_version version;
++	int ret;
 +
-+#include <linux/types.h>
-+#include <linux/tracepoint.h>
++	pm_runtime_get_sync(cdev->dev);
 +
-+DECLARE_EVENT_CLASS(catpt_ipc_msg,
++	ret = catpt_ipc_get_fw_version(cdev, &version);
 +
-+	TP_PROTO(u32 header),
++	pm_runtime_mark_last_busy(cdev->dev);
++	pm_runtime_put_autosuspend(cdev->dev);
 +
-+	TP_ARGS(header),
++	if (ret)
++		return CATPT_IPC_ERROR(ret);
 +
-+	TP_STRUCT__entry(
-+		__field(u32, header)
-+	),
++	return sprintf(buf, "%d.%d.%d.%d\n", version.type, version.major,
++		       version.minor, version.build);
++}
 +
-+	TP_fast_assign(
-+		__entry->header = header;
-+	),
++static DEVICE_ATTR_RO(fw_version);
 +
-+	TP_printk("0x%08x", __entry->header)
-+);
++static ssize_t fw_build_read(struct file *filp, struct kobject *kobj,
++			     struct bin_attribute *bin_attr, char *buf,
++			     loff_t off, size_t count)
++{
++	struct catpt_dev *cdev = dev_get_drvdata(kobj_to_dev(kobj));
++	struct catpt_fw_version version;
++	int ret;
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_irq,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++	pm_runtime_get_sync(cdev->dev);
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_request,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++	ret = catpt_ipc_get_fw_version(cdev, &version);
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_reply,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++	pm_runtime_mark_last_busy(cdev->dev);
++	pm_runtime_put_autosuspend(cdev->dev);
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_notify,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++	if (ret)
++		return CATPT_IPC_ERROR(ret);
 +
-+TRACE_EVENT_CONDITION(catpt_ipc_payload,
++	memcpy(buf, &version, sizeof(version));
++	return count;
++}
 +
-+	TP_PROTO(const u8 *data, size_t size),
++static BIN_ATTR_RO(fw_build, sizeof(struct catpt_fw_version));
 +
-+	TP_ARGS(data, size),
++int catpt_sysfs_create(struct catpt_dev *cdev)
++{
++	int ret;
 +
-+	TP_CONDITION(data && size),
++	ret = sysfs_create_file(&cdev->dev->kobj, &dev_attr_fw_version.attr);
++	if (ret)
++		return ret;
 +
-+	TP_STRUCT__entry(
-+		__dynamic_array(u8, buf, size)
-+	),
++	ret = sysfs_create_bin_file(&cdev->dev->kobj, &bin_attr_fw_build);
++	if (ret) {
++		sysfs_remove_file(&cdev->dev->kobj, &dev_attr_fw_version.attr);
++		return ret;
++	}
 +
-+	TP_fast_assign(
-+		memcpy(__get_dynamic_array(buf), data, size);
-+	),
++	return 0;
++}
 +
-+	TP_printk("%u byte(s)%s",
-+		  __get_dynamic_array_len(buf),
-+		  __print_hex_dump("", DUMP_PREFIX_NONE, 16, 4,
-+				   __get_dynamic_array(buf),
-+				   __get_dynamic_array_len(buf), false))
-+);
-+
-+#endif /* __SND_SOC_INTEL_CATPT_TRACE_H */
-+
-+/* This part must be outside protection */
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE trace
-+#include <trace/define_trace.h>
++void catpt_sysfs_remove(struct catpt_dev *cdev)
++{
++	sysfs_remove_bin_file(&cdev->dev->kobj, &bin_attr_fw_build);
++	sysfs_remove_file(&cdev->dev->kobj, &dev_attr_fw_version.attr);
++}
 -- 
 2.17.1
 
