@@ -2,79 +2,69 @@ Return-Path: <SRS0=lB/p=BW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ECD4C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 06:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9775C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 06:23:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A12E20781
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 06:22:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 53B5620771
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2020 06:23:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bAKEePP8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A12E20781
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AtMTmTIL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53B5620771
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C7B31663;
-	Wed, 12 Aug 2020 08:21:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C7B31663
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1928166A;
+	Wed, 12 Aug 2020 08:22:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1928166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597213337;
-	bh=SRUfkaOv3X4G3e+uWqXVM7xeph1/+CR9jRCZ0kAjD2Y=;
+	s=default; t=1597213412;
+	bh=vKGxuIGO1rN+5GcUqsqtIVXBYQEgZWQy2zAHznYrgU4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bAKEePP8ZTLiU8cGVyTP+7cIonRiexgC2GIO0FjhB8i/X6ediT+hjm3v8bGB5clsB
-	 QEJYP1UXcGEbS6lTR6/cspyMUDaik+n5+lGR1+XHxmn1NkDWUGtdGM29z2m//loq4W
-	 31FpknbgRZZusSqqCf7AUBNp3k9zw3CuvT1Lo/bY=
+	b=AtMTmTILLRQOd64yoeDmv1KTAYEd2JWzKC6rjlJm4GewImHuvAh9jL+AOVYuNWrlv
+	 T2g3y8vaXkboIDFIB6ezq2SJRGFRMo43XRAoeLq0DqIhOTGo5Y0wMHHWQAPERLkDzw
+	 Rynq6b9fzjTzxcSpefmV/DdjlumzJT2AK/pD7GvE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10F95F801DB;
-	Wed, 12 Aug 2020 08:21:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C834F8022D;
+	Wed, 12 Aug 2020 08:22:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0E2AF8022B; Wed, 12 Aug 2020 08:21:24 +0200 (CEST)
+ id 545BCF80245; Wed, 12 Aug 2020 08:22:41 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 462BBF800F4
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 08:21:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 462BBF800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87D68F800F4
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2020 08:22:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87D68F800F4
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CB142AC12;
- Wed, 12 Aug 2020 06:21:35 +0000 (UTC)
-Date: Wed, 12 Aug 2020 08:21:13 +0200
-Message-ID: <s5hpn7wz8o6.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 8C10FAC12;
+ Wed, 12 Aug 2020 06:22:56 +0000 (UTC)
+Date: Wed, 12 Aug 2020 08:22:35 +0200
+Message-ID: <s5ho8ngz8lw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 0/3] Modernize tasklet callback API
-In-Reply-To: <202008111427.D00FCCF@keescook>
-References: <20200716030847.1564131-1-keescook@chromium.org>
- <87h7tpa3hg.fsf@nanos.tec.linutronix.de>
- <202007301113.45D24C9D@keescook>
- <CAOMdWSJQKHAWY1P297b9koOLd8sVtezEYEyWGtymN1YeY27M6A@mail.gmail.com>
- <202008111427.D00FCCF@keescook>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] conf: USB-Audio: Disable IEC958 on Lenovo ThinkStation
+ P620
+In-Reply-To: <C17B75FA-61F1-4646-8C24-249170FF3829@canonical.com>
+References: <20200803155745.18082-1-kai.heng.feng@canonical.com>
+ <7626CA68-F198-4654-BEDE-59E4DB0D9B48@canonical.com>
+ <s5h5z9p2zz2.wl-tiwai@suse.de>
+ <C17B75FA-61F1-4646-8C24-249170FF3829@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
- alsa-devel@alsa-project.org, Oscar Carter <oscar.carter@gmx.com>,
- Will Deacon <will@kernel.org>,
- Kernel Hardening <kernel-hardening@lists.openwall.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Allen <allen.lkml@gmail.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
- Thomas Gleixner <tglx@linutronix.de>, Romain Perier <romain.perier@gmail.com>,
- linux-input@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,50 +80,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 11 Aug 2020 23:33:13 +0200,
-Kees Cook wrote:
+On Wed, 12 Aug 2020 06:00:22 +0200,
+Kai-Heng Feng wrote:
 > 
-> On Mon, Aug 03, 2020 at 02:16:15PM +0530, Allen wrote:
-> > Here's the series re-based on top of 5.8
-> > https://github.com/allenpais/tasklets/tree/V3
+> Hi,
 > 
-> Great!
+> > On Aug 11, 2020, at 19:17, Takashi Iwai <tiwai@suse.de> wrote:
+> > 
+> > On Tue, 11 Aug 2020 12:00:54 +0200,
+> > Kai-Heng Feng wrote:
+> >> 
+> >> Hi,
+> >> 
+> >>> On Aug 3, 2020, at 23:57, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+> >>> 
+> >>> Both USB audio cards on Lenovo ThinkStation P620 don't support IEC958,
+> >>> so disable IEC958 accordingly.
+> >>> 
+> >>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> >> 
+> >> Should I use GitHub instead of mailing list for any future alia-lib patch?
+> > 
+> > Sorry, I overlooked this since I wasn't on Cc.
+> > Applied now.  Thanks.
 > 
-> > Let me know how you would want these to be reviewed.
+> Thanks.
 > 
-> Was a Coccinelle script used for any of these conversions? I wonder if
-> it'd be easier to do a single treewide patch for the more mechanical
-> changes.
-> 
-> And, actually, I still think the "prepare" patches should just be
-> collapsed into the actual "covert" patches -- there are only a few.
-> 
-> After those, yeah, I think getting these sent to their respective
-> maintainers is the next step.
-> 
-> > Also, I was thinking if removing tasklets completely could be a task
-> > on KSPP wiki. If yes, I did like to take ownership of that task. I have a
-> > couple of ideas in mind, which could be discussed in a separate email.
-> 
-> Sure! I will add it to the tracker. Here's for the refactoring:
-> https://github.com/KSPP/linux/issues/30
-> 
-> and here's for the removal:
-> https://github.com/KSPP/linux/issues/94
-> 
-> if you can added details/examples of how they should be removed, that'd
-> help other folks too, if they wanted to jump in. :)
+> Is mailing list or GitHub preferred way?
 
-I have a patch set to convert the remaining tasklet usage in sound
-drivers to either the threaded IRQ or the work, but it wasn't
-submitted / merged for 5.8 due to the obvious conflict with your API
-changes.
-Each conversion is rather simple, but it's always a question of the
-nature of each tasklet usage which alternative is the best fit.
-
-FWIW, the current version is found in test/kill-tasklet branch of
-sound git tree
-  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+I personally still prefer ML, but it's basically up to you.
 
 
 thanks,
