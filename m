@@ -7,73 +7,72 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C142C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Aug 2020 10:57:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 307E4C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Aug 2020 10:58:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB61D20781
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Aug 2020 10:57:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ABFCB207DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Aug 2020 10:58:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xx9kuSaB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="TRgYdiiw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB61D20781
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hTIACQn7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="GNoqJ7hV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABFCB207DA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E82E1660;
-	Fri, 14 Aug 2020 12:56:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E82E1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C55B1674;
+	Fri, 14 Aug 2020 12:57:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C55B1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597402645;
-	bh=3inUWYTxXv9FZKFFLJlFKs1GRv7vN0Mqs0FaEYb21lE=;
+	s=default; t=1597402689;
+	bh=48VoSHiUNBq8ew1rmsSXbIkEeiKZW0zi8O3Mb/RfHto=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xx9kuSaBQPGkeM+mNVA2JrhEHBE6WSnFt7SOFKIQuo89gnncptifOSqR5e4Qcrjar
-	 Pux/NTk6bQg/YcoV5blbJlzCvR1Q5M2MankqZdKQLFzyB+WmtGtluDzFqrqhOu6tbR
-	 KakcMg/nX7mjom5Mb0JWRWDJ89xKtt32ZxehIXoI=
+	b=hTIACQn7cp58OID4A616TVkPzgzHKMQ5N4LdWDnlB3Zi5/Ra7TuxdTA5aCESTSM15
+	 Hes+iXzMD5Rqy5bI46/0dJb1EUi1Lw6FoZFQ7oyt9cMmrf2AI/JJQmr8MTlQsz75nG
+	 oGTw7Mt0ks3U5F657WRDtso9H+0aaGzQykst/fKk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16BC0F802E8;
-	Fri, 14 Aug 2020 12:54:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F4204F802EB;
+	Fri, 14 Aug 2020 12:54:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36FAFF802EA; Fri, 14 Aug 2020 12:54:37 +0200 (CEST)
-Received: from mail29.static.mailgun.info (mail29.static.mailgun.info
- [104.130.122.29])
+ id BDB9EF802E9; Fri, 14 Aug 2020 12:54:37 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF590F802E8
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2020 12:54:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF590F802E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 540C0F802E1
+ for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2020 12:54:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 540C0F802E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="TRgYdiiw"
+ header.i=@mg.codeaurora.org header.b="GNoqJ7hV"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1597402469; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1597402472; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=+p4L5HepHVfNwEYZ4Wgv6SMrX9rmY/Y0hwfHhSk9YaY=;
- b=TRgYdiiwX01zYSL8R72oUiRe68BOmNeKUShABLpQodZAppg7kJeJB+3dEXzpRTdWj5Im0PyO
- QSnBPPdV98d5AUt2Blid0a5z2WC7zjU86V8SUHwOxkuI/CgRDXXhhdzT1CqkSqGLHZcW4fIg
- l8swKKfLzmm/ZMLZ2y7g6aIn2oo=
-X-Mailgun-Sending-Ip: 104.130.122.29
+ bh=MFq5q/nvUA4Da5minLQ/5WQKxE6K5fjxfakeD/Ulegg=;
+ b=GNoqJ7hVGpKqD8gOsDm823+X9R3hILw0D2OylI4iBd5i9KHrDa5qnP4x80hPwmRoRYpr7Qz9
+ 3E8zJlG4jO+4EFkIBnp3XVekJdJWWXQMdmruE8gZxy2ElxTIiyDOuJXgrPqXVz7Ij9QC15gO
+ b2KBojcrka8VCCaBM5wrssVBfxQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f366d5203528d4024fc0738 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 Aug 2020 10:54:10
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f366d5e440a07969a0afaf5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 Aug 2020 10:54:22
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 28ABFC433C9; Fri, 14 Aug 2020 10:54:10 +0000 (UTC)
+ id E9A6EC433A0; Fri, 14 Aug 2020 10:54:21 +0000 (UTC)
 Received: from rohkumar-linux.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: rohitkr)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 362B5C4339C;
- Fri, 14 Aug 2020 10:54:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 362B5C4339C
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id AED2CC4339C;
+ Fri, 14 Aug 2020 10:54:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AED2CC4339C
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -85,9 +84,9 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
  alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v6 04/12] ASoC: qcom: lpass-platform: fix memory leak
-Date: Fri, 14 Aug 2020 16:23:00 +0530
-Message-Id: <1597402388-14112-5-git-send-email-rohitkr@codeaurora.org>
+Subject: [PATCH v6 06/12] ASoC: qcom: lpass-cpu: fix concurrency issue
+Date: Fri, 14 Aug 2020 16:23:02 +0530
+Message-Id: <1597402388-14112-7-git-send-email-rohitkr@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1597402388-14112-1-git-send-email-rohitkr@codeaurora.org>
 References: <1597402388-14112-1-git-send-email-rohitkr@codeaurora.org>
@@ -107,37 +106,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-lpass_pcm_data is never freed. Free it in close
-ops to avoid memory leak.
+i2sctl register value is set to 0 during hw_free(). This
+impacts any ongoing concurrent session on the same i2s
+port. As trigger() stop already resets enable bit to 0,
+there is no need of explicit hw_free. Removing it to
+fix the issue.
 
-Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
+Fixes: 80beab8e1d86 ("ASoC: qcom: Add LPASS CPU DAI driver")
 Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/lpass-platform.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/qcom/lpass-cpu.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 3697f4e..315feda 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -61,7 +61,7 @@ static int lpass_platform_pcmops_open(struct snd_soc_component *component,
- 	int ret, dma_ch, dir = substream->stream;
- 	struct lpass_pcm_data *data;
- 
--	data = devm_kzalloc(soc_runtime->dev, sizeof(*data), GFP_KERNEL);
-+	data = kzalloc(sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
- 
-@@ -118,6 +118,7 @@ static int lpass_platform_pcmops_close(struct snd_soc_component *component,
- 	if (v->free_dma_channel)
- 		v->free_dma_channel(drvdata, data->dma_ch);
- 
-+	kfree(data);
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 6b86f16..5d84f63 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -266,21 +266,6 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
+-static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
+-{
+-	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+-	int ret;
+-
+-	ret = regmap_write(drvdata->lpaif_map,
+-			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+-			   0);
+-	if (ret)
+-		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
+-
+-	return ret;
+-}
+-
+ static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+@@ -350,7 +335,6 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ 	.startup	= lpass_cpu_daiops_startup,
+ 	.shutdown	= lpass_cpu_daiops_shutdown,
+ 	.hw_params	= lpass_cpu_daiops_hw_params,
+-	.hw_free	= lpass_cpu_daiops_hw_free,
+ 	.prepare	= lpass_cpu_daiops_prepare,
+ 	.trigger	= lpass_cpu_daiops_trigger,
+ };
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
