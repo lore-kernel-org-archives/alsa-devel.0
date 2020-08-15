@@ -1,85 +1,75 @@
-Return-Path: <SRS0=GNy4=BY=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=xC/7=BZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 959A5C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Aug 2020 17:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B5F1C433DF
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2020 00:22:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CACF20791
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Aug 2020 17:45:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AEE2720838
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2020 00:22:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VxiC7lw1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="OUIP20W0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CACF20791
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b/aTisuK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="g1SNOB8K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEE2720838
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93C2B84D;
-	Fri, 14 Aug 2020 19:44:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93C2B84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F6491660;
+	Sat, 15 Aug 2020 02:21:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F6491660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597427115;
-	bh=o/6z4MGdYi6zoU5b+gNtGDhmBNZpyT2dhtyiP2mz80A=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VxiC7lw1zP0YPahcdSbWIwkSbQ4H8QTDa0uVASzpown4DARvm58XKqfigAl5Ri8st
-	 z6+sUAb7OdYCMtjOcJM5ZTtthONXd5r9puoOd2SGvJx6X2IlOTVic1BY8/9Qc1BOdn
-	 IXpW3t/ddjij3/yNmg9WD7vF0XKCwuNXZ2CBkCLk=
+	s=default; t=1597450927;
+	bh=IOCCZrSN9/ijbsKUK2NSaOCChBJGbwSvTnRAHSYgtIc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=b/aTisuKSP5RYLuqaWyBVHW133NzvGFRM+ue7HAV27JUMzle1bipS+pxbGg/gui7x
+	 +k03anGtMt8hw+cjRz+fgumHEblmyM2yXuP4dqAQAK4dSmhiF+6SywdzbR7P8u+m22
+	 5MCVNohjoD/f2zqsdD8Q5ZbSZeGaxgiXjurEhmDo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EEA5F801DB;
-	Fri, 14 Aug 2020 19:44:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CC3DF801DB;
+	Sat, 15 Aug 2020 02:21:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35DA5F8022B; Fri, 14 Aug 2020 19:44:23 +0200 (CEST)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [85.215.255.52])
+ id 5F56EF8022B; Sat, 15 Aug 2020 02:21:14 +0200 (CEST)
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE64CF800F4
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2020 19:44:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE64CF800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 351CFF800D3
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2020 02:21:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 351CFF800D3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="OUIP20W0"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1597427054;
- s=strato-dkim-0002; d=gerhold.net;
- h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=2Z0U+mcYwggZx3AXbVi+Ktpmy8/fEbXz6BZpJ2spCyk=;
- b=OUIP20W0AuSKw1stcu+cZMVS62+bn1wcRL6KDMTIY4iZdFN/WdQ5/iidPJ19AmYcyt
- PFMnSmmS4SJm+rsIDhHulAJdsPpJZQ3cneLlY+yQmW7SfJZUNP7GbWoTW50ZT6HDYMbL
- GIuWoMNUuwtbi7a7AIThpe3gdllWNKYyp7KzYaYtb1i43lqbyjPDIRaJ/3jBBj6XU6XL
- TuBVIWWFtsdb6ZQMZakj3gXEDGoGykwK8G31xoHa/02FJlP+nIK4giB7w34DeLrSDnNH
- zSmChickkTaLloBoYEcmGrQ3SGCpo1OvoFjA7lfb1irXTJ1X2vN0xuv+pRCT68rS3B4Y
- 83zQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6Ic/MbIo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
- with ESMTPSA id Y0939ew7EHi94lK
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Fri, 14 Aug 2020 19:44:09 +0200 (CEST)
-Date: Fri, 14 Aug 2020 19:43:32 +0200
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: msm8916-wcd-analog: fix register Interrupt offset
-Message-ID: <20200814174332.GA314820@gerhold.net>
-References: <20200811103452.20448-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
+ header.b="g1SNOB8K"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
+ s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+ Subject:Cc:To:From:Reply-To:Content-Type:Content-ID:Content-Description:
+ Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+ In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=NquPYfTMZ7a9Jsx7neN79BIKHyveGWGyMYomGBqi1xw=; b=g1SNOB8KTx0Ef2AtarN/n9TuP0
+ q8MZdAZEvsJ2HExzwWu1slwgXkXQm6E1yhK0LXqA2NqucYZvKXJCSbqdfj9kkYRKmFhw8j6uARncb
+ wsKyR0vksBJMGh78mnJeXrw9Cop0xQDwcvAPrkPS/laOJTurzSIxROQ6ja8ZjY3IIYv4=;
+Received: from [2a00:1370:8125:6004::d8d] (helo=home.puleglot.ru)
+ by puleglot.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+ (Exim 4.93.0.4) (envelope-from <puleglot@puleglot.ru>)
+ id 1k6jwX-0003Zb-Of; Sat, 15 Aug 2020 03:21:05 +0300
+From: Alexander Tsoy <alexander@tsoy.me>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Add capture support for Saffire 6 (USB 1.1)
+Date: Sat, 15 Aug 2020 03:21:03 +0300
+Message-Id: <20200815002103.29247-1-alexander@tsoy.me>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811103452.20448-1-srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, broonie@kernel.org, john.stultz@linaro.org
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,42 +85,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Aug 11, 2020 at 11:34:52AM +0100, Srinivas Kandagatla wrote:
-> For some reason interrupt set and clear register offsets are
-> not set correctly.
-> This patch corrects them!
-> 
-> Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  sound/soc/codecs/msm8916-wcd-analog.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-> index 4428c62e25cf..3ddd822240e3 100644
-> --- a/sound/soc/codecs/msm8916-wcd-analog.c
-> +++ b/sound/soc/codecs/msm8916-wcd-analog.c
-> @@ -19,8 +19,8 @@
->  
->  #define CDC_D_REVISION1			(0xf000)
->  #define CDC_D_PERPH_SUBTYPE		(0xf005)
-> -#define CDC_D_INT_EN_SET		(0x015)
-> -#define CDC_D_INT_EN_CLR		(0x016)
-> +#define CDC_D_INT_EN_SET		(0xf015)
-> +#define CDC_D_INT_EN_CLR		(0xf016)
->  #define MBHC_SWITCH_INT			BIT(7)
->  #define MBHC_MIC_ELECTRICAL_INS_REM_DET	BIT(6)
->  #define MBHC_BUTTON_PRESS_DET		BIT(5)
-> -- 
-> 2.21.0
-> 
+Capture and playback endpoints on Saffire 6 (USB 1.1) resides on the same
+interface. This was not supported by the composite quirk back in the day
+when initial support for this device was added, thus only playback was
+enabled until now.
 
-It's surprising that we didn't notice this before. Seems like the HW
-has exactly the IRQs we want enabled by default. Everything seems to be
-still working fine after this patch, so FWIW:
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+---
+ sound/usb/quirks-table.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-Tested-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index d79e3ddc5690..e6202608e043 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2673,28 +2673,58 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ {
+ 	USB_DEVICE(0x1235, 0x0010),
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "Focusrite",
+ 		.product_name = "Saffire 6 USB",
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_COMPOSITE,
+ 		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
+ 			{
+ 				.ifnum = 0,
+ 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+ 				.data = &(const struct audioformat) {
+ 					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
+ 					.channels = 4,
+ 					.iface = 0,
+ 					.altsetting = 1,
+ 					.altset_idx = 1,
+ 					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+ 					.endpoint = 0x01,
+ 					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.datainterval = 1,
++					.maxpacksize = 0x024c,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000,
++					.rate_min = 44100,
++					.rate_max = 48000,
++					.nr_rates = 2,
++					.rate_table = (unsigned int[]) {
++						44100, 48000
++					}
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 2,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0,
++					.endpoint = 0x82,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.datainterval = 1,
++					.maxpacksize = 0x0126,
+ 					.rates = SNDRV_PCM_RATE_44100 |
+ 						 SNDRV_PCM_RATE_48000,
+ 					.rate_min = 44100,
+ 					.rate_max = 48000,
+ 					.nr_rates = 2,
+ 					.rate_table = (unsigned int[]) {
+ 						44100, 48000
+ 					}
+-- 
+2.26.2
 
-Thanks!
-Stephan
