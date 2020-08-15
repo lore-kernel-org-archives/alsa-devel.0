@@ -8,84 +8,90 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E91FFC433DF
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2020 11:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78D35C433DF
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2020 11:26:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0457E23119
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2020 11:25:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 02E4D23119
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2020 11:26:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i+e7UIzW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BzvxEX87"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0457E23119
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="COKlF3T3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RcfBisNl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02E4D23119
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8528C1664;
-	Sat, 15 Aug 2020 13:24:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8528C1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37EA01663;
+	Sat, 15 Aug 2020 13:25:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37EA01663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597490742;
-	bh=yKBCi59ha74wr/RTxZZP6HoPdnk1oJ+4prgXzkemx5w=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=i+e7UIzWW2ZyaIJEo3JoFfY/13iPY6uaQoN13j0oCJz4nCS0SvUje8SJQwfx7hOm0
-	 gSrMliyYfTlIhrPUWmQF27h8a+6YmNV5BVfo/mQGSfjQCLNqrViVmLvI2Srq9xj9Zl
-	 30JvW/nzr8vHLN2jEu/6yIuz9t0u88WA5Y0nIaGE=
+	s=default; t=1597490795;
+	bh=xczCMJRGBiUN9AMEvVb6iKVJb39HhkFQW7e0K/8AmZs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=COKlF3T3JNlOm0CWMrbOPaGSFNsnPkNUnngA/vd+BZ8nJ6BsA3uSNmlJbuMQsQbF2
+	 Z4Fjk60Uh/YSS3jvbwp+ZdixX8aAs0FgnHFkXt30ewi6F7EPNir+bT2Pil3s69s0El
+	 MrAwo1eh9FCkRpLlbgR1mxK5vb0x4FiZOsYGZ2nY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 232EDF8014C;
-	Sat, 15 Aug 2020 13:24:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25A41F80171;
+	Sat, 15 Aug 2020 13:24:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E419EF800D3; Sat, 15 Aug 2020 13:24:49 +0200 (CEST)
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
- [IPv6:2a00:1450:4864:20::542])
+ id E4827F8014C; Sat, 15 Aug 2020 13:24:51 +0200 (CEST)
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com
+ [IPv6:2a00:1450:4864:20::642])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9225F800D3
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2020 13:24:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9225F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1A25F8014B
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2020 13:24:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1A25F8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BzvxEX87"
-Received: by mail-ed1-x542.google.com with SMTP id i26so8712376edv.4
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2020 04:24:46 -0700 (PDT)
+ header.b="RcfBisNl"
+Received: by mail-ej1-x642.google.com with SMTP id jp10so12598214ejb.0
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2020 04:24:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=/pYCqw4FJgQPrWvNgxirZK4mGQC6/Ct9Zlkxybe7NMM=;
- b=BzvxEX870Xh3lvpFQLGjz7Veu4ygb9dXO7nfFMPyo3sDsJRvTHw6edfND4yqselsR6
- URdlfuviGFFbRySestfN8PU7laLrFmG9iH1pfGTSdnXc1buyXBrCXETreK/M9kDopNRL
- WJVCQYEx4kOiyuYGPpSZqor0EFIDiuRi3/MTukfQc2pS2hP1YDgE2bIJtcPaiDIi01jL
- QPqZhDCVHMybZGVVBmfwQHHrGOI0OSwscrfWbmYsyGzHVVMqxiLtSfLKSqGFZsAisfLx
- tTVZWR8KsVBWy7Ia/VM6l+oBsSYy/3YIzmJgrrbDQR/h1yyH9KRorvdwgkPpPE2JDYVL
- C6Jw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=vsYRcSKJo5heCkEhByxTesr3qnuVqbFBvI7V/761LSM=;
+ b=RcfBisNl6UXEMchW7A5g1HzcineDtMdGJxg8pSBUgnHND0LmggU7y/FoNRZZeVV6LN
+ kNoLIXGm2vsaptDdsioIb7Q1olsgv5yc9DZ7ZGWYs84pZGUEaSrkLHHsauzmBWiliNLJ
+ 80chWYLTncWt/Jn7133ZQq7xz08lJlaVVQg+nbfazl1Bn44rEMsKTlSa9ycZI25VWsv4
+ 3tKh/FXwvsoemyuyw7up/EWnbpZvXB84YUjxwzz5HccfgU5N+sgEKI25flqUq8EgAKmH
+ Ot8Ll9fuLtHmGErjcgq0T57ZyaLQZta4Af5awtIVFZs5UMtVIg5YEQBNcaGl3mzJNPTP
+ 4uHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=/pYCqw4FJgQPrWvNgxirZK4mGQC6/Ct9Zlkxybe7NMM=;
- b=DCaPiB5CQvrrMt15aIebcv5dIk6nqdJ5nNwuhByF8MlfdyXcK2rrpyxuYFGV5pNL02
- niCPdwEYefvzxCDJkti7t5BqVM34+ZqSHFMmlEKprhpGy4blO/zIiyBB1bRmz7/trYSZ
- yZBiLBIdD+axHAeNxYb8fu6ucFdJdeEKxAmHhzQixJKLFgIsSnO3KmrU7+vNJxewe3By
- 9T2BDxovVAgd2OC+oJBhXIj6MaKbTIllYBnztdGYhmV2ahdnmSicXzniRCdxs2nZkDYk
- SAW6jImnpP64RrbQUru+P8wb1XDhsPBOopCdirzQmzANlZqAvOaFNSF6DZ5ab6zaaLnR
- GJkA==
-X-Gm-Message-State: AOAM533PHGQLnqqyO+XkflzZ+3P1MKgJ+bqBqEBYqFkxsCzCvhAc3rLt
- WbgGYGN7mlc26m2huFVcdpI=
-X-Google-Smtp-Source: ABdhPJzNUtJSkcac39yHBPS5OxPmkL38Y++peDytppNuvWlZm5hLmWf+eQB4YO0lfG/9XEr/QYT7Gg==
-X-Received: by 2002:a50:fd8d:: with SMTP id o13mr6673800edt.313.1597490685719; 
- Sat, 15 Aug 2020 04:24:45 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=vsYRcSKJo5heCkEhByxTesr3qnuVqbFBvI7V/761LSM=;
+ b=GDu6sPILRHkgwaF7Q19QiMXMAscUDxM3LvuZ7vcwkR2UYHqeXNJZJwk6C1+IpyChHf
+ fEJpZdd8TdoLI1+JG5AYcgWgMSLUsJRaiQEs9TQ5yqQX5bI5PW7+uhexO/3iy2eBYwRG
+ BkzSooxeQC73uThixtdEE8ADl5DFS/fkngyWePo0oVt+aHFCr09PPRBVXFdQCHkgQZrS
+ k2sn/qRBuVf9yF9Xzv9qjQsl3VdSC+0pEdq9vysSsuI9MYif+J+DKgD3o/cP/dj6tH5G
+ satk0GfQsz2Lsi3FGzC/VxwqtRO2sWrsOv+9rX4CEB7uVhNIW4RSmoG+v17ZeAhoBkLD
+ 260Q==
+X-Gm-Message-State: AOAM531YtkhSJs62wsTrWLaxjV+/KFqJpUrbLAC9kpyGKVHMiBTTAqwf
+ s352jWITxCvZ0mFHqsoKg0c=
+X-Google-Smtp-Source: ABdhPJyxOEsEOhMyUIA4+Iz32TqEEjVTsSegFwkW+dd6LEVTbpRkB7b+vARNNelBhUeQw25VyZM0Rg==
+X-Received: by 2002:a17:906:dd5:: with SMTP id
+ p21mr6862906eji.416.1597490686713; 
+ Sat, 15 Aug 2020 04:24:46 -0700 (PDT)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id g19sm9106505ejz.5.2020.08.15.04.24.44
+ by smtp.gmail.com with ESMTPSA id g19sm9106505ejz.5.2020.08.15.04.24.45
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 15 Aug 2020 04:24:45 -0700 (PDT)
+ Sat, 15 Aug 2020 04:24:46 -0700 (PDT)
 From: Johan Jonker <jbx6244@gmail.com>
 To: heiko@sntech.de
-Subject: [RFC PATCH v1 1/2] ASoC: rockchip-spdif: add description for rk3308
-Date: Sat, 15 Aug 2020 13:24:36 +0200
-Message-Id: <20200815112437.6662-1-jbx6244@gmail.com>
+Subject: [RFC PATCH v1 2/2] arm64: dts: rockchip: change fallback string
+ rockchip, rk3308-spdif
+Date: Sat, 15 Aug 2020 13:24:37 +0200
+Message-Id: <20200815112437.6662-2-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200815112437.6662-1-jbx6244@gmail.com>
+References: <20200815112437.6662-1-jbx6244@gmail.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
  sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
@@ -151,21 +157,22 @@ static const struct of_device_id rk_spdif_match[] = {
 	{},
 };
 ---
- Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-index c46715265..26e986097 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-@@ -27,6 +27,7 @@ properties:
-           - enum:
-             - rockchip,rk3188-spdif
-             - rockchip,rk3288-spdif
-+            - rockchip,rk3308-spdif
-           - const: rockchip,rk3066-spdif
+diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+index e8b754d41..2560b9877 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+@@ -574,7 +574,7 @@
+ 	};
  
-   reg:
+ 	spdif_tx: spdif-tx@ff3a0000 {
+-		compatible = "rockchip,rk3308-spdif", "rockchip,rk3328-spdif";
++		compatible = "rockchip,rk3308-spdif", "rockchip,rk3066-spdif";
+ 		reg = <0x0 0xff3a0000 0x0 0x1000>;
+ 		interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
+ 		clocks = <&cru SCLK_SPDIF_TX>, <&cru HCLK_SPDIFTX>;
 -- 
 2.11.0
 
