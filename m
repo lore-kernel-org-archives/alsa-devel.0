@@ -2,68 +2,89 @@ Return-Path: <SRS0=HN0C=B2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 688BFC433E1
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Aug 2020 07:56:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22EB1C433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Aug 2020 08:45:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A97122065C
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Aug 2020 07:56:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 926C2206F4
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Aug 2020 08:45:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K23Kixck"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A97122065C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nwtOHPGb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="drEoeXpH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 926C2206F4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 415FB167E;
-	Sun, 16 Aug 2020 09:56:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 415FB167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA831655;
+	Sun, 16 Aug 2020 10:44:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA831655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597564616;
-	bh=yJ/mntHS5FkM/xYl6+L3CMdwrpxDMQPdiQ+RxGiafGs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=K23KixckCEAshXugJC8Aurmw7i4uFQHHp8JnyfiBV//cKnERYzOKN2Ew5CfLKmha1
-	 j421+h2H6VL++4yAIYmjn9FheWlPtY18nkzLMxCIxACbU72d13luquukS3km79sjoI
-	 /aLxu0clrpf0BB8M/zj7nT6+SQKBmCO0mKT5Va7U=
+	s=default; t=1597567526;
+	bh=T6UwMy4v18bgR1RYSk8bKZfCqTMnyUP8XZKnI31+u3w=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nwtOHPGbtm2oL2n5Api8M6OcxAemFP9T3o/I3juCh7OWeI9aa4jkHcQf225TrqdIr
+	 VRqfq9u3IEL/UAf1Rbc6k/kCsp40aN8YW/BPFqxlYK6aSiJ6NwQ2nCO9JBCW78Rk/t
+	 vs94t0KXQUzvPvZhkiu4aQ9LXjUIcSr9Dp2RTqE0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BAE7F802E9;
-	Sun, 16 Aug 2020 09:52:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9941BF800D3;
+	Sun, 16 Aug 2020 10:44:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4396DF8023F; Sun, 16 Aug 2020 09:14:27 +0200 (CEST)
-Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
+ id 25DA3F8023F; Sun, 16 Aug 2020 10:44:34 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 259F3F800C8
+ for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2020 10:44:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 259F3F800C8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="drEoeXpH"
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net
+ [82.4.196.95])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9992DF800F0
- for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2020 09:14:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9992DF800F0
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id 2DC612D125E6899B1B39;
- Sun, 16 Aug 2020 15:14:04 +0800 (CST)
-Received: from ubuntu.huawei.com (100.120.247.70) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 16 Aug 2020 15:13:53 +0800
-From: Liang Wang <wangliang101@huawei.com>
-To: <perex@perex.cz>, <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH] sound/isa:fix spelling mistakes in the comments
-Date: Sun, 16 Aug 2020 15:13:09 +0800
-Message-ID: <20200816071309.121461-1-wangliang101@huawei.com>
-X-Mailer: git-send-email 2.28.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 032672067C;
+ Sun, 16 Aug 2020 08:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1597567464;
+ bh=T6UwMy4v18bgR1RYSk8bKZfCqTMnyUP8XZKnI31+u3w=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=drEoeXpHv0E0mUqTh6XgOtxm5HjQ3BZXo/2Vyh0E5JgpqmZ5oJHeFCZAHCZB9rAXm
+ AbIb6f0WWGOxG4kSm3h11hWn0MA48MyZ6oiLma2mj2RujKNmxiI3bNdIjGxh0rdsDK
+ bybFa1BfDVi2cbQ+dCfDbBrEzAgdhLg63i6r2Z2c=
+Date: Sun, 16 Aug 2020 09:44:18 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
+Message-ID: <20200816094418.5bd08f5f@archlinux>
+In-Reply-To: <20200812213453.GA690477@ravnborg.org>
+References: <20200812203618.2656699-1-robh@kernel.org>
+ <20200812213453.GA690477@ravnborg.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.120.247.70]
-X-CFilter-Loop: Reflected
-X-Mailman-Approved-At: Sun, 16 Aug 2020 09:52:37 +0200
-Cc: wangle6@huawei.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-fbdev@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Rob Herring <robh@kernel.org>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,47 +100,193 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix spelling mistakes in the comments:
-	initailise ==> initialise
-	tranfer ==> transfer
-	Initialse ==> Initialise
+On Wed, 12 Aug 2020 23:34:53 +0200
+Sam Ravnborg <sam@ravnborg.org> wrote:
 
-Signed-off-by: Liang Wang <wangliang101@huawei.com>
----
- sound/isa/sscape.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Hi Rob.
+> 
+> On Wed, Aug 12, 2020 at 02:36:18PM -0600, Rob Herring wrote:
+> > Clean-up incorrect indentation, extra spaces, long lines, and missing
+> > EOF newline in schema files. Most of the clean-ups are for list
+> > indentation which should always be 2 spaces more than the preceding
+> > keyword.
+> > 
+> > Found with yamllint (which I plan to integrate into the checks).  
+> 
+> I have browsed through the patch - and there was only a few things
+> that jumped at me.
+> 
+> With these points considered:
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
-index 5363d88cc4b9..2e5a5c5279e8 100644
---- a/sound/isa/sscape.c
-+++ b/sound/isa/sscape.c
-@@ -308,7 +308,7 @@ static inline int verify_mpu401(const struct snd_mpu401 *mpu)
- }
- 
- /*
-- * This is apparently the standard way to initailise an MPU-401
-+ * This is apparently the standard way to initialise an MPU-401
-  */
- static inline void initialise_mpu401(const struct snd_mpu401 *mpu)
- {
-@@ -339,7 +339,7 @@ static void soundscape_free(struct snd_card *c)
- }
- 
- /*
-- * Tell the SoundScape to begin a DMA tranfer using the given channel.
-+ * Tell the SoundScape to begin a DMA transfer using the given channel.
-  * All locking issues are left to the caller.
-  */
- static void sscape_start_dma_unsafe(unsigned io_base, enum GA_REG reg)
-@@ -803,7 +803,7 @@ static int mpu401_open(struct snd_mpu401 *mpu)
- }
- 
- /*
-- * Initialse an MPU-401 subdevice for MIDI support on the SoundScape.
-+ * Initialise an MPU-401 subdevice for MIDI support on the SoundScape.
-  */
- static int create_mpu401(struct snd_card *card, int devnum,
- 			 unsigned long port, int irq)
--- 
-2.27.0
+Replying here as the patch doesn't seem to have made it to linux-iio
+at least. I'm not sure why...
+
+Anyhow, found it in an lkml archive so for the iio changes
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> 
+> I expect only some (few) of my points to actually results in any updates.
+> 
+> I look forward to have the lint functionality as part of the built-in
+> tools so we catch these things early.
+> 
+> 	Sam
+> 
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index f63895c8ce2d..88814a2a14a5 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -273,8 +273,8 @@ properties:
+> >                - fsl,imx6ull-14x14-evk     # i.MX6 UltraLiteLite 14x14 EVK Board
+> >                - kontron,imx6ull-n6411-som # Kontron N6411 SOM
+> >                - myir,imx6ull-mys-6ulx-eval # MYiR Tech iMX6ULL Evaluation Board
+> > -              - toradex,colibri-imx6ull-eval            # Colibri iMX6ULL Module on Colibri Evaluation Board
+> > -              - toradex,colibri-imx6ull-wifi-eval       # Colibri iMX6ULL Wi-Fi / Bluetooth Module on Colibri Evaluation Board
+> > +              - toradex,colibri-imx6ull-eval      # Colibri iMX6ULL Module on Colibri Eval Board
+> > +              - toradex,colibri-imx6ull-wifi-eval # Colibri iMX6ULL Wi-Fi / BT Module on Colibri Eval Board
+> >            - const: fsl,imx6ull  
+> 
+> This change looks bad as it drops the alignment with the comments below.
+> See following patch chunck:
+> 
+> >
+> >        - description: Kontron N6411 S Board
+> > @@ -312,9 +312,12 @@ properties:
+> >                - toradex,colibri-imx7d                   # Colibri iMX7 Dual Module
+> >                - toradex,colibri-imx7d-aster             # Colibri iMX7 Dual Module on Aster Carrier Board
+> >                - toradex,colibri-imx7d-emmc              # Colibri iMX7 Dual 1GB (eMMC) Module
+> > -              - toradex,colibri-imx7d-emmc-aster        # Colibri iMX7 Dual 1GB (eMMC) Module on Aster Carrier Board
+> > -              - toradex,colibri-imx7d-emmc-eval-v3      # Colibri iMX7 Dual 1GB (eMMC) Module on Colibri Evaluation Board V3
+> > -              - toradex,colibri-imx7d-eval-v3           # Colibri iMX7 Dual Module on Colibri Evaluation Board V3
+> > +              - toradex,colibri-imx7d-emmc-aster        # Colibri iMX7 Dual 1GB (eMMC) Module on
+> > +                                                        #  Aster Carrier Board  
+> 
+> 
+> 
+> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
+> > index 177d48c5bd97..e89c1ea62ffa 100644
+> > --- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
+> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9322.yaml
+> > @@ -25,8 +25,7 @@ properties:
+> >    compatible:
+> >      items:
+> >        - enum:
+> > -        - dlink,dir-685-panel
+> > -
+> > +          - dlink,dir-685-panel
+> >        - const: ilitek,ili9322
+> >
+> >    reset-gpios: true
+> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
+> > index a39332276bab..76a9068a85dd 100644
+> > --- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
+> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9881c.yaml
+> > @@ -13,8 +13,7 @@ properties:
+> >    compatible:
+> >      items:
+> >        - enum:
+> > -        - bananapi,lhr050h41
+> > -
+> > +          - bananapi,lhr050h41
+> >        - const: ilitek,ili9881c
+> >  
+> 
+> The extra lines is a simple way to indicate that here shall be added
+> more in the future. So I like the empty line.
+> 
+> 
+> > diff --git a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+> > index 32e0896c6bc1..47938e372987 100644
+> > --- a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+> > +++ b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+> > @@ -79,7 +79,8 @@ properties:
+> >      description: |
+> >        kHz; switching frequency.
+> >      $ref: /schemas/types.yaml#/definitions/uint32
+> > -    enum: [ 600, 640, 685, 738, 800, 872, 960, 1066, 1200, 1371, 1600, 1920, 2400, 3200, 4800, 9600 ]
+> > +    enum: [ 600, 640, 685, 738, 800, 872, 960, 1066, 1200, 1371, 1600, 1920,
+> > +            2400, 3200, 4800, 9600 ]
+> >
+> >    qcom,ovp:
+> >      description: |  
+> 
+> In the modern world we are living in now line length of 100 chars are
+> OK. checkpatch and coding_style is updated to reflected this.
+> 
+> > diff --git a/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml b/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
+> > index 4ddb42a4ae05..9102feae90a2 100644
+> > --- a/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
+> > +++ b/Documentation/devicetree/bindings/spi/mikrotik,rb4xx-spi.yaml
+> > @@ -33,4 +33,5 @@ examples:
+> >          reg = <0x1f000000 0x10>;
+> >      };
+> >
+> > -...
+> > \ No newline at end of file
+> > +...
+> > +  
+> 
+> Added one line too much?
+> 
+>  diff --git a/Documentation/devicetree/bindings/spi/spi-mux.yaml b/Documentation/devicetree/bindings/spi/spi-mux.yaml
+> > index 0ae692dc28b5..3d3fed63409b 100644
+> > --- a/Documentation/devicetree/bindings/spi/spi-mux.yaml
+> > +++ b/Documentation/devicetree/bindings/spi/spi-mux.yaml
+> > @@ -43,47 +43,47 @@ properties:
+> >      maxItems: 1
+> >
+> >  required:
+> > -   - compatible
+> > -   - reg
+> > -   - spi-max-frequency
+> > -   - mux-controls
+> > +  - compatible
+> > +  - reg
+> > +  - spi-max-frequency
+> > +  - mux-controls
+> >
+> >  examples:
+> > -   - |
+> > -     #include <dt-bindings/gpio/gpio.h>
+> > -     mux: mux-controller {
+> > -       compatible = "gpio-mux";
+> > -       #mux-control-cells = <0>;
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    mux: mux-controller {
+> > +        compatible = "gpio-mux";
+> > +        #mux-control-cells = <0>;
+> >
+> > -       mux-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+> > -     };
+> > +        mux-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+> > +    };  
+> 
+> Example is updated to use 4-space indent. I like.
+> 
+> But many other examples are left untouched.
+> 
+> So I wonder if updating all examples to the same indent should
+> be left for another mega-patch?
+> 
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index f3d847832fdc..2baee2c817c1 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -993,7 +993,8 @@ patternProperties:
+> >    "^sst,.*":
+> >      description: Silicon Storage Technology, Inc.
+> >    "^sstar,.*":
+> > -    description: Xiamen Xingchen(SigmaStar) Technology Co., Ltd. (formerly part of MStar Semiconductor, Inc.)
+> > +    description: Xiamen Xingchen(SigmaStar) Technology Co., Ltd.
+> > +      (formerly part of MStar Semiconductor, Inc.)
+> >    "^st,.*":
+> >      description: STMicroelectronics
+> >    "^starry,.*":  
+> 
+> Did you check that they are all in alphabetical order?
+> I would be suprised if this is the only issue in this file.
+> 
+> 
 
