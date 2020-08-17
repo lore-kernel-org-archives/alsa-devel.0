@@ -2,86 +2,84 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B888C433E3
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 14:34:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86234C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 14:47:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92E9A20729
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 14:34:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3A582078B
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 14:47:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z6qCJXno"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92E9A20729
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UNRWWukV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3A582078B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07DCD16AF;
-	Mon, 17 Aug 2020 16:33:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07DCD16AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C92816BD;
+	Mon, 17 Aug 2020 16:46:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C92816BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597674843;
-	bh=a/llFhYecR59mg8RVe4S3rIMio+cVvDk91yd3Zfj/+o=;
+	s=default; t=1597675651;
+	bh=+lF/g1sq+zugh8mmaCClWBhYb2+hfst7beX7w5wRC/I=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z6qCJXno3fMPPxiX1kdKWTBeCpjHUb++tEpNaXEr+raKNCkNn71wSJxnczXPLBxBk
-	 TRyjG6UDsfumKacne+G68X4/RN95G8ZHLOi+AGBZJzTyyCWWueJiR1WxpIXkbzHUb9
-	 i4CtB+429S6Wd+8UuoQ9yNuxNsQg1jSgL9sO3wkA=
+	b=UNRWWukVAvaLAAaaYdkxMSKnCoyddYlNK2P8XPJGhBnsYQ3raFXkngpfs6q/Dp0H2
+	 1Su2nBUP3MNVMtKN/U4gp+FeSM5l3D0MBUcXnUbEbvg9BZ9r2LEdSY8tad/ZoGarPS
+	 cCoOfhSoHG5eY+BxT7ISKwtKeskwCgRmNxlJ1iz4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91334F80216;
-	Mon, 17 Aug 2020 16:33:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1546F80216;
+	Mon, 17 Aug 2020 16:46:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BDBFF80218; Mon, 17 Aug 2020 16:33:11 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 0E58CF80218; Mon, 17 Aug 2020 16:46:38 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B0F8F800F0
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 16:33:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B0F8F800F0
-IronPort-SDR: hC8spxiLORXvVJlQnhJ91bJFltLdeede9rV/eLifH0aUSx8fLK5M0m62OnvAb/cAquRD5IjrVM
- wscOR0+d5hGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="142341058"
-X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; d="scan'208";a="142341058"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E8F3F800D3
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 16:46:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E8F3F800D3
+IronPort-SDR: oJ+9uPjgx6nTWlH80RqTCfMmiHFX3xnV1NRdWCaRvqlWZaA5Cxi1d0GkovaTT4Q7KdA/QNCU0c
+ 4LuBbKr3RfAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="239541501"
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; d="scan'208";a="239541501"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Aug 2020 07:33:05 -0700
-IronPort-SDR: 6TRoDZ6h+TyEqCleyTeS4KJ+i1+ZdANc3ulabwohtVGDQcU5lddWBWEEKksR/4ODjNDwltz+TJ
- m3bZlJs+BFEQ==
-X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; d="scan'208";a="440883848"
-Received: from mgorski-mobl.ger.corp.intel.com (HELO [10.213.233.172])
- ([10.213.233.172])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Aug 2020 07:33:03 -0700
-Subject: Re: [PATCH] ASoC: Intel: skl_hda_dsp_generic: Fix NULLptr dereference
- in autosuspend delay
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-References: <20200722173524.30161-1-mateusz.gorski@linux.intel.com>
- <2674621e-1546-3048-3ba2-f8fe1265d6e1@linux.intel.com>
- <014d8a2f-1ba7-1872-73b2-2384d908de79@intel.com>
- <edc0c832-c92b-ab95-c5e5-6bea2cf12973@linux.intel.com>
- <alpine.DEB.2.22.394.2008121627040.3186@eliteleevi.tm.intel.com>
-From: "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
-Message-ID: <5b3f05e6-873d-70b2-1ca7-d473a1a21210@linux.intel.com>
-Date: Mon, 17 Aug 2020 16:32:45 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Aug 2020 07:46:25 -0700
+IronPort-SDR: xNqpQ4+oAK0T5d3KMDpO/z75SQuJ4v+gLwH/xKFyVVU5I0nK7o72OOvLguw/zRys8gqjneq48h
+ UWENS81sxitw==
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; d="scan'208";a="310117114"
+Received: from jhor-mobl.gar.corp.intel.com (HELO [10.209.166.196])
+ ([10.209.166.196])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Aug 2020 07:46:23 -0700
+Subject: Re: [PATCH 00/13] soundwire: intel: add power management support
+To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
+References: <20200721203723.18305-1-yung-chuan.liao@linux.intel.com>
+ <20200817120841.GQ2639@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d8f8f64f-34db-9c9a-c821-83dda3b2db9a@linux.intel.com>
+Date: Mon, 17 Aug 2020 09:46:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2008121627040.3186@eliteleevi.tm.intel.com>
+In-Reply-To: <20200817120841.GQ2639@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Language: pl
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, mengdong.lin@intel.com, slawomir.blauciak@intel.com,
+ sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,62 +96,104 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-W dniu 8/12/2020 o 3:48 PM, Kai Vehmanen pisze:
-> Hi,
->
-> On Wed, 22 Jul 2020, Pierre-Louis Bossart wrote:
->
->>>>> Change the string in conditional statement to "ehdaudio0D0" to ensure
->>>>> that only the HDAudio codec is handled by this function.
->>>> I am not sure this is correct.
->>>>
->>>> I may be wrong, but my understanding is the following:
->>>>
->>>> Before 5bf73b1b1dec, the driver would use the first dailink of the card,
->>>> and in the case of devices without an HDaudio codec (e.g. Up2 board) it
->>>> would set the auto suspend delay using that first dailink. See the code in
->>>> skl_hda_fill_card_info(), it reorders the dailinks when HDaudio codecs are
->>>> not present so if you test for 'edhaudio00' you no longer allow for this
->>>> HDMI-only case to be handled with autosuspend.
->>>>
->>>> Kai would need to review this, so this will have to wait I am afraid.
->>>>
->>> So, for_each_card_rtds needs to be context aware (hdmi type). Right now,
->>> introduced _autosuspend_delay is causing kernel panics.
->> The code before 5bf73b1b1dec would use an HDMI dailink when HDaudio codecs are
->> not present, so I don't really see the point on being context aware. Either
->> this never worked or there's a side effect. In both cases, I would kindly ask
->> that this does not get merged before Kai is back.
-> the patch from Mateusz might be most pragmatic way to solve this.
->
-> The original problem was not setting autosuspend for external HDA codecs
-> which cause jack detection issues with some codecs. So we added the call
-> to set autosuspend timeout for all HDA codecs (patch "ASoC: intel/skl/hda
-> - set autosuspend timeout for hda codecs"). This is not strictly needed
-> for HDMI, but as it (seemed) cleaner to just call autosuspend for all HDA
-> codecs, the patch did that. Later we have hit issues with special cases
-> for HDMI, first with the case of disabled HDMI codec (my patch "ASoC:
-> intel/skl/hda - fix oops on systems without i915 audio codec") and now
-> issues with systems using hdac_hdmi.
->
-> So what we really want to do is to confirm the codec driver is hdac_hda
-> (and not hdac_hdmi or any other drivers), and if yes, then call the
-> autosuspend function. I did spend some time trying to find a clean(er) way
-> to do this, but codec name seemed the best option. I'll test the hdmi-only
-> case, but I believe Mateusz patch will work in that case as well.
->
-> Br, Kai
+
+On 8/17/20 7:08 AM, Vinod Koul wrote:
+> On 22-07-20, 04:37, Bard Liao wrote:
+>> This series adds power management support for Intel soundwire links.
+> 
+> I had applied except 3 & 9 (few skipped in middle due to conflict while
+> applying), BUT I get a build failure on patch 2 onwards :(
+> 
+> drivers/soundwire/intel_init.c: In function ‘sdw_intel_cleanup’:
+> drivers/soundwire/intel_init.c:72:4: error: implicit declaration of function ‘pm_runtime_disable’ [-Werror=implicit-function-declaration]
+>     72 |    pm_runtime_disable(&link->pdev->dev);
+> 
+> I suspect due to missing header? I was on x64 build with allmodconfig
+> 
+> So only patch 1 is applied and pushed now
+
+I just tried on these series applied on top of soundwire/next
+
+commit 9b3b4b3f2f2af863d2f6dd65afd295a5a673afa2 (soundwire/next)
+
+     soundwire: intel: Add basic power management support
+
+And I don't see any issue?
+
+If you want to double-check merge issues, I pushed the code here: 
+https://github.com/plbossart/sound/tree/sdw/pm_runtime_soundwire_next
+
+I am really not sure what conflicts you are referring to, git am worked 
+fine for me, only skipped the first patch that's already applied.
+
+$git am ~/Downloads/alsa/122/\[PATCH\ *
+Applying: soundwire: intel: Add basic power management support
+error: patch failed: drivers/soundwire/intel.c:463
+error: drivers/soundwire/intel.c: patch does not apply
+Patch failed at 0001 soundwire: intel: Add basic power management support
+hint: Use 'git am --show-current-patch' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+$ git am --skip
+Applying: soundwire: intel: add pm_runtime support
+Applying: soundwire: intel: reset pm_runtime status during system resume
+Applying: soundwire: intel: fix race condition on system resume
+Applying: soundwire: intel: call helper to reset Slave states on resume
+Applying: soundwire: intel: reinitialize IP+DSP in .prepare(), but only 
+when resuming
+Applying: soundwire: intel: pm_runtime idle scheduling
+Applying: soundwire: intel: add CLK_STOP_TEARDOWN for pm_runtime suspend
+Applying: soundwire: intel: add CLK_STOP_BUS_RESET support
+Applying: soundwire: intel: add CLK_STOP_NOT_ALLOWED support
+Applying: soundwire: intel_init: handle power rail dependencies for 
+clock stop mode
+Applying: soundwire: intel: support clock_stop mode without quirks
+Applying: soundwire: intel: refine runtime pm for 
+SDW_INTEL_CLK_STOP_BUS_RESET
+
+I tried the compilation twice, once with our default SOF config and once 
+with allmodconfig.
+
+make drivers/soundwire/ W=1
+   GEN     Makefile
+   YACC    scripts/genksyms/parse.tab.[ch]
+/data/pbossart/ktest/broonie-next/scripts/genksyms/parse.y: warning: 9 
+shift/reduce conflicts [-Wconflicts-sr]
+/data/pbossart/ktest/broonie-next/scripts/genksyms/parse.y: warning: 5 
+reduce/reduce conflicts [-Wconflicts-rr]
+   HOSTCC  scripts/genksyms/parse.tab.o
+   HOSTCC  scripts/genksyms/lex.lex.o
+   HOSTLD  scripts/genksyms/genksyms
+   CC      scripts/mod/empty.o
+   MKELF   scripts/mod/elfconfig.h
+   HOSTCC  scripts/mod/modpost.o
+   CC      scripts/mod/devicetable-offsets.s
+   HOSTCC  scripts/mod/file2alias.o
+   HOSTCC  scripts/mod/sumversion.o
+   HOSTLD  scripts/mod/modpost
+   CC      kernel/bounds.s
+   CC      arch/x86/kernel/asm-offsets.s
+   CALL    /data/pbossart/ktest/broonie-next/scripts/checksyscalls.sh
+   CALL    /data/pbossart/ktest/broonie-next/scripts/atomic/check-atomics.sh
+   DESCEND  objtool
+   CC [M]  drivers/soundwire/bus_type.o
+   CC [M]  drivers/soundwire/bus.o
+   CC [M]  drivers/soundwire/master.o
+   CC [M]  drivers/soundwire/slave.o
+   CC [M]  drivers/soundwire/mipi_disco.o
+   CC [M]  drivers/soundwire/stream.o
+   CC [M]  drivers/soundwire/sysfs_slave.o
+   CC [M]  drivers/soundwire/sysfs_slave_dpn.o
+   CC [M]  drivers/soundwire/debugfs.o
+   LD [M]  drivers/soundwire/soundwire-bus.o
+   CC [M]  drivers/soundwire/cadence_master.o
+   LD [M]  drivers/soundwire/soundwire-cadence.o
+   CC [M]  drivers/soundwire/intel.o
+   CC [M]  drivers/soundwire/intel_init.o
+   LD [M]  drivers/soundwire/soundwire-intel.o
+   CC [M]  drivers/soundwire/qcom.o
+   LD [M]  drivers/soundwire/soundwire-qcom.o
 
 
-Thanks for the review,
-
-
-is there anything else I can do with this patch?
-
-
-Also, Mark, please let me know if I should resend this change.
-
-
-Thanks,
-Mateusz
 
