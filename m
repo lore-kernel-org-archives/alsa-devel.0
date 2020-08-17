@@ -2,65 +2,98 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C11AC433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:37:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10CFDC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 07:31:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDACD20716
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:37:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 64F3820758
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 07:31:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="emXClmE5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDACD20716
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VxVCw3TW";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="vKwc0hm9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64F3820758
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37C1B1686;
-	Mon, 17 Aug 2020 08:36:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37C1B1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id E35271672;
+	Mon, 17 Aug 2020 09:30:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E35271672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597646219;
-	bh=o4BQFI5R6+rXZjZ/RcehO1q+pHl0BEwgBe3TD/ju5zQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1597649471;
+	bh=AVkus5sFf1+Sd2hIUx7zuq0/87UVNZSAufB5pPGeaKo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=emXClmE5tLwFqv4iYjsnsvibSNgoRMLMQOhvRWH4PhEWpEaEoNhm1avJ0iSUI7jUN
-	 ikfnjEXxZB7XEqwa+vA4dP16v5D5RvjBkyXAVq29Qv5JAS0+9A9Do4JviDMzD2P9MQ
-	 Xqj374BbnQH5btwBWcgM6U4TsPa68PJefD3UL0aM=
+	b=VxVCw3TWYd7hCTloS1PIIgkhiv8DZft8Mm3yypjzlJuNK6DdfTAVL24PVD4LStAkk
+	 NyM/eFWQh4KzFBl3ddFgy0q4oIsfzAtgrUsnfwWxXP/g8tTpJSpzjmLPNTPw2JpsHD
+	 eqsjjEN/mgSIVC6lSD5MSrdfi9YWs+GIwp0faNl4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0634DF80257;
-	Mon, 17 Aug 2020 08:36:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 714EEF800F0;
+	Mon, 17 Aug 2020 09:30:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94156F8025A; Mon, 17 Aug 2020 08:36:00 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D187AF80218; Mon, 17 Aug 2020 09:30:18 +0200 (CEST)
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
+ [IPv6:2607:f8b0:4864:20::d44])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17FB6F800EF
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 08:35:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17FB6F800EF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3C1F2ACB0;
- Mon, 17 Aug 2020 06:36:14 +0000 (UTC)
-Date: Mon, 17 Aug 2020 08:35:48 +0200
-Message-ID: <s5h7dtxrd8b.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH] usb-audio: Update documentation comment for MS2109 quirk
-In-Reply-To: <20200816084431.102151-1-marcan@marcan.st>
-References: <20200816084431.102151-1-marcan@marcan.st>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2159BF800F0
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 09:30:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2159BF800F0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="vKwc0hm9"
+Received: by mail-io1-xd44.google.com with SMTP id z6so16672785iow.6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 00:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=njImXme8DvFmBmmBNjNQkbOdGSjHzwAWepRldmmnkFM=;
+ b=vKwc0hm9KMhrs8R9lVS1+IPdDcR9wpOy8T7gFNt5q2QV3lOt6h/3fdoj6kEeqgp8aN
+ 58J0ceAUIVAOo+etWCr23cZzpX2S1j9MNwnY2cgfEKSU1kQgW1rb8mNawPAJL4/yX8ZI
+ A5l3InaUTt8Trss2ZBvCyyKe76g9Y+vpkC+ac9yxPdy1RJID9vGjFt1o4WVpv4/HgNRz
+ v+y4X8vu2FtjiwjaZ6h6atRbrGngkkDptjZXg2LM6devwJofRgz9k/zfdmL3Zb/cUQ1p
+ dJzOX7GPWZLtp6FaHawv72tIIjSDJC/DtTRUeuECn9u3bcdSoOORu29S0KVlBclwYQUy
+ tRsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=njImXme8DvFmBmmBNjNQkbOdGSjHzwAWepRldmmnkFM=;
+ b=HsW72iM7WknOGh0RlGNEARsOyBKlQxce7WPvf1eT6ugnegx99yzmrCLpVIWZQ1U9XD
+ Xbx0WZLGsRr/PTRNs6BtziL6/QnmYv8hYyyJeWTVkYSeCTAsD0gBuOW0vf8636xNTyGc
+ RXAt6qTrgUcrjG6ACx5pzheEOEsH+/l6jQND91yOVNc1+CLI4gYr+W0TpIafslF9KgAE
+ j8TMyCvJCZnjtrsS0nzQeyHNl/1EEXH7yTvGrDs2r3h0VaVC9PI834WehNVy+e6H0TCE
+ /3MDVGKwvpRB1kDccfR0i4PFTWmSgiyY/JUoGzrthn8+Jqij2eGRkfCAeUS1LIK3Ay5Q
+ rzfg==
+X-Gm-Message-State: AOAM530dgdDzAiSBD0AEMp3rJ3lOKY/fb0JfkXoaDitfum9cM29jbK5H
+ DUFl5OdSdYfdroWwL2fHKOYeQiuneIVRDFsVny8kyg==
+X-Google-Smtp-Source: ABdhPJwCa0E+vAfxwNpCUTPIUSspheXu7A+kHNdN+DzANKgmK0a/mh8mC9JzSsxmyLAcqGudRpVCGbTB72ZlRdctp5Y=
+X-Received: by 2002:a05:6638:2515:: with SMTP id
+ v21mr13267320jat.109.1597649408741; 
+ Mon, 17 Aug 2020 00:30:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <1597644455-8216-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1597644455-8216-3-git-send-email-jiaxin.yu@mediatek.com>
+In-Reply-To: <1597644455-8216-3-git-send-email-jiaxin.yu@mediatek.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Mon, 17 Aug 2020 15:29:57 +0800
+Message-ID: <CA+Px+wXSbGLb+AZnF8ETRycRUVjqk4xacm5DH6MzuMw0vh6Wzg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] dt-bindings: mediatek: mt6359: add codec document
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA development <alsa-devel@alsa-project.org>, howie.huang@mediatek.com,
+ Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ shane.chien@mediatek.com, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, eason.yen@mediatek.com,
+ Matthias Brugger <matthias.bgg@gmail.com>, bicycle.tsai@mediatek.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,12 +109,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 16 Aug 2020 10:44:31 +0200,
-Hector Martin wrote:
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+On Mon, Aug 17, 2020 at 2:08 PM Jiaxin Yu <jiaxin.yu@mediatek.com> wrote:
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6359-sound
 
-Applied, thanks.
+The compatible string has been removed since v3.
 
+> +required:
+> +  - compatible
 
-Takashi
+The same here.
+
+> +examples:
+> +  - |
+> +    mt6359codec: mt6359codec {
+> +      compatible = "mediatek,mt6359-sound";
+
+And the same here.
