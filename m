@@ -2,90 +2,82 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MIME_BASE64_TEXT,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26CE6C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 05:39:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7825C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:09:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 846E6206FA
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 05:39:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5527120758
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:09:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NZnRZoKp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=skidata.com header.i=@skidata.com header.b="g3ZQ1WwK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 846E6206FA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=skidata.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="csHXJx5E";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="WU8s/2Df"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5527120758
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C2BB1668;
-	Mon, 17 Aug 2020 07:38:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C2BB1668
+	by alsa0.perex.cz (Postfix) with ESMTPS id C984683E;
+	Mon, 17 Aug 2020 08:09:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C984683E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597642778;
-	bh=nC3QtiPkc2ash+7NhCkNY1Q6+j1FJN1xDaKIPykDIQE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NZnRZoKpS++JFwF51VGSN9zjLuCQJZSzq5yUZwpaj2nUzfIRJZn9YbyfelVITSyag
-	 u77eXR1YKni3VEUD67M41FhYu8UFtkvQqFV6SXHNR3mr6KOOdEPT9TSXUJiwGc/QSG
-	 qOUkYIvqmQisY6RrU+uOG0PJ5ylbWdFo3BFxZ4dw=
+	s=default; t=1597644594;
+	bh=Lu1pMyst1Tuly33CctInw4/3ftqcqaHDiJCV73RnmxQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=csHXJx5EWEOANCAYGVZ83XNJ7ZE4p9IEnXWEB54p98OW/Zil8aEZS6Lad7MDihvGw
+	 5c+RBVpDzKKUImJhPrdUNrsYGsS4q2rCqzIeJAeYlsUZvUvnNsRtXXPEcuwoAHuSps
+	 knssMlBO3ERu4YRD1v14R5Ocg2EyTWDU3plvYXiw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F5EEF80216;
-	Mon, 17 Aug 2020 07:38:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6033AF80216;
+	Mon, 17 Aug 2020 08:09:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D4D1F80218; Mon, 17 Aug 2020 07:38:45 +0200 (CEST)
-Received: from mail1.skidata.com (mail1.skidata.com [91.230.2.99])
- (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CD3AF800D3
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 07:38:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CD3AF800D3
+ id 939C2F800EF; Mon, 17 Aug 2020 08:09:02 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa1.perex.cz (Postfix) with ESMTP id D1358F800EF
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 08:08:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1358F800EF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=skidata.com header.i=@skidata.com
- header.b="g3ZQ1WwK"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=skidata.com; i=@skidata.com; q=dns/txt; s=selector1;
- t=1597642720; x=1629178720;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=nC3QtiPkc2ash+7NhCkNY1Q6+j1FJN1xDaKIPykDIQE=;
- b=g3ZQ1WwK2LfsTSExisMhJBmH+Lr6NiGFz0I6ikikdbbu5/z/lDRIBcx9
- bv1Hq9hNFPz6vFTQ0MwWlEjRVFIhvadlcqKNxXmT8EVy7+8019b/ALZo4
- 7YaNB0XSWAZCY87+bQxpyFhmGfVjzT+4apHiRVyovTctDKbSvSDwIAdM7
- zK2B3pLdoLoWm2XOtkT46urJ1AgI7FfrjyVCHZu09pFGUY2q86TisTWlt
- pooNK7V02WrWDG0RsU6Z3S+pMtDSdwKMMXvI1OtlsIdp0JFvfvm3XChf4
- SSPbI8nVO9RUF3KN4hSk/9bFXISLDOX1WtTz9W2+Xzde1sreDop2z1Vis g==;
-IronPort-SDR: Cyb4DgRj+rCeSt/lc6ca/UWAxILZY3BwglmUQTpWJKQHBZEMAjDzPsI/XWGEqNlWzWLVt2G5t0
- ftCvLYazD3V9kXiumE7Dl9j53lr16eEt+XMB1S73ckdJQOEgch5Laa9QH2iMy1OOOEVG94MmRg
- eI1QfaSCRzXL/yYa0rMlnC+FXRsAypoOJKqbBx9YX3zNK5O6JBvu19RU57ttVdjfR64ruRgtyz
- DC2rVUWr89IXhyUIsDZjAO5qfLdU7CDpruLk5D66jwnhCxXbO6t/cAHKtunyJaZMyvRnOESEV4
- fkA=
-X-IronPort-AV: E=Sophos;i="5.76,322,1592863200"; d="scan'208";a="26161395"
-Date: Mon, 17 Aug 2020 07:38:36 +0200
-From: Richard Leitner <richard.leitner@skidata.com>
-To: Robin Gong <yibin.gong@nxp.com>
-Subject: Re: pcm|dmaengine|imx-sdma race condition on i.MX6
-Message-ID: <20200817053836.GC551027@pcleri>
-References: <20200813112258.GA327172@pcleri>
- <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <7f98cd6d30404e4d9d621f57f45ae441@skidata.com>
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="WU8s/2Df"
+X-UUID: 9b12133b8c1b4633a50d50bb56699ca5-20200817
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=Lu1pMyst1Tuly33CctInw4/3ftqcqaHDiJCV73RnmxQ=; 
+ b=WU8s/2DfsA7RlJAnD3vnJD8QMhLS0UrNUK3J5OYVawl5IfkcEvJGGr5ZzGlUZDLWdA+CMBli6Nzx/8PjH+mHQcs6fjBY0gAeI87Flfc9J1w7OEuku5puGAt0CC02dDDMHRUWHanhJCI3ecyuByUkJ+I4LXmCryP5SzNPN6ZQn0M=;
+X-UUID: 9b12133b8c1b4633a50d50bb56699ca5-20200817
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+ with ESMTP id 1270104413; Mon, 17 Aug 2020 14:08:42 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 17 Aug 2020 14:08:39 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 17 Aug 2020 14:08:40 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <matthias.bgg@gmail.com>, <robh+dt@kernel.org>,
+ <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/2] Add mediatek codec mt6359 driver
+Date: Mon, 17 Aug 2020 14:07:33 +0800
+Message-ID: <1597644455-8216-1-git-send-email-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <7f98cd6d30404e4d9d621f57f45ae441@skidata.com>
-X-Originating-IP: [192.168.111.252]
-X-ClientProxiedBy: sdex6srv.skidata.net (192.168.111.84) To
- sdex5srv.skidata.net (192.168.111.83)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, linux-kernel@vger.kernel.org,
- nicoleotsuka@gmail.com, vkoul@kernel.org, dl-linux-imx <linux-imx@nxp.com>,
- kernel@pengutronix.de, dmaengine@vger.kernel.org, dan.j.williams@intel.com,
- shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
- Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>
+Content-Type: text/plain
+X-MTK: N
+Content-Transfer-Encoding: base64
+Cc: alsa-devel@alsa-project.org, shane.chien@mediatek.com,
+ howie.huang@mediatek.com, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ tzungbi@google.com, linux-mediatek@lists.infradead.org, eason.yen@mediatek.com,
+ bicycle.tsai@mediatek.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,107 +93,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Aug 14, 2020 at 11:18:10AM +0200, Robin Gong wrote:
-> 
-> On 2020/08/13 19:23: Richard Leitner <richard.leitner@skidata.com> wrote:
-> > Hi,
-> > we've found a race condition with the PCM on the i.MX6 which results 
-> > in an -EIO for the SNDRV_PCM_IOCTL_READI_FRAMES ioctl after an -EPIPE (XRUN).
-> > 
-> > A possible reproduction may look like the following reduced call graph 
-> > during a PCM capture:
-> > 
-> > us -> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES)
-> >       - wait_for_avail()
-> >         - schedule_timeout()
-> >    -> snd_pcm_update_hw_ptr0()
-> >       - snd_pcm_update_state: EPIPE (XRUN)
-> >       - sdma_disable_channel_async() # get's scheduled away due to sleep us
-> > <- ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) returns -EPIPE
-> > us -> ioctl(SNDRV_PCM_IOCTL_PREPARE) # as reaction to the EPIPE (XRUN)
-> > us -> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) # next try to capture frames
-> >       - sdma_prep_dma_cyclic()
-> >         - sdma_load_context() # not loaded as context_loaded is 1
-> >       - wait_for_avail()
-> >         - schedule_timeout()
-> > # now the sdma_channel_terminate_work() comes back and sets # 
-> > context_loaded = false and frees in vchan_dma_desc_free_list().
-> > us <- ioctl returns -EIO (capture write error (DMA or IRQ trouble?))
->
-> Seems the write error caused by context_loaded not set to false before
-> next transfer start? If yes, please have a try with the 03/04 of the below
-> patch set, anyway, could you post your failure log?
-> https://lkml.org/lkml/2020/8/11/111
+QWRkIG1lZGlhdGVrIGNvZGVjIChNVDYzNTkpIGRyaXZlcg0KDQpNVDYzNTkgc3VwcG9ydCBwbGF5
+YmFjayBhbmQgY2FwdHVyZSBmZWF0dXJlLg0KDQpPbiBkb3dubGluayBwYXRoLCBpdCBpbmNsdWRl
+cyB0aHJlZSBEQUNzIGZvciBoYW5kc2V0LCBoZWFkc2V0LA0KYW5kIGxpbmVvdXQgcGF0aC4gT24g
+dW5saW5rIHBhdGgsIGl0IGluY2x1ZGVkcyB0aHJlZSBBRENzIGZvcg0KbWFpbiBtaWMsIHNlY29u
+ZCBtaWMsIDNyZCBtaWMsIGFuZCBoZWFkc2V0IG1pYy4NCg0KQnkgc2NlbmFyaW8sIHNlbGVjdCAq
+X01VWCB3aWRnZXQgdG8gY3JlYXRlIGRhbXAgcGF0aC4NCkFuZCBieSBzZWxlY3QgbWljX3R5cGVf
+bXV4IHRvIGNob29zZSBETUlDL0FNSUMvLi4uLg0KDQpGb3IgZXhhbXBsZSwgc2VsZWN0IHRoZXNl
+IE1VWCB3aWRnZXQgdG8gY3JlYXRlIGhlYWRzZXQgcGF0aA0KKDEpIERBQyBJbiBNdXggLS0+ICJO
+b3JtYWwgUGF0aCINCigyKSBIUCBNdXggLS0+ICJBdWRpbyBQbGF5YmFjayINCg0KdjUgY2hhbmdl
+czoNCgkxLiBEb24ndCBuZWVkIHRvIHVucmVnaXN0ZXIgdGhlIGNvbXBvbmVudCB3aGljaCBpcyBh
+bHJlYWR5IHJlbGVnYXRlZCB0byBkZXZtLg0KDQp2NCBjaGFuZ2VzOg0KCTEuIEFkZCBhIHJlbW92
+ZSgpIGZ1bmN0aW9uIHRvIHVuZG8gcmVndWxhdG9yX2VuYWJsZSgpLg0KCTIuIFJlbW92ZWQgdW5u
+ZWNlc3NhcnkgbG9ncy4NCgkzLiBwYXRjaHdvcmsgbGluazoNCgkJaHR0cHM6Ly9wYXRjaHdvcmsu
+a2VybmVsLm9yZy9jb3Zlci8xMTcxNTU1My8NCgkJaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9y
+Zy9wYXRjaC8xMTcxNjAxNS8NCgkJaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8x
+MTcxNTU1Ny8NCnYzIGNoYW5nZXM6DQoJMS4gcGF0Y2h3b3JrIGxpbms6DQoJCWh0dHBzOi8vcGF0
+Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTE3MTQyOTEvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtl
+cm5lbC5vcmcvcGF0Y2gvMTE3MTQyOTUvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcv
+cGF0Y2gvMTE3MTQzMzkvDQoNCnYyIGNoYW5nZXM6DQoJMS4gcGF0Y2h3b3JrIGxpbms6DQoJCWh0
+dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTE3MDY5MzUvDQoJCWh0dHBzOi8vcGF0
+Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE3MDg4NjUvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtl
+cm5lbC5vcmcvcGF0Y2gvMTE3MDY5MzcvDQoNCnYxIGNoYW5nZXM6DQoJMS5sa21sIGxpbms6DQoJ
+CWh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzMvNS8xMjU3DQoNCkppYXhpbiBZdSAoMik6DQog
+IEFTb0M6IG1lZGlhdGVrOiBtdDYzNTk6IGFkZCBjb2RlYyBkcml2ZXINCiAgZHQtYmluZGluZ3M6
+IG1lZGlhdGVrOiBtdDYzNTk6IGFkZCBjb2RlYyBkb2N1bWVudA0KDQogLi4uL2RldmljZXRyZWUv
+YmluZGluZ3Mvc291bmQvbXQ2MzU5LnlhbWwgICAgICAgICAgfCAgIDY4ICsNCiBzb3VuZC9zb2Mv
+Y29kZWNzL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDggKw0KIHNvdW5k
+L3NvYy9jb2RlY3MvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArDQog
+c291bmQvc29jL2NvZGVjcy9tdDYzNTkuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAyNzUz
+ICsrKysrKysrKysrKysrKysrKysrDQogc291bmQvc29jL2NvZGVjcy9tdDYzNTkuaCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAyNjQwICsrKysrKysrKysrKysrKysrKysNCiA1IGZpbGVzIGNo
+YW5nZWQsIDU0NzEgaW5zZXJ0aW9ucygrKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvbXQ2MzU5LnlhbWwNCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgc291bmQvc29jL2NvZGVjcy9tdDYzNTkuYw0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3Vu
+ZC9zb2MvY29kZWNzL210NjM1OS5oDQoNCi0tIA0KMS44LjEuMS5kaXJ0eQ0K
 
-Thanks for the pointer to those patches. I've tested them on top of the
-v5.8 tag during the weekend. It seems those patches are mitigiating
-the described EIO issue.
-
-Nonetheless IMHO this patches are not fixing the root cause of the
-problem (unsynchronized sdma_disable_channel_async / sdma_prep_dma_cyclic).
-Do you (or somebody else) have any suggestions/comments/objections on that?
-
-regards;rl
-
-> 
-> > 
-> > 
-> > What we have found out, based on our understanding:
-> > The dmaengine docu states that a dmaengine_terminate_async() must be 
-> > followed by a dmaengine_synchronize().
-> > However, in the pcm_dmaengine.c, only dmaengine_terminate_async() is 
-> > called (for performance reasons and because it might be called from an 
-> > interrupt handler).
-> > 
-> > In our tests, we saw that the user-space immediately calls
-> > ioctl(SNDRV_PCM_IOCTL_PREPARE) as a handler for the happened xrun 
-> > (previous ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) returns with -EPIPE). In 
-> > our case (imx-sdma.c), the terminate really happens asynchronously 
-> > with a worker thread which is not awaited/synchronized by the
-> > ioctl(SNDRV_PCM_IOCTL_PREPARE) call.
-> > 
-> > Since the syscall immediately enters an atomic context 
-> > (snd_pcm_stream_lock_irq()), we are not able to flush the work of the 
-> > termination worker from within the DMA context. This leads to an 
-> > unterminated DMA getting re-initialized and then terminated.
-> > 
-> > On the i.MX6 platform the problem is (if I got it correctly) that the
-> > sdma_channel_terminate_work() called after the -EPIPE gets scheduled 
-> > away (for the 1-2ms sleep [1]). During that time the userspace already 
-> > sends in the
-> > ioctl(SNDRV_PCM_IOCTL_PREPARE) and
-> > ioctl(SNDRV_PCM_IOCTL_READI_FRAMES).
-> > As none of them are anyhow synchronized to the terminate_worker the
-> > vchan_dma_desc_free_list() [2] and "sdmac->context_loaded = false;" 
-> > [3] are executed during the wait_for_avail() [4] of the 
-> > ioctl(SNDRV_PCM_IOCTL_READI_FRAMES).
-> > 
-> > To make sure we identified the problem correctly we've tested to add a 
-> > "dmaengine_synchronize()" before the snd_pcm_prepare() in [5]. This 
-> > fixed the race condition in all our tests. (Before we were able to 
-> > reproduce it in 100% of the test runs).
-> > 
-> > Based on our understanding, there are two different points to ensure 
-> > the
-> > termination:
-> > Either ensure that the termination is finished within the previous 
-> > SNDRV_PCM_IOCTL_READI_FRAMES call (inside the DMA context) or 
-> > finishing it in the SNDRV_PCM_IOCTL_PREPARE call (and all other 
-> > applicable ioclts) before entering the atomic context (from the PCM context).
-> > 
-> > We initially thought about implementing the first approach, basically 
-> > splitting up the dma_device terminate_all operation into a sync
-> > (busy-wait) and a async one. This would align the operations with the 
-> > DMAengine interface and would enable a sync termination variant from 
-> > atomic contexts.
-> > However, we saw that the dma_free_attrs() function has a WARN_ON on 
-> > irqs disabled, which would be the case for the sync variant.
-> > Side note: We found this issue on the current v5.4.y LTS branch, but 
-> > it also affects v5.8.y.
-> > 
-> > Any feedback or pointers how we may fix the problem are warmly welcome!
-> > If anything is unclear please just ask :-)
-> > 
-> > regards;
-> > Richard Leitner
-> > Benjamin Bara
