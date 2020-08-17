@@ -2,66 +2,79 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C61F6C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACED3C433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:36:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AD5820716
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:33:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 363662078A
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 06:36:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PGLTGRDG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AD5820716
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qs7ryIZq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HJSo0/n5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 363662078A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A70EB83E;
-	Mon, 17 Aug 2020 08:32:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A70EB83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95CBC1672;
+	Mon, 17 Aug 2020 08:35:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95CBC1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597646017;
-	bh=JFKVwJizHkGyX6jWYhHUSLd5a6Q0ou+Urn9HhqNChzM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1597646166;
+	bh=WOzCSas7pYUPfYTUIGe5up6ZYyAXxS4L+F4vNZkQK1U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PGLTGRDGbRv4Rz8idH9QkYNSSCusdKd8LmhuvV5Fpy9S1GabMyprxdytCRCAbGZ7Y
-	 akScOejswmQamB0eTcPC7A7DmyCoBtVeBNCy1xXwIdkhdFGw8wkCWwe/dejg2Js32z
-	 +94JRcUKfL68C3ffGrQFNw4uFzCnYMAachMbR4YY=
+	b=qs7ryIZqbI+bfFEBmBNgLVuNGj4bSKeAvu/oA4i1aX3WAfxuwRQIVGumpq8GtQ790
+	 ZqP211oMkSSyciYBw/frXbtHJKCZheGBx7HbJjMcH64nhJgt+Q/hPrKcO+fM202uM+
+	 HjdSY+FNqMRbvT4crOBK9+SJXGK3EP9GbZRY8/Po=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EAF2F80216;
-	Mon, 17 Aug 2020 08:32:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22424F80216;
+	Mon, 17 Aug 2020 08:35:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F251F80218; Mon, 17 Aug 2020 08:32:44 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id C43C8F80216; Mon, 17 Aug 2020 08:35:14 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D395AF800D3
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 08:32:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D395AF800D3
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 79FEFAE37;
- Mon, 17 Aug 2020 06:32:57 +0000 (UTC)
-Date: Mon, 17 Aug 2020 08:32:32 +0200
-Message-ID: <s5h8sedrddr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: tom.ty89@gmail.com
-Subject: Re: [ALSA patch] [PATCH] ALSA: usb-audio: ignore
- broken	processing/extension unit
-In-Reply-To: <5f39a502.1c69fb81.e7174.8615@mx.google.com>
-References: <5f39a502.1c69fb81.e7174.8615@mx.google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AEA0F80218
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 08:35:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AEA0F80218
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="HJSo0/n5"
+Received: from localhost (unknown [122.171.38.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 21A2020716;
+ Mon, 17 Aug 2020 06:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1597646104;
+ bh=WOzCSas7pYUPfYTUIGe5up6ZYyAXxS4L+F4vNZkQK1U=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=HJSo0/n5Vd+zD+WAvL5Oe4jBG6FUznp0lkrzbUYzWnyu6IdsAu8CI9w4qXsY1yqtY
+ FRK8CCbq2YfnqLCRsvw674uYtvZP1LZRvU+ZIsGMwuad903CNp2et/MD2TQvfdmwdF
+ qABh28s3r9qwEgA5W3q8UhHP/apIdSeKB85GYJg4=
+Date: Mon, 17 Aug 2020 12:04:55 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH v2] soundwire: master: enable pm runtime
+Message-ID: <20200817063455.GN2639@vkoul-mobl>
+References: <20200726215945.3119-1-yung-chuan.liao@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200726215945.3119-1-yung-chuan.liao@linux.intel.com>
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,57 +90,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 16 Aug 2020 23:28:11 +0200,
-tom.ty89@gmail.com wrote:
-> 
-> From: Tom Yan <tom.ty89@gmail.com>
-> 
-> Some devices have broken extension unit where getting current value doesn't work. Attempt that once when creating mixer control for it. If it fails, just ignore it, so that it won't cripple the device entirely (and/or make the error floods).
+On 27-07-20, 05:59, Bard Liao wrote:
+> The hierarchy of soundwire devices is platform device -> M device -> S
+> device. A S device is physically attached on the platform device. So the
+> platform device should be resumed when a S device is resumed. As the
+> bridge of platform device and S device, we have to implement runtime pm
+> on M driver. We have set runtime pm ops in M driver already, but still
+> need to enable runtime pm.
 
-Could you give your Signed-off-by line?  It's mandatory for merging to
-the upstream.
+Applied, thanks
 
-
-thanks,
-
-Takashi
-
-
-> ---
->  sound/usb/mixer.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index eab0fd4fd7c3..e0b7174c1043 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -2367,7 +2367,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
->  	int num_ins;
->  	struct usb_mixer_elem_info *cval;
->  	struct snd_kcontrol *kctl;
-> -	int i, err, nameid, type, len;
-> +	int i, err, nameid, type, len, val;
->  	const struct procunit_info *info;
->  	const struct procunit_value_info *valinfo;
->  	const struct usbmix_name_map *map;
-> @@ -2470,6 +2470,12 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
->  			break;
->  		}
->  
-> +		err = get_cur_ctl_value(cval, cval->control << 8, &val);
-> +		if (err < 0) {
-> +			usb_mixer_elem_info_free(cval);
-> +			return -EINVAL;
-> +		}
-> +
->  		kctl = snd_ctl_new1(&mixer_procunit_ctl, cval);
->  		if (!kctl) {
->  			usb_mixer_elem_info_free(cval);
-> -- 
-> 2.28.0
-> 
-> _______________________________________________
-> Patch mailing list
-> Patch@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/patch
-> 
+-- 
+~Vinod
