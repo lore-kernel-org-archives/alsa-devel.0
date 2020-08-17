@@ -2,98 +2,61 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0244C433E3
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DE90C433E4
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:22:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22C0A2080D
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:12:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 97A752086A
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:22:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UPAkWdVU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rBkaeThX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22C0A2080D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bXr5O/9u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97A752086A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98602167C;
-	Mon, 17 Aug 2020 10:11:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98602167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13D53167C;
+	Mon, 17 Aug 2020 10:21:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13D53167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597651939;
-	bh=Yo1CWloWHthvFyuk3Hg+hCFx7pvkzfD2qDjdRRtj/2Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1597652561;
+	bh=ENpwYjxOEpr61vFOO8/fh2vdT5Oj7MKMlhMQJcPq2RA=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UPAkWdVU8khziBLMa79v9g2AmiqDzQ081mmyExeJ7jyTRmsoliC4talrI75ZiK/kP
-	 jUU8Xtdgfg7bsoZb9l7Y8AUid9OU6761KtFJgtIKSAKvVKeZTTlH6jVLfPj1rSpdFN
-	 5NjhcGCRNdN3EAWhR6Rld1nZKV3ca3TuXYmz6aEY=
+	b=bXr5O/9utOWKX/cM21YfZPNxgmthJc7Ds6EjR7DGrHnMCduaC5XK0A51UMRQRbF84
+	 oaffl0/j3mXG9D6NUIZ80siz3C3DaVKBvLysQLIyLACmSGuilHcDwmQIjLCauo/hP6
+	 +v3FXlJ4sIGXO81NaNag8zosKqadQ9PfQxvBK5oU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E61CF80216;
-	Mon, 17 Aug 2020 10:11:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8826AF80216;
+	Mon, 17 Aug 2020 10:21:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49E91F80218; Mon, 17 Aug 2020 10:11:27 +0200 (CEST)
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com
- [IPv6:2607:f8b0:4864:20::144])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id AC5BDF8025A; Mon, 17 Aug 2020 10:21:49 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 415E0F800F0
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 10:11:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 415E0F800F0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="rBkaeThX"
-Received: by mail-il1-x144.google.com with SMTP id e11so5776637ils.10
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 01:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Lt6hzq5ZQO4HiO3QNUBUTHvgybU3ir4bEXy46hXUV98=;
- b=rBkaeThXVt8B5nb+Cq4kDmKYVxa3SVAFiCNoqheXNihqyvUk+53LxPMfauwnzPS/Na
- VRJpDtqSyoEubgQMwX5GaMPK2SauuRNWBft/Ll8blgxDhTDb280lDQuj3Ua1vXwiKtAL
- 5f3iuTgwO8le7b0VoFCIVgWpwHE22MTNbAZbUAF6edvZ7yUV42kD4KbloBmuHLcsa+br
- md9pqQns95LBAeST17auuF2R08fHlmesmmfLAMjB0hmlYLVK0q/BNfJxhRHLzU14ZMIY
- D1l+CW8LUOqZ/eYtjR+lH1FWGMbZ9SkMoSkB800k7o6EHxI711PFk/oynbxsi0OkySqw
- SmZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Lt6hzq5ZQO4HiO3QNUBUTHvgybU3ir4bEXy46hXUV98=;
- b=ntyK5J3KzCT7QHtn85226zLvCoYjizvshthdPPgEqOx6/zDeZQrNKJB9XbHJ2PWh3+
- wo0dbcjHCzJZMB9vaZNsqhVxSj5GA3B05kkziEXdjqjRweNLGBxWsoTzmKljvkqv2d2R
- 6JTW9Tdwuxc3QiQ5wOZEGcu8hAmzeuYQRWl3EQFjwS8Vz8kKEAb7Axw4YhJ/rz3+6uh2
- mQVNVTYffPZmx50gyUXr4FH1yLZ61vSjymOPgbwEiS527fhyJgYHl82Z95EZxsqqHnWh
- ZdKXVKWpj2JutR7fu+/8jWFbj4lcjWFjRo8umHgbwZRGMQivqfnfcRxEQA9Le0Yq1RAy
- yPGg==
-X-Gm-Message-State: AOAM530P+qjMMrQvviTzGdE1LPBRy4LF2JOebvAlx7k9ICPAH9XvVLRV
- 3aHNNdgCORKHvnRIqnXkmMij6WwldKmqJexZT/KnOQ==
-X-Google-Smtp-Source: ABdhPJzyL87H7xo+SFVJo6OxddJRwCf8TqTo/jG/8v4crswXEsNPG1scfuanoeHlA4HikpKT8hXnnNsJOLQbgj4Ix9w=
-X-Received: by 2002:a92:c904:: with SMTP id t4mr12816222ilp.257.1597651874349; 
- Mon, 17 Aug 2020 01:11:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <1597644455-8216-1-git-send-email-jiaxin.yu@mediatek.com>
- <1597644455-8216-3-git-send-email-jiaxin.yu@mediatek.com>
- <CA+Px+wXSbGLb+AZnF8ETRycRUVjqk4xacm5DH6MzuMw0vh6Wzg@mail.gmail.com>
-In-Reply-To: <CA+Px+wXSbGLb+AZnF8ETRycRUVjqk4xacm5DH6MzuMw0vh6Wzg@mail.gmail.com>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 17 Aug 2020 16:11:03 +0800
-Message-ID: <CA+Px+wUMXoSL6w0wBduE7obJRWgCteeT8=_=U=8LR34JKTTGZA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] dt-bindings: mediatek: mt6359: add codec document
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>, howie.huang@mediatek.com,
- Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- shane.chien@mediatek.com, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, eason.yen@mediatek.com,
- Matthias Brugger <matthias.bgg@gmail.com>, bicycle.tsai@mediatek.com,
- linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id E24EEF800F0
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 10:21:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E24EEF800F0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 2D365AD1B
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 08:22:08 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 3/3] ALSA: usb-audio: Properly match with audio interface class
+Date: Mon, 17 Aug 2020 10:21:40 +0200
+Message-Id: <20200817082140.20232-4-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200817082140.20232-1-tiwai@suse.de>
+References: <20200817082140.20232-1-tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,26 +72,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Aug 17, 2020 at 3:29 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> On Mon, Aug 17, 2020 at 2:08 PM Jiaxin Yu <jiaxin.yu@mediatek.com> wrote:
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,mt6359-sound
->
-> The compatible string has been removed since v3.
->
-> > +required:
-> > +  - compatible
->
-> The same here.
->
-> > +examples:
-> > +  - |
-> > +    mt6359codec: mt6359codec {
-> > +      compatible = "mediatek,mt6359-sound";
->
-> And the same here.
+There are a few entries in the quirk table that set the device ID with
+USB_DEVICE() macro while having an extra bInterfaceClass field.  But
+bInterfaceClass field is never checked unless the proper match_flags
+is set, so those may match incorrectly with all interfaces.
 
-I misunderstood.  It still needs the compatible string to match the
-corresponding driver.
+Introduce another macro to match with the vid/pid pair and the audio
+class interface, and apply it to such entries, so that they can match
+properly.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/quirks-table.h | 55 +++++++++++++++++-------------------------------
+ 1 file changed, 19 insertions(+), 36 deletions(-)
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 988bb9d00192..7a80ef31bbe4 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -35,6 +35,14 @@
+ 	.bInterfaceClass = USB_CLASS_AUDIO, \
+ 	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL
+ 
++/* Another standard entry matching with vid/pid and the audio class */
++#define USB_AUDIO_CLASS(vend, prod) \
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE | \
++		       USB_DEVICE_ID_MATCH_INT_CLASS, \
++	.idVendor = vend, \
++	.idProduct = prod, \
++	.bInterfaceClass = USB_CLASS_AUDIO
++
+ /* FTDI devices */
+ {
+ 	USB_DEVICE(0x0403, 0xb8d8),
+@@ -68,34 +76,14 @@
+ 	}
+ },
+ 
+-{
+-	/* E-Mu 0202 USB */
+-	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+-	.idVendor = 0x041e,
+-	.idProduct = 0x3f02,
+-	.bInterfaceClass = USB_CLASS_AUDIO,
+-},
+-{
+-	/* E-Mu 0404 USB */
+-	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+-	.idVendor = 0x041e,
+-	.idProduct = 0x3f04,
+-	.bInterfaceClass = USB_CLASS_AUDIO,
+-},
+-{
+-	/* E-Mu Tracker Pre */
+-	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+-	.idVendor = 0x041e,
+-	.idProduct = 0x3f0a,
+-	.bInterfaceClass = USB_CLASS_AUDIO,
+-},
+-{
+-	/* E-Mu 0204 USB */
+-	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+-	.idVendor = 0x041e,
+-	.idProduct = 0x3f19,
+-	.bInterfaceClass = USB_CLASS_AUDIO,
+-},
++/* E-Mu 0202 USB */
++{ USB_AUDIO_CLASS(0x041e, 0x3f02) },
++/* E-Mu 0404 USB */
++{ USB_AUDIO_CLASS(0x041e, 0x3f04) },
++/* E-Mu Tracker Pre */
++{ USB_AUDIO_CLASS(0x041e, 0x3f0a) },
++/* E-Mu 0204 USB */
++{ USB_AUDIO_CLASS(0x041e, 0x3f19) },
+ 
+ /*
+  * HP Wireless Audio
+@@ -2751,10 +2739,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ },
+ 
+ /* KeithMcMillen Stringport */
+-{
+-	USB_DEVICE(0x1f38, 0x0001),
+-	.bInterfaceClass = USB_CLASS_AUDIO,
+-},
++{ USB_AUDIO_CLASS(0x1f38, 0x0001) },
+ 
+ /* Miditech devices */
+ {
+@@ -2977,10 +2962,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ },
+ {
+ 	/* Tascam US122 MKII - playback-only support */
+-	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+-	.idVendor = 0x0644,
+-	.idProduct = 0x8021,
+-	.bInterfaceClass = USB_CLASS_AUDIO,
++	USB_AUDIO_CLASS(0x0644, 0x8021),
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "TASCAM",
+ 		.product_name = "US122 MKII",
+@@ -3612,3 +3594,4 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
+ #undef USB_AUDIO_DEVICE
++#undef USB_AUDIO_CLASS
+-- 
+2.16.4
+
