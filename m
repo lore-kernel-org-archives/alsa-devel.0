@@ -2,87 +2,67 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F794C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 21:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D5EAC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 22:48:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4E482072E
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 21:53:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D35DA206DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 22:48:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X/2ZMJXI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4E482072E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p9iRCvCm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D35DA206DA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BFF383D;
-	Mon, 17 Aug 2020 23:52:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BFF383D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4622F16D5;
+	Tue, 18 Aug 2020 00:47:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4622F16D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597701191;
-	bh=VafXr1WcSttAOv4RIWZ56chxFqmuaaAq+X03JIuQmrs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=X/2ZMJXIUi8fRZ+Z7wOQhfHS8LI88grHXElGTIEESFl+dbz9Ee+KC5SWqaQ+c15+8
-	 Tk82D4OOrU46PE7kQDY/hj63OuWtWwLrpHm7w6Gw2mZlp3VdpI5dQ9ZQcRWJ7XjOiP
-	 wRUb6rW2SOdaxL7yimvnVves9maxdODjcSuXstFI=
+	s=default; t=1597704500;
+	bh=kLLZuOItp7lmq+MfOP/sYg6TH7hauCI+MB43ZZD6MTs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=p9iRCvCm1xIGZ4S7BglNGA+22j6RRPtNsUHCx1+/ibToDMqthNVx00L8HIFk4cD9j
+	 JzY8fB6Xih9S5em02P6wDApjJkUK3jlb0c3aZGeT0SGeBCycmrD6J8ab2O2G/50uwe
+	 Pf7xmsm62d99F2LuAwdm3xEJ1/SR9doItQEHJ5FM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE4B9F80216;
-	Mon, 17 Aug 2020 23:52:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCCC5F80216;
+	Tue, 18 Aug 2020 00:47:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8305F80218; Mon, 17 Aug 2020 23:52:18 +0200 (CEST)
-Received: from mail-io1-f67.google.com (mail-io1-f67.google.com
- [209.85.166.67])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A08E7F80218; Tue, 18 Aug 2020 00:47:26 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0730AF800F0
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 23:52:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0730AF800F0
-Received: by mail-io1-f67.google.com with SMTP id h4so19185399ioe.5
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 14:52:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=E11IGqe88Tc6Z0vOlOvE5ENGRj196p+lCtOlbpTnEuM=;
- b=goaZ+uQjrH7pgk414RxzOmo3VWhzOfX31eFA3wMy3sbWH5ABSfvYvLkPElr6EsDBdH
- 5hJFrwwd0kXpuWQ0oht10XeYwQbaznu6BBDKZdrE2iWf8hwSwF75aqkvxJR9EArRYaIw
- TspeVV4xgEqHhym59jtBo8yJ1F45eauJliiT1Qg4Id3Seq41gy+qennO2nRLHmjwWgYW
- 19QncE92e5P5o1cyZcokHiNBEqA+uFw+9CLMopYCOnb8sk5m/o3o+EoMkr5nomPt1HPY
- fIUlGvhf00hRXAASH/2CKGAmflt8NeAXZW/20CPUFfAP6AFgVHx/ixoStO+z/OOmw6bJ
- yFPw==
-X-Gm-Message-State: AOAM532/31w9Mmm+Z+DLQ8SExnT5nkudiuGdLTHA4AZiNk6YoUfS7jfN
- QKZI3yebQ/VMFONwp7zKAw==
-X-Google-Smtp-Source: ABdhPJyHSDK+5TEtfeg0k9BGNP6X9Atf/V18+ASpg7f0YjHh3/cYxf3H70kyY4EQqMZnas7g5GZrTg==
-X-Received: by 2002:a6b:8dd2:: with SMTP id
- p201mr14037976iod.152.1597701129759; 
- Mon, 17 Aug 2020 14:52:09 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
- by smtp.gmail.com with ESMTPSA id t187sm9556524iof.54.2020.08.17.14.52.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 17 Aug 2020 14:52:09 -0700 (PDT)
-Received: (nullmailer pid 1635439 invoked by uid 1000);
- Mon, 17 Aug 2020 21:52:08 -0000
-Date: Mon, 17 Aug 2020 15:52:08 -0600
-From: Rob Herring <robh@kernel.org>
-To: Anson Huang <Anson.Huang@nxp.com>
-Subject: Re: [PATCH] dt-bindings: sound: Convert NXP spdif to json-schema
-Message-ID: <20200817215208.GA1632404@bogus>
-References: <1596691077-30658-1-git-send-email-Anson.Huang@nxp.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F60CF800EF
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 00:47:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F60CF800EF
+Received: from [82.43.126.140] (helo=localhost)
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <colin.king@canonical.com>)
+ id 1k7nuK-0000uc-3W; Mon, 17 Aug 2020 22:47:12 +0000
+From: Colin King <colin.king@canonical.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Michal Simek <michal.simek@xilinx.com>, alsa-devel@alsa-project.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] sound: remove duplicate "the the" phrase in Kconfig text
+Date: Mon, 17 Aug 2020 23:47:06 +0100
+Message-Id: <20200817224706.6139-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596691077-30658-1-git-send-email-Anson.Huang@nxp.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- shengjiu.wang@nxp.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- broonie@kernel.org, Linux-imx@nxp.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,214 +78,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Aug 06, 2020 at 01:17:57PM +0800, Anson Huang wrote:
-> Convert the NXP SPDIF binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  .../devicetree/bindings/sound/fsl,spdif.txt        |  68 -------------
->  .../devicetree/bindings/sound/fsl,spdif.yaml       | 108 +++++++++++++++++++++
->  2 files changed, 108 insertions(+), 68 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-> deleted file mode 100644
-> index e1365b0..0000000
-> --- a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-> +++ /dev/null
-> @@ -1,68 +0,0 @@
-> -Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
-> -
-> -The Freescale S/PDIF audio block is a stereo transceiver that allows the
-> -processor to receive and transmit digital audio via an coaxial cable or
-> -a fibre cable.
-> -
-> -Required properties:
-> -
-> -  - compatible		: Compatible list, should contain one of the following
-> -			  compatibles:
-> -			  "fsl,imx35-spdif",
-> -			  "fsl,vf610-spdif",
-> -			  "fsl,imx6sx-spdif",
-> -
-> -  - reg			: Offset and length of the register set for the device.
-> -
-> -  - interrupts		: Contains the spdif interrupt.
-> -
-> -  - dmas		: Generic dma devicetree binding as described in
-> -			  Documentation/devicetree/bindings/dma/dma.txt.
-> -
-> -  - dma-names		: Two dmas have to be defined, "tx" and "rx".
-> -
-> -  - clocks		: Contains an entry for each entry in clock-names.
-> -
-> -  - clock-names		: Includes the following entries:
-> -	"core"		  The core clock of spdif controller.
-> -	"rxtx<0-7>"	  Clock source list for tx and rx clock.
-> -			  This clock list should be identical to the source
-> -			  list connecting to the spdif clock mux in "SPDIF
-> -			  Transceiver Clock Diagram" of SoC reference manual.
-> -			  It can also be referred to TxClk_Source bit of
-> -			  register SPDIF_STC.
-> -	"spba"		  The spba clock is required when SPDIF is placed as a
-> -			  bus slave of the Shared Peripheral Bus and when two
-> -			  or more bus masters (CPU, DMA or DSP) try to access
-> -			  it. This property is optional depending on the SoC
-> -			  design.
-> -
-> -Optional properties:
-> -
-> -   - big-endian		: If this property is absent, the native endian mode
-> -			  will be in use as default, or the big endian mode
-> -			  will be in use for all the device registers.
-> -
-> -Example:
-> -
-> -spdif: spdif@2004000 {
-> -	compatible = "fsl,imx35-spdif";
-> -	reg = <0x02004000 0x4000>;
-> -	interrupts = <0 52 0x04>;
-> -	dmas = <&sdma 14 18 0>,
-> -	       <&sdma 15 18 0>;
-> -	dma-names = "rx", "tx";
-> -
-> -	clocks = <&clks 197>, <&clks 3>,
-> -	       <&clks 197>, <&clks 107>,
-> -	       <&clks 0>, <&clks 118>,
-> -	       <&clks 62>, <&clks 139>,
-> -	       <&clks 0>;
-> -	clock-names = "core", "rxtx0",
-> -		"rxtx1", "rxtx2",
-> -		"rxtx3", "rxtx4",
-> -		"rxtx5", "rxtx6",
-> -		"rxtx7";
-> -
-> -	big-endian;
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> new file mode 100644
-> index 0000000..819f37f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> @@ -0,0 +1,108 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl,spdif.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +description: |
-> +  The Freescale S/PDIF audio block is a stereo transceiver that allows the
-> +  processor to receive and transmit digital audio via an coaxial cable or
-> +  a fibre cable.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx35-spdif
-> +      - fsl,vf610-spdif
-> +      - fsl,imx6sx-spdif
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    items:
-> +      - description: DMA controller phandle and request line for RX
-> +      - description: DMA controller phandle and request line for TX
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +  clocks:
-> +    items:
-> +      - description: The core clock of spdif controller.
-> +      - description: Clock for tx0 and rx0.
-> +      - description: Clock for tx1 and rx1.
-> +      - description: Clock for tx2 and rx2.
-> +      - description: Clock for tx3 and rx3.
-> +      - description: Clock for tx4 and rx4.
-> +      - description: Clock for tx5 and rx5.
-> +      - description: Clock for tx6 and rx6.
-> +      - description: Clock for tx7 and rx7.
-> +      - description: The spba clock is required when SPDIF is placed as a bus
-> +          slave of the Shared Peripheral Bus and when two or more bus masters
-> +          (CPU, DMA or DSP) try to access it. This property is optional depending
-> +          on the SoC design.
-> +    minItems: 9
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: rxtx0
-> +      - const: rxtx1
-> +      - const: rxtx2
-> +      - const: rxtx3
-> +      - const: rxtx4
-> +      - const: rxtx5
-> +      - const: rxtx6
-> +      - const: rxtx7
-> +      - const: spba
-> +    minItems: 9
-> +
-> +  big-endian:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      If this property is absent, the native endian mode will be in use
-> +      as default, or the big endian mode will be in use for all the device
-> +      registers. Set this flag for HCDs with big endian descriptors and big
-> +      endian registers.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - dmas
-> +  - dma-names
-> +  - clocks
-> +  - clock-names
+From: Colin Ian King <colin.king@canonical.com>
 
-Add:
+There are a couple of occurrences of "the the" in the Kconfig
+text. Fix these.
 
-additionalProperties: false
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/xilinx/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-With that added,
+diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
+index 1d3586b68db7..5bd2730aab76 100644
+--- a/sound/soc/xilinx/Kconfig
++++ b/sound/soc/xilinx/Kconfig
+@@ -9,14 +9,14 @@ config SND_SOC_XILINX_I2S
+ 	  encapsulates PCM in AES format and sends AES data.
+ 
+ config SND_SOC_XILINX_AUDIO_FORMATTER
+-	tristate "Audio support for the the Xilinx audio formatter"
++	tristate "Audio support for the Xilinx audio formatter"
+ 	help
+ 	  Select this option to enable Xilinx audio formatter
+ 	  support. This provides DMA platform device support for
+ 	  audio functionality.
+ 
+ config SND_SOC_XILINX_SPDIF
+-	tristate "Audio support for the the Xilinx SPDIF"
++	tristate "Audio support for the Xilinx SPDIF"
+ 	help
+ 	  Select this option to enable Xilinx SPDIF Audio.
+ 	  This provides playback and capture of SPDIF audio in
+-- 
+2.27.0
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> +
-> +examples:
-> +  - |
-> +    spdif@2004000 {
-> +        compatible = "fsl,imx35-spdif";
-> +        reg = <0x02004000 0x4000>;
-> +        interrupts = <0 52 0x04>;
-> +        dmas = <&sdma 14 18 0>,
-> +               <&sdma 15 18 0>;
-> +        dma-names = "rx", "tx";
-> +        clocks = <&clks 197>, <&clks 3>,
-> +                 <&clks 197>, <&clks 107>,
-> +                 <&clks 0>, <&clks 118>,
-> +                 <&clks 62>, <&clks 139>,
-> +                 <&clks 0>;
-> +        clock-names = "core", "rxtx0",
-> +                      "rxtx1", "rxtx2",
-> +                      "rxtx3", "rxtx4",
-> +                      "rxtx5", "rxtx6",
-> +                      "rxtx7";
-> +        big-endian;
-> +    };
-> -- 
-> 2.7.4
-> 
