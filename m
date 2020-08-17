@@ -2,71 +2,68 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22BD1C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:41:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6224C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 09:09:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94D542072D
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:41:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B48F2063A
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 09:09:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DhpQLaOT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94D542072D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ILcrBDgS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B48F2063A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DB881684;
-	Mon, 17 Aug 2020 10:40:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DB881684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84A75168B;
+	Mon, 17 Aug 2020 11:08:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84A75168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597653660;
-	bh=7E08jSijridrwMzR9ekHERbOjuBB5gxiKFS5yDeUD+Q=;
+	s=default; t=1597655387;
+	bh=PD65L59MQ8EHNyYX6ZwzmmIEzDDOJ+WMs1MKh6TcP20=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DhpQLaOTjHOryqqLUq5ndWWkRU/7jkdOwtMoI7I/aKZoWdO/qYvc5T4LG4YvgERZE
-	 K6XTqyLY+4cSuf9sWHVcYQl5Itx845vhJFYdriLo+7C4+fc7XKSZ4k1J5XAn9V+1At
-	 QVhLgDAKxmfihcyTdQOIlHB+o2UduucznA+OqOUc=
+	b=ILcrBDgSjmTaL1Sw88yDFhZ7peRHHB/5JHtlRCgsHuuwbNP/QssrP7CPM3pOLkPD7
+	 Ex5aALmeMKJ9Vz8RacuiwYM5/9AeyF4u/5sxiFz55nFvCp1lEy+adeOwbHqsJjJvr0
+	 vcvruxcN0Vsg4owC01PbtbJ1tpX9lY80hC0OboY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BB2BF800F0;
-	Mon, 17 Aug 2020 10:40:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2548FF80216;
+	Mon, 17 Aug 2020 11:08:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A911F800D3; Mon, 17 Aug 2020 10:40:07 +0200 (CEST)
+ id C2166F80218; Mon, 17 Aug 2020 11:08:53 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17C89F800D3
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 10:39:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17C89F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 056FAF800D3
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 11:08:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 056FAF800D3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2B7A6B603;
- Mon, 17 Aug 2020 08:40:21 +0000 (UTC)
-Date: Mon, 17 Aug 2020 10:39:55 +0200
-Message-ID: <s5htux1psx0.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 0EF75AEC6;
+ Mon, 17 Aug 2020 09:09:08 +0000 (UTC)
+Date: Mon, 17 Aug 2020 11:08:42 +0200
+Message-ID: <s5hpn7pprl1.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mike Pozulp <pozulp.kernel@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add model alc298-samsung-headphone
-In-Reply-To: <20200817043219.458889-1-pozulp.kernel@gmail.com>
-References: <20200817043219.458889-1-pozulp.kernel@gmail.com>
+To: Allen Pais <allen.cryptic@gmail.com>
+Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
+In-Reply-To: <20200817085703.25732-1-allen.cryptic@gmail.com>
+References: <20200817085703.25732-1-allen.cryptic@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Thomas Hebb <tommyhebb@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, Chris Chiu <chiu@endlessm.com>,
- Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc: alsa-devel@alsa-project.org, keescook@chromium.org, timur@kernel.org,
+ Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, clemens@ladisch.de,
+ tiwai@suse.com, nicoleotsuka@gmail.com, Allen Pais <allen.lkml@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,18 +79,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Aug 2020 06:32:17 +0200,
-Mike Pozulp wrote:
+On Mon, 17 Aug 2020 10:56:53 +0200,
+Allen Pais wrote:
 > 
-> The very quiet and distorted headphone output bug that afflicted my
-> Samsung Notebook 9 is appearing in many other Samsung laptops. Expose
-> the quirk which fixed my laptop as a model so other users can try it.
+> From: Allen Pais <allen.lkml@gmail.com>
 > 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
-> Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
+> Commit 12cc923f1ccc ("tasklet: Introduce new initialization API")'
+> introduced a new tasklet initialization API. This series converts 
+> all the sound drivers to use the new tasklet_setup() API
 
-It makes sense.
-Now applied, thanks.
+Is this targeted for 5.9 or 5.10?
 
+I have a patch set to drop the whole tasklet usage in sound/*
+(destined for 5.10, to be submitted soon), so if that's for 5.10,
+it'll be likely superfluous.
+
+
+thanks,
 
 Takashi
