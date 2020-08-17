@@ -7,53 +7,54 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DE90C433E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:22:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6B2FC433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:23:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97A752086A
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:22:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F45720658
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 08:23:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bXr5O/9u"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97A752086A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DUDoFzLR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F45720658
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13D53167C;
-	Mon, 17 Aug 2020 10:21:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13D53167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F33111686;
+	Mon, 17 Aug 2020 10:22:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F33111686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597652561;
-	bh=ENpwYjxOEpr61vFOO8/fh2vdT5Oj7MKMlhMQJcPq2RA=;
+	s=default; t=1597652614;
+	bh=4HTHjweDHNUq2DqCvRq3DHmOhj1nYpiXgaIDEJIZxW0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bXr5O/9utOWKX/cM21YfZPNxgmthJc7Ds6EjR7DGrHnMCduaC5XK0A51UMRQRbF84
-	 oaffl0/j3mXG9D6NUIZ80siz3C3DaVKBvLysQLIyLACmSGuilHcDwmQIjLCauo/hP6
-	 +v3FXlJ4sIGXO81NaNag8zosKqadQ9PfQxvBK5oU=
+	b=DUDoFzLROOtoYFJfCx5fTKOhlp97vdnisAxM1FDbabrceeIu0Kex3Mt7iloYLrpAA
+	 lspve4hmkCI7O1H012vyZpYU6sjL3vuglloOEvybFAouuwPeUO0uajCcEVdJNWzIBZ
+	 1QEUDetmGJZSU7guBadirCB3HGPi3/SrvaXGkFRM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8826AF80216;
-	Mon, 17 Aug 2020 10:21:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1469BF80260;
+	Mon, 17 Aug 2020 10:21:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC5BDF8025A; Mon, 17 Aug 2020 10:21:49 +0200 (CEST)
+ id 120F5F80257; Mon, 17 Aug 2020 10:21:50 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E24EEF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5853F80216
  for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 10:21:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E24EEF800F0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5853F80216
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2D365AD1B
+ by mx2.suse.de (Postfix) with ESMTP id 18EF8ACF6
  for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 08:22:08 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ALSA: usb-audio: Properly match with audio interface class
-Date: Mon, 17 Aug 2020 10:21:40 +0200
-Message-Id: <20200817082140.20232-4-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: usb-audio: Move device rename and profile quirks to
+ an internal table
+Date: Mon, 17 Aug 2020 10:21:38 +0200
+Message-Id: <20200817082140.20232-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200817082140.20232-1-tiwai@suse.de>
 References: <20200817082140.20232-1-tiwai@suse.de>
@@ -72,111 +73,392 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are a few entries in the quirk table that set the device ID with
-USB_DEVICE() macro while having an extra bInterfaceClass field.  But
-bInterfaceClass field is never checked unless the proper match_flags
-is set, so those may match incorrectly with all interfaces.
+So far we've added the devices that need vendor/product string renames
+or the profile setup into the standard quirk table in quirks-table.h.
+This table is imported into the primary USB audio device entry, hence
+it's all exported for the probing so that udev and co can take a look
+at it.  OTOH, for renaming or profile setup, we don't need to expose
+those explicit entries because the probe itself follows the standard
+way.  That said, we're exposing unnecessarily too many entries.
 
-Introduce another macro to match with the vid/pid pair and the audio
-class interface, and apply it to such entries, so that they can match
-properly.
+This patch moves such internal quirk entries into the own table, and
+reduces the exported device table size.  Along with the moving items,
+re-arrange the entries in the proper order.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/quirks-table.h | 55 +++++++++++++++++-------------------------------
- 1 file changed, 19 insertions(+), 36 deletions(-)
+ sound/usb/card.c         | 133 +++++++++++++++++++++++++++++++++++++++++++----
+ sound/usb/quirks-table.h | 120 ------------------------------------------
+ sound/usb/usbaudio.h     |   1 -
+ 3 files changed, 124 insertions(+), 130 deletions(-)
 
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 696e788c5d31..fa764b61fe9c 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -332,6 +332,106 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
+ 	return 0;
+ }
+ 
++/*
++ * Profile name preset table
++ */
++struct usb_audio_device_name {
++	u32 id;
++	const char *vendor_name;
++	const char *product_name;
++	const char *profile_name;	/* override card->longname */
++};
++
++#define PROFILE_NAME(vid, pid, vendor, product, profile)	 \
++	{ .id = USB_ID(vid, pid), .vendor_name = (vendor),	 \
++	  .product_name = (product), .profile_name = (profile) }
++#define DEVICE_NAME(vid, pid, vendor, product) \
++	PROFILE_NAME(vid, pid, vendor, product, NULL)
++
++/* vendor/product and profile name presets, sorted in device id order */
++static const struct usb_audio_device_name usb_audio_names[] = {
++	/* HP Thunderbolt Dock Audio Headset */
++	PROFILE_NAME(0x03f0, 0x0269, "HP", "Thunderbolt Dock Audio Headset",
++		     "HP-Thunderbolt-Dock-Audio-Headset"),
++	/* HP Thunderbolt Dock Audio Module */
++	PROFILE_NAME(0x03f0, 0x0567, "HP", "Thunderbolt Dock Audio Module",
++		     "HP-Thunderbolt-Dock-Audio-Module"),
++
++	/* Two entries for Gigabyte TRX40 Aorus Master:
++	 * TRX40 Aorus Master has two USB-audio devices, one for the front
++	 * headphone with ESS SABRE9218 DAC chip, while another for the rest
++	 * I/O (the rear panel and the front mic) with Realtek ALC1220-VB.
++	 * Here we provide two distinct names for making UCM profiles easier.
++	 */
++	PROFILE_NAME(0x0414, 0xa000, "Gigabyte", "Aorus Master Front Headphone",
++		     "Gigabyte-Aorus-Master-Front-Headphone"),
++	PROFILE_NAME(0x0414, 0xa001, "Gigabyte", "Aorus Master Main Audio",
++		     "Gigabyte-Aorus-Master-Main-Audio"),
++
++	/* Gigabyte TRX40 Aorus Pro WiFi */
++	PROFILE_NAME(0x0414, 0xa002,
++		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
++
++	/* Creative/E-Mu devices */
++	DEVICE_NAME(0x041e, 0x3010, "Creative Labs", "Sound Blaster MP3+"),
++	/* Creative/Toshiba Multimedia Center SB-0500 */
++	DEVICE_NAME(0x041e, 0x3048, "Toshiba", "SB-0500"),
++
++	DEVICE_NAME(0x046d, 0x0990, "Logitech, Inc.", "QuickCam Pro 9000"),
++
++	/* Dell WD15 Dock */
++	PROFILE_NAME(0x0bda, 0x4014, "Dell", "WD15 Dock", "Dell-WD15-Dock"),
++	/* Dell WD19 Dock */
++	PROFILE_NAME(0x0bda, 0x402e, "Dell", "WD19 Dock", "Dell-WD15-Dock"),
++
++	DEVICE_NAME(0x0ccd, 0x0028, "TerraTec", "Aureon5.1MkII"),
++
++	/*
++	 * The original product_name is "USB Sound Device", however this name
++	 * is also used by the CM106 based cards, so make it unique.
++	 */
++	DEVICE_NAME(0x0d8c, 0x0102, NULL, "ICUSBAUDIO7D"),
++	DEVICE_NAME(0x0d8c, 0x0103, NULL, "Audio Advantage MicroII"),
++
++	/* MSI TRX40 Creator */
++	PROFILE_NAME(0x0db0, 0x0d64,
++		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
++	/* MSI TRX40 */
++	PROFILE_NAME(0x0db0, 0x543d,
++		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
++
++	/* Stanton/N2IT Final Scratch v1 device ('Scratchamp') */
++	DEVICE_NAME(0x103d, 0x0100, "Stanton", "ScratchAmp"),
++	DEVICE_NAME(0x103d, 0x0101, "Stanton", "ScratchAmp"),
++
++	/* aka. Serato Scratch Live DJ Box */
++	DEVICE_NAME(0x13e5, 0x0001, "Rane", "SL-1"),
++
++	/* Lenovo ThinkStation P620 Rear Line-in, Line-out and Microphone */
++	PROFILE_NAME(0x17aa, 0x1046, "Lenovo", "ThinkStation P620 Rear",
++		     "Lenovo-ThinkStation-P620-Rear"),
++	/* Lenovo ThinkStation P620 Internal Speaker + Front Headset */
++	PROFILE_NAME(0x17aa, 0x104d, "Lenovo", "ThinkStation P620 Main",
++		     "Lenovo-ThinkStation-P620-Main"),
++
++	/* Asrock TRX40 Creator */
++	PROFILE_NAME(0x26ce, 0x0a01,
++		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
++
++	{ } /* terminator */
++};
++
++static const struct usb_audio_device_name *
++lookup_device_name(u32 id)
++{
++	static const struct usb_audio_device_name *p;
++
++	for (p = usb_audio_names; p->id; p++)
++		if (p->id == id)
++			return p;
++	return NULL;
++}
++
+ /*
+  * free the chip instance
+  *
+@@ -357,10 +457,16 @@ static void usb_audio_make_shortname(struct usb_device *dev,
+ 				     const struct snd_usb_audio_quirk *quirk)
+ {
+ 	struct snd_card *card = chip->card;
+-
+-	if (quirk && quirk->product_name && *quirk->product_name) {
+-		strlcpy(card->shortname, quirk->product_name,
+-			sizeof(card->shortname));
++	const struct usb_audio_device_name *preset;
++	const char *s = NULL;
++
++	preset = lookup_device_name(chip->usb_id);
++	if (preset && preset->product_name)
++		s = preset->product_name;
++	else if (quirk && quirk->product_name)
++		s = quirk->product_name;
++	if (s && *s) {
++		strlcpy(card->shortname, s, sizeof(card->shortname));
+ 		return;
+ 	}
+ 
+@@ -382,17 +488,26 @@ static void usb_audio_make_longname(struct usb_device *dev,
+ 				    const struct snd_usb_audio_quirk *quirk)
+ {
+ 	struct snd_card *card = chip->card;
++	const struct usb_audio_device_name *preset;
++	const char *s = NULL;
+ 	int len;
+ 
++	preset = lookup_device_name(chip->usb_id);
++
+ 	/* shortcut - if any pre-defined string is given, use it */
+-	if (quirk && quirk->profile_name && *quirk->profile_name) {
+-		strlcpy(card->longname, quirk->profile_name,
+-			sizeof(card->longname));
++	if (preset && preset->profile_name)
++		s = preset->profile_name;
++	if (s && *s) {
++		strlcpy(card->longname, s, sizeof(card->longname));
+ 		return;
+ 	}
+ 
+-	if (quirk && quirk->vendor_name && *quirk->vendor_name) {
+-		len = strlcpy(card->longname, quirk->vendor_name, sizeof(card->longname));
++	if (preset && preset->vendor_name)
++		s = preset->vendor_name;
++	else if (quirk && quirk->vendor_name)
++		s = quirk->vendor_name;
++	if (s && *s) {
++		len = strlcpy(card->longname, s, sizeof(card->longname));
+ 	} else {
+ 		/* retrieve the vendor and device strings as longname */
+ 		if (dev->descriptor.iManufacturer)
 diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 988bb9d00192..7a80ef31bbe4 100644
+index f4fb002e3ef4..978f7113bd81 100644
 --- a/sound/usb/quirks-table.h
 +++ b/sound/usb/quirks-table.h
-@@ -35,6 +35,14 @@
- 	.bInterfaceClass = USB_CLASS_AUDIO, \
- 	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL
+@@ -25,33 +25,6 @@
+ 	.idProduct = prod, \
+ 	.bInterfaceClass = USB_CLASS_VENDOR_SPEC
  
-+/* Another standard entry matching with vid/pid and the audio class */
-+#define USB_AUDIO_CLASS(vend, prod) \
-+	.match_flags = USB_DEVICE_ID_MATCH_DEVICE | \
-+		       USB_DEVICE_ID_MATCH_INT_CLASS, \
-+	.idVendor = vend, \
-+	.idProduct = prod, \
-+	.bInterfaceClass = USB_CLASS_AUDIO
-+
+-#define QUIRK_RENAME_DEVICE(_vendor, _device)				\
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) { \
+-		.vendor_name = _vendor,					\
+-		.product_name = _device,				\
+-		.ifnum = QUIRK_NO_INTERFACE				\
+-	}
+-
+-#define QUIRK_DEVICE_PROFILE(_vendor, _device, _profile)		\
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) { \
+-		.vendor_name = _vendor,					\
+-		.product_name = _device,				\
+-		.profile_name = _profile,				\
+-		.ifnum = QUIRK_NO_INTERFACE				\
+-	}
+-
+-/* HP Thunderbolt Dock Audio Headset */
+-{
+-	USB_DEVICE(0x03f0, 0x0269),
+-	QUIRK_DEVICE_PROFILE("HP", "Thunderbolt Dock Audio Headset",
+-			     "HP-Thunderbolt-Dock-Audio-Headset"),
+-},
+-/* HP Thunderbolt Dock Audio Module */
+-{
+-	USB_DEVICE(0x03f0, 0x0567),
+-	QUIRK_DEVICE_PROFILE("HP", "Thunderbolt Dock Audio Module",
+-			     "HP-Thunderbolt-Dock-Audio-Module"),
+-},
  /* FTDI devices */
  {
  	USB_DEVICE(0x0403, 0xb8d8),
-@@ -68,34 +76,14 @@
+@@ -85,16 +58,6 @@
  	}
  },
  
+-/* Creative/E-Mu devices */
 -{
--	/* E-Mu 0202 USB */
--	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
--	.idVendor = 0x041e,
--	.idProduct = 0x3f02,
--	.bInterfaceClass = USB_CLASS_AUDIO,
+-	USB_DEVICE(0x041e, 0x3010),
+-	QUIRK_RENAME_DEVICE("Creative Labs", "Sound Blaster MP3+")
 -},
+-/* Creative/Toshiba Multimedia Center SB-0500 */
 -{
--	/* E-Mu 0404 USB */
--	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
--	.idVendor = 0x041e,
--	.idProduct = 0x3f04,
--	.bInterfaceClass = USB_CLASS_AUDIO,
+-	USB_DEVICE(0x041e, 0x3048),
+-	QUIRK_RENAME_DEVICE("Toshiba", "SB-0500")
 -},
--{
--	/* E-Mu Tracker Pre */
--	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
--	.idVendor = 0x041e,
--	.idProduct = 0x3f0a,
--	.bInterfaceClass = USB_CLASS_AUDIO,
--},
--{
--	/* E-Mu 0204 USB */
--	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
--	.idVendor = 0x041e,
--	.idProduct = 0x3f19,
--	.bInterfaceClass = USB_CLASS_AUDIO,
--},
-+/* E-Mu 0202 USB */
-+{ USB_AUDIO_CLASS(0x041e, 0x3f02) },
-+/* E-Mu 0404 USB */
-+{ USB_AUDIO_CLASS(0x041e, 0x3f04) },
-+/* E-Mu Tracker Pre */
-+{ USB_AUDIO_CLASS(0x041e, 0x3f0a) },
-+/* E-Mu 0204 USB */
-+{ USB_AUDIO_CLASS(0x041e, 0x3f19) },
+ {
+ 	/* E-Mu 0202 USB */
+ 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+@@ -226,7 +189,6 @@
+ 	.idProduct = 0x0990,
+ 	.bInterfaceClass = USB_CLASS_AUDIO,
+ 	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
+-	QUIRK_RENAME_DEVICE("Logitech, Inc.", "QuickCam Pro 9000")
+ },
  
  /*
-  * HP Wireless Audio
-@@ -2751,10 +2739,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+@@ -2609,10 +2571,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.type = QUIRK_MIDI_STANDARD_INTERFACE
+ 	}
  },
- 
- /* KeithMcMillen Stringport */
 -{
--	USB_DEVICE(0x1f38, 0x0001),
--	.bInterfaceClass = USB_CLASS_AUDIO,
+-	USB_DEVICE(0x0ccd, 0x0028),
+-	QUIRK_RENAME_DEVICE("TerraTec", "Aureon5.1MkII")
 -},
-+{ USB_AUDIO_CLASS(0x1f38, 0x0001) },
- 
- /* Miditech devices */
  {
-@@ -2977,10 +2962,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 	USB_DEVICE(0x0ccd, 0x0035),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+@@ -2623,16 +2581,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
  },
- {
- 	/* Tascam US122 MKII - playback-only support */
--	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
--	.idVendor = 0x0644,
--	.idProduct = 0x8021,
--	.bInterfaceClass = USB_CLASS_AUDIO,
-+	USB_AUDIO_CLASS(0x0644, 0x8021),
- 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
- 		.vendor_name = "TASCAM",
- 		.product_name = "US122 MKII",
-@@ -3612,3 +3594,4 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
  
- #undef USB_DEVICE_VENDOR_SPEC
- #undef USB_AUDIO_DEVICE
-+#undef USB_AUDIO_CLASS
+-/* Stanton/N2IT Final Scratch v1 device ('Scratchamp') */
+-{
+-	USB_DEVICE(0x103d, 0x0100),
+-	QUIRK_RENAME_DEVICE("Stanton", "ScratchAmp")
+-},
+-{
+-	USB_DEVICE(0x103d, 0x0101),
+-	QUIRK_RENAME_DEVICE("Stanton", "ScratchAmp")
+-},
+-
+ /* Novation EMS devices */
+ {
+ 	USB_DEVICE_VENDOR_SPEC(0x1235, 0x0001),
+@@ -2817,26 +2765,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ 
+-/* */
+-{
+-	/* aka. Serato Scratch Live DJ Box */
+-	USB_DEVICE(0x13e5, 0x0001),
+-	QUIRK_RENAME_DEVICE("Rane", "SL-1")
+-},
+-
+-/* Lenovo ThinkStation P620 Rear Line-in, Line-out and Microphone */
+-{
+-	USB_DEVICE(0x17aa, 0x1046),
+-	QUIRK_DEVICE_PROFILE("Lenovo", "ThinkStation P620 Rear",
+-			     "Lenovo-ThinkStation-P620-Rear"),
+-},
+-/* Lenovo ThinkStation P620 Internal Speaker + Front Headset */
+-{
+-	USB_DEVICE(0x17aa, 0x104d),
+-	QUIRK_DEVICE_PROFILE("Lenovo", "ThinkStation P620 Main",
+-			     "Lenovo-ThinkStation-P620-Main"),
+-},
+-
+ /* Native Instruments MK2 series */
+ {
+ 	/* Komplete Audio 6 */
+@@ -3295,19 +3223,6 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 	}
+ },
+ 
+-/*
+- * The original product_name is "USB Sound Device", however this name
+- * is also used by the CM106 based cards, so make it unique.
+- */
+-{
+-	USB_DEVICE(0x0d8c, 0x0102),
+-	QUIRK_RENAME_DEVICE(NULL, "ICUSBAUDIO7D")
+-},
+-{
+-	USB_DEVICE(0x0d8c, 0x0103),
+-	QUIRK_RENAME_DEVICE(NULL, "Audio Advantage MicroII")
+-},
+-
+ /* disabled due to regression for other devices;
+  * see https://bugzilla.kernel.org/show_bug.cgi?id=199905
+  */
+@@ -3408,18 +3323,10 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 		}
+ 	}
+ },
+-/* Dell WD15 Dock */
+-{
+-	USB_DEVICE(0x0bda, 0x4014),
+-	QUIRK_DEVICE_PROFILE("Dell", "WD15 Dock", "Dell-WD15-Dock")
+-},
+ /* Dell WD19 Dock */
+ {
+ 	USB_DEVICE(0x0bda, 0x402e),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+-		.vendor_name = "Dell",
+-		.product_name = "WD19 Dock",
+-		.profile_name = "Dell-WD15-Dock",
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_SETUP_FMT_AFTER_RESUME
+ 	}
+@@ -3645,33 +3552,6 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 	}
+ },
+ 
+-#define ALC1220_VB_DESKTOP(vend, prod) { \
+-	USB_DEVICE(vend, prod),	\
+-	QUIRK_DEVICE_PROFILE("Realtek", "ALC1220-VB-DT", \
+-			     "Realtek-ALC1220-VB-Desktop") \
+-}
+-ALC1220_VB_DESKTOP(0x0414, 0xa002), /* Gigabyte TRX40 Aorus Pro WiFi */
+-ALC1220_VB_DESKTOP(0x0db0, 0x0d64), /* MSI TRX40 Creator */
+-ALC1220_VB_DESKTOP(0x0db0, 0x543d), /* MSI TRX40 */
+-ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* Asrock TRX40 Creator */
+-#undef ALC1220_VB_DESKTOP
+-
+-/* Two entries for Gigabyte TRX40 Aorus Master:
+- * TRX40 Aorus Master has two USB-audio devices, one for the front headphone
+- * with ESS SABRE9218 DAC chip, while another for the rest I/O (the rear
+- * panel and the front mic) with Realtek ALC1220-VB.
+- * Here we provide two distinct names for making UCM profiles easier.
+- */
+-{
+-	USB_DEVICE(0x0414, 0xa000),
+-	QUIRK_DEVICE_PROFILE("Gigabyte", "Aorus Master Front Headphone",
+-			     "Gigabyte-Aorus-Master-Front-Headphone")
+-},
+-{
+-	USB_DEVICE(0x0414, 0xa001),
+-	QUIRK_DEVICE_PROFILE("Gigabyte", "Aorus Master Main Audio",
+-			     "Gigabyte-Aorus-Master-Main-Audio")
+-},
+ {
+ 	/*
+ 	 * Pioneer DJ DJM-900NXS2
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index b91c4c0807ec..2275295fe71f 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -109,7 +109,6 @@ enum quirk_type {
+ struct snd_usb_audio_quirk {
+ 	const char *vendor_name;
+ 	const char *product_name;
+-	const char *profile_name;	/* override the card->longname */
+ 	int16_t ifnum;
+ 	uint16_t type;
+ 	bool shares_media_device;
 -- 
 2.16.4
 
