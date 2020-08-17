@@ -2,95 +2,110 @@ Return-Path: <SRS0=tpTD=B3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27389C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 09:26:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50C5BC433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 09:26:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0A6F2072E
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 09:26:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CCAB22072D
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2020 09:26:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KrVlsZMK";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NAHfXp4U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0A6F2072E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M9I5v+tl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="kVBF4LkT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCAB22072D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2810116D1;
-	Mon, 17 Aug 2020 11:25:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2810116D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 506C516E0;
+	Mon, 17 Aug 2020 11:25:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 506C516E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597656369;
-	bh=qX871vE+FuBcMCwIyoO/B6faScex0KuAjvcf8gzD10o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1597656395;
+	bh=v5C0i8Aibv8oWHxYZ0zb/51Y6ITNtKmlTWvmXQwNGSA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KrVlsZMKvqbJT2vNC9VqxD3422EcGESeBqiRJ3PqTWCIxm/45ZVq0uwc6fNDMO+Hq
-	 Jd1PZiF9AqieRRsecxa5Zle8fmwBWU7CjqvizDupkUWb2CMI297JPr5MgHW2wfaChz
-	 rfQtgj3RIb08OpkF9Isa5HpU7eFdcD5d6GqbYJGE=
+	b=M9I5v+tltiqE7PPSKIZTiLK5JDa5ZbEcT9zVeva7teU+oEfAmB5C4rxnpVZEykA09
+	 vuRoSL9xhLht+E+Iy8V9rE8whMB8Np3Ni1/WM9l/16YIEoXAlpfHCuA7pSSyw6OPCV
+	 Gn3PPHE71DKHUfeo4H5Z9yoE//AlEmaINjWK2MkA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7B79F80218;
-	Mon, 17 Aug 2020 11:19:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB984F80260;
+	Mon, 17 Aug 2020 11:22:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9649AF80255; Mon, 17 Aug 2020 11:19:15 +0200 (CEST)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0BA76F80260; Mon, 17 Aug 2020 11:22:37 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5178F80218
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 11:19:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5178F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEE9DF80216
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 11:22:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEE9DF80216
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="NAHfXp4U"
-Received: by mail-wr1-x442.google.com with SMTP id y3so14226885wrl.4
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2020 02:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=qX871vE+FuBcMCwIyoO/B6faScex0KuAjvcf8gzD10o=;
- b=NAHfXp4UBf6Jibtr2eCLhEO9YoL8Wt0anDkAAE2K5TZU53xG1vkvMB2EgNCPhxmGx5
- 5T32Kbcf1FdbzuearoAM/32+vKjxF0vhz64kmxZbU9ko7qcmNfkyTlqyF/GFcyxSVLrJ
- 4AipYvBmctHdf5NScgCdQmoDe6GBXy6cl050KRWSjF4d85M4QevyefgyHJWjxGkWqVTS
- bbVXr1TUoX220i171lSN7bFYORPx8K6513VEN6ttGYOEkm+naSJ8p2UZxdk0z7fJNMaf
- FjjpeZuHmTS3NmdyQULQ9ufpXW+PaUMUhtPwUwlVvQxYUkLL8MOw27x70MEt5E9DxpzO
- VQNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=qX871vE+FuBcMCwIyoO/B6faScex0KuAjvcf8gzD10o=;
- b=BruznG4ovULVnUJy8SGgQeSFiqC/RN0WEqna/QU73gQMcoGneNC3M1VJnsb/mlyPj7
- 5SZlUAxSG9D0ZEyOmWW+0xdJsupsCEgBR4TlLt4cdo+7JqsZmRFRsRKkg7RQcrS2XBfH
- hsUKEb5ROaerBpf8elDqLy2bXcU3mBu35Np71495r8rWr68TrZA9MPtojEMvqUr4e1XS
- v6oh655bEh5JZRJqXQkbFHPlM2jap8kCMZhbs9u/VWwaKgsmvUM2idsWPTibOQgSsmTJ
- nmEFhLsYp+MMKTekAD8Mm9WY+NjEC6E9lvSFkGdU1aM4nqma4TK07jaNuRA5hB1572GW
- RTCA==
-X-Gm-Message-State: AOAM531GxiJjD+2oCK6ssk6gNUSiQPhoKRwjbDcGZGnksYrO8gWhv1qJ
- VG8pQiFnj10nLdaF3Wb4XDFXQaAgVjVAC52Z3fY=
-X-Google-Smtp-Source: ABdhPJyqCR0rK5Dp5nj1dXQBMsH1a4xuJvfOer49VOTuXmGUa+ctG1GwTxQ2v/dZNgABIn1M51tgRR3MnRWB5D7Osl8=
-X-Received: by 2002:adf:b1dc:: with SMTP id r28mr14132586wra.242.1597655944611; 
- Mon, 17 Aug 2020 02:19:04 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="kVBF4LkT"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 07H9Eei0010088; Mon, 17 Aug 2020 04:22:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=TIgmhQPJma7LMTwk9a2r2DrIV+fSdBsZPGpZsfznD4U=;
+ b=kVBF4LkTLx+vxHzdlXI1tA7RDqD1CjQfpE84Hhq/pf2ALXeTa8QDni7zy382rlhUn1ls
+ xPiR1Vo8Jpnsa2/INR2kWExSzu5ENhrUH+2xECCel8ELvmTXiKy9ATK+zyMuCt1ZDRHH
+ 5AXYi2s8hgkVEt7MjOx+sY2DlByUWWI8pctYa0OsCet7v1n2qqdezmKeL0XvgnXCY7bm
+ SPVxvzgliAALRuMLzSFUPg4SHjBSKywMfcS6ImkMBMLZo1XKu9F6F9LiwxPmJqu7krsQ
+ QmE6oDxyJG/cC/lG0xPaqv+yt0XMttcHMU9OIsQkidCstX7sDrE1DujKkDAcJDtZBILG vw== 
+Authentication-Results: ppops.net;
+ spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 32xd42t8c0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 17 Aug 2020 04:22:23 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 17 Aug
+ 2020 10:22:21 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 17 Aug 2020 10:22:21 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AB8B42C3;
+ Mon, 17 Aug 2020 09:22:21 +0000 (UTC)
+Date: Mon, 17 Aug 2020 09:22:21 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+Subject: Re: [PATCH] ASoC: wm8962: Export DAC/ADC monomix switches
+Message-ID: <20200817092221.GE10899@ediswmail.ad.cirrus.com>
+References: <3662154.EqNIRYjrc8@pliszka>
 MIME-Version: 1.0
-References: <20200817085703.25732-1-allen.cryptic@gmail.com>
- <s5hpn7pprl1.wl-tiwai@suse.de>
-In-Reply-To: <s5hpn7pprl1.wl-tiwai@suse.de>
-From: Allen Pais <allen.cryptic@gmail.com>
-Date: Mon, 17 Aug 2020 14:48:53 +0530
-Message-ID: <CAEogwTAGHOfBe4ztkx9To0gQGwHwFWzCBxn8nzWJP=wRJUJ56A@mail.gmail.com>
-Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, keescook@chromium.org, timur@kernel.org,
- Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, clemens@ladisch.de,
- tiwai@suse.com, nicoleotsuka@gmail.com, Allen Pais <allen.lkml@gmail.com>,
- linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3662154.EqNIRYjrc8@pliszka>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ malwarescore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxlogscore=756
+ mlxscore=0 spamscore=0 suspectscore=0 phishscore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008170070
+Cc: alsa-devel@alsa-project.org, "kernel@puri.sm" <kernel@puri.sm>,
+ patches@opensource.cirrus.com,
+ Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,16 +121,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
->
-> Is this targeted for 5.9 or 5.10?
+On Sun, Aug 16, 2020 at 03:23:34AM +0200, Sebastian Krzyszkowiak wrote:
+> This allows solutions like ALSA UCM to utilize hardware mono downmix
+> for cases where mono output to a single speaker is desired only in
+> specific situations (like on a mobile phone).
+> 
+> Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+> ---
 
-This is targeted for 5.9.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-> I have a patch set to drop the whole tasklet usage in sound/*
-> (destined for 5.10, to be submitted soon), so if that's for 5.10,
-> it'll be likely superfluous.
-
- I have picked patches from your tree to adapt to this new API.
-Those can be picked in 5.10 I suppose.
-
-Thanks.
+Thanks,
+Charles
