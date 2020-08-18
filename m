@@ -2,72 +2,75 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4F13C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BA60C433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:58:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 455F4207DE
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:57:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B90D7207D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:58:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kBE0RhWz";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YFq50sSU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 455F4207DE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iD2bQVfL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hd8yj2Z4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B90D7207D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D328917A7;
-	Tue, 18 Aug 2020 18:56:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D328917A7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30D1A1793;
+	Tue, 18 Aug 2020 18:57:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30D1A1793
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597769869;
-	bh=PMfzfiAqcPXlXu5+PpIhojgS7cmHoB6sX8LG4lMXi2w=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1597769912;
+	bh=3vbm55O2sXgcIvXGhZRQabLgIImj+oFTn5mSUu/7Agw=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kBE0RhWzye2GhuBwGBUjiJK40ij4iEqsHaD1EBkB0p00+32Y3OadgfX1JOYoAbxrr
-	 5QidMzSzeyP6/yDUuAIUSJ18yUGcWdaFUnAW0o6EQlrk0Aj1ywIoyz5zLJOojgAKnU
-	 JjbrTiuOV+aDw1W6EmHn8SXWsnvoMeb4k0Gmb+A4=
+	b=iD2bQVfLhj2G3Atk8cHnDg9cB+k1pS8OsqoFR6QvBV51HXTkwtziF2yX9hbquc50U
+	 bOqDh4fdG6YhwTntJ0hqqIrtnYLdKzSiUpeFVWtWslnJQnkqr53DwCp223zRPucilQ
+	 QkafN40AkhB0i0+0LH1kNOze6hU+ckdcFlZPQt3E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22C22F802E8;
-	Tue, 18 Aug 2020 18:54:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 633D3F802EB;
+	Tue, 18 Aug 2020 18:54:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 311C9F802E8; Tue, 18 Aug 2020 18:54:36 +0200 (CEST)
+ id 220C5F802EC; Tue, 18 Aug 2020 18:54:40 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83E32F802E3
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:54:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83E32F802E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id AFF72F802E2
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:54:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFF72F802E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YFq50sSU"
+ header.b="Hd8yj2Z4"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AB5FE207D3;
- Tue, 18 Aug 2020 16:54:29 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B6523207D3;
+ Tue, 18 Aug 2020 16:54:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597769670;
- bh=PMfzfiAqcPXlXu5+PpIhojgS7cmHoB6sX8LG4lMXi2w=;
+ s=default; t=1597769675;
+ bh=3vbm55O2sXgcIvXGhZRQabLgIImj+oFTn5mSUu/7Agw=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=YFq50sSU6RhGrWc8t9xZbk8wknnIp+Ww/9n7oWuNyKIZZbeAPtGN4NZQc4ZZ5rd6Q
- zQG4Y2V5KY26/BDLJIX3GqzgqJzQEfsazBMxEADKagIDb2LaDbfXpD/5e9YIQSkdG1
- IfNVshfsGPXBVidoAt8+RmCd+motEqtqWb6Vf/xE=
-Date: Tue, 18 Aug 2020 17:53:59 +0100
+ b=Hd8yj2Z4AZnjkkZfNcW76gJD1StQ0Hd498Lrh2p0s3HytUpyS9vBhtC0Hkx1oj+KM
+ IOhlAnOWEf0qRJZ5I5H9B/xQOTLqe7baPNC2DDKpqx0Cxc5f3lEm/D63e6/yzYs8Vx
+ wnW+amRKnMUbil8RaF824efxXqqyaLSdP05mlc2o=
+Date: Tue, 18 Aug 2020 17:54:04 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-In-Reply-To: <20200808012156.10827-1-rdunlap@infradead.org>
-References: <20200808012156.10827-1-rdunlap@infradead.org>
-Subject: Re: [PATCH] ASoC: SOF: delete repeated words in comments
-Message-Id: <159776961931.56094.1084906977146137662.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: festevam@gmail.com, Xiubo.Lee@gmail.com, tiwai@suse.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, timur@kernel.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, perex@perex.cz
+In-Reply-To: <1597047103-6863-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1597047103-6863-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2] ASoC: fsl-asoc-card: Get "extal" clock rate by
+ clk_get_rate
+Message-Id: <159776961931.56094.3057738370364224756.b4-ty@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,8 +86,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 7 Aug 2020 18:21:56 -0700, Randy Dunlap wrote:
-> Drop the repeated words {that, the} in comments.
+On Mon, 10 Aug 2020 16:11:43 +0800, Shengjiu Wang wrote:
+> On some platform(.e.g. i.MX8QM MEK), the "extal" clock is different
+> with the mclk of codec, then the clock rate is also different.
+> So it is better to get clock rate of "extal" rate by clk_get_rate,
+> don't reuse the clock rate of mclk.
 
 Applied to
 
@@ -92,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: delete repeated words in comments
-      commit: 8932f0cb20e815478a5aaa6ff2850ff25f10a2fe
+[1/1] ASoC: fsl-asoc-card: Get "extal" clock rate by clk_get_rate
+      commit: a8fd5ca8016948a611bff62b0990ade9e1f8e83c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
