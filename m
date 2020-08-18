@@ -2,79 +2,63 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26AEAC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 00:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1121C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:38:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4E632078B
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 00:57:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 311892075E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:38:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LdeJt37p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4E632078B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KaCzG2iY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 311892075E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3212716E8;
-	Tue, 18 Aug 2020 02:56:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3212716E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9224616E8;
+	Tue, 18 Aug 2020 04:37:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9224616E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597712231;
-	bh=VeQJ7gtUfxTiZYIo6KTcLfjVHIgZX92yB4cLnpUCVUw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LdeJt37pIkza9jIstbgGmhVP6rFPF1KT4wnH1x2RZu3eXV1JuQmaGWR5EFiNpHaEk
-	 6qqzcx+HkAwTXszGOGynEzXD4TuMkTBV9BaAWofBDO+4MM8Mq7JDCzlBINLDH5Yu7e
-	 KDZKdSZ9JimxU0AIJJtbYc+wSAHLqgsDbfwRqoLo=
+	s=default; t=1597718314;
+	bh=udg2wfLnuE8Eccx+/SIFJWAh3JGqcf9jvIOMINANgqM=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KaCzG2iYFgZnzYf7oY4LvHwXFBTAjOMN6gn2CP4jM7YAYXL0o6ueIiGgetX5slXWs
+	 x3hJlBWu+1aXaxIRoQhITg1zu13Wea6c1HqH/uG3YwgQpeYFFTfKI6DnuWNT9ZEtgr
+	 bM1HK9KUqckPq7uwf4tFfXN35gb19/6mRJNsw2uA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B29AF80216;
-	Tue, 18 Aug 2020 02:56:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED7BFF80228;
+	Tue, 18 Aug 2020 04:37:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 391D8F80218; Tue, 18 Aug 2020 02:56:19 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CDE0F800D3
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 02:56:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CDE0F800D3
-IronPort-SDR: UJDabTyd6uvUaRKExof6q9vXZq+TtM3JY62mh+K4Ebv/jCRQlNrrC0kfMWvxjqAZcTYH87kUHD
- rH+Llw7beDrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="239642552"
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; d="scan'208";a="239642552"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Aug 2020 17:56:10 -0700
-IronPort-SDR: +cRgIv89HL96sSmuryIQJos0iUOC3iKa4y7gEnpQim4/uCQFhmJO8lbrcHsk14+4dMnWw9K52g
- E7UU0pdud5hQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; d="scan'208";a="328802745"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
- by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2020 17:56:08 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: hdac_hdmi: support 'ELD' mixer
-Date: Tue, 18 Aug 2020 08:44:13 +0800
-Message-Id: <20200818004413.12852-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200814083436.19845-1-brent.lu@intel.com>
-References: <20200814083436.19845-1-brent.lu@intel.com>
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Brent Lu <brent.lu@intel.com>
+ id 29DD9F8023F; Tue, 18 Aug 2020 04:37:42 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id EDBC4F80104
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 04:37:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDBC4F80104
+Date: 18 Aug 2020 11:37:29 +0900
+X-IronPort-AV: E=Sophos;i="5.76,325,1592838000"; d="scan'208";a="54823961"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 18 Aug 2020 11:37:29 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D793B4003881;
+ Tue, 18 Aug 2020 11:37:29 +0900 (JST)
+Message-ID: <871rk4hean.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: soc-core: use client_mutex for snd_soc_find_dai()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,212 +74,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add an binary mixer 'ELD' to each HDMI PCM device so user space
-could read the ELD data of external HDMI display.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+commit 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
+added snd_soc_dai_link_set_capabilities().
+But it is using snd_soc_find_dai() (A) which is required client_mutex (B).
+And client_mutex is soc-core.c local.
+
+	struct snd_soc_dai *snd_soc_find_dai(xxx)
+	{
+		...
+(B)		lockdep_assert_held(&client_mutex);
+		...
+	}
+
+	void snd_soc_dai_link_set_capabilities(xxx)
+	{
+		...
+		for_each_pcm_streams(direction) {
+			...
+			for_each_link_cpus(dai_link, i, cpu) {
+(A)				dai = snd_soc_find_dai(cpu);
+				...
+			}
+			...
+			for_each_link_codecs(dai_link, i, codec) {
+(A)				dai = snd_soc_find_dai(codec);
+				...
+			}
+		}
+		...
+	}
+
+Because of these background, we will get WARNING if .config has CONFIG_LOCKDEP.
+
+	WARNING: CPU: 2 PID: 53 at sound/soc/soc-core.c:814 snd_soc_find_dai+0xf8/0x100
+	CPU: 2 PID: 53 Comm: kworker/2:1 Not tainted 5.7.0-rc1+ #328
+	Hardware name: Renesas H3ULCB Kingfisher board based on r8a77951 (DT)
+	Workqueue: events deferred_probe_work_func
+	pstate: 60000005 (nZCv daif -PAN -UAO)
+	pc : snd_soc_find_dai+0xf8/0x100
+	lr : snd_soc_find_dai+0xf4/0x100
+	...
+	Call trace:
+	 snd_soc_find_dai+0xf8/0x100
+	 snd_soc_dai_link_set_capabilities+0xa0/0x16c
+	 graph_dai_link_of_dpcm+0x390/0x3c0
+	 graph_for_each_link+0x134/0x200
+	 graph_probe+0x144/0x230
+	 platform_drv_probe+0x5c/0xb0
+	 really_probe+0xe4/0x430
+	 driver_probe_device+0x60/0xf4
+
+Many drivers are already calling snd_soc_find_dai() and/or snd_soc_dai_link_set_capabilities().
+Thus, same thing can be happen on these drivers, too.
+
+	> grep snd_soc_find_dai -rl sound/soc/*
+	sound/soc/samsung/tm2_wm5110.c
+	sound/soc/soc-core.c
+	sound/soc/soc-dai.c
+	sound/soc/soc-topology.c
+	sound/soc/sof/topology.c
+
+	> grep snd_soc_dai_link_set_capabilities -rl sound/soc/*
+	sound/soc/generic/simple-card.c
+	sound/soc/generic/audio-graph-card.c
+	sound/soc/qcom/common.c
+	sound/soc/soc-dai.c
+
+This patch renames current snd_soc_find_dai() to _no_mutex(),
+and new snd_soc_find_dai() uses client_mutex.
+
+Fixes: 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 138 +++++++++++++++++++++++++++++++++++
- 1 file changed, 138 insertions(+)
+ sound/soc/soc-core.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index f26b77faed59..869d1547ae5d 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -9,6 +9,7 @@
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index fe23e936e2d1..6ea66b57b2c1 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -805,7 +805,7 @@ static struct snd_soc_component *soc_find_component(
   *
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  * Return: pointer of DAI, or NULL if not found.
   */
-+
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/module.h>
-@@ -107,6 +108,7 @@ struct hdac_hdmi_pcm {
- 	unsigned char chmap[8]; /* ALSA API channel-map */
- 	struct mutex lock;
- 	int jack_event;
-+	struct snd_kcontrol *eld_ctl;
- };
+-struct snd_soc_dai *snd_soc_find_dai(
++static struct snd_soc_dai *snd_soc_find_dai_no_mutex(
+ 	const struct snd_soc_dai_link_component *dlc)
+ {
+ 	struct snd_soc_component *component;
+@@ -829,6 +829,17 @@ struct snd_soc_dai *snd_soc_find_dai(
  
- struct hdac_hdmi_dai_port_map {
-@@ -1248,6 +1250,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 	struct hdac_hdmi_pcm *pcm;
- 	int size = 0;
- 	int port_id = -1;
-+	bool eld_valid, eld_changed;
- 
- 	if (!hdmi)
- 		return;
-@@ -1273,6 +1276,8 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 			size = -EINVAL;
- 	}
- 
-+	eld_valid = port->eld.eld_valid;
-+
- 	if (size > 0) {
- 		port->eld.eld_valid = true;
- 		port->eld.eld_size = size;
-@@ -1281,6 +1286,8 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 		port->eld.eld_size = 0;
- 	}
- 
-+	eld_changed = (eld_valid != port->eld.eld_valid);
-+
- 	pcm = hdac_hdmi_get_pcm(hdev, port);
- 
- 	if (!port->eld.monitor_present || !port->eld.eld_valid) {
-@@ -1313,6 +1320,12 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 
- 	}
- 	mutex_unlock(&hdmi->pin_mutex);
-+
-+	if (eld_changed && pcm)
-+		snd_ctl_notify(hdmi->card,
-+			       SNDRV_CTL_EVENT_MASK_VALUE |
-+			       SNDRV_CTL_EVENT_MASK_INFO,
-+			       &pcm->eld_ctl->id);
+ 	return NULL;
  }
- 
- static int hdac_hdmi_add_ports(struct hdac_device *hdev,
-@@ -1411,6 +1424,122 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdev)
- 
- }
- 
-+static int hdac_hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
++
++struct snd_soc_dai *snd_soc_find_dai(const struct snd_soc_dai_link_component *dlc)
 +{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_hdmi_port *port;
-+	struct hdac_hdmi_eld *eld;
++	struct snd_soc_dai *dai;
 +
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = 0;
++	mutex_lock(&client_mutex);
++	dai = snd_soc_find_dai_no_mutex(dlc);
++	mutex_unlock(&client_mutex);
 +
-+	pcm = get_hdmi_pcm_from_id(hdmi, kcontrol->id.device);
-+	if (!pcm) {
-+		dev_dbg(component->dev, "%s: no pcm, device %d\n", __func__,
-+			kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	if (list_empty(&pcm->port_list)) {
-+		dev_dbg(component->dev, "%s: empty port list, device %d\n",
-+			__func__, kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	mutex_lock(&hdmi->pin_mutex);
-+
-+	list_for_each_entry(port, &pcm->port_list, head) {
-+		eld = &port->eld;
-+
-+		if (eld->eld_valid) {
-+			uinfo->count = eld->eld_size;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&hdmi->pin_mutex);
-+
-+	return 0;
++	return dai;
 +}
-+
-+static int hdac_hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_hdmi_port *port;
-+	struct hdac_hdmi_eld *eld;
-+
-+	memset(ucontrol->value.bytes.data, 0, ARRAY_SIZE(ucontrol->value.bytes.data));
-+
-+	pcm = get_hdmi_pcm_from_id(hdmi, kcontrol->id.device);
-+	if (!pcm) {
-+		dev_dbg(component->dev, "%s: no pcm, device %d\n", __func__,
-+			kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	if (list_empty(&pcm->port_list)) {
-+		dev_dbg(component->dev, "%s: empty port list, device %d\n",
-+			__func__, kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	mutex_lock(&hdmi->pin_mutex);
-+
-+	list_for_each_entry(port, &pcm->port_list, head) {
-+		eld = &port->eld;
-+
-+		if (!eld->eld_valid)
-+			continue;
-+
-+		if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data) ||
-+		    eld->eld_size > ELD_MAX_SIZE) {
-+			mutex_unlock(&hdmi->pin_mutex);
-+
-+			dev_err(component->dev, "%s: buffer too small, device %d eld_size %d\n",
-+				__func__, kcontrol->id.device, eld->eld_size);
-+			snd_BUG();
-+			return -EINVAL;
-+		}
-+
-+		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
-+		       eld->eld_size);
-+		break;
-+	}
-+
-+	mutex_unlock(&hdmi->pin_mutex);
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_create_eld_ctl(struct snd_soc_component *component, struct hdac_hdmi_pcm *pcm)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct snd_kcontrol_new hdmi_eld_ctl = {
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.iface	= SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name	= "ELD",
-+		.info	= hdac_hdmi_eld_ctl_info,
-+		.get	= hdac_hdmi_eld_ctl_get,
-+		.device	= pcm->pcm_id,
-+	};
-+
-+	/* add ELD ctl with the device number corresponding to the PCM stream */
-+	kctl = snd_ctl_new1(&hdmi_eld_ctl, component);
-+	if (!kctl)
-+		return -ENOMEM;
-+
-+	pcm->eld_ctl = kctl;
-+
-+	return snd_ctl_add(component->card->snd_card, kctl);
-+}
-+
- static const struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup = hdac_hdmi_pcm_open,
- 	.shutdown = hdac_hdmi_pcm_close,
-@@ -1784,6 +1913,15 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
- 		}
- 	}
+ EXPORT_SYMBOL_GPL(snd_soc_find_dai);
  
-+	/* add control for ELD Bytes */
-+	err = hdac_hdmi_create_eld_ctl(component, pcm);
-+	if (err < 0) {
-+		dev_err(&hdev->dev,
-+			"eld control add failed with err: %d for pcm: %d\n",
-+			err, device);
-+		return err;
-+	}
-+
- 	list_add_tail(&pcm->head, &hdmi->pcm_list);
+ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
+@@ -999,7 +1010,7 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+ 		return -ENOMEM;
  
- 	return 0;
+ 	for_each_link_cpus(dai_link, i, cpu) {
+-		asoc_rtd_to_cpu(rtd, i) = snd_soc_find_dai(cpu);
++		asoc_rtd_to_cpu(rtd, i) = snd_soc_find_dai_no_mutex(cpu);
+ 		if (!asoc_rtd_to_cpu(rtd, i)) {
+ 			dev_info(card->dev, "ASoC: CPU DAI %s not registered\n",
+ 				 cpu->dai_name);
+@@ -1010,7 +1021,7 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+ 
+ 	/* Find CODEC from registered CODECs */
+ 	for_each_link_codecs(dai_link, i, codec) {
+-		asoc_rtd_to_codec(rtd, i) = snd_soc_find_dai(codec);
++		asoc_rtd_to_codec(rtd, i) = snd_soc_find_dai_no_mutex(codec);
+ 		if (!asoc_rtd_to_codec(rtd, i)) {
+ 			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
+ 				 codec->dai_name);
 -- 
-2.17.1
+2.25.1
 
