@@ -2,95 +2,69 @@ Return-Path: <SRS0=Ooul=B7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BFAAC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:47:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BFD8C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:48:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E83572078D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:47:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CAC3020738
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:48:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="acqijjry";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oQqWiBbc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E83572078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dUIMdEN/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAC3020738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 707BA169E;
-	Fri, 21 Aug 2020 09:47:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707BA169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6298016A5;
+	Fri, 21 Aug 2020 09:47:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6298016A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597996076;
-	bh=aPjlnF14zgZg8tK3QsIiYKwfQ5nIQhoCFtQERsafaLA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=acqijjrytPVItHGz6/r3e15sTVdXCyMlABLBtSChf4GDFx9NJQJRXdykESPtmbyCf
-	 /QqlGwvxIPrZ2Dbo0C67a5ShVcMTG4phSle+H+f+AE88BEYr/5ayQzh0HOUOwcbHEv
-	 mXTzZOVyUILl7HCSMSmFfIyQJwpYkhP6FLG6Eqk4=
+	s=default; t=1597996107;
+	bh=MbBDkxosu6wTA21802AMDVk2qskNBvFelBlwMbVdqmE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dUIMdEN/sBfYvpWhdWW3dU1TKSMDGYsqZYgLocdCYr0mCvIWRU3ObiZ6yl7aLwN8p
+	 7e9Uns1YuRSpqowdHT89QNeeLMaSFW7Xrex5bO9ok8pQZlxixNFDi3hVFZ1ylL6Gv2
+	 MmwMeFs3z8EqSdaOMRDEM9Y2IOYKxMib81uo+l80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99581F802D2;
-	Fri, 21 Aug 2020 09:33:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 024A0F80216;
+	Fri, 21 Aug 2020 09:36:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87079F802DB; Fri, 21 Aug 2020 09:33:47 +0200 (CEST)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 500F2F80218; Tue, 18 Aug 2020 03:11:35 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3079AF802A9
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 09:33:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3079AF802A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="oQqWiBbc"
-Received: by mail-wr1-x42c.google.com with SMTP id r15so1007107wrp.13
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 00:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=7af5XMotKX7+7pq+GDcHe4RuHh/qDb+P+7bkBuurbqI=;
- b=oQqWiBbcvD1Lxxady4jXWmfyeyQJZRkYXxNWMUQpC6ZdDn6p5aa/V1Kt4h5O0qvkP3
- mhoXVj2Uv58p18uP9XmQ+3Ec538e+VMaCMy1VBzBAjfDOfweoADp5GC4IIj4/uhei5ES
- F17DvcL1eHVlzQb2uCGQoEmlz19cY9vZyQKAWEI/AJMdR0xDvhstXnbu9g47OGMNSGm9
- wiAysuM46eaExOcnMx7qxv9snzFp4OVLgKPEmiJ86qA5aoZ3v1APeYfk9xjsxM45VIrW
- 8bToMViCZqGNAz9xaKBbpRq65e9yZpOERC04zESKyX964rJWO4tcE05XkBEbWtBfbZD1
- pBoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=7af5XMotKX7+7pq+GDcHe4RuHh/qDb+P+7bkBuurbqI=;
- b=LtVTfeWrILnrZLzl8dy8VuNkKf+Jt4b8wdH4qec7D/gAIhdz635wWPXs22lT9CPK82
- GhxuD0FEZaFuS5pqFmC7AqrYmPB3FR9Lu1MX59yDGrUjcOALCkPS8NVzuulCt2v6JKeQ
- TROSfeoNgr8yA8c7tEVvqJbwzfqWOB7CGxAX1b4hi4GXs/DArUThuE50FAo7nDDepcxf
- eaOIFL/tMnXb9a/weuqkh35cwoeIkz4776jaI/+6w1m44qn4cXgQwRCew9GnNCiEVCeU
- 5ivwQEY+ofU+1xjCcnnz0F0FyA+c6Mp3MQwvc9Jw0UTlI0WV9jyC1atory78NtyrRoLV
- 1t9w==
-X-Gm-Message-State: AOAM530YEFWIWrFI3wu0KIxPZN7tMytaGIK3t1komtSRo2ILrNVB7bp6
- UV44+m8d1Oohoymzsd7qi+Y6OkD3whB8HOqmxGo=
-X-Google-Smtp-Source: ABdhPJzl0JeDqHGYoVYAJh80c2IEY966kQCF6X3dAY8wrLiISpuuSsAPpidFO7bLjXn4TlVahutsvmFLrYl9EwqiL90=
-X-Received: by 2002:adf:ef08:: with SMTP id e8mr1577386wro.164.1597995215644; 
- Fri, 21 Aug 2020 00:33:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
- <CAEnQRZCsy+QiMpCCRPNF-BUcjaT+UVE2B_a6Bd48f8tRqXTpOA@mail.gmail.com>
- <87h7swzclq.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87h7swzclq.wl-kuninori.morimoto.gx@renesas.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Fri, 21 Aug 2020 10:33:24 +0300
-Message-ID: <CAEnQRZAPeGcBYWjdJOaUNdeqpdbNw63m9QxpXFM92HoD-29ysA@mail.gmail.com>
-Subject: Re: More Generic Audio Graph Sound Card idea
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Sameer Pujar <spujar@nvidia.com>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6160CF800EF
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 03:11:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6160CF800EF
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B09DD1A0F74;
+ Tue, 18 Aug 2020 03:11:27 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 22E201A0F2A;
+ Tue, 18 Aug 2020 03:11:24 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9C4DD402BE;
+ Tue, 18 Aug 2020 03:11:19 +0200 (CEST)
+From: Anson Huang <Anson.Huang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+ shengjiu.wang@nxp.com, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] dt-bindings: sound: Convert NXP spdif to json-schema
+Date: Tue, 18 Aug 2020 09:06:11 +0800
+Message-Id: <1597712771-32433-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Mailman-Approved-At: Fri, 21 Aug 2020 09:36:14 +0200
+Cc: Linux-imx@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,43 +80,210 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Aug 21, 2020 at 10:25 AM Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->
->
-> Hi Daniel
->
-> Thank you for your feedback
->
-> > > Because of it, the connection judgement for normal vs DPCM is tricky.
-> > > I know Pierre-Louis want to use it for SOF, but something is missing,
-> > > thus, can't use (?).
-> (snip)
-> > Thanks for having a look at this. I also tried to use generic machine
-> > driver (simple-card)
-> > with SOF but I had some trouble creating desired DPCM links.
-> >
-> > Main limitation of simple-card is that there is no direct way of
-> > specifying DPCM links.
-> >
-> > I had an attempt to introduce a more flexible approach for that here:
-> > https://lkml.org/lkml/2019/10/13/123
-> >
-> > but obviously we can do better than that.
-> >
-> > For now, I'm using only normal links with simple-audio card and it
-> > works fine for
-> > me with SOF, but in the future I think we might need to expand that.
->
-> OK, the issue is also normal vs DPCM judgement.
-> Maybe having "dsp" can solve it, same as audio-graph-card ?
-> I'm not sure we need to update simple-audio, too > Mark ?
+Convert the NXP SPDIF binding to DT schema format using json-schema.
 
-Yes, the condition choosing normal vs dpcm is fairly similar
-for simple-card and audio-graph-card:
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+changes since V1:
+	- add "additionalProperties: false".
+---
+ .../devicetree/bindings/sound/fsl,spdif.txt        |  68 -------------
+ .../devicetree/bindings/sound/fsl,spdif.yaml       | 110 +++++++++++++++++++++
+ 2 files changed, 110 insertions(+), 68 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.yaml
 
-if (dpcm_selectable &&
-    ((of_get_child_count(codec_port) > 1) ||
-     adata.convert_rate || adata.convert_channels)
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+deleted file mode 100644
+index e1365b0..0000000
+--- a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
++++ /dev/null
+@@ -1,68 +0,0 @@
+-Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
+-
+-The Freescale S/PDIF audio block is a stereo transceiver that allows the
+-processor to receive and transmit digital audio via an coaxial cable or
+-a fibre cable.
+-
+-Required properties:
+-
+-  - compatible		: Compatible list, should contain one of the following
+-			  compatibles:
+-			  "fsl,imx35-spdif",
+-			  "fsl,vf610-spdif",
+-			  "fsl,imx6sx-spdif",
+-
+-  - reg			: Offset and length of the register set for the device.
+-
+-  - interrupts		: Contains the spdif interrupt.
+-
+-  - dmas		: Generic dma devicetree binding as described in
+-			  Documentation/devicetree/bindings/dma/dma.txt.
+-
+-  - dma-names		: Two dmas have to be defined, "tx" and "rx".
+-
+-  - clocks		: Contains an entry for each entry in clock-names.
+-
+-  - clock-names		: Includes the following entries:
+-	"core"		  The core clock of spdif controller.
+-	"rxtx<0-7>"	  Clock source list for tx and rx clock.
+-			  This clock list should be identical to the source
+-			  list connecting to the spdif clock mux in "SPDIF
+-			  Transceiver Clock Diagram" of SoC reference manual.
+-			  It can also be referred to TxClk_Source bit of
+-			  register SPDIF_STC.
+-	"spba"		  The spba clock is required when SPDIF is placed as a
+-			  bus slave of the Shared Peripheral Bus and when two
+-			  or more bus masters (CPU, DMA or DSP) try to access
+-			  it. This property is optional depending on the SoC
+-			  design.
+-
+-Optional properties:
+-
+-   - big-endian		: If this property is absent, the native endian mode
+-			  will be in use as default, or the big endian mode
+-			  will be in use for all the device registers.
+-
+-Example:
+-
+-spdif: spdif@2004000 {
+-	compatible = "fsl,imx35-spdif";
+-	reg = <0x02004000 0x4000>;
+-	interrupts = <0 52 0x04>;
+-	dmas = <&sdma 14 18 0>,
+-	       <&sdma 15 18 0>;
+-	dma-names = "rx", "tx";
+-
+-	clocks = <&clks 197>, <&clks 3>,
+-	       <&clks 197>, <&clks 107>,
+-	       <&clks 0>, <&clks 118>,
+-	       <&clks 62>, <&clks 139>,
+-	       <&clks 0>;
+-	clock-names = "core", "rxtx0",
+-		"rxtx1", "rxtx2",
+-		"rxtx3", "rxtx4",
+-		"rxtx5", "rxtx6",
+-		"rxtx7";
+-
+-	big-endian;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+new file mode 100644
+index 0000000..2ac671f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+@@ -0,0 +1,110 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/fsl,spdif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++description: |
++  The Freescale S/PDIF audio block is a stereo transceiver that allows the
++  processor to receive and transmit digital audio via an coaxial cable or
++  a fibre cable.
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx35-spdif
++      - fsl,vf610-spdif
++      - fsl,imx6sx-spdif
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  dmas:
++    items:
++      - description: DMA controller phandle and request line for RX
++      - description: DMA controller phandle and request line for TX
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++  clocks:
++    items:
++      - description: The core clock of spdif controller.
++      - description: Clock for tx0 and rx0.
++      - description: Clock for tx1 and rx1.
++      - description: Clock for tx2 and rx2.
++      - description: Clock for tx3 and rx3.
++      - description: Clock for tx4 and rx4.
++      - description: Clock for tx5 and rx5.
++      - description: Clock for tx6 and rx6.
++      - description: Clock for tx7 and rx7.
++      - description: The spba clock is required when SPDIF is placed as a bus
++          slave of the Shared Peripheral Bus and when two or more bus masters
++          (CPU, DMA or DSP) try to access it. This property is optional depending
++          on the SoC design.
++    minItems: 9
++
++  clock-names:
++    items:
++      - const: core
++      - const: rxtx0
++      - const: rxtx1
++      - const: rxtx2
++      - const: rxtx3
++      - const: rxtx4
++      - const: rxtx5
++      - const: rxtx6
++      - const: rxtx7
++      - const: spba
++    minItems: 9
++
++  big-endian:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      If this property is absent, the native endian mode will be in use
++      as default, or the big endian mode will be in use for all the device
++      registers. Set this flag for HCDs with big endian descriptors and big
++      endian registers.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - dmas
++  - dma-names
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    spdif@2004000 {
++        compatible = "fsl,imx35-spdif";
++        reg = <0x02004000 0x4000>;
++        interrupts = <0 52 0x04>;
++        dmas = <&sdma 14 18 0>,
++               <&sdma 15 18 0>;
++        dma-names = "rx", "tx";
++        clocks = <&clks 197>, <&clks 3>,
++                 <&clks 197>, <&clks 107>,
++                 <&clks 0>, <&clks 118>,
++                 <&clks 62>, <&clks 139>,
++                 <&clks 0>;
++        clock-names = "core", "rxtx0",
++                      "rxtx1", "rxtx2",
++                      "rxtx3", "rxtx4",
++                      "rxtx5", "rxtx6",
++                      "rxtx7";
++        big-endian;
++    };
+-- 
+2.7.4
 
-Can you expand a little bit more about what having 'DSP' means?
