@@ -2,73 +2,74 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2986EC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17AC0C433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:56:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F67620855
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:56:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 94C37207D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 16:56:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pkBavuLi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RuLvDdVL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F67620855
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Igv5gxgo";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KzyrYJRY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94C37207D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 010A5179E;
-	Tue, 18 Aug 2020 18:55:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 010A5179E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB760179B;
+	Tue, 18 Aug 2020 18:56:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB760179B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597769772;
-	bh=Rofmd0QiMs/9k+UeK1IF5bpm3qfZbJPjgTGC8mXF5mo=;
+	s=default; t=1597769816;
+	bh=8qiooKqbIY5buvznR0kFH1lZk03u/d1h4s6h+UzWh+w=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pkBavuLincekYdspq+9G2OGRuU/L6aMTkrqaS464rVN57O5lh7i7j3GyVYCcuV4hI
-	 JE6ghlPgip22FT8ItAet+XBxavN/qyYlR2INgsnhlUtaJIVg8EKDm2a2rs0ov+SNgt
-	 +JE/ysTgPSTDeWnYWUltxpSYCwaEaNlOG7zt2af0=
+	b=Igv5gxgo0M0yhwiInSjy+BRE+iPe1yxCa1DQd3ArC0m5ASehHy+wv0D63W1E/cmg8
+	 0aH3P1ivmsfwRuxR5B1hZ707fEgICWm8zq5d3HlUNJCOWioLfL2XVNNB79/ztmEYTX
+	 /ZeRAD3t6H2mcLVLLWqUc4EpXH7KBFC4tzc3u/S0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB3BDF802A2;
-	Tue, 18 Aug 2020 18:54:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3145F802DB;
+	Tue, 18 Aug 2020 18:54:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD739F800D3; Tue, 18 Aug 2020 18:54:22 +0200 (CEST)
+ id 559F4F80279; Tue, 18 Aug 2020 18:54:24 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14048F800D3
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:54:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14048F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91CAEF80114
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:54:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91CAEF80114
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RuLvDdVL"
+ header.b="KzyrYJRY"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 957D3207D3;
- Tue, 18 Aug 2020 16:54:14 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BF618207DA;
+ Tue, 18 Aug 2020 16:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597769655;
- bh=Rofmd0QiMs/9k+UeK1IF5bpm3qfZbJPjgTGC8mXF5mo=;
+ s=default; t=1597769660;
+ bh=8qiooKqbIY5buvznR0kFH1lZk03u/d1h4s6h+UzWh+w=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=RuLvDdVLs1Oeefo7spMC8e0Ij5aM8bFFrsLuPKzM9D5Wzsz2MvNc7mMhAsl1hALMl
- Nf11Lqt2Y3X5wb/dzEbKuj7NJExtqMZv/o18SmuzEq8vQALb9lxqvlOaffeuFza0OI
- +O2nP3ITQ9psaIqAM7xB7MSgL915CJ7g4RBtHDfM=
-Date: Tue, 18 Aug 2020 17:53:44 +0100
+ b=KzyrYJRY/SUg2zTX0I7Qe3AjmpADPvAFy1Ho9yYgcUAqTKntd0HBNEZiVYlRCoGho
+ vL4oHNfjuIkQLJ76ShY6jXtC1fgVx0Gw/55CcmOFxiKmczA+8OpEhbfaOLnonsnGyy
+ Xxd/GkdFHy1e3XFPP7dS+jt7CBKR99x5qoG23YYE=
+Date: Tue, 18 Aug 2020 17:53:49 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20200811105818.7890-1-srinivas.kandagatla@linaro.org>
-References: <20200811105818.7890-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qcom: add a dedicated menuconfig
-Message-Id: <159776961932.56094.5932457968960769416.b4-ty@kernel.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- john.stultz@linaro.org, tiwai@suse.com, lgirdwood@gmail.com
+To: robh@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ Dan Murphy <dmurphy@ti.com>, perex@perex.cz
+In-Reply-To: <20200817172151.26564-1-dmurphy@ti.com>
+References: <20200817172151.26564-1-dmurphy@ti.com>
+Subject: Re: [PATCH 1/2] dt-bindings: tas2562: Remove tas2562 text file
+Message-Id: <159776961933.56094.16343409470039919349.b4-ty@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,9 +85,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 11 Aug 2020 11:58:18 +0100, Srinivas Kandagatla wrote:
-> Currently list of Qualcomm drivers is growing, so put them in to a
-> proper menu so that it does not mix up with other ASOC configs in menuconfig.
+On Mon, 17 Aug 2020 12:21:50 -0500, Dan Murphy wrote:
+> Remove the tas2562 text file as the tas2562.yaml is now available.
 
 Applied to
 
@@ -94,8 +94,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: add a dedicated menuconfig
-      commit: db24fa5756e944a711a66692af7e25a2189bfe52
+[1/2] dt-bindings: tas2562: Remove tas2562 text file
+      commit: b1e78c9fcca83d3666bc149ba8ecc1e472759359
+[2/2] dt-bindings: tas2562: Add device specification links
+      commit: da9afe50ae2aac72d1b213d028d4e865c7ea9ba3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
