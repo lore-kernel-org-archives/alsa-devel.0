@@ -6,76 +6,69 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23BA3C433E3
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:01:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B80AAC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:01:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A397C2067C
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:01:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 473222067C
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:01:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="At+9VC/O";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bHQOeTXi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A397C2067C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dxCBpuSg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="h/eLPdVz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 473222067C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AFD717B3;
-	Tue, 18 Aug 2020 19:00:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AFD717B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC01017AA;
+	Tue, 18 Aug 2020 19:01:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC01017AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597770071;
-	bh=jKm2t81NtYjV40fRviXCJZukNmdxkXqUVLGa7N1IAnM=;
+	s=default; t=1597770111;
+	bh=Lq5bTC7AVJ/pYnGclAdQT8NAAoDP3wzNT792XtYvGt0=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=At+9VC/Ood6RhoE9TZ8H5CAHhOMFUglnBEcayfjICYSbz+b+26d9LtPIWNALvBDJL
-	 6ib9vBe9xdHtgyWdmuqolYRFKU02t5/vpadCLj3qL+OPnyODdUhBgO7rVe7tldjyde
-	 hdj3Ypq5B8c7C75ivLvWwt4tIC9myJVUU1JplwK8=
+	b=dxCBpuSg3jow80y/2gNjgeKYlF1oLfmF4sQZoyU9WghX4+NzksTz7PsnWL8BFqmZY
+	 VyLLPuoGSjWezOm+p0lciZTM5HoMh0BDpWWsEzgdVpyrKqKAJct1eioDn6AJ74E1Uy
+	 HCBcejSQBHdNjkUPyC/iVEnCs2jtb4nQ4XEvgSlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB656F80328;
-	Tue, 18 Aug 2020 18:55:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB989F80336;
+	Tue, 18 Aug 2020 18:55:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 780E0F80332; Tue, 18 Aug 2020 18:55:04 +0200 (CEST)
+ id 9C5F5F80337; Tue, 18 Aug 2020 18:55:09 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B811F80328
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:55:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B811F80328
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B3F2F80332
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:55:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B3F2F80332
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bHQOeTXi"
+ header.b="h/eLPdVz"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 700B5207DA;
- Tue, 18 Aug 2020 16:55:00 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 614992080C;
+ Tue, 18 Aug 2020 16:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597769701;
- bh=jKm2t81NtYjV40fRviXCJZukNmdxkXqUVLGa7N1IAnM=;
+ s=default; t=1597769705;
+ bh=Lq5bTC7AVJ/pYnGclAdQT8NAAoDP3wzNT792XtYvGt0=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=bHQOeTXib9+XN32Hhfn7nLtuMO3JpGzdl/Q5SxvbeXE627jk6OBNcSszTdCEGnVEj
- MqlZ/gkWly6tf5+Ro715BYsnt5sphihRvsMnBt2ncDpL+J5PFCmBOt+bv1Jrq4GvHr
- hKQ39ZsBjXJCt5MbN5Q4njHaNUYYYgqxbJ+8B0os=
-Date: Tue, 18 Aug 2020 17:54:30 +0100
+ b=h/eLPdVztqPYvz3i0FiVZLoQieZTQHUlSF5VBt31kdMLlPUsF0foMPJT+pW3mciwv
+ iwjaa5lUSNBU0N618cwC1CROiRlDQw/zR7cPf2xd6V8KIjbRB3JSOlzoSTB923xYVR
+ LlyexTLnrCIyyz3L5u1utaL16rFXugaXP/Xm3GlM=
+Date: Tue, 18 Aug 2020 17:54:35 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-In-Reply-To: <20200813084112.26205-1-dinghao.liu@zju.edu.cn>
-References: <20200813084112.26205-1-dinghao.liu@zju.edu.cn>
-Subject: Re: [PATCH] [v2] ASoC: intel: Fix memleak in sst_media_open
-Message-Id: <159776961932.56094.14732357136908133614.b4-ty@kernel.org>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org,
- "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200811103452.20448-1-srinivas.kandagatla@linaro.org>
+References: <20200811103452.20448-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: msm8916-wcd-analog: fix register Interrupt offset
+Message-Id: <159776961933.56094.9052363191985703080.b4-ty@kernel.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ john.stultz@linaro.org, tiwai@suse.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,10 +84,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 13 Aug 2020 16:41:10 +0800, Dinghao Liu wrote:
-> When power_up_sst() fails, stream needs to be freed
-> just like when try_module_get() fails. However, current
-> code is returning directly and ends up leaking memory.
+On Tue, 11 Aug 2020 11:34:52 +0100, Srinivas Kandagatla wrote:
+> For some reason interrupt set and clear register offsets are
+> not set correctly.
+> This patch corrects them!
 
 Applied to
 
@@ -102,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: intel: Fix memleak in sst_media_open
-      commit: 062fa09f44f4fb3776a23184d5d296b0c8872eb9
+[1/1] ASoC: msm8916-wcd-analog: fix register Interrupt offset
+      commit: ff69c97ef84c9f7795adb49e9f07c9adcdd0c288
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
