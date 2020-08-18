@@ -4,71 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26E41C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:02:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E233BC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:03:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3E9A2067C
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:02:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A1882067C
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:03:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RGsOQVBq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="y99SsJTf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3E9A2067C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oN2L84cJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="opiKH/kZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A1882067C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 377BC17BB;
-	Tue, 18 Aug 2020 19:01:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 377BC17BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE094170C;
+	Tue, 18 Aug 2020 19:02:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE094170C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597770169;
-	bh=QoPaf4egRW2rnSHqEO2/BiqGRsXuylKPG8k1819llQY=;
+	s=default; t=1597770207;
+	bh=F0d1tHSMqIeJXGRCk/zltyPc2lru14KSafh0tiFtELM=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RGsOQVBq83NP07z3yMt5x05Pmq/IcO1zk9Fc3O+dA6202r/gUI8qnasF36RFtAsjW
-	 pWk1uuUZx61hrVBa2+7fFLBE9I+6r33N6MBPCWpx77vTbH9lCtK/hJdZERWJixhzUZ
-	 7B3XTHEPD9OjVg8pV20VPRhRyNyVAdQ/97dXcb38=
+	b=oN2L84cJ1FN9Bcd77DS/psNArqbKvY7Mp6j748YQndVJeV174T1aYXQ2M5u11V/Nj
+	 zOMQT0PCozgQSOiAH7FfpxZ56tWtqMSN8rLs3Gh6ezmdUZK3zsT5YehVviRUq1hYRE
+	 VZWRQZDtfTXz9DJ5PdNJWBHGHZNXk5ppEKp1mvnQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF9C7F802A1;
-	Tue, 18 Aug 2020 18:55:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADA60F8029A;
+	Tue, 18 Aug 2020 18:55:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0280F8033F; Tue, 18 Aug 2020 18:55:19 +0200 (CEST)
+ id 83271F8033F; Tue, 18 Aug 2020 18:55:24 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66F51F8033E
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:55:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66F51F8033E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3EBCBF80341
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:55:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EBCBF80341
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="y99SsJTf"
+ header.b="opiKH/kZ"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6951B2080C;
- Tue, 18 Aug 2020 16:55:15 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5FEAB20786;
+ Tue, 18 Aug 2020 16:55:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597769715;
- bh=QoPaf4egRW2rnSHqEO2/BiqGRsXuylKPG8k1819llQY=;
+ s=default; t=1597769720;
+ bh=F0d1tHSMqIeJXGRCk/zltyPc2lru14KSafh0tiFtELM=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=y99SsJTfpZuXN2M4gOJ/lc7ITaPzMYvD/gbwF0on39/vwMT56Xpht0GlkOGjy6roO
- /zHS0cli8FUJmCLR2t8b548JIRPDoZSLQDJTwyAQcpc2RFaUgG7unMMyQWx1mhyvrx
- sG4fgwnRgbEO+di1HFs2Ow6PbOJNNpxQb9fDUArY=
-Date: Tue, 18 Aug 2020 17:54:45 +0100
+ b=opiKH/kZMfaz3lDHneR7+ihHEGL/mIrOfTr5dG01Giq1h9rJ79uKzp2hh8nRr0HG/
+ yj99c358vIf+E66L2K5eL7Ah159k+TSf1kwfZ5494B8HV43X9KDojhCvf18GdRDlku
+ OlxQRtm/3/ihRjCYDOyFCcTXcsgZXROtHqB2icnE=
+Date: Tue, 18 Aug 2020 17:54:50 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <20200818143632.16539-1-brent.lu@intel.com>
-References: <20200818004413.12852-1-brent.lu@intel.com>
- <20200818143632.16539-1-brent.lu@intel.com>
-Subject: Re: [PATCH v3] ASoC: hdac_hdmi: support 'ELD' mixer
-Message-Id: <159776961934.56094.17358038925109916518.b4-ty@kernel.org>
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+To: Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
+ Maxime Ripard <mripard@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Mark Rutland <mark.rutland@arm.com>, Chen-Yu Tsai <wens@csie.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20200726012557.38282-1-samuel@sholland.org>
+References: <20200726012557.38282-1-samuel@sholland.org>
+Subject: Re: [PATCH 0/7] Allwinner A64 digital audio codec fixes
+Message-Id: <159776961932.56094.2705667823777375165.b4-ty@kernel.org>
+Cc: Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Vasily Khoruzhick <anarsoul@gmail.com>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,15 +88,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Aug 2020 22:36:32 +0800, Brent Lu wrote:
-> Add a binary mixer 'ELD' to each HDMI PCM device so user-space can
-> read the ELD data of external HDMI display.
+On Sat, 25 Jul 2020 20:25:50 -0500, Samuel Holland wrote:
+> This series fixes a couple of issues with the digital audio codec in the
+> Allwinner A64 SoC:
+>   1) Left/right channels were swapped when playing/recording audio
+>   2) DAPM topology was wrong, breaking some kcontrols
 > 
-> If same PCM is connected to multiple receivers, the mixer returns the
-> ELD data for the first one found in the port list and ignore the rest.
-> Thie behavior seems iffy but is aligned with the user-space interface
-> exposed by patch_hdmi.c. Also the pcm-to-many routing is nor really
-> supported by the driver now.
+> This is the minimum set of changes necessary to fix these issues in a
+> backward-compatible way. For that reason, some DAPM widgets still have
+> incorrect or confusing names; those and other issues will be fixed in
+> later patch sets.
+> 
+> [...]
 
 Applied to
 
@@ -100,8 +107,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: hdac_hdmi: support 'ELD' mixer
-      commit: 1f53bcb3fc952b55a0ad0e7f6eabfc93a170659d
+[1/7] ASoC: dt-bindings: Add a new compatible for the A64 codec
+      commit: cef305d4eb0733f25215793ed30b056a7db9bb62
+[2/7] ASoC: sun8i-codec: Fix DAPM to match the hardware topology
+      commit: 90cac932976e93b17203b4216ba83bdcd68e0ed0
+[3/7] ASoC: sun8i-codec: Add missing mixer routes
+      commit: e47d2dcd88fc3e6837f8aa0060ce820ec9001e26
+[4/7] ASoC: sun8i-codec: Add a quirk for LRCK inversion
+      commit: 7518805fb636308909a6a7953e9fdb194abb15f8
+[5/7] ARM: dts: sun8i: a33: Update codec widget names
+      (no commit info)
+[6/7] arm64: dts: allwinner: a64: Update codec widget names
+      (no commit info)
+[7/7] arm64: dts: allwinner: a64: Update the audio codec compatible
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
