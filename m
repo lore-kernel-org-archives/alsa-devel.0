@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E93E1C433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:41:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8638CC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:42:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68C492173E
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:41:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0CA412076E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:42:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Aj/Xltwm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68C492173E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MKqbZK3G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CA412076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C28E41769;
-	Tue, 18 Aug 2020 16:40:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C28E41769
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B0F2175D;
+	Tue, 18 Aug 2020 16:41:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B0F2175D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597761704;
-	bh=HxB1OnACJhuhY1N+c9nPfdbKxQXIQxElpe9emGUp/Jg=;
+	s=default; t=1597761727;
+	bh=bQ2O3tXRTtXgin0JBoVJcBbXpwywCmGbImHvQvRud6o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Aj/Xltwm8cTjfgJWoL4w+s3371nUxqHgy4C9bgkeimekfNNj6e9rl0qKch/svuuqo
-	 JPr5NL5LLGrSZq5Oo+Yil5O8/Kv4lSlBXAKMsL8pHsb1p6NKfT+4LwRqVd7bA0Ufbd
-	 Xb2WqPq7erXV0R9EQ2Yo4uSXgNjTZgrHt+QJOnsE=
+	b=MKqbZK3GHMp9kSbOGwHsP9ngopaFCW6YnXTIRN2slv0rKNcnRdgto67ww3d1SrcK2
+	 ofCbwbNzKXEfncSESPwaeIROgKgMcKC653ud2A+R2mFFvUxrkAB1RF87SXjwhNde5m
+	 RyILAFBZAAKZRkbnoFDiTqnjGjXNCUbnVeA4XKxc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C689F80317;
-	Tue, 18 Aug 2020 16:35:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04703F80322;
+	Tue, 18 Aug 2020 16:36:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59D5DF8031A; Tue, 18 Aug 2020 16:35:57 +0200 (CEST)
+ id AD875F80328; Tue, 18 Aug 2020 16:36:01 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20525F80306
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 16:35:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20525F80306
-IronPort-SDR: J3+hLCzOACmGS4jnee+TVRWoyTfAWY7qlXPaxIIp2aeZZonwHiXMYHm440agMy2ETudsqy5OpH
- kwjPzQF5eoQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219223572"
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="219223572"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DADFF80307
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 16:35:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DADFF80307
+IronPort-SDR: uSLSEJbmjQPP0vba2nwOt8qBUk9CpKmC2PGmik4rofLtxnI/7HOpRLpXBA4Q2D6nkfJB516Lrv
+ K44PyPsTTfsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219223587"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="219223587"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2020 07:35:50 -0700
-IronPort-SDR: AIhjxwyM/gfQSxofSktFFoxr2OoyARo0h0simTSsqnoe5EB4uk2nh/bTMpBp5WJIXwwfmz8CS0
- zNwFVoSKeEwg==
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="471830737"
+ 18 Aug 2020 07:35:54 -0700
+IronPort-SDR: rZQzk4DF3+xAvZfsyWodrluSh4F2EA7HqkIff5aE6I1tvoej7gQmzrAw+wnYCYMOJ9IH7EKeXN
+ k20Ozb9nFSWQ==
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="471830766"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2020 07:35:46 -0700
+ 18 Aug 2020 07:35:50 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
- clock-stop invalid configs
-Date: Tue, 18 Aug 2020 10:41:18 +0800
-Message-Id: <20200818024120.20721-10-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 10/11] soundwire: intel: pass link_mask information to each
+ master
+Date: Tue, 18 Aug 2020 10:41:19 +0800
+Message-Id: <20200818024120.20721-11-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
 References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
@@ -92,31 +92,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Detect cases where the clock is assumed to be stopped but the IP is
-not in the relevant state, and add a dynamic debug trace.
+While the hardware exposes independent bits to power-up each master,
+the recommended sequence is to power all links or none. Idle links can
+still use the clock stop mode while the master is powered.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/soundwire/intel.h      | 2 ++
+ drivers/soundwire/intel_init.c | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 7c63581270fd..b82d02af3c4f 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1964,6 +1964,11 @@ static int intel_resume_runtime(struct device *dev)
- 			}
- 		}
- 	} else if (!clock_stop_quirks) {
-+
-+		clock_stop0 = sdw_cdns_is_clock_stop(&sdw->cdns);
-+		if (!clock_stop0)
-+			dev_err(dev, "%s invalid configuration, clock was not stopped", __func__);
-+
- 		ret = intel_init(sdw);
- 		if (ret) {
- 			dev_err(dev, "%s failed: %d", __func__, ret);
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+index 23daab9da329..76820d0b9deb 100644
+--- a/drivers/soundwire/intel.h
++++ b/drivers/soundwire/intel.h
+@@ -18,6 +18,7 @@
+  * @shim_lock: mutex to handle access to shared SHIM registers
+  * @shim_mask: global pointer to check SHIM register initialization
+  * @clock_stop_quirks: mask defining requested behavior on pm_suspend
++ * @link_mask: global mask needed for power-up/down sequences
+  * @cdns: Cadence master descriptor
+  * @list: used to walk-through all masters exposed by the same controller
+  */
+@@ -33,6 +34,7 @@ struct sdw_intel_link_res {
+ 	struct mutex *shim_lock; /* protect shared registers */
+ 	u32 *shim_mask;
+ 	u32 clock_stop_quirks;
++	u32 link_mask;
+ 	struct sdw_cdns *cdns;
+ 	struct list_head list;
+ };
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index add46d8fc85c..65d9b9bd2106 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -255,6 +255,7 @@ static struct sdw_intel_ctx
+ 		link->clock_stop_quirks = res->clock_stop_quirks;
+ 		link->shim_lock = &ctx->shim_lock;
+ 		link->shim_mask = &ctx->shim_mask;
++		link->link_mask = link_mask;
+ 
+ 		memset(&pdevinfo, 0, sizeof(pdevinfo));
+ 
 -- 
 2.17.1
 
