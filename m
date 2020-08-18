@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 299C3C433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97770C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:43:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A735A20716
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:40:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1DB0D20716
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:42:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lTnuS/Zp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A735A20716
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qH3aE7Dw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DB0D20716
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2554616F7;
-	Tue, 18 Aug 2020 04:39:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2554616F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7946116F8;
+	Tue, 18 Aug 2020 04:42:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7946116F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597718405;
-	bh=AFRX7QCxxRnxR+boUV2IfEmt3ZnOKML3Ek0X9+XhvZ8=;
+	s=default; t=1597718578;
+	bh=yunBgyTIyqpxAgl2yEfJ48h8cxgjwAAPSEV7jbreNpU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lTnuS/Zp4RL7V6TfDx2TfRYIMgeZwLpIJC7V/BHeKuo/ZsgedNll5wJAI0UBLyx8T
-	 a8MrgN3MDRCjh0Ac46uqPYew0/pSZoZGSL7HMigByhnRr7X7N4AQ4qyYeskaHh3R4B
-	 6spspZB9sfz0thy/5qmBRHkKbtuCrpCijgelX2qI=
+	b=qH3aE7DwgZ9YFnsy/DK7VarISP7XLNs/TauGrBiRxqoiA+G9cb5F+OVEwuAlsRFqn
+	 EvePk0E4Yqb9NRaQDbVUPYsCZZlojj848pzjJ71ibI7V9olh7Ira4ytoib5zamG41R
+	 yOJDbJGxnfh3fAvajBYunDOaZcWyAuYOfdVsIyrw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AC88F80273;
-	Tue, 18 Aug 2020 04:39:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 022BDF80228;
+	Tue, 18 Aug 2020 04:42:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07248F80279; Tue, 18 Aug 2020 04:39:13 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 12F2BF80104
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 04:39:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12F2BF80104
-Date: 18 Aug 2020 11:39:03 +0900
-X-IronPort-AV: E=Sophos;i="5.76,325,1592838000"; d="scan'208";a="54824117"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 18 Aug 2020 11:39:03 +0900
+ id 74087F8023F; Tue, 18 Aug 2020 04:42:06 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 54611F800D3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 04:41:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54611F800D3
+Date: 18 Aug 2020 11:41:57 +0900
+X-IronPort-AV: E=Sophos;i="5.76,325,1592838000"; d="scan'208";a="54610110"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Aug 2020 11:41:57 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6103B4003881;
- Tue, 18 Aug 2020 11:39:03 +0900 (JST)
-Message-ID: <87zh6sfznl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A3E8241580A3;
+ Tue, 18 Aug 2020 11:41:57 +0900 (JST)
+Message-ID: <87y2mcfzir.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v2 2/9] ASoC: audio-graph: Use of_node and DAI for DPCM
- DAI link names
-In-Reply-To: <1596605064-27748-3-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
+ DPCM
+In-Reply-To: <1596605064-27748-4-git-send-email-spujar@nvidia.com>
 References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
- <1596605064-27748-3-git-send-email-spujar@nvidia.com>
+ <1596605064-27748-4-git-send-email-spujar@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -84,17 +84,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+Hi Sameer
 
-> For multiple instances of components, using DAI name alone for DAI links
-> is causing conflicts. Components can define multiple DAIs and hence using
-> just a device name won't help either. Thus DT device node reference and
-> DAI names are used to uniquely represent DAI link names.
+> PCM devices are created for FE dai links with 'no-pcm' flag as '0'.
+> Such DAI links have CPU component which implement either pcm_construct()
+> or pcm_new() at component or dai level respectively. Based on this,
+> current patch exposes a helper function to identify such components
+> and populate 'no_pcm' flag for DPCM DAI link.
+> 
+> This helps to have BE<->BE component links where PCM devices need
+> not be created for CPU component involved in such links.
 > 
 > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 > ---
+(snip)
+> @@ -259,6 +270,16 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+>  		if (ret < 0)
+>  			goto out_put_node;
+>  
+> +		/*
+> +		 * In BE<->BE connections it is not required to create
+> +		 * PCM devices at CPU end of the dai link and thus 'no_pcm'
+> +		 * flag needs to be set. It is useful when there are many
+> +		 * BE components and some of these have to be connected to
+> +		 * form a valid audio path.
+> +		 */
+> +		if (!soc_component_is_pcm(cpus))
+> +			dai_link->no_pcm = 1;
+> +
 
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+For safety, I want to judge with data->component_chaining.
+
+	if (data->component_chaining &&
+	    !soc_component_is_pcm(cpus))
+			dai_link->no_pcm = 1;
 
 Thank you for your help !!
 
