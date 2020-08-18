@@ -2,87 +2,75 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59DBFC433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 13:51:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A444CC433E3
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:36:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9F04206DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 13:51:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3168C2076E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:36:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B6aoH98w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9F04206DA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CcA527p5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3168C2076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58D301757;
-	Tue, 18 Aug 2020 15:50:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58D301757
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BBFE1757;
+	Tue, 18 Aug 2020 16:35:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BBFE1757
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597758708;
-	bh=/slSsivvZgkyvVR9C0c59sev1Ouph3IWfCRnFhXcwSw=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=B6aoH98wSFOa93S/eiPhPOBdxYQ9hhXPT7hIX/iV0Zm5dWZFuJDWbuR/nhOg8lTzA
-	 IztVkUmi01OBQVCVjYJVDK5kw05yB8xaiYJB2UfN2yG3HmNahztdBC5tEwzyrP5Z9y
-	 xSgXOSUs0VkaZc7yyb9VdPuaueBQmNary9yZH+9U=
+	s=default; t=1597761373;
+	bh=n5ANTfr5FI3/tK6gZ2jAimf8xHv0BqCTttY7rQZL4zI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CcA527p57ENuPeZNEMYAw2Ezd6Kgsy4RdpCiFCpsnKukMLUdPsRclPhhtlbDKaoXf
+	 tpWlxH1BdUUAQoUpocwjlaQ7bN1+G/ZhNYgCTTDos7wInDlDIOKKbBgeFWHlhFPzHb
+	 aKkg6PYGUixmFDegckwHxa0aiV/Aq5OxWpVJn7z8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9BA7F80114;
-	Tue, 18 Aug 2020 15:50:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24BE3F80228;
+	Tue, 18 Aug 2020 16:35:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 316D3F8023F; Tue, 18 Aug 2020 15:50:56 +0200 (CEST)
+ id 6CC3FF8023F; Tue, 18 Aug 2020 16:35:21 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B798F80114
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 15:50:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B798F80114
-IronPort-SDR: R+NR5wnAJWZetdlBO27QF1h5F+lWBwmPa7Z2JX1rUIvLeE6Xql2gYDBzQyveaCqh6lu4ckXB/k
- D6SwC4RKvvpw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154872054"
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="154872054"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 269D7F800D3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 16:35:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 269D7F800D3
+IronPort-SDR: +QbgXCnGjG4PiFRUaKqv7ArXu4cjDzYD0CCHgOAxvj3MfMNdEEHGSo1+Bpvd3TA9NptWRB0FEw
+ Dw+sLosgibhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154885421"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="154885421"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2020 06:50:44 -0700
-IronPort-SDR: OFjA1eihL9+leGX1XYtlVNpCK7iHXFFmlgmhCiGVDFbAQiXAPfr0FrDYFE6KKeK4+KS2Yf2XKX
- ZxwkIyGMOxnw==
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="278050481"
-Received: from cdrobins-mobl.amr.corp.intel.com (HELO [10.209.120.216])
- ([10.209.120.216])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2020 06:50:41 -0700
-Subject: Re: [PATCH 2/2] soundwire: fix port_ready[] dynamic allocation in
- mipi_disco and ASoC codecs
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
-References: <20200817174727.15139-1-yung-chuan.liao@linux.intel.com>
- <20200817174727.15139-3-yung-chuan.liao@linux.intel.com>
- <20200818063659.GW2639@vkoul-mobl>
- <e9f12e13-49e0-5306-a975-b1b854baef02@linux.intel.com>
-Message-ID: <c5c91925-b4c0-a41a-1c35-aeebf5de175b@linux.intel.com>
-Date: Tue, 18 Aug 2020 08:50:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <e9f12e13-49e0-5306-a975-b1b854baef02@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
- hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
- jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
- rander.wang@linux.intel.com, bard.liao@intel.com
+ 18 Aug 2020 07:35:12 -0700
+IronPort-SDR: wocKKZzVhI3sF2f0xlsRaWqstQJiY0+OiFswM4jwM6bZ5waBkYSJGHqaIJuDxcp0uGPmQy3II1
+ +/vC68wElUog==
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="471830239"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Aug 2020 07:35:08 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH 00/11] soundwire: intel: add multi-link support
+Date: Tue, 18 Aug 2020 10:41:09 +0800
+Message-Id: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,13 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This series enables multi-link support for Intel platforms.
 
+Bard Liao (1):
+  soundwire: intel: Only call sdw stream APIs for the first cpu_dai
 
+Pierre-Louis Bossart (10):
+  soundwire: intel: disable shim wake on suspend
+  soundwire: intel: ignore software command retries
+  soundwire: intel: add multi-link support
+  soundwire: intel: add missing support for all clock stop modes
+  soundwire: bus: update multi-link definition with hw sync details
+  soundwire: intel: add multi-link hw_synchronization information
+  soundwire: stream: enable hw_sync as needed by hardware
+  soundwire: intel: add dynamic debug trace for clock-stop invalid
+    configs
+  soundwire: intel: pass link_mask information to each master
+  soundwire: intel: don't manage link power individually
 
-> In addition, there's a WIP change to regmap to add support for SoundWire 
-> 1.2 MBQ-based register access, but this only affects regmap and ASoC 
-> trees, all handled by Mark.
+ drivers/soundwire/intel.c      | 309 ++++++++++++++++++++++++++++-----
+ drivers/soundwire/intel.h      |   2 +
+ drivers/soundwire/intel_init.c |   1 +
+ drivers/soundwire/stream.c     |  15 +-
+ include/linux/soundwire/sdw.h  |   6 +
+ 5 files changed, 282 insertions(+), 51 deletions(-)
 
-I have to take this comment back, the regmap change will depend on the 
-MBQ macro that should go in the SoundWire tree.
+-- 
+2.17.1
 
