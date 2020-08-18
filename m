@@ -2,70 +2,71 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+X-Spam-Status: No, score=-8.4 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B4CAC433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:37:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3916C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:38:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1849E207DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:37:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31BBF2080C
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 14:38:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XFi4u5pL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1849E207DA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BTSp/YfY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31BBF2080C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A225D1767;
-	Tue, 18 Aug 2020 16:37:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A225D1767
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1E6D1760;
+	Tue, 18 Aug 2020 16:37:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1E6D1760
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597761474;
-	bh=LjamWxOg98vcSqJtuYJhXzStZ7dX77gIUQ7V4UJ9rvI=;
+	s=default; t=1597761488;
+	bh=SFki5N6j7jJaeuC3VI8kaK8+CF5DwHJgK7OcdJR68V8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XFi4u5pLkhJ3NHBFlmphBFYs/Vi0lm3bswAolZaMUA2k2TRlo1dLPLtGP8CBn+8YO
-	 +SZdhzyfYkjIGec51tWHrWKCfL8I6QVY0tVMAXeM/AiraIlPg60KB2DB4FptepepqR
-	 Bsy0PoSMa0HtDv7pneRDh7iS8rbvDHLF31sAiaSo=
+	b=BTSp/YfYknMgRG7HbsuAWBQl0eTLzO3uy8QWlAynncPhhkGBYubTC5EQt3dKQR2u8
+	 rGmA2jrGRMg6C/H8z6N3fxjOVKZJqbBfqNZrXwOLv0shdTRWs8TaAGhMKh0ogXsr2a
+	 6xVy/+FXUx7StQ7vGMVCpx5C+zFKS5uVnHci5hxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6C33F802C2;
-	Tue, 18 Aug 2020 16:35:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 455F6F802D2;
+	Tue, 18 Aug 2020 16:35:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D1D3F802C3; Tue, 18 Aug 2020 16:35:35 +0200 (CEST)
+ id 357A2F802C2; Tue, 18 Aug 2020 16:35:36 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02D03F80273
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 16:35:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02D03F80273
-IronPort-SDR: Q8JrK5rRk9rfr9GZZs9Vbrvd/ykmv0L/rxQ/9BR6J1O7On1o/DtgNkXK8Q40892NOHFG46ljM5
- 0Ylxzh01eUsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219223479"
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="219223479"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 029F5F80114
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 16:35:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 029F5F80114
+IronPort-SDR: bYRh3uLwfJuKHJ8CN9Um3EJipnD/luwK+pZp9pkCC8qZRcHJrRfqS3FB/MLMctztqH6e3kVe+1
+ S1Q83X8Y97nA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219223486"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="219223486"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2020 07:35:22 -0700
-IronPort-SDR: mJdXbCWdxOR7a6Q4QjeYKaPcZxbFWdVEEGC0RP0aoEQ+EeiHREsNbOYHR2uyrXUIg5KeDuAppf
- QcCeS+6DyOqw==
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="471830344"
+ 18 Aug 2020 07:35:26 -0700
+IronPort-SDR: MTYXaxlGYh36CC0VKt3NI3NM3kfNAefenASRMLwGCn6FfnXsaHIGulzU5aE9dXDn0JpkS+VLat
+ nDj+DYV/YRAg==
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; d="scan'208";a="471830419"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2020 07:35:16 -0700
+ 18 Aug 2020 07:35:22 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 02/11] soundwire: intel: ignore software command retries
-Date: Tue, 18 Aug 2020 10:41:11 +0800
-Message-Id: <20200818024120.20721-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 03/11] soundwire: intel: add multi-link support
+Date: Tue, 18 Aug 2020 10:41:12 +0800
+Message-Id: <20200818024120.20721-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
 References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
@@ -91,31 +92,264 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-with multiple links synchronized in hardware, retrying commands in
-software is not recommended.
+The multi-link support is enabled with a hardware gsync signal
+connecting all links. All commands and operations which typically are
+handled on an SSP boundary will be deferred further and enabled across
+all links with the 'syncGo' sequence.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/soundwire/intel.c | 120 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 110 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index fe9b92fd48db..c9ba706e20c6 100644
+index c9ba706e20c6..a3aa8ab49285 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1355,6 +1355,11 @@ static int intel_master_probe(struct platform_device *pdev)
- 		dev_info(dev,
- 			 "SoundWire master %d is disabled, will be ignored\n",
- 			 bus->link_id);
-+	/*
-+	 * Ignore BIOS err_threshold, it's a really bad idea when dealing
-+	 * with multiple hardware synchronized links
-+	 */
-+	bus->prop.err_threshold = 0;
+@@ -34,6 +34,7 @@
+ #define SDW_INTEL_MASTER_DISABLE_PM_RUNTIME		BIT(0)
+ #define SDW_INTEL_MASTER_DISABLE_CLOCK_STOP		BIT(1)
+ #define SDW_INTEL_MASTER_DISABLE_PM_RUNTIME_IDLE	BIT(2)
++#define SDW_INTEL_MASTER_DISABLE_MULTI_LINK		BIT(3)
  
- 	return 0;
+ static int md_flags;
+ module_param_named(sdw_md_flags, md_flags, int, 0444);
+@@ -555,6 +556,19 @@ static int intel_shim_sync_go_unlocked(struct sdw_intel *sdw)
+ 	return ret;
  }
+ 
++static int intel_shim_sync_go(struct sdw_intel *sdw)
++{
++	int ret;
++
++	mutex_lock(sdw->link_res->shim_lock);
++
++	ret = intel_shim_sync_go_unlocked(sdw);
++
++	mutex_unlock(sdw->link_res->shim_lock);
++
++	return ret;
++}
++
+ /*
+  * PDI routines
+  */
+@@ -1303,10 +1317,7 @@ static int intel_init(struct sdw_intel *sdw)
+ 
+ 	intel_shim_init(sdw, clock_stop);
+ 
+-	if (clock_stop)
+-		return 0;
+-
+-	return sdw_cdns_init(&sdw->cdns);
++	return 0;
+ }
+ 
+ /*
+@@ -1372,6 +1383,7 @@ int intel_master_startup(struct platform_device *pdev)
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+ 	struct sdw_bus *bus = &cdns->bus;
+ 	int link_flags;
++	bool multi_link;
+ 	u32 clock_stop_quirks;
+ 	int ret;
+ 
+@@ -1382,7 +1394,16 @@ int intel_master_startup(struct platform_device *pdev)
+ 		return 0;
+ 	}
+ 
+-	/* Initialize shim, controller and Cadence IP */
++	link_flags = md_flags >> (bus->link_id * 8);
++	multi_link = !(link_flags & SDW_INTEL_MASTER_DISABLE_MULTI_LINK);
++	if (!multi_link) {
++		dev_dbg(dev, "Multi-link is disabled\n");
++		bus->multi_link = false;
++	} else {
++		bus->multi_link = true;
++	}
++
++	/* Initialize shim, controller */
+ 	ret = intel_init(sdw);
+ 	if (ret)
+ 		goto err_init;
+@@ -1401,12 +1422,33 @@ int intel_master_startup(struct platform_device *pdev)
+ 		goto err_init;
+ 	}
+ 
++	/*
++	 * follow recommended programming flows to avoid timeouts when
++	 * gsync is enabled
++	 */
++	if (multi_link)
++		intel_shim_sync_arm(sdw);
++
++	ret = sdw_cdns_init(cdns);
++	if (ret < 0) {
++		dev_err(dev, "unable to initialize Cadence IP\n");
++		goto err_interrupt;
++	}
++
+ 	ret = sdw_cdns_exit_reset(cdns);
+ 	if (ret < 0) {
+ 		dev_err(dev, "unable to exit bus reset sequence\n");
+ 		goto err_interrupt;
+ 	}
+ 
++	if (multi_link) {
++		ret = intel_shim_sync_go(sdw);
++		if (ret < 0) {
++			dev_err(dev, "sync go failed: %d\n", ret);
++			goto err_interrupt;
++		}
++	}
++
+ 	/* Register DAIs */
+ 	ret = intel_register_dai(sdw);
+ 	if (ret) {
+@@ -1418,7 +1460,6 @@ int intel_master_startup(struct platform_device *pdev)
+ 	intel_debugfs_init(sdw);
+ 
+ 	/* Enable runtime PM */
+-	link_flags = md_flags >> (bus->link_id * 8);
+ 	if (!(link_flags & SDW_INTEL_MASTER_DISABLE_PM_RUNTIME)) {
+ 		pm_runtime_set_autosuspend_delay(dev,
+ 						 INTEL_MASTER_SUSPEND_DELAY_MS);
+@@ -1654,6 +1695,7 @@ static int intel_resume(struct device *dev)
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+ 	struct sdw_bus *bus = &cdns->bus;
+ 	int link_flags;
++	bool multi_link;
+ 	int ret;
+ 
+ 	if (bus->prop.hw_disabled) {
+@@ -1662,6 +1704,9 @@ static int intel_resume(struct device *dev)
+ 		return 0;
+ 	}
+ 
++	link_flags = md_flags >> (bus->link_id * 8);
++	multi_link = !(link_flags & SDW_INTEL_MASTER_DISABLE_MULTI_LINK);
++
+ 	if (pm_runtime_suspended(dev)) {
+ 		dev_dbg(dev, "%s: pm_runtime status was suspended, forcing active\n", __func__);
+ 
+@@ -1672,6 +1717,7 @@ static int intel_resume(struct device *dev)
+ 		pm_runtime_enable(dev);
+ 
+ 		link_flags = md_flags >> (bus->link_id * 8);
++
+ 		if (!(link_flags & SDW_INTEL_MASTER_DISABLE_PM_RUNTIME_IDLE))
+ 			pm_runtime_idle(dev);
+ 	}
+@@ -1694,12 +1740,33 @@ static int intel_resume(struct device *dev)
+ 		return ret;
+ 	}
+ 
++	/*
++	 * follow recommended programming flows to avoid timeouts when
++	 * gsync is enabled
++	 */
++	if (multi_link)
++		intel_shim_sync_arm(sdw);
++
++	ret = sdw_cdns_init(&sdw->cdns);
++	if (ret < 0) {
++		dev_err(dev, "unable to initialize Cadence IP during resume\n");
++		return ret;
++	}
++
+ 	ret = sdw_cdns_exit_reset(cdns);
+ 	if (ret < 0) {
+ 		dev_err(dev, "unable to exit bus reset sequence during resume\n");
+ 		return ret;
+ 	}
+ 
++	if (multi_link) {
++		ret = intel_shim_sync_go(sdw);
++		if (ret < 0) {
++			dev_err(dev, "sync go failed during resume\n");
++			return ret;
++		}
++	}
++
+ 	/*
+ 	 * after system resume, the pm_runtime suspend() may kick in
+ 	 * during the enumeration, before any children device force the
+@@ -1722,6 +1789,8 @@ static int intel_resume_runtime(struct device *dev)
+ 	struct sdw_bus *bus = &cdns->bus;
+ 	u32 clock_stop_quirks;
+ 	bool clock_stop0;
++	int link_flags;
++	bool multi_link;
+ 	int status;
+ 	int ret;
+ 
+@@ -1731,6 +1800,9 @@ static int intel_resume_runtime(struct device *dev)
+ 		return 0;
+ 	}
+ 
++	link_flags = md_flags >> (bus->link_id * 8);
++	multi_link = !(link_flags & SDW_INTEL_MASTER_DISABLE_MULTI_LINK);
++
+ 	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
+ 
+ 	if (clock_stop_quirks & SDW_INTEL_CLK_STOP_TEARDOWN) {
+@@ -1752,11 +1824,32 @@ static int intel_resume_runtime(struct device *dev)
+ 			return ret;
+ 		}
+ 
++		/*
++		 * follow recommended programming flows to avoid
++		 * timeouts when gsync is enabled
++		 */
++		if (multi_link)
++			intel_shim_sync_arm(sdw);
++
++		ret = sdw_cdns_init(&sdw->cdns);
++		if (ret < 0) {
++			dev_err(dev, "unable to initialize Cadence IP during resume\n");
++			return ret;
++		}
++
+ 		ret = sdw_cdns_exit_reset(cdns);
+ 		if (ret < 0) {
+ 			dev_err(dev, "unable to exit bus reset sequence during resume\n");
+ 			return ret;
+ 		}
++
++		if (multi_link) {
++			ret = intel_shim_sync_go(sdw);
++			if (ret < 0) {
++				dev_err(dev, "sync go failed during resume\n");
++				return ret;
++			}
++		}
+ 	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) {
+ 		ret = intel_init(sdw);
+ 		if (ret) {
+@@ -1773,11 +1866,18 @@ static int intel_resume_runtime(struct device *dev)
+ 		 */
+ 		clock_stop0 = sdw_cdns_is_clock_stop(&sdw->cdns);
+ 
+-		/*
+-		 * make sure all Slaves are tagged as UNATTACHED and
+-		 * provide reason for reinitialization
+-		 */
+ 		if (!clock_stop0) {
++
++			/*
++			 * Re-initialize the IP since it was powered-off
++			 */
++			sdw_cdns_init(&sdw->cdns);
++
++			/*
++			 * make sure all Slaves are tagged as UNATTACHED and
++			 * provide reason for reinitialization
++			 */
++
+ 			status = SDW_UNATTACH_REQUEST_MASTER_RESET;
+ 			sdw_clear_slave_status(bus, status);
+ 		}
 -- 
 2.17.1
 
