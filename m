@@ -2,66 +2,68 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F86C433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 10:21:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84721C433E3
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 10:26:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 02A6A20786
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 10:21:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15C05207DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 10:26:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZZUSh/lS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02A6A20786
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PjMQ4lX2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15C05207DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8227D174B;
-	Tue, 18 Aug 2020 12:20:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8227D174B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 571721745;
+	Tue, 18 Aug 2020 12:25:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 571721745
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597746082;
-	bh=V642bEd4zBc8cKb9TdlocniHJ5K5DDq+tPEkAVb+uZo=;
+	s=default; t=1597746389;
+	bh=NaMbOWPgE0MWhXo9sACGZ1ycP2td9F+eShk3XnfJudw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZZUSh/lSuC1MD75FOJfWPouV4HGVrOfURyvQcCtJ+T5n12UJZ0ZMKgPWpAOHIcHvn
-	 GRcyrEb5Q2s3YbZrduTO4LbVAzTChs4ULRfFzu9JFBAeXuwAyZc8c0A74rleu0hJr2
-	 GwC/XSyRNw3TfpKt/mSQKDik5j9xRZslUr1mZvAg=
+	b=PjMQ4lX2YYAR400rgQxLX5gYFRJ3OA9TymqzZVgzBO//eEUBpyAQHUuNrMOegztyT
+	 1yutDSAvJaNxqrxPXeZlpOvEo3MWyA4fmrsScbN3gKJfhvvXyx9fQpmaOiFz8WgDgf
+	 PC0P0xf8Cu+xhYNgAUZao8la0CTcl+yqHcutKPQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F3C6F80104;
-	Tue, 18 Aug 2020 12:20:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAA22F80114;
+	Tue, 18 Aug 2020 12:25:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FD54F80228; Tue, 18 Aug 2020 12:20:30 +0200 (CEST)
+ id 1408BF80114; Tue, 18 Aug 2020 12:25:38 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C0ECF80114
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 12:20:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C0ECF80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA0DEF80114
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 12:25:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA0DEF80114
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C0006AF8E;
- Tue, 18 Aug 2020 10:20:48 +0000 (UTC)
-Date: Tue, 18 Aug 2020 12:20:22 +0200
-Message-ID: <s5htux0l0gp.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 380FCAF8E;
+ Tue, 18 Aug 2020 10:25:57 +0000 (UTC)
+Date: Tue, 18 Aug 2020 12:25:31 +0200
+Message-ID: <s5hsgckl084.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: tanjeff <tanjeff@cccmz.de>
-Subject: Re: [PATCH] Add documentation for snd_ctl_elem_list_*
-In-Reply-To: <20200817201906.36ec9c4e@tanjeffs-laptop>
-References: <20200817201906.36ec9c4e@tanjeffs-laptop>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
+In-Reply-To: <20200817085703.25732-1-allen.cryptic@gmail.com>
+References: <20200817085703.25732-1-allen.cryptic@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, keescook@chromium.org, timur@kernel.org,
+ Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, clemens@ladisch.de,
+ tiwai@suse.com, nicoleotsuka@gmail.com, Allen Pais <allen.cryptic@gmail.com>,
+ Allen Pais <allen.lkml@gmail.com>, linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,17 +79,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Aug 2020 20:19:06 +0200,
-tanjeff wrote:
+On Mon, 17 Aug 2020 10:56:53 +0200,
+Allen Pais wrote:
 > 
-> From 731895b67fcae743551989a5dd04382003e66560 Mon Sep 17 00:00:00 2001
-> From: "Tanjeff-N. Moos" <tanjeff@cccmz.de>
-> Date: Fri, 14 Aug 2020 08:40:28 +0200
-> Subject: [PATCH] Add documentation for snd_ctl_elem_list_*.
+> From: Allen Pais <allen.lkml@gmail.com>
 > 
-> Signed-off-by: Tanjeff-N. Moos <tanjeff@cccmz.de>
+> Commit 12cc923f1ccc ("tasklet: Introduce new initialization API")'
+> introduced a new tasklet initialization API. This series converts 
+> all the sound drivers to use the new tasklet_setup() API
+> 
+> Allen Pais (10):
+>   sound: core: convert tasklets to use new tasklet_setup() API
+>   sound: firewire: convert tasklets to use new tasklet_setup() API
+>   sound: asihpi: convert tasklets to use new tasklet_setup() API
+>   sound: riptide: convert tasklets to use new tasklet_setup() API
+>   sound: rm9652: convert tasklets to use new tasklet_setup() API
+>   sound/soc: fsl_esai: convert tasklets to use new tasklet_setup() API
+>   sound/soc: sh: convert tasklets to use new tasklet_setup() API
+>   sound/soc: txx9: convert tasklets to use new tasklet_setup() API
 
-Applied now.  Thanks.
+Mark, may I apply those ASoC patches through my tree together with
+others?  Those seem targeting to 5.9, and I have a patch set to
+convert to tasklet for 5.10, which would be better manageable when
+based on top of those changes.
 
+
+thanks,
 
 Takashi
+
+
+>   sound: midi: convert tasklets to use new tasklet_setup() API
+>   sound: ua101: convert tasklets to use new tasklet_setup() API
+> 
+>  sound/core/timer.c            |  7 +++----
+>  sound/firewire/amdtp-stream.c |  8 ++++----
+>  sound/pci/asihpi/asihpi.c     |  9 ++++-----
+>  sound/pci/riptide/riptide.c   |  6 +++---
+>  sound/pci/rme9652/hdsp.c      |  6 +++---
+>  sound/pci/rme9652/hdspm.c     |  7 +++----
+>  sound/soc/fsl/fsl_esai.c      |  7 +++----
+>  sound/soc/sh/siu_pcm.c        | 10 ++++------
+>  sound/soc/txx9/txx9aclc.c     |  7 +++----
+>  sound/usb/midi.c              |  7 +++----
+>  sound/usb/misc/ua101.c        |  7 +++----
+>  11 files changed, 36 insertions(+), 45 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
