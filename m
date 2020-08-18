@@ -2,64 +2,72 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B665BC433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 04:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF4D6C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 05:24:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B25D20706
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 04:30:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C3D42075E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 05:24:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XzHgFQED"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B25D20706
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tPQX1jge"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C3D42075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FC9D1713;
-	Tue, 18 Aug 2020 06:29:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FC9D1713
+	by alsa0.perex.cz (Postfix) with ESMTPS id 993701678;
+	Tue, 18 Aug 2020 07:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 993701678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597725030;
-	bh=qP+qWsTicukE0XHz0nD2PYsXrTGRNE1Jp3hr9nDUGEQ=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XzHgFQEDn7GXVqIRyvKPh1nAxYUkf29NTs6DG4Q8KiXWI00glGNlAIKd8fN8D7h+e
-	 DgNdrN4G5suYHzuWf7h9SWSQCELQACZGd86BRBnlkdQ5XSIOsumAyp54gw+ie/IyyG
-	 XxGwKde8H0iwwT3IkijwLAnwfAsLiTFbiHv8zRNQ=
+	s=default; t=1597728289;
+	bh=uj2GtfXmM+58LM/YRW5RUwVeszieNmVbDehXnQWIYTE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tPQX1jgeksS6f8WsCK4aJ34FVXqsmN88Wtrbpr9V5Qj/HBRRDRWLiDB/VTPLPIF1Q
+	 mdI/F4ugrcW9pB9QK6e04FjoGgUpfjmU1y+SfmPevlUsgTj2VXL6UYCdz5Vyo2nfhH
+	 5Dtc/R9mIo1cmbZwT4l1yY1y1NnnJygKkT12e7oo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE6BCF80228;
-	Tue, 18 Aug 2020 06:29:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3BB7F80104;
+	Tue, 18 Aug 2020 07:23:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25D88F8023F; Tue, 18 Aug 2020 06:29:36 +0200 (CEST)
+ id 2BF8DF8023F; Tue, 18 Aug 2020 07:23:56 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7C8CEF80114
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 06:29:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C8CEF80114
-Date: 18 Aug 2020 13:29:23 +0900
-X-IronPort-AV: E=Sophos;i="5.76,326,1592838000"; d="scan'208";a="54619444"
+ by alsa1.perex.cz (Postfix) with ESMTP id 90EC8F80104
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 07:23:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90EC8F80104
+Date: 18 Aug 2020 14:23:39 +0900
+X-IronPort-AV: E=Sophos;i="5.76,326,1592838000"; d="scan'208";a="54623889"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 18 Aug 2020 13:29:23 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 18 Aug 2020 14:23:39 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 50CC04189ABD;
- Tue, 18 Aug 2020 13:29:23 +0900 (JST)
-Message-ID: <87tux0fujp.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id BDD2541A7AD0;
+ Tue, 18 Aug 2020 14:23:39 +0900 (JST)
+Message-ID: <87pn7ofs19.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: soc-core: move snd_soc_dai_link_set_capabilities() to
- soc-core.c
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
+ DPCM
+In-Reply-To: <1596605064-27748-4-git-send-email-spujar@nvidia.com>
+References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
+ <1596605064-27748-4-git-send-email-spujar@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-To: Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
+ atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
+ nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
+ viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
+ thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
+ mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,176 +83,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-commit 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-added snd_soc_dai_link_set_capabilities().
-But it is using snd_soc_find_dai() (A) which is required client_mutex (B).
-And client_mutex is soc-core.c local.
+Hi again
 
-	struct snd_soc_dai *snd_soc_find_dai(xxx)
-	{
-		...
-(B)		lockdep_assert_held(&client_mutex);
-		...
-	}
+> PCM devices are created for FE dai links with 'no-pcm' flag as '0'.
+> Such DAI links have CPU component which implement either pcm_construct()
+> or pcm_new() at component or dai level respectively. Based on this,
+> current patch exposes a helper function to identify such components
+> and populate 'no_pcm' flag for DPCM DAI link.
+> 
+> This helps to have BE<->BE component links where PCM devices need
+> not be created for CPU component involved in such links.
+> 
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+(snip)
+> +static bool soc_component_is_pcm(struct snd_soc_dai_link_component *dlc)
+> +{
+> +	struct snd_soc_dai *dai = snd_soc_find_dai(dlc);
+> +
+> +	if (dai && (dai->component->driver->pcm_construct ||
+> +		    dai->driver->pcm_new))
+> +		return true;
+> +
+> +	return false;
+> +}
 
-	void snd_soc_dai_link_set_capabilities(xxx)
-	{
-		...
-		for_each_pcm_streams(direction) {
-			...
-			for_each_link_cpus(dai_link, i, cpu) {
-(A)				dai = snd_soc_find_dai(cpu);
-				...
-			}
-			...
-			for_each_link_codecs(dai_link, i, codec) {
-(A)				dai = snd_soc_find_dai(codec);
-				...
-			}
-		}
-		...
-	}
+This snd_soc_find_dai() will indicate WARNING
+if .config has CONFIG_LOCKDEP for me.
 
-Because of this, we will get WARNING.
+Maybe implement it at soc-core.c with client_mutex lock
+is needed.
 
-	WARNING: CPU: 2 PID: 53 at sound/soc/soc-core.c:814 snd_soc_find_dai+0xf8/0x100
-	CPU: 2 PID: 53 Comm: kworker/2:1 Not tainted 5.7.0-rc1+ #328
-	Hardware name: Renesas H3ULCB Kingfisher board based on r8a77951 (DT)
-	Workqueue: events deferred_probe_work_func
-	pstate: 60000005 (nZCv daif -PAN -UAO)
-	pc : snd_soc_find_dai+0xf8/0x100
-	lr : snd_soc_find_dai+0xf4/0x100
-	...
-	Call trace:
-	 snd_soc_find_dai+0xf8/0x100
-	 snd_soc_dai_link_set_capabilities+0xa0/0x16c
-	 graph_dai_link_of_dpcm+0x390/0x3c0
-	 graph_for_each_link+0x134/0x200
-	 graph_probe+0x144/0x230
-	 platform_drv_probe+0x5c/0xb0
-	 really_probe+0xe4/0x430
-	 driver_probe_device+0x60/0xf4
+Thank you for your help !!
 
-Because not only snd_soc_dai_link_set_capabilities() but many drivers
-are already using snd_soc_find_dai(),
-1st idea for this issue was creating snd_soc_find_dai() of
-_with_mutex / _without_mutex, but it was not enough and/or confusable.
-
-soc-dai.c which is implemented snd_soc_dai_link_set_capabilities() currently is
-mainly for snd_soc_dai related functions, not for snd_soc_dai_link.
-Thus as 2nd idea, this patch moves snd_soc_dai_link_set_capabilities()
-from soc-dai.c to soc-core.c, and use mutex_lock().
-
-Fixes: 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Best regards
 ---
- sound/soc/soc-core.c | 41 +++++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-dai.c  | 38 --------------------------------------
- 2 files changed, 41 insertions(+), 38 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index fe23e936e2d1..f46979f8d965 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -344,6 +344,47 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(snd_soc_lookup_component);
- 
-+/*
-+ * snd_soc_dai_link_set_capabilities() - set dai_link properties based on its DAIs
-+ */
-+void snd_soc_dai_link_set_capabilities(struct snd_soc_dai_link *dai_link)
-+{
-+	struct snd_soc_dai_link_component *cpu;
-+	struct snd_soc_dai_link_component *codec;
-+	struct snd_soc_dai *dai;
-+	bool supported[SNDRV_PCM_STREAM_LAST + 1];
-+	int direction;
-+	int i;
-+
-+	mutex_lock(&client_mutex);
-+
-+	for_each_pcm_streams(direction) {
-+		supported[direction] = true;
-+
-+		for_each_link_cpus(dai_link, i, cpu) {
-+			dai = snd_soc_find_dai(cpu);
-+			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
-+				supported[direction] = false;
-+				break;
-+			}
-+		}
-+		if (!supported[direction])
-+			continue;
-+		for_each_link_codecs(dai_link, i, codec) {
-+			dai = snd_soc_find_dai(codec);
-+			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
-+				supported[direction] = false;
-+				break;
-+			}
-+		}
-+	}
-+	mutex_unlock(&client_mutex);
-+
-+	dai_link->dpcm_playback = supported[SNDRV_PCM_STREAM_PLAYBACK];
-+	dai_link->dpcm_capture  = supported[SNDRV_PCM_STREAM_CAPTURE];
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_link_set_capabilities);
-+
- struct snd_soc_pcm_runtime
- *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
- 			 struct snd_soc_dai_link *dai_link)
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 693893420bf0..783b7928205e 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -393,44 +393,6 @@ bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int dir)
- 	return stream->channels_min;
- }
- 
--/*
-- * snd_soc_dai_link_set_capabilities() - set dai_link properties based on its DAIs
-- */
--void snd_soc_dai_link_set_capabilities(struct snd_soc_dai_link *dai_link)
--{
--	struct snd_soc_dai_link_component *cpu;
--	struct snd_soc_dai_link_component *codec;
--	struct snd_soc_dai *dai;
--	bool supported[SNDRV_PCM_STREAM_LAST + 1];
--	int direction;
--	int i;
--
--	for_each_pcm_streams(direction) {
--		supported[direction] = true;
--
--		for_each_link_cpus(dai_link, i, cpu) {
--			dai = snd_soc_find_dai(cpu);
--			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
--				supported[direction] = false;
--				break;
--			}
--		}
--		if (!supported[direction])
--			continue;
--		for_each_link_codecs(dai_link, i, codec) {
--			dai = snd_soc_find_dai(codec);
--			if (!dai || !snd_soc_dai_stream_valid(dai, direction)) {
--				supported[direction] = false;
--				break;
--			}
--		}
--	}
--
--	dai_link->dpcm_playback = supported[SNDRV_PCM_STREAM_PLAYBACK];
--	dai_link->dpcm_capture  = supported[SNDRV_PCM_STREAM_CAPTURE];
--}
--EXPORT_SYMBOL_GPL(snd_soc_dai_link_set_capabilities);
--
- void snd_soc_dai_action(struct snd_soc_dai *dai,
- 			int stream, int action)
- {
--- 
-2.25.1
-
+Kuninori Morimoto
