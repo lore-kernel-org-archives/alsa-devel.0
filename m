@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88516C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00AB5C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:11:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE4E92063A
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:10:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 716062067C
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:11:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UPK/FvqG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FLldg7pS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE4E92063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PLRts12Y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cESQYc2m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 716062067C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7064B17AD;
-	Tue, 18 Aug 2020 19:09:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7064B17AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02C1717BE;
+	Tue, 18 Aug 2020 19:10:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02C1717BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597770637;
-	bh=zOU4Pdp1V5FeOhpAv/v6/unjQwdDYx6ZaaOnFF7Mnmg=;
+	s=default; t=1597770672;
+	bh=OHZvWecYvKy95NxWDafvdTZBC/UOwa9QCGfqnRNcDhE=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UPK/FvqGXqtRz0oKiREo5lWaVm1IJyLbRU8n7yJ4YNnTnx3FBwQX7rERZ+OfWlPJS
-	 +A58rbGvr8NHQBOkp6v7dhfwaZ+O1I8yJCOSwUMV89kPvAfMvwgolxcShCuEIKhc46
-	 A+l6VdIdmqnt/1nWUCiHloY2GvNnDszLH64tgDQg=
+	b=PLRts12YCVv0zwik4QoH68+ABXlDq7IxByyDlXG+veBfAXWlo+7YljXnoawJy8tnQ
+	 GFO7DO5CmMYtUO921AMtz9bxaovqdZ/NRUNl8StZkqHTR4Hekk9oBLZKxagN34jduc
+	 bLOoR6pj/cLJWGLG00CCCdA/g1NhJYFwfTcbtZ+Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22302F803AF;
-	Tue, 18 Aug 2020 18:56:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60DA7F803BE;
+	Tue, 18 Aug 2020 18:56:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6191FF803B0; Tue, 18 Aug 2020 18:56:25 +0200 (CEST)
+ id 7FECCF803CA; Tue, 18 Aug 2020 18:56:38 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23ECEF803AD
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:56:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23ECEF803AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14250F803BC
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 18:56:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14250F803BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FLldg7pS"
+ header.b="cESQYc2m"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1F76820829;
- Tue, 18 Aug 2020 16:56:20 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4DC1E207D3;
+ Tue, 18 Aug 2020 16:56:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597769781;
- bh=zOU4Pdp1V5FeOhpAv/v6/unjQwdDYx6ZaaOnFF7Mnmg=;
+ s=default; t=1597769786;
+ bh=OHZvWecYvKy95NxWDafvdTZBC/UOwa9QCGfqnRNcDhE=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=FLldg7pSy4wgyeihdoPTQ4O5HGunk6EmATkRuxHotsyw0cABy8TN6Nvk3OJmoMU7p
- q+KQZAw/MlneDDdhqVMozzxpj+4+fW6gt8XO4T5CHAtuzTRnxmpz3SWOt7xmNzpDJX
- ymRu3IJMKjyoFaI27eGSJHWbxUBq4v2sYuHZCO6w=
-Date: Tue, 18 Aug 2020 17:55:50 +0100
+ b=cESQYc2mBCeVYMDyY/iVKWmJCtLNmpNlJqCUHwaJUr/Y1/oExql0IB1t4cnlwSRNJ
+ GxCtULgbfTzaEKj/YrNwc4R8nKB4h8sx2gKqnLdR0w1rphrtVaN4OKXaZwkSFoaE8a
+ CLxFQMC7RFDKtICeNAaVLTwZnbuQDLcNHtDOcrnw=
+Date: Tue, 18 Aug 2020 17:55:56 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Michal Simek <michal.simek@xilinx.com>,
- Colin King <colin.king@canonical.com>, linux-arm-kernel@lists.infradead.org,
- Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20200817224706.6139-1-colin.king@canonical.com>
-References: <20200817224706.6139-1-colin.king@canonical.com>
-Subject: Re: [PATCH] sound: remove duplicate "the the" phrase in Kconfig text
-Message-Id: <159776961933.56094.6016392996060777072.b4-ty@kernel.org>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: ckeepax@opensource.cirrus.com, Sylwester Nawrocki <s.nawrocki@samsung.com>
+In-Reply-To: <20200731173834.23832-1-s.nawrocki@samsung.com>
+References: <CGME20200731173856eucas1p292d2bc7319aa6a9af9b0e48b89ae803b@eucas1p2.samsung.com>
+ <20200731173834.23832-1-s.nawrocki@samsung.com>
+Subject: Re: [PATCH RFC] ASoC: wm8994: Avoid attempts to read unreadable
+ registers
+Message-Id: <159776961933.56094.2130746902213654082.b4-ty@kernel.org>
+Cc: simon@lineageos.org, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com,
+ patches@opensource.cirrus.com, lgirdwood@gmail.com, m.szyprowski@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,9 +86,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Aug 2020 23:47:06 +0100, Colin King wrote:
-> There are a couple of occurrences of "the the" in the Kconfig
-> text. Fix these.
+On Fri, 31 Jul 2020 19:38:34 +0200, Sylwester Nawrocki wrote:
+> The driver supports WM1811, WM8994, WM8958 devices but according to
+> documentation and the regmap definitions the WM8958_DSP2_* registers
+> are only available on WM8958. In current code these registers are
+> being accessed as if they were available on all the three chips.
+> 
+> When starting playback on WM1811 CODEC multiple errors like:
+> "wm8994-codec wm8994-codec: ASoC: error at soc_component_read_no_lock on wm8994-codec: -5"
+> can be seen, which is caused by attempts to read an unavailable
+> WM8958_DSP2_PROGRAM register. The issue has been uncovered by recent
+> commit "e2329ee ASoC: soc-component: add soc_component_err()".
+> 
+> [...]
 
 Applied to
 
@@ -96,8 +106,8 @@ Applied to
 
 Thanks!
 
-[1/1] sound: remove duplicate "the the" phrase in Kconfig text
-      commit: 466a806a7d2beffa6a79d61dbabac8a48685c3e2
+[1/1] ASoC: wm8994: Avoid attempts to read unreadable registers
+      commit: f082bb59b72039a2326ec1a44496899fb8aa6d0e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
