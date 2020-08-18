@@ -2,72 +2,65 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97770C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 105A2C433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:53:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DB0D20716
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:42:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 626DA2075E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 02:53:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qH3aE7Dw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DB0D20716
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D6vf+9Km"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 626DA2075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7946116F8;
-	Tue, 18 Aug 2020 04:42:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7946116F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDEB41678;
+	Tue, 18 Aug 2020 04:53:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDEB41678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597718578;
-	bh=yunBgyTIyqpxAgl2yEfJ48h8cxgjwAAPSEV7jbreNpU=;
+	s=default; t=1597719236;
+	bh=z4TZJzDLhEKg4zGiQcqi9hwHbFQpS5W3cYDgT8gFsbs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qH3aE7DwgZ9YFnsy/DK7VarISP7XLNs/TauGrBiRxqoiA+G9cb5F+OVEwuAlsRFqn
-	 EvePk0E4Yqb9NRaQDbVUPYsCZZlojj848pzjJ71ibI7V9olh7Ira4ytoib5zamG41R
-	 yOJDbJGxnfh3fAvajBYunDOaZcWyAuYOfdVsIyrw=
+	b=D6vf+9Km/ujFMvlvWx5X1NATrrs+iWdb0J0fQPvLCQ53Yc279wkbc+GTK+/mXpZep
+	 vvv0mwLb2jLjxoyFYVVwt6F/Jq5gnrZSmXEU73b6O9qXr/9Ii9Z6ZaCDGgNP75OYN2
+	 ABS2ZY3t5sRYegT/+5FNuDK1puhQWO3EIPzKeSAw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 022BDF80228;
-	Tue, 18 Aug 2020 04:42:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E7F0F80228;
+	Tue, 18 Aug 2020 04:53:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74087F8023F; Tue, 18 Aug 2020 04:42:06 +0200 (CEST)
+ id 09982F8023F; Tue, 18 Aug 2020 04:53:01 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 54611F800D3
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 04:41:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54611F800D3
-Date: 18 Aug 2020 11:41:57 +0900
-X-IronPort-AV: E=Sophos;i="5.76,325,1592838000"; d="scan'208";a="54610110"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 18 Aug 2020 11:41:57 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 8F9BAF800D3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 04:52:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F9BAF800D3
+Date: 18 Aug 2020 11:52:53 +0900
+X-IronPort-AV: E=Sophos;i="5.76,325,1592838000"; d="scan'208";a="54611195"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Aug 2020 11:52:53 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A3E8241580A3;
- Tue, 18 Aug 2020 11:41:57 +0900 (JST)
-Message-ID: <87y2mcfzir.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2B1314003880;
+ Tue, 18 Aug 2020 11:52:53 +0900 (JST)
+Message-ID: <87wo1wfz0j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
- DPCM
-In-Reply-To: <1596605064-27748-4-git-send-email-spujar@nvidia.com>
-References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
- <1596605064-27748-4-git-send-email-spujar@nvidia.com>
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-core: use client_mutex for snd_soc_find_dai()
+In-Reply-To: <871rk4hean.wl-kuninori.morimoto.gx@renesas.com>
+References: <871rk4hean.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
- nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
- viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,40 +77,78 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Sameer
+Hi Mark
 
-> PCM devices are created for FE dai links with 'no-pcm' flag as '0'.
-> Such DAI links have CPU component which implement either pcm_construct()
-> or pcm_new() at component or dai level respectively. Based on this,
-> current patch exposes a helper function to identify such components
-> and populate 'no_pcm' flag for DPCM DAI link.
+> commit 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
+> added snd_soc_dai_link_set_capabilities().
+> But it is using snd_soc_find_dai() (A) which is required client_mutex (B).
+> And client_mutex is soc-core.c local.
 > 
-> This helps to have BE<->BE component links where PCM devices need
-> not be created for CPU component involved in such links.
+> 	struct snd_soc_dai *snd_soc_find_dai(xxx)
+> 	{
+> 		...
+> (B)		lockdep_assert_held(&client_mutex);
+> 		...
+> 	}
 > 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
-(snip)
-> @@ -259,6 +270,16 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
->  		if (ret < 0)
->  			goto out_put_node;
->  
-> +		/*
-> +		 * In BE<->BE connections it is not required to create
-> +		 * PCM devices at CPU end of the dai link and thus 'no_pcm'
-> +		 * flag needs to be set. It is useful when there are many
-> +		 * BE components and some of these have to be connected to
-> +		 * form a valid audio path.
-> +		 */
-> +		if (!soc_component_is_pcm(cpus))
-> +			dai_link->no_pcm = 1;
-> +
+> 	void snd_soc_dai_link_set_capabilities(xxx)
+> 	{
+> 		...
+> 		for_each_pcm_streams(direction) {
+> 			...
+> 			for_each_link_cpus(dai_link, i, cpu) {
+> (A)				dai = snd_soc_find_dai(cpu);
+> 				...
+> 			}
+> 			...
+> 			for_each_link_codecs(dai_link, i, codec) {
+> (A)				dai = snd_soc_find_dai(codec);
+> 				...
+> 			}
+> 		}
+> 		...
+> 	}
+> 
+> Because of these background, we will get WARNING if .config has CONFIG_LOCKDEP.
+> 
+> 	WARNING: CPU: 2 PID: 53 at sound/soc/soc-core.c:814 snd_soc_find_dai+0xf8/0x100
+> 	CPU: 2 PID: 53 Comm: kworker/2:1 Not tainted 5.7.0-rc1+ #328
+> 	Hardware name: Renesas H3ULCB Kingfisher board based on r8a77951 (DT)
+> 	Workqueue: events deferred_probe_work_func
+> 	pstate: 60000005 (nZCv daif -PAN -UAO)
+> 	pc : snd_soc_find_dai+0xf8/0x100
+> 	lr : snd_soc_find_dai+0xf4/0x100
+> 	...
+> 	Call trace:
+> 	 snd_soc_find_dai+0xf8/0x100
+> 	 snd_soc_dai_link_set_capabilities+0xa0/0x16c
+> 	 graph_dai_link_of_dpcm+0x390/0x3c0
+> 	 graph_for_each_link+0x134/0x200
+> 	 graph_probe+0x144/0x230
+> 	 platform_drv_probe+0x5c/0xb0
+> 	 really_probe+0xe4/0x430
+> 	 driver_probe_device+0x60/0xf4
+> 
+> Many drivers are already calling snd_soc_find_dai() and/or snd_soc_dai_link_set_capabilities().
+> Thus, same thing can be happen on these drivers, too.
+> 
+> 	> grep snd_soc_find_dai -rl sound/soc/*
+> 	sound/soc/samsung/tm2_wm5110.c
+> 	sound/soc/soc-core.c
+> 	sound/soc/soc-dai.c
+> 	sound/soc/soc-topology.c
+> 	sound/soc/sof/topology.c
+> 
+> 	> grep snd_soc_dai_link_set_capabilities -rl sound/soc/*
+> 	sound/soc/generic/simple-card.c
+> 	sound/soc/generic/audio-graph-card.c
+> 	sound/soc/qcom/common.c
+> 	sound/soc/soc-dai.c
 
-For safety, I want to judge with data->component_chaining.
+I noticed that samsung / sof are using snd_soc_find_dai() under client_mutex.
+This means this patch creates deadlock for these.
+Hmm... we need both _with_mutex() and _without_mutex().
 
-	if (data->component_chaining &&
-	    !soc_component_is_pcm(cpus))
-			dai_link->no_pcm = 1;
 
 Thank you for your help !!
 
