@@ -2,73 +2,73 @@ Return-Path: <SRS0=DJp9=B4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9705C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A5FC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:41:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6745C2054F
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:40:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5FA472054F
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Aug 2020 17:41:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P5t0c/tU";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y9nK+Ya6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6745C2054F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nlY70qzI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ViDeIAN1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FA472054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C92E3173D;
-	Tue, 18 Aug 2020 19:39:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C92E3173D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B75D217D7;
+	Tue, 18 Aug 2020 19:40:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B75D217D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597772448;
-	bh=/NjznLi/eUXRLbD6pi5jub1BSv2mjlpYB38wQk1g/F4=;
+	s=default; t=1597772501;
+	bh=QoPaf4egRW2rnSHqEO2/BiqGRsXuylKPG8k1819llQY=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P5t0c/tUHc6K0gn3URsqWV3htO8A2vMasD8eVzYH1aGio8Y7UvZiNd/zshAj3WMQN
-	 ZqfIhYKEP1GkHQkkOmh2yJ2gdWSfwmUKVnallRV8p8YM923VGNtXI/4mZzUc7ymUd+
-	 VJP4XNGnEv7Nx6+OGa/CzRUIJojVtu3I/QFWaX7M=
+	b=nlY70qzI0StuKdak0d8Co+0IB7P+LsglI7VjlR3hz/prwRr9DTUcxG+YkVOp1UqQO
+	 dqcRjUUMe9dvCswdcG4h0UbSZII9lxgnQdhl0AAWEprdHSqla8nQ528QAPSoD5jbBJ
+	 kBnOHztPqhCl5Z02K5MZfPYSo/tu6Hqjx21PkwM4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D9C0F80114;
-	Tue, 18 Aug 2020 19:39:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E4ECF8029A;
+	Tue, 18 Aug 2020 19:39:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E6B1F8023F; Tue, 18 Aug 2020 19:39:56 +0200 (CEST)
+ id A6AC9F80228; Tue, 18 Aug 2020 19:39:56 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48EFCF80104
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 19:39:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48EFCF80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A603F800D3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2020 19:39:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A603F800D3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Y9nK+Ya6"
+ header.b="ViDeIAN1"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2EC8220674;
- Tue, 18 Aug 2020 17:39:47 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6527420674;
+ Tue, 18 Aug 2020 17:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1597772387;
- bh=/NjznLi/eUXRLbD6pi5jub1BSv2mjlpYB38wQk1g/F4=;
+ s=default; t=1597772392;
+ bh=QoPaf4egRW2rnSHqEO2/BiqGRsXuylKPG8k1819llQY=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Y9nK+Ya6MKeSuVwiceh9BJh29RYQdj6xHvMjvWPyOt81iF/2pDRGkA+kw8g0bFkJv
- qvdUEO7U1U9iIZ9zPvjzJJLefQ53ZyAlEr4QjBwiY/N23aRqjveBMp2kss+/wKpQ+9
- dgl+xQzSaAp87iXz45mRLfa/kI9/PspoWJPLW6No=
-Date: Tue, 18 Aug 2020 18:39:17 +0100
+ b=ViDeIAN1u1pBpmkfysiM7caC8Z7NB5kupBFZkv0jAmUFMpMzZdRVfKCtRFqhDuzNC
+ 2CihM5ost/lypnKIww84i8XVsf0slzwwYrwxUZ7FcpvR7pEhNsRJgDV44KABiYqHcU
+ ckkcO7g2HoVq6uZQbslykPeakNxg359pWa8riXOU=
+Date: Tue, 18 Aug 2020 18:39:22 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20200818160126.4852-1-ckeepax@opensource.cirrus.com>
-References: <20200818160126.4852-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Update naming in error handling
-Message-Id: <159777235703.24785.11022024450782473457.b4-ty@kernel.org>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20200818143632.16539-1-brent.lu@intel.com>
+References: <20200818004413.12852-1-brent.lu@intel.com>
+ <20200818143632.16539-1-brent.lu@intel.com>
+Subject: Re: [PATCH v3] ASoC: hdac_hdmi: support 'ELD' mixer
+Message-Id: <159777235703.24785.10482285356223108247.b4-ty@kernel.org>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,11 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Aug 2020 17:01:26 +0100, Charles Keepax wrote:
-> It seems the datasheet has never used the word slave for this error
-> status bit and has always used the term address error. So update the
-> driver to match the datasheets and also in the process align a bit
-> better with avoiding the use of such words where possible.
+On Tue, 18 Aug 2020 22:36:32 +0800, Brent Lu wrote:
+> Add a binary mixer 'ELD' to each HDMI PCM device so user-space can
+> read the ELD data of external HDMI display.
+> 
+> If same PCM is connected to multiple receivers, the mixer returns the
+> ELD data for the first one found in the port list and ignore the rest.
+> Thie behavior seems iffy but is aligned with the user-space interface
+> exposed by patch_hdmi.c. Also the pcm-to-many routing is nor really
+> supported by the driver now.
 
 Applied to
 
@@ -96,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: Update naming in error handling
-      commit: a4d328efed242b9912f5fe72948ed4587aba5197
+[1/1] ASoC: hdac_hdmi: support 'ELD' mixer
+      commit: 1f53bcb3fc952b55a0ad0e7f6eabfc93a170659d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
