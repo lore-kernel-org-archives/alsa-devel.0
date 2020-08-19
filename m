@@ -2,67 +2,67 @@ Return-Path: <SRS0=bO7z=B5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 409FDC433E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8A77C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:07:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C147B20786
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:07:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 41DE120786
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:07:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vE3Ajcxt";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hBtqzsfx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C147B20786
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jFEdaUr0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Tv1CWbnL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41DE120786
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 483F41850;
-	Wed, 19 Aug 2020 09:06:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 483F41850
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4635185F;
+	Wed, 19 Aug 2020 09:06:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4635185F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597820827;
-	bh=utuji8tm/J1lgfnRjbt6e5a4c8uD60e5uP2hodhWBww=;
+	s=default; t=1597820858;
+	bh=KdwfEWginA9ahEpNNNE3kGMpTWCULZ25m4l9lxGsKLI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vE3AjcxtYpfZMOyU2Znk6PveEuzR/Y4vT4bln2WIAGW4EtVfFOzfjavGvizMD6iTF
-	 jdK9+H3b0Kcw6Pb9gkllkJQwAS9r6m2jKpos1hZzfKbdCx4+wnG79N+7CY/qgzif7x
-	 yhfqncohEWjbrRYUnzlGd2FMoTcC/cBg9s7j5BoI=
+	b=jFEdaUr0dNnKJfT2vosI/rc7U/3L3OQoaRRHPmppsuEzH3y6nWtyJkyyngGO9eaeV
+	 w19JkZnoDjCKW3mHrjoGc9/SEDUFvbKrOD3evI2obOb0NwVHpt3TQdOVM9sLi/kyCN
+	 7ZAkPKeRwrJoW2kHgbgBqmH+2f1+QnCXFr37evxg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADA55F8036B;
-	Wed, 19 Aug 2020 08:57:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8E80F80372;
+	Wed, 19 Aug 2020 08:57:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A47DF8036D; Wed, 19 Aug 2020 08:57:44 +0200 (CEST)
+ id 89357F80376; Wed, 19 Aug 2020 08:57:52 +0200 (CEST)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1F42F8034C
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1F42F8034C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4E97F80345
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4E97F80345
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="hBtqzsfx"
+ header.b="Tv1CWbnL"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=S03TR+vPtR2uoi+numZ3EHXk4bHn9A8TB4HMLDbtw9o=; b=hBtqzsfxdA3eBap9tMq5cWDCIT
- tVDsg1btxUDVMpC+PQsRMyu/BiOxC0kqRwDCW7fYAtAN/Z0j7e7ggmEVK1UrS0iUApgfiqyhthYys
- RRE2LyeCQYE8gu5FDnZXi/JD+Cwz/iRvYyc4cKMlk+5HWn38a6p+ReUsDxDPxwu7LKpRyZOctfypt
- pHWAAT9cIEd7u9USQ6S8eJOAQWXsmzZ+XH81xpMHy3LP68c+jamixUc70G1yvMv9Kf/nVgy6X8oiX
- G9j1o5ZOmShbXx8nKtOLZCwYTbHtBsbi4u2r5pWaIhw2OJPmFeIpZ5zhT2F6FZPuBQnQIX1RtMOI2
- m3esGVig==;
+ bh=gJaI6Esuqevc5n1odFS47MOCP+KM34I3vDSv3XnZjAI=; b=Tv1CWbnLynvwmWs1Jhy5zKi3md
+ uudL4RJWWKY0HA+Skk8RjLPLJTh5m/CPiLgGyyco4MXv4NU9RtzxB6zAQFr16KcUPXrcLcOOhIvEN
+ jJr4XvBcs5GY24zClkR+J/+cJPPc+ftEYA+yf9U9PCVauRmjbZpqGKFEWmNjRmgA5OM38RiW7jJIx
+ 3R9Tg8QbODpTLKDYSQQbRhIOvxDaEip+asJYYyOr1erjSfyFKIaDyZHzGQMmLigFfGFV53Q+268So
+ 6R1k9V4Ymav8GkQQ6bHSD2xeHktpWRG/qBapr3eHyF2P7npqGMhZh6Wb9r08l2HiSbt7nThXkUmIe
+ Ipaa1CEQ==;
 Received: from [2001:4bb8:198:f3b2:86b6:2277:f429:37a1] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8I1o-00005v-T0; Wed, 19 Aug 2020 06:56:57 +0000
+ id 1k8I1L-0008Pq-VK; Wed, 19 Aug 2020 06:56:28 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -73,9 +73,9 @@ To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Pawel Osciak <pawel@osciak.com>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
  Matt Porter <mporter@kernel.crashing.org>, iommu@lists.linux-foundation.org
-Subject: [PATCH 25/28] dma-mapping: remove dma_cache_sync
-Date: Wed, 19 Aug 2020 08:55:52 +0200
-Message-Id: <20200819065555.1802761-26-hch@lst.de>
+Subject: [PATCH 15/28] dma-direct: remove __dma_to_phys
+Date: Wed, 19 Aug 2020 08:55:42 +0200
+Message-Id: <20200819065555.1802761-16-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200819065555.1802761-1-hch@lst.de>
 References: <20200819065555.1802761-1-hch@lst.de>
@@ -105,182 +105,239 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All users are gone now, remove the API.
+There is no harm in just always clearing the SME encryption bit, while
+significantly simplifying the interface.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/mips/Kconfig               |  1 -
- arch/mips/jazz/jazzdma.c        |  1 -
- arch/mips/mm/dma-noncoherent.c  |  6 ------
- arch/parisc/Kconfig             |  1 -
- arch/parisc/kernel/pci-dma.c    |  6 ------
- include/linux/dma-mapping.h     |  9 ---------
- include/linux/dma-noncoherent.h | 10 ----------
- kernel/dma/Kconfig              |  3 ---
- kernel/dma/mapping.c            | 14 --------------
- 9 files changed, 51 deletions(-)
+ arch/arm/include/asm/dma-direct.h      |  2 +-
+ arch/mips/bmips/dma.c                  |  2 +-
+ arch/mips/cavium-octeon/dma-octeon.c   |  2 +-
+ arch/mips/include/asm/dma-direct.h     |  2 +-
+ arch/mips/loongson2ef/fuloong-2e/dma.c |  2 +-
+ arch/mips/loongson2ef/lemote-2f/dma.c  |  2 +-
+ arch/mips/loongson64/dma.c             |  2 +-
+ arch/mips/pci/pci-ar2315.c             |  2 +-
+ arch/mips/pci/pci-xtalk-bridge.c       |  2 +-
+ arch/mips/sgi-ip32/ip32-dma.c          |  2 +-
+ arch/powerpc/include/asm/dma-direct.h  |  2 +-
+ include/linux/dma-direct.h             | 21 +++++++++++----------
+ kernel/dma/direct.c                    |  6 +-----
+ 13 files changed, 23 insertions(+), 26 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index c95fa3a2484cf0..1be91c5d666e61 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1134,7 +1134,6 @@ config DMA_NONCOHERENT
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_HAS_DMA_SET_UNCACHED
- 	select DMA_NONCOHERENT_MMAP
--	select DMA_NONCOHERENT_CACHE_SYNC
- 	select NEED_DMA_MAP_STATE
- 
- config SYS_HAS_EARLY_PRINTK
-diff --git a/arch/mips/jazz/jazzdma.c b/arch/mips/jazz/jazzdma.c
-index 0f9a9cb7fe7a95..e2efe43f5f9cc3 100644
---- a/arch/mips/jazz/jazzdma.c
-+++ b/arch/mips/jazz/jazzdma.c
-@@ -614,7 +614,6 @@ const struct dma_map_ops jazz_dma_ops = {
- 	.sync_single_for_device	= jazz_dma_sync_single_for_device,
- 	.sync_sg_for_cpu	= jazz_dma_sync_sg_for_cpu,
- 	.sync_sg_for_device	= jazz_dma_sync_sg_for_device,
--	.cache_sync		= arch_dma_cache_sync,
- 	.mmap			= dma_common_mmap,
- 	.get_sgtable		= dma_common_get_sgtable,
- 	.alloc_pages		= dma_common_alloc_pages,
-diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
-index 97a14adbafc99c..f34ad1f09799f1 100644
---- a/arch/mips/mm/dma-noncoherent.c
-+++ b/arch/mips/mm/dma-noncoherent.c
-@@ -137,12 +137,6 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+diff --git a/arch/arm/include/asm/dma-direct.h b/arch/arm/include/asm/dma-direct.h
+index 7c3001a6a775bf..a8cee87a93e8ab 100644
+--- a/arch/arm/include/asm/dma-direct.h
++++ b/arch/arm/include/asm/dma-direct.h
+@@ -8,7 +8,7 @@ static inline dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return pfn_to_dma(dev, __phys_to_pfn(paddr)) + offset;
  }
- #endif
  
--void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction direction)
--{
--	dma_sync_virt_for_device(vaddr, size, direction);
--}
--
- #ifdef CONFIG_DMA_PERDEV_COHERENT
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
- 		const struct iommu_ops *iommu, bool coherent)
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 3b0f53dd70bc9b..ed15da1da174e0 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -195,7 +195,6 @@ config PA11
- 	depends on PA7000 || PA7100LC || PA7200 || PA7300LC
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
--	select DMA_NONCOHERENT_CACHE_SYNC
- 
- config PREFETCH
- 	def_bool y
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index 38c68e131bbe2a..ce38c0b9158125 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -454,9 +454,3 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+-static inline phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dev_addr)
++static inline phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dev_addr)
  {
- 	flush_kernel_dcache_range((unsigned long)phys_to_virt(paddr), size);
+ 	unsigned int offset = dev_addr & ~PAGE_MASK;
+ 	return __pfn_to_phys(dma_to_pfn(dev, dev_addr)) + offset;
+diff --git a/arch/mips/bmips/dma.c b/arch/mips/bmips/dma.c
+index df56bf4179e347..ba2a5d33dfd3fa 100644
+--- a/arch/mips/bmips/dma.c
++++ b/arch/mips/bmips/dma.c
+@@ -52,7 +52,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t pa)
+ 	return pa;
  }
--
--void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--	       enum dma_data_direction direction)
--{
--	flush_kernel_dcache_range((unsigned long)vaddr, size);
--}
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 73fa6e10c5c8b5..7321df0b9ffc83 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -123,8 +123,6 @@ struct dma_map_ops {
- 	void (*sync_sg_for_device)(struct device *dev,
- 				   struct scatterlist *sg, int nents,
- 				   enum dma_data_direction dir);
--	void (*cache_sync)(struct device *dev, void *vaddr, size_t size,
--			enum dma_data_direction direction);
- 	int (*dma_supported)(struct device *dev, u64 mask);
- 	u64 (*get_required_mask)(struct device *dev);
- 	size_t (*max_mapping_size)(struct device *dev);
-@@ -258,9 +256,6 @@ void *dma_alloc_pages(struct device *dev, size_t size, dma_addr_t *dma_handle,
- 		enum dma_data_direction dir, gfp_t gfp);
- void dma_free_pages(struct device *dev, size_t size, void *vaddr,
- 		dma_addr_t dma_handle, enum dma_data_direction dir);
--/* dma_cache_sync is deprecated: don't use in new code */
--void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction dir);
- int dma_get_sgtable_attrs(struct device *dev, struct sg_table *sgt,
- 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
- 		unsigned long attrs);
-@@ -353,10 +348,6 @@ static inline void dma_free_pages(struct device *dev, size_t size, void *vaddr,
- 		dma_addr_t dma_handle, enum dma_data_direction dir)
+ 
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
  {
+ 	struct bmips_dma_range *r;
+ 
+diff --git a/arch/mips/cavium-octeon/dma-octeon.c b/arch/mips/cavium-octeon/dma-octeon.c
+index 14ea680d180e07..388b13ba2558c2 100644
+--- a/arch/mips/cavium-octeon/dma-octeon.c
++++ b/arch/mips/cavium-octeon/dma-octeon.c
+@@ -177,7 +177,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return paddr;
  }
--static inline void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction dir)
--{
--}
- static inline int dma_get_sgtable_attrs(struct device *dev,
- 		struct sg_table *sgt, void *cpu_addr, dma_addr_t dma_addr,
- 		size_t size, unsigned long attrs)
-diff --git a/include/linux/dma-noncoherent.h b/include/linux/dma-noncoherent.h
-index 1eecfd24d434f8..e61283e06576a8 100644
---- a/include/linux/dma-noncoherent.h
-+++ b/include/linux/dma-noncoherent.h
-@@ -59,16 +59,6 @@ static inline pgprot_t dma_pgprot(struct device *dev, pgprot_t prot,
- }
- #endif /* CONFIG_MMU */
  
--#ifdef CONFIG_DMA_NONCOHERENT_CACHE_SYNC
--void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction direction);
--#else
--static inline void arch_dma_cache_sync(struct device *dev, void *vaddr,
--		size_t size, enum dma_data_direction direction)
--{
--}
--#endif /* CONFIG_DMA_NONCOHERENT_CACHE_SYNC */
--
- #ifdef CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE
- void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
- 		enum dma_data_direction dir);
-diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-index 6cf7f7947ae797..98417f8eef92b2 100644
---- a/kernel/dma/Kconfig
-+++ b/kernel/dma/Kconfig
-@@ -74,9 +74,6 @@ config ARCH_HAS_DMA_PREP_COHERENT
- config ARCH_HAS_FORCE_DMA_UNENCRYPTED
- 	bool
- 
--config DMA_NONCOHERENT_CACHE_SYNC
--	bool
--
- config DMA_VIRT_OPS
- 	bool
- 	depends on HAS_DMA
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index dacdb7226caacd..81b0492332d4c8 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -555,20 +555,6 @@ int dma_set_coherent_mask(struct device *dev, u64 mask)
- EXPORT_SYMBOL(dma_set_coherent_mask);
- #endif
- 
--void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction dir)
--{
--	const struct dma_map_ops *ops = get_dma_ops(dev);
--
--	BUG_ON(!valid_dma_direction(dir));
--
--	if (dma_alloc_direct(dev, ops))
--		arch_dma_cache_sync(dev, vaddr, size, dir);
--	else if (ops->cache_sync)
--		ops->cache_sync(dev, vaddr, size, dir);
--}
--EXPORT_SYMBOL(dma_cache_sync);
--
- size_t dma_max_mapping_size(struct device *dev)
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t daddr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr)
  {
- 	const struct dma_map_ops *ops = get_dma_ops(dev);
+ #ifdef CONFIG_PCI
+ 	if (dev && dev_is_pci(dev))
+diff --git a/arch/mips/include/asm/dma-direct.h b/arch/mips/include/asm/dma-direct.h
+index 14e352651ce946..8e178651c638c2 100644
+--- a/arch/mips/include/asm/dma-direct.h
++++ b/arch/mips/include/asm/dma-direct.h
+@@ -3,6 +3,6 @@
+ #define _MIPS_DMA_DIRECT_H 1
+ 
+ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr);
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t daddr);
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr);
+ 
+ #endif /* _MIPS_DMA_DIRECT_H */
+diff --git a/arch/mips/loongson2ef/fuloong-2e/dma.c b/arch/mips/loongson2ef/fuloong-2e/dma.c
+index e122292bf6660a..83fadeb3fd7d56 100644
+--- a/arch/mips/loongson2ef/fuloong-2e/dma.c
++++ b/arch/mips/loongson2ef/fuloong-2e/dma.c
+@@ -6,7 +6,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return paddr | 0x80000000;
+ }
+ 
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	return dma_addr & 0x7fffffff;
+ }
+diff --git a/arch/mips/loongson2ef/lemote-2f/dma.c b/arch/mips/loongson2ef/lemote-2f/dma.c
+index abf0e39d7e4696..302b43a14eee74 100644
+--- a/arch/mips/loongson2ef/lemote-2f/dma.c
++++ b/arch/mips/loongson2ef/lemote-2f/dma.c
+@@ -6,7 +6,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return paddr | 0x80000000;
+ }
+ 
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	if (dma_addr > 0x8fffffff)
+ 		return dma_addr;
+diff --git a/arch/mips/loongson64/dma.c b/arch/mips/loongson64/dma.c
+index dbfe6e82fddd1c..b3dc5d0bd2b113 100644
+--- a/arch/mips/loongson64/dma.c
++++ b/arch/mips/loongson64/dma.c
+@@ -13,7 +13,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return ((nid << 44) ^ paddr) | (nid << node_id_offset);
+ }
+ 
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t daddr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr)
+ {
+ 	/* We extract 2bit node id (bit 44~47, only bit 44~45 used now) from
+ 	 * Loongson-3's 48bit address space and embed it into 40bit */
+diff --git a/arch/mips/pci/pci-ar2315.c b/arch/mips/pci/pci-ar2315.c
+index 490953f515282a..d88395684f487d 100644
+--- a/arch/mips/pci/pci-ar2315.c
++++ b/arch/mips/pci/pci-ar2315.c
+@@ -175,7 +175,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return paddr + ar2315_dev_offset(dev);
+ }
+ 
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	return dma_addr - ar2315_dev_offset(dev);
+ }
+diff --git a/arch/mips/pci/pci-xtalk-bridge.c b/arch/mips/pci/pci-xtalk-bridge.c
+index 9b3cc775c55e05..f1b37f32b55395 100644
+--- a/arch/mips/pci/pci-xtalk-bridge.c
++++ b/arch/mips/pci/pci-xtalk-bridge.c
+@@ -33,7 +33,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return bc->baddr + paddr;
+ }
+ 
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	return dma_addr & ~(0xffUL << 56);
+ }
+diff --git a/arch/mips/sgi-ip32/ip32-dma.c b/arch/mips/sgi-ip32/ip32-dma.c
+index fa7b17cb53853e..160317294d97a9 100644
+--- a/arch/mips/sgi-ip32/ip32-dma.c
++++ b/arch/mips/sgi-ip32/ip32-dma.c
+@@ -27,7 +27,7 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return dma_addr;
+ }
+ 
+-phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
++phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	phys_addr_t paddr = dma_addr & RAM_OFFSET_MASK;
+ 
+diff --git a/arch/powerpc/include/asm/dma-direct.h b/arch/powerpc/include/asm/dma-direct.h
+index abc154d784b078..95b09313d2a4cf 100644
+--- a/arch/powerpc/include/asm/dma-direct.h
++++ b/arch/powerpc/include/asm/dma-direct.h
+@@ -7,7 +7,7 @@ static inline dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return paddr + dev->archdata.dma_offset;
+ }
+ 
+-static inline phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t daddr)
++static inline phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr)
+ {
+ 	return daddr - dev->archdata.dma_offset;
+ }
+diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
+index 6a96a8ecac7cbc..811582a39e291f 100644
+--- a/include/linux/dma-direct.h
++++ b/include/linux/dma-direct.h
+@@ -24,11 +24,17 @@ static inline dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return dev_addr - ((dma_addr_t)dev->dma_pfn_offset << PAGE_SHIFT);
+ }
+ 
+-static inline phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dev_addr)
++static inline phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dev_addr)
+ {
+-	phys_addr_t paddr = (phys_addr_t)dev_addr;
+-
+-	return paddr + ((phys_addr_t)dev->dma_pfn_offset << PAGE_SHIFT);
++	phys_addr_t paddr = (phys_addr_t)dev_addr +
++		((phys_addr_t)dev->dma_pfn_offset << PAGE_SHIFT);
++
++	/*
++	 * Clear the Memory encryption mask if support by the architecture.  We
++	 * do this unconditionally so that we don't have to track if someone
++	 * fed us an encrypted or unencryped DMA address.
++	 */
++	return __sme_clr(paddr);
+ }
+ #endif /* !CONFIG_ARCH_HAS_PHYS_TO_DMA */
+ 
+@@ -44,7 +50,7 @@ static inline bool force_dma_unencrypted(struct device *dev)
+ /*
+  * If memory encryption is supported, phys_to_dma will set the memory encryption
+  * bit in the DMA address, and dma_to_phys will clear it.  The raw __phys_to_dma
+- * and __dma_to_phys versions should only be used on non-encrypted memory for
++ * version should only be used on non-encrypted memory for
+  * special occasions like DMA coherent buffers.
+  */
+ static inline dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr)
+@@ -52,11 +58,6 @@ static inline dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr)
+ 	return __sme_set(__phys_to_dma(dev, paddr));
+ }
+ 
+-static inline phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr)
+-{
+-	return __sme_clr(__dma_to_phys(dev, daddr));
+-}
+-
+ static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size,
+ 		bool is_ram)
+ {
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index 2e280b9c063449..a97835983a34f7 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -48,11 +48,6 @@ gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 dma_mask,
+ {
+ 	u64 dma_limit = min_not_zero(dma_mask, dev->bus_dma_limit);
+ 
+-	if (force_dma_unencrypted(dev))
+-		*phys_limit = __dma_to_phys(dev, dma_limit);
+-	else
+-		*phys_limit = dma_to_phys(dev, dma_limit);
+-
+ 	/*
+ 	 * Optimistically try the zone that the physical address mask falls
+ 	 * into first.  If that returns memory that isn't actually addressable
+@@ -61,6 +56,7 @@ gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 dma_mask,
+ 	 * Note that GFP_DMA32 and GFP_DMA are no ops without the corresponding
+ 	 * zones.
+ 	 */
++	*phys_limit = dma_to_phys(dev, dma_limit);
+ 	if (*phys_limit <= DMA_BIT_MASK(zone_dma_bits))
+ 		return GFP_DMA;
+ 	if (*phys_limit <= DMA_BIT_MASK(32))
 -- 
 2.28.0
 
