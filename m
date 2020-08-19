@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0CAAC433E8
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 248AFC433E8
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:03:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2520F207DE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:03:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 973CD207DE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:03:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ohQsKznY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="joFN0ww+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2520F207DE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fWGrYWA6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XA1vL5ZQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 973CD207DE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9DCA1766;
-	Wed, 19 Aug 2020 09:02:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9DCA1766
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3E0F17EF;
+	Wed, 19 Aug 2020 09:02:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3E0F17EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597820598;
-	bh=F1YjH3+hAuBIuxFKYfyP+PZcw9QXdKPAG0GUag7NxCE=;
+	s=default; t=1597820623;
+	bh=eS9glYwhXJMYgdVa/1ty3JtCCHTQNVmGgpRyPYOqtrE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ohQsKznYSqQ0GWAEQVCphZqcnuU4VkJTgfSHMx2mW7qa8zSZTHMLmbFp/CgAGCy8n
-	 kIhJ41vKI9FaYL33pNewFl5akeD2DM38vQREDfBRNbugf0hp+M7c47jM20tVQdvuzE
-	 IPw/YQbXG98SA4qJbMC+jKqe/fieZLyVAYLcq+40=
+	b=fWGrYWA6bo1JbJKwCTMiE6mj1HxLIIwHFKa5y3+1aAt/bwmIObiK4CZaqzDZ7CUN5
+	 cx7viRHCdQ2q+UVy5QWnxEuSGP+5uMy52NgJodKHKGWH71zhmkUz5MLihYTL2dMEM5
+	 tEy5khLRfhOi4gc/doE54rJ4rUFWImwLRS3Hysoc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD391F80332;
-	Wed, 19 Aug 2020 08:57:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FCA5F80338;
+	Wed, 19 Aug 2020 08:57:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5751F80333; Wed, 19 Aug 2020 08:57:11 +0200 (CEST)
+ id 4705FF8033D; Wed, 19 Aug 2020 08:57:14 +0200 (CEST)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A29CAF80317
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A29CAF80317
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48278F80321
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48278F80321
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="joFN0ww+"
+ header.b="XA1vL5ZQ"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=ZtUM/olxUf8C2TvkEPmqhqiLEztY8gyw8OoXm4S66J0=; b=joFN0ww+0aa92xQbCzyMJkP7LD
- 8JSoseHLlahhfiaA1lVSRSPW99kkw+xo4xdI9KQUb6l8fcvQ1JFGDjrE7lNY43skYEvkO6sJBvNuI
- ovuZ3ghLBiC7cimGa0zz0lEel7wTzq1v5puhSiTWO2cPmzjRRujsGdGv+7If4seWQ/HNzI6MHxhU1
- 4byruJvxXeuiKXvhleriuiiuwda79/w7C/U8FbqJUTO3fTp2Ce0hz4Bob299SMDEONrIlqC/49BCx
- +BqS2Tp5+L35IkWLeY8UQ1J6OQLxl09Os7Wuzp80LKtW6Hs8573Udi+/spUOj3c0bLw4Uerhc3GyD
- uPnoXnjw==;
+ bh=Zrmu5iMLYvFiMq8HFIdWyHcjZPqxIM1+gxr5lbG6RqA=; b=XA1vL5ZQWcpYB9lkjANXS49TDB
+ B4ryz2QdjuP8CSVshFHtMlIwps20n8Uvvj9no1MwDaCpcCcZfhX/Gj2uSgUWTjPAz5OXyMBrbVKGD
+ ajYZW0DDlmxyRSJMsXsPSb9D2ciwmYov9Vbr1JOlaFrRvKtHMzUm08126ZCxfdvD/dyJkuTv+TeYE
+ eiYvfUd6MFs1jxjBzpN7i8dKQJ07VVYHK05EuOKQJk0T3LhqKnyVRZ6e5RrKUeng0XZZZ9AyNu/Kt
+ KriBqeGn5aoTmk+4GDi5WWbav59d915s38yiVnRFrqLsXZOhRHSg4Tq7mfClfeQss/JTMrVlRK8n+
+ EPYZ+9Kg==;
 Received: from [2001:4bb8:198:f3b2:86b6:2277:f429:37a1] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8I1C-0008OB-DC; Wed, 19 Aug 2020 06:56:19 +0000
+ id 1k8I12-0008MJ-S1; Wed, 19 Aug 2020 06:56:09 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -73,9 +73,10 @@ To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Pawel Osciak <pawel@osciak.com>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
  Matt Porter <mporter@kernel.crashing.org>, iommu@lists.linux-foundation.org
-Subject: [PATCH 11/28] dma-mapping: add (back) arch_dma_mark_clean for ia64
-Date: Wed, 19 Aug 2020 08:55:38 +0200
-Message-Id: <20200819065555.1802761-12-hch@lst.de>
+Subject: [PATCH 06/28] lib82596: move DMA allocation into the callers of
+ i82596_probe
+Date: Wed, 19 Aug 2020 08:55:33 +0200
+Message-Id: <20200819065555.1802761-7-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200819065555.1802761-1-hch@lst.de>
 References: <20200819065555.1802761-1-hch@lst.de>
@@ -105,147 +106,187 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add back a hook to optimize dcache flushing after reading executable
-code using DMA.  This gets ia64 out of the business of pretending to
-be dma incoherent just for this optimization.
+This allows us to get rid of the LIB82596_DMA_ATTR defined and prepare
+for untangling the coherent vs non-coherent DMA allocation API.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/ia64/Kconfig               |  3 +--
- arch/ia64/kernel/dma-mapping.c  | 14 +-------------
- arch/ia64/mm/init.c             |  3 +--
- include/linux/dma-direct.h      |  3 +++
- include/linux/dma-noncoherent.h |  8 ++++++++
- kernel/dma/Kconfig              |  6 ++++++
- kernel/dma/direct.c             |  3 +++
- 7 files changed, 23 insertions(+), 17 deletions(-)
+ drivers/net/ethernet/i825xx/lasi_82596.c | 24 ++++++++++------
+ drivers/net/ethernet/i825xx/lib82596.c   | 36 ++++++++----------------
+ drivers/net/ethernet/i825xx/sni_82596.c  | 19 +++++++++----
+ 3 files changed, 40 insertions(+), 39 deletions(-)
 
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 5b4ec80bf5863a..513ba0c5d33610 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -8,6 +8,7 @@ menu "Processor type and features"
+diff --git a/drivers/net/ethernet/i825xx/lasi_82596.c b/drivers/net/ethernet/i825xx/lasi_82596.c
+index aec7e98bcc853a..8c5ab9b7553e75 100644
+--- a/drivers/net/ethernet/i825xx/lasi_82596.c
++++ b/drivers/net/ethernet/i825xx/lasi_82596.c
+@@ -96,8 +96,6 @@
  
- config IA64
- 	bool
-+	select ARCH_HAS_DMA_MARK_CLEAN
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
- 	select ACPI
-@@ -32,8 +33,6 @@ config IA64
- 	select TTY
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_VIRT_CPU_ACCOUNTING
--	select DMA_NONCOHERENT_MMAP
--	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select VIRT_TO_BUS
- 	select GENERIC_IRQ_PROBE
- 	select GENERIC_PENDING_IRQ if SMP
-diff --git a/arch/ia64/kernel/dma-mapping.c b/arch/ia64/kernel/dma-mapping.c
-index 09ef9ce9988d1f..f640ed6fe1d576 100644
---- a/arch/ia64/kernel/dma-mapping.c
-+++ b/arch/ia64/kernel/dma-mapping.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <linux/dma-direct.h>
-+#include <linux/dma-mapping.h>
- #include <linux/export.h>
+ #define OPT_SWAP_PORT	0x0001	/* Need to wordswp on the MPU port */
  
- /* Set this to 1 if there is a HW IOMMU in the system */
-@@ -7,15 +7,3 @@ int iommu_detected __read_mostly;
- 
- const struct dma_map_ops *dma_ops;
- EXPORT_SYMBOL(dma_ops);
+-#define LIB82596_DMA_ATTR	DMA_ATTR_NON_CONSISTENT
 -
--void *arch_dma_alloc(struct device *dev, size_t size,
--		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs)
--{
--	return dma_direct_alloc_pages(dev, size, dma_handle, gfp, attrs);
--}
--
--void arch_dma_free(struct device *dev, size_t size, void *cpu_addr,
--		dma_addr_t dma_addr, unsigned long attrs)
--{
--	dma_direct_free_pages(dev, size, cpu_addr, dma_addr, attrs);
--}
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 0b3fb4c7af2920..02e5aa08294ee0 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -73,8 +73,7 @@ __ia64_sync_icache_dcache (pte_t pte)
-  * DMA can be marked as "clean" so that lazy_mmu_prot_update() doesn't have to
-  * flush them when they get mapped into an executable vm-area.
-  */
--void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
--		enum dma_data_direction dir)
-+void arch_dma_mark_clean(phys_addr_t paddr, size_t size)
+ #define DMA_WBACK(ndev, addr, len) \
+ 	do { dma_cache_sync((ndev)->dev.parent, (void *)addr, len, DMA_TO_DEVICE); } while (0)
+ 
+@@ -155,7 +153,7 @@ lan_init_chip(struct parisc_device *dev)
  {
- 	unsigned long pfn = PHYS_PFN(paddr);
+ 	struct	net_device *netdevice;
+ 	struct i596_private *lp;
+-	int	retval;
++	int retval = -ENOMEM;
+ 	int i;
  
-diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-index 5a3ce2a2479437..738485b3578062 100644
---- a/include/linux/dma-direct.h
-+++ b/include/linux/dma-direct.h
-@@ -153,6 +153,9 @@ static inline void dma_direct_sync_single_for_cpu(struct device *dev,
+ 	if (!dev->irq) {
+@@ -186,12 +184,22 @@ lan_init_chip(struct parisc_device *dev)
  
- 	if (unlikely(is_swiotlb_buffer(paddr)))
- 		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_CPU);
+ 	lp = netdev_priv(netdevice);
+ 	lp->options = dev->id.sversion == 0x72 ? OPT_SWAP_PORT : 0;
++	lp->dma = dma_alloc_attrs(dev->dev.parent, sizeof(struct i596_dma),
++			      &lp->dma_addr, GFP_KERNEL,
++			      DMA_ATTR_NON_CONSISTENT);
++	if (!lp->dma)
++		goto out_free_netdev;
+ 
+ 	retval = i82596_probe(netdevice);
+-	if (retval) {
+-		free_netdev(netdevice);
+-		return -ENODEV;
+-	}
++	if (retval)
++		goto out_free_dma;
++	return 0;
 +
-+	if (dir == DMA_FROM_DEVICE)
-+		arch_dma_mark_clean(paddr, size);
++out_free_dma:
++	dma_free_attrs(dev->dev.parent, sizeof(struct i596_dma),
++		       lp->dma, lp->dma_addr, DMA_ATTR_NON_CONSISTENT);
++out_free_netdev:
++	free_netdev(netdevice);
+ 	return retval;
  }
  
- static inline dma_addr_t dma_direct_map_page(struct device *dev,
-diff --git a/include/linux/dma-noncoherent.h b/include/linux/dma-noncoherent.h
-index ca09a4e07d2d3d..b9bc6c557ea46f 100644
---- a/include/linux/dma-noncoherent.h
-+++ b/include/linux/dma-noncoherent.h
-@@ -108,6 +108,14 @@ static inline void arch_dma_prep_coherent(struct page *page, size_t size)
+@@ -202,7 +210,7 @@ static int __exit lan_remove_chip(struct parisc_device *pdev)
+ 
+ 	unregister_netdev (dev);
+ 	dma_free_attrs(&pdev->dev, sizeof(struct i596_private), lp->dma,
+-		       lp->dma_addr, LIB82596_DMA_ATTR);
++		       lp->dma_addr, DMA_ATTR_NON_CONSISTENT);
+ 	free_netdev (dev);
+ 	return 0;
  }
- #endif /* CONFIG_ARCH_HAS_DMA_PREP_COHERENT */
+diff --git a/drivers/net/ethernet/i825xx/lib82596.c b/drivers/net/ethernet/i825xx/lib82596.c
+index b03757e169e475..b4e4b3eb5758b5 100644
+--- a/drivers/net/ethernet/i825xx/lib82596.c
++++ b/drivers/net/ethernet/i825xx/lib82596.c
+@@ -1047,9 +1047,8 @@ static const struct net_device_ops i596_netdev_ops = {
  
-+#ifdef CONFIG_ARCH_HAS_DMA_MARK_CLEAN
-+void arch_dma_mark_clean(phys_addr_t paddr, size_t size);
-+#else
-+static inline void arch_dma_mark_clean(phys_addr_t paddr, size_t size)
-+{
-+}
-+#endif /* ARCH_HAS_DMA_MARK_CLEAN */
+ static int i82596_probe(struct net_device *dev)
+ {
+-	int i;
+ 	struct i596_private *lp = netdev_priv(dev);
+-	struct i596_dma *dma;
++	int ret;
+ 
+ 	/* This lot is ensure things have been cache line aligned. */
+ 	BUILD_BUG_ON(sizeof(struct i596_rfd) != 32);
+@@ -1063,41 +1062,28 @@ static int i82596_probe(struct net_device *dev)
+ 	if (!dev->base_addr || !dev->irq)
+ 		return -ENODEV;
+ 
+-	dma = dma_alloc_attrs(dev->dev.parent, sizeof(struct i596_dma),
+-			      &lp->dma_addr, GFP_KERNEL,
+-			      LIB82596_DMA_ATTR);
+-	if (!dma) {
+-		printk(KERN_ERR "%s: Couldn't get shared memory\n", __FILE__);
+-		return -ENOMEM;
+-	}
+-
+ 	dev->netdev_ops = &i596_netdev_ops;
+ 	dev->watchdog_timeo = TX_TIMEOUT;
+ 
+-	memset(dma, 0, sizeof(struct i596_dma));
+-	lp->dma = dma;
+-
+-	dma->scb.command = 0;
+-	dma->scb.cmd = I596_NULL;
+-	dma->scb.rfd = I596_NULL;
++	memset(lp->dma, 0, sizeof(struct i596_dma));
++	lp->dma->scb.command = 0;
++	lp->dma->scb.cmd = I596_NULL;
++	lp->dma->scb.rfd = I596_NULL;
+ 	spin_lock_init(&lp->lock);
+ 
+-	DMA_WBACK_INV(dev, dma, sizeof(struct i596_dma));
++	DMA_WBACK_INV(dev, lp->dma, sizeof(struct i596_dma));
+ 
+-	i = register_netdev(dev);
+-	if (i) {
+-		dma_free_attrs(dev->dev.parent, sizeof(struct i596_dma),
+-			       dma, lp->dma_addr, LIB82596_DMA_ATTR);
+-		return i;
+-	}
++	ret = register_netdev(dev);
++	if (ret)
++		return ret;
+ 
+ 	DEB(DEB_PROBE, printk(KERN_INFO "%s: 82596 at %#3lx, %pM IRQ %d.\n",
+ 			      dev->name, dev->base_addr, dev->dev_addr,
+ 			      dev->irq));
+ 	DEB(DEB_INIT, printk(KERN_INFO
+ 			     "%s: dma at 0x%p (%d bytes), lp->scb at 0x%p\n",
+-			     dev->name, dma, (int)sizeof(struct i596_dma),
+-			     &dma->scb));
++			     dev->name, lp->dma, (int)sizeof(struct i596_dma),
++			     &lp->dma->scb));
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/ethernet/i825xx/sni_82596.c b/drivers/net/ethernet/i825xx/sni_82596.c
+index 22f5887578b2bd..e80e790ffbd4d4 100644
+--- a/drivers/net/ethernet/i825xx/sni_82596.c
++++ b/drivers/net/ethernet/i825xx/sni_82596.c
+@@ -24,8 +24,6 @@
+ 
+ static const char sni_82596_string[] = "snirm_82596";
+ 
+-#define LIB82596_DMA_ATTR	0
+-
+ #define DMA_WBACK(priv, addr, len)     do { } while (0)
+ #define DMA_INV(priv, addr, len)       do { } while (0)
+ #define DMA_WBACK_INV(priv, addr, len) do { } while (0)
+@@ -134,10 +132,19 @@ static int sni_82596_probe(struct platform_device *dev)
+ 	lp->ca = ca_addr;
+ 	lp->mpu_port = mpu_addr;
+ 
++	lp->dma = dma_alloc_coherent(dev->dev.parent, sizeof(struct i596_dma),
++				     &lp->dma_addr, GFP_KERNEL);
++	if (!lp->dma)
++		goto probe_failed;
 +
- void *arch_dma_set_uncached(void *addr, size_t size);
- void arch_dma_clear_uncached(void *addr, size_t size);
+ 	retval = i82596_probe(netdevice);
+-	if (retval == 0)
+-		return 0;
++	if (retval)
++		goto probe_failed_free_dma;
++	return 0;
  
-diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-index 847a9d1fa6343d..6cf7f7947ae797 100644
---- a/kernel/dma/Kconfig
-+++ b/kernel/dma/Kconfig
-@@ -43,6 +43,12 @@ config ARCH_HAS_DMA_SET_MASK
- config ARCH_HAS_DMA_WRITE_COMBINE
- 	bool
++probe_failed_free_dma:
++	dma_free_coherent(dev->dev.parent, sizeof(struct i596_dma), lp->dma,
++			  lp->dma_addr);
+ probe_failed:
+ 	free_netdev(netdevice);
+ probe_failed_free_ca:
+@@ -153,8 +160,8 @@ static int sni_82596_driver_remove(struct platform_device *pdev)
+ 	struct i596_private *lp = netdev_priv(dev);
  
-+#
-+# Select if the architectures provides the arch_dma_mark_clean hook
-+#
-+config ARCH_HAS_DMA_MARK_CLEAN
-+	bool
-+
- config DMA_DECLARE_COHERENT
- 	bool
- 
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index bb0041e9965975..1123e767f4315f 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -340,6 +340,9 @@ void dma_direct_sync_sg_for_cpu(struct device *dev,
- 		if (unlikely(is_swiotlb_buffer(paddr)))
- 			swiotlb_tbl_sync_single(dev, paddr, sg->length, dir,
- 					SYNC_FOR_CPU);
-+
-+		if (dir == DMA_FROM_DEVICE)
-+			arch_dma_mark_clean(paddr, sg->length);
- 	}
- 
- 	if (!dev_is_dma_coherent(dev))
+ 	unregister_netdev(dev);
+-	dma_free_attrs(dev->dev.parent, sizeof(struct i596_private), lp->dma,
+-		       lp->dma_addr, LIB82596_DMA_ATTR);
++	dma_free_coherent(dev->dev.parent, sizeof(struct i596_private), lp->dma,
++			  lp->dma_addr);
+ 	iounmap(lp->ca);
+ 	iounmap(lp->mpu_port);
+ 	free_netdev (dev);
 -- 
 2.28.0
 
