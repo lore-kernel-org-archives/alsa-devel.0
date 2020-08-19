@@ -2,78 +2,110 @@ Return-Path: <SRS0=Ooul=B7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D0C2C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:51:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 574C5C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:52:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C43032078D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:51:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D58DB2078D
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:52:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YDX5nazK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C43032078D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arm.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p2YsbEUd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dV/u8lgz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D58DB2078D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5992E169E;
-	Fri, 21 Aug 2020 09:50:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5992E169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BBD816DA;
+	Fri, 21 Aug 2020 09:51:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BBD816DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597996300;
-	bh=jCqPZVe1OHj7I+fIqFxKRu6ZHElSS0ZmT4sOz/N6cCg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1597996334;
+	bh=xpIT4BYeapPfrHUWZZBCpk+FGcN9cg3weKN+hWLsTHY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YDX5nazKFc95dRIi1jHqFmCRBijkcuMB+FIDPxBO8eB+7gpRr04WaLziRS0LG9Xia
-	 lvi/ci8VUja8rjXjMN3cALsE0Ak3kPlSwsn+qlQfhBJcYNTp226G939ueb5Ev/1b+g
-	 LotNuibWClBQfwLGKifbzw/CfcWT/BDg1OJxcnaI=
+	b=p2YsbEUdM+YxZP882Jvs6fDZeU0vdNBvf/66zWkXNQHhfac6iWfcp3h7LqlZ1cRr4
+	 DF/3sT1iAQPaTSvSXcMhac7yhbZaCsaGOGFR4E+bPtM+iqKdnRdrNtKkQUYG3+Itv2
+	 dkj97R1tlnZAZuQJR1/uP1FLMRknaOThsmJPHiVY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6145F803F3;
-	Fri, 21 Aug 2020 09:36:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D4F2F803F9;
+	Fri, 21 Aug 2020 09:36:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A753BF80218; Wed, 19 Aug 2020 16:07:29 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1DE4DF8011C
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 16:07:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DE4DF8011C
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 671BB1045;
- Wed, 19 Aug 2020 07:07:14 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9DCD3F71F;
- Wed, 19 Aug 2020 07:07:07 -0700 (PDT)
-Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-To: Tomasz Figa <tfiga@chromium.org>
+ id 4A35AF80114; Wed, 19 Aug 2020 16:12:22 +0200 (CEST)
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
+ [IPv6:2a00:1450:4864:20::542])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F932F80114
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 16:12:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F932F80114
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="dV/u8lgz"
+Received: by mail-ed1-x542.google.com with SMTP id c10so18215842edk.6
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 07:12:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=/Js4y14Ghs6Bq4zdQYDVHKruVAGVzHlKISQN4bMebSg=;
+ b=dV/u8lgzRJf9R13RTyQNVA0z7K0gpop908KdbH7mh1lom7wOwawyDuMH4lJJUnAt3N
+ ER1Hz91rD7vCxhZyzb6LHpsKYbaB2LKK6Ns95j0nfjmJX5hZXauljIjL3//YJqgWaxRv
+ 97QHf+SgHVXKKphnPxr8+LnwmzFET6Ce2ARqc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=/Js4y14Ghs6Bq4zdQYDVHKruVAGVzHlKISQN4bMebSg=;
+ b=cHlWo8cOO5cOPwUKFRx6oLaT11qgq47xkKwnpZznQog48DHpTLJxay5IlnGS+PopRS
+ CxLgFKdypK2ncBIMhvrFuC/hxnXVX98W9qgIZTgIUNveWQ2r9sPR5af1tsFPr+aRnuai
+ x4kQnb5W/z68X6Wr3NiR6QFczpTuFkzD+1JCPwClpgUGw8r1xRbHto43blm6l347MZ5Q
+ tkcQDEOWX/K4j2E3mq9xNc079M6Z2T8FYzmyPeslyOVK0RiheDP8sj8tcEKl2iosK24f
+ Tz9o560Yfl7nJK+gf8iaucx9RCYjNL+jXZG5SyL4d+rnsPr/RHUASUgt6RCksmBbuYGx
+ pg8Q==
+X-Gm-Message-State: AOAM533U2HuelCa2gklC+KVLn/YOIIDLDEIuosehGbkBhz7+hecCHyf/
+ sAqdqJpxWcXkLmXJc4KPpe4FFNh+KT78BQ==
+X-Google-Smtp-Source: ABdhPJy61WHxht6+1TYYw804BpUzt5YCS5mMXz172GqHz3m2Q/7BsB3qLWLgOyBhLOiTj7Ep9NfoBQ==
+X-Received: by 2002:a05:6402:2285:: with SMTP id
+ cw5mr24374059edb.242.1597846331356; 
+ Wed, 19 Aug 2020 07:12:11 -0700 (PDT)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com.
+ [209.85.221.50])
+ by smtp.gmail.com with ESMTPSA id m14sm7732830ejr.11.2020.08.19.07.12.09
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 19 Aug 2020 07:12:10 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id f7so21698801wrw.1
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 07:12:09 -0700 (PDT)
+X-Received: by 2002:adf:ec4f:: with SMTP id w15mr24104550wrn.385.1597846328915; 
+ Wed, 19 Aug 2020 07:12:08 -0700 (PDT)
+MIME-Version: 1.0
 References: <20200819065555.1802761-1-hch@lst.de>
  <20200819065555.1802761-6-hch@lst.de>
  <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
  <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com>
  <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
-From: Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2b32f1d8-16f7-3352-40a5-420993d52fb5@arm.com>
-Date: Wed, 19 Aug 2020 15:07:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+ <20200819135738.GB17098@lst.de>
+In-Reply-To: <20200819135738.GB17098@lst.de>
+From: Tomasz Figa <tfiga@chromium.org>
+Date: Wed, 19 Aug 2020 16:11:52 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5BvpzJTycFvjntmX9W_d879hHFX+rJ8W9EK6+6cqFaVMA@mail.gmail.com>
+Message-ID: <CAAFQd5BvpzJTycFvjntmX9W_d879hHFX+rJ8W9EK6+6cqFaVMA@mail.gmail.com>
+Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
+To: Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Fri, 21 Aug 2020 09:36:14 +0200
 Cc: alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
  Linux Doc Mailing List <linux-doc@vger.kernel.org>,
  nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
  linux-mips@vger.kernel.org,
  "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- linux-mm@kvack.org, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
+ linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
  linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
  Joonyoung Shim <jy0922.shim@samsung.com>, linux-scsi@vger.kernel.org,
  Joerg Roedel <joro@8bytes.org>,
@@ -82,11 +114,12 @@ Cc: alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
  Linux Media Mailing List <linux-media@vger.kernel.org>,
  Tom Lendacky <thomas.lendacky@amd.com>, Pawel Osciak <pawel@osciak.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
+ "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+ Joerg Roedel <joro@8bytes.org>, " <linux-arm-kernel@lists.infradead.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-parisc@vger.kernel.org,
  netdev@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kyungmin Park <kyungmin.park@samsung.com>
+ Kyungmin Park <kyungmin.park@samsung.com>, Robin Murphy <robin.murphy@arm.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,83 +135,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-08-19 13:49, Tomasz Figa wrote:
-> On Wed, Aug 19, 2020 at 1:51 PM Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> Hi Tomasz,
->>
->> On 2020-08-19 12:16, Tomasz Figa wrote:
->>> Hi Christoph,
->>>
->>> On Wed, Aug 19, 2020 at 8:56 AM Christoph Hellwig <hch@lst.de> wrote:
->>>>
->>>> The V4L2-FLAG-MEMORY-NON-CONSISTENT flag is entirely unused,
->>>
->>> Could you explain what makes you think it's unused? It's a feature of
->>> the UAPI generally supported by the videobuf2 framework and relied on
->>> by Chromium OS to get any kind of reasonable performance when
->>> accessing V4L2 buffers in the userspace.
->>>
->>>> and causes
->>>> weird gymanstics with the DMA_ATTR_NON_CONSISTENT flag, which is
->>>> unimplemented except on PARISC and some MIPS configs, and about to be
->>>> removed.
->>>
->>> It is implemented by the generic DMA mapping layer [1], which is used
->>> by a number of architectures including ARM64 and supposed to be used
->>> by new architectures going forward.
->>
->> AFAICS all that V4L2_FLAG_MEMORY_NON_CONSISTENT does is end up
->> controling whether DMA_ATTR_NON_CONSISTENT is added to vb2_queue::dma_attrs.
->>
->> Please can you point to where DMA_ATTR_NON_CONSISTENT does anything at
->> all on arm64?
->>
-> 
-> With the default config it doesn't, but with
-> CONFIG_DMA_NONCOHERENT_CACHE_SYNC enabled it makes dma_pgprot() keep
-> the pgprot value as is, without enforcing coherence attributes.
+On Wed, Aug 19, 2020 at 3:57 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Aug 19, 2020 at 02:49:01PM +0200, Tomasz Figa wrote:
+> > With the default config it doesn't, but with
+> > CONFIG_DMA_NONCOHERENT_CACHE_SYNC enabled it makes dma_pgprot() keep
+> > the pgprot value as is, without enforcing coherence attributes.
+>
+> Which isn't selected on arm64, and that is for a good reason.
+>
+> > AFAIK dma_cache_sync() isn't the only way to perform the cache
+> > synchronization.
+>
+> Yes, it is the only documented way to do it.  And if you read the whole
+> series instead of screaming you'd see that it provides a proper way
+> to deal with non-coherent memory which will also work with arm64.
+> instead of screaming
+>
 
-How active are the PA-RISC and MIPS ports of Chromium OS?
+I'm sorry if I have offended you in any way, but would also appreciate
+it if a less aggressive tone was directed towards me as well.
 
-Hacking CONFIG_DMA_NONCOHERENT_CACHE_SYNC into an architecture that 
-doesn't provide dma_cache_sync() is wrong, since at worst it may break 
-other drivers. If downstream is wildly misusing an API then so be it, 
-but it's hardly a strong basis for an upstream argument.
+I have valid reasons to object to this patch, as stated in my previous
+emails. The fact that the original feature has problems is of course
+another story and, as I mentioned too, I'm willing to look into fixing
+them.
 
->> Also, I posit that videobuf2 is not actually relying on
->> DMA_ATTR_NON_CONSISTENT anyway, since it's clearly not using it properly:
->>
->> "By using this API, you are guaranteeing to the platform
->> that you have all the correct and necessary sync points for this memory
->> in the driver should it choose to return non-consistent memory."
->>
->> $ git grep dma_cache_sync drivers/media
->> $
-> 
-> AFAIK dma_cache_sync() isn't the only way to perform the cache
-> synchronization. The earlier patch series that I reviewed relied on
-> dma_get_sgtable() and then dma_sync_sg_*() (which existed in the
-> vb2-dc since forever [1]). However, it looks like with the final code
-> the sgtable isn't acquired and the synchronization isn't happening, so
-> you have a point.
+I'm of course happy to review the rest of the series and even more
+happy to help migrating this code to whatever is added there, as long
+as the functionality is preserved.
 
-Using the streaming sync calls on coherent allocations has also always 
-been wrong per the API, regardless of the bodies of code that have 
-happened to get away with it for so long.
+> > By the way, as a videobuf2 reviewer, I'd appreciate being CC'd on any
+> > series related to the subsystem-facing DMA API changes, since
+> > videobuf2 is one of the biggest users of it.
+>
+> The cc list is too long - I cc lists and key maintainers.  As a reviewer
+> should should watch your subsystems lists closely.
 
-> FWIW, I asked back in time what the plan is for non-coherent
-> allocations and it seemed like DMA_ATTR_NON_CONSISTENT and
-> dma_sync_*() was supposed to be the right thing to go with. [2] The
-> same thread also explains why dma_alloc_pages() isn't suitable for the
-> users of dma_alloc_attrs() and DMA_ATTR_NON_CONSISTENT.
+Well, I guess we can disagree on this, because there is no clear
+policy. I'm listed in the MAINTAINERS file for the subsystem and I
+believe the purpose of the file is to list the people to CC on
+relevant patches. We're all overloaded with work and having to look
+through the huge volume of mailing lists like linux-media doesn't help
+and thus I'd still appreciate being added on CC.
 
-AFAICS even back then Christoph was implying getting rid of 
-NON_CONSISTENT and *replacing* it with something streaming-API-based - 
-i.e. this series - not encouraging mixing the existing APIs. It doesn't 
-seem impossible to implement a remapping version of this new 
-dma_alloc_pages() for IOMMU-backed ops if it's really warranted 
-(although at that point it seems like "non-coherent" vb2-dc starts to 
-have significant conceptual overlap with vb2-sg).
-
-Robin.
+Best regards,
+Tomasz
