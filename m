@@ -2,66 +2,71 @@ Return-Path: <SRS0=bO7z=B5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D8B9C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 06:05:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39BE8C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 06:39:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69FDB20738
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 06:05:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A872E207FF
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 06:39:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J/+/0IeW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69FDB20738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sCRcK8iC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A872E207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC25917E8;
-	Wed, 19 Aug 2020 08:04:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC25917E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2419D17EF;
+	Wed, 19 Aug 2020 08:38:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2419D17EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597817147;
-	bh=VCUBEO2Q7gpjmd0m22idV7sbPliWvaex+H1FYA7N79Y=;
+	s=default; t=1597819181;
+	bh=0Sjope5tKJw++M58j2vr4ZCV6fuX4tzE3GIywm6lYQ0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J/+/0IeWOdpz21KwqWn2d3cLNnEYqVeJ1OfAwjUYPNfXV0HzUuvwpDSrJWnBo8ytk
-	 rIf7AYr5w9sxXq0ycMpgpqdicqRACoDh20HwYzDnqA0pXuGMdvH0M2g0Y42vpq3bTH
-	 Q0XeMbcDXVdGjZ8LhXXwU1M+5rKdB6em1R/6CFBs=
+	b=sCRcK8iCE9nsyhHY89M3XPZbBCNlYme3xS3cKVOZzNPjMUy7m2G/RdJ7G5sDtB8KK
+	 UAdzPI9dU4LExzhY155hgMOPz0/cGpz7bEs1hZ9tWRt2j9eu97RFcZ/guV3MIPwvyd
+	 QEeoFWvy/LyztYhNpprCVD95wcKbeSunrXlnuqVc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46806F80216;
-	Wed, 19 Aug 2020 08:04:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92FD5F80114;
+	Wed, 19 Aug 2020 08:38:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A726DF80218; Wed, 19 Aug 2020 08:04:54 +0200 (CEST)
+ id 55BB0F80218; Wed, 19 Aug 2020 08:38:49 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94BF7F80114
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:04:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94BF7F80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD1E3F80114
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:38:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD1E3F80114
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C05EAAB55;
- Wed, 19 Aug 2020 06:05:07 +0000 (UTC)
-Date: Wed, 19 Aug 2020 08:04:41 +0200
-Message-ID: <s5h4kozjhmu.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A1581ADFE;
+ Wed, 19 Aug 2020 06:39:08 +0000 (UTC)
+Date: Wed, 19 Aug 2020 08:38:41 +0200
+Message-ID: <s5hy2mbi1hq.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.9-rc1
-In-Reply-To: <20200818183312.3BF8A2075E@mail.kernel.org>
-References: <20200818183312.3BF8A2075E@mail.kernel.org>
+To: Mike Pozulp <pozulp.kernel@gmail.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Book Ion
+In-Reply-To: <20200818165446.499821-1-pozulp.kernel@gmail.com>
+References: <20200818165446.499821-1-pozulp.kernel@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Thomas Hebb <tommyhebb@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, Chris Chiu <chiu@endlessm.com>,
+ Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Jian-Hong Pan <jian-hong@endlessm.com>,
+ =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,29 +82,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Aug 2020 20:32:36 +0200,
-Mark Brown wrote:
+On Tue, 18 Aug 2020 18:54:44 +0200,
+Mike Pozulp wrote:
 > 
-> The following changes since commit 8e34f1e867b572f1e20b5250c2897fe5f041c99f:
+> The Galaxy Book Ion uses the same ALC298 codec as other Samsung laptops
+> which have the no headphone sound bug, like my Samsung Notebook. The
+> Galaxy Book owner confirmed that this patch fixes the bug.
 > 
->   Merge series "ASoC: core: Two step component registration" from Cezary Rojewski <cezary.rojewski@intel.com>: (2020-07-31 19:36:00 +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.9-rc1
-> 
-> for you to fetch changes up to 062fa09f44f4fb3776a23184d5d296b0c8872eb9:
-> 
->   ASoC: intel: Fix memleak in sst_media_open (2020-08-17 12:28:57 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.9
-> 
-> A bunch of fixes that came in during the merge window, mostly for issues
-> that were uncovered by the changes to report errors on invalid register
-> access plus one important fix in that code itself.
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
+> Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
 
-Pulled now.  Thanks.
+Thanks, applied.
 
 
 Takashi
