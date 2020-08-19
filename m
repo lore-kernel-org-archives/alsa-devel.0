@@ -2,103 +2,73 @@ Return-Path: <SRS0=bO7z=B5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0A45C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78453C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:29:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B1C8206DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:18:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 007F62075E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:29:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OgOg3a7q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=metafoo.de header.i=@metafoo.de header.b="eDfFoTCT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B1C8206DA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JzM5u7eM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 007F62075E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBBFB17BF;
-	Wed, 19 Aug 2020 13:17:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBBFB17BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6239D1684;
+	Wed, 19 Aug 2020 13:28:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6239D1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597835910;
-	bh=krvKYO0OoWldBAB5IoMk9wIHZHP3CC0fXmqAyyV7CQU=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1597836557;
+	bh=umP0MVIyiFVMYcLobtb253vXnyw8vjd2tlBDyO7E+t4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OgOg3a7qBjlmy6+RwUKuFWZ5ellByyeIERCtoiUxdPm/2mzi0yOg4rhdPEnJ1yVKI
-	 LBRAXbt/hgLjowQCJuSHptc7bmCt/z5tTFDrTneCLc7moCm4s/F9jv6iowLnh4eel6
-	 Px5Y3NH5b+wTdbKN2INu7pIn2UzgirY4lmLFKfds=
+	b=JzM5u7eMJB27Y/qx5hn+nWVlj2YgOyBAZTUfbi9bfa15aDyg0b1lqCPBYGQmfSolO
+	 sLCvVuMZ3JR2/oJDJJowksFiIxNzi80UTExlSNUpHxdbn1DertesKs9lYg9XkP7GIH
+	 ICNjUMG5Q0mKYrvEPV4q4FBhWLsnlXTJrC8Ujhcg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7646F80257;
-	Wed, 19 Aug 2020 13:17:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD82FF80216;
+	Wed, 19 Aug 2020 13:28:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EC86F8025A; Wed, 19 Aug 2020 13:17:08 +0200 (CEST)
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B2449F80218; Wed, 19 Aug 2020 13:28:22 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6C45F8011C
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 13:16:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C45F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
- header.b="eDfFoTCT"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
- s=default2002;
- h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
- MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender:Reply-To:
- Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
- Resent-To:Resent-Cc:Resent-Message-ID;
- bh=PXfvSPFtBMluQAvegskJOAm1wzYdd4jMhbecJAC6wAU=; b=eDfFoTCTutJK03cocRFF/wbbfM
- SByYmpX/VD0vY8KaiLXkjKN7HC8di6RtXVYJlnsS4H1UIPOVMcTo2/trf5pk2FtB5z2JIQBfQ6Klr
- X70rQ8xlemViWOrfZ7GHbh1y1G4bX4MybvPG23VoshRJzO6+YL8gfPUMLyEEkA8AamHFVxegAtRqt
- nxye+EAbYC63R8wim37mjuJYgAjKJlqW4rYVVR6W+8m3R9Rw8UBPXGZwpVOB44UjvnbgN6C+I1nm2
- 4HBSIkteQhbk1LfpDech8i9EaYT2AUv/j7vdvDwzNnUP5x/5OjbDh5pCk5ncyfspxe8l6j6ubxv1Z
- RKU9aOZQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
- by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
- id 1k8M5J-0008CP-SV; Wed, 19 Aug 2020 13:16:49 +0200
-Received: from [2001:a61:25dc:8101:9e5c:8eff:fe01:8578]
- by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1k8M5J-000JL2-LY; Wed, 19 Aug 2020 13:16:49 +0200
-Subject: Re: pcm|dmaengine|imx-sdma race condition on i.MX6
-From: Lars-Peter Clausen <lars@metafoo.de>
-To: Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>,
- Robin Gong <yibin.gong@nxp.com>
-References: <20200813112258.GA327172@pcleri>
- <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <61498763c60e488a825e8dd270732b62@skidata.com>
- <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
-Message-ID: <7a16b532-6edd-83b3-6a57-c0b471b9401a@metafoo.de>
-Date: Wed, 19 Aug 2020 13:16:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25904/Mon Aug 17 15:02:24 2020)
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "timur@kernel.org" <timur@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
- "vkoul@kernel.org" <vkoul@kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
- "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Richard Leitner - SKIDATA <Richard.Leitner@skidata.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD9D2F8011C
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 13:28:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD9D2F8011C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 2E939B7EE;
+ Wed, 19 Aug 2020 11:28:38 +0000 (UTC)
+Date: Wed, 19 Aug 2020 13:28:11 +0200
+Message-ID: <s5h4koyj2no.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Allen <allen.lkml@gmail.com>
+Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
+In-Reply-To: <20200819111605.GC5441@sirena.org.uk>
+References: <20200817085703.25732-1-allen.cryptic@gmail.com>
+ <s5hsgckl084.wl-tiwai@suse.de>
+ <20200818104432.GB5337@sirena.org.uk>
+ <CAOMdWSK79WWsmsxJH9zUMZMfkBNRWXbmEHg-haxNZopHjC1cGw@mail.gmail.com>
+ <20200819111605.GC5441@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>,
+ timur@kernel.org, Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org,
+ clemens@ladisch.de, tiwai@suse.com, nicoleotsuka@gmail.com,
+ Allen Pais <allen.cryptic@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,41 +84,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 8/19/20 1:08 PM, Lars-Peter Clausen wrote:
-> On 8/17/20 9:28 AM, Benjamin Bara - SKIDATA wrote:
->> We think this is not an i.MX6-specific problem, but a problem of the 
->> DMAengine usage from the PCM.
->> In case of a XRUN, the DMA channel is never closed but first a 
->> SNDRV_PCM_TRIGGER_STOP next a
->> SNDRV_PCM_TRIGGER_START is triggered.
->> The SNDRV_PCM_TRIGGER_STOP simply executes a 
->> dmaengine_terminate_async() [1]
->> but does not await the termination by calling dmaengine_synchronize(),
->> which is required as stated by the docu [2].
->> Anyways, we are not able to fix it in the pcm_dmaengine layer either 
->> at the end of
->> SNDRV_PCM_TRIGGER_STOP (called from the DMA on complete interrupt 
->> handler)
->> or at the beginning of SNDRV_PCM_TRIGGER_START (called from a PCM 
->> ioctl),
->> since the dmaengine_synchronize() requires a non-atomic context.
->
-> I think this might be an sdma specific problem after all. 
-> dmaengine_terminate_async() will issue a request to stop the DMA. But 
-> it is still safe to issue the next transfer, even without calling 
-> dmaengine_synchronize(). The DMA should start the new transfer at its 
-> earliest convenience in that case.
->
-> dmaegine_synchronize() is so that the consumer has a guarantee that 
-> the DMA is finished using the resources (e.g. the memory buffers) 
-> associated with the DMA transfer so it can safely free them. 
+On Wed, 19 Aug 2020 13:16:05 +0200,
+Mark Brown wrote:
+> 
+> On Wed, Aug 19, 2020 at 04:21:58PM +0530, Allen wrote:
+> 
+> > > These patches which I wasn't CCed on and which need their subject lines
+> > > fixing :( .  With the subject lines fixed I guess so so
+> 
+> > Extremely sorry. I thought I had it covered. How would you like it
+> > worded?
+> 
+> ASoC:
 
-You can think of dmaengine_terminate_async() and 
-dmaengine_issue_pending() as adding operations to a command queue. The 
-DMA is responsible that the operations are executed in the same order 
-that they were added to the queue and to make sure that their execution 
-does not conflict.
+To be more exact, "ASoC:" prefix is for sound/soc/*, and for the rest
+sound/*, use "ALSA:" prefix please.
 
-dmaegine_synchronize() is for external consumers to wait until all 
-operations in the command queue have been completed.
 
+Takashi
