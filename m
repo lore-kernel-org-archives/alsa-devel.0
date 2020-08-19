@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84603C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:05:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E90F4C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:05:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 106D8214F1
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:05:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E9C22184D
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:05:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V/a6i+4e";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jqVQwXKa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 106D8214F1
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZEqg1+2t";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FjpJs1q6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E9C22184D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92AC716BD;
-	Wed, 19 Aug 2020 09:04:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AC716BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 116BA184F;
+	Wed, 19 Aug 2020 09:05:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 116BA184F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597820722;
-	bh=x1608pXNiHqgi8Ks61n/uylP6/2H1NYZoLPCWdr9UIQ=;
+	s=default; t=1597820754;
+	bh=2tVazYGtGoUo0AF+kb3X8WDySC8uut7Y50hTbVAa9rA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V/a6i+4eb1fq/NS1X0mL3spmIpYwHWMdUc5iYfrjSgcILxYeXLdwb1mxvkTtkvVgR
-	 AdB3B0XwljgiK++RdYLiib9ve7Hf8wEpYL2zt80nrKGzJYNFGRCqViVowL6/sVYLWk
-	 o6fAWhCPyiEtDs0AnziE62DWoRKqo3dpuChY5LfI=
+	b=ZEqg1+2tBR5eT0N+5UpYgXrxiB2gujUE/0ZzdTqmJCZdofkPyucaYW6E8nUd3E9lp
+	 Z9iVtlhwsCsoXZlyWDqXP7hunK8N06yUtm1maak8bOCx8ZxkPMt78E9ta98JAcWjgX
+	 g5ldx7J7xdwL6drDulZg+M9yxhMpThQX7ID2aYO0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20461F80346;
-	Wed, 19 Aug 2020 08:57:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2872F8034A;
+	Wed, 19 Aug 2020 08:57:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96F98F80347; Wed, 19 Aug 2020 08:57:22 +0200 (CEST)
+ id BD105F80321; Wed, 19 Aug 2020 08:57:23 +0200 (CEST)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BBBBF80336
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BBBBF80336
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92952F80321
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92952F80321
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="jqVQwXKa"
+ header.b="FjpJs1q6"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=JBtww2AF0MKHgVJ2NsYCRS8RX5wJV/mnDYAumMky5+Q=; b=jqVQwXKaFpfaLermWlMeQOmiG2
- PlPtQdsPnRzZk9aVdDZYPr29069EriV/602dzGZwo5GfjgWPB1uaETIlQibnQxHFRhZwz6AQMzap1
- rZc3uQb5rpWNWX5Wajo6BoNAuXyX0+IRA2PL+dYxsTmFJPSrD+mdYTk6Hj5YekUT45kZnJY1dYaU8
- 3x5Zpak+pYkzubqM2CSxEjr19RORB8nyR/wKOdN4C7LwZc4R34QaIrny+2VtnKH7T4W7BB448cc6n
- WX5R9KvfqG8Lp/Eg3w4h5AodbQCJs/HmqnLT6+15tDASXerOoVWfXkfJ9F/0rcFWryXLfaGekIoML
- rC3PGeoQ==;
+ bh=gjKGhyixAeN99VD5Y9J4wAkwFSZBXIPb+5emgbxT41Q=; b=FjpJs1q6Y1lBqC7rkOykwKGmk4
+ jBazOeHmmonZ9E/peW+NLv9Lx2BlZehfpM2DRRBB0RMHmZr/GqPJJcvFHiZKAAwTYVPSsnQ50LI+m
+ Bu/U2WAdcWaIaZ6B5Y+fnBbU+XDBZyTv5kcCbbDigh3k4uaNsYKFoaE1XT651RmB061jQ3R2lEq/h
+ hzk6lwe9o9XRUOTW2U9OJKTpjS/VsEBGE86tZB5jY45zMAWAnXdry3Tqwds8hZwv6z0Hxga1FHrno
+ bssR18gkqfcz3Ua1iOftURBw2VyObut0Q/71HLKgNMs5OBxveAupyeYLotw63rsMM1/Us3GBeLTHK
+ b//XcmfA==;
 Received: from [2001:4bb8:198:f3b2:86b6:2277:f429:37a1] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8I1R-0008Qm-Og; Wed, 19 Aug 2020 06:56:34 +0000
+ id 1k8I1G-0008Oy-KM; Wed, 19 Aug 2020 06:56:23 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -73,10 +73,10 @@ To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Pawel Osciak <pawel@osciak.com>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
  Matt Porter <mporter@kernel.crashing.org>, iommu@lists.linux-foundation.org
-Subject: [PATCH 17/28] dma-mapping: move dma_common_{mmap,
- get_sgtable} out of mapping.c
-Date: Wed, 19 Aug 2020 08:55:44 +0200
-Message-Id: <20200819065555.1802761-18-hch@lst.de>
+Subject: [PATCH 13/28] dma-direct: lift gfp_t manipulation out
+ of__dma_direct_alloc_pages
+Date: Wed, 19 Aug 2020 08:55:40 +0200
+Message-Id: <20200819065555.1802761-14-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200819065555.1802761-1-hch@lst.de>
 References: <20200819065555.1802761-1-hch@lst.de>
@@ -106,158 +106,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a new file that contains helpera for misc DMA ops, which is only
-built when CONFIG_DMA_OPS is set.
+Move the detailed gfp_t setup from __dma_direct_alloc_pages into the
+caller to clean things up a little.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- kernel/dma/Makefile      |  1 +
- kernel/dma/mapping.c     | 47 +-----------------------------------
- kernel/dma/ops_helpers.c | 51 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+), 46 deletions(-)
- create mode 100644 kernel/dma/ops_helpers.c
+ kernel/dma/direct.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/dma/Makefile b/kernel/dma/Makefile
-index 32c7c1942bbd6c..dc755ab68aabf9 100644
---- a/kernel/dma/Makefile
-+++ b/kernel/dma/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_HAS_DMA)			+= mapping.o direct.o
-+obj-$(CONFIG_DMA_OPS)			+= ops_helpers.o
- obj-$(CONFIG_DMA_OPS)			+= dummy.o
- obj-$(CONFIG_DMA_CMA)			+= contiguous.o
- obj-$(CONFIG_DMA_DECLARE_COHERENT)	+= coherent.o
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index 0d129421e75fc8..848c95c27d79ff 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -8,7 +8,7 @@
- #include <linux/memblock.h> /* for max_pfn */
- #include <linux/acpi.h>
- #include <linux/dma-direct.h>
--#include <linux/dma-noncoherent.h>
-+#include <linux/dma-mapping.h>
- #include <linux/export.h>
- #include <linux/gfp.h>
- #include <linux/of_device.h>
-@@ -295,22 +295,6 @@ void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index 8da9a62dd9a72c..01120510968fa1 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -108,7 +108,7 @@ static inline bool dma_should_free_from_pool(struct device *dev,
  }
- EXPORT_SYMBOL(dma_sync_sg_for_device);
  
--/*
-- * Create scatter-list for the already allocated DMA buffer.
-- */
--int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
--		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
--		 unsigned long attrs)
--{
--	struct page *page = virt_to_page(cpu_addr);
--	int ret;
--
--	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
--	if (!ret)
--		sg_set_page(sgt->sgl, page, PAGE_ALIGN(size), 0);
--	return ret;
--}
--
- /*
-  * The whole dma_get_sgtable() idea is fundamentally unsafe - it seems
-  * that the intention is to allow exporting memory allocated via the
-@@ -358,35 +342,6 @@ pgprot_t dma_pgprot(struct device *dev, pgprot_t prot, unsigned long attrs)
- }
- #endif /* CONFIG_MMU */
+ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
+-		gfp_t gfp, unsigned long attrs)
++		gfp_t gfp)
+ {
+ 	int node = dev_to_node(dev);
+ 	struct page *page = NULL;
+@@ -116,11 +116,6 @@ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
  
--/*
-- * Create userspace mapping for the DMA-coherent memory.
-- */
--int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
--		void *cpu_addr, dma_addr_t dma_addr, size_t size,
--		unsigned long attrs)
--{
--#ifdef CONFIG_MMU
--	unsigned long user_count = vma_pages(vma);
--	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
--	unsigned long off = vma->vm_pgoff;
--	int ret = -ENXIO;
+ 	WARN_ON_ONCE(!PAGE_ALIGNED(size));
+ 
+-	if (attrs & DMA_ATTR_NO_WARN)
+-		gfp |= __GFP_NOWARN;
 -
--	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
--
--	if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
--		return ret;
--
--	if (off >= count || user_count > count - off)
--		return -ENXIO;
--
--	return remap_pfn_range(vma, vma->vm_start,
--			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
--			user_count << PAGE_SHIFT, vma->vm_page_prot);
--#else
--	return -ENXIO;
--#endif /* CONFIG_MMU */
--}
--
- /**
-  * dma_can_mmap - check if a given device supports dma_mmap_*
-  * @dev: device to check
-diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-new file mode 100644
-index 00000000000000..e443c69be4299f
---- /dev/null
-+++ b/kernel/dma/ops_helpers.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Helpers for DMA ops implementations.  These generally rely on the fact that
-+ * the allocated memory contains normal pages in the direct kernel mapping.
-+ */
-+#include <linux/dma-noncoherent.h>
-+
-+/*
-+ * Create scatter-list for the already allocated DMA buffer.
-+ */
-+int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
-+		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
-+		 unsigned long attrs)
-+{
-+	struct page *page = virt_to_page(cpu_addr);
-+	int ret;
-+
-+	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-+	if (!ret)
-+		sg_set_page(sgt->sgl, page, PAGE_ALIGN(size), 0);
-+	return ret;
-+}
-+
-+/*
-+ * Create userspace mapping for the DMA-coherent memory.
-+ */
-+int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
-+		void *cpu_addr, dma_addr_t dma_addr, size_t size,
-+		unsigned long attrs)
-+{
-+#ifdef CONFIG_MMU
-+	unsigned long user_count = vma_pages(vma);
-+	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
-+	unsigned long off = vma->vm_pgoff;
-+	int ret = -ENXIO;
-+
-+	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
-+
-+	if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
-+		return ret;
-+
-+	if (off >= count || user_count > count - off)
-+		return -ENXIO;
-+
-+	return remap_pfn_range(vma, vma->vm_start,
-+			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-+			user_count << PAGE_SHIFT, vma->vm_page_prot);
-+#else
-+	return -ENXIO;
-+#endif /* CONFIG_MMU */
-+}
+-	/* we always manually zero the memory once we are done: */
+-	gfp &= ~__GFP_ZERO;
+ 	gfp |= dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
+ 					   &phys_limit);
+ 	page = dma_alloc_contiguous(dev, size, gfp);
+@@ -164,6 +159,8 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+ 		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
+ 
+ 	size = PAGE_ALIGN(size);
++	if (attrs & DMA_ATTR_NO_WARN)
++		gfp |= __GFP_NOWARN;
+ 
+ 	if (dma_should_alloc_from_pool(dev, gfp, attrs)) {
+ 		ret = dma_alloc_from_pool(dev, size, &page, gfp);
+@@ -172,7 +169,8 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+ 		goto done;
+ 	}
+ 
+-	page = __dma_direct_alloc_pages(dev, size, gfp, attrs);
++	/* we always manually zero the memory once we are done */
++	page = __dma_direct_alloc_pages(dev, size, gfp & ~__GFP_ZERO);
+ 	if (!page)
+ 		return NULL;
+ 
 -- 
 2.28.0
 
