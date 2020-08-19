@@ -2,93 +2,67 @@ Return-Path: <SRS0=bO7z=B5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7909C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 15:33:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92FF5C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 15:39:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E8F0207FF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 15:33:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECBFB207FF
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 15:39:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KZdX9ofB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="HyCuX0TH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E8F0207FF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l4JnwPyO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECBFB207FF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D16CC185E;
-	Wed, 19 Aug 2020 17:32:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D16CC185E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8276E16A3;
+	Wed, 19 Aug 2020 17:38:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8276E16A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597851210;
-	bh=Wn84SR3lRohaGxD2BJ1QGkEMuJH/5jEXpFMA5NGtjtk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=KZdX9ofBsk5x3aC8wArDDeXrtl69+FGN6Y5uVhtEyEzA6lnVkdfa42oOkbmjcsPQJ
-	 2Ot1/mmaNHjDn4EeiLPVwGsRVqNoIE+2XAKXozkM0HPLhlmMCdI4YkP7hhMD/JIqty
-	 OVP9KwNZyTjyUYBbH0ym0Dap+m/g9ym1wJi7U3u4=
+	s=default; t=1597851550;
+	bh=lQNYOgVmtGmMsfWJmNp44ds4Iexi/zzYXFolCARhSnM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=l4JnwPyOrT491nZvAtzhmYYMYAe18+fiPmlNAIeVAPZmopo1irY9XozgAmurRw4ow
+	 8CbdvBAr2d8mMTUtoiXpZzxzRHH2L3EtOwr5D3Mtg1GJ+gqKlZ2dXC0lPSM9xesGbe
+	 Lp7yHESjV14s4tjbPzf6UXnY8jw9zAQxrCZ5djUg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C3AFF80216;
-	Wed, 19 Aug 2020 17:32:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1775F800D3;
+	Wed, 19 Aug 2020 17:38:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA2CCF80218; Wed, 19 Aug 2020 17:32:38 +0200 (CEST)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9A4C5F80218; Wed, 19 Aug 2020 17:38:18 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E511EF800D3
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 17:32:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E511EF800D3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="HyCuX0TH"
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5f3d45cd0004>; Wed, 19 Aug 2020 08:31:25 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate102.nvidia.com (PGP Universal service);
- Wed, 19 Aug 2020 08:32:23 -0700
-X-PGP-Universal: processed;
- by hqpgpgate102.nvidia.com on Wed, 19 Aug 2020 08:32:23 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 19 Aug
- 2020 15:32:20 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 19 Aug 2020 15:32:20 +0000
-Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by
- hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
- id <B5f3d46020000>; Wed, 19 Aug 2020 08:32:20 -0700
-From: Sameer Pujar <spujar@nvidia.com>
-To: <tiwai@suse.com>, <perex@perex.cz>
-Subject: [PATCH v2] ALSA: hda: avoid reset of sdo_limit
-Date: Wed, 19 Aug 2020 21:02:10 +0530
-Message-ID: <1597851130-6765-1-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-X-NVConfidentiality: public
-MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1597851085; bh=UKdLDoLgUYOX5aCYnviJBBJIVVE0zJ5ynw8P/hu+ZBQ=;
- h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
- X-NVConfidentiality:MIME-Version:Content-Type;
- b=HyCuX0THfj4UQS9DN3XxPXIbBaZp/goOgVzHVQIX7XgP+NaV0gecB6kon3K9FoDy9
- nMFzALtdtrs05WgPu2YMSTg4/Xk34oXDNd1UvAiVJzdqCEDQFVGhccrc7v39bY1eRV
- zRjsrl/s8uUcPwhsKnvbe4KHe1sBb9Es3v/L0HD3aTRp7zzqtNpNfiTYrfipJW/SAE
- wjlMWleyHT31avgA3IheHbaObWz2npoyzXCiSjnnVQDjbcep0SN5IIU8H8H1fm8CaJ
- egh+FKC7XK1xJHc6xbT4XtGsdhRsIbAq3oTbLvKBQv4gv6d9GnzAlxDSQAAair9wVO
- vyC+U1cCT5B0A==
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0576F800D3
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 17:38:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0576F800D3
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id DF0F6B5FD;
+ Wed, 19 Aug 2020 15:38:34 +0000 (UTC)
+Date: Wed, 19 Aug 2020 17:38:08 +0200
+Message-ID: <s5hk0xuhcin.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v2] ALSA: hda: avoid reset of sdo_limit
+In-Reply-To: <1597851130-6765-1-git-send-email-spujar@nvidia.com>
+References: <1597851130-6765-1-git-send-email-spujar@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- Sameer Pujar <spujar@nvidia.com>, yang.jie@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ linux-kernel@vger.kernel.org, yang.jie@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, stable@vger.kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,67 +78,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-By default 'sdo_limit' is initialized with a default value of '8'
-as per spec. This is overridden in cases where a different value is
-required. However this is getting reset when snd_hdac_bus_init_chip()
-is called again, which happens during runtime PM cycle.
+On Wed, 19 Aug 2020 17:32:10 +0200,
+Sameer Pujar wrote:
+> 
+> By default 'sdo_limit' is initialized with a default value of '8'
+> as per spec. This is overridden in cases where a different value is
+> required. However this is getting reset when snd_hdac_bus_init_chip()
+> is called again, which happens during runtime PM cycle.
+> 
+> Avoid this reset by moving 'sdo_limit' setup to 'snd_hdac_bus_init()'
+> function which would be called only once.
+> 
+> Fixes: 67ae482a59e9 ("ALSA: hda: add member to store ratio for stripe control")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 
-Avoid this reset by moving 'sdo_limit' setup to 'snd_hdac_bus_init()'
-function which would be called only once.
+Applied now.  Thanks.
 
-Fixes: 67ae482a59e9 ("ALSA: hda: add member to store ratio for stripe control")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- sound/hda/hdac_bus.c        | 12 ++++++++++++
- sound/hda/hdac_controller.c | 11 -----------
- 2 files changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 09ddab5..9766f6a 100644
---- a/sound/hda/hdac_bus.c
-+++ b/sound/hda/hdac_bus.c
-@@ -46,6 +46,18 @@ int snd_hdac_bus_init(struct hdac_bus *bus, struct device *dev,
- 	INIT_LIST_HEAD(&bus->hlink_list);
- 	init_waitqueue_head(&bus->rirb_wq);
- 	bus->irq = -1;
-+
-+	/*
-+	 * Default value of '8' is as per the HD audio specification (Rev 1.0a).
-+	 * Following relation is used to derive STRIPE control value.
-+	 *  For sample rate <= 48K:
-+	 *   { ((num_channels * bits_per_sample) / number of SDOs) >= 8 }
-+	 *  For sample rate > 48K:
-+	 *   { ((num_channels * bits_per_sample * rate/48000) /
-+	 *	number of SDOs) >= 8 }
-+	 */
-+	bus->sdo_limit = 8;
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_bus_init);
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 011b17c..b98449f 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -529,17 +529,6 @@ bool snd_hdac_bus_init_chip(struct hdac_bus *bus, bool full_reset)
- 
- 	bus->chip_init = true;
- 
--	/*
--	 * Default value of '8' is as per the HD audio specification (Rev 1.0a).
--	 * Following relation is used to derive STRIPE control value.
--	 *  For sample rate <= 48K:
--	 *   { ((num_channels * bits_per_sample) / number of SDOs) >= 8 }
--	 *  For sample rate > 48K:
--	 *   { ((num_channels * bits_per_sample * rate/48000) /
--	 *	number of SDOs) >= 8 }
--	 */
--	bus->sdo_limit = 8;
--
- 	return true;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_bus_init_chip);
--- 
-2.7.4
-
+Takashi
