@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 248AFC433E8
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:03:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16BA3C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:04:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 973CD207DE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:03:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8DAED207DE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 07:04:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fWGrYWA6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XA1vL5ZQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 973CD207DE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lNg01MKS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B+Kbvqdu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DAED207DE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3E0F17EF;
-	Wed, 19 Aug 2020 09:02:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3E0F17EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E37241843;
+	Wed, 19 Aug 2020 09:03:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E37241843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597820623;
-	bh=eS9glYwhXJMYgdVa/1ty3JtCCHTQNVmGgpRyPYOqtrE=;
+	s=default; t=1597820655;
+	bh=/nlQCFVGlWUNRxeQUDE8oOJdSyeiQ8oFBHa6nq4I05c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fWGrYWA6bo1JbJKwCTMiE6mj1HxLIIwHFKa5y3+1aAt/bwmIObiK4CZaqzDZ7CUN5
-	 cx7viRHCdQ2q+UVy5QWnxEuSGP+5uMy52NgJodKHKGWH71zhmkUz5MLihYTL2dMEM5
-	 tEy5khLRfhOi4gc/doE54rJ4rUFWImwLRS3Hysoc=
+	b=lNg01MKSRipLiT36M1nAD05l8Jdu5ou9W0z6x70SoFKhDCVESUiwy+TwNloDaO4C/
+	 p7fd8Xi+xaRPzKb5iSy5GLKqv66J1fofy1gdc0rHkjpVBlcVx5k/nBDPB3veRpcan0
+	 DYqE9kdI+0Fd4pLiSnu5PcfPt9nZqfCXRoqKpT8U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FCA5F80338;
-	Wed, 19 Aug 2020 08:57:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D026F80342;
+	Wed, 19 Aug 2020 08:57:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4705FF8033D; Wed, 19 Aug 2020 08:57:14 +0200 (CEST)
+ id 6C412F8033D; Wed, 19 Aug 2020 08:57:15 +0200 (CEST)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48278F80321
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48278F80321
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C94BF80333
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 08:57:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C94BF80333
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="XA1vL5ZQ"
+ header.b="B+Kbvqdu"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=Zrmu5iMLYvFiMq8HFIdWyHcjZPqxIM1+gxr5lbG6RqA=; b=XA1vL5ZQWcpYB9lkjANXS49TDB
- B4ryz2QdjuP8CSVshFHtMlIwps20n8Uvvj9no1MwDaCpcCcZfhX/Gj2uSgUWTjPAz5OXyMBrbVKGD
- ajYZW0DDlmxyRSJMsXsPSb9D2ciwmYov9Vbr1JOlaFrRvKtHMzUm08126ZCxfdvD/dyJkuTv+TeYE
- eiYvfUd6MFs1jxjBzpN7i8dKQJ07VVYHK05EuOKQJk0T3LhqKnyVRZ6e5RrKUeng0XZZZ9AyNu/Kt
- KriBqeGn5aoTmk+4GDi5WWbav59d915s38yiVnRFrqLsXZOhRHSg4Tq7mfClfeQss/JTMrVlRK8n+
- EPYZ+9Kg==;
+ bh=t/kUI/553mQLkPn2YstRQ1uK7QcbAe6EXdXOlcFiX/o=; b=B+Kbvqduoiia1ONSXw50+AAvII
+ SDCx6Q5i1wD1ezj1lsE/JQF3YbqSMgFxv6KOUYJxjYqh+96u7plrV+/YdrNpz8WDFhQW1S4H5Srxd
+ /svckscBzNBWdiFRGXc2AbTzAzlrdpesdCvrY46aj8wx3UqzriA+qG5PDFJHIufcy2Szc07uAzFjB
+ A9bjJtEhAaOU0mBzU+YkTgw4yRv/Y0j0IVpmaClidPQq8MFJqjPcXNDdKkAEO/BSDZFQ9pgQ7EfIo
+ NG5HP1xs9rulYgK4ERUivl4xbpNxfSmTYqP8Uxwxc0Fm5HhzEwUo1cHA/Is6oiJmP0q5bUvgMU50R
+ pqfWn1Xg==;
 Received: from [2001:4bb8:198:f3b2:86b6:2277:f429:37a1] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k8I12-0008MJ-S1; Wed, 19 Aug 2020 06:56:09 +0000
+ id 1k8I16-0008NH-FO; Wed, 19 Aug 2020 06:56:12 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -73,10 +73,9 @@ To: Mauro Carvalho Chehab <mchehab@kernel.org>,
  Pawel Osciak <pawel@osciak.com>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
  Matt Porter <mporter@kernel.crashing.org>, iommu@lists.linux-foundation.org
-Subject: [PATCH 06/28] lib82596: move DMA allocation into the callers of
- i82596_probe
-Date: Wed, 19 Aug 2020 08:55:33 +0200
-Message-Id: <20200819065555.1802761-7-hch@lst.de>
+Subject: [PATCH 08/28] MIPS: make dma_sync_*_for_cpu a little less overzealous
+Date: Wed, 19 Aug 2020 08:55:35 +0200
+Message-Id: <20200819065555.1802761-9-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200819065555.1802761-1-hch@lst.de>
 References: <20200819065555.1802761-1-hch@lst.de>
@@ -106,187 +105,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This allows us to get rid of the LIB82596_DMA_ATTR defined and prepare
-for untangling the coherent vs non-coherent DMA allocation API.
+When transferring DMA ownership back to the CPU there should never
+be any writeback from the cache, as the buffer was owned by the
+device until now.  Instead it should just be invalidated for the
+mapping directions where the device could have written data.
+Note that the changes rely on the fact that kmap_atomic is stubbed
+out for the !HIGHMEM case to simplify the code a bit.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/net/ethernet/i825xx/lasi_82596.c | 24 ++++++++++------
- drivers/net/ethernet/i825xx/lib82596.c   | 36 ++++++++----------------
- drivers/net/ethernet/i825xx/sni_82596.c  | 19 +++++++++----
- 3 files changed, 40 insertions(+), 39 deletions(-)
+ arch/mips/mm/dma-noncoherent.c | 44 +++++++++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/ethernet/i825xx/lasi_82596.c b/drivers/net/ethernet/i825xx/lasi_82596.c
-index aec7e98bcc853a..8c5ab9b7553e75 100644
---- a/drivers/net/ethernet/i825xx/lasi_82596.c
-+++ b/drivers/net/ethernet/i825xx/lasi_82596.c
-@@ -96,8 +96,6 @@
+diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
+index 563c2c0d0c8193..97a14adbafc99c 100644
+--- a/arch/mips/mm/dma-noncoherent.c
++++ b/arch/mips/mm/dma-noncoherent.c
+@@ -55,22 +55,34 @@ void *arch_dma_set_uncached(void *addr, size_t size)
+ 	return (void *)(__pa(addr) + UNCAC_BASE);
+ }
  
- #define OPT_SWAP_PORT	0x0001	/* Need to wordswp on the MPU port */
- 
--#define LIB82596_DMA_ATTR	DMA_ATTR_NON_CONSISTENT
--
- #define DMA_WBACK(ndev, addr, len) \
- 	do { dma_cache_sync((ndev)->dev.parent, (void *)addr, len, DMA_TO_DEVICE); } while (0)
- 
-@@ -155,7 +153,7 @@ lan_init_chip(struct parisc_device *dev)
+-static inline void dma_sync_virt(void *addr, size_t size,
++static inline void dma_sync_virt_for_device(void *addr, size_t size,
+ 		enum dma_data_direction dir)
  {
- 	struct	net_device *netdevice;
- 	struct i596_private *lp;
--	int	retval;
-+	int retval = -ENOMEM;
- 	int i;
+ 	switch (dir) {
+ 	case DMA_TO_DEVICE:
+ 		dma_cache_wback((unsigned long)addr, size);
+ 		break;
+-
+ 	case DMA_FROM_DEVICE:
+ 		dma_cache_inv((unsigned long)addr, size);
+ 		break;
+-
+ 	case DMA_BIDIRECTIONAL:
+ 		dma_cache_wback_inv((unsigned long)addr, size);
+ 		break;
++	default:
++		BUG();
++	}
++}
  
- 	if (!dev->irq) {
-@@ -186,12 +184,22 @@ lan_init_chip(struct parisc_device *dev)
- 
- 	lp = netdev_priv(netdevice);
- 	lp->options = dev->id.sversion == 0x72 ? OPT_SWAP_PORT : 0;
-+	lp->dma = dma_alloc_attrs(dev->dev.parent, sizeof(struct i596_dma),
-+			      &lp->dma_addr, GFP_KERNEL,
-+			      DMA_ATTR_NON_CONSISTENT);
-+	if (!lp->dma)
-+		goto out_free_netdev;
- 
- 	retval = i82596_probe(netdevice);
--	if (retval) {
--		free_netdev(netdevice);
--		return -ENODEV;
--	}
-+	if (retval)
-+		goto out_free_dma;
-+	return 0;
-+
-+out_free_dma:
-+	dma_free_attrs(dev->dev.parent, sizeof(struct i596_dma),
-+		       lp->dma, lp->dma_addr, DMA_ATTR_NON_CONSISTENT);
-+out_free_netdev:
-+	free_netdev(netdevice);
- 	return retval;
- }
- 
-@@ -202,7 +210,7 @@ static int __exit lan_remove_chip(struct parisc_device *pdev)
- 
- 	unregister_netdev (dev);
- 	dma_free_attrs(&pdev->dev, sizeof(struct i596_private), lp->dma,
--		       lp->dma_addr, LIB82596_DMA_ATTR);
-+		       lp->dma_addr, DMA_ATTR_NON_CONSISTENT);
- 	free_netdev (dev);
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/i825xx/lib82596.c b/drivers/net/ethernet/i825xx/lib82596.c
-index b03757e169e475..b4e4b3eb5758b5 100644
---- a/drivers/net/ethernet/i825xx/lib82596.c
-+++ b/drivers/net/ethernet/i825xx/lib82596.c
-@@ -1047,9 +1047,8 @@ static const struct net_device_ops i596_netdev_ops = {
- 
- static int i82596_probe(struct net_device *dev)
++static inline void dma_sync_virt_for_cpu(void *addr, size_t size,
++		enum dma_data_direction dir)
++{
++	switch (dir) {
++	case DMA_TO_DEVICE:
++		break;
++	case DMA_FROM_DEVICE:
++	case DMA_BIDIRECTIONAL:
++		dma_cache_inv((unsigned long)addr, size);
++		break;
+ 	default:
+ 		BUG();
+ 	}
+@@ -82,7 +94,7 @@ static inline void dma_sync_virt(void *addr, size_t size,
+  * configured then the bulk of this loop gets optimized out.
+  */
+ static inline void dma_sync_phys(phys_addr_t paddr, size_t size,
+-		enum dma_data_direction dir)
++		enum dma_data_direction dir, bool for_device)
  {
--	int i;
- 	struct i596_private *lp = netdev_priv(dev);
--	struct i596_dma *dma;
-+	int ret;
+ 	struct page *page = pfn_to_page(paddr >> PAGE_SHIFT);
+ 	unsigned long offset = paddr & ~PAGE_MASK;
+@@ -90,18 +102,20 @@ static inline void dma_sync_phys(phys_addr_t paddr, size_t size,
  
- 	/* This lot is ensure things have been cache line aligned. */
- 	BUILD_BUG_ON(sizeof(struct i596_rfd) != 32);
-@@ -1063,41 +1062,28 @@ static int i82596_probe(struct net_device *dev)
- 	if (!dev->base_addr || !dev->irq)
- 		return -ENODEV;
+ 	do {
+ 		size_t len = left;
++		void *addr;
  
--	dma = dma_alloc_attrs(dev->dev.parent, sizeof(struct i596_dma),
--			      &lp->dma_addr, GFP_KERNEL,
--			      LIB82596_DMA_ATTR);
--	if (!dma) {
--		printk(KERN_ERR "%s: Couldn't get shared memory\n", __FILE__);
--		return -ENOMEM;
--	}
+ 		if (PageHighMem(page)) {
+-			void *addr;
 -
- 	dev->netdev_ops = &i596_netdev_ops;
- 	dev->watchdog_timeo = TX_TIMEOUT;
- 
--	memset(dma, 0, sizeof(struct i596_dma));
--	lp->dma = dma;
--
--	dma->scb.command = 0;
--	dma->scb.cmd = I596_NULL;
--	dma->scb.rfd = I596_NULL;
-+	memset(lp->dma, 0, sizeof(struct i596_dma));
-+	lp->dma->scb.command = 0;
-+	lp->dma->scb.cmd = I596_NULL;
-+	lp->dma->scb.rfd = I596_NULL;
- 	spin_lock_init(&lp->lock);
- 
--	DMA_WBACK_INV(dev, dma, sizeof(struct i596_dma));
-+	DMA_WBACK_INV(dev, lp->dma, sizeof(struct i596_dma));
- 
--	i = register_netdev(dev);
--	if (i) {
--		dma_free_attrs(dev->dev.parent, sizeof(struct i596_dma),
--			       dma, lp->dma_addr, LIB82596_DMA_ATTR);
--		return i;
--	}
-+	ret = register_netdev(dev);
-+	if (ret)
-+		return ret;
- 
- 	DEB(DEB_PROBE, printk(KERN_INFO "%s: 82596 at %#3lx, %pM IRQ %d.\n",
- 			      dev->name, dev->base_addr, dev->dev_addr,
- 			      dev->irq));
- 	DEB(DEB_INIT, printk(KERN_INFO
- 			     "%s: dma at 0x%p (%d bytes), lp->scb at 0x%p\n",
--			     dev->name, dma, (int)sizeof(struct i596_dma),
--			     &dma->scb));
-+			     dev->name, lp->dma, (int)sizeof(struct i596_dma),
-+			     &lp->dma->scb));
- 
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/i825xx/sni_82596.c b/drivers/net/ethernet/i825xx/sni_82596.c
-index 22f5887578b2bd..e80e790ffbd4d4 100644
---- a/drivers/net/ethernet/i825xx/sni_82596.c
-+++ b/drivers/net/ethernet/i825xx/sni_82596.c
-@@ -24,8 +24,6 @@
- 
- static const char sni_82596_string[] = "snirm_82596";
- 
--#define LIB82596_DMA_ATTR	0
--
- #define DMA_WBACK(priv, addr, len)     do { } while (0)
- #define DMA_INV(priv, addr, len)       do { } while (0)
- #define DMA_WBACK_INV(priv, addr, len) do { } while (0)
-@@ -134,10 +132,19 @@ static int sni_82596_probe(struct platform_device *dev)
- 	lp->ca = ca_addr;
- 	lp->mpu_port = mpu_addr;
- 
-+	lp->dma = dma_alloc_coherent(dev->dev.parent, sizeof(struct i596_dma),
-+				     &lp->dma_addr, GFP_KERNEL);
-+	if (!lp->dma)
-+		goto probe_failed;
+ 			if (offset + len > PAGE_SIZE)
+ 				len = PAGE_SIZE - offset;
++		}
 +
- 	retval = i82596_probe(netdevice);
--	if (retval == 0)
--		return 0;
-+	if (retval)
-+		goto probe_failed_free_dma;
-+	return 0;
++		addr = kmap_atomic(page);
++		if (for_device)
++			dma_sync_virt_for_device(addr + offset, len, dir);
++		else
++			dma_sync_virt_for_cpu(addr + offset, len, dir);
++		kunmap_atomic(addr);
  
-+probe_failed_free_dma:
-+	dma_free_coherent(dev->dev.parent, sizeof(struct i596_dma), lp->dma,
-+			  lp->dma_addr);
- probe_failed:
- 	free_netdev(netdevice);
- probe_failed_free_ca:
-@@ -153,8 +160,8 @@ static int sni_82596_driver_remove(struct platform_device *pdev)
- 	struct i596_private *lp = netdev_priv(dev);
+-			addr = kmap_atomic(page);
+-			dma_sync_virt(addr + offset, len, dir);
+-			kunmap_atomic(addr);
+-		} else
+-			dma_sync_virt(page_address(page) + offset, size, dir);
+ 		offset = 0;
+ 		page++;
+ 		left -= len;
+@@ -111,7 +125,7 @@ static inline void dma_sync_phys(phys_addr_t paddr, size_t size,
+ void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
+ 		enum dma_data_direction dir)
+ {
+-	dma_sync_phys(paddr, size, dir);
++	dma_sync_phys(paddr, size, dir, true);
+ }
  
- 	unregister_netdev(dev);
--	dma_free_attrs(dev->dev.parent, sizeof(struct i596_private), lp->dma,
--		       lp->dma_addr, LIB82596_DMA_ATTR);
-+	dma_free_coherent(dev->dev.parent, sizeof(struct i596_private), lp->dma,
-+			  lp->dma_addr);
- 	iounmap(lp->ca);
- 	iounmap(lp->mpu_port);
- 	free_netdev (dev);
+ #ifdef CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU
+@@ -119,16 +133,14 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+ 		enum dma_data_direction dir)
+ {
+ 	if (cpu_needs_post_dma_flush())
+-		dma_sync_phys(paddr, size, dir);
++		dma_sync_phys(paddr, size, dir, false);
+ }
+ #endif
+ 
+ void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+ 		enum dma_data_direction direction)
+ {
+-	BUG_ON(direction == DMA_NONE);
+-
+-	dma_sync_virt(vaddr, size, direction);
++	dma_sync_virt_for_device(vaddr, size, direction);
+ }
+ 
+ #ifdef CONFIG_DMA_PERDEV_COHERENT
 -- 
 2.28.0
 
