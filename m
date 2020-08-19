@@ -2,73 +2,85 @@ Return-Path: <SRS0=bO7z=B5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78453C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5A64C433E3
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:59:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 007F62075E
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:29:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 437C12072D
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Aug 2020 11:59:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JzM5u7eM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 007F62075E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tXW9q1VM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 437C12072D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6239D1684;
-	Wed, 19 Aug 2020 13:28:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6239D1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id B308316CA;
+	Wed, 19 Aug 2020 13:58:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B308316CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597836557;
-	bh=umP0MVIyiFVMYcLobtb253vXnyw8vjd2tlBDyO7E+t4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=JzM5u7eMJB27Y/qx5hn+nWVlj2YgOyBAZTUfbi9bfa15aDyg0b1lqCPBYGQmfSolO
-	 sLCvVuMZ3JR2/oJDJJowksFiIxNzi80UTExlSNUpHxdbn1DertesKs9lYg9XkP7GIH
-	 ICNjUMG5Q0mKYrvEPV4q4FBhWLsnlXTJrC8Ujhcg=
+	s=default; t=1597838354;
+	bh=RgRvYOfdymyiXmitWmYSNkWeivyTv9SR2fGVAi2KP1k=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tXW9q1VMwILdWe0JeNbmaIPdsWWOvAFsBNSv+Gnb27sTBekudya7VFKIEOIWM0Z7U
+	 FYRfT7LzJrjQ6EiqhntcuGcAuBpTFFEiu6XZsox0tHMB5GUTSOR79RSgRO+e/8wlDj
+	 nzXU2E99mcjcPatlvl9K62pDJdYqzCEjYT9DpIxQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD82FF80216;
-	Wed, 19 Aug 2020 13:28:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46F69F80216;
+	Wed, 19 Aug 2020 13:58:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2449F80218; Wed, 19 Aug 2020 13:28:22 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id F1CD3F80218; Wed, 19 Aug 2020 13:58:22 +0200 (CEST)
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.70.196])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD9D2F8011C
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 13:28:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD9D2F8011C
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2E939B7EE;
- Wed, 19 Aug 2020 11:28:38 +0000 (UTC)
-Date: Wed, 19 Aug 2020 13:28:11 +0200
-Message-ID: <s5h4koyj2no.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Allen <allen.lkml@gmail.com>
-Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
-In-Reply-To: <20200819111605.GC5441@sirena.org.uk>
-References: <20200817085703.25732-1-allen.cryptic@gmail.com>
- <s5hsgckl084.wl-tiwai@suse.de>
- <20200818104432.GB5337@sirena.org.uk>
- <CAOMdWSK79WWsmsxJH9zUMZMfkBNRWXbmEHg-haxNZopHjC1cGw@mail.gmail.com>
- <20200819111605.GC5441@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>,
- timur@kernel.org, Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org,
- clemens@ladisch.de, tiwai@suse.com, nicoleotsuka@gmail.com,
- Allen Pais <allen.cryptic@gmail.com>, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B383F80114
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2020 13:58:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B383F80114
+Received: from localhost (unknown [192.168.167.32])
+ by regular1.263xmail.com (Postfix) with ESMTP id 6F6EF153C;
+ Wed, 19 Aug 2020 19:58:04 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net
+ [124.126.19.250]) by smtp.263.net (postfix) whith ESMTP id
+ P9873T140063715358464S1597838284065216_; 
+ Wed, 19 Aug 2020 19:58:04 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <e53548ead706dc6b484bfeb14e7bcb0e>
+X-RL-SENDER: penghao@uniontech.com
+X-SENDER: penghao@uniontech.com
+X-LOGIN-NAME: penghao@uniontech.com
+X-FST-TO: perex@perex.cz
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 5
+X-System-Flag: 0
+From: penghao <penghao@uniontech.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Subject: [PATCH] ALSA: usb-audio: Add prevent wakeup from s3 state trig by
+ Lenovo ThinkCentre TI024Gen3 USB-audio
+Date: Wed, 19 Aug 2020 19:57:57 +0800
+Message-Id: <20200819115757.23168-1-penghao@uniontech.com>
+X-Mailer: git-send-email 2.11.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, penghao@uniontech.com, crwulff@gmail.com,
+ gustavoars@kernel.org, linux-kernel@vger.kernel.org, alexander@tsoy.me,
+ dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,21 +96,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 Aug 2020 13:16:05 +0200,
-Mark Brown wrote:
-> 
-> On Wed, Aug 19, 2020 at 04:21:58PM +0530, Allen wrote:
-> 
-> > > These patches which I wasn't CCed on and which need their subject lines
-> > > fixing :( .  With the subject lines fixed I guess so so
-> 
-> > Extremely sorry. I thought I had it covered. How would you like it
-> > worded?
-> 
-> ASoC:
+TI024Gen3 USB-audio is controlled by TI024Gen3,when TI024Gens
+enter sleep mode, USB-audio will disconnect from USB bus port,
+wakup form s3 state
 
-To be more exact, "ASoC:" prefix is for sound/soc/*, and for the rest
-sound/*, use "ALSA:" prefix please.
+Signed-off-by: penghao <penghao@uniontech.com>
+---
+ sound/usb/card.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 696e788c5d31..6bdbb34009b3 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -658,6 +658,12 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 	}
+ 
+ 	dev_set_drvdata(&dev->dev, chip);
++	/*
++	 *ALSA: usb-audio: Add prevent wakeup from s3 state trig by Lenovo
++	 *ThinkCentre TI024Gen3 usb-audio
++	 */
++	if ((usb_id->idVendor == 0x17ef) && (usb_id->idProduct == 0xa012))
++		device_set_wakeup_enable(＆dev->dev, 0);
+ 
+ 	/*
+ 	 * For devices with more than one control interface, we assume the
+-- 
+2.11.0
 
 
-Takashi
+
