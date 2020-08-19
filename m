@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD6EC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 00:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60C86C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 00:39:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA8352078D
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 00:38:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDE0C20885
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 00:39:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IrbF9t9N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA8352078D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rZKFlFeh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDE0C20885
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BD191677;
-	Thu, 20 Aug 2020 02:38:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BD191677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CE6C1687;
+	Thu, 20 Aug 2020 02:38:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CE6C1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597883936;
-	bh=C3jnknJ1yuaV6xhGfTQ3QQX+NK0wLk1Dvya86qEqb6M=;
+	s=default; t=1597883989;
+	bh=PvnQ7rPY+1oDp5wgiT6xLrY9UAr6r6O3NXYvYPe0NEs=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=IrbF9t9NDLeZEkAqHkSA34m6y6jnpZes1Mu/5WDOqiKmTFuO06AyHrQm+T9OFx/B0
-	 Ches+eShf9PdK7JjqCoI6JsRmtmdZt2yI2NwU2DGEB8srR5zGEsNHlRmjEw5+zmYef
-	 hUtwbt4qVXOouPjyb2btuaRDzVjOZ4jQcEgYWBN8=
+	b=rZKFlFeh1pT0AMua6ulfQOiiRbU2mE6Tx2/6m3czAvFtJEmBwOUG1EhgO3ouvb0tB
+	 U3gRwvXt8yyDJlIz9oPu65aXgXG9FVZdNvt0bchGuhqmgnOnGaGbM3MGFwucGpKrgl
+	 yIHeNQNT9/9IVh/hmgwXR8WrC2i9UQUWsWjt7yi0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95405F80216;
-	Thu, 20 Aug 2020 02:38:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D13EF80257;
+	Thu, 20 Aug 2020 02:38:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 317C9F80218; Thu, 20 Aug 2020 02:38:04 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id C6DE6F8025A; Thu, 20 Aug 2020 02:38:26 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34E2DF80114
- for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2020 02:37:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34E2DF80114
-IronPort-SDR: k57juKCOePq8ga9u9aD+3Di5rFTKKaZkyX/uLLnFoui3KWrzTxsThCWTrwJ2kuw/MkHZMY71qM
- VCgYsz4Arqaw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="152821935"
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; d="scan'208";a="152821935"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67EBCF80114
+ for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2020 02:38:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67EBCF80114
+IronPort-SDR: oZkxZmN7adZAImvDo5GBvrFvCt/mgkD6ZRggu6P9cfsW2J3KoAdLHqZ92e1+4HiSWMo887pphU
+ HI99IPVnUnLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="143031990"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; d="scan'208";a="143031990"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Aug 2020 17:37:50 -0700
-IronPort-SDR: wB+ijCfBDvyAk7iBk8biFOdg8/UgprPuE+bWvigBN/oBn+14Lx/jpAfpZwks9xBXDTarmHxEEf
- N5rHUpV8G7Hg==
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; d="scan'208";a="472442637"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Aug 2020 17:38:15 -0700
+IronPort-SDR: DK4xeuBm6hCXz0Uru8ooTQDEMpzuloNBFLZFPUDxsxg6ldwCkr7FgX4D9dGF/ngGfFBAmaokiP
+ KFQ5UjxWBiUw==
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; d="scan'208";a="279836321"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Aug 2020 17:37:48 -0700
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Aug 2020 17:38:13 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [RESEND] ASoC: SOF: Intel: hda: import SOUNDWIRE_INIT namespace
-Date: Wed, 19 Aug 2020 20:44:04 +0800
-Message-Id: <20200819124404.3734-1-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND] ASoC: SOF: Intel: add build support for SoundWire
+Date: Wed, 19 Aug 2020 20:44:29 +0800
+Message-Id: <20200819124429.3785-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 Cc: vkoul@kernel.org, alsa-devel@alsa-project.org,
  pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
@@ -85,23 +85,101 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Make sure the SoundWire driver can be loaded
+Select SoundWire capabilities on newer Intel platforms, starting with
+CannonLake/CoffeeLake/CometLake.
+
+As done for HDaudio, the SoundWire link is an opt-in capability. We
+explicitly test for ACPI to avoid warnings on unmet dependencies on
+the SoundWire side.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/intel/Kconfig | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 63ca920c8e6e..c0b75d682750 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1207,3 +1207,4 @@ MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC);
- MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
-+MODULE_IMPORT_NS(SOUNDWIRE_INTEL_INIT);
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 3aaf25e4f766..f644010cc568 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -166,6 +166,7 @@ config SND_SOC_SOF_CANNONLAKE_SUPPORT
+ config SND_SOC_SOF_CANNONLAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
++	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+@@ -181,6 +182,7 @@ config SND_SOC_SOF_COFFEELAKE_SUPPORT
+ config SND_SOC_SOF_COFFEELAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
++	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+@@ -196,6 +198,7 @@ config SND_SOC_SOF_ICELAKE_SUPPORT
+ config SND_SOC_SOF_ICELAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
++	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+@@ -203,6 +206,7 @@ config SND_SOC_SOF_ICELAKE
+ config SND_SOC_SOF_COMETLAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
++	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+@@ -229,6 +233,7 @@ config SND_SOC_SOF_TIGERLAKE_SUPPORT
+ config SND_SOC_SOF_TIGERLAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
++	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+@@ -244,6 +249,7 @@ config SND_SOC_SOF_ELKHARTLAKE_SUPPORT
+ config SND_SOC_SOF_ELKHARTLAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
++	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+@@ -329,6 +335,29 @@ config SND_SOC_SOF_HDA
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+ 
++config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
++	bool "SOF support for SoundWire"
++	depends on SOUNDWIRE && ACPI
++	help
++	  This adds support for SoundWire with Sound Open Firmware
++		  for Intel(R) platforms.
++	  Say Y if you want to enable SoundWire links with SOF.
++	  If unsure select "N".
++
++config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
++	tristate
++	select SND_SOC_SOF_INTEL_SOUNDWIRE if SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++config SND_SOC_SOF_INTEL_SOUNDWIRE
++	tristate
++	select SOUNDWIRE_INTEL
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
+ endif ## SND_SOC_SOF_INTEL_PCI
+ 
+ endif ## SND_SOC_SOF_INTEL_TOPLEVEL
 -- 
 2.17.1
 
