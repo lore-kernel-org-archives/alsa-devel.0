@@ -6,64 +6,62 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5763C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:59:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54AECC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 08:00:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62B4820738
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:59:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D091220732
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 08:00:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EKbMZCGW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62B4820738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MVWi+eQC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D091220732
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFF5516D9;
-	Fri, 21 Aug 2020 09:58:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFF5516D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B00C16CE;
+	Fri, 21 Aug 2020 09:59:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B00C16CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597996786;
-	bh=5n8Ej9Jyx+ak/RB4zixbPt/7g+d6y/3VfoEVH/79BoE=;
+	s=default; t=1597996823;
+	bh=X0ORiFKrWP0s649SyWVIij8iYQogdHWVg0rWlAHt9tU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EKbMZCGWukbaR5P3FDkbLzXjoZb8XNcK5dy0RTMcvDCSqAKAjuCKifL87ZMOC3cTD
-	 QFyHD2O4dVMLk/56/xbOQcTwryBL3KY13tXa+i9Su+i+jEjSjjxhRUCQfgo8zbDuTp
-	 2z7ndo+PRcWS11GpT9gmedwOGq8A0jpaKviREeRk=
+	b=MVWi+eQC8jPpmqGxMcakCY7W6XenOemc4McniqEWZJmVJHbyNTXVXUJC7IuIEBWWX
+	 wn5TOiD/J1Ka+62LAo7ksXJqJi8WlE2X6XN6Kjx1xswd9JFwBiuhbRZarnMMHfFB+R
+	 O7qMiXDIbadOnJ0UZVzw4dlauuP15bzZvQvF3f1U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA170F804BC;
-	Fri, 21 Aug 2020 09:37:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7422F804CF;
+	Fri, 21 Aug 2020 09:37:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2FE1F80228; Thu, 20 Aug 2020 18:51:21 +0200 (CEST)
+ id 74FCAF80228; Thu, 20 Aug 2020 18:52:16 +0200 (CEST)
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A579F800D3
- for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2020 18:51:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A579F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3DDF7F800D3
+ for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2020 18:52:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DDF7F800D3
 Received: by verein.lst.de (Postfix, from userid 2407)
- id 01D2C68AFE; Thu, 20 Aug 2020 18:51:13 +0200 (CEST)
-Date: Thu, 20 Aug 2020 18:51:12 +0200
+ id 48F9168AFE; Thu, 20 Aug 2020 18:52:13 +0200 (CEST)
+Date: Thu, 20 Aug 2020 18:52:13 +0200
 From: Christoph Hellwig <hch@lst.de>
 To: Tomasz Figa <tfiga@chromium.org>
 Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-Message-ID: <20200820165112.GB12693@lst.de>
+Message-ID: <20200820165213.GC12693@lst.de>
 References: <20200819065555.1802761-1-hch@lst.de>
  <20200819065555.1802761-6-hch@lst.de>
  <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
  <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com>
  <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
- <20200819135738.GB17098@lst.de>
- <CAAFQd5BvpzJTycFvjntmX9W_d879hHFX+rJ8W9EK6+6cqFaVMA@mail.gmail.com>
- <20200820044533.GA4570@lst.de>
- <CAAFQd5CEsC2h-oEdZOPTkUQ4WfFL0yyYu9dE5UscEVpLyMLrCg@mail.gmail.com>
+ <2b32f1d8-16f7-3352-40a5-420993d52fb5@arm.com> <20200820050214.GA4815@lst.de>
+ <CAAFQd5AknYpP5BamC=wJkEJyO-q47V6Gc+HT65h6B+HyT+-xjQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAFQd5CEsC2h-oEdZOPTkUQ4WfFL0yyYu9dE5UscEVpLyMLrCg@mail.gmail.com>
+In-Reply-To: <CAAFQd5AknYpP5BamC=wJkEJyO-q47V6Gc+HT65h6B+HyT+-xjQ@mail.gmail.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Mailman-Approved-At: Fri, 21 Aug 2020 09:36:15 +0200
 Cc: alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
@@ -102,14 +100,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Aug 20, 2020 at 12:09:34PM +0200, Tomasz Figa wrote:
-> > I'm happy to Cc and active participant in the discussion.  I'm not
-> > going to add all reviewers because even with the trimmed CC list
-> > I'm already hitting the number of receipients limit on various lists.
+On Thu, Aug 20, 2020 at 12:24:31PM +0200, Tomasz Figa wrote:
+> > Of course this still uses the scatterlist structure with its annoying
+> > mix of input and output parametes, so I'd rather not expose it as
+> > an official API at the DMA layer.
 > 
-> Fair enough.
+> The problem with the above open coded approach is that it requires
+> explicit handling of the non-IOMMU and IOMMU cases and this is exactly
+> what we don't want to have in vb2 and what was actually the job of the
+> DMA API to hide. Is the plan to actually move the IOMMU handling out
+> of the DMA API?
 > 
-> We'll make your job easier and just turn my MAINTAINERS entry into a
-> maintainer. :)
+> Do you think we could instead turn it into a dma_alloc_noncoherent()
+> helper, which has similar semantics as dma_alloc_attrs() and handles
+> the various corner cases (e.g. invalidate_kernel_vmap_range and
+> flush_kernel_vmap_range) to achieve the desired functionality without
+> delegating the "hell", as you called it, to the users?
 
-Sounds like a plan.
+Yes, I guess I could do something in that direction.  At least for
+dma-iommu, which thanks to Robin should be all you'll need in the
+foreseeable future.
