@@ -2,72 +2,91 @@ Return-Path: <SRS0=2rKR=B6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33AE8C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 23:02:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2DD2C433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 23:33:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2295207DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 23:02:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 234252072D
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2020 23:33:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JDqIwtqG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2295207DF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qMazlqb9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bd5MBqTu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 234252072D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39D2E1675;
-	Fri, 21 Aug 2020 01:01:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39D2E1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82F40167C;
+	Fri, 21 Aug 2020 01:32:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F40167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597964522;
-	bh=Z/yyV3T4ynR7UJwAI6eVT3WX+jLqRlojYZQBxXR09D0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=JDqIwtqGpEjhG4LXOPQjgkP7PGogF+8kIJ2jLqZ8aUAl2dSZwTcoQvZJWliykTJ85
-	 7A5pbvZsi2Z0q1Z3VwbtrmBvBRSZHORblWIoB61TGDwYE2PTRrBP2hXE0G99llxhIe
-	 PT7h/v01Lsov/V6oZ8LGy7qYzKBKKsu8i59gdkGQ=
+	s=default; t=1597966401;
+	bh=IzG2252/GtmYR2U3KHYvq2rpb+U8NbK5RUGLzOodfpE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qMazlqb9dcqDsnrnrm07H+GCG/D1vZ01KXbNP+uueng8J1SE+IqcBtS8zqEU4cPX4
+	 6PbeBInhND2jc8CbiG8clt05uO0grLsUbPSL7a00YQ6BJvxHAiUjMw3oTVoBphS3vh
+	 OVAXIMdUSJCRViO/vH9S5F49h8h9NRQ2o/INSheo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6867F801F9;
-	Fri, 21 Aug 2020 01:01:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8302F800D3;
+	Fri, 21 Aug 2020 01:32:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AEAFF80228; Fri, 21 Aug 2020 01:01:08 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 48E61F80114
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 01:00:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48E61F80114
-Date: 21 Aug 2020 08:00:52 +0900
-X-IronPort-AV: E=Sophos;i="5.76,334,1592838000"; d="scan'208";a="54887817"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 21 Aug 2020 08:00:52 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id ACAA540062CD;
- Fri, 21 Aug 2020 08:00:52 +0900 (JST)
-Message-ID: <87lfi8zzze.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v2 0/9] Audio graph card updates and usage with Tegra210
- audio
-In-Reply-To: <8fa4a359-c80c-9c8f-93fa-c1cc25b322e8@nvidia.com>
-References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
- <87v9highuf.wl-kuninori.morimoto.gx@renesas.com>
- <8fa4a359-c80c-9c8f-93fa-c1cc25b322e8@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
- nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
- viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
+ id D13C9F8023F; Fri, 21 Aug 2020 01:32:27 +0200 (CEST)
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
+ [IPv6:2607:f8b0:4864:20::1035])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 111FBF800D3
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 01:32:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 111FBF800D3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="bd5MBqTu"
+Received: by mail-pj1-x1035.google.com with SMTP id nv17so7517pjb.3
+ for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2020 16:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=oHRUaXVxFTwOM/ib33v9O2zJFH8XkU6FcMZ3065ZAnE=;
+ b=bd5MBqTuXT891F0ZO2St+ccmRXmL6vB8zWdxaQ9Yo0srssHXevWXdnFfw9mA80DdB2
+ /6q1aLZTTyoxzfctmqcJSeMibeVgv8TzdD3WOroHZTDiK2EqVAUySCgfln/awjOGY66x
+ m7MhEnX5N2IPtWSIgmz4TnDsd/equMzbWlvPY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=oHRUaXVxFTwOM/ib33v9O2zJFH8XkU6FcMZ3065ZAnE=;
+ b=nWob5x4adrU1KoJijxU9f/5DzyE+BxLCJB0WK836fdO01alRQS4vHIIcK1WkSqY3XT
+ IYwR3ne5HcON7Gs8N5T/J7RNGeeBdTrXqapVYQ+Y/aiyquACm/dScg7P8T65wCTD0Eqk
+ LXe6iWthFjAHD7jznNz+m43uMZDHMvv5rUaOokm6oq73QbWjdwqTqOBbCxD+iGLLqLWj
+ P0D+svo+c2+TNYSPSmYFaVUUX6WS7nSTu80VBV1TiLaWqAax7NYeKiFdAPuep3A6oqxb
+ OSDcItqdDQ4L865q/b9l7zifehhLh4FKtgeLitGHfQpDAItIapktmZbt0oQEbBVmKbX+
+ BuBQ==
+X-Gm-Message-State: AOAM532y9b44m4XGOEtFZd5xapRYhsxVQctmXtZbnzLepnEHiWgjOf/z
+ QWsM9E8p+FTlG/nM2VKMqt5WPC/o4u3N6Rw=
+X-Google-Smtp-Source: ABdhPJzlRkIwsZo1jjq4KU07iXLGV99n/PDyupimpGDtwW+5WQeEeuW2hBOPoRg+PPQeou2vgbnbFw==
+X-Received: by 2002:a17:90b:784:: with SMTP id l4mr141635pjz.96.1597966336215; 
+ Thu, 20 Aug 2020 16:32:16 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:7220:84ff:fe09:2f18])
+ by smtp.gmail.com with ESMTPSA id lk16sm6297pjb.13.2020.08.20.16.32.15
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 20 Aug 2020 16:32:15 -0700 (PDT)
+From: Curtis Malainey <cujomalainey@chromium.org>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/2] ucm: Add JackSwitch definition
+Date: Thu, 20 Aug 2020 16:32:04 -0700
+Message-Id: <20200820233205.505925-1-cujomalainey@chromium.org>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, Curtis Malainey <cujomalainey@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,32 +102,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Some codecs can differentiate headsets based on the number of rings.
+Should we choose to differentiate the config we will need to be able to
+select based on the jack event code.
 
-Hi Sameer
-
-> >> This series proposes following enhancements to audio-graph card driver.
-> >>   * Support multiple instances of a component.
-> >>   * Support open platforms with empty Codec endpoint.
-> >>   * Identify no-pcm DPCM DAI links which can be used in BE<->BE connections.
-> >>   * Add new compatible to support DPCM based DAI chaining.
-> >> 
-> >> This pushes DT support for Tegra210 based platforms which uses audio-graph
-> >> card and above enhancements.
-> >> 
-> >> The series is based on following references where DPCM usgae for Tegra
-> >> Audio and simple-card driver proposal were discussed.
-> >>   * https://lkml.org/lkml/2020/4/30/519 (DPCM for Tegra)
-> >>   * https://lkml.org/lkml/2020/6/27/4 (simple-card driver)
-> > I will try to test this patch-set this week, and report/review it.
-> 
-> Thank you for review so far. Have you also got a chance to review
-> remaining commits in the series?
-
-I have no comment/opinion for other patches.
-Thanks
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 ---
-Kuninori Morimoto
+ include/use-case.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/use-case.h b/include/use-case.h
+index 2363c3ed..80148a7b 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -386,6 +386,9 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
+  *        to e.g. automatically mute speakers when headphones are plugged in,
+  *        but that's application policy configuration that doesn't belong
+  *        to UCM configuration files.
++ *   - JackSwitch
++ *      - Represents the jack switch value for this device. Value is a base 10
++ *        value of a switch code in input_event_codes.h
+  *   - MinBufferLevel
+  *	- This is used on platform where reported buffer level is not accurate.
+  *	  E.g. "512", which holds 512 samples in device buffer. Note: this will
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
