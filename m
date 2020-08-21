@@ -8,88 +8,87 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E33C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 505A4C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:05:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8448F20738
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:05:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D190520738
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:05:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Npg/ccPv";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mE+a7e+L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8448F20738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O59bE0Ed";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+m4RFJ5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D190520738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CE671687;
-	Fri, 21 Aug 2020 21:04:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CE671687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6246D169E;
+	Fri, 21 Aug 2020 21:04:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6246D169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598036711;
-	bh=bK141jokSuVa+qRhNWCNHGtH7vlrtxW6EzlqheQyRH4=;
+	s=default; t=1598036738;
+	bh=eXISs/GcJTpxpOGs3a3RWPrYXjg0UmUsXpRhUnhf27o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Npg/ccPv4UlK1qTNJ6qlV7i6Gql5ZEC8qfJP/cWfPX75p5janj00Rhyz3f5QJJJNA
-	 W/3cqBAYZ3HiCIE2ddlxIULj3MmPn/EwmvdVR8pYhBbtJH1ysyvkpRH/lPR1zprDg9
-	 N3spK8t3mcVWE7xUj+FbwjuoV0WDoqgFMLubW094=
+	b=O59bE0EdzGJ08GmG3u7JFpExKkwc7qGDdJ1+dF0p3g8iIbosCO2cJx+J06K2KVvW3
+	 Namn4LBss6gXpLh0CWGTqKUF93b2jcqwxkZsGGV1nQWr3lYMzgfEqdANfnl4pvwRM1
+	 yDeVfhdGKDios64px90mRFvhn1rY+WgEGudkw/Js=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B56DF80361;
-	Fri, 21 Aug 2020 20:54:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FC9DF80367;
+	Fri, 21 Aug 2020 20:54:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E579F80317; Fri, 21 Aug 2020 20:54:22 +0200 (CEST)
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
- [IPv6:2607:f8b0:4864:20::f42])
+ id 23497F80322; Fri, 21 Aug 2020 20:54:24 +0200 (CEST)
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
+ [IPv6:2607:f8b0:4864:20::842])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0709F80308
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 20:54:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0709F80308
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF0F6F80304
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 20:54:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF0F6F80304
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="mE+a7e+L"
-Received: by mail-qv1-xf42.google.com with SMTP id cs12so1088073qvb.2
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 11:54:16 -0700 (PDT)
+ header.b="E+m4RFJ5"
+Received: by mail-qt1-x842.google.com with SMTP id h21so1920729qtp.11
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 11:54:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Nh1SeH655blb1lMsGRsZcuvpTaQWPjWEn/zrRW9ahdk=;
- b=mE+a7e+L2zMvC3oBW95DSznj8stF0K+CCHUS7uvPsHY2jNp+L2nhKvp1nNnfpk3bIe
- jOxyztVEfgvd7sf8pbyzkprs0aNnNrElB8py6oBxLjx6+1u6rRUWFmlcdH4PWmNDVMIG
- zshJDg8WrAiyHQea1lJB9G2YN3hCVt69g2ZmK2ZijznzbY9HGfTXerRQAApQXwx5oB5k
- 0O1u0C3ba6Pwh5fZVNML/PErCmcyf+ZwEalBXFM3Oz5TzCKuaoq+WG1l+WpyQwchg0Ls
- 2oQFChZEF+Hb3P326cFah7Qi4l4PEay+Z6lA5I9mVOdFABo80L8nAl/WDScRbMDUtcyT
- GsMg==
+ bh=4j2Ooeu2ISog/lD6w0WCQQfInoe31/wDtwY8WRaL+vA=;
+ b=E+m4RFJ5QjMLgUBBbjCVHqOjHdtW7gV5D4XIJMrylgMlbQpr8JfjFy6bxdse0YqabM
+ tBC8Jt/qH66/L2shnWcXhgpbk/pl6i6gRf87g6BA/EjIM17qN+uHg708iewH45k5prGH
+ Go7ZpC/GpVQuZLtEq2XyFa59AMk8c36MbYG1VzdMqCTb5j2bi9LwZcS5nT4LrzMTOXSZ
+ 0WyNWH5DpSihpawOmNY8ZUIKEemKAQoVac+Pl75A3QBZR4jGN2F9BTPH3ZIj21C6nlBN
+ RC02BsHtAzjtVPe+0c5cbTEkhx6H9xObvmK7GopRqt7sxPvptuXq6cpwD8slOkI1i8CH
+ K/wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Nh1SeH655blb1lMsGRsZcuvpTaQWPjWEn/zrRW9ahdk=;
- b=V2w+e40F61J3cCTUa669HSpG+rHQ7my9XlwIJvO0c6WdzTKEuQIoO7rwx2b5olO9Q3
- ypNp9YWaI0YwiBuYk0/cr4RUEA90h/ldWiIuHdz7qk2CEi9WCCYGnNnzaXOMb+VXjgIW
- 9RQ5AzUmHUV4GzoYd0oeNee+5+6sEDl8/K+WOGhs1eDt7hkx4hpFY9D8KU1O7QgIlQc9
- fld4VW0rHlhg8XCquD67GQS6eARypaPJZS+pvQEZMz1utdb1TbHCZCshiHUOTX6kViMa
- 4GYfacjA7waXbUBxqSVer89lrKH66Oti2Mzf52Wq+iJyAWT4N2vvDEziQqV5BAceCIJU
- 1h6A==
-X-Gm-Message-State: AOAM5318smqRoJw7YKIgioNe/dIzsYlAyrFjdUmuRO46ZW64XteJQJCl
- 8UW6WWNZFT3yO/CO8Xpf76o=
-X-Google-Smtp-Source: ABdhPJwE4nMumlYjaLS4lWaAmu6jEEVGiRXoA1KUQpzmOPGLoyj3FUleVHp+0RO/r0PTDtY2AX2QIA==
-X-Received: by 2002:ad4:510b:: with SMTP id g11mr3567035qvp.20.1598036054969; 
- Fri, 21 Aug 2020 11:54:14 -0700 (PDT)
+ bh=4j2Ooeu2ISog/lD6w0WCQQfInoe31/wDtwY8WRaL+vA=;
+ b=b9Wwe83+XHbHriphS84rvn6LLE+HO9DyaNJqZPAJsCUshkaToLhSk+gRdVc0jNs38m
+ cD9RwF769kn7TjZpcQsVa1DvB7dBJYOJPPQDQj2/t8OTRx6y7c5eCUbLPbncnVlhJ25t
+ S1kJSywgL/jE8HVljbESTZH4+zj1A2PJqjxWfplse97t8Dk9e1hPl26sWehsXr2zzVg5
+ 4lgssRtI1VQ5uLl1Rq8L9sDXPjq2WqYQJNKRofuQnj+Xm3uDMYleakgCJx9jyMq0uVut
+ DMglM8JaVXu3AWdzDzze3X+m0Ks4kDu6xSitCua/nJsTJSrZJV4DfLgofrcpJnrZ7H2W
+ Jr0A==
+X-Gm-Message-State: AOAM531NecA5RTWFJuYnrgRwJFq4WL0Zs6QJXFDERUHDkCsPXJbLQEQX
+ DW5YqXDdmQVucBMKVpHJXJA=
+X-Google-Smtp-Source: ABdhPJwr6TUAy9j3Vami64pyga/LqLY2P0SXRXQyBHOMFag3xf3VX1zyuPurLP+i660UUSJjECDduQ==
+X-Received: by 2002:aed:3b57:: with SMTP id q23mr4031882qte.150.1598036056850; 
+ Fri, 21 Aug 2020 11:54:16 -0700 (PDT)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
  [71.65.111.223])
- by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.54.14
+ by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.54.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 Aug 2020 11:54:14 -0700 (PDT)
+ Fri, 21 Aug 2020 11:54:16 -0700 (PDT)
 From: Connor McAdams <conmanx360@gmail.com>
 To: 
-Subject: [PATCH 18/20] ALSA: hda/ca0132 - Add AE-7 microphone selection
- commands.
-Date: Fri, 21 Aug 2020 14:52:35 -0400
-Message-Id: <20200821185239.26133-19-conmanx360@gmail.com>
+Subject: [PATCH 19/20] ALSA: hda/ca0132 - Add AE-7 custom controls.
+Date: Fri, 21 Aug 2020 14:52:36 -0400
+Message-Id: <20200821185239.26133-20-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200821185239.26133-1-conmanx360@gmail.com>
 References: <20200821185239.26133-1-conmanx360@gmail.com>
@@ -112,61 +111,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add AE-7 quirk data for setting of microphone. The AE-7 has no front
-panel connector, so only rear-mic/line-in have new commands.
+Add headphone gain and DAC filter controls, which use the same commands
+as the AE-5. Also, change input source enumerated control item count to
+exclude front microphone.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_ca0132.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index ad594c2d47ec..933f3b0be63e 100644
+index 933f3b0be63e..9c70d85b21e0 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -4997,6 +4997,15 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
- 			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
- 			tmp = FLOAT_THREE;
- 			break;
-+		case QUIRK_AE7:
-+			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
-+			tmp = FLOAT_THREE;
-+			chipio_set_conn_rate(codec, MEM_CONNID_MICIN2,
-+					SR_96_000);
-+			chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2,
-+					SR_96_000);
-+			dspio_set_uint_param(codec, 0x80, 0x01, FLOAT_ZERO);
-+			break;
- 		default:
- 			tmp = FLOAT_ONE;
- 			break;
-@@ -5042,6 +5051,14 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
- 		case QUIRK_AE5:
- 			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
- 			break;
-+		case QUIRK_AE7:
-+			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x3f);
-+			chipio_set_conn_rate(codec, MEM_CONNID_MICIN2,
-+					SR_96_000);
-+			chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2,
-+					SR_96_000);
-+			dspio_set_uint_param(codec, 0x80, 0x01, FLOAT_ZERO);
-+			break;
- 		default:
- 			break;
+@@ -5839,6 +5839,13 @@ static int ca0132_alt_input_source_put(struct snd_kcontrol *kcontrol,
+ 	int sel = ucontrol->value.enumerated.item[0];
+ 	unsigned int items = IN_SRC_NUM_OF_INPUTS;
+ 
++	/*
++	 * The AE-7 has no front microphone, so limit items to 2: rear mic and
++	 * line-in.
++	 */
++	if (ca0132_quirk(spec) == QUIRK_AE7)
++		items = 2;
++
+ 	if (sel >= items)
+ 		return 0;
+ 
+@@ -7029,20 +7036,25 @@ static int ca0132_build_controls(struct hda_codec *codec)
  		}
-@@ -5051,7 +5068,10 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
- 		if (ca0132_quirk(spec) == QUIRK_R3DI)
- 			chipio_set_conn_rate(codec, 0x0F, SR_96_000);
+ 	}
  
--		tmp = FLOAT_ZERO;
-+		if (ca0132_quirk(spec) == QUIRK_AE7)
-+			tmp = FLOAT_THREE;
-+		else
-+			tmp = FLOAT_ZERO;
- 		dspio_set_uint_param(codec, 0x80, 0x00, tmp);
- 
- 		switch (ca0132_quirk(spec)) {
+-	if (ca0132_quirk(spec) == QUIRK_AE5) {
++	switch (ca0132_quirk(spec)) {
++	case QUIRK_AE5:
++	case QUIRK_AE7:
+ 		err = ae5_add_headphone_gain_enum(codec);
+ 		if (err < 0)
+ 			return err;
+ 		err = ae5_add_sound_filter_enum(codec);
+ 		if (err < 0)
+ 			return err;
+-	}
+-
+-	if (ca0132_quirk(spec) == QUIRK_ZXR) {
++		break;
++	case QUIRK_ZXR:
+ 		err = zxr_add_headphone_gain_switch(codec);
+ 		if (err < 0)
+ 			return err;
++		break;
++	default:
++		break;
+ 	}
++
+ #ifdef ENABLE_TUNING_CONTROLS
+ 	add_tuning_ctls(codec);
+ #endif
 -- 
 2.20.1
 
