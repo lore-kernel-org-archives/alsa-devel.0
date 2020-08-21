@@ -2,85 +2,96 @@ Return-Path: <SRS0=Ooul=B7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB5C1C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8724C433E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 18:54:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3912A2072D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:43:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B05120748
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 18:54:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R48eliDI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qMiOzNe6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3912A2072D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OFX+6CuL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IHn3Pdrj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B05120748
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C67AD1730;
-	Fri, 21 Aug 2020 18:43:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C67AD1730
+	by alsa0.perex.cz (Postfix) with ESMTPS id B894D1678;
+	Fri, 21 Aug 2020 20:53:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B894D1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598028233;
-	bh=DtGgnPkg8Vi64C6+dKTHm1EqoFMOck2QxuISZD/5lx0=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=R48eliDIu3rqTWxXiK39nQOSCA29xyokfCL+IK0Vo/fDZal5kkxvlsDZJ2tHfJyrD
-	 xllnP7FeA+vu5ryd0Eda6kxEGDwuusSIYMTtCaxG9GUC6C2rVD5F434iTzL+aVZMsg
-	 rttrNdvEDgYj1LYu/yU/HachRoTp7BKFdyJc1MgE=
+	s=default; t=1598036079;
+	bh=3acBYzPJQFFIlOET0djmRKFKZh5eY9uTW5a4pNQNb1E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OFX+6CuLqJlDMNb7rWiXxPWoNzre/McEaUaINZoAwGcJKhVjFgIw64eDzudbg660/
+	 ca+5ogUED4RIXZrRXV5t06FQLQIXgfxb0J5jPmiaJcyN2GemTVhXZlLxBzDizaTdtZ
+	 k8ixdUzYh+cREYKFhxvq01gfeIFZverleiaPHXgU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF597F802D2;
-	Fri, 21 Aug 2020 18:40:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 237F8F80253;
+	Fri, 21 Aug 2020 20:53:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC254F802DD; Fri, 21 Aug 2020 18:40:38 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 93F18F80253; Fri, 21 Aug 2020 20:53:46 +0200 (CEST)
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
+ [IPv6:2607:f8b0:4864:20::842])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D769F802D2
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:40:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D769F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A0E7F800C0
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 20:53:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A0E7F800C0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qMiOzNe6"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 527382072D;
- Fri, 21 Aug 2020 16:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598028034;
- bh=DtGgnPkg8Vi64C6+dKTHm1EqoFMOck2QxuISZD/5lx0=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=qMiOzNe6KP7t162HHbQjkPpYIlCVtFv8ltnH10opD/JDehV3q+upopsMV2bo60TM8
- 6Z8WJGPJUdMhItnbU72Y6dskZsMOoGS2HMZSYzDh6KgmEGd3CpOKS9Q4VMnCh+7Qxa
- GA4kPln/R6m7gkeNxxk4N6dWGdmMey+I6ho9CHW8=
-Date: Fri, 21 Aug 2020 17:40:02 +0100
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <1596198365-10105-1-git-send-email-brent.lu@intel.com>
-References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
- <1596198365-10105-1-git-send-email-brent.lu@intel.com>
-Subject: Re: [PATCH v3 0/2] Add period size constraint for Atom Chromebook
-Message-Id: <159802798182.25503.9357316995968776171.b4-ty@kernel.org>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Sam McNally <sammc@chromium.org>, Damian van Soelen <dj.vsoelen@gmail.com>,
- Daniel Stuart <daniel.stuart14@gmail.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Yu-Hsuan Hsu <yuhsuan@chromium.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="IHn3Pdrj"
+Received: by mail-qt1-x842.google.com with SMTP id w9so1937892qts.6
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 11:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=6fEk5o+JtGsEMi+t1XipTCOzTB4EYy5u5pAnjhPn+tc=;
+ b=IHn3PdrjjkxPkH4x22lOEh8mz7SNlFAtCTdUqXGkJQNcr2zYGRLUIhWPChaEStztrQ
+ fC/X4a4IPpXC+NY6PV3e13wwGSXbSutrgBvEH73X2uTEg6Xexsr19AGU9QjZhTNFNv9x
+ NdqMYitYDpykv2AWPTiK4bJrpYsjuc4oSaSL9WWNnMA3QzMNEwiRbL44QUpyJpuBnP5d
+ xJdHOFyVMWGVxmdu0QhU8ph4AOeofUo9QO2a8SJma2sX6/7ZSpMj1KUYJDrFphbiyCtK
+ qD+CYmbFsLahWwV05hIQgi6XNJ+eYkuoJBqWoH2lTf1YqXyOjVnj6GpNSzTI3//xx9tY
+ pl+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=6fEk5o+JtGsEMi+t1XipTCOzTB4EYy5u5pAnjhPn+tc=;
+ b=S5EgJWxKkENbw6I2a4dmDN7Tvtao0+EeNrCEh8DeYqWrm33+XDc4HUSv2HAGy3Qd4d
+ 92ky4zQwe4Taff6h+RvwzHDL3AIqUN6aeQ7uQnsnw/CmacE3xZ0L4txaspJmhxz9HJ8t
+ lfBvGVuhObi4l18qkv8/8hIkjNqGhHeZ2J5xekxALAOtiC+rqEv9KCQub+uw6UwitKdL
+ jU6zwMXOpZ18aj9Rm7YRatxXB+mtLWYVtlIftVyXHN+2rX+YdG/9XrkMOlq95Ey+hdVn
+ O/ei6jlPpm04Xx2YP5bpfekNyT6o0uedd3mfwvcIEjgN6HVhnpWIPcFJHR/iFTF1vPhT
+ ZUPQ==
+X-Gm-Message-State: AOAM531vQ7sHjpq5FyqlSvFAmdPb5MT4ECD1X0OUU+X8QEKNtoda2aOY
+ W2DhWFkCioouNnw0PhaASTo=
+X-Google-Smtp-Source: ABdhPJxqidkPRdoAqeh12zWutA108nXj9dr2/WKtZ5kYfsIuy56E6pDiDC5ku6o7yafxKR14Hb7DfA==
+X-Received: by 2002:ac8:4117:: with SMTP id q23mr4029550qtl.186.1598036019416; 
+ Fri, 21 Aug 2020 11:53:39 -0700 (PDT)
+Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
+ [71.65.111.223])
+ by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.53.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 21 Aug 2020 11:53:38 -0700 (PDT)
+From: Connor McAdams <conmanx360@gmail.com>
+To: 
+Subject: [PATCH 00/20] ALSA: hda/ca0132 - Add AE-7 support/Control cleanup.
+Date: Fri, 21 Aug 2020 14:52:17 -0400
+Message-Id: <20200821185239.26133-1-conmanx360@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org, conmanx360@gmail.com,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,42 +107,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 31 Jul 2020 20:26:03 +0800, Brent Lu wrote:
-> Two different constraints are implemented: one is in platform's CPU
-> DAI to enforce the period to be multiple of 1ms to align with firmware
-> design. The other is in Atom Chromebook's machine driver to use 240 as
-> period size which is selected by google.
-> 
-> 
-> Changes since v1:
-> -Add comma at the end of media_period_size array declaration.
-> 
-> [...]
+This patch series adds support for the Sound Blaster AE-7 along with
+adding new controls and cleaning up the old ones. I have personally
+tested the Recon3D, Recon3Di, Sound Blaster Z/ZxR, and AE-5 cards to
+confirm they work with these patches. Another user has confirmed that
+they work on the AE-7.
 
-Applied to
+Connor McAdams (20):
+  ALSA: hda/ca0132 - Cleanup ca0132_mmio_init function.
+  ALSA: hda/ca0132 - Add speaker tuning initialization commands.
+  ALSA: hda/ca0132 - Add surround channel config control.
+  ALSA: hda/ca0132 - Add full-range speaker selection controls.
+  ALSA: hda/ca0132 - Add bass redirection controls.
+  ALSA: hda/ca0132 - Remove surround output selection.
+  ALSA: hda/ca0132 - Clean up ca0132_alt_out_select.
+  ALSA: hda/ca0132 - Add quirk output selection structures.
+  ALSA: hda/ca0132 - Fix Recon3D Center/LFE output.
+  ALSA: hda/ca0132 - Add new quirk ID for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add SoundBlaster AE-7 pincfg.
+  ALSA: hda/ca0132 - Set AE-7 bools and select mixer.
+  ALSA: hda/ca0132 - Add ca0132_mmio_init data for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add pre-init function for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add init data for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add DSP setup functions for AE-7.
+  ALSA: hda/ca0132 - Add output selection for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add AE-7 microphone selection commands.
+  ALSA: hda/ca0132 - Add AE-7 custom controls.
+  ALSA: hda/ca0132 - Add AE-7 exit commands.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+ sound/pci/hda/patch_ca0132.c | 1794 +++++++++++++++++++++++++++-------
+ 1 file changed, 1430 insertions(+), 364 deletions(-)
 
-Thanks!
+-- 
+2.20.1
 
-[1/1] ASoC: intel: atom: Add period size constraint
-      commit: 5e7820e369248f880767c4c4079b414529bc2125
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
