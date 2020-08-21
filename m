@@ -6,68 +6,67 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C626CC433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:31:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 804FFC433E3
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:31:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4720F207DE
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:31:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0F15C207DE
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:31:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KkT1tRzA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1CGF92dN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4720F207DE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WGRSosa6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fn38HLXn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F15C207DE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C45BA16FF;
-	Fri, 21 Aug 2020 18:30:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C45BA16FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4D5416ED;
+	Fri, 21 Aug 2020 18:30:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4D5416ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598027471;
-	bh=RA20fT0TwJ5xJ395cUD+YGIQN+UL6HpyNW/jNAwOTuo=;
+	s=default; t=1598027502;
+	bh=ySY7r+XvByWG/h02YkSpizvqYnRnOEsqEYmyDA8cBmk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KkT1tRzAnMzxMJJl9/jEGsJRhkZXJ9hq39iJI/aFEgv2T2+Fk6qjqixBYA5YMEW3d
-	 N/49E7ubYZQ/vLwIG7jZJnhKbLYYuHNzzgOZJuaD+0fC+/AGT/2BS0gLZr3wBcVsPH
-	 P1ggSHCGaVtQkTVYpfevqNHZqALlxeI3Y2qE5UFg=
+	b=WGRSosa64dBJ0k83u485UF4hXlBtsrM9kt0N7xhXZGmjze0K0PhF/qBoULP2bA4V7
+	 znCmlUiR85utvXencWdFazqbeiVxob4zEsiwfy5yvduf7f1MhSsJ+ZlNHRw0J8H7tE
+	 nFq435Kg6aJhGkCAg3pdaEz4Nue5Q+Vm4Q+hFzXA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44193F80392;
-	Fri, 21 Aug 2020 18:18:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 394BCF80393;
+	Fri, 21 Aug 2020 18:18:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55531F802E1; Fri, 21 Aug 2020 18:18:23 +0200 (CEST)
+ id 5CB3EF80392; Fri, 21 Aug 2020 18:18:23 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6658F802E1
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:18:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6658F802E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45C03F80392
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:18:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45C03F80392
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="1CGF92dN"
+ header.b="Fn38HLXn"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E563D22CAD;
- Fri, 21 Aug 2020 16:18:10 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 18D0C22CA0;
+ Fri, 21 Aug 2020 16:18:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026691;
- bh=RA20fT0TwJ5xJ395cUD+YGIQN+UL6HpyNW/jNAwOTuo=;
+ s=default; t=1598026693;
+ bh=ySY7r+XvByWG/h02YkSpizvqYnRnOEsqEYmyDA8cBmk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=1CGF92dNTMTWqsaJTnJ6Do7t038/VmMrVSpVRioIC7f28CLKMLr2nBHBufNfbBGcg
- dSBiL2tBqk3QXsr2hdywsxOp4LL87l78mLGVPGlFLSl29mzh3e76jd6oFoX95OESyh
- epbrGthuWlRPaYrYqMNmWGQvkxcqXJ/zzGxkzoiE=
+ b=Fn38HLXnmjse0s8SeiKmcQBQ/sZAKUQeZqkztCPAtbQkI4F3G4bdPpVbxiQI0n3eK
+ D6+8u39kL4t1p8T3dvuLornndIKYPrAjPRV+S26/BoSHKsIgW0e3Ix1pLgMO00wUma
+ sO9pmsLS3w4yZHQeTNmJQXDohV6zuYMOh7B1rlpA=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 03/38] ASoC: img-parallel-out: Fix a reference
- count leak
-Date: Fri, 21 Aug 2020 12:17:32 -0400
-Message-Id: <20200821161807.348600-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 04/38] ASoC: tegra: Fix reference count leaks.
+Date: Fri, 21 Aug 2020 12:17:33 -0400
+Message-Id: <20200821161807.348600-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821161807.348600-1-sashal@kernel.org>
 References: <20200821161807.348600-1-sashal@kernel.org>
@@ -76,7 +75,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Qiushi Wu <wu000273@umn.edu>
+ Jon Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ Qiushi Wu <wu000273@umn.edu>, linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,37 +94,54 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 6b9fbb073636906eee9fe4d4c05a4f445b9e2a23 ]
+[ Upstream commit deca195383a6085be62cb453079e03e04d618d6e ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code, causing incorrect ref count if
-pm_runtime_put_noidle() is not called in error handling paths.
-Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
+Calling pm_runtime_get_sync increments the counter even in case of
+failure, causing incorrect ref count if pm_runtime_put is not called in
+error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
 
 Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Link: https://lore.kernel.org/r/20200614033344.1814-1-wu000273@umn.edu
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20200613204422.24484-1-wu000273@umn.edu
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/img/img-parallel-out.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/tegra/tegra30_ahub.c | 4 +++-
+ sound/soc/tegra/tegra30_i2s.c  | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index acc005217be06..f56752662b199 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -166,8 +166,10 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 43679aeeb12be..88e838ac937dc 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -655,8 +655,10 @@ static int tegra30_ahub_resume(struct device *dev)
+ 	int ret;
  
- 	ret = pm_runtime_get_sync(prl->dev);
+ 	ret = pm_runtime_get_sync(dev);
 -	if (ret < 0)
 +	if (ret < 0) {
-+		pm_runtime_put_noidle(prl->dev);
++		pm_runtime_put(dev);
  		return ret;
 +	}
+ 	ret = regcache_sync(ahub->regmap_ahub);
+ 	ret |= regcache_sync(ahub->regmap_apbif);
+ 	pm_runtime_put(dev);
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 0b176ea24914b..bf155c5092f06 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -551,8 +551,10 @@ static int tegra30_i2s_resume(struct device *dev)
+ 	int ret;
  
- 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
- 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
+ 	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put(dev);
+ 		return ret;
++	}
+ 	ret = regcache_sync(i2s->regmap);
+ 	pm_runtime_put(dev);
+ 
 -- 
 2.25.1
 
