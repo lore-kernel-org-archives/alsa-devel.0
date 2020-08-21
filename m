@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C093C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:18:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64C9CC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:18:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7FD52063A
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:18:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E68F522D71
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:18:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WVmHF/Vw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqZoTbqm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7FD52063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eZfdjeFm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DiJ8Asxh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E68F522D71
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52B5E16A9;
-	Fri, 21 Aug 2020 18:17:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52B5E16A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 612AB16B2;
+	Fri, 21 Aug 2020 18:17:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 612AB16B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598026684;
-	bh=cAA9DlpTrMCDJIGEUfaf/cn0vOGig3xNSRqqtLuzOrk=;
+	s=default; t=1598026727;
+	bh=G7Bxe3htfLyEMy8okKHuhNIpEbesWGNFyZOsNYvkWzo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WVmHF/VwJR4qPTkzhAk+x6ItCHnXrsq7useV5Af4CrTJ/pbU2WouEYqWDGjsN3rHe
-	 mtIC7bp12O7CvHRJTEMi3LZ/rLAzUlbKEWv7JzNH3lXr7viTIf/x9VyFhdQ1ZFccTx
-	 6dW6U7/5FLG2KbcaF421s//f9R9aDrIIrjqQiJWc=
+	b=eZfdjeFmqebG5YPAu2Un3Sk0veDMxzKDMvjmJ7QqoyCmCiutzdx3/d+CfAFK60iYh
+	 q0j2hBrEBmPCjl0Zss8cRVk3Qjh9OMQheGbj1Aw8dtnqqYol/l92DCHp5Vz7Bb1yUy
+	 SqDlF0ISDx4Syty+t8bBrb+8qORzASZf5qoOX7nI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13051F802D2;
+	by alsa1.perex.cz (Postfix) with ESMTP id E2508F802E2;
 	Fri, 21 Aug 2020 18:14:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEDE1F802C3; Fri, 21 Aug 2020 18:14:45 +0200 (CEST)
+ id 23BB8F80257; Fri, 21 Aug 2020 18:14:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC7A2F80218
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:14:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC7A2F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEFFBF80255
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:14:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEFFBF80255
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gqZoTbqm"
+ header.b="DiJ8Asxh"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B080F20FC3;
- Fri, 21 Aug 2020 16:14:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 89AD62224D;
+ Fri, 21 Aug 2020 16:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026467;
- bh=cAA9DlpTrMCDJIGEUfaf/cn0vOGig3xNSRqqtLuzOrk=;
+ s=default; t=1598026473;
+ bh=G7Bxe3htfLyEMy8okKHuhNIpEbesWGNFyZOsNYvkWzo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=gqZoTbqmHnmWf3P8egcLnf02Ilzyi8eyHCPK+8myUC2OK3dJjfNv7jU5vW4dmHEKi
- SJsdGCG2GzOlQ2hLf7e+5UCHnbbRMQjDMBSm19+QhpC5Rss2aS9xwfOaAHp1vtcMXW
- AEkD3dE6thmRzPL4cJPLnsfmjO0U3R+GJG27SdMU=
+ b=DiJ8AsxhFt693FsnMMHtLU/1FdZKpp9E4e6v2qkm1hfXSVsYL0U6k8ubOgoYK0cz0
+ fVuvvGJGiVV1lB0pTuIPXaFla2UOdYU+WA9UW6agoyyarl6iRq91fLc1KlRkbR0IyJ
+ MQhIoKlGuW8v4H1slSomda/EnIdaQj5WBjNKK8S0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 02/62] ALSA: pci: delete repeated words in comments
-Date: Fri, 21 Aug 2020 12:13:23 -0400
-Message-Id: <20200821161423.347071-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 07/62] ASoC: img: Fix a reference count leak in
+ img_i2s_in_set_fmt
+Date: Fri, 21 Aug 2020 12:13:28 -0400
+Message-Id: <20200821161423.347071-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
 References: <20200821161423.347071-1-sashal@kernel.org>
@@ -74,8 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Qiushi Wu <wu000273@umn.edu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,118 +92,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit c7fabbc51352f50cc58242a6dc3b9c1a3599849b ]
+[ Upstream commit c4c59b95b7f7d4cef5071b151be2dadb33f3287b ]
 
-Drop duplicated words in sound/pci/.
-{and, the, at}
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code, causing incorrect ref count if
+pm_runtime_put_noidle() is not called in error handling paths.
+Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://lore.kernel.org/r/20200806021926.32418-1-rdunlap@infradead.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Link: https://lore.kernel.org/r/20200614033749.2975-1-wu000273@umn.edu
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/cs46xx/cs46xx_lib.c       | 2 +-
- sound/pci/cs46xx/dsp_spos_scb_lib.c | 2 +-
- sound/pci/hda/hda_codec.c           | 2 +-
- sound/pci/hda/hda_generic.c         | 2 +-
- sound/pci/hda/patch_sigmatel.c      | 2 +-
- sound/pci/ice1712/prodigy192.c      | 2 +-
- sound/pci/oxygen/xonar_dg.c         | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/img/img-i2s-in.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
-index a080d63a9b456..4490dd7469d99 100644
---- a/sound/pci/cs46xx/cs46xx_lib.c
-+++ b/sound/pci/cs46xx/cs46xx_lib.c
-@@ -766,7 +766,7 @@ static void snd_cs46xx_set_capture_sample_rate(struct snd_cs46xx *chip, unsigned
- 		rate = 48000 / 9;
+diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
+index e30b66b94bf67..0843235d73c91 100644
+--- a/sound/soc/img/img-i2s-in.c
++++ b/sound/soc/img/img-i2s-in.c
+@@ -343,8 +343,10 @@ static int img_i2s_in_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	chan_control_mask = IMG_I2S_IN_CH_CTL_CLK_TRANS_MASK;
  
- 	/*
--	 *  We can not capture at at rate greater than the Input Rate (48000).
-+	 *  We can not capture at a rate greater than the Input Rate (48000).
- 	 *  Return an error if an attempt is made to stray outside that limit.
- 	 */
- 	if (rate > 48000)
-diff --git a/sound/pci/cs46xx/dsp_spos_scb_lib.c b/sound/pci/cs46xx/dsp_spos_scb_lib.c
-index 6b536fc23ca62..1f90ca723f4df 100644
---- a/sound/pci/cs46xx/dsp_spos_scb_lib.c
-+++ b/sound/pci/cs46xx/dsp_spos_scb_lib.c
-@@ -1716,7 +1716,7 @@ int cs46xx_iec958_pre_open (struct snd_cs46xx *chip)
- 	struct dsp_spos_instance * ins = chip->dsp_spos_instance;
+ 	ret = pm_runtime_get_sync(i2s->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(i2s->dev);
+ 		return ret;
++	}
  
- 	if ( ins->spdif_status_out & DSP_SPDIF_STATUS_OUTPUT_ENABLED ) {
--		/* remove AsynchFGTxSCB and and PCMSerialInput_II */
-+		/* remove AsynchFGTxSCB and PCMSerialInput_II */
- 		cs46xx_dsp_disable_spdif_out (chip);
- 
- 		/* save state */
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 803978d69e3c4..ea7f16dd1f73c 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3427,7 +3427,7 @@ EXPORT_SYMBOL_GPL(snd_hda_set_power_save);
-  * @nid: NID to check / update
-  *
-  * Check whether the given NID is in the amp list.  If it's in the list,
-- * check the current AMP status, and update the the power-status according
-+ * check the current AMP status, and update the power-status according
-  * to the mute status.
-  *
-  * This function is supposed to be set or called from the check_power_status
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index f4e9d9445e18f..201a3b6b0b0f6 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -813,7 +813,7 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
- 	}
- }
- 
--/* sync power of each widget in the the given path */
-+/* sync power of each widget in the given path */
- static hda_nid_t path_power_update(struct hda_codec *codec,
- 				   struct nid_path *path,
- 				   bool allow_powerdown)
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index a608d0486ae49..2bea11d62d3e9 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -832,7 +832,7 @@ static int stac_auto_create_beep_ctls(struct hda_codec *codec,
- 	static const struct snd_kcontrol_new beep_vol_ctl =
- 		HDA_CODEC_VOLUME(NULL, 0, 0, 0);
- 
--	/* check for mute support for the the amp */
-+	/* check for mute support for the amp */
- 	if ((caps & AC_AMPCAP_MUTE) >> AC_AMPCAP_MUTE_SHIFT) {
- 		const struct snd_kcontrol_new *temp;
- 		if (spec->anabeep_nid == nid)
-diff --git a/sound/pci/ice1712/prodigy192.c b/sound/pci/ice1712/prodigy192.c
-index 8df14f63b10df..096ec76f53046 100644
---- a/sound/pci/ice1712/prodigy192.c
-+++ b/sound/pci/ice1712/prodigy192.c
-@@ -32,7 +32,7 @@
-  *		  Experimentally I found out that only a combination of
-  *		  OCKS0=1, OCKS1=1 (128fs, 64fs output) and ice1724 -
-  *		  VT1724_MT_I2S_MCLK_128X=0 (256fs input) yields correct
-- *		  sampling rate. That means the the FPGA doubles the
-+ *		  sampling rate. That means that the FPGA doubles the
-  *		  MCK01 rate.
-  *
-  *	Copyright (c) 2003 Takashi Iwai <tiwai@suse.de>
-diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
-index c3f8721624cd4..b90421a1d909a 100644
---- a/sound/pci/oxygen/xonar_dg.c
-+++ b/sound/pci/oxygen/xonar_dg.c
-@@ -29,7 +29,7 @@
-  *   GPIO 4 <- headphone detect
-  *   GPIO 5 -> enable ADC analog circuit for the left channel
-  *   GPIO 6 -> enable ADC analog circuit for the right channel
-- *   GPIO 7 -> switch green rear output jack between CS4245 and and the first
-+ *   GPIO 7 -> switch green rear output jack between CS4245 and the first
-  *             channel of CS4361 (mechanical relay)
-  *   GPIO 8 -> enable output to speakers
-  *
+ 	for (i = 0; i < i2s->active_channels; i++)
+ 		img_i2s_in_ch_disable(i2s, i);
 -- 
 2.25.1
 
