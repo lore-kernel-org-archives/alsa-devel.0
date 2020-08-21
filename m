@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0392C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F913C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:02:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 757F22072D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:02:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD0F02072D
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:02:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lppKs3kb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 757F22072D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GsBDBoEA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD0F02072D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED1701692;
-	Fri, 21 Aug 2020 22:01:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED1701692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38C82166D;
+	Fri, 21 Aug 2020 22:01:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38C82166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598040133;
+	s=default; t=1598040167;
 	bh=RsZb5ZcJlPZ/fmiRp2oF2VVME04wYU8JwnycqMJfnqc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lppKs3kbaHnqmBVMHippsRnKU7765U7fW1Kau8PbjKg0aZqbuEYE8IK1lG9A5UQzH
-	 XmOUzs0t1C/lWtT+zpOvqqvFIY/HIqPyjPUpitBqV3yOZ0hgBrxpEU8+/9CY/prwQS
-	 5aPin/9Crhy61UmBuBqUUCNByXIzpNdz10sjBXMY=
+	b=GsBDBoEAJukT2SA2q+fYrlcYJqr71fGJ6UZyUiKv2NgW+oYAD6XuFgr9Bs9vIScV1
+	 weQzXe/Ulp1a2FjKCtDCN2dY/ESkf6cm+NohioEN7eGZCul6heNeagjOHiT+qFcOAd
+	 HF8fJE0yEdPETZGlvHnRf0oDjoAzT3VRXBrtdEWk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71A1FF80306;
-	Fri, 21 Aug 2020 21:56:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F4F8F80307;
+	Fri, 21 Aug 2020 21:56:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59BAAF802EC; Fri, 21 Aug 2020 21:56:39 +0200 (CEST)
+ id EB0D2F802EB; Fri, 21 Aug 2020 21:56:39 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 794D5F80216
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 21:56:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 794D5F80216
-IronPort-SDR: x/w9ID/uOAfYEfX6eWV8EtElCdPGTEj/uyGK1ngBSlSy8RD0H7Nca7r5BS4RPRO2R5fxc3nE6W
- v+afXfvM2xaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="217158564"
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="217158564"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6929DF80257
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 21:56:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6929DF80257
+IronPort-SDR: JzXx59j4Pkon6M7UlkNPn09rBU2cOouChwMb0gg/vu2SrTGNA2biiZ5PgZI01mVPDZCigXHjoK
+ Vw2af5SIrL8w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="217158562"
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="217158562"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Aug 2020 12:56:22 -0700
-IronPort-SDR: LlGcD1hWUfPUu2FdG/h881tRL2iABQhr+9nPhI7cBfS6zRQk3OkV4+mpMGpoOQ9PPIQYQtBNr5
- pZ6AzdM4+2og==
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="279002426"
+ 21 Aug 2020 12:56:21 -0700
+IronPort-SDR: 2raCJYDlQI34z/yQkSC9a/E8kPaloynshXAHR74EwvnKXDR2BSulSMJlRaiSdwmbVLxY5PttoX
+ 5ELYiC03btEA==
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="279002421"
 Received: from pahnn-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.254.176.176])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  21 Aug 2020 12:56:21 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/14] SoC: Intel: sof_sdw: Add support for product Ripto
-Date: Fri, 21 Aug 2020 14:55:58 -0500
-Message-Id: <20200821195603.215535-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 10/14] ASoC: Intel: sof_sdw: Add support for product Ripto
+Date: Fri, 21 Aug 2020 14:55:57 -0500
+Message-Id: <20200821195603.215535-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821195603.215535-1-pierre-louis.bossart@linux.intel.com>
 References: <20200821195603.215535-1-pierre-louis.bossart@linux.intel.com>
