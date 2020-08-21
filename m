@@ -6,70 +6,70 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D1E7C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:34:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CA10C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:35:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B26D207DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:34:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1032220724
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:35:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gvq15EaG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="woRazyhH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B26D207DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OUp75aKp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eg72yDFg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1032220724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2973116D3;
-	Fri, 21 Aug 2020 18:33:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2973116D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95C4E1719;
+	Fri, 21 Aug 2020 18:34:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95C4E1719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598027673;
+	s=default; t=1598027715;
 	bh=ngB6DdBiJuvmnLavUkZSbxNw6b3Hq4QduT3Hww3mo2E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gvq15EaGybAtrtzGHrj+Qg+gzfHeePQpoNftGOkVLfO3kFlGlzwyWz6DkNnRR+M15
-	 2ma0owC9JpDUI8q+9s5ybZ6KCZtgXGdPLHTqm1RnQ2prKExprZM1rwx092d2FMo19H
-	 liAJPMKjIiKUspvZxmfB0NN1WtWX5nmIX6fACPr8=
+	b=OUp75aKpyTg0Z2nienTtRvOQBR/6uYf+BZ8jnE3j6naoZba8Q5g82wGJM/vfYpRl2
+	 XzksDS9ALbcsbg4x6cEdHBrXna2JRVy7Bwzdg9CAsHDmy85Tudi7Vn4qkZkyz3//SQ
+	 em2kerO2r5AZorXbi0jB+VqGbT4NyQqaPwkQZjC4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65836F802FF;
-	Fri, 21 Aug 2020 18:19:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C74DAF80260;
+	Fri, 21 Aug 2020 18:20:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24231F80303; Fri, 21 Aug 2020 18:19:52 +0200 (CEST)
+ id 5A7C1F802FE; Fri, 21 Aug 2020 18:20:30 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CBA58F802E8
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:19:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBA58F802E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 055AAF80316
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:20:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 055AAF80316
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="woRazyhH"
+ header.b="eg72yDFg"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9FA8722B4E;
- Fri, 21 Aug 2020 16:19:40 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D8D3D22D0B;
+ Fri, 21 Aug 2020 16:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026781;
+ s=default; t=1598026817;
  bh=ngB6DdBiJuvmnLavUkZSbxNw6b3Hq4QduT3Hww3mo2E=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=woRazyhH3QHLTv90KUPI/aVANXjzjRloKaucqJuJkWMYmx65fX0H532q/JdIHCD9/
- YNqtw7luKnWVI0PVhtUgGVMqWMseqdQZm38sqDz6r7yxQQOSVeCrKGl3VVnAvyYxkI
- 1N9HjfA+Gkk/LIgEKrGA8FrGJikouXN8TBF8CI5s=
+ b=eg72yDFgwmWnY4Zp9s7alwKqO7JyIeVZF1tAm64j/1igICfQHg4tiT0Xasv5ZShY/
+ 505Te5gJS99DCsRJxwCj8y4RXyRtDkMd4Km38wwsFWYOAJkh0QapTmMaZjeC7qd4aG
+ uBFgHYl08Udx13B5sY+TBPPvH9WP6GD3XfVbiMq8=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 02/26] ASoC: tegra: Fix reference count leaks.
-Date: Fri, 21 Aug 2020 12:19:13 -0400
-Message-Id: <20200821161938.349246-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 02/22] ASoC: tegra: Fix reference count leaks.
+Date: Fri, 21 Aug 2020 12:19:54 -0400
+Message-Id: <20200821162014.349506-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161938.349246-1-sashal@kernel.org>
-References: <20200821161938.349246-1-sashal@kernel.org>
+In-Reply-To: <20200821162014.349506-1-sashal@kernel.org>
+References: <20200821162014.349506-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
