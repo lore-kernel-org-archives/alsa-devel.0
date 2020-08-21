@@ -7,73 +7,74 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 155E1C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:58:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B418C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:59:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F74120724
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:58:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87E6E20724
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 19:59:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PZbCXoY7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F74120724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sQWBoowS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87E6E20724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AD751698;
-	Fri, 21 Aug 2020 21:58:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AD751698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F2A4166B;
+	Fri, 21 Aug 2020 21:58:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F2A4166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598039936;
-	bh=IqImp2Nk/EXphVxRNVe90M0a5GbSDrhsb8Mnd9OCH+s=;
+	s=default; t=1598039950;
+	bh=ZTSv1T6QTgQq+l9dndeGu/d0ok2KJ1gSygYekp0jztE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PZbCXoY7UtW/fDcb7mNQ3D4hw+DYGZ3oAHpwtg1owCa5gP9I/wl61YFKawzB/jstc
-	 XjMRTk3rt7NEzFoi9yEqWyBvH6ZKotPppf30MhTA+MSIGul8eB0dGOoQwg5rbJBQhh
-	 VohcyNkl2EXIBLt3s4zNw7xLLepXS0BQ1+ag+pzQ=
+	b=sQWBoowSI/ZnXjV56PM1uLmjCcsCFBURiFzxnkm+rw54Djgr3PanFvw0RGBl5zhjl
+	 jt9TluLzO6pBSf95HQG8iGzhC9jCo0FOxhVVGhXoojl5c6o/HwfDVBuKE1Tirmb6oi
+	 T80gL7NuPDm6arIbMm/xgQOPXSweUawEBq+PHUpw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F3E6F802E7;
-	Fri, 21 Aug 2020 21:56:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E8FAF80253;
+	Fri, 21 Aug 2020 21:56:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CE69F802D2; Fri, 21 Aug 2020 21:56:28 +0200 (CEST)
+ id 59A12F802EB; Fri, 21 Aug 2020 21:56:35 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59E1DF80216
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 21:56:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59E1DF80216
-IronPort-SDR: fgZDYDrQv4R6Fnn9tFiqH75ODri8YVj/aMfFvByQh4hvIFahv1mg+YgWOrc9o9W8oeSSiiv8GX
- lfrTRMPgq7Kg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="217158538"
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="217158538"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08391F8028F
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 21:56:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08391F8028F
+IronPort-SDR: GzUK+DIh4CTZesq2jwDgGBj4p6dJVAlDpC6OLXt2H1gT3VMC0M1P/60Ge9WcF0pvaXslzzQfGL
+ rftYG0OTIUag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="217158553"
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="217158553"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Aug 2020 12:56:15 -0700
-IronPort-SDR: iNVd9IoE6k3FYeu93VyjRjmOW00PejWxCzo5jEuIGARTvGWHlHNWlSaA4Gh8mFm7n4TtP+BL/q
- lBHHsVUNnfnQ==
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="279002392"
+ 21 Aug 2020 12:56:18 -0700
+IronPort-SDR: 0FIvipkgQlh5AZy19ORNB2bq6pEszBYUGWckk8zyBV5KwH90Ps3N0qJz9orryjNeNF4JiVREU7
+ W4Ga0vFAVxNA==
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="279002407"
 Received: from pahnn-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.254.176.176])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Aug 2020 12:56:14 -0700
+ 21 Aug 2020 12:56:17 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/14] ASoC: Intel: soc-acpi: cnl: add support for rt5682 on
- SoundWire link2
-Date: Fri, 21 Aug 2020 14:55:49 -0500
-Message-Id: <20200821195603.215535-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/14] ASoC: Intel: tgl_max98373: fix a runtime pm issue in
+ multi-thread case
+Date: Fri, 21 Aug 2020 14:55:53 -0500
+Message-Id: <20200821195603.215535-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821195603.215535-1-pierre-louis.bossart@linux.intel.com>
 References: <20200821195603.215535-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- vinod.koul@intel.com, broonie@kernel.org,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, vinod.koul@intel.com, broonie@kernel.org,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -91,61 +92,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add one of the configurations for rt5682 w/ the Up Extreme Advanced
-Audio mode using the SoundWire link2.
+From: Rander Wang <rander.wang@intel.com>
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+When the playback & capture streams are stopped simultaneously, the
+SOF PCI device will remain pm_runtime active. The root-cause is a race
+condition with two threads reaching the trigger function at the same
+time. They see another stream is active so the dapm pin is not
+disabled, so the codec remains active as well as the parent PCI
+device.
+
+For max98373, the capture stream provides feedback when playback is
+working and it is unused when playback is stopped. So the dapm pin
+should be set only when playback is active.
+
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-cnl-match.c   | 33 ++++++++++++++++++-
- 1 file changed, 32 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_maxim_common.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index 6a0bcc1a8429..7d61e0da808b 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -27,8 +27,39 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_machines);
+diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
+index 1a6961592029..b6e63ea13d64 100644
+--- a/sound/soc/intel/boards/sof_maxim_common.c
++++ b/sound/soc/intel/boards/sof_maxim_common.c
+@@ -66,6 +66,10 @@ int max98373_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	int j;
+ 	int ret = 0;
  
-+static const struct snd_soc_acpi_endpoint single_endpoint = {
-+	.num = 0,
-+	.aggregated = 0,
-+	.group_position = 0,
-+	.group_id = 0,
-+};
++	/* set spk pin by playback only */
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		return 0;
 +
-+static const struct snd_soc_acpi_adr_device rt5682_2_adr[] = {
-+	{
-+		.adr = 0x000220025D568200,
-+		.num_endpoints = 1,
-+		.endpoints = &single_endpoint,
-+	}
-+};
-+
-+static const struct snd_soc_acpi_link_adr up_extreme_rt5682_2[] = {
-+	{
-+		.mask = BIT(2),
-+		.num_adr = ARRAY_SIZE(rt5682_2_adr),
-+		.adr_d = rt5682_2_adr,
-+	},
-+	{}
-+};
-+
- struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_sdw_machines[] = {
--	{},
-+	{
-+		.link_mask = BIT(2),
-+		.links = up_extreme_rt5682_2,
-+		.drv_name = "sof_sdw",
-+		.sof_fw_filename = "sof-cnl.ri",
-+		.sof_tplg_filename = "sof-cnl-rt5682-sdw2.tplg"
-+	},
-+	{}
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_sdw_machines);
- 
+ 	for_each_rtd_codec_dais(rtd, j, codec_dai) {
+ 		struct snd_soc_component *component = codec_dai->component;
+ 		struct snd_soc_dapm_context *dapm =
+@@ -86,9 +90,6 @@ int max98373_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		case SNDRV_PCM_TRIGGER_STOP:
+ 		case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-			/* Make sure no streams are active before disable pin */
+-			if (snd_soc_dai_active(codec_dai) != 1)
+-				break;
+ 			ret = snd_soc_dapm_disable_pin(dapm, pin_name);
+ 			if (!ret)
+ 				snd_soc_dapm_sync(dapm);
 -- 
 2.25.1
 
