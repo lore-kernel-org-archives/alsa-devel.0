@@ -6,68 +6,68 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 512A1C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:22:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E5FC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:23:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF13620578
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:22:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88E4620656
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:23:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y4z/aWmn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vDLJQnFU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF13620578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E1WqVTER";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AGYXy6Pe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88E4620656
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BB6F1698;
-	Fri, 21 Aug 2020 18:22:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BB6F1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20E481696;
+	Fri, 21 Aug 2020 18:22:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20E481696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598026973;
-	bh=T4C4QfGvKpcbuYZLQLF4H+rJkL3Y8Z5tdpSfYSOdYyc=;
+	s=default; t=1598026992;
+	bh=G7Bxe3htfLyEMy8okKHuhNIpEbesWGNFyZOsNYvkWzo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y4z/aWmn5Q+Wbr+jRzHmBIn+tREoL58863LV8gfzJBbXNb+yOwWq8kg/dX29ASTMW
-	 2ulWLmV+ZMBbFDyxRO0fA2PWe6+yFsg0tOZKBy7/pWd4YhQTQENOfoq2T3/haXPcX/
-	 9nLE1siK8HvbUHlojiTvQQzRKZ0tTFckKzr0HARM=
+	b=E1WqVTERBsPi8ia1qM4Xl/CtRb1pb5rCkYVo5xtfR1OPdlrJ7sE/8b56auGD8oWlC
+	 +eSWh39FZN73Oj7ZyL8oG/PgX9tqQyqik8T/NvJF5iTe6m/Ziq1F33VUSn4/++lmHW
+	 +04iAbiDJ7z8RLnetYbKAI1gHSkfQ69LS/P2JI2Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97928F80322;
-	Fri, 21 Aug 2020 18:16:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21167F80339;
+	Fri, 21 Aug 2020 18:16:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A457F80337; Fri, 21 Aug 2020 18:16:00 +0200 (CEST)
+ id F2BAEF80337; Fri, 21 Aug 2020 18:16:01 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 584D3F80322
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:15:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 584D3F80322
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34839F80317
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:15:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34839F80317
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vDLJQnFU"
+ header.b="AGYXy6Pe"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 56E0421741;
- Fri, 21 Aug 2020 16:15:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 06C5322B4D;
+ Fri, 21 Aug 2020 16:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026550;
- bh=T4C4QfGvKpcbuYZLQLF4H+rJkL3Y8Z5tdpSfYSOdYyc=;
+ s=default; t=1598026554;
+ bh=G7Bxe3htfLyEMy8okKHuhNIpEbesWGNFyZOsNYvkWzo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=vDLJQnFUnp8y5yhDfPFCFwTXDxvRHjl3nLNwMM+bxAZZnpVWF6Mo4AhnGISag0ZMx
- aFpERNscpxKLTUiHQA/vgMgIDvwoS7UJ7jhVjctoy0IdSfCAuTneLhZEDZ52hQkEEF
- H7mMeW/npbO8JBTfIaAUK/UZNyi+kgmuGX3I395E=
+ b=AGYXy6PeVp4hSWPSiena6ENLUsJydqsrEG/FNzUaAfiMOjOyUwmNNfYp7qHx7NaEW
+ Dqsnr8aA71Jd6SxkeWBCFUQ4moRHnSzRbrISLBLYvPkBz+jYoM8ySGTbsORuET5eSK
+ HhBtfiWHTwlDLnNfjxwUU7bHLaQ06JY3wUCtZr9I=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 03/61] ALSA: hda/realtek: Fix pin default on Intel
- NUC 8 Rugged
-Date: Fri, 21 Aug 2020 12:14:47 -0400
-Message-Id: <20200821161545.347622-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 07/61] ASoC: img: Fix a reference count leak in
+ img_i2s_in_set_fmt
+Date: Fri, 21 Aug 2020 12:14:51 -0400
+Message-Id: <20200821161545.347622-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821161545.347622-1-sashal@kernel.org>
 References: <20200821161545.347622-1-sashal@kernel.org>
@@ -75,8 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Qiushi Wu <wu000273@umn.edu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,66 +92,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit e2d2fded6bdf3f7bb40718a208140dba8b4ec574 ]
+[ Upstream commit c4c59b95b7f7d4cef5071b151be2dadb33f3287b ]
 
-The jack on Intel NUC 8 Rugged rear panel doesn't work.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code, causing incorrect ref count if
+pm_runtime_put_noidle() is not called in error handling paths.
+Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
 
-The spec [1] states that the jack supports both headphone and
-microphone, so override a Pin Complex which has both Amp-In and Amp-Out
-to make the jack work.
-
-Node 0x1b fits the requirement, and user confirmed the jack now works
-with new pin config.
-
-[1] https://www.intel.com/content/dam/support/us/en/documents/mini-pcs/NUC8CCH_TechProdSpec.pdf
-BugLink: https://bugs.launchpad.net/bugs/1875199
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20200807080514.15293-1-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Link: https://lore.kernel.org/r/20200614033749.2975-1-wu000273@umn.edu
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/img/img-i2s-in.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 313eecfb91b44..ab0f19858f798 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6137,6 +6137,7 @@ enum {
- 	ALC269_FIXUP_CZC_L101,
- 	ALC269_FIXUP_LEMOTE_A1802,
- 	ALC269_FIXUP_LEMOTE_A190X,
-+	ALC256_FIXUP_INTEL_NUC8_RUGGED,
- };
+diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
+index e30b66b94bf67..0843235d73c91 100644
+--- a/sound/soc/img/img-i2s-in.c
++++ b/sound/soc/img/img-i2s-in.c
+@@ -343,8 +343,10 @@ static int img_i2s_in_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	chan_control_mask = IMG_I2S_IN_CH_CTL_CLK_TRANS_MASK;
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7458,6 +7459,15 @@ static const struct hda_fixup alc269_fixups[] = {
- 		},
- 		.chain_id = ALC269_FIXUP_DMIC,
- 	},
-+	[ALC256_FIXUP_INTEL_NUC8_RUGGED] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x1b, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE
-+	},
- };
+ 	ret = pm_runtime_get_sync(i2s->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(i2s->dev);
+ 		return ret;
++	}
  
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7755,6 +7765,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
- 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
-+	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
- 
- #if 0
- 	/* Below is a quirk table taken from the old code.
+ 	for (i = 0; i < i2s->active_channels; i++)
+ 		img_i2s_in_ch_disable(i2s, i);
 -- 
 2.25.1
 
