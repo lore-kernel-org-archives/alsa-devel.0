@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 173B2C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:19:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92246C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:19:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 946EB22DD3
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:19:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 18C3222D04
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:19:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kD2WdmaP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BX30BvcM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 946EB22DD3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ExoEDBVQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4GFlIn0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18C3222D04
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 327C41685;
-	Fri, 21 Aug 2020 18:18:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 327C41685
+	by alsa0.perex.cz (Postfix) with ESMTPS id A705616B9;
+	Fri, 21 Aug 2020 18:18:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A705616B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598026747;
-	bh=gWohrytgPPCufu0Y0SdUetLBz+Kc3A0G8R2gLyGeer8=;
+	s=default; t=1598026789;
+	bh=FS9LV1mgzKB2FrwnM+i3H+Tuad1djbcvC2VsGtvdOyI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kD2WdmaP7s49EXEN5vuz9mi7WeNTPmR6lerQtiw+Ng0YPbZoLteILSc8rFWaMz7Q5
-	 leO/PqW59ydHV38HM2/SuMQqe5w00k5ItcoMeua4Hqyx6TE9Vto1caoZsKtdYJ6rL6
-	 HY94lQa3HDZenfVU4+d3oYmijrTr9bQNfwUwyoMw=
+	b=ExoEDBVQElaBbF9pycnGGpmBxCD2Dxojjpin8zx7Q+AIQGCUOP+56v64kypmaqE2R
+	 /HIp2iA8xgzP2LD259WwQ2yswMQwh+kK/1dtW8F5/eKRZqmO7kid+Hm3RHES9H/g8Q
+	 HOCA7aszXm3W+qMtwTG/KNB/DqExIjdVdQVJPjLc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00C41F802E9;
-	Fri, 21 Aug 2020 18:14:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FB08F80303;
+	Fri, 21 Aug 2020 18:15:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD131F80255; Fri, 21 Aug 2020 18:14:47 +0200 (CEST)
+ id 93011F80304; Fri, 21 Aug 2020 18:15:26 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 217CAF80216
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:14:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 217CAF80216
+ by alsa1.perex.cz (Postfix) with ESMTPS id 714B2F802F9
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:15:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 714B2F802F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BX30BvcM"
+ header.b="B4GFlIn0"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E8F3322B4B;
- Fri, 21 Aug 2020 16:14:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4BADA22C9F;
+ Fri, 21 Aug 2020 16:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026475;
- bh=gWohrytgPPCufu0Y0SdUetLBz+Kc3A0G8R2gLyGeer8=;
+ s=default; t=1598026518;
+ bh=FS9LV1mgzKB2FrwnM+i3H+Tuad1djbcvC2VsGtvdOyI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BX30BvcMviD5aaJBOaw1W6vcKLChTMHU3rDuM9TswtEPglj+waUKL21hm3FSKv0kM
- R8SGaJsyrqtCI1zkTLsBSx95946XVkKwBSBEq8qvNZYYDnCXYdvNTL0T5vzXdd05nC
- 9q/PoYXnFNLQuRT4U53O6J0G40S/nxHofZUzIqyk=
+ b=B4GFlIn0r5x1xYgOq2O9Bo4du9mGyjh15e5A5T1xi8JZe1HWkLKxBZpR1pveNu1sc
+ ldoCrrsdTSvjfv+imFUdFzfOFmNtCuix8Lmz+JsdYdN036w0x+FkWzLK2KFguCIS91
+ GUE8Fy92xcrNZ/ICNeqBWyizuPAnyZ0Hh4Tdh7xE=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 09/62] ASoC: tegra: Fix reference count leaks.
-Date: Fri, 21 Aug 2020 12:13:30 -0400
-Message-Id: <20200821161423.347071-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 42/62] ALSA: hda: Add support for Loongson 7A1000
+ controller
+Date: Fri, 21 Aug 2020 12:14:03 -0400
+Message-Id: <20200821161423.347071-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
 References: <20200821161423.347071-1-sashal@kernel.org>
@@ -74,9 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Jon Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
- Qiushi Wu <wu000273@umn.edu>, linux-tegra@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Kaige Li <likaige@loongson.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,56 +92,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Kaige Li <likaige@loongson.cn>
 
-[ Upstream commit deca195383a6085be62cb453079e03e04d618d6e ]
+[ Upstream commit 61eee4a7fc406f94e441778c3cecbbed30373c89 ]
 
-Calling pm_runtime_get_sync increments the counter even in case of
-failure, causing incorrect ref count if pm_runtime_put is not called in
-error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
+Add the new PCI ID 0x0014 0x7a07 to support Loongson 7A1000 controller.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20200613204422.24484-1-wu000273@umn.edu
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kaige Li <likaige@loongson.cn>
+Link: https://lore.kernel.org/r/1594954292-1703-2-git-send-email-likaige@loongson.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/tegra/tegra30_ahub.c | 4 +++-
- sound/soc/tegra/tegra30_i2s.c  | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 635eacbd28d47..156e3b9d613c6 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -643,8 +643,10 @@ static int tegra30_ahub_resume(struct device *dev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(dev);
- 		return ret;
-+	}
- 	ret = regcache_sync(ahub->regmap_ahub);
- 	ret |= regcache_sync(ahub->regmap_apbif);
- 	pm_runtime_put(dev);
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index d59882ec48f16..db5a8587bfa4c 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -567,8 +567,10 @@ static int tegra30_i2s_resume(struct device *dev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(dev);
- 		return ret;
-+	}
- 	ret = regcache_sync(i2s->regmap);
- 	pm_runtime_put(dev);
- 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4c23b169ac67e..1a26940a3fd7c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2747,6 +2747,8 @@ static const struct pci_device_id azx_ids[] = {
+ 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
+ 	/* Zhaoxin */
+ 	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
++	/* Loongson */
++	{ PCI_DEVICE(0x0014, 0x7a07), .driver_data = AZX_DRIVER_GENERIC },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, azx_ids);
 -- 
 2.25.1
 
