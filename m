@@ -7,101 +7,101 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C88EC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82DB1C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:43:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B40F8207DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:42:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0AA29207DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 07:43:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N11aFCxw";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="bhGu4L7i";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="b6ryquQq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B40F8207DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rb3ouTdV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="BaBGAXdV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nl7qShPG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AA29207DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4340A1698;
-	Fri, 21 Aug 2020 09:41:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4340A1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8300E16B4;
+	Fri, 21 Aug 2020 09:42:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8300E16B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1597995755;
-	bh=MQtjZaIVZyTzc9dyMPygL4g1QsFUr2tmc+xmbd1ksUA=;
+	s=default; t=1597995792;
+	bh=NsDj5mhAOHE3U5SLAhjBIClS4OgP64OspdNDURlL1tQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N11aFCxwngpUpOTTVGfrSr0Ac6Gc24Y+hicXX9aok1dPQdXTMuiochojbNlrSjx2n
-	 drkznUMDQQCDV6Udss+17RZosIpGQqiwZRi6o+dbz2MHsl7UZxZpXLcRw4+TQXW1K8
-	 cfZHLEUkN6TY8JSu5p1W+iqvjhhZ+NTwqRfx6C8s=
+	b=Rb3ouTdVGaQyS39OQou2Z2JkqcRkdEk6L0SGxSsiVAe2qug5PZveeIWd2ofIYMB3k
+	 5kLy+FmvneXxYQOHVgEwK5/f4bjfrypLLXSa/YLUzGft+bda0z9Ci0TXiFM0TtrhNh
+	 Xp7r5nLSmiF60XWS+kokRYRbIxWghVU/DgwfKDD0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3902F8036C;
-	Fri, 21 Aug 2020 09:32:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2BC9F8036D;
+	Fri, 21 Aug 2020 09:32:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22CFEF80317; Fri, 21 Aug 2020 09:31:59 +0200 (CEST)
+ id 24751F8033F; Fri, 21 Aug 2020 09:32:08 +0200 (CEST)
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD62FF802EC
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 09:31:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD62FF802EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id C50E2F80307
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 09:31:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C50E2F80307
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="bhGu4L7i"; 
+ header.b="BaBGAXdV"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="b6ryquQq"
+ header.i=@messagingengine.com header.b="nl7qShPG"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.west.internal (Postfix) with ESMTP id DD32790F;
- Fri, 21 Aug 2020 03:31:44 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id F2D0A88D;
+ Fri, 21 Aug 2020 03:31:51 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute2.internal (MEProxy); Fri, 21 Aug 2020 03:31:45 -0400
+ by compute2.internal (MEProxy); Fri, 21 Aug 2020 03:31:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=Y/8SJwzWWXRjh
- 6+YEEYfAEplJzDhuvEcF6U2dQH01G8=; b=bhGu4L7i6ELzlRlNHD/6umionDFH2
- /fqMv305MiHDyS43jwjszJ94P9Om0M5SW9PotZTUofAnkgTzRXKscWvr2OmwFZeS
- qTLgjIMPJKcoTkD/XlIclK3raV9SyzSG54Vf4ClOVHLAvK73zRPAF8jz7b35Rrda
- Gv1PsyOWAs128wZsr/f50k62IxZBH1AenD4RPYUK0HHp8mWjUALo4Re1jkT7Sjm/
- PxCshHARsBnf0Tma+GFanL9zhrmH1Zjjk2apT3ogVZm1YITb+jw5bI4lM5ms8Cb+
- pOK34haauAWtkuOLprwRBdIGlPfITOIOUu1nSBSImAOOPhBQAV9AYoFMw==
+ :mime-version:content-transfer-encoding; s=fm2; bh=K/QPuC3ZdcnZY
+ 7jTjKWi3t1nnUTZaUy5ObXDqQ9utho=; b=BaBGAXdVo3qb0KJVuaxuPP1QtE4D3
+ 2gXzFKaP50OnKQhl5k5niklWZ6Or3u+Sa4XjwY2ZmkeeLIwXtg6LdyRtWWnb6GEz
+ XOdUywJtqMzzmitizUqY6nyFVxyzQf4OCHL8WwA7zHldHu9Alf9kI23Uw1mrELpI
+ helpEpLfyWZmbxOu0wmzliuiP85ZE3imUyiJgcjVPHv076wKBAvWwhCzcrhd9FQN
+ pmGtdsMuJTQ2S+OYapKVwNMfmBn6G5nIUHAcsUjNmqwUfXEXpxFCXyqZSMsI9Is5
+ 7EJ/suC6BPBYAGASfoBnlYt1mHFI6Yv1VcWjmzBRQnjTBVZiNm2uCHU0w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=Y/8SJwzWWXRjh6+YEEYfAEplJzDhuvEcF6U2dQH01G8=; b=b6ryquQq
- /pCc2RaoDq0ZR8KofYLOUoEBP5ymIYp9tUrunC4xHHPHq6fDgMa7+NcuursSX5n6
- Hqfpiv1PPJrdRK97a9jHVO1sBNIG0PTpbSz4UAReJcneuwVjtyaZUsT/FykAPsKv
- +WZBlEbtArItdIjlhZfqQ581oghbJdB3jaJimuchstaSJLUXeISliPvuD1GCDxFY
- W1SfYrHZjoJHIlqKudJIM+Ls6yXS5MiJ0UrYpFrclbTDvHkDCjX/bcC0V1JkCF0Q
- ZJSGnnHEYOfWiyGtptv+yVZrlbCzNUHRhWJwL3APFNDeSXf/NjJcxyGyebCIPSI2
- FfOWYU/vnNVCrA==
-X-ME-Sender: <xms:YHg_Xz84_gjxxQdWg69hOXABUWuFM811HZm1rDTrOto5B2UqkQ4vMA>
+ fm3; bh=K/QPuC3ZdcnZY7jTjKWi3t1nnUTZaUy5ObXDqQ9utho=; b=nl7qShPG
+ bhh7TJJxPS5zP77aWxnBo0XvCkvv78C0+e1AUzORfqaWZXFypmaasoj+tcGvmOLP
+ 4j4SjT3H/qQ9XiwTHxuLKb6Q0ZEbah6LG24nMBCcoxWSCX3EyAPGxP2lZcArapoX
+ 4As+JQnujXmS91dBtG07E16JV4i1nc/7VVNmjMkGD9dbQVjyP3hW0+8h428Vovrh
+ 0g5fCUS6Hd30qcxZ/Qf/LIw61CeFbAsBxZljZAyrEBOznJpxrznGYphHAq4E5Vwb
+ wMANtJj2wNiOMxwJB6xexZl750mUR+uMdl8kX8VL9imrsHVwODh+xVE8Kxx6XXn/
+ a705Z1RL1+mmHA==
+X-ME-Sender: <xms:Z3g_XziWOFYaaE17AJgB3rx6ZQcSUojwfjLEKs6uPqUEW5oIDi43sg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudduuddgudduudcutefuodetggdotefrod
  ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
  necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
  ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
  rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevfefffe
  ektefgveegfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucfkphepudek
- tddrvdefhedrfedrheegnecuvehluhhsthgvrhfuihiivgepuddvnecurfgrrhgrmhepmh
+ tddrvdefhedrfedrheegnecuvehluhhsthgvrhfuihiivgepudelnecurfgrrhgrmhepmh
  grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:YHg_X_uo0P5Z0h1EWNwHeOIpoKV4dO_k4yDGwvyvmLrBiX-VpXFHIw>
- <xmx:YHg_XxDNbV8-gRuH6JmEahtezcE8trGMQsIBmlV0_Oh1Ws29NJug0g>
- <xmx:YHg_X_cboHccPclP5C68Rt3O-f4Obm52KtrvaP2SLmlOj2D1Va4WWw>
- <xmx:YHg_Xy0PDGxMtBmlaChnKA7gu06IrJngnfoLD4OgjuhaKGQVC_rfkg>
+X-ME-Proxy: <xmx:Z3g_XwBipOD49oI10_st-yUuPJo3Otqs2R3wmxTV0iZO2MRWsRDhZg>
+ <xmx:Z3g_XzESaqXsxxJhYIh-47rX62p29S9E4P7D_kFziTFeOvKLVkEEgA>
+ <xmx:Z3g_XwQxkUKdJajq7ErDNUxz5wtx3E39k_uTsTnXnOk_eUH_ElR9-g>
+ <xmx:Z3g_X9rYE29B2j4Csv17fy61OjanmW3W-T-9p5K9uPmwOVMV21uIwA>
 Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id EA93030600A6;
- Fri, 21 Aug 2020 03:31:42 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 5AD4A30600A6;
+ Fri, 21 Aug 2020 03:31:50 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	perex@perex.cz
-Subject: [PATCH 17/25] efw-downloader: subcmd-device: support debug output for
- response of Fireworks protocol
-Date: Fri, 21 Aug 2020 16:31:03 +0900
-Message-Id: <20200821073111.134857-18-o-takashi@sakamocchi.jp>
+Subject: [PATCH 21/25] efw-downloader: file-cntr: add parser for data binary
+ shipped by Echo Digital Audio corporation
+Date: Fri, 21 Aug 2020 16:31:07 +0900
+Message-Id: <20200821073111.134857-22-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821073111.134857-1-o-takashi@sakamocchi.jp>
 References: <20200821073111.134857-1-o-takashi@sakamocchi.jp>
@@ -124,95 +124,314 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It's helpful to dump communication result optionally.
+Echo Digital Audio corporation designed data format of firmware. The
+format seems to be suitable for their SDK for customers and closed.
 
-This commit adds debug option for the purpose.
+FFADO project implements the format parser in libffado2. Although the
+implementation is not enough in several points, it's good point to guess
+the format.
+
+I captured asynchronous packet by bus analyzer during updating firmware by
+Windows driver, aggregated the content of packet by script, then compared
+it to content of firmware. Some points are cleared (but not all).
+
+This commit adds parser for data binary shipped by Echo Digital Audio
+corporation. I note that driver package shipped by vendors for Fireworks
+based devices includes no EULA. I think this kind of reimplementation
+is not limited in the case.
+
+The content of file consists of two parts; header after magic bytes, and
+payload. The header includes metadata about the data of payload. There are
+four kind of data; for DSP, for IceLynx Micro, for arbitrary data, and
+for FPGA.
+
+The content except for magic bytes is hexadecimal string,
+therefore it's possible to print out by simple dump tool; cat(1) and
+less(1). The header includes CRC32 value of the decoded data and checksum
+of every bytes of the decoded data.
+
+When the header includes a flag, the CRC32 value is written to the end of
+area for firmware.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- efw-downloader/src/subcmd-device.c | 40 ++++++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 2 deletions(-)
+ efw-downloader/src/file-cntr.c | 183 +++++++++++++++++++++++++++++++++
+ efw-downloader/src/file-cntr.h |  39 +++++++
+ efw-downloader/src/meson.build |   5 +
+ 3 files changed, 227 insertions(+)
+ create mode 100644 efw-downloader/src/file-cntr.c
+ create mode 100644 efw-downloader/src/file-cntr.h
 
-diff --git a/efw-downloader/src/subcmd-device.c b/efw-downloader/src/subcmd-device.c
-index 5ac0ac6..329eef0 100644
---- a/efw-downloader/src/subcmd-device.c
-+++ b/efw-downloader/src/subcmd-device.c
-@@ -28,8 +28,31 @@ static int print_help()
-     return EXIT_FAILURE;
- }
- 
--static int parse_args(int argc, char **argv, const char **path, const char **op_name)
-+static void handle_responded_signal(EfwProto *proto, HinawaSndEfwStatus status, guint seqnum,
-+                      guint category, guint command, const guint32 *frame, guint frame_size)
- {
-+    gchar *label = g_enum_to_string(HINAWA_TYPE_SND_EFW_STATUS, status);
-+    int i;
+diff --git a/efw-downloader/src/file-cntr.c b/efw-downloader/src/file-cntr.c
+new file mode 100644
+index 0000000..1e159f7
+--- /dev/null
++++ b/efw-downloader/src/file-cntr.c
+@@ -0,0 +1,183 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++// Copyright (c) 2020 Takashi Sakamoto
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
 +
-+    printf("responded:\n");
-+    printf("  status: %s\n", label);
-+    printf("  seqnum: %d\n", seqnum);
-+    printf("  category; %d\n", category);
-+    printf("  command: %d\n", command);
++#include <zlib.h>
 +
-+    if (frame_size > 0) {
-+        printf("  frame:\n");
-+        for (i = 0; i < frame_size; ++i)
-+            printf("  [%3x]: %08x\n", i, frame[i]);
++#include "file-cntr.h"
++
++#define MAGIC_BYTES             "1651 1 0 0 0\r\n"
++#define PAYLOAD_OFFSET_QUADS    0x3f
++
++static int parse_entry(FILE *handle, uint32_t *val)
++{
++    char buf[16];
++    char *end;
++    size_t len;
++    int err = 0;
++
++    if (fgets(buf, sizeof(buf), handle) != buf) {
++        if (ferror(handle))
++            err = -errno;
++        else
++            err = INT_MAX;  // Use the value for EOF.
++        return err;
 +    }
 +
-+    g_free(label);
++    len = strlen(buf);
++    if (buf[0] != '0' || buf[1] != 'x' || buf[len - 2] != '\r' || buf[len - 1] != '\n')
++        return -EPROTO;
++    buf[len - 2] = '\0';
++
++    *val = strtoul(buf, &end, 16);
++    if (*end != '\0')
++        return -EPROTO;
++
++    return err;
 +}
 +
-+static int parse_args(int argc, char **argv, const char **path, const char **op_name, gboolean *debug)
++static int parse_header(FILE *handle, struct file_cntr_header *header)
 +{
++    uint32_t *buf = (uint32_t *)header;
++    int err = 0;
 +    int i;
 +
-     if (argc < 2)
-         return -EINVAL;
-     assert(strncmp(argv[1], "device", sizeof("device")) == 0);
-@@ -42,6 +65,15 @@ static int parse_args(int argc, char **argv, const char **path, const char **op_
-         return -EINVAL;
-     *op_name = argv[3];
- 
-+    *debug = FALSE;
-+    for (i = 0; i < argc; ++i) {
-+        if (strncmp(argv[i], "--debug", sizeof(--debug)) == 0 ||
-+            strncmp(argv[i], "-d", sizeof(--debug)) == 0) {
-+            *debug = TRUE;
++    for (i = 0; i < 8; ++i) {
++        uint32_t val;
++
++        err = parse_entry(handle, &val);
++        if (err != 0)
 +            break;
-+        }
++
++        buf[i] = val;
 +    }
 +
-     return 0;
- }
- 
-@@ -54,6 +86,7 @@ int subcmd_device(int argc, char **argv)
-     } *entry, entries[] = {
-     };
-     GError *error = NULL;
-+    gboolean debug;
-     const char *path;
-     const char *op_name;
-     HinawaFwNode *node;
-@@ -65,7 +98,7 @@ int subcmd_device(int argc, char **argv)
-     int err;
-     int i;
- 
--    err = parse_args(argc, argv, &path, &op_name);
-+    err = parse_args(argc, argv, &path, &op_name, &debug);
-     if (err < 0)
-         return print_help(0, NULL, NULL, NULL);
- 
-@@ -103,6 +136,9 @@ int subcmd_device(int argc, char **argv)
-     }
- 
-     proto = efw_proto_new();
-+    if (debug)
-+        g_signal_connect(proto, "responded", (GCallback)handle_responded_signal, NULL);
++    if (err == INT_MAX)
++        err = -ENODATA;
 +
-     efw_proto_bind(proto, node, &error);
-     if (error != NULL) {
-         if (g_error_matches(error, HINAWA_FW_NODE_ERROR, HINAWA_FW_NODE_ERROR_FAILED)) {
++    return err;
++}
++
++static int parse_payload(FILE *handle, unsigned int quads, uint32_t *blob)
++{
++    int err = 0;
++    int i;
++
++    for (i = 0; i < quads; ++i) {
++        uint32_t val;
++
++        err = parse_entry(handle, &val);
++        if (err != 0)
++            break;
++
++        blob[i] = val;
++    }
++
++    if (i != quads || err == INT_MAX)
++        err = -ENODATA;
++
++    return err;
++}
++
++static int check_crc32(struct file_cntr *cntr)
++{
++    uint32_t blob_crc32;
++
++    blob_crc32 = crc32(0ul, (const uint8_t *)cntr->payload.blob,
++                       cntr->payload.count * sizeof(*cntr->payload.blob));
++    if (blob_crc32 != cntr->header.blob_crc32)
++        return -EINVAL;
++
++    return 0;
++}
++
++static int check_checksum(struct file_cntr *cntr)
++{
++    uint32_t checksum = 0;
++    int i, j;
++
++    for (i = 0; i < cntr->payload.count; ++i) {
++        for (j = 3; j >= 0; --j)
++            checksum += (cntr->payload.blob[i] >> (j * 8)) & 0xff;
++    }
++
++    if (checksum != cntr->header.blob_checksum)
++        return -EINVAL;
++
++    return 0;
++}
++
++int file_cntr_parse(struct file_cntr *cntr, const char *filepath)
++{
++    FILE *handle;
++    char buf[16];
++    size_t till_data;
++    int err = 0;
++
++    handle = fopen(filepath, "r");
++    if (handle == NULL)
++        return -errno;
++
++    // Check magic bytes.
++    if (fgets(buf, sizeof(buf), handle) != buf) {
++        if (ferror(handle))
++            err = -errno;
++        else
++            err = -ENODATA;
++        goto end;
++    }
++
++    if (memcmp(buf, MAGIC_BYTES, sizeof(MAGIC_BYTES))) {
++        err = -EPROTO;
++        goto end;
++    }
++
++    // Parse header.
++    err = parse_header(handle, &cntr->header);
++    if (err < 0)
++        goto end;
++
++    // Skip to area for data.
++    till_data = (PAYLOAD_OFFSET_QUADS - 7) * 12;
++    if (fseek(handle, till_data, SEEK_CUR) < 0) {
++        err = -errno;
++        goto end;
++    }
++
++    cntr->payload.blob = calloc(cntr->header.blob_quads, sizeof(*cntr->payload.blob));
++    if (cntr->payload.blob == NULL) {
++        err = -ENOMEM;
++        goto end;
++    }
++    cntr->payload.count = cntr->header.blob_quads;
++
++    err = parse_payload(handle, cntr->header.blob_quads, cntr->payload.blob);
++    if (err < 0) {
++        free(cntr->payload.blob);
++        goto end;
++    }
++
++    err = check_crc32(cntr);
++    if (err < 0) {
++        free(cntr->payload.blob);
++        goto end;
++    }
++
++    err = check_checksum(cntr);
++    if (err < 0)
++        free(cntr->payload.blob);
++end:
++    fclose(handle);
++
++    return err;
++}
++
++void file_cntr_release(struct file_cntr *cntr)
++{
++    if (cntr->payload.blob != NULL)
++        free(cntr->payload.blob);
++    cntr->payload.blob = NULL;
++}
+diff --git a/efw-downloader/src/file-cntr.h b/efw-downloader/src/file-cntr.h
+new file mode 100644
+index 0000000..c4657f1
+--- /dev/null
++++ b/efw-downloader/src/file-cntr.h
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++// Copyright (c) 2020 Takashi Sakamoto
++#ifndef __FILE_CNTR__
++#define __FILE_CNTR__
++
++#include <stdint.h>
++
++enum blob_type {
++    BLOB_TYPE_DSP = 0,
++    BLOB_TYPE_ICELYNX = 1,
++    BLOB_TYPE_DATA = 2,
++    BLOB_TYPE_FPGA = 3,
++};
++
++struct file_cntr_header {
++    enum blob_type type;
++    uint32_t offset_addr;
++    uint32_t blob_quads;
++    uint32_t blob_crc32;
++    uint32_t blob_checksum;
++    uint32_t version;
++    uint32_t crc_in_region_end;
++    uint32_t cntr_quads;
++};
++
++struct file_cntr_payload {
++    uint32_t *blob;
++    size_t count;
++};
++
++struct file_cntr {
++    struct file_cntr_header header;
++    struct file_cntr_payload payload;
++};
++
++int file_cntr_parse(struct file_cntr *cntr, const char *filepath);
++void file_cntr_release(struct file_cntr *cntr);
++
++#endif
+diff --git a/efw-downloader/src/meson.build b/efw-downloader/src/meson.build
+index 8738d76..05d491d 100644
+--- a/efw-downloader/src/meson.build
++++ b/efw-downloader/src/meson.build
+@@ -11,12 +11,15 @@ hinawa = dependency('hinawa',
+   version: '>=2.1',
+ )
+ 
++zlib = dependency('zlib')
++
+ sources = [
+   'main.c',
+   'efw-proto.c',
+   'config-rom.c',
+   'node-dispatcher.c',
+   'efw-commands.c',
++  'file-cntr.c',
+   'subcmd-device.c',
+   'op-device-read.c',
+ ]
+@@ -26,6 +29,7 @@ headers = [
+   'config-rom.h',
+   'node-dispatcher.h',
+   'efw-commands.h',
++  'file-cntr.h',
+   'subcmds.h',
+ ]
+ 
+@@ -42,6 +46,7 @@ executable('efw-downloader',
+   dependencies: [
+     gobject,
+     hinawa,
++    zlib,
+   ],
+   install: true,
+ )
 -- 
 2.25.1
 
