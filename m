@@ -6,67 +6,66 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0580C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A3ECC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:34:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F217207BB
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:33:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15E2F20724
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:33:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cXTQCGlU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jv0dqx+q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F217207BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oSv3FBtG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eD8TOu6f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15E2F20724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FE9016BF;
-	Fri, 21 Aug 2020 18:32:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FE9016BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 509AA1716;
+	Fri, 21 Aug 2020 18:33:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 509AA1716
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598027608;
-	bh=kr53/aLDIqOoxQ3H3Cd+86TFZJG+yDTjeToeL/dSmrc=;
+	s=default; t=1598027638;
+	bh=KBZtrl9l7zLEZJan83MptJLbyr5aJyrD63fDN0bHUu8=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cXTQCGlU5rsvOg3zYCkyGZrT+EDxIkOaBl1u5R2ctoNzotZfSjPN/yJMcLi55A9+u
-	 bn3Ryr3W0jklmEZ5EI03sMVrw192VoOwc8FvsuMt/Etloz1kgvbJiI4lTpDEiSxmQq
-	 G5J4gdv1moqfAjpY9nh9Ipd5uSBo5H19h/4ETSns=
+	b=oSv3FBtGXyMCFfKTdfw8namzj9B3zCe5Aoer1oqud931VFIun9/GNkDlgzgvvaiOw
+	 6B4G9ylbeUGiPfxaimfQj5UBRyM8LQryOMfrHAtuBStgRLvk6X/Jg2bMKOT0FDfYO0
+	 hQX0NrmVFgjfMmUw/VzG9zwVEMt1fCD/DHDo11TM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1179FF802E9;
-	Fri, 21 Aug 2020 18:19:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DA7FF802F8;
+	Fri, 21 Aug 2020 18:19:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70705F802EC; Fri, 21 Aug 2020 18:19:07 +0200 (CEST)
+ id 5197FF802FD; Fri, 21 Aug 2020 18:19:47 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B844F802DF
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:19:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B844F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F71AF802F7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:19:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F71AF802F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Jv0dqx+q"
+ header.b="eD8TOu6f"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EA67322B47;
- Fri, 21 Aug 2020 16:18:58 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 75A8022CA1;
+ Fri, 21 Aug 2020 16:19:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026739;
- bh=kr53/aLDIqOoxQ3H3Cd+86TFZJG+yDTjeToeL/dSmrc=;
+ s=default; t=1598026780;
+ bh=KBZtrl9l7zLEZJan83MptJLbyr5aJyrD63fDN0bHUu8=;
  h=From:To:Cc:Subject:Date:From;
- b=Jv0dqx+qHQw0d2FXJMRCbow19qhPqNY77fKW7KMvZqFg0buI/vXvsJ4lvGaOk4KVM
- eYR0Fv5wPWwh5H0cgZ+mvIDJGdDHrZccMS66Jqd5/pwZbs3ejvhfFv16uL8+BG6Dz4
- fwbL5VAVEgpJWnsRQbCau4KkorbcknfLKs+q2lc8=
+ b=eD8TOu6fx57NkSWndHLJyUU10FuM7T0wyFa/coS5/j+42fgrG0CuazzNnAGMCJToX
+ a6FvGXYhKxl/m7jgWOTmmA6pjRyO45iSaz81jRcLLanVuf00P7uIUzOe6UqozM8gzD
+ lDVhNurpuAQu06KpgX+J3n7rbj7p2EClO9a8vYzU=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 01/30] ALSA: pci: delete repeated words in
- comments
-Date: Fri, 21 Aug 2020 12:18:28 -0400
-Message-Id: <20200821161857.348955-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 01/26] ALSA: pci: delete repeated words in comments
+Date: Fri, 21 Aug 2020 12:19:12 -0400
+Message-Id: <20200821161938.349246-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-stable: review
@@ -111,7 +110,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  7 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
-index 0020fd0efc466..09c547f4cc186 100644
+index 528102cc2d5d0..d824ff4ae3e3b 100644
 --- a/sound/pci/cs46xx/cs46xx_lib.c
 +++ b/sound/pci/cs46xx/cs46xx_lib.c
 @@ -780,7 +780,7 @@ static void snd_cs46xx_set_capture_sample_rate(struct snd_cs46xx *chip, unsigned
@@ -137,10 +136,10 @@ index 7488e1b7a7707..4e726d39b05d1 100644
  
  		/* save state */
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 7d65fe31c8257..a56f018d586f5 100644
+index cbe0248225c1c..4e67614f15f8e 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -3394,7 +3394,7 @@ EXPORT_SYMBOL_GPL(snd_hda_set_power_save);
+@@ -3496,7 +3496,7 @@ EXPORT_SYMBOL_GPL(snd_hda_set_power_save);
   * @nid: NID to check / update
   *
   * Check whether the given NID is in the amp list.  If it's in the list,
@@ -150,10 +149,10 @@ index 7d65fe31c8257..a56f018d586f5 100644
   *
   * This function is supposed to be set or called from the check_power_status
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 28ef409a9e6ae..9dee657ce9e27 100644
+index 949c90a859fab..184089c5e8cbc 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -823,7 +823,7 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
+@@ -820,7 +820,7 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
  	}
  }
  
@@ -163,10 +162,10 @@ index 28ef409a9e6ae..9dee657ce9e27 100644
  				   struct nid_path *path,
  				   bool allow_powerdown)
 diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 7cd147411b22d..f7896a9ae3d65 100644
+index d1a6d20ace0da..80b72d0702c5e 100644
 --- a/sound/pci/hda/patch_sigmatel.c
 +++ b/sound/pci/hda/patch_sigmatel.c
-@@ -863,7 +863,7 @@ static int stac_auto_create_beep_ctls(struct hda_codec *codec,
+@@ -862,7 +862,7 @@ static int stac_auto_create_beep_ctls(struct hda_codec *codec,
  	static struct snd_kcontrol_new beep_vol_ctl =
  		HDA_CODEC_VOLUME(NULL, 0, 0, 0);
  
