@@ -2,80 +2,81 @@ Return-Path: <SRS0=Ooul=B7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87152C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 15:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F9D3C433E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:15:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E11DD207BB
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 15:51:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15FCC22B43
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:15:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qNQp+h76"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E11DD207BB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XvFXOSkj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hv7W/vIi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15FCC22B43
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62FA0167E;
-	Fri, 21 Aug 2020 17:50:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62FA0167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 900F91684;
+	Fri, 21 Aug 2020 18:14:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 900F91684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598025061;
-	bh=7lGvicdNOA09KI+9Iqs64Ww2ddOSsgTat/wpE3LePBo=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1598026530;
+	bh=KXQV7iN6LfRHw4fLqfpnmxvNW34f/PK96F7lMXsjoCQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qNQp+h76yI68n5rpv8RGWbMDKQh7DsOHCH2Tton9Q0oc3YclK+XrfBXwpH/tvQYxZ
-	 HWKAKzGob8/+lHgvjxcgxBCyTnYgXsoRcT6G9wTlQjbIFlm7WRM6iyQ1Nfof8EDNM2
-	 a6kAL0LhuwTJQxvo8rovRbSvZRf+RieezG/nFiqc=
+	b=XvFXOSkjsBY7NP8V/iSjEj31tCXj4qNi0CRfBJnwWO6rpxPjRlce4SJNejwIltJ3N
+	 2trARhgS15b9pN5nGzpkKc3CtoN/GugmmPg2Zfr5odksY8JUVLxW36P/5XhgaJhqoo
+	 p0AKR6dZqrcIGRCIu2hrcCI7u3SIGLv0HAh09X0g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00ECFF80216;
-	Fri, 21 Aug 2020 17:50:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94353F800D3;
+	Fri, 21 Aug 2020 18:14:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C926F80218; Fri, 21 Aug 2020 17:50:09 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4F8E4F80260; Fri, 21 Aug 2020 18:14:37 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5487EF800D2
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 17:49:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5487EF800D2
-IronPort-SDR: Ku8BDoms2h5Ayw2VlkVIjbTmyw75ZEn02YY3Z/7b3SNAiSvKALH5Iz+QVCTcUSrRmFb9Ik6i25
- pUEFrKW8O58g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="135101313"
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; d="scan'208";a="135101313"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Aug 2020 08:49:55 -0700
-IronPort-SDR: U0c/ucYHcYWMlQh/WwpAiK3Danxi4+T+E4u771AvD7KIVPZW1dYADp7rgNRfOP9+NXg4ImwvZO
- xe4Dt3D1dCtw==
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; d="scan'208";a="442385981"
-Received: from pcmiller-mobl1.amr.corp.intel.com (HELO [10.209.120.121])
- ([10.209.120.121])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Aug 2020 08:49:54 -0700
-Subject: Re: More Generic Audio Graph Sound Card idea
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>
-References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8507bcc1-8b20-4d70-7fd2-1131f8b02d5b@linux.intel.com>
-Date: Fri, 21 Aug 2020 10:49:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6C5FF800D2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:14:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6C5FF800D2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Hv7W/vIi"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C6B79208DB;
+ Fri, 21 Aug 2020 16:14:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1598026468;
+ bh=KXQV7iN6LfRHw4fLqfpnmxvNW34f/PK96F7lMXsjoCQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Hv7W/vIizXQxpqteMFQwNXpFg8sppcx4MvtwnUQZ1qOGmwkWxt1dOYwlvK/oOVqgl
+ ns/8qwGAGlWdXotADZaQ6DWWp6Gao3P4ZMdFxP9D99VPR3XoFJropswSDl+VjgWzU5
+ Ei2huTCDiuOiBOAJwppNkWosW2ok3GcX9fkZpjV0=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 03/62] ALSA: hda/realtek: Fix pin default on Intel
+ NUC 8 Rugged
+Date: Fri, 21 Aug 2020 12:13:24 -0400
+Message-Id: <20200821161423.347071-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
+References: <20200821161423.347071-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Sameer Pujar <spujar@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,77 +92,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Morimoto-san,
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
- > I know Pierre-Louis want to use it for SOF, but something is missing,
- > thus, can't use (?).
+[ Upstream commit e2d2fded6bdf3f7bb40718a208140dba8b4ec574 ]
 
-Here's a bit more background.
+The jack on Intel NUC 8 Rugged rear panel doesn't work.
 
-For SoundWire, we could have the following examples for amplifier 
-connections, where in some cases we have two amplifiers located on 
-separate links (top diagram) and in the second they are on the same link.
+The spec [1] states that the jack supports both headphone and
+microphone, so override a Pin Complex which has both Amp-In and Amp-Out
+to make the jack work.
 
-| FE PCMs    |  SoC DSP  | BE DAIs   | Audio devices |
+Node 0x1b fits the requirement, and user confirmed the jack now works
+with new pin config.
 
-              *************
-   PCM0 <---> *           * DAI0 <---> Codec Headset
-              *           *
-   PCM1 <---> *           * DAI1 <---> Amp Left
-              *   DSP     *
-   PCM2 <---> *           * DAI2 <---> Amp Right
-              *           *
-   PCM3 <---> *           * DAI3 <---> BT
-              *           *
-              *           * DAI4 <---> DMIC
-              *           *
-              *           * DAI5 <---> FM
-              *************
+[1] https://www.intel.com/content/dam/support/us/en/documents/mini-pcs/NUC8CCH_TechProdSpec.pdf
+BugLink: https://bugs.launchpad.net/bugs/1875199
 
-              *************
-   PCM0 <---> *           * DAI0 <---> Codec Headset
-              *           *
-   PCM1 <---> *           * DAI1 <---> Amp Left
-              *   DSP     *        |
-   PCM2 <---> *           * DAI2/  --> Amp Right
-              *           *
-   PCM3 <---> *           * DAI3 <---> BT
-              *           *
-              *           * DAI4 <---> DMIC
-              *           *
-              *           * DAI5 <---> FM
-              *************
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20200807080514.15293-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-We'd need a means to express that the two amplifiers are really supposed 
-to operate concurrently and be synchronized, and let the drivers know 
-which configuration to use (multi-cpu/multi-codec or single 
-CPU/multi-codec).
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 00d155b98c1d1..049a07447ba1a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6169,6 +6169,7 @@ enum {
+ 	ALC269_FIXUP_CZC_L101,
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
++	ALC256_FIXUP_INTEL_NUC8_RUGGED,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7490,6 +7491,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		},
+ 		.chain_id = ALC269_FIXUP_DMIC,
+ 	},
++	[ALC256_FIXUP_INTEL_NUC8_RUGGED] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1b, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7787,6 +7797,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
++	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
+ 
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
+-- 
+2.25.1
 
-Currently we do this manually by hard-coding an 'endpoint group', see 
-e.g. 
-https://elixir.bootlin.com/linux/latest/source/sound/soc/intel/common/soc-acpi-intel-cml-match.c#L69, 
-and use this information in the machine driver to know which of the 
-configurations to use.
-
-At some point we'd like to read this information from platform firmware 
-(will be ACPI for Intel but that's a detail) and create the dais in the 
-right way by grouping endpoints on the same dailink when they are 
-connected, and create separate dailink otherwise.
-
-Note that we only want the connection between BEs and audio devices to 
-be described in platform firmware, the topology inside the SOC DSP is 
-handled with a topology file that can be changed at will to e.g. 
-add/remove processing.
-
-We really need to make sure the audio graph can be described in two 
-parts, the bottom part related to hardware routing and layout, and the 
-DSP part. Of course the topology part would have to be constrained to 
-use the DAIs used in the lower level.
-
-Hope this helps explain what I am looking for.
-
-Thank you for starting this thread!
-
-Regards
-
--Pierre
