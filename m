@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EB86C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:28:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7410C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:28:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8FA1F20656
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:28:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 43F0A206DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:28:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S9FROoFn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nVbysKkN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FA1F20656
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bEIbqAaN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1mdwuIRM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43F0A206DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C7BC16ED;
-	Fri, 21 Aug 2020 18:27:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C7BC16ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6AAC16EA;
+	Fri, 21 Aug 2020 18:28:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6AAC16EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598027307;
-	bh=xLVwb0w4XTSUj3JwDiKNBo/VprSnSpTNy1zh6aFbFUI=;
+	s=default; t=1598027337;
+	bh=wfyP6ErZoZxY7ltPAxt9V2YaYyKjCJkU6bza5vC6jfQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S9FROoFnL9WwCKljUo4kiTl+BFMqBvWerepKV/CySaTnjp439530S/HJfc57qJLyX
-	 8ZdIctZisc73yiiAt1ZaxTOq2MDh+OunVwIzG2M/5Jq1bSG4qJ9/TQhphPgB2iiaNf
-	 l3GH7TL8ZnWRasO6WPL3zgXGpWee85xPRj9V6AfY=
+	b=bEIbqAaNaShF0/zLZVV4EpdTnGE0y9//t7o+9zjwa/nqW2t98Oa0+DyQL+pdFpV/5
+	 n6TuRReI6wEDkd8+U9rKp7p1Jr75vnOJr/HLAQXGPEZc1BOcVWpY2TDLIchqFAyNMJ
+	 Cmkp7M4EczYvvk7lAd+qIcRCy9QIr3zeU/Rboy+s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3B4EF80376;
-	Fri, 21 Aug 2020 18:17:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5B9EF8037D;
+	Fri, 21 Aug 2020 18:17:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85624F80360; Fri, 21 Aug 2020 18:17:22 +0200 (CEST)
+ id 5B274F8036D; Fri, 21 Aug 2020 18:17:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43E93F80253
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:17:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43E93F80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1DB3F80255
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:17:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1DB3F80255
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nVbysKkN"
+ header.b="1mdwuIRM"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 44ED72224D;
- Fri, 21 Aug 2020 16:17:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8759022B4B;
+ Fri, 21 Aug 2020 16:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026629;
- bh=xLVwb0w4XTSUj3JwDiKNBo/VprSnSpTNy1zh6aFbFUI=;
+ s=default; t=1598026632;
+ bh=wfyP6ErZoZxY7ltPAxt9V2YaYyKjCJkU6bza5vC6jfQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=nVbysKkNVdiDR6XguElYgRP1CXu10RSx0dgv8WXAfu1X5teWAfTtW11U04NTitrzd
- 1lNbjPdZYWc9zRIeWqrojpHMnv0vtMkcX3dOZh4K43Pcm/6S5/6POVNUm8NaxBQmj/
- Q+hqrJHTrNL7yWyVUwEDmIGAjQZktq7nO4cjgbgs=
+ b=1mdwuIRMkVgETb0eextYFGtt7NCh7LodlfucpqonofdDnaGfRFdxmsrUuqIP/MN+p
+ MpVCCjEeN8YXvtn/UcE4QCC8jXEol74nKG17vfnwkNMDW5VSyPCBlf/yin2mvMA9Ju
+ D9DIJuhCvn++16AHGQli/Hs2DRBGgxA3hFVO/+mk=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 04/48] ALSA: hda/hdmi: Use force connectivity
- quirk on another HP desktop
-Date: Fri, 21 Aug 2020 12:16:20 -0400
-Message-Id: <20200821161704.348164-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 06/48] ASoC: img-parallel-out: Fix a reference
+ count leak
+Date: Fri, 21 Aug 2020 12:16:22 -0400
+Message-Id: <20200821161704.348164-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821161704.348164-1-sashal@kernel.org>
 References: <20200821161704.348164-1-sashal@kernel.org>
@@ -75,8 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Qiushi Wu <wu000273@umn.edu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,35 +92,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit d96f27c80b65437a7b572647ecb4717ec9a50c98 ]
+[ Upstream commit 6b9fbb073636906eee9fe4d4c05a4f445b9e2a23 ]
 
-There's another HP desktop has buggy BIOS which flags the Port
-Connectivity bit as no connection.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code, causing incorrect ref count if
+pm_runtime_put_noidle() is not called in error handling paths.
+Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
 
-Apply force connectivity quirk to enable DP/HDMI audio.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20200811095336.32396-1-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Link: https://lore.kernel.org/r/20200614033344.1814-1-wu000273@umn.edu
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/img/img-parallel-out.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index a9559fb29e209..ec9460f3a288e 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1818,6 +1818,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
- }
+diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
+index 5ddbe3a31c2e9..4da49a42e8547 100644
+--- a/sound/soc/img/img-parallel-out.c
++++ b/sound/soc/img/img-parallel-out.c
+@@ -163,8 +163,10 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	}
  
- static const struct snd_pci_quirk force_connect_list[] = {
-+	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
- 	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
- 	{}
- };
+ 	ret = pm_runtime_get_sync(prl->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(prl->dev);
+ 		return ret;
++	}
+ 
+ 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
+ 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
 -- 
 2.25.1
 
