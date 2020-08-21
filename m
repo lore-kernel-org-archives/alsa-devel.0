@@ -6,79 +6,74 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA561C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02EB5C433E3
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:26:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6395B20656
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:25:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8647F20656
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 16:26:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AtGkgB+h";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ucZlJ+N8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6395B20656
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bo0feQ+K";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="P5yRMhbB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8647F20656
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E33CE16DD;
-	Fri, 21 Aug 2020 18:24:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E33CE16DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2161716CC;
+	Fri, 21 Aug 2020 18:25:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2161716CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598027136;
-	bh=GWXXzB5dOe5LzjCmmQyVZuCFOLpd7KoXrQkTgZPh64Q=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AtGkgB+hU6EHI2+TH6Jgo1de93lHbJ+8Rxy/X0n4EOqbNDcpVmA3UmMXdSLanH+Si
-	 rlfJZlkmTfjkfC1ad7bfGNyUS+DybF7NEcg5EyP4gUmGjSaMu2k3AnJO3/xuUO+rss
-	 sLzGaYbA9MrySrdJuAY+kx8CMtsXdpo1N8uMyr6Y=
+	s=default; t=1598027175;
+	bh=atyzxSmKZvCjKg35gnk/DNffB9siaSr+jtZ4WxUcGOg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bo0feQ+KAHhZMQFxVBnV2uiDB6WGvV7bx/yueL19v63orSTHoNAsBWm6miX98LsUa
+	 WphTBmOABlAovopuF5aSGsP+IrMydXkVE8prBnU2Y/pIsrpVh4uS4Bd5ihfylWTSqs
+	 hZwU1R/3l1oxptfmxpfNLzjIirmTR+3JFSgBW8Uc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2071FF80350;
-	Fri, 21 Aug 2020 18:16:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FB20F80361;
+	Fri, 21 Aug 2020 18:17:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D3AAF80351; Fri, 21 Aug 2020 18:16:48 +0200 (CEST)
+ id 2F0CBF80363; Fri, 21 Aug 2020 18:17:14 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4C20F80218
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:16:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4C20F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC57CF802C2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 18:17:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC57CF802C2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ucZlJ+N8"
+ header.b="P5yRMhbB"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9A90122BEF;
- Fri, 21 Aug 2020 16:16:40 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 984E320578;
+ Fri, 21 Aug 2020 16:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598026601;
- bh=GWXXzB5dOe5LzjCmmQyVZuCFOLpd7KoXrQkTgZPh64Q=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ucZlJ+N8x0LMUZADAdk6ZCQAVRe4Ak95nnAfMBkY9cG8t8RCF1T+Dhbp+JM4nuonm
- xnED7VJUxGCTf5jUnZ7xerZLJffdgZBh5uIQ49EH42HcbBoE+8f0gx9llSd2dQiI6l
- 7c/FvH5R7PhDNWKx//leHe8rEwCJZKhv0br4kv7w=
+ s=default; t=1598026626;
+ bh=atyzxSmKZvCjKg35gnk/DNffB9siaSr+jtZ4WxUcGOg=;
+ h=From:To:Cc:Subject:Date:From;
+ b=P5yRMhbBOrzvKZ6MV0jITLoO5S8IOCabSu5j7119+lBGseM7qUa0Plik8CRfUahKR
+ PnjDvP9/DxXZ3Y9ZxUU8qykEPowss2kwqqPcems1ztvsk27emdARcf+GsLDsqR6wyg
+ MX4VV5WD63zeP+awtm1dicO7WQBwmlbCZ7xMioQc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 44/61] ASoC: Intel: sof_sdw_rt711: remove
- properties in card remove
-Date: Fri, 21 Aug 2020 12:15:28 -0400
-Message-Id: <20200821161545.347622-44-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 01/48] ALSA: hda/hdmi: Add quirk to force
+ connectivity
+Date: Fri, 21 Aug 2020 12:16:17 -0400
+Message-Id: <20200821161704.348164-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161545.347622-1-sashal@kernel.org>
-References: <20200821161545.347622-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,87 +89,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit cf0418cd06ce42fcf35beb33e315b5a77e596926 ]
+[ Upstream commit cd72c317a0a11f64225b9a3f1fe503bb8c7327b5 ]
 
-The rt711 jack detection properties are set from the machine drivers
-during the card probe, as done in other ASoC examples.
+HDMI on some platforms doesn't enable audio support because its Port
+Connectivity [31:30] is set to AC_JACK_PORT_NONE:
+Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0b000094: OUT Detect HBR HDMI DP
+  Pin Default 0x58560010: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Devices: 0
+  Connection: 3
+     0x02 0x03* 0x04
 
-KASAN reports a use-after-free error when unbinding drivers due to a
-confusing sequence between the ACPI core, the device core and the
-SoundWire device cleanups.
+For now, use a quirk to force connectivity based on SSID. If there are
+more platforms affected by the same issue, we can eye for a more generic
+solution.
 
-Rather than fixing this sequence, follow the recommendation to have
-the same caller add and remove properties, add an explicit
-device_remove_properties() in the card .remove() callback.
-
-In future patches the use of device_add/remove_properties will be
-replaced by a direct handling of a swnode, but the sequence will
-remain the same.
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200717211337.31956-3-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20200804155836.16252-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c        |  1 +
- sound/soc/intel/boards/sof_sdw_common.h |  1 +
- sound/soc/intel/boards/sof_sdw_rt711.c  | 15 +++++++++++++++
- 3 files changed, 17 insertions(+)
+ sound/pci/hda/patch_hdmi.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 61b5bced29b7e..9f01eb224d615 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -184,6 +184,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.direction = {true, true},
- 		.dai_name = "rt711-aif1",
- 		.init = sof_sdw_rt711_init,
-+		.exit = sof_sdw_rt711_exit,
- 	},
- 	{
- 		.id = 0x1308,
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index dd593ff3575b5..b9c9c974b6142 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -84,6 +84,7 @@ int sof_sdw_rt711_init(const struct snd_soc_acpi_link_adr *link,
- 		       struct snd_soc_dai_link *dai_links,
- 		       struct sof_sdw_codec_info *info,
- 		       bool playback);
-+int sof_sdw_rt711_exit(struct device *dev, struct snd_soc_dai_link *dai_link);
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 908b68fda24c9..a9559fb29e209 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -176,6 +176,7 @@ struct hdmi_spec {
+ 	bool use_jack_detect; /* jack detection enabled */
+ 	bool use_acomp_notifier; /* use eld_notify callback for hotplug */
+ 	bool acomp_registered; /* audio component registered in this driver */
++	bool force_connect; /* force connectivity */
+ 	struct drm_audio_component_audio_ops drm_audio_ops;
+ 	int (*port2pin)(struct hda_codec *, int); /* reverse port/pin mapping */
  
- /* RT700 support */
- int sof_sdw_rt700_init(const struct snd_soc_acpi_link_adr *link,
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
-index 2a4917e3d5614..35be804479caf 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711.c
-@@ -132,6 +132,21 @@ static int rt711_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
+@@ -1711,7 +1712,8 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ 	 * all device entries on the same pin
+ 	 */
+ 	config = snd_hda_codec_get_pincfg(codec, pin_nid);
+-	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
++	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE &&
++	    !spec->force_connect)
+ 		return 0;
+ 
+ 	/*
+@@ -1815,11 +1817,18 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+ 	return 0;
  }
  
-+int sof_sdw_rt711_exit(struct device *dev, struct snd_soc_dai_link *dai_link)
-+{
-+	struct device *sdw_dev;
++static const struct snd_pci_quirk force_connect_list[] = {
++	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
++	{}
++};
 +
-+	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL,
-+					  dai_link->codecs[0].name);
-+	if (!sdw_dev)
-+		return -EINVAL;
+ static int hdmi_parse_codec(struct hda_codec *codec)
+ {
++	struct hdmi_spec *spec = codec->spec;
+ 	hda_nid_t start_nid;
+ 	unsigned int caps;
+ 	int i, nodes;
++	const struct snd_pci_quirk *q;
+ 
+ 	nodes = snd_hda_get_sub_nodes(codec, codec->core.afg, &start_nid);
+ 	if (!start_nid || nodes < 0) {
+@@ -1827,6 +1836,11 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 
++	q = snd_pci_quirk_lookup(codec->bus->pci, force_connect_list);
 +
-+	device_remove_properties(sdw_dev);
-+	put_device(sdw_dev);
++	if (q && q->value)
++		spec->force_connect = true;
 +
-+	return 0;
-+}
-+
- int sof_sdw_rt711_init(const struct snd_soc_acpi_link_adr *link,
- 		       struct snd_soc_dai_link *dai_links,
- 		       struct sof_sdw_codec_info *info,
+ 	/*
+ 	 * hdmi_add_pin() assumes total amount of converters to
+ 	 * be known, so first discover all converters
 -- 
 2.25.1
 
