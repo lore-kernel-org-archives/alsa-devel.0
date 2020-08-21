@@ -7,72 +7,73 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F913C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:02:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9DDDC433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:03:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD0F02072D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:02:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4E8CE20735
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 20:03:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GsBDBoEA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD0F02072D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TFwxjFcH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E8CE20735
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38C82166D;
-	Fri, 21 Aug 2020 22:01:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38C82166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBA3B1695;
+	Fri, 21 Aug 2020 22:02:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBA3B1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598040167;
-	bh=RsZb5ZcJlPZ/fmiRp2oF2VVME04wYU8JwnycqMJfnqc=;
+	s=default; t=1598040191;
+	bh=QK34Xh2BDZdQwP0z1kwjMxoGmQ5VouteiDdgFKRZ4+c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GsBDBoEAJukT2SA2q+fYrlcYJqr71fGJ6UZyUiKv2NgW+oYAD6XuFgr9Bs9vIScV1
-	 weQzXe/Ulp1a2FjKCtDCN2dY/ESkf6cm+NohioEN7eGZCul6heNeagjOHiT+qFcOAd
-	 HF8fJE0yEdPETZGlvHnRf0oDjoAzT3VRXBrtdEWk=
+	b=TFwxjFcHm+81nlAbP580/elH+AGnW9qk3blY/aW185R3NWVfHl5BtHK26+6tJbLyL
+	 cCgflTjIGg+FiNtZxETWeonyXXWsNDGjYa9RYRUYW7JlHGKcaWyC3XqylPmiK2Wp8m
+	 SbirVncgYgQd6qlyqhQ+HfhwW8XzOVkKY/4BDKjw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F4F8F80307;
-	Fri, 21 Aug 2020 21:56:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C032BF80322;
+	Fri, 21 Aug 2020 21:56:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB0D2F802EB; Fri, 21 Aug 2020 21:56:39 +0200 (CEST)
+ id 135F4F80216; Fri, 21 Aug 2020 21:56:40 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6929DF80257
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 21:56:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6929DF80257
-IronPort-SDR: JzXx59j4Pkon6M7UlkNPn09rBU2cOouChwMb0gg/vu2SrTGNA2biiZ5PgZI01mVPDZCigXHjoK
- Vw2af5SIrL8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="217158562"
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="217158562"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18E07F802C3
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 21:56:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E07F802C3
+IronPort-SDR: Ppsqr1ZcXtiUZdDqWvrlcEyXULil3bsx8/ejzULbcQbF7lf4EQxt/HjSzKvxupSGDbDShZ36PR
+ YAQ5N7nUBvKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="217158559"
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="217158559"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  21 Aug 2020 12:56:21 -0700
-IronPort-SDR: 2raCJYDlQI34z/yQkSC9a/E8kPaloynshXAHR74EwvnKXDR2BSulSMJlRaiSdwmbVLxY5PttoX
- 5ELYiC03btEA==
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="279002421"
+IronPort-SDR: qWev2RO3RHmfN0zhADmypbb+pq6q6H5bnmrrWMKR2TJFYTr/iPcB7i0+Bmy0sfZNmuTq6s2NpE
+ JPbAtUepgvDg==
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; d="scan'208";a="279002417"
 Received: from pahnn-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.254.176.176])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Aug 2020 12:56:21 -0700
+ 21 Aug 2020 12:56:20 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/14] ASoC: Intel: sof_sdw: Add support for product Ripto
-Date: Fri, 21 Aug 2020 14:55:57 -0500
-Message-Id: <20200821195603.215535-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 09/14] ASoC: Intel: sof_sdw: rename id as part_id
+Date: Fri, 21 Aug 2020 14:55:56 -0500
+Message-Id: <20200821195603.215535-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821195603.215535-1-pierre-louis.bossart@linux.intel.com>
 References: <20200821195603.215535-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, vinod.koul@intel.com, broonie@kernel.org,
+Cc: tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ vinod.koul@intel.com, broonie@kernel.org,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -90,38 +91,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Ripto is another product based on TGL with the same
-audio hardware configuration as Volteer.
+The "id" field in sof_sdw_codec_info struct is actually the "part
+id". Rename to prevent confusions.
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c        | 14 +++++++-------
+ sound/soc/intel/boards/sof_sdw_common.h |  2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index ca231459ac10..44d06fa48b24 100644
+index dca981f7c7d3..ca231459ac10 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -123,6 +123,15 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_SDW_TGL_HDMI | SOF_SDW_PCH_DMIC |
- 					SOF_SDW_FOUR_SPK),
- 	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Ripto"),
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI | SOF_SDW_PCH_DMIC |
-+					SOF_SDW_FOUR_SPK),
-+	},
+@@ -212,20 +212,20 @@ static const struct snd_soc_ops sdw_ops = {
  
- 	{}
- };
+ static struct sof_sdw_codec_info codec_info_list[] = {
+ 	{
+-		.id = 0x700,
++		.part_id = 0x700,
+ 		.direction = {true, true},
+ 		.dai_name = "rt700-aif1",
+ 		.init = sof_sdw_rt700_init,
+ 	},
+ 	{
+-		.id = 0x711,
++		.part_id = 0x711,
+ 		.direction = {true, true},
+ 		.dai_name = "rt711-aif1",
+ 		.init = sof_sdw_rt711_init,
+ 		.exit = sof_sdw_rt711_exit,
+ 	},
+ 	{
+-		.id = 0x1308,
++		.part_id = 0x1308,
+ 		.acpi_id = "10EC1308",
+ 		.direction = {true, false},
+ 		.dai_name = "rt1308-aif",
+@@ -233,20 +233,20 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		.init = sof_sdw_rt1308_init,
+ 	},
+ 	{
+-		.id = 0x715,
++		.part_id = 0x715,
+ 		.direction = {false, true},
+ 		.dai_name = "rt715-aif2",
+ 		.init = sof_sdw_rt715_init,
+ 	},
+ 	{
+-		.id = 0x8373,
++		.part_id = 0x8373,
+ 		.direction = {true, true},
+ 		.dai_name = "max98373-aif1",
+ 		.init = sof_sdw_mx8373_init,
+ 		.codec_card_late_probe = sof_sdw_mx8373_late_probe,
+ 	},
+ 	{
+-		.id = 0x5682,
++		.part_id = 0x5682,
+ 		.direction = {true, true},
+ 		.dai_name = "rt5682-sdw",
+ 		.init = sof_sdw_rt5682_init,
+@@ -265,7 +265,7 @@ static inline int find_codec_info_part(u64 adr)
+ 		 * A codec info is for all sdw version with the part id if
+ 		 * version_id is not specified in the codec info.
+ 		 */
+-		if (part_id == codec_info_list[i].id &&
++		if (part_id == codec_info_list[i].part_id &&
+ 		    (!codec_info_list[i].version_id ||
+ 		     sdw_version == codec_info_list[i].version_id))
+ 			return i;
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index cb1320348d0b..ce0680a7b180 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -51,7 +51,7 @@ enum {
+ #define SOF_SDW_NO_AGGREGATION		BIT(12)
+ 
+ struct sof_sdw_codec_info {
+-	const int id;
++	const int part_id;
+ 	const int version_id;
+ 	int amp_num;
+ 	const u8 acpi_id[ACPI_ID_LEN];
 -- 
 2.25.1
 
