@@ -1,85 +1,65 @@
-Return-Path: <SRS0=Ooul=B7=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=57+Y=CA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 725C3C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 21:57:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBCE2C433E1
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Aug 2020 06:37:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEC4F207DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2020 21:57:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48E7A2072D
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Aug 2020 06:37:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SEmSd0+z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SJLsMQ2o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEC4F207DA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sIJedG/Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48E7A2072D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=longlandclan.id.au
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D2081678;
-	Fri, 21 Aug 2020 23:56:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D2081678
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF86D83D;
+	Sat, 22 Aug 2020 08:36:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF86D83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598047047;
-	bh=omGYKu4UKaBy5l/8iUmdyJvFxlVfjWz4GLF05Wo2kJ8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=SEmSd0+z1o1xF78Bp0BDvbIDzpFt2eV6+AeBx4xR08ifGpZHGCPq8OzZT9+3IltNm
-	 lQQC2yNj7PRTRT+xqjetFcGp5wF8z6hIfDeQsb/Z4Varo2LR6nGRh7G0wnAGBy6tK0
-	 v6yvab01O1RrkArWjFyDjDnjKqYRHiWjGFznEeic=
+	s=default; t=1598078253;
+	bh=xlyLDXEoJb9nYjl2e4ydUF3JBddKrWoAwTvCospusdg=;
+	h=From:Subject:To:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=sIJedG/Q4ngmoSqKvKSMjlyGAkCtHlClMf7Tuyxo+vgZeT5t2OToLpEfq3z9072Ql
+	 xfT9O3p0xP/FKkIRxf4Py4vP2txHTX+OTaC3SLgFE59aNbYGhm2Rq5s9oEx+hso6G/
+	 YBbPGmT3wM5qQnvvaXZN5pHM47XYKwO4MwoGl/Qc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3FA1F80216;
-	Fri, 21 Aug 2020 23:56:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B1E7F801ED;
+	Sat, 22 Aug 2020 08:36:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02957F80218; Fri, 21 Aug 2020 23:56:33 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 81F36F8007E; Sat, 22 Aug 2020 08:36:38 +0200 (CEST)
+Received: from mail.longlandclan.id.au (eth2015.qld.adsl.internode.on.net
+ [150.101.176.226])
+ by alsa1.perex.cz (Postfix) with ESMTP id B9DFEF8007E
+ for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2020 08:36:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9DFEF8007E
+Received: from [IPv6:2001:44b8:21ac:7053:a64e:31ff:fe53:99cc] (unknown
+ [IPv6:2001:44b8:21ac:7053:a64e:31ff:fe53:99cc])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E42BDF800C0
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2020 23:56:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E42BDF800C0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SJLsMQ2o"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A7660207CD;
- Fri, 21 Aug 2020 21:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598046984;
- bh=omGYKu4UKaBy5l/8iUmdyJvFxlVfjWz4GLF05Wo2kJ8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=SJLsMQ2oGuzSHfUbYmoNFlIbifymxPe6CaC6uh6rh5j4BfAY7VkT/bYe7fXUfm12v
- DQNLozLdt4plBt6fxGbQcSX4PH7EQTB1uG6pvScUWvx4nDNXyz8FfU2ctS8y1Va3yS
- n00gsLSs+Y4+15XCeGy2FEWJe3L77XhthcB/hWjc=
-Date: Fri, 21 Aug 2020 22:55:50 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 06/14] ASoC: Intel: tgl_max98373: fix a runtime pm issue
- in multi-thread case
-Message-ID: <20200821215550.GK4870@sirena.org.uk>
-References: <20200821195603.215535-1-pierre-louis.bossart@linux.intel.com>
- <20200821195603.215535-7-pierre-louis.bossart@linux.intel.com>
+ by mail.longlandclan.id.au (Postfix) with ESMTPSA id 50CD2785FA5
+ for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2020 16:36:28 +1000 (EST)
+From: Stuart Longland <stuartl@longlandclan.id.au>
+Subject: aserver + shm plug-in information?
+To: alsa-devel@alsa-project.org
+Message-ID: <4562ea78-a6c5-de56-98e4-e72803a561eb@longlandclan.id.au>
+Date: Sat, 22 Aug 2020 16:36:26 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="8tUgZ4IE8L4vmMyh"
-Content-Disposition: inline
-In-Reply-To: <20200821195603.215535-7-pierre-louis.bossart@linux.intel.com>
-X-Cookie: divorce, n:
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, vinod.koul@intel.com,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,41 +75,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+[Hi all, I sent this to the alsa-user list about 2 months ago, and
+haven't seen any replies.  Hoping someone here might know?  Thanks in
+advance.]
 
---8tUgZ4IE8L4vmMyh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-On Fri, Aug 21, 2020 at 02:55:53PM -0500, Pierre-Louis Bossart wrote:
-> From: Rander Wang <rander.wang@intel.com>
->=20
-> When the playback & capture streams are stopped simultaneously, the
-> SOF PCI device will remain pm_runtime active. The root-cause is a race
-> condition with two threads reaching the trigger function at the same
-> time. They see another stream is active so the dapm pin is not
-> disabled, so the codec remains active as well as the parent PCI
-> device.
->=20
-> For max98373, the capture stream provides feedback when playback is
-> working and it is unused when playback is stopped. So the dapm pin
-> should be set only when playback is active.
+I'm looking at ways to try and share a sound card over a network in a
+lossless and low-latency manner.
 
-Should this be sent as a fix?
+The application here will be to be able to use the sound card on a
+Raspberry Pi to interface to an amateur radio transceiver, and use that
+interface to send things like slow-scan television from a more powerful
+workstation.
 
---8tUgZ4IE8L4vmMyh
-Content-Type: application/pgp-signature; name="signature.asc"
+For this to work, it is utterly *essential* that no audio compression is
+used.  So PulseAudio, JACK, etc… unless I'm very much mistaken, are not
+options as they use lossy audio CODECs for compression.  Audio itself
+might only be 8kHz at 16-bit linear PCM, mono… so not terribly high
+bit-rate, and even latency is negotiable, but lossy compression is
+likely to mess things up.
 
------BEGIN PGP SIGNATURE-----
+PulseAudio I'd imagine is also asking for trouble where digital modes
+are concerned, as it'll be trying to re-sample everything to keep a
+consistent sample rate.  I want as little extra DSP on streams as
+possible.  I'd prefer to let PulseAudio just handle "audio" only.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9AQuYACgkQJNaLcl1U
-h9A9swf/UufkcYfWi1pRxGTH1GbKmnWZa3hcITaHZdC786VMkj7weu7pZ3VIPjrB
-RypxnA+Mn5Os/edf/lGaUKbxXwFRmi5GnXiouiSKiXQ4yPWk5x4LvwiFWpAtvdT/
-dkG4yLg+4+WNHeY/pO/mpz0/oedQM/7RETO94yP1P+R6Urkv3NTWIWvZkD5q2Yzp
-S04d1PVYCRNnl19O5z/0fzIVQ9PcOebjrtvxEZhj01X7lJ5ikIEijMH8wI/DJfFb
-+RRQ6QjVkdMe3Eyjto9F69t/pHrsVxTABhf9MlcWMWVjnu/927clZbeks9x5KCKI
-jJvSIhLdNrRT8Mk7NxOaRtK41QNtPg==
-=YAIy
------END PGP SIGNATURE-----
+I'm considering writing an ALSA PCM plug-in to accomplish this, that
+would expose a "virtual" sound card on my workstation, and allow me to
+stream it (by custom protocol, RTP, whatever) to another machine.  In
+researching this, I've stumbled on the `shm` plug-in.
 
---8tUgZ4IE8L4vmMyh--
+https://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_shm
+
+It apparently talks to something called `aserver`.  `man aserver` gives
+me nothing.  Google search just takes me to its source code.  There
+seems to be scant information about what this does, how to configure it,
+etc.
+
+Alternatively, it'd be nice to know how `aserver` and the `shm` plug-in
+communicate, maybe I can write my own client daemon that acts like
+`aserver` and looks after streaming to the desired end-point.
+
+Alternatively, if people feel I'm barking up the wrong tree, I'm willing
+to consider alternatives.
+
+Regards,
+-- 
+Stuart Longland (aka Redhatter, VK4MSL)
+
+I haven't lost my mind...
+  ...it's backed up on a tape somewhere.
