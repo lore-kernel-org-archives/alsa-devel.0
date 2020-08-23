@@ -2,71 +2,60 @@ Return-Path: <SRS0=eDLw=CB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14C03C433E1
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 11:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9D26C433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 11:33:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9019A2067C
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 11:29:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 56C6A20774
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 11:33:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AemJum4P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9019A2067C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pr2+b9pS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56C6A20774
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 045F71654;
-	Sun, 23 Aug 2020 13:28:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 045F71654
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFA2382E;
+	Sun, 23 Aug 2020 13:32:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFA2382E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598182180;
-	bh=7Zjys5Cs6sRf+7+uamw5zQ2SLnXTJFSrBUQwm9W/VqA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AemJum4PWKRZofsuOOAqN7x1zC+WsCFPVlk6okgDNBXBmTOc/mkHq5KDonfjefnNb
-	 4oBbJ/GMSyGAmA0B1ZKqYT0iyeKEwinFylQuGwouhLh92D16Bz83efxMY26HH8MXqg
-	 sdhK6w9RUYjYRnYOElr5mlxu2FKRold1YeuGQ97o=
+	s=default; t=1598182429;
+	bh=N8Clq+yRxeXQ65VsJ6a7uxdPH+vqMr6mNHwpl+lJJdY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Pr2+b9pSlsZoRTngxxAcIFQmW1uoZkFe9GdW1xRw9OgP1pEMhWw2Zx6YKsVdLg5IL
+	 ho7/6QJ60yXJ1+nhfeQGrtNPb9+Z2Q9KALfjFnkoNYwZ+1CVtue7qe7urujnXgH2n2
+	 EmEdkutZfW6GMgdVdZ+WooFZyMYdxV6bLguVwQmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B852F80245;
-	Sun, 23 Aug 2020 13:28:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D50EF80245;
+	Sun, 23 Aug 2020 13:32:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFF04F8025A; Sun, 23 Aug 2020 13:28:46 +0200 (CEST)
+ id 33EC5F8025A; Sun, 23 Aug 2020 13:32:58 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B30EBF800EB
- for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2020 13:28:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B30EBF800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B6D2F800EB
+ for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2020 13:32:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6D2F800EB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9B1B0AE4B;
- Sun, 23 Aug 2020 11:29:08 +0000 (UTC)
-Date: Sun, 23 Aug 2020 13:28:38 +0200
-Message-ID: <s5hft8da9eh.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 505BAAD46;
+ Sun, 23 Aug 2020 11:33:21 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
-Subject: Re: [PATCH 3/3] ALSA: usb-audio: Properly match with audio interface
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Correct wrongly matching entries with audio
  class
-In-Reply-To: <s5h8se6br92.wl-tiwai@suse.de>
-References: <20200817082140.20232-1-tiwai@suse.de>
- <20200817082140.20232-4-tiwai@suse.de>
- <213664da6ebb6bf7f1382a93676f087236da412a.camel@tsoy.me>
- <s5h8se6br92.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Date: Sun, 23 Aug 2020 13:32:51 +0200
+Message-Id: <20200823113251.10175-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: Alexander Tsoy <alexander@tsoy.me>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,133 +71,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 22 Aug 2020 18:05:29 +0200,
-Takashi Iwai wrote:
-> 
-> On Sat, 22 Aug 2020 17:27:35 +0200,
-> Alexander Tsoy wrote:
-> > 
-> > В Пн, 17/08/2020 в 10:21 +0200, Takashi Iwai пишет:
-> > > There are a few entries in the quirk table that set the device ID
-> > > with
-> > > USB_DEVICE() macro while having an extra bInterfaceClass field.  But
-> > > bInterfaceClass field is never checked unless the proper match_flags
-> > > is set, so those may match incorrectly with all interfaces.
-> > > 
-> > > Introduce another macro to match with the vid/pid pair and the audio
-> > > class interface, and apply it to such entries, so that they can match
-> > > properly.
-> > > 
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > ---
-> > >  sound/usb/quirks-table.h | 55 +++++++++++++++++---------------------
-> > > ----------
-> > >  1 file changed, 19 insertions(+), 36 deletions(-)
-> > > 
-> > > diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-> > > index 988bb9d00192..7a80ef31bbe4 100644
-> > > --- a/sound/usb/quirks-table.h
-> > > +++ b/sound/usb/quirks-table.h
-> > > @@ -35,6 +35,14 @@
-> > >  	.bInterfaceClass = USB_CLASS_AUDIO, \
-> > >  	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL
-> > >  
-> > > +/* Another standard entry matching with vid/pid and the audio class
-> > > */
-> > > +#define USB_AUDIO_CLASS(vend, prod) \
-> > > +	.match_flags = USB_DEVICE_ID_MATCH_DEVICE | \
-> > > +		       USB_DEVICE_ID_MATCH_INT_CLASS, \
-> > > +	.idVendor = vend, \
-> > > +	.idProduct = prod, \
-> > > +	.bInterfaceClass = USB_CLASS_AUDIO
-> > > +
-> > >  /* FTDI devices */
-> > >  {
-> > >  	USB_DEVICE(0x0403, 0xb8d8),
-> > > @@ -68,34 +76,14 @@
-> > >  	}
-> > >  },
-> > >  
-> > > -{
-> > > -	/* E-Mu 0202 USB */
-> > > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
-> > > -	.idVendor = 0x041e,
-> > > -	.idProduct = 0x3f02,
-> > > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > > -},
-> > > -{
-> > > -	/* E-Mu 0404 USB */
-> > > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
-> > > -	.idVendor = 0x041e,
-> > > -	.idProduct = 0x3f04,
-> > > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > > -},
-> > > -{
-> > > -	/* E-Mu Tracker Pre */
-> > > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
-> > > -	.idVendor = 0x041e,
-> > > -	.idProduct = 0x3f0a,
-> > > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > > -},
-> > > -{
-> > > -	/* E-Mu 0204 USB */
-> > > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
-> > > -	.idVendor = 0x041e,
-> > > -	.idProduct = 0x3f19,
-> > > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > > -},
-> > > +/* E-Mu 0202 USB */
-> > > +{ USB_AUDIO_CLASS(0x041e, 0x3f02) },
-> > > +/* E-Mu 0404 USB */
-> > > +{ USB_AUDIO_CLASS(0x041e, 0x3f04) },
-> > > +/* E-Mu Tracker Pre */
-> > > +{ USB_AUDIO_CLASS(0x041e, 0x3f0a) },
-> > > +/* E-Mu 0204 USB */
-> > > +{ USB_AUDIO_CLASS(0x041e, 0x3f19) },
-> > >  
-> > >  /*
-> > >   * HP Wireless Audio
-> > > @@ -2751,10 +2739,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
-> > >  },
-> > >  
-> > >  /* KeithMcMillen Stringport */
-> > > -{
-> > > -	USB_DEVICE(0x1f38, 0x0001),
-> > > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > > -},
-> > > +{ USB_AUDIO_CLASS(0x1f38, 0x0001) },
-> > >  
-> > >  /* Miditech devices */
-> > >  {
-> > > @@ -2977,10 +2962,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge",
-> > > "HVR-950Q"),
-> > >  },
-> > >  {
-> > >  	/* Tascam US122 MKII - playback-only support */
-> > > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
-> > > -	.idVendor = 0x0644,
-> > > -	.idProduct = 0x8021,
-> > > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > > +	USB_AUDIO_CLASS(0x0644, 0x8021),
-> > >  	.driver_info = (unsigned long) &(const struct
-> > > snd_usb_audio_quirk) {
-> > >  		.vendor_name = "TASCAM",
-> > >  		.product_name = "US122 MKII",
-> > > @@ -3612,3 +3594,4 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge",
-> > > "HVR-950Q"),
-> > >  
-> > >  #undef USB_DEVICE_VENDOR_SPEC
-> > >  #undef USB_AUDIO_DEVICE
-> > > +#undef USB_AUDIO_CLASS
-> > 
-> > I don't know anything about KeithMcMillen Stringport, but all other
-> > devices (US122 MKII and E-mu) seems to have Vendor-specific Class.
-> 
-> OK, then it must be with USB_DEVICE_VENDOR_SPEC macro instead although
-> they had .bInterfaceClass = USB_CLASS_AUDIO line wrongly.
-> Could you submit the correction patch, or shall I fix in my side?
+The commit 51ab5d77dcb8 ("ALSA: usb-audio: Properly match with audio
+interface class") converted the quirk entries that have both vid/pid
+pair and bInterface fields to match with all those with a new macro
+USB_AUDIO_CLASS().  However, it turned out that those are false
+conversions; all those (but the unknown KeithMcMillen device) are
+actually with vendor-specific interface class, hence the conversions
+broke the matching.
 
-Never mind, I prepared a patch by myself.  Will submit now.
+This patch corrects those entries to the right one,
+USB_DEVICE_VENDOR_SPEC() (and USB_DEVICE() for KeithMcMillen to be
+sure), and drop the unused USB_AUDIO_CLASS macro again.
 
+Fixes: 51ab5d77dcb8 ("ALSA: usb-audio: Properly match with audio interface class")
+Reported-by: Alexander Tsoy <alexander@tsoy.me>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/quirks-table.h | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
 
-Takashi
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 969c79d0c688..7fe9d3e75d59 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -35,14 +35,6 @@
+ 	.bInterfaceClass = USB_CLASS_AUDIO, \
+ 	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL
+ 
+-/* Another standard entry matching with vid/pid and the audio class */
+-#define USB_AUDIO_CLASS(vend, prod) \
+-	.match_flags = USB_DEVICE_ID_MATCH_DEVICE | \
+-		       USB_DEVICE_ID_MATCH_INT_CLASS, \
+-	.idVendor = vend, \
+-	.idProduct = prod, \
+-	.bInterfaceClass = USB_CLASS_AUDIO
+-
+ /* FTDI devices */
+ {
+ 	USB_DEVICE(0x0403, 0xb8d8),
+@@ -77,13 +69,13 @@
+ },
+ 
+ /* E-Mu 0202 USB */
+-{ USB_AUDIO_CLASS(0x041e, 0x3f02) },
++{ USB_DEVICE_VENDOR_SPEC(0x041e, 0x3f02) },
+ /* E-Mu 0404 USB */
+-{ USB_AUDIO_CLASS(0x041e, 0x3f04) },
++{ USB_DEVICE_VENDOR_SPEC(0x041e, 0x3f04) },
+ /* E-Mu Tracker Pre */
+-{ USB_AUDIO_CLASS(0x041e, 0x3f0a) },
++{ USB_DEVICE_VENDOR_SPEC(0x041e, 0x3f0a) },
+ /* E-Mu 0204 USB */
+-{ USB_AUDIO_CLASS(0x041e, 0x3f19) },
++{ USB_DEVICE_VENDOR_SPEC(0x041e, 0x3f19) },
+ 
+ /*
+  * HP Wireless Audio
+@@ -2756,7 +2748,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ },
+ 
+ /* KeithMcMillen Stringport */
+-{ USB_AUDIO_CLASS(0x1f38, 0x0001) },
++{ USB_DEVICE(0x1f38, 0x0001) }, /* FIXME: should be more restrictive matching */
+ 
+ /* Miditech devices */
+ {
+@@ -2979,7 +2971,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ },
+ {
+ 	/* Tascam US122 MKII - playback-only support */
+-	USB_AUDIO_CLASS(0x0644, 0x8021),
++	USB_DEVICE_VENDOR_SPEC(0x0644, 0x8021),
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "TASCAM",
+ 		.product_name = "US122 MKII",
+@@ -3611,4 +3603,3 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
+ #undef USB_AUDIO_DEVICE
+-#undef USB_AUDIO_CLASS
+-- 
+2.16.4
+
