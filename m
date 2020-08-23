@@ -6,63 +6,62 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33234C433E1
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 08:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0675AC433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 10:50:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFA2B2075B
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 08:03:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9F72020774
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 10:50:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fbTYtlDC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFA2B2075B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qkat4Jxj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F72020774
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31CAC168F;
-	Sun, 23 Aug 2020 10:02:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31CAC168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03A971655;
+	Sun, 23 Aug 2020 12:50:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03A971655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598169812;
-	bh=snEp0hegPq/0/IP+fQOpIASkDQR5agQ0KGReEe3S7SE=;
+	s=default; t=1598179857;
+	bh=1ZQGOyVauBZWRzTTiPCqdOVjZPuXlHTHfnyyErmPFSM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fbTYtlDCJIllnszfxjgTGDGwtlxouauA+eNp5oirlvIz8Tx5OQXdAReueoYbxwkvd
-	 NXsHGmGJr/gLWGHr3yvQuUEFVrsFjXEATDCe/bsjpRTKAJGTxSajkTknVqRiWakgIR
-	 SAox/nzg8mggXKKqOy/wvkJbxgyvzPHh3LEG3a9k=
+	b=Qkat4JxjG7RGN8iiD+s3XRkEYqkc0RxHPaf59X+5+3yLch+AaKkfANfwQcIs82rrk
+	 cDWPxzt37tuKJ5YJOi2NopQaMOO3GWxTmszIvYzPW9K35WW5/Lh9t/4ZsC5BtGNlFG
+	 ua0ptxWSvHS3kH0jjij9Nvxvtyzpheh6TyPhBjdk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1585AF800B8;
-	Sun, 23 Aug 2020 10:01:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72419F80245;
+	Sun, 23 Aug 2020 12:50:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF437F802C3; Sun, 23 Aug 2020 10:01:54 +0200 (CEST)
+ id E3CCDF8025A; Sun, 23 Aug 2020 12:50:04 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E426F802BC
- for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2020 10:01:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E426F802BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7656F800EB
+ for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2020 12:49:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7656F800EB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 65002ABF4;
- Sun, 23 Aug 2020 08:02:17 +0000 (UTC)
-Date: Sun, 23 Aug 2020 10:01:48 +0200
-Message-ID: <s5hzh6laiz7.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 12C0FAC19;
+ Sun, 23 Aug 2020 10:50:25 +0000 (UTC)
+Date: Sun, 23 Aug 2020 12:49:55 +0200
+Message-ID: <s5hpn7hab70.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/2] ALSA: firewire-digi00x: exclude Avid Adrenaline from
- detection
-In-Reply-To: <20200823075545.56305-1-o-takashi@sakamocchi.jp>
-References: <20200823075545.56305-1-o-takashi@sakamocchi.jp>
+To: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+Subject: Re: [PATCH] topology: hda-dsp: Remove srcintc module from HDA DSP
+ topology
+In-Reply-To: <20200821102105.3210-1-mateusz.gorski@linux.intel.com>
+References: <20200821102105.3210-1-mateusz.gorski@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Simon Wood <simon@mungewell.org>, alsa-devel@alsa-project.org,
- clemens@ladisch.de, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, cezary.rojewski@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,74 +77,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 23 Aug 2020 09:55:45 +0200,
-Takashi Sakamoto wrote:
+On Fri, 21 Aug 2020 12:21:05 +0200,
+Mateusz Gorski wrote:
 > 
-> Avid Adrenaline is reported that ALSA firewire-digi00x driver is bound to.
-> However, as long as he investigated, the design of this model is hardly
-> similar to the one of Digi 00x family. It's better to exclude the model
-> from modalias of ALSA firewire-digi00x driver.
+> The main goal of this topology is to handle every device with hda-dsp
+> configuration on Skylake SST driver.
 > 
-> This commit changes device entries so that the model is excluded.
+> The module_id value for srcintc module varies by FW branch, which makes
+> it impossible to have one universal topology with srcintc module for all of them.
 > 
-> $ python3 crpp < ~/git/am-config-rom/misc/avid-adrenaline.img
->                ROM header and bus information block
->                -----------------------------------------------------------------
-> 400  04203a9c  bus_info_length 4, crc_length 32, crc 15004
-> 404  31333934  bus_name "1394"
-> 408  e064a002  irmc 1, cmc 1, isc 1, bmc 0, cyc_clk_acc 100, max_rec 10 (2048)
-> 40c  00a07e01  company_id 00a07e     |
-> 410  00085257  device_id 0100085257  | EUI-64 00a07e0100085257
+> Remove srcintc from this topology to make it truly universal.
 > 
->                root directory
->                -----------------------------------------------------------------
-> 414  0005d08c  directory_length 5, crc 53388
-> 418  0300a07e  vendor
-> 41c  8100000c  --> descriptor leaf at 44c
-> 420  0c008380  node capabilities
-> 424  8d000002  --> eui-64 leaf at 42c
-> 428  d1000004  --> unit directory at 438
-> 
->                eui-64 leaf at 42c
->                -----------------------------------------------------------------
-> 42c  0002410f  leaf_length 2, crc 16655
-> 430  00a07e01  company_id 00a07e     |
-> 434  00085257  device_id 0100085257  | EUI-64 00a07e0100085257
-> 
->                unit directory at 438
->                -----------------------------------------------------------------
-> 438  0004d6c9  directory_length 4, crc 54985
-> 43c  1200a02d  specifier id: 1394 TA
-> 440  13014001  version: Vender Unique and AV/C
-> 444  17000001  model
-> 448  81000009  --> descriptor leaf at 46c
-> 
->                descriptor leaf at 44c
->                -----------------------------------------------------------------
-> 44c  00077205  leaf_length 7, crc 29189
-> 450  00000000  textual descriptor
-> 454  00000000  minimal ASCII
-> 458  41766964  "Avid"
-> 45c  20546563  " Tec"
-> 460  686e6f6c  "hnol"
-> 464  6f677900  "ogy"
-> 468  00000000
-> 
->                descriptor leaf at 46c
->                -----------------------------------------------------------------
-> 46c  000599a5  leaf_length 5, crc 39333
-> 470  00000000  textual descriptor
-> 474  00000000  minimal ASCII
-> 478  41647265  "Adre"
-> 47c  6e616c69  "nali"
-> 480  6e650000  "ne"
-> 
-> Reported-by: Simon Wood <simon@mungewell.org>
-> Fixes: 9edf723fd858 ("ALSA: firewire-digi00x: add skeleton for Digi 002/003 family")
-> Cc: <stable@vger.kernel.org> # 4.4+
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
 
-Thanks, applied.
+Applied now.  Thanks.
 
 
 Takashi
