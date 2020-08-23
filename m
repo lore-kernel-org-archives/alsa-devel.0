@@ -7,61 +7,64 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6804C433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 14:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 398AFC433E1
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 14:02:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35321206C0
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 14:01:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B796F2078A
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Aug 2020 14:02:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C6iJ5y6c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35321206C0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eqeuCO+I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B796F2078A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B60EF1655;
-	Sun, 23 Aug 2020 16:00:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B60EF1655
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD8FA1665;
+	Sun, 23 Aug 2020 16:01:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD8FA1665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598191277;
-	bh=gJmUv7iQfodOCEYXA3AhLpSvX38bPym0GNrl8IL5eG4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=C6iJ5y6cy9KQphiOEEn9cWQcVN2RZ5XMPvjMOHv6W5tHUk4jXtRU4zbWkh3GOtI0i
-	 3r2nm0QPDbyhFqL4a5A7ZhUe3yF8JMjSRygwbOwMdiBrphWF71/5qsym91G+M1plx/
-	 RdujyLQj8K8jy7njTMYWItaeWOxcUMTLw51WCLLg=
+	s=default; t=1598191330;
+	bh=JPApKvGP38xr+NIOHsp9s2+03RdsCeQN1jNfDLjk1TE=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=eqeuCO+ISCMIQ5hoopuxWtYV3Ct/RHtIlP0DLgXB3hjNRhsUywE+4YwGyaKPh+ENJ
+	 Yiy/ZVLxwcb1/wdmcoyhqtnXGMbfhi+4+3CzkScJvYtJFPYSY3bs20oc0DQKPjXjx0
+	 Ecmntc9b9Eno0wVx/SQXbQIvFTM3aSGTEAB1eZKA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28C51F80245;
-	Sun, 23 Aug 2020 16:00:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E973CF80271;
+	Sun, 23 Aug 2020 16:00:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02F3CF80260; Sun, 23 Aug 2020 16:00:24 +0200 (CEST)
+ id 5829BF8025A; Sun, 23 Aug 2020 16:00:25 +0200 (CEST)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50292F800EB
- for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2020 16:00:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50292F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 911FDF800C0
+ for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2020 16:00:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 911FDF800C0
 Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3AE9B1A0856;
- Sun, 23 Aug 2020 16:00:13 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 734AF1A0924;
+ Sun, 23 Aug 2020 16:00:14 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B7D3A1A0A24;
- Sun, 23 Aug 2020 16:00:09 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 14F221A0804;
+ Sun, 23 Aug 2020 16:00:11 +0200 (CEST)
 Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 6E8EB40323;
- Sun, 23 Aug 2020 16:00:04 +0200 (CEST)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E3011402E2;
+ Sun, 23 Aug 2020 16:00:06 +0200 (CEST)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 1/2] ASoC: dt-bindings: ak5558: Add power supply property
-Date: Sun, 23 Aug 2020 21:54:36 +0800
-Message-Id: <1598190877-9213-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 2/2] ASoC: ak5558: Add regulator support
+Date: Sun, 23 Aug 2020 21:54:37 +0800
+Message-Id: <1598190877-9213-2-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1598190877-9213-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1598190877-9213-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,27 +81,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-AVDD-supply is for Analog power supply
-DVDD-supply is for Digital power supply
+"AVDD" is for analog power supply,  "DVDD" is for digital power
+supply, they can improve the power management.
+
+As the regulator is enabled in pm runtime resume, which is
+behind the component driver probe, so accessing registers in
+component driver probe will fail. Fix this issue by enabling
+regcache_cache_only after pm_runtime_enable.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- Documentation/devicetree/bindings/sound/ak5558.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/ak5558.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ak5558.txt b/Documentation/devicetree/bindings/sound/ak5558.txt
-index 7d67ca6ced80..36934098170c 100644
---- a/Documentation/devicetree/bindings/sound/ak5558.txt
-+++ b/Documentation/devicetree/bindings/sound/ak5558.txt
-@@ -10,6 +10,8 @@ Required properties:
- Optional properties:
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 8179512129d3..2f076d5ee284 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
  
- - reset-gpios: A GPIO specifier for the power down & reset pin.
-+- AVDD-supply: Analog power supply
-+- DVDD-supply: Digital power supply
+ #include <sound/initval.h>
+@@ -22,8 +23,15 @@
  
- Example:
+ #include "ak5558.h"
  
++#define AK5558_NUM_SUPPLIES 2
++static const char *ak5558_supply_names[AK5558_NUM_SUPPLIES] = {
++	"DVDD",
++	"AVDD",
++};
++
+ /* AK5558 Codec Private Data */
+ struct ak5558_priv {
++	struct regulator_bulk_data supplies[AK5558_NUM_SUPPLIES];
+ 	struct snd_soc_component component;
+ 	struct regmap *regmap;
+ 	struct i2c_client *i2c;
+@@ -299,12 +307,22 @@ static int __maybe_unused ak5558_runtime_suspend(struct device *dev)
+ 	regcache_cache_only(ak5558->regmap, true);
+ 	ak5558_power_off(ak5558);
+ 
++	regulator_bulk_disable(ARRAY_SIZE(ak5558->supplies),
++			       ak5558->supplies);
+ 	return 0;
+ }
+ 
+ static int __maybe_unused ak5558_runtime_resume(struct device *dev)
+ {
+ 	struct ak5558_priv *ak5558 = dev_get_drvdata(dev);
++	int ret;
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(ak5558->supplies),
++				    ak5558->supplies);
++	if (ret != 0) {
++		dev_err(dev, "Failed to enable supplies: %d\n", ret);
++		return ret;
++	}
+ 
+ 	ak5558_power_off(ak5558);
+ 	ak5558_power_on(ak5558);
+@@ -350,6 +368,7 @@ static int ak5558_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct ak5558_priv *ak5558;
+ 	int ret = 0;
++	int i;
+ 
+ 	ak5558 = devm_kzalloc(&i2c->dev, sizeof(*ak5558), GFP_KERNEL);
+ 	if (!ak5558)
+@@ -367,6 +386,16 @@ static int ak5558_i2c_probe(struct i2c_client *i2c)
+ 	if (IS_ERR(ak5558->reset_gpiod))
+ 		return PTR_ERR(ak5558->reset_gpiod);
+ 
++	for (i = 0; i < ARRAY_SIZE(ak5558->supplies); i++)
++		ak5558->supplies[i].supply = ak5558_supply_names[i];
++
++	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(ak5558->supplies),
++				      ak5558->supplies);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = devm_snd_soc_register_component(&i2c->dev,
+ 				     &soc_codec_dev_ak5558,
+ 				     &ak5558_dai, 1);
+@@ -374,6 +403,7 @@ static int ak5558_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 
+ 	pm_runtime_enable(&i2c->dev);
++	regcache_cache_only(ak5558->regmap, true);
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
