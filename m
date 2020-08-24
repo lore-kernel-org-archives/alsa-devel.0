@@ -6,71 +6,71 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A212EC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21410C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:40:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EABA20838
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:40:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95CF32067C
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:40:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kljP73ns";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ouaGDcHc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EABA20838
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G4jyEx8K";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCIDUk3m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95CF32067C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8D75169E;
-	Mon, 24 Aug 2020 18:39:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8D75169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0DAC1616;
+	Mon, 24 Aug 2020 18:40:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0DAC1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598287214;
-	bh=q88Q+P2+4EgBQdQl1eeHV49GcwL+Mnk0zzT6hd6Yes8=;
+	s=default; t=1598287252;
+	bh=SGrvq5KpMJDOoo8ypt7Ljvm6VOL79mY9JtRX84+7CDo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kljP73nssT8iyJF/K5FqPxF1lr8g9o4t17ftuIk0t5+68XknK3clX1b4CoVux+6I2
-	 Zeq1MHPvF4hRleBvldmc0GkYS/utGMqaVo8oT1yCd0ZlXKz+Kfqgp53oDA+x8Zeplv
-	 mnsrBThf0Pa8m2dgACY4ZoCQ33PU3gzVbeJBijjM=
+	b=G4jyEx8KmxOxicZLbudhBjYH6b/s1lyKWaYdR+61AiRmn2XdNkfQ8vHzAGI0X7Q9n
+	 jD83+7RHDzTn3X9w29PYQmSICKZlR8GOXb0JBUe4WtEfmer/7mnNwWRI35XG0T0lQc
+	 Q3mfbQt2IMWVclUk/CaUxZIah34LBT46p8OLdy74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A12BF802E9;
-	Mon, 24 Aug 2020 18:37:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25EDBF801EC;
+	Mon, 24 Aug 2020 18:38:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10DC0F802D2; Mon, 24 Aug 2020 18:37:27 +0200 (CEST)
+ id E096AF8020C; Mon, 24 Aug 2020 18:38:28 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE662F802DC
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2020 18:37:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE662F802DC
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5212F801D9
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2020 18:38:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5212F801D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ouaGDcHc"
+ header.b="YCIDUk3m"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9A65A23100;
- Mon, 24 Aug 2020 16:37:14 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7246C22CB1;
+ Mon, 24 Aug 2020 16:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598287035;
- bh=q88Q+P2+4EgBQdQl1eeHV49GcwL+Mnk0zzT6hd6Yes8=;
+ s=default; t=1598287101;
+ bh=SGrvq5KpMJDOoo8ypt7Ljvm6VOL79mY9JtRX84+7CDo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ouaGDcHcPL5nS7mjjef5hGCGtVbQfleBdZ7bW2c+n7zWYQ8LhEfFaVuQxhd4riOG9
- uvfOuCNu7lVbT5R61L9+90qy5a7KDrOsKr+xYz0dnrBUmOcY2so9tEKw1xpCUnq+cP
- NWFgdymfYGf5/sljDgxAjQI3avx+ETE47iGBj1N0=
+ b=YCIDUk3msvEWa2Pe/YlFqYQgyA9YEt4EuSDdtRbHNAU23w73O7bKk7M4EZ42SCOqj
+ VPDyRSZ2X4jtFDyitZuaC9KcgJWbliV/pi6gt0voxxrAfNkeS+1nvlYRIlyXaF5mqj
+ 2Np4LBpB/sda1WtkrgT1zqI9n/3Man2Ql8cu16MU=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 30/54] ASoC: wm8994: Avoid attempts to read
+Subject: [PATCH AUTOSEL 5.4 22/38] ASoC: wm8994: Avoid attempts to read
  unreadable registers
-Date: Mon, 24 Aug 2020 12:36:09 -0400
-Message-Id: <20200824163634.606093-30-sashal@kernel.org>
+Date: Mon, 24 Aug 2020 12:37:34 -0400
+Message-Id: <20200824163751.606577-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824163634.606093-1-sashal@kernel.org>
-References: <20200824163634.606093-1-sashal@kernel.org>
+In-Reply-To: <20200824163751.606577-1-sashal@kernel.org>
+References: <20200824163751.606577-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -121,10 +121,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index ca42445b649d4..b471892d84778 100644
+index 18535b326680a..04f23477039a5 100644
 --- a/sound/soc/codecs/wm8958-dsp2.c
 +++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -412,8 +412,12 @@ int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
+@@ -416,8 +416,12 @@ int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
  		  struct snd_kcontrol *kcontrol, int event)
  {
  	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
