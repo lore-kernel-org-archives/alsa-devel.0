@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B463C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:41:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DEECC433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:41:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 021C12067C
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:41:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24D7920738
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 16:41:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j3uAtybz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uaGA0heC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 021C12067C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mXlHj61S";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HjFHXrSn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24D7920738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DF6416A4;
-	Mon, 24 Aug 2020 18:40:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DF6416A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABDC71682;
+	Mon, 24 Aug 2020 18:41:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABDC71682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598287268;
-	bh=NQ8Uop4X/nfXaBjKjluTzejNzJ/9/EIsfBRYORrCU24=;
+	s=default; t=1598287311;
+	bh=z7HQxv9VSgRcd7nBu9ujYpFT8TnEHBX4hITSL08r+ps=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j3uAtybzPpAVyk++fMKL0MREcqkLs3n//1SgV3UMksiUOueFWNw3INvpfILwIdRU9
-	 8SkGYCzmRvrw4zWUR3AsYv7+2btVtG3x0Ydy0HthXaVHNvPyARUKSq7vSwGQn2jMao
-	 x58ZsHuyYrfc83NwWXuaZ2b/tGsUjDa5hjpkY+Kg=
+	b=mXlHj61S/YDdesmw9kUABcdHylQNf4oictQE8eHhiu01VR4jLXLzAHCFKh26do3tM
+	 EdorVepCav4/wvHzn3cLJl14vBEuoWaE0w9CV15i2dLVVjuOGqrfwxm2NzWaDa3A2v
+	 BT7k7FII2J1vDp3UoUAssIdr9idxD39DwAHxQimg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E4ACF802C2;
-	Mon, 24 Aug 2020 18:38:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C74EDF80257;
+	Mon, 24 Aug 2020 18:39:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC493F801F2; Mon, 24 Aug 2020 18:38:29 +0200 (CEST)
+ id 51B93F8025E; Mon, 24 Aug 2020 18:39:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8243F8016F
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2020 18:38:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8243F8016F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 179BAF8013D
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2020 18:39:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 179BAF8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uaGA0heC"
+ header.b="HjFHXrSn"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 164B323106;
- Mon, 24 Aug 2020 16:38:18 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AD82D22DA7;
+ Mon, 24 Aug 2020 16:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598287098;
- bh=NQ8Uop4X/nfXaBjKjluTzejNzJ/9/EIsfBRYORrCU24=;
+ s=default; t=1598287140;
+ bh=z7HQxv9VSgRcd7nBu9ujYpFT8TnEHBX4hITSL08r+ps=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=uaGA0heC3Lg1xrweO23p3DUJ+4SE4d3bAfsS3fFrzJur5fUxs0xTAMNjO6vtNmAvR
- AkvmDjw0EVra1BJwi2BJcZ5uObeW22jL75c/zTSxjFr4sNoAKZsizTz2zOPQplavYN
- ouGNeazovTNeotSS3/ptY6xwjlyHrXdonzu6vDew=
+ b=HjFHXrSnCSnLjtu77Wqh8xf3DzlWrWY4KIfKQfQSnIWMaqT+uGJktBdQ8v9BDMJzu
+ hE9MzrHEMB6d2TUGH/ZwvNQEZQvtEpqRIMRxl6Ya8PaEIC5+3Lq3lcntc3KaZi/w60
+ hRUQY3On1xa2q80cz31IJ8DUP/kCv+CGqMlWA6pI=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 20/38] ALSA: hda/realtek: Add model
- alc298-samsung-headphone
-Date: Mon, 24 Aug 2020 12:37:32 -0400
-Message-Id: <20200824163751.606577-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 11/21] ASoC: wm8994: Avoid attempts to read
+ unreadable registers
+Date: Mon, 24 Aug 2020 12:38:35 -0400
+Message-Id: <20200824163845.606933-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824163751.606577-1-sashal@kernel.org>
-References: <20200824163751.606577-1-sashal@kernel.org>
+In-Reply-To: <20200824163845.606933-1-sashal@kernel.org>
+References: <20200824163845.606933-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Mike Pozulp <pozulp.kernel@gmail.com>,
- alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,35 +93,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mike Pozulp <pozulp.kernel@gmail.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-[ Upstream commit 23dc958689449be85e39351a8c809c3d344b155b ]
+[ Upstream commit f082bb59b72039a2326ec1a44496899fb8aa6d0e ]
 
-The very quiet and distorted headphone output bug that afflicted my
-Samsung Notebook 9 is appearing in many other Samsung laptops. Expose
-the quirk which fixed my laptop as a model so other users can try it.
+The driver supports WM1811, WM8994, WM8958 devices but according to
+documentation and the regmap definitions the WM8958_DSP2_* registers
+are only available on WM8958. In current code these registers are
+being accessed as if they were available on all the three chips.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
-Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
-Link: https://lore.kernel.org/r/20200817043219.458889-1-pozulp.kernel@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+When starting playback on WM1811 CODEC multiple errors like:
+"wm8994-codec wm8994-codec: ASoC: error at soc_component_read_no_lock on wm8994-codec: -5"
+can be seen, which is caused by attempts to read an unavailable
+WM8958_DSP2_PROGRAM register. The issue has been uncovered by recent
+commit "e2329ee ASoC: soc-component: add soc_component_err()".
+
+This patch adds a check in wm8958_aif_ev() callback so the DSP2 handling
+is only done for WM8958.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200731173834.23832-1-s.nawrocki@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm8958-dsp2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 88629906f314c..e230909af980c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7926,6 +7926,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC299_FIXUP_PREDATOR_SPK, .name = "predator-spk"},
- 	{.id = ALC298_FIXUP_HUAWEI_MBX_STEREO, .name = "huawei-mbx-stereo"},
- 	{.id = ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE, .name = "alc256-medion-headset"},
-+	{.id = ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc298-samsung-headphone"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
+diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
+index 108e8bf42a346..f0a409504a13b 100644
+--- a/sound/soc/codecs/wm8958-dsp2.c
++++ b/sound/soc/codecs/wm8958-dsp2.c
+@@ -419,8 +419,12 @@ int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
+ 		  struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wm8994 *control = dev_get_drvdata(component->dev->parent);
+ 	int i;
+ 
++	if (control->type != WM8958)
++		return 0;
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 	case SND_SOC_DAPM_PRE_PMU:
 -- 
 2.25.1
 
