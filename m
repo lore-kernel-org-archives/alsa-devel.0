@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EFF5C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:37:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EC6FC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:38:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12A5C204FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:37:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E0E5020578
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:38:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BzMNAxTh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12A5C204FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KF7JXVqL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0E5020578
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DCD11654;
-	Tue, 25 Aug 2020 09:36:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DCD11654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2674E167E;
+	Tue, 25 Aug 2020 09:37:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2674E167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598341048;
-	bh=NADCfzTqJwW6NLestjahrwKtAbpJWO5eBWJgd2mrdmk=;
+	s=default; t=1598341101;
+	bh=Jks9A2mq0z2OU2SN20xbHHWKVuZDuoHkanaCeF9rH60=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BzMNAxThzG5r8omYdxi4wDQnx1y12j4aN5g++wlHte//G0SL10ifgN0WAYrA90SY3
-	 Tg+6aMemLanZtTO/keHt38RMWkglj0/xKm0dVHVaprK8bMjq7I2HZnshj/aGNWTadp
-	 wgpIqzJOBMYVa3zeOXue2nHFp8BvXZPiVMUAln0A=
+	b=KF7JXVqLTWxX7h4DxVcz2OvQgVNHE0/MdChCzkDvxHSZOc9T243Vc8gEvrBgrUXla
+	 GO/UByi9EKEaxPDntULUjx96BSpxPC6fymn84vl2sp8ZUxgjHm9oOdfM9ISe4JZpNM
+	 M9+CGHpptk4QAxwhEgN+7odGwj1jKxnCmDg6FrmI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE63CF8025A;
-	Tue, 25 Aug 2020 09:36:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5F54F80260;
+	Tue, 25 Aug 2020 09:36:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C99BF8025A; Tue, 25 Aug 2020 09:36:34 +0200 (CEST)
+ id C2EAAF80143; Tue, 25 Aug 2020 09:36:39 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 928B6F800EB
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 09:36:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 928B6F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id C84A9F80143
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 09:36:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C84A9F80143
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6BEC0AC24;
- Tue, 25 Aug 2020 07:36:54 +0000 (UTC)
-Date: Tue, 25 Aug 2020 09:36:23 +0200
-Message-ID: <s5heenv6utk.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id ED17EAD26;
+ Tue, 25 Aug 2020 07:37:03 +0000 (UTC)
+Date: Tue, 25 Aug 2020 09:36:33 +0200
+Message-ID: <s5hd03f6uta.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mohan Kumar <mkumard@nvidia.com>
-Subject: Re: [PATCH 1/2] ALSA: hda: Fix 2 channel swapping for Tegra
-In-Reply-To: <20200825052415.20626-2-mkumard@nvidia.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/tegra: Program WAKEEN register for Tegra
+In-Reply-To: <20200825052415.20626-3-mkumard@nvidia.com>
 References: <20200825052415.20626-1-mkumard@nvidia.com>
- <20200825052415.20626-2-mkumard@nvidia.com>
+ <20200825052415.20626-3-mkumard@nvidia.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -80,14 +80,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 Aug 2020 07:24:14 +0200,
+On Tue, 25 Aug 2020 07:24:15 +0200,
 Mohan Kumar wrote:
 > 
-> The Tegra HDA codec HW implementation has an issue related to not
-> swapping the 2 channel Audio Sample Packet(ASP) channel mapping.
-> Whatever the FL and FR mapping specified the left channel always
-> comes out of left speaker and right channel on right speaker. So
-> add condition to disallow the swapping of FL,FR during the playback.
+> The WAKEEN bits are used to indicate which bits in the
+> STATESTS register may cause wake event during the codec
+> state change request. Configure the WAKEEN register for
+> the Tegra to detect the wake events.
 > 
 > Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
 
