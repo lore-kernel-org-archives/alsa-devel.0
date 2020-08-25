@@ -2,95 +2,94 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 679FAC433E3
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:17:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08B5EC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:18:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF4E52074D
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:17:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8ED292074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:18:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qGcCP3Wv";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D1quhfa+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF4E52074D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l+2mPsPN";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gNLeaYTR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8ED292074D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E6731690;
-	Tue, 25 Aug 2020 22:16:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E6731690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 168171692;
+	Tue, 25 Aug 2020 22:17:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 168171692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598386661;
-	bh=y9W5VhsF1SkT6aBjGCAKTXEwaqmktkSYZ7Y438hdRyk=;
+	s=default; t=1598386679;
+	bh=bbSrtAXJEKWCFXFVIVoOp6dY0U3z7kejxTxaYOapOrg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qGcCP3WvUPeWJdUd+oyI0X7nmBjkQRESyvi+cWSoLVWnXcN0FkMQCzqxNTKmlK36G
-	 /iKhvX/PmkDiCKXGC2Y6DHkvf75iyDjhAk5tjz4COl1EzJxmEuDtsNwUuftldRHgoK
-	 PdOQF5khgsGPuk1FOxmXod77BNAn5GAimjiHcPuU=
+	b=l+2mPsPNe7x88vuMa5XkpnB3diATO8Yf3hHHHp2JN5kQfOzxGHt0P/6CwyB2ze/lX
+	 h5t1vxvucM1dMnpF6f2tdcnSNbeLCM9xq9TDhCevBEzc/QNNFC9uAPKChRNvCklwfD
+	 qXVKZtHK53HhcW885i5LJenGQ4AFVR4j/PwCO+XY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBE06F80331;
-	Tue, 25 Aug 2020 22:11:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD49FF80334;
+	Tue, 25 Aug 2020 22:11:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6DB7F8031A; Tue, 25 Aug 2020 22:11:28 +0200 (CEST)
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
- [IPv6:2607:f8b0:4864:20::742])
+ id DC0F1F80328; Tue, 25 Aug 2020 22:11:30 +0200 (CEST)
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
+ [IPv6:2607:f8b0:4864:20::842])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7411DF802EB
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:11:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7411DF802EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC7CCF802F9
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:11:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC7CCF802F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="D1quhfa+"
-Received: by mail-qk1-x742.google.com with SMTP id d139so7256443qke.11
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 13:11:16 -0700 (PDT)
+ header.b="gNLeaYTR"
+Received: by mail-qt1-x842.google.com with SMTP id k18so10003896qtm.10
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 13:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=PyW2J2UOhlxaTC3XuwkPuw7lgwu3wVys0aDNpB+jS1E=;
- b=D1quhfa+3/XarwBootUNPPs3xIMwKxE+clw9r8WMdAtyLagB5rc2wey/aIFgiFf3UW
- KZZBbSB6u8gV38ZO+oDHYxxg3MxyeGZdAk9pNmRtIiUZ1st37ZeKAKSWOJndc3ZqOToH
- p4T+Ua44QzfsXotS3MKKga8LCf8zJPvO9sXeKOc+BIWi/xh3dIWjSFyXbfhjulRTOYbW
- yp/wSLFA3+/rIIWnbPzkC2e47CfF1WSPQagC7KnNGPyfzcxRli35IIjkLKu77nDmItQ+
- jSPn/JZ49yI3XsphNAnZyOL93WDVDub3AnlhvYf7EVCqNSNrJUzclcjGSanXVqUtIJTY
- H72w==
+ bh=7joicHzwupdYBnuFsGJaO4mRul/OCWauur3CmqWFnlc=;
+ b=gNLeaYTRkbkiGNwcpJ/dLe+Nu+nCW7Kp//N3Eue87gEpNJNAmbBPDmVTQZh0mxzkZa
+ sb/8GQ41ja4dRa6OLkCHFGRpYljQdQR4ksG5DAvvUrweW+mDtA0T6jczrWZNTK1iV4/F
+ GMyZwOIHhNB4lOonbVb6s499AFHFJfwyPsRsu0jH95zI5rvR1oJ6zxxnxjuqN9UcAmVe
+ FqKCQMGcr34ZW2Quxzg6NFSnWZihVtXOjN2ug91xQ7Onr+ZZEuMUlsrqPASuKbcd3smW
+ G48NEGaKR2PpfouzbIp8tSXfoJi/W2Zu7QquqcX8gRT2l0jqimI8vIH99bSGKJkivS5a
+ KfGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=PyW2J2UOhlxaTC3XuwkPuw7lgwu3wVys0aDNpB+jS1E=;
- b=nvMoCAfVXqt058fHGt98eUYGPEKepM24L9WdV4rhYQopqXUgN2ZX02LCqj6OBTz/K1
- yP3EAXSBUF2e50oOMJxxNWLd9x1uOM+GpDQ6mf1A0F1BKgc7oOy3av1IbcRhBPUV1Fyd
- zwj2qMkEsx40xtttS0FdVibC3Y0tR//XN/Bt0f917waaOXL130AfV0BgjmAH6MtNC3ab
- xpyuuIXzNZ69HMXxaAboEXal19f5xkHR18IY+3nqEVJ8KokSLkItEiBDDGam7hFGUOJj
- 3qSSvfsuh7wiAqMy06n1VFbWgGQQyrUNGye42FCFbZpfc2jol3jWbD7JcAGYQ962mAMm
- tFxg==
-X-Gm-Message-State: AOAM531ElsMNChOfdI33PzuV/jLnUCljUl3k3SB3DaQBL0q/3y0WeQ5L
- 9cgFKce+LzBGZj0qqDwC7Kk=
-X-Google-Smtp-Source: ABdhPJyIai6YUySonnwyqrcNXkTmlHnuSwrtBl+qQUd1H9q4nHBR7c/mnHZTN84Exf1Y4wVuJ7ocgA==
-X-Received: by 2002:a05:620a:48:: with SMTP id
- t8mr11120533qkt.474.1598386274815; 
- Tue, 25 Aug 2020 13:11:14 -0700 (PDT)
+ bh=7joicHzwupdYBnuFsGJaO4mRul/OCWauur3CmqWFnlc=;
+ b=V5HnZBnmvVKpiL70qhcXslIKC91u3JIxpZ2B6N6SBXoyF9dx7r4dPMncO7SuPWXr2k
+ lhuk82VheaSzDoJG5QUG265qjrPQljXR1baVqtdm1iJgq3htUL/00svkol3PwkT8jl12
+ rZxIMz1N4NeD3vDgXV9P59ojSCzpAaRuXSuIRqoVl7UjV4HdSVsi+u5gr42vhUulXGMd
+ CJr2z4otHS+Yu9LT0u31n1PUqfTK9ApgwmHA7nhfQQGTGuuJVIadIPJIhU/cPaNgWSub
+ wfPVbsj+oSKYYR8hk6mFbXyf/jEEMlfRAjnul492ioJzNAp8rkEt47GWbC+Veo8pEyA7
+ vMgw==
+X-Gm-Message-State: AOAM532se4d+pH4KX7CtPlaqcrv/lkbZi5yz6EhIimDUYhtXdi4KgtTm
+ gZenL9ZO/Y69qu6nzP6Ncjk=
+X-Google-Smtp-Source: ABdhPJwPdoVRrJGRGUCyc1XJ80M70LBeUzfXqDK2XWbHzhrVHb5ZRn3WvirC2StImSW8jmoBgNxKmw==
+X-Received: by 2002:ac8:7774:: with SMTP id h20mr10585454qtu.331.1598386278755; 
+ Tue, 25 Aug 2020 13:11:18 -0700 (PDT)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
  [71.65.111.223]) by smtp.googlemail.com with ESMTPSA id
- n23sm12453459qkk.105.2020.08.25.13.11.14
+ n23sm12453459qkk.105.2020.08.25.13.11.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 Aug 2020 13:11:14 -0700 (PDT)
+ Tue, 25 Aug 2020 13:11:18 -0700 (PDT)
 From: Connor McAdams <conmanx360@gmail.com>
 To: 
-Subject: [PATCH v2 08/20] ALSA: hda/ca0132 - Add quirk output selection
- structures.
-Date: Tue, 25 Aug 2020 16:10:27 -0400
-Message-Id: <20200825201040.30339-9-conmanx360@gmail.com>
+Subject: [PATCH v2 10/20] ALSA: hda/ca0132 - Add new quirk ID for SoundBlaster
+ AE-7.
+Date: Tue, 25 Aug 2020 16:10:29 -0400
+Message-Id: <20200825201040.30339-11-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200825201040.30339-1-conmanx360@gmail.com>
 References: <20200825201040.30339-1-conmanx360@gmail.com>
@@ -113,389 +112,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add structures containing the changes that need to happen on output
-selection for each quirk. This should streamline the addition of new
-quirks.
+Add a new PCI subsystem ID for the SoundBlaster AE-7 card.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 336 +++++++++++++++++++++++++----------
- 1 file changed, 241 insertions(+), 95 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 39e333866be3..ab84ea397552 100644
+index 138403fd1639..284f63dc2749 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -1256,6 +1256,164 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+@@ -1134,6 +1134,7 @@ enum {
+ 	QUIRK_R3DI,
+ 	QUIRK_R3D,
+ 	QUIRK_AE5,
++	QUIRK_AE7,
+ };
+ 
+ #ifdef CONFIG_PCI
+@@ -1253,6 +1254,7 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1102, 0x0013, "Recon3D", QUIRK_R3D),
+ 	SND_PCI_QUIRK(0x1102, 0x0018, "Recon3D", QUIRK_R3D),
+ 	SND_PCI_QUIRK(0x1102, 0x0051, "Sound Blaster AE-5", QUIRK_AE5),
++	SND_PCI_QUIRK(0x1102, 0x0081, "Sound Blaster AE-7", QUIRK_AE7),
  	{}
  };
  
-+/* Output selection quirk info structures. */
-+#define MAX_QUIRK_MMIO_GPIO_SET_VALS 3
-+#define MAX_QUIRK_SCP_SET_VALS 2
-+struct ca0132_alt_out_set_info {
-+	unsigned int dac2port; /* ParamID 0x0d value. */
-+
-+	bool has_hda_gpio;
-+	char hda_gpio_pin;
-+	char hda_gpio_set;
-+
-+	unsigned int mmio_gpio_count;
-+	char mmio_gpio_pin[MAX_QUIRK_MMIO_GPIO_SET_VALS];
-+	char mmio_gpio_set[MAX_QUIRK_MMIO_GPIO_SET_VALS];
-+
-+	unsigned int scp_cmds_count;
-+	unsigned int scp_cmd_mid[MAX_QUIRK_SCP_SET_VALS];
-+	unsigned int scp_cmd_req[MAX_QUIRK_SCP_SET_VALS];
-+	unsigned int scp_cmd_val[MAX_QUIRK_SCP_SET_VALS];
-+
-+	bool has_chipio_write;
-+	unsigned int chipio_write_addr;
-+	unsigned int chipio_write_data;
-+};
-+
-+struct ca0132_alt_out_set_quirk_data {
-+	int quirk_id;
-+
-+	bool has_headphone_gain;
-+	bool is_ae_series;
-+
-+	struct ca0132_alt_out_set_info out_set_info[NUM_OF_OUTPUTS];
-+};
-+
-+static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
-+	{ .quirk_id = QUIRK_R3DI,
-+	  .has_headphone_gain = false,
-+	  .is_ae_series       = false,
-+	  .out_set_info = {
-+		/* Speakers. */
-+		{ .dac2port         = 0x24,
-+		  .has_hda_gpio     = true,
-+		  .hda_gpio_pin     = 2,
-+		  .hda_gpio_set     = 1,
-+		  .mmio_gpio_count  = 0,
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false,
-+		},
-+		/* Headphones. */
-+		{ .dac2port         = 0x21,
-+		  .has_hda_gpio     = true,
-+		  .hda_gpio_pin     = 2,
-+		  .hda_gpio_set     = 0,
-+		  .mmio_gpio_count  = 0,
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false,
-+		} },
-+	},
-+	{ .quirk_id = QUIRK_R3D,
-+	  .has_headphone_gain = false,
-+	  .is_ae_series       = false,
-+	  .out_set_info = {
-+		/* Speakers. */
-+		{ .dac2port         = 0x24,
-+		  .has_hda_gpio     = false,
-+		  .mmio_gpio_count  = 1,
-+		  .mmio_gpio_pin    = { 1 },
-+		  .mmio_gpio_set    = { 1 },
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false,
-+		},
-+		/* Headphones. */
-+		{ .dac2port         = 0x21,
-+		  .has_hda_gpio     = false,
-+		  .mmio_gpio_count  = 1,
-+		  .mmio_gpio_pin    = { 1 },
-+		  .mmio_gpio_set    = { 0 },
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false,
-+		} },
-+	},
-+	{ .quirk_id = QUIRK_SBZ,
-+	  .has_headphone_gain = false,
-+	  .is_ae_series       = false,
-+	  .out_set_info = {
-+		/* Speakers. */
-+		{ .dac2port         = 0x18,
-+		  .has_hda_gpio     = false,
-+		  .mmio_gpio_count  = 3,
-+		  .mmio_gpio_pin    = { 7, 4, 1 },
-+		  .mmio_gpio_set    = { 0, 1, 1 },
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false, },
-+		/* Headphones. */
-+		{ .dac2port         = 0x12,
-+		  .has_hda_gpio     = false,
-+		  .mmio_gpio_count  = 3,
-+		  .mmio_gpio_pin    = { 7, 4, 1 },
-+		  .mmio_gpio_set    = { 1, 1, 0 },
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false,
-+		} },
-+	},
-+	{ .quirk_id = QUIRK_ZXR,
-+	  .has_headphone_gain = true,
-+	  .is_ae_series       = false,
-+	  .out_set_info = {
-+		/* Speakers. */
-+		{ .dac2port         = 0x24,
-+		  .has_hda_gpio     = false,
-+		  .mmio_gpio_count  = 3,
-+		  .mmio_gpio_pin    = { 2, 3, 5 },
-+		  .mmio_gpio_set    = { 1, 1, 0 },
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false,
-+		},
-+		/* Headphones. */
-+		{ .dac2port         = 0x21,
-+		  .has_hda_gpio     = false,
-+		  .mmio_gpio_count  = 3,
-+		  .mmio_gpio_pin    = { 2, 3, 5 },
-+		  .mmio_gpio_set    = { 0, 1, 1 },
-+		  .scp_cmds_count   = 0,
-+		  .has_chipio_write = false,
-+		} },
-+	},
-+	{ .quirk_id = QUIRK_AE5,
-+	  .has_headphone_gain = true,
-+	  .is_ae_series       = true,
-+	  .out_set_info = {
-+		/* Speakers. */
-+		{ .dac2port          = 0xa4,
-+		  .has_hda_gpio      = false,
-+		  .mmio_gpio_count   = 0,
-+		  .scp_cmds_count    = 2,
-+		  .scp_cmd_mid       = { 0x96, 0x96 },
-+		  .scp_cmd_req       = { SPEAKER_TUNING_FRONT_LEFT_INVERT,
-+					 SPEAKER_TUNING_FRONT_RIGHT_INVERT },
-+		  .scp_cmd_val       = { FLOAT_ZERO, FLOAT_ZERO },
-+		  .has_chipio_write  = true,
-+		  .chipio_write_addr = 0x0018b03c,
-+		  .chipio_write_data = 0x00000012
-+		},
-+		/* Headphones. */
-+		{ .dac2port          = 0xa1,
-+		  .has_hda_gpio      = false,
-+		  .mmio_gpio_count   = 0,
-+		  .scp_cmds_count    = 2,
-+		  .scp_cmd_mid       = { 0x96, 0x96 },
-+		  .scp_cmd_req       = { SPEAKER_TUNING_FRONT_LEFT_INVERT,
-+					 SPEAKER_TUNING_FRONT_RIGHT_INVERT },
-+		  .scp_cmd_val       = { FLOAT_ONE, FLOAT_ONE },
-+		  .has_chipio_write  = true,
-+		  .chipio_write_addr = 0x0018b03c,
-+		  .chipio_write_data = 0x00000012
-+		} },
-+	}
-+};
-+
- /*
-  * CA0132 codec access
-  */
-@@ -3513,26 +3671,6 @@ static void r3di_gpio_mic_set(struct hda_codec *codec,
- 			    AC_VERB_SET_GPIO_DATA, cur_gpio);
- }
- 
--static void r3di_gpio_out_set(struct hda_codec *codec,
--		enum r3di_out_select cur_out)
--{
--	unsigned int cur_gpio;
--
--	/* Get the current GPIO Data setup */
--	cur_gpio = snd_hda_codec_read(codec, 0x01, 0, AC_VERB_GET_GPIO_DATA, 0);
--
--	switch (cur_out) {
--	case R3DI_HEADPHONE_OUT:
--		cur_gpio &= ~(1 << R3DI_OUT_SELECT_BIT);
--		break;
--	case R3DI_LINE_OUT:
--		cur_gpio |= (1 << R3DI_OUT_SELECT_BIT);
--		break;
--	}
--	snd_hda_codec_write(codec, codec->core.afg, 0,
--			    AC_VERB_SET_GPIO_DATA, cur_gpio);
--}
--
- static void r3di_gpio_dsp_status_set(struct hda_codec *codec,
- 		enum r3di_dsp_status dsp_status)
- {
-@@ -4314,86 +4452,93 @@ static int ca0132_alt_surround_set_bass_redirection(struct hda_codec *codec,
-  * These are the commands needed to setup output on each of the different card
-  * types.
-  */
--static void ca0132_alt_select_out_quirk_handler(struct hda_codec *codec)
-+static void ca0132_alt_select_out_get_quirk_data(struct hda_codec *codec,
-+		const struct ca0132_alt_out_set_quirk_data **quirk_data)
- {
- 	struct ca0132_spec *spec = codec->spec;
--	unsigned int tmp;
-+	int quirk = ca0132_quirk(spec);
-+	unsigned int i;
- 
--	switch (spec->cur_out_type) {
--	case SPEAKER_OUT:
--		switch (ca0132_quirk(spec)) {
--		case QUIRK_SBZ:
--			ca0113_mmio_gpio_set(codec, 7, false);
--			ca0113_mmio_gpio_set(codec, 4, true);
--			ca0113_mmio_gpio_set(codec, 1, true);
--			chipio_set_control_param(codec, 0x0d, 0x18);
--			break;
--		case QUIRK_ZXR:
--			ca0113_mmio_gpio_set(codec, 2, true);
--			ca0113_mmio_gpio_set(codec, 3, true);
--			ca0113_mmio_gpio_set(codec, 5, false);
--			zxr_headphone_gain_set(codec, 0);
--			chipio_set_control_param(codec, 0x0d, 0x24);
--			break;
--		case QUIRK_R3DI:
--			chipio_set_control_param(codec, 0x0d, 0x24);
--			r3di_gpio_out_set(codec, R3DI_LINE_OUT);
--			break;
--		case QUIRK_R3D:
--			chipio_set_control_param(codec, 0x0d, 0x24);
--			ca0113_mmio_gpio_set(codec, 1, true);
--			break;
--		case QUIRK_AE5:
--			ae5_mmio_select_out(codec);
--			ae5_headphone_gain_set(codec, 2);
--			tmp = FLOAT_ZERO;
--			dspio_set_uint_param(codec, 0x96, 0x29, tmp);
--			dspio_set_uint_param(codec, 0x96, 0x2a, tmp);
--			chipio_set_control_param(codec, 0x0d, 0xa4);
--			chipio_write(codec, 0x18b03c, 0x00000012);
--			break;
--		default:
--			break;
-+	*quirk_data = NULL;
-+	for (i = 0; i < ARRAY_SIZE(quirk_out_set_data); i++) {
-+		if (quirk_out_set_data[i].quirk_id == quirk) {
-+			*quirk_data = &quirk_out_set_data[i];
-+			return;
- 		}
--		break;
--	case HEADPHONE_OUT:
--		switch (ca0132_quirk(spec)) {
--		case QUIRK_SBZ:
--			ca0113_mmio_gpio_set(codec, 7, true);
--			ca0113_mmio_gpio_set(codec, 4, true);
--			ca0113_mmio_gpio_set(codec, 1, false);
--			chipio_set_control_param(codec, 0x0d, 0x12);
--			break;
--		case QUIRK_ZXR:
--			ca0113_mmio_gpio_set(codec, 2, false);
--			ca0113_mmio_gpio_set(codec, 3, false);
--			ca0113_mmio_gpio_set(codec, 5, true);
--			zxr_headphone_gain_set(codec, spec->zxr_gain_set);
--			chipio_set_control_param(codec, 0x0d, 0x21);
--			break;
--		case QUIRK_R3DI:
--			chipio_set_control_param(codec, 0x0d, 0x21);
--			r3di_gpio_out_set(codec, R3DI_HEADPHONE_OUT);
--			break;
--		case QUIRK_R3D:
--			chipio_set_control_param(codec, 0x0d, 0x21);
--			ca0113_mmio_gpio_set(codec, 0x1, false);
--			break;
--		case QUIRK_AE5:
--			ae5_mmio_select_out(codec);
--			ae5_headphone_gain_set(codec,
--					spec->ae5_headphone_gain_val);
--			tmp = FLOAT_ONE;
--			dspio_set_uint_param(codec, 0x96, 0x29, tmp);
--			dspio_set_uint_param(codec, 0x96, 0x2a, tmp);
--			chipio_set_control_param(codec, 0x0d, 0xa1);
--			chipio_write(codec, 0x18b03c, 0x00000012);
--			break;
--		default:
--			break;
-+	}
-+}
-+
-+static int ca0132_alt_select_out_quirk_set(struct hda_codec *codec)
-+{
-+	const struct ca0132_alt_out_set_quirk_data *quirk_data;
-+	const struct ca0132_alt_out_set_info *out_info;
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int i, gpio_data;
-+	int err;
-+
-+	ca0132_alt_select_out_get_quirk_data(codec, &quirk_data);
-+	if (!quirk_data)
-+		return 0;
-+
-+	out_info = &quirk_data->out_set_info[spec->cur_out_type];
-+	if (quirk_data->is_ae_series)
-+		ae5_mmio_select_out(codec);
-+
-+	if (out_info->has_hda_gpio) {
-+		gpio_data = snd_hda_codec_read(codec, codec->core.afg, 0,
-+				AC_VERB_GET_GPIO_DATA, 0);
-+
-+		if (out_info->hda_gpio_set)
-+			gpio_data |= (1 << out_info->hda_gpio_pin);
-+		else
-+			gpio_data &= ~(1 << out_info->hda_gpio_pin);
-+
-+		snd_hda_codec_write(codec, codec->core.afg, 0,
-+				    AC_VERB_SET_GPIO_DATA, gpio_data);
-+	}
-+
-+	if (out_info->mmio_gpio_count) {
-+		for (i = 0; i < out_info->mmio_gpio_count; i++) {
-+			ca0113_mmio_gpio_set(codec, out_info->mmio_gpio_pin[i],
-+					out_info->mmio_gpio_set[i]);
- 		}
--		break;
- 	}
-+
-+	if (out_info->scp_cmds_count) {
-+		for (i = 0; i < out_info->scp_cmds_count; i++) {
-+			err = dspio_set_uint_param(codec,
-+					out_info->scp_cmd_mid[i],
-+					out_info->scp_cmd_req[i],
-+					out_info->scp_cmd_val[i]);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
-+
-+	chipio_set_control_param(codec, 0x0d, out_info->dac2port);
-+
-+	if (out_info->has_chipio_write) {
-+		chipio_write(codec, out_info->chipio_write_addr,
-+				out_info->chipio_write_data);
-+	}
-+
-+	if (quirk_data->has_headphone_gain) {
-+		if (spec->cur_out_type != HEADPHONE_OUT) {
-+			if (quirk_data->is_ae_series)
-+				ae5_headphone_gain_set(codec, 2);
-+			else
-+				zxr_headphone_gain_set(codec, 0);
-+		} else {
-+			if (quirk_data->is_ae_series)
-+				ae5_headphone_gain_set(codec,
-+						spec->ae5_headphone_gain_val);
-+			else
-+				zxr_headphone_gain_set(codec,
-+						spec->zxr_gain_set);
-+		}
-+	}
-+
-+	return 0;
- }
- 
- static void ca0132_set_out_node_pincfg(struct hda_codec *codec, hda_nid_t nid,
-@@ -4456,7 +4601,8 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 	if (err < 0)
- 		goto exit;
- 
--	ca0132_alt_select_out_quirk_handler(codec);
-+	if (ca0132_alt_select_out_quirk_set(codec) < 0)
-+		goto exit;
- 
- 	switch (spec->cur_out_type) {
- 	case SPEAKER_OUT:
 -- 
 2.20.1
 
