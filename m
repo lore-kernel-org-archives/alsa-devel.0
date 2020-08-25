@@ -2,69 +2,68 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EC6FC433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D411DC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 08:01:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0E5020578
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:38:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 57E9F2065F
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 08:01:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KF7JXVqL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0E5020578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZQXFt4/8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57E9F2065F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2674E167E;
-	Tue, 25 Aug 2020 09:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2674E167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1DD21661;
+	Tue, 25 Aug 2020 10:01:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1DD21661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598341101;
-	bh=Jks9A2mq0z2OU2SN20xbHHWKVuZDuoHkanaCeF9rH60=;
+	s=default; t=1598342515;
+	bh=3sr2fsuZFxgdqnm9hPI9Gz/6yX9+WeQG2dVg+vpB0G0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KF7JXVqLTWxX7h4DxVcz2OvQgVNHE0/MdChCzkDvxHSZOc9T243Vc8gEvrBgrUXla
-	 GO/UByi9EKEaxPDntULUjx96BSpxPC6fymn84vl2sp8ZUxgjHm9oOdfM9ISe4JZpNM
-	 M9+CGHpptk4QAxwhEgN+7odGwj1jKxnCmDg6FrmI=
+	b=ZQXFt4/87k+AOTTklsSiQ3faX31RPAq6xdzELpny1MxsHCW23FrAVdX1/CcWBik0D
+	 DjBHDwA2C0rL4Fzhf1rONjp2XmGmyUTMdNsttbr3ER9BnvkmEy4ENqNBX5X4SPAZ24
+	 +5gzies/0O7GZE84MPXJdSTi4S79asSySaY25U2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5F54F80260;
-	Tue, 25 Aug 2020 09:36:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D97CF80245;
+	Tue, 25 Aug 2020 10:01:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2EAAF80143; Tue, 25 Aug 2020 09:36:39 +0200 (CEST)
+ id C3B12F8025A; Tue, 25 Aug 2020 10:00:40 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C84A9F80143
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 09:36:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C84A9F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC160F80143
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 10:00:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC160F80143
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id ED17EAD26;
- Tue, 25 Aug 2020 07:37:03 +0000 (UTC)
-Date: Tue, 25 Aug 2020 09:36:33 +0200
-Message-ID: <s5hd03f6uta.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 54FA2AC2F;
+ Tue, 25 Aug 2020 08:01:02 +0000 (UTC)
+Date: Tue, 25 Aug 2020 10:00:31 +0200
+Message-ID: <s5h7dtn6tpc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mohan Kumar <mkumard@nvidia.com>
-Subject: Re: [PATCH 2/2] ALSA: hda/tegra: Program WAKEEN register for Tegra
-In-Reply-To: <20200825052415.20626-3-mkumard@nvidia.com>
-References: <20200825052415.20626-1-mkumard@nvidia.com>
- <20200825052415.20626-3-mkumard@nvidia.com>
+To: Alex Dewar <alex.dewar90@gmail.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Book Ion
+ 15 inches
+In-Reply-To: <30693624-744d-6971-1dc8-8ffe4df6082c@gmail.com>
+References: <7210c752-0a1f-3985-91f0-b70facf0293c@gmail.com>
+ <30693624-744d-6971-1dc8-8ffe4df6082c@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, aplattner@nvidia.com, spujar@nvidia.com,
- tiwai@suse.com, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
- treding@nvidia.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ adrien.crivelli@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,17 +79,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 Aug 2020 07:24:15 +0200,
-Mohan Kumar wrote:
+On Mon, 24 Aug 2020 14:31:17 +0200,
+Alex Dewar wrote:
 > 
-> The WAKEEN bits are used to indicate which bits in the
-> STATESTS register may cause wake event during the codec
-> state change request. Configure the WAKEEN register for
-> the Tegra to detect the wake events.
-> 
-> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+> My mistake -- I didn't read your changelog properly. Sorry!
 
-Thanks, applied.
+Would you resubmit the corrected fix patch?
 
+Also, better to indicate the device id number in the patch
+description.  It's confusing which entry you've corrected
+intentionally for what, and documenting it would help understanding
+it.
+
+
+thanks,
 
 Takashi
+
+> 
+> On 24/08/2020 13:30, Alex Dewar wrote:
+> > There's a mistake in this. The ID numbers are the wrong way round.
+> >
+> > Alex
+> 
