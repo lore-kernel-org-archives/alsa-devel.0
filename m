@@ -2,94 +2,94 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0193C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:14:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDB7DC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:15:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EF7220738
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:14:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C3E92074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:15:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CU/c781m";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mK1eEnbF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EF7220738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tpKhQfDh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kWW2HUNl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C3E92074D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F23B31697;
-	Tue, 25 Aug 2020 22:13:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F23B31697
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDC8B16BA;
+	Tue, 25 Aug 2020 22:14:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDC8B16BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598386472;
-	bh=yfCHXL3CM15iwn3t/O25ZudgRiYiLOcb4VgELjjYbys=;
+	s=default; t=1598386517;
+	bh=GFPzKwbuJlWifw2RYhR1x9+1JFqzPewAzUEwxb7rI8c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CU/c781mnnEZ/6a/s9iy64OcDh9rTix7ts8kCgw1U4xw/SoDf01FvtIE563yH74LS
-	 64gwE4M70XaDnjZWZ8cBSIUUc2g5+mfyw4Ca9ke9HlLOCO6hGKY0PhBWgtcJwEJpZ+
-	 9MVUeEn5c3bcyBmYegUOTWMxbDNBdWfzgls/NLxI=
+	b=tpKhQfDhZ7qEjztGmEvadOJsM0sIaepr+Sqy6yFkNF/8RpvplEkOuwsUbPe5ZguKb
+	 vvK9ydKxW1YH69il+21pbktbHP2yh0g7q46FC1eNaVoUK8VbqVaLnu58A81YL1wYzp
+	 hgHQbymzIOZyH1c5Rz+8KzpNbd+43vvuselGL1C4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6330CF802E8;
-	Tue, 25 Aug 2020 22:11:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE6B0F802F8;
+	Tue, 25 Aug 2020 22:11:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4000F802E2; Tue, 25 Aug 2020 22:11:14 +0200 (CEST)
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
- [IPv6:2607:f8b0:4864:20::842])
+ id B7705F802F7; Tue, 25 Aug 2020 22:11:18 +0200 (CEST)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 023ADF800D1
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:11:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 023ADF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id A58E1F802E0
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:11:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A58E1F802E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="mK1eEnbF"
-Received: by mail-qt1-x842.google.com with SMTP id x12so10043777qtp.1
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 13:11:06 -0700 (PDT)
+ header.b="kWW2HUNl"
+Received: by mail-qk1-x741.google.com with SMTP id z3so7999502qkz.7
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 13:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Y3YVryPXklllfdxGU+w/IQCrc9AF7mpnZ0z2qTujuJ8=;
- b=mK1eEnbFMbuEq6vr/5IuRN3tRmdLpPEIrymOmhWmNDmV9j+qxrPh9B6L+vZo9ugmXm
- 8PGysjggH+SLwzfc4ws25Efk3GgNFwXgk2hcBXVrh2kpNlbSLoLp/Nt6oehqvr6dXdqa
- j0/zzwxMezWQ73DBewBagBo0s0cZ1CiyNolsIRHQL7qZpFFodvSDGd/sAe1od/5DCieB
- zO7ONjxYxBVesuDOurKt0R/wLyUIxAk8oQ947L0zwK7bBIIJj/MuhP41xH0UqyXiMckT
- d8uUeGQcpsMqGANG8jm5DQ7JarsUi5m0OVzOdCQAe08OVdQ+NRF7yrB2AyrCtdXDybsE
- X1KA==
+ bh=mX5XV2qTPQIMbrDlAgnnVyhYs6O9ThLMKRIF8OKEgC0=;
+ b=kWW2HUNlWgH3O2A41tYA1nFPgw0r8UVqoIxZlQa5GCTBTxSrgwyTmuTXhRlLExujXQ
+ OsE2w/cvZpjGe4jDYHFQl6pkQ4aW9b15PKkWgLztOn+u8uOnLz9LEGmQkNbXQqG/V3vg
+ S73asGYUCjjEAjR9KR/h1eDhnIUFzgJzb3YaYiYutLKLdCQk4hMGWClQJTks8qw8+O+5
+ Oa/VpeYKGHoJwU7EHBeER4YkP/qvByS8e57nT4wlbYkRKiCT2UneWeLUuIR6mWWY/0tl
+ ditP2MYeadEiOl5SBt4D2gpqziuRwhEISLxrI2F+qMui/HtLphAi0X5lwEYDUs8y4RPy
+ k07w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Y3YVryPXklllfdxGU+w/IQCrc9AF7mpnZ0z2qTujuJ8=;
- b=fJrMH+1OGbrKKdKnu73cN/XWXzWmRtc5FAN5zyuHEnHQS31iBKo3FvetBoVvlStZoZ
- 6wTXSJXFbK8lfjboi0DGN/oX7/xncSsDLuqoB0C0XFtO19Ph8TOh2KqIbW86q0U6tl+R
- sc91Mm96owLvee6+JKrY3U58j/4OJP4jWdrtIxWejZtfXBv7l0wsuSrCc5XdAMNWWC/+
- 9iaVVrNTCS68ZIaghIrj34QG0ev4t8BsfCbj8o91f6bkSvk45lprn4t8os0S0g00AfpX
- VqkY7lfNgGiDcIpxKt4PSE55zSB+blzV/gDYcS6K5Fp2V1yhfAN/lyxU+c9ePWsDKsn7
- e9aQ==
-X-Gm-Message-State: AOAM530A0Ob+s/jffqwUFk8KcqCgExX0Z2aw1q6hH7pymgDR7cZssV+w
- oCIJeY4FGH4RWjU5xpouDJo=
-X-Google-Smtp-Source: ABdhPJxYZEOOmucmMIGwT/JzQtTHt89dm1h1u72DCk2DdcaKfpm6PDuSIA49Q+8WPXU52vqxCOlo1w==
-X-Received: by 2002:ac8:6141:: with SMTP id d1mr3025288qtm.170.1598386264388; 
- Tue, 25 Aug 2020 13:11:04 -0700 (PDT)
+ bh=mX5XV2qTPQIMbrDlAgnnVyhYs6O9ThLMKRIF8OKEgC0=;
+ b=Ncsx+UqX63uaJ8mWCz0hWkivtI0pWRiRXorsiZVWqFDFEOsI0/QqrE9MntUMRZPdgs
+ sTqKNcmTMnZLQ8R5MRFupwiOu8vwg9ttogLZdPVgnXlc7CamZqoy9nksBlWCp61BHfCA
+ Qzh00pO2sEHNIrnxW+S1PTvv1ZhtFMeq08xqji2bOzIbTnVAGgMBWDTX8ZlvJP2KkOf3
+ 39c4Q/00Eew/hKREac11qE569tx/SfOqz+a6USNd1hGxBdB+wKMfNssfiicMaCyRZApi
+ 4UQPsGX4EO2b+YkgSk9zkyBWRvKxyTLwE5DeGOoHAg3ZeeBnhxpuFqBcMwrpB4oflcWZ
+ /j7w==
+X-Gm-Message-State: AOAM533mx+UfSGWpGsmFa5H4vUCz/Njn5Mh3J+tiNxJh2cQt65iTVMS1
+ G/2q/HOob00nGOnRvmceNjU=
+X-Google-Smtp-Source: ABdhPJxvaEGJ7vKtI6N9eO3C7TaINsukvi8AIZ3Ql5lsVVcVX8aJZ0FPeJGN1TMuF3DUxiEv/1nhQg==
+X-Received: by 2002:a05:620a:1585:: with SMTP id
+ d5mr11206123qkk.259.1598386268897; 
+ Tue, 25 Aug 2020 13:11:08 -0700 (PDT)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
  [71.65.111.223]) by smtp.googlemail.com with ESMTPSA id
- n23sm12453459qkk.105.2020.08.25.13.11.03
+ n23sm12453459qkk.105.2020.08.25.13.11.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 Aug 2020 13:11:04 -0700 (PDT)
+ Tue, 25 Aug 2020 13:11:08 -0700 (PDT)
 From: Connor McAdams <conmanx360@gmail.com>
 To: 
-Subject: [PATCH v2 03/20] ALSA: hda/ca0132 - Add surround channel config
- control.
-Date: Tue, 25 Aug 2020 16:10:22 -0400
-Message-Id: <20200825201040.30339-4-conmanx360@gmail.com>
+Subject: [PATCH v2 05/20] ALSA: hda/ca0132 - Add bass redirection controls.
+Date: Tue, 25 Aug 2020 16:10:24 -0400
+Message-Id: <20200825201040.30339-6-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200825201040.30339-1-conmanx360@gmail.com>
 References: <20200825201040.30339-1-conmanx360@gmail.com>
@@ -112,186 +112,250 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a surround channel configuration enumeration control. Setting up
-different channel configurations allows the DSP to upmix stereo audio
-into multi-channel audio, and allows for redirection of bass to a
-subwoofer.
+Add bass redirection controls for surround outputs. This uses the DSP to
+redirect audio below the bass redirection crossover frequency to the LFE
+channel from the front/rear L/R speakers. This only goes into effect if
+the speakers aren't set as full range, and only if the surround
+configuration has an LFE channel.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 110 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 108 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 130 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 126 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 2e664aeee1c4..1a5fb30b69ab 100644
+index 469cefe9a51a..8ad2fc5ab30b 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -38,6 +38,8 @@
- #define FLOAT_ONE	0x3f800000
- #define FLOAT_TWO	0x40000000
- #define FLOAT_THREE     0x40400000
-+#define FLOAT_FIVE	0x40a00000
-+#define FLOAT_SIX       0x40c00000
- #define FLOAT_EIGHT     0x41000000
- #define FLOAT_MINUS_5	0xc0a00000
- 
-@@ -143,7 +145,8 @@ enum {
- 	MIC_BOOST_ENUM,
- 	AE5_HEADPHONE_GAIN_ENUM,
- 	AE5_SOUND_FILTER_ENUM,
--	ZXR_HEADPHONE_GAIN
-+	ZXR_HEADPHONE_GAIN,
-+	SPEAKER_CHANNEL_CFG_ENUM,
+@@ -149,6 +149,8 @@ enum {
+ 	SPEAKER_CHANNEL_CFG_ENUM,
+ 	SPEAKER_FULL_RANGE_FRONT,
+ 	SPEAKER_FULL_RANGE_REAR,
++	BASS_REDIRECTION,
++	BASS_REDIRECTION_XOVER,
  #define EFFECTS_COUNT  (EFFECT_END_NID - EFFECT_START_NID)
  };
  
-@@ -686,6 +689,39 @@ static const struct ca0132_alt_out_set alt_out_presets[] = {
- 	}
- };
- 
-+/* Surround output channel count configuration structures. */
-+#define SPEAKER_CHANNEL_CFG_COUNT 5
-+enum {
-+	SPEAKER_CHANNELS_2_0,
-+	SPEAKER_CHANNELS_2_1,
-+	SPEAKER_CHANNELS_4_0,
-+	SPEAKER_CHANNELS_4_1,
-+	SPEAKER_CHANNELS_5_1,
-+};
-+
-+struct ca0132_alt_speaker_channel_cfg {
-+	char *name;
-+	unsigned int val;
-+};
-+
-+static const struct ca0132_alt_speaker_channel_cfg speaker_channel_cfgs[] = {
-+	{ .name = "2.0",
-+	  .val = FLOAT_ONE
-+	},
-+	{ .name = "2.1",
-+	  .val = FLOAT_TWO
-+	},
-+	{ .name = "4.0",
-+	  .val = FLOAT_FIVE
-+	},
-+	{ .name = "4.1",
-+	  .val = FLOAT_SIX
-+	},
-+	{ .name = "5.1",
-+	  .val = FLOAT_EIGHT
-+	}
-+};
-+
- /*
-  * DSP volume setting structs. Req 1 is left volume, req 2 is right volume,
-  * and I don't know what the third req is, but it's always zero. I assume it's
-@@ -1063,6 +1099,7 @@ struct ca0132_spec {
- 	/* ca0132_alt control related values */
- 	unsigned char in_enum_val;
- 	unsigned char out_enum_val;
-+	unsigned char channel_cfg_val;
+@@ -1123,6 +1125,8 @@ struct ca0132_spec {
+ 	unsigned char speaker_range_val[2];
  	unsigned char mic_boost_enum_val;
  	unsigned char smart_volume_setting;
++	unsigned char bass_redirection_val;
++	long bass_redirect_xover_freq;
  	long fx_ctl_val[EFFECT_LEVEL_SLIDERS];
-@@ -4476,7 +4513,8 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 		snd_hda_set_pin_ctl(codec, spec->out_pins[3],
- 				    pin_ctl | PIN_OUT);
- 
--		dspio_set_uint_param(codec, 0x80, 0x04, FLOAT_EIGHT);
-+		tmp = speaker_channel_cfgs[spec->channel_cfg_val].val;
-+		dspio_set_uint_param(codec, 0x80, 0x04, tmp);
- 		break;
- 	}
- 	/*
-@@ -5582,6 +5620,54 @@ static int ca0132_alt_output_select_put(struct snd_kcontrol *kcontrol,
- 	return 1;
+ 	long xbass_xover_freq;
+ 	long eq_preset_val;
+@@ -4324,6 +4328,35 @@ static int ca0132_alt_set_full_range_speaker(struct hda_codec *codec)
+ 	return 0;
  }
  
-+/* Select surround output type: 2.1, 4.0, 4.1, or 5.1. */
-+static int ca0132_alt_speaker_channel_cfg_get_info(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_info *uinfo)
++static int ca0132_alt_surround_set_bass_redirection(struct hda_codec *codec,
++		bool val)
 +{
-+	unsigned int items = SPEAKER_CHANNEL_CFG_COUNT;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = items;
-+	if (uinfo->value.enumerated.item >= items)
-+		uinfo->value.enumerated.item = items - 1;
-+	strcpy(uinfo->value.enumerated.name,
-+			speaker_channel_cfgs[uinfo->value.enumerated.item].name);
-+	return 0;
-+}
-+
-+static int ca0132_alt_speaker_channel_cfg_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
 +	struct ca0132_spec *spec = codec->spec;
++	unsigned int tmp;
++	int err;
 +
-+	ucontrol->value.enumerated.item[0] = spec->channel_cfg_val;
++	if (val && spec->channel_cfg_val != SPEAKER_CHANNELS_4_0 &&
++			spec->channel_cfg_val != SPEAKER_CHANNELS_2_0)
++		tmp = FLOAT_ONE;
++	else
++		tmp = FLOAT_ZERO;
++
++	err = dspio_set_uint_param(codec, 0x96, SPEAKER_BASS_REDIRECT, tmp);
++	if (err < 0)
++		return err;
++
++	/* If it is enabled, make sure to set the crossover frequency. */
++	if (tmp) {
++		tmp = float_xbass_xover_lookup[spec->xbass_xover_freq];
++		err = dspio_set_uint_param(codec, 0x96,
++				SPEAKER_BASS_REDIRECT_XOVER_FREQ, tmp);
++		if (err < 0)
++			return err;
++	}
++
 +	return 0;
-+}
-+
-+static int ca0132_alt_speaker_channel_cfg_put(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct ca0132_spec *spec = codec->spec;
-+	int sel = ucontrol->value.enumerated.item[0];
-+	unsigned int items = SPEAKER_CHANNEL_CFG_COUNT;
-+
-+	if (sel >= items)
-+		return 0;
-+
-+	codec_dbg(codec, "ca0132_alt_speaker_channels: sel=%d, channels=%s\n",
-+		    sel, speaker_channel_cfgs[sel].name);
-+
-+	spec->channel_cfg_val = sel;
-+
-+	if (spec->out_enum_val == SURROUND_OUT)
-+		ca0132_alt_select_out(codec);
-+
-+	return 1;
 +}
 +
  /*
-  * Smart Volume output setting control. Three different settings, Normal,
-  * which takes the value from the smart volume slider. The two others, loud
-@@ -6226,6 +6312,23 @@ static int ca0132_alt_add_output_enum(struct hda_codec *codec)
+  * These are the commands needed to setup output on each of the different card
+  * types.
+@@ -4593,6 +4626,15 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
+ 		ca0132_effects_set(codec, X_BASS,
+ 			spec->effects_switch[X_BASS - EFFECT_START_NID]);
+ 
++	if (spec->cur_out_type == SURROUND_OUT)
++		err = ca0132_alt_surround_set_bass_redirection(codec,
++				spec->bass_redirection_val);
++	else
++		err = ca0132_alt_surround_set_bass_redirection(codec, 0);
++
++	if (err < 0)
++		goto exit;
++
+ 	/* run through the output dsp commands for the selected output. */
+ 	for (i = 0; i < alt_out_presets[spec->cur_out_type].commands; i++) {
+ 		err = dspio_set_uint_param(codec,
+@@ -5282,6 +5324,18 @@ static int ca0132_vnode_switch_set(struct snd_kcontrol *kcontrol,
+ 	return ret;
+ }
+ /* End of control change helpers. */
++
++static void ca0132_alt_bass_redirection_xover_set(struct hda_codec *codec,
++		long idx)
++{
++	snd_hda_power_up(codec);
++
++	dspio_set_param(codec, 0x96, 0x20, SPEAKER_BASS_REDIRECT_XOVER_FREQ,
++			&(float_xbass_xover_lookup[idx]), sizeof(unsigned int));
++
++	snd_hda_power_down(codec);
++}
++
+ /*
+  * Below I've added controls to mess with the effect levels, I've only enabled
+  * them on the Sound Blaster Z, but they would probably also work on the
+@@ -5290,6 +5344,7 @@ static int ca0132_vnode_switch_set(struct snd_kcontrol *kcontrol,
+  */
+ 
+ /* Sets DSP effect level from the sliders above the controls */
++
+ static int ca0132_alt_slider_ctl_set(struct hda_codec *codec, hda_nid_t nid,
+ 			  const unsigned int *lookup, int idx)
+ {
+@@ -5335,8 +5390,12 @@ static int ca0132_alt_xbass_xover_slider_ctl_get(struct snd_kcontrol *kcontrol,
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	struct ca0132_spec *spec = codec->spec;
+ 	long *valp = ucontrol->value.integer.value;
++	hda_nid_t nid = get_amp_nid(kcontrol);
+ 
+-	*valp = spec->xbass_xover_freq;
++	if (nid == BASS_REDIRECTION_XOVER)
++		*valp = spec->bass_redirect_xover_freq;
++	else
++		*valp = spec->xbass_xover_freq;
+ 
+ 	return 0;
+ }
+@@ -5391,16 +5450,25 @@ static int ca0132_alt_xbass_xover_slider_put(struct snd_kcontrol *kcontrol,
+ 	struct ca0132_spec *spec = codec->spec;
+ 	hda_nid_t nid = get_amp_nid(kcontrol);
+ 	long *valp = ucontrol->value.integer.value;
++	long *cur_val;
+ 	int idx;
+ 
++	if (nid == BASS_REDIRECTION_XOVER)
++		cur_val = &spec->bass_redirect_xover_freq;
++	else
++		cur_val = &spec->xbass_xover_freq;
++
+ 	/* any change? */
+-	if (spec->xbass_xover_freq == *valp)
++	if (*cur_val == *valp)
+ 		return 0;
+ 
+-	spec->xbass_xover_freq = *valp;
++	*cur_val = *valp;
+ 
+ 	idx = *valp;
+-	ca0132_alt_slider_ctl_set(codec, nid, float_xbass_xover_lookup, idx);
++	if (nid == BASS_REDIRECTION_XOVER)
++		ca0132_alt_bass_redirection_xover_set(codec, *cur_val);
++	else
++		ca0132_alt_slider_ctl_set(codec, nid, float_xbass_xover_lookup, idx);
+ 
+ 	return 0;
+ }
+@@ -5968,6 +6036,11 @@ static int ca0132_switch_get(struct snd_kcontrol *kcontrol,
+ 		return 0;
+ 	}
+ 
++	if (nid == BASS_REDIRECTION) {
++		*valp = spec->bass_redirection_val;
++		return 0;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -6054,6 +6127,14 @@ static int ca0132_switch_put(struct snd_kcontrol *kcontrol,
+ 		changed = 0;
+ 	}
+ 
++	if (nid == BASS_REDIRECTION) {
++		spec->bass_redirection_val = *valp;
++		if (spec->cur_out_type == SURROUND_OUT)
++			ca0132_alt_surround_set_bass_redirection(codec, *valp);
++
++		changed = 0;
++	}
++
+ exit:
+ 	snd_hda_power_down(codec);
+ 	return changed;
+@@ -6436,6 +6517,39 @@ static int ca0132_alt_add_rear_full_range_switch(struct hda_codec *codec)
  				snd_ctl_new1(&knew, codec));
  }
  
 +/*
-+ * Add a control for selecting channel count on speaker output. Setting this
-+ * allows the DSP to do bass redirection and channel upmixing on surround
-+ * configurations.
++ * Bass redirection redirects audio below the crossover frequency to the LFE
++ * channel on speakers that are set as not being full-range. On configurations
++ * without an LFE channel, it does nothing. Bass redirection seems to be the
++ * replacement for X-Bass on configurations with an LFE channel.
 + */
-+static int ca0132_alt_add_speaker_channel_cfg_enum(struct hda_codec *codec)
++static int ca0132_alt_add_bass_redirection_crossover(struct hda_codec *codec)
 +{
++	const char *namestr = "Bass Redirection Crossover";
 +	struct snd_kcontrol_new knew =
-+		HDA_CODEC_MUTE_MONO("Surround Channel Config",
-+				    SPEAKER_CHANNEL_CFG_ENUM, 1, 0, HDA_OUTPUT);
-+	knew.info = ca0132_alt_speaker_channel_cfg_get_info;
-+	knew.get = ca0132_alt_speaker_channel_cfg_get;
-+	knew.put = ca0132_alt_speaker_channel_cfg_put;
-+	return snd_hda_ctl_add(codec, SPEAKER_CHANNEL_CFG_ENUM,
-+				snd_ctl_new1(&knew, codec));
++		HDA_CODEC_VOLUME_MONO(namestr, BASS_REDIRECTION_XOVER, 1, 0,
++				HDA_OUTPUT);
++
++	knew.tlv.c = NULL;
++	knew.info = ca0132_alt_xbass_xover_slider_info;
++	knew.get = ca0132_alt_xbass_xover_slider_ctl_get;
++	knew.put = ca0132_alt_xbass_xover_slider_put;
++
++	return snd_hda_ctl_add(codec, BASS_REDIRECTION_XOVER,
++			snd_ctl_new1(&knew, codec));
++}
++
++static int ca0132_alt_add_bass_redirection_switch(struct hda_codec *codec)
++{
++	const char *namestr = "Bass Redirection";
++	struct snd_kcontrol_new knew =
++		CA0132_CODEC_MUTE_MONO(namestr, BASS_REDIRECTION, 1,
++				HDA_OUTPUT);
++
++	return snd_hda_ctl_add(codec, BASS_REDIRECTION,
++			snd_ctl_new1(&knew, codec));
 +}
 +
  /*
   * Create an Input Source enumerated control for the alternate ca0132 codecs
   * because the front microphone has no auto-detect, and Line-in has to be set
-@@ -6530,6 +6633,9 @@ static int ca0132_build_controls(struct hda_codec *codec)
- 	 */
- 	if (ca0132_use_alt_functions(spec)) {
- 		err = ca0132_alt_add_output_enum(codec);
+@@ -6749,6 +6863,12 @@ static int ca0132_build_controls(struct hda_codec *codec)
+ 		if (err < 0)
+ 			return err;
+ 		err = ca0132_alt_add_rear_full_range_switch(codec);
 +		if (err < 0)
 +			return err;
-+		err = ca0132_alt_add_speaker_channel_cfg_enum(codec);
++		err = ca0132_alt_add_bass_redirection_crossover(codec);
++		if (err < 0)
++			return err;
++		err = ca0132_alt_add_bass_redirection_switch(codec);
  		if (err < 0)
  			return err;
  		err = ca0132_alt_add_mic_boost_enum(codec);
+@@ -8102,6 +8222,8 @@ static void ca0132_init_chip(struct hda_codec *codec)
+ 		spec->xbass_xover_freq = 8;
+ 		for (i = 0; i < EFFECT_LEVEL_SLIDERS; i++)
+ 			spec->fx_ctl_val[i] = effect_slider_defaults[i];
++
++		spec->bass_redirect_xover_freq = 8;
+ 	}
+ 
+ 	spec->voicefx_val = 0;
 -- 
 2.20.1
 
