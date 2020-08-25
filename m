@@ -2,95 +2,76 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5E47C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFC3DC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:41:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5049420737
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:32:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D93D204FD
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:41:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mGBmOT5O";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="fmYwSvJG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5049420737
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MVXHQ87a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D93D204FD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C89C81654;
-	Tue, 25 Aug 2020 07:31:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C89C81654
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA47A1655;
+	Tue, 25 Aug 2020 07:40:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA47A1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598333546;
-	bh=BJgbKeXdgr54DuT8yzrbCAfJsLcJAibFpHpcGbx67pg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1598334066;
+	bh=U/ubgQCmVyfEbRT+qXAW3kpxNIaiYI1k1KFkJjiebZs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mGBmOT5OBVma3GOHmENuDBN6oP/FzMYRL8O2G62T1yzJVe7E3hngNr2Kb59OiLXbg
-	 TqqWCQ7Q0hKd1KjQpjhx8XneLuw0mU/hjRK9zK2Kdi4nGNNg8+ATh9VSXqw3KgZkKl
-	 naRPc3dRwh2cm97JjcNZwP65JqAtbHiznDWu9Mkk=
+	b=MVXHQ87a7L7mVl9OtL7e6j/y9qxYaOui7drpYoQjxGF5t9fdAA/Dc3C0dAPDxIy6h
+	 hm2aCzVJbCrQ19kxiIDpl2BzBJ9T614a+XDFP3SLKFK3R0DDHbQHYg+srdVdyLZBf5
+	 JOmnxbPQ4dufb6EfDQEa6p4PlLI5fzv7wMKofsQU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49D76F800EB;
-	Tue, 25 Aug 2020 07:31:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41254F80245;
+	Tue, 25 Aug 2020 07:40:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BC44F8025A; Tue, 25 Aug 2020 07:31:34 +0200 (CEST)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 443EAF800EB
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 07:31:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 443EAF800EB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="fmYwSvJG"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5f44a1eb0001>; Mon, 24 Aug 2020 22:30:19 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Mon, 24 Aug 2020 22:31:21 -0700
-X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Mon, 24 Aug 2020 22:31:21 -0700
-Received: from [10.25.97.151] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug
- 2020 05:31:18 +0000
-Subject: Re: [PATCH 0/2] Tegra HDA specific fixes
-To: Mohan Kumar <mkumard@nvidia.com>, <tiwai@suse.com>, <aplattner@nvidia.com>
-References: <20200825052415.20626-1-mkumard@nvidia.com>
-From: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <93744a6d-843a-0e8c-d0d1-d0d7e9a8458c@nvidia.com>
-Date: Tue, 25 Aug 2020 11:01:15 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200825052415.20626-1-mkumard@nvidia.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1598333419; bh=1BROby4DFgEOnZO+X7W4iJVTRoHH6abe5JWVienKd/w=;
- h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
- Content-Language;
- b=fmYwSvJGjPtEYF5C3cCrKfID+I/9d6nlOuFBHBU4SGlzw3RAeVcoc/8Yf6tSzFsjp
- 4cwWyNg2VCLLPZ0Uu2BVVopbhqtO4A0VGhOm2FpnmCttNheK6KjPG6YoNCovDqtben
- olBwkgG13hOlBDV+XYWV2RSNtRteCqCSmkTyrpku+5dYN/frb4sQa0xxMKj0XmCpGJ
- AvG0XnrUxhIJxpREtl+9BW33TJg8aCFNjq04iFdCryB4V20kZU+I6uGVnR7NG5wB9o
- gVAURQ2+UOcKDBNCv0lewUQzpGxG/lemdbCkDhuVlepjqXK0hYhOBHlALg/BZ0xMWw
- DoY14Rbatkhrw==
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- treding@nvidia.com, jonathanh@nvidia.com
+ id 7EDDCF8025A; Tue, 25 Aug 2020 07:40:14 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 82D86F800EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 07:40:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82D86F800EB
+Date: 25 Aug 2020 14:40:02 +0900
+X-IronPort-AV: E=Sophos;i="5.76,351,1592838000"; d="scan'208";a="55229736"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 25 Aug 2020 14:40:02 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7A20E41D55BF;
+ Tue, 25 Aug 2020 14:40:02 +0900 (JST)
+Message-ID: <87o8mzwajg.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
+ DPCM
+In-Reply-To: <14691a05-cb29-a030-0e72-eca900d8eb7e@nvidia.com>
+References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
+ <1596605064-27748-4-git-send-email-spujar@nvidia.com>
+ <87pn7ofs19.wl-kuninori.morimoto.gx@renesas.com>
+ <97f325a6-96cc-11c5-8027-8c0a159e3da0@nvidia.com>
+ <2d3aa11e-3c56-1f7a-3d41-2457f973d55b@nvidia.com>
+ <87sgcbwcnf.wl-kuninori.morimoto.gx@renesas.com>
+ <14691a05-cb29-a030-0e72-eca900d8eb7e@nvidia.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
+ atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
+ nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
+ viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
+ thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
+ mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,17 +88,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> This series has the fix for
-> - 2 Channel swapping issue for Tegra
-> - WAKEEN programming to detect wake events.
->
-> Mohan Kumar (2):
->    ALSA: hda: Fix 2 channel swapping for Tegra
->    ALSA: hda/tegra: Program WAKEEN register for Tegra
->
->   sound/pci/hda/hda_tegra.c  | 7 +++++++
->   sound/pci/hda/patch_hdmi.c | 5 +++++
->   2 files changed, 12 insertions(+)
->
-Acked-by: Sameer Pujar <spujar@nvidia.com>
+Hi Sameer
 
+> > Yes, I'm posting fixup patch.
+> > 
+> >          https://patchwork.kernel.org/patch/11719919/
+> 
+> Just curious that why snd_soc_find_dai() itself cannot be protected,
+> instead of leaving this to callers.
+
+Because, snd_soc_find_dai() is called both with/without client_mutex.
+(same/sof are calling it with mutex, simple-card/audio-graph are calling without mutex)
+
+Other solution is create both snd_soc_find_dai_with_mutex()/without_mutex().
+I'm not sure which style is best.
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
