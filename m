@@ -2,79 +2,101 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 247E0C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 01:27:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A41EAC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 03:12:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CD082072D
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 01:27:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DB19207FB
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 03:12:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M8pGT+dZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CD082072D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tr3GaoEt";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="Y+qrFFJ6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DB19207FB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 085F21654;
-	Tue, 25 Aug 2020 03:26:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 085F21654
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0171165D;
+	Tue, 25 Aug 2020 05:11:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0171165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598318845;
-	bh=GMQu29kYpAu2O0b6RiIpAJ5yMO5F4UTXq5ofudxliSk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=M8pGT+dZwDqVV5/XMr7w9OVw2THmTZoPWHgvy/yB9KLBZuWuWsUSUYLTT5Fotlbcq
-	 gwIBxDaCgippVl0y9WCyvvSgVsGnaCsnmc1ZH2aTx7+uZuxUJkRLAzECMjnaTpCWnL
-	 6dDrY9tA0AxQDhdULsLqxMLnUmTQHufKX7wNpkOo=
+	s=default; t=1598325141;
+	bh=B+Zgx08ZZIlHiO3EjqC3kAgpVjVLj6Srzmvv9aySNKM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Tr3GaoEtZo2s2dOM9c1kTPxFw5t+wgx5Sg9LWjcoQODgj4GE0m6NgWUQzJN36UriM
+	 uD4D/8bw1h1XJLS0UUXO5TMjWQdqfmagH8b5nHlxy83DQMyI4LsifWzQEnfh8N3+rd
+	 Dsp2eJdjc/EDghwxnD70tmr1QgR9iuXzIvsmm65Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97A2AF8016F;
-	Tue, 25 Aug 2020 03:26:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13142F80143;
+	Tue, 25 Aug 2020 05:11:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 261B6F801D9; Tue, 25 Aug 2020 03:26:32 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id DCA5CF8025A; Tue, 25 Aug 2020 05:11:23 +0200 (CEST)
+Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
+ [216.228.121.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E90A6F8013D
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 03:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E90A6F8013D
-IronPort-SDR: wRbRsSVmcKgiJAE4N/6calDmdr2VoKsgm9qSLAcgsdHxjvxTXn8XzVPL0kf0lPxqTIV0LXscNt
- 4mASncnMRU2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="153436552"
-X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; d="scan'208";a="153436552"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Aug 2020 18:26:20 -0700
-IronPort-SDR: 0U9UupZ1piSB1NCBH8/LgXnxrutyJ+D+zfVz4+5kZRuuwBZsSNjLNwMRR3NOo0xuRAqEEHxSP3
- zbawr9UyAHIg==
-X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; d="scan'208";a="443446093"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Aug 2020 18:26:16 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH v2] soundwire: intel: fix intel_suspend/resume defined but not
- used warning
-Date: Mon, 24 Aug 2020 21:32:34 +0800
-Message-Id: <20200824133234.28115-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04419F80143
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 05:11:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04419F80143
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="Y+qrFFJ6"
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5f4481100000>; Mon, 24 Aug 2020 20:10:08 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate101.nvidia.com (PGP Universal service);
+ Mon, 24 Aug 2020 20:11:10 -0700
+X-PGP-Universal: processed;
+ by hqpgpgate101.nvidia.com on Mon, 24 Aug 2020 20:11:10 -0700
+Received: from [10.25.97.151] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug
+ 2020 03:11:06 +0000
+Subject: Re: More Generic Audio Graph Sound Card idea
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
+ <20200821121844.GF4870@sirena.org.uk>
+ <878se4zybn.wl-kuninori.morimoto.gx@renesas.com>
+ <58220f32-0b3e-d666-5bb0-bbeae27f6aab@nvidia.com>
+ <87364by23u.wl-kuninori.morimoto.gx@renesas.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <e6e04e2c-2695-b7ba-3eb2-79158f317e4a@nvidia.com>
+Date: Tue, 25 Aug 2020 08:41:03 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+In-Reply-To: <87364by23u.wl-kuninori.morimoto.gx@renesas.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1598325008; bh=XXp2/9E8WDkIqXHecOtzHsA7j1S9s+rWmxMrXc6Vj1M=;
+ h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+ Content-Language;
+ b=Y+qrFFJ6azmDcOPhED5vmbmUQ9QhqS+q4Gq5V6Jgkg8CRUjWxLq419lodNmeYmhfx
+ vREVMM8bitmpoXcbsAp2XXSqWJChnVn1b+ks/ueQWc3eNl6HgpYYRwzOlOc2IJjOiw
+ BSjpycygDJ1o3A/Wz5Cb33P1kAGg6fR5JvXyBnHrUvgEBjG3mCNhKeiXd8b1nJScK4
+ 8QWIYDBoAv+kYATwEnHqNzr45KbzGuNMlazn9sr6tvBtVKQvZ30D3CAp73B9abca6x
+ cGRVja7G0Jqm7oNKksZA/GGQLk9YwmXehWnZHZTRDYonNe/+1iCv7er4VMuUCHPBXq
+ vBjn0yNvglSpw==
+Cc: sharadg@nvidia.com, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,52 +112,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When CONFIG_PM_SLEEP is not defined, GCC throws compilation warnings:
+Hi Morimoto-san,
 
-drivers/soundwire/intel.c:1799:12: warning: ‘intel_resume’ defined but not
-used [-Wunused-function]
- static int intel_resume(struct device *dev)
-            ^~~~~~~~~~~~
-drivers/soundwire/intel.c:1683:12: warning: ‘intel_suspend’ defined but not
-used [-Wunused-function]
- static int intel_suspend(struct device *dev)
-            ^~~~~~~~~~~~~
+CC Jon, Sharad
 
-Fix by using __maybe_unused macro.
+On 8/25/2020 6:29 AM, Kuninori Morimoto wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Hi Sameer
+>
+>> The series [0] introduces small deltas to resolve issues I am
+>> facing. As you see, most of the implementation is unchanged for the
+>> graph-card driver. Hence I am not sure if we need a new driver now.
+> Yes, maybe it is not needed *for now*, but will be issue in the future,
+> because I can't have normal-link and DPCM-link in the same time, right ?
 
-Suggested-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
-Changelog:
-v2:
- - use __maybe_unused macro instead of wrapping in another ifdef.
----
- drivers/soundwire/intel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes I am forcing usage of DPCM for all links. May be the compatible 
+"-cc-" should reflect this. The reason for doing so is, wanted to use 
+DPCM interface with the component model as previously discussed with 
+Mark in [1]. The existing detection mechanism did not work because, in 
+my case, the HW links are one-to-one and the DT is described that way in 
+[0].
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index dbcbe2708563..ebca8ced59ec 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1527,7 +1527,7 @@ int intel_master_process_wakeen_event(struct platform_device *pdev)
- 
- #ifdef CONFIG_PM
- 
--static int intel_suspend(struct device *dev)
-+static int __maybe_unused intel_suspend(struct device *dev)
- {
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
-@@ -1625,7 +1625,7 @@ static int intel_suspend_runtime(struct device *dev)
- 	return ret;
- }
- 
--static int intel_resume(struct device *dev)
-+static int __maybe_unused intel_resume(struct device *dev)
- {
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
--- 
-2.17.1
+>
+>> at all it gets complicated in future, the "-cc-" compatible can be
+>> moved to new driver? Please note that the new "-cc-" compatibility is
+>> added to address following and some of these are discussed in [1].
+>> - DPCM usage with component model (where there can be N number of
+>> components available and M (<= N) of them can be connected together to
+>> form an audio path). For example the path would be like,
+>> FE -> BE_1 -> BE_2 -> ... -> BE_M.
+>> - I am extending dpcm_path_get() for this reason and DAI ops get
+>> called for all connected components.
+>>
+>> [0] https://lkml.org/lkml/2020/8/5/42
+>> [1] https://lkml.org/lkml/2020/4/30/519
+> The difference between "-cc" and "card2" is DPCM link detection.
+> "-cc-"  will assume all are DPCM link,
+> "card2" will detect both normal-link and DPCM-link via DT.
+>
+> But, I guess new driver 1st version is focus to
+> detecting normal-link and DPCM-link only.
 
+Do you plan to propose something like enum for card2 and has scope for 
+extension, where link type can be normal/DPCM/codec-to-codec/etc., ?
+Since there are so many board variants and may have some specific 
+requirements, I am wondering being able to detect link type from DT 
+should be the only motivation for a new driver.
+
+>
+> This means it is not enough for your case,
+> because I can't full reproduce your board/situation.
+> Maybe you need some extra patch on "card2"
+> which "-cc-" added to soc-xxx.c
+
+I am afraid that even the new driver won't work as it is for my case 
+unless a similar compatible and flag exposed for it. So I am not sure 
+how different it would be from [0].
+
+
+Thanks,
+Sameer.
