@@ -8,88 +8,87 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 725A6C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:22:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DBB7C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:22:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F188C2075E
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:22:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B22CA2075E
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:22:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KVEe5h0q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uMUpTd8p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F188C2075E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TqLIA/T9";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="imQNwuyL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B22CA2075E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A9F116B9;
-	Tue, 25 Aug 2020 22:21:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A9F116B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 471AC16C3;
+	Tue, 25 Aug 2020 22:21:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 471AC16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598386925;
-	bh=X/rsSBsrp1CyURzzcODb4xr5RTYCmdchBo9XMpHhySQ=;
+	s=default; t=1598386964;
+	bh=szuNKAgkYT+TQfIGw71gUSENj7MHo65z1qImg5hqvgk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KVEe5h0qcxazk4X5QASufzqq7PKA384omDpwcnY5CcKZKSOhd/520SnpTrfXoSFe8
-	 UMYIm4nYyrDoobkeNOGHbG0wQZbE902DV/psn+vP8L4hBKvoJaJR6V6S/bjs9FwGqR
-	 Yzzxm3Zzo/F2I8mHNpr5e7crYMvVR7tYGVwvQLF0=
+	b=TqLIA/T9kxQWJ+LPz+UZZhtDVqr7o9yQCqJ/ebyoUxNObM27ZGH5d2iApZhDGVXh5
+	 4dl/VbFrR8zmSyHVVm6u9u03Jn3s+ZQDoW39TkboDsqq8+VPY6TjpRwX4tyJIf5cr6
+	 vRoBJVY1Kk76mvjyjBdbIV152zrQrY2KwKL93OnU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADDE1F8036C;
-	Tue, 25 Aug 2020 22:11:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD8A1F80370;
+	Tue, 25 Aug 2020 22:11:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06AC8F80328; Tue, 25 Aug 2020 22:11:41 +0200 (CEST)
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
- [IPv6:2607:f8b0:4864:20::744])
+ id 7210CF80335; Tue, 25 Aug 2020 22:11:43 +0200 (CEST)
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
+ [IPv6:2607:f8b0:4864:20::841])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E548F80328
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:11:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E548F80328
+ by alsa1.perex.cz (Postfix) with ESMTPS id 096D7F80329
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:11:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 096D7F80329
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="uMUpTd8p"
-Received: by mail-qk1-x744.google.com with SMTP id o64so6192945qkb.10
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 13:11:33 -0700 (PDT)
+ header.b="imQNwuyL"
+Received: by mail-qt1-x841.google.com with SMTP id k18so10004764qtm.10
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 13:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=k1da2fAV2EiQh7vVO93ek9apNvvMiSDZUgYoRcsPbOw=;
- b=uMUpTd8pIXKAsSyGriRx+OF2tXnJE4SsTtmcTL2ab7byJwIJ6/ecDegHY9Pl0hOLpC
- wzN1uqYrxzR1PRGExtXidxK5UHtORiW3sDl0hL6tP0HDeKMTN+y2A6XuTjOhY8/HWO8t
- 7cQupL5K7IJJevAS5DMJn05ug6aWBhh7VGApTwWBXiTeWKqV3fk/y9RheSySmyUjZwhO
- mi3RXnhr0EF/m1Y4NcRt8S698eFyse8nFwhGxI7JA0SbRItEyafv0zVZAfuiiC4Oq/Du
- vy4Q04Kb6dkQHkdJuiPxDzmfFhYTg/UOVUJmzyc5Qs1YTFUDF6rID/qHdJobMyGgNAyr
- yl5A==
+ bh=M8q6dm5mmw5Td1zETyvacyXoL82xchupi74RSawN6Ew=;
+ b=imQNwuyLRMz5z0nzGwpPGnvNRsiTUDsrlb+zOR2FcUlFwU250vFohtXoCv4nlWk+Wx
+ eTYcFbLTxBF8JzPhxleqYGePOa53egjh2l9A/4rS6xW4Rr9Z1VP1PadByPS9eex02Gfm
+ C1lfqMvVAAsHKiwsX1mSceREoHLK1Tc5b/NK3poSMbhDZPQigQgL91raIs6kRFwgZKZ1
+ upvFSlKAZuvFZ1vaweFxvMmxoeJrPKOS172nOqF7wZxnnJu4R+GdBbjCYzFn1TTeiQUP
+ 8Ta9i3hjBbm/m+aSulhS7O402Dy6kg03KjCGk2YS8x68Mngnko2geUs5ApYQsTcisz2x
+ 4hHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=k1da2fAV2EiQh7vVO93ek9apNvvMiSDZUgYoRcsPbOw=;
- b=qV+JjxkYjOWOlWPUVjAR/Aak7hbq/Hb+fdgZ/S4h8WqrqnnjDEpCevUaJWuj42UxZE
- ejP8VV3JnLLJpRqgyYITX3F18XZKmYWdOcPf3YhX93x6UW8+Jw+PueRqta0RzHw43GIH
- uB57Zzp/jm0larTGVZbmz9y+hg4W1b3eEeTdX1/Oev458/T2zvjzuUXNZd+KCw8Jzpin
- X/tkasZ70mNri9gBmHzufBlV6oy+RNU6WdPkLMhdXQD5+nnI4WRM8ew0vSllhuv0EvO1
- ZWoxN51ndy1k/dSywmvfyn6WmY31TT+w/AfeSI8BYxwZqjOz5f4+7LJZAT54zVVtXtRZ
- 3Cfg==
-X-Gm-Message-State: AOAM531/75NXzqRZpyYecUhyN3z+46ZKDTrIIlTvMF7ASH7jN6aBoqFE
- 4ufFGTq9vOAoD6tFFNzI9RU=
-X-Google-Smtp-Source: ABdhPJyKcp6cLMiFgvQ+YKy4tk4K8doRDATt69GDmP4uJ61BvaUEIrxKb+v4Ey7qixzGnWTmdsDuCA==
-X-Received: by 2002:a37:4856:: with SMTP id v83mr11203807qka.213.1598386293007; 
- Tue, 25 Aug 2020 13:11:33 -0700 (PDT)
+ bh=M8q6dm5mmw5Td1zETyvacyXoL82xchupi74RSawN6Ew=;
+ b=eVzJ+7TtSxBwCbBr/pfxMwueeSGDC2vpaggW9ySumrz24VPww5vncmUTl0Jrud30QL
+ Casf0iMlZWtvZFqiR+me5KuT4Gi5WHTwL6ArFcGFOiw4ylvXWtfauvpuVBtrfyEP34ds
+ AFATkXmkJh1QAWoJSYftnCavvvqIzcczEObqNAIzXqXHh1EOd8uTVp5zIxnSDfOmySlX
+ mTCjNCc3V4jAbBUXdkvRMn/Y/unyZXOo7RGv2TOyZw6u64t8QMBvHpgbQzzz7OteOSvT
+ OTD+ALtMAEgKi47TZfjj8pNRdxSRPc9SdI8UtNxsYtr9NKFqGdGKvGswiBPV8JQrbGUf
+ XvCw==
+X-Gm-Message-State: AOAM532T2uvF8FDgJ4vttix3L8BCG/QnMl2lWRvEQhCodSkDSxroeXpl
+ b81Bdf/5rlvjQjYPWIC58+o=
+X-Google-Smtp-Source: ABdhPJx39Ct45gM/LOal2j67L7+GsQQ64KOaqVJApGUDQWFazLfIF2VZeVgHVOeJe8XD/oYWuABbeA==
+X-Received: by 2002:ac8:5546:: with SMTP id o6mr10591181qtr.211.1598386296965; 
+ Tue, 25 Aug 2020 13:11:36 -0700 (PDT)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
  [71.65.111.223]) by smtp.googlemail.com with ESMTPSA id
- n23sm12453459qkk.105.2020.08.25.13.11.32
+ n23sm12453459qkk.105.2020.08.25.13.11.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 Aug 2020 13:11:32 -0700 (PDT)
+ Tue, 25 Aug 2020 13:11:36 -0700 (PDT)
 From: Connor McAdams <conmanx360@gmail.com>
 To: 
-Subject: [PATCH v2 17/20] ALSA: hda/ca0132 - Add output selection for
- SoundBlaster AE-7.
-Date: Tue, 25 Aug 2020 16:10:36 -0400
-Message-Id: <20200825201040.30339-18-conmanx360@gmail.com>
+Subject: [PATCH v2 19/20] ALSA: hda/ca0132 - Add AE-7 custom controls.
+Date: Tue, 25 Aug 2020 16:10:38 -0400
+Message-Id: <20200825201040.30339-20-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200825201040.30339-1-conmanx360@gmail.com>
 References: <20200825201040.30339-1-conmanx360@gmail.com>
@@ -112,143 +111,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add output selection quirk table information for SoundBlaster AE-7, and
-slightly modify the AE-5's ca0113 command table to accommodate the AE-7.
+Add headphone gain and DAC filter controls, which use the same commands
+as the AE-5. Also, change input source enumerated control item count to
+exclude front microphone.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 88 ++++++++++++++++++++++++++++--------
- 1 file changed, 68 insertions(+), 20 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 8519119ef7a6..dcc8d29d934c 100644
+index 8c6e38734489..52f6d3740e0a 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -727,22 +727,29 @@ static const struct ct_dsp_volume_ctl ca0132_alt_vol_ctls[] = {
- };
+@@ -5839,6 +5839,13 @@ static int ca0132_alt_input_source_put(struct snd_kcontrol *kcontrol,
+ 	int sel = ucontrol->value.enumerated.item[0];
+ 	unsigned int items = IN_SRC_NUM_OF_INPUTS;
  
- /* Values for ca0113_mmio_command_set for selecting output. */
--#define AE5_CA0113_OUT_SET_COMMANDS 6
--struct ae5_ca0113_output_set {
--	unsigned int group[AE5_CA0113_OUT_SET_COMMANDS];
--	unsigned int target[AE5_CA0113_OUT_SET_COMMANDS];
--	unsigned int vals[AE5_CA0113_OUT_SET_COMMANDS];
-+#define AE_CA0113_OUT_SET_COMMANDS 6
-+struct ae_ca0113_output_set {
-+	unsigned int group[AE_CA0113_OUT_SET_COMMANDS];
-+	unsigned int target[AE_CA0113_OUT_SET_COMMANDS];
-+	unsigned int vals[NUM_OF_OUTPUTS][AE_CA0113_OUT_SET_COMMANDS];
- };
- 
--static const struct ae5_ca0113_output_set ae5_ca0113_output_presets[] = {
--	{ .group =  { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
--	  .target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
--	  .vals =   { 0x00, 0x00, 0x40, 0x00, 0x00, 0x3f }
--	},
--	{ .group =  { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
--	  .target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
--	  .vals =   { 0x3f, 0x3f, 0x00, 0x00, 0x00, 0x00 }
--	}
-+static const struct ae_ca0113_output_set ae5_ca0113_output_presets = {
-+	.group =  { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
-+	.target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
-+		    /* Speakers. */
-+	.vals =   { { 0x00, 0x00, 0x40, 0x00, 0x00, 0x3f },
-+		    /* Headphones. */
-+		    { 0x3f, 0x3f, 0x00, 0x00, 0x00, 0x00 } },
-+};
++	/*
++	 * The AE-7 has no front microphone, so limit items to 2: rear mic and
++	 * line-in.
++	 */
++	if (ca0132_quirk(spec) == QUIRK_AE7)
++		items = 2;
 +
-+static const struct ae_ca0113_output_set ae7_ca0113_output_presets = {
-+	.group  = { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
-+	.target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
-+		    /* Speakers. */
-+	.vals   = { { 0x00, 0x00, 0x40, 0x00, 0x00, 0x3f },
-+		    /* Headphones. */
-+		    { 0x3f, 0x3f, 0x00, 0x00, 0x02, 0x00 } },
- };
+ 	if (sel >= items)
+ 		return 0;
  
- /* ae5 ca0113 command sequences to set headphone gain levels. */
-@@ -1427,6 +1434,41 @@ static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
- 		  .chipio_write_addr = 0x0018b03c,
- 		  .chipio_write_data = 0x00000012
- 		} },
-+	},
-+	{ .quirk_id = QUIRK_AE7,
-+	  .has_headphone_gain = true,
-+	  .is_ae_series       = true,
-+	  .out_set_info = {
-+		/* Speakers. */
-+		{ .dac2port          = 0x58,
-+		  .has_hda_gpio      = false,
-+		  .mmio_gpio_count   = 1,
-+		  .mmio_gpio_pin     = { 0 },
-+		  .mmio_gpio_set     = { 1 },
-+		  .scp_cmds_count    = 2,
-+		  .scp_cmd_mid       = { 0x96, 0x96 },
-+		  .scp_cmd_req       = { SPEAKER_TUNING_FRONT_LEFT_INVERT,
-+					 SPEAKER_TUNING_FRONT_RIGHT_INVERT },
-+		  .scp_cmd_val       = { FLOAT_ZERO, FLOAT_ZERO },
-+		  .has_chipio_write  = true,
-+		  .chipio_write_addr = 0x0018b03c,
-+		  .chipio_write_data = 0x00000000
-+		},
-+		/* Headphones. */
-+		{ .dac2port          = 0x58,
-+		  .has_hda_gpio      = false,
-+		  .mmio_gpio_count   = 1,
-+		  .mmio_gpio_pin     = { 0 },
-+		  .mmio_gpio_set     = { 1 },
-+		  .scp_cmds_count    = 2,
-+		  .scp_cmd_mid       = { 0x96, 0x96 },
-+		  .scp_cmd_req       = { SPEAKER_TUNING_FRONT_LEFT_INVERT,
-+					 SPEAKER_TUNING_FRONT_RIGHT_INVERT },
-+		  .scp_cmd_val       = { FLOAT_ONE, FLOAT_ONE },
-+		  .has_chipio_write  = true,
-+		  .chipio_write_addr = 0x0018b03c,
-+		  .chipio_write_data = 0x00000010
-+		} },
+@@ -7029,20 +7036,25 @@ static int ca0132_build_controls(struct hda_codec *codec)
+ 		}
  	}
- };
  
-@@ -4383,18 +4425,24 @@ static int ca0132_effects_set(struct hda_codec *codec, hda_nid_t nid, long val);
- static void ae5_mmio_select_out(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
-+	const struct ae_ca0113_output_set *out_cmds;
- 	unsigned int i;
- 
--	for (i = 0; i < AE5_CA0113_OUT_SET_COMMANDS; i++)
--		ca0113_mmio_command_set(codec,
--			ae5_ca0113_output_presets[spec->cur_out_type].group[i],
--			ae5_ca0113_output_presets[spec->cur_out_type].target[i],
--			ae5_ca0113_output_presets[spec->cur_out_type].vals[i]);
-+	if (ca0132_quirk(spec) == QUIRK_AE5)
-+		out_cmds = &ae5_ca0113_output_presets;
-+	else
-+		out_cmds = &ae7_ca0113_output_presets;
-+
-+	for (i = 0; i < AE_CA0113_OUT_SET_COMMANDS; i++)
-+		ca0113_mmio_command_set(codec, out_cmds->group[i],
-+				out_cmds->target[i],
-+				out_cmds->vals[spec->cur_out_type][i]);
- }
- 
- static int ca0132_alt_set_full_range_speaker(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
-+	int quirk = ca0132_quirk(spec);
- 	unsigned int tmp;
- 	int err;
- 
-@@ -4426,7 +4474,7 @@ static int ca0132_alt_set_full_range_speaker(struct hda_codec *codec)
- 	 * Only the AE series cards set this value when setting full-range,
- 	 * and it's always 1.0f.
- 	 */
 -	if (ca0132_quirk(spec) == QUIRK_AE5) {
-+	if (quirk == QUIRK_AE5 || quirk == QUIRK_AE7) {
- 		err = dspio_set_uint_param(codec, 0x96,
- 				SPEAKER_FULL_RANGE_SURROUND_L_R, FLOAT_ONE);
++	switch (ca0132_quirk(spec)) {
++	case QUIRK_AE5:
++	case QUIRK_AE7:
+ 		err = ae5_add_headphone_gain_enum(codec);
  		if (err < 0)
+ 			return err;
+ 		err = ae5_add_sound_filter_enum(codec);
+ 		if (err < 0)
+ 			return err;
+-	}
+-
+-	if (ca0132_quirk(spec) == QUIRK_ZXR) {
++		break;
++	case QUIRK_ZXR:
+ 		err = zxr_add_headphone_gain_switch(codec);
+ 		if (err < 0)
+ 			return err;
++		break;
++	default:
++		break;
+ 	}
++
+ #ifdef ENABLE_TUNING_CONTROLS
+ 	add_tuning_ctls(codec);
+ #endif
 -- 
 2.20.1
 
