@@ -1,60 +1,63 @@
-Return-Path: <SRS0=/b47=CC=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0468C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 23:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A25FC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:09:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BD8F2074D
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2020 23:40:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE463206BE
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:09:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q9DbBWJZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BD8F2074D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hy89+9Eg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE463206BE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE6951671;
-	Tue, 25 Aug 2020 01:40:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE6951671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85F8315F9;
+	Tue, 25 Aug 2020 02:09:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85F8315F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598312453;
-	bh=Ekn/hTkj2ysA4B6ea+I7h5n6fK7+xgS736dTTydJYD4=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Q9DbBWJZ2yGOLkDYsNhZAws2k3VHQeJSgWfmpUHu04YCs4HpgT2SOWPJCe9B9ui0s
-	 zoWbRfgoCeMoWOBxY3oYQ+Yho6j10NSLHtgOxXgg6pvajd7lAHXERy2CmIK17c5Om+
-	 f8sq9KomBS0htsbiZtaozAqOWaaVslVxL+1MDx7g=
+	s=default; t=1598314197;
+	bh=QrYykrs94ZbJ52EQOLPWijxbrfKuz4Jiy1e/KC791so=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Hy89+9Eg/jUB0yANIV7PqedTE9pcymJFpUU02KTVeA1/DO11uba1251cVB3Q8av6L
+	 1unE00UAhJiCTmOUBqJc2JjP3qGxvwM0gy1przDpJ4T5qUG9vxCfD+0igXqAuMP3mI
+	 /VXa9m1/ejHWwJn8hUd0CVvnLqexG6vawMavjXoc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72F6FF801F2;
-	Tue, 25 Aug 2020 01:39:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1594FF800EB;
+	Tue, 25 Aug 2020 02:09:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AED1F801F2; Tue, 25 Aug 2020 01:39:31 +0200 (CEST)
+ id 23978F801D9; Tue, 25 Aug 2020 02:09:05 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A613CF800B8
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 01:39:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A613CF800B8
-Date: 25 Aug 2020 08:39:24 +0900
-X-IronPort-AV: E=Sophos;i="5.76,350,1592838000"; d="scan'208";a="55410325"
+ by alsa1.perex.cz (Postfix) with ESMTP id 6E9B8F800EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 02:08:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E9B8F800EB
+Date: 25 Aug 2020 09:08:54 +0900
+X-IronPort-AV: E=Sophos;i="5.76,350,1592838000"; d="scan'208";a="55413193"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 08:39:24 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 09:08:54 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 30C1E40065D7;
- Tue, 25 Aug 2020 08:39:24 +0900 (JST)
-Message-ID: <87a6yjy5sy.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CA2DC4008549;
+ Tue, 25 Aug 2020 09:08:54 +0900 (JST)
+Message-ID: <878se3y4fs.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: pcm3168a: ignore 0 Hz settings
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ti: fixup ams_delta_mute() function name
+In-Reply-To: <87blizy5ts.wl-kuninori.morimoto.gx@renesas.com>
+References: <87blizy5ts.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -74,34 +77,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi Mark
 
-Some sound card try to set 0 Hz as reset, but it is impossible.
-This patch ignores it to avoid error return.
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> commit 059374fe9ea5d ("ASoC: ti: merge .digital_mute() into .mute_stream()")
+> merged .digital_mute() into .mute_stream().
+> But it didn't rename ams_delta_digital_mute() to ams_delta_mute().
+> This patch fixup it.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This is for mark/for-5.9
+
+
+Thank you for your help !!
+
+Best regards
 ---
- sound/soc/codecs/pcm3168a.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 9711fab296eb..045c6f8b26be 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -306,6 +306,13 @@ static int pcm3168a_set_dai_sysclk(struct snd_soc_dai *dai,
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(dai->component);
- 	int ret;
- 
-+	/*
-+	 * Some sound card sets 0 Hz as reset,
-+	 * but it is impossible to set. Ignore it here
-+	 */
-+	if (freq == 0)
-+		return 0;
-+
- 	if (freq > PCM3168A_MAX_SYSCLK)
- 		return -EINVAL;
- 
--- 
-2.25.1
-
+Kuninori Morimoto
