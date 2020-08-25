@@ -2,93 +2,95 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 112C2C433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5E47C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:32:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8FCD620706
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:27:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5049420737
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 05:32:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pOyRrOVh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="Kc7jwu05"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FCD620706
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mGBmOT5O";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="fmYwSvJG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5049420737
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 288541689;
-	Tue, 25 Aug 2020 07:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 288541689
+	by alsa0.perex.cz (Postfix) with ESMTPS id C89C81654;
+	Tue, 25 Aug 2020 07:31:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C89C81654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598333235;
-	bh=iKo3IAGGJK6KjDfpaY/VYjfFIt9Mk8dJII+i+B8JoNc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1598333546;
+	bh=BJgbKeXdgr54DuT8yzrbCAfJsLcJAibFpHpcGbx67pg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pOyRrOVhc7q6GEE+DFirxaQfR0OYonJ+Wm0DjkC+4h8DK6p6JvmNdvPUEMJMAnM7w
-	 tU1naY1sAcEk81bUr1dlRgvRkP6AG9JAsbrZsQl4e0aZwHr1aqLXDS/LDIe0cuEAef
-	 1ZsbwxfL/a4Wo1YYa4nJZ3QKkk+lBzujddJMFFQk=
+	b=mGBmOT5OBVma3GOHmENuDBN6oP/FzMYRL8O2G62T1yzJVe7E3hngNr2Kb59OiLXbg
+	 TqqWCQ7Q0hKd1KjQpjhx8XneLuw0mU/hjRK9zK2Kdi4nGNNg8+ATh9VSXqw3KgZkKl
+	 naRPc3dRwh2cm97JjcNZwP65JqAtbHiznDWu9Mkk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81D56F8028A;
-	Tue, 25 Aug 2020 07:24:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49D76F800EB;
+	Tue, 25 Aug 2020 07:31:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D11ACF802BC; Tue, 25 Aug 2020 07:24:46 +0200 (CEST)
+ id 7BC44F8025A; Tue, 25 Aug 2020 07:31:34 +0200 (CEST)
 Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
  [216.228.121.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47F9CF80245
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 07:24:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47F9CF80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id 443EAF800EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 07:31:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 443EAF800EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="Kc7jwu05"
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
+ header.b="fmYwSvJG"
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
  hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5f44a0510000>; Mon, 24 Aug 2020 22:23:29 -0700
+ id <B5f44a1eb0001>; Mon, 24 Aug 2020 22:30:19 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate102.nvidia.com (PGP Universal service);
- Mon, 24 Aug 2020 22:24:31 -0700
+ by hqpgpgate101.nvidia.com (PGP Universal service);
+ Mon, 24 Aug 2020 22:31:21 -0700
 X-PGP-Universal: processed;
- by hqpgpgate102.nvidia.com on Mon, 24 Aug 2020 22:24:31 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug
- 2020 05:24:30 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 25 Aug 2020 05:24:30 +0000
-Received: from mkumard.nvidia.com (Not Verified[10.24.34.162]) by
- hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
- id <B5f44a08c0002>; Mon, 24 Aug 2020 22:24:30 -0700
-From: Mohan Kumar <mkumard@nvidia.com>
-To: <tiwai@suse.com>, <aplattner@nvidia.com>, <spujar@nvidia.com>
-Subject: [PATCH 1/2] ALSA: hda: Fix 2 channel swapping for Tegra
-Date: Tue, 25 Aug 2020 10:54:14 +0530
-Message-ID: <20200825052415.20626-2-mkumard@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200825052415.20626-1-mkumard@nvidia.com>
+ by hqpgpgate101.nvidia.com on Mon, 24 Aug 2020 22:31:21 -0700
+Received: from [10.25.97.151] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug
+ 2020 05:31:18 +0000
+Subject: Re: [PATCH 0/2] Tegra HDA specific fixes
+To: Mohan Kumar <mkumard@nvidia.com>, <tiwai@suse.com>, <aplattner@nvidia.com>
 References: <20200825052415.20626-1-mkumard@nvidia.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <93744a6d-843a-0e8c-d0d1-d0d7e9a8458c@nvidia.com>
+Date: Tue, 25 Aug 2020 11:01:15 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200825052415.20626-1-mkumard@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1598333009; bh=a5QUmoqtIdKI1HCFjXoyAjuO2g0uZRGOpFekUri+6Uo=;
- h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
- In-Reply-To:References:MIME-Version:Content-Type;
- b=Kc7jwu05vAO5eUQTavB+uV/tcJuuROZvTEvr85O0yZCbd+ipdmPBh9Sap3ikj8mvF
- 2PXzV9jocAPzg2h+KrGp38++dU2b8KXu2BdLOpqdGKUmApx1aRqeeJlgofJoEaKd0W
- 69Vwb+lbjw115eFCyOWFHRNY/L3OAJ9h4uVbIT6IWlkdDbyIU1FfE/kpccxGgzQxKP
- q5G6pkK8RqHCnBE7BZK9qYtVkb4kbMoTHwJs5tWJu1RSI8BPvBet1x6hp2Y1u1Boa0
- ZaPa1YoVUQygaA2c+dmrquL4/xI50vL0vRjpie0LNL03VNS494+HhJUpy4VdrAqPNv
- XMRDmW1qWy9pw==
+ t=1598333419; bh=1BROby4DFgEOnZO+X7W4iJVTRoHH6abe5JWVienKd/w=;
+ h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+ Content-Language;
+ b=fmYwSvJGjPtEYF5C3cCrKfID+I/9d6nlOuFBHBU4SGlzw3RAeVcoc/8Yf6tSzFsjp
+ 4cwWyNg2VCLLPZ0Uu2BVVopbhqtO4A0VGhOm2FpnmCttNheK6KjPG6YoNCovDqtben
+ olBwkgG13hOlBDV+XYWV2RSNtRteCqCSmkTyrpku+5dYN/frb4sQa0xxMKj0XmCpGJ
+ AvG0XnrUxhIJxpREtl+9BW33TJg8aCFNjq04iFdCryB4V20kZU+I6uGVnR7NG5wB9o
+ gVAURQ2+UOcKDBNCv0lewUQzpGxG/lemdbCkDhuVlepjqXK0hYhOBHlALg/BZ0xMWw
+ DoY14Rbatkhrw==
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- treding@nvidia.com, Mohan Kumar <mkumard@nvidia.com>, jonathanh@nvidia.com
+ treding@nvidia.com, jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,40 +106,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Tegra HDA codec HW implementation has an issue related to not
-swapping the 2 channel Audio Sample Packet(ASP) channel mapping.
-Whatever the FL and FR mapping specified the left channel always
-comes out of left speaker and right channel on right speaker. So
-add condition to disallow the swapping of FL,FR during the playback.
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
----
- sound/pci/hda/patch_hdmi.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index b8c8490e568b..3259d713ace9 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -3734,6 +3734,7 @@ static int tegra_hdmi_build_pcms(struct hda_codec *codec)
- 
- static int patch_tegra_hdmi(struct hda_codec *codec)
- {
-+	struct hdmi_spec *spec;
- 	int err;
- 
- 	err = patch_generic_hdmi(codec);
-@@ -3741,6 +3742,10 @@ static int patch_tegra_hdmi(struct hda_codec *codec)
- 		return err;
- 
- 	codec->patch_ops.build_pcms = tegra_hdmi_build_pcms;
-+	spec = codec->spec;
-+	spec->chmap.ops.chmap_cea_alloc_validate_get_type =
-+		nvhdmi_chmap_cea_alloc_validate_get_type;
-+	spec->chmap.ops.chmap_validate = nvhdmi_chmap_validate;
- 
- 	return 0;
- }
--- 
-2.17.1
+> This series has the fix for
+> - 2 Channel swapping issue for Tegra
+> - WAKEEN programming to detect wake events.
+>
+> Mohan Kumar (2):
+>    ALSA: hda: Fix 2 channel swapping for Tegra
+>    ALSA: hda/tegra: Program WAKEEN register for Tegra
+>
+>   sound/pci/hda/hda_tegra.c  | 7 +++++++
+>   sound/pci/hda/patch_hdmi.c | 5 +++++
+>   2 files changed, 12 insertions(+)
+>
+Acked-by: Sameer Pujar <spujar@nvidia.com>
 
