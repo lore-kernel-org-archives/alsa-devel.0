@@ -2,67 +2,68 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2476DC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:16:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D061C433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 01:00:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7DCF2074D
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:16:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63CED20882
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 01:00:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TzBtkMBD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7DCF2074D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S3x4bGII"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63CED20882
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DAD41654;
-	Tue, 25 Aug 2020 02:16:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DAD41654
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE3F11654;
+	Tue, 25 Aug 2020 02:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE3F11654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598314615;
-	bh=XvoDxoNcveHtwPfmn/cOFV6XxPiW7e6YPcdF4VqOcYA=;
+	s=default; t=1598317218;
+	bh=GRYHfhZtNlgelMVgf5KVybijAk8NIr+X0kc/i7nBvWE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TzBtkMBDfxJKUBl3NK48aOdpzCG4hh0EImCnwKRt20pQyoi37nonl/OuvJ1fccuMJ
-	 hE304oeBEOOvJiT3owx0GLij2BXI7Wgr5SNQw6vmobipNLJhU4hkCeui5NvaqmIGm9
-	 ZwZwx8th1QyIC92WyLj9a5M3uzDYRqlYm+Vk9+Bk=
+	b=S3x4bGIIaYmsij0Sx6F6muHxqczNg8kKC6nseadwox/9r4In5zp6uRYU9hiX9WkCL
+	 0GeG7ioKw/Tbl5VDAjD2297ZikAdSi29cpfMdZz/B4Bcasj45rW+iChdnIsf6sfykD
+	 hPalgmZ5sZXCLpD6hGLG/2A9Ha5m/mcxF4SbDfhs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A11F5F8016F;
-	Tue, 25 Aug 2020 02:16:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EF93F8016F;
+	Tue, 25 Aug 2020 02:59:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D352F801D9; Tue, 25 Aug 2020 02:16:03 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 97971F800B8
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 02:15:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97971F800B8
-Date: 25 Aug 2020 09:15:51 +0900
-X-IronPort-AV: E=Sophos;i="5.76,350,1592838000"; d="scan'208";a="55197212"
+ id 51644F801D9; Tue, 25 Aug 2020 02:59:27 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1BF81F800B8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 02:59:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BF81F800B8
+Date: 25 Aug 2020 09:59:16 +0900
+X-IronPort-AV: E=Sophos;i="5.76,350,1592838000"; d="scan'208";a="55418378"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 25 Aug 2020 09:15:51 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 09:59:16 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 192BC4007522;
- Tue, 25 Aug 2020 09:15:51 +0900 (JST)
-Message-ID: <875z97y448.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 362A04005167;
+ Tue, 25 Aug 2020 09:59:16 +0900 (JST)
+Message-ID: <87364by23u.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-core: move snd_soc_dai_link_set_capabilities()
- to soc-core.c
-In-Reply-To: <87tux0fujp.wl-kuninori.morimoto.gx@renesas.com>
-References: <87tux0fujp.wl-kuninori.morimoto.gx@renesas.com>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: More Generic Audio Graph Sound Card idea
+In-Reply-To: <58220f32-0b3e-d666-5bb0-bbeae27f6aab@nvidia.com>
+References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
+ <20200821121844.GF4870@sirena.org.uk>
+ <878se4zybn.wl-kuninori.morimoto.gx@renesas.com>
+ <58220f32-0b3e-d666-5bb0-bbeae27f6aab@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,40 +80,39 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+Hi Sameer
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> The series [0] introduces small deltas to resolve issues I am
+> facing. As you see, most of the implementation is unchanged for the
+> graph-card driver. Hence I am not sure if we need a new driver now.
+
+Yes, maybe it is not needed *for now*, but will be issue in the future,
+because I can't have normal-link and DPCM-link in the same time, right ?
+
+> at all it gets complicated in future, the "-cc-" compatible can be
+> moved to new driver? Please note that the new "-cc-" compatibility is
+> added to address following and some of these are discussed in [1].
+> - DPCM usage with component model (where there can be N number of
+> components available and M (<= N) of them can be connected together to
+> form an audio path). For example the path would be like,
+> FE -> BE_1 -> BE_2 -> ... -> BE_M.
+> - I am extending dpcm_path_get() for this reason and DAI ops get
+> called for all connected components.
 > 
-> commit 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-> added snd_soc_dai_link_set_capabilities().
-> But it is using snd_soc_find_dai() (A) which is required client_mutex (B).
-> And client_mutex is soc-core.c local.
-(snip)
-> Because not only snd_soc_dai_link_set_capabilities() but many drivers
-> are already using snd_soc_find_dai(),
-> 1st idea for this issue was creating snd_soc_find_dai() of
-> _with_mutex / _without_mutex, but it was not enough and/or confusable.
-> 
-> soc-dai.c which is implemented snd_soc_dai_link_set_capabilities() currently is
-> mainly for snd_soc_dai related functions, not for snd_soc_dai_link.
-> Thus as 2nd idea, this patch moves snd_soc_dai_link_set_capabilities()
-> from soc-dai.c to soc-core.c, and use mutex_lock().
-> 
-> Fixes: 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
+> [0] https://lkml.org/lkml/2020/8/5/42
+> [1] https://lkml.org/lkml/2020/4/30/519
 
-This is for mark/for-5.9, but I noticed that
-your for-5.9 branch doesn't have this commit
+The difference between "-cc" and "card2" is DPCM link detection.
+"-cc-"  will assume all are DPCM link,
+"card2" will detect both normal-link and DPCM-link via DT.
 
-	4f8721542f7b75954bfad98c51aa59d683d35b50
-	("ASoC: core: use less strict tests for dailink capabilities")
+But, I guess new driver 1st version is focus to
+detecting normal-link and DPCM-link only.
 
-But, linus/master (= v5.9-rc2) has it.
-And I noticed that your for-5.10 branch has it.
-
-Which branch should I use for linus/master (= v5.9-rcX) ?
-
+This means it is not enough for your case,
+because I can't full reproduce your board/situation.
+Maybe you need some extra patch on "card2"
+which "-cc-" added to soc-xxx.c
 
 Thank you for your help !!
 
