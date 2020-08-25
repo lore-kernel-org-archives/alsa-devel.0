@@ -7,56 +7,58 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0E6C433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:10:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2476DC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:16:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EFDDA207D3
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:10:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A7DCF2074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 00:16:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h5anSuP+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFDDA207D3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TzBtkMBD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7DCF2074D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6851B1661;
-	Tue, 25 Aug 2020 02:10:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6851B1661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DAD41654;
+	Tue, 25 Aug 2020 02:16:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DAD41654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598314250;
-	bh=KMBjfS9xasA9vNSnEGv+T2rZJnS0e9wII9dqUc8Itkc=;
+	s=default; t=1598314615;
+	bh=XvoDxoNcveHtwPfmn/cOFV6XxPiW7e6YPcdF4VqOcYA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h5anSuP+aojt1PUhafWX1JWm8rlICuPgNPH4bpeWwirz8Rn7c7/0faujtv2XcJPnT
-	 tgBL1wjIZ2KauIWkzNP2DSnfisEVPAKD95eE8ujIUFKMgPoLzH3I4OgE+d8ZP69a4t
-	 EBGxsdNZ/GvFFySEpVeao0djIYdsPiF/t103p2gA=
+	b=TzBtkMBDfxJKUBl3NK48aOdpzCG4hh0EImCnwKRt20pQyoi37nonl/OuvJ1fccuMJ
+	 hE304oeBEOOvJiT3owx0GLij2BXI7Wgr5SNQw6vmobipNLJhU4hkCeui5NvaqmIGm9
+	 ZwZwx8th1QyIC92WyLj9a5M3uzDYRqlYm+Vk9+Bk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CDB2F800B8;
-	Tue, 25 Aug 2020 02:09:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A11F5F8016F;
+	Tue, 25 Aug 2020 02:16:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD734F8020C; Tue, 25 Aug 2020 02:09:21 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 8FAE2F8016F
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 02:09:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FAE2F8016F
-Date: 25 Aug 2020 09:09:16 +0900
-X-IronPort-AV: E=Sophos;i="5.76,350,1592838000"; d="scan'208";a="55413236"
+ id 1D352F801D9; Tue, 25 Aug 2020 02:16:03 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 97971F800B8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 02:15:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97971F800B8
+Date: 25 Aug 2020 09:15:51 +0900
+X-IronPort-AV: E=Sophos;i="5.76,350,1592838000"; d="scan'208";a="55197212"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 09:09:16 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 25 Aug 2020 09:15:51 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 91DA24007522;
- Tue, 25 Aug 2020 09:09:16 +0900 (JST)
-Message-ID: <877dtny4f6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 192BC4007522;
+ Tue, 25 Aug 2020 09:15:51 +0900 (JST)
+Message-ID: <875z97y448.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm3168a: ignore 0 Hz settings
-In-Reply-To: <87a6yjy5sy.wl-kuninori.morimoto.gx@renesas.com>
-References: <87a6yjy5sy.wl-kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-core: move snd_soc_dai_link_set_capabilities()
+ to soc-core.c
+In-Reply-To: <87tux0fujp.wl-kuninori.morimoto.gx@renesas.com>
+References: <87tux0fujp.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -81,13 +83,35 @@ Hi Mark
 
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> Some sound card try to set 0 Hz as reset, but it is impossible.
-> This patch ignores it to avoid error return.
+> commit 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
+> added snd_soc_dai_link_set_capabilities().
+> But it is using snd_soc_find_dai() (A) which is required client_mutex (B).
+> And client_mutex is soc-core.c local.
+(snip)
+> Because not only snd_soc_dai_link_set_capabilities() but many drivers
+> are already using snd_soc_find_dai(),
+> 1st idea for this issue was creating snd_soc_find_dai() of
+> _with_mutex / _without_mutex, but it was not enough and/or confusable.
 > 
+> soc-dai.c which is implemented snd_soc_dai_link_set_capabilities() currently is
+> mainly for snd_soc_dai related functions, not for snd_soc_dai_link.
+> Thus as 2nd idea, this patch moves snd_soc_dai_link_set_capabilities()
+> from soc-dai.c to soc-core.c, and use mutex_lock().
+> 
+> Fixes: 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
 
-This is for mark/for-5.9
+This is for mark/for-5.9, but I noticed that
+your for-5.9 branch doesn't have this commit
+
+	4f8721542f7b75954bfad98c51aa59d683d35b50
+	("ASoC: core: use less strict tests for dailink capabilities")
+
+But, linus/master (= v5.9-rc2) has it.
+And I noticed that your for-5.10 branch has it.
+
+Which branch should I use for linus/master (= v5.9-rcX) ?
 
 
 Thank you for your help !!
