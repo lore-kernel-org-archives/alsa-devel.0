@@ -6,70 +6,74 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8BD5C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 06:36:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 929C0C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 06:47:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 059C12071E
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 06:36:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0DB142076C
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 06:47:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jayY4qq9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 059C12071E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kz+8DDDm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DB142076C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78D811607;
-	Tue, 25 Aug 2020 08:35:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78D811607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FB0E1607;
+	Tue, 25 Aug 2020 08:46:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FB0E1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598337380;
-	bh=1GLYZmwFtPNsr94cu8cGFtqv4t2cu+UACZtf0Fr8nX4=;
+	s=default; t=1598338022;
+	bh=/62Jkd5HkB+OSMgGoh2PlMjJHbUnuO5vVnZAnF8cUhE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jayY4qq9VvyRIjNuR2/5wsF5ob3W+DLRXH8RiTxUFpXrURL9VSkbzJlxaxj6REdl6
-	 ogJTpW496DWlNpSLl/ERzBlYVi+PiRItJuNw7wT4a3jloc+vcYoipYaHjgYvgaeJXH
-	 U1v2Wpnf6vZqf3KCl4t42MFevaZoG3H6uNYqYtj4=
+	b=Kz+8DDDmwAmYd6zAoSt4vOLO1oR17kEAWKxXET91FvR029IB3BnxFWT7b0+8TqWI0
+	 VnSrlrtg+jhWitoipqBzz9tR0sd7AgJr7Pg2alvNh/e520oPB84PEsC7K1yYO4I/aS
+	 iw/fWEw3Vp1pkrTvodt83Y6pCXeh8XTqYhfJM+WU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 093A6F80245;
-	Tue, 25 Aug 2020 08:35:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E08B2F80245;
+	Tue, 25 Aug 2020 08:46:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2A59F8025A; Tue, 25 Aug 2020 08:35:28 +0200 (CEST)
+ id 25E0BF8025A; Tue, 25 Aug 2020 08:46:10 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id EDA77F800D1
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 08:35:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDA77F800D1
-Date: 25 Aug 2020 15:35:18 +0900
-X-IronPort-AV: E=Sophos;i="5.76,351,1592838000"; d="scan'208";a="55452532"
+ by alsa1.perex.cz (Postfix) with ESMTP id 4FD9EF800EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 08:46:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FD9EF800EB
+Date: 25 Aug 2020 15:46:00 +0900
+X-IronPort-AV: E=Sophos;i="5.76,351,1592838000"; d="scan'208";a="55453648"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 15:35:18 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 15:46:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id F15104004BBE;
- Tue, 25 Aug 2020 15:35:17 +0900 (JST)
-Message-ID: <87mu2jw7zd.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0A3D14002C14;
+ Tue, 25 Aug 2020 15:46:00 +0900 (JST)
+Message-ID: <87lfi3w7hj.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: More Generic Audio Graph Sound Card idea
-In-Reply-To: <2d9140c7-7cba-34d9-d4b7-c9f9f395d9e7@nvidia.com>
-References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
- <20200821121844.GF4870@sirena.org.uk>
- <878se4zybn.wl-kuninori.morimoto.gx@renesas.com>
- <58220f32-0b3e-d666-5bb0-bbeae27f6aab@nvidia.com>
- <87364by23u.wl-kuninori.morimoto.gx@renesas.com>
- <e6e04e2c-2695-b7ba-3eb2-79158f317e4a@nvidia.com>
- <87r1rvwbsd.wl-kuninori.morimoto.gx@renesas.com>
- <2d9140c7-7cba-34d9-d4b7-c9f9f395d9e7@nvidia.com>
+Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
+ DPCM
+In-Reply-To: <e9698ac3-0a2e-08a2-3f78-b0be0069d6ee@nvidia.com>
+References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
+ <1596605064-27748-4-git-send-email-spujar@nvidia.com>
+ <87pn7ofs19.wl-kuninori.morimoto.gx@renesas.com>
+ <97f325a6-96cc-11c5-8027-8c0a159e3da0@nvidia.com>
+ <2d3aa11e-3c56-1f7a-3d41-2457f973d55b@nvidia.com>
+ <87sgcbwcnf.wl-kuninori.morimoto.gx@renesas.com>
+ <14691a05-cb29-a030-0e72-eca900d8eb7e@nvidia.com>
+ <87o8mzwajg.wl-kuninori.morimoto.gx@renesas.com>
+ <e9698ac3-0a2e-08a2-3f78-b0be0069d6ee@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: sharadg@nvidia.com, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- jonathanh@nvidia.com
+Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
+ atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
+ nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
+ viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
+ thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
+ mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,145 +92,23 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-> If we plan to go this way, I think we need to consider board specific
-> configuration at init time and one at runtime. In that case there
-> could be multiple compatibles that would get added to the driver and
-> various other requirements can be managed with behavioral flags
-> instead from DT?
+> > Other solution is create both snd_soc_find_dai_with_mutex()/without_mutex().
+> > I'm not sure which style is best.
+> 
+> I don't know how complex it is to have a unified solution. But if we
+> can protect snd_soc_find_dai() itself, things would be simpler may be
+> in long term. Right now there are separate source files for soc-core,
+> soc-dai and soc-component, but because of two approaches looks like
+> the function need to be moved around and need to be placed in
+> soc-core. Also the issue might go unnoticed if LOCKDEP is not enabled.
+> 
+> May be start with a wrapper for now and eventually unify?
 
-This is still just idea though...
-But for example, if you want to
-	1) basically, DT is almost audio-graph
-	2) but want to have customized operation for some part
-
-And if "audio-graph-card2" driver has graph_init() exported function,
-you can create your own drviver, and use customized audio-graph
-by using .hooks.
-
-This is just idea/sample, but I'm not sure this is enough or not,
-and/or if I can do what I want.
-But do you think it can solve your issue ?
-
--- own driver ---
-	static const struct of_device_id graph_of_match[] = {
-=>		{ .compatible = "sameer-audio-graph" },
-		{},
-	};
-
-	static audio_graph_hooks hooks = {
-		.parse_of_hook_pre  = xxx,
-=>		.parse_of_hook_post = sameer_parse_of_post,
-		.dai_link_of_pre    = xxx,
-		.dai_link_of_post   = xxx,
-=>		.init               = sameer_init,
-		...
-	};
-
-=>	int sameer_init(struct snd_soc_pcm_runtime *rtd)
-	{
-		/*
-		 * This will be called runtime init timing.
-		 * Call original asoc_simple_dai_init() first
-		 * and do own init, for example.
-		 */
-		asoc_simple_dai_init(rtd);
-
-		do_something_own_settings(rtd->xxx);
-	}
-
-=>	static int sameer_parse_of_post(struct asoc_simple_priv *priv)
-	{
-		struct sameer_priv *my_priv = graph_priv_to_my_priv(priv);
-
-		/*
-		 * This will be called after audio_graph's graph_parse_of()
-		 */
-
-		/*
-		 * Customize own settings here.
-		 *
-		 * Special connection ?
-		 * Special Setings ?
-		 * Calculate something ?
-		 * Overwrite something ?
-		 */
-	}
-
-	static int sameer_probe(...)
-	{
-		struct sameer_priv *my_priv;
-		struct asoc_simple_priv *graph_priv;
-
-		my_priv = zalloc();
-		graph_priv = my_priv_to_graph_priv(my_priv);
-=>		graph_priv->hooks = hooks
-
-		/*
-		 * Basically, it will do same as audio_graph,
-		 * but .hooks will be called if you specified
-		 */
-=>		return graph_init(graph_priv);
-	}
-
---- Kconfig ----
-
-	config SND_SAMEER_AUDIO_GRAPH_CARD
-		tristate "Sameer's Audio Graph sound card support"
-=>		depends on SND_AUDIO_GRAPH_CARD
-		...
-
----- my-dt ----------
-
-	  /*
-	   * DT setting is almost same as audio_graph
-	   * which is supporting normal and DPCM.
-	   * You can add own property which will be handled under .hook
-	   */
-	                      *************
-	  PCM0 <------------> *           * <----DAI0----->
-	                      *  DSP      *
-	                      *           * <----DAI1----->
-	                      *************
-	  PCM1 <------------------------------------------> DAI2
-
-		sound {
-			compatible = "sameer-audio-graph";
-
-			dais = <&PCM0,	/* for DPCM */
-				&PCM1>  /* for normal*/
-		};
-
-		front-end {
-			ports {
-				PCM0: port@0 { pcm0: endpoint { remote-endpoint = <&dsp_f0>; }; };
-				PCM1: port@1 { pcm1: endpoint { remote-endpoint = <&dai2>; }; };
-			};
-		};
-
-		dsp {
-			compatible = "audio-graph-card2-dsp";
-
-			ports {
-				/* Front End side */
-				port@0 { dsp_f0: endpoint { remote-endpoint = <&pcm0>; }; };
-
-				/* Back End side */
-				port@4 { dsp_b0: endpoint { remote-endpoint = <&dai0>; }; };
-				port@5 { dsp_b1: endpoint { remote-endpoint = <&dai1>; }; };
-			};
-		};
-
-		back-end {
-			ports {
-				port@0 { dai0: endpoint { remote-endpoint = <&dsp_b0>; }; };
-				port@1 { dai1: endpoint { remote-endpoint = <&dsp_b1>; }; };
-			};
-		};
-
-		codec {
-			port { dai2: endpoint { remote-endpoint = <&pcm1>; }; };
-		};
-
+Yeah, it seems has _with_mutex() can be better idea.
+I'm posting patch, but I noticed that Mark's branch vs Linus branch
+have some mismatch (?), and now I'm asking it to him.
+I can post _with_mutex() version as v2 if I could get answer.
+After that I'm happy your next patch can re-use it.
 
 Thank you for your help !!
 
