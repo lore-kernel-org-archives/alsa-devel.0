@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B94BBC433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:28:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EFF5C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:37:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50B872071E
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:28:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12A5C204FD
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:37:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mTVXj5sW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50B872071E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BzMNAxTh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12A5C204FD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE9A71654;
-	Tue, 25 Aug 2020 09:27:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE9A71654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DCD11654;
+	Tue, 25 Aug 2020 09:36:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DCD11654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598340529;
-	bh=/95ap4m6aAwEyq+jDAxNf0lu+mySFNXu2uj8a9CmtD0=;
+	s=default; t=1598341048;
+	bh=NADCfzTqJwW6NLestjahrwKtAbpJWO5eBWJgd2mrdmk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mTVXj5sWj9hbZzs50w6gpyKXrp3wuw9+m89+L7LswhIfVwOihi9x6VW7JetvWI+uA
-	 9r1oEiyv7zRJGcFEew5hm3O85GLv0JdNJZ92zQQYjOBfmCD2IMa30c4u/MeuKJnKwy
-	 jlWYokUI6lBjuiA9VnPY6Qv6uf9YeWlhdU7wsvEw=
+	b=BzMNAxThzG5r8omYdxi4wDQnx1y12j4aN5g++wlHte//G0SL10ifgN0WAYrA90SY3
+	 Tg+6aMemLanZtTO/keHt38RMWkglj0/xKm0dVHVaprK8bMjq7I2HZnshj/aGNWTadp
+	 wgpIqzJOBMYVa3zeOXue2nHFp8BvXZPiVMUAln0A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45FABF80245;
-	Tue, 25 Aug 2020 09:27:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE63CF8025A;
+	Tue, 25 Aug 2020 09:36:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F4108F8025A; Tue, 25 Aug 2020 09:27:55 +0200 (CEST)
+ id 9C99BF8025A; Tue, 25 Aug 2020 09:36:34 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 064C0F800EB
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 09:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 064C0F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 928B6F800EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 09:36:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 928B6F800EB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 51AE1AC24;
- Tue, 25 Aug 2020 07:28:15 +0000 (UTC)
-Date: Tue, 25 Aug 2020 09:27:44 +0200
-Message-ID: <s5himd76v7z.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6BEC0AC24;
+ Tue, 25 Aug 2020 07:36:54 +0000 (UTC)
+Date: Tue, 25 Aug 2020 09:36:23 +0200
+Message-ID: <s5heenv6utk.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Tong Zhang <ztong0001@gmail.com>
-Subject: Re: [PATCH] ALSA: ca0106: fix error code handling
-In-Reply-To: <20200824224541.1260307-1-ztong0001@gmail.com>
-References: <20200824224541.1260307-1-ztong0001@gmail.com>
+To: Mohan Kumar <mkumard@nvidia.com>
+Subject: Re: [PATCH 1/2] ALSA: hda: Fix 2 channel swapping for Tegra
+In-Reply-To: <20200825052415.20626-2-mkumard@nvidia.com>
+References: <20200825052415.20626-1-mkumard@nvidia.com>
+ <20200825052415.20626-2-mkumard@nvidia.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, aplattner@nvidia.com, spujar@nvidia.com,
+ tiwai@suse.com, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+ treding@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,16 +80,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 Aug 2020 00:45:41 +0200,
-Tong Zhang wrote:
+On Tue, 25 Aug 2020 07:24:14 +0200,
+Mohan Kumar wrote:
 > 
-> snd_ca0106_spi_write() returns 1 on error, snd_ca0106_pcm_power_dac()
-> is returning the error code directly, and the caller is expecting an
-> negative error code
+> The Tegra HDA codec HW implementation has an issue related to not
+> swapping the 2 channel Audio Sample Packet(ASP) channel mapping.
+> Whatever the FL and FR mapping specified the left channel always
+> comes out of left speaker and right channel on right speaker. So
+> add condition to disallow the swapping of FL,FR during the playback.
 > 
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
 
-Thanks, applied with Cc to stable.
+Thanks, applied.
 
 
 Takashi
