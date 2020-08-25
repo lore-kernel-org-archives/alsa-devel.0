@@ -6,64 +6,67 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D411DC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 08:01:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C022C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 08:27:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57E9F2065F
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 08:01:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACB162067C
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 08:27:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZQXFt4/8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57E9F2065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i10FVkYx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACB162067C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1DD21661;
-	Tue, 25 Aug 2020 10:01:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1DD21661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B2801655;
+	Tue, 25 Aug 2020 10:26:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B2801655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598342515;
-	bh=3sr2fsuZFxgdqnm9hPI9Gz/6yX9+WeQG2dVg+vpB0G0=;
+	s=default; t=1598344021;
+	bh=kYVH8Fa7fWmSDDFjaPEM7F2fO91c8Xhmxt9nfrRlYT4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZQXFt4/87k+AOTTklsSiQ3faX31RPAq6xdzELpny1MxsHCW23FrAVdX1/CcWBik0D
-	 DjBHDwA2C0rL4Fzhf1rONjp2XmGmyUTMdNsttbr3ER9BnvkmEy4ENqNBX5X4SPAZ24
-	 +5gzies/0O7GZE84MPXJdSTi4S79asSySaY25U2c=
+	b=i10FVkYxK6KpJ2ikAlOdxdQTOHIvvyeddWeHOnMQdwGWm+My4HXybgOVqCi7q5BQn
+	 fkTxFkQc8AtYArr6I9L3aQguo5XkwMC1Hf61X4AQi4DJwvBQdYKGhGmFS7DTEFMgDq
+	 Dpd3fcBcJpNqwtFGAyKrSACreCCiWxgPigl2hRC8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D97CF80245;
-	Tue, 25 Aug 2020 10:01:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1CF6F80245;
+	Tue, 25 Aug 2020 10:26:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3B12F8025A; Tue, 25 Aug 2020 10:00:40 +0200 (CEST)
+ id E78FDF80143; Tue, 25 Aug 2020 10:26:08 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC160F80143
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 10:00:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC160F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id F01D0F80143;
+ Tue, 25 Aug 2020 10:26:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F01D0F80143
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 54FA2AC2F;
- Tue, 25 Aug 2020 08:01:02 +0000 (UTC)
-Date: Tue, 25 Aug 2020 10:00:31 +0200
-Message-ID: <s5h7dtn6tpc.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5540FB5FB;
+ Tue, 25 Aug 2020 08:26:31 +0000 (UTC)
+Date: Tue, 25 Aug 2020 10:25:56 +0200
+Message-ID: <s5h5z976siz.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alex Dewar <alex.dewar90@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Book Ion
- 15 inches
-In-Reply-To: <30693624-744d-6971-1dc8-8ffe4df6082c@gmail.com>
-References: <7210c752-0a1f-3985-91f0-b70facf0293c@gmail.com>
- <30693624-744d-6971-1dc8-8ffe4df6082c@gmail.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: Refactor calculating SDnFMT according to
+ specification
+In-Reply-To: <alpine.DEB.2.22.394.2008241434310.3186@eliteleevi.tm.intel.com>
+References: <20200824100034.3129-1-pawel.harlozinski@linux.intel.com>
+ <alpine.DEB.2.22.394.2008241434310.3186@eliteleevi.tm.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
- adrien.crivelli@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: cezary.rojewski@intel.com, patch@alsa-project.org, lgirdwood@gmail.com,
+ alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
+ Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,26 +82,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 Aug 2020 14:31:17 +0200,
-Alex Dewar wrote:
+On Mon, 24 Aug 2020 14:16:26 +0200,
+Kai Vehmanen wrote:
 > 
-> My mistake -- I didn't read your changelog properly. Sorry!
+> Hey,
+> 
+> On Mon, 24 Aug 2020, Pawel Harlozinski wrote:
+> 
+> > Set SDnFMT depending on which format was given, as maxbps only describes container size.
+> 
+> hmm, I'm not entirely sure that is correct. Usage may be a bit varied, but 
+> most places in existing code, "maxbps" is treated as number of significant 
+> bits, not the container size. E.g. in hdac_hda.c:
+> 
+> »       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> »       »       maxbps = dai->driver->playback.sig_bits;
+> »       else
+> »       »       maxbps = dai->driver->capture.sig_bits;
+> 
+> It would seem "maxbps" is a bit superfluous given the same information can 
+> be relayed in "format" as well. But currently it's still used. E.g. if you 
+> look at snd_hdac_query_supported_pcm(), if codec reports 24bit support, 
+> format is always set to SNDRV_PCM_FMTBIT_S32_LE, even if only 24bit are 
+> valid. So snd_pcm_format_width() will not return the expected significant 
+> bits info, but you have to use "maxbps". So original code seems correct 
+> (or at least you'd need to update both places).
 
-Would you resubmit the corrected fix patch?
+Hm, we need to check the call pattern, then.  The maxbps passed to
+this function was supposed to be the value obtained from
+snd_hdac_query_supported_pcm(), i.e. the codec capability.
 
-Also, better to indicate the device id number in the patch
-description.  It's confusing which entry you've corrected
-intentionally for what, and documenting it would help understanding
-it.
+But, basically this patch wouldn't change any practical behavior.  In
+the current code, snd_pcm_format_width() can be never 20 or 24,
+because the 24 and 24bit supports are also with SNDRV_PCM_FMT_S32_LE.
+That is, the cases 20 and 24 there are superfluous from the
+beginning (although the checks of maxbps are still needed).
+
+Instead, what we could improve is:
+- Set up the proper msbits hw_constraint to reflect the maxbps value
+- Choose the right AC_FMT_BITS_* depending on the hw_params msbits
+
+We may change the query function not to return a single maxbps value
+but rather storing the raw PCM parameter value (AC_SUPPCM_*), and pass
+it at re-encoding the format value, too, if we want to make things
+perfect.
 
 
 thanks,
 
 Takashi
-
-> 
-> On 24/08/2020 13:30, Alex Dewar wrote:
-> > There's a mistake in this. The ID numbers are the wrong way round.
-> >
-> > Alex
-> 
