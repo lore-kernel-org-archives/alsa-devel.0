@@ -2,72 +2,88 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B699C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:26:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F150C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:44:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C537E20665
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:26:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE92E20738
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 20:44:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EOm/9GB5";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sMxX8Q8P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C537E20665
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hHcmnbhD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE92E20738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 520FB16F4;
-	Tue, 25 Aug 2020 22:25:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 520FB16F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BF7D82A;
+	Tue, 25 Aug 2020 22:43:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BF7D82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598387174;
-	bh=olxuYwvUisJl7u7cXkvg1W6hA+A5C56u6qCVWX5oAZ8=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1598388288;
+	bh=dr4J+3ztzYwNN3nftuI0Xw1YA5ryPYYKUL1XLkozwXg=;
+	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EOm/9GB5CKd2+/3YUuQka94IDgJK4MqPDpzxyGetOfGv3/0RKlWM3OtNv4CyuLaO7
-	 SZHSU9W6QOvf6lryyCxL/+ZW7LORbBW5AuTujqTsRnxpPmRc/wMT0hyDNfuiR5Pbm6
-	 GLJAuKIQc+T5KWkOKab56OBQTzNMVHV3IUjqBvJg=
+	b=hHcmnbhDuRZ53P2gNTkBCNseiFTAwri+XUaQzoD+1cLPRAJWmIQgkjS4jmX6RarV3
+	 rYCFdVnwJyYcJeVfMikBbroBu8dAZZ5OfyRSq/P3CnqApAy1P7HSsA7541t0HbtYUq
+	 DPdE+SS07PYAURe+WUeDYceUAmK6LyqkeHaNGbtM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31CA4F802E7;
-	Tue, 25 Aug 2020 22:20:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2DC5F80245;
+	Tue, 25 Aug 2020 22:43:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79670F802C4; Tue, 25 Aug 2020 22:20:03 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B063F802C2
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:20:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B063F802C2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sMxX8Q8P"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id A2273F8025A; Tue, 25 Aug 2020 22:43:56 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3AC4E2074D;
- Tue, 25 Aug 2020 20:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598386798;
- bh=olxuYwvUisJl7u7cXkvg1W6hA+A5C56u6qCVWX5oAZ8=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=sMxX8Q8PWIcR7ZohUGwIE6jvCQdI6S6R5tPTrKuXC2BOxUf8Fdhv6XkK8hIQzVvse
- dRvfcK2x9Zhnp9ZU/m0i0jyEPGulwd+S2mPuUnz/0uLerH0x5WRrvtR38c6TIJd46l
- NcMgIQX5NX6YAXpax4WvYtep81eXAvsO6VE2rZFs=
-Date: Tue, 25 Aug 2020 21:19:23 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87blizy5ts.wl-kuninori.morimoto.gx@renesas.com>
-References: <87blizy5ts.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: ti: fixup ams_delta_mute() function name
-Message-Id: <159838674787.41542.10749253876222247416.b4-ty@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF87EF800EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 22:43:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF87EF800EB
+IronPort-SDR: c+RC8sRUPiqz2RueAJMUuFbYDpWrwqpklU03z3WC7ZAK/CCsuX1pzv2GEu+/1e18n5FAjHpaZn
+ Dg+3NbwGDFfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="157236385"
+X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; d="scan'208";a="157236385"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Aug 2020 13:43:47 -0700
+IronPort-SDR: BVg4CSlGw04HDacBOMGSokcmGRs1rz19bK+WlHZg1bMxq/CoU/3DSbY7MXa01Y+3xLk9uohwPO
+ URA06i9qp0cg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; d="scan'208";a="338924902"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.19.243])
+ ([10.213.19.243])
+ by orsmga007.jf.intel.com with ESMTP; 25 Aug 2020 13:43:43 -0700
+Subject: Re: [PATCH v4 01/13] ASoC: Intel: Add catpt device
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+References: <20200812205753.29115-1-cezary.rojewski@intel.com>
+ <20200812205753.29115-2-cezary.rojewski@intel.com>
+ <20200813182908.GA1891694@smile.fi.intel.com>
+ <3280b1a6-81f3-9f3f-d496-2bbf570c82d1@intel.com>
+Message-ID: <fc5ef897-50e6-c9c2-e25e-5f6946e80ae1@intel.com>
+Date: Tue, 25 Aug 2020 22:43:42 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <3280b1a6-81f3-9f3f-d496-2bbf570c82d1@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ filip.kaczmarski@intel.com, harshapriya.n@intel.com, marcin.barlik@intel.com,
+ zwisler@google.com, lgirdwood@gmail.com, tiwai@suse.com,
+ filip.proborszcz@intel.com, broonie@kernel.org,
+ amadeuszx.slawinski@linux.intel.com, michal.wasko@intel.com,
+ cujomalainey@chromium.org, krzysztof.hejmowski@intel.com,
+ ppapierkowski@habana.ai, vamshi.krishna.gopal@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,36 +99,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 25 Aug 2020 08:38:54 +0900, Kuninori Morimoto wrote:
-> commit 059374fe9ea5d ("ASoC: ti: merge .digital_mute() into .mute_stream()")
-> merged .digital_mute() into .mute_stream().
-> But it didn't rename ams_delta_digital_mute() to ams_delta_mute().
-> This patch fixup it.
+On 2020-08-17 12:02 PM, Cezary Rojewski wrote:
+> On 2020-08-13 8:29 PM, Andy Shevchenko wrote:
+>> On Wed, Aug 12, 2020 at 10:57:41PM +0200, Cezary Rojewski wrote:
 
-Applied to
+...
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+>>> +#define CATPT_CS_DEFAULT    0x8480040E
+>>> +#define CATPT_IMC_DEFAULT    0x7FFF0003
+>>> +#define CATPT_IMD_DEFAULT    0x7FFF0003
+>>> +#define CATPT_CLKCTL_DEFAULT    0x7FF
+>>
+>> These looks like set of bit fields, can we describe them either in 
+>> comments
+>> or in the values like GENMASK(x, y) | BIT(z) ?
+>>
+> 
+> Let's go with the latter. As explained below, I don't have much info in 
+> regard to re-setting registers to their defaults. This knowldge might 
+> come in time (and a ton of testing) but certainly, won't be part of this 
+> release.
+> 
+> One issue might arise when describing the "reserved" regions as some 
+> bits should not be modified by sw normally, but are part of "recommended 
+> sequence" anyway. I'll see if there are any among '1's.
+> 
 
-Thanks!
+In regard to your comment related to defaults, I've provided WPT ADSP 
+Cspec within previously shared location:
 
-[1/1] ASoC: ti: fixup ams_delta_mute() function name
-      commit: d062085d61b1c2015845d1d9c475266381cce785
+	\\10.237.149.136\AudioDspShare\crojewsk\acpi\bdw-y
+Note: Chapter 50.7 describes the register map.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+What I've said in the last paragraph proved true - many (in some cases 
+most..) bits are of 'Reserved' type. Because of spaghetti generated when 
+attempting to mask this, I'd stick with existing, explicit default 
+values which are frankly more readable.
+I've added single comment above each _DEFAULT block instead:
+	/* defaults to reset SSP|SHIM registers to after each power cycle */
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Thanks once again for your input during 'catpt' upstream process.
+Please note I'll remove the Cspec from linked location as soon as I read 
+your response to this e-mail (probably tomorrow morning).
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Czarek
