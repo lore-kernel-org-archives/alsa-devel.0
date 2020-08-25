@@ -2,78 +2,88 @@ Return-Path: <SRS0=+Hcd=CD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 929C0C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 06:47:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CFBFC433E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:11:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0DB142076C
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 06:47:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9AA062074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Aug 2020 07:11:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kz+8DDDm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DB142076C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r+gsI3mg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3Wq0A6w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AA062074D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FB0E1607;
-	Tue, 25 Aug 2020 08:46:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FB0E1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3B461607;
+	Tue, 25 Aug 2020 09:10:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3B461607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598338022;
-	bh=/62Jkd5HkB+OSMgGoh2PlMjJHbUnuO5vVnZAnF8cUhE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1598339503;
+	bh=FWfgAaWELOpnq9T2ZqffNJ7A9qnO3QfKuIy+OMg+Nkc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Kz+8DDDmwAmYd6zAoSt4vOLO1oR17kEAWKxXET91FvR029IB3BnxFWT7b0+8TqWI0
-	 VnSrlrtg+jhWitoipqBzz9tR0sd7AgJr7Pg2alvNh/e520oPB84PEsC7K1yYO4I/aS
-	 iw/fWEw3Vp1pkrTvodt83Y6pCXeh8XTqYhfJM+WU=
+	b=r+gsI3mguTt0PruG8WxpevPAZa5feSXzoERIutKhBeEiTmMDWrOQ3ohpZHtp6cCka
+	 Aln5DcilbJbQrIWpCj4gG+SExYw8fEnWabdre7zKaQ6bag5uml+3l3lLt01VM4qdwF
+	 pjO3Ct4AQG27EqUwxDzsyoCD0KQpC3KXE1AwV89k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E08B2F80245;
-	Tue, 25 Aug 2020 08:46:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B074F80143;
+	Tue, 25 Aug 2020 09:10:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25E0BF8025A; Tue, 25 Aug 2020 08:46:10 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 4FD9EF800EB
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 08:46:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FD9EF800EB
-Date: 25 Aug 2020 15:46:00 +0900
-X-IronPort-AV: E=Sophos;i="5.76,351,1592838000"; d="scan'208";a="55453648"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 15:46:00 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0A3D14002C14;
- Tue, 25 Aug 2020 15:46:00 +0900 (JST)
-Message-ID: <87lfi3w7hj.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
- DPCM
-In-Reply-To: <e9698ac3-0a2e-08a2-3f78-b0be0069d6ee@nvidia.com>
-References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
- <1596605064-27748-4-git-send-email-spujar@nvidia.com>
- <87pn7ofs19.wl-kuninori.morimoto.gx@renesas.com>
- <97f325a6-96cc-11c5-8027-8c0a159e3da0@nvidia.com>
- <2d3aa11e-3c56-1f7a-3d41-2457f973d55b@nvidia.com>
- <87sgcbwcnf.wl-kuninori.morimoto.gx@renesas.com>
- <14691a05-cb29-a030-0e72-eca900d8eb7e@nvidia.com>
- <87o8mzwajg.wl-kuninori.morimoto.gx@renesas.com>
- <e9698ac3-0a2e-08a2-3f78-b0be0069d6ee@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: jonathanh@nvidia.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, swarren@nvidia.com, linux-kernel@vger.kernel.org,
- nwartikar@nvidia.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
- viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
+ id 90A65F8025A; Tue, 25 Aug 2020 09:10:50 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24998F80143
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 09:10:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24998F80143
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="f3Wq0A6w"
+Received: from localhost (p54b333df.dip0.t-ipconnect.de [84.179.51.223])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C35662074D;
+ Tue, 25 Aug 2020 07:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1598339436;
+ bh=FWfgAaWELOpnq9T2ZqffNJ7A9qnO3QfKuIy+OMg+Nkc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=f3Wq0A6wK+XyCx0NdyaVbiOp2OMrI3KPwj1V3RQ/NOii/Sv8XJMYsbLmiBZPZxHLr
+ 0oPOxmO4ZW2uxwUXqLpZCKZIApP5fRkbLXbO9bWzKlL5g/hG5Vx0qfVAI9CAKfOqMV
+ tmM358uBo/FCFQE7cpCl+yIXbi94y/ptPbOUqIoI=
+Date: Tue, 25 Aug 2020 09:10:33 +0200
+From: Wolfram Sang <wsa@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
+Message-ID: <20200825071033.GB1861@ninjato>
+References: <20200812203618.2656699-1-robh@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="JYK4vJDZwFMowpUq"
+Content-Disposition: inline
+In-Reply-To: <20200812203618.2656699-1-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-fbdev@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hwmon@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,28 +100,64 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Sameer
+--JYK4vJDZwFMowpUq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Other solution is create both snd_soc_find_dai_with_mutex()/without_mutex().
-> > I'm not sure which style is best.
-> 
-> I don't know how complex it is to have a unified solution. But if we
-> can protect snd_soc_find_dai() itself, things would be simpler may be
-> in long term. Right now there are separate source files for soc-core,
-> soc-dai and soc-component, but because of two approaches looks like
-> the function need to be moved around and need to be placed in
-> soc-core. Also the issue might go unnoticed if LOCKDEP is not enabled.
-> 
-> May be start with a wrapper for now and eventually unify?
+On Wed, Aug 12, 2020 at 02:36:18PM -0600, Rob Herring wrote:
+> Clean-up incorrect indentation, extra spaces, long lines, and missing
+> EOF newline in schema files. Most of the clean-ups are for list
+> indentation which should always be 2 spaces more than the preceding
+> keyword.
+>=20
+> Found with yamllint (which I plan to integrate into the checks).
+>=20
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-clk@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-spi@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: linux-hwmon@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-rtc@vger.kernel.org
+> Cc: linux-serial@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Yeah, it seems has _with_mutex() can be better idea.
-I'm posting patch, but I noticed that Mark's branch vs Linus branch
-have some mismatch (?), and now I'm asking it to him.
-I can post _with_mutex() version as v2 if I could get answer.
-After that I'm happy your next patch can re-use it.
+I trust you guys in figuring out the details, so for touching I2C:
 
-Thank you for your help !!
+Acked-by: Wolfram Sang <wsa@kernel.org>
 
-Best regards
----
-Kuninori Morimoto
+
+--JYK4vJDZwFMowpUq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9EuWkACgkQFA3kzBSg
+KbZbPA/+MqNMzGTVXT++2afD+v/Qkum1LRbeldro+e0ewQSps4tnW/eHg9RaemYr
+BwxfsOZA+EJp0lGOnRM5/vhPMoInlSEwJSBlxtjratUScfPiR7D4ljKXGaUQv4IV
+l9cXBZuOeLnSerxdYsuGrs8M0uqe4rAc3jt/FGD4rSgawNTN1HieFaQ0vq/0I5Gi
+pyJv09alaosBuqNYc37Gqm9Ddk6xEJb8lvwrVqeS2ZGMFmfJuFlsuLKhwdgen/og
+Wik6VZEjyUHJbyZgkcwMn6rTVTnopK7E0RYmdap35Bh6MAZ3auQ4eQU2tktY3L0G
++NL/ah9FAvmPH1RAR7KmXzZxVYX2ZoWm3AJVpCIvlc9toZI5NdOwdruT+KlTLHIY
+T0vs7B3wqsrD4pHputHdDtf9iSZDB0FiTi44yJjReI72Yb47gDXXK7tOcewvq33Y
+J9dv/HeT85ER8dZ3fCssLdOsIVSE5ZGaDGjP9M4hPo5ZqM5WlMcqW13gmBsEaY3W
+quFFx4pgOXFmnO+7fCb0OIoySeTtgCMNqSwekaNsrbK8dBsFhMx62IzUwwCwL8ST
+clLrMsK81BA4v5hiU1SXC5zAJJG1W0FEpGvIuQRa5YxW8goqwIJrEuvy8jWLhg1x
+kB4BNFdQdBMg8xw0GSHGDhOZhIxgC5t/fvrbiLmqazzmbfCE1i8=
+=71f2
+-----END PGP SIGNATURE-----
+
+--JYK4vJDZwFMowpUq--
