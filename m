@@ -2,72 +2,79 @@ Return-Path: <SRS0=PqWm=CF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF5E0C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:53:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C94D9C433E3
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:53:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 383FC207DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:53:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 559AF2087C
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:53:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DqDuTe2a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 383FC207DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="djNl++WV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 559AF2087C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5507180A;
-	Thu, 27 Aug 2020 18:52:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5507180A
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDF3E16D6;
+	Thu, 27 Aug 2020 18:52:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF3E16D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598547199;
-	bh=RaOz6ulOiqof/phL3MP0hG7EUAcdRaw+8zD75bpd6EI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DqDuTe2ae1+cPh3FMm2PE9mBvAt0TtkJpeFRRkkTJnKjmWQTz0CbnR5ncoiytX8PA
-	 NeGnRORSmUehtkE2+X/gSYWjmIkyouCgdkOjuh4HDGJn3L0GujCiNlcUxXob0r0B5p
-	 5FdT8+tMw6ZS2WB/51ohdKN21i2B0xBeTtrNOH9Q=
+	s=default; t=1598547213;
+	bh=ioySzM567hgVMfEdApVrSSQs+w2YYTUujl/DTEYGC58=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=djNl++WVKTyroFnGcYiaHXrBtcldGikOBFzWKJo64LlDGLP3Xp7E4OI8yMVa8ScPt
+	 1El379xhw85dQzr3reveqKYB6lUKX8BRLcoseVpKniEAtfLw5o84LX8XTx+Mk0cyCQ
+	 jS1KFWr0vIfWtG0T3SAc+CU2JdbM7AhWfCiAAxe8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC404F8027B;
-	Thu, 27 Aug 2020 18:50:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAA0DF802C4;
+	Thu, 27 Aug 2020 18:50:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24021F80245; Tue, 25 Aug 2020 14:06:18 +0200 (CEST)
+ id E17F4F8025A; Tue, 25 Aug 2020 14:57:37 +0200 (CEST)
 Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37376F8025A
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 14:06:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37376F8025A
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 35D83423E0EFD375A76F;
- Tue, 25 Aug 2020 20:06:00 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
- 20:05:51 +0800
-From: Yu Kuai <yukuai3@huawei.com>
-To: <timur@kernel.org>, <nicoleotsuka@gmail.com>, <Xiubo.Lee@gmail.com>,
- <festevam@gmail.com>, <shengjiu.wang@gmail.com>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <shawnguo@kernel.org>, <s.hauer@pengutronix.de>, <kernel@pengutronix.de>,
- <linux-imx@nxp.com>, <xobs@kosagi.com>
-Subject: [PATCH 0/2] do exception handling appropriately in imx_es8328_probe()
-Date: Tue, 25 Aug 2020 20:05:29 +0800
-Message-ID: <20200825120531.1479304-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF9B4F800D1
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 14:57:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF9B4F800D1
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 0DE891BA80540EF3079A;
+ Tue, 25 Aug 2020 20:57:25 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.103) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0;
+ Tue, 25 Aug 2020 20:57:15 +0800
+Subject: Re: [PATCH 1/2] ASoC: fsl: imx-es8328: add missing kfree() call in
+ imx_es8328_probe()
+To: Mark Brown <broonie@kernel.org>
+References: <20200825120531.1479304-1-yukuai3@huawei.com>
+ <20200825120531.1479304-2-yukuai3@huawei.com>
+ <20200825121102.GF5379@sirena.org.uk>
+From: "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <4b0147df-b773-6c04-ff08-0bbc8b668f5f@huawei.com>
+Date: Tue, 25 Aug 2020 20:57:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.127.227]
+In-Reply-To: <20200825121102.GF5379@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.103]
 X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Thu, 27 Aug 2020 18:50:46 +0200
-Cc: alsa-devel@alsa-project.org, yi.zhang@huawei.com,
- linux-kernel@vger.kernel.org, yukuai@huawei.com, linuxppc-dev@lists.ozlabs.org,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ yi.zhang@huawei.com, festevam@gmail.com, s.hauer@pengutronix.de,
+ tiwai@suse.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com, linux-imx@nxp.com,
+ kernel@pengutronix.de, yukuai@huawei.com, shawnguo@kernel.org, xobs@kosagi.com,
+ shengjiu.wang@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,14 +90,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Yu Kuai (2):
-  ASoC: fsl: imx-es8328: add missing kfree() call in imx_es8328_probe()
-  ASoC: fsl: imx-es8328: add missing put_device() call in
-    imx_es8328_probe()
 
- sound/soc/fsl/imx-es8328.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+On 2020/08/25 20:11, Mark Brown wrote:
+> On Tue, Aug 25, 2020 at 08:05:30PM +0800, Yu Kuai wrote:
+>> If memory allocation for 'data' or 'comp' succeed, imx_es8328_probe()
+>> doesn't have corresponding kfree() in exception handling. Thus add
+>> kfree() for this function implementation.
+> 
+>> @@ -151,7 +151,7 @@ static int imx_es8328_probe(struct platform_device *pdev)
+>>   	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
+>>   	if (!comp) {
+> 
+> The allocation is being done using devm_ which means no explicit kfree()
+> is needed, the allocation will be automatically unwound when the device
+> is unbound.
 
--- 
-2.25.4
+Hi,
+
+Thanks for pointing it out, I'll remove this patch.
+
+Best regards,
+Yu Kuai
 
