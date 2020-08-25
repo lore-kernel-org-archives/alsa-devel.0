@@ -2,118 +2,77 @@ Return-Path: <SRS0=PqWm=CF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F6BEC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1473CC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:51:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5CDB2080C
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:03:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6DCDE20707
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:51:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YhCR80Oi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="ZRKGZZ80";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IjZUgF5n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5CDB2080C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n0zuqHUQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DCDE20707
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BC4F17E9;
-	Thu, 27 Aug 2020 18:02:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BC4F17E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5CEB17E7;
+	Thu, 27 Aug 2020 18:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5CEB17E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598544207;
-	bh=InPYkJCYrJmhxVP5EEX97exZUhUoEm1oaubW+hf9FXQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1598547098;
+	bh=QrwSe+9DnLrTYLcJDcZJTNJRHdSTiVWryuiXFRwspD4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YhCR80OiwZEBa1fb01uyYSBhr7gQVPPVZl4rfl5L3XtF84lvsT1xjklK+SA72zzgq
-	 iRR2IGSm1Ish/wXhmrLR4Nci1VyytiHXSHudOIsTAz8ot8EyfPYn6QJgjzhUIzazeG
-	 rklftnJt5si8PeEfkmGffFGbPuezraDK1qG6pM0g=
+	b=n0zuqHUQ2jxyYipcSxYD5t9ddlEtt6sP9LGT/Bf+/aoAyo93SMDtLKPSnB3s+G2q/
+	 frBvDuXIvIvcCfOXX429TCZ7fGP5xbnPzka/PB9xjTxppJt2aD5kRB1DMqsSz5kZI8
+	 tvMQTkvYiEUmyUy0lAqPNjfSEqs1CUEtHBhL+zFQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93883F80143;
-	Thu, 27 Aug 2020 18:02:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F1E5F80143;
+	Thu, 27 Aug 2020 18:50:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6324BF8016F; Thu, 27 Aug 2020 18:02:34 +0200 (CEST)
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
- [64.147.123.19])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id ADD4EF80269; Tue, 25 Aug 2020 14:06:16 +0200 (CEST)
+Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76849F80105
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 18:02:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76849F80105
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="ZRKGZZ80"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="IjZUgF5n"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.west.internal (Postfix) with ESMTP id EC9332C3;
- Thu, 27 Aug 2020 12:02:17 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Thu, 27 Aug 2020 12:02:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=2vB6ju1ym1dHSPU1ht3atJagQzK
- 6jUIZ6b0A1Vu2fHo=; b=ZRKGZZ80QB9g3OYnfo6DVPu7r/Mt4LSQ1yIZzZ63sFW
- t9PkHfESgfKrPB8NwWSigBaCLs5R91EgGZmHprj6iZarESlF//Oz9sV9dyduB6nB
- B8sSCC2lg6d+RCDG0gVHkzNtk27mxH3mnK5FzTlfAft8zK0U7d+Yk/FfLpnLMTQZ
- hcvs0hSV/GTbnoIbSCc15G2/QwFQPMpZpaKcwPzU0mnaX9eiRJtqVgHI/7C9/fNa
- dF3ZvHbJw13phRsLOtFQFC8qDNQjCJb//XlSqG6wZOXVtmmF+RrAI8qDM6DTdJuR
- 6IWpRFjYyJlTGD8EHf4oj5KRt8BLo3txuGHjdSA8DvA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=2vB6ju
- 1ym1dHSPU1ht3atJagQzK6jUIZ6b0A1Vu2fHo=; b=IjZUgF5nr90SDk4jA9RfX2
- PywB2qwKrPbsMD/wvHf6VA2rH436QeV83+avatYrBKPjR4Y+OJf0OZ+NzA7jJzkG
- kmJtyEDC84ja83v7MaXaTlVFvul7USjYj98F0zz+PPXUjK/IYWgmF/KmDHICONAt
- eaWheV2lr52gCctnMhJPwE57qxJLhQLbR0qMukGEGrdOm33a9gnYzmfi8uL/JBtB
- Od9r0AhYrndOxRXlBwMHCex6haaqkELKaNKnv/nGdlTOgAWPBwvi2cTCWUA5s+dU
- ehOn31uLd/rpdzlRj1KvIQevT5WklX8pknyFziYgGIiM43Cp1G77k++ERiPlVhKQ
- ==
-X-ME-Sender: <xms:B9lHX4lrl4jZBkuY0sDZoOVcP7WT4UXIWZRu8rTEuliLE9M68VKXig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvgedgledvucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
- hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
- hpqeenucggtffrrghtthgvrhhnpedujeeugfekudejleetieduledufeeffefhkedtffel
- jedtueelfeffheeftedugeenucffohhmrghinheptghonhhfihhguhhrvgdrrggtpdhmrg
- hkvghfihhlvgdrrghmpdguvggsihgrnhdrohhrghenucfkphepudektddrvdefhedrfedr
- heegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepoh
- dqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:CNlHX337V2sZRKsQQjt3X4aw4onBPuVF21PMDAtIkAo5wuw4MARsMQ>
- <xmx:CNlHX2q6BPVduevROLaz6C4QhwQFPDKmRyhMBJOFvHJzth7IR1YVfA>
- <xmx:CNlHX0kHGp032I0C2I1m1Deej79cA6ch8AGhyhxEyGacOEMgo5FX6g>
- <xmx:CdlHX7_6AnXSIVF-OHzqaaagRmu3Ock14H9-kh16QrluBVDp-_4l6g>
-Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp
- [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id E6C3B3280059;
- Thu, 27 Aug 2020 12:02:14 -0400 (EDT)
-Date: Fri, 28 Aug 2020 01:02:12 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 00/25] alsa-tools: efw-downloader: add initial version of
- firmwre downloader for Echo Audio Fireworks devices
-Message-ID: <20200827160212.GA406268@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, perex@perex.cz,
- alsa-devel@alsa-project.org, clemens@ladisch.de
-References: <20200821073111.134857-1-o-takashi@sakamocchi.jp>
- <20200826093258.235615-1-o-takashi@sakamocchi.jp>
- <s5hy2m1skwm.wl-tiwai@suse.de>
- <20200827122442.GA394751@workstation>
- <s5hd03cp7q7.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33A57F80245
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 14:06:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33A57F80245
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 45575E51671AF449BBA3;
+ Tue, 25 Aug 2020 20:06:00 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
+ 20:05:52 +0800
+From: Yu Kuai <yukuai3@huawei.com>
+To: <timur@kernel.org>, <nicoleotsuka@gmail.com>, <Xiubo.Lee@gmail.com>,
+ <festevam@gmail.com>, <shengjiu.wang@gmail.com>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <shawnguo@kernel.org>, <s.hauer@pengutronix.de>, <kernel@pengutronix.de>,
+ <linux-imx@nxp.com>, <xobs@kosagi.com>
+Subject: [PATCH 1/2] ASoC: fsl: imx-es8328: add missing kfree() call in
+ imx_es8328_probe()
+Date: Tue, 25 Aug 2020 20:05:30 +0800
+Message-ID: <20200825120531.1479304-2-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200825120531.1479304-1-yukuai3@huawei.com>
+References: <20200825120531.1479304-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hd03cp7q7.wl-tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
+X-Mailman-Approved-At: Thu, 27 Aug 2020 18:50:46 +0200
+Cc: alsa-devel@alsa-project.org, yi.zhang@huawei.com,
+ linux-kernel@vger.kernel.org, yukuai@huawei.com, linuxppc-dev@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,99 +88,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+If memory allocation for 'data' or 'comp' succeed, imx_es8328_probe()
+doesn't have corresponding kfree() in exception handling. Thus add
+kfree() for this function implementation.
 
-On Thu, Aug 27, 2020 at 02:57:04PM +0200, Takashi Iwai wrote:
-> On Thu, 27 Aug 2020 14:24:42 +0200, Takashi Sakamoto wrote:
-> > On Wed, Aug 26, 2020 at 01:31:53PM +0200, Takashi Iwai wrote:
-> > > Since it's based on meson build, it'll be tricky to include this in
-> > > alsa-tools whether others are all autoconf.  The tarball creation is
-> > > done in the top directory and that assumes the execution of "make
-> > > alsa-dist" in each subdirectory.  Without this integration, the
-> > > directory won't be included in the release.
-> > > 
-> > > Could you work on it, too?
-> > 
-> > I didn't have enough care of distributing the package. Thank you for the
-> > indication.
-> > 
-> > Although it's possible to write configure.ac/Makefile.am for
-> > efw-downloader, I'd like to use meson.build for my convenience, especially
-> > for the convenience of gnome module[1] in meson (Nowadays software in GNOME
-> > project including GLib is mostly build by meson).
-> > 
-> > As long as I know, the concept of release creation in GNU Autotools is
-> > different from the one in meson build system. GNU Autotools distributes
-> > scripts generated from Makefile.am/configure.ac and so. On the other
-> > hand, meson distributes files maintained by git or mercurial.
-> > 
-> > If we have a space to make enough arrangement for alsa-tools, the
-> > top-level Makefile should be changed to have two variables for
-> > subdirectories which includes software built by GNU Autotools and the
-> > others, then be changed further for configure/install/alsa-dist/clean
-> > targets.
-> > 
-> > Nevertheless, the idea to mix all of software built by several types of
-> > build system into one repository is not so convenient itself. I'll take
-> > more time to investigate further for better packaging of alsa-tools.
-> > (Tools like Android repo is a bit over-engineering in the case, mmm)
-> > 
-> > I decline the patchset for now.
-> 
-> OK.  It's indeed awkward to mix up both auto-tools and meson.
-> So the more suitable option would be either to modernize everything
-> with meson, or just create a configure.ac for efw-downloader.
-> Maybe the latter is easier, as the dependency would be only about
-> hinawa and the check via pkgconfig is trivial even with automake.
-> But, obviously, modernization is more appealing (with a risk of
-> breakage, as always :)
+Fixes: 7e7292dba215 ("ASoC: fsl: add imx-es8328 machine driver")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ sound/soc/fsl/imx-es8328.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-The modernization is itself preferrable, but the idea of everything with
-meson is not better since we have several build systems in the world. In
-my opinion, the preferrable way is to enable developers to add software
-without limitations about its build system and dependency.
+diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
+index 15a27a2cd0ca..8f71ed3a6f75 100644
+--- a/sound/soc/fsl/imx-es8328.c
++++ b/sound/soc/fsl/imx-es8328.c
+@@ -151,7 +151,7 @@ static int imx_es8328_probe(struct platform_device *pdev)
+ 	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
+ 	if (!comp) {
+ 		ret = -ENOMEM;
+-		goto fail;
++		goto free_data;
+ 	}
+ 
+ 	data->dev = dev;
+@@ -182,12 +182,12 @@ static int imx_es8328_probe(struct platform_device *pdev)
+ 	ret = snd_soc_of_parse_card_name(&data->card, "model");
+ 	if (ret) {
+ 		dev_err(dev, "Unable to parse card name\n");
+-		goto fail;
++		goto free_comp;
+ 	}
+ 	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
+ 	if (ret) {
+ 		dev_err(dev, "Unable to parse routing: %d\n", ret);
+-		goto fail;
++		goto free_comp;
+ 	}
+ 	data->card.num_links = 1;
+ 	data->card.owner = THIS_MODULE;
+@@ -196,10 +196,14 @@ static int imx_es8328_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_card(&data->card);
+ 	if (ret) {
+ 		dev_err(dev, "Unable to register: %d\n", ret);
+-		goto fail;
++		goto free_comp;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, data);
++free_comp:
++	kfree(comp);
++free_data:
++	kfree(data);
+ fail:
+ 	of_node_put(ssi_np);
+ 	of_node_put(codec_np);
+-- 
+2.25.4
 
-As a quick glance, below applications have dependency to Gtk+2 or Gtk+3.
-For them, replacement with meson build system is reasonable:
-
-* echomixer
-* envy24control
-* hdajackretask
-* rmedigicontrol
-
-As you know, Gtk+2 is already obsoleted, thus the above should be ported to
-Gtk4[1].
-
-Qlo10k1 is only an application of Qt3. I guess CMake is more preferrable
-than GNU Autotools in the case. As well as Gtk+2, Gt3 is already
-obsoleted.
-
-Hwmixvolume is written by Python 3, thus it's better to follow the
-standard way in Python world (setup.py).
-
-For the other software, it doesn't matter still to use GNU autotools.
-
-However, ld10k1 includes tools (ld10k1/lo10k1/dl10k1) seem to depend on
-local library (liblo10k1) but Makefile seems not to describe the dependency
-appropriately.
-
-At present, I have no proposal for the issue, but it's possible to
-split the software into several repositories depending on build system,
-like:
-
- * alsa-tools-meson
- * alsa-tools-cmake
- * alsa-tools-python
- * alsa-tools-autotools
-
-Then put release script to alsa-tools repository with git-submodules for them.
-
-
-[1] Debian Bug report logs - #967250
-alsa-tools: depends on deprecated GTK 2
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=967250
-
-
-Regards
-
-Takashi Sakamoto
