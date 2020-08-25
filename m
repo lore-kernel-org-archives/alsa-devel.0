@@ -7,69 +7,91 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C29BFC433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A288EC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:54:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49F352087C
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:54:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26579207DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 16:54:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mU3TQo3e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49F352087C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kRqnPf8i";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="CPCMbgBQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26579207DF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAE081810;
-	Thu, 27 Aug 2020 18:53:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAE081810
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3A501801;
+	Thu, 27 Aug 2020 18:54:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3A501801
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598547252;
-	bh=hx8iWLP9YF8BHlvBzI0REp4X1ABP9RmmCuS3vQnKqGU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mU3TQo3eLMZXfbmWJIC91v6HZcT2DaUuUnGhhTrAOMou0GSglVyWRgS0r+V7bVKQs
-	 NGTgQtPe7hslpnEqMABOqdoBmlLhQWvEo6mS2yyMgXtWqHHuQ5Gv2ZBFrNGB9gh6H6
-	 38zrzaEsn8zJ7GND2SlluDkGfHe8tGqxgulcB1yY=
+	s=default; t=1598547295;
+	bh=r7aTocnT3phrcx+5mpBZdLLIjxqDloO528eWN7Ac+NY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kRqnPf8iv6YCNbHYMPA01Irw1zMdjLlsl4Sh5uea0Ob9WYvOVDY9lIfvySYFwT7t9
+	 3QB53ysnapBOjcY6lPyDrjssS5kmrr6IcS3iTmvWES6ge5IZoBDUF+v+ECwMz1qN1y
+	 nqKdN3nzuSeJosOoOnGPQBNC1c1tZGtAQ0+E9cgg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13783F802DD;
-	Thu, 27 Aug 2020 18:50:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73041F802E2;
+	Thu, 27 Aug 2020 18:51:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 518DEF8025A; Tue, 25 Aug 2020 15:03:03 +0200 (CEST)
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9979BF8025A; Tue, 25 Aug 2020 19:17:19 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2D5DF80143
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 15:02:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2D5DF80143
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id AEB24C7A2EAAA29B03A7;
- Tue, 25 Aug 2020 21:02:52 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
- 21:02:44 +0800
-From: Yu Kuai <yukuai3@huawei.com>
-To: <timur@kernel.org>, <nicoleotsuka@gmail.com>, <Xiubo.Lee@gmail.com>,
- <festevam@gmail.com>, <shengjiu.wang@gmail.com>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <shawnguo@kernel.org>, <s.hauer@pengutronix.de>, <kernel@pengutronix.de>,
- <linux-imx@nxp.com>, <xobs@kosagi.com>
-Subject: [PATCH V2] ASoC: fsl: imx-es8328: add missing put_device() call in
- imx_es8328_probe()
-Date: Tue, 25 Aug 2020 21:02:24 +0800
-Message-ID: <20200825130224.1488694-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
-X-Mailman-Approved-At: Thu, 27 Aug 2020 18:50:46 +0200
-Cc: alsa-devel@alsa-project.org, yi.zhang@huawei.com,
- linux-kernel@vger.kernel.org, yukuai3@huawei.com,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id E347CF800EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2020 19:17:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E347CF800EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="CPCMbgBQ"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1598375833; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=blzaXb2I2ymE/HdTDHIHmFUKyvRdIQJoaWYgCiIlutE=;
+ b=CPCMbgBQgixsU4WJKd/zZRtx9EoCipA8qEoFNdzwJTBbD6mDy49v4gE70RQMWsXZApPDWmuL
+ b5YD2WCG/W84Ac4gygMaV+nbpB1O86WGjdVfuQmVmapYQcKzhjw6oAiq4By9xtY9OBJH5UeL
+ D6ecwCZBAsm+BO/ihyPbGrDHTkQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f454790fb5eb2479cc31f11 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 Aug 2020 17:17:04
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id EF0B5C43395; Tue, 25 Aug 2020 17:17:03 +0000 (UTC)
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 698BEC433C6;
+ Tue, 25 Aug 2020 17:16:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 698BEC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=none smtp.mailfrom=srivasam@codeaurora.org
+From: Srinivasa Rao <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] dt-bindings: Add sc7180-lpass HDMI header define
+Date: Tue, 25 Aug 2020 22:46:24 +0530
+Message-Id: <1598375788-1882-2-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1598375788-1882-1-git-send-email-srivasam@codeaurora.org>
+References: <1598375788-1882-1-git-send-email-srivasam@codeaurora.org>
+X-Mailman-Approved-At: Thu, 27 Aug 2020 18:50:45 +0200
+Cc: vsujithk <vsujithk@codeaurora.org>, Srinivasa Rao <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,68 +107,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-if of_find_device_by_node() succeed, imx_es8328_probe() doesn't have
-a corresponding put_device(). Thus add a jump target to fix the exception
-handling for this function implementation.
+From: vsujithk <vsujithk@codeaurora.org>
 
-Fixes: 7e7292dba215 ("ASoC: fsl: add imx-es8328 machine driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Add header defining HDMI dai-id for SC7180 lpass soc.
+
+Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
 ---
-Changes from V1:
- - remove the first patch in patch series
+ include/dt-bindings/sound/sc7180-lpass.h | 1 +
+ 1 file changed, 1 insertion(+)
 
- sound/soc/fsl/imx-es8328.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-index 15a27a2cd0ca..fad1eb6253d5 100644
---- a/sound/soc/fsl/imx-es8328.c
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -145,13 +145,13 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data) {
- 		ret = -ENOMEM;
--		goto fail;
-+		goto put_device;
- 	}
+diff --git a/include/dt-bindings/sound/sc7180-lpass.h b/include/dt-bindings/sound/sc7180-lpass.h
+index 7d988f6..0b4991e 100644
+--- a/include/dt-bindings/sound/sc7180-lpass.h
++++ b/include/dt-bindings/sound/sc7180-lpass.h
+@@ -4,6 +4,7 @@
  
- 	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
- 	if (!comp) {
- 		ret = -ENOMEM;
--		goto fail;
-+		goto put_device;
- 	}
+ #define MI2S_PRIMARY	0
+ #define MI2S_SECONDARY	1
++#define HDMI	2
  
- 	data->dev = dev;
-@@ -182,12 +182,12 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	ret = snd_soc_of_parse_card_name(&data->card, "model");
- 	if (ret) {
- 		dev_err(dev, "Unable to parse card name\n");
--		goto fail;
-+		goto put_device;
- 	}
- 	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
- 	if (ret) {
- 		dev_err(dev, "Unable to parse routing: %d\n", ret);
--		goto fail;
-+		goto put_device;
- 	}
- 	data->card.num_links = 1;
- 	data->card.owner = THIS_MODULE;
-@@ -196,10 +196,12 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_card(&data->card);
- 	if (ret) {
- 		dev_err(dev, "Unable to register: %d\n", ret);
--		goto fail;
-+		goto put_device;
- 	}
+ #define LPASS_MCLK0	0
  
- 	platform_set_drvdata(pdev, data);
-+put_device:
-+	put_device(&ssi_pdev->dev);
- fail:
- 	of_node_put(ssi_np);
- 	of_node_put(codec_np);
 -- 
-2.25.4
+2.7.4
 
