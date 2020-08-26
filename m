@@ -2,67 +2,98 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB83FC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC346C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:42:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EE4A2071E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:31:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3062D20707
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:42:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="thbf2PgW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EE4A2071E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d10Iyvli";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PQq/z3XL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3062D20707
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3D5D16FB;
-	Wed, 26 Aug 2020 10:30:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3D5D16FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 969A51705;
+	Wed, 26 Aug 2020 10:41:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 969A51705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598430682;
-	bh=UEd+sJAbFMK1GX0KUx6mBrN0xHBWzw20uCrbYDeDZgY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=thbf2PgWBDYWhwlKmsbIps7XoK24HcQUDhfwBbKmGMrrrNHkLN9RqhXVKcCnrgZ/m
-	 DXDI7ksFh4o6arpRTNN0prlOvcZY1b7dB6mNMziGvOaVd2PH97y/asOMdAErfqQKQP
-	 EnxeSui/uo8zsWLy31LfObwpFGcMTKVpwuP/JTPg=
+	s=default; t=1598431336;
+	bh=XYPp4rWPSOWRmWtfeewy/QAt7FTlH4Mu1Ngkz09GZWg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=d10IyvlibGvjaQTxXQkvd/e8chD6RjJRuX/DYsq+gAg8GwyM3BzGf8Vm4/eyf65e8
+	 IV6NkZbezIW3UXY93H2lPz+YMPfaHwV+NU2gtjzMshbfTfgSFVktdTHhI6BSW3ALfk
+	 2CWjr42wC2CUBGDevkeZ8cJ1F25zl559xpw7Z1dA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BB27F8016F;
-	Wed, 26 Aug 2020 10:30:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 293BDF8016F;
+	Wed, 26 Aug 2020 10:41:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 012A8F801D9; Wed, 26 Aug 2020 10:30:30 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 01E1EF801D9; Wed, 26 Aug 2020 10:41:24 +0200 (CEST)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5642BF80143
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 10:30:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5642BF80143
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id AF270B001;
- Wed, 26 Aug 2020 08:30:53 +0000 (UTC)
-Date: Wed, 26 Aug 2020 10:30:22 +0200
-Message-ID: <s5htuwpu7vl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH v2 00/20] ALSA: hda/ca0132 - Add AE-7 support/Control
- cleanup.
-In-Reply-To: <20200825201040.30339-1-conmanx360@gmail.com>
-References: <20200825201040.30339-1-conmanx360@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33205F80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 10:41:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33205F80105
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="PQq/z3XL"
+Received: by mail-pl1-x642.google.com with SMTP id h2so563171plr.0
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 01:41:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=JSB2W5Pv/3jJUL2eOsemL7QFgNmO3p3U0SiP4IFkLZM=;
+ b=PQq/z3XLXfqrcYlzOat94mH5VVN2P4F5ppN9gEsqYf03TAqcgj7Wji62URYcH5PZsG
+ Awy4gf2qQvrbT0pYqG9c83OyG7RGlC8GWsgoUQHpfdJFMPNrnamAI2UtyNCeJ0Xmp1Jp
+ MJBZZMG29YN2xcOARSHGvkzJdbbPbV6IVu7w4PDy2K9+rDZ761OmMTH0F6u5JVIg0CUO
+ gRq8WSvFU68AjQdWdasGMfRJ7SMJl0rlYPpRL6J59J6nDopXQ+RXzOQR3fNHQL6+Tyfb
+ mwkhFXtOP8+zE6W9+TLBIrLzfR14ftavvEv9LB4W1h+7UTJqqtwm3cSVu+Tn9GRbRJbm
+ V1dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=JSB2W5Pv/3jJUL2eOsemL7QFgNmO3p3U0SiP4IFkLZM=;
+ b=uK+yhaFDC/OkwZw58hhugM8qZysBt/tQS+JqZQlTRPb3kz8JX5rPOh7tcauPzwR2g+
+ mjhf9fsBm5rAer4PxlSBwVKclPp71OBgWYsuDfBiUfqr7vEg0obaSzGTFGdPonhfXLNL
+ ysFxxPSnqHhjqe3kpyYTVRdhAyl5K35Uh/igUVFxXnPw1nUeUUVrc61XA9T+pFl/oqDZ
+ wWXJn6/yapINkS3teVm6/Y2BfQiOgIVn6qNxdxL/TY0eQaR6jeVenbIisIZdI9WbOIQl
+ oSQhMM4wKjRg0GvqyE09R106i8Bzg5qZWlPKQ+dAmjebo6pfep2n0ZvUCADpSCH0MYxr
+ kADw==
+X-Gm-Message-State: AOAM530GOH0oNY2nTdyPaBFvtKOwca6VhYIDP7JMnvn8df7RsVohq5sA
+ 7qvlmdgOCf4cjCUB3ACIXO0=
+X-Google-Smtp-Source: ABdhPJy9APVzxgOYOZiHI0TdEJ/seh1vsiahqNDOJJu/WZXmE5WovhWYnhQHA5qolszt/3+VG4nxPg==
+X-Received: by 2002:a17:90b:1984:: with SMTP id
+ mv4mr5165533pjb.32.1598431278282; 
+ Wed, 26 Aug 2020 01:41:18 -0700 (PDT)
+Received: from localhost.localdomain ([112.214.139.41])
+ by smtp.googlemail.com with ESMTPSA id e12sm1462284pjl.9.2020.08.26.01.41.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 26 Aug 2020 01:41:17 -0700 (PDT)
+From: Adrien Crivelli <adrien.crivelli@gmail.com>
+To: 
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Book Ion
+ NT950XCJ-X716A
+Date: Wed, 26 Aug 2020 17:40:14 +0900
+Message-Id: <20200826084014.211217-1-adrien.crivelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+ Takashi Iwai <tiwai@suse.com>, Adrien Crivelli <adrien.crivelli@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,41 +109,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 Aug 2020 22:10:19 +0200,
-Connor McAdams wrote:
-> 
-> This patch series adds support for the Sound Blaster AE-7 along with
-> adding new controls and cleaning up the old ones. I have personally
-> tested the Recon3D, Recon3Di, Sound Blaster Z/ZxR, and AE-5 cards to
-> confirm they work with these patches. Another user has confirmed that
-> they work on the AE-7.
-> 
-> ---
-> v2: Change control names to omit unnecessary information.
-> 
-> Connor McAdams (20):
->   ALSA: hda/ca0132 - Cleanup ca0132_mmio_init function.
->   ALSA: hda/ca0132 - Add speaker tuning initialization commands.
->   ALSA: hda/ca0132 - Add surround channel config control.
->   ALSA: hda/ca0132 - Add full-range speaker selection controls.
->   ALSA: hda/ca0132 - Add bass redirection controls.
->   ALSA: hda/ca0132 - Remove surround output selection.
->   ALSA: hda/ca0132 - Clean up ca0132_alt_out_select.
->   ALSA: hda/ca0132 - Add quirk output selection structures.
->   ALSA: hda/ca0132 - Fix Recon3D Center/LFE output.
->   ALSA: hda/ca0132 - Add new quirk ID for SoundBlaster AE-7.
->   ALSA: hda/ca0132 - Add SoundBlaster AE-7 pincfg.
->   ALSA: hda/ca0132 - Set AE-7 bools and select mixer.
->   ALSA: hda/ca0132 - Add ca0132_mmio_init data for SoundBlaster AE-7.
->   ALSA: hda/ca0132 - Add pre-init function for SoundBlaster AE-7.
->   ALSA: hda/ca0132 - Add init data for SoundBlaster AE-7.
->   ALSA: hda/ca0132 - Add DSP setup functions for AE-7.
->   ALSA: hda/ca0132 - Add output selection for SoundBlaster AE-7.
->   ALSA: hda/ca0132 - Add AE-7 microphone selection commands.
->   ALSA: hda/ca0132 - Add AE-7 custom controls.
->   ALSA: hda/ca0132 - Add AE-7 exit commands.
+The Galaxy Book Ion NT950XCJ-X716A (15 inches) uses the same ALC298
+codec as other Samsung laptops which have the no headphone sound bug. I
+confirmed on my own hardware that this fixes the bug.
 
-Applied all 20 patches now.  Thanks.
+This also correct the model name for the 13 inches version. It was
+incorrectly referenced as NT950XCJ-X716A in commit e17f02d05. But it
+should have been NP930XCJ-K01US.
 
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
+Signed-off-by: Adrien Crivelli <adrien.crivelli@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Takashi
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a1fa983d2..98789691a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7695,7 +7695,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x144d, 0xc176, "Samsung Notebook 9 Pro (NP930MBE-K04US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x144d, 0xc189, "Samsung Galaxy Flex Book (NT950QCG-X716)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+-	SND_PCI_QUIRK(0x144d, 0xc18a, "Samsung Galaxy Book Ion (NT950XCJ-X716A)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
++	SND_PCI_QUIRK(0x144d, 0xc18a, "Samsung Galaxy Book Ion (NP930XCJ-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
++	SND_PCI_QUIRK(0x144d, 0xc830, "Samsung Galaxy Book Ion (NT950XCJ-X716A)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", ALC269_FIXUP_ATIV_BOOK_8),
+ 	SND_PCI_QUIRK(0x144d, 0xc812, "Samsung Notebook Pen S (NT950SBE-X58)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+-- 
+2.25.1
+
