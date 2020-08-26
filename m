@@ -2,80 +2,88 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E78A2C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 00:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE5FBC433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 01:00:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70CF3206EB
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 00:02:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C3802075E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 01:00:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KrEnzJ4C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70CF3206EB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LkBBxw/w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C3802075E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EC81170E;
-	Wed, 26 Aug 2020 02:01:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EC81170E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DAB116EA;
+	Wed, 26 Aug 2020 02:59:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DAB116EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598400158;
-	bh=tffTb950Xlosy8m97UB5faQ0iQuP7rC6ppLAeU6DRqU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1598403625;
+	bh=uyH8ofU2SgQHK/i0XbOy+7D9wdJlUOBPe+yT1HG6x0A=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KrEnzJ4CQNwM39cxwz/ko98MnSCk4g0LAU+wLxoVw6zY1FH0EGemUO5MSxcTIFq1L
-	 S+NdhkZ/l+xJgwk2TWDIondFpc4bVeMO1/Vu7B9PS7n3IxrSyob3GfzqqOrxCdE1uk
-	 fUYdsjm7OL+GsPfVTmxtch+fslUcXmKB5uSMUWEQ=
+	b=LkBBxw/w30/TFi8zc1K0Di6GVlg3Y6PckIukPGZ1d9TcOnR1T/mrqVxnuxEQSpob9
+	 qAm4Vg41ADdcFTwfSbrFHiGbKEI83ifQo60izJv+wzF5nvbg8R6XgTff17ehen2M1O
+	 uu6Z5aTdATgchB7EqSHjxRuxGF5mzVTwfzLrlaSs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41B79F802C4;
-	Wed, 26 Aug 2020 01:59:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 440C8F80245;
+	Wed, 26 Aug 2020 02:59:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62334F802C3; Wed, 26 Aug 2020 01:59:21 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 604F9F8025A; Wed, 26 Aug 2020 02:59:34 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 814C8F8025A
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 01:59:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 814C8F8025A
-IronPort-SDR: 5AUvcLwVNgEXguHmMrIXTKq/MHM60IGHbF0AkIDjPoP5TytVWix7PGNRbqgyHf2KqebaBefqRi
- wYmQRWFd+DHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="135764554"
-X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; d="scan'208";a="135764554"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00879F800D1
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 02:59:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00879F800D1
+IronPort-SDR: gj2t+ObZilDkWBxsQg6LfS0t7djuLIPMnWgQ8u9EPIEPlROX7NhfV8OsIHxt1p2VXBD5wxNlUn
+ CLLlydLi/o4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="157258145"
+X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; d="scan'208";a="157258145"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Aug 2020 16:59:05 -0700
-IronPort-SDR: BPgxL4fYTDfaQwDct3caqiaN52gl0XZg17kSy478Y6c95bq5HbtaXRDPDPhoBHYpztvIQRjbVj
- 0P3E3VAk/pHA==
-X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; d="scan'208";a="474558911"
-Received: from cdurvasu-mobl2.amr.corp.intel.com (HELO localhost.localdomain)
- ([10.209.42.42])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Aug 2020 16:59:04 -0700
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ASoC: SOF: ext_manifest: Parse debug ABI version
-Date: Tue, 25 Aug 2020 16:58:53 -0700
-Message-Id: <20200825235854.1588034-4-ranjani.sridharan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200825235854.1588034-1-ranjani.sridharan@linux.intel.com>
-References: <20200825235854.1588034-1-ranjani.sridharan@linux.intel.com>
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Aug 2020 17:59:20 -0700
+IronPort-SDR: MZqZoLMfNzPxPGFz52Zc703BZo+h3Wr4O3u79OfpRl1v96oaLbsyX/J2/zugAyzoW1p2I1oWU6
+ p6VAoW0I6OSg==
+X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; d="scan'208";a="443833246"
+Received: from yungchua-mobl.ccr.corp.intel.com (HELO [10.252.187.42])
+ ([10.252.187.42])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Aug 2020 17:59:16 -0700
+Subject: Re: [PATCH 4/4] regmap: sdw: add support for SoundWire 1.2 MBQ
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
+ <20200825171656.75836-5-pierre-louis.bossart@linux.intel.com>
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Message-ID: <8bd9593d-c81d-d01b-ee93-b15de2fe7f1f@linux.intel.com>
+Date: Wed, 26 Aug 2020 08:59:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200825171656.75836-5-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,82 +99,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 
-The debug ABI can be extracted from the extended manifest content.
-This information known at build time does not need to be provided
-in a mailbox.
+On 8/26/2020 1:16 AM, Pierre-Louis Bossart wrote:
+> The SoundWire 1.1 specification only allowed for reads and writes of
+> bytes. The SoundWire 1.2 specification adds a new capability to
+> transfer "Multi-Byte Quantities" (MBQ) across the bus. The transfers
+> still happens one-byte-at-a-time, but the update is atomic.
+>
+> For example when writing a 16-bit volume, the first byte transferred
+> is only taken into account when the second byte is successfully
+> transferred.
+>
+> The mechanism is symmetrical for read and writes:
+> - On a read, the address of the last byte to be read is modified by
+> setting the MBQ bit
+> - On a write, the address of all but the last byte to be written are
+> modified by setting the MBQ bit. The address for the last byte relies
+> on the MBQ bit being cleared.
+>
+> The current definitions for MBQ-based controls in the SDCA draft
+> standard are limited to 16 bits for volumes, so for now this is the
+> only supported format. An update will be provided if and when support
+> for 24-bit and 32-bit values is specified by the SDCA standard.
+>
+> One possible objection is that this code could have been handled with
+> regmap-sdw.c. However this is a new spec addition not handled by every
+> SoundWire 1.1 and non-SDCA device, so there's no reason to load code
+> that will never be used.
+>
+> Also in practice it's extremely unlikely that CONFIG_REGMAP would not
+> be selected with CONFIG_REGMAP_MBQ selected. However there's no
+> functional dependency between the two modules so they can be selected
+> separately.
+>
+> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- include/sound/sof/ext_manifest.h |  7 +++++++
- sound/soc/sof/loader.c           | 19 +++++++++++++++++++
- 2 files changed, 26 insertions(+)
+Acked-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-diff --git a/include/sound/sof/ext_manifest.h b/include/sound/sof/ext_manifest.h
-index 04359cda92dc..342e86e54db5 100644
---- a/include/sound/sof/ext_manifest.h
-+++ b/include/sound/sof/ext_manifest.h
-@@ -60,6 +60,7 @@ enum sof_ext_man_elem_type {
- 	SOF_EXT_MAN_ELEM_FW_VERSION		= 0,
- 	SOF_EXT_MAN_ELEM_WINDOW			= SOF_IPC_EXT_WINDOW,
- 	SOF_EXT_MAN_ELEM_CC_VERSION		= SOF_IPC_EXT_CC_INFO,
-+	SOF_EXT_MAN_ELEM_DBG_ABI		= SOF_IPC_EXT_USER_ABI_INFO,
- };
- 
- /* extended manifest element header */
-@@ -92,4 +93,10 @@ struct sof_ext_man_cc_version {
- 	struct sof_ipc_cc_version cc_version;
- } __packed;
- 
-+struct ext_man_dbg_abi {
-+	struct sof_ext_man_elem_header hdr;
-+	/* use sof_ipc struct because of code re-use */
-+	struct sof_ipc_user_abi_version dbg_abi;
-+} __packed;
-+
- #endif /* __SOF_FIRMWARE_EXT_MANIFEST_H__ */
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 42e0e3e58869..b8e72084dfeb 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -176,6 +176,22 @@ static int ext_man_get_cc_info(struct snd_sof_dev *sdev,
- 	return get_cc_info(sdev, &cc->cc_version.ext_hdr);
- }
- 
-+static int ext_man_get_dbg_abi_info(struct snd_sof_dev *sdev,
-+				    const struct sof_ext_man_elem_header *hdr)
-+{
-+	const struct ext_man_dbg_abi *dbg_abi =
-+		container_of(hdr, struct ext_man_dbg_abi, hdr);
-+
-+	if (sdev->first_boot)
-+		dev_dbg(sdev->dev,
-+			"Firmware: DBG_ABI %d:%d:%d\n",
-+			SOF_ABI_VERSION_MAJOR(dbg_abi->dbg_abi.abi_dbg_version),
-+			SOF_ABI_VERSION_MINOR(dbg_abi->dbg_abi.abi_dbg_version),
-+			SOF_ABI_VERSION_PATCH(dbg_abi->dbg_abi.abi_dbg_version));
-+
-+	return 0;
-+}
-+
- static ssize_t snd_sof_ext_man_size(const struct firmware *fw)
- {
- 	const struct sof_ext_man_header *head;
-@@ -255,6 +271,9 @@ static int snd_sof_fw_ext_man_parse(struct snd_sof_dev *sdev,
- 		case SOF_EXT_MAN_ELEM_CC_VERSION:
- 			ret = ext_man_get_cc_info(sdev, elem_hdr);
- 			break;
-+		case SOF_EXT_MAN_ELEM_DBG_ABI:
-+			ret = ext_man_get_dbg_abi_info(sdev, elem_hdr);
-+			break;
- 		default:
- 			dev_warn(sdev->dev, "warning: unknown sof_ext_man header type %d size 0x%X\n",
- 				 elem_hdr->type, elem_hdr->size);
--- 
-2.25.1
 
