@@ -2,81 +2,96 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 515A7C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F347DC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:57:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3E942078D
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:52:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5FB62078D
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:57:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IZEUdvjk";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="c9Xiglad"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3E942078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nXF1druh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="mDhVNkcP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5FB62078D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ED861770;
-	Wed, 26 Aug 2020 16:51:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ED861770
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B78816C7;
+	Wed, 26 Aug 2020 16:47:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B78816C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598453546;
-	bh=rf7zsP6dACnKfYBm9zRmVe9qedTxdc/aAmPH+PZPZZU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1598453312;
+	bh=rsDgv//86vFSAM8lsZRkfGWtz/vrcCoZX8UA76dMJk4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IZEUdvjkZx3P7nbThyjWsdVe8hc27D5r4SxzWImkJy4y3YrWvc/6CPVqffMEKvcb+
-	 CB7UUR8KSDtdp/2EbDFl7zMpuAiNCNSH3j8Czy0y4g/10PFYVfADbJvdKuNESoChhw
-	 kxnhdE9j/1/5tFRFXoHQlBuyWbLoPIUEEBf7ko8c=
+	b=nXF1druhTB8jue7MhhmlkUZJVIZ8tH8uMNzPfII8vqXqP1MSMtq/sg4aJRHWqF5fO
+	 CeX/YzgBhOaLYQSvW8V0GrlEyuJmwLUb5rqr45XgDPZB2L7M9q2FDtKanu6oqKzniQ
+	 ngG7yb1lq09quJFhDdFSVzz2UdLoLquiZnc2tLBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6D14F802A0;
-	Wed, 26 Aug 2020 16:49:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B607F80105;
+	Wed, 26 Aug 2020 16:47:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D55DF801D9; Wed, 26 Aug 2020 16:49:55 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9AC05F801D9; Wed, 26 Aug 2020 16:47:39 +0200 (CEST)
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
+ [81.169.146.171])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4B92F8016F
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 16:49:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4B92F8016F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C5A1F80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 16:47:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C5A1F80105
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="c9Xiglad"
-Received: from localhost.localdomain (unknown [194.230.155.216])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 859FF21741;
- Wed, 26 Aug 2020 14:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598453383;
- bh=rf7zsP6dACnKfYBm9zRmVe9qedTxdc/aAmPH+PZPZZU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=c9Xiglad3I74ATAeJSFUx4soE1XJFBfIApc63HcQhhtLj7XmewZG5doK5QdqT1aIT
- OFE6+VAxfJMgJSmeBVZn7XXhGTdI0pKt1UQt9H5IOW4lupScq5ZhHckGhZ8Z2z4GOS
- 3XY6HI9kEePSFWod5449v5PbX+s/Fdsk3B6PdaFA=
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Lee Jones <lee.jones@linaro.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 2/3] mfd: stmfx: Simplify with dev_err_probe()
-Date: Wed, 26 Aug 2020 16:49:34 +0200
-Message-Id: <20200826144935.10067-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200826144935.10067-1-krzk@kernel.org>
-References: <20200826144935.10067-1-krzk@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="mDhVNkcP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598453247;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=WtPyyCfNYRDGNlRLhnTbAOZUqz018Ne4S7uPqstOy3k=;
+ b=mDhVNkcPXQQ1EassQtSK2pMQEI6X3ogvtsHR4i1JoClEdthuFKr1VuHNv0m5btJtI4
+ VMV4dRgy5S6XgZkPLVtKllqPs0WJ6ckEEn8yaKTPQT7n2fVDv9WjReEaqmYjSbF425yY
+ VIsTsVLCY1SHXE0ieHlDhhR83XmqtTVKELSK/80Vs7yjzlevLybop1gW14ezXmk/tZaj
+ uOlaD7wKuyN4W1f2L2QQ/7C/VGmepFkTD8aOIWDG5ddGbb5/Oe8HYRYY7k6NVafwmKos
+ z2MDSAHN+/049KVq2O0TEZ6g7pKtW83XUPAqUdRlxfIPHPYQOxwqT5ikV6Ple8oaQZ+5
+ uoKA==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/Fboo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+ with ESMTPSA id g0b6c1w7QElPnl9
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Wed, 26 Aug 2020 16:47:25 +0200 (CEST)
+Date: Wed, 26 Aug 2020 16:47:18 +0200
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v6 2/2] ASoC: qcom: sc7180: Add machine driver for sound
+ card registration
+Message-ID: <20200826144718.GA854@gerhold.net>
+References: <20200826110454.1811352-1-cychiang@chromium.org>
+ <20200826110454.1811352-3-cychiang@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826110454.1811352-3-cychiang@chromium.org>
+Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+ Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
+ Ajit Pandey <ajitp@codeaurora.org>, Tzung-Bi Shih <tzungbi@google.com>,
+ Andy Gross <agross@kernel.org>, dgreid@chromium.org,
+ devicetree@vger.kernel.org, tzungbi@chromium.org,
+ linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,33 +107,221 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and also it prints the error value.
+On Wed, Aug 26, 2020 at 07:04:54PM +0800, Cheng-Yi Chiang wrote:
+> From: Ajit Pandey <ajitp@codeaurora.org>
+> 
+> Add new driver to register sound card on sc7180 trogdor board and
+> do the required configuration for lpass cpu dai and external codecs
+> connected over MI2S interfaces.
+> 
+> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> ---
+>  sound/soc/qcom/Kconfig  |  12 ++
+>  sound/soc/qcom/Makefile |   2 +
+>  sound/soc/qcom/sc7180.c | 244 ++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 258 insertions(+)
+>  create mode 100644 sound/soc/qcom/sc7180.c
+> 
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> index a607ace8b089..63678b746299 100644
+> --- a/sound/soc/qcom/Kconfig
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -116,4 +116,16 @@ config SND_SOC_SDM845
+>  	  SDM845 SoC-based systems.
+>  	  Say Y if you want to use audio device on this SoCs.
+>  
+> +config SND_SOC_SC7180
+> +	tristate "SoC Machine driver for SC7180 boards"
+> +	depends on SND_SOC_QCOM
+> +	select SND_SOC_QCOM_COMMON
+> +	select SND_SOC_LPASS_SC7180
+> +	select SND_SOC_MAX98357A
+> +	select SND_SOC_RT5682
+> +	help
+> +	  To add support for audio on Qualcomm Technologies Inc.
+> +	  SC7180 SoC-based systems.
+> +	  Say Y if you want to use audio device on this SoCs.
+> +
+>  endif #SND_SOC_QCOM
+> diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+> index 7972c9479ab0..0cdcbf367ef1 100644
+> --- a/sound/soc/qcom/Makefile
+> +++ b/sound/soc/qcom/Makefile
+> @@ -17,12 +17,14 @@ snd-soc-storm-objs := storm.o
+>  snd-soc-apq8016-sbc-objs := apq8016_sbc.o
+>  snd-soc-apq8096-objs := apq8096.o
+>  snd-soc-sdm845-objs := sdm845.o
+> +snd-soc-sc7180-objs := sc7180.o
+>  snd-soc-qcom-common-objs := common.o
+>  
+>  obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+>  obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
+>  obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
+>  obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
+> +obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
+>  obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
+>  
+>  #DSP lib
+> diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
+> new file mode 100644
+> index 000000000000..7849376f63ba
+> --- /dev/null
+> +++ b/sound/soc/qcom/sc7180.c
+> @@ -0,0 +1,244 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> +//
+> +// sc7180.c -- ALSA SoC Machine driver for SC7180
+> +
+> +#include <dt-bindings/sound/sc7180-lpass.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/core.h>
+> +#include <sound/jack.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include <uapi/linux/input-event-codes.h>
+> +
+> +#include "../codecs/rt5682.h"
+> +#include "common.h"
+> +#include "lpass.h"
+> +
+> +#define DEFAULT_SAMPLE_RATE_48K		48000
+> +#define DEFAULT_MCLK_RATE		19200000
+> +#define RT5682_PLL1_FREQ (48000 * 512)
+> +
+> +struct sc7180_snd_data {
+> +	struct snd_soc_jack jack;
+> +	u32 pri_mi2s_clk_count;
+> +};
+> +
+> +static void sc7180_jack_free(struct snd_jack *jack)
+> +{
+> +	struct snd_soc_component *component = jack->private_data;
+> +
+> +	snd_soc_component_set_jack(component, NULL, NULL);
+> +}
+> +
+> +static int sc7180_headset_init(struct snd_soc_component *component)
+> +{
+> +	struct snd_soc_card *card = component->card;
+> +	struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
+> +	struct snd_jack *jack;
+> +	int rval;
+> +
+> +	rval = snd_soc_card_jack_new(
+> +			card, "Headset Jack",
+> +			SND_JACK_HEADSET |
+> +			SND_JACK_HEADPHONE |
+> +			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> +			SND_JACK_BTN_2 | SND_JACK_BTN_3,
+> +			&pdata->jack, NULL, 0);
+> +
+> +	if (rval < 0) {
+> +		dev_err(card->dev, "Unable to add Headset Jack\n");
+> +		return rval;
+> +	}
+> +
+> +	jack = pdata->jack.jack;
+> +
+> +	snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+> +	snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+> +	snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+> +	snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+> +
+> +	jack->private_data = component;
+> +	jack->private_free = sc7180_jack_free;
+> +
+> +	rval = snd_soc_component_set_jack(component,
+> +					  &pdata->jack, NULL);
+> +	if (rval != 0 && rval != -EOPNOTSUPP) {
+> +		dev_warn(card->dev, "Failed to set jack: %d\n", rval);
+> +		return rval;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct snd_soc_aux_dev sc7180_headset_dev = {
+> +	.dlc = COMP_EMPTY(),
+> +	.init = sc7180_headset_init,
+> +};
+> +
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/mfd/stmfx.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+[...]
 
-diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
-index 711979afd90a..5e680bfdf5c9 100644
---- a/drivers/mfd/stmfx.c
-+++ b/drivers/mfd/stmfx.c
-@@ -331,11 +331,9 @@ static int stmfx_chip_init(struct i2c_client *client)
- 	ret = PTR_ERR_OR_ZERO(stmfx->vdd);
- 	if (ret == -ENODEV) {
- 		stmfx->vdd = NULL;
--	} else if (ret == -EPROBE_DEFER) {
--		return ret;
--	} else if (ret) {
--		dev_err(&client->dev, "Failed to get VDD regulator: %d\n", ret);
--		return ret;
-+	} else {
-+		return dev_err_probe(&client->dev, ret,
-+				     "Failed to get VDD regulator\n");
- 	}
- 
- 	if (stmfx->vdd) {
--- 
-2.17.1
+> +static struct snd_soc_card sc7180_card = {
+> +	.owner = THIS_MODULE,
+> +	.aux_dev = &sc7180_headset_dev,
+> +	.num_aux_devs = 1,
+> +	.dapm_widgets = sc7180_snd_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets),
+> +};
+> +
+> +static int sc7180_parse_aux_of(struct device *dev)
+> +{
+> +	sc7180_headset_dev.dlc.of_node = of_parse_phandle(
+> +			dev->of_node, "aux-dev", 0);
+> +
+> +	if (!sc7180_headset_dev.dlc.of_node)
+> +		return -EINVAL;
+> +	return 0;
+> +}
+> +
 
+Thanks for noting that this conflicts with my patch set that adds the
+"aux-devs" property for the device tree [1], I didn't see this before.
+
+The use of aux-dev in this patch looks a bit weird to me...
+
+As I understand, the "auxiliary devices" of a sound card are intended to
+be used for components that should be probed even though they don't
+appear within one of the DAI links. Examples for that are especially
+analog amplifiers and other components that do not have digital audio
+input/output.
+
+On the other hand, in this patch it seems to be just a way to mark the
+DAI component that will provide the headphone jack detection. In your
+example, the component that provides the headphone jack then appears
+both as DAI component and as auxiliary device:
+
+	aux-dev = <&alc5682>;
+
+	dai-link@0 {
+		link-name = "MultiMedia0";
+		reg = <0>;
+		cpu {
+			sound-dai = <&lpass_cpu 0>;
+		};
+		codec {
+			sound-dai = <&alc5682 0>;
+		};
+	};
+
+Adding &alc5682 to snd_soc_card->aux_dev is kind of pointless in this
+case because it will already be probed as part of the DAI link.
+
+The only thing you gain is that you have the init() callback which gives
+you the component that provides the headphone jack. But if someone wants
+to add an actual auxiliary device later (e.g. an analog amplifier),
+they would run into trouble...
+
+I wonder if it would be better to just have some sort of phandle, e.g.
+
+	audio-jack = <&alc5682>;
+
+but instead of creating an auxiliary device for this you would e.g.
+iterate over the list of components to find the one the phandle refers to.
+
+Or maybe someone else can comment if using an auxiliary device for this
+does really make sense?
+
+Thanks,
+Stephan
+
+[1]: https://lore.kernel.org/alsa-devel/20200826095141.94017-1-stephan@gerhold.net/
