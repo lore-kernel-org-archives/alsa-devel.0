@@ -2,76 +2,70 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A57BBC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18F45C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:58:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23A9B2078A
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:19:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B33CF207DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:58:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h180uB79";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PNJRCD+c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23A9B2078A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iQoQmMXS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B33CF207DF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 886A917B4;
-	Wed, 26 Aug 2020 21:18:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 886A917B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3187B17A5;
+	Wed, 26 Aug 2020 21:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3187B17A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598469545;
-	bh=JmBM+nkl0t+UofWg4Gi1xS0o3nBQu5RONor3hOBJoqE=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1598471888;
+	bh=wLmgamH0KIaS0rGIFDHl2rLBW3n+08uEZH3fccfbkjY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h180uB799yZgyeJ6F33zLaL9NMD8VMZnzf7D3vCKyirG3YYRCSwanXAme6lcB+tkl
-	 qKR/EeWM/xsw8rkfRJwDD9aMdn32QUaceTyFKQLWM7Q6sQMdIVntrMJvBe9Nx4b0oC
-	 IvrBeqR83/j6G2+MI9rxnWKkoo34HgoULku2AFEw=
+	b=iQoQmMXSf0pYRo+769QZ46WJqbxRzJYY94+rtCyc8xiz57ilfkqnIG5KpWjZ64VVC
+	 C8AFW/21c8uHNpakomhNba7sLnc2wVmvsZY+/7awkKtfWrglSQ/cQwKoyHm7EVMAEJ
+	 CquBs8sSz2yKB743YPW+rs8yEzZ4s4VIPCfBtHgU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1B8BF801EC;
-	Wed, 26 Aug 2020 21:17:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5B3BF80105;
+	Wed, 26 Aug 2020 21:57:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 820B3F801F2; Wed, 26 Aug 2020 21:17:25 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 194ADF800EB; Wed, 26 Aug 2020 21:57:16 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC7D6F801F2
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 21:17:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC7D6F801F2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PNJRCD+c"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D43552078A;
- Wed, 26 Aug 2020 19:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598469441;
- bh=JmBM+nkl0t+UofWg4Gi1xS0o3nBQu5RONor3hOBJoqE=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=PNJRCD+cKqy2Mvyvk8mEF8MpHMrU/Fy/KvJ4bIblOU22Mdh+2ISANcpiOOK+il/Fo
- mXvPO7D2WwrBryg83KPXAjKWyZpqsbNG52DuxZZ7gq5q/gHAPsHU2V/BQCrANihDeI
- l1H6Mq7+p7vPvcoUOejRI4ltWrit/YNGe8aF6aNY=
-Date: Wed, 26 Aug 2020 20:16:45 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-In-Reply-To: <20200820042828.10308-1-dinghao.liu@zju.edu.cn>
-References: <20200820042828.10308-1-dinghao.liu@zju.edu.cn>
-Subject: Re: [PATCH] ASoC: qcom: common: Fix refcount imbalance on error
-Message-Id: <159846939972.39744.13708543764168639585.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51309F800EB
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 21:57:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51309F800EB
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 0973FABA2;
+ Wed, 26 Aug 2020 19:57:39 +0000 (UTC)
+Date: Wed, 26 Aug 2020 21:57:07 +0200
+Message-ID: <s5hk0xlqiy4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/8] ALSA: hda: fix VS_LTRC register name
+In-Reply-To: <20200826185025.GR4965@sirena.org.uk>
+References: <20200826184532.1612070-1-ranjani.sridharan@linux.intel.com>
+ <20200826184532.1612070-2-ranjani.sridharan@linux.intel.com>
+ <20200826185025.GR4965@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,36 +81,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 20 Aug 2020 12:28:27 +0800, Dinghao Liu wrote:
-> for_each_child_of_node returns a node pointer np with
-> refcount incremented. So when devm_kzalloc fails, a
-> pairing refcount decrement is needed to keep np's
-> refcount balanced.
+On Wed, 26 Aug 2020 20:50:25 +0200,
+Mark Brown wrote:
+> 
+> On Wed, Aug 26, 2020 at 11:45:25AM -0700, Ranjani Sridharan wrote:
+> > It should be called VS_LTRP instead.
+> 
+> Takashi, should I just apply this to the ASoC tree?
 
-Applied to
+Yes, it's just a typo fix, feel free to take it.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-Thanks!
 
-[1/1] ASoC: qcom: common: Fix refcount imbalance on error
-      commit: c1e6414cdc371f9ed82cefebba7538499a3059f9
+thanks,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Takashi
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
