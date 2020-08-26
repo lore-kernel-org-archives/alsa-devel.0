@@ -2,84 +2,84 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2409C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 17:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D300AC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 18:09:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3AA202075E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 17:27:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 50C6B207DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 18:09:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q85RxUyF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vRE9gAq6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AA202075E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t/gzaAD/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50C6B207DF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E39A177B;
-	Wed, 26 Aug 2020 19:26:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E39A177B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1F1E1782;
+	Wed, 26 Aug 2020 20:08:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1F1E1782
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598462819;
-	bh=S8TXZrq1wbwhPqABDtlshBxR1KjWnaZqnCtcuEK91FA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1598465350;
+	bh=1l8e8lsMxps1j+E8/omeo/Rw9Coc9cmQV1bH23Hrq/c=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q85RxUyFX5xvbSbt4qteyBHvUEAIfTAcTwOj89Xs1Dcu3HGyDwmGLXtXyR0ZhCe76
-	 NHOIyBSXuY3z71/2pzxjhgZXhH83ULApmB2wfo8t9caN5Qzy+pAhTk61YBtQcmcEo6
-	 mWQJbRA/KRc3tx/U4xe/avH9BhBoyLkmhGUHnu8M=
+	b=t/gzaAD/EG8+nBUqgWliv3MUJVBSI1GEduBn269dhTgtq75IK0Ulyea0njRKEpH2p
+	 4L4XWWvJMA6gMRGJwKT4p2HibtJf50AD8PCQQHufU2MYygP6n6qNZie3diu1ghIF9w
+	 XYLYe2OjpPvFzT30trH9i4IseoCz1twsIhV1BT0c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5D6FF8016F;
-	Wed, 26 Aug 2020 19:26:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F8C2F8016F;
+	Wed, 26 Aug 2020 20:08:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 547D0F801D9; Wed, 26 Aug 2020 19:26:07 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E49F3F800EB
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 19:25:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E49F3F800EB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vRE9gAq6"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id B836CF801D9; Wed, 26 Aug 2020 20:08:18 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AE5152075E;
- Wed, 26 Aug 2020 17:25:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598462753;
- bh=S8TXZrq1wbwhPqABDtlshBxR1KjWnaZqnCtcuEK91FA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=vRE9gAq6ZNqBg3N58fycZZ/pb3EXixz70zN1ZsNqLj65QEbquM7zRlhelGMNG2pr2
- iiIXK2zbHSarABuV77ZxpjApU/K6VsKSvHrr7YqyEyczQNBv4lHPEeYIdoFgIxpA6s
- I53dOocISH2azcG9NvRRUt+xr/E1JC4gQJR+84Rs=
-Date: Wed, 26 Aug 2020 18:25:16 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7EF7F80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 20:08:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7EF7F80105
+IronPort-SDR: 6PRFv/RwTvKUBMglKqKmOyHUeoiSuYxVTX2OCUDTvHiESOfpBMezyAMrvOxvvZAwlRjXWSQAVa
+ w02g67aNvI7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="157393115"
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="157393115"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Aug 2020 11:08:07 -0700
+IronPort-SDR: WnoKohTSORAaoQWpjm9J7NKJnYjWHGpP4vrufmIGKIqaZtx61Svn02Fg9DHpgwNIe1yK9ZH07L
+ lyuxfaYGgsHQ==
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="474865887"
+Received: from sjweber-mobl.amr.corp.intel.com (HELO [10.209.187.249])
+ ([10.209.187.249])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Aug 2020 11:08:05 -0700
 Subject: Re: [PATCH 1/4] regmap: sdw: move to -EOPNOTSUPP
-Message-ID: <20200826172516.GM4965@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>
 References: <20200825171656.75836-2-pierre-louis.bossart@linux.intel.com>
  <20200825214858.GK5379@sirena.org.uk>
  <6f7e5830-4dd8-1ecc-20c3-df75bc9ef265@linux.intel.com>
- <20200826095600.GA4965@sirena.org.uk>
- <s5ha6yhu3af.wl-tiwai@suse.de>
- <20200826101301.GB4965@sirena.org.uk>
- <s5h8se1u2or.wl-tiwai@suse.de>
+ <20200826095600.GA4965@sirena.org.uk> <s5ha6yhu3af.wl-tiwai@suse.de>
+ <20200826101301.GB4965@sirena.org.uk> <s5h8se1u2or.wl-tiwai@suse.de>
  <927c93bc-9ad8-7e5d-a5ea-d566e5f543df@linux.intel.com>
+ <20200826172516.GM4965@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9eb82812-436a-e94e-e7d0-28c9300e13f6@linux.intel.com>
+Date: Wed, 26 Aug 2020 13:08:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="BHMq0+oGliEfCAkH"
-Content-Disposition: inline
-In-Reply-To: <927c93bc-9ad8-7e5d-a5ea-d566e5f543df@linux.intel.com>
-X-Cookie: Should I do my BOBBIE VINTON medley?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200826172516.GM4965@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  "Rafael J. Wysocki" <rafael@kernel.org>, Takashi Iwai <tiwai@suse.de>,
@@ -105,42 +105,12 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---BHMq0+oGliEfCAkH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Aug 26, 2020 at 10:05:50AM -0500, Pierre-Louis Bossart wrote:
+> If you want to change this you'd need to change it over the whole
+> subsystem (if not other subsystems), including the places where the
+> value is used.
 
-> I assumed this change to -EOPNOTSUPP reflected a consensus in kernel-land,
-> it's obviously not the case. This patch was supposed to be a trivial
-> clean-up...
+ok, I'll drop this patch for now, keep -ENOTSUPP and deal with this 
+later. The only thing I really care about for now is SoundWire MBQ 
+support, this is the only thing gating SDCA contributions.
 
-No, it's just some random guy sent a patch.  They've not made any
-perceptible effort to interact with any of the existing users.
-
-> So to be clear, what is the direction for existing code
-> a) keep -ENOTSUPP as is?
-> b) move to -EOPNOTSUPP?
-
-> And what is the preference for new code?
-
-If you want to change this you'd need to change it over the whole
-subsystem (if not other subsystems), including the places where the
-value is used.
-
---BHMq0+oGliEfCAkH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9GmvwACgkQJNaLcl1U
-h9CVZwf/X1R3FvN72dVYg3h6EUe0Lc2dc9uETB0siPhxUEa3nMuatoNxcp5W4x1U
-d6oIj55I4XmyMV4M7qUTaJWPiuIxptj/X6tuFQysg2QULq98txsRtp/S8+UnSeW3
-l9ECbZxahzFi6ydJI+QEZbdTu3gykzMrZ4vPHRJ430/Q9Xof+GSiBQ5yWKwz8Yy3
-nmmkeSDJk0AFLkqCzpG3pDRo+HxEnKfcJVaDl//AYnmKySZxzu0PacTVf7ceFYIa
-ehD1Z2lBJEG2wcAfwJaEh1IFG+NiqbePpBH+Nziy71y7UVc082qCfE31NZlkt6Ts
-MJUmhHp0xcUaBV9koqd5IQKGnmWw8Q==
-=ls7t
------END PGP SIGNATURE-----
-
---BHMq0+oGliEfCAkH--
