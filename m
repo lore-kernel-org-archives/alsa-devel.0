@@ -2,102 +2,86 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FD1AC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 13:59:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3354C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:41:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA7E022B3F
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 13:59:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 30922208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:41:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Toq8Tm6j";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bk7UARc5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA7E022B3F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Iyb2lggK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30922208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B1251729;
-	Wed, 26 Aug 2020 15:58:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B1251729
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E4261727;
+	Wed, 26 Aug 2020 16:40:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E4261727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598450340;
-	bh=XfxUSMNSXa9hRdcmZ4l2beQ1mORrOXnj0dV+YbE1830=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1598452886;
+	bh=9zKiGE/aYnuWFq4e2JSkdXss2oKilznYIzi6e79sYsM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Toq8Tm6jJSIwHCBiIQCkmDVa9KtWcxcWzHLF/UT6pg7Rv5XLyx9ely1gvh4K4HqS7
-	 V5bp1eFbiZHfVwH3L2xDA8FXV6jaC9Fw+X90V3yTzRooeWiD6/66HPZFWRkGsNyLpM
-	 52Ssu9ynT37+lvGeUb0xuKbFvCYIlBlsSnXYKeGM=
+	b=Iyb2lggKIyMUR2AqVIqyAIbdSiEMMqpdYZJMbcyNA9ZZHV1G3UkGPiVvqV777XYw9
+	 MmGFgWLBtpaFiLJJnHZNF2TryI0jnV/nIqC8dXgdCedd1V1jBDIdnxnPabU6i0FCDh
+	 yr43JnV+iphvhdNdMeYdj6gbghas04QqNmrp++Gg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FED4F80143;
-	Wed, 26 Aug 2020 15:58:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E31AFF8016F;
+	Wed, 26 Aug 2020 16:40:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 516D4F801D9; Wed, 26 Aug 2020 15:58:08 +0200 (CEST)
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com
- [IPv6:2607:f8b0:4864:20::102f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1938DF801EC; Wed, 26 Aug 2020 16:40:33 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFD60F80143
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 15:58:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFD60F80143
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Bk7UARc5"
-Received: by mail-pj1-x102f.google.com with SMTP id s2so314546pjr.4
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 06:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:references:from:message-id:date:user-agent:mime-version
- :in-reply-to:content-transfer-encoding:content-language;
- bh=0FqnOd3YmcV12Oz4t5r7g9q9j9/q135slbpSCK8ntsM=;
- b=Bk7UARc5qoYztF/VbGHAd38RKkSR28cowwXeoZM+mWrQEDQOG+3am/NyRNAR1P9bn5
- 7q+bFsRF96YW8z5jVxe7iiC7k1Y8JpPWE5BAExlm9iFEkBABjJgLRRQlk+jOO7n70lj5
- w1BIOZmpn3SHcobcEOIuUHbBOBbrY/F5Tq05HwF7ohLK1VyFbhxI9U8yUP0R7r9F+8DA
- KKircv0pF0JlOacpStQDUpxTAZjG4DhbpiTNNKfrHC7sUTpFUA6lkAjE/TwHIbpXmPr+
- 8YByV1488qN8/RYJ0W+mLUlxHtW8b+erPOIKzwGByPwDR2p3c3uJ7gmfrQiHi91LpmB2
- ioeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=0FqnOd3YmcV12Oz4t5r7g9q9j9/q135slbpSCK8ntsM=;
- b=hza3grjyUXiedl9DxVf7VrdLQz45T8Boxcdh1dOLKNJwVm3gveOL8E/3cJwJvxR9+4
- xBxDhkb9VzJVvnKIvd39OCsA9SMdjr/uYiBEAtY+oqlVFLKLwIQnlf7DVU0szA5n9ntr
- Fr+sAAC3Nc0Mi0o/C8OU6qQredaH1wAPf/iqfM6+Dm8H/uHoq3FWm5JXPW55If7zlXKI
- +2RTODSJSoTftJouY687r7VRn5nV+72+7fjhtTkqw58F4z4/RG0J97gvaYsqlFR7yWdG
- vSop9g72BZ9OKkTCFmF+XLYHUxukmmPy/brWZ4uNrzo1L8zGyrqXKB7aSpgeFlnO371o
- n8FA==
-X-Gm-Message-State: AOAM532NabMqIPqtf0IKRdCUKumKQW3hmpN0mJWnJM2xqKhmvA7P0Q8C
- G5stdiS1VPBUtPUjlQWB6YtnESkKGHWzLA==
-X-Google-Smtp-Source: ABdhPJyVPMbmZZb8nyScya1KCSxaIl8mYoFUrhk90eJiu2mzkDXWIykYtkHcVbahkiYKEK3cTQyTqA==
-X-Received: by 2002:a17:902:8d8a:: with SMTP id
- v10mr11947164plo.249.1598450277766; 
- Wed, 26 Aug 2020 06:57:57 -0700 (PDT)
-Received: from [10.25.99.87] ([202.164.25.5])
- by smtp.gmail.com with ESMTPSA id p9sm2512264pge.39.2020.08.26.06.57.55
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 26 Aug 2020 06:57:57 -0700 (PDT)
-Subject: Re: Question about DPCM
-To: Shengjiu Wang <shengjiu.wang@gmail.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>
-References: <CAA+D8APKP9Ci7frPsNjCeF3s+kPm-FU-3-DoU36e4aqBBecKPQ@mail.gmail.com>
-From: Sameer Pujar <dev.spujar@gmail.com>
-Message-ID: <9abb0eb9-2d7f-0516-1003-4c50183a89c6@gmail.com>
-Date: Wed, 26 Aug 2020 19:27:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB942F80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 16:40:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB942F80105
+IronPort-SDR: eYwisir8b6Tcv4kecRklCc1W2HvgrfYf2fnmqXUEJ4/+1TvaJn1GANGQuuifxUIJy1JsAWPHLd
+ aWLQSCNcSnEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="135849031"
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="135849031"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Aug 2020 07:40:20 -0700
+IronPort-SDR: uwrE/m7OJxY2wgP0ERnHQlSOIMq0Fak51rD/ut8OuryPrAsM34MBNqt2K0CCynweGLzV4+3tDo
+ T5go1EsNN8Cw==
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="299494855"
+Received: from gillelas-mobl1.amr.corp.intel.com (HELO [10.255.231.51])
+ ([10.255.231.51])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Aug 2020 07:40:18 -0700
+Subject: Re: [PATCH 05/11] soundwire: bus: update multi-link definition with
+ hw sync details
+To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
+References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
+ <20200818024120.20721-6-yung-chuan.liao@linux.intel.com>
+ <20200826094420.GA2639@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d534afc3-3c38-275e-2f62-0432ffd91a36@linux.intel.com>
+Date: Wed, 26 Aug 2020 09:09:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAA+D8APKP9Ci7frPsNjCeF3s+kPm-FU-3-DoU36e4aqBBecKPQ@mail.gmail.com>
+In-Reply-To: <20200826094420.GA2639@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,21 +97,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Shengju,
 
->       Can DPCM support such a pipeline?
->       FE ->  (FE/BE) ->BE
->       which means I want to connect several cpu-dai together:
->       CPU-DAI1  -> CPU-DAI2 -> CPU-DAI3 -> CPU-DAI4 -> Codec
->
->       Could you please recommend what I can do?  Thanks for you help!
 
-AFAIK, DPCM currently does not support such a pipeline. I am trying to 
-address similar requirement in series [0]. Some of the related 
-discussion you can find in [1].
+>> + * @hw_sync_min_links: Number of links used by a stream above which
+>> + * hardware-based synchronization is required. This value is only
+>> + * meaningful if multi_link is set. If set to 1, hardware-based
+>> + * synchronization will be used even if a stream only uses a single
+>> + * SoundWire segment.
+> 
+> Soundwire spec does not say anything about multi-link so this is left to
+> implementer. Assuming that value of 1 would mean hw based sync will
+> be used even for single stream does not make sense in generic terms.
+> Maybe yes for Intel but may not be true for everyone?
 
-[0] https://lkml.org/lkml/2020/8/5/42
-[1] https://lkml.org/lkml/2020/4/30/519
+hw-based sync is required for Intel even for single stream. It's been 
+part of the recommended programming flows since the beginning but 
+ignored so far.
 
-Thanks,
-Sameer.
+That said, this value is set by each master implementation, no one 
+forces non-Intel users to implement an Intel-specific requirement.
+
+> We already use m_rt_count in code for this, so the question is why is
+> that not sufficient?
+
+Because as you rightly said above, Intel requires the hw_sync to be used 
+even for single stream, but we didn't want others to be forced to use 
+the hw-sync for single stream. the m_rt_count is not sufficient for Intel.
+
+I think we are in agreement on not forcing everyone to follow what is 
+required by Intel, and that's precisely why we added this setting. If 
+you set it to two you would only use hw_sync when two masters are used.
