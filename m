@@ -6,74 +6,72 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFFB5C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:18:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A57BBC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:19:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 605FE2078A
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:18:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 23A9B2078A
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 19:19:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l8R/6yFr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZiCZuNhm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 605FE2078A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h180uB79";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PNJRCD+c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23A9B2078A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7C8417A1;
-	Wed, 26 Aug 2020 21:17:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7C8417A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 886A917B4;
+	Wed, 26 Aug 2020 21:18:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 886A917B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598469492;
-	bh=0H6AKIRhKk8pjwIpNJ1qeXyffDG7WNeaHBbBTs3CeAw=;
+	s=default; t=1598469545;
+	bh=JmBM+nkl0t+UofWg4Gi1xS0o3nBQu5RONor3hOBJoqE=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l8R/6yFrSCphZFrkXw3mE2+IiJCAxuMajRFL+KxEqPX3eDHo/35k1NjucVe4laZMP
-	 X3NA0rr8YGgj+J+LHmbC3XO7/4yzLF2gka9nan1eQ43/dIwfr07v1ZSVmBmjrB+xk2
-	 qon5CEAbyCg2WDiHxmJS17S4vQc+Z3pobaByPxZI=
+	b=h180uB799yZgyeJ6F33zLaL9NMD8VMZnzf7D3vCKyirG3YYRCSwanXAme6lcB+tkl
+	 qKR/EeWM/xsw8rkfRJwDD9aMdn32QUaceTyFKQLWM7Q6sQMdIVntrMJvBe9Nx4b0oC
+	 IvrBeqR83/j6G2+MI9rxnWKkoo34HgoULku2AFEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5288FF800EB;
-	Wed, 26 Aug 2020 21:17:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1B8BF801EC;
+	Wed, 26 Aug 2020 21:17:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68BB6F801D9; Wed, 26 Aug 2020 21:17:21 +0200 (CEST)
+ id 820B3F801F2; Wed, 26 Aug 2020 21:17:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5CC6F800EB
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 21:17:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5CC6F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC7D6F801F2
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 21:17:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC7D6F801F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZiCZuNhm"
+ header.b="PNJRCD+c"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AF71E2078A;
- Wed, 26 Aug 2020 19:17:15 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D43552078A;
+ Wed, 26 Aug 2020 19:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598469436;
- bh=0H6AKIRhKk8pjwIpNJ1qeXyffDG7WNeaHBbBTs3CeAw=;
+ s=default; t=1598469441;
+ bh=JmBM+nkl0t+UofWg4Gi1xS0o3nBQu5RONor3hOBJoqE=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=ZiCZuNhmWPoftkP1giXAxL3KKv8kxyu8FywRiqwvNgbAk3UiReFw8QWqoRAmQlDXC
- 0HdOekZaDZKz40p2MhoYd7/T6UaPa0OKCiHE0OfItmOBdbjEHZT+pmTgm2766hL5xY
- gL+M2Jt3fTHSFKtfPBjD8ZHEKH0dtvQj/8vqXDwQ=
-Date: Wed, 26 Aug 2020 20:16:39 +0100
+ b=PNJRCD+cKqy2Mvyvk8mEF8MpHMrU/Fy/KvJ4bIblOU22Mdh+2ISANcpiOOK+il/Fo
+ mXvPO7D2WwrBryg83KPXAjKWyZpqsbNG52DuxZZ7gq5q/gHAPsHU2V/BQCrANihDeI
+ l1H6Mq7+p7vPvcoUOejRI4ltWrit/YNGe8aF6aNY=
+Date: Wed, 26 Aug 2020 20:16:45 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-In-Reply-To: <20200826163340.3249608-1-vkoul@kernel.org>
-References: <20200826163340.3249608-1-vkoul@kernel.org>
-Subject: Re: [PATCH v2 0/5] ASoC: Fix return check for devm_regmap_init_sdw()
-Message-Id: <159846939971.39744.13669389911848588325.b4-ty@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Ryan Lee <ryans.lee@maximintegrated.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Shuming Fan <shumingf@realtek.com>, Naveen Manohar <naveen.m@intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+In-Reply-To: <20200820042828.10308-1-dinghao.liu@zju.edu.cn>
+References: <20200820042828.10308-1-dinghao.liu@zju.edu.cn>
+Subject: Re: [PATCH] ASoC: qcom: common: Fix refcount imbalance on error
+Message-Id: <159846939972.39744.13708543764168639585.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,21 +87,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 26 Aug 2020 22:03:35 +0530, Vinod Koul wrote:
-> This series attempts to fix return check for devm_regmap_init_sdw()
-> 
-> Changes in v2:
->  - Add missing patch for rt711
->  - Add patch for rt700
-> 
-> Vinod Koul (5):
->   ASoC: max98373: Fix return check for devm_regmap_init_sdw()
->   ASoC: rt1308-sdw: Fix return check for devm_regmap_init_sdw()
->   ASoC: rt711: Fix return check for devm_regmap_init_sdw()
->   ASoC: rt715: Fix return check for devm_regmap_init_sdw()
->   ASoC: rt700: Fix return check for devm_regmap_init_sdw()
-> 
-> [...]
+On Thu, 20 Aug 2020 12:28:27 +0800, Dinghao Liu wrote:
+> for_each_child_of_node returns a node pointer np with
+> refcount incremented. So when devm_kzalloc fails, a
+> pairing refcount decrement is needed to keep np's
+> refcount balanced.
 
 Applied to
 
@@ -111,16 +99,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: max98373: Fix return check for devm_regmap_init_sdw()
-      commit: 6e0c9b5f90978287b5a3d38ee83203d295f375f1
-[2/5] ASoC: rt1308-sdw: Fix return check for devm_regmap_init_sdw()
-      commit: 344850d93c098e1b17e6f89d5e436893e9762ef3
-[3/5] ASoC: rt711: Fix return check for devm_regmap_init_sdw()
-      commit: be1a4b2c56db860a220c6f74d461188e5733264a
-[4/5] ASoC: rt715: Fix return check for devm_regmap_init_sdw()
-      commit: 282eb0b52e3f0399ee48a4cad0d9ffec840b0164
-[5/5] ASoC: rt700: Fix return check for devm_regmap_init_sdw()
-      commit: db1a4250aef53775ec0094b81454213319cc8c74
+[1/1] ASoC: qcom: common: Fix refcount imbalance on error
+      commit: c1e6414cdc371f9ed82cefebba7538499a3059f9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
