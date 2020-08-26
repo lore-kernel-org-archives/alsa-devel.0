@@ -2,81 +2,82 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91044C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 18:52:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75782C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 18:52:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 118F52078A
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 18:52:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA3B32080C
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 18:52:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jgcEN5/X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 118F52078A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uKznN8gR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EfGk7K67"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA3B32080C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F62A17A7;
-	Wed, 26 Aug 2020 20:51:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F62A17A7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7031E17A8;
+	Wed, 26 Aug 2020 20:51:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7031E17A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598467936;
-	bh=XBr/fnbwBz/TLqTnqck7d9QMDktEe+KFnwu1ysa+BqY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jgcEN5/X2E51HD4VCsJJSag6R9xTYTYqKaPBhkLoAnZUwUrM1IO1ww2wO48I5PRqU
-	 2G8Zkqn3t/1r0AyXiefKGXYJqYMwa6AQ8XE6lunl7APr9c7IqamTbvu7xM8/hZf2DA
-	 Ko1e1RyjrkAnBFPobmRtwrB7Lh//2jujHkg+8P5I=
+	s=default; t=1598467959;
+	bh=u5YL3gJo1LDspCet5eGX7Njt7Er6sUfOnLpX//R3Dw4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uKznN8gRYNWu6XhkZbLcUGA/Di8v6WwXMlQeuwckrn4zs5Z/SPzrfbzJcuV0zrB85
+	 no+ByTWPSx7855+bgkB0lfvYizkf//tw4k67CxlEQI0Px+qwKmui5HqBLaP0SIOpi8
+	 5qSV9cJRg8yp/isRdkfM7KiMCCEgMd2AQoEae8HA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51544F8016F;
-	Wed, 26 Aug 2020 20:49:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2269F801F2;
+	Wed, 26 Aug 2020 20:51:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11D2DF8016F; Wed, 26 Aug 2020 20:49:03 +0200 (CEST)
-Received: from mail-io1-f66.google.com (mail-io1-f66.google.com
- [209.85.166.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EDA9FF80257; Wed, 26 Aug 2020 20:51:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2FA3F8016F
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 20:48:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2FA3F8016F
-Received: by mail-io1-f66.google.com with SMTP id h4so3238153ioe.5
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 11:48:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ANVjB6Oqn2d1pZe/e10TGufV/gtKnuBQp7HE23A4Kz8=;
- b=QvVRkc0lPkPa/E0EFSaUJg8mkPI+n5Bo8V5qXEQc4px0Ve/eijZxFB7RxJ8gFEnMW2
- sb0BxxnI/4dgSQd4LRj3pS7bJ+av0qdrjmIQTGJcuq38tgPkv9SGzBgH3tGLP3vW8wjz
- RLJzjTjo3WgJ6Mmgy3svcNadyCEwQJwlq2AVil7ML+q6zoFGT9J9Ty/3PVXVDJswNY5X
- DuTaq6hGiscLInPMpoOTZVmD+bqNfqqVV2qfmh2mrvB6sGDjgO81J6d0bm8luBrwLLmh
- e3ohIP8NQmqzVo80fl8zLzWrZ2noA2NXUDvQN7GPgPQnOqoWXp24WjrwR16ew3I0UGiG
- 9oig==
-X-Gm-Message-State: AOAM531XM0asEI2PmqXaKt78ArJFGy5jC172Ic0QTKHPYjmefA29hLow
- 6T/QTqX5ujUAQk6060wagA==
-X-Google-Smtp-Source: ABdhPJxCGQDbXnwHYxRdKiwLONGRlHhRoTm815Iaj2AA0tWZ3EoOypxgdG+IXPtFbxHb2B2WuP+pTw==
-X-Received: by 2002:a05:6602:280f:: with SMTP id
- d15mr5477882ioe.200.1598467734302; 
- Wed, 26 Aug 2020 11:48:54 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.249])
- by smtp.googlemail.com with ESMTPSA id c2sm1609226iow.6.2020.08.26.11.48.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 Aug 2020 11:48:53 -0700 (PDT)
-From: Rob Herring <robh@kernel.org>
-To: devicetree@vger.kernel.org
-Subject: [PATCH 1/3] dt-bindings: sound: Remove unused 'linux,hdmi-audio'
-Date: Wed, 26 Aug 2020 12:48:49 -0600
-Message-Id: <20200826184851.3431531-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 556DAF801EC
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 20:51:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 556DAF801EC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="EfGk7K67"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id BFA0C2078A;
+ Wed, 26 Aug 2020 18:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1598467862;
+ bh=u5YL3gJo1LDspCet5eGX7Njt7Er6sUfOnLpX//R3Dw4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=EfGk7K677aN6IwTqYE7tb9F83mITA/w9AJAOovwB0DXuAr5s8Rq5/8VtX9bMZz/ez
+ gpOCTcQZaZ5oBlwb2Oa/SX1PFhaSz8ClM89zxd7dpX8OuBW98VgdbPJushXJvali2k
+ 6uV311EW6xENriVa4RS1dQSKQ2AFf769uj1katUs=
+Date: Wed, 26 Aug 2020 19:50:25 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 1/8] ALSA: hda: fix VS_LTRC register name
+Message-ID: <20200826185025.GR4965@sirena.org.uk>
+References: <20200826184532.1612070-1-ranjani.sridharan@linux.intel.com>
+ <20200826184532.1612070-2-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ZaW/dtY/7oMe/vLp"
+Content-Disposition: inline
+In-Reply-To: <20200826184532.1612070-2-ranjani.sridharan@linux.intel.com>
+X-Cookie: Should I do my BOBBIE VINTON medley?
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,39 +93,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The binding was added in 2013 and has had no driver since 2015.
 
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/sound/hdmi.txt | 16 ----------------
- 1 file changed, 16 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/hdmi.txt
+--ZaW/dtY/7oMe/vLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/sound/hdmi.txt b/Documentation/devicetree/bindings/sound/hdmi.txt
-deleted file mode 100644
-index 56407c30e954..000000000000
---- a/Documentation/devicetree/bindings/sound/hdmi.txt
-+++ /dev/null
-@@ -1,16 +0,0 @@
--Device-Tree bindings for dummy HDMI codec
--
--Required properties:
--	- compatible: should be "linux,hdmi-audio".
--
--CODEC output pins:
--  * TX
--
--CODEC input pins:
--  * RX
--
--Example node:
--
--	hdmi_audio: hdmi_audio@0 {
--		compatible = "linux,hdmi-audio";
--	};
--- 
-2.25.1
+On Wed, Aug 26, 2020 at 11:45:25AM -0700, Ranjani Sridharan wrote:
+> It should be called VS_LTRP instead.
 
+Takashi, should I just apply this to the ASoC tree?
+
+--ZaW/dtY/7oMe/vLp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9GrvEACgkQJNaLcl1U
+h9A+CAf/aFODriub8QIe1/8fJHtuyFRYaWk3VPPzDbubMOgKfb3seDkq9Qbe0dgS
+zYkoll8G8GmzvFCfy/znjN4Q7uQVSKSzcmid3obiHceWZuum3fSkMMebHvC3TVUy
+B5nek3iw9kDZU10hEYMJWeONU770zExTiXaPYlPMnaBgx35q5Dm7pvHaS+Eebwun
+IYZ6OcUbSC5EwAFC958owZ9yx6t1czaskRetNqo7ecgmSTqizlRQYnyJJ10ZuEO4
+fBGxOrU5OBLsSVsCsyuKOB1iM47ZeiYbCwm1tzrIYEhHlNgzzySt+InHWwOjB5gd
+/etpxoov5xpzTeUlqccO6yLZYr2QTg==
+=ozve
+-----END PGP SIGNATURE-----
+
+--ZaW/dtY/7oMe/vLp--
