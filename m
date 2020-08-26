@@ -2,73 +2,78 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0C98C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:58:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34ADEC433E3
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 13:48:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FB0A2080C
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:58:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2CAD22B40
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 13:48:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aF0kqpDm";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZOAZ8PC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FB0A2080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LXZgORBM";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="yGPqnz+8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2CAD22B40
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3C7A1756;
-	Wed, 26 Aug 2020 14:57:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3C7A1756
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4402B16CF;
+	Wed, 26 Aug 2020 15:47:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4402B16CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598446681;
-	bh=ezcQ5dPmt0mrjFunCsvXBhAKE0liTK6c4bzI1vFds6E=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1598449720;
+	bh=ZA0fSwL8NzC6mMs/LwDsWlnjWb3abNWBYTeue6Ut3J0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aF0kqpDmmH7gqXyG0ldXP7C81f92Jh43bNXY7ipVNoIlzqq4m7qPyI7lPwKRtlly+
-	 FaabkvL36z7IBm0HAnYNDiWE9+6+MHl/Ddluvtq5ha7gthrC23wmqOfYatj94Ps+gK
-	 kNXvNelFNVioHiRgM5pnFTxa8RqyfIDe1g/F2F2o=
+	b=LXZgORBMPOkSg+a+t3jz+87eQSQryQ3nvIRu80efQuUJisaDPJag7kRgQT5Hb3Nqr
+	 I/ZLEzSa4ykOQn2Oq6y+Kd+zatrnB4epXElv9FbeOmVuyKKU2tAU2ZYR7PXE5Y7QW4
+	 5lRy0aO4Wnv2rCNyjEnBP1IthKbt9XY/kQUZc75k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC2FCF8020C;
-	Wed, 26 Aug 2020 14:56:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3400F8016F;
+	Wed, 26 Aug 2020 15:47:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A601F801D9; Wed, 26 Aug 2020 14:56:17 +0200 (CEST)
+ id 78262F801D9; Wed, 26 Aug 2020 15:47:48 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A9DDF800EB
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 14:56:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A9DDF800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27BBAF80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 15:47:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27BBAF80105
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GZOAZ8PC"
+ header.b="yGPqnz+8"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EC5A42080C;
- Wed, 26 Aug 2020 12:56:11 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 936A722B3F;
+ Wed, 26 Aug 2020 13:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598446572;
- bh=ezcQ5dPmt0mrjFunCsvXBhAKE0liTK6c4bzI1vFds6E=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=GZOAZ8PCP5ZDmfWcn2NjveXt65gKa8T+7xoj/dat8r/0c35fsb1zkGnGm8zMcZNU1
- niuk7uhN9McGHBFzks29QgGzHc5xuX+Bh9Wp92XBVaGdBiQauJt7Zmqy4F2b0wcMC+
- QFi2sbLbSMf3jf24vlUtFME5tiHgXbB7vFlc8Q5M=
-Date: Wed, 26 Aug 2020 13:55:36 +0100
+ s=default; t=1598449655;
+ bh=ZA0fSwL8NzC6mMs/LwDsWlnjWb3abNWBYTeue6Ut3J0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=yGPqnz+8edOAOfy0jo/ZjXs/xGpIhkdXhH71X5zqJNfKt9PR/A0B0fry+HGzKX4A8
+ 0DnMkqnx64qfn7oDcq+DonR6362EP1m+MKw6e6PvZkj3nTLgOafm8743OHKUQZdouW
+ iLhtO+YXhc38+OOF7QVA2aQP6lxSc8tdx7L+h0bY=
+Date: Wed, 26 Aug 2020 14:46:58 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20200825235854.1588034-1-ranjani.sridharan@linux.intel.com>
-References: <20200825235854.1588034-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 0/4] SOF FW loader fixes and updates
-Message-Id: <159844653099.37071.13873594783675405659.b4-ty@kernel.org>
-Cc: tiwai@suse.de
+To: Pavel Dobias <dobias@2n.cz>
+Subject: Re: [PATCH] ASoC: max9867: shutdown codec when changing filter type
+Message-ID: <20200826134658.GG4965@sirena.org.uk>
+References: <20200826113904.10265-1-dobias@2n.cz>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="vSsTm1kUtxIHoa7M"
+Content-Disposition: inline
+In-Reply-To: <20200826113904.10265-1-dobias@2n.cz>
+X-Cookie: Should I do my BOBBIE VINTON medley?
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, ladis@linux-mips.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,48 +89,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 Aug 2020 16:58:50 -0700, Ranjani Sridharan wrote:
-> This series includes fixes and updates to the SOF firmware loader.
-> 
-> Iulian Olaru (1):
->   ASoC: SOF: loader: Add debug box region
-> 
-> Karol Trzcinski (2):
->   ASoC: SOF: IPC: make sof_ipc_window monosized
->   ASoC: SOF: ext_manifest: Parse debug ABI version
-> 
-> [...]
 
-Applied to
+--vSsTm1kUtxIHoa7M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Wed, Aug 26, 2020 at 01:39:04PM +0200, Pavel Dobias wrote:
+> Changing filter type without disabling codec results in filter
+> malfunction. Disable codec when changing filter type.
 
-Thanks!
+> +static int max9867_filter_set(struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+> +	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
+> +	unsigned int mode = ucontrol->value.enumerated.item[0];
+> +
+> +	if (mode > 1)
+> +		return -EINVAL;
+> +
+> +	/* shutdown codec before switching filter mode */
+> +	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
+> +		MAX9867_PWRMAN_SHDN, 0);
 
-[1/4] ASoC: SOF: IPC: make sof_ipc_window monosized
-      commit: 76ab546cd8f0c64d4603b2faad4558c5b670561e
-[2/4] ASoC: SOF: loader: fix memory leak in get_ext_windows
-      commit: e9157a449aa3f72fdbded9ce780c666bf0951cf3
-[3/4] ASoC: SOF: ext_manifest: Parse debug ABI version
-      commit: 60b7c1ba289b8ebe4f275b0b381f711e5b60184b
-[4/4] ASoC: SOF: loader: Add debug box region
-      commit: e17b7389dcc4239b806cd8789a812ee1b8b7b134
+This probably needs to return -EBUSY if the audio path is up - obviously
+shutting the CODEC down is going to glitch the audio pretty badly.  It
+should probably also check to see if the value is actually being changed
+so we avoid a fairly expensive operation for noop changes.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--vSsTm1kUtxIHoa7M
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9GZ9EACgkQJNaLcl1U
+h9CSFAf/WR1giJbw0J/Y+TZYpFD4P8Mffgz43/yi+Gpqd71KzPE6qTgZb4MmBkxV
+gcU/8MaD+C/f7KVXEU62wkTxknSDMILqoFtyHTmKhH3+l8RQEI5Ws1BARpiTcuhB
+IRp5/yjnRu3xdDdgpq8YZQg34uNCKWRiOK6aAFDkrwvy8X3hnajMKgmg5noQW7Kp
+tnMFLkgkbm/svX/tu1ILuwUy6d+xKHWyuGnmHLawNsGg6yGkOerW6lHvceEvw8Ea
+B37fVR60oGscCp/x5GRmgyJnxTKqbHRoc/Bb9jbaeP3fdITeDFXhFQYwQL/D5Er2
+jcHmfOONjCtazgroVN31TGUGRL+F+w==
+=kin3
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--vSsTm1kUtxIHoa7M--
