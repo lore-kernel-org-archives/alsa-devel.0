@@ -2,81 +2,67 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14F86C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:47:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56517C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:48:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 797592071E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:47:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDA712071E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:48:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mA19at/+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dih5vfgd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 797592071E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PLB1IBIk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDA712071E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC5811706;
-	Wed, 26 Aug 2020 10:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC5811706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45AA116A2;
+	Wed, 26 Aug 2020 10:47:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45AA116A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598431657;
-	bh=HoUnL2q1WxrGMZkSItOoLBcbNE9id2blFCNhr5ujsSo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1598431713;
+	bh=oMkg6dvwXVq/GpwT42sO9SCsRJ8BNvaKlu3x9dpTx5k=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mA19at/+L/bpkHmp624TyLY3FAHR0P0DLQzaw651F0l2EAwe5nOgdwUv/01bFT6fM
-	 gTbiSy+o/dJvwy2A3MpDWREKjUfRN1q99PKqxtIMsJFzxSs+wTSa3tuLRpG97tp030
-	 x/HASgYL+1McYJbFm1vb5kG5dyLAYjHfiY3OSY3A=
+	b=PLB1IBIkL6/7G3Jg9RfbCUdlA2gqC5oYfjyvEBs8kZP7f+a2z2Fd7oYjQuzA7/8Ij
+	 k3ZinzLU/vot18YKe54QYNyDfT1u829r/helQmgKgRaYW51dxbAPgKkVK3PL19W5i2
+	 g/Fx04UoVMXHw8S2Csi8M65kNVJaDlmfi4LKCiY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83B23F8016F;
-	Wed, 26 Aug 2020 10:46:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD220F801EC;
+	Wed, 26 Aug 2020 10:47:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99FBBF801D9; Wed, 26 Aug 2020 10:46:44 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id BE69CF801F2; Wed, 26 Aug 2020 10:47:41 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21F9FF80143
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 10:46:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21F9FF80143
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dih5vfgd"
-Received: from localhost (unknown [122.171.38.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 33F552071E;
- Wed, 26 Aug 2020 08:46:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598431600;
- bh=HoUnL2q1WxrGMZkSItOoLBcbNE9id2blFCNhr5ujsSo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=dih5vfgd2MSYnjNKJIwqN2EcDZjiYbs4WmUSide/Pmx/pPy68SGTT5MpMvQ2wpIqw
- TISsDTMzie7mChKUidct21AZ1AMPSbh/sYoup4B07jNaMmQhG5QvGAQx436EGER4yw
- DnqW7haaYdXOpEL3cHpWNavOYSSeRzpJojzVu8fQ=
-Date: Wed, 26 Aug 2020 14:16:35 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH v2] soundwire: intel: fix intel_suspend/resume defined
- but not used warning
-Message-ID: <20200826084635.GX2639@vkoul-mobl>
-References: <20200824133234.28115-1-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200824133234.28115-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF978F801EC
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 10:47:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF978F801EC
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id D50B6ABED;
+ Wed, 26 Aug 2020 08:48:06 +0000 (UTC)
+Date: Wed, 26 Aug 2020 10:47:35 +0200
+Message-ID: <s5ho8mxu72w.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Adrien Crivelli <adrien.crivelli@gmail.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Book Ion
+ NT950XCJ-X716A
+In-Reply-To: <20200826084014.211217-1-adrien.crivelli@gmail.com>
+References: <20200826084014.211217-1-adrien.crivelli@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,21 +78,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 24-08-20, 21:32, Bard Liao wrote:
-> When CONFIG_PM_SLEEP is not defined, GCC throws compilation warnings:
+On Wed, 26 Aug 2020 10:40:14 +0200,
+Adrien Crivelli wrote:
 > 
-> drivers/soundwire/intel.c:1799:12: warning: ‘intel_resume’ defined but not
-> used [-Wunused-function]
->  static int intel_resume(struct device *dev)
->             ^~~~~~~~~~~~
-> drivers/soundwire/intel.c:1683:12: warning: ‘intel_suspend’ defined but not
-> used [-Wunused-function]
->  static int intel_suspend(struct device *dev)
->             ^~~~~~~~~~~~~
+> The Galaxy Book Ion NT950XCJ-X716A (15 inches) uses the same ALC298
+> codec as other Samsung laptops which have the no headphone sound bug. I
+> confirmed on my own hardware that this fixes the bug.
 > 
-> Fix by using __maybe_unused macro.
+> This also correct the model name for the 13 inches version. It was
+> incorrectly referenced as NT950XCJ-X716A in commit e17f02d05. But it
+> should have been NP930XCJ-K01US.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
+> Signed-off-by: Adrien Crivelli <adrien.crivelli@gmail.com>
 
-Applied, thanks
+Thanks, applied.
 
--- 
-~Vinod
+
+Takashi
