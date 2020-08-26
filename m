@@ -6,68 +6,68 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BE1AC433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0C98C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:58:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C4F32080C
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:57:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FB0A2080C
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:58:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t/KdQMWd";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CmD1Cb7V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C4F32080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aF0kqpDm";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZOAZ8PC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FB0A2080C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B6B71744;
-	Wed, 26 Aug 2020 14:56:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B6B71744
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3C7A1756;
+	Wed, 26 Aug 2020 14:57:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3C7A1756
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598446629;
-	bh=CW9kNzo3j+PP+YGjUxwav44EE03197hg0IMKJjSSSCQ=;
+	s=default; t=1598446681;
+	bh=ezcQ5dPmt0mrjFunCsvXBhAKE0liTK6c4bzI1vFds6E=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t/KdQMWdXunHqiHxKDvFzHYZPY+mpoqGon9BYKmdVADGbGulQBvGkGtaUmR3xRJE2
-	 YTyZkTo+4uh+g7zKJrwgEaICzugmyxKY9/pRJSFeGf9JBOfcqULjwmhlZmIcgTQG4X
-	 oOk6H30icp3mB/3X080zar7kwIBkVok5yCPxw7g4=
+	b=aF0kqpDmmH7gqXyG0ldXP7C81f92Jh43bNXY7ipVNoIlzqq4m7qPyI7lPwKRtlly+
+	 FaabkvL36z7IBm0HAnYNDiWE9+6+MHl/Ddluvtq5ha7gthrC23wmqOfYatj94Ps+gK
+	 kNXvNelFNVioHiRgM5pnFTxa8RqyfIDe1g/F2F2o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AB56F8016F;
-	Wed, 26 Aug 2020 14:56:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC2FCF8020C;
+	Wed, 26 Aug 2020 14:56:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E38A1F801EC; Wed, 26 Aug 2020 14:56:16 +0200 (CEST)
+ id 3A601F801D9; Wed, 26 Aug 2020 14:56:17 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01338F80143
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 14:56:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01338F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A9DDF800EB
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 14:56:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A9DDF800EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CmD1Cb7V"
+ header.b="GZOAZ8PC"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B14EF208E4;
- Wed, 26 Aug 2020 12:56:06 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EC5A42080C;
+ Wed, 26 Aug 2020 12:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598446567;
- bh=CW9kNzo3j+PP+YGjUxwav44EE03197hg0IMKJjSSSCQ=;
+ s=default; t=1598446572;
+ bh=ezcQ5dPmt0mrjFunCsvXBhAKE0liTK6c4bzI1vFds6E=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=CmD1Cb7V4IP3ch1vRUAAE/9g4gX3zwAnIIIvR5+EsItJp9KhBdckNC748eJBEuYWv
- WNIKB41KQ+Lk7GZ+ZjxY0P1TrfnIZCGzTH8/VdszFYsrud1do+/CLPHa3p28wBDVfi
- pnKVz+xKNgmxBk6tdBmSEvlMYhRwMIfJhP9Y7wAU=
-Date: Wed, 26 Aug 2020 13:55:31 +0100
+ b=GZOAZ8PCP5ZDmfWcn2NjveXt65gKa8T+7xoj/dat8r/0c35fsb1zkGnGm8zMcZNU1
+ niuk7uhN9McGHBFzks29QgGzHc5xuX+Bh9Wp92XBVaGdBiQauJt7Zmqy4F2b0wcMC+
+ QFi2sbLbSMf3jf24vlUtFME5tiHgXbB7vFlc8Q5M=
+Date: Wed, 26 Aug 2020 13:55:36 +0100
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20200825235040.1586478-1-ranjani.sridharan@linux.intel.com>
-References: <20200825235040.1586478-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 0/7] SOF fixes and updates
-Message-Id: <159844653099.37071.12835752319691209056.b4-ty@kernel.org>
+In-Reply-To: <20200825235854.1588034-1-ranjani.sridharan@linux.intel.com>
+References: <20200825235854.1588034-1-ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 0/4] SOF FW loader fixes and updates
+Message-Id: <159844653099.37071.13873594783675405659.b4-ty@kernel.org>
 Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,13 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 Aug 2020 16:50:33 -0700, Ranjani Sridharan wrote:
-> This series includes fixes for error reporting, topology parsing and
-> runtime PM issues along with updates for DMIC support and IMX platforms.
+On Tue, 25 Aug 2020 16:58:50 -0700, Ranjani Sridharan wrote:
+> This series includes fixes and updates to the SOF firmware loader.
 > 
-> Iulian Olaru (2):
->   ASoC: SOF: imx: Replace sdev->private with sdev->pdata->hw_pdata
->   ASoC: SOF: sof-of-dev: Add .arch_ops field
+> Iulian Olaru (1):
+>   ASoC: SOF: loader: Add debug box region
+> 
+> Karol Trzcinski (2):
+>   ASoC: SOF: IPC: make sof_ipc_window monosized
+>   ASoC: SOF: ext_manifest: Parse debug ABI version
 > 
 > [...]
 
@@ -100,20 +102,14 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: SOF: Intel: hda: report error only for the last ROM init iteration
-      commit: 53ec753137f2a407c949cef3158e89ece7688637
-[2/7] ASoC: SOF: fix a runtime pm issue in SOF when HDMI codec doesn't work
-      commit: 6c63c954e1c52f1262f986f36d95f557c6f8fa94
-[3/7] ASoC: SOF: intel: hda: support also devices with 1 and 3 dmics
-      commit: 3dca35e35b42b3405ddad7ee95c02a2d8cf28592
-[4/7] ASoC: SOF: topology: fix the ipc_size calculation for process component
-      commit: 878694dcbe51794c7a68195b92a3707ed4ff5826
-[5/7] ASoC: SOF: Intel: hda: add extended rom status dump to error log
-      commit: 29c8e4398f02adacd429c7847dacc8aea5a0c2f1
-[6/7] ASoC: SOF: imx: Replace sdev->private with sdev->pdata->hw_pdata
-      commit: 17b3f99a360d76fed46e7ec1e12d6670bd7ca884
-[7/7] ASoC: SOF: sof-of-dev: Add .arch_ops field
-      commit: 5a1fa00ad74bd5e77feab84a6d64c06f267df415
+[1/4] ASoC: SOF: IPC: make sof_ipc_window monosized
+      commit: 76ab546cd8f0c64d4603b2faad4558c5b670561e
+[2/4] ASoC: SOF: loader: fix memory leak in get_ext_windows
+      commit: e9157a449aa3f72fdbded9ce780c666bf0951cf3
+[3/4] ASoC: SOF: ext_manifest: Parse debug ABI version
+      commit: 60b7c1ba289b8ebe4f275b0b381f711e5b60184b
+[4/4] ASoC: SOF: loader: Add debug box region
+      commit: e17b7389dcc4239b806cd8789a812ee1b8b7b134
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
