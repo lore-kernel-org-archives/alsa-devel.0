@@ -2,78 +2,81 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E706BC433E3
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:53:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3AC6C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:54:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68FF72067C
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:53:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B5F52067C
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:54:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="baFUKzu7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="N36eYJo9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68FF72067C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LlZTtJzY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="Z3ym7lDf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B5F52067C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCB4B16FD;
-	Wed, 26 Aug 2020 11:52:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCB4B16FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id A09141720;
+	Wed, 26 Aug 2020 11:53:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A09141720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598435601;
-	bh=dRX24YLMKQDuqbKr+tMI9HFp3nsF9wXeGpRHYrMgniw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=baFUKzu7M/eYAMs06o89uaj9NIf9S/Qg0k7WNRoPxHWc7xgCZaJxJGyj0zq0d3xpk
-	 SeZ4+Oz09h2ts1JqZfmv8ePYq91Z9L64ugP1QK4X4I7vOmwK6df4sX98spXxa1HUkV
-	 zF1pSh6ZQe+p216nQdArzpgU8XNN1aHgGk6fwai8=
+	s=default; t=1598435660;
+	bh=2t3Hrqr7j+fXDhaWsKES2M9AJ4B5o9Ksuv2iONTbqZ4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LlZTtJzYHUh3Rv/dDhCp450iA4qFEv5mRDufl1SAjcFSTUL/wYMr++PWXpzHOpUQe
+	 /wKlTEycKKY7yha5ycXn8UIiIruFBYJjDElouJxeC0zMUmTPgl3HhWv77niX6zyCLN
+	 67JOOVz8ssSkBrwtplwkGjTwnMu9A0HcLuZPZRkY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29EA2F801EC;
-	Wed, 26 Aug 2020 11:52:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C49FDF802A0;
+	Wed, 26 Aug 2020 11:52:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D725AF801EC; Wed, 26 Aug 2020 11:52:29 +0200 (CEST)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [85.215.255.50])
+ id B1566F80257; Wed, 26 Aug 2020 11:52:32 +0200 (CEST)
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
+ [85.215.255.82])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 999C4F800EB
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 11:52:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 999C4F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21D5CF8016F
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 11:52:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21D5CF8016F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="N36eYJo9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598435542;
+ header.b="Z3ym7lDf"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598435545;
  s=strato-dkim-0002; d=gerhold.net;
- h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
- Subject:Sender;
- bh=F/c9iaxZixYGzGo5s+iEIuFcmUCvaL5Q1xK1gdH/2pQ=;
- b=N36eYJo9Z9i9emjIdOcu8/E/TPS0SHrNDmRK+5P3P8TiwV8tuy7E//WcPysotvPxaM
- f2nbxIdEQnhSBtdiuw7C3IDT8S4dXxm3jOCkX/1JxiggtKBh6ktqN6pmzz6LSqcCGsDm
- PlM54/9T/Gb+Hsq+/lg5XNJYDYcJLZHOqVdtmEcBx1fm5JJ6+aThw/OkXiFeD4qEJCtb
- xDt9aMyh3SDfyaCIkdid6IbclOgB0A0+H8PN041dfgU27A51nl3KvYnnBtkVKB400eoF
- AWI4mvg+PC9wFKVfqrZSX1HHcSYOOIVgFTfA5Q344E0mri+cjVe4Wj3dt1j7baHH1OwM
- QR5w==
+ h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=PtOA7FAw/iEqDUeGc5Ioxizj0fv1lckLU2YvxJLvd3o=;
+ b=Z3ym7lDfay+AN12IUzITRHTXV1xoO9W1w+3SqMPS++sYwR+xcfWqU6zXlaaYED3SU8
+ yQygjAJWsohf8BVimpmvw7cMebIPkqHWmLt8ijf7jlI2K8AotzWsLtb/dhksmGZbCMOW
+ Ay4/JYeLbcQG7pQ1kxGIBgWZwbNBk4Hbzejz9deejJ5WnoMzI3s5VBBqUIA9ejMfZL/p
+ bKy7o9vIGGPAfVr9N2Od/GuXdTmit7aue46OOoxjz1ZAJU5j6GMnh7wwBwrE57kLnh41
+ zi4CIGJn5l8vG1EYnx+i+MFkx+1DvRhz3LWO4KOv2p8QQiWYLntlQ2jrCH7KLA8qAj3e
+ 0EyQ==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4W6NYn8D"
 X-RZG-CLASS-ID: mo00
 Received: from localhost.localdomain
  by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
- with ESMTPSA id g0b6c1w7Q9qGl6U
+ with ESMTPSA id g0b6c1w7Q9qHl6V
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
  (Client did not present a certificate);
- Wed, 26 Aug 2020 11:52:16 +0200 (CEST)
+ Wed, 26 Aug 2020 11:52:17 +0200 (CEST)
 From: Stephan Gerhold <stephan@gerhold.net>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 0/2] ASoC: qcom: common: Parse auxiliary devices from
- device tree
-Date: Wed, 26 Aug 2020 11:51:39 +0200
-Message-Id: <20200826095141.94017-1-stephan@gerhold.net>
+Subject: [PATCH v2 1/2] ASoC: dt-bindings: qcom: Document "aux-devs" property
+Date: Wed, 26 Aug 2020 11:51:40 +0200
+Message-Id: <20200826095141.94017-2-stephan@gerhold.net>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200826095141.94017-1-stephan@gerhold.net>
+References: <20200826095141.94017-1-stephan@gerhold.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -102,28 +105,74 @@ not appear as part of the DAI links specified in the device tree.
 Examples for this are auxiliary devices such as analog amplifiers
 or codecs.
 
-The ASoC core provides a way to probe these components by adding
-them to snd_soc_card->aux_dev.
+To make them work they need to be added as part of "aux-devs"
+and connected to some other audio component using the audio routes
+configurable using "(qcom,)audio-routing".
 
-This patch set allows specifying them in the device tree through
-a new "aux-devs" property.
-
-v1: https://lore.kernel.org/linux-arm-msm/20200819091533.2334-1-stephan@gerhold.net/
-Changes in v2:
-  - Fix value type in device tree bindings:
-    aux-devs should be array of phandles without any arguments, so change
-    <phandles with arguments> -> <array of phandles>
-
-Stephan Gerhold (2):
-  ASoC: dt-bindings: qcom: Document "aux-devs" property
-  ASoC: qcom: common: Parse auxiliary devices from device tree
-
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
  .../devicetree/bindings/sound/qcom,apq8016-sbc.txt        | 7 +++++++
  Documentation/devicetree/bindings/sound/qcom,apq8096.txt  | 8 ++++++++
  Documentation/devicetree/bindings/sound/qcom,sdm845.txt   | 8 ++++++++
- sound/soc/qcom/common.c                                   | 4 ++++
- 4 files changed, 27 insertions(+)
+ 3 files changed, 23 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+index 84b28dbe9f15..23998262a0a7 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+@@ -34,6 +34,13 @@ Required properties:
+ 			  * DMIC
+ 			  * Ext Spk
+ 
++Optional properties:
++
++- aux-devs		: A list of phandles for auxiliary devices (e.g. analog
++			  amplifiers) that do not appear directly within the DAI
++			  links. Should be connected to another audio component
++			  using "qcom,audio-routing".
++
+ Dai-link subnode properties and subnodes:
+ 
+ Required dai-link subnodes:
+diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+index c814e867850f..e1b9fa8a5bf8 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+@@ -55,6 +55,14 @@ This binding describes the APQ8096 sound card, which uses qdsp for audio.
+ 	Value type: <stringlist>
+ 	Definition: The user-visible name of this sound card.
+ 
++- aux-devs
++	Usage: optional
++	Value type: <array of phandles>
++	Definition: A list of phandles for auxiliary devices (e.g. analog
++		    amplifiers) that do not appear directly within the DAI
++		    links. Should be connected to another audio component
++		    using "audio-routing".
++
+ = dailinks
+ Each subnode of sndcard represents either a dailink, and subnodes of each
+ dailinks would be cpu/codec/platform dais.
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+index ca8c89e88bfa..de4c604641da 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+@@ -24,6 +24,14 @@ This binding describes the SDM845 sound card, which uses qdsp for audio.
+ 	Value type: <stringlist>
+ 	Definition: The user-visible name of this sound card.
+ 
++- aux-devs
++	Usage: optional
++	Value type: <array of phandles>
++	Definition: A list of phandles for auxiliary devices (e.g. analog
++		    amplifiers) that do not appear directly within the DAI
++		    links. Should be connected to another audio component
++		    using "audio-routing".
++
+ = dailinks
+ Each subnode of sndcard represents either a dailink, and subnodes of each
+ dailinks would be cpu/codec/platform dais.
 -- 
 2.28.0
 
