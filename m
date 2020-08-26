@@ -7,84 +7,82 @@ X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FD07C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 15:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29948C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 15:13:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 951E320738
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 15:12:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B65E20707
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 15:13:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jCrgtZYD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 951E320738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KxA61+25"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B65E20707
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2840B1777;
-	Wed, 26 Aug 2020 17:11:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2840B1777
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E280176E;
+	Wed, 26 Aug 2020 17:12:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E280176E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598454751;
-	bh=/LguMcfUawnfYlYtIwbW/F26bSGASj2xxa/2U3UJUUk=;
+	s=default; t=1598454796;
+	bh=8WeEi5025yM0p/SAtxYi2cx0TWpP0dbvAhk4Uc9GwdU=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jCrgtZYDDLzTiBRavTkW1AMDxXcrkXQxoS+E0oi4t+7BJAnNdTMSMGmRGNUlbqdyK
-	 1RgAboY1n8uv2SC13x3UQXCsyno93eV4JG+aGUySPDTh8yzGKLQd045/4hHIc4m4Rl
-	 A6tSzpDw/IGZ4qXkxVFIsgLZv/wIrQMoCJ1+6JKo=
+	b=KxA61+25ihvBz4NPLuCVfZOKQK68NB9vh3N4Kp1R8hVvRjJW1sloznhrJWLFYzJY/
+	 cG5JPQYappHPc4Hvr1NApz2W9bfrO8ocWEIOceTy5zY5HV8LhN3XRZ1sQrhVbGHh6A
+	 kW2PmLk4eohBWgTdzq9Gf4x8xI1Oxdyn+rhMuzjI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56861F802BC;
-	Wed, 26 Aug 2020 17:11:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5E8FF8020C;
+	Wed, 26 Aug 2020 17:11:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6954F8016F; Wed, 26 Aug 2020 17:11:31 +0200 (CEST)
+ id 588B4F8016F; Wed, 26 Aug 2020 17:11:37 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72C01F800EB
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 17:11:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72C01F800EB
-IronPort-SDR: udUt4jOmRXAW3Doy78DiSsyX4ElW/o+XQK2WYewlpg8KOgI4w6reuGiHuVgrIXHu+E/8BOqhYl
- 22EF30YkKv3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="143970581"
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="143970581"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90E8CF801EC
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 17:11:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90E8CF801EC
+IronPort-SDR: FKxaTMcKlVN2y6SRc9nEfY3rfQrHzlM+jZEkBF6iiI/EA2SnkxndRmmsYG6lxLjg9p5aNy9+gF
+ kNAIb8m4id+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="143970570"
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="143970570"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Aug 2020 08:11:23 -0700
-IronPort-SDR: 8BOuzBscj9k1lVGdB5yJS0/sLIDM5VLn6aH07+vWPTj0D+L0nElcFtADnHP9l4yhtte+n6Vrfd
- A7qzJE3PNBsQ==
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="299505123"
+ 26 Aug 2020 08:11:21 -0700
+IronPort-SDR: Kqzb7ZXAZ8xX5SlEi/WxQq5DXzfNtH2AFLCDJqB4ItflV1I+fWFym6ZPnOZw0sYNJuGfbTurLm
+ 4y58MMJou79A==
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; d="scan'208";a="299505099"
 Received: from gillelas-mobl1.amr.corp.intel.com (HELO [10.255.231.51])
  ([10.255.231.51])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Aug 2020 08:11:22 -0700
-Subject: Re: [PATCH 1/4] regmap: sdw: move to -EOPNOTSUPP
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-References: <20200825171656.75836-2-pierre-louis.bossart@linux.intel.com>
- <20200825214858.GK5379@sirena.org.uk>
- <6f7e5830-4dd8-1ecc-20c3-df75bc9ef265@linux.intel.com>
- <20200826095600.GA4965@sirena.org.uk> <s5ha6yhu3af.wl-tiwai@suse.de>
- <20200826101301.GB4965@sirena.org.uk> <s5h8se1u2or.wl-tiwai@suse.de>
+ 26 Aug 2020 08:11:19 -0700
+Subject: Re: [PATCH 3/4] soundwire: SDCA: add helper macro to access controls
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
+ <20200825171656.75836-4-pierre-louis.bossart@linux.intel.com>
+ <20200826085540.GY2639@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <927c93bc-9ad8-7e5d-a5ea-d566e5f543df@linux.intel.com>
-Date: Wed, 26 Aug 2020 10:05:50 -0500
+Message-ID: <9c078341-7e90-a4e8-da30-19e9720d93e4@linux.intel.com>
+Date: Wed, 26 Aug 2020 10:00:30 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <s5h8se1u2or.wl-tiwai@suse.de>
+In-Reply-To: <20200826085540.GY2639@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
+ tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org,
+ Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
  srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -104,31 +102,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-
->>>> checkpatch is broken.
->>
->>> Heh, I'm not objecting it :)
->>
->>> OTOH, it's also true that ENOTSUPP is no good error code if returned
->>> to user-space.  Unfortunately many codes (including what I wrote) use
->>> this code mistakenly, and they can't be changed any longer...
->>
->> It's also used internally in various places without being returned to
->> userspace, that's what's going on here - the regmap core has some
->> specific checks for -ENOTSUPP.
+>> +/* v1.2 device - SDCA address mapping */
 > 
-> Sure, for such an internal usage any code can be used.
-> The question is a case like this -- where the return code might be
-> carried to outside.  Though, looking through the grep output, all
-> callers simply return -EINVAL for any errors, so it doesn't matter
-> much for now.
+> Can you please add description of bits used by each field here,
+> something like we have done for DevId
 
-I assumed this change to -EOPNOTSUPP reflected a consensus in 
-kernel-land, it's obviously not the case. This patch was supposed to be 
-a trivial clean-up...
+were you referring to something like this?
 
-So to be clear, what is the direction for existing code
-a) keep -ENOTSUPP as is?
-b) move to -EOPNOTSUPP?
+  * Spec definition
+  *   Register		Bit	Contents
+  *   DevId_0 [7:4]	47:44	sdw_version
+  *   DevId_0 [3:0]	43:40	unique_id
+  *   DevId_1		39:32	mfg_id [15:8]
+  *   DevId_2		31:24	mfg_id [7:0]
+  *   DevId_3		23:16	part_id [15:8]
+  *   DevId_4		15:08	part_id [7:0]
+  *   DevId_5		07:00	class_id
 
-And what is the preference for new code?
+> 
+>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
+>> +						 (((fun) & 0x7) << 22) |	\
+>> +						 (((ent) & 0x40) << 15) |	\
+>> +						 (((ent) & 0x3f) << 7) |	\
+>> +						 (((ctl) & 0x30) << 15) |	\
+>> +						 (((ctl) & 0x0f) << 3) |	\
+>> +						 (((ch) & 0x38) << 12) |	\
+>> +						 ((ch) & 0x07))
+> 
+> GENMASK() for the bitmaps here please. Also it would look very neat by
+> using FIELD_PREP() here, you can skip the bit shifts and they would be
+> done by FIELD_PREP() for you.
+
+ok.
