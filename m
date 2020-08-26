@@ -2,96 +2,66 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F347DC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:57:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12D15C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 15:08:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5FB62078D
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 14:57:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B57A2078A
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 15:08:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nXF1druh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="mDhVNkcP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5FB62078D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LGV3RwP+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B57A2078A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=2n.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B78816C7;
-	Wed, 26 Aug 2020 16:47:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B78816C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04A6F16CA;
+	Wed, 26 Aug 2020 17:07:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04A6F16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598453312;
-	bh=rsDgv//86vFSAM8lsZRkfGWtz/vrcCoZX8UA76dMJk4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nXF1druhTB8jue7MhhmlkUZJVIZ8tH8uMNzPfII8vqXqP1MSMtq/sg4aJRHWqF5fO
-	 CeX/YzgBhOaLYQSvW8V0GrlEyuJmwLUb5rqr45XgDPZB2L7M9q2FDtKanu6oqKzniQ
-	 ngG7yb1lq09quJFhDdFSVzz2UdLoLquiZnc2tLBU=
+	s=default; t=1598454529;
+	bh=64zxDvnztOsB+P0uuj9iHRqz81QkMSfMBORCXhhko7E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LGV3RwP+yn6Sjvw1ikC0jVK0njP/0ZXU+1CH9kl/woNkQk5rkXb+bmNIyD3x/cU8f
+	 /5cVNEsKY+kUSKCfANS6IAjpOxaPMRI399huBfjt1s9g536H8tkTT7OAC7pvjAt7rV
+	 W+ZCZ17gQunl3KgcilLTZ2iFOebu9/Xb5571eHvU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B607F80105;
-	Wed, 26 Aug 2020 16:47:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DC4AF8016F;
+	Wed, 26 Aug 2020 17:07:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AC05F801D9; Wed, 26 Aug 2020 16:47:39 +0200 (CEST)
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
- [81.169.146.171])
+ id 23FD9F801D9; Wed, 26 Aug 2020 17:07:57 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C5A1F80105
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 16:47:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C5A1F80105
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="mDhVNkcP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598453247;
- s=strato-dkim-0002; d=gerhold.net;
- h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=WtPyyCfNYRDGNlRLhnTbAOZUqz018Ne4S7uPqstOy3k=;
- b=mDhVNkcPXQQ1EassQtSK2pMQEI6X3ogvtsHR4i1JoClEdthuFKr1VuHNv0m5btJtI4
- VMV4dRgy5S6XgZkPLVtKllqPs0WJ6ckEEn8yaKTPQT7n2fVDv9WjReEaqmYjSbF425yY
- VIsTsVLCY1SHXE0ieHlDhhR83XmqtTVKELSK/80Vs7yjzlevLybop1gW14ezXmk/tZaj
- uOlaD7wKuyN4W1f2L2QQ/7C/VGmepFkTD8aOIWDG5ddGbb5/Oe8HYRYY7k6NVafwmKos
- z2MDSAHN+/049KVq2O0TEZ6g7pKtW83XUPAqUdRlxfIPHPYQOxwqT5ikV6Ple8oaQZ+5
- uoKA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/Fboo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
- with ESMTPSA id g0b6c1w7QElPnl9
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Wed, 26 Aug 2020 16:47:25 +0200 (CEST)
-Date: Wed, 26 Aug 2020 16:47:18 +0200
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH v6 2/2] ASoC: qcom: sc7180: Add machine driver for sound
- card registration
-Message-ID: <20200826144718.GA854@gerhold.net>
-References: <20200826110454.1811352-1-cychiang@chromium.org>
- <20200826110454.1811352-3-cychiang@chromium.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40623F80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 17:07:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40623F80105
+IronPort-SDR: 4gm61BmUP/HEXHAZEvwQhgSY5eIlGIZog7qTdUUMRCLXUrKqewZAvHtvI9n1+N6bSoVA0VntYi
+ /YVBUfuKcr4bHMN+LIBWQkGSv2X95bhwIoBL1VEiIxL68MOLsbdP8gYblwSjIcwmYz1Ndfbmks
+ 1GsqX773zWeqk4XIGN3/hstYUwWUMnuZ21tcWDVH4Lzhr0PldlLeMNOX2mN5V3UuUy9slZQtnQ
+ s7+n3o6TVzGdmGdsNkRnkkxdPXVViv69qJ7Ue8SB+WsCPNn573ORpkT2Y2LEL9SCKyIqg+pqIF
+ +dU=
+X-IronPort-AV: E=Sophos;i="5.76,356,1592863200"; d="scan'208";a="12239379"
+From: Pavel Dobias <dobias@2n.cz>
+To: <alsa-devel@alsa-project.org>
+Subject: [PATCH v2] ASoC: max9867: shutdown codec when changing filter type
+Date: Wed, 26 Aug 2020 17:07:24 +0200
+Message-ID: <20200826150724.15687-1-dobias@2n.cz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826110454.1811352-3-cychiang@chromium.org>
-Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
- Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
- Ajit Pandey <ajitp@codeaurora.org>, Tzung-Bi Shih <tzungbi@google.com>,
- Andy Gross <agross@kernel.org>, dgreid@chromium.org,
- devicetree@vger.kernel.org, tzungbi@chromium.org,
- linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX04.axis.com (10.0.5.18)
+Cc: broonie@kernel.org, ladis@linux-mips.org, Pavel Dobias <dobias@2n.cz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,221 +77,153 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Aug 26, 2020 at 07:04:54PM +0800, Cheng-Yi Chiang wrote:
-> From: Ajit Pandey <ajitp@codeaurora.org>
-> 
-> Add new driver to register sound card on sc7180 trogdor board and
-> do the required configuration for lpass cpu dai and external codecs
-> connected over MI2S interfaces.
-> 
-> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-> ---
->  sound/soc/qcom/Kconfig  |  12 ++
->  sound/soc/qcom/Makefile |   2 +
->  sound/soc/qcom/sc7180.c | 244 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 258 insertions(+)
->  create mode 100644 sound/soc/qcom/sc7180.c
-> 
-> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-> index a607ace8b089..63678b746299 100644
-> --- a/sound/soc/qcom/Kconfig
-> +++ b/sound/soc/qcom/Kconfig
-> @@ -116,4 +116,16 @@ config SND_SOC_SDM845
->  	  SDM845 SoC-based systems.
->  	  Say Y if you want to use audio device on this SoCs.
->  
-> +config SND_SOC_SC7180
-> +	tristate "SoC Machine driver for SC7180 boards"
-> +	depends on SND_SOC_QCOM
-> +	select SND_SOC_QCOM_COMMON
-> +	select SND_SOC_LPASS_SC7180
-> +	select SND_SOC_MAX98357A
-> +	select SND_SOC_RT5682
-> +	help
-> +	  To add support for audio on Qualcomm Technologies Inc.
-> +	  SC7180 SoC-based systems.
-> +	  Say Y if you want to use audio device on this SoCs.
-> +
->  endif #SND_SOC_QCOM
-> diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-> index 7972c9479ab0..0cdcbf367ef1 100644
-> --- a/sound/soc/qcom/Makefile
-> +++ b/sound/soc/qcom/Makefile
-> @@ -17,12 +17,14 @@ snd-soc-storm-objs := storm.o
->  snd-soc-apq8016-sbc-objs := apq8016_sbc.o
->  snd-soc-apq8096-objs := apq8096.o
->  snd-soc-sdm845-objs := sdm845.o
-> +snd-soc-sc7180-objs := sc7180.o
->  snd-soc-qcom-common-objs := common.o
->  
->  obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
->  obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
->  obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
->  obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
-> +obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
->  obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
->  
->  #DSP lib
-> diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-> new file mode 100644
-> index 000000000000..7849376f63ba
-> --- /dev/null
-> +++ b/sound/soc/qcom/sc7180.c
-> @@ -0,0 +1,244 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +//
-> +// Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> +//
-> +// sc7180.c -- ALSA SoC Machine driver for SC7180
-> +
-> +#include <dt-bindings/sound/sc7180-lpass.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <sound/core.h>
-> +#include <sound/jack.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <uapi/linux/input-event-codes.h>
-> +
-> +#include "../codecs/rt5682.h"
-> +#include "common.h"
-> +#include "lpass.h"
-> +
-> +#define DEFAULT_SAMPLE_RATE_48K		48000
-> +#define DEFAULT_MCLK_RATE		19200000
-> +#define RT5682_PLL1_FREQ (48000 * 512)
-> +
-> +struct sc7180_snd_data {
-> +	struct snd_soc_jack jack;
-> +	u32 pri_mi2s_clk_count;
-> +};
-> +
-> +static void sc7180_jack_free(struct snd_jack *jack)
-> +{
-> +	struct snd_soc_component *component = jack->private_data;
-> +
-> +	snd_soc_component_set_jack(component, NULL, NULL);
-> +}
-> +
-> +static int sc7180_headset_init(struct snd_soc_component *component)
-> +{
-> +	struct snd_soc_card *card = component->card;
-> +	struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
-> +	struct snd_jack *jack;
-> +	int rval;
-> +
-> +	rval = snd_soc_card_jack_new(
-> +			card, "Headset Jack",
-> +			SND_JACK_HEADSET |
-> +			SND_JACK_HEADPHONE |
-> +			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-> +			SND_JACK_BTN_2 | SND_JACK_BTN_3,
-> +			&pdata->jack, NULL, 0);
-> +
-> +	if (rval < 0) {
-> +		dev_err(card->dev, "Unable to add Headset Jack\n");
-> +		return rval;
-> +	}
-> +
-> +	jack = pdata->jack.jack;
-> +
-> +	snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-> +	snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> +	snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> +	snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-> +
-> +	jack->private_data = component;
-> +	jack->private_free = sc7180_jack_free;
-> +
-> +	rval = snd_soc_component_set_jack(component,
-> +					  &pdata->jack, NULL);
-> +	if (rval != 0 && rval != -EOPNOTSUPP) {
-> +		dev_warn(card->dev, "Failed to set jack: %d\n", rval);
-> +		return rval;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct snd_soc_aux_dev sc7180_headset_dev = {
-> +	.dlc = COMP_EMPTY(),
-> +	.init = sc7180_headset_init,
-> +};
-> +
+Changing filter type without disabling codec results in filter
+malfunction. Disable codec when changing filter type.
 
-[...]
+Signed-off-by: Pavel Dobias <dobias@2n.cz>
+---
+Changes in v2:
+- don't allow change if component active
+- avoid codec shutdown in max9867_filter_set if value not changed
 
-> +static struct snd_soc_card sc7180_card = {
-> +	.owner = THIS_MODULE,
-> +	.aux_dev = &sc7180_headset_dev,
-> +	.num_aux_devs = 1,
-> +	.dapm_widgets = sc7180_snd_widgets,
-> +	.num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets),
-> +};
-> +
-> +static int sc7180_parse_aux_of(struct device *dev)
-> +{
-> +	sc7180_headset_dev.dlc.of_node = of_parse_phandle(
-> +			dev->of_node, "aux-dev", 0);
-> +
-> +	if (!sc7180_headset_dev.dlc.of_node)
-> +		return -EINVAL;
-> +	return 0;
-> +}
-> +
+ sound/soc/codecs/max9867.c | 80 +++++++++++++++++++++++++++++++++-----
+ sound/soc/codecs/max9867.h |  4 +-
+ 2 files changed, 73 insertions(+), 11 deletions(-)
 
-Thanks for noting that this conflicts with my patch set that adds the
-"aux-devs" property for the device tree [1], I didn't see this before.
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index fcb31144d69c..749de1ab1093 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -15,6 +15,13 @@
+ #include <sound/tlv.h>
+ #include "max9867.h"
+ 
++struct max9867_priv {
++	struct regmap *regmap;
++	const struct snd_pcm_hw_constraint_list *constraints;
++	unsigned int sysclk, pclk;
++	bool master, dsp_a;
++};
++
+ static const char *const max9867_spmode[] = {
+ 	"Stereo Diff", "Mono Diff",
+ 	"Stereo Cap", "Mono Cap",
+@@ -32,8 +39,68 @@ static const char *const max9867_adc_dac_filter_text[] = {
+ 	"Butterworth/8-24"
+ };
+ 
+-static SOC_ENUM_SINGLE_DECL(max9867_filter, MAX9867_CODECFLTR, 7,
+-	max9867_filter_text);
++static int max9867_filter_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
++	unsigned int reg;
++	int ret;
++
++	ret = regmap_read(max9867->regmap, MAX9867_CODECFLTR, &reg);
++	if (ret)
++		return -EINVAL;
++
++	if (reg & MAX9867_CODECFLTR_MODE)
++		ucontrol->value.enumerated.item[0] = 1;
++	else
++		ucontrol->value.enumerated.item[0] = 0;
++
++	return 0;
++}
++
++static int max9867_filter_set(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
++	unsigned int reg, mode = ucontrol->value.enumerated.item[0];
++	int ret;
++
++	/* don't allow change if component active */
++	if (snd_soc_component_active(component)) {
++		return -EBUSY;
++	}
++
++	if (mode > 1)
++		return -EINVAL;
++	mode = mode ? MAX9867_CODECFLTR_MODE : 0;
++
++	/* read current filter mode */
++	ret = regmap_read(max9867->regmap, MAX9867_CODECFLTR, &reg);
++	if (ret)
++		return -EINVAL;
++
++	/* check if change is needed */
++	if ((reg & MAX9867_CODECFLTR_MODE) == mode)
++		return 0;
++
++	/* shutdown codec before switching filter mode */
++	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
++		MAX9867_PWRMAN_SHDN, 0);
++
++	/* switch filter mode */
++	regmap_update_bits(max9867->regmap, MAX9867_CODECFLTR,
++		MAX9867_CODECFLTR_MODE, mode);
++
++	/* out of shutdown now */
++	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
++		MAX9867_PWRMAN_SHDN, MAX9867_PWRMAN_SHDN);
++
++	return 0;
++}
++
++static SOC_ENUM_SINGLE_EXT_DECL(max9867_filter, max9867_filter_text);
+ static SOC_ENUM_SINGLE_DECL(max9867_dac_filter, MAX9867_CODECFLTR, 0,
+ 	max9867_adc_dac_filter_text);
+ static SOC_ENUM_SINGLE_DECL(max9867_adc_filter, MAX9867_CODECFLTR, 4,
+@@ -76,7 +143,7 @@ static const struct snd_kcontrol_new max9867_snd_controls[] = {
+ 	SOC_ENUM("Speaker Mode", max9867_spkmode),
+ 	SOC_SINGLE("Volume Smoothing Switch", MAX9867_MODECONFIG, 6, 1, 0),
+ 	SOC_SINGLE("Line ZC Switch", MAX9867_MODECONFIG, 5, 1, 0),
+-	SOC_ENUM("DSP Filter", max9867_filter),
++	SOC_ENUM_EXT("DSP Filter", max9867_filter, max9867_filter_get, max9867_filter_set),
+ 	SOC_ENUM("ADC Filter", max9867_adc_filter),
+ 	SOC_ENUM("DAC Filter", max9867_dac_filter),
+ 	SOC_SINGLE("Mono Playback Switch", MAX9867_IFC1B, 3, 1, 0),
+@@ -197,13 +264,6 @@ static const struct snd_pcm_hw_constraint_list max9867_constraints_48k = {
+ 	.count = ARRAY_SIZE(max9867_rates_48k),
+ };
+ 
+-struct max9867_priv {
+-	struct regmap *regmap;
+-	const struct snd_pcm_hw_constraint_list *constraints;
+-	unsigned int sysclk, pclk;
+-	bool master, dsp_a;
+-};
+-
+ static int max9867_startup(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
+index 3092c3b99075..b6b880631b13 100644
+--- a/sound/soc/codecs/max9867.h
++++ b/sound/soc/codecs/max9867.h
+@@ -44,7 +44,8 @@
+ #define MAX9867_IFC1B_PCLK_4	0x05
+ #define MAX9867_IFC1B_PCLK_8	0x06
+ #define MAX9867_IFC1B_PCLK_16	0x07
+-#define MAX9867_CODECFLTR    0x0a
++#define MAX9867_CODECFLTR	0x0a
++#define MAX9867_CODECFLTR_MODE	(1<<7)
+ #define MAX9867_SIDETONE     0x0b
+ #define MAX9867_DACLEVEL     0x0c
+ #define MAX9867_ADCLEVEL     0x0d
+@@ -58,6 +59,7 @@
+ #define MAX9867_MICCONFIG    0x15
+ #define MAX9867_MODECONFIG   0x16
+ #define MAX9867_PWRMAN       0x17
++#define MAX9867_PWRMAN_SHDN  (1<<7)
+ #define MAX9867_REVISION     0xff
+ 
+ #define MAX9867_CACHEREGNUM 10
+-- 
+2.20.1
 
-The use of aux-dev in this patch looks a bit weird to me...
-
-As I understand, the "auxiliary devices" of a sound card are intended to
-be used for components that should be probed even though they don't
-appear within one of the DAI links. Examples for that are especially
-analog amplifiers and other components that do not have digital audio
-input/output.
-
-On the other hand, in this patch it seems to be just a way to mark the
-DAI component that will provide the headphone jack detection. In your
-example, the component that provides the headphone jack then appears
-both as DAI component and as auxiliary device:
-
-	aux-dev = <&alc5682>;
-
-	dai-link@0 {
-		link-name = "MultiMedia0";
-		reg = <0>;
-		cpu {
-			sound-dai = <&lpass_cpu 0>;
-		};
-		codec {
-			sound-dai = <&alc5682 0>;
-		};
-	};
-
-Adding &alc5682 to snd_soc_card->aux_dev is kind of pointless in this
-case because it will already be probed as part of the DAI link.
-
-The only thing you gain is that you have the init() callback which gives
-you the component that provides the headphone jack. But if someone wants
-to add an actual auxiliary device later (e.g. an analog amplifier),
-they would run into trouble...
-
-I wonder if it would be better to just have some sort of phandle, e.g.
-
-	audio-jack = <&alc5682>;
-
-but instead of creating an auxiliary device for this you would e.g.
-iterate over the list of components to find the one the phandle refers to.
-
-Or maybe someone else can comment if using an auxiliary device for this
-does really make sense?
-
-Thanks,
-Stephan
-
-[1]: https://lore.kernel.org/alsa-devel/20200826095141.94017-1-stephan@gerhold.net/
