@@ -2,68 +2,66 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4323DC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 11:33:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59AA7C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 11:41:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C11C12083B
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 11:33:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7F4020707
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 11:41:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KHo/fJg3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C11C12083B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cNLfDzg0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7F4020707
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=2n.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 557CC1734;
-	Wed, 26 Aug 2020 13:32:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 557CC1734
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D96B1711;
+	Wed, 26 Aug 2020 13:40:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D96B1711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598441579;
-	bh=Y4ujCp409VsK8mqnld9pIQdu4PcDPdfpulOeGBKwlbQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KHo/fJg3gXZGNsMDiKfAXR52WvuJWQy0wM4JgNzKa9IZ2/8MktL1RyheETL0WEYHO
-	 zKBja29HMrrc3D+FEbczVbT9SB5HpAWio+SpDCHqBo+5vtCRxOpi7BWi5zHkYCXy7I
-	 HMbboo5PqVCAZnEj35yKcnKh05SjTIfn6OZy2/sM=
+	s=default; t=1598442087;
+	bh=ZRZA5KSLrS9/ukxU2rzBBkr3A8X6vSEtTNX3aWXBzOY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cNLfDzg0k6LuD9WT1zyUa3Jp90U00KUG4cJuhbsbzaWY9CKatr8tr26xtYR4q9y4d
+	 39eJqRvbS1lbOXSTK4n3C/wnmYt+ePI4mu5jhASnoBPn+KgL6svqJ0Nyc3PS8oduQA
+	 fCniBfeJKUf2tNbBkG55Gq/V9Hv8mnlsr4naAp7U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE33CF8016F;
-	Wed, 26 Aug 2020 13:32:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13794F8016F;
+	Wed, 26 Aug 2020 13:40:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50252F801D9; Wed, 26 Aug 2020 13:32:07 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C26ACF801D9; Wed, 26 Aug 2020 13:40:35 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 354D3F800EB
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 13:31:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 354D3F800EB
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0720DAEF3;
- Wed, 26 Aug 2020 11:32:25 +0000 (UTC)
-Date: Wed, 26 Aug 2020 13:31:53 +0200
-Message-ID: <s5hy2m1skwm.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 00/25] alsa-tools: efw-downloader: add initial version of
- firmwre downloader for Echo Audio Fireworks devices
-In-Reply-To: <20200826093258.235615-1-o-takashi@sakamocchi.jp>
-References: <20200821073111.134857-1-o-takashi@sakamocchi.jp>
- <20200826093258.235615-1-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79993F80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 13:40:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79993F80105
+IronPort-SDR: ihiAbG38bEsQ6G9F7lLD92CWCNU0IgYWIpEFRwvTrhIZ0Ldt3wT03WNm2QEkGgyPOyv8lueI0Q
+ bfMKlgT5OSc0ereWFfN1YxD7pPBb76h7cQqYdr1WD00zRmEnH0qPVYE0ObxWR1Thy0Vvak6xp0
+ 5CSX+dxn0/kakrSj19U+ZfdreRU6oRFB4R2/UqhdwR1eIN9mWogKnlwj5fN0baaM2ximgZHJjy
+ 7pg7NV8KwUUylqCjkTzoYqckOLH2NpN7iMyrXVHl2iuyGubSaGm+rbHtvRjy59MhDCwa7gyNdV
+ +cw=
+X-IronPort-AV: E=Sophos;i="5.76,355,1592863200"; d="scan'208";a="12229664"
+From: Pavel Dobias <dobias@2n.cz>
+To: <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: max9867: shutdown codec when changing filter type
+Date: Wed, 26 Aug 2020 13:39:04 +0200
+Message-ID: <20200826113904.10265-1-dobias@2n.cz>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX04.axis.com (10.0.5.18)
+Cc: broonie@kernel.org, ladis@linux-mips.org, Pavel Dobias <dobias@2n.cz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,158 +77,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 26 Aug 2020 11:32:58 +0200,
-Takashi Sakamoto wrote:
-> 
-> Hi,
-> 
-> Would I expect any reaction by maintainers of alsa-tools repository for
-> the patches?
+Changing filter type without disabling codec results in filter
+malfunction. Disable codec when changing filter type.
 
-I'm reviewing those patches now.
+Signed-off-by: Pavel Dobias <dobias@2n.cz>
+---
+ sound/soc/codecs/max9867.c | 64 ++++++++++++++++++++++++++++++++------
+ sound/soc/codecs/max9867.h |  4 ++-
+ 2 files changed, 57 insertions(+), 11 deletions(-)
 
-Since it's based on meson build, it'll be tricky to include this in
-alsa-tools whether others are all autoconf.  The tarball creation is
-done in the top directory and that assumes the execution of "make
-alsa-dist" in each subdirectory.  Without this integration, the
-directory won't be included in the release.
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index fcb31144d69c..c5bceb93b171 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -15,6 +15,13 @@
+ #include <sound/tlv.h>
+ #include "max9867.h"
+ 
++struct max9867_priv {
++	struct regmap *regmap;
++	const struct snd_pcm_hw_constraint_list *constraints;
++	unsigned int sysclk, pclk;
++	bool master, dsp_a;
++};
++
+ static const char *const max9867_spmode[] = {
+ 	"Stereo Diff", "Mono Diff",
+ 	"Stereo Cap", "Mono Cap",
+@@ -32,8 +39,52 @@ static const char *const max9867_adc_dac_filter_text[] = {
+ 	"Butterworth/8-24"
+ };
+ 
+-static SOC_ENUM_SINGLE_DECL(max9867_filter, MAX9867_CODECFLTR, 7,
+-	max9867_filter_text);
++static int max9867_filter_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
++	unsigned int reg;
++	int ret;
++
++	ret = regmap_read(max9867->regmap, MAX9867_CODECFLTR, &reg);
++	if (ret)
++		return -EINVAL;
++
++	if (reg & MAX9867_CODECFLTR_MODE)
++		ucontrol->value.enumerated.item[0] = 1;
++	else
++		ucontrol->value.enumerated.item[0] = 0;
++
++	return 0;
++}
++
++static int max9867_filter_set(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
++	unsigned int mode = ucontrol->value.enumerated.item[0];
++
++	if (mode > 1)
++		return -EINVAL;
++
++	/* shutdown codec before switching filter mode */
++	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
++		MAX9867_PWRMAN_SHDN, 0);
++
++	/* switch filter mode */
++	regmap_update_bits(max9867->regmap, MAX9867_CODECFLTR,
++		MAX9867_CODECFLTR_MODE, mode ? MAX9867_CODECFLTR_MODE : 0);
++
++	/* out of shutdown now */
++	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
++		MAX9867_PWRMAN_SHDN, MAX9867_PWRMAN_SHDN);
++
++	return 0;
++}
++
++static SOC_ENUM_SINGLE_EXT_DECL(max9867_filter, max9867_filter_text);
+ static SOC_ENUM_SINGLE_DECL(max9867_dac_filter, MAX9867_CODECFLTR, 0,
+ 	max9867_adc_dac_filter_text);
+ static SOC_ENUM_SINGLE_DECL(max9867_adc_filter, MAX9867_CODECFLTR, 4,
+@@ -76,7 +127,7 @@ static const struct snd_kcontrol_new max9867_snd_controls[] = {
+ 	SOC_ENUM("Speaker Mode", max9867_spkmode),
+ 	SOC_SINGLE("Volume Smoothing Switch", MAX9867_MODECONFIG, 6, 1, 0),
+ 	SOC_SINGLE("Line ZC Switch", MAX9867_MODECONFIG, 5, 1, 0),
+-	SOC_ENUM("DSP Filter", max9867_filter),
++	SOC_ENUM_EXT("DSP Filter", max9867_filter, max9867_filter_get, max9867_filter_set),
+ 	SOC_ENUM("ADC Filter", max9867_adc_filter),
+ 	SOC_ENUM("DAC Filter", max9867_dac_filter),
+ 	SOC_SINGLE("Mono Playback Switch", MAX9867_IFC1B, 3, 1, 0),
+@@ -197,13 +248,6 @@ static const struct snd_pcm_hw_constraint_list max9867_constraints_48k = {
+ 	.count = ARRAY_SIZE(max9867_rates_48k),
+ };
+ 
+-struct max9867_priv {
+-	struct regmap *regmap;
+-	const struct snd_pcm_hw_constraint_list *constraints;
+-	unsigned int sysclk, pclk;
+-	bool master, dsp_a;
+-};
+-
+ static int max9867_startup(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
+index 3092c3b99075..b6b880631b13 100644
+--- a/sound/soc/codecs/max9867.h
++++ b/sound/soc/codecs/max9867.h
+@@ -44,7 +44,8 @@
+ #define MAX9867_IFC1B_PCLK_4	0x05
+ #define MAX9867_IFC1B_PCLK_8	0x06
+ #define MAX9867_IFC1B_PCLK_16	0x07
+-#define MAX9867_CODECFLTR    0x0a
++#define MAX9867_CODECFLTR	0x0a
++#define MAX9867_CODECFLTR_MODE	(1<<7)
+ #define MAX9867_SIDETONE     0x0b
+ #define MAX9867_DACLEVEL     0x0c
+ #define MAX9867_ADCLEVEL     0x0d
+@@ -58,6 +59,7 @@
+ #define MAX9867_MICCONFIG    0x15
+ #define MAX9867_MODECONFIG   0x16
+ #define MAX9867_PWRMAN       0x17
++#define MAX9867_PWRMAN_SHDN  (1<<7)
+ #define MAX9867_REVISION     0xff
+ 
+ #define MAX9867_CACHEREGNUM 10
+-- 
+2.20.1
 
-Could you work on it, too?
-
-
-thanks,
-
-Takashi
-
-
-> On Fri, Aug 21, 2020 at 04:30:46PM +0900, Takashi Sakamoto wrote:
-> > Hi,
-> > 
-> > This patchset is for alsa-tool repository[1] to add a new command-line
-> > tool, efw-downloader. The tools is designed to operate on-board flash
-> > memory for devices based on Fireworks board module. The patches are also
-> > available in my personal repository in github.com[2].
-> > 
-> > Fireworks board module was designed by Echo Digital Audio corporation. The
-> > board module has on-board flash memory to store firmware blob and session
-> > data. The contents of flash memory can be operated by software by a pair
-> > of asynchronous transactions defined by Echo Digital Audio corporation.
-> > 
-> > Echo Digital Audio corporation also designed file format of firmware.
-> > Hardware Vendors including Echo Digital Audio corporation shipped
-> > several versions of firmware by the format in driver packages for
-> > Windows and macOS.
-> > 
-> > The goal of this tool is to operate the flash memory to download any
-> > version of firmware. In this patchset, limited functionalities are added;
-> > read from the flash memory, and parse the content of file. The other
-> > functionalities are planned to added in future work.
-> > 
-> > I thinks it possible to put actual firmware blobs into somewhere
-> > suitable for them (alsa-firmware or linux-firmware repositories). I
-> > think it better to prepare the files by reading on-board flash memory,
-> > with enough care of copyright of original firmware files shipped by
-> > vendor. In the case, it's preferable to use file format different
-> > from the original one. But it's my first time for this kind of work.
-> > I'd like to ask some advices to alsa developers.
-> > 
-> > [1] https://github.com/alsa-project/alsa-tools/
-> > [2] https://github.com/takaswie/alsa-tools/tree/topic/efw-downloader
-> > 
-> > Takashi Sakamoto (25):
-> >   efw-downloader: start a new project to operate on-board flash memory
-> >     for Fireworks board module
-> >   efw-downloader: efw-proto: define EfwProto as derived object of
-> >     HinawaFwResp
-> >   efw-downloader: efw-proto: add constructor, destructor, bind, unbind
-> >     functions
-> >   efw-downloader: efw-proto: add responded signal
-> >   efw-downloader: efw-proto: add class virtual method to handle
-> >     responded signal
-> >   efw-downloader: efw-proto: add instance private structure
-> >   efw-downloader: efw-proto: emit responded signal at receiving response
-> >   efw-downloader: efw-proto: add function to finish transaction for
-> >     command frame
-> >   efw-downloader: efw-proto: add function to finish a pair of
-> >     transactions
-> >   efw-downloader: add parser for sub commands
-> >   efw-downloader: subcmd-device: implement 'device' sub command to
-> >     operate actual device
-> >   efw-downloader: subcmd-device: open firewire character device by
-> >     HinawaFwNode
-> >   efw-downloader: config-rom: parse config rom to detect supported
-> >     device
-> >   efw-downloader: subcmd-device: check supported models or not
-> >   efw-downloader: subcmd-device: bind Fireworks protocol
-> >   efw-downloader: node_dispatcher: add event dispatcher utilizing GLib
-> >     MainContext/MainLoop
-> >   efw-downloader: subcmd-device: support debug output for response of
-> >     Fireworks protocol
-> >   efw-downloader: efw-commands: add support for a part of hardware
-> >     command
-> >   efw-downloader: efw-commands: add support for commands in flash
-> >     category
-> >   efw-downloader: subcmd-device: add read operation
-> >   efw-downloader: file-cntr: add parser for data binary shipped by Echo
-> >     Digital Audio corporation
-> >   efw-downloader: subcmd-file: add 'file' sub command
-> >   efw-downloader: subcmd-file: add parse operation
-> >   efw-downloader: man: add online manual
-> >   efw-downloader: add README formatted by reStructuredText
-> > 
-> >  efw-downloader/COPYING                        | 674 ++++++++++++++++++
-> >  efw-downloader/README.rst                     | 167 +++++
-> >  efw-downloader/man/efw-downloader.1           | 162 +++++
-> >  efw-downloader/meson.build                    |  14 +
-> >  efw-downloader/meson_options.txt              |   5 +
-> >  efw-downloader/src/config-rom.c               |  60 ++
-> >  efw-downloader/src/config-rom.h               |  26 +
-> >  efw-downloader/src/efw-commands.c             | 243 +++++++
-> >  efw-downloader/src/efw-commands.h             |  57 ++
-> >  .../src/efw-proto-sigs-marshal.list           |   1 +
-> >  efw-downloader/src/efw-proto.c                | 401 +++++++++++
-> >  efw-downloader/src/efw-proto.h                |  80 +++
-> >  efw-downloader/src/file-cntr.c                | 183 +++++
-> >  efw-downloader/src/file-cntr.h                |  39 +
-> >  efw-downloader/src/main.c                     |  54 ++
-> >  efw-downloader/src/meson.build                |  54 ++
-> >  efw-downloader/src/node-dispatcher.c          |  86 +++
-> >  efw-downloader/src/node-dispatcher.h          |  21 +
-> >  efw-downloader/src/op-device-read.c           | 104 +++
-> >  efw-downloader/src/op-file-parse.c            | 106 +++
-> >  efw-downloader/src/subcmd-device.c            | 182 +++++
-> >  efw-downloader/src/subcmd-file.c              |  87 +++
-> >  efw-downloader/src/subcmds.h                  |  16 +
-> >  23 files changed, 2822 insertions(+)
-> >  create mode 100644 efw-downloader/COPYING
-> >  create mode 100644 efw-downloader/README.rst
-> >  create mode 100644 efw-downloader/man/efw-downloader.1
-> >  create mode 100644 efw-downloader/meson.build
-> >  create mode 100644 efw-downloader/meson_options.txt
-> >  create mode 100644 efw-downloader/src/config-rom.c
-> >  create mode 100644 efw-downloader/src/config-rom.h
-> >  create mode 100644 efw-downloader/src/efw-commands.c
-> >  create mode 100644 efw-downloader/src/efw-commands.h
-> >  create mode 100644 efw-downloader/src/efw-proto-sigs-marshal.list
-> >  create mode 100644 efw-downloader/src/efw-proto.c
-> >  create mode 100644 efw-downloader/src/efw-proto.h
-> >  create mode 100644 efw-downloader/src/file-cntr.c
-> >  create mode 100644 efw-downloader/src/file-cntr.h
-> >  create mode 100644 efw-downloader/src/main.c
-> >  create mode 100644 efw-downloader/src/meson.build
-> >  create mode 100644 efw-downloader/src/node-dispatcher.c
-> >  create mode 100644 efw-downloader/src/node-dispatcher.h
-> >  create mode 100644 efw-downloader/src/op-device-read.c
-> >  create mode 100644 efw-downloader/src/op-file-parse.c
-> >  create mode 100644 efw-downloader/src/subcmd-device.c
-> >  create mode 100644 efw-downloader/src/subcmd-file.c
-> >  create mode 100644 efw-downloader/src/subcmds.h
-> > 
-> > -- 
-> > 2.25.1
-> 
-> 
-> Thanks
-> 
-> Takashi Sakamoto
-> 
