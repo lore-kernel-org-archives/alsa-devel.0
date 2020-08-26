@@ -2,63 +2,69 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8D54C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 23:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 458ACC433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 00:00:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6790D20679
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 23:56:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B688020679
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 23:59:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="acM9JLgC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6790D20679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bQfGUkme"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B688020679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4F8117AE;
-	Thu, 27 Aug 2020 01:55:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4F8117AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B85117B8;
+	Thu, 27 Aug 2020 01:59:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B85117B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598486199;
-	bh=uXzvIbWuS+Sbjtm1V+layt82PAJ2s9+poIMb/jxCasU=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=acM9JLgCBOa5u/kuThK/s3Zd8skPqXoXuW2RT94zWc7eHYT8C9zGs1hrSbBOst+CX
-	 E+C1m/k7JmapM1yGNVvsR6KE1ADQoiygr3yF5yB2MSuPekcn4d3OJZ+UP/ZPgLmWlL
-	 TWqjItydi52d3r5TfPXVrmLaiq3ksc3qeEbdj/vY=
+	s=default; t=1598486398;
+	bh=fxS4k6R8HfqsAuSUNtRTxXbzlMZTlfA1nWmrqUUSghM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bQfGUkmeg2X7u0JsY/nSAaMPA7tKnSk8eyWGMj3J3dUJM45HnGHo8nkOOIBuwMps1
+	 mstLNT6botjxgQ2Bj1fPBkpfc7h6X2x2Qu7cIbwzbWqnbNErW2N8ziOeWCh0lYxAWA
+	 bRJ2jvPn4RIf19dkRHXDLOCrmM42ejuYGp1JEoFQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C0D3F8016F;
-	Thu, 27 Aug 2020 01:55:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6C21F8016F;
+	Thu, 27 Aug 2020 01:59:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD180F801D9; Thu, 27 Aug 2020 01:55:47 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1352EF80105
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 01:55:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1352EF80105
-Date: 27 Aug 2020 08:55:39 +0900
-X-IronPort-AV: E=Sophos;i="5.76,357,1592838000"; d="scan'208";a="55406681"
+ id 2BE81F801D9; Thu, 27 Aug 2020 01:59:06 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 92553F800EB
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 01:58:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92553F800EB
+Date: 27 Aug 2020 08:58:57 +0900
+X-IronPort-AV: E=Sophos;i="5.76,357,1592838000"; d="scan'208";a="55623912"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 Aug 2020 08:55:39 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 27 Aug 2020 08:58:57 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6682A4005E2C;
- Thu, 27 Aug 2020 08:55:39 +0900 (JST)
-Message-ID: <87blixvuab.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 24FC240065D2;
+ Thu, 27 Aug 2020 08:58:57 +0900 (JST)
+Message-ID: <87a6yhvu4t.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: soc-core: add snd_soc_find_dai_with_mutex()
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: renesas,
+ rsnd: switch to yaml base Documentation
+In-Reply-To: <20200825160532.GA862290@bogus>
+References: <87wo1nwdft.wl-kuninori.morimoto.gx@renesas.com>
+ <87tuwrwdf0.wl-kuninori.morimoto.gx@renesas.com>
+ <20200825160532.GA862290@bogus>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-To: Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,134 +81,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi Rob
 
-commit 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-added snd_soc_dai_link_set_capabilities().
-But it is using snd_soc_find_dai() (A) which is required client_mutex (B).
-And client_mutex is soc-core.c local.
+Thank you for your feedback
 
-	struct snd_soc_dai *snd_soc_find_dai(xxx)
-	{
-		...
-(B)		lockdep_assert_held(&client_mutex);
-		...
-	}
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > 
+> > This patch switches from .txt base to .yaml base Document.
+> > It is still keeping detail explanations at .txt
+> > 
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+(snip)
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/renesas,rsnd.example.dt.yaml: example-0: sound@ec500000:reg:0: [0, 3964665856, 0, 4096] is too long
+> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/renesas,rsnd.example.dt.yaml: example-0: sound@ec500000:reg:1: [0, 3965321216, 0, 256] is too long
+> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/renesas,rsnd.example.dt.yaml: example-0: sound@ec500000:reg:2: [0, 3964928000, 0, 4096] is too long
+> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/renesas,rsnd.example.dt.yaml: example-0: sound@ec500000:reg:3: [0, 3964932096, 0, 4736] is too long
+> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/renesas,rsnd.example.dt.yaml: example-0: sound@ec500000:reg:4: [0, 3967025152, 0, 512] is too long
+> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+(snip)
+> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
-	void snd_soc_dai_link_set_capabilities(xxx)
-	{
-		...
-		for_each_pcm_streams(direction) {
-			...
-			for_each_link_cpus(dai_link, i, cpu) {
-(A)				dai = snd_soc_find_dai(cpu);
-				...
-			}
-			...
-			for_each_link_codecs(dai_link, i, codec) {
-(A)				dai = snd_soc_find_dai(codec);
-				...
-			}
-		}
-		...
-	}
+I could confirm it by upgrading.
+I will solve this issue and repost
 
-Because of these background, we will get WARNING if .config has CONFIG_LOCKDEP.
+Thank you for your help !!
 
-	WARNING: CPU: 2 PID: 53 at sound/soc/soc-core.c:814 snd_soc_find_dai+0xf8/0x100
-	CPU: 2 PID: 53 Comm: kworker/2:1 Not tainted 5.7.0-rc1+ #328
-	Hardware name: Renesas H3ULCB Kingfisher board based on r8a77951 (DT)
-	Workqueue: events deferred_probe_work_func
-	pstate: 60000005 (nZCv daif -PAN -UAO)
-	pc : snd_soc_find_dai+0xf8/0x100
-	lr : snd_soc_find_dai+0xf4/0x100
-	...
-	Call trace:
-	 snd_soc_find_dai+0xf8/0x100
-	 snd_soc_dai_link_set_capabilities+0xa0/0x16c
-	 graph_dai_link_of_dpcm+0x390/0x3c0
-	 graph_for_each_link+0x134/0x200
-	 graph_probe+0x144/0x230
-	 platform_drv_probe+0x5c/0xb0
-	 really_probe+0xe4/0x430
-	 driver_probe_device+0x60/0xf4
-
-snd_soc_find_dai() will be used from (X) CPU/Codec/Platform driver with
-mutex lock, and (Y) Card driver without mutex lock.
-This snd_soc_dai_link_set_capabilities() is for Card driver,
-this means called without mutex.
-This patch adds snd_soc_find_dai_with_mutex() to solve it.
-
-Fixes: 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Best regards
 ---
-
-This patch was originally "ASoC: soc-core: move snd_soc_dai_link_set_capabilities() to soc-core.c".
-This is for asoc/for-5.9 branch
-
- include/sound/soc.h  |  2 ++
- sound/soc/soc-core.c | 13 +++++++++++++
- sound/soc/soc-dai.c  |  4 ++--
- 3 files changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 5e3919ffb00c..4176071f61bf 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1361,6 +1361,8 @@ void snd_soc_unregister_dai(struct snd_soc_dai *dai);
- 
- struct snd_soc_dai *snd_soc_find_dai(
- 	const struct snd_soc_dai_link_component *dlc);
-+struct snd_soc_dai *snd_soc_find_dai_with_mutex(
-+	const struct snd_soc_dai_link_component *dlc);
- 
- #include <sound/soc-dai.h>
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2fe1b2ec7c8f..fe11856d7a63 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -834,6 +834,19 @@ struct snd_soc_dai *snd_soc_find_dai(
- }
- EXPORT_SYMBOL_GPL(snd_soc_find_dai);
- 
-+struct snd_soc_dai *snd_soc_find_dai_with_mutex(
-+	const struct snd_soc_dai_link_component *dlc)
-+{
-+	struct snd_soc_dai *dai;
-+
-+	mutex_lock(&client_mutex);
-+	dai = snd_soc_find_dai(dlc);
-+	mutex_unlock(&client_mutex);
-+
-+	return dai;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_find_dai_with_mutex);
-+
- static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- 				     struct snd_soc_dai_link *link)
- {
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 91a2551e4cef..0dbd312aad08 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -412,14 +412,14 @@ void snd_soc_dai_link_set_capabilities(struct snd_soc_dai_link *dai_link)
- 		supported_codec = false;
- 
- 		for_each_link_cpus(dai_link, i, cpu) {
--			dai = snd_soc_find_dai(cpu);
-+			dai = snd_soc_find_dai_with_mutex(cpu);
- 			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
- 				supported_cpu = true;
- 				break;
- 			}
- 		}
- 		for_each_link_codecs(dai_link, i, codec) {
--			dai = snd_soc_find_dai(codec);
-+			dai = snd_soc_find_dai_with_mutex(codec);
- 			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
- 				supported_codec = true;
- 				break;
--- 
-2.25.1
-
+Kuninori Morimoto
