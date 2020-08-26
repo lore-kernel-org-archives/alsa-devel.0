@@ -6,72 +6,72 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E7ADC433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:47:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 013E0C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:49:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F18482075E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:47:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F6112075E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 09:49:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u+ftHuAW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDEVZ6pU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F18482075E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C+JsfJvO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0wzNPBU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F6112075E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69D6316F3;
-	Wed, 26 Aug 2020 11:46:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69D6316F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id D34A416F3;
+	Wed, 26 Aug 2020 11:48:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D34A416F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598435265;
-	bh=xqg0uPoIsVRT6yhZLnpmkmckUCu1vQcTgykvXhOQk4Y=;
+	s=default; t=1598435360;
+	bh=Iy0PPrLl7Bd/yyILufkraB05ZmIEaRK3D+xoob+NABs=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u+ftHuAW9ZtLLsx4C2hqvTY3qc16lcji4HS9m6EDWhicexxK4epXva95sKy5ixmG9
-	 qJlJ8QM1/bG3dsEHTDLzGpRTC9izxu+no1/eTJpsRTIKZIY4/LWELyNclFrKVk10sj
-	 plwiLlAZmnn2txRrueeDUx/gxmzXiurytBq4XRSw=
+	b=C+JsfJvOI7bWK316NE7lmDr/Jb9sVVHNEF2AmzY3xZYt4AHH3+pFCfCUSZn3i82M0
+	 radkTqUVbdEDkoQwxUxyqOt20c3VgJTQeVuiQoMD8gIKs41rhSLp4YnwzJAme6UXte
+	 jz6gM5xiJU2ygwaLoh7zDAMX0aF0L2fA8STutwOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EACBEF801D9;
-	Wed, 26 Aug 2020 11:46:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 712AEF8016F;
+	Wed, 26 Aug 2020 11:48:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B733F801EC; Wed, 26 Aug 2020 11:46:53 +0200 (CEST)
+ id 84293F801D9; Wed, 26 Aug 2020 11:48:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8034F80143
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 11:46:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8034F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53337F80143
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 11:48:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53337F80143
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YDEVZ6pU"
+ header.b="n0wzNPBU"
 Received: from localhost (unknown [122.171.38.130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id F3C802075E;
- Wed, 26 Aug 2020 09:46:39 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C33EC2075E;
+ Wed, 26 Aug 2020 09:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598435200;
- bh=xqg0uPoIsVRT6yhZLnpmkmckUCu1vQcTgykvXhOQk4Y=;
+ s=default; t=1598435301;
+ bh=Iy0PPrLl7Bd/yyILufkraB05ZmIEaRK3D+xoob+NABs=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=YDEVZ6pUUy3KFjaL+7TIb/v++RViP+I9EUHWTesVAAN8ap7NpBUO0uUPXDllMr8YX
- 7RH6J+xGVF4b9v099nyVEgm0FXKh0WdTNmPXWDj85ZXDsEmGjybOs4Qand/ZnzBgCU
- IZKOmP5X2z3+b7JDlIEcD3P4HIP9IThclEIwlF4E=
-Date: Wed, 26 Aug 2020 15:16:36 +0530
+ b=n0wzNPBUocQie5n5JGb5sa+2fSll3loKsiMANLvADZJf2PGrwPs9ClV0OLHylkORD
+ da0y3shYsUpokhL0bEOXYPqNPh4O395aiK2sSEUK0jrV01m15hFJgnYBQY0C/Mk6Ny
+ hcqrlwsqWjSIGDDqkBxw/7+GKzlZH4znwz/bXiZw=
+Date: Wed, 26 Aug 2020 15:18:17 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 07/11] soundwire: intel: Only call sdw stream APIs for
- the first cpu_dai
-Message-ID: <20200826094636.GB2639@vkoul-mobl>
+Subject: Re: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
+ clock-stop invalid configs
+Message-ID: <20200826094817.GC2639@vkoul-mobl>
 References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
- <20200818024120.20721-8-yung-chuan.liao@linux.intel.com>
+ <20200818024120.20721-10-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200818024120.20721-8-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200818024120.20721-10-yung-chuan.liao@linux.intel.com>
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
@@ -93,113 +93,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On 18-08-20, 10:41, Bard Liao wrote:
-> We should call these APIs once per stream. So we can only call it
-> when the dai ops is invoked for the first cpu dai.
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
+> Detect cases where the clock is assumed to be stopped but the IP is
+> not in the relevant state, and add a dynamic debug trace.
+
+you meant a debug print..and it looks like error print below (also in title).
+
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > ---
->  drivers/soundwire/intel.c | 45 +++++++++++++++++++++++++++++++++------
->  1 file changed, 39 insertions(+), 6 deletions(-)
+>  drivers/soundwire/intel.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 > diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 89a8ad1f80e8..7c63581270fd 100644
+> index 7c63581270fd..b82d02af3c4f 100644
 > --- a/drivers/soundwire/intel.c
 > +++ b/drivers/soundwire/intel.c
-> @@ -941,11 +941,13 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
->  static int intel_prepare(struct snd_pcm_substream *substream,
->  			 struct snd_soc_dai *dai)
->  {
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *first_cpu_dai = asoc_rtd_to_cpu(rtd, 0);
->  	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
->  	struct sdw_intel *sdw = cdns_to_intel(cdns);
->  	struct sdw_cdns_dma_data *dma;
->  	int ch, dir;
-> -	int ret;
-> +	int ret = 0;
->  
->  	dma = snd_soc_dai_get_dma_data(dai, substream);
->  	if (!dma) {
-> @@ -985,7 +987,13 @@ static int intel_prepare(struct snd_pcm_substream *substream,
->  			goto err;
->  	}
->  
-> -	ret = sdw_prepare_stream(dma->stream);
-> +	/*
-> +	 * All cpu dais belong to a stream. To ensure sdw_prepare_stream
-> +	 * is called once per stream, we should call it only when
-> +	 * dai = first_cpu_dai.
-> +	 */
-> +	if (first_cpu_dai == dai)
-> +		ret = sdw_prepare_stream(dma->stream);
-
-Hmmm why not use the one place which is unique in the card to call this,
-hint machine dais are only called once.
-
->  
->  err:
->  	return ret;
-> @@ -994,9 +1002,19 @@ static int intel_prepare(struct snd_pcm_substream *substream,
->  static int intel_trigger(struct snd_pcm_substream *substream, int cmd,
->  			 struct snd_soc_dai *dai)
->  {
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *first_cpu_dai = asoc_rtd_to_cpu(rtd, 0);
->  	struct sdw_cdns_dma_data *dma;
->  	int ret;
->  
-> +	/*
-> +	 * All cpu dais belong to a stream. To ensure sdw_enable/disable_stream
-> +	 * are called once per stream, we should call them only when
-> +	 * dai = first_cpu_dai.
-> +	 */
-> +	if (first_cpu_dai != dai)
-> +		return 0;
+> @@ -1964,6 +1964,11 @@ static int intel_resume_runtime(struct device *dev)
+>  			}
+>  		}
+>  	} else if (!clock_stop_quirks) {
 > +
->  	dma = snd_soc_dai_get_dma_data(dai, substream);
->  	if (!dma) {
->  		dev_err(dai->dev, "failed to get dma data in %s", __func__);
-> @@ -1031,6 +1049,8 @@ static int intel_trigger(struct snd_pcm_substream *substream, int cmd,
->  static int
->  intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
->  {
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *first_cpu_dai = asoc_rtd_to_cpu(rtd, 0);
->  	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
->  	struct sdw_intel *sdw = cdns_to_intel(cdns);
->  	struct sdw_cdns_dma_data *dma;
-> @@ -1040,12 +1060,25 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
->  	if (!dma)
->  		return -EIO;
->  
-> -	ret = sdw_deprepare_stream(dma->stream);
-> -	if (ret) {
-> -		dev_err(dai->dev, "sdw_deprepare_stream: failed %d", ret);
-> -		return ret;
-> +	/*
-> +	 * All cpu dais belong to a stream. To ensure sdw_deprepare_stream
-> +	 * is called once per stream, we should call it only when
-> +	 * dai = first_cpu_dai.
-> +	 */
-> +	if (first_cpu_dai == dai) {
-> +		ret = sdw_deprepare_stream(dma->stream);
-> +		if (ret) {
-> +			dev_err(dai->dev, "sdw_deprepare_stream: failed %d", ret);
-> +			return ret;
-> +		}
->  	}
->  
-> +	/*
-> +	 * The sdw stream state will transition to RELEASED when stream->
-> +	 * master_list is empty. So the stream state will transition to
-> +	 * DEPREPARED for the first cpu-dai and to RELEASED for the last
-> +	 * cpu-dai.
-> +	 */
->  	ret = sdw_stream_remove_master(&cdns->bus, dma->stream);
->  	if (ret < 0) {
->  		dev_err(dai->dev, "remove master from stream %s failed: %d\n",
+> +		clock_stop0 = sdw_cdns_is_clock_stop(&sdw->cdns);
+> +		if (!clock_stop0)
+> +			dev_err(dev, "%s invalid configuration, clock was not stopped", __func__);
+> +
+>  		ret = intel_init(sdw);
+>  		if (ret) {
+>  			dev_err(dev, "%s failed: %d", __func__, ret);
 > -- 
 > 2.17.1
 
