@@ -2,68 +2,67 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B019C433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:23:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB83FC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:31:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA0CE206FA
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:23:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EE4A2071E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 08:31:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hqBsGYcm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA0CE206FA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="thbf2PgW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EE4A2071E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 790DD16FD;
-	Wed, 26 Aug 2020 10:22:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 790DD16FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3D5D16FB;
+	Wed, 26 Aug 2020 10:30:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3D5D16FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598430194;
-	bh=yE4PZDHJDn6qqo/jFii5iml+uoGZpWnSRokeMrOZKk4=;
+	s=default; t=1598430682;
+	bh=UEd+sJAbFMK1GX0KUx6mBrN0xHBWzw20uCrbYDeDZgY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hqBsGYcmhweG785Lm2rcTMcG0mIGJA9/IBesFTF1f7dG/OZzZcmRKMiMBnxcSGVj1
-	 P+GNAKNh55w88NhKgd8gaKMFCTgtZ+pRdi62DCuQk/ekPTd6/JR5kwoBI8Ky1wK3hZ
-	 foXrUkOzqTT/mA/th/WrR5lK1C3CovKJnv9z8LmU=
+	b=thbf2PgWBDYWhwlKmsbIps7XoK24HcQUDhfwBbKmGMrrrNHkLN9RqhXVKcCnrgZ/m
+	 DXDI7ksFh4o6arpRTNN0prlOvcZY1b7dB6mNMziGvOaVd2PH97y/asOMdAErfqQKQP
+	 EnxeSui/uo8zsWLy31LfObwpFGcMTKVpwuP/JTPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 082DFF8016F;
-	Wed, 26 Aug 2020 10:22:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BB27F8016F;
+	Wed, 26 Aug 2020 10:30:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6887CF80143; Wed, 26 Aug 2020 10:22:22 +0200 (CEST)
+ id 012A8F801D9; Wed, 26 Aug 2020 10:30:30 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55577F80143
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 10:22:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55577F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5642BF80143
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 10:30:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5642BF80143
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3D135ABED;
- Wed, 26 Aug 2020 08:22:45 +0000 (UTC)
-Date: Wed, 26 Aug 2020 10:22:13 +0200
-Message-ID: <s5hwo1lu896.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id AF270B001;
+ Wed, 26 Aug 2020 08:30:53 +0000 (UTC)
+Date: Wed, 26 Aug 2020 10:30:22 +0200
+Message-ID: <s5htuwpu7vl.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>
-Subject: Re: [PATCH] Add basic capture support for Pioneer DJ DJM-250MK2
-In-Reply-To: <20200825153113.6352-1-konference@frantovo.cz>
-References: <20200825153113.6352-1-konference@frantovo.cz>
+To: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: [PATCH v2 00/20] ALSA: hda/ca0132 - Add AE-7 support/Control
+ cleanup.
+In-Reply-To: <20200825201040.30339-1-conmanx360@gmail.com>
+References: <20200825201040.30339-1-conmanx360@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Dmitry Panchenko <dmitry@d-systems.ee>,
- =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <franta-linux@frantovo.cz>,
- Fabian Lesniak <fabian@lesniak-it.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,17 +78,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 Aug 2020 17:31:13 +0200,
-František Kučera wrote:
+On Tue, 25 Aug 2020 22:10:19 +0200,
+Connor McAdams wrote:
 > 
-> From: František Kučera <franta-linux@frantovo.cz>
+> This patch series adds support for the Sound Blaster AE-7 along with
+> adding new controls and cleaning up the old ones. I have personally
+> tested the Recon3D, Recon3Di, Sound Blaster Z/ZxR, and AE-5 cards to
+> confirm they work with these patches. Another user has confirmed that
+> they work on the AE-7.
 > 
-> This patch extends support for DJM-250MK2 and allows recording.
-> However, DVS is not possible yet (see the comment in code).
+> ---
+> v2: Change control names to omit unnecessary information.
 > 
-> Signed-off-by: František Kučera <franta-linux@frantovo.cz>
+> Connor McAdams (20):
+>   ALSA: hda/ca0132 - Cleanup ca0132_mmio_init function.
+>   ALSA: hda/ca0132 - Add speaker tuning initialization commands.
+>   ALSA: hda/ca0132 - Add surround channel config control.
+>   ALSA: hda/ca0132 - Add full-range speaker selection controls.
+>   ALSA: hda/ca0132 - Add bass redirection controls.
+>   ALSA: hda/ca0132 - Remove surround output selection.
+>   ALSA: hda/ca0132 - Clean up ca0132_alt_out_select.
+>   ALSA: hda/ca0132 - Add quirk output selection structures.
+>   ALSA: hda/ca0132 - Fix Recon3D Center/LFE output.
+>   ALSA: hda/ca0132 - Add new quirk ID for SoundBlaster AE-7.
+>   ALSA: hda/ca0132 - Add SoundBlaster AE-7 pincfg.
+>   ALSA: hda/ca0132 - Set AE-7 bools and select mixer.
+>   ALSA: hda/ca0132 - Add ca0132_mmio_init data for SoundBlaster AE-7.
+>   ALSA: hda/ca0132 - Add pre-init function for SoundBlaster AE-7.
+>   ALSA: hda/ca0132 - Add init data for SoundBlaster AE-7.
+>   ALSA: hda/ca0132 - Add DSP setup functions for AE-7.
+>   ALSA: hda/ca0132 - Add output selection for SoundBlaster AE-7.
+>   ALSA: hda/ca0132 - Add AE-7 microphone selection commands.
+>   ALSA: hda/ca0132 - Add AE-7 custom controls.
+>   ALSA: hda/ca0132 - Add AE-7 exit commands.
 
-Applied now.  Thanks.
+Applied all 20 patches now.  Thanks.
 
 
 Takashi
