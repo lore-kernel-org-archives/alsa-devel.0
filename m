@@ -2,86 +2,77 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A196CC433E1
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 10:18:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E012FC433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 10:23:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29C4920866
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 10:18:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61ABD2071E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 10:23:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e0bHbvjn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ggqjLcsW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29C4920866
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BAydOQyZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61ABD2071E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8EEB21729;
-	Wed, 26 Aug 2020 12:17:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EEB21729
+	by alsa0.perex.cz (Postfix) with ESMTPS id E78EE1719;
+	Wed, 26 Aug 2020 12:22:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E78EE1719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598437093;
-	bh=5tJW1RUehpS5WybOA0ZAprsp+YpJ4fCRYflUkMT9GYI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1598437410;
+	bh=HYqgS8i6cVwNtl7evEWwhogNEn3GAB2tCCj/TUpWfI4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e0bHbvjnN2FnOnGUPyNd79m4wOSjBMFZRf39RKGYcMr9dyCBivkSZFZkel7N8iNmO
-	 B2QCHHr6bW3ZjTSxjicNtleh35YDM1143v1XTm+EzWNxpFYKcq5GMZyy2+oWH9R76f
-	 lWckY5H3Eu5/b7mOTwFPnwz6v7XYWFYDZfz/9010=
+	b=BAydOQyZAGcKxu1LYiTQ453luNzQIK5UfYdqBOx0kh2L8I8A+jw6dFmxZOIXhm0Tq
+	 wgYzraQd1K17ppXsORsI8PrJ+XRBMwFmgbwGhKjg04wuXsUJUj05TS6hAQBZqGMJFW
+	 LnlMGSZ50Oe1PuL8HXLUcaIl71nl5v3VdeMd6pMU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FC58F80143;
-	Wed, 26 Aug 2020 12:17:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 701F2F80105;
+	Wed, 26 Aug 2020 12:22:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38475F801D9; Wed, 26 Aug 2020 12:17:21 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 6B3AEF801D9; Wed, 26 Aug 2020 12:22:37 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C28B1F80105
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 12:17:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C28B1F80105
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ggqjLcsW"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BEF1E20786;
- Wed, 26 Aug 2020 10:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598437033;
- bh=5tJW1RUehpS5WybOA0ZAprsp+YpJ4fCRYflUkMT9GYI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ggqjLcsW5r39HmxmZeRwkMMcMvMbzKBucECTKjbLUEN9lPyFhb6B1Wb/65ghmw0qo
- e1etyh5xkqZkG81NZsilBAgDxjMI+QBJIeT9f/qFH4PGjteBTD6/LK13ufuwQx+Kdj
- MajUluJpge6kI0aZyWFntKE2M0iUAamBbiDY3Oyo=
-Date: Wed, 26 Aug 2020 11:16:37 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 4/4] regmap: sdw: add support for SoundWire 1.2 MBQ
-Message-ID: <20200826101637.GC4965@sirena.org.uk>
-References: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
- <20200825171656.75836-5-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="dkEUBIird37B8yKS"
-Content-Disposition: inline
-In-Reply-To: <20200825171656.75836-5-pierre-louis.bossart@linux.intel.com>
-X-Cookie: Should I do my BOBBIE VINTON medley?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A241BF80105
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 12:22:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A241BF80105
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 22BA1B77F;
+ Wed, 26 Aug 2020 10:23:01 +0000 (UTC)
+Date: Wed, 26 Aug 2020 12:22:28 +0200
+Message-ID: <s5h8se1u2or.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] regmap: sdw: move to -EOPNOTSUPP
+In-Reply-To: <20200826101301.GB4965@sirena.org.uk>
+References: <20200825171656.75836-2-pierre-louis.bossart@linux.intel.com>
+ <20200825214858.GK5379@sirena.org.uk>
+ <6f7e5830-4dd8-1ecc-20c3-df75bc9ef265@linux.intel.com>
+ <20200826095600.GA4965@sirena.org.uk>
+ <s5ha6yhu3af.wl-tiwai@suse.de>
+ <20200826101301.GB4965@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Bard liao <yung-chuan.liao@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, gregkh@linuxfoundation.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+ vkoul@kernel.org, srinivas.kandagatla@linaro.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, jank@cadence.com,
+ slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -98,43 +89,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 26 Aug 2020 12:13:01 +0200,
+Mark Brown wrote:
+> 
+> On Wed, Aug 26, 2020 at 12:09:28PM +0200, Takashi Iwai wrote:
+> > Mark Brown wrote:
+> 
+> > > checkpatch is broken.
+> 
+> > Heh, I'm not objecting it :)
+> 
+> > OTOH, it's also true that ENOTSUPP is no good error code if returned
+> > to user-space.  Unfortunately many codes (including what I wrote) use
+> > this code mistakenly, and they can't be changed any longer...
+> 
+> It's also used internally in various places without being returned to
+> userspace, that's what's going on here - the regmap core has some
+> specific checks for -ENOTSUPP.
 
---dkEUBIird37B8yKS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sure, for such an internal usage any code can be used.
+The question is a case like this -- where the return code might be
+carried to outside.  Though, looking through the grep output, all
+callers simply return -EINVAL for any errors, so it doesn't matter
+much for now.
 
-On Tue, Aug 25, 2020 at 12:16:56PM -0500, Pierre-Louis Bossart wrote:
 
-> One possible objection is that this code could have been handled with
-> regmap-sdw.c. However this is a new spec addition not handled by every
-> SoundWire 1.1 and non-SDCA device, so there's no reason to load code
-> that will never be used.
+BTW, there are a few callers of devm_regmap_init_sdw() checking the
+return value with NULL.  This will crash as the function returns the
+error pointer, and they must be checked with IS_ERR() instead.
 
-> Also in practice it's extremely unlikely that CONFIG_REGMAP would not
-> be selected with CONFIG_REGMAP_MBQ selected. However there's no
-> functional dependency between the two modules so they can be selected
-> separately.
 
-The other thing I'm wondering here is about compatibility - is this
-something we can enumerate at runtime and if so couldn't this be done
-more like how we handle the various I2C and SMBus variants so the driver
-just says it wants a SoundWire regmap and then based on the capabilities
-of the device and the controller the regmap decides if it can use MBQ or
-not on the current system?
-
---dkEUBIird37B8yKS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9GNoQACgkQJNaLcl1U
-h9CrSQf/WFN5slGq6hYdSlbxY9S5fg1zC1mvg9ty1w/5Mz/65Q//rzJpHBd+tYKc
-HZLr2kEjM7nBO1Zm3fngADbUmKwlCRFnWwEuzcCibOQbgopTmhVg1MIQOcg32RcU
-w2D7/0oZWoPul9tO3UR/cf3I5FgBkuRZfBayFeFb6FbwZVgb4F8BDA8Xobt215Zb
-mRVFxChQ7/0IDT6ju1CqDEk6zr1h5zIhqgVXO8YOkvOXh6ObxL1jXvrSMtOVZ2Ki
-Kqpf6i6sJxNwu7PF4f6EdhrDKQKLLncW/qrh6Phx383RkfHhdCqGwPAB4H8Vjb15
-j70LoMEibs5FCPo/+fD8AGxDkrOU4Q==
-=f/l0
------END PGP SIGNATURE-----
-
---dkEUBIird37B8yKS--
+Takashi
