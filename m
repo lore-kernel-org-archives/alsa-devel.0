@@ -2,88 +2,77 @@ Return-Path: <SRS0=TbbB=CE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8490FC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:04:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97700C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:29:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0EB9E20786
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:04:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 209802080C
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Aug 2020 12:29:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hw0KmXYd";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="duxjQB0p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EB9E20786
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mBgKdM+J";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="skoJy6gP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 209802080C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BB641740;
-	Wed, 26 Aug 2020 14:03:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BB641740
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E67F1710;
+	Wed, 26 Aug 2020 14:28:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E67F1710
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598443469;
-	bh=D1uJfmjgC/26o2z3u1zFuw7ebz3MKhc1sl8fKcEtvqE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Hw0KmXYd/Q9wqYrlZvgZzYqmISirkjSex2h4sIkY+X8zjLE/RxkLZ4MskeJKxcaIc
-	 FwwKray0+j62MwPFpqZ+OYVl8wIVEL3PdGV+NGLOui4Abau+flNfZQNcffTAtfFaWM
-	 aXNWxZnUvNOBlokGOfdZOM7Gg4z+HyqcenlyWlHc=
+	s=default; t=1598444967;
+	bh=94vf/goBzfoC5nm9rDlXYfi2mPg0KiLVJ1zsM82yLYE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mBgKdM+JcZJWX+o1VT/qPmP2nBD4xupWGqlh9F4IxlhnHhRvdyAHu6tDqN4FvGDTu
+	 ANvbfoRYrnvan+MnzDhKjEMuEOtjuhIfnyiHQ/M3rw9oSPXJhVLqU0N4j4lwqcR6pR
+	 YKy2bI5tBGMCC2KcAVlWR615f/nm5pXK4Hqmxv5Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8D90F8016F;
-	Wed, 26 Aug 2020 14:03:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B6E9F801F2;
+	Wed, 26 Aug 2020 14:28:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49FB6F801D9; Wed, 26 Aug 2020 14:03:37 +0200 (CEST)
+ id 24AA8F801D9; Wed, 26 Aug 2020 14:28:33 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D5F3F800EB
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 14:03:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D5F3F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id A518EF80143
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2020 14:28:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A518EF80143
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="duxjQB0p"
-Received: from localhost (unknown [122.171.38.130])
+ header.b="skoJy6gP"
+Received: from localhost.localdomain (unknown [122.171.38.130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EA8C920897;
- Wed, 26 Aug 2020 12:03:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 222042080C;
+ Wed, 26 Aug 2020 12:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598443407;
- bh=D1uJfmjgC/26o2z3u1zFuw7ebz3MKhc1sl8fKcEtvqE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=duxjQB0p/RG9lpGyNMl+3wLI/iY6Ywj0fIehqcHQRy6ik4BDUpo57UKpANLlRQY8O
- 1EqLuq51Wy4AoOO/kkgVX/g7QDGd7sZiqZsXWQyan50Wc2rpumt4wwqr+KMxZIN7m/
- 5Y2Bz85mXHQCqsQvBiD9JNTOcc2O9QLUW0B6pt0Q=
-Date: Wed, 26 Aug 2020 17:33:23 +0530
+ s=default; t=1598444903;
+ bh=94vf/goBzfoC5nm9rDlXYfi2mPg0KiLVJ1zsM82yLYE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=skoJy6gPAskSS9qnDxXxdhst6jKjvkpOu2bECZju2/2wNKRzkdhCbAtKV6Zt9Jy2K
+ f+cXA/NK1p/XX5uNDNegefnQZn8jm7mG2L9l8i8NtLVHfetMxbME5pNI5W8S6Mm3HQ
+ CzGr4x6AtST8oRwp9z27pQSDvnbI1sOkbQNamw48=
 From: Vinod Koul <vkoul@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 1/4] regmap: sdw: move to -EOPNOTSUPP
-Message-ID: <20200826120323.GD2639@vkoul-mobl>
-References: <20200825171656.75836-2-pierre-louis.bossart@linux.intel.com>
- <20200825214858.GK5379@sirena.org.uk>
- <6f7e5830-4dd8-1ecc-20c3-df75bc9ef265@linux.intel.com>
- <20200826095600.GA4965@sirena.org.uk>
- <s5ha6yhu3af.wl-tiwai@suse.de>
- <20200826101301.GB4965@sirena.org.uk>
- <s5h8se1u2or.wl-tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/4] ASoC: max98373: Fix return check for
+ devm_regmap_init_sdw()
+Date: Wed, 26 Aug 2020 17:58:08 +0530
+Message-Id: <20200826122811.3223663-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h8se1u2or.wl-tiwai@suse.de>
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, gregkh@linuxfoundation.org,
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Ryan Lee <ryans.lee@maximintegrated.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-kernel@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
- Mark Brown <broonie@kernel.org>, srinivas.kandagatla@linaro.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, jank@cadence.com,
- slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>,
+ Vinod Koul <vkoul@kernel.org>, Naveen Manohar <naveen.m@intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -100,39 +89,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 26-08-20, 12:22, Takashi Iwai wrote:
-> On Wed, 26 Aug 2020 12:13:01 +0200,
-> Mark Brown wrote:
-> > 
-> > On Wed, Aug 26, 2020 at 12:09:28PM +0200, Takashi Iwai wrote:
-> > > Mark Brown wrote:
-> > 
-> > > > checkpatch is broken.
-> > 
-> > > Heh, I'm not objecting it :)
-> > 
-> > > OTOH, it's also true that ENOTSUPP is no good error code if returned
-> > > to user-space.  Unfortunately many codes (including what I wrote) use
-> > > this code mistakenly, and they can't be changed any longer...
-> > 
-> > It's also used internally in various places without being returned to
-> > userspace, that's what's going on here - the regmap core has some
-> > specific checks for -ENOTSUPP.
-> 
-> Sure, for such an internal usage any code can be used.
-> The question is a case like this -- where the return code might be
-> carried to outside.  Though, looking through the grep output, all
-> callers simply return -EINVAL for any errors, so it doesn't matter
-> much for now.
-> 
-> 
-> BTW, there are a few callers of devm_regmap_init_sdw() checking the
-> return value with NULL.  This will crash as the function returns the
-> error pointer, and they must be checked with IS_ERR() instead.
+devm_regmap_init_sdw() returns a valid pointer on success or ERR_PTR on
+failure which should be checked with IS_ERR. Also use PTR_ERR for
+returning error codes.
 
-Yes that is correct, all expect wsa codec do the incorrect thing. Will
-send patches for these shortly
+Reported-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 56a5b7910e96 ("ASoC: codecs: max98373: add SoundWire support")
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ sound/soc/codecs/max98373-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks
+diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
+index 5fe724728e84..e4675cfff7b2 100644
+--- a/sound/soc/codecs/max98373-sdw.c
++++ b/sound/soc/codecs/max98373-sdw.c
+@@ -838,8 +838,8 @@ static int max98373_sdw_probe(struct sdw_slave *slave,
+ 
+ 	/* Regmap Initialization */
+ 	regmap = devm_regmap_init_sdw(slave, &max98373_sdw_regmap);
+-	if (!regmap)
+-		return -EINVAL;
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
+ 
+ 	return max98373_init(slave, regmap);
+ }
 -- 
-~Vinod
+2.26.2
+
