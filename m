@@ -2,65 +2,84 @@ Return-Path: <SRS0=PqWm=CF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2316C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 07:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37CFFC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 07:16:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53AC922BEA
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 07:00:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB75422BEA
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 07:16:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f5t16tGG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53AC922BEA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y/3cjXLv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB75422BEA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C29C017C8;
-	Thu, 27 Aug 2020 08:59:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C29C017C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25C9717CA;
+	Thu, 27 Aug 2020 09:15:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25C9717CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598511599;
-	bh=u56HHwey9KpECQSbXboTtHYMokwH1EVtQoZW7h7W4kA=;
+	s=default; t=1598512588;
+	bh=1VdRf5CtWIyPIdXvS2wAEaKh5zW4UzsiNlRDUA6XX6U=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f5t16tGGddeAMUvoY/zeweYu+14shcsh7xv/8pyvHUv9zfQSu1FRF59dAHnNycIRb
-	 QM+dP5SFGelaoTHYQUHZd/5UKdNwO54tJTB+onje9pIrn7oL9xQmgFk3kuKtFu8+Jj
-	 ZFxcKq/3nE59CxV4Z3Yho4p3hSCCFxxKvcIB7Xmw=
+	b=Y/3cjXLv8VJtVOzaUe9u4QgbxOfU+DCvdIjQbPGWJo2qtjyKnJ+9Nwt4QJv9LvRjj
+	 PrXJYpPRpDqqXJusIOWC2Y4sOoiabsxrt0TypyCxPZmDsrS1OZSYMBgtdx4EpO2QqT
+	 hg8UsuYy6H2xdheYskuSyOKLnH9kX9isiY6hLOLA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50163F80143;
-	Thu, 27 Aug 2020 08:59:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3F67F80143;
+	Thu, 27 Aug 2020 09:15:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC079F8016F; Thu, 27 Aug 2020 08:59:07 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 21A30F8016F; Thu, 27 Aug 2020 09:15:36 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB38BF80085
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 08:58:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB38BF80085
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0E592B6BF;
- Thu, 27 Aug 2020 06:59:26 +0000 (UTC)
-Date: Thu, 27 Aug 2020 08:58:54 +0200
-Message-ID: <s5heensr2vl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Harsha Priya <harshapriya.n@intel.com>
-Subject: Re: [PATCH] ALSA: Realtek: Early Forbid of runtime PM
-In-Reply-To: <1598505643-30347-1-git-send-email-harshapriya.n@intel.com>
-References: <1598505643-30347-1-git-send-email-harshapriya.n@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7B9FF80105
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 09:15:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7B9FF80105
+IronPort-SDR: l5oGs1gxbuBs65DbtHlQA90rhC5kara4TAaIjpmgcczCbdSoBFHqwSARoh8PhmfsrNlNV7VNRa
+ tfAhzMIKlPgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="144193281"
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; d="scan'208";a="144193281"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Aug 2020 00:15:30 -0700
+IronPort-SDR: Zpm+ya4u91Zk+HFTnzEsfMZuveriW7ix0fFcTT2Hv0fvJEotLVmqf+NbcQu3eYwsPY142coxyd
+ IiJ2JnYxKqDQ==
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; d="scan'208";a="475094944"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Aug 2020 00:15:28 -0700
+Date: Thu, 27 Aug 2020 10:14:18 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH] ASoC: intel/skl/hda - fix probe regression on systems
+ without i915
+In-Reply-To: <159542547442.19620.11983281044239009101.b4-ty@kernel.org>
+Message-ID: <alpine.DEB.2.22.394.2008271002260.3186@eliteleevi.tm.intel.com>
+References: <20200714132804.3638221-1-kai.vehmanen@linux.intel.com>
+ <159542547442.19620.11983281044239009101.b4-ty@kernel.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: Emmanuel Jillela <emmanuel.jillela@intel.com>, alsa-devel@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ kuninori.morimoto.gx@renesas.com, ranjani.sridharan@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,44 +95,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 27 Aug 2020 07:20:43 +0200,
-Harsha Priya wrote:
+Hi,
+
++stable
+
+On Wed, 22 Jul 2020, Mark Brown wrote:
+> Applied to
 > 
-> For Realtek codecs, pm_runtime_forbid() is called in the probe function 
-> after the build_controls(). In a stress test, occasionally the runtime
-> PM calls are invoked before controls are built. This causes the codec to be
-> runtime suspended before probe completes. Because of this, not all
-> controls are enumerated correctly and audio does not work until
-> system is rebooted.
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+[...]
 > 
-> This patch calls pm_runtime_forbid() early to fix the issue.
-> Multiple stress tests of 2000+ cycles has been done to test the fix.
-> 
-> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-> Signed-off-by: Emmanuel Jillela <emmanuel.jillela@intel.com>
-> Reviewed-by: Kailang Yang <kailang@realtek.com>
+> [1/1] ASoC: intel/skl/hda - fix probe regression on systems without i915
+>       commit: ffc6d45d96f07a32700cb6b7be2d3459e63c255a
 
-The behavior shouldn't be specific to that model, also not to codec
-vendors, but it's rather a generic problem, so it's no right place to
-correct, I suppose.
+please apply this to stable kernels as well. Without the patch, audio is 
+broken with 5.8.x on many laptops (with Intel audio and non-Intel 
+graphics). One more recent bug filed:
+https://github.com/thesofproject/sof/issues/3345
 
-Can we simply call pm_runtime_forbid() at creating a codec object like
-below?
+This does _not_ affect 5.7.x and older, plus already fixed in 5.9-rc.
 
+Br, Kai
 
-thanks,
-
-Takashi
-
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1000,6 +1000,9 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
- 	if (err < 0)
- 		goto error;
- 
-+	/* PM runtime needs to be enabled later after binding codec */
-+	pm_runtime_forbid(&codec->core.dev);
-+
- 	return 0;
- 
-  error:
