@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9136EC433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45560C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:55:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 141792087C
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:54:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA95E2087C
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:55:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HhFDCnTs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 141792087C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CUT1xDqs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA95E2087C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6AC617FA;
-	Thu, 27 Aug 2020 03:54:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6AC617FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 548F3180A;
+	Thu, 27 Aug 2020 03:54:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 548F3180A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598493297;
-	bh=xTk30X7O3WVRpglYjXaI9SfMm4gEhdJXtBxUHTOr53o=;
+	s=default; t=1598493311;
+	bh=QOeuDD2QK0SZWVgD1OEbRNWCoYFGmGF1YUB2+sjgfvw=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HhFDCnTsKbs5pfyq8LeBBH9V1DGj1JxyRPozXA9/cDgTi9wwlDz+gbojWzRac9II+
-	 pgLnPLCPSBpbga95cW5LhR/JV815UUcAD4ZR1AjmA7iSQ5tj5kNrM6owyLB9TiHBO2
-	 QPlKqAnXNyZyaeeqWJyBch2cdEP1ctnw71gk5Sqw=
+	b=CUT1xDqsObPrGJ93194K7ERRECXh0Way0o0XkAKQyxdMN1B1vNMHAFDeHlYjKogtf
+	 NXWSorlo79em391CQVqukmDx+9XMZpb3L8noaDYcroIIy2EZ3+gS61IbIkzLGibcvq
+	 E0X5mD3ClOsPNwYKkVA36PUwIIIpm+03AOpY3N/A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30BD1F802FF;
-	Thu, 27 Aug 2020 03:50:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 844EDF80304;
+	Thu, 27 Aug 2020 03:51:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06003F80303; Thu, 27 Aug 2020 03:50:55 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0E312F802EA
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 03:50:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E312F802EA
-Date: 27 Aug 2020 10:50:51 +0900
-X-IronPort-AV: E=Sophos;i="5.76,357,1592838000"; d="scan'208";a="55418750"
+ id 0971CF80307; Thu, 27 Aug 2020 03:51:00 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 60260F80305
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 03:50:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60260F80305
+Date: 27 Aug 2020 10:50:56 +0900
+X-IronPort-AV: E=Sophos;i="5.76,357,1592838000"; d="scan'208";a="55635855"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 27 Aug 2020 10:50:51 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 27 Aug 2020 10:50:56 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 937BD4142EEF;
- Thu, 27 Aug 2020 10:50:51 +0900 (JST)
-Message-ID: <87o8mwvoyb.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3AAC64143226;
+ Thu, 27 Aug 2020 10:50:56 +0900 (JST)
+Message-ID: <87mu2gvoy6.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 6/7] ASoC: soc-pcm: remove unneeded dev_err() for
- snd_soc_dai_startup()
+Subject: [PATCH v2 7/7] ASoC: soc-pcm: remove unneeded dev_err() for
+ snd_soc_component_module/open()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87wo1kvozz.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,33 +79,42 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-snd_soc_dai_startup() itself will indicate error message,
-thus, soc_pcm_open() don't need to handle it.
-This patch removes it.
+snd_soc_component_module_get(), snd_soc_component_open() itself will indicate
+error message, thus, soc_pcm_components_open() don't need to handle it.
+This patch removes these.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/soc-pcm.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 7f3e44918f19..070fb71fc6f6 100644
+index 070fb71fc6f6..09e8d703a502 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -729,12 +729,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	/* startup the audio subsystem */
- 	for_each_rtd_dais(rtd, i, dai) {
- 		ret = snd_soc_dai_startup(dai, substream);
+@@ -614,20 +614,12 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream)
+ 
+ 	for_each_rtd_components(rtd, i, component) {
+ 		ret = snd_soc_component_module_get_when_open(component, substream);
 -		if (ret < 0) {
--			dev_err(dai->dev,
--				"ASoC: can't open DAI %s: %d\n",
--				dai->name, ret);
+-			dev_err(component->dev,
+-				"ASoC: can't get module %s\n",
+-				component->name);
 +		if (ret < 0)
- 			goto err;
+ 			break;
 -		}
  
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 			dai->tx_mask = 0;
+ 		ret = snd_soc_component_open(component, substream);
+-		if (ret < 0) {
+-			dev_err(component->dev,
+-				"ASoC: can't open component %s: %d\n",
+-				component->name, ret);
++		if (ret < 0)
+ 			break;
+-		}
+ 	}
+ 
+ 	return ret;
 -- 
 2.25.1
 
