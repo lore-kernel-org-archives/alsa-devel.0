@@ -2,76 +2,73 @@ Return-Path: <SRS0=PqWm=CF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59827C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:37:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD019C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:39:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B80C52074A
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:37:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 669FC207F7
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:39:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u0lvT/2g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B80C52074A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SnZAoA4d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 669FC207F7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BCC917CA;
-	Thu, 27 Aug 2020 03:37:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BCC917CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9E1E17D9;
+	Thu, 27 Aug 2020 03:38:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9E1E17D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598492277;
-	bh=gtSD+kQ8cckM/2X4W2HXI8fGN5o+1zU5jbkRvJ/V3SU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1598492384;
+	bh=XqXMyEgQsChQ8F20E+T/ztUS80Xb8FHUw/8297QYeco=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u0lvT/2gZRkedt62XFMBrq6e0QFw2DMvOKnRm8P34GMgToqWK8dcASqMEgPuecYzj
-	 uwqOAtzbYgwKSeRi7WCgAr1ygz8ZnMvgXeqVT3makp9UQFrD7QlteLnj/wLQE3PIkE
-	 9+Gjn8Cd/1C0UtF+tbTbK/IR74zW+WqzSixuyyTY=
+	b=SnZAoA4d1okeDSb3yzj0MDae3uN2Bko/pbCxO4jUX53UdGMrltQVoUOBqaf+A87ob
+	 0Xb3Y4Osj3cutcSD7b+0gqRTQ+Ldas0ma1hLbwPjbxnwW7uLDgsWjuZEmFeHJHCfz+
+	 Yg3rd36nVuQLAhdshyFdiTg6v+bqErWKZ9WoqXAE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3B0EF8016F;
-	Thu, 27 Aug 2020 03:37:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 490B0F801D9;
+	Thu, 27 Aug 2020 03:38:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2671F801D9; Thu, 27 Aug 2020 03:37:04 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id C2C67F80143
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 03:36:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2C67F80143
-Date: 27 Aug 2020 10:36:54 +0900
-X-IronPort-AV: E=Sophos;i="5.76,357,1592838000"; d="scan'208";a="55634204"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 27 Aug 2020 10:36:54 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id C9328413F217;
- Thu, 27 Aug 2020 10:36:54 +0900 (JST)
-Message-ID: <87y2m0vplk.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: More Generic Audio Graph Sound Card idea
-In-Reply-To: <f21353ca-5d47-afac-3451-f951eced36e2@nvidia.com>
-References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
- <20200821121844.GF4870@sirena.org.uk>
- <878se4zybn.wl-kuninori.morimoto.gx@renesas.com>
- <58220f32-0b3e-d666-5bb0-bbeae27f6aab@nvidia.com>
- <87364by23u.wl-kuninori.morimoto.gx@renesas.com>
- <e6e04e2c-2695-b7ba-3eb2-79158f317e4a@nvidia.com>
- <87r1rvwbsd.wl-kuninori.morimoto.gx@renesas.com>
- <2d9140c7-7cba-34d9-d4b7-c9f9f395d9e7@nvidia.com>
- <87mu2jw7zd.wl-kuninori.morimoto.gx@renesas.com>
- <f21353ca-5d47-afac-3451-f951eced36e2@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: sharadg@nvidia.com, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- jonathanh@nvidia.com
+ id B2DDBF801F2; Thu, 27 Aug 2020 03:38:47 +0200 (CEST)
+Received: from cmccmta3.chinamobile.com (cmccmta3.chinamobile.com
+ [221.176.66.81])
+ by alsa1.perex.cz (Postfix) with ESMTP id 76AE4F800EB
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 03:38:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76AE4F800EB
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by
+ rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec5f470e8b176-60d10;
+ Thu, 27 Aug 2020 09:38:20 +0800 (CST)
+X-RM-TRANSID: 2eec5f470e8b176-60d10
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.21.77] (unknown[10.42.68.12])
+ by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee55f470e8be69-26624;
+ Thu, 27 Aug 2020 09:38:20 +0800 (CST)
+X-RM-TRANSID: 2ee55f470e8be69-26624
+Subject: Re: [PATCH] ASoC: fsl_spdif: Fix unnecessary check infsl_spdif_probe()
+To: Mark Brown <broonie@kernel.org>
+References: <20200826150918.16116-1-tangbin@cmss.chinamobile.com>
+ <20200826165308.GJ4965@sirena.org.uk>
+From: Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <f2196e55-6458-4f55-96ac-bd18ecb461d1@cmss.chinamobile.com>
+Date: Thu, 27 Aug 2020 09:37:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200826165308.GJ4965@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,39 +84,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark
 
-Hi Sameer
+在 2020/8/27 0:53, Mark Brown 写道:
+> On Wed, Aug 26, 2020 at 11:09:18PM +0800, Tang Bin wrote:
+>> The function fsl_spdif_probe() is only called with an openfirmware
+>> platform device. Therefore there is no need to check that the passed
+>> in device is NULL.
+> Why is this an issue - the check will make things more robust if someone
+> manages to load the driver on a non-DT system and otherwise costs us a
+> couple of instructions?
+Thanks for your reply.
 
-> >          static audio_graph_hooks hooks = {
-> >                  .parse_of_hook_pre  = xxx,
-> > =>              .parse_of_hook_post = sameer_parse_of_post,
-> 
-> We may end up re-parsing the whole stuff under 'hook_post' (which
-> appears redundant) because I am forcing DPCM and would like
-> func_dpcm() to execute for all links. If I could set a flag under
-> 'hooks' and if 'audio-graph-card' can use it to force DPCM, it would
-> appear to be a better choice.
+In this function,  function fsl_spdif_probe() can be triggered only if 
+the platform_device and platform_driver matches,
 
-Asking how to judge link to driver is maybe nice idea.
+so I think the judgement at the beginning is redundant.
 
-I didn't mentioned in order not to not diverge,
-but I'm also thinking that some overwrite function itself
-as you mentioned.
+Thanks
 
-	if (priv->hooks->func_pre)
-		priv->hooks->func_pre(...);
-
-	if (priv->hooks->func)
-		priv->hooks->func(...);	/* driver's function */
-	else
-		graph_func(...);	/* audio-graph function */
-		
-	if (priv->hooks->func_post)
-		priv->hooks->func_post(...);
+Tang Bin
 
 
-Thank you for your help !!
 
-Best regards
----
-Kuninori Morimoto
