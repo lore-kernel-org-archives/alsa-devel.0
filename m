@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EC24C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:19:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59827C433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:37:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 065AC2075B
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:19:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B80C52074A
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Aug 2020 01:37:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Bgqbfu+0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 065AC2075B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u0lvT/2g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B80C52074A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A30417C8;
-	Thu, 27 Aug 2020 03:18:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A30417C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BCC917CA;
+	Thu, 27 Aug 2020 03:37:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BCC917CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598491146;
-	bh=IYt5ehTs0odMOW6ADceSmRTBabKVYU2X4V+Asz/+0x0=;
+	s=default; t=1598492277;
+	bh=gtSD+kQ8cckM/2X4W2HXI8fGN5o+1zU5jbkRvJ/V3SU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bgqbfu+0GO2U664ihDvDfeTZ12FBC2nyTkjOKeeNMx1+VG57IODWvsDkl+M1vMYIW
-	 dLi9EjDt9BiXOBLDDaSw/VyTUiMU/FhVjFxyguvIdZg3EzPNBiYT6zPFkV767xpDQH
-	 p2dCxO32XlIPa+nYPlmrgMjkBcXzqe/1JyScYaRw=
+	b=u0lvT/2gZRkedt62XFMBrq6e0QFw2DMvOKnRm8P34GMgToqWK8dcASqMEgPuecYzj
+	 uwqOAtzbYgwKSeRi7WCgAr1ygz8ZnMvgXeqVT3makp9UQFrD7QlteLnj/wLQE3PIkE
+	 9+Gjn8Cd/1C0UtF+tbTbK/IR74zW+WqzSixuyyTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5DF9F8016F;
-	Thu, 27 Aug 2020 03:18:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3B0EF8016F;
+	Thu, 27 Aug 2020 03:37:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A10E3F801D9; Thu, 27 Aug 2020 03:18:13 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id CD6FDF800EB
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 03:18:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD6FDF800EB
-Date: 27 Aug 2020 10:18:04 +0900
-X-IronPort-AV: E=Sophos;i="5.76,357,1592838000"; d="scan'208";a="55415151"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 Aug 2020 10:18:04 +0900
+ id E2671F801D9; Thu, 27 Aug 2020 03:37:04 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C2C67F80143
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2020 03:36:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2C67F80143
+Date: 27 Aug 2020 10:36:54 +0900
+X-IronPort-AV: E=Sophos;i="5.76,357,1592838000"; d="scan'208";a="55634204"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 27 Aug 2020 10:36:54 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E4654400C09F;
- Thu, 27 Aug 2020 10:18:04 +0900 (JST)
-Message-ID: <871rjsx51e.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C9328413F217;
+ Thu, 27 Aug 2020 10:36:54 +0900 (JST)
+Message-ID: <87y2m0vplk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
 Subject: Re: More Generic Audio Graph Sound Card idea
@@ -90,42 +90,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-> What you are suggesting is 'audio-graph-card2' is a new restructured
-> version of 'audio-graph-card' with some additional customization
-> available for specific users. Do you think updating existing
-> 'audio-graph-card' itself, with necessary hooks, would be too
-> complicated to handle?
-
-It depends on how new driver was implemented.
-If we need to keep current card, I will keep it as-is and do nothing anymore,
-and has customize option at card2.
-If we update current card, customize option will be added to it.
-
-> From a brief overview, it may solve my issue in customizing few
-> stuff. But I am not too sure if we want to go that way, because
-> eventually we end up in writing a separate machine driver for Tegra
-> (though there can be common stuff used from the generic graph
-> card). The original idea was to use 'audio-graph-card' and people
-> facing similar issues could use "-cc-" compatible.
-
-The biggest issue on current audio-graph-card is that
-DPCM feature is limited, and because of it, the link detection
-is very tricky.
-Your "-cc-" assumes all links are DPCM, but it is more limitation.
-We want to have more flexible/generic detection.
-
-> >                  dsp {
-> >                          compatible = "audio-graph-card2-dsp";
+> >          static audio_graph_hooks hooks = {
+> >                  .parse_of_hook_pre  = xxx,
+> > =>              .parse_of_hook_post = sameer_parse_of_post,
 > 
-> Sorry I did not understand this. Do you intend to parse 'dsp'
-> separately with some version of audio graph card? In my case 'dsp' is
-> just a 'crossbar' and is registered as a component exposing all
-> routes. However I have described links in the DT in a similar way
-> where my 'crossbar' is exposing FEs and BEs like below.
+> We may end up re-parsing the whole stuff under 'hook_post' (which
+> appears redundant) because I am forcing DPCM and would like
+> func_dpcm() to execute for all links. If I could set a flag under
+> 'hooks' and if 'audio-graph-card' can use it to force DPCM, it would
+> appear to be a better choice.
 
-This compatible is used just for indicating audio-graph DSP.
-"audio-graph-card" will parse it if it was connected.
-If you confuse it, just ignore for now.
+Asking how to judge link to driver is maybe nice idea.
+
+I didn't mentioned in order not to not diverge,
+but I'm also thinking that some overwrite function itself
+as you mentioned.
+
+	if (priv->hooks->func_pre)
+		priv->hooks->func_pre(...);
+
+	if (priv->hooks->func)
+		priv->hooks->func(...);	/* driver's function */
+	else
+		graph_func(...);	/* audio-graph function */
+		
+	if (priv->hooks->func_post)
+		priv->hooks->func_post(...);
 
 
 Thank you for your help !!
