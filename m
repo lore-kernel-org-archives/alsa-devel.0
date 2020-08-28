@@ -7,85 +7,86 @@ X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A14BC433E6
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:16:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECAC9C433E6
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:19:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99A2620757
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:16:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6172C20757
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:19:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FBAzf/9O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99A2620757
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GU5PcxL1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6172C20757
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDCA318A3;
-	Fri, 28 Aug 2020 17:15:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDCA318A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEFA5188C;
+	Fri, 28 Aug 2020 17:18:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEFA5188C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598627808;
-	bh=KwopbHG9OgzOQ38Bl3Sv7EJLJpxdfx28xpcNKOFjHCE=;
+	s=default; t=1598627961;
+	bh=BfEGsvkA+wLvUfI+kpZgTVxR1opyNLSWIo5qzVPgO1I=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FBAzf/9O/q9qQwiKHT40pLGpp9PB14Xq/1SaBKGTN4a4U5GsRgIqX7MDcNccmsFKZ
-	 6toJOm95UGKgLu37sPRpW116zPGAXfLj56hrMdedP2rYWY8PdSporlhUxHk4iQ5Xos
-	 6Ns5cDYjcQXZtLMlCnvrob4L64BOi/KmqUw2aGJI=
+	b=GU5PcxL1g/iTw2P6CWauv/oy5Te4zEH9WDneOGjelbyGqT6S0YA2cbNvDz0qnAL2x
+	 poeMdOMXmsJWAoLCjQkvZ2Rgezbkd+Yj0v0idlyMo6N0wZAM2dfXwXjI1+BGj/YXQm
+	 Cra2Dad1mnMBUoPLyffyhJAW0m2JVKuA4jggJcWA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C2F7F801F2;
-	Fri, 28 Aug 2020 17:15:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C22CF800EB;
+	Fri, 28 Aug 2020 17:18:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEBD1F8020C; Fri, 28 Aug 2020 17:15:07 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 9A690F801D9; Fri, 28 Aug 2020 17:18:29 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB8B6F80143
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 17:14:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB8B6F80143
-IronPort-SDR: o5DWQ+vnsu70tMP8cAYh2ChIqOy3I9hP+RccQ1YWBfC4YjmY+j0o2w6GiX6e/hrjeyaYYksR+a
- eEA90SGLA1Fw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="155939826"
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; d="scan'208";a="155939826"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17942F800EB
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 17:18:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17942F800EB
+IronPort-SDR: 7NnSTk190oLAgQfOWv9niz/FLWZMgW23Jn5YUYJzhWQeuJMUDCg8K2yaOlCUeU8M6zW5808s3s
+ hsd9LMHN5Qwg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="136744147"
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; d="scan'208";a="136744147"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Aug 2020 08:14:54 -0700
-IronPort-SDR: lmmOffibLsj9n0W6xaXGeuDfgSX/QKOitxVzhsT/UObzEMYoNNzzUbIzp8LZrJ0NAv1/emfTqf
- 00P4tmDuBt8w==
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; d="scan'208";a="300265640"
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Aug 2020 08:18:17 -0700
+IronPort-SDR: SFp7fwoh3RchKClBFDuKhvS/zyDJ89FB5QdHBT8YxtTTdzyj6eGP06bF4a0Hnwq18on9CEopNw
+ z409P3XXfl0A==
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; d="scan'208";a="300266451"
 Received: from lilymao-mobl.amr.corp.intel.com (HELO [10.209.185.175])
  ([10.209.185.175])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Aug 2020 08:14:52 -0700
-Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
- and Slave device alerts
+ 28 Aug 2020 08:18:15 -0700
+Subject: Re: [PATCH 4/4] regmap: sdw: add support for SoundWire 1.2 MBQ
 To: Vinod Koul <vkoul@kernel.org>
-References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
- <20200819090637.GE2639@vkoul-mobl>
- <8d60fa6f-bb7f-daa8-5ae2-51386b87ccad@linux.intel.com>
- <20200821050758.GI2639@vkoul-mobl>
- <29ea5a44-b971-770a-519c-ae879557b63f@linux.intel.com>
- <20200828080024.GP2639@vkoul-mobl>
+References: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
+ <20200825171656.75836-5-pierre-louis.bossart@linux.intel.com>
+ <20200826090542.GZ2639@vkoul-mobl>
+ <c5119781-bee0-f11b-eb73-cd2da6ab09f5@linux.intel.com>
+ <20200828072342.GK2639@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <77ecb4bc-10d6-8fbd-e97f-923d01a5e555@linux.intel.com>
-Date: Fri, 28 Aug 2020 10:14:50 -0500
+Message-ID: <79ec0d5b-21e9-d54d-1c73-e1007cf493fa@linux.intel.com>
+Date: Fri, 28 Aug 2020 09:49:16 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200828080024.GP2639@vkoul-mobl>
+In-Reply-To: <20200828072342.GK2639@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
- hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
- jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
- bard.liao@intel.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,21 +103,19 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-
-> Is this timeout for suspend or resume? Somehow I was under the
-> assumption that it is former? Or is the result seen on resume?
+>>>> +#include <linux/mod_devicetable.h>
+>>>
+>>> Curious why do you need this header?
+>>
+>> I'll return the question back to you, since you added this header for
+>> regmap-sdw.c:
+>>
+>> 7c22ce6e21840 (Vinod Koul           2018-01-08 15:50:59 +0530  6) #include
+>> <linux/mod_devicetable.h>
 > 
-> Rereading the race describe above in steps, I think this should be
-> handled in step c above. Btw is that suspend or runtime suspend which
-> causes this? Former would be bigger issue as we should not have work
-> running when we return from suspend call. Latter should be dealt with
-> anyway as device might be off after suspend.
+> Looks like it should be removed :)
+> 
+> I could compile it without any issues on few archs I do. let me push the
+> patch on my tree and see if bots are happy, will send the patch
 
-This happens with a system suspend. Because we disable the interrupts, 
-the workqueue never completes, and we have a timeout on system resume.
-
-That's why we want to prevent the workqueue from starting, or let it 
-complete, but not have this zombie state where we suspend but there's 
-still a wait for completion that times out later. The point here is 
-really  making sure the workqueue is not used before suspend.
+I already fixed this on my side, will submit next week.
