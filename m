@@ -2,100 +2,90 @@ Return-Path: <SRS0=n32M=CG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29774C433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:15:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A14BC433E6
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:16:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8D2320757
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:15:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 99A2620757
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 15:16:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vor0XxzU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="F8plumSa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8D2320757
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FBAzf/9O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99A2620757
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F40F185B;
-	Fri, 28 Aug 2020 17:15:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F40F185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDCA318A3;
+	Fri, 28 Aug 2020 17:15:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDCA318A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598627755;
-	bh=a2/BofKB+XGI3vE1Ny2QpefHDyPaK6JfrBus9W7ZmdY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Vor0XxzUWKWhIf2i0XjpbHPV7AJHxEBRSe6Lsa40JJ6sNr/Tj8h6AohIoFZI3TJti
-	 f/raZXPC9Y/nOJvAqXRgimiODigg9JmW8k4DTfY3KlpGLpOZxFcaBrX9UcvW2Js5fw
-	 iyQ2w0j/3Py/uZ9r5roMQuywRl+agtqxafoBXGVA=
+	s=default; t=1598627808;
+	bh=KwopbHG9OgzOQ38Bl3Sv7EJLJpxdfx28xpcNKOFjHCE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FBAzf/9O/q9qQwiKHT40pLGpp9PB14Xq/1SaBKGTN4a4U5GsRgIqX7MDcNccmsFKZ
+	 6toJOm95UGKgLu37sPRpW116zPGAXfLj56hrMdedP2rYWY8PdSporlhUxHk4iQ5Xos
+	 6Ns5cDYjcQXZtLMlCnvrob4L64BOi/KmqUw2aGJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1B61F8016F;
-	Fri, 28 Aug 2020 17:15:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C2F7F801F2;
+	Fri, 28 Aug 2020 17:15:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BAA5F80105; Fri, 28 Aug 2020 17:15:02 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BEBD1F8020C; Fri, 28 Aug 2020 17:15:07 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82130F80105
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 17:14:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82130F80105
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="F8plumSa"
-Received: by mail-wm1-x343.google.com with SMTP id t2so1274158wma.0
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 08:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=6XO7ADdhJqpOQN7r6IzL9NHcOCfqqL0xalqP8Zr9AVw=;
- b=F8plumSakJirsH7lNu+Hn/G7X19AHjzTM5ONVDRwW97YDaWp3eg5szWB9CGtJhU1Vl
- xDFBvsnLlFHfbRlyNJtUC4tBi4s/mV1k4Rb02oFIBor+rPQeL/cg6t4Cew5Gn5mWJpIE
- Vt9KWC3iVYvkuyvrFRynD11z7LAMVPS+NI9tnBG14HFtnOHW6LVuCYnX33VWdWOsXr5e
- qFu28wlsnB7Y9L5unZLg6f+471jLdM9fe5jHwFkhnxxvaPAzYGZRjDgNUWQ6qtm+iBJt
- x/eqVD/jlV7ybQwhqzNXBTd6BUWYCR8zG7Co5wjqsfBCECYSt9kbIJ4zzWAjtCSaqkcb
- kGMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=6XO7ADdhJqpOQN7r6IzL9NHcOCfqqL0xalqP8Zr9AVw=;
- b=rUxLk/eouWn5dMBLoKCS/En/dDM1hH9l87PjcTDMOgddiGt2v+9QBSCUMKLR0gdnCJ
- j72C0W7M2H9/Thz1J9AbpsYl+3HLg+C8BMpjbaANl1MCykzYOHX5GaXxCSsabdOz6/p6
- a4HtAOR4n0Jii/ZhdZGDLaCP65YJ4TjspFJowyLRwsym7ue88P2E3Bpoz65V0hjlaWZh
- Zt8tR8/Fg6EdA1XVKCKkQt1X+CGJufqBKi9Dl/1VvtOJPIByEwKB0JwWfS3n3opGyBtO
- +oH/Ya4xdueEqMdk8+1yFsIl/bFQEkoOQLtm2QMKA4kDixwZAkDJ0GDlMjfSawMqrcwB
- Hj3Q==
-X-Gm-Message-State: AOAM532DOE88eS6qxzC9QKGB4RAmn3ZS8rGBMq8KjBtHuaP4mOCT4t12
- fFrXmwSeGFXNRayPZIIiItgYwA==
-X-Google-Smtp-Source: ABdhPJxjB6+c5w8aI5zAeGsZDGu6H+RsO/PecnVXHIa5KCb0j3pXBs/KW6K15lIti3aH81H18eacBw==
-X-Received: by 2002:a1c:7215:: with SMTP id n21mr2039022wmc.156.1598627690389; 
- Fri, 28 Aug 2020 08:14:50 -0700 (PDT)
-Received: from starbuck.baylibre.local
- (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
- by smtp.googlemail.com with ESMTPSA id b8sm2877677wmh.48.2020.08.28.08.14.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 28 Aug 2020 08:14:49 -0700 (PDT)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: meson: axg-toddr: fix channel order on g12 platforms
-Date: Fri, 28 Aug 2020 17:14:38 +0200
-Message-Id: <20200828151438.350974-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB8B6F80143
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 17:14:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB8B6F80143
+IronPort-SDR: o5DWQ+vnsu70tMP8cAYh2ChIqOy3I9hP+RccQ1YWBfC4YjmY+j0o2w6GiX6e/hrjeyaYYksR+a
+ eEA90SGLA1Fw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="155939826"
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; d="scan'208";a="155939826"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Aug 2020 08:14:54 -0700
+IronPort-SDR: lmmOffibLsj9n0W6xaXGeuDfgSX/QKOitxVzhsT/UObzEMYoNNzzUbIzp8LZrJ0NAv1/emfTqf
+ 00P4tmDuBt8w==
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; d="scan'208";a="300265640"
+Received: from lilymao-mobl.amr.corp.intel.com (HELO [10.209.185.175])
+ ([10.209.185.175])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Aug 2020 08:14:52 -0700
+Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
+ and Slave device alerts
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
+ <20200819090637.GE2639@vkoul-mobl>
+ <8d60fa6f-bb7f-daa8-5ae2-51386b87ccad@linux.intel.com>
+ <20200821050758.GI2639@vkoul-mobl>
+ <29ea5a44-b971-770a-519c-ae879557b63f@linux.intel.com>
+ <20200828080024.GP2639@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <77ecb4bc-10d6-8fbd-e97f-923d01a5e555@linux.intel.com>
+Date: Fri, 28 Aug 2020 10:14:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>,
- linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
- Nicolas Belin <nbelin@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20200828080024.GP2639@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,68 +101,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On g12 and following platforms, The first channel of record with more than
-2 channels ends being placed randomly on an even channel of the output.
 
-On these SoCs, a bit was added to force the first channel to be placed at
-the beginning of the output. Apparently the behavior if the bit is not set
-is not easily predictable. According to the documentation, this bit is not
-present on the axg series.
 
-Set the bit on g12 and fix the problem.
 
-Fixes: a3c23a8ad4dc ("ASoC: meson: axg-toddr: add g12a support")
-Reported-by: Nicolas Belin <nbelin@baylibre.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/axg-toddr.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+> Is this timeout for suspend or resume? Somehow I was under the
+> assumption that it is former? Or is the result seen on resume?
+> 
+> Rereading the race describe above in steps, I think this should be
+> handled in step c above. Btw is that suspend or runtime suspend which
+> causes this? Former would be bigger issue as we should not have work
+> running when we return from suspend call. Latter should be dealt with
+> anyway as device might be off after suspend.
 
-diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
-index e711abcf8c12..d6adf7edea41 100644
---- a/sound/soc/meson/axg-toddr.c
-+++ b/sound/soc/meson/axg-toddr.c
-@@ -18,6 +18,7 @@
- #define CTRL0_TODDR_SEL_RESAMPLE	BIT(30)
- #define CTRL0_TODDR_EXT_SIGNED		BIT(29)
- #define CTRL0_TODDR_PP_MODE		BIT(28)
-+#define CTRL0_TODDR_SYNC_CH		BIT(27)
- #define CTRL0_TODDR_TYPE_MASK		GENMASK(15, 13)
- #define CTRL0_TODDR_TYPE(x)		((x) << 13)
- #define CTRL0_TODDR_MSB_POS_MASK	GENMASK(12, 8)
-@@ -189,10 +190,31 @@ static const struct axg_fifo_match_data axg_toddr_match_data = {
- 	.dai_drv		= &axg_toddr_dai_drv
- };
- 
-+static int g12a_toddr_dai_startup(struct snd_pcm_substream *substream,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
-+	int ret;
-+
-+	ret = axg_toddr_dai_startup(substream, dai);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Make sure the first channel ends up in the at beginning of the output
-+	 * As weird as it looks, without this the first channel may be misplaced
-+	 * in memory, with a random shift of 2 channels.
-+	 */
-+	regmap_update_bits(fifo->map, FIFO_CTRL0, CTRL0_TODDR_SYNC_CH,
-+			   CTRL0_TODDR_SYNC_CH);
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dai_ops g12a_toddr_ops = {
- 	.prepare	= g12a_toddr_dai_prepare,
- 	.hw_params	= axg_toddr_dai_hw_params,
--	.startup	= axg_toddr_dai_startup,
-+	.startup	= g12a_toddr_dai_startup,
- 	.shutdown	= axg_toddr_dai_shutdown,
- };
- 
--- 
-2.25.4
+This happens with a system suspend. Because we disable the interrupts, 
+the workqueue never completes, and we have a timeout on system resume.
 
+That's why we want to prevent the workqueue from starting, or let it 
+complete, but not have this zombie state where we suspend but there's 
+still a wait for completion that times out later. The point here is 
+really  making sure the workqueue is not used before suspend.
