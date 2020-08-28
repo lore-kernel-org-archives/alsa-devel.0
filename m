@@ -2,89 +2,81 @@ Return-Path: <SRS0=n32M=CG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0F6C433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:30:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8497C433E7
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:42:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 954FD207DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:30:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7251121532
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:42:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cn7bLjHM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qWvhfPBP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 954FD207DF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CDimZNpl";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OVA97ENb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7251121532
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29814185C;
-	Fri, 28 Aug 2020 13:29:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29814185C
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED39B185B;
+	Fri, 28 Aug 2020 13:41:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED39B185B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598614209;
-	bh=r0auWt1WLe3bPMB8HsfLvODhQKFzRQ6uKSJCYvvsEMA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Cn7bLjHMJZWVJAZOUyp8RhCMp0HJSU9G3pgpVIKMydetBGznOr2Miv8WgLHbewVIV
-	 q2mNhpexkHz2zFol9giq0LqjpUWkiSR35G9QQwBnX+cr0hk93L64w5FL/gDD20+b/X
-	 VTpmYoBaDFeS3BMOJ2nTOFYfKbAE215SQAbwDCq0=
+	s=default; t=1598614945;
+	bh=MaASZatezYnsnTvN/iW46PG9ZF1Yto7qOUQdDiuXixU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CDimZNplpvRRMx+njCxvUyybR7/R1zvc+Tp9jXVBhxuqyQbAypPpEWW/VZex2dpmW
+	 +ipqb3jmOESOQgagG7LwkCkUn9Zcw6DGiA0SPVUPpAu/sTGSvVc9ASFJ/h08DJgGeO
+	 OqzTVEsiG+n/mQ8EboWrp+9q60pjOBC2kr1euMko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84CEAF80143;
-	Fri, 28 Aug 2020 13:29:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B466F80118;
+	Fri, 28 Aug 2020 13:41:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E8B0F8016F; Fri, 28 Aug 2020 13:29:11 +0200 (CEST)
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+ id B173DF8016F; Fri, 28 Aug 2020 13:41:33 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB5D6F80118
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 13:41:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB5D6F80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="OVA97ENb"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 827B3F800EB
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 13:28:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 827B3F800EB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qWvhfPBP"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07SBSubY057960;
- Fri, 28 Aug 2020 06:28:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1598614136;
- bh=K6J1dxqpyjkqrS/MebKa8sgd6/5VHr1CiLNX3jpx7pw=;
- h=From:To:CC:Subject:Date;
- b=qWvhfPBPFpUdwKJGs7+w7SHCWETcn124eVl+LPdMUmLNya2liW/NM8mAwMbM1wprG
- zioL7jtMPyJ7cbuhOP2ENK+lBv1rtBfTcZjwrlZhgyaujt/wxgFfNi5F5t4yLn33Xu
- jnCNEN0QFrpeySO3fchJ9ljMo9zkedIF7AjfY0E4=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07SBSuas117700
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 28 Aug 2020 06:28:56 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 28
- Aug 2020 06:28:56 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 28 Aug 2020 06:28:56 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07SBStBb116292;
- Fri, 28 Aug 2020 06:28:55 -0500
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <robh@kernel.org>
-Subject: [PATCH] ASoC: tlv320adcx140: Add digital mic channel enable routing
-Date: Fri, 28 Aug 2020 06:28:55 -0500
-Message-ID: <20200828112855.10112-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 3F38720848;
+ Fri, 28 Aug 2020 11:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1598614881;
+ bh=MaASZatezYnsnTvN/iW46PG9ZF1Yto7qOUQdDiuXixU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=OVA97ENbEmvVyjMauH1f3r+66JwiKQn2O2Fd47hfs0vZvyoZFcfknGp1HRqlS5GTt
+ 8bSzu78t/p9MV81FpvdwLqFu4Hin/0UqELqSuNnvwodEq/N6q0gN3K7Ev+XL+5Xnod
+ 6DlkeKncryWwuMWIKcuUbd5DLKglazEJ6Cw9lZvU=
+Date: Fri, 28 Aug 2020 12:40:43 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH] ASoC: core: remove artificial component and DAI name
+ constraint
+Message-ID: <20200828114043.GE5566@sirena.org.uk>
+References: <20200827205100.1479331-1-dmitry.baryshkov@linaro.org>
+ <20200828105354.GD5566@sirena.org.uk>
+ <190cb4fb-44d9-cb70-f3dc-f8285e6abebb@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="3XA6nns4nE4KvaS/"
+Content-Disposition: inline
+In-Reply-To: <190cb4fb-44d9-cb70-f3dc-f8285e6abebb@linaro.org>
+X-Cookie: Your fault -- core dumped
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,83 +92,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add the audio routing map to enable the digital mic paths when the
-analog mic paths are not enabled.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- sound/soc/codecs/tlv320adcx140.c | 37 ++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+--3XA6nns4nE4KvaS/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 5cd50d841177..5d1b2a03f0ac 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -412,6 +412,16 @@ static const struct snd_soc_dapm_widget adcx140_dapm_widgets[] = {
- 	SND_SOC_DAPM_ADC("CH3_ADC", "CH3 Capture", ADCX140_IN_CH_EN, 5, 0),
- 	SND_SOC_DAPM_ADC("CH4_ADC", "CH4 Capture", ADCX140_IN_CH_EN, 4, 0),
- 
-+	SND_SOC_DAPM_ADC("CH1_DIG", "CH1 Capture", ADCX140_IN_CH_EN, 7, 0),
-+	SND_SOC_DAPM_ADC("CH2_DIG", "CH2 Capture", ADCX140_IN_CH_EN, 6, 0),
-+	SND_SOC_DAPM_ADC("CH3_DIG", "CH3 Capture", ADCX140_IN_CH_EN, 5, 0),
-+	SND_SOC_DAPM_ADC("CH4_DIG", "CH4 Capture", ADCX140_IN_CH_EN, 4, 0),
-+	SND_SOC_DAPM_ADC("CH5_DIG", "CH5 Capture", ADCX140_IN_CH_EN, 3, 0),
-+	SND_SOC_DAPM_ADC("CH6_DIG", "CH6 Capture", ADCX140_IN_CH_EN, 2, 0),
-+	SND_SOC_DAPM_ADC("CH7_DIG", "CH7 Capture", ADCX140_IN_CH_EN, 1, 0),
-+	SND_SOC_DAPM_ADC("CH8_DIG", "CH8 Capture", ADCX140_IN_CH_EN, 0, 0),
-+
-+
- 	SND_SOC_DAPM_SWITCH("CH1_ASI_EN", SND_SOC_NOPM, 0, 0,
- 			    &adcx140_dapm_ch1_en_switch),
- 	SND_SOC_DAPM_SWITCH("CH2_ASI_EN", SND_SOC_NOPM, 0, 0,
-@@ -470,6 +480,15 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
- 	{"CH3_ASI_EN", "Switch", "CH3_ADC"},
- 	{"CH4_ASI_EN", "Switch", "CH4_ADC"},
- 
-+	{"CH1_ASI_EN", "Switch", "CH1_DIG"},
-+	{"CH2_ASI_EN", "Switch", "CH2_DIG"},
-+	{"CH3_ASI_EN", "Switch", "CH3_DIG"},
-+	{"CH4_ASI_EN", "Switch", "CH4_DIG"},
-+	{"CH5_ASI_EN", "Switch", "CH5_DIG"},
-+	{"CH6_ASI_EN", "Switch", "CH6_DIG"},
-+	{"CH7_ASI_EN", "Switch", "CH7_DIG"},
-+	{"CH8_ASI_EN", "Switch", "CH8_DIG"},
-+
- 	{"CH5_ASI_EN", "Switch", "CH5_OUT"},
- 	{"CH6_ASI_EN", "Switch", "CH6_OUT"},
- 	{"CH7_ASI_EN", "Switch", "CH7_OUT"},
-@@ -541,6 +560,15 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
- 	{"PDM Clk Div Select", "705.6 kHz", "MIC1P Input Mux"},
- 	{"PDM Clk Div Select", "5.6448 MHz", "MIC1P Input Mux"},
- 
-+	{"MIC1P Input Mux", NULL, "CH1_DIG"},
-+	{"MIC1M Input Mux", NULL, "CH2_DIG"},
-+	{"MIC2P Input Mux", NULL, "CH3_DIG"},
-+	{"MIC2M Input Mux", NULL, "CH4_DIG"},
-+	{"MIC3P Input Mux", NULL, "CH5_DIG"},
-+	{"MIC3M Input Mux", NULL, "CH6_DIG"},
-+	{"MIC4P Input Mux", NULL, "CH7_DIG"},
-+	{"MIC4M Input Mux", NULL, "CH8_DIG"},
-+
- 	{"MIC1 Analog Mux", "Line In", "MIC1P"},
- 	{"MIC2 Analog Mux", "Line In", "MIC2P"},
- 	{"MIC3 Analog Mux", "Line In", "MIC3P"},
-@@ -554,6 +582,15 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
- 	{"MIC3M Input Mux", "Analog", "MIC3M"},
- 	{"MIC4P Input Mux", "Analog", "MIC4P"},
- 	{"MIC4M Input Mux", "Analog", "MIC4M"},
-+
-+	{"MIC1P Input Mux", "Digital", "MIC1P"},
-+	{"MIC1M Input Mux", "Digital", "MIC1M"},
-+	{"MIC2P Input Mux", "Digital", "MIC2P"},
-+	{"MIC2M Input Mux", "Digital", "MIC2M"},
-+	{"MIC3P Input Mux", "Digital", "MIC3P"},
-+	{"MIC3M Input Mux", "Digital", "MIC3M"},
-+	{"MIC4P Input Mux", "Digital", "MIC4P"},
-+	{"MIC4M Input Mux", "Digital", "MIC4M"},
- };
- 
- static const struct snd_kcontrol_new adcx140_snd_controls[] = {
--- 
-2.28.0
+On Fri, Aug 28, 2020 at 02:38:19PM +0300, Dmitry Baryshkov wrote:
+> On 28/08/2020 13:53, Mark Brown wrote:
 
+> > Are you sure the name doesn't get exposed to userspace through a field
+> > that's 32 bytes long?
+
+> Good question. From the first glance the only place where the names are
+> exposed is the debugfs.
+
+Yeah, I think so too - they don't end up in the PCM name which is the
+what I was originally thinking of.
+
+--3XA6nns4nE4KvaS/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9I7TsACgkQJNaLcl1U
+h9C0VAf/eg+kSMciscSxBYLfNOj2EjEYr7RUncMXTiU6kwpHZCwRRg1rHLk5JWSx
+ZswQAzrL9mBMYI6DCn5WwkoV+Jr246eQNAwwFcw9466y4aHIJbYlqu+toY1ZgCx7
+XBJFeknoxx7ZywtLvJTC3c3ZibTw1yC8EEHCXqwcdpZp2j6iyvbIwg7z7cui41+R
+y30daN0beFIxQsGqx1aom7lQJljluayOwayud/HLfz++52DyNYBSlTso69Urx1EL
+SNuJeAXaC9nA0XrzzwtXUZLGAEitb2l4fenisZn2NHKhZaMRdzye5omyJCrh+FYC
+VMVY1RJS2d1FGTmVbPIs7a/RnsHMCA==
+=+l7o
+-----END PGP SIGNATURE-----
+
+--3XA6nns4nE4KvaS/--
