@@ -2,97 +2,115 @@ Return-Path: <SRS0=n32M=CG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C524C433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 21:54:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E046C433E2
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 23:13:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23EE92078A
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 21:54:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2010208D5
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 23:13:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l1BXZg++"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23EE92078A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QNjCKBI3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DTx98g6e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2010208D5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6A6018C1;
-	Fri, 28 Aug 2020 23:53:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6A6018C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 770F318C1;
+	Sat, 29 Aug 2020 01:12:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 770F318C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598651638;
-	bh=ROFVvjuyhout5udhMdUexmszaY/V6Pgw8mRjD/NJUQU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1598656403;
+	bh=NAuYfTn7l2Olqc2mIK8A5IL35SDAJWKJAS/dDFuy/LY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l1BXZg++CGCA3tAwIA81mMiNSspNZ55jTvEuaIqxz4iGRSRnJGg0lOaI8guJQ0+Aa
-	 LXTv/Tihie5Cq72yYwM6lbpLkII51Wp4rWlJ9XtPtIKEBtruZemAVpgJ7LBpa93rpH
-	 BV5b5BkOgL/JhYjJVjtFPnYflosYRrT90hQazwvs=
+	b=QNjCKBI3fTCV2pAZAGK6KlcMdUKnJlYyxqmF5bBJGyAvuZNpnNLD8oWgnXThH4nWS
+	 p6Iy5iAbhOA8AwOFEJD5u/F52gdfSgjwuk6aNCD8lQfqsnEENH7ZkjsebVEc5co/Mz
+	 vRJzDtozwakouSn6frSCWBqF64vSP0O5DSKZ3LOQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16786F80143;
-	Fri, 28 Aug 2020 23:53:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2F35F80143;
+	Sat, 29 Aug 2020 01:12:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10245F8016F; Fri, 28 Aug 2020 23:52:59 +0200 (CEST)
-Received: from mail-il1-f196.google.com (mail-il1-f196.google.com
- [209.85.166.196])
+ id D7F6CF8016F; Sat, 29 Aug 2020 01:12:30 +0200 (CEST)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
+ [IPv6:2607:f8b0:4864:20::1043])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACFDDF800EB
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 23:52:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACFDDF800EB
-Received: by mail-il1-f196.google.com with SMTP id o16so1939489ilq.0
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 14:52:50 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70D3AF800EB
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 01:12:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70D3AF800EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="DTx98g6e"
+Received: by mail-pj1-x1043.google.com with SMTP id g6so257705pjl.0
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 16:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=eTKdXiRCKS6tUmMOhEk7xSRiz3K0QjMIqXKfgOUTwVI=;
+ b=DTx98g6eHjR9eWZ8L8pNZvzNzyyoyGJGoCSVzxnwe383QCEf6CiPXBYd7KGVxtcyWM
+ imHYSMTzYzDKbP9GdybbwuCc5YWmZJB/nMyEkOnXnO1PMF4GDNLmCJ3JJQnnthHL+c6q
+ B4VizqndaVWBqtihAlgf8low/9/yvPUV9bIiU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=en+PfxEtmvRwXUALF3uVWa2UzaRDDagomEGlqyPEpSA=;
- b=jxZZwZwqGgeuPm81zmsMDVgOAIytTrqm71KJijEVvYGzkrvBTp1klTXTFxQC6G1EMK
- DD5e2iVZtxL6pxDmZCFvI3YkNoPbpGKdDeTfaTWl4SCICMk/XrlqLl/Y4yze1ZBozgdO
- 7yoEXnqERtBvq/pCLna8Z4bQM8MsEwNMIZp7C8iAgVxFiIwF2gJLLMEhdbp0KnaPHdDa
- Q5Bl1jA9KMnpwPfvh64bJDkgPShsEazk1YvmI0gr2B9uKR8dXqI5674DFz6XSAIyvP+D
- Hd74vVE39TqT5yRoVfcrxV2NqEtBAUH7xSHeTpNqu+A1L66iFnY0rU6hlIv5mRbiAWk1
- AWMA==
-X-Gm-Message-State: AOAM530QUyqj+SXPDsuUaH75N+oED+OF+hQWmvOb9bhMDrTvuYJmugJU
- 8UYc9XEjh43ntu3luDzXDA==
-X-Google-Smtp-Source: ABdhPJy4YaTio1rbBlu0PiA76q677TzpWC0WH5BRcOwzNptJ7mNdQnN0x/aVJ+Fn3tDYsugM/Ig9+g==
-X-Received: by 2002:a05:6e02:673:: with SMTP id
- l19mr726225ilt.121.1598651568896; 
- Fri, 28 Aug 2020 14:52:48 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
- by smtp.gmail.com with ESMTPSA id m19sm302471ila.40.2020.08.28.14.52.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 28 Aug 2020 14:52:47 -0700 (PDT)
-Received: (nullmailer pid 3469322 invoked by uid 1000);
- Fri, 28 Aug 2020 21:52:43 -0000
-Date: Fri, 28 Aug 2020 15:52:43 -0600
-From: Rob Herring <robh@kernel.org>
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH v6 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-Message-ID: <20200828215243.GA3469273@bogus>
-References: <20200826110454.1811352-1-cychiang@chromium.org>
- <20200826110454.1811352-2-cychiang@chromium.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=eTKdXiRCKS6tUmMOhEk7xSRiz3K0QjMIqXKfgOUTwVI=;
+ b=AxVyKb/19QAKgp9Yepp16K9ZwZC2RuHNPMtq1u4kEGfn9XavXRmMDFV9Sq3pTVJNTt
+ Sqz/vxp61thIycxYRlZNOiGfT1+6gfreNeLo1mYGs70Jl0Sat5xb380DE9rJnNsHvcux
+ nCCdBLvrEIxVqaHq/gxNFpPv1WtqPikVw6bGEhrkUXT+ennUDIj7yphGeSzLDgHLmUy3
+ xj+88d7eFKY6ueGt7zlLCV9ZEh3fDy8FDM1O8zj4uLC22I9kyNQ+a0IwskmzOB1u9rHl
+ a7KQSqisT4rJk7RhiLa1ZvqCm+recCRjQcmGRvqRCNtxFLNCuECXIyG80taLRyZijaF4
+ oSvQ==
+X-Gm-Message-State: AOAM53292v6TgB40anxZ65dTyfDQEhwG1AoHHt6ptps4F7+kIkYF8t3/
+ WvkibAM00Y3MM1Qi5BuKQC7Bzt1vvyD8FQ==
+X-Google-Smtp-Source: ABdhPJwVu33Bchz3j9SPnIwTilSVMCP4t6VJW47O4wFatMjRUOTNk21WctdSGp1UZeQoqKVPv1Ab2g==
+X-Received: by 2002:a17:902:b486:: with SMTP id
+ y6mr903874plr.100.1598656338714; 
+ Fri, 28 Aug 2020 16:12:18 -0700 (PDT)
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com.
+ [209.85.216.54])
+ by smtp.gmail.com with ESMTPSA id a200sm492002pfd.182.2020.08.28.16.12.18
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 28 Aug 2020 16:12:18 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id i13so262326pjv.0
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 16:12:18 -0700 (PDT)
+X-Received: by 2002:a1f:d6c4:: with SMTP id n187mr874772vkg.65.1598655985575; 
+ Fri, 28 Aug 2020 16:06:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826110454.1811352-2-cychiang@chromium.org>
-Cc: dianders@chromium.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Stephan Gerhold <stephan@gerhold.net>, linux-kernel@vger.kernel.org,
- Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, tzungbi@chromium.org,
- Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
- Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.org,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Taniya Das <tdas@codeaurora.org>,
- linux-arm-kernel@lists.infradead.org
+References: <20200826110454.1811352-1-cychiang@chromium.org>
+ <20200826110454.1811352-3-cychiang@chromium.org>
+In-Reply-To: <20200826110454.1811352-3-cychiang@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 28 Aug 2020 16:06:14 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XaCt6V+VXfk8T+2mS4d5sKQzMC12AcH9a=MNkgguvmjQ@mail.gmail.com>
+Message-ID: <CAD=FV=XaCt6V+VXfk8T+2mS4d5sKQzMC12AcH9a=MNkgguvmjQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] ASoC: qcom: sc7180: Add machine driver for sound
+ card registration
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Taniya Das <tdas@codeaurora.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+ Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
+ Ajit Pandey <ajitp@codeaurora.org>, Tzung-Bi Shih <tzungbi@google.com>,
+ Andy Gross <agross@kernel.org>, Dylan Reid <dgreid@chromium.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, tzungbi@chromium.org,
+ Stephan Gerhold <stephan@gerhold.net>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,14 +126,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 26 Aug 2020 19:04:53 +0800, Cheng-Yi Chiang wrote:
-> Add devicetree bindings documentation file for sc7180 sound card.
-> 
-> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> ---
->  .../bindings/sound/qcom,sc7180.yaml           | 124 ++++++++++++++++++
->  1 file changed, 124 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
-> 
+Hi,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Wed, Aug 26, 2020 at 4:05 AM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+>
+> +config SND_SOC_SC7180
+> +       tristate "SoC Machine driver for SC7180 boards"
+> +       depends on SND_SOC_QCOM
+> +       select SND_SOC_QCOM_COMMON
+> +       select SND_SOC_LPASS_SC7180
+> +       select SND_SOC_MAX98357A
+> +       select SND_SOC_RT5682
+
+I haven't done any significant testing / review of your patch (I'm
+mostly sound-clueless), but I believe that the above needs to be
+"select SND_SOC_RT5682_I2C" atop the current top of the sound tree.
+When I fix that I can confirm that I see the rt5682 probe on
+sc7180-trogdor with Rob Clark's dts patch.
+
+-Doug
