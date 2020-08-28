@@ -2,84 +2,89 @@ Return-Path: <SRS0=n32M=CG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 397E0C433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:07:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0F6C433E2
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:30:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90F4A20872
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:07:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 954FD207DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Aug 2020 11:30:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dSEUrfpw";
-	dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com header.b="gAj03ZAW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90F4A20872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cn7bLjHM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qWvhfPBP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 954FD207DF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 215331830;
-	Fri, 28 Aug 2020 13:06:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 215331830
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29814185C;
+	Fri, 28 Aug 2020 13:29:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29814185C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598612838;
-	bh=FPX2swMTxRR8YfDbLM/FJy7kNSVt0W8tH3+50yt/EME=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dSEUrfpwNlVS/JbtmrsyHpdcQ/MPnV2OFNI6P8RHYTfbjzwe87C3gDSnX4QWZhHvb
-	 qXrBQSy8KFvu6wvWLcTiLW+cqKBIpXdahfit8bSvZNnFeuMuMB3FtzgOV55QbT2Jfn
-	 1iIpI5crTPxhJv9gq9hAlIPmeIH8d2kU+1lWspqQ=
+	s=default; t=1598614209;
+	bh=r0auWt1WLe3bPMB8HsfLvODhQKFzRQ6uKSJCYvvsEMA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Cn7bLjHMJZWVJAZOUyp8RhCMp0HJSU9G3pgpVIKMydetBGznOr2Miv8WgLHbewVIV
+	 q2mNhpexkHz2zFol9giq0LqjpUWkiSR35G9QQwBnX+cr0hk93L64w5FL/gDD20+b/X
+	 VTpmYoBaDFeS3BMOJ2nTOFYfKbAE215SQAbwDCq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93869F800EB;
-	Fri, 28 Aug 2020 13:06:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84CEAF80143;
+	Fri, 28 Aug 2020 13:29:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76095F8016F; Fri, 28 Aug 2020 13:06:25 +0200 (CEST)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+ id 6E8B0F8016F; Fri, 28 Aug 2020 13:29:11 +0200 (CEST)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50903F800EB
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 13:06:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50903F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 827B3F800EB
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2020 13:28:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 827B3F800EB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="gAj03ZAW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; l=1074; q=dns/txt; s=axis-central1;
- t=1598612780; x=1630148780;
- h=date:from:to:subject:in-reply-to:message-id:references:
- mime-version; bh=PEdfquxULEGmJU4HcJ4Lbg8+401VlkPBzzaKrqN4NZY=;
- b=gAj03ZAWcIDy7xQcCMECf4Xtr9wIwUfkP0KYUy3EaX0hzl8RX0zxCRRB
- Xg/58sb2FrXF7KnKim7I2y3NL1GgHz/LSo/W9DKzQa7WM3HIRzjThNqhn
- UdwxWwbMAzQhcRjc4HOtj6FeLzcjbX6L+UKT6y1Y4dB0Kmw8WKD7fH0Py
- Mw5qtEenZGjS1dtSmcksYtFUAchc0qU5sVRVwCxPGKRFIJx+1enjiXs42
- zHJO3IIaJ8RJAcrN8pYa9mGDTAKKSgEbXhlvaTdEKY9CmixP++jXcmwh2
- R170DCHld0mizkSmdqHpDxWjgohgoDyxyFrm+Jm2pMAgiTVBdVEMoFoRv w==;
-IronPort-SDR: qVwuOihaeZRqLSMxrpYPeq6StuHK2Y5BkB6YGtncQnlCBer77AgwttwzniIqMsth6wlMjNRXlz
- jP4Dqwbhpd84FhwmEzYk29KeoXmgDsJzSK4ruu0HPpUMCNAq3bhT29t0byKlniKA+E20SpAreq
- jn0rvSAcwa/Vp7KzWi8RKNvYKzAiHU7KLjgrUR+HmaJ8DGmAFcclXrz3R0gDpA3YfAkBfBWKMl
- M62lWp/YCJpcLj4iGY7G5FPfymjASDRyQlgjrtaBjii8tB3bFwQ2Ej57gTSkqDUUSa/ckSvySO
- +mg=
-X-IronPort-AV: E=Sophos;i="5.76,363,1592863200"; d="scan'208";a="11961677"
-Date: Fri, 28 Aug 2020 13:05:59 +0200
-From: Ricard Wanderlof <ricardw@axis.com>
-X-X-Sender: ricardw@lnxricardw1.se.axis.com
-To: alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 0/7] Allwinner A64 digital audio codec fixes
-In-Reply-To: <20200828104948.sdq2ftwiwyjhh3lc@gilmour.lan>
-Message-ID: <alpine.DEB.2.21.2008281300530.19501@lnxricardw1.se.axis.com>
-References: <20200726012557.38282-1-samuel@sholland.org>
- <20200828104948.sdq2ftwiwyjhh3lc@gilmour.lan>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qWvhfPBP"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07SBSubY057960;
+ Fri, 28 Aug 2020 06:28:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1598614136;
+ bh=K6J1dxqpyjkqrS/MebKa8sgd6/5VHr1CiLNX3jpx7pw=;
+ h=From:To:CC:Subject:Date;
+ b=qWvhfPBPFpUdwKJGs7+w7SHCWETcn124eVl+LPdMUmLNya2liW/NM8mAwMbM1wprG
+ zioL7jtMPyJ7cbuhOP2ENK+lBv1rtBfTcZjwrlZhgyaujt/wxgFfNi5F5t4yLn33Xu
+ jnCNEN0QFrpeySO3fchJ9ljMo9zkedIF7AjfY0E4=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07SBSuas117700
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 28 Aug 2020 06:28:56 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 28
+ Aug 2020 06:28:56 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 28 Aug 2020 06:28:56 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07SBStBb116292;
+ Fri, 28 Aug 2020 06:28:55 -0500
+From: Dan Murphy <dmurphy@ti.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <robh@kernel.org>
+Subject: [PATCH] ASoC: tlv320adcx140: Add digital mic channel enable routing
+Date: Fri, 28 Aug 2020 06:28:55 -0500
+Message-ID: <20200828112855.10112-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: XBOX01.axis.com (10.0.5.15) To XBOX03.axis.com (10.0.5.17)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,33 +100,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add the audio routing map to enable the digital mic paths when the
+analog mic paths are not enabled.
 
-This caught my eye and brought up an issue I've been wondering about for 
-some time:
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 37 ++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-On Fri, 28 Aug 2020, Maxime Ripard wrote:
-
-> On Sat, Jul 25, 2020 at 08:25:50PM -0500, Samuel Holland wrote:
-
-> > ... some DAPM widgets still have incorrect or confusing names; those 
-> > and other issues will be fixed in later patch sets.
-
-As a general and firm rule in the Linux kernel when it comes to upgrades 
-and fixes is "We do not break userspace". Which means that for instance an 
-application must not stop working after a kernel upgrade due to some API 
-changing.
-
-So does this mean that the name of an ALSA control, once it's in the 
-mainline kernel, can never be changed, for whatever reason?
-
-Or devicetree properties, does the same apply there? Say a property as a 
-confusing name, is it possible to change it at all?
-
-Or are these things open to debate, depending on the severity and 
-consequences etc?
-
-/Ricard
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 5cd50d841177..5d1b2a03f0ac 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -412,6 +412,16 @@ static const struct snd_soc_dapm_widget adcx140_dapm_widgets[] = {
+ 	SND_SOC_DAPM_ADC("CH3_ADC", "CH3 Capture", ADCX140_IN_CH_EN, 5, 0),
+ 	SND_SOC_DAPM_ADC("CH4_ADC", "CH4 Capture", ADCX140_IN_CH_EN, 4, 0),
+ 
++	SND_SOC_DAPM_ADC("CH1_DIG", "CH1 Capture", ADCX140_IN_CH_EN, 7, 0),
++	SND_SOC_DAPM_ADC("CH2_DIG", "CH2 Capture", ADCX140_IN_CH_EN, 6, 0),
++	SND_SOC_DAPM_ADC("CH3_DIG", "CH3 Capture", ADCX140_IN_CH_EN, 5, 0),
++	SND_SOC_DAPM_ADC("CH4_DIG", "CH4 Capture", ADCX140_IN_CH_EN, 4, 0),
++	SND_SOC_DAPM_ADC("CH5_DIG", "CH5 Capture", ADCX140_IN_CH_EN, 3, 0),
++	SND_SOC_DAPM_ADC("CH6_DIG", "CH6 Capture", ADCX140_IN_CH_EN, 2, 0),
++	SND_SOC_DAPM_ADC("CH7_DIG", "CH7 Capture", ADCX140_IN_CH_EN, 1, 0),
++	SND_SOC_DAPM_ADC("CH8_DIG", "CH8 Capture", ADCX140_IN_CH_EN, 0, 0),
++
++
+ 	SND_SOC_DAPM_SWITCH("CH1_ASI_EN", SND_SOC_NOPM, 0, 0,
+ 			    &adcx140_dapm_ch1_en_switch),
+ 	SND_SOC_DAPM_SWITCH("CH2_ASI_EN", SND_SOC_NOPM, 0, 0,
+@@ -470,6 +480,15 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+ 	{"CH3_ASI_EN", "Switch", "CH3_ADC"},
+ 	{"CH4_ASI_EN", "Switch", "CH4_ADC"},
+ 
++	{"CH1_ASI_EN", "Switch", "CH1_DIG"},
++	{"CH2_ASI_EN", "Switch", "CH2_DIG"},
++	{"CH3_ASI_EN", "Switch", "CH3_DIG"},
++	{"CH4_ASI_EN", "Switch", "CH4_DIG"},
++	{"CH5_ASI_EN", "Switch", "CH5_DIG"},
++	{"CH6_ASI_EN", "Switch", "CH6_DIG"},
++	{"CH7_ASI_EN", "Switch", "CH7_DIG"},
++	{"CH8_ASI_EN", "Switch", "CH8_DIG"},
++
+ 	{"CH5_ASI_EN", "Switch", "CH5_OUT"},
+ 	{"CH6_ASI_EN", "Switch", "CH6_OUT"},
+ 	{"CH7_ASI_EN", "Switch", "CH7_OUT"},
+@@ -541,6 +560,15 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+ 	{"PDM Clk Div Select", "705.6 kHz", "MIC1P Input Mux"},
+ 	{"PDM Clk Div Select", "5.6448 MHz", "MIC1P Input Mux"},
+ 
++	{"MIC1P Input Mux", NULL, "CH1_DIG"},
++	{"MIC1M Input Mux", NULL, "CH2_DIG"},
++	{"MIC2P Input Mux", NULL, "CH3_DIG"},
++	{"MIC2M Input Mux", NULL, "CH4_DIG"},
++	{"MIC3P Input Mux", NULL, "CH5_DIG"},
++	{"MIC3M Input Mux", NULL, "CH6_DIG"},
++	{"MIC4P Input Mux", NULL, "CH7_DIG"},
++	{"MIC4M Input Mux", NULL, "CH8_DIG"},
++
+ 	{"MIC1 Analog Mux", "Line In", "MIC1P"},
+ 	{"MIC2 Analog Mux", "Line In", "MIC2P"},
+ 	{"MIC3 Analog Mux", "Line In", "MIC3P"},
+@@ -554,6 +582,15 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+ 	{"MIC3M Input Mux", "Analog", "MIC3M"},
+ 	{"MIC4P Input Mux", "Analog", "MIC4P"},
+ 	{"MIC4M Input Mux", "Analog", "MIC4M"},
++
++	{"MIC1P Input Mux", "Digital", "MIC1P"},
++	{"MIC1M Input Mux", "Digital", "MIC1M"},
++	{"MIC2P Input Mux", "Digital", "MIC2P"},
++	{"MIC2M Input Mux", "Digital", "MIC2M"},
++	{"MIC3P Input Mux", "Digital", "MIC3P"},
++	{"MIC3M Input Mux", "Digital", "MIC3M"},
++	{"MIC4P Input Mux", "Digital", "MIC4P"},
++	{"MIC4M Input Mux", "Digital", "MIC4M"},
+ };
+ 
+ static const struct snd_kcontrol_new adcx140_snd_controls[] = {
 -- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+2.28.0
+
