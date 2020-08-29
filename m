@@ -6,60 +6,60 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76292C433E2
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:28:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6731BC433E2
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:29:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F182120791
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:28:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4943206C0
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:29:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dw8EZ8u3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OrsmhwRS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F182120791
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qQXeAyAC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hDqaE39V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4943206C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81B9D18C5;
-	Sat, 29 Aug 2020 16:28:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81B9D18C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A2B317CA;
+	Sat, 29 Aug 2020 16:28:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A2B317CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598711333;
-	bh=E9thMYeMHfyw6+b2VsGPYrGNBKia9yaCy7sNBsZe7r8=;
+	s=default; t=1598711374;
+	bh=H9/7Dbf9LygCvK0aYUI6HPVn2FPAlLp3dBxpNrldFaA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dw8EZ8u3SASmOP2I71bbwm00Hz2Ln0nPGKb/3CnLnDQnhg2pw86KPxZ7uaDRlK0yl
-	 yWRSUGNxmnwHUZ9o295m5n8Q/USHyakZ/YZD+v2GYmHzLEVQxAO3+v2tyQXHy4gdxf
-	 DlgTC5X7oIM3KIJJ6/ktu/pWXMyHKG4i6M5SgXs4=
+	b=qQXeAyACGo/Wi7LpOFBwGL5TxVIriGM2rUWV1IuxPAUbTtOvGzc3Xy9Hn9jP7HB2i
+	 Lj/fdZGdU8jXfHJQ8gtUIPOf0XZCTDa62WKwQ8b6x4BAkOwu1QLlVSXlXjUxY6LMze
+	 mQiKdI36dZNggTRla85gf3jw7EGMG19cvJxFCjMQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5262F802DD;
-	Sat, 29 Aug 2020 16:25:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAC6BF802E2;
+	Sat, 29 Aug 2020 16:25:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37727F802DD; Sat, 29 Aug 2020 16:25:46 +0200 (CEST)
+ id 73862F802DF; Sat, 29 Aug 2020 16:25:47 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE3AEF802D2
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 16:25:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE3AEF802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5570F802DC
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 16:25:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5570F802DC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OrsmhwRS"
+ header.b="hDqaE39V"
 Received: from localhost.localdomain (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 952B220BED;
- Sat, 29 Aug 2020 14:25:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A88A820791;
+ Sat, 29 Aug 2020 14:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598711138;
- bh=E9thMYeMHfyw6+b2VsGPYrGNBKia9yaCy7sNBsZe7r8=;
+ s=default; t=1598711143;
+ bh=H9/7Dbf9LygCvK0aYUI6HPVn2FPAlLp3dBxpNrldFaA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=OrsmhwRShcIabXLwV8as2jDAx/r/uAy17Lq/fbtBG8LkRsAg8kvuZzbZKULZ7lB/I
- nNJSWhl/tA2gxK/yuCsIQTte2i8RMSLUfdboo8zOpj5LnlKqfzvQk0wxWY356MkSpo
- Pw4epVgwVo1EY5mT54nPSXg6YQsYCVOgHumLKa9A=
+ b=hDqaE39VjhNbj9XQ+fzzwv25hDUepTA7YyXZkNWGvDYRx6yz+wCBalJCmA+Qzj+ts
+ dSDlZtJXeH9kZR1oJJdPip2gm21ix0O3tuf5/XcIyzDYjEBU+5VJQWGaLncn4I7QEE
+ /BIjbRBfzS089q28ijjtcPlnwitTxr/hsy3Vk0as=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
  Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
@@ -72,10 +72,10 @@ To: Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
  linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH 05/10] dt-bindings: connector: Convert Samsung 11-pin USB
- bindings to dtschema
-Date: Sat, 29 Aug 2020 16:24:56 +0200
-Message-Id: <20200829142501.31478-5-krzk@kernel.org>
+Subject: [PATCH 06/10] dt-bindings: sound: samsung-i2s: Use
+ unevaluatedProperties
+Date: Sat, 29 Aug 2020 16:24:57 +0200
+Message-Id: <20200829142501.31478-6-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200829142501.31478-1-krzk@kernel.org>
 References: <20200829142501.31478-1-krzk@kernel.org>
@@ -98,136 +98,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add Samsung 11-pin USB-C connector into standard dtschema bindings file.
+Additional properties actually might appear (e.g. power-domains) so use
+unevaluatedProperties to fix dtbs_check warnings like:
+
+  arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml: i2s@11440000:
+    Additional properties are not allowed ('power-domains', '#address-cells', 'interrupts', '#size-cells' were unexpected)
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../connector/samsung,usb-connector-11pin.txt | 49 -------------------
- .../bindings/connector/usb-connector.yaml     | 44 +++++++++++++++++
- 2 files changed, 44 insertions(+), 49 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/connector/samsung,usb-connector-11pin.txt
+ Documentation/devicetree/bindings/sound/samsung-i2s.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/connector/samsung,usb-connector-11pin.txt b/Documentation/devicetree/bindings/connector/samsung,usb-connector-11pin.txt
-deleted file mode 100644
-index 3dd8961154ab..000000000000
---- a/Documentation/devicetree/bindings/connector/samsung,usb-connector-11pin.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--Samsung micro-USB 11-pin connector
--==================================
--
--Samsung micro-USB 11-pin connector is an extension of micro-USB connector.
--It is present in multiple Samsung mobile devices.
--It has additional pins to route MHL traffic simultanously with USB.
--
--The bindings are superset of usb-connector bindings for micro-USB connector[1].
--
--Required properties:
--- compatible: must be: "samsung,usb-connector-11pin", "usb-b-connector",
--- type: must be "micro".
--
--Required nodes:
--- any data bus to the connector should be modeled using the OF graph bindings
--  specified in bindings/graph.txt, unless the bus is between parent node and
--  the connector. Since single connector can have multpile data buses every bus
--  has assigned OF graph port number as follows:
--    0: High Speed (HS),
--    3: Mobile High-Definition Link (MHL), specific to 11-pin Samsung micro-USB.
--
--[1]: bindings/connector/usb-connector.yaml
--
--Example
---------
--
--Micro-USB connector with HS lines routed via controller (MUIC) and MHL lines
--connected to HDMI-MHL bridge (sii8620):
--
--muic-max77843@66 {
--	...
--	usb_con: connector {
--		compatible = "samsung,usb-connector-11pin", "usb-b-connector";
--		label = "micro-USB";
--		type = "micro";
--
--		ports {
--			#address-cells = <1>;
--			#size-cells = <0>;
--
--			port@3 {
--				reg = <3>;
--				usb_con_mhl: endpoint {
--					remote-endpoint = <&sii8620_mhl>;
--				};
--			};
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-index 9bd52e63c935..dc6ff64422d4 100644
---- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-+++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-@@ -25,6 +25,10 @@ properties:
-           - const: gpio-usb-b-connector
-           - const: usb-b-connector
+diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.yaml b/Documentation/devicetree/bindings/sound/samsung-i2s.yaml
+index b2ad093d94df..16dc81288115 100644
+--- a/Documentation/devicetree/bindings/sound/samsung-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/samsung-i2s.yaml
+@@ -115,7 +115,7 @@ required:
+   - clocks
+   - clock-names
  
-+      - items:
-+          - const: samsung,usb-connector-11pin
-+          - const: usb-b-connector
-+
-   label:
-     description: Symbolic name for the connector.
+-additionalProperties: false
++unevaluatedProperties: false
  
-@@ -158,6 +162,16 @@ allOf:
-         - required:
-             - id-gpios
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: samsung,usb-connector-11pin
-+    then:
-+      properties:
-+        type:
-+          const: micro
-+
  examples:
-   # Micro-USB connector with HS lines routed via controller (MUIC).
    - |
-@@ -233,3 +247,33 @@ examples:
-         vbus-supply = <&usb_p0_vbus>;
-       };
-     };
-+
-+  # Micro-USB connector with HS lines routed via controller (MUIC) and MHL
-+  # lines connected to HDMI-MHL bridge (sii8620) on Samsung Exynos5433-based
-+  # mobile phone
-+  - |
-+    muic-max77843 {
-+      usb_con4: connector {
-+        compatible = "samsung,usb-connector-11pin", "usb-b-connector";
-+        label = "micro-USB";
-+        type = "micro";
-+
-+        ports {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          port@0 {
-+            reg = <0>;
-+            muic_to_usb: endpoint {
-+              remote-endpoint = <&usb_to_muic>;
-+            };
-+          };
-+          port@3 {
-+            reg = <3>;
-+            usb_con_mhl: endpoint {
-+              remote-endpoint = <&sii8620_mhl>;
-+            };
-+          };
-+        };
-+      };
-+    };
 -- 
 2.17.1
 
