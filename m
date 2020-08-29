@@ -2,97 +2,65 @@ Return-Path: <SRS0=Trf1=CH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E90C433E2
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 00:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79549C433E2
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 03:52:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2095820838
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 00:12:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D17D4206CD
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 03:52:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T0PTTM9e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2095820838
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S7xHsngq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D17D4206CD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A99C318C2;
-	Sat, 29 Aug 2020 02:12:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A99C318C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CFFE18AC;
+	Sat, 29 Aug 2020 05:51:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CFFE18AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598659976;
-	bh=iGeT3MSpUm0YvU4srxJW0ZPlUlckjmx6oZIiBQAaNbU=;
-	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1598673126;
+	bh=BrH7Hq43MFT643etmrcPFD2ciosy5EKJSghGTnYGsaw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T0PTTM9e2OmhphV0kl+pFYeWyluCC+MlUcJcXaPcDIbsurZnXZCirPXKSmUtFW0WK
-	 HuVJtIvqcCrqfoyiXvqjCFgjN9ytdOmjlitDyeeVaMvpIzY7DRoN46z/RaKOAy7yoO
-	 zb9NGaaZ4mWOXk+5aRctoBiW76HbysQHk1q8rCXw=
+	b=S7xHsngqYf1sRbSs4L+dEDxkgFtzArZ6c34ne3iLmruIKic/fkrWL0D6m0BcmJzTW
+	 oOy7Siqgw9PhKrX5PrUBgNg5yvPtwt7lTD7547DnhxxYx0nnoblhPX1gZQlAjIvwJo
+	 Ftwm7TY229kiWodYf+ZSZi2Dfn+eRmcdEa6WKqWY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 162C2F80143;
-	Sat, 29 Aug 2020 02:12:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA693F8012E;
+	Sat, 29 Aug 2020 05:51:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FAA5F8016F; Sat, 29 Aug 2020 02:12:04 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0536AF80105
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 02:11:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0536AF80105
-IronPort-SDR: ih+jyx23w7Ulh/QOdzVZa4U/vzk2leYkRNrXRWwExh45pMUX3NctfseOse62wvB+7FCgScsbq/
- SOtQWbnisXvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="144440468"
-X-IronPort-AV: E=Sophos;i="5.76,365,1592895600"; d="scan'208";a="144440468"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Aug 2020 17:11:54 -0700
-IronPort-SDR: h4/orcg6Gn8nZ9ohrRYk+lZSm+43zkLVdgDI4N9Y2stHaHJZBEYbeRpB1m00xdjqKyRt5YQyWb
- VxfQI2pIm4Eg==
-X-IronPort-AV: E=Sophos;i="5.76,365,1592895600"; d="scan'208";a="340050304"
-Received: from fvera1-mobl.amr.corp.intel.com (HELO [10.212.55.68])
- ([10.212.55.68])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Aug 2020 17:11:52 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v6 2/2] ASoC: qcom: sc7180: Add machine driver for sound
- card registration
-To: Doug Anderson <dianders@chromium.org>,
- Cheng-Yi Chiang <cychiang@chromium.org>
-References: <20200826110454.1811352-1-cychiang@chromium.org>
- <20200826110454.1811352-3-cychiang@chromium.org>
- <CAD=FV=XaCt6V+VXfk8T+2mS4d5sKQzMC12AcH9a=MNkgguvmjQ@mail.gmail.com>
-Message-ID: <7b3bb666-c53e-e385-e153-1383f2831c2e@linux.intel.com>
-Date: Fri, 28 Aug 2020 19:11:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 95988F8025A; Sat, 29 Aug 2020 05:51:13 +0200 (CEST)
+Received: from mail3-167.sinamail.sina.com.cn (mail3-167.sinamail.sina.com.cn
+ [202.108.3.167]) by alsa1.perex.cz (Postfix) with SMTP id 812C6F8012E
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 05:50:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 812C6F8012E
+Received: from unknown (HELO localhost.localdomain)([221.219.168.120])
+ by sina.com with ESMTP
+ id 5F49D09D0002ACC0; Sat, 29 Aug 2020 11:50:55 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+X-SMAIL-MID: 820213628766
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+12a3fcd1493ec6585007@syzkaller.appspotmail.com>
+Subject: Re: KASAN: use-after-free Read in snd_pcm_oss_release
+Date: Sat, 29 Aug 2020 11:50:43 +0800
+Message-Id: <20200829035043.4612-1-hdanton@sina.com>
+In-Reply-To: <000000000000cd24b305adde81ff@google.com>
+References: <000000000000cd24b305adde81ff@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=XaCt6V+VXfk8T+2mS4d5sKQzMC12AcH9a=MNkgguvmjQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Taniya Das <tdas@codeaurora.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, LKML <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>,
- Liam Girdwood <lgirdwood@gmail.com>,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
- tzungbi@chromium.org, Ajit Pandey <ajitp@codeaurora.org>,
- Tzung-Bi Shih <tzungbi@google.com>, Andy Gross <agross@kernel.org>,
- Rohit kumar <rohitkr@codeaurora.org>, Mark Brown <broonie@kernel.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Dylan Reid <dgreid@chromium.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, gustavoars@kernel.org, arnd@arndb.de,
+ tiwai@suse.com, syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
+ hdanton@sina.com, akpm@linux-foundation.org, walken@google.com, vbabka@suse.cz
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,24 +77,130 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->> +config SND_SOC_SC7180
->> +       tristate "SoC Machine driver for SC7180 boards"
->> +       depends on SND_SOC_QCOM
-
-this depends is probably not necessary, the code is already in an if case.
-
->> +       select SND_SOC_QCOM_COMMON
->> +       select SND_SOC_LPASS_SC7180
->> +       select SND_SOC_MAX98357A
->> +       select SND_SOC_RT5682
+Thu, 27 Aug 2020 09:34:15 -0700
+> syzbot found the following issue on:
 > 
-> I haven't done any significant testing / review of your patch (I'm
-> mostly sound-clueless), but I believe that the above needs to be
-> "select SND_SOC_RT5682_I2C" atop the current top of the sound tree.
-> When I fix that I can confirm that I see the rt5682 probe on
-> sc7180-trogdor with Rob Clark's dts patch.
+> HEAD commit:    f37be724 Add linux-next specific files for 20200826
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=137c7cb9900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1e5a1cf036089d95
+> dashboard link: https://syzkaller.appspot.com/bug?extid=12a3fcd1493ec6585007
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+12a3fcd1493ec6585007@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2367 [inline]
+> BUG: KASAN: use-after-free in snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2361 [inline]
+> BUG: KASAN: use-after-free in snd_pcm_oss_release+0x28d/0x300 sound/core/oss/pcm_oss.c:2548
+> Read of size 8 at addr ffff888026b66480 by task syz-executor.1/27751
+> 
+> CPU: 1 PID: 27751 Comm: syz-executor.1 Not tainted 5.9.0-rc2-next-20200826-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+>  __kasan_report mm/kasan/report.c:513 [inline]
+>  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+>  snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2367 [inline]
+>  snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2361 [inline]
+>  snd_pcm_oss_release+0x28d/0x300 sound/core/oss/pcm_oss.c:2548
+>  __fput+0x285/0x920 fs/file_table.c:281
+>  task_work_run+0xdd/0x190 kernel/task_work.c:141
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:140 [inline]
+>  exit_to_user_mode_prepare+0x195/0x1c0 kernel/entry/common.c:167
+>  syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:242
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x416f01
+> Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+> RSP: 002b:00007ffdd39a5e70 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+> RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000416f01
+> RDX: 0000000000000001 RSI: 0000000001190428 RDI: 0000000000000003
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 00007ffdd39a5f60 R11: 0000000000000293 R12: 0000000001190428
+> R13: 0000000000268c54 R14: ffffffffffffffff R15: 000000000118cfec
+> 
+> Allocated by task 27754:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+>  kasan_set_track mm/kasan/common.c:56 [inline]
+>  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+>  kmem_cache_alloc_trace+0x16e/0x2c0 mm/slab.c:3550
+>  kmalloc include/linux/slab.h:554 [inline]
+>  kzalloc include/linux/slab.h:666 [inline]
+>  snd_pcm_oss_open_file sound/core/oss/pcm_oss.c:2389 [inline]
+>  snd_pcm_oss_open.part.0+0x55e/0x1290 sound/core/oss/pcm_oss.c:2491
+>  snd_pcm_oss_open+0x3c/0x50 sound/core/oss/pcm_oss.c:2455
+>  soundcore_open+0x445/0x600 sound/sound_core.c:593
+>  chrdev_open+0x266/0x770 fs/char_dev.c:414
+>  do_dentry_open+0x4b9/0x11b0 fs/open.c:817
+>  do_open fs/namei.c:3251 [inline]
+>  path_openat+0x1b9a/0x2730 fs/namei.c:3368
+>  do_filp_open+0x17e/0x3c0 fs/namei.c:3395
+>  do_sys_openat2+0x16d/0x420 fs/open.c:1168
+>  do_sys_open fs/open.c:1184 [inline]
+>  __do_sys_openat fs/open.c:1200 [inline]
+>  __se_sys_openat fs/open.c:1195 [inline]
+>  __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Freed by task 27754:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+>  kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+>  __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+>  __cache_free mm/slab.c:3418 [inline]
+>  kfree+0x103/0x2c0 mm/slab.c:3756
+>  snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2371 [inline]
+>  snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2361 [inline]
+>  snd_pcm_oss_release+0x17e/0x300 sound/core/oss/pcm_oss.c:2548
+>  __fput+0x285/0x920 fs/file_table.c:281
+>  task_work_run+0xdd/0x190 kernel/task_work.c:141
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:140 [inline]
+>  exit_to_user_mode_prepare+0x195/0x1c0 kernel/entry/common.c:167
+>  syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:242
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> The buggy address belongs to the object at ffff888026b66480
+>  which belongs to the cache kmalloc-32 of size 32
+> The buggy address is located 0 bytes inside of
+>  32-byte region [ffff888026b66480, ffff888026b664a0)
+> The buggy address belongs to the page:
+> page:0000000076bbbb49 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888026b66fc1 pfn:0x26b66
+> flags: 0xfffe0000000200(slab)
+> raw: 00fffe0000000200 ffffea0002385208 ffffea0000782448 ffff8880aa040100
+> raw: ffff888026b66fc1 ffff888026b66000 000000010000002e 0000000000000000
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>  ffff888026b66380: fa fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
+>  ffff888026b66400: 00 fc fc fc fc fc fc fc 00 00 00 00 fc fc fc fc
+> >ffff888026b66480: fa fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
+>                    ^
+>  ffff888026b66500: 00 fc fc fc fc fc fc fc 00 fc fc fc fc fc fc fc
+>  ffff888026b66580: fa fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
+> ==================================================================
 
-Ack, no one should select SND_SOC_RT5682 directly in machine drivers. 
-now that the code is split between I2C and SoundWire parts.
+Hard to see why file is released more than once though it's not
+that hard to prepare a fix.
 
-There should probably be a depends on I2C as well?
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -2535,6 +2535,10 @@ static int snd_pcm_oss_release(struct in
+ 	struct snd_pcm_oss_file *pcm_oss_file;
+ 
+ 	pcm_oss_file = file->private_data;
++	if (!pcm_oss_file)
++		return 0;
++	file->private_data = NULL;
++
+ 	substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
+ 	if (substream == NULL)
+ 		substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
+
