@@ -6,60 +6,60 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B5EFC433E6
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02BBFC433E6
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:31:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB8F52065F
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:30:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 793322065F
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:31:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KRA3985h";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ykSI5/vi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB8F52065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OBO8FYh4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cr7yPnmX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 793322065F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7903F18E5;
-	Sat, 29 Aug 2020 16:29:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7903F18E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 152361902;
+	Sat, 29 Aug 2020 16:30:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 152361902
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598711438;
-	bh=6gznRRrKsqAQNWmMyK3EtnSRpMtqnII6P6GgV9nfPDo=;
+	s=default; t=1598711476;
+	bh=E1hVAd3lBjehhCh0G784FFWukEKouWeGXwdRL4oXW8s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KRA3985hcN/9dcY9Ap/sNUThKGi9PQO0nNutqJn1XLKqqF8S1SgMYy1TTXr6b36W4
-	 QvGuMbfLBKqB1NVT5tIzgHxIZG6KE6O3PjzPWNjPlHJ3m5vYR2kEeBYmMwyLwH77fB
-	 iEdg7cqlsoK5umelYP7S1aScysFqTJoil6w1GQTY=
+	b=OBO8FYh4qGYI6pAcv44R0dOc8FNdd54yMbXKMzjUb/BZA+p7LyfJFvIEwgPYgqHcB
+	 KljCt+4a8I+cHcne1caBksyreWqirHnSogNY8VMGbot7EE9LnHDGnbEqOO2WR7PIof
+	 Z1iiFC0jW9kNhIjBZtkdw/hCzZSOOJD1mpIYP7Fk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26153F802FF;
-	Sat, 29 Aug 2020 16:26:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DBC6F80306;
+	Sat, 29 Aug 2020 16:26:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A141F802EA; Sat, 29 Aug 2020 16:25:57 +0200 (CEST)
+ id 8AAE8F80307; Sat, 29 Aug 2020 16:26:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04920F802DF
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 16:25:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04920F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 432D3F80305
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 16:26:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 432D3F80305
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ykSI5/vi"
+ header.b="cr7yPnmX"
 Received: from localhost.localdomain (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D726820791;
- Sat, 29 Aug 2020 14:25:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1C0B120C56;
+ Sat, 29 Aug 2020 14:25:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598711153;
- bh=6gznRRrKsqAQNWmMyK3EtnSRpMtqnII6P6GgV9nfPDo=;
+ s=default; t=1598711158;
+ bh=E1hVAd3lBjehhCh0G784FFWukEKouWeGXwdRL4oXW8s=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ykSI5/vivMZCJ/zaqQo1HfS6rLP0th/ECZU3qUrs4QBNLMpoSQCspQsQFh6kiqmsI
- Y7xEH8oXyzlvQRE0WpAD96kv0vIpwAirg6JrfcPFqBtItQV2RFbD6i68BEbOEhOJ9U
- 6Z1iMrsvNt+/i83xi7toS8eLB4ehdk4S/hm47wFk=
+ b=cr7yPnmX9yXVCWjvWHUOp+ejxR44jkEQyY9aMINktokMsSu/4DwnEwjMCRLZlaZFO
+ fXGE90a1K6Vfo1IOeauMfcjbYBAcVHFtknsboKDm3U8sYTRtNVlPDlCzgYhzItH0Fw
+ 6eb20eRaUV3JnU5yvHoy9DHW6KrvvOvaM5SksL6w=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
  Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
@@ -72,9 +72,10 @@ To: Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
  linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH 08/10] arm64: dts: exynos: Add compatibles to sysreg nodes
-Date: Sat, 29 Aug 2020 16:24:59 +0200
-Message-Id: <20200829142501.31478-8-krzk@kernel.org>
+Subject: [RFT 09/10] arm64: dts: exynos: Correct port of USB-C connector node
+ on Exynos5433 TM2
+Date: Sat, 29 Aug 2020 16:25:00 +0200
+Message-Id: <20200829142501.31478-9-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200829142501.31478-1-krzk@kernel.org>
 References: <20200829142501.31478-1-krzk@kernel.org>
@@ -97,42 +98,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-System register nodes, implementing syscon binding, should use
-appropriate compatible.  This fixes dtbs_check warnings:
+The USB-C connector bindings require port@0.  Such port was already
+described in DTS but outside of the connector itself.  Put it into
+proper place to fix dtbs_check warnings like:
 
-  arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml: syscon@13b80000:
-    compatible: ['syscon'] is not valid under any of the given schemas
+  arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml: musb_connector: ports: 'port@0' is a required property
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/exynos/exynos5433.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-index 74ac4ac75865..b2eebdd88c3c 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-@@ -1015,17 +1015,17 @@
+---
+
+Not tested on HQ. Please kindly review and test.
+
+Best regards,
+Krzysztof
+---
+ .../boot/dts/exynos/exynos5433-tm2-common.dtsi    | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+index 6246cce2a15e..bab6c1addd5f 100644
+--- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+@@ -871,6 +871,13 @@
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
+ 
++					port@0 {
++						reg = <0>;
++						muic_to_usb: endpoint {
++							remote-endpoint = <&usb_to_muic>;
++						};
++					};
++
+ 					port@3 {
+ 						reg = <3>;
+ 						musb_con_to_mhl: endpoint {
+@@ -879,14 +886,6 @@
+ 					};
+ 				};
+ 			};
+-
+-			ports {
+-				port {
+-					muic_to_usb: endpoint {
+-						remote-endpoint = <&usb_to_muic>;
+-					};
+-				};
+-			};
  		};
  
- 		syscon_disp: syscon@13b80000 {
--			compatible = "syscon";
-+			compatible = "samsung,exynos5433-sysreg", "syscon";
- 			reg = <0x13b80000 0x1010>;
- 		};
- 
- 		syscon_cam0: syscon@120f0000 {
--			compatible = "syscon";
-+			compatible = "samsung,exynos5433-sysreg", "syscon";
- 			reg = <0x120f0000 0x1020>;
- 		};
- 
- 		syscon_cam1: syscon@145f0000 {
--			compatible = "syscon";
-+			compatible = "samsung,exynos5433-sysreg", "syscon";
- 			reg = <0x145f0000 0x1038>;
- 		};
- 
+ 		regulators {
 -- 
 2.17.1
 
