@@ -1,88 +1,78 @@
-Return-Path: <SRS0=Trf1=CH=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=QqOT=CI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DFA8C433E2
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97D8EC433E6
+	for <alsa-devel@archiver.kernel.org>; Sun, 30 Aug 2020 15:06:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28F832065F
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Aug 2020 14:31:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 19C5320720
+	for <alsa-devel@archiver.kernel.org>; Sun, 30 Aug 2020 15:06:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qAkn7aiF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="m5w7LxE8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28F832065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SPrm3SkF";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XAr8sG/d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19C5320720
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDC0718FF;
-	Sat, 29 Aug 2020 16:30:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDC0718FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85B5618E9;
+	Sun, 30 Aug 2020 17:05:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85B5618E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598711508;
-	bh=y1v3WRBl4MbrDweIobQQZydmN+yvc1LWyMEcpKKt2S0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1598799991;
+	bh=zHR9TJ8jVNiVPvQ4aST5WzObGLoue/3fhOOFDqyVYUw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qAkn7aiFTOofBsPItLp6BX4PX8hKyHZUp/GySa9RAy0Aw62P81Xvoa3DImQZCTAQt
-	 z/9TNAVqGvpKTmU4KnADniFn1H79lFfl+kE4nkoHTVNUQ2poRYifw15bJNE8NHOcJG
-	 8VMR1/OTszCFzfc5Uv4Ls+5YhaLljE4TE3ikk4xo=
+	b=SPrm3SkFQmNTcQIE9AcfLOSUHNe0w8fFe/qA0geuzG2iMg4ERNBr3Wyk9SpC9ncl8
+	 FbRmY8KslvlQmG4exAwvaL6EV4iA5grxKQqN4KEQnxV8VCz8FGSsDXKkmCRJd2eF25
+	 ap+kNC/RAjHfCyZCArcBHjfgRPuOuhSnPShuTyVg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EBA8F80307;
-	Sat, 29 Aug 2020 16:26:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 094FEF802A2;
+	Sun, 30 Aug 2020 17:05:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51782F80315; Sat, 29 Aug 2020 16:26:08 +0200 (CEST)
+ id 3C648F802A8; Sun, 30 Aug 2020 17:05:38 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C536F80308
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2020 16:26:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C536F80308
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B340F8021D
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2020 17:05:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B340F8021D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="m5w7LxE8"
+ header.b="XAr8sG/d"
 Received: from localhost.localdomain (unknown [194.230.155.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 69282206C0;
- Sat, 29 Aug 2020 14:25:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3BFDC208CA;
+ Sun, 30 Aug 2020 11:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598711164;
- bh=y1v3WRBl4MbrDweIobQQZydmN+yvc1LWyMEcpKKt2S0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=m5w7LxE8HNSicErTpW8YDPTUUtPUsRWL7SQc/QbDSiDVxqoVASBqrg0+jxIZS4ALy
- tayAMnlVVsztFempHudHlZ41F71RVa90Nvek6O+r21yXFwjuuw1ogWzkUU28jXC/Hk
- Iyz8IABk+dYmIfBRH3GAHMC+bliFq0mp4oPruUyQ=
+ s=default; t=1598786802;
+ bh=zHR9TJ8jVNiVPvQ4aST5WzObGLoue/3fhOOFDqyVYUw=;
+ h=From:To:Subject:Date:In-Reply-To:References:From;
+ b=XAr8sG/dLCMo1XPpaXff3tNidTfKg5jy81og+3ja6RYewE9kTDvR4DrxLzyRBIMBT
+ U5RM0YQcJQ4+VZ5v53PSyWKiNoMx+2b7phZ9yUB01Pi2SiHH/ahiZY5pMun3uko2+8
+ 7q3+T7ezJTCkTXOC7Nne/MWWkPAlbMb9NbtxA3Zw=
 From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee.jones@linaro.org>,
- Sangbeom Kim <sbkim73@samsung.com>,
+To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>,
  Sylwester Nawrocki <s.nawrocki@samsung.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- alsa-devel@alsa-project.org
-Subject: [RFT 10/10] arm64: dts: exynos: Enable Arizona interrupt controller
- in Exynos5433 TM2
-Date: Sat, 29 Aug 2020 16:25:01 +0200
-Message-Id: <20200829142501.31478-10-krzk@kernel.org>
+ Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] dt-bindings: sound: odroid: Use unevaluatedProperties
+Date: Sun, 30 Aug 2020 13:26:33 +0200
+Message-Id: <20200830112633.6732-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200829142501.31478-1-krzk@kernel.org>
-References: <20200829142501.31478-1-krzk@kernel.org>
-Cc: Sylwester Nawrocki <snawrocki@kernel.org>,
- Chanwoo Choi <cw00.choi@samsung.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Inki Dae <inki.dae@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20200830112633.6732-1-krzk@kernel.org>
+References: <20200830112633.6732-1-krzk@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,37 +88,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Wolfson Arizona codec is interrupt controller which is required by
-bindings.  This fixes dtbs_check warnings like:
+Additional properties or nodes actually might appear (e.g.
+assigned-clocks) so use unevaluatedProperties to fix dtbs_check warnings
+like:
 
-  arch/arm64/boot/dts/exynos/exynos5433-tm2e.dt.yaml: wm5110-codec@0: 'interrupt-controller' is a required property
-  arch/arm64/boot/dts/exynos/exynos5433-tm2e.dt.yaml: wm5110-codec@0: '#interrupt-cells' is a required property
+  arch/arm/boot/dts/exynos5422-odroidxu3.dt.yaml: sound:
+    'assigned-clock-parents', 'assigned-clock-rates', 'assigned-clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
 ---
+ Documentation/devicetree/bindings/sound/samsung,odroid.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Not tested on HQ. Please kindly review and test.
-
-Best regards,
-Krzysztof
----
- arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-index bab6c1addd5f..49cd55d6891c 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-@@ -1242,6 +1242,8 @@
+diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.yaml b/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
+index 8ff2d39e7d17..de1be3d6d1e9 100644
+--- a/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
++++ b/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
+@@ -69,7 +69,7 @@ required:
+   - cpu
+   - codec
  
- 		gpio-controller;
- 		#gpio-cells = <2>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
+-additionalProperties: false
++unevaluatedProperties: false
  
- 		wlf,micd-detect-debounce = <300>;
- 		wlf,micd-bias-start-time = <0x1>;
+ examples:
+   - |
 -- 
 2.17.1
 
