@@ -2,105 +2,110 @@ Return-Path: <SRS0=wuVw=CJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51FBBC433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B75C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:52:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBE1F2076D
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:51:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 81C6120720
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:52:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HkypW7LY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="oOTWbThO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="D4ph+k6A"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBE1F2076D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xh1LoPmJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="SLguCI3s";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gU/BQgUj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81C6120720
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4837917FA;
-	Mon, 31 Aug 2020 05:50:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4837917FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE8DD1811;
+	Mon, 31 Aug 2020 05:51:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE8DD1811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598845903;
-	bh=FZ7RxxDHabxkHJi9KnsQjfyCvi7RLY2n/9I0rrd/KjI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HkypW7LYKxjtC0+6+LXrULa/bPpYsKGZe0g5vosx03uTDQglL3uwBWOi0y9bHKqRR
-	 n4rLiB3Lc6V/8woagu+08etm5K/3Ko0LnWiF60wERpXgTxODMaEvPSCNkcjTj8Zn7A
-	 BbjF8b7sdO3yL3/lJnztsPLavO5Yrmh0L/7NREag=
+	s=default; t=1598845920;
+	bh=vtUWG8Ni0V1665w5y5dI2KWVozWKVRIHVCmYVfsLDsU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Xh1LoPmJYbWiqSKZAaIRaHlsENyrzP4AjOC9J9g6bEEpVINGd492DTvbE84yjZ4zO
+	 Ms4PjabvlWZMSpDOMVyHZup5NdaekKfJDijnGrQX2u65WTvF9jD9TRh2dCnLxwHDL6
+	 XsFLo8iL+zEtbF52GMl+QLdVcoCeeHGCdsNmXmCs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B1EEF80146;
-	Mon, 31 Aug 2020 05:49:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90562F802C4;
+	Mon, 31 Aug 2020 05:49:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0B16F802C3; Mon, 31 Aug 2020 05:49:11 +0200 (CEST)
+ id 0F22DF802C3; Mon, 31 Aug 2020 05:49:14 +0200 (CEST)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EFC1F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91F50F8024A
  for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 05:48:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EFC1F80212
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91F50F8024A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="oOTWbThO"; 
+ header.b="SLguCI3s"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="D4ph+k6A"
+ header.i=@messagingengine.com header.b="gU/BQgUj"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id D27C8580535;
- Sun, 30 Aug 2020 23:48:55 -0400 (EDT)
+ by mailnew.nyi.internal (Postfix) with ESMTP id 5FFAF580553;
+ Sun, 30 Aug 2020 23:48:56 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Sun, 30 Aug 2020 23:48:55 -0400
+ by compute3.internal (MEProxy); Sun, 30 Aug 2020 23:48:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm3; bh=xeWOte1Ts6wwOUtqKOVkgDpqDp
- 6peOxWUO9K5MecHaM=; b=oOTWbThO0fOCflpcrx9HSCzTUPFxvgy6/2gTe5pIU4
- ykYxXvQknqai+NKjOsRR8kI1Sj5xdmJjgUVe3jWo13WHntTzKOGe1K0SQvX8V33+
- MuiidPXxlJaeFJOedBDRO8ZEOOljbsT7D8nmpC2tuH2uzhxTuwIPDN3maJrIek8i
- w2o4gNxmPw43VzUcpBZA5OnoXKPe2sGlIqxNf4Cfp1SS5tvWfqpuMSWxrywPMEPW
- 0lzF/F+bpy4NwUd/HEwX9MlwelKgxGdzVnt3NCmoOD74rj7UY1lI4Po800yiEmJw
- 3yjfdJVpT/R2JmrcgBVqCiT9K2Q9Px7UPgI/uAS7D/EA==
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm3; bh=Xd2DPB2xaaTmh
+ zOiijGY8/Y+VdMv+lHjQmXSRZT+fzc=; b=SLguCI3syQvBkZHf0pZ2hbCMfkRq7
+ VqaJgdbdi35W569DjXOMhsgW6Ktg0tSV0qIPNhKMUNBJe+18i3qgH0DsXS+veHLU
+ GQNmTfC6LGuE+REfzjYrt1XSJJylpQnc5AH/PBFQiEK6gQWH3GqXSVCqXpRA4Tkh
+ NfiOqJWTl/SEkfp8WzXLxCGhqi10aI3r6UGWvkcDtNP8vFTbA1zHzjg7DJToMzTb
+ a9GikOnalwgBo20m6BXO6kTkchDgTeXJTi25Y6YFFe7um8efeyDKSP0wS1Ufjp8x
+ k4S26GG0tqzAKjxjAywb8/NDNy8pg9jM4zd6imSG/I+50/HLU8tkR7k6w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xeWOte1Ts6wwOUtqK
- OVkgDpqDp6peOxWUO9K5MecHaM=; b=D4ph+k6Axrxs0dvQ0ihVE94ahP0vbU1cc
- 7ubCnCtblTUPWE5u7j3HMMTiVuTL5x0XBVzqQZ3+ibCwsGTd1yX04AblXfLECD8U
- iLiXdy0jNQ+TMrep12Pzyg/mWRx6wfv4bajw5+U5nStwLmsyPb5I7MSjNesnZwwR
- q7/9ntUS6lSWqQhZM/rQIaGIfV7PVnYvENOysgtK4W/2cH8I1wYBVNlOpU3iqJAT
- OeAPNfLaVMwqzm+TTTWts40niODeN4T0JI/2+j6U3Ol46V3RpcBWDRwakQNQ2mI7
- hsnywgAaLJDaL7GUPLKe2Wf0SYw4YaxwzhrBsaETVr1XfvOfPDRcQ==
-X-ME-Sender: <xms:JnNMX62M67LkYfnWgbWpKBvgAiIKtPOcCgUrzLWbhsfO7i4WZjcBYg>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=Xd2DPB2xaaTmhzOiijGY8/Y+VdMv+lHjQmXSRZT+fzc=; b=gU/BQgUj
+ n922gJyWJaNDISucAfGPu/yc37Vewy59kgmvLw6XPeaB4HSjmPN3AWb0xWHlCi7X
+ iy54P9oTm9UAyK+e1UHEK8PTeA8QQE48FFzFniC6yiDZwyteP01iw2O6un30N7Yh
+ cG6HWRbeeaADewvF2eLCidcEdFk1yOSdAkB54/S5V7pk/LHSPOo7sgqq5mb97WKe
+ I0XFGhE1jdMPtZjHGGI324uMIJIK7yVHAKpIKNCxWqxFqf00WHk3cbpGXvi6LQry
+ N2a3ZEFZ+A0vFPZvAfGr4amdVszM/ON770Y2Qbnb2YN0hkScxNzSrLMuHRnSUqYN
+ g02ensyrXmX/mg==
+X-ME-Sender: <xms:KHNMX5JyUi6mp5fUhX1TlgqQOF6DnD1yk0d_fgs5V5xGnto_S1SlnQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefgedgjeehucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
- jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
- htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
- vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
- eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
- ohhrgh
-X-ME-Proxy: <xmx:JnNMX9FvIMztCn-Dmys24DRhrEQtLHKqLhDezJ94ZFJz1NsYyI41RA>
- <xmx:JnNMXy66UVgmwH1B33qnjBEL0SRHpPjQgvdNGxNWcD1h9huBC1MBhQ>
- <xmx:JnNMX70FXdMs6gFIz340nJyTrTN2OVyll9zBZ5oXJ-McMyBk7iqEwQ>
- <xmx:J3NMX02QORIthQyCzObB74J1Nu_vNbNKcb1SMRWx3VqpfQu_usgxRQ>
+ cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
+ lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+ frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
+ gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
+ iivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+ ugdrohhrgh
+X-ME-Proxy: <xmx:KHNMX1IQmE7OCOBa70QCpDbzi9GoDP2kjG9TWiaUAg2WfM3Hnd6wRQ>
+ <xmx:KHNMXxv3YDQA4QN6jUWrZPLjXDHN7zXTAZF8whe7c0DZM5q2qpVTeA>
+ <xmx:KHNMX6bkEufJl5CJetpp9RsNZsfjiHf4yzdfajohWjpo4qo3DATeCQ>
+ <xmx:KHNMXw5TTjwKH0dlM877NZ1Nwxc1_tuSR5oTVYk6m407Q-VvN_KhXg>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id E2C923280063;
- Sun, 30 Aug 2020 23:48:53 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id BC5403280065;
+ Sun, 30 Aug 2020 23:48:55 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 0/9] ASoC: sun8i-codec driver cleanup
-Date: Sun, 30 Aug 2020 22:48:43 -0500
-Message-Id: <20200831034852.18841-1-samuel@sholland.org>
+Subject: [PATCH 4/9] ASoC: sun8i-codec: Fix AIF1_MXR_SRC field names
+Date: Sun, 30 Aug 2020 22:48:47 -0500
+Message-Id: <20200831034852.18841-5-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200831034852.18841-1-samuel@sholland.org>
+References: <20200831034852.18841-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
@@ -121,25 +126,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now that the fixes series is merged, here is a series of small cleanups
-to the sun8i-codec driver. These help shorten the patch stack for the
-next series, which will add support for the other two DAIs in this
-codec: AIF2 and AIF3.
+Even though they are for the left channel mixer, they are documented as
+"MXR_SRC". This matches the naming scheme used for the main DAC. The "R"
+is part of the abbreviation for "mixer", not a reference to the channel.
 
-Samuel Holland (9):
-  ASoC: sun8i-codec: Remove extraneous widgets
-  ASoC: sun8i-codec: Fix AIF1 MODCLK widget name
-  ASoC: sun8i-codec: Fix AIF1_ADCDAT_CTRL field names
-  ASoC: sun8i-codec: Fix AIF1_MXR_SRC field names
-  ASoC: sun8i-codec: Fix ADC_DIG_CTRL field name
-  ASoC: sun8i-codec: Fix field bit number indentation
-  ASoC: sun8i-codec: Sort masks in a consistent order
-  ASoC: sun8i-codec: Attach the bus clock to the regmap
-  ASoC: sun8i-codec: Manage module clock via DAPM
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ sound/soc/sunxi/sun8i-codec.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
- sound/soc/sunxi/sun8i-codec.c | 104 ++++++++++++----------------------
- 1 file changed, 37 insertions(+), 67 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 68c8edae9084..def3a0059c3d 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -55,10 +55,10 @@
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA		14
+ #define SUN8I_AIF1_MXR_SRC				0x04c
+-#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF1DA0L	15
+-#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACL	14
+-#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_ADCL		13
+-#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACR	12
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF1DA0L	15
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACL	14
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_ADCL		13
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACR	12
+ #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R	11
+ #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR	10
+ #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR		9
+@@ -374,18 +374,18 @@ static const struct snd_kcontrol_new sun8i_dac_mixer_controls[] = {
+ static const struct snd_kcontrol_new sun8i_input_mixer_controls[] = {
+ 	SOC_DAPM_DOUBLE("AIF1 Slot 0 Digital ADC Capture Switch",
+ 			SUN8I_AIF1_MXR_SRC,
+-			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF1DA0L,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF1DA0L,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R, 1, 0),
+ 	SOC_DAPM_DOUBLE("AIF2 Digital ADC Capture Switch", SUN8I_AIF1_MXR_SRC,
+-			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACL,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACL,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR, 1, 0),
+ 	SOC_DAPM_DOUBLE("AIF1 Data Digital ADC Capture Switch",
+ 			SUN8I_AIF1_MXR_SRC,
+-			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_ADCL,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_ADCL,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR, 1, 0),
+ 	SOC_DAPM_DOUBLE("AIF2 Inv Digital ADC Capture Switch",
+ 			SUN8I_AIF1_MXR_SRC,
+-			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACR,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACR,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL, 1, 0),
+ };
+ 
 -- 
 2.26.2
 
