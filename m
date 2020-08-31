@@ -2,79 +2,115 @@ Return-Path: <SRS0=wuVw=CJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74EECC433E6
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 01:24:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB403C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:50:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0102420EDD
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 01:24:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 505A920720
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:50:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nmyaZII7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0102420EDD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J7sZ8gma";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="hQeLlKHi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dR80+nW1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 505A920720
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90C571709;
-	Mon, 31 Aug 2020 03:23:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90C571709
+	by alsa0.perex.cz (Postfix) with ESMTPS id D25C417F3;
+	Mon, 31 Aug 2020 05:49:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D25C417F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598837078;
-	bh=/iiqJcXIsz580Ij84BrpXyf5ePDrejVT7id/TVlxuDs=;
+	s=default; t=1598845802;
+	bh=n8eva39d6i6OR7iE37A9HSwEN/eWgV3fEDnYsLTBFeY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nmyaZII7LxMAs5ISGmnhzu/8pg9ca0SJptdONvLPEmPqbmpAGhjQxySQYi4rjN31K
-	 c0XQTEzyp/jR7/wr+JEXW1r4UHTGaN0ZVgRtL8fjb5J3lzFXv24e3KrYjWfWlhjUpK
-	 pdLcvcXZRrTvtUXxm4gQBssZi5ofgarsIjCqzdW4=
+	b=J7sZ8gmaxhIDb432uQnw9gWxER1Gykh/h2Bp0bP2iVOkqlWXLO0CnU31NcMmv7Jjj
+	 ivZynU0SnelgKcsx+wH4LgypOMv8KXj45cGuZbZqM/bMEmrJ1+I1pwJsZAthtak5lQ
+	 /4FHcQHCE2kRZIclGcJ1nk6f8NboYjeNVqAkg/CE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7895BF802DD;
-	Mon, 31 Aug 2020 03:21:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C879F80257;
+	Mon, 31 Aug 2020 05:49:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10F2EF802C3; Mon, 31 Aug 2020 03:21:46 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 88F89F802C3; Mon, 31 Aug 2020 05:49:06 +0200 (CEST)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27A6EF8021D
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 03:21:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27A6EF8021D
-IronPort-SDR: hy8byx312ti+HQl4d5h3OFOxJU9QmMwsHjkWXjGmhDQbbu9LZG0Dg7ZYDxL7oNW3Q/0ZE4/wEp
- dvdhiprNvQZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="156899776"
-X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; d="scan'208";a="156899776"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Aug 2020 18:21:38 -0700
-IronPort-SDR: K2LmHPC0fQSWskEtJndSBUjiaCzVdvE2xg0Gam69gBLMxlDLuFrMnAZunQcNs2NlI2AlU5t46u
- EnuMbd5KKTiw==
-X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; d="scan'208";a="476529247"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Aug 2020 18:21:34 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH v3 3/3] ASoC: codecs: soundwire: remove port_ready[] usage
- from codecs.
-Date: Sun, 30 Aug 2020 21:27:42 +0800
-Message-Id: <20200830132742.20404-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
-References: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BF4BF801DA
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 05:48:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BF4BF801DA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="hQeLlKHi"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="dR80+nW1"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailnew.nyi.internal (Postfix) with ESMTP id D37B558054E;
+ Sun, 30 Aug 2020 23:48:55 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute3.internal (MEProxy); Sun, 30 Aug 2020 23:48:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm3; bh=vuHoEqUnlx/Z5
+ PQhy2y3P36C8JzS/AOw1EeZvaEYsUk=; b=hQeLlKHiSG0COlQZgbKfxOFyur2kz
+ cmsCZtMbGoKELzwPleO74JqS8+3CGmaVLhuGLpxzGJ0uiXQ08AH/VIZQonMi5vgp
+ kbsS0oykrS3cfhO+9Hp464wl0H0GmZmzropL4PCMeamaC5s0JAXtBEKxPJMpOfs2
+ LrZDWgR6HkADTCsejkhg9Sxxyhl9CkSRlc2RMQPAP92YxjRVjSBlA3UxTnRJNYid
+ hxrzjLA9k7TicD9FI9mBacok1xBPQ+hwIYM5SGDhxZCKCuRhgH8SPrejBtXEOAfA
+ 32inhhUb0HtEqyb1nreS2xTOUujWyZbe68uz96RDdKkntHIkStvc3xmpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=vuHoEqUnlx/Z5PQhy2y3P36C8JzS/AOw1EeZvaEYsUk=; b=dR80+nW1
+ hr11+rlosEOyNZhj89Hy9CSpvsPTXbNAoDi/rH1JTytVa5XvmrZJGbI8lGvzl7BS
+ 1IlL5kBYYfQ5hoAsIVkKthhhI17H/jc1xKtcaMitxdbOimWWHv2ujl2vRZ15v1ZR
+ 99Id81fmN7/bgKpZPmNG4jUoJkR0GzqxDo4h9sfmTkU7qFH6Xhe/sPa88uBxydvq
+ 2pC9xjYXHhGF47MZ9oW6nJW2NjxgIB3LidGWozai7RJcoQIgiqQUpgOuyHkY3P4u
+ k1uZppDqMShHeAFO10saakNwFug0Qogq77th9thc4oBDFHdWuCe5QpjsCZBYeJ85
+ g82fUPYwVONmEQ==
+X-ME-Sender: <xms:J3NMXzRJ2Uxsm8o69iJZgZK93na29E9BPTf0UUD3PI2a5XEKZkTagg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefgedgjeehucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
+ lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+ frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
+ gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
+ iivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+ ugdrohhrgh
+X-ME-Proxy: <xmx:J3NMX0z_LswX-2Qojpu8r6d2Em6ndQmHr7dytuYu6Pq2udE2BqBnaQ>
+ <xmx:J3NMX41T0WJT8YH2MnwTNvkdHt7LrY1Y4mjJpcNruTYYTmzbOZ8fmw>
+ <xmx:J3NMXzCtELVjlbjMmo5GvV7sWUMcSTZnm6nIflK1XFJp1Lf55T1mFg>
+ <xmx:J3NMX4j0xlaaZEUsuITrK0qJWeAPi84vxPmr-F8E4W-FApPnbRHqcQ>
+Received: from titanium.stl.sholland.net
+ (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+ by mail.messagingengine.com (Postfix) with ESMTPA id D1C26328005D;
+ Sun, 30 Aug 2020 23:48:54 -0400 (EDT)
+From: Samuel Holland <samuel@sholland.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 2/9] ASoC: sun8i-codec: Fix AIF1 MODCLK widget name
+Date: Sun, 30 Aug 2020 22:48:45 -0500
+Message-Id: <20200831034852.18841-3-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200831034852.18841-1-samuel@sholland.org>
+References: <20200831034852.18841-1-samuel@sholland.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Samuel Holland <samuel@sholland.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,310 +126,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The name should reference "AIF1", not "AFI1".
 
-As port_ready is now changed to a fixed array in sdw.h, and all
-initialization work is done at soundwire side. So remove them from
-codec drivers.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/codecs/max98373-sdw.c | 15 +--------------
- sound/soc/codecs/rt1308-sdw.c   | 14 +-------------
- sound/soc/codecs/rt5682-sdw.c   | 15 +--------------
- sound/soc/codecs/rt700-sdw.c    | 15 +--------------
- sound/soc/codecs/rt711-sdw.c    | 15 +--------------
- sound/soc/codecs/rt715-sdw.c    | 33 +--------------------------------
- 6 files changed, 6 insertions(+), 101 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
-index 5fe724728e84..a3ec92775ea7 100644
---- a/sound/soc/codecs/max98373-sdw.c
-+++ b/sound/soc/codecs/max98373-sdw.c
-@@ -282,7 +282,7 @@ static const struct dev_pm_ops max98373_pm = {
- static int max98373_read_prop(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
--	int nval, i, num_of_ports;
-+	int nval, i;
- 	u32 bit;
- 	unsigned long addr;
- 	struct sdw_dpn_prop *dpn;
-@@ -295,7 +295,6 @@ static int max98373_read_prop(struct sdw_slave *slave)
- 	prop->clk_stop_timeout = 20;
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 52ef0f9ec79e..263c1e7c3cc2 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -431,7 +431,7 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 			sun8i_input_mixer_controls),
  
- 	nval = hweight32(prop->source_ports);
--	num_of_ports = nval;
- 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 					  sizeof(*prop->src_dpn_prop),
- 					  GFP_KERNEL);
-@@ -315,7 +314,6 @@ static int max98373_read_prop(struct sdw_slave *slave)
+ 	/* Clocks */
+-	SND_SOC_DAPM_SUPPLY("MODCLK AFI1", SUN8I_MOD_CLK_ENA,
++	SND_SOC_DAPM_SUPPLY("MODCLK AIF1", SUN8I_MOD_CLK_ENA,
+ 			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MODCLK DAC", SUN8I_MOD_CLK_ENA,
+ 			    SUN8I_MOD_CLK_ENA_DAC, 0, NULL, 0),
+@@ -464,11 +464,11 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 	{ "SYSCLK", NULL, "AIF1 PLL" },
  
- 	/* do this again for sink now */
- 	nval = hweight32(prop->sink_ports);
--	num_of_ports += nval;
- 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 					   sizeof(*prop->sink_dpn_prop),
- 					   GFP_KERNEL);
-@@ -333,17 +331,6 @@ static int max98373_read_prop(struct sdw_slave *slave)
- 		i++;
- 	}
+ 	{ "RST AIF1", NULL, "SYSCLK" },
+-	{ "MODCLK AFI1", NULL, "RST AIF1" },
+-	{ "AIF1 AD0L", NULL, "MODCLK AFI1" },
+-	{ "AIF1 AD0R", NULL, "MODCLK AFI1" },
+-	{ "AIF1 DA0L", NULL, "MODCLK AFI1" },
+-	{ "AIF1 DA0R", NULL, "MODCLK AFI1" },
++	{ "MODCLK AIF1", NULL, "RST AIF1" },
++	{ "AIF1 AD0L", NULL, "MODCLK AIF1" },
++	{ "AIF1 AD0R", NULL, "MODCLK AIF1" },
++	{ "AIF1 DA0L", NULL, "MODCLK AIF1" },
++	{ "AIF1 DA0R", NULL, "MODCLK AIF1" },
  
--	/* Allocate port_ready based on num_of_ports */
--	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
--					 sizeof(*slave->port_ready),
--					 GFP_KERNEL);
--	if (!slave->port_ready)
--		return -ENOMEM;
--
--	/* Initialize completion */
--	for (i = 0; i < num_of_ports; i++)
--		init_completion(&slave->port_ready[i]);
--
- 	/* set the timeout values */
- 	prop->clk_stop_timeout = 20;
- 
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index b0ba0d2acbdd..09c69dbab12a 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -118,7 +118,7 @@ static int rt1308_clock_config(struct device *dev)
- static int rt1308_read_prop(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
--	int nval, i, num_of_ports = 1;
-+	int nval, i;
- 	u32 bit;
- 	unsigned long addr;
- 	struct sdw_dpn_prop *dpn;
-@@ -131,7 +131,6 @@ static int rt1308_read_prop(struct sdw_slave *slave)
- 
- 	/* for sink */
- 	nval = hweight32(prop->sink_ports);
--	num_of_ports += nval;
- 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 						sizeof(*prop->sink_dpn_prop),
- 						GFP_KERNEL);
-@@ -149,17 +148,6 @@ static int rt1308_read_prop(struct sdw_slave *slave)
- 		i++;
- 	}
- 
--	/* Allocate port_ready based on num_of_ports */
--	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
--					sizeof(*slave->port_ready),
--					GFP_KERNEL);
--	if (!slave->port_ready)
--		return -ENOMEM;
--
--	/* Initialize completion */
--	for (i = 0; i < num_of_ports; i++)
--		init_completion(&slave->port_ready[i]);
--
- 	/* set the timeout values */
- 	prop->clk_stop_timeout = 20;
- 
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index 94bf6bee78e6..b7c97aba7f17 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -537,7 +537,7 @@ static int rt5682_update_status(struct sdw_slave *slave,
- static int rt5682_read_prop(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
--	int nval, i, num_of_ports = 1;
-+	int nval, i;
- 	u32 bit;
- 	unsigned long addr;
- 	struct sdw_dpn_prop *dpn;
-@@ -549,7 +549,6 @@ static int rt5682_read_prop(struct sdw_slave *slave)
- 	prop->sink_ports = 0x2;		/* BITMAP: 00000010 */
- 
- 	nval = hweight32(prop->source_ports);
--	num_of_ports += nval;
- 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 					  sizeof(*prop->src_dpn_prop),
- 					  GFP_KERNEL);
-@@ -569,7 +568,6 @@ static int rt5682_read_prop(struct sdw_slave *slave)
- 
- 	/* do this again for sink now */
- 	nval = hweight32(prop->sink_ports);
--	num_of_ports += nval;
- 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 					   sizeof(*prop->sink_dpn_prop),
- 					   GFP_KERNEL);
-@@ -587,17 +585,6 @@ static int rt5682_read_prop(struct sdw_slave *slave)
- 		i++;
- 	}
- 
--	/* Allocate port_ready based on num_of_ports */
--	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
--					 sizeof(*slave->port_ready),
--					 GFP_KERNEL);
--	if (!slave->port_ready)
--		return -ENOMEM;
--
--	/* Initialize completion */
--	for (i = 0; i < num_of_ports; i++)
--		init_completion(&slave->port_ready[i]);
--
- 	/* set the timeout values */
- 	prop->clk_stop_timeout = 20;
- 
-diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
-index 4d14048d1197..b19fbcc12c69 100644
---- a/sound/soc/codecs/rt700-sdw.c
-+++ b/sound/soc/codecs/rt700-sdw.c
-@@ -333,7 +333,7 @@ static int rt700_update_status(struct sdw_slave *slave,
- static int rt700_read_prop(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
--	int nval, i, num_of_ports = 1;
-+	int nval, i;
- 	u32 bit;
- 	unsigned long addr;
- 	struct sdw_dpn_prop *dpn;
-@@ -345,7 +345,6 @@ static int rt700_read_prop(struct sdw_slave *slave)
- 	prop->sink_ports = 0xA; /* BITMAP:  00001010 */
- 
- 	nval = hweight32(prop->source_ports);
--	num_of_ports += nval;
- 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 						sizeof(*prop->src_dpn_prop),
- 						GFP_KERNEL);
-@@ -365,7 +364,6 @@ static int rt700_read_prop(struct sdw_slave *slave)
- 
- 	/* do this again for sink now */
- 	nval = hweight32(prop->sink_ports);
--	num_of_ports += nval;
- 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 						sizeof(*prop->sink_dpn_prop),
- 						GFP_KERNEL);
-@@ -383,17 +381,6 @@ static int rt700_read_prop(struct sdw_slave *slave)
- 		i++;
- 	}
- 
--	/* Allocate port_ready based on num_of_ports */
--	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
--					sizeof(*slave->port_ready),
--					GFP_KERNEL);
--	if (!slave->port_ready)
--		return -ENOMEM;
--
--	/* Initialize completion */
--	for (i = 0; i < num_of_ports; i++)
--		init_completion(&slave->port_ready[i]);
--
- 	/* set the timeout values */
- 	prop->clk_stop_timeout = 20;
- 
-diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-index 45b928954b58..dc4a2b482462 100644
---- a/sound/soc/codecs/rt711-sdw.c
-+++ b/sound/soc/codecs/rt711-sdw.c
-@@ -337,7 +337,7 @@ static int rt711_update_status(struct sdw_slave *slave,
- static int rt711_read_prop(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
--	int nval, i, num_of_ports = 1;
-+	int nval, i;
- 	u32 bit;
- 	unsigned long addr;
- 	struct sdw_dpn_prop *dpn;
-@@ -349,7 +349,6 @@ static int rt711_read_prop(struct sdw_slave *slave)
- 	prop->sink_ports = 0x8; /* BITMAP:  00001000 */
- 
- 	nval = hweight32(prop->source_ports);
--	num_of_ports += nval;
- 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 						sizeof(*prop->src_dpn_prop),
- 						GFP_KERNEL);
-@@ -369,7 +368,6 @@ static int rt711_read_prop(struct sdw_slave *slave)
- 
- 	/* do this again for sink now */
- 	nval = hweight32(prop->sink_ports);
--	num_of_ports += nval;
- 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 						sizeof(*prop->sink_dpn_prop),
- 						GFP_KERNEL);
-@@ -387,17 +385,6 @@ static int rt711_read_prop(struct sdw_slave *slave)
- 		i++;
- 	}
- 
--	/* Allocate port_ready based on num_of_ports */
--	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
--					sizeof(*slave->port_ready),
--					GFP_KERNEL);
--	if (!slave->port_ready)
--		return -ENOMEM;
--
--	/* Initialize completion */
--	for (i = 0; i < num_of_ports; i++)
--		init_completion(&slave->port_ready[i]);
--
- 	/* set the timeout values */
- 	prop->clk_stop_timeout = 20;
- 
-diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
-index d11b23d6b240..d8ed07305ffc 100644
---- a/sound/soc/codecs/rt715-sdw.c
-+++ b/sound/soc/codecs/rt715-sdw.c
-@@ -431,7 +431,7 @@ static int rt715_update_status(struct sdw_slave *slave,
- static int rt715_read_prop(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
--	int nval, i, num_of_ports = 1;
-+	int nval, i;
- 	u32 bit;
- 	unsigned long addr;
- 	struct sdw_dpn_prop *dpn;
-@@ -443,7 +443,6 @@ static int rt715_read_prop(struct sdw_slave *slave)
- 	prop->sink_ports = 0x0;	/* BITMAP:  00000000 */
- 
- 	nval = hweight32(prop->source_ports);
--	num_of_ports += nval;
- 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
- 					sizeof(*prop->src_dpn_prop),
- 					GFP_KERNEL);
-@@ -460,36 +459,6 @@ static int rt715_read_prop(struct sdw_slave *slave)
- 		i++;
- 	}
- 
--	/* do this again for sink now */
--	nval = hweight32(prop->sink_ports);
--	num_of_ports += nval;
--	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
--					sizeof(*prop->sink_dpn_prop),
--					GFP_KERNEL);
--	if (!prop->sink_dpn_prop)
--		return -ENOMEM;
--
--	dpn = prop->sink_dpn_prop;
--	i = 0;
--	addr = prop->sink_ports;
--	for_each_set_bit(bit, &addr, 32) {
--		dpn[i].num = bit;
--		dpn[i].simple_ch_prep_sm = true;
--		dpn[i].ch_prep_timeout = 10;
--		i++;
--	}
--
--	/* Allocate port_ready based on num_of_ports */
--	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
--					sizeof(*slave->port_ready),
--					GFP_KERNEL);
--	if (!slave->port_ready)
--		return -ENOMEM;
--
--	/* Initialize completion */
--	for (i = 0; i < num_of_ports; i++)
--		init_completion(&slave->port_ready[i]);
--
- 	/* set the timeout values */
- 	prop->clk_stop_timeout = 20;
- 
+ 	{ "RST DAC", NULL, "SYSCLK" },
+ 	{ "MODCLK DAC", NULL, "RST DAC" },
 -- 
-2.17.1
+2.26.2
 
