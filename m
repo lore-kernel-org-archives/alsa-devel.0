@@ -2,70 +2,74 @@ Return-Path: <SRS0=n5aI=CK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C8F2C433E6
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 01:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54415C433E6
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 01:39:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A82AF2064B
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 01:38:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3FEB2098B
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 01:39:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g9Y1R5ZM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A82AF2064B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K6IvwuDK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3FEB2098B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 288B4174C;
-	Tue,  1 Sep 2020 03:37:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 288B4174C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19C4A1755;
+	Tue,  1 Sep 2020 03:38:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19C4A1755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598924288;
-	bh=1Zbs3D2H0Iv3uSM54N4Rh5f+bxsjWsBv1+XJv6x7Uks=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=g9Y1R5ZMuob71KcmPAMA74TsXV24Oqcgszk0QNWGBx+J04pb9c8I7w4KpV2e2Ie5B
-	 4+QEd34kwxgWrRLNM8BNsWIrVXTEx0Y3K4+eJ/cKkTIYgiRpfvXcrtX8XqRwW4H2wZ
-	 ua4wKylhPE4cqjOAcb/e3InWdSpFuRBeVQwjD4SE=
+	s=default; t=1598924341;
+	bh=22ta/4+9hk70a0xdubH6aV9cHtZIM/89KtRdeWBdvGo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=K6IvwuDKm406HFsWTVun5/k+Bwx3bUllEoacAQvCWBRWnfVtdS+dYkSiSGFz+8b+W
+	 Rfz4IN5Zn3z1YX0NCL1DL5bpghvzq4jcdKB3m2vOBuFjqLjX46+kCFnGDxiM92ocD1
+	 gTpxu1jvWvogDD1VM7q28hR6x5QGmcKpENU4GOSY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A491AF80217;
-	Tue,  1 Sep 2020 03:37:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B42F8F8020D;
+	Tue,  1 Sep 2020 03:37:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB2F8F800BA; Tue,  1 Sep 2020 03:37:11 +0200 (CEST)
+ id CC480F8021D; Tue,  1 Sep 2020 03:37:16 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFF9CF800BA
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 03:37:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFF9CF800BA
-IronPort-SDR: WtX35PfEiBE5n+kCUNCTbQPZeA/hfSKAPOVTFrltpqh0e78Rh2r8yHN/D5Qh/k7E/ct+cpfhnw
- LcIr0y7xFYXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="157090481"
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="157090481"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58EDDF801EB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 03:37:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58EDDF801EB
+IronPort-SDR: nwUg05Ud+z0wcGhvYdQbFV9pMO6q8QOCF+aP94kkyeF4iiV9SVQf9ttCvgnzs3mkZwjY63i0dk
+ WC+SVv8yxOvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="157090506"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="157090506"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Aug 2020 18:37:03 -0700
-IronPort-SDR: ZJtB0CzyLlVkImfOVCXYB8wUU4T/pLvO7cmQfL2FG2F0SILlz5YdJeAeIe60+awBGY1NDYXfY5
- EU4mRjQmIZ5Q==
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="476984087"
+ 31 Aug 2020 18:37:09 -0700
+IronPort-SDR: RQC9SIDPAchTniEYKy2+rhW87zy1XH1PiVe8qO79TuSbA8KDY5dwHDPxqvVoVyXdsOMznx1rvc
+ egEv1ctohclA==
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="476984112"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Aug 2020 18:36:58 -0700
+ 31 Aug 2020 18:37:04 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v4 0/3] ASoC: soundwire: fix port_ready[] dynamic allocation
-Date: Mon, 31 Aug 2020 21:43:15 +0800
-Message-Id: <20200831134318.11443-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v4 1/3] ASoC: codecs: soundwire: remove port_ready[] usage
+ from codecs.
+Date: Mon, 31 Aug 2020 21:43:16 +0800
+Message-Id: <20200831134318.11443-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200831134318.11443-1-yung-chuan.liao@linux.intel.com>
+References: <20200831134318.11443-1-yung-chuan.liao@linux.intel.com>
 Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
@@ -86,48 +90,310 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The existing code allocates memory for the total number of ports.
-This only works if the ports are contiguous, but will break if e.g. a
-Devices uses port0, 1, and 14. The port_ready[] array would contain 3
-elements, which would lead to an out-of-bounds access. Conversely in
-other cases, the wrong port index would be used leading to timeouts on
-prepare.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This can be fixed by allocating for the worst-case of 15
-ports (DP0..DP14). In addition since the number is now fixed, we can
-use an array instead of a dynamic allocation.
+port_ready will be changed to a fixed array in sdw.h and all initialization
+work will be done at soundwire side in the following patch. So remove them
+from codec drivers.
 
-Changes in v4:
-- Reorder the patches order to allow bisect.
-
-Changes in v3:
-- Add ASoC tag in the cover letter title.
-- Edit the title and commit message of the third patch for better
-  understanding.
-
-Changes in v2:
-- Split patches into sdw and asoc patches. Please note that "soundwire:
-  fix port_ready[] dynamic allocation in mipi_disco" and "ASoC: codecs:
-  fix port_ready[] dynamic allocation in ASoC codecs" should be merged
-  at the same time.
-
-
-Pierre-Louis Bossart (3):
-  ASoC: codecs: soundwire: remove port_ready[] usage from codecs.
-  soundwire: add definition for maximum number of ports
-  soundwire: fix port_ready[] dynamic allocation in mipi_disco
-
- drivers/soundwire/mipi_disco.c  | 18 +-----------------
- drivers/soundwire/slave.c       |  4 ++++
- include/linux/soundwire/sdw.h   |  5 +++--
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
  sound/soc/codecs/max98373-sdw.c | 15 +--------------
  sound/soc/codecs/rt1308-sdw.c   | 14 +-------------
  sound/soc/codecs/rt5682-sdw.c   | 15 +--------------
  sound/soc/codecs/rt700-sdw.c    | 15 +--------------
  sound/soc/codecs/rt711-sdw.c    | 15 +--------------
  sound/soc/codecs/rt715-sdw.c    | 33 +--------------------------------
- 9 files changed, 14 insertions(+), 120 deletions(-)
+ 6 files changed, 6 insertions(+), 101 deletions(-)
 
+diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
+index 5fe724728e84..a3ec92775ea7 100644
+--- a/sound/soc/codecs/max98373-sdw.c
++++ b/sound/soc/codecs/max98373-sdw.c
+@@ -282,7 +282,7 @@ static const struct dev_pm_ops max98373_pm = {
+ static int max98373_read_prop(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_prop *prop = &slave->prop;
+-	int nval, i, num_of_ports;
++	int nval, i;
+ 	u32 bit;
+ 	unsigned long addr;
+ 	struct sdw_dpn_prop *dpn;
+@@ -295,7 +295,6 @@ static int max98373_read_prop(struct sdw_slave *slave)
+ 	prop->clk_stop_timeout = 20;
+ 
+ 	nval = hweight32(prop->source_ports);
+-	num_of_ports = nval;
+ 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 					  sizeof(*prop->src_dpn_prop),
+ 					  GFP_KERNEL);
+@@ -315,7 +314,6 @@ static int max98373_read_prop(struct sdw_slave *slave)
+ 
+ 	/* do this again for sink now */
+ 	nval = hweight32(prop->sink_ports);
+-	num_of_ports += nval;
+ 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 					   sizeof(*prop->sink_dpn_prop),
+ 					   GFP_KERNEL);
+@@ -333,17 +331,6 @@ static int max98373_read_prop(struct sdw_slave *slave)
+ 		i++;
+ 	}
+ 
+-	/* Allocate port_ready based on num_of_ports */
+-	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
+-					 sizeof(*slave->port_ready),
+-					 GFP_KERNEL);
+-	if (!slave->port_ready)
+-		return -ENOMEM;
+-
+-	/* Initialize completion */
+-	for (i = 0; i < num_of_ports; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	/* set the timeout values */
+ 	prop->clk_stop_timeout = 20;
+ 
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index b0ba0d2acbdd..09c69dbab12a 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -118,7 +118,7 @@ static int rt1308_clock_config(struct device *dev)
+ static int rt1308_read_prop(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_prop *prop = &slave->prop;
+-	int nval, i, num_of_ports = 1;
++	int nval, i;
+ 	u32 bit;
+ 	unsigned long addr;
+ 	struct sdw_dpn_prop *dpn;
+@@ -131,7 +131,6 @@ static int rt1308_read_prop(struct sdw_slave *slave)
+ 
+ 	/* for sink */
+ 	nval = hweight32(prop->sink_ports);
+-	num_of_ports += nval;
+ 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 						sizeof(*prop->sink_dpn_prop),
+ 						GFP_KERNEL);
+@@ -149,17 +148,6 @@ static int rt1308_read_prop(struct sdw_slave *slave)
+ 		i++;
+ 	}
+ 
+-	/* Allocate port_ready based on num_of_ports */
+-	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
+-					sizeof(*slave->port_ready),
+-					GFP_KERNEL);
+-	if (!slave->port_ready)
+-		return -ENOMEM;
+-
+-	/* Initialize completion */
+-	for (i = 0; i < num_of_ports; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	/* set the timeout values */
+ 	prop->clk_stop_timeout = 20;
+ 
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 94bf6bee78e6..b7c97aba7f17 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -537,7 +537,7 @@ static int rt5682_update_status(struct sdw_slave *slave,
+ static int rt5682_read_prop(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_prop *prop = &slave->prop;
+-	int nval, i, num_of_ports = 1;
++	int nval, i;
+ 	u32 bit;
+ 	unsigned long addr;
+ 	struct sdw_dpn_prop *dpn;
+@@ -549,7 +549,6 @@ static int rt5682_read_prop(struct sdw_slave *slave)
+ 	prop->sink_ports = 0x2;		/* BITMAP: 00000010 */
+ 
+ 	nval = hweight32(prop->source_ports);
+-	num_of_ports += nval;
+ 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 					  sizeof(*prop->src_dpn_prop),
+ 					  GFP_KERNEL);
+@@ -569,7 +568,6 @@ static int rt5682_read_prop(struct sdw_slave *slave)
+ 
+ 	/* do this again for sink now */
+ 	nval = hweight32(prop->sink_ports);
+-	num_of_ports += nval;
+ 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 					   sizeof(*prop->sink_dpn_prop),
+ 					   GFP_KERNEL);
+@@ -587,17 +585,6 @@ static int rt5682_read_prop(struct sdw_slave *slave)
+ 		i++;
+ 	}
+ 
+-	/* Allocate port_ready based on num_of_ports */
+-	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
+-					 sizeof(*slave->port_ready),
+-					 GFP_KERNEL);
+-	if (!slave->port_ready)
+-		return -ENOMEM;
+-
+-	/* Initialize completion */
+-	for (i = 0; i < num_of_ports; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	/* set the timeout values */
+ 	prop->clk_stop_timeout = 20;
+ 
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index 4d14048d1197..b19fbcc12c69 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -333,7 +333,7 @@ static int rt700_update_status(struct sdw_slave *slave,
+ static int rt700_read_prop(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_prop *prop = &slave->prop;
+-	int nval, i, num_of_ports = 1;
++	int nval, i;
+ 	u32 bit;
+ 	unsigned long addr;
+ 	struct sdw_dpn_prop *dpn;
+@@ -345,7 +345,6 @@ static int rt700_read_prop(struct sdw_slave *slave)
+ 	prop->sink_ports = 0xA; /* BITMAP:  00001010 */
+ 
+ 	nval = hweight32(prop->source_ports);
+-	num_of_ports += nval;
+ 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 						sizeof(*prop->src_dpn_prop),
+ 						GFP_KERNEL);
+@@ -365,7 +364,6 @@ static int rt700_read_prop(struct sdw_slave *slave)
+ 
+ 	/* do this again for sink now */
+ 	nval = hweight32(prop->sink_ports);
+-	num_of_ports += nval;
+ 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 						sizeof(*prop->sink_dpn_prop),
+ 						GFP_KERNEL);
+@@ -383,17 +381,6 @@ static int rt700_read_prop(struct sdw_slave *slave)
+ 		i++;
+ 	}
+ 
+-	/* Allocate port_ready based on num_of_ports */
+-	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
+-					sizeof(*slave->port_ready),
+-					GFP_KERNEL);
+-	if (!slave->port_ready)
+-		return -ENOMEM;
+-
+-	/* Initialize completion */
+-	for (i = 0; i < num_of_ports; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	/* set the timeout values */
+ 	prop->clk_stop_timeout = 20;
+ 
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index 45b928954b58..dc4a2b482462 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -337,7 +337,7 @@ static int rt711_update_status(struct sdw_slave *slave,
+ static int rt711_read_prop(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_prop *prop = &slave->prop;
+-	int nval, i, num_of_ports = 1;
++	int nval, i;
+ 	u32 bit;
+ 	unsigned long addr;
+ 	struct sdw_dpn_prop *dpn;
+@@ -349,7 +349,6 @@ static int rt711_read_prop(struct sdw_slave *slave)
+ 	prop->sink_ports = 0x8; /* BITMAP:  00001000 */
+ 
+ 	nval = hweight32(prop->source_ports);
+-	num_of_ports += nval;
+ 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 						sizeof(*prop->src_dpn_prop),
+ 						GFP_KERNEL);
+@@ -369,7 +368,6 @@ static int rt711_read_prop(struct sdw_slave *slave)
+ 
+ 	/* do this again for sink now */
+ 	nval = hweight32(prop->sink_ports);
+-	num_of_ports += nval;
+ 	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 						sizeof(*prop->sink_dpn_prop),
+ 						GFP_KERNEL);
+@@ -387,17 +385,6 @@ static int rt711_read_prop(struct sdw_slave *slave)
+ 		i++;
+ 	}
+ 
+-	/* Allocate port_ready based on num_of_ports */
+-	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
+-					sizeof(*slave->port_ready),
+-					GFP_KERNEL);
+-	if (!slave->port_ready)
+-		return -ENOMEM;
+-
+-	/* Initialize completion */
+-	for (i = 0; i < num_of_ports; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	/* set the timeout values */
+ 	prop->clk_stop_timeout = 20;
+ 
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index d11b23d6b240..d8ed07305ffc 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -431,7 +431,7 @@ static int rt715_update_status(struct sdw_slave *slave,
+ static int rt715_read_prop(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_prop *prop = &slave->prop;
+-	int nval, i, num_of_ports = 1;
++	int nval, i;
+ 	u32 bit;
+ 	unsigned long addr;
+ 	struct sdw_dpn_prop *dpn;
+@@ -443,7 +443,6 @@ static int rt715_read_prop(struct sdw_slave *slave)
+ 	prop->sink_ports = 0x0;	/* BITMAP:  00000000 */
+ 
+ 	nval = hweight32(prop->source_ports);
+-	num_of_ports += nval;
+ 	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
+ 					sizeof(*prop->src_dpn_prop),
+ 					GFP_KERNEL);
+@@ -460,36 +459,6 @@ static int rt715_read_prop(struct sdw_slave *slave)
+ 		i++;
+ 	}
+ 
+-	/* do this again for sink now */
+-	nval = hweight32(prop->sink_ports);
+-	num_of_ports += nval;
+-	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
+-					sizeof(*prop->sink_dpn_prop),
+-					GFP_KERNEL);
+-	if (!prop->sink_dpn_prop)
+-		return -ENOMEM;
+-
+-	dpn = prop->sink_dpn_prop;
+-	i = 0;
+-	addr = prop->sink_ports;
+-	for_each_set_bit(bit, &addr, 32) {
+-		dpn[i].num = bit;
+-		dpn[i].simple_ch_prep_sm = true;
+-		dpn[i].ch_prep_timeout = 10;
+-		i++;
+-	}
+-
+-	/* Allocate port_ready based on num_of_ports */
+-	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
+-					sizeof(*slave->port_ready),
+-					GFP_KERNEL);
+-	if (!slave->port_ready)
+-		return -ENOMEM;
+-
+-	/* Initialize completion */
+-	for (i = 0; i < num_of_ports; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	/* set the timeout values */
+ 	prop->clk_stop_timeout = 20;
+ 
 -- 
 2.17.1
 
