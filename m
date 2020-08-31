@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB403C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05B26C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:50:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 505A920720
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:50:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8497C20720
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 03:50:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J7sZ8gma";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="hQeLlKHi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dR80+nW1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 505A920720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XR9TeSD6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="Fia0eJvK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MPUht6zR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8497C20720
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D25C417F3;
-	Mon, 31 Aug 2020 05:49:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D25C417F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B5001811;
+	Mon, 31 Aug 2020 05:50:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B5001811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598845802;
-	bh=n8eva39d6i6OR7iE37A9HSwEN/eWgV3fEDnYsLTBFeY=;
+	s=default; t=1598845856;
+	bh=LM/A5KUPHjMvGZ4UBdNrwL0HGCQRsFz6kdcRQ7YSzQ4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J7sZ8gmaxhIDb432uQnw9gWxER1Gykh/h2Bp0bP2iVOkqlWXLO0CnU31NcMmv7Jjj
-	 ivZynU0SnelgKcsx+wH4LgypOMv8KXj45cGuZbZqM/bMEmrJ1+I1pwJsZAthtak5lQ
-	 /4FHcQHCE2kRZIclGcJ1nk6f8NboYjeNVqAkg/CE=
+	b=XR9TeSD6UoWE6emxhzsb3wnqLlIDWq1nzj7k9gHPbGW6+0Z+zCr48JJ10NCK18CXJ
+	 A5ON+b3XcV7HlsLu/HW7aXHXRX6tOf/xFXz88dALOVYjXmVCyqCG5wfZB8fgT5cppH
+	 towiur8omUF6prIXnSLZrG+t4Z+Gca6UFVYf5qp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C879F80257;
-	Mon, 31 Aug 2020 05:49:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43081F8024A;
+	Mon, 31 Aug 2020 05:49:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88F89F802C3; Mon, 31 Aug 2020 05:49:06 +0200 (CEST)
+ id 5353BF802BC; Mon, 31 Aug 2020 05:49:07 +0200 (CEST)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8BF4BF801DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 946B7F80257
  for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 05:48:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BF4BF801DA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 946B7F80257
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="hQeLlKHi"; 
+ header.b="Fia0eJvK"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="dR80+nW1"
+ header.i=@messagingengine.com header.b="MPUht6zR"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id D37B558054E;
+ by mailnew.nyi.internal (Postfix) with ESMTP id DC72C58054F;
  Sun, 30 Aug 2020 23:48:55 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
  by compute3.internal (MEProxy); Sun, 30 Aug 2020 23:48:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=vuHoEqUnlx/Z5
- PQhy2y3P36C8JzS/AOw1EeZvaEYsUk=; b=hQeLlKHiSG0COlQZgbKfxOFyur2kz
- cmsCZtMbGoKELzwPleO74JqS8+3CGmaVLhuGLpxzGJ0uiXQ08AH/VIZQonMi5vgp
- kbsS0oykrS3cfhO+9Hp464wl0H0GmZmzropL4PCMeamaC5s0JAXtBEKxPJMpOfs2
- LrZDWgR6HkADTCsejkhg9Sxxyhl9CkSRlc2RMQPAP92YxjRVjSBlA3UxTnRJNYid
- hxrzjLA9k7TicD9FI9mBacok1xBPQ+hwIYM5SGDhxZCKCuRhgH8SPrejBtXEOAfA
- 32inhhUb0HtEqyb1nreS2xTOUujWyZbe68uz96RDdKkntHIkStvc3xmpA==
+ :mime-version:content-transfer-encoding; s=fm3; bh=wD7ZfrlNaMxZt
+ s/5UJZ3RuMQ+EnJabMvQzkgcOJiW2A=; b=Fia0eJvKRfDaz+g3P7iLlmuTAj8mK
+ 9fuqR0YfWAOarVXuiZuo3B+c7Tvk5IwSbLkd9jkY1Y3iECdiyK0KmdyHPM+Saq0q
+ t/KvK0Yq4fsXAJ+6JSsv9pNm6S+JGEMVPpDq4A8rAOnUZQiggssVm91KyoRcSt3C
+ O7J63OsSCzmtpAlmPX1n2Tgv5S/FmZ8eE59z3Kn49NzmHWeIKWbCblwW4Jj5vLn3
+ YpVClQVnZi38zSMYuFI9X0T4P9H2TFMQJIGUrKv73JsIQ0U+y2ZTLeQQJMhY5p7h
+ 6CXGHXKMVJFSCF7EOVMaAu3VLXGJvzzitdulKAabX2hygJhnKJ7KuzZ+Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=vuHoEqUnlx/Z5PQhy2y3P36C8JzS/AOw1EeZvaEYsUk=; b=dR80+nW1
- hr11+rlosEOyNZhj89Hy9CSpvsPTXbNAoDi/rH1JTytVa5XvmrZJGbI8lGvzl7BS
- 1IlL5kBYYfQ5hoAsIVkKthhhI17H/jc1xKtcaMitxdbOimWWHv2ujl2vRZ15v1ZR
- 99Id81fmN7/bgKpZPmNG4jUoJkR0GzqxDo4h9sfmTkU7qFH6Xhe/sPa88uBxydvq
- 2pC9xjYXHhGF47MZ9oW6nJW2NjxgIB3LidGWozai7RJcoQIgiqQUpgOuyHkY3P4u
- k1uZppDqMShHeAFO10saakNwFug0Qogq77th9thc4oBDFHdWuCe5QpjsCZBYeJ85
- g82fUPYwVONmEQ==
-X-ME-Sender: <xms:J3NMXzRJ2Uxsm8o69iJZgZK93na29E9BPTf0UUD3PI2a5XEKZkTagg>
+ fm3; bh=wD7ZfrlNaMxZts/5UJZ3RuMQ+EnJabMvQzkgcOJiW2A=; b=MPUht6zR
+ EgxQliNNuoYSlEhBvyrEy6TPSwYbQLT5TfPxTMVXx5ljNvwNl/Nb97RmelhH26je
+ i5hnEXowAb8yseHVSEEX+FO5jcPhLDjMHFL5/JXJTNSbypRIQ74Ll+A8LVLy5gTb
+ Cym6UZtv6Ik6K6rYLwDCw3Vvm322fE+EcWB2IbNq2kVy3Ceb540gzxia+j6JaP95
+ GTlWEs4AqlwqiBu/ZVUrAmDFztpnfB3dXoZ918PTUasOYGX31LAduAeAmHR5f5sz
+ 6fhAZpwjfY5k6hh7IybaVYgTVtbcQ95a5ig2V22VeBu9hFTKas42Ro0HJkcTBceg
+ roMj0lHiTxEv7w==
+X-ME-Sender: <xms:J3NMX-iLpPkfzYu0ndT09Qyjzxj7aHdGVuWHJbcEBYtQwE8JmS-ShA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefgedgjeehucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -88,21 +88,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefgedgjeehucetufdoteggod
  gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
  iivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
  ugdrohhrgh
-X-ME-Proxy: <xmx:J3NMX0z_LswX-2Qojpu8r6d2Em6ndQmHr7dytuYu6Pq2udE2BqBnaQ>
- <xmx:J3NMX41T0WJT8YH2MnwTNvkdHt7LrY1Y4mjJpcNruTYYTmzbOZ8fmw>
- <xmx:J3NMXzCtELVjlbjMmo5GvV7sWUMcSTZnm6nIflK1XFJp1Lf55T1mFg>
- <xmx:J3NMX4j0xlaaZEUsuITrK0qJWeAPi84vxPmr-F8E4W-FApPnbRHqcQ>
+X-ME-Proxy: <xmx:J3NMX_AdmJJhOW2UdMYezQ_B_zagWBTUQa8w9jSBNxXJ9XG8ypHttA>
+ <xmx:J3NMX2G3SsbwRYVostrkjHWNivNxKjGjYAMWPnfdnjgO5MNPMXc6DA>
+ <xmx:J3NMX3Sm4P76JzyyF7igO7OtWyhqjiElS26bxHtDtwWgfMs2LG5nBQ>
+ <xmx:J3NMXywEBewCBt7Vz7DA1yon8oCZ06s8KoqqcWiKDH0ynaXn77lVdA>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id D1C26328005D;
- Sun, 30 Aug 2020 23:48:54 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 4D00A3280064;
+ Sun, 30 Aug 2020 23:48:55 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 2/9] ASoC: sun8i-codec: Fix AIF1 MODCLK widget name
-Date: Sun, 30 Aug 2020 22:48:45 -0500
-Message-Id: <20200831034852.18841-3-samuel@sholland.org>
+Subject: [PATCH 3/9] ASoC: sun8i-codec: Fix AIF1_ADCDAT_CTRL field names
+Date: Sun, 30 Aug 2020 22:48:46 -0500
+Message-Id: <20200831034852.18841-4-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200831034852.18841-1-samuel@sholland.org>
 References: <20200831034852.18841-1-samuel@sholland.org>
@@ -126,44 +126,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The name should reference "AIF1", not "AFI1".
+They are controlling "AD0" (AIF1 slot 0 ADC), not "DA0".
 
 Acked-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 52ef0f9ec79e..263c1e7c3cc2 100644
+index 263c1e7c3cc2..68c8edae9084 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -431,7 +431,7 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			sun8i_input_mixer_controls),
+@@ -49,8 +49,8 @@
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
+ #define SUN8I_AIF1_ADCDAT_CTRL				0x044
+-#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0L_ENA		15
+-#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0R_ENA		14
++#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA		15
++#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA		14
+ #define SUN8I_AIF1_DACDAT_CTRL				0x048
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA		14
+@@ -407,10 +407,10 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 	/* AIF "ADC" Outputs */
+ 	SND_SOC_DAPM_AIF_IN("AIF1 AD0L", "Capture", 0,
+ 			    SUN8I_AIF1_ADCDAT_CTRL,
+-			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0L_ENA, 0),
++			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA, 0),
+ 	SND_SOC_DAPM_AIF_IN("AIF1 AD0R", "Capture", 0,
+ 			    SUN8I_AIF1_ADCDAT_CTRL,
+-			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0R_ENA, 0),
++			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA, 0),
  
- 	/* Clocks */
--	SND_SOC_DAPM_SUPPLY("MODCLK AFI1", SUN8I_MOD_CLK_ENA,
-+	SND_SOC_DAPM_SUPPLY("MODCLK AIF1", SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("MODCLK DAC", SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_DAC, 0, NULL, 0),
-@@ -464,11 +464,11 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	{ "SYSCLK", NULL, "AIF1 PLL" },
- 
- 	{ "RST AIF1", NULL, "SYSCLK" },
--	{ "MODCLK AFI1", NULL, "RST AIF1" },
--	{ "AIF1 AD0L", NULL, "MODCLK AFI1" },
--	{ "AIF1 AD0R", NULL, "MODCLK AFI1" },
--	{ "AIF1 DA0L", NULL, "MODCLK AFI1" },
--	{ "AIF1 DA0R", NULL, "MODCLK AFI1" },
-+	{ "MODCLK AIF1", NULL, "RST AIF1" },
-+	{ "AIF1 AD0L", NULL, "MODCLK AIF1" },
-+	{ "AIF1 AD0R", NULL, "MODCLK AIF1" },
-+	{ "AIF1 DA0L", NULL, "MODCLK AIF1" },
-+	{ "AIF1 DA0R", NULL, "MODCLK AIF1" },
- 
- 	{ "RST DAC", NULL, "SYSCLK" },
- 	{ "MODCLK DAC", NULL, "RST DAC" },
+ 	/* ADC Inputs (connected to analog codec DAPM context) */
+ 	SND_SOC_DAPM_ADC("ADCL", NULL, SND_SOC_NOPM, 0, 0),
 -- 
 2.26.2
 
