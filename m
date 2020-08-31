@@ -2,77 +2,70 @@ Return-Path: <SRS0=wuVw=CJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D0CAC433E6
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 09:15:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ED55C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 09:41:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B489D208CA
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 09:15:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF127206C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 09:41:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TUXH4mMr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B489D208CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ALQtYvI4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF127206C0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35B81185C;
-	Mon, 31 Aug 2020 11:14:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35B81185C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E71E171C;
+	Mon, 31 Aug 2020 11:40:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E71E171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598865306;
-	bh=tzp/yXwtZF0kN5xmenOHr54FeWLG2PtjI6ADqYkKvYY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1598866862;
+	bh=eaVf1EMCSJNpZH7VY/jtrhonBx5yT6vxCcf/+Ag4CZk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TUXH4mMr+1ybozrZ0r8wgVHL0c6PWgUcrxNoAMZaxjQiE+zAPqE4Ey18UipEE8qEt
-	 3mYMCXubTJ7B2o8BNkUdb6kz92f8ab2DR+XQEZRuP8K3eUYa+ra79d0rzxU95o0GNY
-	 5LJj6/Oo1u59/u5ByPy5xrpu756oeCwtQeMHOn9Q=
+	b=ALQtYvI4iU1OiJ2x4qOrvEcnVYJooKT/PWWm3Fw1SIvuNnArOmC2U2E06Az1RXnLO
+	 03lPB4nAVpApOYOxOvIKu5ah+RtOdIlhMV+E51A8nghZ2pMZaTZE9BIpjkqJR6jjG9
+	 gyYLROYyAjG+uZV3Frn539krBhtQ9Puwpke8jTKg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF5DAF80317;
-	Mon, 31 Aug 2020 11:08:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA986F801DA;
+	Mon, 31 Aug 2020 11:40:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49EEFF80268; Mon, 31 Aug 2020 11:08:54 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D7EABF80212; Mon, 31 Aug 2020 11:40:09 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3719BF80268
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 11:08:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3719BF80268
-IronPort-SDR: jmKUKdFWLrHgbMJXITJYxDZNQQ4Cs6VTxUaU1+liO2f9+DzVdCYP/G4+fFX4tknBL9tEyodiIT
- r9o0oI9Obing==
-X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="136466761"
-X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; d="scan'208";a="136466761"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Aug 2020 02:08:11 -0700
-IronPort-SDR: 35gDVmuE6YjP3cxtp1yM74AK7vvleT+aAGTI4AxSGYwQQbx4vJY+2M0/Asq2pkb2Kj2Xfv687Y
- Cl6lznWUl6Qg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; d="scan'208";a="314286890"
-Received: from test-hp-compaq-8100-elite-cmt-pc.igk.intel.com ([10.237.149.93])
- by orsmga002.jf.intel.com with ESMTP; 31 Aug 2020 02:08:09 -0700
-From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 05/10] topology: decode: Fix printing texts section
-Date: Mon, 31 Aug 2020 11:08:58 +0200
-Message-Id: <1598864943-22883-6-git-send-email-piotrx.maziarz@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598864943-22883-1-git-send-email-piotrx.maziarz@linux.intel.com>
-References: <1598864943-22883-1-git-send-email-piotrx.maziarz@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
- amadeuszx.slawinski@linux.intel.com, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CE13F80058
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 11:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CE13F80058
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 4D3FBACF2;
+ Mon, 31 Aug 2020 09:40:35 +0000 (UTC)
+Date: Mon, 31 Aug 2020 11:40:00 +0200
+Message-ID: <s5hsgc3i26n.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Jillela, Emmanuel" <emmanuel.jillela@intel.com>
+Subject: Re: [PATCH v2] ALSA: HDA: Early Forbid of runtime PM
+In-Reply-To: <BN6PR1101MB2275262388388F71D62390299C520@BN6PR1101MB2275.namprd11.prod.outlook.com>
+References: <1598569536-9450-1-git-send-email-harshapriya.n@intel.com>
+ <s5h5z93ns23.wl-tiwai@suse.de>
+ <alpine.DEB.2.22.394.2008281800180.3186@eliteleevi.tm.intel.com>
+ <BN6PR1101MB2275262388388F71D62390299C520@BN6PR1101MB2275.namprd11.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "N, Harshapriya" <harshapriya.n@intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,27 +81,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- src/topology/text.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, 28 Aug 2020 19:06:51 +0200,
+Jillela, Emmanuel wrote:
+> 
+> 
+> > Subject: Re: [PATCH v2] ALSA: HDA: Early Forbid of runtime PM
+> > 
+> > Hey,
+> > 
+> > On Fri, 28 Aug 2020, Takashi Iwai wrote:
+> > 
+> > > On Fri, 28 Aug 2020 01:05:36 +0200, Harsha Priya wrote:
+> > > > This issue being common across all codecs, pm_runtime_forbid() is
+> > > > called when the codec object is created to fix this issue.
+> > > > A codec enables or disables runtime pm in its own probe function.
+> > >
+> > > Thanks.  The only concern is about the influence on the relevant ASoC
+> > > code, especially hdac_hda.c.
+> > >
+> > > Kai, could you check whether this still works?
+> > 
+> > I believe Harsha is testing mostly with ASoC, so hdac_hda.c should be covered.
+> > 
+> > I did queue a SOF CI job for this v2 patch and I'm seeing some failures in module
+> > load/unload test that might be related and need checking before we merge:
+> > 
+> > https://sof-ci.01.org/linuxpr/PR2403/build4400/devicetest/
+> > 
+> > The actual runtime-PM tests in our test set pass, but module load/unload has failures >on
+> > some platforms. I'll follow-up when I have a better understanding what goes wrong.
+> > 
+> > Br, Kai
+> I am just trying to think ahead to get something that may work. We can add an if check around the pm_runtime_forbid like below
+> If (!codec->auto_runtime_pm)
+> 	Pm_runtime_forbid(&codec->core.dev)
+> Do you think that will work??
 
-diff --git a/src/topology/text.c b/src/topology/text.c
-index 507c545..b899b28 100644
---- a/src/topology/text.c
-+++ b/src/topology/text.c
-@@ -103,7 +103,7 @@ int tplg_save_text(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 		return 0;
- 	err = tplg_save_printf(dst, pfx, "'%s'.values [\n", elem->id);
- 	for (i = 0; err >= 0 && i < texts->num_items; i++)
--		err = tplg_save_printf(dst, pfx, "\t'%s'\n", texts->items[i][0]);
-+		err = tplg_save_printf(dst, pfx, "\t'%s'\n", texts->items[i]);
- 	if (err >= 0)
- 		err = tplg_save_printf(dst, pfx, "]\n");
- 	return err;
--- 
-2.7.4
+snd_hda_codec_device_new() is called before setting the flag, so it's
+no use for adding the conditional.
 
+
+thanks,
+
+Takashi
