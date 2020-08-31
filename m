@@ -7,77 +7,76 @@ X-Spam-Status: No, score=-7.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 015D9C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 15:13:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B08F2C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 15:16:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D564207EA
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 15:13:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 17C2C20767
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Aug 2020 15:16:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I0cvjdaR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D564207EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NCb70cT+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17C2C20767
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13C411765;
-	Mon, 31 Aug 2020 17:12:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13C411765
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74DCC176F;
+	Mon, 31 Aug 2020 17:15:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74DCC176F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598886797;
-	bh=XTkGY2MK3KaY/l+4C2P8iT+SJXe5m6stW1P075xTss8=;
+	s=default; t=1598887007;
+	bh=MEMd8TObfbYcwnF80376xgFjo5ScuXiaiIOT9RO6hQQ=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I0cvjdaRaDn0Qn/m1y9seWcFgi4/6PlH50M1UoesOBsH2bCA8bVHNMyBWUf0bZ3yM
-	 43chybGACsgk9kBoMZClAx7vbfV9LGaOtp90zef/HqHmXT11qzWKhXQrSxuj9e9Eb8
-	 6sLfF5yWDGf5qcocajGClFtICeD8/dX09Lm4kE3o=
+	b=NCb70cT+DvwCCavjt9IpvfgZJIsCvqPICPYbXCTie25dbC2JSNw3GdNpCX4jaExsD
+	 RwrclSUdZ2TreFnCKE5tuN589SZa2uwHXeCydtrCpLcCZGIIqz9Vgwdpq46a6urx8S
+	 D9fZ2V7bNF81hS8jkxKYeYCEu1H9SwVo9pvuYPkE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71718F801DA;
-	Mon, 31 Aug 2020 17:12:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0ADDF801DA;
+	Mon, 31 Aug 2020 17:15:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56667F801DA; Mon, 31 Aug 2020 17:12:24 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 1A346F80212; Mon, 31 Aug 2020 17:15:55 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77C7FF80146
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 17:12:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77C7FF80146
-IronPort-SDR: MXQMAoEUXKKLwCUrT7SjYr3aRFdTDvMYhFnD+WqZTaZ9+XsgVtN73M5ForyjagOREcYoRhbuDj
- XNXwWzlLXqCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="144671416"
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="144671416"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B244F80146
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2020 17:15:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B244F80146
+IronPort-SDR: aTDRWglonb5aCdisCO7o7uwmMOhmn2m9GNVgksVzBH8nSG1KcvHkDuU5xWQW86zfS5+vzqzIqQ
+ Ug6jrY3vpmJw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="136520676"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="136520676"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Aug 2020 08:12:11 -0700
-IronPort-SDR: W2JTNx3hI1AVbQtJmUolyOm5HWXco2Bnn/FosS7i9xHr7AwwAdVR8Ta4SJaiRdxTSqkdd6aiE4
- FlbHmIAICbtw==
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="501375147"
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Aug 2020 08:15:41 -0700
+IronPort-SDR: v+uBZj2yz55phQgP83igUTAsDBunmkJ9f49VrBbrIS3NM4KS8+6pGtYENeFcFdHxEM6jugM9Bv
+ 4kF0z8JH/H9A==
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; d="scan'208";a="501376518"
 Received: from jaeikcho-mobl.amr.corp.intel.com (HELO [10.213.165.6])
  ([10.213.165.6])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Aug 2020 08:12:09 -0700
-Subject: Re: [PATCH v3 0/3] ASoC: soundwire: fix port_ready[] dynamic
- allocation
-To: Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org, 
- vkoul@kernel.org
-References: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
+ 31 Aug 2020 08:15:38 -0700
+Subject: Re: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
+ clock-stop invalid configs
+To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
+References: <20200829110047.GC2639@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <dd947a84-87cb-7eed-9ac2-fe3de42dfc31@linux.intel.com>
-Date: Mon, 31 Aug 2020 10:12:08 -0500
+Message-ID: <051afb2d-dd2e-0ea4-d8a9-980f5df136b7@linux.intel.com>
+Date: Mon, 31 Aug 2020 10:15:37 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200829110047.GC2639@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: vinod.koul@linaro.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- ranjani.sridharan@linux.intel.com, linux-kernel@vger.kernel.org,
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
  hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
  jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
  rander.wang@linux.intel.com, bard.liao@intel.com
@@ -97,57 +96,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-On 8/30/20 8:27 AM, Bard Liao wrote:
-> The existing code allocates memory for the total number of ports.
-> This only works if the ports are contiguous, but will break if e.g. a
-> Devices uses port0, 1, and 14. The port_ready[] array would contain 3
-> elements, which would lead to an out-of-bounds access. Conversely in
-> other cases, the wrong port index would be used leading to timeouts on
-> prepare.
+>>>>>> Detect cases where the clock is assumed to be stopped but the IP is
+>>>>>> not in the relevant state, and add a dynamic debug trace.
+>>>>>
+>>>>> you meant a debug print..and it looks like error print below (also in title).
+>>>>
+>>>> I don't understand the comment. Is the 'trace' confusing and are you asking
+>>>> to e.g. change the commit message to 'add dynamic debug log'?
+>>>
+>>> Question is what is dynamic about this?
+>> dev_dbg() is part of the kernel dynamic debug capability...
+>>
+>> https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html
+>>
+>> Not sure what you are asking here?
 > 
-> This can be fixed by allocating for the worst-case of 15
-> ports (DP0..DP14). In addition since the number is now fixed, we can
-> use an array instead of a dynamic allocation.
-
-Bard, the order of patches will break git bisect, no? I tried on my side 
-and get the following error after applying patch1
-
-sound/soc/codecs/max98373-sdw.c:337:20: error: assignment to expression 
-with array type
-   337 |  slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
-       |
-
-the order should be
-
-ASoC: codecs: soundwire: remove port_ready[] usage from codecs.
-soundwire: add definition for maximum number of ports
-soundwire: fix port_ready[] dynamic allocation in mipi_disco
-
-> Changes in v3:
-> - Add ASoC tag in the cover letter title.
-> - Edit the title and commit message of the third patch for better
->    understanding.
+> :-| where is dev_dbg() ?
 > 
-> Changes in v2:
-> - Split patches into sdw and asoc patches. Please note that "soundwire:
->    fix port_ready[] dynamic allocation in mipi_disco" and "ASoC: codecs:
->    fix port_ready[] dynamic allocation in ASoC codecs" should be merged
->    at the same time.
+> See [1]
+
 > 
-> Pierre-Louis Bossart (3):
->    soundwire: add definition for maximum number of ports
->    soundwire: fix port_ready[] dynamic allocation in mipi_disco
->    ASoC: codecs: soundwire: remove port_ready[] usage from codecs.
+> [1]
 > 
->   drivers/soundwire/mipi_disco.c  | 18 +-----------------
->   drivers/soundwire/slave.c       |  4 ++++
->   include/linux/soundwire/sdw.h   |  5 +++--
->   sound/soc/codecs/max98373-sdw.c | 15 +--------------
->   sound/soc/codecs/rt1308-sdw.c   | 14 +-------------
->   sound/soc/codecs/rt5682-sdw.c   | 15 +--------------
->   sound/soc/codecs/rt700-sdw.c    | 15 +--------------
->   sound/soc/codecs/rt711-sdw.c    | 15 +--------------
->   sound/soc/codecs/rt715-sdw.c    | 33 +--------------------------------
->   9 files changed, 14 insertions(+), 120 deletions(-)
+>> +			dev_err(dev, "%s invalid configuration, clock was not stopped", __func__);
 > 
+>                          ^^^^^^^
+
+it's still a log using the "dynamic debug" framework.
+
+Again, what are you asking us to fix?
+
