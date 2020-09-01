@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C9C8C433E6
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 03:05:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B25DC433E2
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 03:05:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6E02206CD
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 03:05:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9F5F42068F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 03:05:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y3qUm3Sb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6E02206CD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EpeAlaU8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F5F42068F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45C53180A;
-	Wed,  2 Sep 2020 05:04:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45C53180A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 429BF1822;
+	Wed,  2 Sep 2020 05:04:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 429BF1822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599015903;
-	bh=hagcKcLRa2aSAj26hDePR792qXZ56u6eyook9AvGge0=;
+	s=default; t=1599015941;
+	bh=/dy4tdvCGnmLLYHQLy4G0MUhTDmnkguIgY/xz1iAeVA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y3qUm3SbGho14XgsaaBHDAdj0lCpcF+UdqfSHBrbITb+uXoFaaQhQwtcT+mVTRCZZ
-	 ji2qgUtaP2BC60TnDMUl5JIaZwinn3d2+tJ3Vv+0R69NlbxhDjKs8dEM1Fz641pLZ7
-	 Y1Q0xrLeg+IVpkPiszJ1cVltgJF72aX6LO7c0HGQ=
+	b=EpeAlaU8Vsk8SPHPPY9GGaT+tne+e+5zhFQwK7QIxyZWznLTotu+lHB7/KzURIwNL
+	 ni8tdYCNptweEAunUBCvGkLMcd1JbydTh/BbZY7pOwssA6kPaUkO2kQ2ga3xUUWlIU
+	 iPUMwhvG7RFMT7VU39gRQlAAm2AWpzYd/vdr/hH4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2975FF802E8;
-	Wed,  2 Sep 2020 05:00:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9C4DF80322;
+	Wed,  2 Sep 2020 05:00:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7058CF802D2; Wed,  2 Sep 2020 05:00:09 +0200 (CEST)
+ id 99B75F80276; Wed,  2 Sep 2020 05:00:10 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CC6BF80276
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 05:00:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CC6BF80276
-IronPort-SDR: a9a9HhruDom6R4NhEUJsaZYbnOfHZQMWhlnsoaiuKUpMP5lUtja76MtxXQ+UV5oCTy+OEGgq/e
- G2DrFRReuvyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="156570759"
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; d="scan'208";a="156570759"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04003F802A1
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 05:00:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04003F802A1
+IronPort-SDR: oMB+WyGEzolALD/5IRoZ0k3UwfPSoREiwFuFTocpqQ26Dq4hPMrfPlCqf1Q92tWIeFwiLvhRvD
+ mum04GVbOVHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="156570768"
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; d="scan'208";a="156570768"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Sep 2020 19:59:59 -0700
-IronPort-SDR: rcN5K088Nt+PHXwuEobRqiOjwrhP7Ui2uAlCwbs5vFNhaKDCvU+840R4QObVqBbi7K4KQwwrUp
- Za/1Gxszdwkw==
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; d="scan'208";a="283588096"
+ 01 Sep 2020 20:00:03 -0700
+IronPort-SDR: GREZdfE6O4YCP5rqbgSo15xy0SFNXBT+oegSmZVc14nhs5xx+NvL9DvqEZgPp6nhd5ZgSKT/1t
+ /aHnvi/8Fodg==
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; d="scan'208";a="283588154"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Sep 2020 19:59:56 -0700
+ 01 Sep 2020 19:59:59 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 05/10] soundwire: bus: update multi-link definition with hw
- sync details
-Date: Tue,  1 Sep 2020 23:05:51 +0800
-Message-Id: <20200901150556.19432-6-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 06/10] soundwire: intel: add multi-link hw_synchronization
+ information
+Date: Tue,  1 Sep 2020 23:05:52 +0800
+Message-Id: <20200901150556.19432-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
 References: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
@@ -92,47 +92,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Hardware-based synchronization is typically required when the
-bus->multi_link flag is set.
-
-On Intel platforms, when the Cadence IP is configured in 'Multi Master
-Mode', the hardware synchronization is required even when a stream
-only uses a single segment. The existing code only deal with hardware
-synchronization when a stream uses more than one segment so to remain
-backwards compatible we add a configuration threshold. For Intel cases
-this threshold will be set to one, other platforms may be able to use
-the SSP-based sync in those cases.
+set the flags as required by hardware implementation
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- include/linux/soundwire/sdw.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/soundwire/intel.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 76052f12c9f7..9adbe4fd7980 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -827,6 +827,11 @@ struct sdw_master_ops {
-  * @multi_link: Store bus property that indicates if multi links
-  * are supported. This flag is populated by drivers after reading
-  * appropriate firmware (ACPI/DT).
-+ * @hw_sync_min_links: Number of links used by a stream above which
-+ * hardware-based synchronization is required. This value is only
-+ * meaningful if multi_link is set. If set to 1, hardware-based
-+ * synchronization will be used even if a stream only uses a single
-+ * SoundWire segment.
-  */
- struct sdw_bus {
- 	struct device *dev;
-@@ -850,6 +855,7 @@ struct sdw_bus {
- 	unsigned int clk_stop_timeout;
- 	u32 bank_switch_timeout;
- 	bool multi_link;
-+	int hw_sync_min_links;
- };
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 8634d33c388c..272826973426 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1400,7 +1400,14 @@ int intel_master_startup(struct platform_device *pdev)
+ 		dev_dbg(dev, "Multi-link is disabled\n");
+ 		bus->multi_link = false;
+ 	} else {
++		/*
++		 * hardware-based synchronization is required regardless
++		 * of the number of segments used by a stream: SSP-based
++		 * synchronization is gated by gsync when the multi-master
++		 * mode is set.
++		 */
+ 		bus->multi_link = true;
++		bus->hw_sync_min_links = 1;
+ 	}
  
- int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
+ 	/* Initialize shim, controller */
 -- 
 2.17.1
 
