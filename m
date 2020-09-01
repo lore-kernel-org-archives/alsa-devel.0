@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 592BBC433E7
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 16:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DA7BC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 16:26:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D87C420BED
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 16:25:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1312420767
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 16:26:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="na5JB5Re"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D87C420BED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E8HsF/Ht"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1312420767
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50B5F17F6;
-	Tue,  1 Sep 2020 18:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50B5F17F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81E6417FE;
+	Tue,  1 Sep 2020 18:25:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81E6417FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598977554;
-	bh=CsDhY8HEUP04n+fEo5J9C/wES06GpKSvUSj0oZHQYYA=;
+	s=default; t=1598977601;
+	bh=xQqU/jfY7Kztk2q9FyoSHlqquV03KSPbJPH/5zcecxI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=na5JB5ReyfcxL/pvMdqoRnWUvJDf6QNKzzuAjDlcF117uMUMFq6JE1GZ9Zt26qIt0
-	 YY6iUssgSiRAXegObwxldwQTtxgIkoFyikraQfGeCau6GuMSR9/ZeFOiNh/Ubsx/nv
-	 fM0kqn7l6Zq+8UqPvWjaH+jlaJb70thZc4AxM6eA=
+	b=E8HsF/HtHDEdOcgpkFMN28Lu5WwS08MTE4ZESyNrM3e2fDzw7W+Rpla+FDgcc7acI
+	 0cZw6jXqbOLmeqD++u9uQ514ezD10SgqAVXOe5TK8raDnRMsuft0kjM51tTM9dSoSs
+	 LMM5unlMydcot7H2lT8nMym3KrnHRcjwWoclujAo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F9AAF8025F;
-	Tue,  1 Sep 2020 18:24:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A1FAF8028F;
+	Tue,  1 Sep 2020 18:24:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01115F8025F; Tue,  1 Sep 2020 18:22:58 +0200 (CEST)
+ id 0FAFFF8025F; Tue,  1 Sep 2020 18:23:04 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA62BF801DA
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 18:22:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA62BF801DA
-IronPort-SDR: R3deaq9Ya+bmf6ApphEi575ik2dm5RlaB4KeDcEs1YqjFDZ1z+tdqanB5sqSm4E+835PkyReVd
- 1xHTl08KTmWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="144889307"
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; d="scan'208";a="144889307"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FAB0F800BA
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 18:22:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FAB0F800BA
+IronPort-SDR: rCedTjCEDpm1e8bOwzJ6fCBHHduppQoN5nQ9Z+50FOfNBj6lexT3CvuH6OSVt3LnEP6YtrslJY
+ ykOWVwIiR8hA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="144889317"
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; d="scan'208";a="144889317"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Sep 2020 09:22:44 -0700
-IronPort-SDR: 5hhM7C4HH2LqVhXMHA0UmLVWRA4p+L554xhv4DOf/55fw0C39nnROp6eoShIuzd8yGU+6Ng4CR
- Smj2pKXQBl/Q==
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; d="scan'208";a="477261186"
+ 01 Sep 2020 09:22:48 -0700
+IronPort-SDR: gcTlRKT+t0+rvRkfxBAWei22o/SzbXv5nOP8dVZo/EjJddN2szPdqqCp9FSoprZ/NDWg3R2Cc+
+ 9rMQ1DiNh4rw==
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; d="scan'208";a="477261208"
 Received: from tracimsx-mobl5.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.252.140.215])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Sep 2020 09:22:43 -0700
+ 01 Sep 2020 09:22:47 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/3] regmap: sdw: add required header files
-Date: Tue,  1 Sep 2020 11:22:23 -0500
-Message-Id: <20200901162225.33343-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 3/3] regmap: sdw: add support for SoundWire 1.2 MBQ
+Date: Tue,  1 Sep 2020 11:22:25 -0500
+Message-Id: <20200901162225.33343-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
 References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
@@ -76,8 +76,7 @@ Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de,
  gregkh@linuxfoundation.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "open list:REGISTER MAP ABSTRACTION" <linux-kernel@vger.kernel.org>,
- vkoul@kernel.org, broonie@kernel.org,
+ open list <linux-kernel@vger.kernel.org>, vkoul@kernel.org, broonie@kernel.org,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -95,31 +94,239 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Explicitly add header files used by regmap SoundWire support.
+The SoundWire 1.1 specification only allowed for reads and writes of
+bytes. The SoundWire 1.2 specification adds a new capability to
+transfer "Multi-Byte Quantities" (MBQ) across the bus. The transfers
+still happens one-byte-at-a-time, but the update is atomic.
 
-Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+For example when writing a 16-bit volume, the first byte transferred
+is only taken into account when the second byte is successfully
+transferred.
+
+The mechanism is symmetrical for read and writes:
+- On a read, the address of the last byte to be read is modified by
+setting the MBQ bit
+- On a write, the address of all but the last byte to be written are
+modified by setting the MBQ bit. The address for the last byte relies
+on the MBQ bit being cleared.
+
+The current definitions for MBQ-based controls in the SDCA draft
+standard are limited to 16 bits for volumes, so for now this is the
+only supported format. An update will be provided if and when support
+for 24-bit and 32-bit values is specified by the SDCA standard.
+
+One possible objection is that this code could have been handled with
+regmap-sdw.c. However this is a new spec addition not handled by every
+SoundWire 1.1 and non-SDCA device, so there's no reason to load code
+that will never be used.
+
+Also in practice it's extremely unlikely that CONFIG_REGMAP would not
+be selected with CONFIG_REGMAP_MBQ selected. However there's no
+functional dependency between the two modules so they can be selected
+separately.
+
 Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Acked-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/base/regmap/regmap-sdw.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/base/regmap/Kconfig          |   6 +-
+ drivers/base/regmap/Makefile         |   1 +
+ drivers/base/regmap/regmap-sdw-mbq.c | 101 +++++++++++++++++++++++++++
+ include/linux/regmap.h               |  21 ++++++
+ 4 files changed, 128 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/base/regmap/regmap-sdw-mbq.c
 
-diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
-index c92d614b4943..c83be26434e7 100644
---- a/drivers/base/regmap/regmap-sdw.c
-+++ b/drivers/base/regmap/regmap-sdw.c
-@@ -2,7 +2,9 @@
- // Copyright(c) 2015-17 Intel Corporation.
+diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
+index bcb90d8c3960..50b1e2d06a25 100644
+--- a/drivers/base/regmap/Kconfig
++++ b/drivers/base/regmap/Kconfig
+@@ -4,7 +4,7 @@
+ # subsystems should select the appropriate symbols.
  
- #include <linux/device.h>
+ config REGMAP
+-	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SOUNDWIRE || REGMAP_SCCB || REGMAP_I3C || REGMAP_SPI_AVMM)
++	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SOUNDWIRE || REGMAP_SOUNDWIRE_MBQ || REGMAP_SCCB || REGMAP_I3C || REGMAP_SPI_AVMM)
+ 	select IRQ_DOMAIN if REGMAP_IRQ
+ 	bool
+ 
+@@ -46,6 +46,10 @@ config REGMAP_SOUNDWIRE
+ 	tristate
+ 	depends on SOUNDWIRE
+ 
++config REGMAP_SOUNDWIRE_MBQ
++	tristate
++	depends on SOUNDWIRE
++
+ config REGMAP_SCCB
+ 	tristate
+ 	depends on I2C
+diff --git a/drivers/base/regmap/Makefile b/drivers/base/regmap/Makefile
+index ac1b69ee4051..33f63adb5b3d 100644
+--- a/drivers/base/regmap/Makefile
++++ b/drivers/base/regmap/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_REGMAP_MMIO) += regmap-mmio.o
+ obj-$(CONFIG_REGMAP_IRQ) += regmap-irq.o
+ obj-$(CONFIG_REGMAP_W1) += regmap-w1.o
+ obj-$(CONFIG_REGMAP_SOUNDWIRE) += regmap-sdw.o
++obj-$(CONFIG_REGMAP_SOUNDWIRE_MBQ) += regmap-sdw-mbq.o
+ obj-$(CONFIG_REGMAP_SCCB) += regmap-sccb.o
+ obj-$(CONFIG_REGMAP_I3C) += regmap-i3c.o
+ obj-$(CONFIG_REGMAP_SPI_AVMM) += regmap-spi-avmm.o
+diff --git a/drivers/base/regmap/regmap-sdw-mbq.c b/drivers/base/regmap/regmap-sdw-mbq.c
+new file mode 100644
+index 000000000000..8ce30650b97c
+--- /dev/null
++++ b/drivers/base/regmap/regmap-sdw-mbq.c
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright(c) 2020 Intel Corporation.
++
++#include <linux/device.h>
 +#include <linux/errno.h>
- #include <linux/module.h>
++#include <linux/module.h>
 +#include <linux/regmap.h>
- #include <linux/soundwire/sdw.h>
- #include "internal.h"
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_registers.h>
++#include "internal.h"
++
++static int regmap_sdw_mbq_write(void *context, unsigned int reg, unsigned int val)
++{
++	struct device *dev = context;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	int ret;
++
++	ret = sdw_write(slave, SDW_SDCA_MBQ_CTL(reg), (val >> 8) & 0xff);
++	if (ret < 0)
++		return ret;
++
++	return sdw_write(slave, reg, val & 0xff);
++}
++
++static int regmap_sdw_mbq_read(void *context, unsigned int reg, unsigned int *val)
++{
++	struct device *dev = context;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	int read0;
++	int read1;
++
++	read0 = sdw_read(slave, reg);
++	if (read0 < 0)
++		return read0;
++
++	read1 = sdw_read(slave, SDW_SDCA_MBQ_CTL(reg));
++	if (read1 < 0)
++		return read1;
++
++	*val = (read1 << 8) | read0;
++
++	return 0;
++}
++
++static struct regmap_bus regmap_sdw_mbq = {
++	.reg_read = regmap_sdw_mbq_read,
++	.reg_write = regmap_sdw_mbq_write,
++	.reg_format_endian_default = REGMAP_ENDIAN_LITTLE,
++	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
++};
++
++static int regmap_sdw_mbq_config_check(const struct regmap_config *config)
++{
++	/* MBQ-based controls are only 16-bits for now */
++	if (config->val_bits != 16)
++		return -ENOTSUPP;
++
++	/* Registers are 32 bits wide */
++	if (config->reg_bits != 32)
++		return -ENOTSUPP;
++
++	if (config->pad_bits != 0)
++		return -ENOTSUPP;
++
++	return 0;
++}
++
++struct regmap *__regmap_init_sdw_mbq(struct sdw_slave *sdw,
++				     const struct regmap_config *config,
++				     struct lock_class_key *lock_key,
++				     const char *lock_name)
++{
++	int ret;
++
++	ret = regmap_sdw_mbq_config_check(config);
++	if (ret)
++		return ERR_PTR(ret);
++
++	return __regmap_init(&sdw->dev, &regmap_sdw_mbq,
++			&sdw->dev, config, lock_key, lock_name);
++}
++EXPORT_SYMBOL_GPL(__regmap_init_sdw_mbq);
++
++struct regmap *__devm_regmap_init_sdw_mbq(struct sdw_slave *sdw,
++					  const struct regmap_config *config,
++					  struct lock_class_key *lock_key,
++					  const char *lock_name)
++{
++	int ret;
++
++	ret = regmap_sdw_mbq_config_check(config);
++	if (ret)
++		return ERR_PTR(ret);
++
++	return __devm_regmap_init(&sdw->dev, &regmap_sdw_mbq,
++			&sdw->dev, config, lock_key, lock_name);
++}
++EXPORT_SYMBOL_GPL(__devm_regmap_init_sdw_mbq);
++
++MODULE_DESCRIPTION("Regmap SoundWire MBQ Module");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index d865d8fea535..a031ace22b6b 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -567,6 +567,10 @@ struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
+ 				 const struct regmap_config *config,
+ 				 struct lock_class_key *lock_key,
+ 				 const char *lock_name);
++struct regmap *__regmap_init_sdw_mbq(struct sdw_slave *sdw,
++				     const struct regmap_config *config,
++				     struct lock_class_key *lock_key,
++				     const char *lock_name);
+ struct regmap *__regmap_init_spi_avmm(struct spi_device *spi,
+ 				      const struct regmap_config *config,
+ 				      struct lock_class_key *lock_key,
+@@ -616,6 +620,10 @@ struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
+ 				 const struct regmap_config *config,
+ 				 struct lock_class_key *lock_key,
+ 				 const char *lock_name);
++struct regmap *__devm_regmap_init_sdw_mbq(struct sdw_slave *sdw,
++					  const struct regmap_config *config,
++					  struct lock_class_key *lock_key,
++					  const char *lock_name);
+ struct regmap *__devm_regmap_init_slimbus(struct slim_device *slimbus,
+ 				 const struct regmap_config *config,
+ 				 struct lock_class_key *lock_key,
+@@ -814,6 +822,19 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
+ 	__regmap_lockdep_wrapper(__regmap_init_sdw, #config,		\
+ 				sdw, config)
  
++/**
++ * regmap_init_sdw_mbq() - Initialise register map
++ *
++ * @sdw: Device that will be interacted with
++ * @config: Configuration for register map
++ *
++ * The return value will be an ERR_PTR() on error or a valid pointer to
++ * a struct regmap.
++ */
++#define regmap_init_sdw_mbq(sdw, config)					\
++	__regmap_lockdep_wrapper(__regmap_init_sdw_mbq, #config,		\
++				sdw, config)
++
+ /**
+  * regmap_init_spi_avmm() - Initialize register map for Intel SPI Slave
+  * to AVMM Bus Bridge
 -- 
 2.25.1
 
