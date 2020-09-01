@@ -2,74 +2,109 @@ Return-Path: <SRS0=n5aI=CK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B84E2C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 14:54:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 379C8C433E7
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 14:54:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B693206EB
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 14:54:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0C2E206FA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 14:54:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lF+018O0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="g4S0BMe/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B693206EB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tidzPu5C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="wObSEMiI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="aKMifmu3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0C2E206FA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F24217BB;
-	Tue,  1 Sep 2020 16:53:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F24217BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A8CD17DB;
+	Tue,  1 Sep 2020 16:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A8CD17DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598972041;
-	bh=fCAv1y//4a6UC8MVETGKggnvPbFkFDYGouK55xIoJqo=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1598972053;
+	bh=5QgiJp1XQuU8WeasWKUrByXxrzK/9M/xvKJovjxtOSE=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lF+018O0UDEUwsjuUDAv0H3RKRZH0E0p8TPpiKUtR2vvfsWBUPJc10e2tsaC34fI9
-	 XCbn05LplVhH6d4W4jFkfQ5sgTb9SL5C9Olya6Mw9a61urkbMCFk6HPNTyRMODM4Tj
-	 EvgG3O2xepJHJ6v6NzQ7xtmLVM146MfsIuCfYYqg=
+	b=tidzPu5CSMEAddi1wX6tXscjwBgwDPAOXDUYZbdCHio52yIjL9pM1LXsvxN6QF/3u
+	 cQLbwOSrqW67TnLvrhHsLm224by/0nOnE6XPz08AiMBlpZtERh4+ToEgdASQ7+TkB4
+	 RenJnZ5hWZfI+fuQhPRRNQr4H5z6UCSSO6XLI2+A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F80FF802E1;
-	Tue,  1 Sep 2020 16:50:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AEDFF800BA;
+	Tue,  1 Sep 2020 16:53:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2870CF802E3; Tue,  1 Sep 2020 16:50:55 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C7124F80217; Tue,  1 Sep 2020 16:53:10 +0200 (CEST)
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com
+ [66.63.167.143])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE7E2F802E1
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 16:50:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE7E2F802E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68634F801EB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 16:52:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68634F801EB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="g4S0BMe/"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ dkim=pass (1024-bit key) header.d=hansenpartnership.com
+ header.i=@hansenpartnership.com header.b="wObSEMiI"; 
+ dkim=pass (1024-bit key) header.d=hansenpartnership.com
+ header.i=@hansenpartnership.com header.b="aKMifmu3"
+Received: from localhost (localhost [127.0.0.1])
+ by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2FA1E8EE112;
+ Tue,  1 Sep 2020 07:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+ s=20151216; t=1598971964;
+ bh=5QgiJp1XQuU8WeasWKUrByXxrzK/9M/xvKJovjxtOSE=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=wObSEMiIFiMQqpuLxaCfGj6fWwMB1SR5uR3WpqveV9O4eMPwCERYxZe+pGeu45B1s
+ Hh0lHOhPmaDzTL+z1MwoTQwce39LAcI0HTI6j6IhhJYI3h5nKO0TMp801H3LPYpAS2
+ cAlNurtUenHcZUudnTaoIqyV7yZakslR9e7UqKeA=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id 0Zy3Ukh5UkrA; Tue,  1 Sep 2020 07:52:44 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net
+ [73.35.198.56])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DB76A215A4;
- Tue,  1 Sep 2020 14:50:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598971851;
- bh=fCAv1y//4a6UC8MVETGKggnvPbFkFDYGouK55xIoJqo=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=g4S0BMe/r8cu4FMwk0ntbalQbZsJaQSAhjHnAiabD+OgG0sBV2KQVfFMq+FF0NDV6
- 054WFdeOA6VomWybTpZkwG0dvwGCXdVtM1injYU3jWjUld85qzz8zc93Q2UqHRzWLO
- XRYipEN0LwQx/gRIv6oBJ+2KgesA+KqvugcK5CEg=
-Date: Tue, 01 Sep 2020 15:50:11 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Douglas Anderson <dianders@chromium.org>
-In-Reply-To: <20200828162005.1.I4f67f494c4f759b0e5c7f487e040dfdcf16e0876@changeid>
-References: <20200828162005.1.I4f67f494c4f759b0e5c7f487e040dfdcf16e0876@changeid>
-Subject: Re: [PATCH] ASoC: rt5682: Prefer async probe
-Message-Id: <159897179515.47719.15361648860135990824.b4-ty@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, cychiang@chromium.org
+ by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id C9BD38EE0F5;
+ Tue,  1 Sep 2020 07:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+ s=20151216; t=1598971963;
+ bh=5QgiJp1XQuU8WeasWKUrByXxrzK/9M/xvKJovjxtOSE=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=aKMifmu3auQ6FWaycnVm58I6hz9G+D25US7ZBIQmKPWtl/OO3oAlisEasTKoEqxvs
+ l6ihGgc23PPx6Vjc2Wtc/36E47y53pW7IPIx5bd2ov50jG73PyojCzhwq4i11ZzTyB
+ Dg3UC/gKa12A9sw0Wl45QN34rTiyU/vUbrJxeAio=
+Message-ID: <1598971960.4238.5.camel@HansenPartnership.com>
+Subject: Re: [PATCH 07/28] 53c700: improve non-coherent DMA handling
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Christoph Hellwig <hch@lst.de>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>,  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Joonyoung Shim <jy0922.shim@samsung.com>, Seung-Woo Kim
+ <sw0312.kim@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Ben
+ Skeggs <bskeggs@redhat.com>, Pawel Osciak <pawel@osciak.com>, Marek
+ Szyprowski <m.szyprowski@samsung.com>, Matt Porter
+ <mporter@kernel.crashing.org>,  iommu@lists.linux-foundation.org
+Date: Tue, 01 Sep 2020 07:52:40 -0700
+In-Reply-To: <20200819065555.1802761-8-hch@lst.de>
+References: <20200819065555.1802761-1-hch@lst.de>
+ <20200819065555.1802761-8-hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Tom Lendacky <thomas.lendacky@amd.com>, alsa-devel@alsa-project.org,
+ linux-samsung-soc@vger.kernel.org, linux-ia64@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,36 +120,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 28 Aug 2020 16:20:27 -0700, Douglas Anderson wrote:
-> The probe of rt5682 is pretty slow.  A quick measurement shows that it
-> takes ~650 ms on at least one board.  There's no reason to block all
-> other drivers waiting for this probe to finish.  Set the flag to allow
-> other drivers to probe while we're probing.
+On Wed, 2020-08-19 at 08:55 +0200, Christoph Hellwig wrote:
+> Switch the 53c700 driver to only use non-coherent descriptor memory
+> if it really has to because dma_alloc_coherent fails.  This doesn't
+> matter for any of the platforms it runs on currently, but that will
+> change soon.
+> 
+> To help with this two new helpers to transfer ownership to and from
+> the device are added that abstract the syncing of the non-coherent
+> memory. The two current bidirectional cases are mapped to transfers
+> to the device, as that appears to what they are used for.  Note that
+> for parisc, which is the only architecture this driver needs to use
+> non-coherent memory on, the direction argument of dma_cache_sync is
+> ignored, so this will not change behavior in any way.
 
-Applied to
+I think this looks mostly OK, except for one misnamed parameter below. 
+Unfortunately, the last non-coherent parisc was the 700 series and I no
+longer own a box, so I can't test that part of it (I can fire up the
+C360 to test it on a coherent arch).
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+[...]
+> diff --git a/drivers/scsi/53c700.h b/drivers/scsi/53c700.h
+> index 05fe439b66afe5..0f545b05fe611d 100644
+> --- a/drivers/scsi/53c700.h
+> +++ b/drivers/scsi/53c700.h
+> @@ -209,6 +209,7 @@ struct NCR_700_Host_Parameters {
+>  #endif
+>  	__u32	chip710:1;	/* set if really a 710 not
+> 700 */
+>  	__u32	burst_length:4;	/* set to 0 to disable
+> 710 bursting */
+> +	__u32	noncoherent:1;	/* needs to use non-
+> coherent DMA */
+>  
+>  	/* NOTHING BELOW HERE NEEDS ALTERING */
+>  	__u32	fast:1;		/* if we can alter the
+> SCSI bus clock
+> @@ -429,7 +430,7 @@ struct NCR_700_Host_Parameters {
+>  	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32));
+> i++) { \
+>  		__u32 val =
+> bS_to_cpu((script)[A_##symbol##_used[i]]) + da; \
+>  		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
+> -		dma_cache_sync((dev),
+> &(script)[A_##symbol##_used[i]], 4, DMA_TO_DEVICE); \
+> +		dma_sync_to_dev((dev),
+> &(script)[A_##symbol##_used[i]], 4); \
+>  		DEBUG((" script, patching %s at %d to %pad\n", \
+>  		       #symbol, A_##symbol##_used[i], &da)); \
+>  	} \
+> @@ -441,7 +442,7 @@ struct NCR_700_Host_Parameters {
+>  	dma_addr_t da = value; \
+>  	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32));
+> i++) { \
+>  		(script)[A_##symbol##_used[i]] = bS_to_host(da); \
+> -		dma_cache_sync((dev),
+> &(script)[A_##symbol##_used[i]], 4, DMA_TO_DEVICE); \
+> +		dma_sync_to_dev((dev),
+> &(script)[A_##symbol##_used[i]], 4); \
+>  		DEBUG((" script, patching %s at %d to %pad\n", \
+>  		       #symbol, A_##symbol##_used[i], &da)); \
+>  	} \
+> @@ -456,7 +457,7 @@ struct NCR_700_Host_Parameters {
+>  		val &= 0xff00ffff; \
+>  		val |= ((value) & 0xff) << 16; \
+>  		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
+> -		dma_cache_sync((dev),
+> &(script)[A_##symbol##_used[i]], 4, DMA_TO_DEVICE); \
+> +		dma_sync_to_dev((dev),
+> &(script)[A_##symbol##_used[i]], 4); \
+>  		DEBUG((" script, patching ID field %s at %d to
+> 0x%x\n", \
+>  		       #symbol, A_##symbol##_used[i], val)); \
+>  	} \
+> @@ -470,7 +471,7 @@ struct NCR_700_Host_Parameters {
+>  		val &= 0xffff0000; \
+>  		val |= ((value) & 0xffff); \
+>  		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
+> -		dma_cache_sync((dev),
+> &(script)[A_##symbol##_used[i]], 4, DMA_TO_DEVICE); \
+> +		dma_sync_to_dev((dev),
+> &(script)[A_##symbol##_used[i]], 4); \
+>  		DEBUG((" script, patching short field %s at %d to
+> 0x%x\n", \
+>  		       #symbol, A_##symbol##_used[i], val)); \
+>  	} \
 
-Thanks!
+These macro arguments need updating.  Since you changed the input from
+hostdata->dev to hostdata, leaving the macro argument as dev is simply
+misleading.  It needs to become hostdata or h.
 
-[1/1] ASoC: rt5682: Prefer async probe
-      commit: 160c174ff6972bb56bf48ac3335297889839e1f1
+James
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
