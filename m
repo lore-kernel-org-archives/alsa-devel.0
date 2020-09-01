@@ -2,143 +2,78 @@ Return-Path: <SRS0=n5aI=CK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46F59C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 10:31:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ACB7C433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 11:03:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4E872083B
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 10:31:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1B12207BC
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 11:03:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l/Q+s0BU";
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="XAzAG68L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4E872083B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ibjxuSQ+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QFCek2P9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1B12207BC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF28E17AF;
-	Tue,  1 Sep 2020 12:30:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF28E17AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10F431778;
+	Tue,  1 Sep 2020 13:03:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10F431778
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598956269;
-	bh=RyyRksn/l0L3ABmBhXELIMi8M4rndskNe9jtbeEByNk=;
-	h=Subject:To:From:Date:In-Reply-To:References:List-Id:
+	s=default; t=1598958235;
+	bh=QCYSdtAYLN+f++6XyOMvY/CKpRVLzqQUReDYKl7Tmk0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l/Q+s0BUsYQNfg5KagUzQ2ZJ59gayOqNGfO01HAkoIluhcY9Luz6ADNo34ueKvHOS
-	 70YgWCIZHtKiKbZoOGY2Jr8HbxrBkDJ2xDpjGjZE4PeJF4jwzaQDjj4NuH72d523v+
-	 rDbwe1hsOKkWfXnnzCes+7UC5BR5OCZX3e9Uj/xw=
+	b=ibjxuSQ+4zLGY4wZkUIfiOPQXK8CPw3KTyIVI+PreZnWGJaBBuyczec2dmoYA0Q0N
+	 sFtO0YwJ9y3ckX4O2bNfRCuiSmIKhxr9H9MysXhiHyK9XQVRTgW9S7GNsmKhROlW/0
+	 Ect5w8ddpBYO2XbHa6jrzALzCepAMOCeTwyRABgI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 280B1F80217;
-	Tue,  1 Sep 2020 12:30:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A62E2F8020D;
+	Tue,  1 Sep 2020 13:03:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C73FF80278; Tue,  1 Sep 2020 12:30:15 +0200 (CEST)
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
- [210.118.77.11])
+ id 57D32F80217; Tue,  1 Sep 2020 13:03:01 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C68CCF801EB
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 12:30:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C68CCF801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E15CF801DA
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 13:02:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E15CF801DA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="XAzAG68L"
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
- by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id
- 20200901103006euoutp01da7ab5fdbaf29578e2fc717084c1ba3d~wojLC3_Ja1005210052euoutp01w
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 10:30:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com
- 20200901103006euoutp01da7ab5fdbaf29578e2fc717084c1ba3d~wojLC3_Ja1005210052euoutp01w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1598956206;
- bh=wt/lfrYvi6NYE+rsChJGWO7vqFppDLQ0HZIW/Allo4E=;
- h=Subject:To:From:Date:In-Reply-To:References:From;
- b=XAzAG68LmG1G0IJVDdTTsUkMGGc9poz+j6ErBgtpJGYCssSn9jZpvy1j0athjoEGj
- 2KDHDNqYY4IVBWcqZwv5yGXzbrJa4B6R5yjL76fo7qNnwwFeijvy1e6lR8/KartGy3
- Fll7KzoIuarg+EeEgYz6gm8ISEhO66heWaCLvI6E=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
- eucas1p1.samsung.com (KnoxPortal) with ESMTP id
- 20200901103006eucas1p129f50fc9ee5c81d9bf33b83d202c66f3~wojKySMEl2238822388eucas1p1a;
- Tue,  1 Sep 2020 10:30:06 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
- eusmges2new.samsung.com (EUCPMTA) with SMTP id 2F.11.05997.EA22E4F5; Tue,  1
- Sep 2020 11:30:06 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
- eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
- 20200901103005eucas1p1c28f849d841ec56d87459314fae85654~wojKU4q1B2243422434eucas1p1Y;
- Tue,  1 Sep 2020 10:30:05 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
- eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20200901103005eusmtrp1c0efa6dcd6cc9fcbbfd87099073d25c9~wojKUGJJA1923319233eusmtrp1Z;
- Tue,  1 Sep 2020 10:30:05 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-d6-5f4e22ae50b7
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
- eusmgms2.samsung.com (EUCPMTA) with SMTP id 38.68.06017.DA22E4F5; Tue,  1
- Sep 2020 11:30:05 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
- eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
- 20200901103004eusmtip1cd15b079b2a68327794223d5d080e177~wojJEvRQA0142501425eusmtip1Q;
- Tue,  1 Sep 2020 10:30:04 +0000 (GMT)
-Subject: Re: [PATCH 1/2] dt-bindings: sound: midas-audio: Correct parsing
- sound-dai phandles
-To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim
- <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <7a30c1c3-d243-9952-4f13-d26380f31bcc@samsung.com>
-Date: Tue, 1 Sep 2020 12:30:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="QFCek2P9"
+Received: from localhost (unknown [122.172.190.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 39CA6206EF;
+ Tue,  1 Sep 2020 11:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1598958174;
+ bh=QCYSdtAYLN+f++6XyOMvY/CKpRVLzqQUReDYKl7Tmk0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QFCek2P99Re/uJ+lbJOk+hM/WTo83VuQDJl5MTmEiSpeXuOMZHVVAFJLw4Qt1XJiJ
+ 8+Wb77oxTGWzZ7wN5uNn3ob2xbEdF+8vDxWmwEqr5N1tWHkdaDYZkepuJf2b8OICc3
+ Yu8TDwfe2ld3easguiL64mePN/51/9jhV1b5ueno=
+Date: Tue, 1 Sep 2020 16:32:44 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: trix@redhat.com
+Subject: Re: [PATCH] soundwire: fix error handling
+Message-ID: <20200901110244.GZ2639@vkoul-mobl>
+References: <20200829153515.3840-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200830112633.6732-1-krzk@kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sb0hTcRT1997b23M0eW6GF4uioR8U0kyDF4VUFO1DiFGBWWlTHyq5qZta
- BoVo5VIzSUV8jZQi0iVmyz/TdMQ0l00npv3TTMuhqEiGw7Ay8/kW+e2cc8/hnguXwmWNIj8q
- RZPJajWqVAUpIVp6lh07GxSRcbsK6uTM8KAVYyq+OEmmutshYgYGGsXM0rAeY4baDSRzvbNb
- zAzWurADlLJxMY9UtnFjYqXJeJNUljQZkXLRtC1KFCPZn8impmSz2pCI85LkhndmMr2IuNRr
- 1RO5qAMvRJ4U0OFQoH+FFSIJJaNrEbjynxECcSFY4PrdZBHBg9pr5L/I1OCYO/IIwdI9PRLI
- dwSWhnGMd8npWBiv6Fof+NDlGNh760X8gKRD4dbLEsRjKR0BnU6O4DFB+8Ocs3o9vHkt3Gx7
- iwkeb+itcq55KMpzbfVyUxAv47QvjLjtOL0dWucNOL8L6AYxlE8vi4Sqh+FH2Qs3lsOsrUks
- 4K1gLysmhEA+guLno2KBlCIYt9UgwbUPPjl+kvxmnA6EJ+0hgnwQTLmvcV4G2gs+zHsLJbzg
- TkulW5aC/oZMcPvDL2MlJmA/KHKuEoJFCX2TKaVoB7fhSG7DZdyGy7j/FWoQYUS+bJZOncTq
- dmvYi8E6lVqXpUkKTkhTm9DaH9n/2Fxm1P473opoCik2SaNcx+JkIlW2LkdtRUDhCh/poX57
- rEyaqMq5zGrT4rRZqazOirZQhMJXGnZ/5pyMTlJlshdYNp3V/ptilKdfLrqdXbuiPRv7NVJ+
- pSIhQML0vPE3nGgLt5TNvt/TaulSH+k73unxEe4OL8RzRweMHrK9eSLZinbSPBco98mY9s4Y
- dUhcoXWPJ4IMYU9XP2ND0S0W7upSVfXEqT5D8pmqicIp20zHt9mTAc1JsacfmtHMYjSJV9Yo
- 6kdifEPS4xSELlkVGoRrdaq/9mXi00MDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsVy+t/xu7prlfziDW7cNbC4cvEQk8XUh0/Y
- LOYfOcdqcf78BnaLb1c6mCwu75rDZtG69wi7xcUVX5gcODw2fG5i89g56y67x6ZVnWwefVtW
- MXp83iQXwBqlZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwea2VkqqRvZ5OSmpNZllqk
- b5egl7Hu2g62gm6WipOHOlgaGPcwdzFyckgImEg8u3iXCcQWEljKKNF0orSLkQMoLiUxv0UJ
- okRY4s+1LrYuRi6gkveMEl/ufgSrFxaIk7g/9TAjSEJEYAqTxK1vT9khqtoZJZb8nc8CUsUm
- YCjRe7SPEcTmFbCT2PtkFlicRUBF4vWT+WCTRIEmPe79zwxRIyhxcuYTFpArOIGu+7lFCyTM
- LKAu8WfeJWYIW1ziFlQrs4C8xPa3c5gnMArOQtI9C0nLLCQts5C0LGBkWcUoklpanJueW2yk
- V5yYW1yal66XnJ+7iREYZduO/dyyg7HrXfAhRgEORiUe3oAvPvFCrIllxZW5hxglOJiVRHid
- zp6OE+JNSaysSi3Kjy8qzUktPsRoCvTbRGYp0eR8YALIK4k3NDU0t7A0NDc2NzazUBLn7RA4
- GCMkkJ5YkpqdmlqQWgTTx8TBKdXAqHVeTKXlSDVbWnfDrRNiB5Qm3l604VTjLGOus7Fbqh7t
- fD/hFc8jgb1HLSQ6fDYmPvMWC3+gEXORccYj02op3b2GOwrfHxNaWq726GLMmhqJH5P3XFCu
- WXxSu7dZi2tGQMXttw8TTAM/v1ay2qCeuKKjoc9B/AmX94bWpGrOzLYzW4SFjr4RV2Ipzkg0
- 1GIuKk4EAKc7/27IAgAA
-X-CMS-MailID: 20200901103005eucas1p1c28f849d841ec56d87459314fae85654
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200830112644eucas1p284d918eef5dcc6039ca27d8f52be89ab
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200830112644eucas1p284d918eef5dcc6039ca27d8f52be89ab
-References: <CGME20200830112644eucas1p284d918eef5dcc6039ca27d8f52be89ab@eucas1p2.samsung.com>
- <20200830112633.6732-1-krzk@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829153515.3840-1-trix@redhat.com>
+Cc: alsa-devel@alsa-project.org, ndesaulniers@google.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ shreyas.nc@intel.com, natechancellor@gmail.com,
+ yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -154,14 +89,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 30.08.2020 13:26, Krzysztof Kozlowski wrote:
-> The "sound-dai" property has cells therefore phandle-array should be
-> used, even if it is just one phandle.  This fixes dtbs_check warnings
-> like:
-> 
->   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0:1: missing phandle tag in 0
->   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0: [158, 0] is too long
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Hello Tom,
 
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+On 29-08-20, 08:35, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis flags this problem
+> 
+> stream.c:844:9: warning: Use of memory after
+>   it is freed
+>         kfree(bus->defer_msg.msg->buf);
+>               ^~~~~~~~~~~~~~~~~~~~~~~
+> 
+> This happens in an error handler cleaning up memory
+> allocated for elements in a list.
+> 
+> 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> 		bus = m_rt->bus;
+> 
+> 		kfree(bus->defer_msg.msg->buf);
+> 		kfree(bus->defer_msg.msg);
+> 	}
+> 
+> And is triggered when the call to sdw_bank_switch() fails.
+> There are a two problems.
+> 
+> First, when sdw_bank_switch() fails, though it frees memory it
+> does not clear bus's reference 'defer_msg.msg' to that memory.
+> 
+> The second problem is the freeing msg->buf. In some cases
+> msg will be NULL so this will dereference a null pointer.
+> Need to check before freeing.
+
+The change looks good to me, but the title of patch should be revised.
+
+The patch subject should describe the patch, in this case is setting
+pointer to null on cleanup, so an appropriate subject may be"
+"[PATCH]: soundwire: set defer_msg to null".
+
+Please revise subject line and update including the ack/reviews
+received
+
+Thanks
+> 
+> Fixes: 99b8a5d608a6 ("soundwire: Add bank switch routine")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/soundwire/stream.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index 37290a799023..6e36deb505b1 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -717,6 +717,7 @@ static int sdw_bank_switch(struct sdw_bus *bus, int m_rt_count)
+>  	kfree(wbuf);
+>  error_1:
+>  	kfree(wr_msg);
+> +	bus->defer_msg.msg = NULL;
+>  	return ret;
+>  }
+>  
+> @@ -840,9 +841,10 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+>  error:
+>  	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+>  		bus = m_rt->bus;
+> -
+> -		kfree(bus->defer_msg.msg->buf);
+> -		kfree(bus->defer_msg.msg);
+> +		if (bus->defer_msg.msg) {
+> +			kfree(bus->defer_msg.msg->buf);
+> +			kfree(bus->defer_msg.msg);
+> +		}
+>  	}
+>  
+>  msg_unlock:
+> -- 
+> 2.18.1
+
+-- 
+~Vinod
