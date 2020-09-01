@@ -2,70 +2,83 @@ Return-Path: <SRS0=n5aI=CK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC40C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 12:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3775BC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 12:52:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D692220767
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 12:21:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA3BE206EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 12:52:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cSb+adck"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D692220767
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RgB6VXrn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="fjFhV/eA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA3BE206EF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FBB41735;
-	Tue,  1 Sep 2020 14:21:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FBB41735
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2902A178D;
+	Tue,  1 Sep 2020 14:51:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2902A178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598962911;
-	bh=um4KNaykb3CjppXKX93Ka6+INA8ahEi1bSpRT5qXD5Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cSb+adckv1FIVI4I8Bzv5i9bqdx5W18nR1o9NkJLpkWcwDuK/K4r3zH6FzrHh3pWX
-	 Dt/uTiwVQ0GJhLTzYanc4dxZasLf6flnF7HmjUECD1+hN3qo5pq1/8bO/YuGviiYSv
-	 m3gjmjDAoHOunkcTdi0es2McO0lxy+um8Es+vwd0=
+	s=default; t=1598964752;
+	bh=48Ub5qPil6gZr1C/SLrc9fTujaGq8V4DdOcl9rGCBFc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RgB6VXrniP1WA67b8rScuaNZ/HxNQZ62v7CVJivaK1e/xM87nVG+ZI5Nh06p1jya7
+	 y/SPS18lncb0Q8VAsKZMeQyyq8Wmyw3Sjx4A8MJUpNDJE1BbSq8jDqGRQ5cJmi1M7G
+	 laNlMWnfP0VvcsOj30akNohZN+1iEk+MqxbAdy6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 247E6F8020D;
-	Tue,  1 Sep 2020 14:21:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B28DCF801EB;
+	Tue,  1 Sep 2020 14:51:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E85EFF80217; Tue,  1 Sep 2020 14:20:59 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2D6AEF80217; Tue,  1 Sep 2020 14:51:40 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C560AF800BA
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 14:20:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C560AF800BA
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 07425AEF8;
- Tue,  1 Sep 2020 12:20:53 +0000 (UTC)
-Date: Tue, 01 Sep 2020 14:20:52 +0200
-Message-ID: <s5hh7sheli3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: WARNING in snd_pcm_plugin_build_mulaw
-In-Reply-To: <CAOMZO5Cw919kMk2t2SwTpGkij+r3L3sBhWEuAgMVooPbrnQ6rg@mail.gmail.com>
-References: <000000000000971bc005ae3db23d@google.com>
- <CAOMZO5Cw919kMk2t2SwTpGkij+r3L3sBhWEuAgMVooPbrnQ6rg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>, syzkaller-bugs@googlegroups.com,
- linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- syzbot <syzbot+23b22dc2e0b81cbfcc95@syzkaller.appspotmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E736F801EB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 14:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E736F801EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="fjFhV/eA"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; l=995; q=dns/txt; s=axis-central1;
+ t=1598964695; x=1630500695;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=bZ/H5Fs/QMbb9e+PlCCs4RRk8UF5csgy4VmwPELJui4=;
+ b=fjFhV/eANRPw62eZ7sxb34UXc7rIBbuDuxeMDk/1OcTyFeMTTyy9JEe8
+ pndWjVnQQVYgl79j9mBk98KJUHe+3LEY4LV+MSO0HQ/uVEDG5aYiLz9IL
+ w9JbWLJIawv/vFG/23igrsExb82R4L7cq1OpjZiKoVmsVCx5EG9jvT5mT
+ YDY7stmKUe5ddbCB8orFLo+KY51TrfzJD+F6IOFHg4SkTodxXyIslz6JM
+ LZ5p549EFSJSZ5ZImdGkdt1UUWGx4dNImocBd3lGS76yRNfSWdzbA1ccx
+ DYewGMwAk7FTibwSDRzR/SUKCDBoaaHv+ibVcp5FOzCwfl5jHt0lGj3iG Q==;
+IronPort-SDR: gzHzlcmCoOgPoBKEljhCVaeIS9elkzWwIBKSsDR/9WI5kwrKUMgd6HhCVlab82xpz/0rYuKNbt
+ XpylXJpQ0UDBcx2N2o8ygWoWviWgQzyYD5NvaN7qgWri1aWcDPHNf9Gx0W1VtUoRRtNR7F7QUw
+ YGgbkjXETCHMybezzxJ13U8h3l5j8cr5HfaQTNapkBL9E1DDR9o9cmB6B/otRSellwxM4ijL3b
+ R3MNdr8kYCBAvyzqsg7hVLf3FBFge2rULdnuSpzxYNDeDi/aQwHCxRHbee1NriFWVqTOy4rldP
+ K7A=
+X-IronPort-AV: E=Sophos;i="5.76,379,1592863200"; d="scan'208";a="12434794"
+From: Camel Guo <camel.guo@axis.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <dmurphy@ti.com>
+Subject: [PATCH v2] ASoC: tlv320adcx140: Fix accessing uninitialized
+ adcx140->dev
+Date: Tue, 1 Sep 2020 14:51:22 +0200
+Message-ID: <20200901125123.25886-1-camel.guo@axis.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Cc: Camel Guo <camel.guo@axis.com>, alsa-devel@alsa-project.org,
+ kernel@axis.com, linux-kernel@vger.kernel.org, Camel Guo <camelg@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,48 +94,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 01 Sep 2020 14:16:24 +0200,
-Fabio Estevam wrote:
-> 
-> On Tue, Sep 1, 2020 at 7:08 AM syzbot
-> <syzbot+23b22dc2e0b81cbfcc95@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    15bc20c6 Merge tag 'tty-5.9-rc3' of git://git.kernel.org/p..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1268efb1900000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=23b22dc2e0b81cbfcc95
-> > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a95f41900000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a452f2900000
-> >
-> > The issue was bisected to:
-> >
-> > commit f3ca3f5b0966cfc2737178cca8a7a65b09991898
-> > Author: Fabio Estevam <festevam@gmail.com>
-> > Date:   Fri Mar 27 15:57:21 2020 +0000
-> >
-> >     dt-bindings: sound: cs42l51: Remove unneeded I2C unit name
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15395f41900000
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=17395f41900000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=13395f41900000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+23b22dc2e0b81cbfcc95@syzkaller.appspotmail.com
-> > Fixes: f3ca3f5b0966 ("dt-bindings: sound: cs42l51: Remove unneeded I2C unit name")
-> 
-> The conclusion that this commit caused the problem is strange, since
-> this commit is just a yaml documentation fix.
+From: Camel Guo <camelg@axis.com>
 
-The bisection result must be bogus.  And the issue here is harmless,
-merely a superfluous WARN_ON().  I'll work on it later.
+In adcx140_i2c_probe, adcx140->dev is accessed before its
+initialization. This commit fixes this bug.
 
+Signed-off-by: Camel Guo <camel.guo@axis.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-thanks,
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 5cd50d841177..7ae6ec374be3 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -980,6 +980,8 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+ 	if (!adcx140)
+ 		return -ENOMEM;
+ 
++	adcx140->dev = &i2c->dev;
++
+ 	adcx140->gpio_reset = devm_gpiod_get_optional(adcx140->dev,
+ 						      "reset", GPIOD_OUT_LOW);
+ 	if (IS_ERR(adcx140->gpio_reset))
+@@ -1007,7 +1009,7 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+ 			ret);
+ 		return ret;
+ 	}
+-	adcx140->dev = &i2c->dev;
++
+ 	i2c_set_clientdata(i2c, adcx140);
+ 
+ 	return devm_snd_soc_register_component(&i2c->dev,
+-- 
+2.20.1
 
-Takashi
