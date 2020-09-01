@@ -2,68 +2,82 @@ Return-Path: <SRS0=n5aI=CK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2328EC433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 11:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5DA3C433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 11:09:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E0F420BED
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 11:08:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47C7620BED
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Sep 2020 11:09:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NpZUTZ9F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E0F420BED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GG1Xvyn/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZRA07ah7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47C7620BED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3ECD179B;
-	Tue,  1 Sep 2020 13:07:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3ECD179B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB9C4178C;
+	Tue,  1 Sep 2020 13:08:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB9C4178C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1598958499;
-	bh=P7k+rcBxqQGNmNIJu1orEyN8ZTq5PwWIvbnFd5w3l18=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NpZUTZ9FUsmQoHQ4rKrUT+bEkB6XdPDXVhlGRE01NwtOL45n36vhVt7OXpuPJr6QG
-	 3207t1+xK7/UFrUKK8knegqeXVNDc6uRlRfFZlU5PQc89AOdMcJbMTcLkaeEE7FzKi
-	 mfsesM9fE23vnF99vY09clTA0+ZkuucSSWeNWzF4=
+	s=default; t=1598958546;
+	bh=T0xnxr/y4YBmhu4WiqlJbSgMNsEzKd25ycCTi2mkHEc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GG1Xvyn//MoJSjJYzd6Iplg4IrMqMeg6k8icyhDBNUgucY01/am9WaTX1pICmJkWX
+	 0woZWMoZUuGxVZoD0/PU5QveeDlCYnBMRi95GYhIkKV1ofVBOTSUuXYFxjam+WIQVj
+	 xvZi0oJBRr4q4+F92MuJNTPRdLHIa0PD2pJ4S/NQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6347FF801DA;
-	Tue,  1 Sep 2020 13:07:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64CEEF8021D;
+	Tue,  1 Sep 2020 13:07:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D56F8F80278; Tue,  1 Sep 2020 13:07:26 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id ECEECF8020D; Tue,  1 Sep 2020 13:07:34 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B0A4F8020D
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 13:07:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B0A4F8020D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ZRA07ah7"
+Received: from localhost (unknown [122.172.190.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45D84F8021D
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2020 13:07:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45D84F8021D
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6EEEF1A006E;
- Tue,  1 Sep 2020 13:07:11 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BF7B11A004F;
- Tue,  1 Sep 2020 13:07:06 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id F32454024E;
- Tue,  1 Sep 2020 13:07:00 +0200 (CEST)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com
-Subject: [PATCH] ASoC: fsl_sai: Support multiple data channel enable bits
-Date: Tue,  1 Sep 2020 19:01:08 +0800
-Message-Id: <1598958068-10552-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by mail.kernel.org (Postfix) with ESMTPSA id 4B7DF207BC;
+ Tue,  1 Sep 2020 11:07:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1598958441;
+ bh=T0xnxr/y4YBmhu4WiqlJbSgMNsEzKd25ycCTi2mkHEc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ZRA07ah7oA3Z+zd0ktM3bt0M5XKPWhxnpzJMQOHXOduHfaZN28YoDJGPUnBzi0E+v
+ AyngVMf5h4GNdW6sl4hTtnb9k26Bv4i5HriLMbiLPB4WHVW5SDO2Xoz+D4zXbciTUW
+ Kso17d+9HqbCZur7G+ClfcGC078yftNnkzmVjEEk=
+Date: Tue, 1 Sep 2020 16:37:16 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
+ clock-stop invalid configs
+Message-ID: <20200901110716.GA2639@vkoul-mobl>
+References: <20200829110047.GC2639@vkoul-mobl>
+ <051afb2d-dd2e-0ea4-d8a9-980f5df136b7@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <051afb2d-dd2e-0ea4-d8a9-980f5df136b7@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,127 +93,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-One data channel is one data line. From imx7ulp, the SAI IP is
-enhanced to support multiple data channels.
+On 31-08-20, 10:15, Pierre-Louis Bossart wrote:
+> 
+> > > > > > > Detect cases where the clock is assumed to be stopped but the IP is
+> > > > > > > not in the relevant state, and add a dynamic debug trace.
+> > > > > > 
+> > > > > > you meant a debug print..and it looks like error print below (also in title).
+> > > > > 
+> > > > > I don't understand the comment. Is the 'trace' confusing and are you asking
+> > > > > to e.g. change the commit message to 'add dynamic debug log'?
+> > > > 
+> > > > Question is what is dynamic about this?
+> > > dev_dbg() is part of the kernel dynamic debug capability...
+> > > 
+> > > https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html
+> > > 
+> > > Not sure what you are asking here?
+> > 
+> > :-| where is dev_dbg() ?
+> > 
+> > See [1]
+> 
+> > 
+> > [1]
+> > 
+> > > +			dev_err(dev, "%s invalid configuration, clock was not stopped", __func__);
+> > 
+> >                          ^^^^^^^
+> 
+> it's still a log using the "dynamic debug" framework.
+> 
+> Again, what are you asking us to fix?
 
-If there is only two channels input and slots is 2, then enable one
-data channel is enough for data transfer. So enable the TCE/RCE and
-transmit/receive mask register according to the input channels and
-slots configuration.
+Ah you are really testing my patience!
 
-Move the data channel enablement from startup() to hw_params().
+The title says "dynamic debug" and then you use a dev_err which is *not*
+part of dynamic debug as it is printed always and cannot be dynamically
+enabled and disabled!
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 30 ++++++++++++------------------
- sound/soc/fsl/fsl_sai.h |  2 +-
- 2 files changed, 13 insertions(+), 19 deletions(-)
+See Documentation/admin-guide/dynamic-debug-howto.rst:
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 62c5fdb678fc..38c7bcbb361d 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -443,6 +443,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	u32 slots = (channels == 1) ? 2 : channels;
- 	u32 slot_width = word_width;
- 	int adir = tx ? RX : TX;
-+	u32 pins;
- 	int ret;
- 
- 	if (sai->slots)
-@@ -451,6 +452,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	if (sai->slot_width)
- 		slot_width = sai->slot_width;
- 
-+	pins = DIV_ROUND_UP(channels, slots);
-+
- 	if (!sai->is_slave_mode) {
- 		if (sai->bclk_ratio)
- 			ret = fsl_sai_set_bclk(cpu_dai, tx,
-@@ -501,13 +504,17 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 				   FSL_SAI_CR5_FBT_MASK, val_cr5);
- 	}
- 
-+	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
-+			   FSL_SAI_CR3_TRCE_MASK,
-+			   FSL_SAI_CR3_TRCE((1 << pins) - 1));
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
- 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
- 			   val_cr4);
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx, ofs),
- 			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
- 			   FSL_SAI_CR5_FBT_MASK, val_cr5);
--	regmap_write(sai->regmap, FSL_SAI_xMR(tx), ~0UL - ((1 << channels) - 1));
-+	regmap_write(sai->regmap, FSL_SAI_xMR(tx),
-+		     ~0UL - ((1 << min(channels, slots)) - 1));
- 
- 	return 0;
- }
-@@ -517,6 +524,10 @@ static int fsl_sai_hw_free(struct snd_pcm_substream *substream,
- {
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	unsigned int ofs = sai->soc_data->reg_offset;
-+
-+	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
-+			   FSL_SAI_CR3_TRCE_MASK, 0);
- 
- 	if (!sai->is_slave_mode &&
- 			sai->mclk_streams & BIT(substream->stream)) {
-@@ -651,14 +662,9 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
--	unsigned int ofs = sai->soc_data->reg_offset;
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	int ret;
- 
--	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
--			   FSL_SAI_CR3_TRCE_MASK,
--			   FSL_SAI_CR3_TRCE);
--
- 	/*
- 	 * EDMA controller needs period size to be a multiple of
- 	 * tx/rx maxburst
-@@ -675,17 +681,6 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *cpu_dai)
--{
--	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
--	unsigned int ofs = sai->soc_data->reg_offset;
--	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
--
--	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
--			   FSL_SAI_CR3_TRCE_MASK, 0);
--}
--
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
- 	.set_bclk_ratio	= fsl_sai_set_dai_bclk_ratio,
- 	.set_sysclk	= fsl_sai_set_dai_sysclk,
-@@ -695,7 +690,6 @@ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
- 	.hw_free	= fsl_sai_hw_free,
- 	.trigger	= fsl_sai_trigger,
- 	.startup	= fsl_sai_startup,
--	.shutdown	= fsl_sai_shutdown,
- };
- 
- static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 6aba7d28f5f3..5f630be74853 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -109,7 +109,7 @@
- #define FSL_SAI_CR2_DIV_MASK	0xff
- 
- /* SAI Transmit and Receive Configuration 3 Register */
--#define FSL_SAI_CR3_TRCE	BIT(16)
-+#define FSL_SAI_CR3_TRCE(x)     ((x) << 16)
- #define FSL_SAI_CR3_TRCE_MASK	GENMASK(23, 16)
- #define FSL_SAI_CR3_WDFL(x)	(x)
- #define FSL_SAI_CR3_WDFL_MASK	0x1f
+"Dynamic debug is designed to allow you to dynamically enable/disable
+kernel code to obtain additional kernel information.  Currently, if
+``CONFIG_DYNAMIC_DEBUG`` is set, then all ``pr_debug()``/``dev_dbg()`` and
+``print_hex_dump_debug()``/``print_hex_dump_bytes()`` calls can be dynamically
+enabled per-callsite."
+
+No dev_err here!
+
 -- 
-2.27.0
-
+~Vinod
