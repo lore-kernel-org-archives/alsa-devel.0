@@ -2,60 +2,61 @@ Return-Path: <SRS0=rI3+=CL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 203CDC433E7
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:34:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D5A3C433E7
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:34:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 885222083B
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:34:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA4662083B
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:34:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pJ6SgWP2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 885222083B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eyjHWHBt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA4662083B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 032FC16C0;
-	Wed,  2 Sep 2020 19:33:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 032FC16C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46FCC1868;
+	Wed,  2 Sep 2020 19:33:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46FCC1868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599068040;
-	bh=gIOJKKYC0y1pf0cQPJ8wWZn0Qi5B/twGLr+vW4NRqfw=;
+	s=default; t=1599068065;
+	bh=v0QtplADo9BL9iFnJ25px1zVJEmrqGAyeVHl9NKiS6w=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pJ6SgWP2LrIcbdaeK1XF0D//RZtmm4GkGx7WGtcf+RlVSgYOXI4R4xAgVGrVYAw4y
-	 dus5RdVpIvRQF0Y6FMNH4cowcisVbjSe4bAwfWNwJ7lD75Zd8J3IbJSfLRdXyotvi0
-	 uDO7w+UtATxgo0HS9GAZxC1DfWoXHu7rVsAqyfY4=
+	b=eyjHWHBt0yo+DbJ7rOXfag/GILlNELYs5XWVPYRD2t7h31yewjV29kXC48Ysn0NbR
+	 xXxpvGhODeQa4vvjFOLlVw9bq4Kh9IDDZWmnF8ITUjp9GeYw3vUUovKP+gEpTTQpVg
+	 Zi5yu3YCB5PIEXQUlhOAy+fVb7sJwBYLo4ZafIJ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E665F802BC;
-	Wed,  2 Sep 2020 19:32:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56681F802D2;
+	Wed,  2 Sep 2020 19:32:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BAE2F802C4; Wed,  2 Sep 2020 19:32:34 +0200 (CEST)
+ id 6B5C2F802DB; Wed,  2 Sep 2020 19:32:48 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB39FF802BC
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 19:32:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB39FF802BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8EB2FF802D2
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 19:32:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EB2FF802D2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6C9E1AFB2;
- Wed,  2 Sep 2020 17:32:29 +0000 (UTC)
-Date: Wed, 02 Sep 2020 19:32:28 +0200
-Message-ID: <s5hlfhs84pf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 4F686AFB2;
+ Wed,  2 Sep 2020 17:32:43 +0000 (UTC)
+Date: Wed, 02 Sep 2020 19:32:42 +0200
+Message-ID: <s5hk0xc84p1.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: add dev_dbg log when driver is not selected
-In-Reply-To: <20200902154239.1440537-1-kai.vehmanen@linux.intel.com>
-References: <20200902154239.1440537-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: use consistent HDAudio spelling in
+ comments/docs
+In-Reply-To: <20200902154250.1440585-1-kai.vehmanen@linux.intel.com>
+References: <20200902154250.1440585-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -79,21 +80,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 02 Sep 2020 17:42:39 +0200,
+On Wed, 02 Sep 2020 17:42:50 +0200,
 Kai Vehmanen wrote:
 > 
 > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> On SKL+ Intel platforms, the driver selection is handled by the
-> snd_intel_dspcfg, and when the HDaudio legacy driver is not selected,
-> be it with the auto-selection or user preferences with a kernel
-> parameter, the probe aborts with no logs, only a -ENODEV return value.
+> We use HDaudio and HDAudio, pick one to make searches easier.
+> No functionality change
 > 
-> Having no dmesg trace, even with dynamic debug enabled, makes support
-> more complicated than it needs to be, and even experienced users can
-> be fooled. A simple dev_dbg() trace solves this problem.
+> Also fix timestamping typo in documentation.
 > 
-> BugLink: https://github.com/thesofproject/linux/issues/2330
+> Reported-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
