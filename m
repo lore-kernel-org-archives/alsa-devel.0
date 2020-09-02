@@ -2,74 +2,88 @@ Return-Path: <SRS0=rI3+=CL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE229C433E7
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 13:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B76C0C433E2
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 13:15:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 750D220767
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 13:13:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3DBB120767
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 13:15:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d3Ns1pUs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 750D220767
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GxEvCQ0+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DBB120767
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E123B182B;
-	Wed,  2 Sep 2020 15:13:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E123B182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA5B41839;
+	Wed,  2 Sep 2020 15:14:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA5B41839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599052438;
-	bh=l8yfDgubi4D1wTCiCEn6opPM45yetzQqr5YG0cwFPNY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1599052547;
+	bh=RwZIu+7xg11zmf4AxRurBy5XFxEMlMWOwuQJyEv9dSs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d3Ns1pUs9jHxWKlRcQoA0OITKZoHI7SVEwdfNfEAL/s/kF2tF4FSloCM/UEp9+jf+
-	 Asi9VRnZXrEZGNOpLectFKgGIgQhvKrf/4aKQkHGOl0DL8pPHkH1GmY1+CBF/uJd1z
-	 FXna8sSI9+5G19ngoeCKq2SEBtU2lM0FebBNmGxo=
+	b=GxEvCQ0+2Y2BANH57dz7kxqoccd/vedcomaGg7P5bKKW8JPdgBtkbBK0hTdw1UJES
+	 nhBN5HdZ/nmzsHVZC1N6L4NOmflfbCXhG381kUey+QUCwUdgqc4v9ZUErL3w7lGs5h
+	 xgigTWPqFkQZGLFstU9KpVmVsuYP2mytjA8+zi2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8779BF800F3;
-	Wed,  2 Sep 2020 15:13:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63912F80268;
+	Wed,  2 Sep 2020 15:14:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE518F80268; Wed,  2 Sep 2020 15:13:06 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AB821F80212; Wed,  2 Sep 2020 15:14:54 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADC5FF800F3
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 15:12:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADC5FF800F3
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CA076AF72;
- Wed,  2 Sep 2020 13:12:59 +0000 (UTC)
-Date: Wed, 02 Sep 2020 15:12:58 +0200
-Message-ID: <s5hpn749vad.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: hda/realtek - Add control fixup for Lenovo Thinkpad
- X1 Carbon 7th
-In-Reply-To: <3e999b99-0ce7-68b8-a923-07ba2f4d798d@perex.cz>
-References: <20200829112746.3118-1-benjamin.poirier@gmail.com>
- <32b649db-ede6-d3ea-a963-d0bac331e4b4@perex.cz>
- <s5hft81czh8.wl-tiwai@suse.de> <s5hlfhsbn0u.wl-tiwai@suse.de>
- <3e999b99-0ce7-68b8-a923-07ba2f4d798d@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- Hui Wang <hui.wang@canonical.com>,
- Benjamin Poirier <benjamin.poirier@gmail.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Vincent Bernat <vincent@bernat.ch>, Even Brenden <evenbrenden@gmail.com>,
- Mark Pearson <mpearson@lenovo.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9500F800F3;
+ Wed,  2 Sep 2020 15:14:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9500F800F3
+IronPort-SDR: Fhzk5dHfdtM/o4q7srWIY+fXQCQfR6M4Y4GZGH/tdI2vK3yo+qs0MUc4azQdOeYGk23uJK+lxT
+ u8fueZgbAbPA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="175430258"
+X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
+ d="scan'208,217";a="175430258"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Sep 2020 06:14:45 -0700
+IronPort-SDR: tOTzcspjGKx8YHGcF5C0Hoy7oeui2A/RVzj+WvqjIIYnB7FPuDfJ+PUvH2+3b0NyH4hSXIbvaa
+ PmS36kFgi9pA==
+X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
+ d="scan'208,217";a="446522021"
+Received: from pharlozi-mobl.ger.corp.intel.com (HELO [10.213.23.197])
+ ([10.213.23.197])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Sep 2020 06:14:37 -0700
+Subject: Re: [PATCH] ALSA: hda: Refactor calculating SDnFMT according to
+ specification
+To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+References: <20200824100034.3129-1-pawel.harlozinski@linux.intel.com>
+ <alpine.DEB.2.22.394.2008241434310.3186@eliteleevi.tm.intel.com>
+ <s5h5z976siz.wl-tiwai@suse.de>
+From: "Harlozinski, Pawel" <pawel.harlozinski@linux.intel.com>
+Message-ID: <2dbc0b8b-2ea3-19e5-cc19-ad2f59b213c1@linux.intel.com>
+Date: Wed, 2 Sep 2020 15:13:44 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <s5h5z976siz.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, broonie@kernel.org,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,166 +99,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 02 Sep 2020 14:55:19 +0200,
-Jaroslav Kysela wrote:
-> 
-> Dne 02. 09. 20 v 10:28 Takashi Iwai napsal(a):
-> > On Tue, 01 Sep 2020 17:01:55 +0200,
-> > Takashi Iwai wrote:
-> >>
-> >> On Tue, 01 Sep 2020 15:52:09 +0200,
-> >> Jaroslav Kysela wrote:
-> >>>
-> >>>> +}
-> >>>> +
-> >>>> +static int tpx1_dual_speaker_vol_put(struct snd_kcontrol *kcontrol,
-> >>>> +				     struct snd_ctl_elem_value *ucontrol)
-> >>>> +{
-> >>>> +	struct tpx1_dual_speaker *speaker_priv = snd_kcontrol_chip(kcontrol);
-> >>>> +	int err;
-> >>>> +
-> >>>> +	/* Control tweeter volume */
-> >>>> +	err = speaker_priv->underlying.put(&speaker_priv->underlying,
-> >>>> +					   ucontrol);
-> >>>> +	if (err < 0)
-> >>>> +		return err;
-> >>>> +
-> >>>> +	/* Control woofer volume (shared with headphone) */
-> >>>> +	err = speaker_priv->hp_vol.put(&speaker_priv->hp_vol, ucontrol);
-> >>>> +	if (err < 0)
-> >>>> +		return err;
-> >>>> +
-> >>>> +	snd_ctl_notify(speaker_priv->codec->card, SNDRV_CTL_EVENT_MASK_VALUE,
-> >>>> +		       &speaker_priv->hp_vol.id);
-> >>>> +	return err;
-> >>>> +}
-> >>>> +
-> >>>> +static int tpx1_dual_speaker_vol_tlv(struct snd_kcontrol *kcontrol,
-> >>>> +				     int op_flag, unsigned int size,
-> >>>> +				     unsigned int __user *tlv)
-> >>>> +{
-> >>>> +	struct tpx1_dual_speaker *speaker_priv = snd_kcontrol_chip(kcontrol);
-> >>>> +
-> >>>> +	return speaker_priv->underlying.tlv.c(&speaker_priv->underlying,
-> >>>> +					      op_flag, size, tlv);
-> >>>> +}
-> >>>> +
-> >>>> +static void tpx1_dual_speaker_vol_free(struct snd_kcontrol *kcontrol)
-> >>>> +{
-> >>>> +	struct tpx1_dual_speaker *speaker_priv = snd_kcontrol_chip(kcontrol);
-> >>>> +
-> >>>> +	if (speaker_priv->underlying.private_free)
-> >>>> +		speaker_priv->underlying.private_free(
-> >>>> +			&speaker_priv->underlying);
-> >>>> +	kfree(speaker_priv);
-> >>>> +}
-> >>>> +
-> >>>> +static int tpx1_dual_override_speaker_vol(struct hda_codec *codec,
-> >>>> +					  struct snd_kcontrol *speaker_vol,
-> >>>> +					  struct snd_kcontrol *hp_vol)
-> >>>> +{
-> >>>> +	struct tpx1_dual_speaker *speaker_priv;
-> >>>> +
-> >>>> +	speaker_priv = kmalloc(sizeof(struct tpx1_dual_speaker), GFP_KERNEL);
-> >>>> +	if (!speaker_priv)
-> >>>> +		return -ENOMEM;
-> >>>> +	speaker_priv->codec = codec;
-> >>>> +	memcpy(&speaker_priv->underlying, speaker_vol,
-> >>>> +	       sizeof(struct snd_kcontrol));
-> >>>> +	memcpy(&speaker_priv->hp_vol, hp_vol, sizeof(struct snd_kcontrol));
-> >>>
-> >>> This is a bit clumsy part. It would be probably nice to have a helper in the
-> >>> upper control code to clone the original control safely. Takashi?
-> >>
-> >> The purpose of those is to have two controls managing the same amp and
-> >> get notified with each other at other's update, right?  The missing
-> >> piece is only about notification, and that could be done in the common
-> >> code somehow, too.  For example, we can reduce the 16bit usage of NID
-> >> to 8 bit embedded in private_value, then we'll have 8 bit space for
-> >> storing the coupled kctl nid or some other tag for notification.
-> >>
-> >> However, the approach by this patch has minor problems, as far as I
-> >> see:
-> >>
-> >> - The notification may be issued unnecessarily for Master volume
-> >>   change;
-> >>   when you change Master volume, it'll notify Headphone and/or Speaker
-> >>   as well although those (virtual) values aren't changed.
-> >>   It's a minor issue and can be almost negligible, though.
-> >>
-> >> - The volume status depends on the operation order;
-> >>   e.g. when switching the output from speaker to headphone, at first
-> >>   mute and set volume zero Speaker, then unmute/raise Headphone.
-> >>   But if we do unmute/raise Headphone at first, then mute/zero
-> >>   Speaker, the headphone output will be also zero volume out of
-> >>   sudden.
-> >>   It seems that PA does in the former way, so the current approach
-> >>   might work practically, but it can be a pitfall in some corner
-> >>   cases.
-> > 
-> > After testing the actual patch with hda-emu, I noticed that the
-> > Speaker volume changes the volume of both speakers, and it's also tied
-> > with Headphone, too.  That said, basically this is de facto Master
-> > volume, and we basically don't need to control the individual amp.
-> > 
-> > If that's the case, the following patch may work instead (checked only
-> > via hda-emu).  It applies the workaround to fix the routing, then
-> > rename the half-working volume controls that aren't touched by PA.  If
-> > user definitely needs to adjust the individual amp, they can still
-> > change the renamed kctl (DAC1 and DAC2), but this must be a rare
-> > requirement.
-> 
-> This patch works with and without UCM and the code is really straight now.
-> Nice idea. Please, apply it to upstream.
-> 
-> Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-> 
-> > 
-> > 
-> > Takashi
-> > 
-> > --- a/sound/pci/hda/patch_realtek.c
-> > +++ b/sound/pci/hda/patch_realtek.c
-> > @@ -5867,6 +5867,39 @@ static void alc275_fixup_gpio4_off(struct hda_codec *codec,
-> >  	}
-> >  }
-> >  
-> > +/* Quirk for Thinkpad X1 7th and 8th Gen
-> > + * The following fixed routing needed
-> > + * DAC1 (NID 0x02) -> Speaker (NID 0x14); some eq applied secretly
-> > + * DAC2 (NID 0x03) -> Bass (NID 0x17) & Headphone (NID 0x21); sharing a DAC
-> > + * DAC3 (NID 0x06) -> Unused, due to the lack of volume amp
-> > + */
-> > +static void alc285_fixup_thinkpad_x1_gen7(struct hda_codec *codec,
-> > +					  const struct hda_fixup *fix, int action)
-> > +{
-> > +	static const hda_nid_t conn[] = { 0x02, 0x03 }; /* exclude 0x06 */
-> 
-> It seems that NID 0x17 should be forced to 0x03 only for this hardware.
+Hey!
+
+Thanks for Your input!
+
+I've created that patch because our validation is actually checking if 
+values
+in SDnFMT are matching their expectations, and they've found  it 
+indicates 32 bits in 32 container while playing 24 bits in 32 container.
+This could be fixed without touching checks of maxbps:
+
+	switch (snd_pcm_format_width(format)) {
+	case 8:
+		val |= AC_FMT_BITS_8;
+		break;
+	case 16:
+		val |= AC_FMT_BITS_16;
+		break;
+	case 20:
+		val |= AC_FMT_BITS_20;
+		break;
+	case 24:
+		if (maxbps >= 24)
+			val |= AC_FMT_BITS_24;
+		else
+			val |= AC_FMT_BITS_20;
+		break;
+	case 32:
+		if (maxbps >= 32 || format == SNDRV_PCM_FORMAT_FLOAT_LE)
+			val |= AC_FMT_BITS_32;
+		else if (maxbps >= 24)
+			val |= AC_FMT_BITS_24;
+		else
+			val |= AC_FMT_BITS_20;
+		break;
+	default:
+		return 0;
+	}
+
+
+I've simplified that because maxbps seems redundant here - thansk for 
+catching Kai!
+Although reason of  usage maxbps is still not clear (at least for me).
+
+On 8/25/2020 10:25 AM, Takashi Iwai wrote:
+
+> On Mon, 24 Aug 2020 14:16:26 +0200,
+> Kai Vehmanen wrote:
+>> Hey,
+>>
+>> On Mon, 24 Aug 2020, Pawel Harlozinski wrote:
+>>
+>>> Set SDnFMT depending on which format was given, as maxbps only describes container size.
+>> hmm, I'm not entirely sure that is correct. Usage may be a bit varied, but
+>> most places in existing code, "maxbps" is treated as number of significant
+>> bits, not the container size. E.g. in hdac_hda.c:
+>>
+>> »       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>> »       »       maxbps = dai->driver->playback.sig_bits;
+>> »       else
+>> »       »       maxbps = dai->driver->capture.sig_bits;
+>>
+>> It would seem "maxbps" is a bit superfluous given the same information can
+>> be relayed in "format" as well. But currently it's still used. E.g. if you
+>> look at snd_hdac_query_supported_pcm(), if codec reports 24bit support,
+>> format is always set to SNDRV_PCM_FMTBIT_S32_LE even if only 24bit are valid.
+So, for me looks like place where we can align with actual format, right ?
+>>   So snd_pcm_format_width() will not return the expected significant
+>> bits info, but you have to use "maxbps". So original code seems correct
+>> (or at least you'd need to update both places).
+
+> Hm, we need to check the call pattern, then.  The maxbps passed to
+> this function was supposed to be the value obtained from
+> snd_hdac_query_supported_pcm(), i.e. the codec capability.
+Here I'm also not sure if we should just "cut" format  in 
+snd_hdac_calc_stream_format (eg. 32 to 24) if codec does not support 32?
+
+> But, basically this patch wouldn't change any practical behavior.  In
+> the current code, snd_pcm_format_width() can be never 20 or 24,
+> because the 24 and 24bit supports are also with SNDRV_PCM_FMT_S32_LE.
+> That is, the cases 20 and 24 there are superfluous from the
+> beginning (although the checks of maxbps are still needed
 >
-> > +	static const hda_nid_t preferred_pairs[] = {
-> > +		0x14, 0x02, 0x17, 0x03, 0x21, 0x03, 0
-> > +	};
-> 
-> But you're preferring this here..
-
-Right, but the above both of two are really needed.
-
-The reason why only setting preferred_pairs doesn't suffice is because
-of the generic parser's nature: the individual DACs would have a
-better score than the shared DAC at evaluating the routes.   So we
-need to exclude NID 0x06, and then pass preferred_pairs.
-
-Of course, we may enforce it by overriding the connection list with a
-single item, too.  But then you'd have to correct the index again as
-in Benjamin's v2 patch.  The above two sequences are a bit simpler
-than that, IMO.
-
-
-I'm going to submit a formal patch once when Benjamin is happy with
-this approach.
-
-
-thanks,
-
-Takashi
+> Instead, what we could improve is:
+> - Set up the proper msbits hw_constraint to reflect the maxbps value
+> - Choose the right AC_FMT_BITS_* depending on the hw_params msbitsWe may change the query function not to return a single maxbps value
+> but rather storing the raw PCM parameter value (AC_SUPPCM_*), and pass
+> it at re-encoding the format value, too, if we want to make
+>
+> thanks,
+>
+> Takashi
