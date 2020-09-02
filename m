@@ -5,83 +5,79 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C14BC433E7
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 11:02:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E966C433E2
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 11:03:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9E2D2098B
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 11:02:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC7342078E
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 11:03:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uga8gL9/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PxWMEIAi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9E2D2098B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mTsCvzMl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="liRKPch7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC7342078E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47D4E17C6;
-	Wed,  2 Sep 2020 13:02:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47D4E17C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EBB9166D;
+	Wed,  2 Sep 2020 13:02:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EBB9166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599044573;
-	bh=SjaZIwH/tb3JNsYjS5SxojsLOb58EBpAvKy4ZzfcdhQ=;
+	s=default; t=1599044620;
+	bh=txJfNlOtWDkA9Ez0nzHnJWQ4h8nWikVeEJ3eWQK5VE0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Uga8gL9/XeBeiu9yzUI+/ca1C2VbbvgmmzB/eXUOv0KhtPM8kP9NVdLGtGutueR76
-	 M/oLw3nFctCo9g5eNajIBqRC9fT51kKgafHZF2YVRFv96SAYhR09gxVQs9mIoCyqd0
-	 Qpbu+36UXXH1xtC70fiKA8WxnYVZp29ewliqnEVw=
+	b=mTsCvzMlWZRS5RTGNv3b8dV5qxIhMXbGW7KWVh5hVK7psT7hXrBKkZ6U7bydOrSwq
+	 cPa9HTebEoB3FHXejR/Nu1IFcv3m6xh6vVk+B1ZPftNjXDSI0JvjzgyGunxKu8pn3a
+	 NYqpWqUOTbaHEGQ9xTX3H4YLr+r0S7Ama3vVLfGI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9719AF802A1;
-	Wed,  2 Sep 2020 13:01:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4774BF802BC;
+	Wed,  2 Sep 2020 13:01:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C548F80257; Wed,  2 Sep 2020 13:01:07 +0200 (CEST)
+ id AAC29F8024A; Wed,  2 Sep 2020 13:01:12 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D89BFF801DA
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 13:00:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D89BFF801DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A392F8024A
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 13:01:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A392F8024A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PxWMEIAi"
+ header.b="liRKPch7"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id ED8832065E;
- Wed,  2 Sep 2020 11:00:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 242CA20FC3;
+ Wed,  2 Sep 2020 11:01:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599044455;
- bh=SjaZIwH/tb3JNsYjS5SxojsLOb58EBpAvKy4ZzfcdhQ=;
+ s=default; t=1599044462;
+ bh=txJfNlOtWDkA9Ez0nzHnJWQ4h8nWikVeEJ3eWQK5VE0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PxWMEIAiuOe+LaXSvA6XNwEqeDVZ8M4g4r147HDTnNZhnZHBuvO2FzAUrEls+SsS1
- 0TAm7ItoPeKbcQZOoPiEXSuT/+en42csi8D0uC2dcVzmMK+eEyIpR0/rF2pUMlpgWX
- o7hblx/CJj95taOMG3pgG/oo6o4tqRBu/W/hg6CU=
+ b=liRKPch7gWVonq0lyt470eai/AK+bcwkg4NKk1jnkvakvaC7ciKdqV0X6byVjBdNH
+ 8bwwgP2hleORuwNfQxMmW6C1aAIcC0mUoY3y4DnkjJ8X+5Q7CDKymeBMBWY+ifkYya
+ UtCCR4Fmw5SGNAsP8fa5f69tQ+/3wylt7QD030OM=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: himadrispandya@gmail.com,
 	dvyukov@google.com,
 	linux-usb@vger.kernel.org
-Subject: [PATCH 01/10] USB: move snd_usb_pipe_sanity_check into the USB core
-Date: Wed,  2 Sep 2020 13:01:03 +0200
-Message-Id: <20200902110115.1994491-2-gregkh@linuxfoundation.org>
+Subject: [PATCH 08/10] sound: line6: move to use usb_control_msg_send() and
+ usb_control_msg_recv()
+Date: Wed,  2 Sep 2020 13:01:12 +0200
+Message-Id: <20200902110115.1994491-11-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
 References: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- johan.hedberg@gmail.com, Chris Wulff <crwulff@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, marcel@holtmann.org,
- Eli Billauer <eli.billauer@gmail.com>, Dmitry Panchenko <dmitry@d-systems.ee>,
- linux-kernel@vger.kernel.org, Jussi Laako <jussi@sonarnerd.net>,
- tiwai@suse.com, stern@rowland.harvard.ed, linux-bluetooth@vger.kernel.org,
- Alexander Tsoy <alexander@tsoy.me>, Alan Stern <stern@rowland.harvard.edu>,
- Nick Kossifidis <mickflemm@gmail.com>, Jesus Ramos <jesus-ramos@live.com>,
- "Geoffrey D. Bennett" <g@b4.vu>, Emiliano Ingrassia <ingrassia@epigenesys.com>
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>, alsa-devel@alsa-project.org,
+ johan.hedberg@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ marcel@holtmann.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ stern@rowland.harvard.ed, linux-bluetooth@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,219 +93,225 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_usb_pipe_sanity_check() is a great function, so let's move it into
-the USB core so that other parts of the kernel, including the USB core,
-can call it.
-
-Name it usb_pipe_type_check() to match the existing
-usb_urb_ep_type_check() call, which now uses this function.
+The usb_control_msg_send() and usb_control_msg_recv() calls can return
+an error if a "short" write/read happens, and they can handle data off
+of the stack, so move the driver over to using those calls instead,
+saving some logic when dynamically allocating memory.
 
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Eli Billauer <eli.billauer@gmail.com>
-Cc: Emiliano Ingrassia <ingrassia@epigenesys.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Alexander Tsoy <alexander@tsoy.me>
-Cc: "Geoffrey D. Bennett" <g@b4.vu>
-Cc: Jussi Laako <jussi@sonarnerd.net>
-Cc: Nick Kossifidis <mickflemm@gmail.com>
-Cc: Dmitry Panchenko <dmitry@d-systems.ee>
-Cc: Chris Wulff <crwulff@gmail.com>
-Cc: Jesus Ramos <jesus-ramos@live.com>
-Cc: linux-usb@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/urb.c          | 29 ++++++++++++++++++++++-------
- include/linux/usb.h             |  1 +
- sound/usb/helper.c              | 16 +---------------
- sound/usb/helper.h              |  1 -
- sound/usb/mixer_scarlett_gen2.c |  2 +-
- sound/usb/quirks.c              | 12 ++++++------
- 6 files changed, 31 insertions(+), 30 deletions(-)
+ sound/usb/line6/driver.c   | 69 +++++++++++++++-----------------------
+ sound/usb/line6/podhd.c    | 17 ++++------
+ sound/usb/line6/toneport.c |  8 ++---
+ 3 files changed, 37 insertions(+), 57 deletions(-)
 
-diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
-index 27e83e55a590..45bc2914c1ba 100644
---- a/drivers/usb/core/urb.c
-+++ b/drivers/usb/core/urb.c
-@@ -192,24 +192,39 @@ static const int pipetypes[4] = {
- };
- 
- /**
-- * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-- * @urb: urb to be checked
-+ * usb_pipe_type_check - sanity check of a specific pipe for a usb device
-+ * @dev: struct usb_device to be checked
-+ * @pipe: pipe to check
-  *
-  * This performs a light-weight sanity check for the endpoint in the
-- * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-- * a negative error code.
-+ * given usb device.  It returns 0 if the pipe is a valid for the specific usb
-+ * device, otherwise a negative error code.
-  */
--int usb_urb_ep_type_check(const struct urb *urb)
-+int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe)
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 60674ce4879b..601292c51491 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -337,23 +337,18 @@ int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
  {
- 	const struct usb_host_endpoint *ep;
+ 	struct usb_device *usbdev = line6->usbdev;
+ 	int ret;
+-	unsigned char *len;
++	u8 len;
+ 	unsigned count;
  
--	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-+	ep = usb_pipe_endpoint(dev, pipe);
- 	if (!ep)
+ 	if (address > 0xffff || datalen > 0xff)
  		return -EINVAL;
--	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-+	if (usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
- 		return -EINVAL;
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(usb_pipe_type_check);
-+
-+/**
-+ * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-+ * @urb: urb to be checked
-+ *
-+ * This performs a light-weight sanity check for the endpoint in the
-+ * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-+ * a negative error code.
-+ */
-+int usb_urb_ep_type_check(const struct urb *urb)
-+{
-+	return usb_pipe_type_check(urb->dev, urb->pipe);
-+}
- EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
  
- /**
-diff --git a/include/linux/usb.h b/include/linux/usb.h
-index 20c555db4621..0b3963d7ec38 100644
---- a/include/linux/usb.h
-+++ b/include/linux/usb.h
-@@ -1764,6 +1764,7 @@ static inline int usb_urb_dir_out(struct urb *urb)
- 	return (urb->transfer_flags & URB_DIR_MASK) == URB_DIR_OUT;
- }
- 
-+int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe);
- int usb_urb_ep_type_check(const struct urb *urb);
- 
- void *usb_alloc_coherent(struct usb_device *dev, size_t size,
-diff --git a/sound/usb/helper.c b/sound/usb/helper.c
-index 4c12cc5b53fd..cf92d7110773 100644
---- a/sound/usb/helper.c
-+++ b/sound/usb/helper.c
-@@ -63,20 +63,6 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
- 	return NULL;
- }
- 
--/* check the validity of pipe and EP types */
--int snd_usb_pipe_sanity_check(struct usb_device *dev, unsigned int pipe)
--{
--	static const int pipetypes[4] = {
--		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
--	};
--	struct usb_host_endpoint *ep;
+-	len = kmalloc(1, GFP_KERNEL);
+-	if (!len)
+-		return -ENOMEM;
 -
--	ep = usb_pipe_endpoint(dev, pipe);
--	if (!ep || usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
--		return -EINVAL;
--	return 0;
--}
+ 	/* query the serial number: */
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+-			      (datalen << 8) | 0x21, address,
+-			      NULL, 0, LINE6_TIMEOUT * HZ);
 -
- /*
-  * Wrapper for usb_control_msg().
-  * Allocates a temp buffer to prevent dmaing from/to the stack.
-@@ -89,7 +75,7 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
- 	void *buf = NULL;
- 	int timeout;
+-	if (ret < 0) {
++	ret = usb_control_msg_send(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
++				   (datalen << 8) | 0x21, address, NULL, 0,
++				   LINE6_TIMEOUT * HZ);
++	if (ret) {
+ 		dev_err(line6->ifcdev, "read request failed (error %d)\n", ret);
+ 		goto exit;
+ 	}
+@@ -362,45 +357,41 @@ int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
+ 	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
+ 		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
  
--	if (snd_usb_pipe_sanity_check(dev, pipe))
-+	if (usb_pipe_type_check(dev, pipe))
- 		return -EINVAL;
+-		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+-				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
+-				      USB_DIR_IN,
+-				      0x0012, 0x0000, len, 1,
+-				      LINE6_TIMEOUT * HZ);
+-		if (ret < 0) {
++		ret = usb_control_msg_recv(usbdev, 0, 0x67,
++					   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
++					   0x0012, 0x0000, &len, 1,
++					   LINE6_TIMEOUT * HZ);
++		if (ret) {
+ 			dev_err(line6->ifcdev,
+ 				"receive length failed (error %d)\n", ret);
+ 			goto exit;
+ 		}
  
- 	if (size > 0) {
-diff --git a/sound/usb/helper.h b/sound/usb/helper.h
-index 5e8a18b4e7b9..f5b4c6647e4d 100644
---- a/sound/usb/helper.h
-+++ b/sound/usb/helper.h
-@@ -7,7 +7,6 @@ unsigned int snd_usb_combine_bytes(unsigned char *bytes, int size);
- void *snd_usb_find_desc(void *descstart, int desclen, void *after, u8 dtype);
- void *snd_usb_find_csint_desc(void *descstart, int desclen, void *after, u8 dsubtype);
- 
--int snd_usb_pipe_sanity_check(struct usb_device *dev, unsigned int pipe);
- int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe,
- 		    __u8 request, __u8 requesttype, __u16 value, __u16 index,
- 		    void *data, __u16 size);
-diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 0ffff7640892..9609c6d9655c 100644
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -1978,7 +1978,7 @@ static int scarlett2_mixer_status_create(struct usb_mixer_interface *mixer)
- 		return 0;
+-		if (*len != 0xff)
++		if (len != 0xff)
+ 			break;
  	}
  
--	if (snd_usb_pipe_sanity_check(dev, pipe))
-+	if (usb_pipe_type_check(dev, pipe))
- 		return -EINVAL;
+ 	ret = -EIO;
+-	if (*len == 0xff) {
++	if (len == 0xff) {
+ 		dev_err(line6->ifcdev, "read failed after %d retries\n",
+ 			count);
+ 		goto exit;
+-	} else if (*len != datalen) {
++	} else if (len != datalen) {
+ 		/* should be equal or something went wrong */
+ 		dev_err(line6->ifcdev,
+ 			"length mismatch (expected %d, got %d)\n",
+-			(int)datalen, (int)*len);
++			(int)datalen, len);
+ 		goto exit;
+ 	}
  
- 	mixer->urb = usb_alloc_urb(0, GFP_KERNEL);
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index abf99b814a0f..fc3aab04a0bc 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -846,7 +846,7 @@ static int snd_usb_accessmusic_boot_quirk(struct usb_device *dev)
- 	static const u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 };
- 	void *buf;
+ 	/* receive the result: */
+-	ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+-			      0x0013, 0x0000, data, datalen,
+-			      LINE6_TIMEOUT * HZ);
+-
+-	if (ret < 0)
++	ret = usb_control_msg_recv(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
++				   0x0013, 0x0000, data, datalen, LINE6_TIMEOUT * HZ);
++	if (ret)
+ 		dev_err(line6->ifcdev, "read failed (error %d)\n", ret);
  
--	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x05)))
-+	if (usb_pipe_type_check(dev, usb_sndintpipe(dev, 0x05)))
- 		return -EINVAL;
- 	buf = kmemdup(seq, ARRAY_SIZE(seq), GFP_KERNEL);
- 	if (!buf)
-@@ -875,7 +875,7 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
+ exit:
+-	kfree(len);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(line6_read_data);
+@@ -423,12 +414,10 @@ int line6_write_data(struct usb_line6 *line6, unsigned address, void *data,
+ 	if (!status)
+ 		return -ENOMEM;
+ 
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+-			      0x0022, address, data, datalen,
+-			      LINE6_TIMEOUT * HZ);
+-
+-	if (ret < 0) {
++	ret = usb_control_msg_send(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
++				   0x0022, address, data, datalen, LINE6_TIMEOUT * HZ);
++	if (ret) {
+ 		dev_err(line6->ifcdev,
+ 			"write request failed (error %d)\n", ret);
+ 		goto exit;
+@@ -437,14 +426,10 @@ int line6_write_data(struct usb_line6 *line6, unsigned address, void *data,
+ 	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
+ 		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
+ 
+-		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0),
+-				      0x67,
+-				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
+-				      USB_DIR_IN,
+-				      0x0012, 0x0000,
+-				      status, 1, LINE6_TIMEOUT * HZ);
+-
+-		if (ret < 0) {
++		ret = usb_control_msg_recv(usbdev, 0, 0x67,
++					   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
++					   0x0012, 0x0000, status, 1, LINE6_TIMEOUT * HZ);
++		if (ret) {
+ 			dev_err(line6->ifcdev,
+ 				"receiving status failed (error %d)\n", ret);
+ 			goto exit;
+diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
+index eef45f7fef0d..a1261f55d62b 100644
+--- a/sound/usb/line6/podhd.c
++++ b/sound/usb/line6/podhd.c
+@@ -183,29 +183,25 @@ static const struct attribute_group podhd_dev_attr_group = {
+ static int podhd_dev_start(struct usb_line6_podhd *pod)
+ {
+ 	int ret;
+-	u8 *init_bytes;
++	u8 init_bytes[8];
+ 	int i;
+ 	struct usb_device *usbdev = pod->line6.usbdev;
+ 
+-	init_bytes = kmalloc(8, GFP_KERNEL);
+-	if (!init_bytes)
+-		return -ENOMEM;
+-
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
++	ret = usb_control_msg_send(usbdev, 0,
+ 					0x67, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+ 					0x11, 0,
+ 					NULL, 0, LINE6_TIMEOUT * HZ);
+-	if (ret < 0) {
++	if (ret) {
+ 		dev_err(pod->line6.ifcdev, "read request failed (error %d)\n", ret);
+ 		goto exit;
+ 	}
+ 
+ 	/* NOTE: looks like some kind of ping message */
+-	ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
++	ret = usb_control_msg_recv(usbdev, 0, 0x67,
+ 					USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+ 					0x11, 0x0,
+ 					init_bytes, 3, LINE6_TIMEOUT * HZ);
+-	if (ret < 0) {
++	if (ret) {
+ 		dev_err(pod->line6.ifcdev,
+ 			"receive length failed (error %d)\n", ret);
+ 		goto exit;
+@@ -220,13 +216,12 @@ static int podhd_dev_start(struct usb_line6_podhd *pod)
+ 			goto exit;
+ 	}
+ 
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
++	ret = usb_control_msg_send(usbdev, 0,
+ 					USB_REQ_SET_FEATURE,
+ 					USB_TYPE_STANDARD | USB_RECIP_DEVICE | USB_DIR_OUT,
+ 					1, 0,
+ 					NULL, 0, LINE6_TIMEOUT * HZ);
+ exit:
+-	kfree(init_bytes);
+ 	return ret;
+ }
+ 
+diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
+index 94dd5e7ab2e6..a9b56085b76a 100644
+--- a/sound/usb/line6/toneport.c
++++ b/sound/usb/line6/toneport.c
+@@ -126,11 +126,11 @@ static int toneport_send_cmd(struct usb_device *usbdev, int cmd1, int cmd2)
  {
  	int ret;
  
--	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-+	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
- 		return -EINVAL;
- 	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 				  0xaf, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-@@ -984,7 +984,7 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+-			      cmd1, cmd2, NULL, 0, LINE6_TIMEOUT * HZ);
++	ret = usb_control_msg_send(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
++				   cmd1, cmd2, NULL, 0, LINE6_TIMEOUT * HZ);
  
- 	dev_dbg(&dev->dev, "Waiting for Axe-Fx III to boot up...\n");
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-+	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
- 		return -EINVAL;
- 	/* If the Axe-Fx III has not fully booted, it will timeout when trying
- 	 * to enable the audio streaming interface. A more generous timeout is
-@@ -1018,7 +1018,7 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
- {
- 	int err, actual_length;
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x01)))
-+	if (usb_pipe_type_check(dev, usb_sndintpipe(dev, 0x01)))
- 		return -EINVAL;
- 	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x01), buf, *length,
- 				&actual_length, 1000);
-@@ -1030,7 +1030,7 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
- 
- 	memset(buf, 0, buf_size);
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_rcvintpipe(dev, 0x82)))
-+	if (usb_pipe_type_check(dev, usb_rcvintpipe(dev, 0x82)))
- 		return -EINVAL;
- 	err = usb_interrupt_msg(dev, usb_rcvintpipe(dev, 0x82), buf, buf_size,
- 				&actual_length, 1000);
-@@ -1117,7 +1117,7 @@ static int snd_usb_motu_m_series_boot_quirk(struct usb_device *dev)
- {
- 	int ret;
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-+	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
- 		return -EINVAL;
- 	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 			      1, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-	if (ret < 0) {
++	if (ret) {
+ 		dev_err(&usbdev->dev, "send failed (error %d)\n", ret);
+ 		return ret;
+ 	}
 -- 
 2.28.0
 
