@@ -8,90 +8,89 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E10C433E6
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:07:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90334C433E6
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:07:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDF7520786
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:07:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 159E32068E
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:07:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KdFtYSzR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fmcA5hII"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDF7520786
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bOYrnnC4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQ7doj9I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 159E32068E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61ECB182D;
-	Wed,  2 Sep 2020 06:06:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61ECB182D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DA3B1868;
+	Wed,  2 Sep 2020 06:07:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DA3B1868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599019631;
-	bh=Hii11Vv01hJLffOFq0gh/Cpl9BEc4hK2AN5GnsqTrxc=;
+	s=default; t=1599019677;
+	bh=p8sv6kqImDY5NVcFwe8mJIagzkq3LIFPLui3Nr+zTME=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KdFtYSzRQ8qgYaN4CIHMShY40ZjLWOP0T+Ui9Bgir1AD5jmSzmy+LhvNfo114q4dl
-	 w8qMEq+lmH1hk8M2oGX16MhLrPrKmHR/aprCk1bUfT1IJ/GAtCNB8wd74Oj8DAOcdc
-	 8qw3tyuGnpVQ0Wgw2ccdGUzNO4/6iUwA4tq5u+Nc=
+	b=bOYrnnC4qpbGvWk81LGVw4WzkxpHjDgI7q0heLW7rLJSBRj1N5+rY6vxWEIfem7AF
+	 glbLTaUiS7tb7jWHiJIFTOLIsjFYzSCT/5w6pM1G7RFLa9daZvzZgynVcvltdOD6jn
+	 Vv8MNnO9nc4pOq1NoHir3050P5dCcDCtz+/00gio=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFAC4F802FE;
-	Wed,  2 Sep 2020 06:03:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BCFBF80316;
+	Wed,  2 Sep 2020 06:03:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25AADF802FF; Wed,  2 Sep 2020 06:03:06 +0200 (CEST)
+ id 3768DF802FE; Wed,  2 Sep 2020 06:03:07 +0200 (CEST)
 Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
  [IPv6:2607:f8b0:4864:20::644])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6C73F80212
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 06:02:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6C73F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0109CF802F9
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 06:02:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0109CF802F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="fmcA5hII"
-Received: by mail-pl1-x644.google.com with SMTP id c15so1659305plq.4
- for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2020 21:02:59 -0700 (PDT)
+ header.b="TQ7doj9I"
+Received: by mail-pl1-x644.google.com with SMTP id z15so1652724plo.7
+ for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2020 21:02:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=057MQRcXwBybksLEq1JjeqZlXpzUKHEjqPT9u+T+lUY=;
- b=fmcA5hIIK6NFT5wXEF/poQ1rqr35v045PQHj49YAznjGCFDbTxJL4Y1DbIoy90PXxc
- P1F7RWGwdLycks6pPj0yX8kUZM92yWHdhr8d8p3dmovUrTGDyVfZxnbkMfPo5YLgtWRE
- /HPyRo3YwFNyuKR6SnK+YzXaUXwwrcrkXuIpjVCaG9i3ZcBBKq/22Ms3j7a2YojRTmoh
- 9tOHkNNcvJU9uMsTexewVTNCxuDzIxKD/AVf0juPJxvJELLqnrmsYlj2QNnhjBog7t1U
- aZZUOzBTQejbd0sYFvlu3OPrsW573Nj8A0jYgpMcuGDZH/nU/9XbaI7F6Ilrzggex4si
- N0og==
+ bh=k0GnVK/bRT0aDvxdkx//PUkfpDKNzaBGv8SVt3ojD/8=;
+ b=TQ7doj9I44t0sRzxnzhn0hapcozhgffluKOPJd3QpRDFo22WFPipnr9xKkMyiBO3RQ
+ j4Z9soMSX8e7IuvhciBox0cZD70N6Z6VZ4mtAuqhKfzP3EFS1cw28wKl/nixj279jlmL
+ +lUC0mtE6X5vrdddMWd9h72XDRpiIyWWhy/47TfDS48umoBouugnR+qhHLaJ/axcl8Sb
+ 2NqDcetmYPU8n9o0GYPCGnwUrpihIHpAhQjNhczxp/zd8IZOaGJl5YSrV2OwnAkcJ6gQ
+ lfDSOk+As8gm9joUnPHd2w9nhKgXpeTaL2k4cmXrO18yrElWhyuCZ4TRFDzd90MtvtyB
+ qEog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=057MQRcXwBybksLEq1JjeqZlXpzUKHEjqPT9u+T+lUY=;
- b=M7RJjDFMqOodpa/WKwJM2glmPHRf+ucnoTS3fAqYuFZKUenuryqwHGLl0GouvwvFSn
- GgFhSr7iTy0rVfHpi6LUPjqHvM0bOtsS7bjtKpLiF+CU2Zto3jraOW/FApAc2F8+C3uB
- BR4vM56f2TUs3KZezonoQsDeKnPUHGZzcjOQ3xvKsSEIMBzgXrX36Qp6t1f7urszGCeq
- LKjNu90laRe8qj7H+a6j8flgcNktmiGm5uIUP4rb4oni063uVzA6ETb+nzHl1mptlkxI
- yl/e8Aii3JY6z/eStiCfvmb9siqE4bQ9M8Mb9iy5as9E+bcPpvLWtEXsFKKhn16JLHqy
- k8/w==
-X-Gm-Message-State: AOAM530UYrjw4QrbiCkQZYSyqmsRRZ4J/z9aips2ByabvFINTO2a7ws8
- PGinVNx5nRnZwwgaJ/XYtVROic66NrSqfg==
-X-Google-Smtp-Source: ABdhPJw+0dMt2KzEOeXEwgtu8UEfC0HyjL0lr0vEA6dAFoqFRF+ayNi123BPcbRpoEKpf0t/VPx5fA==
-X-Received: by 2002:a17:902:8605:: with SMTP id
- f5mr410484plo.263.1599019377817; 
- Tue, 01 Sep 2020 21:02:57 -0700 (PDT)
+ bh=k0GnVK/bRT0aDvxdkx//PUkfpDKNzaBGv8SVt3ojD/8=;
+ b=sL9SWB40hOHDdjX7DF01mmqgybFCw+BZDsAEs32XKI0gkPN5WPVIG5IWEAP7PrcwXw
+ sUSMwBPJrRGMPcnX6m1cqv/B4Ro3iiuj6jn7tPJbQVwLP2O0pPfLvLknX08qTmbmp+4c
+ jnAluxgNgt7W1aHYOqJo3HVjJEPJb4PdSUy33m7nRh1N5sn1H+nJqyEcNBzraRqvVBfI
+ 1wSjOe3Mvb52pokHo0nI2O4j4XQyvxiy2yXD6c8kQMbe0zFv5+4+25nSGWB9mmQEk5HN
+ jV24O+T55qE4CrULfJyKmtluSCMBvRaqkpgqlUX8/QcDJl2QqwGF+kuhbYxe6HwXDOJc
+ CmQQ==
+X-Gm-Message-State: AOAM532C1I2HGXBlLKPbGgK49eGtPswEJhXo++deZF666I1Po4ImxSVV
+ NwsbuOBmLUrBtnPGkrd/zRA=
+X-Google-Smtp-Source: ABdhPJzLGH4+1YM/vJshxTESb6/GURbIA6mgHUWGzcUKqVenwrAS+Ge8bi5y7J0UTp65dF9FW2wvAw==
+X-Received: by 2002:a17:902:56a:: with SMTP id 97mr450045plf.130.1599019374003; 
+ Tue, 01 Sep 2020 21:02:54 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.196.170])
- by smtp.gmail.com with ESMTPSA id q71sm3058350pjq.7.2020.09.01.21.02.54
+ by smtp.gmail.com with ESMTPSA id q71sm3058350pjq.7.2020.09.01.21.02.50
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Sep 2020 21:02:57 -0700 (PDT)
+ Tue, 01 Sep 2020 21:02:53 -0700 (PDT)
 From: Allen Pais <allen.lkml@gmail.com>
 To: perex@perex.cz,
 	tiwai@suse.com,
 	broonie@kernel.org
-Subject: [PATCH v2 07/10] ASoC: siu: convert tasklets to use new
+Subject: [PATCH v2 06/10] ASoc: fsl_esai: convert tasklets to use new
  tasklet_setup() API
-Date: Wed,  2 Sep 2020 09:32:18 +0530
-Message-Id: <20200902040221.354941-8-allen.lkml@gmail.com>
+Date: Wed,  2 Sep 2020 09:32:17 +0530
+Message-Id: <20200902040221.354941-7-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200902040221.354941-1-allen.lkml@gmail.com>
 References: <20200902040221.354941-1-allen.lkml@gmail.com>
@@ -123,38 +122,35 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- sound/soc/sh/siu_pcm.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index bd9de77c35f3..50fc7810723e 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -198,9 +198,9 @@ static int siu_pcm_rd_set(struct siu_port *port_info,
- 	return 0;
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 4ae36099ae82..79b861afd986 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -708,9 +708,9 @@ static void fsl_esai_trigger_stop(struct fsl_esai *esai_priv, bool tx)
+ 			   ESAI_xFCR_xFR, 0);
  }
  
--static void siu_io_tasklet(unsigned long data)
-+static void siu_io_tasklet(struct tasklet_struct *t)
+-static void fsl_esai_hw_reset(unsigned long arg)
++static void fsl_esai_hw_reset(struct tasklet_struct *t)
  {
--	struct siu_stream *siu_stream = (struct siu_stream *)data;
-+	struct siu_stream *siu_stream = from_tasklet(siu_stream, t, tasklet);
- 	struct snd_pcm_substream *substream = siu_stream->substream;
- 	struct device *dev = substream->pcm->card->dev;
- 	struct snd_pcm_runtime *rt = substream->runtime;
-@@ -520,10 +520,8 @@ static int siu_pcm_new(struct snd_soc_component *component,
- 		(*port_info)->pcm = pcm;
- 
- 		/* IO tasklets */
--		tasklet_init(&(*port_info)->playback.tasklet, siu_io_tasklet,
--			     (unsigned long)&(*port_info)->playback);
--		tasklet_init(&(*port_info)->capture.tasklet, siu_io_tasklet,
--			     (unsigned long)&(*port_info)->capture);
-+		tasklet_setup(&(*port_info)->playback.tasklet, siu_io_tasklet);
-+		tasklet_setup(&(*port_info)->capture.tasklet, siu_io_tasklet);
+-	struct fsl_esai *esai_priv = (struct fsl_esai *)arg;
++	struct fsl_esai *esai_priv = from_tasklet(esai_priv, t, task);
+ 	bool tx = true, rx = false, enabled[2];
+ 	unsigned long lock_flags;
+ 	u32 tfcr, rfcr;
+@@ -1070,8 +1070,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
  	}
  
- 	dev_info(card->dev, "SuperH SIU driver initialized.\n");
+-	tasklet_init(&esai_priv->task, fsl_esai_hw_reset,
+-		     (unsigned long)esai_priv);
++	tasklet_setup(&esai_priv->task, fsl_esai_hw_reset);
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 
 -- 
 2.25.1
 
