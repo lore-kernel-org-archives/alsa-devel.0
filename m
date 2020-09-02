@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85EFCC43461
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 15:50:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D447AC433E2
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 15:51:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 367E82137B
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 15:50:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 847072072A
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 15:51:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VYy5JwlA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 367E82137B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TKD37phj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 847072072A
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F5101759;
-	Wed,  2 Sep 2020 17:50:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F5101759
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02C2A1886;
+	Wed,  2 Sep 2020 17:50:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02C2A1886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599061850;
-	bh=Svchi+49uSN3qGrSwGxlcTGQPwPd1OGRnR9WMOm3onE=;
+	s=default; t=1599061905;
+	bh=8E4aCHA8YmkfiF0hxzWcEPfncWmpAutytAuk9HQEb78=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VYy5JwlAJN22VmgPkT/Y/OrG2OPRvh7agNcbJj1DAYuNvgL/oWRVomOvjGE+Kc0D4
-	 gxEqzPL+cXQZmsrMh5Szul8WkGGWRAejfqHJtVYPJhXe8C1uZnO4nptGZmIwopNMuh
-	 hqsXXzNBxGzdF9bg6YlJqMT3OqVYLOgaaGbSR17Y=
+	b=TKD37phjZ8fp1fDUnZVHKWPO+STWCAUUvA51GNuOKK6sSnimry/NR2hI/Zx/kBZIv
+	 QFh7YWNQJAnEA1k3T+Qr8JClof3Ccw4DwCXk/e9YDSBeR2fwTsxJb1Ddnr/gUmXFh0
+	 555ZK5z5Hd/aXWkB/3leqMFty4uzIi2wJ/uu9f1w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 478F2F80212;
-	Wed,  2 Sep 2020 17:50:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1994DF802C4;
+	Wed,  2 Sep 2020 17:50:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B596F800BA; Wed,  2 Sep 2020 17:49:58 +0200 (CEST)
+ id 3DCD1F800F3; Wed,  2 Sep 2020 17:50:31 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id CDFCAF800BA
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 17:49:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDFCAF800BA
+ by alsa1.perex.cz (Postfix) with ESMTP id BFF15F800F3
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 17:50:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFF15F800F3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1599061788242712975-webhooks-bot@alsa-project.org>
-References: <1599061788242712975-webhooks-bot@alsa-project.org>
+In-Reply-To: <1599061828596168995-webhooks-bot@alsa-project.org>
+References: <1599061828596168995-webhooks-bot@alsa-project.org>
 Subject: Miss mapping to unmute the middle speakers for Creative X-Fi with 20K1
  chipset cards in analog-output.conf
-Message-Id: <20200902154958.8B596F800BA@alsa1.perex.cz>
-Date: Wed,  2 Sep 2020 17:49:58 +0200 (CEST)
+Message-Id: <20200902155031.3DCD1F800F3@alsa1.perex.cz>
+Date: Wed,  2 Sep 2020 17:50:31 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,7 +72,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 alsa-project/alsa-utils issue #54 was edited from deathxxx123:
 
 Hi there. I want to report some bug, that is present from long time and i think that can be fixed now.
-With any configuration that uses center/subwoofer, that center gets muted by default for Creative X-Fi with 20K1 chipset cards, but if you have other card, that will not happen, because of missing configuration in `analog-output.conf`.
+With any configuration that uses center/subwoofer, that center gets muted by default for Creative X-Fi with 20K1 chipset cards, but if you have other card, that will not happen, because of missing configuration for Center/Subwoofer in `analog-output.conf`.
 The missing thing in `analog-output.conf` is:
 ```
 [Element Center/LFE]
