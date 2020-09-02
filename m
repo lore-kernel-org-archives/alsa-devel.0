@@ -8,89 +8,90 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 180C1C433E6
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:06:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E10C433E6
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:07:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AA8E20786
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:06:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDF7520786
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:07:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a4DAbDU4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JJfSZAQF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AA8E20786
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KdFtYSzR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fmcA5hII"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDF7520786
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14CE01850;
-	Wed,  2 Sep 2020 06:06:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14CE01850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61ECB182D;
+	Wed,  2 Sep 2020 06:06:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61ECB182D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599019614;
-	bh=2gINi1V3qDxftE80kJvy9klZRKOxWvJCtV3jvALYoPk=;
+	s=default; t=1599019631;
+	bh=Hii11Vv01hJLffOFq0gh/Cpl9BEc4hK2AN5GnsqTrxc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a4DAbDU4jnRw1h0GWMO/XcRrb7RMuEEah4+cATy4jKpP9wQTqYYUqEze32Zr416Ee
-	 vIrGtGH9zGPv4wRkTDRwI/RE8knA8ZR0kEW24Yz2KSJp/vUD6CL7Ka+FTYK4CkEl0u
-	 eZwVgEQ+J6Iv72T+Wejt9L6/rcFkS3i62HVCQkNE=
+	b=KdFtYSzRQ8qgYaN4CIHMShY40ZjLWOP0T+Ui9Bgir1AD5jmSzmy+LhvNfo114q4dl
+	 w8qMEq+lmH1hk8M2oGX16MhLrPrKmHR/aprCk1bUfT1IJ/GAtCNB8wd74Oj8DAOcdc
+	 8qw3tyuGnpVQ0Wgw2ccdGUzNO4/6iUwA4tq5u+Nc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D171F802F7;
-	Wed,  2 Sep 2020 06:03:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFAC4F802FE;
+	Wed,  2 Sep 2020 06:03:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BB68F802F8; Wed,  2 Sep 2020 06:02:59 +0200 (CEST)
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com
- [IPv6:2607:f8b0:4864:20::543])
+ id 25AADF802FF; Wed,  2 Sep 2020 06:03:06 +0200 (CEST)
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
+ [IPv6:2607:f8b0:4864:20::644])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5275F80212
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 06:02:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5275F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6C73F80212
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 06:02:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6C73F80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JJfSZAQF"
-Received: by mail-pg1-x543.google.com with SMTP id w186so1858848pgb.8
- for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2020 21:02:52 -0700 (PDT)
+ header.b="fmcA5hII"
+Received: by mail-pl1-x644.google.com with SMTP id c15so1659305plq.4
+ for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2020 21:02:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=sGG3rAOIUtBwifyFrh+uay3mLGw7gglSc8A6kESWHzo=;
- b=JJfSZAQFEvqT9kbV5uHWA1gotLUHMAdFJQ/LH6wPrHNkEx6n7+RDwywqzSrk7HoanN
- 6IfloxZ0XHRDZT4QI0q9KkKzAbAjm1nc0dEGvCV01f6ddjlGVnLa+pimhdqZqAjq8wtz
- 4jQk168hcBtUIn/sF0nRlI5YVCEaGVb+VuN4sbmSVG7EFyG9FMmGnJZ72MBK863kMDB9
- OVFjq2KjBdUrbfAjJLIGohVeChnpPgpJnDPTFMyNgP1OAcNxqs1ulAIC7ee9p/z8r40Q
- Op6tN/Eky3CqXLoVfs2NWqLlhWYRlH4w3EGjXCxTdTrZZL0pVJxVVq2TGYUhl/7rN0kc
- LFFw==
+ bh=057MQRcXwBybksLEq1JjeqZlXpzUKHEjqPT9u+T+lUY=;
+ b=fmcA5hIIK6NFT5wXEF/poQ1rqr35v045PQHj49YAznjGCFDbTxJL4Y1DbIoy90PXxc
+ P1F7RWGwdLycks6pPj0yX8kUZM92yWHdhr8d8p3dmovUrTGDyVfZxnbkMfPo5YLgtWRE
+ /HPyRo3YwFNyuKR6SnK+YzXaUXwwrcrkXuIpjVCaG9i3ZcBBKq/22Ms3j7a2YojRTmoh
+ 9tOHkNNcvJU9uMsTexewVTNCxuDzIxKD/AVf0juPJxvJELLqnrmsYlj2QNnhjBog7t1U
+ aZZUOzBTQejbd0sYFvlu3OPrsW573Nj8A0jYgpMcuGDZH/nU/9XbaI7F6Ilrzggex4si
+ N0og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=sGG3rAOIUtBwifyFrh+uay3mLGw7gglSc8A6kESWHzo=;
- b=erNjP4faR/fcRK3vjm+AQMhYOC35+Ht7hweKOB9tOFkNAxiWZr7UMjuJg/QxcfMdzz
- GSbvf8DjapAMw/0pBmXG3AWrcQHjw1s1qjVtung1/U43bWJAA61HSV9h8FjmNF76S8je
- n3kYVEy/uy2O/QBsnS7JtbW110EtM35QORKy4yt1eXh8qQv527qX7NS9Jn8AMFWkqiiI
- LlBVN6lz9llwd/IwnB/OaOUzVdZkXc3J1PP1U7/oagRLKl7scc0A8pokAs4YqCNVzNDO
- aQct3pwmFyl87i0kBfL5yJx280hBKrKxigb70OgcCcTDvUCYiUYvTc9HNpSVHqWHrEWq
- Y1UQ==
-X-Gm-Message-State: AOAM532dhgb8Lan2mAst8iN6L+MT2QNXIQxs1MrJvqiBtpNV2X5i5LOB
- AnyrIIW/yA+V6LdN3jQZB04=
-X-Google-Smtp-Source: ABdhPJyCaY3eWYqoZFQL6PxrM7qyrGmhHHSn5WRwoULcTXOeZIv7VoMCQDkgEAB6l0fPn5c2LWjHmQ==
-X-Received: by 2002:a63:5361:: with SMTP id t33mr391974pgl.245.1599019370290; 
- Tue, 01 Sep 2020 21:02:50 -0700 (PDT)
+ bh=057MQRcXwBybksLEq1JjeqZlXpzUKHEjqPT9u+T+lUY=;
+ b=M7RJjDFMqOodpa/WKwJM2glmPHRf+ucnoTS3fAqYuFZKUenuryqwHGLl0GouvwvFSn
+ GgFhSr7iTy0rVfHpi6LUPjqHvM0bOtsS7bjtKpLiF+CU2Zto3jraOW/FApAc2F8+C3uB
+ BR4vM56f2TUs3KZezonoQsDeKnPUHGZzcjOQ3xvKsSEIMBzgXrX36Qp6t1f7urszGCeq
+ LKjNu90laRe8qj7H+a6j8flgcNktmiGm5uIUP4rb4oni063uVzA6ETb+nzHl1mptlkxI
+ yl/e8Aii3JY6z/eStiCfvmb9siqE4bQ9M8Mb9iy5as9E+bcPpvLWtEXsFKKhn16JLHqy
+ k8/w==
+X-Gm-Message-State: AOAM530UYrjw4QrbiCkQZYSyqmsRRZ4J/z9aips2ByabvFINTO2a7ws8
+ PGinVNx5nRnZwwgaJ/XYtVROic66NrSqfg==
+X-Google-Smtp-Source: ABdhPJw+0dMt2KzEOeXEwgtu8UEfC0HyjL0lr0vEA6dAFoqFRF+ayNi123BPcbRpoEKpf0t/VPx5fA==
+X-Received: by 2002:a17:902:8605:: with SMTP id
+ f5mr410484plo.263.1599019377817; 
+ Tue, 01 Sep 2020 21:02:57 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.196.170])
- by smtp.gmail.com with ESMTPSA id q71sm3058350pjq.7.2020.09.01.21.02.46
+ by smtp.gmail.com with ESMTPSA id q71sm3058350pjq.7.2020.09.01.21.02.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Sep 2020 21:02:49 -0700 (PDT)
+ Tue, 01 Sep 2020 21:02:57 -0700 (PDT)
 From: Allen Pais <allen.lkml@gmail.com>
 To: perex@perex.cz,
 	tiwai@suse.com,
 	broonie@kernel.org
-Subject: [PATCH v2 05/10] ALSA: hdsp: convert tasklets to use new
+Subject: [PATCH v2 07/10] ASoC: siu: convert tasklets to use new
  tasklet_setup() API
-Date: Wed,  2 Sep 2020 09:32:16 +0530
-Message-Id: <20200902040221.354941-6-allen.lkml@gmail.com>
+Date: Wed,  2 Sep 2020 09:32:18 +0530
+Message-Id: <20200902040221.354941-8-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200902040221.354941-1-allen.lkml@gmail.com>
 References: <20200902040221.354941-1-allen.lkml@gmail.com>
@@ -122,61 +123,38 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- sound/pci/rme9652/hdsp.c  | 6 +++---
- sound/pci/rme9652/hdspm.c | 7 +++----
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/sh/siu_pcm.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 227aece17e39..dda56ecfd33b 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -3791,9 +3791,9 @@ static int snd_hdsp_set_defaults(struct hdsp *hdsp)
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index bd9de77c35f3..50fc7810723e 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -198,9 +198,9 @@ static int siu_pcm_rd_set(struct siu_port *port_info,
  	return 0;
  }
  
--static void hdsp_midi_tasklet(unsigned long arg)
-+static void hdsp_midi_tasklet(struct tasklet_struct *t)
+-static void siu_io_tasklet(unsigned long data)
++static void siu_io_tasklet(struct tasklet_struct *t)
  {
--	struct hdsp *hdsp = (struct hdsp *)arg;
-+	struct hdsp *hdsp = from_tasklet(hdsp, t, midi_tasklet);
+-	struct siu_stream *siu_stream = (struct siu_stream *)data;
++	struct siu_stream *siu_stream = from_tasklet(siu_stream, t, tasklet);
+ 	struct snd_pcm_substream *substream = siu_stream->substream;
+ 	struct device *dev = substream->pcm->card->dev;
+ 	struct snd_pcm_runtime *rt = substream->runtime;
+@@ -520,10 +520,8 @@ static int siu_pcm_new(struct snd_soc_component *component,
+ 		(*port_info)->pcm = pcm;
  
- 	if (hdsp->midi[0].pending)
- 		snd_hdsp_midi_input_read (&hdsp->midi[0]);
-@@ -5182,7 +5182,7 @@ static int snd_hdsp_create(struct snd_card *card,
- 
- 	spin_lock_init(&hdsp->lock);
- 
--	tasklet_init(&hdsp->midi_tasklet, hdsp_midi_tasklet, (unsigned long)hdsp);
-+	tasklet_setup(&hdsp->midi_tasklet, hdsp_midi_tasklet);
- 
- 	pci_read_config_word(hdsp->pci, PCI_CLASS_REVISION, &hdsp->firmware_rev);
- 	hdsp->firmware_rev &= 0xff;
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 0fa49f4d15cf..572350aaf18d 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -2169,9 +2169,9 @@ static int snd_hdspm_create_midi(struct snd_card *card,
- }
- 
- 
--static void hdspm_midi_tasklet(unsigned long arg)
-+static void hdspm_midi_tasklet(struct tasklet_struct *t)
- {
--	struct hdspm *hdspm = (struct hdspm *)arg;
-+	struct hdspm *hdspm = from_tasklet(hdspm, t, midi_tasklet);
- 	int i = 0;
- 
- 	while (i < hdspm->midiPorts) {
-@@ -6836,8 +6836,7 @@ static int snd_hdspm_create(struct snd_card *card,
- 
+ 		/* IO tasklets */
+-		tasklet_init(&(*port_info)->playback.tasklet, siu_io_tasklet,
+-			     (unsigned long)&(*port_info)->playback);
+-		tasklet_init(&(*port_info)->capture.tasklet, siu_io_tasklet,
+-			     (unsigned long)&(*port_info)->capture);
++		tasklet_setup(&(*port_info)->playback.tasklet, siu_io_tasklet);
++		tasklet_setup(&(*port_info)->capture.tasklet, siu_io_tasklet);
  	}
  
--	tasklet_init(&hdspm->midi_tasklet,
--			hdspm_midi_tasklet, (unsigned long) hdspm);
-+	tasklet_setup(&hdspm->midi_tasklet, hdspm_midi_tasklet);
- 
- 
- 	if (hdspm->io_type != MADIface) {
+ 	dev_info(card->dev, "SuperH SIU driver initialized.\n");
 -- 
 2.25.1
 
