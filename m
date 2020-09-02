@@ -2,71 +2,68 @@ Return-Path: <SRS0=rI3+=CL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8AF7C433E7
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 203CDC433E7
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:34:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4EBAC208C7
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:33:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 885222083B
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:34:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OErtqxOS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EBAC208C7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pJ6SgWP2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 885222083B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9F2C188C;
-	Wed,  2 Sep 2020 19:32:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9F2C188C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 032FC16C0;
+	Wed,  2 Sep 2020 19:33:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 032FC16C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599068004;
-	bh=+XZCmQME8B4lzMr26sTOStiVyhGbr3vkMyzpUBHkikg=;
+	s=default; t=1599068040;
+	bh=gIOJKKYC0y1pf0cQPJ8wWZn0Qi5B/twGLr+vW4NRqfw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OErtqxOSnZrGwCG9YJ4TxiO1M2+EWqyLo8AHRyTveJ6N5rAcSTGsofVIhbWtBTN19
-	 SkHIBIgxwJejphdHySTLpU6uXl93jxzhBj5FNPKUKRj0PAUUJx97OVs5rNvU35yhPp
-	 77AxLevmxJ3MS88fwpuZzfFauRk2rlN8mEG8oovg=
+	b=pJ6SgWP2LrIcbdaeK1XF0D//RZtmm4GkGx7WGtcf+RlVSgYOXI4R4xAgVGrVYAw4y
+	 dus5RdVpIvRQF0Y6FMNH4cowcisVbjSe4bAwfWNwJ7lD75Zd8J3IbJSfLRdXyotvi0
+	 uDO7w+UtATxgo0HS9GAZxC1DfWoXHu7rVsAqyfY4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B464F80276;
-	Wed,  2 Sep 2020 19:32:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E665F802BC;
+	Wed,  2 Sep 2020 19:32:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 772ACF802A1; Wed,  2 Sep 2020 19:32:22 +0200 (CEST)
+ id 7BAE2F802C4; Wed,  2 Sep 2020 19:32:34 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A87ACF80268
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 19:32:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A87ACF80268
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB39FF802BC
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 19:32:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB39FF802BC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6950BAFB2;
- Wed,  2 Sep 2020 17:32:17 +0000 (UTC)
-Date: Wed, 02 Sep 2020 19:32:16 +0200
-Message-ID: <s5hmu2884pr.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6C9E1AFB2;
+ Wed,  2 Sep 2020 17:32:29 +0000 (UTC)
+Date: Wed, 02 Sep 2020 19:32:28 +0200
+Message-ID: <s5hlfhs84pf.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: fix a runtime pm issue in SOF when integrated
- GPU is disabled
-In-Reply-To: <20200902154218.1440441-1-kai.vehmanen@linux.intel.com>
-References: <20200902154218.1440441-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: add dev_dbg log when driver is not selected
+In-Reply-To: <20200902154239.1440537-1-kai.vehmanen@linux.intel.com>
+References: <20200902154239.1440537-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,27 +79,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 02 Sep 2020 17:42:18 +0200,
+On Wed, 02 Sep 2020 17:42:39 +0200,
 Kai Vehmanen wrote:
 > 
-> From: Rander Wang <rander.wang@intel.com>
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> In snd_hdac_device_init pm_runtime_set_active is called to
-> increase child_count in parent device. But when it is failed
-> to build connection with GPU for one case that integrated
-> graphic gpu is disabled, snd_hdac_ext_bus_device_exit will be
-> invoked to clean up a HD-audio extended codec base device. At
-> this time the child_count of parent is not decreased, which
-> makes parent device can't get suspended.
+> On SKL+ Intel platforms, the driver selection is handled by the
+> snd_intel_dspcfg, and when the HDaudio legacy driver is not selected,
+> be it with the auto-selection or user preferences with a kernel
+> parameter, the probe aborts with no logs, only a -ENODEV return value.
 > 
-> This patch calls pm_runtime_set_suspended to decrease child_count
-> in parent device in snd_hdac_device_exit to match with
-> snd_hdac_device_init. pm_runtime_set_suspended can make sure that
-> it will not decrease child_count if the device is already suspended.
+> Having no dmesg trace, even with dynamic debug enabled, makes support
+> more complicated than it needs to be, and even experienced users can
+> be fooled. A simple dev_dbg() trace solves this problem.
 > 
-> Signed-off-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> BugLink: https://github.com/thesofproject/linux/issues/2330
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 > Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
