@@ -8,90 +8,90 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16BC3C433E6
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 898FCC433E2
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:09:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C77420786
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:08:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 106FA2068E
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 04:09:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S/bCle4u";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m8vKp6nv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C77420786
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WgsZ09VT";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="THZ95p1B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 106FA2068E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10AE5183B;
-	Wed,  2 Sep 2020 06:08:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10AE5183B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9527D1795;
+	Wed,  2 Sep 2020 06:08:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9527D1795
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599019738;
-	bh=RfoDALacRYcfmNG9smq3J49ESPzsHsS3+ji8L6x74Tw=;
+	s=default; t=1599019774;
+	bh=0LrA13Z6D3tRAXhxLQMEKRQfMerLWSkbtsdtl2pj+JA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S/bCle4utTht0kVcPseY3jq6Zvm4KfZ0dnksHeR5nOQ7J1EOoVpuvnvI+KVNCfm0x
-	 3+UL9kUO0uYp+6VASSxN1akbvWXvfVi5Suk8dmuj/TNPwBfyk7xunrewE9ED74wGDe
-	 aAXG2hlf/ht0Ye4XJy5H+Zb5rlfM6cHrb9pnuZRQ=
+	b=WgsZ09VTsiOC7AGaj4RR6ZLAiY1NJ3y1Ljpwm9T1yn1B5BIIyX+UhbkFqCR/Swroq
+	 ew/1J4a7J0/+8kqkAevDUGV9c3m77++7jcHt1bir/vFcHDq4ABbKMSgq0uopSIxmFR
+	 PUxFYQYoGJHeO8YW55HGOf5mv/+VkdR8bpOQYr98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49930F80329;
-	Wed,  2 Sep 2020 06:03:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50A6EF80334;
+	Wed,  2 Sep 2020 06:03:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38E90F80323; Wed,  2 Sep 2020 06:03:12 +0200 (CEST)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
+ id C0589F80335; Wed,  2 Sep 2020 06:03:21 +0200 (CEST)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D84B5F80305
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 06:03:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D84B5F80305
+ by alsa1.perex.cz (Postfix) with ESMTPS id B47BFF8032A
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 06:03:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B47BFF8032A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="m8vKp6nv"
-Received: by mail-pj1-x1043.google.com with SMTP id n3so1581419pjq.1
- for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2020 21:03:03 -0700 (PDT)
+ header.b="THZ95p1B"
+Received: by mail-pl1-x642.google.com with SMTP id y6so1648578plk.10
+ for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2020 21:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=4l6m+WeLDQfpIMgWVQGyj+skWIufOXW1m4ZGt68JApA=;
- b=m8vKp6nvPB2XefuOZINWLncQxz0y3mAzpjmrYSK9li46N3Vph9BM14V8QqB12uFqa+
- HzsYvpw9/6xOuJQOwotRNa4zlPMYOLNtGBe7Jl2NWdAYz8QxEsRHMHiSA0puQ0ob0cGo
- YHqrS6JOl/Z5U+4heEYf+JmNOVUkWhXKTKMPmok16m/IyJthlFCJwBxGKHZidTtPGiRm
- GDkBFIyZJmFOBHVLgh0ZhDWcR0InuZ3x0GsSmQmvPJOb+cCb/0HriQQhoim6CGOJKRFf
- pAl78TO424zg92LmAWPnNwDenQIn1UcBwIpIBHBg3RsifjJ/EGMrfoLQ44BEj1u1Kn07
- s9Ow==
+ bh=AOJMlWBC7Fo6+79XuvkGFq5GSjsDSAjFTpzZO2SYEwc=;
+ b=THZ95p1BwgDmC3u7AqLFD9/UwdkbDRfadtwJf2kPikYI04v//MQLk7nzTCc8dsTBkM
+ JwjkcJ/ZIhsDCBJufazxDXtYGTXHrNkBrM8sPvE+6jbDn2a4DOpC4nZwLM/bVFz9PxPz
+ PMo53mtYOP1el/HZ46R6b4xr6HZXmt3utGaTHNmmLXjy8BGkAQARf9kspP6MJM2+zkdK
+ /IbG+R+A7k8PFa+iv6QoEH53arCIgiCFxcyrkaTSE/qZPUqI13BpgyJZZUyaeUZP/8KT
+ LZXz2lbPVrJ3YJhWjy1j9SJfcisHtIDOkJKN6UVBhGkNPlxrsfPuZ4n4lrqla6u1ttco
+ ZN7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=4l6m+WeLDQfpIMgWVQGyj+skWIufOXW1m4ZGt68JApA=;
- b=IzQGnIem6bneVspOTNbSbe5Gtv9oLCpjmCRer2g0v9HjTQ0LkNzoRMER7MgmG7xV++
- SDj05FjoApXwr1Te+7pBuX+7ZxPX0ODTZT9f1K71aOlPLebMtEsbwuktTZScmx6tVkeS
- WSye4nAc5ChmPcCrpzf59+/OrUWKNQ++5YIEnFp/TrYFU6+RlsYcp575z6/Uy9nLoY8C
- tRzB8B6GkDT1PFd0uxtt5Ty43A+Z2QaNn3KIAfWYDN++7knaQXmatH0MF5kGRmorIAw+
- iWRD/wg+UbU1nDSS9vk/F504vZSoD8OaZ/sptNnx6P+0GH0W5EM/Z9zGKyxRzEiS7yev
- HSFw==
-X-Gm-Message-State: AOAM531ZwrKAJ5LHUT//dBq2s7nzrcqvnCClwaPGVzysQ0Bi07ruPsu+
- sgabpbaHFjyywXVVacdke/Y=
-X-Google-Smtp-Source: ABdhPJwC1DwKcoGWz6+j9lsx8mzgOPzq+ozMcgLqkSgO62+3fWeXeBhhScz2SGKU2OgJjUTXBHyT/A==
-X-Received: by 2002:a17:90a:9a92:: with SMTP id
- e18mr443853pjp.211.1599019381319; 
- Tue, 01 Sep 2020 21:03:01 -0700 (PDT)
+ bh=AOJMlWBC7Fo6+79XuvkGFq5GSjsDSAjFTpzZO2SYEwc=;
+ b=QZ+bXzrrtKHZflpBnNEc5oITPl3WpAW6JtAKNPQnZiR6vQ23E9+MJ+yxcJJUj6ZYPF
+ JXPYlgFnAxtSZYqEgIATYCHcLpSMbtXdzbvSFK7Hfr8nr/Nl9PeHoGCPUVnuIOMwIIqT
+ vSm48FWfbshdem3xW/r6f+eWHst1YLHsIBsuCE81UYh1GYpOvlR3l9KiqCmD/6NLvw43
+ BPXX3o/eY8LY30GVU/aSrreCClqzjyVu9wgHNRAOrOp8sePc6+kvbQfBDQpYIb6oAGoY
+ 3fpGDMvAgUlcRicDczUXbcxGWk6XM4LrdaavGbmKvqRejmJo6gFqWKKGXZVUjsJ0U6AG
+ kngQ==
+X-Gm-Message-State: AOAM532z7v4/7GhfTSRZmI3XTdGlrl8OZPfDS1/Tnq49dilsizWQ3ZF/
+ rlUISxRPNxvpqM68olwt0Tk=
+X-Google-Smtp-Source: ABdhPJzxxbfPWUt/EUSMNVa84o6WVx4mR2bcH1WBUNt85OWbyUl8v6snpqdbxafiT6SdhJ21McP+kg==
+X-Received: by 2002:a17:902:ee0b:: with SMTP id
+ z11mr438497plb.268.1599019389111; 
+ Tue, 01 Sep 2020 21:03:09 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.196.170])
- by smtp.gmail.com with ESMTPSA id q71sm3058350pjq.7.2020.09.01.21.02.58
+ by smtp.gmail.com with ESMTPSA id q71sm3058350pjq.7.2020.09.01.21.03.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Sep 2020 21:03:00 -0700 (PDT)
+ Tue, 01 Sep 2020 21:03:08 -0700 (PDT)
 From: Allen Pais <allen.lkml@gmail.com>
 To: perex@perex.cz,
 	tiwai@suse.com,
 	broonie@kernel.org
-Subject: [PATCH v2 08/10] ASoC: txx9: convert tasklets to use new
+Subject: [PATCH v2 10/10] ALSA: ua101: convert tasklets to use new
  tasklet_setup() API
-Date: Wed,  2 Sep 2020 09:32:19 +0530
-Message-Id: <20200902040221.354941-9-allen.lkml@gmail.com>
+Date: Wed,  2 Sep 2020 09:32:21 +0530
+Message-Id: <20200902040221.354941-11-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200902040221.354941-1-allen.lkml@gmail.com>
 References: <20200902040221.354941-1-allen.lkml@gmail.com>
@@ -123,35 +123,35 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- sound/soc/txx9/txx9aclc.c | 7 +++----
+ sound/usb/misc/ua101.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index 4b1cd4da3e36..939b33ec39f5 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -134,9 +134,9 @@ txx9aclc_dma_submit(struct txx9aclc_dmadata *dmadata, dma_addr_t buf_dma_addr)
- 
- #define NR_DMA_CHAIN		2
- 
--static void txx9aclc_dma_tasklet(unsigned long data)
-+static void txx9aclc_dma_tasklet(struct tasklet_struct *t)
- {
--	struct txx9aclc_dmadata *dmadata = (struct txx9aclc_dmadata *)data;
-+	struct txx9aclc_dmadata *dmadata = from_tasklet(dmadata, t, tasklet);
- 	struct dma_chan *chan = dmadata->dma_chan;
- 	struct dma_async_tx_descriptor *desc;
- 	struct snd_pcm_substream *substream = dmadata->substream;
-@@ -352,8 +352,7 @@ static int txx9aclc_dma_init(struct txx9aclc_soc_device *dev,
- 			"playback" : "capture");
- 		return -EBUSY;
- 	}
--	tasklet_init(&dmadata->tasklet, txx9aclc_dma_tasklet,
--		     (unsigned long)dmadata);
-+	tasklet_setup(&dmadata->tasklet, txx9aclc_dma_tasklet);
- 	return 0;
+diff --git a/sound/usb/misc/ua101.c b/sound/usb/misc/ua101.c
+index 884e740a785c..3b2dce1043f5 100644
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -247,9 +247,9 @@ static inline void add_with_wraparound(struct ua101 *ua,
+ 		*value -= ua->playback.queue_length;
  }
  
+-static void playback_tasklet(unsigned long data)
++static void playback_tasklet(struct tasklet_struct *t)
+ {
+-	struct ua101 *ua = (void *)data;
++	struct ua101 *ua = from_tasklet(ua, t, playback_tasklet);
+ 	unsigned long flags;
+ 	unsigned int frames;
+ 	struct ua101_urb *urb;
+@@ -1218,8 +1218,7 @@ static int ua101_probe(struct usb_interface *interface,
+ 	spin_lock_init(&ua->lock);
+ 	mutex_init(&ua->mutex);
+ 	INIT_LIST_HEAD(&ua->ready_playback_urbs);
+-	tasklet_init(&ua->playback_tasklet,
+-		     playback_tasklet, (unsigned long)ua);
++	tasklet_setup(&ua->playback_tasklet, playback_tasklet);
+ 	init_waitqueue_head(&ua->alsa_capture_wait);
+ 	init_waitqueue_head(&ua->rate_feedback_wait);
+ 	init_waitqueue_head(&ua->alsa_playback_wait);
 -- 
 2.25.1
 
