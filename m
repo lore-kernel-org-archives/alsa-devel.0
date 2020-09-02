@@ -2,72 +2,68 @@ Return-Path: <SRS0=rI3+=CL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0B54C433E2
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AC7EC433E7
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:33:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46850207EA
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:31:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A50412083B
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Sep 2020 17:33:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XoJ1fpW1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46850207EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IQrrNJJ8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A50412083B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7CA2186E;
-	Wed,  2 Sep 2020 19:30:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7CA2186E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F76A187D;
+	Wed,  2 Sep 2020 19:32:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F76A187D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599067903;
-	bh=HDcXKa3BKTmRTagidckUnyr/MQMXoVDM8EtIv5zqNic=;
+	s=default; t=1599067985;
+	bh=YNzST/OEC0sMUhjxL2gVrm/pcjwddLhElvL0e7uITmc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XoJ1fpW17cX3WQSUOnScZ8LRGsCP1sK4qg1AMcqIE5eTRzYJwg2SRAQqGds4+9NkV
-	 tT2fyknGrfArtpbdI5XtAmRgtimhhuvfXGOBnABsvuj3p7gO3RehbFkT6plviPjbsu
-	 aTc7mZYKHx9KcXfSY+EBnAo4/r16l+0pibPVvpik=
+	b=IQrrNJJ8uzKrtKXXGKoHNJ9D/TyWfp4hRbDbQbam1UHTQbx3HxK0WM2LM0SabKjqn
+	 lk5zo6qTO+bSHeDMiYYzZFhQ+zFmyVzn5lt4eCP+TAmwl7XGdliu9Y/NTQ1oVyFxeI
+	 0VFLDJmuXIQnxdZTp+o3bYrm7C+blSAdsVYyy9gA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54405F80212;
-	Wed,  2 Sep 2020 19:30:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88664F80257;
+	Wed,  2 Sep 2020 19:32:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9EAAF8024A; Wed,  2 Sep 2020 19:30:51 +0200 (CEST)
+ id 6A425F80268; Wed,  2 Sep 2020 19:32:12 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9CBDBF800BA
- for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 19:30:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CBDBF800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56981F80212
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2020 19:32:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56981F80212
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 80DA8AC50;
- Wed,  2 Sep 2020 17:30:41 +0000 (UTC)
-Date: Wed, 02 Sep 2020 19:30:40 +0200
-Message-ID: <s5hpn7484sf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 15299AC50;
+ Wed,  2 Sep 2020 17:32:07 +0000 (UTC)
+Date: Wed, 02 Sep 2020 19:32:05 +0200
+Message-ID: <s5ho8mo84q2.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: release resource when snd_hdac_device_init is
- failed
-In-Reply-To: <20200902154229.1440489-1-kai.vehmanen@linux.intel.com>
-References: <20200902154229.1440489-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: hdmi - add Rocketlake support
+In-Reply-To: <20200902154207.1440393-1-kai.vehmanen@linux.intel.com>
+References: <20200902154207.1440393-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc: alsa-devel@alsa-project.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,60 +79,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 02 Sep 2020 17:42:29 +0200,
+On Wed, 02 Sep 2020 17:42:07 +0200,
 Kai Vehmanen wrote:
 > 
 > From: Rander Wang <rander.wang@intel.com>
 > 
-> When snd_hdac_device_init is failed, the codec is released by kfree
-> immediately without releasing some resources. The vendor_name should
-> be free if the memory is allocated and the runtime pm status should
-> be restored, especially the runtime pm status of parent device.
-
-It's released via put_device() and this should call the release
-callback, default_release(), and it contains all those kfree()'s and
-pm_runtime_*().
-
-Could you double-check whether it's really missing?
-
-
-thanks,
-
-Takashi
-
+> Add Rocketlake HDMI codec support. Rocketlake shares
+> the pin-to-port mapping table with Tigerlake.
 > 
 > Signed-off-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> ---
->  sound/hda/hdac_device.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-> index 3e9e9ac804f6..8d9d37225701 100644
-> --- a/sound/hda/hdac_device.c
-> +++ b/sound/hda/hdac_device.c
-> @@ -109,12 +109,16 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
->  				     codec->vendor_id & 0xffff);
->  	if (!codec->chip_name) {
->  		err = -ENOMEM;
-> -		goto error;
-> +		goto error_chip;
->  	}
->  
->  	return 0;
->  
-> + error_chip:
-> +	kfree(codec->vendor_name);
->   error:
-> +	pm_runtime_put_noidle(&codec->dev);
-> +	pm_runtime_set_suspended(&codec->dev);
->  	put_device(&codec->dev);
->  	return err;
->  }
-> -- 
-> 2.27.0
-> 
+
+Applied now.  Thanks.
+
+
+Takashi
