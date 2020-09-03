@@ -2,107 +2,75 @@ Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77BF9C433E9
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F41FAC433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:11:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0288E20897
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:03:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8024C2071B
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:11:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l1lYMJg+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EdP0J4d6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0288E20897
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BPt/70bk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8024C2071B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 734711906;
-	Thu,  3 Sep 2020 22:03:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 734711906
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D8761753;
+	Thu,  3 Sep 2020 22:11:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D8761753
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599163430;
-	bh=fGULVC05C5sCXhEYpC/+9Z2Ga4C2yVjc8ZyDOioAvkU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=l1lYMJg+NDoc8JdnAaNiYM8zZneBW0wK6sbIi2LOAbotgMOt+TS9UU8GtBPUroAAi
-	 NThmHtFMQBcYG0JVuDnBFhXrS9UjzCA7/0QTu8Yw8RwwJ7ZTJxlYP4Hv6F5D2EDS0a
-	 AJCIXvki0rgPCVVpBx5ybQ9C3H+EyiDTXlLVWUhk=
+	s=default; t=1599163916;
+	bh=Dhn2XUtFkYycCuxjUMp24CZyeadpifjWGGFt75ASURw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BPt/70bkCrfcR+EBRuoRRlUrt2jU2LMivU+BrW7GvXP08pm02W4xiwfK0Fh3YtKsW
+	 Ys+Z7tBzLmlMowazyyapJAm5jkl2uvMJkG+u4P0pyiRzuMg6TInjH7fkxdADf4ersq
+	 W/kczWiCfvbBxVbJPxtCEEvCBef64sbRkQbLBoR8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F353FF8020D;
-	Thu,  3 Sep 2020 22:02:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56B33F8020D;
+	Thu,  3 Sep 2020 22:11:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B96CF80217; Thu,  3 Sep 2020 22:02:56 +0200 (CEST)
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
- [IPv6:2607:f8b0:4864:20::d41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8ABA2F800BA; Thu,  3 Sep 2020 22:11:02 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3008F800BA
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 22:02:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3008F800BA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="EdP0J4d6"
-Received: by mail-io1-xd41.google.com with SMTP id r9so4729319ioa.2
- for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2020 13:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=fGULVC05C5sCXhEYpC/+9Z2Ga4C2yVjc8ZyDOioAvkU=;
- b=EdP0J4d67KA9Z04eQwpbg4AXblH4icfhJzxrgoDtGi1drJDGJZ6A1Cc4lOOZIzbNQ7
- I5oHurAQmm31BoHE99b0/vAeN27X5keXUvspjNeUF3NExOMeX8nHcTYWD66/Ve4AIA6r
- SNdpPYGHzM1H5zjZLGS2JkojrO7wAYpaoASrSbD73tj0yV8MHn9anwOlaR9JvBpuuBSH
- dwVFzH8iIlZSc6AL7/IDSjNNK0Y5jutH+tWMLDjsgRlCbgcvmitZdBDP5TADNPhsTkcK
- 0m8KsTKjWyKXWMNKR8FcDXiyc4WQ8gIqNigZkMFg376s4xEo45c5wIz8GCbZI5LlCaxG
- 90kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=fGULVC05C5sCXhEYpC/+9Z2Ga4C2yVjc8ZyDOioAvkU=;
- b=dhqNl3jQoadJUfmDvzFDhJU7PQKBw/oWfmFjZpP6gBQsQ26KKsVM9in4FaKBWMTCWZ
- zuWey11wzqZZgTQQXHUluEmNYH0XeEMI+abZiSmREEuBJ1sDv3+fe/SKuvTfydyPxHef
- 98KS6dPfhkhwxXwk8uZzY0w6OxbVCcdwfMtDF51BMdE2moshMAR8ff9cnJHxS21b87ny
- xAteTdvsgdz15wwu2/oYaB1Df9AErOiR6Hs4dvWiCusYZN1RNYBe1Pl7M6bn2FhHFU2U
- bmp4CcvO7mJfocVJMlUqYkllXRVn/Bn0BdXmFcS0aB3RHm+R9Q9z5PAh1N58Bz5ZBrJg
- /F5w==
-X-Gm-Message-State: AOAM531VNxJGP+x2mv2WwikNoCSzwTHgLZS6Zp9XSrxRyoQdDEPp0q6p
- oHzPoBlfTP8yVcJ4ih+UCeypj6zpwG/wc+uUu04=
-X-Google-Smtp-Source: ABdhPJw2fUBB+yaKwX5FZLc8HuO05Z9/+K7Ld3VyqD0BtRUWO7C/9O2RbrunRj9dOgQNqO3na4R8IxFkbgn6AW3k32k=
-X-Received: by 2002:a6b:908:: with SMTP id t8mr4535957ioi.124.1599163362945;
- Thu, 03 Sep 2020 13:02:42 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F027DF800BA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 22:10:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F027DF800BA
+IronPort-SDR: HmhfnXsIVZLjUSwSv89uPYEU12XI/RZW/rsbnSgKkCYZTS9MoYxuuTcVPh3j2G6UbIu9TTiVc7
+ M9GUwDttG3+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="242471254"
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; d="scan'208";a="242471254"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Sep 2020 13:10:46 -0700
+IronPort-SDR: CDMw1GTITNzYa0tmF9cHNytOi8k+RtPHP9gLIFB+bDEN+VfRLGH+B6tqAvCx+BtLBpNaaSTJRA
+ HFsNqIN8jRTg==
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; d="scan'208";a="447033081"
+Received: from mrcordie-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.195.28])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Sep 2020 13:10:47 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [RFC PATCH 0/3] alsa-lib/ASoC: use inclusive language for
+ bclk/fsync/topology
+Date: Thu,  3 Sep 2020 15:10:21 -0500
+Message-Id: <20200903201024.1109914-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200426104115.22630-4-peron.clem@gmail.com>
- <20200428081321.ht3el26yqhsnyfm4@gilmour.lan>
- <CAJiuCcdVs_drs40Q6537BYfz24F7NmC6B8S5-Lt4V4ggs-FXWA@mail.gmail.com>
- <20200429123529.y24dpy63wxq7uvkt@gilmour.lan>
- <CAJiuCcfXqizcq_JuXRCsqEqM2562cr1SGJ0pmy07jcJxAXojOw@mail.gmail.com>
- <20200430084600.samghw4zxb5zdbez@gilmour.lan>
- <CAJiuCcf_LHrJ6QdZgH8HyN6TRiT+GiD+t4UggFCrz-VwVHXV6w@mail.gmail.com>
- <20200504120942.lnrxnnmykqnvw3fb@gilmour.lan>
- <CAJiuCceF340FiLvyeXNZtvqftQMAmk=MtFDLT_9696ix+eH1Yw@mail.gmail.com>
- <20200729143927.47f5tbuaob4ph3lp@gilmour.lan>
- <20200729151548.GB5612@sirena.org.uk>
-In-Reply-To: <20200729151548.GB5612@sirena.org.uk>
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date: Thu, 3 Sep 2020 22:02:31 +0200
-Message-ID: <CAJiuCcdf=TNLPTUPzHP9NzPHqdxG06TRDkQfONY+ScK0DV_v5w@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] ASoC: sun4i-i2s: Add support for H6 I2S
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: devicetree <devicetree@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Jernej Skrabec <jernej.skrabec@siol.net>, Takashi Iwai <tiwai@suse.com>,
- Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Rob Herring <robh+dt@kernel.org>, Maxime Ripard <maxime@cerno.tech>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,25 +86,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Maxime,
+The SOF (Sound Open Firmware) tree contains a lot of references in
+topology files to 'codec_slave'/'codec_master' terms, which in turn
+come from alsa-lib and ALSA/ASoC topology support at the kernel
+level. These terms are no longer compatible with the guidelines
+adopted by the kernel community [1] and need to change in
+backwards-compatible ways.
 
-On Wed, 29 Jul 2020 at 17:16, Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Jul 29, 2020 at 04:39:27PM +0200, Maxime Ripard wrote:
->
-> > It really looks like the polarity of LRCK is fine though. The first word
-> > is sent with LRCK low, and then high, so we have channel 0 and then
-> > channel 1 which seems to be the proper ordering?
->
-> Yes, that's normal.
+The main/secondary terms typically suggested in guidelines don't mean
+anything for clocks, this patchset suggests instead the use of
+'provider' and 'follower' terms, with the 'codec' prefix kept to make
+it clear that the codec is the reference. The CM/CF suffixes are also
+replaced by CP/CF.
 
-Thank you very much for this test.
+It can be argued that the change of suffix is invasive, but finding a
+replacement that keeps the M and S shortcuts has proven difficult in
+quite a few contexts.
 
-So I will revert the following commit:
+The previous definitions are kept for backwards-compatibility so this
+change should not have any functional impact. It is suggested that new
+contributions only use the new terms but there is no requirement to
+transition immediately to the new definitions for existing code. Intel
+will however update all its past contributions related to bit
+clock/frame sync configurations immediately.
 
-ASoC: sun4i-i2s: Fix the LRCK polarity
+This suggestion is easier to review first at the alsa-lib level, and
+if agreed follow-up contributions for the Linux kernel [2] and SOF
+firmware [3] will be provided.
 
-https://github.com/clementperon/linux/commit/dd657eae8164f7e4bafe8b875031a7c6c50646a9
+Feedback welcome
+~Pierre
 
-Regards,
-Clement
+[1] https://lkml.org/lkml/2020/7/4/229
+[2] https://github.com/plbossart/sound/tree/fix/inclusing-language-bclk-fsync
+[3] https://github.com/plbossart/sof/tree/fix/inclusive-language-bclk-fsync
+
+Pierre-Louis Bossart (3):
+  topology: use inclusive language for bclk
+  topology: use inclusive language for fsync
+  topology: use inclusive language in documentation
+
+ include/sound/uapi/asoc.h | 22 +++++++-----
+ include/topology.h        |  8 ++---
+ src/topology/pcm.c        | 74 ++++++++++++++++++++++++++++-----------
+ 3 files changed, 71 insertions(+), 33 deletions(-)
+
+-- 
+2.25.1
+
