@@ -2,64 +2,76 @@ Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 217F5C2BB84
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC508C433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 11:46:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BA1E2086A
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:52:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A4CF206EB
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 11:46:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kro2LGK/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BA1E2086A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d1TKtNna";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwWZs5xu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A4CF206EB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDDC01934;
-	Thu,  3 Sep 2020 12:51:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDDC01934
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2C4E18B5;
+	Thu,  3 Sep 2020 13:45:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2C4E18B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599130356;
-	bh=eRHpZuCxIVA6yeGoa53RyRYHdcVj5E3jOrooxzgFHWA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=kro2LGK/OFnL4kTfM14XLzItw2kDdyAwsJyZWWBJV+qrnzATSaHvLkOWQyXmojzTy
-	 F6noQy4/DWCPEgzIeZcciDXMmYUxy6RCIpFzijBgPTxWzgQJDvC5zLVEeSNPYyh1Zp
-	 ffOB+qW3K+m2yfKnkjTSzFdvA+NQZ58zixBcMR7A=
+	s=default; t=1599133581;
+	bh=X9kU0LEJm1P4PY/yoSWd8AzDqFeRBLYLY94wkbU9bAI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=d1TKtNnapEImB4NjI7nvu+fyeMuBUoCzXYIPMTHcf7XruRJO/2iCtxExSXkqy4Zr1
+	 4w+OF6V5ZWUQA3Dp+HoSBDPzOnmZosMpmRR1ntXKgVT1kskbWsXCC0kcev+JPSQhuF
+	 pQhKo+feoCUfInlENkm415RA33NoVcwZ3rtpImdw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC341F802E3;
-	Thu,  3 Sep 2020 12:48:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2D48F8021D;
+	Thu,  3 Sep 2020 13:45:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C3B4F802E1; Thu,  3 Sep 2020 12:48:05 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id BEFABF8025F; Thu,  3 Sep 2020 13:45:28 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBC7DF8025F
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:47:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBC7DF8025F
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 95907B148;
- Thu,  3 Sep 2020 10:47:53 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91733F801DA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 13:45:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91733F801DA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nwWZs5xu"
+Received: from localhost.localdomain (unknown [122.171.179.172])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C7EF220709;
+ Thu,  3 Sep 2020 11:45:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1599133518;
+ bh=X9kU0LEJm1P4PY/yoSWd8AzDqFeRBLYLY94wkbU9bAI=;
+ h=From:To:Cc:Subject:Date:From;
+ b=nwWZs5xud/NZDk+yzGss4gX9AfQ0B3NyQivPQlEdQ0ootmZd5l2xFD8/6Ixy5wG6a
+ VnPJ0Z/7loWe6pQf4fY3bXzJAvKs2TpCEb2b75iOUMFcATnlncsAvUZt7Rd83q6JpV
+ yyatyM6bqMW6VVucEoQ+a+6BbgiDvHdtqcNQlJMo=
+From: Vinod Koul <vkoul@kernel.org>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] ASoC: sh: Replace tasklet with work
-Date: Thu,  3 Sep 2020 12:47:48 +0200
-Message-Id: <20200903104749.21435-3-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200903104749.21435-1-tiwai@suse.de>
-References: <20200903104749.21435-1-tiwai@suse.de>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>
+Subject: [PATCH v2 0/9] soundwire: use FIELD_{GET|PREP} in subsystem
+Date: Thu,  3 Sep 2020 17:14:55 +0530
+Message-Id: <20200903114504.1202143-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Vinod Koul <vkoul@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,101 +87,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The tasklet is an old API that should be deprecated, usually can be
-converted to another decent API.  In ASoC SH SIU driver, a tasklet is
-still used for offloading the hardware reset function.  It can be
-achieved gracefully with a work queued, too.
+Use the FIELD_{GET|PREP} in soundwire subsytem and remove the local
+SDW_REG_SHIFT().  This makes code IMO look much neater
 
-This patch replaces the tasklet usage in SH SIU driver with a simple
-work.  The conversion is fairly straightforward.
+Tested this on db845c board
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/sh/siu.h     |  2 +-
- sound/soc/sh/siu_pcm.c | 21 +++++++++++----------
- 2 files changed, 12 insertions(+), 11 deletions(-)
+Changes in v2:
+ - fold in fixes provided by Bard and Pierre
+ - Use GENMAS_ULL for addr
+ - rebase to next and fold in new intel change
 
-diff --git a/sound/soc/sh/siu.h b/sound/soc/sh/siu.h
-index 63a508fdfe78..6201840f1bc0 100644
---- a/sound/soc/sh/siu.h
-+++ b/sound/soc/sh/siu.h
-@@ -96,7 +96,7 @@ struct siu_info {
- };
- 
- struct siu_stream {
--	struct tasklet_struct		tasklet;
-+	struct work_struct		work;
- 	struct snd_pcm_substream	*substream;
- 	snd_pcm_format_t		format;
- 	size_t				buf_bytes;
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index 50fc7810723e..45c4320976ab 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -70,7 +70,7 @@ static int siu_pcm_stmwrite_start(struct siu_port *port_info)
- 	siu_stream->rw_flg = RWF_STM_WT;
- 
- 	/* DMA transfer start */
--	tasklet_schedule(&siu_stream->tasklet);
-+	queue_work(system_highpri_wq, &siu_stream->work);
- 
- 	return 0;
- }
-@@ -93,7 +93,7 @@ static void siu_dma_tx_complete(void *arg)
- 		siu_stream->cur_period * siu_stream->period_bytes,
- 		siu_stream->buf_bytes, siu_stream->cookie);
- 
--	tasklet_schedule(&siu_stream->tasklet);
-+	queue_work(system_highpri_wq, &siu_stream->work);
- 
- 	/* Notify alsa: a period is done */
- 	snd_pcm_period_elapsed(siu_stream->substream);
-@@ -198,9 +198,10 @@ static int siu_pcm_rd_set(struct siu_port *port_info,
- 	return 0;
- }
- 
--static void siu_io_tasklet(struct tasklet_struct *t)
-+static void siu_io_work(struct work_struct *work)
- {
--	struct siu_stream *siu_stream = from_tasklet(siu_stream, t, tasklet);
-+	struct siu_stream *siu_stream = container_of(work, struct siu_stream,
-+						     work);
- 	struct snd_pcm_substream *substream = siu_stream->substream;
- 	struct device *dev = substream->pcm->card->dev;
- 	struct snd_pcm_runtime *rt = substream->runtime;
-@@ -253,7 +254,7 @@ static int siu_pcm_stmread_start(struct siu_port *port_info)
- 	/* during stmread flag set */
- 	siu_stream->rw_flg = RWF_STM_RD;
- 
--	tasklet_schedule(&siu_stream->tasklet);
-+	queue_work(system_highpri_wq, &siu_stream->work);
- 
- 	return 0;
- }
-@@ -519,9 +520,9 @@ static int siu_pcm_new(struct snd_soc_component *component,
- 
- 		(*port_info)->pcm = pcm;
- 
--		/* IO tasklets */
--		tasklet_setup(&(*port_info)->playback.tasklet, siu_io_tasklet);
--		tasklet_setup(&(*port_info)->capture.tasklet, siu_io_tasklet);
-+		/* IO works */
-+		INIT_WORK(&(*port_info)->playback.work, siu_io_work);
-+		INIT_WORK(&(*port_info)->capture.work, siu_io_work);
- 	}
- 
- 	dev_info(card->dev, "SuperH SIU driver initialized.\n");
-@@ -534,8 +535,8 @@ static void siu_pcm_free(struct snd_soc_component *component,
- 	struct platform_device *pdev = to_platform_device(pcm->card->dev);
- 	struct siu_port *port_info = siu_ports[pdev->id];
- 
--	tasklet_kill(&port_info->capture.tasklet);
--	tasklet_kill(&port_info->playback.tasklet);
-+	cancel_work_sync(&port_info->capture.work);
-+	cancel_work_sync(&port_info->playback.work);
- 
- 	siu_free_port(port_info);
- 
+Vinod Koul (9):
+  soundwire: define and use addr bit masks
+  soundwire: bus: use FIELD_GET()
+  soundwire: slave: use SDW_DISCO_LINK_ID()
+  soundwire: stream: use FIELD_{GET|PREP}
+  soundwire: qcom : use FIELD_{GET|PREP}
+  soundwire: cadence: use FIELD_{GET|PREP}
+  soundwire: intel: use FIELD_{GET|PREP}
+  soundwire: intel_init: use FIELD_{GET|PREP}
+  soundwire: remove SDW_REG_SHIFT()
+
+ drivers/soundwire/bus.c                 |  6 +--
+ drivers/soundwire/cadence_master.c      | 61 +++++++++++--------------
+ drivers/soundwire/intel.c               | 52 ++++++++-------------
+ drivers/soundwire/intel_init.c          |  2 +-
+ drivers/soundwire/qcom.c                | 22 +++------
+ drivers/soundwire/slave.c               |  2 +-
+ drivers/soundwire/stream.c              | 13 ++----
+ include/linux/soundwire/sdw.h           | 21 ++++++---
+ include/linux/soundwire/sdw_registers.h |  7 ---
+ 9 files changed, 75 insertions(+), 111 deletions(-)
+
 -- 
-2.16.4
+2.26.2
 
