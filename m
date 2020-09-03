@@ -6,65 +6,65 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C4FCC433E9
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 11:48:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3954AC433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 11:48:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7DB3206EB
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 11:48:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A7C9C20709
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 11:48:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CgdSVPdS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LixsVFcm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7DB3206EB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vLp6vHXz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gHT4G23U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7C9C20709
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49CBA18F7;
-	Thu,  3 Sep 2020 13:47:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49CBA18F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id F208E170C;
+	Thu,  3 Sep 2020 13:48:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F208E170C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599133698;
-	bh=X+GUo7r2fem7RtX0ecIJdRl8g3BdBJ89wf8cZ/g/1pw=;
+	s=default; t=1599133737;
+	bh=K+qFth2pKLnlWnbldq+mrSwf1SKpwwoieT1RHMshyCQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CgdSVPdStN5kvLeIlaEi+TVtX36T5daPY2o32ZzsBZz8iCTke9Q0BtEKm0eceMCzs
-	 SYzl51CnHCGxu/iVXESWPD+JdbG04iaEz8YVViiAFY/YnFVER582t3sezJIMzjwMTe
-	 0nmcNktXcBMesYgMcxhtRToX6mHp4T2h9SrIOen0=
+	b=vLp6vHXzrWxwPbHUQnkVSd8O9Qz+neIQqPw+KIK9DDru33LKUgNpdocoBHgmp9Q1p
+	 +r2ryAJNGJEzeeEeSLDah5kswglS8sEWbv87ehetMuemvuUCyu71InJ+BYXdUtKTrg
+	 E+t7pwz3DWdqkcJWoy9Q68f4aWfdCWaNrpN0ZWiw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90DE2F802E0;
-	Thu,  3 Sep 2020 13:45:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 832A3F802EA;
+	Thu,  3 Sep 2020 13:45:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27BFFF800F0; Thu,  3 Sep 2020 13:45:32 +0200 (CEST)
+ id 02A62F802C4; Thu,  3 Sep 2020 13:45:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E117FF800F0
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 13:45:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E117FF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44AFBF802C4
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 13:45:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44AFBF802C4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LixsVFcm"
+ header.b="gHT4G23U"
 Received: from localhost.localdomain (unknown [122.171.179.172])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 293E9206EB;
- Thu,  3 Sep 2020 11:45:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6517D206EB;
+ Thu,  3 Sep 2020 11:45:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599133524;
- bh=X+GUo7r2fem7RtX0ecIJdRl8g3BdBJ89wf8cZ/g/1pw=;
+ s=default; t=1599133530;
+ bh=K+qFth2pKLnlWnbldq+mrSwf1SKpwwoieT1RHMshyCQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LixsVFcmoPjoamYhCHYMBdElYwDRNKqvMzsS2qp+1vLaaI17vfxXCI1p2Ao1NC4vd
- z1bmRkLBKHEFhibl3KH0MBzy5448GWOL35qQOADXStly71Rzv9iTZ01EGsI7wEEjr8
- O0zQMRChywhqhC3yhKzpfI4zewgW9SFgFUIwS+Z4=
+ b=gHT4G23Ulwecu9CVgglNtHCovBRJXqH9PfOn1Ze55izROdPZrlnVDzLae3u+qnR+A
+ N395AB8csPFWn0kaESUlsFStxPr2R9mKdBAgk7nj6UsaDOYcBpEdhqZwKdvIqvH2LG
+ EDCWv5d2/TZG3GDTSp8Kie18ph+/K+PpGeWBrujw=
 From: Vinod Koul <vkoul@kernel.org>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/9] soundwire: bus: use FIELD_GET()
-Date: Thu,  3 Sep 2020 17:14:57 +0530
-Message-Id: <20200903114504.1202143-3-vkoul@kernel.org>
+Subject: [PATCH v2 4/9] soundwire: stream: use FIELD_{GET|PREP}
+Date: Thu,  3 Sep 2020 17:14:59 +0530
+Message-Id: <20200903114504.1202143-5-vkoul@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200903114504.1202143-1-vkoul@kernel.org>
 References: <20200903114504.1202143-1-vkoul@kernel.org>
@@ -90,38 +90,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-use FIELD_GET() in bus code to extract field values instead of open
-coding masks and shift operations.
+use FIELD_{GET|PREP} in stream code to get/set field values instead of
+open coding masks and shift operations.
 
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/bus.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soundwire/stream.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index e6e0fb9a81b4..d808f0256ba0 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -347,8 +347,8 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
- 		return -EINVAL;
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index e4cf484f5905..afb95febb0d3 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -100,9 +100,7 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
+ 		return ret;
+ 
+ 	/* Program DPN_SampleCtrl2 register */
+-	wbuf = (t_params->sample_interval - 1);
+-	wbuf &= SDW_DPN_SAMPLECTRL_HIGH;
+-	wbuf >>= SDW_REG_SHIFT(SDW_DPN_SAMPLECTRL_HIGH);
++	wbuf = FIELD_GET(SDW_DPN_SAMPLECTRL_HIGH, t_params->sample_interval - 1);
+ 
+ 	ret = sdw_write(slave, addr3, wbuf);
+ 	if (ret < 0) {
+@@ -111,9 +109,8 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
  	}
  
--	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
--	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
-+	msg->addr_page1 = FIELD_GET(SDW_SCP_ADDRPAGE1_MASK, addr);
-+	msg->addr_page2 = FIELD_GET(SDW_SCP_ADDRPAGE2_MASK, addr);
- 	msg->addr |= BIT(15);
- 	msg->page = true;
+ 	/* Program DPN_HCtrl register */
+-	wbuf = t_params->hstart;
+-	wbuf <<= SDW_REG_SHIFT(SDW_DPN_HCTRL_HSTART);
+-	wbuf |= t_params->hstop;
++	wbuf = FIELD_PREP(SDW_DPN_HCTRL_HSTART, t_params->hstart);
++	wbuf |= FIELD_PREP(SDW_DPN_HCTRL_HSTOP, t_params->hstop);
  
-@@ -1420,7 +1420,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		port = buf & SDW_SCP_INT1_PORT0_3;
+ 	ret = sdw_write(slave, addr4, wbuf);
+ 	if (ret < 0)
+@@ -157,8 +154,8 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
+ 	}
  
- 		/* To get port number corresponding to bits, shift it */
--		port = port >> SDW_REG_SHIFT(SDW_SCP_INT1_PORT0_3);
-+		port = FIELD_GET(SDW_SCP_INT1_PORT0_3, port);
- 		for_each_set_bit(bit, &port, 8) {
- 			sdw_handle_port_interrupt(slave, bit,
- 						  &port_status[bit]);
+ 	/* Program DPN_PortCtrl register */
+-	wbuf = p_params->data_mode << SDW_REG_SHIFT(SDW_DPN_PORTCTRL_DATAMODE);
+-	wbuf |= p_params->flow_mode;
++	wbuf = FIELD_PREP(SDW_DPN_PORTCTRL_DATAMODE, p_params->data_mode);
++	wbuf |= FIELD_PREP(SDW_DPN_PORTCTRL_FLOWMODE, p_params->flow_mode);
+ 
+ 	ret = sdw_update(s_rt->slave, addr1, 0xF, wbuf);
+ 	if (ret < 0) {
 -- 
 2.26.2
 
