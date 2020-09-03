@@ -2,77 +2,103 @@ Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90B11C433E9
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:13:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAC51C2D0E2
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:31:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A13420897
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:13:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 233D0208CA
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:31:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mYdmAy4q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A13420897
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uOSuVpsr";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPn9PdHb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 233D0208CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 967BC1917;
-	Thu,  3 Sep 2020 22:12:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 967BC1917
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F63516BE;
+	Thu,  3 Sep 2020 22:30:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F63516BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599164026;
-	bh=s5s4TzR8GAu26tsnYZ3yrh35NdMO9ZhPVnBaSzV+dsU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mYdmAy4qUXbPg9p25ZAEe4NCnZ+lRC+d11gr+yZzGpULHQBEU59j6tBRw4/jA5YHG
-	 GOiJEqgRIN8rZ/+QGmY0sQOaK/AHrnOW9fKvm4IRmlNEyaiz2iQW9XpmhXlmVLNwPB
-	 FikIg57nJ6B/lStzXZQEkoFLBzZ5Z9pZz9KqQO+g=
+	s=default; t=1599165105;
+	bh=NwydRQZC2zw1SKjhcdcOZqUeKjoYQeu+JfXmTqoysIY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uOSuVpsrQGVVfIwGKapNG/mqMwkelNflgPSALMp8uD0EUwDsFtqpnO5ASVTMy619E
+	 CUikYLS2PyPOSp58lkE/nbp5HXeWxD9jBoI43m9e2KOcET0k7B5zOE3buL4h1WQ/e9
+	 orgHpH3B1ZUAPct1KMnMzAfWV5H1S+jJqHNdxX2I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4C53F802DB;
-	Thu,  3 Sep 2020 22:11:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19E38F801DA;
+	Thu,  3 Sep 2020 22:30:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44894F802C3; Thu,  3 Sep 2020 22:11:09 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6B623F800F0; Thu,  3 Sep 2020 22:30:52 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CBFDCF800F0
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 22:10:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBFDCF800F0
-IronPort-SDR: kmbv3Qi2akAWss5erIYceGIc8o/DBlN/dRMOESuuRXHyKW5xEGWgHuh0nYQToHR0nsu51TZFDa
- 0tyDhx86eUuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="242471258"
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; d="scan'208";a="242471258"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Sep 2020 13:10:48 -0700
-IronPort-SDR: dIN/k6NK+z+Xx1T+tw3/XCLnl/AluDVw8FxEYM9WCaPvYtQMeRhupE878zPU6InJYx0/PwAXvE
- riKY557b4lOA==
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; d="scan'208";a="447033086"
-Received: from mrcordie-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.195.28])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Sep 2020 13:10:48 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 2/3] topology: use inclusive language for fsync
-Date: Thu,  3 Sep 2020 15:10:23 -0500
-Message-Id: <20200903201024.1109914-3-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A94AF800F0
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 22:30:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A94AF800F0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jPn9PdHb"
+Received: by mail-wr1-x441.google.com with SMTP id m6so4618798wrn.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2020 13:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bCiiLHdkyCif4lDSthP4Rue9BpevgzI0PU8h03qCRjY=;
+ b=jPn9PdHbFfQYzxWap1ICE8K6I+puU4a41hfw1FW7yTjLz1RhIsitR1DWrUfJmsjeCB
+ QuJOmJyDFQYCTkogqBoM4vrDLC/Z5EVI3XFVbh9zdKGJj77q909aTXooCxRXI7xYVuQP
+ p/1egAtosQMJUMhUYeyBm4j5pbEtexUOiRgCbw1yLNA4GMSaR9MEwQi5gIl1O4P3cr9C
+ CR146At7ZOwRhfRac+TMEc6WNIpHskIq3kk+tAK9MInIn63jVVs/EkMYpXiXfF/eZFOu
+ ipNheUsBnVEN6N3RY7iXk1t0dVkKgpWJ/IWMMJP38c+cH+r61oiAKkfz5tqa04VR4jPZ
+ ROmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bCiiLHdkyCif4lDSthP4Rue9BpevgzI0PU8h03qCRjY=;
+ b=B4CovKXW+acpLDfkdH+YCpL4iyJCnMV2+tBDM8B6JmVmZJXN8iFYScyN9bswos4O4K
+ BfJy31wlcmXTAc47tnSuQV/x/Wc5oM1eRN4PTp8A8spKtV/vlCOE0eY1NMRtDe7MaN1g
+ 34dJE+m2U9licJfP2rMzA9DoNbpuAbdsz4bEl6AV/Fe0fHOqOr1zLBfECv7Tu/wuZvBz
+ BNDqtbCVZCcnFdr17zD/iyAsVQXfoiNxG/aTHUGNKK2JBBJdvvbdAqP53Cg+apKQYYyS
+ 4NzinrKcKAD465sdgyUGsHlcvpVoE1xqCLLg9MUYaVYqTJ1Bxl2Lj3XEd7HBAkL1ykl0
+ L6NA==
+X-Gm-Message-State: AOAM532KBLHQtHfpWk7eQPY2EdpbRgjQo1NfquxiS/bMz2w3Td8Fkv/X
+ wBR+S2OMcozRCED2vI1Albs=
+X-Google-Smtp-Source: ABdhPJxWnW47sJQ9T2/8BdZhhOZMbOW7I2FSoB1MeYeY4KcXmQ1ajCllvvZtZlt7+JcUa4XQrMLvqw==
+X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr4118026wrt.32.1599165043167; 
+ Thu, 03 Sep 2020 13:30:43 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr
+ (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+ by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.42
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 03 Sep 2020 13:30:42 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v2 00/20] Add Allwinner H3/H5/H6/A64 HDMI audio
+Date: Thu,  3 Sep 2020 22:30:14 +0200
+Message-Id: <20200903203034.1057334-1-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200903201024.1109914-1-pierre-louis.bossart@linux.intel.com>
-References: <20200903201024.1109914-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Marcus Cooper <codekipper@gmail.com>,
+ linux-sunxi@googlegroups.com,
+ =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,137 +114,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-use fsync_provider for structure fields, 'codec_provider' and
-'codec_follower' for options and modify #defines to use CP and CF
-suffixes.
+Hi,
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/sound/uapi/asoc.h | 11 +++++++----
- include/topology.h        |  2 +-
- src/topology/pcm.c        | 37 ++++++++++++++++++++++++++-----------
- 3 files changed, 34 insertions(+), 16 deletions(-)
+Regarding the I2S LRCK polarity, Maxime Ripard test it and found that
+the LRCK is fine: https://lkml.org/lkml/2020/7/29/581.
+So the patch introduce this modification has been reverted.
 
-diff --git a/include/sound/uapi/asoc.h b/include/sound/uapi/asoc.h
-index 8558992f..91144a1f 100644
---- a/include/sound/uapi/asoc.h
-+++ b/include/sound/uapi/asoc.h
-@@ -178,10 +178,13 @@
- #define SND_SOC_TPLG_BCLK_CS         SND_SOC_TPLG_BCLK_CF
- 
- /* DAI topology FSYNC parameter
-- * For the backwards capability, by default codec is fsync master
-+ * For the backwards capability, by default codec is fsync provider
-  */
--#define SND_SOC_TPLG_FSYNC_CM         0 /* codec is fsync master */
--#define SND_SOC_TPLG_FSYNC_CS         1 /* codec is fsync slave */
-+#define SND_SOC_TPLG_FSYNC_CP         0 /* codec is fsync provider */
-+#define SND_SOC_TPLG_FSYNC_CF         1 /* codec is fsync follower */
-+/* keep previous definitions for compatibility */
-+#define SND_SOC_TPLG_FSYNC_CM         SND_SOC_TPLG_FSYNC_CP
-+#define SND_SOC_TPLG_FSYNC_CS         SND_SOC_TPLG_FSYNC_CF
- 
- /*
-  * Block Header.
-@@ -339,7 +342,7 @@ struct snd_soc_tplg_hw_config {
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
- 	__u8 bclk_provider;	/* SND_SOC_TPLG_BCLK_ value */
--	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
-+	__u8 fsync_provider;	/* SND_SOC_TPLG_FSYNC_ value */
- 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
- 	__le16 reserved;	/* for 32bit alignment */
- 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
-diff --git a/include/topology.h b/include/topology.h
-index 6c970649..4ade20df 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -1029,7 +1029,7 @@ struct snd_tplg_hw_config_template {
- 	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
- 	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
- 	unsigned char  bclk_provider;   /* SND_SOC_TPLG_BCLK_ value */
--	unsigned char  fsync_master;    /* SND_SOC_TPLG_FSYNC_ value */
-+	unsigned char  fsync_provider;  /* SND_SOC_TPLG_FSYNC_ value */
- 	unsigned char  mclk_direction;  /* SND_SOC_TPLG_MCLK_ value */
- 	unsigned short reserved;        /* for 32bit alignment */
- 	unsigned int mclk_rate;	        /* MCLK or SYSCLK freqency in Hz */
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index c6fb07e2..1a3052c7 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -1505,8 +1505,15 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
- 			continue;
- 		}
- 
--		if (strcmp(id, "fsync") == 0 ||
--		    strcmp(id, "fsync_master") == 0) {
-+		provider_legacy = false;
-+		if (strcmp(id, "fsync_provider") == 0) {
-+			SNDERR("deprecated option %s, please use 'fsync'\n", id);
-+			provider_legacy = true;
-+		}
-+
-+		if (provider_legacy ||
-+		    strcmp(id, "fsync") == 0) {
-+
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
- 
-@@ -1516,11 +1523,19 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
- 				 */
- 				SNDERR("deprecated fsync value '%s'", val);
- 
--				hw_cfg->fsync_master = SND_SOC_TPLG_FSYNC_CS;
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CF;
- 			} else if (!strcmp(val, "codec_slave")) {
--				hw_cfg->fsync_master = SND_SOC_TPLG_FSYNC_CS;
--			} else if (!strcmp(val, "codec_master")) {
--				hw_cfg->fsync_master = SND_SOC_TPLG_FSYNC_CM;
-+				SNDERR("deprecated fsync value '%s', use 'codec_follower'", val);
-+
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CF;
-+			} else if (!strcmp(val, "codec_follower")) {
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CF;
-+ 			} else if (!strcmp(val, "codec_master")) {
-+				SNDERR("deprecated fsync value '%s', use 'codec_provider'", val);
-+
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CP;
-+			} else if (!strcmp(val, "codec_provider")) {
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CP;
- 			}
- 			continue;
- 		}
-@@ -1649,9 +1664,9 @@ int tplg_save_hw_config(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 				       hc->bclk_rate);
- 	if (err >= 0 && hc->invert_bclk)
- 		err = tplg_save_printf(dst, pfx, "\tbclk_invert 1\n");
--	if (err >= 0 && hc->fsync_master)
--		err = tplg_save_printf(dst, pfx, "\tfsync_master '%s'\n",
--				       hc->fsync_master == SND_SOC_TPLG_FSYNC_CS ?
-+	if (err >= 0 && hc->fsync_provider)
-+		err = tplg_save_printf(dst, pfx, "\tfsync_provider '%s'\n",
-+				       hc->fsync_provider == SND_SOC_TPLG_FSYNC_CS ?
- 						"codec_slave" : "codec_master");
- 	if (err >= 0 && hc->fsync_rate)
- 		err = tplg_save_printf(dst, pfx, "\tfsync_freq %u\n",
-@@ -1809,7 +1824,7 @@ static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
- 	cfg->invert_bclk = tpl->invert_bclk;
- 	cfg->invert_fsync = tpl->invert_fsync;
- 	cfg->bclk_provider = tpl->bclk_provider;
--	cfg->fsync_master = tpl->fsync_master;
-+	cfg->fsync_provider = tpl->fsync_provider;
- 	cfg->mclk_direction = tpl->mclk_direction;
- 	cfg->reserved = tpl->reserved;
- 	cfg->mclk_rate = tpl->mclk_rate;
-@@ -2192,7 +2207,7 @@ next:
- 		hw->invert_bclk = link->hw_config[i].invert_bclk;
- 		hw->invert_fsync = link->hw_config[i].invert_fsync;
- 		hw->bclk_provider = link->hw_config[i].bclk_provider;
--		hw->fsync_master = link->hw_config[i].fsync_master;
-+		hw->fsync_provider = link->hw_config[i].fsync_provider;
- 		hw->mclk_direction = link->hw_config[i].mclk_direction;
- 		hw->mclk_rate = link->hw_config[i].mclk_rate;
- 		hw->bclk_rate = link->hw_config[i].bclk_rate;
+I have tested this on Allwinner H6 but this should be tested on older
+platform like sun4i family.
+
+Regards,
+Clement
+
+Change since v1:
+- rebase on next-20200828
+- add revert LRCK polarity
+- remove all simple-audio-card,frame-inversion in dts
+- add Ondrej patches for Orange Pi board
+- Add arm64 defconfig patch
+
+Clément Péron (4):
+  Revert "ASoC: sun4i-i2s: Fix the LRCK polarity"
+  ASoC: sun4i-i2s: Fix sun8i volatile regs
+  arm64: dts: allwinner: h6: Enable HDMI sound for Beelink GS1
+  arm64: defconfig: Enable Allwinner i2s driver
+
+Jernej Skrabec (3):
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  arm64: dts: allwinner: h6: Add HDMI audio node
+
+Marcus Cooper (10):
+  ASoC: sun4i-i2s: Adjust LRCLK width
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  arm: dts: sunxi: h3/h5: Add DAI node for HDMI
+  arm: dts: sunxi: h3/h5: Add HDMI audio
+  arm64: dts: allwinner: a64: Add DAI node for HDMI
+  arm64: dts: allwinner: a64: Add HDMI audio
+  arm: sun8i: h3: Add HDMI audio to Orange Pi 2
+  arm: sun8i: h3: Add HDMI audio to Beelink X2
+  arm64: dts: allwinner: a64: Add HDMI audio to Pine64
+
+Ondrej Jirman (3):
+  arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
+  ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
+  arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
+ arch/arm/boot/dts/sun8i-h3-beelink-x2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-one.dts   |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts    |   8 +
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  32 ++
+ .../boot/dts/allwinner/sun50i-a64-pine64.dts  |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  33 ++
+ .../dts/allwinner/sun50i-h5-orangepi-pc2.dts  |   8 +
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   8 +
+ .../dts/allwinner/sun50i-h6-orangepi-3.dts    |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  32 ++
+ arch/arm64/configs/defconfig                  |   1 +
+ sound/soc/sunxi/sun4i-i2s.c                   | 285 ++++++++++++++++--
+ 14 files changed, 431 insertions(+), 18 deletions(-)
+
 -- 
 2.25.1
 
