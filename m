@@ -2,79 +2,64 @@ Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E458DC433E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5EF1C433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:51:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B81E20775
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:50:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3078C206A5
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:51:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hiba1OVt";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ny980hjy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B81E20775
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P92016RZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3078C206A5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BECA21906;
-	Thu,  3 Sep 2020 12:49:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BECA21906
+	by alsa0.perex.cz (Postfix) with ESMTPS id A83A7192D;
+	Thu,  3 Sep 2020 12:50:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A83A7192D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599130222;
-	bh=+niwvcTwlWvSoZv6kAV2JhpMuJDFPstWYms2USZ7d24=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1599130259;
+	bh=KDuiiHagd8qS95037gs0PzZwpzyTKe9cgPi4P5btqnw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hiba1OVtk74psQnViLNg3VlXFahkUrxOZIAhYMiNNW7K8PqOH1cHHU8W2qD6Hq0Q3
-	 37ZFVvMoMBdX5sGRxdSCJQehsYJ1TO+qYz8xbCxHIiX4GVb98CwqNwGLf6nYypZZOI
-	 K8uBOWxKXbeC3egfMaz8dPjK19WNrpWR094pCa1s=
+	b=P92016RZqbucwc3th1GZ3ATQiTUrgUCbtQm+GYBnrTzOttxgVA1DFr5aoHbBBkzO4
+	 fjs4FgAG3TCMNZUzxQKB/yrxc0NXqDu5oLB2GELnvLY9eVF5GhrMtUXDav0Bjz2Mhq
+	 cLzoT4kvHAY1I3LTe0Eq7YXS6f0pAOuFZHZzo9v4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E126BF80217;
-	Thu,  3 Sep 2020 12:45:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36B8BF800F0;
+	Thu,  3 Sep 2020 12:48:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB682F8021D; Thu,  3 Sep 2020 12:45:04 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 34C24F802DC; Thu,  3 Sep 2020 12:47:59 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE045F8020D
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:45:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE045F8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ny980hjy"
-Received: from localhost (unknown [122.171.179.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1D9F320716;
- Thu,  3 Sep 2020 10:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599129900;
- bh=+niwvcTwlWvSoZv6kAV2JhpMuJDFPstWYms2USZ7d24=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ny980hjyju00iDOjfOO3hsBIP++lWvh948a0EcV7re146EvnnvB0w+0AWdukZNNGJ
- cNrxyewXQ5B+/FLfYF5pxQOoP7uc3817+kQdOkZur7UaRTNv4sYS3aX5cHXwXFzSUK
- aVxoy9hfzbDeHwcf4pFlS2Iw6UBrcSskCz5MATJk=
-Date: Thu, 3 Sep 2020 16:14:56 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH v2 00/10] soundwire: intel: add multi-link support
-Message-ID: <20200903104456.GR2639@vkoul-mobl>
-References: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBE80F802A9
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:47:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBE80F802A9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 90CAAB145;
+ Thu,  3 Sep 2020 10:47:53 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/3] ASoC: fsl: Replace tasklet with work
+Date: Thu,  3 Sep 2020 12:47:47 +0200
+Message-Id: <20200903104749.21435-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200903104749.21435-1-tiwai@suse.de>
+References: <20200903104749.21435-1-tiwai@suse.de>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,40 +75,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01-09-20, 23:05, Bard Liao wrote:
-> This series enables multi-link support for Intel platforms.
+The tasklet is an old API that should be deprecated, usually can be
+converted to another decent API.  In ASoC FSL ESAI CPU DAI driver, a
+tasklet is still used for offloading the hardware reset function.
+It can be achieved gracefully with a work queued, too.
 
-Applied all, thanks
+This patch replaces the tasklet usage in fsl esai driver with a simple
+work.  The conversion is fairly straightforward.
 
-> 
-> Changes in v2:
-> - Remove the "soundwire: intel: Only call sdw stream APIs for the first
->   cpu_dai" patch form this series. We will move the sounwdire stream
->   operations to machine driver in another series.
-> - Update the commit message and title of "soundwire: intel: add error log
->   for clock-stop invalid configs"
-> 
-> Pierre-Louis Bossart (10):
->   soundwire: intel: disable shim wake on suspend
->   soundwire: intel: ignore software command retries
->   soundwire: intel: add multi-link support
->   soundwire: intel: add missing support for all clock stop modes
->   soundwire: bus: update multi-link definition with hw sync details
->   soundwire: intel: add multi-link hw_synchronization information
->   soundwire: stream: enable hw_sync as needed by hardware
->   soundwire: intel: add error log for clock-stop invalid configs
->   soundwire: intel: pass link_mask information to each master
->   soundwire: intel: don't manage link power individually
-> 
->  drivers/soundwire/intel.c      | 264 ++++++++++++++++++++++++++++-----
->  drivers/soundwire/intel.h      |   2 +
->  drivers/soundwire/intel_init.c |   1 +
->  drivers/soundwire/stream.c     |  15 +-
->  include/linux/soundwire/sdw.h  |   6 +
->  5 files changed, 243 insertions(+), 45 deletions(-)
-> 
-> -- 
-> 2.17.1
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/fsl/fsl_esai.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 79b861afd986..39637ca78cdb 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -41,7 +41,7 @@ struct fsl_esai_soc_data {
+  * @extalclk: esai clock source to derive HCK, SCK and FS
+  * @fsysclk: system clock source to derive HCK, SCK and FS
+  * @spbaclk: SPBA clock (optional, depending on SoC design)
+- * @task: tasklet to handle the reset operation
++ * @work: work to handle the reset operation
+  * @soc: soc specific data
+  * @lock: spin lock between hw_reset() and trigger()
+  * @fifo_depth: depth of tx/rx FIFO
+@@ -67,7 +67,7 @@ struct fsl_esai {
+ 	struct clk *extalclk;
+ 	struct clk *fsysclk;
+ 	struct clk *spbaclk;
+-	struct tasklet_struct task;
++	struct work_struct work;
+ 	const struct fsl_esai_soc_data *soc;
+ 	spinlock_t lock; /* Protect hw_reset and trigger */
+ 	u32 fifo_depth;
+@@ -117,7 +117,7 @@ static irqreturn_t esai_isr(int irq, void *devid)
+ 				   ESAI_xCR_xEIE_MASK, 0);
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
+ 				   ESAI_xCR_xEIE_MASK, 0);
+-		tasklet_schedule(&esai_priv->task);
++		schedule_work(&esai_priv->work);
+ 	}
+ 
+ 	if (esr & ESAI_ESR_TINIT_MASK)
+@@ -708,9 +708,9 @@ static void fsl_esai_trigger_stop(struct fsl_esai *esai_priv, bool tx)
+ 			   ESAI_xFCR_xFR, 0);
+ }
+ 
+-static void fsl_esai_hw_reset(struct tasklet_struct *t)
++static void fsl_esai_hw_reset(struct work_struct *work)
+ {
+-	struct fsl_esai *esai_priv = from_tasklet(esai_priv, t, task);
++	struct fsl_esai *esai_priv = container_of(work, struct fsl_esai, work);
+ 	bool tx = true, rx = false, enabled[2];
+ 	unsigned long lock_flags;
+ 	u32 tfcr, rfcr;
+@@ -1070,7 +1070,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	tasklet_setup(&esai_priv->task, fsl_esai_hw_reset);
++	INIT_WORK(&esai_priv->work, fsl_esai_hw_reset);
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 
+@@ -1088,7 +1088,7 @@ static int fsl_esai_remove(struct platform_device *pdev)
+ 	struct fsl_esai *esai_priv = platform_get_drvdata(pdev);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+-	tasklet_kill(&esai_priv->task);
++	cancel_work_sync(&esai_priv->work);
+ 
+ 	return 0;
+ }
 -- 
-~Vinod
+2.16.4
+
