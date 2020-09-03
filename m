@@ -2,81 +2,78 @@ Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8D4EC43461
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 08:47:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7928AC433E2
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 09:02:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 282C320767
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 08:47:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BF46A20709
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 09:02:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bGAyvAD0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 282C320767
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NCIxKD1Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF46A20709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9605018C9;
-	Thu,  3 Sep 2020 10:46:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9605018C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D59018C8;
+	Thu,  3 Sep 2020 11:01:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D59018C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599122859;
-	bh=03EnqcyQFypnHdghhtGo93qPIb2kvhxNe6h166rB1KQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bGAyvAD0Y4BabYlp4219troKLDl/F0q1serxfTaCvFFTLU57CBEAElRgSDxP1Zv2o
-	 1Srf3eO8FClALBLLxo1n3Jut/0DC/lXadkmtrBGRse5/mKcEsg7Mnuz0rd7ZMyiVr5
-	 hbqzHa0v+3tE2tJZ1F+98fyqB4SvcuHKao2hUV8Q=
+	s=default; t=1599123766;
+	bh=tuyHARKxmppQ8fk4UK+8CE7c4LLYkoD6uDJRlTfcMeg=;
+	h=To:From:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NCIxKD1YyHIjnbxcJ8q/OjaK3yQLCiOvLXNleyIoWMZAVorzLLT7lO2Ah6mXJhGAa
+	 EnQ2cobaGpuid1p1+I4BAGagEfzDSG76HP1L6yaTDYckDK+J0xtAbVnREpRrc9aBUM
+	 Cbk52ZXBAsfLZ5Cfn/rPDQMRU7OLyYZqbxOaJEYc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 340C7F8020D;
-	Thu,  3 Sep 2020 10:46:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C172BF800BA;
+	Thu,  3 Sep 2020 11:01:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C501DF80217; Thu,  3 Sep 2020 10:46:47 +0200 (CEST)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A3EDDF80217; Thu,  3 Sep 2020 11:01:53 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52D00F801DA
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 10:46:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52D00F801DA
-Received: by verein.lst.de (Postfix, from userid 2407)
- id F0C1868CEE; Thu,  3 Sep 2020 10:46:43 +0200 (CEST)
-Date: Thu, 3 Sep 2020 10:46:43 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH 22/28] sgiseeq: convert from dma_cache_sync to
- dma_sync_single_for_device
-Message-ID: <20200903084643.GA25111@lst.de>
-References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-23-hch@lst.de>
- <20200901152209.GA14288@alpha.franken.de>
- <20200901171241.GA20685@alpha.franken.de> <20200901171627.GA8255@lst.de>
- <20200901173810.GA25282@alpha.franken.de> <20200903084302.GB24410@lst.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78240F801DA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 11:01:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78240F801DA
+IronPort-SDR: Q4bdr9w69+/gfdPl9mCJg2BssC0NhCx/FPqetcPM5tbgVWVVfLFZg/K2daHny+ofWHc2/s6sUp
+ Yh613wBUu7cg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="242360829"
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; d="scan'208";a="242360829"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Sep 2020 02:01:43 -0700
+IronPort-SDR: WPgHbA/wsE6IDh1DxYFVtmSk20c/2aPwoRvBCPhz5U6YKHGHjM7T3oelh6SsP6KD9ic0G0B0PN
+ UIUTXcnkow8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; d="scan'208";a="502988169"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.10.75])
+ ([10.213.10.75])
+ by fmsmga005.fm.intel.com with ESMTP; 03 Sep 2020 02:01:42 -0700
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [RFC] dpcm_fe_dai_do_trigger: implicit removal of _DRAIN cmd since
+ v5.4
+Message-ID: <2eea3479-1efb-ec82-32f2-e89614998aaa@intel.com>
+Date: Thu, 3 Sep 2020 11:01:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903084302.GB24410@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-Cc: alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
- linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
- linux-nvme@lists.infradead.org, linux-mips@vger.kernel.org,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- linux-mm@kvack.org, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
- Joonyoung Shim <jy0922.shim@samsung.com>, linux-scsi@vger.kernel.org,
- iommu@lists.linux-foundation.org, Ben Skeggs <bskeggs@redhat.com>,
- Matt Porter <mporter@kernel.crashing.org>, linux-media@vger.kernel.org,
- Tom Lendacky <thomas.lendacky@amd.com>, Pawel Osciak <pawel@osciak.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
- netdev@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
- linux-kernel@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,34 +89,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 03, 2020 at 10:43:02AM +0200, Christoph Hellwig wrote:
-> On Tue, Sep 01, 2020 at 07:38:10PM +0200, Thomas Bogendoerfer wrote:
-> > this is the problem:
-> > 
-> >        /* Always check for received packets. */
-> >         sgiseeq_rx(dev, sp, hregs, sregs);
-> > 
-> > so the driver will look at the rx descriptor on every interrupt, so
-> > we cache the rx descriptor on the first interrupt and if there was
-> > $no rx packet, we will only see it, if cache line gets flushed for
-> > some other reason.
-> 
-> That means a transfer back to device ownership is missing after a
-> (negative) check.
+Hello,
 
-E.g. something like this for the particular problem, although there
-might be other hiding elsewhere:
+Till v5.4 dpcm_fe_dai_do_trigger was supporting all pcm cmds as each 
+case: SND_SOC_DPCM_TRIGGER_PRE/ _POST/ _BESPOKE was simply passing cmd's 
+value to appropriate variant of _trigger().
 
-diff --git a/drivers/net/ethernet/seeq/sgiseeq.c b/drivers/net/ethernet/seeq/sgiseeq.c
-index 8507ff2420143a..a1c7be8a0d1e5d 100644
---- a/drivers/net/ethernet/seeq/sgiseeq.c
-+++ b/drivers/net/ethernet/seeq/sgiseeq.c
-@@ -403,6 +403,8 @@ static inline void sgiseeq_rx(struct net_device *dev, struct sgiseeq_private *sp
- 		rd = &sp->rx_desc[sp->rx_new];
- 		dma_sync_desc_cpu(dev, rd);
- 	}
-+	dma_sync_desc_dev(dev, rd);
-+
- 	dma_sync_desc_cpu(dev, &sp->rx_desc[orig_end]);
- 	sp->rx_desc[orig_end].rdma.cntinfo &= ~(HPCDMA_EOR);
- 	dma_sync_desc_dev(dev, &sp->rx_desc[orig_end]);
+Since the addition of:
+	acbf27746ecfa96b290b54cc7f05273482ea128a
+	ASoC: pcm: update FE/BE trigger order based on the command
+
+additional filters have been introduced for _PRE and _POST cases:
+
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+	case SNDRV_PCM_TRIGGER_RESUME:
+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		ret = dpcm_dai_trigger_fe_be(substream, cmd, true);
+		break;
+	case SNDRV_PCM_TRIGGER_STOP:
+	case SNDRV_PCM_TRIGGER_SUSPEND:
+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+		ret = dpcm_dai_trigger_fe_be(substream, cmd, false);
+		break;
+	default:
+		ret = -EINVAL;
+		break;
+	}
+
+effectively removing support for _DRAIN command - all requests will 
+yield -EINVAL. _BESPOKE was left alone so support remained there.
+
+Now, is DPCM no longer supporting _DRAIN and that's how things should be 
+-or- DPCM still intends to support _DRAIN and mentioned change is 
+unintended regression?
+
+Czarek
