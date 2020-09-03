@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E801FC433E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:45:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18048C433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:46:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DFFA20775
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:45:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 85F3C207EA
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:46:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m9DcbqQh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DFFA20775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gJ2glDrd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85F3C207EA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1E4E190C;
-	Thu,  3 Sep 2020 12:45:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1E4E190C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2C5618FA;
+	Thu,  3 Sep 2020 12:45:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2C5618FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599129958;
-	bh=4qzgDhjILBA4oGl8kaT+E/3ivsaEcRtpabmCfutZuaY=;
+	s=default; t=1599129973;
+	bh=EDE6xyrAnUN47IzzlU68NcUTwnzUKIsPsiEdEtf2KUg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m9DcbqQhhSiS70G2CkAccYpria5qhIIsXFg3n5XAMxibwEvcfcZta4G7iKPawdJv3
-	 AstqUCFicVMnDr91jKQqqAdh+baZVBpl5tJoVdubKA+XLHToCr0Lg2NlHCP/3ocrku
-	 ncUgmYsx4frd/UR/FnQ3SwB1PKq+gzurUWZPqzhc=
+	b=gJ2glDrd48n+cVYoSHuarxWXXQ+59/NgxVM4bgG2yFRJ09k+cq5ACR0L72gEDmevw
+	 +MRPD3ky3RLcqJ6Cc2f/KP6E/vjv64N38CQk6PLfRa0ih/xsyRLG8ryRhR/ptv9Fsw
+	 aYuUd36BHNWfMVNONZ+YpUR9NusOUhJtv2V4fziI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D631DF802E9;
-	Thu,  3 Sep 2020 12:42:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E352EF802F8;
+	Thu,  3 Sep 2020 12:42:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2545F80217; Thu,  3 Sep 2020 12:41:56 +0200 (CEST)
+ id 40B93F802E1; Thu,  3 Sep 2020 12:41:57 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 305EBF8025F
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:41:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 305EBF8025F
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4663F800F0
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:41:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4663F800F0
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B032CB148;
+ by mx2.suse.de (Postfix) with ESMTP id E7E85B15A;
  Thu,  3 Sep 2020 10:41:38 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 03/11] ALSA: usb-audio: Replace tasklet with work
-Date: Thu,  3 Sep 2020 12:41:23 +0200
-Message-Id: <20200903104131.21097-4-tiwai@suse.de>
+Subject: [PATCH 08/11] ALSA: riptide: Replace tasklet with threaded irq
+Date: Thu,  3 Sep 2020 12:41:28 +0200
+Message-Id: <20200903104131.21097-9-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200903104131.21097-1-tiwai@suse.de>
 References: <20200903104131.21097-1-tiwai@suse.de>
@@ -74,72 +74,105 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The tasklet is an old API that should be deprecated, usually can be
-converted to another decent API.  In USB-audio driver, a tasklet is
-still used in MIDI interface code for handling the output byte
-stream.  It can be achieved gracefully with a work queued in the
-high-prio system workqueue.
+converted to another decent API.  In Riptide driver, a tasklet is
+still used for offloading the PCM IRQ handling.  It can be achieved
+gracefully with a threaded IRQ, too.
 
-This patch replaces the tasklet usage in USB-audio driver with a
-simple work.
+This patch replaces the tasklet usage in riptide driver with a
+threaded IRQ.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/midi.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ sound/pci/riptide/riptide.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index e8287a05e36b..c8213652470c 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -142,7 +142,7 @@ struct snd_usb_midi_out_endpoint {
- 	unsigned int active_urbs;
- 	unsigned int drain_urbs;
- 	int max_transfer;		/* size of urb buffer */
--	struct tasklet_struct tasklet;
-+	struct work_struct work;
- 	unsigned int next_urb;
- 	spinlock_t buffer_lock;
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index 098c69b3b7aa..fcc2073c5025 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -445,7 +445,6 @@ struct snd_riptide {
+ 	union firmware_version firmware;
  
-@@ -344,9 +344,10 @@ static void snd_usbmidi_do_output(struct snd_usb_midi_out_endpoint *ep)
- 	spin_unlock_irqrestore(&ep->buffer_lock, flags);
+ 	spinlock_t lock;
+-	struct tasklet_struct riptide_tq;
+ 	struct snd_info_entry *proc_entry;
+ 
+ 	unsigned long received_irqs;
+@@ -1070,9 +1069,9 @@ getmixer(struct cmdif *cif, short num, unsigned short *rval,
+ 	return 0;
  }
  
--static void snd_usbmidi_out_tasklet(struct tasklet_struct *t)
-+static void snd_usbmidi_out_work(struct work_struct *work)
+-static void riptide_handleirq(struct tasklet_struct *t)
++static irqreturn_t riptide_handleirq(int irq, void *dev_id)
  {
--	struct snd_usb_midi_out_endpoint *ep = from_tasklet(ep, t, tasklet);
-+	struct snd_usb_midi_out_endpoint *ep =
-+		container_of(work, struct snd_usb_midi_out_endpoint, work);
+-	struct snd_riptide *chip = from_tasklet(chip, t, riptide_tq);
++	struct snd_riptide *chip = dev_id;
+ 	struct cmdif *cif = chip->cif;
+ 	struct snd_pcm_substream *substream[PLAYBACK_SUBSTREAMS + 1];
+ 	struct snd_pcm_runtime *runtime;
+@@ -1083,7 +1082,7 @@ static void riptide_handleirq(struct tasklet_struct *t)
+ 	unsigned int flag;
  
- 	snd_usbmidi_do_output(ep);
- }
-@@ -1177,7 +1178,7 @@ static void snd_usbmidi_output_trigger(struct snd_rawmidi_substream *substream,
- 			snd_rawmidi_proceed(substream);
- 			return;
+ 	if (!cif)
+-		return;
++		return IRQ_HANDLED;
+ 
+ 	for (i = 0; i < PLAYBACK_SUBSTREAMS; i++)
+ 		substream[i] = chip->playback_substream[i];
+@@ -1134,6 +1133,8 @@ static void riptide_handleirq(struct tasklet_struct *t)
+ 			}
  		}
--		tasklet_schedule(&port->ep->tasklet);
-+		queue_work(system_highpri_wq, &port->ep->work);
  	}
++
++	return IRQ_HANDLED;
  }
  
-@@ -1440,7 +1441,7 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
+ #ifdef CONFIG_PM_SLEEP
+@@ -1699,13 +1700,14 @@ snd_riptide_interrupt(int irq, void *dev_id)
+ {
+ 	struct snd_riptide *chip = dev_id;
+ 	struct cmdif *cif = chip->cif;
++	irqreturn_t ret = IRQ_HANDLED;
+ 
+ 	if (cif) {
+ 		chip->received_irqs++;
+ 		if (IS_EOBIRQ(cif->hwport) || IS_EOSIRQ(cif->hwport) ||
+ 		    IS_EOCIRQ(cif->hwport)) {
+ 			chip->handled_irqs++;
+-			tasklet_schedule(&chip->riptide_tq);
++			ret = IRQ_WAKE_THREAD;
+ 		}
+ 		if (chip->rmidi && IS_MPUIRQ(cif->hwport)) {
+ 			chip->handled_irqs++;
+@@ -1714,7 +1716,7 @@ snd_riptide_interrupt(int irq, void *dev_id)
+ 		}
+ 		SET_AIACK(cif->hwport);
  	}
+-	return IRQ_HANDLED;
++	return ret;
+ }
  
- 	spin_lock_init(&ep->buffer_lock);
--	tasklet_setup(&ep->tasklet, snd_usbmidi_out_tasklet);
-+	INIT_WORK(&ep->work, snd_usbmidi_out_work);
- 	init_waitqueue_head(&ep->drain_wait);
+ static void
+@@ -1843,7 +1845,6 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
+ 	chip->received_irqs = 0;
+ 	chip->handled_irqs = 0;
+ 	chip->cif = NULL;
+-	tasklet_setup(&chip->riptide_tq, riptide_handleirq);
  
- 	for (i = 0; i < 0x10; ++i)
-@@ -1503,7 +1504,7 @@ void snd_usbmidi_disconnect(struct list_head *p)
- 	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i) {
- 		struct snd_usb_midi_endpoint *ep = &umidi->endpoints[i];
- 		if (ep->out)
--			tasklet_kill(&ep->out->tasklet);
-+			cancel_work_sync(&ep->out->work);
- 		if (ep->out) {
- 			for (j = 0; j < OUTPUT_URBS; ++j)
- 				usb_kill_urb(ep->out->urbs[j].urb);
+ 	if ((chip->res_port =
+ 	     request_region(chip->port, 64, "RIPTIDE")) == NULL) {
+@@ -1856,8 +1857,9 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
+ 	hwport = (struct riptideport *)chip->port;
+ 	UNSET_AIE(hwport);
+ 
+-	if (request_irq(pci->irq, snd_riptide_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, chip)) {
++	if (request_threaded_irq(pci->irq, snd_riptide_interrupt,
++				 riptide_handleirq, IRQF_SHARED,
++				 KBUILD_MODNAME, chip)) {
+ 		snd_printk(KERN_ERR "Riptide: unable to grab IRQ %d\n",
+ 			   pci->irq);
+ 		snd_riptide_free(chip);
 -- 
 2.16.4
 
