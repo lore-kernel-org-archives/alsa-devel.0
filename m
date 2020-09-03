@@ -8,89 +8,90 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCAF2C2D0A7
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3A6FC2D0E3
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:40:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A0C220678
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:39:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 360C52071B
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 20:40:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qsfTMj/B";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0aIAKeZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A0C220678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="peNKeI+g";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pzyYq+Ka"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 360C52071B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8B9B1A9C;
-	Thu,  3 Sep 2020 22:38:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8B9B1A9C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B17961AAB;
+	Thu,  3 Sep 2020 22:39:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B17961AAB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599165570;
-	bh=Ffu0p009uCbD0lcNfaK6xKfJNWxF0SG5XCL5X9Lp6GY=;
+	s=default; t=1599165610;
+	bh=vyTcdY3VF/rxQ5ORthPlvZQrjnmGeE5460vP0xUmqj4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qsfTMj/B8r1JpltQ0dC2butk/I+sqh9tL5l3T5c6+lJx7ckAzWa/qM+x3UNF7vTl2
-	 h/Iah2pW1IzVAgl2cAs3+6JMTMdb/BEdzYQRzhhxizskfHgHhnZjsFptdXx3D5kWI9
-	 Lg4mVbOZ3AqqHQ9zhikCj66BEUL01mEE/ISWfBYk=
+	b=peNKeI+g4G2EtxtzlFo6Qk/sUgZ9xy2B/pULHJNdFuf0Td5Et463cBKPIMWLowkpi
+	 xlEwxuxtM1f8ZShp9Xd12IfOfqO1+m2+1AC8yugPxa+aOcpyY5pEt3nu577Mjuwxxv
+	 W0HAFiE3SR6ym29pxmNGsor4RGF98ZnvpOqF8L/Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97671F80350;
-	Thu,  3 Sep 2020 22:31:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 760F8F8035F;
+	Thu,  3 Sep 2020 22:31:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20EBCF80346; Thu,  3 Sep 2020 22:31:24 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id BFBDAF80360; Thu,  3 Sep 2020 22:31:29 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D775F802C4
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 22:31:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D775F802C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB8F4F80328
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 22:31:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB8F4F80328
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="O0aIAKeZ"
-Received: by mail-wm1-x343.google.com with SMTP id w2so4134419wmi.1
- for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2020 13:31:01 -0700 (PDT)
+ header.b="pzyYq+Ka"
+Received: by mail-wm1-x342.google.com with SMTP id q9so4120464wmj.2
+ for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2020 13:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=ZKqv9b9ye6nXeHQ0sv780xJ1tkZxHw2igrPZLKbetcg=;
- b=O0aIAKeZyRNk7s9q8EZqQBEC/clHIDc8DdK7q9xpLt4BdmEh5sK9RmICcgAEITQigF
- IjzCcyi0HtNrESluB8FrQS36PWGA5qUgjamBvc35j2hh37RYxg0PF2EmgMxN9mkRbx1s
- hRwQ8y+6iMxrUOduNrhX6aTGkgSc+663j5tTNlAc7iM+rF9afhNH5cpkOxfpN8YaAV2j
- FynxtTlWPmvEJ39aOTTFJ4fBbGrkDWP3xbKsZt2H07yOzd4zkA4zc+yemiP90EkDAVfj
- gmV6c/KRgxIMO8mM36+4DOG1gfa+YTfswGvilmcURlve/J41Jw0OqFq+N0XOD4SE4Yis
- VNpQ==
+ bh=5IYak11rFzawAh9fCR1gi4F4Oa4pOW/pvtZIichIlV0=;
+ b=pzyYq+KaGPIgvObH/Te0U/33+5xx6ZAbGyUsLa4mRSRnyCwSM5AgxcMgDzPU24Zx9y
+ /Gw2/qKtPZ/e7vTKokOQp3ZwJktnHuv8qXYTxUiYITgYXx08sH98htb1pfcUDvpHzdE2
+ /LMyPtBHF+mEvb5guDq/66ZQKnSfkDQoQmc+WBEQFUhVjqPjZVlzz+qwPwV9V/OieUeU
+ p3G8wDB61e8aeG7pz796+n2EhYn129DBPnSFvFfVZZcndskHBZtq8OsJtUKAmcLQ8lW4
+ uyuLG1XRVSva3V3cS/MD07LkvHwzLM93EPdK3M++fjzk53+nw3d2jZskQd36mWx1xw4w
+ VQaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=ZKqv9b9ye6nXeHQ0sv780xJ1tkZxHw2igrPZLKbetcg=;
- b=Wbr1AFJBSQPHvx4YQek8wEWsFHDoHfTpWua29EuAM2uAUfvpwKV2MkC7my//UxMqjb
- MQEJubjaFpl2DWrOQXWSNVnA1NWtZxu2pCrWr+DdBlnV8Z4v5CzP5su+iKI2+iPHy/0K
- XrrTNtFywhGC3GqgBhT6OkIxVyISrKegbq2j0w/+hCY1OR/rwEboyqz9LFfQCC8QOoxJ
- jkRrBoJsW0u8Ncof4XnDpptICCjrfxPTWMSojt0uOy7s9lQUtxXrWyDBq8vlcOhqimnV
- KEU4vU2E9TFAYWyn4C7cKUmhbWRzEyW6sxtR83ME+vq/gYauQCIJopLWJSluu1X6cfWq
- tw2w==
-X-Gm-Message-State: AOAM530z5dBNNTZmxevFKG9iEPvkAnBgmKNtdCekgAZObwG7XN09+NtU
- xXjMKnEGMz+KVlD0kfg5f/Q=
-X-Google-Smtp-Source: ABdhPJxa1EVUcgTCV2q8x5mnFjfUNgDGgjSILnbXs8nPpEpQiRI50TKDBegx1b73F86O67npyqTcCA==
-X-Received: by 2002:a1c:8003:: with SMTP id b3mr4498954wmd.121.1599165060920; 
- Thu, 03 Sep 2020 13:31:00 -0700 (PDT)
+ bh=5IYak11rFzawAh9fCR1gi4F4Oa4pOW/pvtZIichIlV0=;
+ b=B/3Y7voRT0yCPTYF0Vy+oR2SZQQ/v0YZwC+nKsDeP0feCEhyEHgf9BELQcnF8yWb9A
+ mnWO6qaFQcw1dHmUtJ3P7WS7Gawhl3eLM1UAQg54MWEDa9VQSglsYBw747rEZjDyzSVR
+ TS1w/vNiIauhZuDrEiG3T2Dk0MWAUaydqiZY/+JuRTYhiedWtnbZWCHofdSedrmkbe/B
+ r5yP5GEZ0G62Jsew4fxTQRxL4VieE5nhBJF9rNcYlt8wGSN4pXVMkr10RWxZM1BajNvp
+ MKX7JKw45nqGqbn33g6W8Ztuvb0ScD7lwIoDjNZp+DUMzRTMUcu5BK0wnndVDZyh+Dai
+ vacQ==
+X-Gm-Message-State: AOAM533F5nyAhxmkrQxL2fPrg8Ce1JiAqs9c1wYffKi5l3siXiRAp54D
+ rxhwNFmOg25CN19jT/Z2iEU=
+X-Google-Smtp-Source: ABdhPJxmuEEdH4QpFHEEFgjUw40D/E8UZi7btVLBAArqpLdAt3NR8lscjeIE7Qodwx7RuSbye8eVFA==
+X-Received: by 2002:a05:600c:414e:: with SMTP id
+ h14mr4116090wmm.2.1599165067180; 
+ Thu, 03 Sep 2020 13:31:07 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr
  (213-245-241-245.rev.numericable.fr. [213.245.241.245])
- by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.59
+ by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.31.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 03 Sep 2020 13:31:00 -0700 (PDT)
+ Thu, 03 Sep 2020 13:31:06 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v2 15/20] arm: sun8i: h3: Add HDMI audio to Beelink X2
-Date: Thu,  3 Sep 2020 22:30:29 +0200
-Message-Id: <20200903203034.1057334-16-peron.clem@gmail.com>
+Subject: [PATCH v2 20/20] arm64: defconfig: Enable Allwinner i2s driver
+Date: Thu,  3 Sep 2020 22:30:34 +0200
+Message-Id: <20200903203034.1057334-21-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
 References: <20200903203034.1057334-1-peron.clem@gmail.com>
@@ -118,35 +119,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Marcus Cooper <codekipper@gmail.com>
+Enable Allwinner I2S driver for arm64 defconfig.
 
-Enable HDMI audio on the Beelink X2.
-
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-h3-beelink-x2.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts b/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
-index 45a24441ff18..f9bec6935120 100644
---- a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
-@@ -142,6 +142,14 @@ hdmi_out_con: endpoint {
- 	};
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
-+&i2s2 {
-+	status = "okay";
-+};
-+
- &ir {
- 	linux,rc-map-name = "rc-tanix-tx3mini";
- 	pinctrl-names = "default";
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 5828b42f5243..4eaac49dccbb 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -691,6 +691,7 @@ CONFIG_SND_SOC_ROCKCHIP_RT5645=m
+ CONFIG_SND_SOC_RK3399_GRU_SOUND=m
+ CONFIG_SND_SOC_SAMSUNG=y
+ CONFIG_SND_SOC_RCAR=m
++CONFIG_SND_SUN4I_I2S=m
+ CONFIG_SND_SUN4I_SPDIF=m
+ CONFIG_SND_SOC_AK4613=m
+ CONFIG_SND_SOC_ES7134=m
 -- 
 2.25.1
 
