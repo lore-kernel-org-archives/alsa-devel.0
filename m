@@ -2,77 +2,62 @@ Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4694C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:37:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFAE5C433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:42:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5AF8120716
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:37:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 60C4920716
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:42:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WA9gKWrL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jRAUC0z+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AF8120716
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M4hbB01W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60C4920716
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9CBF18D9;
-	Thu,  3 Sep 2020 12:36:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9CBF18D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8FDB18C2;
+	Thu,  3 Sep 2020 12:41:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8FDB18C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599129442;
-	bh=kqm1wlMuvFVbDd51jTk7L1toUWZ2fJJxYONbN3DTuRg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1599129761;
+	bh=Ru5RKXwZrmgzkKcRWpZxQ4dDQHg60gcAL9JvXNvTLTo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WA9gKWrLGl+ARM5ejTdjEI3h+hYWhiBdLhJ5ZeekKUZmlkYw8Y/LzOKXfrYRLMpCL
-	 xWgIdOb3klv3jxuaHq7xuz/g36OruMn2e+mUyQl7vw4EvzQaVfa3zh5SFVqM9QxqvG
-	 Iyp+7DQPqoiE2Zvbzi3H3GvX5zTNIc7g6z8nu+Tg=
+	b=M4hbB01W4RiRviFH88O52jwVPp1L878K5cZCKe9aqVhdyUzQo+TTbWrauRLHO1VLr
+	 mXHLpa3ICVwbfp+5NS8LZc/Th2e3kKJvJgDJxkIBNexmtPPrXToRLsmvi2z5OuSCcU
+	 g20/J7ScV0bFckFJCxbXD64s7uKgEmBH6h/NA07Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DFBFF8020D;
-	Thu,  3 Sep 2020 12:36:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05BF1F802C3;
+	Thu,  3 Sep 2020 12:41:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3F3AF80217; Thu,  3 Sep 2020 12:36:30 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id F14BDF802DC; Thu,  3 Sep 2020 12:41:48 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C698EF800F0
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:36:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C698EF800F0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jRAUC0z+"
-Received: from localhost (unknown [122.171.179.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EB79F20716;
- Thu,  3 Sep 2020 10:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599129381;
- bh=kqm1wlMuvFVbDd51jTk7L1toUWZ2fJJxYONbN3DTuRg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jRAUC0z+n5b92cAV5/GcMQTk5OGfNurSzIl5vVM29P3nRNADe8LBuSTIZ1SDvqQv4
- ipoRbX5nqJZHVJRtHZLUWZPUwCT1qwaNinDjzkpiWh//3/ESw777/4IDTNVVL+X0Dj
- g+HNpeSd7bY7tBy0OglWdwKxPrZJ1TNX4pqPNM20=
-Date: Thu, 3 Sep 2020 16:06:17 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/3] regmap: add SoundWire 1.2 MBQ support
-Message-ID: <20200903103617.GP2639@vkoul-mobl>
-References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6766CF8020D
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:41:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6766CF8020D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id AC989B145;
+ Thu,  3 Sep 2020 10:41:38 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 02/11] ALSA: timer: Replace tasklet with work
+Date: Thu,  3 Sep 2020 12:41:22 +0200
+Message-Id: <20200903104131.21097-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200903104131.21097-1-tiwai@suse.de>
+References: <20200903104131.21097-1-tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,50 +73,146 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01-09-20, 11:22, Pierre-Louis Bossart wrote:
-> In preparation of the upstream contribution of SDCA (SoundWire Device
-> Class for Audio) ASoC codec drivers [1] [2], add regmap support
-> SoundWire 1.2 MBQ support. The MBQ (Multi-Byte Quantity) registers
-> need to be handled in a different way from regular 8-bit SoundWire
-> registers, their main application is going to be for volume/gain
-> controls.
-> 
-> The second patch was initially suggested for inclusion in the
-> SoundWire tree, and was modified to add more background information on
-> SDCA in the commit message as requested by Vinod Koul.
+The tasklet is an old API that should be deprecated, usually can be
+converted to another decent API.  In ALSA core timer API, the
+callbacks can be offlined to a tasklet when a flag is set in the timer
+backend.  It can be achieved gracefully with a work queued in the
+high-prio system workqueue.
 
-Is this targetted towards the sdw tree or regmap tree, I think it may
-have dependencies so sdw can be used.
+This patch replaces the usage of tasklet in ALSA timer API with a
+simple work.  Currently the tasklet feature is used only in the system
+timer and hrtimer backends, so both are patched to use the new flag
+name SNDRV_TIMER_HW_WORK, too.
 
-It would be nice to mention these things here in cover
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/timer.h |  8 ++++----
+ sound/core/hrtimer.c  |  2 +-
+ sound/core/timer.c    | 20 ++++++++++----------
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-> 
-> Changes since v1:
-> Rebased on regmap tree (conflict with SPI stuff).
-> Removed mod_devicetable.h header
-> Removed -EOPNOTSUPP error codes, use -ENOTSUPP
-> Added long description of SDCA
-> Used FIELD_PREP/GET as suggested by Vinod Koul
-> Added Bard Liao's Acked-by tag.
-> 
-> Pierre-Louis Bossart (3):
->   regmap: sdw: add required header files
->   soundwire: SDCA: add helper macro to access controls
->   regmap: sdw: add support for SoundWire 1.2 MBQ
-> 
->  drivers/base/regmap/Kconfig             |   6 +-
->  drivers/base/regmap/Makefile            |   1 +
->  drivers/base/regmap/regmap-sdw-mbq.c    | 101 ++++++++++++++++++++++++
->  drivers/base/regmap/regmap-sdw.c        |   2 +
->  include/linux/regmap.h                  |  21 +++++
->  include/linux/soundwire/sdw_registers.h |  33 ++++++++
->  6 files changed, 163 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/base/regmap/regmap-sdw-mbq.c
-> 
-> 
-> base-commit: d17343b87da422a59d99a3ed130573dbeb96c582
-> -- 
-> 2.25.1
-
+diff --git a/include/sound/timer.h b/include/sound/timer.h
+index 23e885d31525..760e132cc0cd 100644
+--- a/include/sound/timer.h
++++ b/include/sound/timer.h
+@@ -21,13 +21,13 @@
+ #define SNDRV_TIMER_HW_STOP	0x00000002	/* call stop before start */
+ #define SNDRV_TIMER_HW_SLAVE	0x00000004	/* only slave timer (variable resolution) */
+ #define SNDRV_TIMER_HW_FIRST	0x00000008	/* first tick can be incomplete */
+-#define SNDRV_TIMER_HW_TASKLET	0x00000010	/* timer is called from tasklet */
++#define SNDRV_TIMER_HW_WORK	0x00000010	/* timer is called from work */
+ 
+ #define SNDRV_TIMER_IFLG_SLAVE	  0x00000001
+ #define SNDRV_TIMER_IFLG_RUNNING  0x00000002
+ #define SNDRV_TIMER_IFLG_START	  0x00000004
+ #define SNDRV_TIMER_IFLG_AUTO	  0x00000008	/* auto restart */
+-#define SNDRV_TIMER_IFLG_FAST	  0x00000010	/* fast callback (do not use tasklet) */
++#define SNDRV_TIMER_IFLG_FAST	  0x00000010	/* fast callback (do not use work) */
+ #define SNDRV_TIMER_IFLG_CALLBACK 0x00000020	/* timer callback is active */
+ #define SNDRV_TIMER_IFLG_EXCLUSIVE 0x00000040	/* exclusive owner - no more instances */
+ #define SNDRV_TIMER_IFLG_EARLY_EVENT 0x00000080	/* write early event to the poll queue */
+@@ -74,7 +74,7 @@ struct snd_timer {
+ 	struct list_head active_list_head;
+ 	struct list_head ack_list_head;
+ 	struct list_head sack_list_head; /* slow ack list head */
+-	struct tasklet_struct task_queue;
++	struct work_struct task_work;
+ 	int max_instances;	/* upper limit of timer instances */
+ 	int num_instances;	/* current number of timer instances */
+ };
+@@ -96,7 +96,7 @@ struct snd_timer_instance {
+ 	unsigned long ticks;		/* auto-load ticks when expired */
+ 	unsigned long cticks;		/* current ticks */
+ 	unsigned long pticks;		/* accumulated ticks for callback */
+-	unsigned long resolution;	/* current resolution for tasklet */
++	unsigned long resolution;	/* current resolution for work */
+ 	unsigned long lost;		/* lost ticks */
+ 	int slave_class;
+ 	unsigned int slave_id;
+diff --git a/sound/core/hrtimer.c b/sound/core/hrtimer.c
+index c61ba52a530a..e97ff8cccb64 100644
+--- a/sound/core/hrtimer.c
++++ b/sound/core/hrtimer.c
+@@ -114,7 +114,7 @@ static int snd_hrtimer_stop(struct snd_timer *t)
+ }
+ 
+ static const struct snd_timer_hardware hrtimer_hw __initconst = {
+-	.flags =	SNDRV_TIMER_HW_AUTO | SNDRV_TIMER_HW_TASKLET,
++	.flags =	SNDRV_TIMER_HW_AUTO | SNDRV_TIMER_HW_WORK,
+ 	.open =		snd_hrtimer_open,
+ 	.close =	snd_hrtimer_close,
+ 	.start =	snd_hrtimer_start,
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 6e27d87b18ed..4e74aa3d9e1f 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -813,12 +813,12 @@ static void snd_timer_clear_callbacks(struct snd_timer *timer,
+ }
+ 
+ /*
+- * timer tasklet
++ * timer work
+  *
+  */
+-static void snd_timer_tasklet(struct tasklet_struct *t)
++static void snd_timer_work(struct work_struct *work)
+ {
+-	struct snd_timer *timer = from_tasklet(timer, t, task_queue);
++	struct snd_timer *timer = container_of(work, struct snd_timer, task_work);
+ 	unsigned long flags;
+ 
+ 	if (timer->card && timer->card->shutdown) {
+@@ -843,7 +843,7 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
+ 	unsigned long resolution;
+ 	struct list_head *ack_list_head;
+ 	unsigned long flags;
+-	int use_tasklet = 0;
++	bool use_work = false;
+ 
+ 	if (timer == NULL)
+ 		return;
+@@ -884,7 +884,7 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
+ 			--timer->running;
+ 			list_del_init(&ti->active_list);
+ 		}
+-		if ((timer->hw.flags & SNDRV_TIMER_HW_TASKLET) ||
++		if ((timer->hw.flags & SNDRV_TIMER_HW_WORK) ||
+ 		    (ti->flags & SNDRV_TIMER_IFLG_FAST))
+ 			ack_list_head = &timer->ack_list_head;
+ 		else
+@@ -919,11 +919,11 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
+ 	snd_timer_process_callbacks(timer, &timer->ack_list_head);
+ 
+ 	/* do we have any slow callbacks? */
+-	use_tasklet = !list_empty(&timer->sack_list_head);
++	use_work = !list_empty(&timer->sack_list_head);
+ 	spin_unlock_irqrestore(&timer->lock, flags);
+ 
+-	if (use_tasklet)
+-		tasklet_schedule(&timer->task_queue);
++	if (use_work)
++		queue_work(system_highpri_wq, &timer->task_work);
+ }
+ EXPORT_SYMBOL(snd_timer_interrupt);
+ 
+@@ -967,7 +967,7 @@ int snd_timer_new(struct snd_card *card, char *id, struct snd_timer_id *tid,
+ 	INIT_LIST_HEAD(&timer->ack_list_head);
+ 	INIT_LIST_HEAD(&timer->sack_list_head);
+ 	spin_lock_init(&timer->lock);
+-	tasklet_setup(&timer->task_queue, snd_timer_tasklet);
++	INIT_WORK(&timer->task_work, snd_timer_work);
+ 	timer->max_instances = 1000; /* default limit per timer */
+ 	if (card != NULL) {
+ 		timer->module = card->module;
+@@ -1200,7 +1200,7 @@ static int snd_timer_s_close(struct snd_timer *timer)
+ 
+ static const struct snd_timer_hardware snd_timer_system =
+ {
+-	.flags =	SNDRV_TIMER_HW_FIRST | SNDRV_TIMER_HW_TASKLET,
++	.flags =	SNDRV_TIMER_HW_FIRST | SNDRV_TIMER_HW_WORK,
+ 	.resolution =	1000000000L / HZ,
+ 	.ticks =	10000000L,
+ 	.close =	snd_timer_s_close,
 -- 
-~Vinod
+2.16.4
+
