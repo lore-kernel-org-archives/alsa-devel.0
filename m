@@ -2,57 +2,61 @@ Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 699B6C433E9
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:51:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85EB1C2BB84
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:52:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D19A206A5
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:51:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06D5C207EA
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 10:52:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kvVpb7si"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D19A206A5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MBdX+5t8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06D5C207EA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 830401924;
-	Thu,  3 Sep 2020 12:50:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 830401924
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70BBF192D;
+	Thu,  3 Sep 2020 12:51:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70BBF192D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599130292;
-	bh=9ewmGijru5K5XWHREyKbu2JyXAi93fxIJVyEj1sFnUk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kvVpb7siyfukBPQ4k/9b5Ji9gCpka9yb9BrFzeZP/JXVvzdqgZAvHeWWw/BhhuwpC
-	 dUK6P8KtcPfxRB8w2ym2RnsUXQQHXduSBglnfdfTN6tamlPyr8uARO5gdxtg1jwcg5
-	 PFsqJXI2Uu+9+zPHbXFkjUX3p6scM3/Q04mQO52E=
+	s=default; t=1599130319;
+	bh=lMDRkzK+SOdIJczYhFF8Emk5f0XLlstvZUEFboInU/A=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MBdX+5t8cy9EdMr8iFKC4hnyhRe6wHavQtPU3uqu4t+reMzOdF7nbQU9LUz2Jy/E5
+	 GOlla6VrXYbg7IjgJDds63PUJH7URwSv1tFi0IoEph0UYlweSQUJwgV7zToW00VFsC
+	 VtVv8+OqnTHqpC+qONOAlUGhDXfOuQFfHViWmh3M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A928F802DD;
-	Thu,  3 Sep 2020 12:48:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FB82F802BC;
+	Thu,  3 Sep 2020 12:48:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4012DF802A9; Thu,  3 Sep 2020 12:47:59 +0200 (CEST)
+ id CCAD8F802E2; Thu,  3 Sep 2020 12:48:04 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5436F800F0
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:47:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5436F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B206F802C4
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 12:47:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B206F802C4
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 81097B01D;
+ by mx2.suse.de (Postfix) with ESMTP id B0DA9B149;
  Thu,  3 Sep 2020 10:47:53 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ASoC: Kill tasklet usage
-Date: Thu,  3 Sep 2020 12:47:46 +0200
-Message-Id: <20200903104749.21435-1-tiwai@suse.de>
+Subject: [PATCH 3/3] ASoC: txx9: Replace tasklet with work
+Date: Thu,  3 Sep 2020 12:47:49 +0200
+Message-Id: <20200903104749.21435-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200903104749.21435-1-tiwai@suse.de>
+References: <20200903104749.21435-1-tiwai@suse.de>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
  Shengjiu Wang <shengjiu.wang@gmail.com>, Timur Tabi <timur@kernel.org>,
  Xiubo Li <Xiubo.Lee@gmail.com>
@@ -71,31 +75,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The tasklet is an old API that should be deprecated, usually can be
+converted to another decent API.  In ASoC TXx9 ACLC driver, a tasklet
+is still used for offloading the hardware reset function.  It can be
+achieved gracefully with a work queued, too.
 
-this is another series of patches to kill tasklet usages in sound
-tree, at this time, applied to ASoC drivers.
-The patches are applied on top the tasklet API conversion patches,
-found in topic/tasklet-convert branch of sound git tree, which will be
-included in 5.9-rc4.
+This patch replaces the tasklet usage in TXx9 ACLC driver with a
+simple work.  The conversion is fairly straightforward.
 
-
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ASoC: fsl: Replace tasklet with work
-  ASoC: sh: Replace tasklet with work
-  ASoC: txx9: Replace tasklet with work
-
- sound/soc/fsl/fsl_esai.c  | 14 +++++++-------
- sound/soc/sh/siu.h        |  2 +-
- sound/soc/sh/siu_pcm.c    | 21 +++++++++++----------
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
  sound/soc/txx9/txx9aclc.c | 11 ++++++-----
  sound/soc/txx9/txx9aclc.h |  2 +-
- 5 files changed, 26 insertions(+), 24 deletions(-)
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index 939b33ec39f5..1d2d0d9b57b0 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -102,7 +102,7 @@ static void txx9aclc_dma_complete(void *arg)
+ 	if (dmadata->frag_count >= 0) {
+ 		dmadata->dmacount--;
+ 		if (!WARN_ON(dmadata->dmacount < 0))
+-			tasklet_schedule(&dmadata->tasklet);
++			queue_work(system_highpri_wq, &dmadata->work);
+ 	}
+ 	spin_unlock_irqrestore(&dmadata->dma_lock, flags);
+ }
+@@ -134,9 +134,10 @@ txx9aclc_dma_submit(struct txx9aclc_dmadata *dmadata, dma_addr_t buf_dma_addr)
+ 
+ #define NR_DMA_CHAIN		2
+ 
+-static void txx9aclc_dma_tasklet(struct tasklet_struct *t)
++static void txx9aclc_dma_work(struct work_struct *work)
+ {
+-	struct txx9aclc_dmadata *dmadata = from_tasklet(dmadata, t, tasklet);
++	struct txx9aclc_dmadata *dmadata =
++		container_of(work, struct txx9aclc_dmadata, work);
+ 	struct dma_chan *chan = dmadata->dma_chan;
+ 	struct dma_async_tx_descriptor *desc;
+ 	struct snd_pcm_substream *substream = dmadata->substream;
+@@ -208,7 +209,7 @@ static int txx9aclc_pcm_trigger(struct snd_soc_component *component,
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 		dmadata->frag_count = -1;
+-		tasklet_schedule(&dmadata->tasklet);
++		queue_work(system_highpri_wq, &dmadata->work);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+@@ -352,7 +353,7 @@ static int txx9aclc_dma_init(struct txx9aclc_soc_device *dev,
+ 			"playback" : "capture");
+ 		return -EBUSY;
+ 	}
+-	tasklet_setup(&dmadata->tasklet, txx9aclc_dma_tasklet);
++	INIT_WORK(&dmadata->work, txx9aclc_dma_work);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/txx9/txx9aclc.h b/sound/soc/txx9/txx9aclc.h
+index 7b3d57e8e546..37c691ba56ed 100644
+--- a/sound/soc/txx9/txx9aclc.h
++++ b/sound/soc/txx9/txx9aclc.h
+@@ -43,7 +43,7 @@ struct txx9aclc_dmadata {
+ 	struct resource *dma_res;
+ 	struct txx9dmac_slave dma_slave;
+ 	struct dma_chan *dma_chan;
+-	struct tasklet_struct tasklet;
++	struct work_struct work;
+ 	spinlock_t dma_lock;
+ 	int stream; /* SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CAPTURE */
+ 	struct snd_pcm_substream *substream;
 -- 
 2.16.4
 
