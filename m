@@ -6,84 +6,87 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C8E2C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 17:50:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71007C433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 18:10:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7560A2072A
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 17:50:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C509820716
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 18:10:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D7o1qgq9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhrzzXdX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7560A2072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qtANFaxb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LFz7ff7j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C509820716
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C729F18E1;
-	Thu,  3 Sep 2020 19:49:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C729F18E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BEED1917;
+	Thu,  3 Sep 2020 20:09:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BEED1917
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599155440;
-	bh=PwReb1wR+sXRrMZqogs7x9Vmd4V3JF81RZqSgbUS1AE=;
+	s=default; t=1599156611;
+	bh=nPiDyoWWJzvm42z4eUx7TC5eLYWJUkO9RtvWj3RGC4o=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D7o1qgq9e+8UIMuPJpEAEAdX2JWdxDhAG0ZoteiZAPhdQRyU+OZ5pbxVp0OWCKk/K
-	 eXYsb96ysta5xb0cXyL7oY71+NgzMRGt5QBISZaVe2Hy4xRErWzAKajfYL9eMovWiI
-	 rVggPIvWyYS+OU5PvcSNGHQpOyy6rPPfW0i4V+C0=
+	b=qtANFaxbPumSEJrV0AxvJyKpjW/bpC1hTb9z3NT8DN+Bt1P6LQRSjH5aj3DQNO6Nw
+	 +LtP1o15lJYO+8x14co56QMJ6551+EnfNueTj+iRh6PJzD9ArlrkOeK+N7yI6EZ8Zf
+	 rPF68wT1FDps4lCiinScr20RtpBqihUYg6T+5+Zw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46B66F8020D;
-	Thu,  3 Sep 2020 19:49:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7C12F8020D;
+	Thu,  3 Sep 2020 20:09:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78DC9F80217; Thu,  3 Sep 2020 19:49:47 +0200 (CEST)
+ id 893F7F80217; Thu,  3 Sep 2020 20:09:11 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE507F800BA
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 19:49:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE507F800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 193E6F801DA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 20:09:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 193E6F801DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qhrzzXdX"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com
- [209.85.167.169])
+ header.b="LFz7ff7j"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com
+ [209.85.218.47])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BAB05208C7
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 17:49:37 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id CCD1020716
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2020 18:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599155377;
- bh=PwReb1wR+sXRrMZqogs7x9Vmd4V3JF81RZqSgbUS1AE=;
+ s=default; t=1599156544;
+ bh=nPiDyoWWJzvm42z4eUx7TC5eLYWJUkO9RtvWj3RGC4o=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=qhrzzXdXDKnCyd4Ckt/77e8sctFd5/zYPH/VxgZ1/a3GPpMD09GHyD0nzB2isro/N
- CLCo7KfDkZiv70y2C0tz52eyPXiISAUHCs3HVDSAjhHtv9ku6kQjyGOED0vwfNgQqd
- MwMREmEHc0mscFdXBzHIH18iNkgdgAaOuIbmvTb4=
-Received: by mail-oi1-f169.google.com with SMTP id z22so3994732oid.1
- for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2020 10:49:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531leTzOIdzx5py9d9RBa8U8FW3XkMZ3Ue6TEyzN8ztCyyUUJwhz
- dClBJtus6Zx2XmDCC96Regl6odUsGzDvmIhCtg==
-X-Google-Smtp-Source: ABdhPJxcXEUSmdKY5Vsvo/Ra42Hgg8KjgnWOfsPDJWq3O7EXceTqI+C/z4ChNMurrb2zF+obJSMgWjL333ToKOp8kaE=
-X-Received: by 2002:aca:1711:: with SMTP id j17mr2842660oii.152.1599155376930; 
- Thu, 03 Sep 2020 10:49:36 -0700 (PDT)
+ b=LFz7ff7jI2wl8OKdb3dNWcGVE0rVk3n6ETlCP3GG74voSOa6MneV8+myrf0nV/Zef
+ 0JehuZ/+B0CpcMryGcvXEvezk5TOPTZBUJ8RTTPjyF4Qng70D2tVA2i5ZWGTowb/E4
+ /337Yq/B4PC/K4TPEzuivLLOqhK6VHTaZj/wmpVM=
+Received: by mail-ej1-f47.google.com with SMTP id lo4so5124410ejb.8
+ for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2020 11:09:03 -0700 (PDT)
+X-Gm-Message-State: AOAM530Swh/ypK68s027z4bNGQSpvTMhyAe/tyfE5YDuxdLeWrKO/qZP
+ RqPYGU/DATEj95ZEyR4NV1VZApfKaiQwCklWrwk=
+X-Google-Smtp-Source: ABdhPJzc1QCdeTf82nUVf10J2Sk2Ur7ILSjfNO9a+DoLfgN1J37o5UYUSobBWE4r8Ye675Mp9s0eKdYwWTi5/JRf1sI=
+X-Received: by 2002:a17:906:af53:: with SMTP id
+ ly19mr3296148ejb.503.1599156542378; 
+ Thu, 03 Sep 2020 11:09:02 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200830112633.6732-1-krzk@kernel.org>
  <159897179515.47719.6003518135515395142.b4-ty@kernel.org>
  <20200903164738.GA2929052@bogus> <20200903172645.GC4771@sirena.org.uk>
-In-Reply-To: <20200903172645.GC4771@sirena.org.uk>
-From: Rob Herring <robh@kernel.org>
-Date: Thu, 3 Sep 2020 11:49:25 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL+_5Lc5vwtqnCZd6Tz9eB1m_oy2r3gtv0cbwBwKTU=dw@mail.gmail.com>
-Message-ID: <CAL_JsqL+_5Lc5vwtqnCZd6Tz9eB1m_oy2r3gtv0cbwBwKTU=dw@mail.gmail.com>
+ <CAL_JsqL+_5Lc5vwtqnCZd6Tz9eB1m_oy2r3gtv0cbwBwKTU=dw@mail.gmail.com>
+In-Reply-To: <CAL_JsqL+_5Lc5vwtqnCZd6Tz9eB1m_oy2r3gtv0cbwBwKTU=dw@mail.gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Thu, 3 Sep 2020 20:08:51 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPe2XpciJtGAFq8c7E=7wrrzK0XUrquDCaNQK+u-2yLByQ@mail.gmail.com>
+Message-ID: <CAJKOXPe2XpciJtGAFq8c7E=7wrrzK0XUrquDCaNQK+u-2yLByQ@mail.gmail.com>
 Subject: Re: [PATCH 1/2] dt-bindings: sound: midas-audio: Correct parsing
  sound-dai phandles
-To: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
+To: Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
  Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,24 +102,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 3, 2020 at 11:27 AM Mark Brown <broonie@kernel.org> wrote:
+On Thu, 3 Sep 2020 at 19:49, Rob Herring <robh@kernel.org> wrote:
 >
-> On Thu, Sep 03, 2020 at 10:47:38AM -0600, Rob Herring wrote:
+> On Thu, Sep 3, 2020 at 11:27 AM Mark Brown <broonie@kernel.org> wrote:
+> >
+> > On Thu, Sep 03, 2020 at 10:47:38AM -0600, Rob Herring wrote:
+> >
+> > > > [2/2] ASoC: odroid: Use unevaluatedProperties
+> > > >       commit: a57307ca6b661e16f9435a25f376ac277c3de697
+> >
+> > > This one should be reverted/dropped too. Patch 1 is fine.
+> >
+> > There are others?  What's the issue with them?  It'd be easiest if you
+> > could send patches doing whatever reverts you're looking for.
 >
-> > > [2/2] ASoC: odroid: Use unevaluatedProperties
-> > >       commit: a57307ca6b661e16f9435a25f376ac277c3de697
+> Just 1 other you picked up. See "ASoC: samsung-i2s: Use
+> unevaluatedProperties". Patches adding the missing properties (and
+> restoring 'additionalProperties' on these 2 if not reverted) is the
+> correct change.
 >
-> > This one should be reverted/dropped too. Patch 1 is fine.
->
-> There are others?  What's the issue with them?  It'd be easiest if you
-> could send patches doing whatever reverts you're looking for.
+> I've gone thru and NAKed all of the others so more don't get picked up.
 
-Just 1 other you picked up. See "ASoC: samsung-i2s: Use
-unevaluatedProperties". Patches adding the missing properties (and
-restoring 'additionalProperties' on these 2 if not reverted) is the
-correct change.
+Ah, my bad... Mark, I can send a follow up which restores the
+additionalProperties (so kind of revert of the second patch) and fixes
+the warning. Other way is that you just drop it and I will send a
+correct fix later.
 
-I've gone thru and NAKed all of the others so more don't get picked up.
+Sorry for the mess.
 
-
-Rob
+Best regards,
+Krzysztpf
