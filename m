@@ -1,4 +1,4 @@
-Return-Path: <SRS0=NgmJ=CM=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=A1sP=CN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,64 +6,63 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50D14C433E2
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 23:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B59BC433E2
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 00:02:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E2412078E
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Sep 2020 23:52:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C624720716
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 00:02:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i/H3Rwqb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E2412078E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e5tAljJr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C624720716
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DCBC1AAB;
-	Fri,  4 Sep 2020 01:51:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DCBC1AAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 447751AAE;
+	Fri,  4 Sep 2020 02:01:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 447751AAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599177160;
-	bh=pRePgXbyqezXMqsy9mZosVYrBIjQWQ2qzv2a24Ot84g=;
+	s=default; t=1599177728;
+	bh=U0XIAZJUzaVFVBUduH+7ZdsXDzdl9ndgzPkCAcIDRYw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i/H3Rwqbwo2d3bcKJRi29MiTAiWYO9Uv1metSQ0JIqw8LGMYIfsHjPnLIxmU6Nc52
-	 ev1B3WxhvioF+c1f/MAKr9vYeI3APF8hdKZNPzVtyEnie1ViEp0V6VqA0295oSbCnY
-	 gQiLiKtK9qEhKHh34xinRPw4OFuLCf2/WKZqfTRc=
+	b=e5tAljJrS3/rqwEWLpHymOroIg3a1W0gTOfINqJbJtHhSahkkfJ7rJlwWlg44rwA8
+	 F5gWqoOH4ZcVznW1fKZV8eoGdPqTJI9HRBahoFPWaS2QKZLj3hOrzIjeGxag3zQEoX
+	 i+QO/C1wpj4K0NSm+z6k7QXwNdb+tHpJfndv6ttg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6ABE1F8020D;
-	Fri,  4 Sep 2020 01:51:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC19AF8020D;
+	Fri,  4 Sep 2020 02:01:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EE5BF80217; Fri,  4 Sep 2020 01:51:47 +0200 (CEST)
+ id 4FB79F80217; Fri,  4 Sep 2020 02:01:16 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id F2C74F801DA
- for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 01:51:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2C74F801DA
-Date: 04 Sep 2020 08:51:33 +0900
-X-IronPort-AV: E=Sophos;i="5.76,387,1592838000"; d="scan'208";a="56323702"
+ by alsa1.perex.cz (Postfix) with ESMTP id 0F373F801DA
+ for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 02:01:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F373F801DA
+Date: 04 Sep 2020 09:01:03 +0900
+X-IronPort-AV: E=Sophos;i="5.76,387,1592838000"; d="scan'208";a="56324629"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 04 Sep 2020 08:51:33 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 04 Sep 2020 09:01:03 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2D5DD4009659;
- Fri,  4 Sep 2020 08:51:33 +0900 (JST)
-Message-ID: <87d032mnfo.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8FBA2400D0E8;
+ Fri,  4 Sep 2020 09:01:03 +0900 (JST)
+Message-ID: <87a6y6mmzt.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: More Generic Audio Graph Sound Card idea
-In-Reply-To: <878se4zybn.wl-kuninori.morimoto.gx@renesas.com>
-References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
- <20200821121844.GF4870@sirena.org.uk>
- <878se4zybn.wl-kuninori.morimoto.gx@renesas.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [RFC] soc_pcm_open: error path behavior change since v5.6
+In-Reply-To: <48810933-41cf-265c-1784-2e2acf979720@intel.com>
+References: <48810933-41cf-265c-1784-2e2acf979720@intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Sameer Pujar <spujar@nvidia.com>,
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,42 +79,38 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
-Cc Sameer
+Hi Cezary
 
-> > Having an audio-graph-card2 isn't ideal but may be required at least
-> > during development :/  Ideally we'd be able to have the new driver parse
-> > both binding formats (or rather, have the new binding format be new use
-> > cases for the same binding format) and only use -card2 while it's in
-> > development.
+> Some time ago negative-tests found out that behavior of soc_pcm_open
+> has changed, quite sure this might be a regression hence my
+> email. Till v5.6 soc_pcm_open was invoking ::shutdown() for cpu_dai in
+> error path only if ::startup() succeeded first (label: 'out'). After
+> addition of commit:
 > 
-> If you want to update current audio-graph-card without creating new
-> audio-graph-card2, I'm OK about it. But need adjusting / agreement.
+> 	5d9fa03e6c3514266fa94851ab1b6dd6e0595a13
+> 	ASoC: soc-pcm: tidyup soc_pcm_open() order
 > 
-> Current audio-graph-card "DSP" user is only me, and I'm using it only locally.
-> Thus upstream doesn't get damage if I removed "audio-graph-scu-card"
-> (= DSP use case) support.
+> this is no longer true. ::shutdown() can and will be invoked for given
+> cpu_dai despite ::startup()'s failure. This complicated further since
+> the merging of cpu & codec dais.
 > 
-> OTOH, Sameer is posting patch for "-cc-" support. If it was accepted
-> and he used it on upstream (= on tegra),
-> keeping compatibility will be very difficult and/or code will be very confusable.
+> The same applies to codec_dais: notice the usage of
+> for_each_rtd_codec_dai_rollback macro instead of for_each_rtd_dais in
+> error path in v5.6.
 > 
-> If Sameer can OK and wait new audio-graph-card, maybe we have no compatibility issue.
-> But in such case, 1st version of new audio-graph-card might be not enough for him.
-> Sameer need to waiting / testing / adjusting / etc, etc...
+> Should dai's ::shutdown() be introducing some kind of state-check from
+> now on? - similarly to how developers deal with some of the core pcm
+> operations e.g.: ::prepare() (as it may get invoked multiple times in
+> a row so check is there to prevent redundancy).
+> Or, perhaps behavior change should be reverted with ::shutdown()
+> routine again being called only after successful ::startup()?
 
-The problem I'm feeling is that new card (= let's call it as card2 here) and
-Sameer's posting "-cc-" are conflicted / no-compatibility.
-It expands card1 DPCM detection.
+I'm sorry but I couldn't 100% understand your opinion.
+But I understand that it is related to rollback order.
+Now I'm posting patch for it. It is not yet 100% but 1st step.
+Does it help for you ?
 
-The good things having "-cc-" is that he can use it immediately.
-the bad things is that it is dificult to keep compatibility between "card1 + -cc-" and "card2".
-
-Creating card2 for development purpose is very welcome for me, and card1 user :)
-But after that, if we want to merge card1 and card2, we need to drop "-cc-" support unfortunately.
-If we want to keep "-cc-", we need to have both card1 / card2.
-
-So, how to handle it ?
+https://lore.kernel.org/r/87wo1kvozz.wl-kuninori.morimoto.gx@renesas.com
 
 Thank you for your help !!
 
