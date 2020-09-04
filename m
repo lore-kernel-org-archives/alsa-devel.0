@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01958C43461
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:39:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83501C433E2
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:40:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7084520DD4
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:39:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0740B20DD4
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:40:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r+iOT6qp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7084520DD4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uVsd0/Aq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0740B20DD4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E37D51EEB;
-	Fri,  4 Sep 2020 15:38:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E37D51EEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D3A716ED;
+	Fri,  4 Sep 2020 15:39:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D3A716ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599226770;
-	bh=n242q6FnHFviQfarEmGgurv1Mb9JzuYMCk2oWRQDVaw=;
+	s=default; t=1599226801;
+	bh=LkxQ3bfb/33evE4/6MYO70HiAHWH04sNmB/8EoL5mks=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r+iOT6qpejT13baSUP8bQOCSyu0MOWkFt7DIvvv2hrSXWktj5wzqJdaDBQUrzY//f
-	 IRpL+3ELB2UGOTyysG97zdeGRmlDnLHx0F5boNkX2TaV2qV2qJIORjhX4bkX2K2Ls4
-	 zs03g/flCiK/QVBjQGO5Z2Rjl+sGzkeOEEfNUcmM=
+	b=uVsd0/AqgeBwn7v/rLzWLsqfIH1tZ0TDv3b8oT9Rfg1rQTrQ6CwVOk4AOxAEVORmq
+	 XB48owIUACJKqhzhPiXunBiLqB9kXoJsj/HmxDHZSmhTxpkFjsCWll4SaM2tPc6f5a
+	 UlTV2tPWxOMU+J29hY6pTFxidAXh2ow9sQT/ooIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42068F80348;
-	Fri,  4 Sep 2020 15:30:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97C7DF80361;
+	Fri,  4 Sep 2020 15:30:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4D2AF80339; Fri,  4 Sep 2020 15:30:15 +0200 (CEST)
+ id 272E1F80340; Fri,  4 Sep 2020 15:30:17 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F06ECF80308
- for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 15:29:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F06ECF80308
-IronPort-SDR: 4ZQIo9YpdhHR5DgGcXTOvbbWEOV+mksJRXsT3Nrx9IGFpdZye+mX6E5M8ivbc8jNYGA0JnMVH9
- ZK+7DnW/Dm0w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="157002884"
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="157002884"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF3AAF8025E
+ for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 15:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF3AAF8025E
+IronPort-SDR: 3PzSssTSfAOqi1ryDM1MNgjNnLCAD1AQTjihdfRd3Q1dKRGT7Jf56l0iaJy8c2scsceyC4KBeP
+ HncyQQutH1mA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="157002893"
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="157002893"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Sep 2020 06:29:59 -0700
-IronPort-SDR: HT0oozUeOxlAIznRJ43SWwU6BPl8T+P63E5Zm67Zm28b8fUAfxj2A7J+9XKQaTXyU4K4kSJ6bw
- xQgjeyMulF2A==
+ 04 Sep 2020 06:30:01 -0700
+IronPort-SDR: ulB3nXBBG0j8q2x02ViHigR5MI17HLyP59TlJhWXvNbxiJA6DYKlpFvLuVmUSyRNVjv6O6Pr+e
+ 6haC9Nyt/65Q==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="284416776"
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="284416781"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga008.fm.intel.com with ESMTP; 04 Sep 2020 06:29:57 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 04 Sep 2020 06:29:59 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 14/16] ASoC: SOF: append extended data to sof_ipc_comp_process
-Date: Fri,  4 Sep 2020 16:27:42 +0300
-Message-Id: <20200904132744.1699575-15-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 15/16] ASoC: SOF: append extended data to sof_ipc_comp_mux
+Date: Fri,  4 Sep 2020 16:27:43 +0300
+Message-Id: <20200904132744.1699575-16-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200904132744.1699575-1-kai.vehmanen@linux.intel.com>
 References: <20200904132744.1699575-1-kai.vehmanen@linux.intel.com>
@@ -91,41 +91,52 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Keyon Jie <yang.jie@linux.intel.com>
 
-Append the extended data to the end of the struct sof_ipc_comp_process,
+Append the extended data to the end of the struct sof_ipc_comp_mux,
 construct the ipc for COMP_NEW during the topology load stage.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/sof/topology.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index c61f46350def..48ea3147124d 100644
+index 48ea3147124d..69865df60033 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -2231,18 +2231,15 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
- 		ipc_data_size = 0;
- 	}
+@@ -1825,19 +1825,16 @@ static int sof_widget_load_mux(struct snd_soc_component *scomp, int index,
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+ 	struct snd_soc_tplg_private *private = &tw->priv;
+ 	struct sof_ipc_comp_mux *mux;
++	size_t ipc_size = sizeof(*mux);
+ 	int ret;
  
--	process = kzalloc(ipc_size, GFP_KERNEL);
-+	process = (struct sof_ipc_comp_process *)
-+		  sof_comp_alloc(swidget, &ipc_size, index, 0);
- 	if (!process) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
+-	mux = kzalloc(sizeof(*mux), GFP_KERNEL);
++	mux = (struct sof_ipc_comp_mux *)
++	      sof_comp_alloc(swidget, &ipc_size, index, core);
+ 	if (!mux)
+ 		return -ENOMEM;
  
- 	/* configure iir IPC message */
--	process->comp.hdr.size = ipc_size;
--	process->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
--	process->comp.id = swidget->comp_id;
- 	process->comp.type = type;
--	process->comp.pipeline_id = index;
- 	process->config.hdr.size = sizeof(process->config);
+ 	/* configure mux IPC message */
+-	mux->comp.hdr.size = sizeof(*mux);
+-	mux->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
+-	mux->comp.id = swidget->comp_id;
+ 	mux->comp.type = SOF_COMP_MUX;
+-	mux->comp.pipeline_id = index;
+-	mux->comp.core = core;
+ 	mux->config.hdr.size = sizeof(mux->config);
  
- 	ret = sof_parse_tokens(scomp, &process->config, comp_tokens,
+ 	ret = sof_parse_tokens(scomp, &mux->config, comp_tokens,
+@@ -1855,7 +1852,7 @@ static int sof_widget_load_mux(struct snd_soc_component *scomp, int index,
+ 	swidget->private = mux;
+ 
+ 	ret = sof_ipc_tx_message(sdev->ipc, mux->comp.hdr.cmd, mux,
+-				 sizeof(*mux), r, sizeof(*r));
++				 ipc_size, r, sizeof(*r));
+ 	if (ret < 0)
+ 		kfree(mux);
+ 
 -- 
 2.27.0
 
