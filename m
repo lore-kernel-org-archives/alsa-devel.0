@@ -2,73 +2,108 @@ Return-Path: <SRS0=A1sP=CN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8253C2BC84
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 10:06:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E49C9C433E2
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 10:42:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C953206D4
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 10:06:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A4532084D
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 10:42:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EQi4ZLFB";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uy0+wzkM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C953206D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ADZyqbBB";
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A8RehVNj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A4532084D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38B491AFD;
-	Fri,  4 Sep 2020 12:05:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38B491AFD
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1DB11AF0;
+	Fri,  4 Sep 2020 12:41:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1DB11AF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599213963;
-	bh=iUMJZ9XEPBrALRtw0yY0mY/bAWNjuejgCUBl80L18YI=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1599216124;
+	bh=xrV/MNfwo0lPJ72VXvbW+1agEROQ4FUOrKNQR9GHZDg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EQi4ZLFB08353ovIUEVMH/b93hlNuL2wp4SKI0Et41nK5sNSmeJP9eNlAlXZ5kTl4
-	 1NdC+FD6hbZGKPpF2PavkrFNZyHmYhcZN394E4A2sIsOEKnRFaC/ffzdvgbHWlHWIM
-	 4r9fdDcysafsOKhmW/FCD8a14XkwqwrU5kzyufso=
+	b=ADZyqbBBTXZ5A9UQhV0ccyfCCw0bm3wvjHVVoMtcGj1N/0lMz1zlXtYRBnq0Ek4zo
+	 8rdUOURohfJzl7UifCQ0FR6sk8+GujhJEvQnFv+suowONP41MlZn0umlalYVE83qnl
+	 2+yf5DlEClJL/Yi7qChnFufSR3M9rc0jEwxYK+cY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 142EFF80257;
-	Fri,  4 Sep 2020 12:04:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F651F8024A;
+	Fri,  4 Sep 2020 12:41:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B896BF80268; Fri,  4 Sep 2020 12:04:25 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A697FF80257; Fri,  4 Sep 2020 12:41:12 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69A4FF80257
- for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 12:04:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69A4FF80257
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89FCBF80113
+ for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 12:41:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89FCBF80113
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Uy0+wzkM"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 805C9206D4;
- Fri,  4 Sep 2020 10:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599213858;
- bh=iUMJZ9XEPBrALRtw0yY0mY/bAWNjuejgCUBl80L18YI=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Uy0+wzkM5dV28M5FUEtM5PZPtvnwn3gl3sNxfM6QfXGocyLE6P6D0tEdVOGN3sr7D
- OvA0CUKiWI17SejscqTfLX4lZo73stZmeUvhal6nPIzUMtAhe6ILq/wcrfPSEeyLVY
- YYJlWzEVNt4ecKxWoPnLNvoRXkzk1mv2YRnwkpaI=
-Date: Fri, 04 Sep 2020 11:03:36 +0100
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20200902140756.1427005-1-kai.vehmanen@linux.intel.com>
-References: <20200902140756.1427005-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: multi core support for 5.10
-Message-Id: <159921381111.42159.653916682345610756.b4-ty@kernel.org>
-Cc: daniel.baluta@nxp.com, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="A8RehVNj"
+Received: by mail-wr1-x443.google.com with SMTP id z4so6255936wrr.4
+ for <alsa-devel@alsa-project.org>; Fri, 04 Sep 2020 03:41:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=AGBcS2K0ImWeFfrWpXAI/Xo9a8mhl/De79Zkj63qpo8=;
+ b=A8RehVNj2xNOT/YL0vidlBxy+xDK9yHRYixalgDgUzpDo0b2eWBf91ky71RbcCgfLI
+ DSUxy5yGwMgvxqu2EHmf6TyyQKvfmM8vyx21XwUgomecbTqPw+Bu7ifHxTDobz3xrrSN
+ Kw6co+OlPpAwUfCQuG9m6IsytM808G+9eMJPWCVrbeEXbf4uIyxfN6l/4SuLfQRK8jAm
+ ZrixQptcS2fmcPcDzTkuA3kiZBb33JUdnadF/BvwS1Tw1e+wM2peYT7wSutrbzLMyiJ3
+ ahIiKveyR3l8fkxoFDO6OV+EMlf5kFbj0OdiL8M+3esTGP23zrwqxWayWnzK3lpPbsP3
+ UAJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=AGBcS2K0ImWeFfrWpXAI/Xo9a8mhl/De79Zkj63qpo8=;
+ b=J+s290AjMdWv6lbMdxxyYGIE8zpASpJ1uhbpuzQbeTOWfMMhdrBqRK3gj8WGlK1Ujl
+ 5hIfCM6cbqeMDAhKzv4WwKsheJQ1tBH6qPUo4N/Thm+XGR1xAigdHTdYj4TroYHDh3Ca
+ WhQqqUUXoB4iyT+XwQSFpm0RUj9B8rjhJvX2ieSRJKu/E8Q2lslsNQv9XTQx5HkywWyK
+ xC2FvUDvIdWsFCipLxXI3ZutDgPsqR/TUGN/Dv+9Cx7F4tiBHZocIvJi5guOb514FgBe
+ oqPApbeQfOlU3EgBzJFC9bYoCs3+W7tD7dPPV4tIOEw+7SsaIQC15I0qpg5Q6LPkD4BP
+ mTJQ==
+X-Gm-Message-State: AOAM533skWZah4IR/o2hGjPK+XGnrgmhpYxKRxKE9tcoG3Y0s9hG3sFJ
+ lTM0xQXulzo2WfuW0FE2kAmiOw==
+X-Google-Smtp-Source: ABdhPJyYDoIzAUGsvrlxti84wRUhnYjSfHM11wVKMy+B6EhxhYo/CAqxDEzFb+cyF2MVww28hUddEQ==
+X-Received: by 2002:adf:e4cc:: with SMTP id v12mr6771808wrm.216.1599216063406; 
+ Fri, 04 Sep 2020 03:41:03 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id h2sm10621197wrp.69.2020.09.04.03.41.02
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 04 Sep 2020 03:41:02 -0700 (PDT)
+Subject: Re: [PATCH v3 2/5] ASoC: dt-bindings: Add dt binding for lpass hdmi
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+ perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1598855964-1042-1-git-send-email-srivasam@codeaurora.org>
+ <1598855964-1042-3-git-send-email-srivasam@codeaurora.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <0aa914dd-6a6e-208d-d29f-214a84dfd8a2@linaro.org>
+Date: Fri, 4 Sep 2020 11:41:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <1598855964-1042-3-git-send-email-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,47 +119,112 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 2 Sep 2020 17:07:53 +0300, Kai Vehmanen wrote:
-> This series extends the multi-core support in SOF. Capability
-> to specify which core to use, on a per component basis, is added
-> to topology. The topology load functionality in SOF is modified to
-> power up/down host controlled cores based on the topology
-> description.
+
+
+On 31/08/2020 07:39, Srinivasa Rao Mandadapu wrote:
+> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 > 
-> Guennadi Liakhovetski (2):
->   ASoC: SOF: add a "core" parameter to widget loading functions
->   ASoC: SOF: support topology components on secondary cores
+> Adds bindings for lpass hdmi interface
+> which can support audio path over dp.
 > 
-> [...]
+> Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
+> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> ---
+>   .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 51 ++++++++++++++++++++--
+>   1 file changed, 47 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> index 09c9bd2..7c2ac0c 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> @@ -22,6 +22,7 @@ properties:
+>         - qcom,lpass-cpu
+>         - qcom,apq8016-lpass-cpu
+>         - qcom,sc7180-lpass-cpu
+> +      - qcom,sc7180-lpass-hdmi
 
-Applied to
+Why do we need a new compatible per interface, IMO, you should just use 
+the existing compatible.
+Or please explain the reasons why we need this?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/3] ASoC: SOF: add a "core" parameter to widget loading functions
-      commit: 0dcdf84289fbf61cd42cbb1e379e2150aa17e31e
-[2/3] ASoC: SOF: support topology components on secondary cores
-      commit: d1c6c4a9fd3da5c735386b0cdb44d79667f10a1b
-[3/3] ASoC: SOF: topology: fix core enable sequence
-      commit: 8c9ff1219aef657954540147522ceaecced71b2b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+>   
+>     reg:
+>       maxItems: 1
+> @@ -60,10 +61,12 @@ properties:
+>       const: 0
+>   
+>   patternProperties:
+> -  "(^mi2s-[0-9a-f]$|mi2s)":
+> +  "^dai@[0-9a-f]$":
+>       type: object
+> -    description: Required properties for each DAI
+> -
+> +    description: |
+> +      LPASS CPU dai node for each I2S device. Bindings of each node
+> +      depends on the specific driver providing the functionality and
+> +      properties.
+>       properties:
+>         reg:
+>           maxItems: 1
+> @@ -145,6 +148,22 @@ allOf:
+>           - iommus
+>           - power-domains
+>   
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,sc7180-lpass-hdmi
+> +    then:
+> +      properties:
+> +        clock-names:
+> +          items:
+> +            - const: pcnoc-sway-clk
+> +            - const: audio-core
+> +            - const: pcnoc-mport-clk
+> +      required:
+> +        - iommus
+> +        - power-domains
+> +
+>   examples:
+>     - |
+>       #include <dt-bindings/sound/sc7180-lpass.h>
+> @@ -178,12 +197,36 @@ examples:
+>               #address-cells = <1>;
+>               #size-cells = <0>;
+>               /* Optional to set different MI2S SD lines */
+> -            mi2s-primary@0 {
+> +            dai@mi2s-primary {
+>                   reg = <MI2S_PRIMARY>;
+>                   qcom,playback-sd-lines = <1>;
+>                   qcom,capture-sd-lines = <0>;
+>               };
+>           };
+> +
+> +        lpassh@62d87000 {
+> +            compatible = "qcom,sc7180-lpass-hdmi";
+> +
+> +            reg = <0 0x62d87000 0 0x68000>;
+> +
+> +            iommus = <&apps_smmu 0x1032 0>;
+> +
+> +            power-domains = <&lpass_hm 0>;
+> +
+> +            clocks = <&gcc 131>,
+> +                 <&lpasscc 6>,
+> +                 <&lpasscc 10>;
+> +
+> +            clock-names = "pcnoc-sway-clk", "audio-core",
+> +                          "pcnoc-mport-clk";
+> +
+> +            #sound-dai-cells = <1>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            interrupts = <0 268 1>;
+> +        };
+>       };
+>   
+>   ...
+> 
