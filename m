@@ -2,117 +2,79 @@ Return-Path: <SRS0=A1sP=CN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACDCBC43461
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 09:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FF0EC433E2
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 09:20:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D1B920748
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 09:19:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF9B520770
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 09:20:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iNLPdrPE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="XM/22yqT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="R3TN3552"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D1B920748
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RfSWbrmk";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ltvDjDrK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF9B520770
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FBAF1AF1;
-	Fri,  4 Sep 2020 11:18:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FBAF1AF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6664B1AF9;
+	Fri,  4 Sep 2020 11:19:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6664B1AF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599211172;
-	bh=ZNvaM+CYXdQnUp+vb+XfGuigeWUmn2LideIG2s/TfsQ=;
+	s=default; t=1599211219;
+	bh=aLb7RDrgL7T4FtSR3hH9b7N4/mywRLSkPDaPL6LBGd8=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iNLPdrPERVIJ2sVSayIiqJnBBJwpddYGJqfsXJJukkZQDTfqgvBvn1mAklpzQ0LA+
-	 VWtt7rWAC2DIDLYWZtI+8XvJuSY8G+1ODtYAop/DSOkk1IYNpb326pSoGS41sdqkuW
-	 3WkJ5nVrRmJpZOJLXiNfB8UcXcNLvmUKUDsH40lo=
+	b=RfSWbrmkToy0WpSzb51FHyB83L9EQLW2aWJF2DT+85sRmwMdnKrXcdVWhONPdj428
+	 lq11vrpSVHktre+qXTWK96i18zgRuZ8AWZeRZSTzPL+U+mqhKKb3Y/9bKqrtGvcWk/
+	 3NQ5bgXdXwHZQiPFbuvgLQ/OfOaBY1EUo6ptClfo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4232BF8025E;
-	Fri,  4 Sep 2020 11:18:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99A49F8026F;
+	Fri,  4 Sep 2020 11:18:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48362F80268; Fri,  4 Sep 2020 11:18:03 +0200 (CEST)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
+ id 626F5F8028F; Fri,  4 Sep 2020 11:18:53 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04746F801DA
- for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 11:17:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04746F801DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 792ABF801DA
+ for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 11:18:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 792ABF801DA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="XM/22yqT"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="R3TN3552"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.nyi.internal (Postfix) with ESMTP id 88B625C00C0;
- Fri,  4 Sep 2020 05:17:55 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Fri, 04 Sep 2020 05:17:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=ZNvaM+CYXdQnUp+vb+XfGuigeWU
- mn2LideIG2s/TfsQ=; b=XM/22yqT5YHx6nsTiSiJVpKkcQQrCq9yoLbKDfGa2ls
- +7tgnULhUOJ08NBr5zw0Lnvx7IZ9CWQz4f5u6siv9xE7O6c3hbp8yUFGk46wHqww
- eE3gof/nqwK+krzu2Zp20QsCovUih1ukyaq1BGeD44OdC+fhV1ypYt2oEOr1sJnk
- c9wKRuyUs9Us8JBdjSJh13KBpZ2OyhxeD1q4q29jB8BH5oiLCEnQnNCkoXaNF7Fu
- xz0Pi/xUu5qRJBlA1xOsKRANaZRNmvPbt6jNF7bbkn/jyK5LlI6qnBGPxvShPqx5
- JWnUQwc4ABgksacSPVczllBDWJo0C6ceoH83erjQ8JA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZNvaM+
- CYXdQnUp+vb+XfGuigeWUmn2LideIG2s/TfsQ=; b=R3TN3552rTIDUjWDQEtrA1
- 6C441UyqEyXzY1TTZdOXf0S1wdpPlgvpx38/aeXCbCjfb6bDzIg04F2GXhs/4nIh
- mm8HLoefzj/jtru+CmQF0acWJ0woxECP9lKxOdT7iqX26132US/d55G4kjZTC/AM
- YJR27mHzYEd4znvgZfpcWfG4pe1UBW2aOFAtu4i01nlOIXk0n8JYyNTbW7D+lL8C
- aDvG+wbh7b40rLCNMh5JqHLOR7vCqmEVXUh9bUu5pv/AneKD2uwj4Dr1plK/FPA9
- npFEF07k7hP16H+Vd4m6YAswBFv3aamKdwzf3ozthR6jHtHD7eo1+Oidi8gJdZGg
- ==
-X-ME-Sender: <xms:QwZSXwXr-iG4hRIl6KnmAOdFUkOLv6Mfl8zWFV-AHQk44R7Z2vm7fw>
- <xme:QwZSX0mrji0avk4tIZxgfX-vDfx6ZPuizeRcvNrFoBud4NQ2st8No1FOc5ztVVVDA
- VmfpCoxQOshtsNS1Dg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegfedgudegucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
- htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
- gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvdenuc
- frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:QwZSX0bcTsDWpHmMMBlj_tA-w-C0djTvlXpXTQ2UmSgfXk9h7QHSLg>
- <xmx:QwZSX_UZ5sSSxy5rPFnUeG3DECeOGVZiUzWTtUNixbNvp3KB2b_krw>
- <xmx:QwZSX6nvajHCf5rMMSAr8ro6akeUpT1iRhyVevSnFv-1oRb_-bY8SQ>
- <xmx:QwZSX8WZDZ5k8q7EJemiVGe1zIevU7cLizMNXTC_KQHLewrzdXrREQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
- [90.89.68.76])
- by mail.messagingengine.com (Postfix) with ESMTPA id 27D203060057;
- Fri,  4 Sep 2020 05:17:55 -0400 (EDT)
-Date: Fri, 4 Sep 2020 11:17:54 +0200
-From: Maxime Ripard <maxime@cerno.tech>
-To: Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH 9/9] ASoC: sun8i-codec: Manage module clock via DAPM
-Message-ID: <20200904091754.gqwtj6hjhgrrbudv@gilmour.lan>
-References: <20200831034852.18841-1-samuel@sholland.org>
- <20200831034852.18841-10-samuel@sholland.org>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ltvDjDrK"
+Received: from localhost (unknown [122.182.253.87])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4795520748;
+ Fri,  4 Sep 2020 09:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1599211121;
+ bh=aLb7RDrgL7T4FtSR3hH9b7N4/mywRLSkPDaPL6LBGd8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ltvDjDrKq9IdoVaFEXNA2ahBFszBxYzaw2+zTsFhLOovicAbu1Owj746x3535lZpB
+ 226YTmmV73ouIE0MWJzkq1zU5sxWIkHo1UnfRcBEsyePffNr7CSxn3FvyYYbxEnITM
+ EqvVIW/s+eScmApRF4hEXJe6xrmSzPmyyP80B5+E=
+Date: Fri, 4 Sep 2020 14:48:31 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH v2 0/9] soundwire: use FIELD_{GET|PREP} in subsystem
+Message-ID: <20200904091831.GW2639@vkoul-mobl>
+References: <20200903114504.1202143-1-vkoul@kernel.org>
+ <169e2a94-37db-a9c0-748f-99af46aef3e5@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="etloxsebhaa6d7ke"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200831034852.18841-10-samuel@sholland.org>
-Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <169e2a94-37db-a9c0-748f-99af46aef3e5@linux.intel.com>
+Cc: alsa-devel@alsa-project.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -128,35 +90,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 04-09-20, 15:46, Bard liao wrote:
+> 
+> On 9/3/2020 7:44 PM, Vinod Koul wrote:
+> > Use the FIELD_{GET|PREP} in soundwire subsytem and remove the local
+> > SDW_REG_SHIFT().  This makes code IMO look much neater
+> > 
+> > Tested this on db845c board
+> > 
+> > Changes in v2:
+> >   - fold in fixes provided by Bard and Pierre
+> >   - Use GENMAS_ULL for addr
+> >   - rebase to next and fold in new intel change
+> > 
+> > Vinod Koul (9):
+> >    soundwire: define and use addr bit masks
+> >    soundwire: bus: use FIELD_GET()
+> >    soundwire: slave: use SDW_DISCO_LINK_ID()
+> >    soundwire: stream: use FIELD_{GET|PREP}
+> >    soundwire: qcom : use FIELD_{GET|PREP}
+> >    soundwire: cadence: use FIELD_{GET|PREP}
+> >    soundwire: intel: use FIELD_{GET|PREP}
+> >    soundwire: intel_init: use FIELD_{GET|PREP}
+> >    soundwire: remove SDW_REG_SHIFT()
+> > 
+> >   drivers/soundwire/bus.c                 |  6 +--
+> >   drivers/soundwire/cadence_master.c      | 61 +++++++++++--------------
+> >   drivers/soundwire/intel.c               | 52 ++++++++-------------
+> >   drivers/soundwire/intel_init.c          |  2 +-
+> >   drivers/soundwire/qcom.c                | 22 +++------
+> >   drivers/soundwire/slave.c               |  2 +-
+> >   drivers/soundwire/stream.c              | 13 ++----
+> >   include/linux/soundwire/sdw.h           | 21 ++++++---
+> >   include/linux/soundwire/sdw_registers.h |  7 ---
+> >   9 files changed, 75 insertions(+), 111 deletions(-)
+> 
+> Tested it on Intel platforms.
+> 
+> Tested-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 
---etloxsebhaa6d7ke
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks Bard, applied now
 
-Hi,
-
-On Sun, Aug 30, 2020 at 10:48:52PM -0500, Samuel Holland wrote:
-> By representing the module clock as a DAPM widget, we ensure that the
-> clock is only enabled when the module is actually in use, without
-> additional code in runtime PM hooks.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Thanks!
-Maxime
-
---etloxsebhaa6d7ke
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1IGQgAKCRDj7w1vZxhR
-xZxKAQCD/2/1W2VmcevYTA04jhWila6rZ5bVzofOrsZMYXDQHwD/S/ajB67MRi9V
-3WWmvc+1ekhwHjWMEwfNhM2J2VtZ1As=
-=gijx
------END PGP SIGNATURE-----
-
---etloxsebhaa6d7ke--
+-- 
+~Vinod
