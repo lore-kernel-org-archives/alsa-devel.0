@@ -7,65 +7,66 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDDFEC43461
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:32:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A87E1C43461
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:33:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 585B320722
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:32:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 20AE42078E
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Sep 2020 13:33:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JBNjLtdu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 585B320722
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZMHiQY7W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20AE42078E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5BD11B67;
-	Fri,  4 Sep 2020 15:31:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5BD11B67
+	by alsa0.perex.cz (Postfix) with ESMTPS id 974A61B00;
+	Fri,  4 Sep 2020 15:32:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 974A61B00
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599226334;
-	bh=AkHFJChKrUGtnWhDCtHQtlETr2FNIaKJ0u0ZP56JemM=;
+	s=default; t=1599226379;
+	bh=jcOEvJWUtJ0nyPs9aK7IwQQaryD6zNUsGPa7+oOXSIw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JBNjLtdu0hTTPzVNjMXyj87uclEc5qhsywg9ojJsFWOhreJraUSee9Pk6BjaRkwXm
-	 CSf99im/GPpdAObAgElow2iJ+Uy7NC03RdxZ4BmPrrsyuHiiCBqWtURWpwSA04I687
-	 pEItCrxRYNvEmngf86aqCgqb2bUL2D1Of8nuRZh8=
+	b=ZMHiQY7WZoGq2JIVUUv59wuHhzLJhOj1tFxzxVHo2K7QIcQQEIfPrh8/PhGgGZH0e
+	 atHJPrP0kcDjFSsT3l12cl/2RuVJfU4LQo3Dm1hD3gCpH4YkffhosLYwagjbood3vO
+	 qiRnhkTzYzLLgVnZHp/JuN+vKtbK8QcPZatqBUaI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B3EEF802DB;
-	Fri,  4 Sep 2020 15:29:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1BA0F80268;
+	Fri,  4 Sep 2020 15:29:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD456F802C4; Fri,  4 Sep 2020 15:29:46 +0200 (CEST)
+ id 468D6F802E9; Fri,  4 Sep 2020 15:29:53 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5CAFF80257
- for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 15:29:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5CAFF80257
-IronPort-SDR: yCkUsdYrciiTtOmbzm/7ed5azTIRwKvLpAotSqmHokOmobhl6k1WW3KgoOduZ7w67fqDBS3mRp
- AKsXwsVVl3lw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="137259555"
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="137259555"
+ by alsa1.perex.cz (Postfix) with ESMTPS id B937CF801DA
+ for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2020 15:29:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B937CF801DA
+IronPort-SDR: 4fNOSW+BBZbmvZQOUP7nQnN8eJ0oKNT6GKcchrzV/pON68FIhXMB5m6ikAhkkHh+7XAx49G7nL
+ a9sXQvWYOc5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="137259560"
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="137259560"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Sep 2020 06:29:35 -0700
-IronPort-SDR: LaAFTiBKB8J53UkmeviZhyGiraffwezU+Y0pW/ks8jug6i5Sp62p7EYSwOKpAxXYyjJBlGLPG3
- eZuOmmFU+Jpg==
+ 04 Sep 2020 06:29:39 -0700
+IronPort-SDR: BXa9/td1v241rsvKXCx7pB3BJEjeNghe+CEDIk34norpbH01tahhlysf7kLh6ymNrgCeMbcph4
+ PXWQ75TK/q/A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="284416706"
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; d="scan'208";a="284416713"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga008.fm.intel.com with ESMTP; 04 Sep 2020 06:29:33 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 04 Sep 2020 06:29:37 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 03/16] ASoC: SOF: topology: create component extended tokens
-Date: Fri,  4 Sep 2020 16:27:31 +0300
-Message-Id: <20200904132744.1699575-4-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 05/16] ASoC: SOF: use the sof_ipc_comp reserved bytes for
+ extended data
+Date: Fri,  4 Sep 2020 16:27:33 +0300
+Message-Id: <20200904132744.1699575-6-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200904132744.1699575-1-kai.vehmanen@linux.intel.com>
 References: <20200904132744.1699575-1-kai.vehmanen@linux.intel.com>
@@ -91,51 +92,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Keyon Jie <yang.jie@linux.intel.com>
 
-Add comp_ext_tokens which will be used to parse all extended tokens,
-these tokens will be stored it to struct snd_sof_widget.
+Use the 32bit reserved member of the struct sof_ipc_comp as the extended
+data length, this will help to minimize the ABI change for adding new
+extended data to the struct sof_ipc_comp, usually only minor ABI version
+bump needed for every update with this new solution.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ include/sound/sof/topology.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index d47da407a1bd..0ba0c3921cf0 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -492,6 +492,16 @@ static int get_token_u16(void *elem, void *object, u32 offset, u32 size)
- 	return 0;
- }
+diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
+index 796b6c8e851d..d12736e14b69 100644
+--- a/include/sound/sof/topology.h
++++ b/include/sound/sof/topology.h
+@@ -57,8 +57,8 @@ struct sof_ipc_comp {
+ 	uint32_t pipeline_id;
+ 	uint32_t core;
  
-+static int get_token_uuid(void *elem, void *object, u32 offset, u32 size)
-+{
-+	struct snd_soc_tplg_vendor_uuid_elem *velem = elem;
-+	u8 *dst = (u8 *)object + offset;
-+
-+	memcpy(dst, velem->uuid, UUID_SIZE);
-+
-+	return 0;
-+}
-+
- static int get_token_comp_format(void *elem, void *object, u32 offset, u32 size)
- {
- 	struct snd_soc_tplg_vendor_string_elem *velem = elem;
-@@ -725,6 +735,13 @@ static const struct sof_topology_token core_tokens[] = {
- 		offsetof(struct sof_ipc_comp, core), 0},
- };
+-	/* reserved for future use */
+-	uint32_t reserved[1];
++	/* extended data length, 0 if no extended data */
++	uint32_t ext_data_length;
+ } __packed;
  
-+/* Component extended tokens */
-+static const struct sof_topology_token comp_ext_tokens[] = {
-+	{SOF_TKN_COMP_UUID,
-+		SND_SOC_TPLG_TUPLE_TYPE_UUID, get_token_uuid,
-+		offsetof(struct sof_ipc_comp_ext, uuid), 0},
-+};
-+
  /*
-  * DMIC PDM Tokens
-  * SOF_TKN_INTEL_DMIC_PDM_CTRL_ID should be the first token
 -- 
 2.27.0
 
