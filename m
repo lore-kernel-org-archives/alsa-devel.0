@@ -2,69 +2,66 @@ Return-Path: <SRS0=o+Y4=CP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AFBDC43461
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Sep 2020 23:12:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 028F5C433E2
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Sep 2020 23:14:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B44AD2145D
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Sep 2020 23:12:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 527DD20709
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Sep 2020 23:14:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AueYUsgt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B44AD2145D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ibVf+F21"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 527DD20709
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA58117C9;
-	Mon,  7 Sep 2020 01:12:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA58117C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD1FA17D1;
+	Mon,  7 Sep 2020 01:13:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD1FA17D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599433972;
-	bh=qB2iAouu5rvLFNRwCG8ewxiSOaZzSyGfSXDJMpSU7iY=;
+	s=default; t=1599434068;
+	bh=pZRPTljmkpDqjt3/b2j7qymsDLZ97v49Z30d8pXPaeY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AueYUsgt3BUjoIllQThq3l04UXWQMEXsX3Dv8pXLrv2gRFlBX3XZnllgN5IG62QDy
-	 vRI7a6iW8Ereyc4sT0EmQy1ilbhjzyXAuJg1rFbZmRv+E+WWOw86CfeWZ92Mg/flxd
-	 iZ1h4Bfh6Cc6ZqO8bqsXTT7Lsdn/cWNO13HgUjj0=
+	b=ibVf+F21IO0gLdsRWm2epdlca/AdSmsK6yjewbpqCqhgLH3bR8bpNGZz28ERzhoQ+
+	 +yKlGNkL+RiB0+kihMWODNShue4otVz2mjTdA59YakgLYHW8NA0C4ozWMo/HsVEygu
+	 cBbsGTHjegzUp31O6kV4prJUGWx8hfG6TLe0RRtk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20973F801F2;
-	Mon,  7 Sep 2020 01:12:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59F03F801F2;
+	Mon,  7 Sep 2020 01:13:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B6D4F8026F; Mon,  7 Sep 2020 01:11:59 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D133FF800B4
- for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 01:11:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D133FF800B4
-Date: 07 Sep 2020 08:11:48 +0900
-X-IronPort-AV: E=Sophos;i="5.76,399,1592838000"; d="scan'208";a="56507747"
+ id C0875F80277; Mon,  7 Sep 2020 01:13:36 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D9D23F801F2
+ for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 01:13:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9D23F801F2
+Date: 07 Sep 2020 08:13:27 +0900
+X-IronPort-AV: E=Sophos;i="5.76,399,1592838000"; d="scan'208";a="56291417"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 07 Sep 2020 08:11:48 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 07 Sep 2020 08:13:27 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 94292411FB2A;
- Mon,  7 Sep 2020 08:11:48 +0900 (JST)
-Message-ID: <87ft7uv6yf.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3E06C411FBA2;
+ Mon,  7 Sep 2020 08:13:27 +0900 (JST)
+Message-ID: <87eenev6vp.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [RFC] soc_pcm_open: error path behavior change since v5.6
-In-Reply-To: <f9a67925-046c-69d4-bc55-5d5e24d75425@intel.com>
-References: <48810933-41cf-265c-1784-2e2acf979720@intel.com>
- <20200903131633.GA4771@sirena.org.uk>
- <f9a67925-046c-69d4-bc55-5d5e24d75425@intel.com>
+Subject: Re: [PATCH] [RFC] ASoC: core: Do not cleanup uninitialized dais on
+ soc_pcm_open failure
+In-Reply-To: <20200904123854.26742-1-cezary.rojewski@intel.com>
+References: <20200904123854.26742-1-cezary.rojewski@intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,45 +80,20 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Cezary
 
-> static int soc_pcm_open(struct snd_pcm_substream *substream)
-> {
+> Introduce for_each_rtd_dais_rollback macro which behaves exactly like
+> for_each_codec_dais_rollback and its cpu_dais equivalent but for all
+> dais instead.
 > 
-> (...)
+> Use newly added macro to fix soc_pcm_open error path and prevent
+> uninitialized dais from being cleaned-up.
 > 
-> 	/* startup the audio subsystem */
-> 	for_each_rtd_dais(rtd, i, dai) {
-> 		ret = snd_soc_dai_startup(dai, substream);
-> 		if (ret < 0) {
-> 			dev_err(dai->dev,
-> 				"ASoC: can't open DAI %s: %d\n",
-> 				dai->name, ret);
-> 			goto config_err;
-> 		}
-> 
-> 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> 			dai->tx_mask = 0;
-> 		else
-> 			dai->rx_mask = 0;
-> 	}
-> 
-> (...)
-> 
-> config_err:
-> 	for_each_rtd_dais(rtd, i, dai)
-> 		snd_soc_dai_shutdown(dai, substream);
-> 
-> -
-> 
-> Let's assume we have 10 dais. In newer kernels, if
-> snd_soc_dai_startup() fails at i=5, error path will attempt to perform
-> snd_soc_dai_shutdown() for all dais (all 10) regardless if respective
-> dai was opened or not. This is a clear behavior change when compared
-> to v5.6 where cpu_dai was cleaned-up only if it was previously started
-> successfully. Due to usage of for_each_rtd_codec_dai_rollback macro,
-> the same applies to codec_dais.
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
 
-Oh, yes. We need _rollback() for it.
-I will try to fix it
+Thank you for your patch
+
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
 
 Thank you for your help !!
 
