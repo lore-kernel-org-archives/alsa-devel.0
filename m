@@ -2,88 +2,82 @@ Return-Path: <SRS0=BS+q=CQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6584C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B342C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:56:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35D422080A
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:42:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BD3F2080A
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:56:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OfyxLpYl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="y5OXdxQG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35D422080A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o8QHXdoc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QwRkdSlw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BD3F2080A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9851C16F6;
-	Mon,  7 Sep 2020 18:41:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9851C16F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB2BA1808;
+	Mon,  7 Sep 2020 18:55:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB2BA1808
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599496955;
-	bh=M0PtdWcYxeBelsDbpwDJEsRn7qwzPiUFqHU6byxnTwI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1599497784;
+	bh=RZjmdONo/8i3kJYH8JYLbprcFOu0SZPUSptiPG3+JEs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OfyxLpYlf2qb+CkphnxKnTWFev1YWbC4JcmgNtyvUEfQNHNtDryZ6cPxwoA+LKq1h
-	 AR2Pl+znw946g0Bna7ePVBjFHbJWa0zIq7dMXeH83AuNAOsVAtSd90XlNaASLO/tvv
-	 f1IgJv/2jUrHwCJdeZhDhri4mEZg65s9/rDQob4o=
+	b=o8QHXdocVuTUJOTMu55bPoqmpWD5BpvnbYTCm6sz6KecZDinGM3G9e78DfnAUIXrv
+	 1MIZaegWnDv3uKETIkgR9WP3BkLWYUqVF30DhJlm/FcFXerzmzTZi53ZiHIJgs19cD
+	 ea+R4YZ+aGt5EQtmjn4tm6KzM7teClxZGBd5BxO0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AF11F802DC;
-	Mon,  7 Sep 2020 18:36:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D1BEF800D3;
+	Mon,  7 Sep 2020 18:55:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FA3EF8033E; Mon,  7 Sep 2020 18:36:04 +0200 (CEST)
+ id 16D7EF80227; Mon,  7 Sep 2020 18:55:33 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 228E1F802DC
- for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 18:35:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 228E1F802DC
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF893F800D3
+ for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 18:55:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF893F800D3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="y5OXdxQG"
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
- [73.47.72.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ header.b="QwRkdSlw"
+Received: from localhost (unknown [122.167.151.194])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 51F2321D95;
- Mon,  7 Sep 2020 16:35:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7C3A7208C7;
+ Mon,  7 Sep 2020 16:55:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599496556;
- bh=M0PtdWcYxeBelsDbpwDJEsRn7qwzPiUFqHU6byxnTwI=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=y5OXdxQGo8nZbgr7qiMk2cNjYo+7/Zj4I8JMlo+KVRS97fPt6ZfBdSoAHj+4Pb99/
- kbOpsaKg1ohN9v8+gi/DWAloX75SVCZdttUKH+3StGvi2JTZMlHfnt++41LCzlNjae
- TrFAJ1fyd+rNMCX+A2/KJAQGPAt8v9ZL9zqJ1hnI=
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 09/10] ALSA: hda: fix a runtime pm issue in SOF
- when integrated GPU is disabled
-Date: Mon,  7 Sep 2020 12:35:42 -0400
-Message-Id: <20200907163543.1281889-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200907163543.1281889-1-sashal@kernel.org>
-References: <20200907163543.1281889-1-sashal@kernel.org>
+ s=default; t=1599497719;
+ bh=RZjmdONo/8i3kJYH8JYLbprcFOu0SZPUSptiPG3+JEs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QwRkdSlw5ifquH2bt94iscfeZG6J1FXzC4tRR6o8+GXw3c+zxXVee+dciGSpRatRD
+ FOe/cOXEOSxHizq4KgmRS3LDI/dSft/VsggBsFaslSg6ite+vI3pdsqNDKfLwA8KKN
+ ERkb/4eBAxxzkgyAIMy4+dkj34ZnikDrJjZPZvVc=
+Date: Mon, 7 Sep 2020 22:25:11 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Tom Rix <trix@redhat.com>
+Subject: Re: [PATCH] soundwire: stream: fix an invalid free
+Message-ID: <20200907165511.GE2639@vkoul-mobl>
+References: <20200905192613.420-1-trix@redhat.com>
+ <20200907141402.GC2639@vkoul-mobl>
+ <93b672ef-76c9-e87c-4526-897b0af01945@redhat.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Takashi Iwai <tiwai@suse.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <93b672ef-76c9-e87c-4526-897b0af01945@redhat.com>
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, ndesaulniers@google.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ clang-built-linux@googlegroups.com, natechancellor@gmail.com,
+ yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,49 +93,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+On 07-09-20, 07:25, Tom Rix wrote:
+> 
+> On 9/7/20 7:14 AM, Vinod Koul wrote:
+> > Hello Tom,
+> >
+> > On 05-09-20, 12:26, trix@redhat.com wrote:
+> >> From: Tom Rix <trix@redhat.com>
+> >>
+> >> clang static analyzer reports this problem
+> >>
+> >> stream.c:872:2: warning: Argument to kfree() is a constant
+> >>   address (18446744073709551092), which is not memory
+> >>   allocated by malloc()
+> >>         kfree(stream);
+> >>         ^~~~~~~~~~~~~
+> >>
+> >> In sdw_shutdown_stream() the stream to free is set by
+> >> a call to snd_soc_dai_get_sdw_stream().  The problem block
+> >> is the check if the call was successful.
+> >>
+> >> 	if (!sdw_stream) {
+> >> 		dev_err(rtd->dev, "no stream found...
+> >> 		return;
+> >> 	}
+> >>
+> >> When snd_soc_dai_get_sdw_stream() fails, it does not
+> >> always return null, sometimes it returns -ENOTSUPP.
+> >>
+> >> So also check for error codes.
+> >> Fixes: 4550569bd779 ("soundwire: stream: add helper to startup/shutdown streams")
+> >> Signed-off-by: Tom Rix <trix@redhat.com>
+> >> ---
+> >>  drivers/soundwire/stream.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> >> index 6e36deb505b1..950231d593c2 100644
+> >> --- a/drivers/soundwire/stream.c
+> >> +++ b/drivers/soundwire/stream.c
+> >> @@ -1913,7 +1913,7 @@ void sdw_shutdown_stream(void *sdw_substream)
+> >>  
+> >>  	sdw_stream = snd_soc_dai_get_sdw_stream(dai, substream->stream);
+> >>  
+> >> -	if (!sdw_stream) {
+> >> +	if (IS_ERR_OR_NULL(sdw_stream)) {
+> > Thanks for the patch. Please see commit 3471d2a192ba ("soundwire:
+> > stream: fix NULL/IS_ERR confusion") in soundwire-next. This has already
+> > been updated to IS_ERR() and Bard has already sent patches for
+> > snd_soc_dai_get_sdw_stream() to return proper values.
+> >
+> > So I you can rerun this on next, you should see this fixed.
+> 
+> I am working on linux-next, so I will see Bard's patch when it lands there.
 
-[ Upstream commit 13774d81f38538c5fa2924bdcdfa509155480fa6 ]
+It should be already there... And I checked, looks like there was no
+linux-next for last few days and it should be back tomorrow so should be
+there
 
-In snd_hdac_device_init pm_runtime_set_active is called to
-increase child_count in parent device. But when it is failed
-to build connection with GPU for one case that integrated
-graphic gpu is disabled, snd_hdac_ext_bus_device_exit will be
-invoked to clean up a HD-audio extended codec base device. At
-this time the child_count of parent is not decreased, which
-makes parent device can't get suspended.
+> 
+> Sorry for not working on soundwire-next, but since i am fixing everywhere linux-next is easiest. 
 
-This patch calls pm_runtime_set_suspended to decrease child_count
-in parent device in snd_hdac_device_exit to match with
-snd_hdac_device_init. pm_runtime_set_suspended can make sure that
-it will not decrease child_count if the device is already suspended.
+Agree, timing this time around!
 
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200902154218.1440441-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/hda/hdac_device.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index e361024eabb63..020ec48f39048 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -123,6 +123,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
- void snd_hdac_device_exit(struct hdac_device *codec)
- {
- 	pm_runtime_put_noidle(&codec->dev);
-+	/* keep balance of runtime PM child_count in parent device */
-+	pm_runtime_set_suspended(&codec->dev);
- 	snd_hdac_bus_remove_device(codec->bus, codec);
- 	kfree(codec->vendor_name);
- 	kfree(codec->chip_name);
 -- 
-2.25.1
-
+~Vinod
