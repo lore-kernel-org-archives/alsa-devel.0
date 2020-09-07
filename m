@@ -2,67 +2,68 @@ Return-Path: <SRS0=BS+q=CQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B308DC43461
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 08:34:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7898C43461
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 08:35:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80CDB2145D
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 08:34:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06BC521481
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 08:35:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KvXSUtEW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80CDB2145D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d4Qihqff"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06BC521481
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBFE1179F;
-	Mon,  7 Sep 2020 10:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBFE1179F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FD541725;
+	Mon,  7 Sep 2020 10:34:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FD541725
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599467652;
-	bh=6xrzPfKYvafzMRUfXpcvxiNSGwTSsjJNX7rd7WOfeS8=;
+	s=default; t=1599467708;
+	bh=cVPSZ/bAbdY3KkYfEwrm6XZ2QSRPGItv94rF/Eyp+xY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KvXSUtEWygq4dhGSeK/Niw1hwVy0v8TkIb58lpEio58TbZ1UvkKSN4iWbHGMInX0K
-	 I5/ZRgeSi6VVg0LNJ1tNyeBWNOSte2yQcWnK1rBo94zarkJneHlizjlrlYDR4gRkwi
-	 FWRl8g5LQ01fX4IcgD1nnRJOgCbE1cftJwBYYvC4=
+	b=d4Qihqff0Qj/dqZoJMrAGL69ImzEMOhk87DM3h/v4gaMN2Wes9g0RM6IchFoEi9pN
+	 n7mfknVbKtIDGfHP7RNzDkuCzZssSoRmQX8QojAqW6rAUpVS7oUGorMgCsAOh9yrTb
+	 r6mPUQ4IDgBXbvvMloE/J7J6Ep8xewERToO5Qgyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76E87F800FD;
-	Mon,  7 Sep 2020 10:33:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F892F80240;
+	Mon,  7 Sep 2020 10:34:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5E9FF8021C; Mon,  7 Sep 2020 10:32:26 +0200 (CEST)
+ id 6290EF8028B; Mon,  7 Sep 2020 10:34:10 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A72B6F800D3
- for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 10:31:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A72B6F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29A64F800B9
+ for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 10:34:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29A64F800B9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9C36DAF39;
- Mon,  7 Sep 2020 08:31:51 +0000 (UTC)
-Date: Mon, 07 Sep 2020 10:31:50 +0200
-Message-ID: <s5hy2lmyoll.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6C87AB6FD;
+ Mon,  7 Sep 2020 08:34:03 +0000 (UTC)
+Date: Mon, 07 Sep 2020 10:34:02 +0200
+Message-ID: <s5hv9gqyohx.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Luke D Jones <luke@ljones.dev>
-Subject: Re: [PATCH V2] ALSA: hda: fixup headset for ASUS GX502 laptop
-In-Reply-To: <20200907081959.56186-1-luke@ljones.dev>
-References: <20200907081959.56186-1-luke@ljones.dev>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 10/11] ALSA: firewire: Replace tasklet with work
+In-Reply-To: <20200906082628.GA74660@workstation>
+References: <20200903104131.21097-1-tiwai@suse.de>
+ <20200903104131.21097-11-tiwai@suse.de>
+ <20200906082628.GA74660@workstation>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com,
- tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,17 +79,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 07 Sep 2020 10:19:59 +0200,
-Luke D Jones wrote:
+On Sun, 06 Sep 2020 10:26:28 +0200,
+Takashi Sakamoto wrote:
 > 
-> The GX502 requires a few steps to enable the headset i/o: pincfg,
-> verbs to enable and unmute the amp used for headpone out, and
-> a jacksense callback to toggle output via internal or jack using
-> a verb.
+> Hi,
 > 
-> Signed-off-by: Luke D Jones <luke@ljones.dev>
+> On Thu, Sep 03, 2020 at 12:41:30PM +0200, Takashi Iwai wrote:
+> > The tasklet is an old API that should be deprecated, usually can be
+> > converted to another decent API.  In FireWire driver, a tasklet is
+> > still used for offloading the AMDTP PCM stream handling.  It can be
+> > achieved gracefully with a work queued, too.
+> > 
+> > This patch replaces the tasklet usage in firewire-lib driver with a
+> > simple work.  The conversion is fairly straightforward but for the
+> > in_interrupt() checks that are replaced with the check using the
+> > current_work().
+> > 
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >  sound/firewire/amdtp-stream-trace.h |  2 +-
+> >  sound/firewire/amdtp-stream.c       | 25 +++++++++++++------------
+> >  sound/firewire/amdtp-stream.h       |  2 +-
+> >  3 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> After testing this patch, I agree with the usage of
+> '(current_work() == &s->period_work)' as an alternative of 'in_interrupt()'.
+> 
+> However, the usage is not appropriate for tracepoints event in the case.
+> 
+> > diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
+> > index 26e7cb555d3c..5386d548cada 100644
+> > --- a/sound/firewire/amdtp-stream-trace.h
+> > +++ b/sound/firewire/amdtp-stream-trace.h
+> > @@ -49,7 +49,7 @@ TRACE_EVENT(amdtp_packet,
+> >  		__entry->data_blocks = data_blocks;
+> >  		__entry->data_block_counter = data_block_counter,
+> >  		__entry->packet_index = s->packet_index;
+> > -		__entry->irq = !!in_interrupt();
+> > +		__entry->irq = (current_work() == &s->period_work);
+> >  		__entry->index = index;
+> >  	),
+> >  	TP_printk(
+> 
+> The tracepoints event is probed in two contexts:
+>  * softirq for isochronous context to process hardware events of 1394 OHCI.
+>  * user task of ALSA PCM applications.
+> 
+> However, it's not probed in the workqueue task since the case is already
+> avoided carefully in below patch:
+> 
+> > @@ -1184,7 +1185,7 @@ unsigned long amdtp_domain_stream_pcm_pointer(struct amdtp_domain *d,
+> >  
+> >  	if (irq_target && amdtp_stream_running(irq_target)) {
+> >  		// This function is called in software IRQ context of
+> > -		// period_tasklet or process context.
+> > +		// period_work or process context.
+> >  		//
+> >  		// When the software IRQ context was scheduled by software IRQ
+> >  		// context of IT contexts, queued packets were already handled.
+> > @@ -1195,9 +1196,9 @@ unsigned long amdtp_domain_stream_pcm_pointer(struct amdtp_domain *d,
+> >  		// immediately to keep better granularity of PCM pointer.
+> >  		//
+> >  		// Later, the process context will sometimes schedules software
+> > -		// IRQ context of the period_tasklet. Then, no need to flush the
+> > +		// IRQ context of the period_work. Then, no need to flush the
+> >  		// queue by the same reason as described in the above
+> > -		if (!in_interrupt()) {
+> > +		if (current_work() != &s->period_work) {
+> >  			// Queued packet should be processed without any kernel
+> >  			// preemption to keep latency against bus cycle.
+> >  			preempt_disable();
+> 
+> as long as testing, I can see no logs for the trancepoints event with the 'irq' field is 1.
+> I would like you to leave 'amdtp-stream-trace.h' as is by dropping the above change since
+> the irq field should record whether the context is softirq or user task.
 
-Thanks, applied now with Cc to stable and a link URL to bugzilla.
+OK, makes sense.  Will fix in v2.
+Thanks for reviewing!
 
 
 Takashi
