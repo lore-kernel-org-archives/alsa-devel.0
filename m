@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9DA8C43461
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:42:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6584C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:42:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39DE52080A
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:42:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 35D422080A
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:42:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bBF6JwjA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GuUCkaR8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39DE52080A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OfyxLpYl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="y5OXdxQG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35D422080A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 761871821;
-	Mon,  7 Sep 2020 18:41:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 761871821
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9851C16F6;
+	Mon,  7 Sep 2020 18:41:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9851C16F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599496920;
-	bh=TVnKCrca6QmsDHJbAgCNBC+xjTCV29vzRJqeIcvo8bg=;
+	s=default; t=1599496955;
+	bh=M0PtdWcYxeBelsDbpwDJEsRn7qwzPiUFqHU6byxnTwI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bBF6JwjAHAevJgAu+HwcNfuY8/a3lD2pzL8v5/dueSkMSMb4+8Ccr7KIvqm1Vajq3
-	 lAqGivNiSTq/wQxXnkYBTl6pZTJA2Ty/hSzH+oxVKaz8q/qEisZWUNkjQe1xtyTFsL
-	 y68jG879Q6MK3JC9+RsuhsV29tFbV6kY4lDV4urc=
+	b=OfyxLpYlf2qb+CkphnxKnTWFev1YWbC4JcmgNtyvUEfQNHNtDryZ6cPxwoA+LKq1h
+	 AR2Pl+znw946g0Bna7ePVBjFHbJWa0zIq7dMXeH83AuNAOsVAtSd90XlNaASLO/tvv
+	 f1IgJv/2jUrHwCJdeZhDhri4mEZg65s9/rDQob4o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C3B5F80337;
-	Mon,  7 Sep 2020 18:35:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AF11F802DC;
+	Mon,  7 Sep 2020 18:36:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D1EAF80338; Mon,  7 Sep 2020 18:35:49 +0200 (CEST)
+ id 3FA3EF8033E; Mon,  7 Sep 2020 18:36:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24D8CF80336
- for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 18:35:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24D8CF80336
+ by alsa1.perex.cz (Postfix) with ESMTPS id 228E1F802DC
+ for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 18:35:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 228E1F802DC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GuUCkaR8"
+ header.b="y5OXdxQG"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 58E9521927;
- Mon,  7 Sep 2020 16:35:40 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 51F2321D95;
+ Mon,  7 Sep 2020 16:35:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599496541;
- bh=TVnKCrca6QmsDHJbAgCNBC+xjTCV29vzRJqeIcvo8bg=;
+ s=default; t=1599496556;
+ bh=M0PtdWcYxeBelsDbpwDJEsRn7qwzPiUFqHU6byxnTwI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GuUCkaR8LcB3PpHy5KgYhAJVXwjji7td0tAlWQ0gitmO18hxsxLNNXHsNKtJYQ2Ur
- ESwUEB9Ga6kJ5/LQ7ToSW0/xYMlJUbvNILbw9ZahRQ1jseaUsXVChiRkShXHO2fNNL
- 3gCDmFliCCrTVcAs5UWvuheWyYXg1M2t/uxAalLA=
+ b=y5OXdxQGo8nZbgr7qiMk2cNjYo+7/Zj4I8JMlo+KVRS97fPt6ZfBdSoAHj+4Pb99/
+ kbOpsaKg1ohN9v8+gi/DWAloX75SVCZdttUKH+3StGvi2JTZMlHfnt++41LCzlNjae
+ TrFAJ1fyd+rNMCX+A2/KJAQGPAt8v9ZL9zqJ1hnI=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 12/13] ALSA: hda: fix a runtime pm issue in SOF
+Subject: [PATCH AUTOSEL 4.4 09/10] ALSA: hda: fix a runtime pm issue in SOF
  when integrated GPU is disabled
-Date: Mon,  7 Sep 2020 12:35:23 -0400
-Message-Id: <20200907163524.1281734-12-sashal@kernel.org>
+Date: Mon,  7 Sep 2020 12:35:42 -0400
+Message-Id: <20200907163543.1281889-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200907163524.1281734-1-sashal@kernel.org>
-References: <20200907163524.1281734-1-sashal@kernel.org>
+In-Reply-To: <20200907163543.1281889-1-sashal@kernel.org>
+References: <20200907163543.1281889-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -130,7 +130,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 03c9872c31cfe..73264d5f58f81 100644
+index e361024eabb63..020ec48f39048 100644
 --- a/sound/hda/hdac_device.c
 +++ b/sound/hda/hdac_device.c
 @@ -123,6 +123,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
