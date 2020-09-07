@@ -7,83 +7,77 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0D0C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EC2EC2D0E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:41:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92ED6206B5
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:40:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73F5C21775
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 16:41:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mwTn9X5p";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rdgA4mGV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92ED6206B5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dnt+ukkr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mGej1oPH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73F5C21775
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DA4517E0;
-	Mon,  7 Sep 2020 18:40:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DA4517E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC8EB1811;
+	Mon,  7 Sep 2020 18:40:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC8EB1811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599496850;
-	bh=0AsOqjbBkPZykoJS/EiWyx0FA+xrH0LXRfn/2dLrtzc=;
+	s=default; t=1599496883;
+	bh=A1GglWH/Xqi80/BCeRtvDldnvRBNc1Oeew/+yalEkgE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mwTn9X5pC6Qpk9o6xNYuOImzgWxbL5qk3SnSu6DBsZUNmcyPpxDg7dYp+jkcH+D/x
-	 GfseL3eZZOydYOrJCE+5iW1JF52DLdFPiEQpO79NAhgmW3/dYQmCKIr6EQ0DG9Z30f
-	 cBBgsSbBvmF84fJNdPN3ZegkeOdBLbuz1gieDqEw=
+	b=dnt+ukkrMX3jPm9OgV/VyLj9x5LgeBxU0L3yGY731m/oeTNWedYpeAfeo2cK/RbZ5
+	 m7VpyUGSLHYspeujk+/f1sYoyIHvUcqjjdV4o395QuCrnI73rnqxnJ7qKYEvFFg/wg
+	 4wUb3yWg7v6fe7j99FQEXItZWGWeqGbfcLAfmVt0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 110C3F802DD;
-	Mon,  7 Sep 2020 18:35:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C11F7F80333;
+	Mon,  7 Sep 2020 18:35:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49EA4F8031A; Mon,  7 Sep 2020 18:35:30 +0200 (CEST)
+ id 730E9F80334; Mon,  7 Sep 2020 18:35:38 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C436F802C4
- for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 18:35:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C436F802C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 436ECF80322
+ for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 18:35:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 436ECF80322
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rdgA4mGV"
+ header.b="mGej1oPH"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 72B89221F0;
- Mon,  7 Sep 2020 16:35:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DDAA621941;
+ Mon,  7 Sep 2020 16:35:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599496522;
- bh=0AsOqjbBkPZykoJS/EiWyx0FA+xrH0LXRfn/2dLrtzc=;
+ s=default; t=1599496530;
+ bh=A1GglWH/Xqi80/BCeRtvDldnvRBNc1Oeew/+yalEkgE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rdgA4mGVtpHmTr4PCVX7xEP3RzrIb6tKkBXIPx1D/xtbTo/2/JZusMd+okDWnkfLN
- 2CnZd4LcfrnIN7ksXgXmKT9zPykTn4pAY2VhPzlch3Yp2BNsnjLMxCcpAp337Wj0QR
- bHyRU6XBWjqpY0tUsfMrIuricsTkXtPBrpTkiLsI=
+ b=mGej1oPHVz+1mi1WIlI6OW0optlKBmMMRK5OHCerEcj9Nbzz/0lQIiUYCS+va0bxU
+ 3e+W/ZHOhkm6l9igdDsG34yWzlTfTZZAR77bVh2K4N4+ErJVFqQqxvh4b2naBVcmX4
+ V6KKUMhNNs65YMfBKfmbztVk9QDZUtsoV8H8ma9o=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 16/17] ALSA: hda: fix a runtime pm issue in SOF
- when integrated GPU is disabled
-Date: Mon,  7 Sep 2020 12:34:59 -0400
-Message-Id: <20200907163500.1281543-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 04/13] ALSA: hda: Fix 2 channel swapping for Tegra
+Date: Mon,  7 Sep 2020 12:35:15 -0400
+Message-Id: <20200907163524.1281734-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200907163500.1281543-1-sashal@kernel.org>
-References: <20200907163500.1281543-1-sashal@kernel.org>
+In-Reply-To: <20200907163524.1281734-1-sashal@kernel.org>
+References: <20200907163524.1281734-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Takashi Iwai <tiwai@suse.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ Sameer Pujar <spujar@nvidia.com>, Mohan Kumar <mkumard@nvidia.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,49 +93,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+From: Mohan Kumar <mkumard@nvidia.com>
 
-[ Upstream commit 13774d81f38538c5fa2924bdcdfa509155480fa6 ]
+[ Upstream commit 216116eae43963c662eb84729507bad95214ca6b ]
 
-In snd_hdac_device_init pm_runtime_set_active is called to
-increase child_count in parent device. But when it is failed
-to build connection with GPU for one case that integrated
-graphic gpu is disabled, snd_hdac_ext_bus_device_exit will be
-invoked to clean up a HD-audio extended codec base device. At
-this time the child_count of parent is not decreased, which
-makes parent device can't get suspended.
+The Tegra HDA codec HW implementation has an issue related to not
+swapping the 2 channel Audio Sample Packet(ASP) channel mapping.
+Whatever the FL and FR mapping specified the left channel always
+comes out of left speaker and right channel on right speaker. So
+add condition to disallow the swapping of FL,FR during the playback.
 
-This patch calls pm_runtime_set_suspended to decrease child_count
-in parent device in snd_hdac_device_exit to match with
-snd_hdac_device_init. pm_runtime_set_suspended can make sure that
-it will not decrease child_count if the device is already suspended.
-
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200902154218.1440441-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+Acked-by: Sameer Pujar <spujar@nvidia.com>
+Link: https://lore.kernel.org/r/20200825052415.20626-2-mkumard@nvidia.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_device.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_hdmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 19deb306facb7..4a843eb7cc940 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -123,6 +123,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
- void snd_hdac_device_exit(struct hdac_device *codec)
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 2def4ad579ccf..4f8dd558af48f 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3224,6 +3224,7 @@ static int tegra_hdmi_build_pcms(struct hda_codec *codec)
+ 
+ static int patch_tegra_hdmi(struct hda_codec *codec)
  {
- 	pm_runtime_put_noidle(&codec->dev);
-+	/* keep balance of runtime PM child_count in parent device */
-+	pm_runtime_set_suspended(&codec->dev);
- 	snd_hdac_bus_remove_device(codec->bus, codec);
- 	kfree(codec->vendor_name);
- 	kfree(codec->chip_name);
++	struct hdmi_spec *spec;
+ 	int err;
+ 
+ 	err = patch_generic_hdmi(codec);
+@@ -3231,6 +3232,10 @@ static int patch_tegra_hdmi(struct hda_codec *codec)
+ 		return err;
+ 
+ 	codec->patch_ops.build_pcms = tegra_hdmi_build_pcms;
++	spec = codec->spec;
++	spec->chmap.ops.chmap_cea_alloc_validate_get_type =
++		nvhdmi_chmap_cea_alloc_validate_get_type;
++	spec->chmap.ops.chmap_validate = nvhdmi_chmap_validate;
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
