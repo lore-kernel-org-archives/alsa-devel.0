@@ -2,82 +2,73 @@ Return-Path: <SRS0=BS+q=CQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0809C43461
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 11:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99425C43461
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 11:20:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 319632168B
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 11:07:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8121421473
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Sep 2020 11:20:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aPytx//D";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uizH5gSg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 319632168B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vkm/8+tI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8121421473
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE73C1795;
-	Mon,  7 Sep 2020 13:06:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE73C1795
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6CEC177D;
+	Mon,  7 Sep 2020 13:20:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6CEC177D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599476868;
-	bh=ASDavNWFz3Ru48cBueNff8IUESkv+WSF8MU9lmTCDDM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aPytx//DqmKx8pNdVzwGMcLsTpPWN+ISZhEM+TcRveElAfDO1DDvOSDuZpGTs3w+U
-	 jJP/z+2J1JsLfD3D/qCZC1Gn40bT7+gwH3gibXczB66CCJGxzkTALEOEJcm4VjKPer
-	 6NpiclU1p4b4o1qhxuiitnXjoX7PKTaQeR3vKp0U=
+	s=default; t=1599477653;
+	bh=UXB89SyvRomFkn54IM+399AKIyQDzEoIVSOTN35JDxU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vkm/8+tIUpWPoQUO7b0tMK36U9HC9mVHwzTCktxDjt+kSNZ3imX/Yu6SKtmZhaOzX
+	 BfTYFJB1VGMQpcjg+zOkD7REQhWvOInB2W/jjUlEexZ3mbXurJS6+dzVgd8nOKxPly
+	 HaV7bnmTZWSA9NRkIJ0n6kUdSWTELKuRptHVQY20=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CAEBF800FD;
-	Mon,  7 Sep 2020 13:06:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50A9AF800B9;
+	Mon,  7 Sep 2020 13:20:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E08A3F80227; Mon,  7 Sep 2020 13:06:55 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CDDCF800FD
- for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 13:06:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CDDCF800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uizH5gSg"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 1BAA3F80227; Mon,  7 Sep 2020 13:20:01 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 27918215A4;
- Mon,  7 Sep 2020 11:06:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599476805;
- bh=ASDavNWFz3Ru48cBueNff8IUESkv+WSF8MU9lmTCDDM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uizH5gSgQY51RFhQPtobIYQvnQMwEBDfIS1Pk252+RUx7HShA+bOPvpLPoldlaj+n
- rgmiUppSDhdoQrrkxSWP/uOUd1vp80WvfrYpIHJOrJtcyY/dyu7AZLzzkoeIJaoAIG
- uTmLbQhAAMZTRBZJPLle4RUGpWBdWTqFSPtlnM5U=
-Date: Mon, 7 Sep 2020 12:06:01 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: Re: [PATCH] ASoC: rt5682: Have global name clock option for parent clk
-Message-ID: <20200907110601.GC4907@sirena.org.uk>
-References: <20200907040038.3124-1-akshu.agrawal@amd.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="+nBD6E3TurpgldQp"
-Content-Disposition: inline
-In-Reply-To: <20200907040038.3124-1-akshu.agrawal@amd.com>
-X-Cookie: Elevators smell different to midgets.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- derek.fang@realtek.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70A3AF800B9
+ for <alsa-devel@alsa-project.org>; Mon,  7 Sep 2020 13:19:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70A3AF800B9
+IronPort-SDR: XOoTGd6muSisGFMVC8HgK89gopQ5WMVGRhDdThLoerzQWEBNnhZPAz0KjWIozHyP/Co/GTDtDp
+ mOVSTnIEbdqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="155486586"
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; d="scan'208";a="155486586"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Sep 2020 04:19:50 -0700
+IronPort-SDR: e+X4q5MiKTwTfXC1OgOTYLNnXeK0VrxII918JcjJmEQcLqUy+MOgSSlU50Uli3zegu8F50+qv4
+ e+do5K2wpg/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; d="scan'208";a="343197020"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by orsmga007.jf.intel.com with ESMTP; 07 Sep 2020 04:19:48 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2] ASoC: core: Do not cleanup uninitialized dais on
+ soc_pcm_open failure
+Date: Mon,  7 Sep 2020 13:19:39 +0200
+Message-Id: <20200907111939.16169-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com,
+ Cezary Rojewski <cezary.rojewski@intel.com>, kuninori.morimoto.gx@renesas.com,
+ lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,41 +84,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Introduce for_each_rtd_dais_rollback macro which behaves exactly like
+for_each_codec_dais_rollback and its cpu_dais equivalent but for all
+dais instead.
 
---+nBD6E3TurpgldQp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Use newly added macro to fix soc_pcm_open error path and prevent
+uninitialized dais from being cleaned-up.
 
-On Mon, Sep 07, 2020 at 09:30:37AM +0530, Akshu Agrawal wrote:
-> When adding parent clk(mclk) to wclk, this adds fallback option
-> for the case where global clk name is used.
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Fixes: 5d9fa03e6c35 ("ASoC: soc-pcm: tidyup soc_pcm_open() order")
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
 
-> @@ -2780,6 +2780,7 @@ static int rt5682_register_dai_clks(struct snd_soc_component *component)
->  			if (rt5682->mclk) {
->  				init.parent_data = &(struct clk_parent_data){
->  					.fw_name = "mclk",
-> +					.name = __clk_get_name(rt5682->mclk),
->  				};
->  				init.num_parents = 1;
->  			}
+Changes in v2:
+- no functional changes
+- appended missing Fixes tag, plus Acked-by from review
 
-I don't understand this change - we clearly already have the clock so
-why can't we just use whatever we used when we originally looked it up
-here?
+ include/sound/soc.h | 2 ++
+ sound/soc/soc-pcm.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
---+nBD6E3TurpgldQp
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index b94ebff12350..09a7d8409ade 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1193,6 +1193,8 @@ struct snd_soc_pcm_runtime {
+ 	     ((i) < (rtd)->num_cpus + (rtd)->num_codecs) &&		\
+ 		     ((dai) = (rtd)->dais[i]);				\
+ 	     (i)++)
++#define for_each_rtd_dais_rollback(rtd, i, dai)		\
++	for (; (--(i) >= 0) && ((dai) = (rtd)->dais[i]);)
+ 
+ void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
+ 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 00ac1cbf6f88..4c9d4cd8cf0b 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -812,7 +812,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ 
+ config_err:
+-	for_each_rtd_dais(rtd, i, dai)
++	for_each_rtd_dais_rollback(rtd, i, dai)
+ 		snd_soc_dai_shutdown(dai, substream);
+ 
+ 	snd_soc_link_shutdown(substream);
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9WFBkACgkQJNaLcl1U
-h9BDVgf/TzUykCu0F6H22up3PWm1DPnZbDx/M60THNm08kFwphVcM57B4Jls3/U1
-QLLodHKZreIHEu3+WcNDrZdWezwElxhBTfb3PL15lsJbsfQr7v0awbLUO7beDrpB
-tHznqF+INvVCU1xHDxUXIvmOp6ftsl+ltLw1I4Va3yIpkM3uFhwJMnZJAJkWj2+9
-RPnFT6Ru9Bb7r9F9QghpW4y5rf662w/ugJRNy+1dCGm91GfN0UbbnB7HKPIBXN+2
-qsWtFP8Tjk1HBcC+o4Bi9FqF7C0JVVrR0K1dxs2TQWkItdz56TP288gVpVtHDyAm
-v/zO5tqxlx4K6u1vbPUAdM3dlMoyjQ==
-=yIiR
------END PGP SIGNATURE-----
-
---+nBD6E3TurpgldQp--
