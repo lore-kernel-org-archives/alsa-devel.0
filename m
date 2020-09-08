@@ -2,83 +2,95 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDB4CC43461
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 11:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3950C43461
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 11:56:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81240206B5
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 11:55:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DD577206B5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 11:56:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jfGQ9PJ8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JAijrfA7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81240206B5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SdZoBpLo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JN0XmYmY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD577206B5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19EE0173C;
-	Tue,  8 Sep 2020 13:55:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19EE0173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CDC71755;
+	Tue,  8 Sep 2020 13:56:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CDC71755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599566157;
-	bh=MLbB+MGwr/r5a0jx3JnLPatiU4On+aPxTZ/schrAPb8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1599566210;
+	bh=kko0HQ+eQammnzmZoFmkcmravp5VgtJhcOXDGeQ7gh8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jfGQ9PJ8+WYj9EeNbJGuvihQ4isQyUpnELaeRN/dnPYbQ4fUney92/6Pnz37KGcjc
-	 ZPMmW8UlCPB9RlpQy5BDmQRxF32bcviR/+yld6ggUO2aYjPjqOR4cQyZjnYK5ZGoNo
-	 AIE6m0VtDbfP4xaMIR8W//1vIrUi9JkIefEDHM4Y=
+	b=SdZoBpLoIQwYkApMfi6BD6r4PjBw7/w/4dkRLXVtaL48WVW1lV8O40WsAL+pHqmjW
+	 f0ie4e6aO2uNkgm+GV1RNRT0ljurED20mjPm3EaHV84bVfN1ppKxp5fRjtQr6cqe5o
+	 CKHTvT7i3Pg7c0BC3Sjqo1mtLMoLygCTeoMPc06U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 957E3F801F2;
-	Tue,  8 Sep 2020 13:55:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F06E1F800FD;
+	Tue,  8 Sep 2020 13:55:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C20C4F80264; Tue,  8 Sep 2020 13:55:04 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 69F2DF80272; Tue,  8 Sep 2020 13:55:57 +0200 (CEST)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FB94F8015F
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 13:55:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FB94F8015F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 688A1F8026F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 13:55:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 688A1F8026F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JAijrfA7"
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A67B72067C;
- Tue,  8 Sep 2020 11:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599566094;
- bh=MLbB+MGwr/r5a0jx3JnLPatiU4On+aPxTZ/schrAPb8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JAijrfA70TLd2SlHXaPJ7sJAG2b3/itt6wTJkQ9xzFwtj9xstl1hwVKhAvEnYhTXX
- nT6c2aribxoYEyWLw2ee+agJ+24B1WaYjoa7se3qUTwLH8zr9WxA6oA8Y7Vnmd5KOH
- IFHKJKT4NpDrV3A4iWY4YidN6r/Se+41BPyNMr84=
-Date: Tue, 8 Sep 2020 13:55:06 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v2] Revert "ALSA: hda: Add support for Loongson 7A1000
- controller"
-Message-ID: <20200908115506.GA1624115@kroah.com>
-References: <1598348388-2518-1-git-send-email-yangtiezhu@loongson.cn>
- <s5hsgcb59gw.wl-tiwai@suse.de>
- <CAAhV-H5V5adhY2OjJLxW7x3zDaHGgBxxy45hjf22+qMSEBQuww@mail.gmail.com>
- <bf50515b-a018-a66d-188a-4901428e66a6@loongson.cn>
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JN0XmYmY"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088BtjZr002439;
+ Tue, 8 Sep 2020 06:55:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1599566145;
+ bh=8S2NCJwrsPCuX+GyPBMxHmMN2Snkw/AKa06O2GPbjc0=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=JN0XmYmYYG+sh7kBGsZ4FEmWIKB3YGVEglGhg9FQvt5MJYCHlDHnInnbAK6Cm3Kwq
+ NdOd7v39ZhWpwkZEieJuoFBwJ/MmKew7rJYgpXu0Vu7KRNTUUCkshGaV3L4lmDrMpG
+ XQibWpzYEYT83NDjh2ci+7FZgciLc+49zW9B7iFw=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088Btj0O103436
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 8 Sep 2020 06:55:45 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
+ 2020 06:55:44 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Sep 2020 06:55:44 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088BtiiB092847;
+ Tue, 8 Sep 2020 06:55:44 -0500
+Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Avoid accessing invalid
+ gpio_reset
+To: Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <tiwai@suse.com>
+References: <20200908083521.14105-1-camel.guo@axis.com>
+From: Dan Murphy <dmurphy@ti.com>
+Message-ID: <c1036c8f-9ddc-1e02-4668-1dd0d081b6cf@ti.com>
+Date: Tue, 8 Sep 2020 06:55:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf50515b-a018-a66d-188a-4901428e66a6@loongson.cn>
-Cc: alsa-devel@alsa-project.org, Huacai Chen <chenhuacai@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Takashi Iwai <tiwai@suse.de>,
- Xuefeng Li <lixuefeng@loongson.cn>
+In-Reply-To: <20200908083521.14105-1-camel.guo@axis.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
+ Camel Guo <camelg@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,22 +106,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Sep 08, 2020 at 11:09:31AM +0800, Tiezhu Yang wrote:
-> On 09/08/2020 08:37 AM, Huacai Chen wrote:
-> > Hi, all
-> > 
-> > This patch should be backported to 5.4.
-> 
-> Hi,
-> 
-> Commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
-> 7A1000 controller") has been not yet merged into 5.4, so no
-> need to backport.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_intel.c?h=v5.4
+Camel
 
-It showed up in 5.4.62, so yes, it does need to go there.
+On 9/8/20 3:35 AM, Camel Guo wrote:
+> From: Camel Guo <camelg@axis.com>
+>
+> When gpio_reset is not well defined in devicetree, the
+> adcx140->gpio_reset is an error code instead of NULL. In this case,
+> adcx140->gpio_reset should not be used by adcx140_reset. This commit
+> sets it NULL to avoid accessing an invalid variable.
+>
+> Signed-off-by: Camel Guo <camelg@axis.com>
+> ---
+>   sound/soc/codecs/tlv320adcx140.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+> index 7ae6ec374be3..597dd1062943 100644
+> --- a/sound/soc/codecs/tlv320adcx140.c
+> +++ b/sound/soc/codecs/tlv320adcx140.c
+> @@ -984,8 +984,10 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+>   
+>   	adcx140->gpio_reset = devm_gpiod_get_optional(adcx140->dev,
+>   						      "reset", GPIOD_OUT_LOW);
+> -	if (IS_ERR(adcx140->gpio_reset))
+> +	if (IS_ERR(adcx140->gpio_reset) || adcx140->gpio_reset == NULL) {
 
-thanks,
+This looks a bit off and seems like the NULL check was added just to 
+print the message.
 
-greg k-h
+I would suggest removing the "or" check and just set the gpio_reset to 
+NULL in an error case.
+
+This avoids noise in the log especially if the gpio_reset is 
+intentionally not populated in the DT
+
+Dan
+
