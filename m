@@ -2,97 +2,85 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2440C43461
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E40BC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:06:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E77221D81
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:04:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E28F20732
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:06:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pXNwTtF8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ia2HCvqT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E77221D81
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qYyr3L0a";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="nCSLpNb+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E28F20732
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97932174F;
-	Tue,  8 Sep 2020 14:03:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97932174F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 986EF174F;
+	Tue,  8 Sep 2020 14:05:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 986EF174F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599566676;
-	bh=q2QxXkEBBSwufOXUF4prFgslxCzFvzOU3WELUM8zvAw=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1599566787;
+	bh=woA2OUV1esAcXCp8pY5naCYSJESW7kmN7zj2pknPraM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pXNwTtF8pk1GuKe0K4Wn7Ug1OcQgJSywskjZieZnSDOKuOnm/2W+TNCN8wZfeOid+
-	 dg9Pd/pDr2Iz5zDwnh/puYgksmMjokdXnoNxAUWzq1/0RNXTO0d6J0E0fzLAT4V8ti
-	 bx7E5mXof8a0H/BNBz4ITsaPu/IyQxIt9YC1jS5k=
+	b=qYyr3L0aGUPILnjinT8pbKLL3j5eCY1EfE2ZFII/eNwlS/0xRKCf9kss8FzUrVOKm
+	 RMfcaruM95JEVQ1oAccH0NrgNh0qiM86ALyZ4wKGn6kOqsCvQbcbWnXM7YHhWTukO4
+	 IAVDE42Cvg+5ISi8WQAxhpSeGIA0VcyQ/s50sD5s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B0A6F801F2;
-	Tue,  8 Sep 2020 14:03:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39771F8010B;
+	Tue,  8 Sep 2020 14:05:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B99B7F80264; Tue,  8 Sep 2020 14:03:43 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E4A38F801F2; Tue,  8 Sep 2020 14:05:35 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77BDEF800FD
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 14:03:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77BDEF800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ia2HCvqT"
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088C3VsW004198;
- Tue, 8 Sep 2020 07:03:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1599566611;
- bh=nsqPY6o4grvE2pz2lannxuY5WsjPIahg4+RoCYp/mc4=;
- h=Subject:From:To:CC:References:Date:In-Reply-To;
- b=ia2HCvqTdT2aSCL0/porgUy55z/i+UNq4fGm51IBwnjCi49OkizTxLE8QrQf5pLhG
- tNYc8imMXyJknGPW8h8Bjtcf/u01AeRfbs9KUtXdyT/+siXEYWnKXnxY9GGFMd0Cgj
- bZSQ1blN0Ra3RX6g1cY8xR/cDa84TcLT/G/RdfnA=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088C3V75118701
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 8 Sep 2020 07:03:31 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
- 2020 07:03:31 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Sep 2020 07:03:31 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088C3SxG114548;
- Tue, 8 Sep 2020 07:03:29 -0500
-Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Avoid accessing invalid
- gpio_reset
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <tiwai@suse.com>, <dmurphy@ti.com>
-References: <20200908083521.14105-1-camel.guo@axis.com>
- <7bb93489-dbd5-d1a5-5df6-e62470bd2252@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <e791162b-1292-e1c4-3fca-b8936beeeb45@ti.com>
-Date: Tue, 8 Sep 2020 15:03:28 +0300
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0E2AF8010B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 14:05:27 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 74EBDA003F;
+ Tue,  8 Sep 2020 14:05:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 74EBDA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1599566727; bh=9b5Fqq5fU5wOYJ08GzQClBq0X5a2Ysj/PnRr3hJV/Bc=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=nCSLpNb+FHy8GvG62T86k1W+ona5zG0+IxqnC3fhMaBBcNgEzZcEH/DgVCNc7N0Y9
+ a7Wq5U1Gbje/+2hPO1vHYBMustZQq8fhy00UaKVidmRWis5Q/4QiEkkwZsuVVxMB+f
+ ZlkzkKw6BnpkO79CL00Q0fyMshTh0oz9kaHov2Io=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue,  8 Sep 2020 14:05:11 +0200 (CEST)
+Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
+To: Vinod Koul <vkoul@kernel.org>, Bard Liao
+ <yung-chuan.liao@linux.intel.com>, broonie@kernel.org
+References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
+ <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
+ <20200828065125.GI2639@vkoul-mobl>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
+Date: Tue, 8 Sep 2020 14:05:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <7bb93489-dbd5-d1a5-5df6-e62470bd2252@ti.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200828065125.GI2639@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Camel Guo <camelg@axis.com>
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ hui.wang@canonical.com, srinivas.kandagatla@linaro.org, bard.liao@intel.com,
+ jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,65 +96,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
-
-On 08/09/2020 14.59, Peter Ujfalusi wrote:
->=20
->=20
-> On 08/09/2020 11.35, Camel Guo wrote:
->> From: Camel Guo <camelg@axis.com>
+Dne 28. 08. 20 v 8:51 Vinod Koul napsal(a):
+> Hi Mark,
+> 
+> On 18-08-20, 22:06, Bard Liao wrote:
+>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 >>
->> When gpio_reset is not well defined in devicetree, the
->> adcx140->gpio_reset is an error code instead of NULL. In this case,
->> adcx140->gpio_reset should not be used by adcx140_reset. This commit
->> sets it NULL to avoid accessing an invalid variable.
+>> Add a slave-level property and program the SCP_INT1_MASK as desired by
+>> the codec driver. Since there is no DisCo property this has to be an
+>> implementation-specific firmware property or hard-coded in the driver.
 >>
->> Signed-off-by: Camel Guo <camelg@axis.com>
+>> The only functionality change is that implementation-defined
+>> interrupts are no longer set for amplifiers - those interrupts are
+>> typically for jack detection or acoustic event detection/hotwording.
+>>
+>> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+>> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 >> ---
->>  sound/soc/codecs/tlv320adcx140.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv32=
-0adcx140.c
->> index 7ae6ec374be3..597dd1062943 100644
->> --- a/sound/soc/codecs/tlv320adcx140.c
->> +++ b/sound/soc/codecs/tlv320adcx140.c
->> @@ -984,8 +984,10 @@ static int adcx140_i2c_probe(struct i2c_client *i=
-2c,
->> =20
->>  	adcx140->gpio_reset =3D devm_gpiod_get_optional(adcx140->dev,
->>  						      "reset", GPIOD_OUT_LOW);
->> -	if (IS_ERR(adcx140->gpio_reset))
->> +	if (IS_ERR(adcx140->gpio_reset) || adcx140->gpio_reset =3D=3D NULL) =
-{
->>  		dev_info(&i2c->dev, "Reset GPIO not defined\n");
->> +		adcx140->gpio_reset =3D NULL;
->=20
-> the correct fix is to:
-> 	dev_err(&i2c->dev, "Reset GPIO not defined\n");
+>>  drivers/soundwire/bus.c         | 12 ++++++------
+>>  include/linux/soundwire/sdw.h   |  2 ++
+>>  sound/soc/codecs/max98373-sdw.c |  3 +++
+>>  sound/soc/codecs/rt1308-sdw.c   |  2 ++
+>>  sound/soc/codecs/rt5682-sdw.c   |  4 ++++
+>>  sound/soc/codecs/rt700-sdw.c    |  4 ++++
+>>  sound/soc/codecs/rt711-sdw.c    |  4 ++++
+>>  sound/soc/codecs/rt715-sdw.c    |  4 ++++
+>>  sound/soc/codecs/wsa881x.c      |  1 +
+> 
+> This touches codecs, can you Ack it please
 
-no need to print, I think gpio core will do that.
+Mark, could you ack the ASoC change to accept this patch via the soundwire repo?
 
-> 	return PTR_ERR(adcx140->gpio_reset);
->=20
-> If the reset GPIO is specified and you get error when requesting it as
-> optional, there is a reason for that.
-> For example deferred probing.
->=20
->> +	}
->> =20
->>  	adcx140->supply_areg =3D devm_regulator_get_optional(adcx140->dev,
->>  							   "areg");
->>
->=20
-> - P=C3=A9ter
->=20
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
->=20
+> 
+> Ideally this should have been split up to header, the codec updates and
+> finally the bus change!
 
-- P=C3=A9ter
+I don't think that the split is ideal in this case. I tested the code and it
+looks straight enough.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Acked-by: Jaroslav Kysela <perex@perex.cz>
 
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
