@@ -4,82 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BE31C43461
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:27:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D654C43461
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:30:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E73A021D47
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:27:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E65B02074D
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 12:30:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GwSmB5mA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="De7j9nEz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E73A021D47
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tuZmLkZC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="Yyq6Ui0q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E65B02074D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE8B41736;
-	Tue,  8 Sep 2020 14:26:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE8B41736
+	by alsa0.perex.cz (Postfix) with ESMTPS id 461D216D2;
+	Tue,  8 Sep 2020 14:29:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 461D216D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599568055;
-	bh=vI9LzmUcQLmPuQo1WvHzCUqjrITqYmJdGPqlknz41l0=;
+	s=default; t=1599568204;
+	bh=ruj8TeTcCYcqVIo5F1ZROpRfqWJ4OMBHRb+PpsTupt8=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GwSmB5mAZI31gMMyKXCIJ5pOweixc1vhkVStfSLGDmejHjdmSJPq249n9VnWudenU
-	 Ha1Goo9TAC6Hbx4wYvrjElMOyrss1SfAzixZYDzg5xtWJ8+BOQosMvIcQaWfXlBLj9
-	 RA+p8k/VfqIodTm857SeXg8TEEDtktJGsXuhW8tI=
+	b=tuZmLkZCawQA/xUORWPDAh4VzKTQYTpfTa4qisuS0hUDvMRF201+VeZafP9g+7sic
+	 qGaR3MuUHSFcGiBc8LjDlHUEmLPhz5HKi3p4+phDzOZrz79Wo/3pGzoChu6b/AufDA
+	 WcnpuwjPz4TfBK0Y6dSKOlZavblPRRsDT44ghkpI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DB96F8015F;
-	Tue,  8 Sep 2020 14:26:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC7ABF8015F;
+	Tue,  8 Sep 2020 14:29:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1761EF801F2; Tue,  8 Sep 2020 14:26:43 +0200 (CEST)
+ id 79696F801F2; Tue,  8 Sep 2020 14:29:11 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDDD1F800FD
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 14:26:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 843EFF8010B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 14:29:05 +0200 (CEST)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 897DAA004B;
- Tue,  8 Sep 2020 14:26:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 897DAA004B
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0E7ADA0055;
+ Tue,  8 Sep 2020 14:29:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 0E7ADA0055
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1599567991; bh=EVRNY2gK6A7LOpNzRvy3Ck7Aj7kox9AUX6fO/yDNTq8=;
+ t=1599568145; bh=kcosKIyrxTELi6uq9lm5YX5Xf7aTeUo9+Do1Y4+8o7A=;
  h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=De7j9nEzdfErbkFza6Sg2BPf8N0KjXLe73YoKCVVI1bq4z89Z7u9anFWzHcenzEM1
- sgjtsmR9XxNqbJUOPzyTer6ltVhL4jsL2fsNbFVG/Nqz/vUgnT9zWieI7x6zhzsk8w
- ZLWpe5Qf4DkDJiLoihWjxgciLu7l5Y8JF/PV4YXc=
+ b=Yyq6Ui0q4YG2pmBriEBkRh3OfsWE6UZbY2OMvWhq9BSGI/mDX5tCea3GCTGlkwn/F
+ jFIVqT/doKfy+AXLz2tcg3Ca8tkusRYBr/Hkz9krWuDAgzChdfOYd34kvSzdQpLSXc
+ 8fGQBF5obyA01iRD542jYi17r5hbI3WxntPKBUN0=
 Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue,  8 Sep 2020 14:26:14 +0200 (CEST)
-Subject: Re: [PATCH v3 0/3] ASoC: Add sdw stream operations to dailink ops.
-To: Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org, 
- vkoul@kernel.org
-References: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
+ Tue,  8 Sep 2020 14:28:48 +0200 (CEST)
+Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
+To: Mark Brown <broonie@kernel.org>
+References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
+ <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
+ <20200828065125.GI2639@vkoul-mobl>
+ <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
+ <20200908121133.GA5551@sirena.org.uk>
 From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <46f44acb-7d4b-965c-a6e2-98a4da79e6cc@perex.cz>
-Date: Tue, 8 Sep 2020 14:26:14 +0200
+Message-ID: <1950b662-ec59-6603-36c7-7a41d9e8460c@perex.cz>
+Date: Tue, 8 Sep 2020 14:28:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200908121133.GA5551@sirena.org.uk>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: vinod.koul@linaro.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
- bard.liao@intel.com, jank@cadence.com, mengdong.lin@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ hui.wang@canonical.com, Vinod Koul <vkoul@kernel.org>,
+ srinivas.kandagatla@linaro.org, ranjani.sridharan@linux.intel.com,
+ jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,37 +99,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 04. 09. 20 v 20:28 Bard Liao napsal(a):
-> Sdw stream operation APIs can be called once per stream. Move these
-> operations to dailink ops. The linked series is "soundwire: Remove sdw
-> stream operations from Intel soundwire dai".
+Dne 08. 09. 20 v 14:11 Mark Brown napsal(a):
+> On Tue, Sep 08, 2020 at 02:05:11PM +0200, Jaroslav Kysela wrote:
+>> Dne 28. 08. 20 v 8:51 Vinod Koul napsal(a):
 > 
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+>>>>  sound/soc/codecs/rt700-sdw.c    |  4 ++++
+>>>>  sound/soc/codecs/rt711-sdw.c    |  4 ++++
+>>>>  sound/soc/codecs/rt715-sdw.c    |  4 ++++
+>>>>  sound/soc/codecs/wsa881x.c      |  1 +
 > 
-> Changes in v3:
->  - s/ASOC/ASoC
+>>> This touches codecs, can you Ack it please
 > 
-> Pierre-Louis Bossart (3):
->   ASoC: soc-dai: clarify return value for get_sdw_stream()
->   ASoC: Intel: sof_sdw: add dailink .trigger callback
->   ASoC: Intel: sof_sdw: add dailink .prepare and .hw_free callback
+>> Mark, could you ack the ASoC change to accept this patch via the soundwire repo?
 > 
->  include/sound/soc-dai.h          |  3 +-
->  sound/soc/intel/boards/sof_sdw.c | 81 ++++++++++++++++++++++++++++++++
->  2 files changed, 83 insertions(+), 1 deletion(-)
+> I don't have this patch and since I seem to get copied on quite a lot of
+> soundwire only serieses I just delete them unread mostly.
 > 
 
-This patchset depends on the SoundWire patchset
-  "[PATCH v2 0/4] soundwire: Remove sdw stream operations from Intel" and
-cannot be used standalone. I believe that one maintainer should accept it or
-there should be a co-ordination between Mark and Vinod to push this in sync.
-We should really settle, how to accept such changes. I believe that Vinod
-should take it with the ack from Mark for this case. Please, don't require to
-split changes which depends on each other.
+It can be fetched from lore (mbox format):
 
-For all above patches (I tested them):
+https://lore.kernel.org/alsa-devel/20200818140656.29014-2-yung-chuan.liao@linux.intel.com/raw
 
-Acked-by: Jaroslav Kysela <perex@perex.cz>
+			Thanks,
+				Jaroslav
 
 -- 
 Jaroslav Kysela <perex@perex.cz>
