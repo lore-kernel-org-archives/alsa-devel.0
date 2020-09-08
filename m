@@ -2,90 +2,84 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6634C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BB70C433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:47:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB14E224B8
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:44:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E1CA222B4E
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:46:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XADGJFGs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="eE+Fr4kP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB14E224B8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e6Zvh4HK";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="y/kX/KGZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1CA222B4E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F50E1786;
-	Tue,  8 Sep 2020 16:43:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F50E1786
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D10E1784;
+	Tue,  8 Sep 2020 16:46:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D10E1784
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599576261;
-	bh=XZLsUE4n69Zm1pzNr/NCRbycAG9h4anp/0lE926ABUU=;
+	s=default; t=1599576418;
+	bh=GXdr2HpLDvzbqS3RyjsWhUITfCW3xMPkRE+o4aHX+h8=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XADGJFGsaKQeVc/OyaS+fRffnMqTmipelG0XiheI4YWGqVCMAt1McRCUsLUnn0KGb
-	 W+YohEW7mWXobeBcNKssN8LfDSdy8tJ9Wzb3JjxTYbYDnfwd94R+I5L1cYHEK1hEZa
-	 fnlJuunM3yA3HcpvOe7pMG8pHLoYnGSPXRo/Z35A=
+	b=e6Zvh4HK6nj0UwzPZueo5quvCRHcsv5QyHei3sceE/FJReUobulNbr80z+o1eDXrq
+	 pjyyp9opCrTBiB5/pzg+iDXaP16DXlgZn0lYBdJuKMNOfUmyBEzCWCCHejELQFBJTR
+	 Si5lpGu9H+0zGt8/6rVv5myGOjw5JojSF3N6WzfU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CDF2F8026F;
-	Tue,  8 Sep 2020 16:43:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4DF0F801F2;
+	Tue,  8 Sep 2020 16:46:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10593F80272; Tue,  8 Sep 2020 16:43:29 +0200 (CEST)
+ id E9D34F80264; Tue,  8 Sep 2020 16:46:06 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBBEDF8015F
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 16:43:19 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1750F8010B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 16:46:00 +0200 (CEST)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 66589A005F;
- Tue,  8 Sep 2020 16:43:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 66589A005F
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 6708BA0065;
+ Tue,  8 Sep 2020 16:46:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 6708BA0065
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1599576199; bh=fWg1F4HBXXeFn5yX5XPjD+9rQALUCRRfNZ57jitMmTM=;
+ t=1599576360; bh=G9Kud4RU0jWLVCXshPcwiYfY/xaaRE9L6yDGKi1cDU0=;
  h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=eE+Fr4kP1DP6AKnaHZ6YJKKuD6CouldmenwXH/SkpL5EcJwkTIPyIk1Ys8NxApTr/
- JJA4I+Bq/yKhlvGw5WmHJQS1f8c3MEJvHyKY5BGGIQ/1ycTTlHMLms9bmQW8zOUgCJ
- 1wD4dy7knC9PuLY8cUKtWdUrFK4zL1ZXZt6n4PnQ=
+ b=y/kX/KGZ6IbhANo25hBuEgPidIm1EEn9aGUJ4sosl7RzntjxQj68cSBZurS0Tf1iD
+ N3PYvgIA/V0Jf/A2IDsnVVrQ+AheacjckTp6kt/AE+kvnnbMax6nnICcrmH2BlNbPZ
+ vlNWNr29tdBXs+i1QBjOy8fX/qZxTXhzxRDN5oBI=
 Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue,  8 Sep 2020 16:43:03 +0200 (CEST)
-Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
-To: Mark Brown <broonie@kernel.org>
-References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
- <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
- <20200828065125.GI2639@vkoul-mobl>
- <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
- <20200908121133.GA5551@sirena.org.uk>
- <1950b662-ec59-6603-36c7-7a41d9e8460c@perex.cz>
- <20200908143312.GC5551@sirena.org.uk>
+ Tue,  8 Sep 2020 16:45:56 +0200 (CEST)
+Subject: Re: [RFC PATCH 1/3] topology: use inclusive language for bclk
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20200903201024.1109914-1-pierre-louis.bossart@linux.intel.com>
+ <20200903201024.1109914-2-pierre-louis.bossart@linux.intel.com>
+ <s5hd03152mr.wl-tiwai@suse.de>
+ <deaae562-80f2-a934-d551-ac5d9a047bbf@linux.intel.com>
+ <20200908143504.GD5551@sirena.org.uk>
+ <70a2012f-aa8b-52db-7694-592677d7171c@linux.intel.com>
 From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <70eef32b-7f57-6868-edb7-f6452aa346c4@perex.cz>
-Date: Tue, 8 Sep 2020 16:43:02 +0200
+Message-ID: <b1d6f026-e6d0-8ae8-2f5b-a8df45299fdf@perex.cz>
+Date: Tue, 8 Sep 2020 16:45:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200908143312.GC5551@sirena.org.uk>
+In-Reply-To: <70a2012f-aa8b-52db-7694-592677d7171c@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- hui.wang@canonical.com, Vinod Koul <vkoul@kernel.org>,
- srinivas.kandagatla@linaro.org, ranjani.sridharan@linux.intel.com,
- jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
- bard.liao@intel.com
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,27 +95,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 08. 09. 20 v 16:33 Mark Brown napsal(a):
-> On Tue, Sep 08, 2020 at 02:28:48PM +0200, Jaroslav Kysela wrote:
->> Dne 08. 09. 20 v 14:11 Mark Brown napsal(a):
+Dne 08. 09. 20 v 16:41 Pierre-Louis Bossart napsal(a):
 > 
->>> I don't have this patch and since I seem to get copied on quite a lot of
->>> soundwire only serieses I just delete them unread mostly.
 > 
->> It can be fetched from lore (mbox format):
+> On 9/8/20 9:35 AM, Mark Brown wrote:
+>> On Tue, Sep 08, 2020 at 08:39:13AM -0500, Pierre-Louis Bossart wrote:
+>>
+>>>>> -	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
+>>>>> +	__u8 bclk_provider;	/* SND_SOC_TPLG_BCLK_ value */
+>>
+>>>> Is it 100% compatible?  Note that the uapi/* header is a copy from the
+>>>> kernel header, and it means that we'll change the same for the kernel,
+>>>> too.
+>>
+>>> It's absolutely 100% compatible by design.
+>>> I was planning to update the kernel uapi header to align changes, but the
+>>> volume of code is much lower on the alsa-lib side. Will resubmit with the
+>>> preferred provider/consumer wording.
+>>
+>> It's binary compatible but it'd break the build for any existing code
+>> using the UAPI headers.
 > 
->> https://lore.kernel.org/alsa-devel/20200818140656.29014-2-yung-chuan.liao@linux.intel.com/raw
-> 
-> Sure, I can go get stuff from the list archives but my list of things to
-> go through is in my inbox.
-> 
+> Sorry, I don't fully get the comment. Aren't the uapi headers copied 
+> into each software tree that relies on them?
 
-Okay, please, Bard resend this patchset as v2 (with already agreed Acked-by:)
-otherwise it won't be applied. I believe that an ack on my follow-up with the
-check of the original message should be sufficient, but apparently it isn't.
+I think that only alsa-lib's topology library uses this header (and has own
+header copy), thus the breakage is minimal in this case.
 
-			Thanks,
-				Jaroslav
+					Jaroslav
 
 -- 
 Jaroslav Kysela <perex@perex.cz>
