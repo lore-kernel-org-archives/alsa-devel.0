@@ -2,75 +2,83 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EDB9C43461
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 17:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC3D3C43461
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 17:30:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B395920738
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 17:26:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13FB020738
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 17:30:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H1nrIYXW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mcVDkvKt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B395920738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TXFZHag1";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTnUp1OQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13FB020738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4162815E4;
-	Tue,  8 Sep 2020 19:25:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4162815E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97ED91674;
+	Tue,  8 Sep 2020 19:29:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97ED91674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599585968;
-	bh=CydX4Uf6mYj5NA3L5lJM8lBHuUJHDrjKYXI2i6uM+fA=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1599586227;
+	bh=2KdALZvMJPP90+O28CbIyTSmiZgiWwNHhCsY/b3oXMc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H1nrIYXWdnGdiCOxpyzKkmQB/SLPn/5SSHNXKy8K3F9mQkcDjkZhAAvNDuvUKh6j3
-	 24FA6/DGCGTc62ogITWllYXuRdABxP3Cqlg+6Nk0xrXnm2NZjS66o5cHio6QagXxiG
-	 ++dgdoK7U4zU6sYcLAhFPa+Ts+Y0MyH/HPEPNbUg=
+	b=TXFZHag171cgBxWKTuKFZgXhCPNTF2O48YHTc6dzJ4AhMQQPZVhSU3X4cg7WoXZXV
+	 T830hzvOgsp2XeHF74cFJDS8OhAKbGe/XYC/LTqlhRuKp+/YrDp4wMwhUJ+/Bkkovf
+	 dTotB+3r/rETYpDY6/3Nm6R9Z1h9FLvQ3HSFrdOs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67A4BF802EB;
-	Tue,  8 Sep 2020 19:21:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EE6BF801F2;
+	Tue,  8 Sep 2020 19:29:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2335F802FE; Tue,  8 Sep 2020 19:21:42 +0200 (CEST)
+ id 0AB12F80264; Tue,  8 Sep 2020 19:29:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9CA8F802EB
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 19:21:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9CA8F802EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 659C9F800FD
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 19:29:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 659C9F800FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mcVDkvKt"
+ header.b="QTnUp1OQ"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 404B520768;
- Tue,  8 Sep 2020 17:21:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E5FC720738;
+ Tue,  8 Sep 2020 17:29:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599585694;
- bh=CydX4Uf6mYj5NA3L5lJM8lBHuUJHDrjKYXI2i6uM+fA=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=mcVDkvKtyJuAL98Ebhp9/5sJ+dgFDUg5/1tRHdl0VQUkSTFivNemF+i+m3QcLlXEu
- qJ22/E76u5+v8M7Ww/EE2F/pQiCELf5asWk9h9FwNE0+cO5ruwlpdtAkr/xsxyjsEy
- X0lic3RidTuUopbVPmUuCzIE95qPElAeHxMNrlWA=
-Date: Tue, 08 Sep 2020 18:20:50 +0100
+ s=default; t=1599586164;
+ bh=2KdALZvMJPP90+O28CbIyTSmiZgiWwNHhCsY/b3oXMc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QTnUp1OQzwTE/HPjQ6HAPnY3aTtqsGGDDezYekfkH6jZvURXfhXr9qzCr6JVGl3tR
+ ImWPYfb4OXelvn8HJEaxuJnBTvbhlmk7U4hsysD5bf+Thl0QTGPRnn985Xb+p8DDV1
+ OIzZmr9183aXo+t9/8m5g+dYDM4fgF4N1ZuoacMA=
+Date: Tue, 8 Sep 2020 18:28:40 +0100
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, dmurphy@ti.com, Camel Guo <camel.guo@axis.com>,
- tiwai@suse.com
-In-Reply-To: <20200908083521.14105-1-camel.guo@axis.com>
-References: <20200908083521.14105-1-camel.guo@axis.com>
-Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Avoid accessing invalid
- gpio_reset
-Message-Id: <159958562064.16576.7853800514030717096.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Camel Guo <camelg@axis.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 1/3] topology: use inclusive language for bclk
+Message-ID: <20200908172840.GH5551@sirena.org.uk>
+References: <20200903201024.1109914-1-pierre-louis.bossart@linux.intel.com>
+ <20200903201024.1109914-2-pierre-louis.bossart@linux.intel.com>
+ <s5hd03152mr.wl-tiwai@suse.de>
+ <deaae562-80f2-a934-d551-ac5d9a047bbf@linux.intel.com>
+ <20200908143504.GD5551@sirena.org.uk>
+ <70a2012f-aa8b-52db-7694-592677d7171c@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="vtJ+CqYNzKB4ukR4"
+Content-Disposition: inline
+In-Reply-To: <70a2012f-aa8b-52db-7694-592677d7171c@linux.intel.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,36 +94,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 8 Sep 2020 10:35:20 +0200, Camel Guo wrote:
-> When gpio_reset is not well defined in devicetree, the
-> adcx140->gpio_reset is an error code instead of NULL. In this case,
-> adcx140->gpio_reset should not be used by adcx140_reset. This commit
-> sets it NULL to avoid accessing an invalid variable.
 
-Applied to
+--vtJ+CqYNzKB4ukR4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, Sep 08, 2020 at 09:41:34AM -0500, Pierre-Louis Bossart wrote:
+> On 9/8/20 9:35 AM, Mark Brown wrote:
+> > On Tue, Sep 08, 2020 at 08:39:13AM -0500, Pierre-Louis Bossart wrote:
 
-Thanks!
+> > > It's absolutely 100% compatible by design.
+> > > I was planning to update the kernel uapi header to align changes, but the
+> > > volume of code is much lower on the alsa-lib side. Will resubmit with the
+> > > preferred provider/consumer wording.
 
-[1/1] ASoC: tlv320adcx140: Wake up codec before accessing register
-      commit: 1a5ce48fd667128e369fdc7fb87e21539aed21b5
+> > It's binary compatible but it'd break the build for any existing code
+> > using the UAPI headers.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> Sorry, I don't fully get the comment. Aren't the uapi headers copied into
+> each software tree that relies on them?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Yes, it's just a question of how disruptive an update ends up being for
+people - if hardly anyone is using it and they know about the change it
+probably doesn't matter that much.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--vtJ+CqYNzKB4ukR4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9Xv0cACgkQJNaLcl1U
+h9A8Wgf6At4I48xbXaC1wIvQ2DxYN3zaTDfEJaCg3Izj53VpaO08rtjLFTZph1Ot
+qQkBRhxcV8V4uza4HR8JcP2BHUV4CGFN7iFBu7damQnTztGcwVhmLHKrUO9jOIjQ
+/ugTP4OKy3CaAb3P6PeWbL9KIO+eepb2kKt7IGTq8I6Qf1HpV2K7LSZTdSdqxIpL
+cO3PagiCppftcug4tU7+EMNOAdUN4BWBbxnqoWMhJLH3diTw888WbRclpUveeBWy
+8cwjeomax/5ub7QqLO/V2QaL4srp3kqhZRMBrqMDdgVwkDKJn+TwSfLDJauLyWZj
+hIeuouv54LTCOG0lfpc2hjLl9xBHNA==
+=pDhA
+-----END PGP SIGNATURE-----
+
+--vtJ+CqYNzKB4ukR4--
