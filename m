@@ -5,68 +5,68 @@ X-Spam-Level:
 X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69FABC43461
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 01:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD5AC43461
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 01:43:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C53F521D20
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 01:42:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BD9421973
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 01:43:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HTPjlPC6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C53F521D20
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Dykt3H4Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BD9421973
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5608B1716;
-	Wed,  9 Sep 2020 03:41:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5608B1716
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0671D1696;
+	Wed,  9 Sep 2020 03:42:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0671D1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599615769;
-	bh=pKEx+ah+IYZ8/lJQCAp/1OshIjqo2pXUF201tyLEf2g=;
+	s=default; t=1599615814;
+	bh=PZ2d1bDEhNRzwHB/XDhMu+rZKXgbn/IgHcbbZgorTCU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HTPjlPC6yJB7BpvM9lKq15Wi9PxlRrj2KbfZGIyLMaKUAiGy1vmYiHtM04ezDl61L
-	 poZjMkTZbYEXhRK0pfqwaahnIwc4K47icKcyC8QHrANwt6oACAI/SlSeyBijfjXFOi
-	 AFY+75RKoOGmv9brWRlpr1tV9MKtAVnUPjXzSN24=
+	b=Dykt3H4QrI734N6hFn+NeaDLEU6TuYlYNa192p8VNBSTK4FwzZQh4eDdM6pe69y3n
+	 e6s2ETqhz2L2IJB5QSPDiRKsm8M3atq0VXMEPLvXRaf4TDuST5bIq60V7PveKkI8eg
+	 CbPgb1bzb+3TstprnIFI2nCDKKR+OpTnFTG7YxA0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCE6EF802EA;
-	Wed,  9 Sep 2020 03:39:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B0BDF802F7;
+	Wed,  9 Sep 2020 03:39:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79BD7F802E2; Wed,  9 Sep 2020 03:39:28 +0200 (CEST)
+ id 5DCFFF802E2; Wed,  9 Sep 2020 03:39:29 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADD73F8021C
- for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2020 03:39:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADD73F8021C
-IronPort-SDR: g7RE1VYfAJhYG9evYrbZs3ft/8o5fnlbZs/Qnriw9YOT3JW5hZ3slWy4c+DWKZfUuwIq18PpXL
- lEj6M6qpiYgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="222458469"
-X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; d="scan'208";a="222458469"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E3E8F802C4
+ for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2020 03:39:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E3E8F802C4
+IronPort-SDR: x+2L08sh59W+fBZD21QFrs1vJ0Uqz5ClfVQDZtsHlSdFRJ1VTXdtQ4SDAfsHWaCsmwCJJQky6f
+ ucaGmj9+LPsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="222458471"
+X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; d="scan'208";a="222458471"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Sep 2020 18:39:20 -0700
-IronPort-SDR: 2Cjzn6LLgBB1at3OexRotIdOKNihHUHrIkcNjzsIWQ3ZxUl7HrdH7Abad1U+Hq+elZ5BrW1BOf
- rNlGltVS5uEw==
-X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; d="scan'208";a="449018106"
+ 08 Sep 2020 18:39:24 -0700
+IronPort-SDR: ozjnOh4U0DPpyy2aFTunLf651Vh0Q38T9PdgOSqk8pwu86Itu/D84R0rgJelNdVB6YiaG7/7ei
+ OB9HOJEsmzUQ==
+X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; d="scan'208";a="449018113"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Sep 2020 18:39:17 -0700
+ 08 Sep 2020 18:39:20 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 4/7] soundwire: bus: use quirk to filter out invalid parity
+Subject: [PATCH v2 5/7] ASoC: codecs: realtek-soundwire: ignore initial PARITY
  errors
-Date: Tue,  8 Sep 2020 21:45:18 +0800
-Message-Id: <20200908134521.6781-5-yung-chuan.liao@linux.intel.com>
+Date: Tue,  8 Sep 2020 21:45:19 +0800
+Message-Id: <20200908134521.6781-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908134521.6781-1-yung-chuan.liao@linux.intel.com>
 References: <20200908134521.6781-1-yung-chuan.liao@linux.intel.com>
@@ -92,69 +92,84 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-If a Slave device reports with a quirk that its initial parity check
-may be incorrect, filter it but keep the parity checks active in
-steady state.
+The parity calculation is not reset on a Severe Reset, which leads to
+misleading/harmless errors reported on startup. The addition of a
+quirk helps filter out such errors while leaving the error checks on
+in steady-state.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/soundwire/bus.c       | 8 +++++++-
- include/linux/soundwire/sdw.h | 4 ++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt1308-sdw.c | 1 +
+ sound/soc/codecs/rt5682-sdw.c | 1 +
+ sound/soc/codecs/rt700-sdw.c  | 1 +
+ sound/soc/codecs/rt711-sdw.c  | 1 +
+ sound/soc/codecs/rt715-sdw.c  | 1 +
+ 5 files changed, 5 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 30b0bed16630..09185e5cfd70 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1362,6 +1362,8 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	unsigned long port;
- 	bool slave_notify = false;
- 	u8 buf, buf2[2], _buf, _buf2[2];
-+	bool parity_check;
-+	bool parity_quirk;
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index e02b325240df..c74685b016af 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -124,6 +124,7 @@ static int rt1308_read_prop(struct sdw_slave *slave)
+ 	struct sdw_dpn_prop *dpn;
  
- 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
+ 	prop->scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
  
-@@ -1394,7 +1396,11 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		 * interrupt
- 		 */
- 		if (buf & SDW_SCP_INT1_PARITY) {
--			if (slave->prop.scp_int1_mask & SDW_SCP_INT1_PARITY)
-+			parity_check = slave->prop.scp_int1_mask & SDW_SCP_INT1_PARITY;
-+			parity_quirk = !slave->first_interrupt_done &&
-+				(slave->prop.quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY);
-+
-+			if (parity_check && !parity_quirk)
- 				dev_err(&slave->dev, "Parity error detected\n");
- 			clear |= SDW_SCP_INT1_PARITY;
- 		}
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 2b93a8ef7fad..790823d2d33b 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -358,6 +358,7 @@ struct sdw_dpn_prop {
-  * @src_dpn_prop: Source Data Port N properties
-  * @sink_dpn_prop: Sink Data Port N properties
-  * @scp_int1_mask: SCP_INT1_MASK desired settings
-+ * @quirks: bitmask identifying deltas from the MIPI specification
-  */
- struct sdw_slave_prop {
- 	u32 mipi_revision;
-@@ -380,8 +381,11 @@ struct sdw_slave_prop {
- 	struct sdw_dpn_prop *src_dpn_prop;
- 	struct sdw_dpn_prop *sink_dpn_prop;
- 	u8 scp_int1_mask;
-+	u32 quirks;
- };
+ 	prop->paging_support = true;
  
-+#define SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY	BIT(0)
-+
- /**
-  * struct sdw_master_prop - Master properties
-  * @revision: MIPI spec version of the implementation
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 8d4ea46bc6b5..feb2db95829e 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -545,6 +545,7 @@ static int rt5682_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index 8d9678d1f3c7..c6fd22058b62 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -341,6 +341,7 @@ static int rt700_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index d4b3d7716cac..10435d97f9ab 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -345,6 +345,7 @@ static int rt711_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 0e5c75f85926..9fb14a0d7334 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -439,6 +439,7 @@ static int rt715_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
 -- 
 2.17.1
 
