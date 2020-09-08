@@ -2,100 +2,83 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C408C43461
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC34AC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:22:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 188D9207DE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:10:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A14D229F0
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:22:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="krEIkT8n";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=marek-ca.20150623.gappssmtp.com header.i=@marek-ca.20150623.gappssmtp.com header.b="DgR0IsQj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 188D9207DE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=marek.ca
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LwvQRYEi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A14D229F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C23A1730;
-	Tue,  8 Sep 2020 16:09:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C23A1730
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3A181740;
+	Tue,  8 Sep 2020 16:21:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3A181740
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599574232;
-	bh=ukUJuFjgUyOo1gDEv9Qkiw/fCabzlJI3AUIJfVzFzRk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=krEIkT8nAlAFoR1XJy42RxSAhkXCePZOk8aLxpEX6T+PFRLPObpUBdmzyd39+UG6x
-	 KyWpOK7YMVc+p5weT+roG28u8QWqniuSLxeS1znp7FKte/PkkqqRTEtOqX/EWkN5XO
-	 g4sbfuPGtkPC7MMg3B430gVNkNLJymtwEPF7/dMY=
+	s=default; t=1599574957;
+	bh=rDXMkjZg2zrVITxRCUNUoGTJIfcPchmrk+rLMMko8cs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LwvQRYEiUT482+GVAeFlbNruG5NI6rSaOHN6w18it8HBqBR/o8jRlckFhZgisq8kh
+	 SRAkMdSGvVqeOIPsNhN9taLpCh2lU4LjjaLJ461ZbnRuG4XVbTmRX5e8ebzvPRix49
+	 vpWX+J8syrJ45wci2Nx5qoDOiElGs0mtqoG1vkzc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC711F801F2;
-	Tue,  8 Sep 2020 16:09:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67C7EF8026F;
+	Tue,  8 Sep 2020 16:21:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E36FFF80264; Tue,  8 Sep 2020 16:09:39 +0200 (CEST)
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com
- [IPv6:2607:f8b0:4864:20::f44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9A23DF80272; Tue,  8 Sep 2020 16:21:45 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D73AF8010B
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 16:09:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D73AF8010B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=marek-ca.20150623.gappssmtp.com
- header.i=@marek-ca.20150623.gappssmtp.com header.b="DgR0IsQj"
-Received: by mail-qv1-xf44.google.com with SMTP id j10so7826871qvk.11
- for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2020 07:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marek-ca.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=kA7YBuYMq9b3mZzCv9QQfgvbcIlMMupkbIGoGou1wKo=;
- b=DgR0IsQjxrfz3z5ThPdVC/EGBKu1Cil2pH0g/Pfa0AUeKE5hMigysm6ESL863n4gSW
- ZFelUzvaCcKKt+R+vd3kVgnbR87hZPYasZ9DG1QkrhGu9kBZy1QhQWT1dbmJhLRleTl6
- 0bqm2gKnliloULfvqnwEcNpa2e8VSxe8qQGwMAz1MDJLWFwu6nLPpEiIFrJJyq7wMvdd
- CMZy7v1PRgsLtziIdbnzOTSWT9OkvrhZsvc03OxKLr7HCwlv1ZNdBnZh8+oQeT8psZ3E
- Ki7Yaz6n+VL+ZMiMJDEhBz7VDZ0OFChwHRZPHUb+QJ3GeH0h7aZb4l/g3U3b0Ub3y2QV
- dq4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=kA7YBuYMq9b3mZzCv9QQfgvbcIlMMupkbIGoGou1wKo=;
- b=HM/Ed+mNMX9e0os1mlNh0Qr2dvce55b+OqWqeBrGNg3/9aletpOSX2L3UVB2vmNajc
- SHI/WRTg4MO92irvW6qyBiVk0AMmoueFMlvn6i2omEexehK5Q4ckwGUp6jKgP8tYdYXF
- IUPzz9r3hvpD8AXICuJOxU+rb2h95y09/2uqGKgSekDHuSwg+kfKMVWg67z5kOKvJ3Z5
- JfFhY5DUjaxQF6MfIZtUxP2OxIXWa+U5ySFOTNXjTQbFFJqllL9nmOURaHB7lyaiVHZO
- AkLbnbsGoQf7aEmE2Jq2Aljhe2xw46YugzswfNapciFQPw8CIwbzzLSRs3mxuBNjhwGt
- NRsg==
-X-Gm-Message-State: AOAM532OOS55q/bsBE/arPRvqWDc3JaokYyqzU7wGwdk5GEYIBSebZr7
- IuEHNjjUibbYdY1VvQ1r5oRRlQ==
-X-Google-Smtp-Source: ABdhPJwDTbXK3AYjXreftxuSFRet1m2rtpDGlXYZDBJkXYObWLBHJ8LTS7P+wSPf/tV6q4xpuTYdsA==
-X-Received: by 2002:ad4:534c:: with SMTP id v12mr270078qvs.14.1599574170698;
- Tue, 08 Sep 2020 07:09:30 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
- by smtp.gmail.com with ESMTPSA id r24sm14447276qtm.70.2020.09.08.07.09.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Sep 2020 07:09:30 -0700 (PDT)
-From: Jonathan Marek <jonathan@marek.ca>
-To: linux-arm-msm@vger.kernel.org
-Subject: [PATCH] soundwire: qcom: fix SLIBMUS/SLIMBUS typo
-Date: Tue,  8 Sep 2020 10:08:17 -0400
-Message-Id: <20200908140818.28373-1-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76371F8015F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 16:21:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76371F8015F
+IronPort-SDR: vXg6LULyu54BVYAoxizhsDQoX27vEIHP+bs+uzd6LXP9oYSMNh3Z2iGBxysFDXzhi47bO17vKm
+ 5svteUg+Msmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="159106181"
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; d="scan'208";a="159106181"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Sep 2020 07:21:35 -0700
+IronPort-SDR: 9U38V0bUd/mYray5wxzCRDWYnjXBiS9lSL/E5HRYyM5x5YzRydwb5vMf0RiJypQh71yIJ9AtA3
+ fqccYaeY54Sg==
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; d="scan'208";a="448802360"
+Received: from mgarber-mobl1.amr.corp.intel.com (HELO [10.212.179.134])
+ ([10.212.179.134])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Sep 2020 07:21:34 -0700
+Subject: Re: [RFC PATCH 0/3] alsa-lib/ASoC: use inclusive language for
+ bclk/fsync/topology
+To: Mark Brown <broonie@kernel.org>
+References: <20200903201024.1109914-1-pierre-louis.bossart@linux.intel.com>
+ <cac824a4-3882-85dd-dc0b-8366090dce94@perex.cz>
+ <9d1c96ad-6860-7a98-4e22-5f566665e7e7@linux.intel.com>
+ <20200904085058.GA4625@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d5682ba4-c487-ef68-ff15-fd51ec655cf1@linux.intel.com>
+Date: Tue, 8 Sep 2020 08:36:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "moderated list:SOUNDWIRE SUBSYSTEM" <alsa-devel@alsa-project.org>,
- open list <linux-kernel@vger.kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Andy Gross <agross@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200904085058.GA4625@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,31 +94,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix slimbus case being broken thanks to a typo.
 
-Fixes: 5bd773242f75 ("soundwire: qcom: avoid dependency on CONFIG_SLIMBUS")
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
-This should be squashed into the problematic patch if possible,
-but I'm not sure if that's possible since its already in linux-next?
+On 9/4/20 3:50 AM, Mark Brown wrote:
+> On Thu, Sep 03, 2020 at 04:32:22PM -0500, Pierre-Louis Bossart wrote:
+>> On 9/3/20 3:42 PM, Jaroslav Kysela wrote:
+> 
+>>>
+>>> Only my 2 cents: It's just another word combo. See bellow for sources for others.
+>>>
+>>> I would prefer probably provider/consumer . It sounds more technic.
+> 
+>> Thanks Jaroslav for chiming in. I had a similar set of comments in internal
+>> reviews, but we didn't really have any consensus and I have not seen good
+>> guidance specifically for clocks.
+> 
+>> Provider/consumer is typically used for discrete data exchange with some
+>> sort of locking and buffer fullness metric, but for clocks we'd want
+>> something that hints at one device following the timing defined by another.
+> 
+>> "follow" or "track" seem clearer than 'consume' IMHO, but I will side with
+>> the majority, this is an RFC which can be modified at will.
+> 
+> Producer/consumer is already quite widely used for clocks (possibly
+> following the regulator API which was templated off the clock API and
+> uses consumer).  The follow/track stuff definitely seems awkward to me.
+> Have we seen any movement from anyone like CODEC vendors on this?
 
- drivers/soundwire/qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+No, I haven't seen any input from CODEC vendors.
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 100af93a5eab..c406a079d237 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -780,7 +780,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	if (!ctrl)
- 		return -ENOMEM;
- 
--#if IS_ENABLED(CONFIG_SLIBMUS)
-+#if IS_ENABLED(CONFIG_SLIMBUS)
- 	if (dev->parent->bus == &slimbus_bus) {
- #else
- 	if (false) {
--- 
-2.26.1
-
+I'll use consumer then since that's preferred by both Jaroslav and Mark. 
+Thanks for the feedback.
