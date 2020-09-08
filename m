@@ -7,83 +7,76 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD4E4C43461
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F33FC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:24:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D98B1229F0
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:23:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7943B229F0
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 14:24:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bsvTQPWV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D98B1229F0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ebKcF050"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7943B229F0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF30516CA;
-	Tue,  8 Sep 2020 16:22:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF30516CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4F031780;
+	Tue,  8 Sep 2020 16:23:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4F031780
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599575010;
-	bh=I3UVbKh5PdwBqs+cwXVYI7OTl+1EcX/7mc26HivuWaQ=;
+	s=default; t=1599575057;
+	bh=d2WoSnF+sJyfhm362v/0Te7p052EtZ6aCcVs+WFCdRE=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bsvTQPWVon8bnpLKimZkbc7m989fFfxRp0iu/M3RAQq2leS2DolLdSULXR8qrqyG1
-	 quwkUq9t5r1XYdbIFvbaLYAN1nmI+RyDFMKAk6fAPJBKO3LGB45kITWwzMGyg70BEE
-	 tMhjsWFVzQw0KZ48AByAC0JkBHHIdRhZKOlgiVo4=
+	b=ebKcF050BOku/HnIGrPCgMhPnnT7lzLz4l2UGj+WNq89BYmMyPvsmsOl2zbEPPUqf
+	 h9kTqAHE/GC5bVo5XUxw4EYuXY8qe4sB0a82QZI5L7iOGUup3r5zMsdrqY3YA2vzX1
+	 1NvJa+4F8DSXkWVMUviBCJpmPhaXaaRVJ4wEGeuc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E10ECF8015F;
-	Tue,  8 Sep 2020 16:21:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BD42F802C2;
+	Tue,  8 Sep 2020 16:21:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA38FF8010B; Tue,  8 Sep 2020 16:21:46 +0200 (CEST)
+ id 2CFCCF80277; Tue,  8 Sep 2020 16:21:47 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 218D7F8010B
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 16:21:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 218D7F8010B
-IronPort-SDR: fgdKSPebaLxfu6HDG83RlEGO397XXngAeza20DgVeH6z72Y515Qr4VjIt31i1mFrzxk15PFa8R
- CCACm1Fxe1IQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="159106178"
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; d="scan'208";a="159106178"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55188F801F2
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 16:21:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55188F801F2
+IronPort-SDR: khL4NL3zGUE8rwxPAxOTJnlr6aN5KdEiKM6Zr4VVsKI/OUn6OPGbQMaQAG5z4xf+JT3Jh1Gpyt
+ LulmWH/UV9pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="159106187"
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; d="scan'208";a="159106187"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Sep 2020 07:21:33 -0700
-IronPort-SDR: dun0+JlDEOAUH4fU6c+UUidwT3ben5QpCr8Dy5TTXNwHsxPxc5wQgdEhyKGLF6GBS0K1ukaqMF
- ZhDFW/lBiIXA==
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; d="scan'208";a="448802350"
+ 08 Sep 2020 07:21:37 -0700
+IronPort-SDR: Jlr6cLUOaTW1MGk/PTu3PoKiu7Df7IKWpl/6fWCb0o3Mws6srCxC5FJRdz4OpuKICxzUP6/TVR
+ RLqGwXD6ExFQ==
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; d="scan'208";a="448802366"
 Received: from mgarber-mobl1.amr.corp.intel.com (HELO [10.212.179.134])
  ([10.212.179.134])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Sep 2020 07:21:32 -0700
-Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
- controls
-To: Vinod Koul <vkoul@kernel.org>
-References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
- <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
- <20200904050244.GT2639@vkoul-mobl>
+ 08 Sep 2020 07:21:36 -0700
+Subject: Re: [RFC PATCH 1/3] topology: use inclusive language for bclk
+To: Takashi Iwai <tiwai@suse.de>
+References: <20200903201024.1109914-1-pierre-louis.bossart@linux.intel.com>
+ <20200903201024.1109914-2-pierre-louis.bossart@linux.intel.com>
+ <s5hd03152mr.wl-tiwai@suse.de>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
-Date: Tue, 8 Sep 2020 08:33:11 -0500
+Message-ID: <deaae562-80f2-a934-d551-ac5d9a047bbf@linux.intel.com>
+Date: Tue, 8 Sep 2020 08:39:13 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200904050244.GT2639@vkoul-mobl>
+In-Reply-To: <s5hd03152mr.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, gregkh@linuxfoundation.org,
- open list <linux-kernel@vger.kernel.org>, broonie@kernel.org,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,83 +92,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks for the review Vinod,
 
-> This is good, thanks for adding it in changelog. Can you also add this
-> description to Documentation (that can come as an individual patch),
 
-ok
 
->> +/*
->> + * v1.2 device - SDCA address mapping
->> + *
->> + * Spec definition
->> + *	Bits		Contents
->> + *	31		0 (required by addressing range)
->> + *	30:26		0b10000 (Control Prefix)
+>>   /* DAI topology FSYNC parameter
+>>    * For the backwards capability, by default codec is fsync master
+>> @@ -335,7 +338,7 @@ struct snd_soc_tplg_hw_config {
+>>   	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
+>>   	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
+>>   	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+>> -	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
+>> +	__u8 bclk_provider;	/* SND_SOC_TPLG_BCLK_ value */
+>>   	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
+>>   	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
+>>   	__le16 reserved;	/* for 32bit alignment */
 > 
-> So this is for 30:26
+> Is it 100% compatible?  Note that the uapi/* header is a copy from the
+> kernel header, and it means that we'll change the same for the kernel,
+> too.
 
-I don't get the comment, sorry.
-
-> 
->> + *	25		0 (Reserved)
->> + *	24:22		Function Number [2:0]
->> + *	21		Entity[6]
->> + *	20:19		Control Selector[5:4]
->> + *	18		0 (Reserved)
->> + *	17:15		Control Number[5:3]
->> + *	14		Next
->> + *	13		MBQ
->> + *	12:7		Entity[5:0]
->> + *	6:3		Control Selector[3:0]
->> + *	2:0		Control Number[2:0]
->> + */
->> +
->> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)						\
->> +	(BIT(30)							|	\
-> 
-> Programmatically this is fine, but then since we are defining for the
-> description above, IMO it would actually make sense for this to be defined
-> as FIELD_PREP:
-> 
->          FIELD_PREP(GENMASK(30, 26), 1)
-> 
-> or better
-> 
->          u32_encode_bits(GENMASK(30, 26), 1)
-> 
->> +	FIELD_PREP(GENMASK(24, 22), FIELD_GET(GENMASK(2, 0), (fun)))	|	\
-> 
-> Why not use u32_encode_bits(GENMASK(24, 22), (fun)) instead for this and
-> below?
-
-Because your comment for the v1 review was to use FIELD_PREP/FIELD_GET, 
-and your other patches for bitfield access only use FIELD_PREP/FIELD_GET.
-
-I really don't care about which macro is used but it wouldn't hurt to 
-have some level of consistency between different parts of the code? Why 
-not use FIELD_PREP/GET everywhere?
-
->> +	FIELD_PREP(BIT(21), FIELD_GET(BIT(6), (ent)))			|	\
->> +	FIELD_PREP(GENMASK(20, 19), FIELD_GET(GENMASK(5, 4), (ctl)))	|	\
->> +	FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), (ch)))	|	\
->> +	FIELD_PREP(GENMASK(12, 7), FIELD_GET(GENMASK(5, 0), (ent)))	|	\
->> +	FIELD_PREP(GENMASK(6, 3), FIELD_GET(GENMASK(3, 0), (ctl)))	|	\
->> +	FIELD_PREP(GENMASK(2, 0), FIELD_GET(GENMASK(2, 0), (ch))))
-> 
-> Also, can we rather have a nice function for this, that would look much
-> cleaner
-
-I am not sure what would be cleaner but fine.
-
-> And while at it, consider defining masks for various fields rather than
-> using numbers in GENMASK() above, that would look better, be more
-> readable and people can reuse it.
-
-Actually on this one I disagree. These fields are not intended to be 
-used by anyone, the goal is precisely to hide them behind regmap, and 
-the use of raw numbers makes it easier to cross-check the documentation 
-and the code. Adding a separate set of definitions would not increase 
-readability.
-
+It's absolutely 100% compatible by design.
+I was planning to update the kernel uapi header to align changes, but 
+the volume of code is much lower on the alsa-lib side. Will resubmit 
+with the preferred provider/consumer wording.
