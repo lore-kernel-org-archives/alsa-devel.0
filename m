@@ -2,82 +2,80 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DC00C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 09:19:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 874D6C43461
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 09:30:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDFD82166E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 09:19:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C00932166E
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 09:30:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fD1Tx8Wu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="e8ZzEu5V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDFD82166E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lfBgGZTe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C00932166E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09276174F;
-	Tue,  8 Sep 2020 11:18:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09276174F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F6441754;
+	Tue,  8 Sep 2020 11:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F6441754
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599556760;
-	bh=monb6BjXeLcED/IB44UK4zoX9ysinevlv8FolEFuVi8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fD1Tx8WuAMJ44VqHG7nCoRflTClEHzWDc0A/L+ANgTh8UUWAFrACYGtbAnQAL7c9M
-	 G9Ak9IhbVlGSwB1LJs/wiAcAYZU13HW1P9FZ274X6yrGsj7ld0gqBPWvouf6SxSvmx
-	 cQGdYpY6DwlMb0ee5cJbYdfaU6mCRf66t8FwMFSI=
+	s=default; t=1599557451;
+	bh=rUMpF/UrCU6yHq4jeqQRlYrDkp7apuqtNv6I1vftYL4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lfBgGZTetaIy29ztEIOP6msJ2OzvoEX/fVwhJyhrR665rPHbIU2CTkmJ8Zb7bU2rK
+	 5Qg9q70bboW94kYohur+4Su1RQj3wOAS0PCtD7lL/gx7p2SoKHw4eoQ6W00ZY1wRcP
+	 Rj9EGmenrXUyOInAP/JBghkPBnjkt5jkGfVmSnbg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85910F801F2;
-	Tue,  8 Sep 2020 11:18:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90974F8010B;
+	Tue,  8 Sep 2020 11:30:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADE3CF80264; Tue,  8 Sep 2020 11:18:28 +0200 (CEST)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ id 90D59F80264; Tue,  8 Sep 2020 11:29:58 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3766BF800FD
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 11:18:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3766BF800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="e8ZzEu5V"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; l=6903; q=dns/txt; s=axis-central1;
- t=1599556703; x=1631092703;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=TEEozU67nGxX3siJVtdFbZmHHEp3Nx0htJv3gTsxY1w=;
- b=e8ZzEu5VtOQx0iePDUlTYjHgn4D66JmSIHvzF25k1kH78n37gMVbmvA2
- hZ4T2a51ejIGQFd0qi0+lcJmYtRhd0S4nxJfM/jJnhJDzROFjDrt6vHqQ
- drpMp3JPjC51ylCUAiY1ZDde1lwicTyntpAuPdEMmt/etQJa1hGPb/DiF
- OMaB0dnkzn5i3cb36OY0zhTBsbmhsw/O0QmdIie2eBpb7jOvDYSPz6cFw
- efQudyFRYhJMNZv207UV5etUe+974yACRZnS33x0QJUa+VFXCuL8EZP57
- O1aj4U6RkWzgbGwjw2Z1AcoVPtPcNeqYemQ1lBpVKbrLl0O8utzuMyqyW Q==;
-IronPort-SDR: 8ihknXVvMLPdLUhNh8gjuGhyi4/EgqK6hB6R3X5BMhXKfnUBABR2KLGJtza23yQrPOrQlsfPCz
- yykSr4Zpbt9SLBRLJP+foAFxFRzrn0dkA9bo+OAdAu3EHIgg0Qxz8lFzt1ks709U+oXX4iGIaT
- VrtgJAFVQ+q2Z3BZNC+tGGXSNH2DaSrTa3kaqniQi79lPG1AGRyXyVuc76XQlnGqOGOYJxtNMb
- CNMI8ZdJuBwtV573AgKSfIfa4CCIpvyA7MIk826ezYlWxqHEulVMBEDtY2oyFVJKkpxSlSRVLa
- v/M=
-X-IronPort-AV: E=Sophos;i="5.76,405,1592863200"; d="scan'208";a="12654985"
-From: Camel Guo <camel.guo@axis.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
- <dmurphy@ti.com>
-Subject: [PATCH] ASoC: tlv320adcx140: Add support for master mode
-Date: Tue, 8 Sep 2020 11:18:12 +0200
-Message-ID: <20200908091812.1441-1-camel.guo@axis.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3493BF8010B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 11:29:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3493BF8010B
+IronPort-SDR: epM330XpgkBRjwvmxlo7yTOOePx4LCrhEqmqd7Q0AuVBjrcHeww+MgF8xTLkXJsSTlsaRzEsPh
+ vDN4alM6A6Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="219659860"
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; d="scan'208";a="219659860"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Sep 2020 02:29:51 -0700
+IronPort-SDR: J4QqKj9DvL3KzutUnSUwOZoHjZ2HRP/i71biTwTLR6hIpeH31KaMqhJbNZ54SrSx1QvxO3frNp
+ Jvduf4KtPLQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; d="scan'208";a="317130449"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga002.jf.intel.com with ESMTP; 08 Sep 2020 02:29:49 -0700
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 2/2] ASoC: SOF: Implement snd_sof_bytes_ext_volatile_get
+ kcontrol IO
+Date: Tue,  8 Sep 2020 12:28:25 +0300
+Message-Id: <20200908092825.1813847-2-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200908092825.1813847-1-kai.vehmanen@linux.intel.com>
+References: <20200908092825.1813847-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Camel Guo <camelg@axis.com>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Dharageswari R <dharageswari.r@intel.com>, kai.vehmanen@linux.intel.com,
+ lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,254 +91,132 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Camel Guo <camelg@axis.com>
+From: Dharageswari R <dharageswari.r@intel.com>
 
-Add setup of bclk-to-ws ratio and sample rate when in master mode,
-as well as MCLK input pin setup.
+This patch implements the snd_sof_bytes_ext_volatile_get() to read the
+actual parameters from DSP by sending the SOF_IPC_COMP_GET_DATA IPC
+for the kcontrol of type SOF_TPLG_KCTL_BYTES_VOLATILE_RO.
 
-Limitations:
-
-- MCLK is assumed to be connected to GPIO1 (other possible choices
-  would be GPI0..3 if they weren't used for analog positive inputs).
-- PLL is always enabled, and clock generation is in automatic mode.
-
-Signed-off-by: Camel Guo <camelg@axis.com>
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/codecs/tlv320adcx140.c | 134 ++++++++++++++++++++++++++++++-
- sound/soc/codecs/tlv320adcx140.h |  35 ++++++++
- 2 files changed, 165 insertions(+), 4 deletions(-)
+ include/uapi/sound/sof/tokens.h |  3 ++
+ sound/soc/sof/control.c         | 58 +++++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-audio.h       |  2 ++
+ sound/soc/sof/topology.c        |  1 +
+ 4 files changed, 64 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 13ece039e9fe..f143b6b62f84 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -35,6 +35,7 @@ struct adcx140_priv {
- 	unsigned int dai_fmt;
- 	unsigned int tdm_delay;
- 	unsigned int slot_width;
-+	int master;
- };
+diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
+index d3aae4ad8959..a642bf30c027 100644
+--- a/include/uapi/sound/sof/tokens.h
++++ b/include/uapi/sound/sof/tokens.h
+@@ -24,6 +24,9 @@
+ #define SOF_TPLG_KCTL_ENUM_ID	257
+ #define SOF_TPLG_KCTL_BYTES_ID	258
+ #define SOF_TPLG_KCTL_SWITCH_ID	259
++#define SOF_TPLG_KCTL_BYTES_VOLATILE_RO 260
++#define SOF_TPLG_KCTL_BYTES_VOLATILE_RW 261
++#define SOF_TPLG_KCTL_BYTES_WO_ID 262
  
- static const char * const gpo_config_names[] = {
-@@ -614,12 +615,85 @@ static int adcx140_reset(struct adcx140_priv *adcx140)
- 	return ret;
+ /*
+  * Tokens - must match values in topology configurations
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index 186eea105bb1..d5e2966cafac 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -353,6 +353,64 @@ int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
+ 	return 0;
  }
  
-+static int adcx140_fs_bclk_ratio(unsigned int bclk_ratio)
++int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int __user *binary_data,
++				   unsigned int size)
 +{
-+	switch (bclk_ratio) {
-+	case 16:
-+		return ADCX140_RATIO_16;
-+	case 24:
-+		return ADCX140_RATIO_24;
-+	case 32:
-+		return ADCX140_RATIO_32;
-+	case 48:
-+		return ADCX140_RATIO_48;
-+	case 64:
-+		return ADCX140_RATIO_64;
-+	case 96:
-+		return ADCX140_RATIO_96;
-+	case 128:
-+		return ADCX140_RATIO_128;
-+	case 192:
-+		return ADCX140_RATIO_192;
-+	case 256:
-+		return ADCX140_RATIO_256;
-+	case 384:
-+		return ADCX140_RATIO_384;
-+	case 512:
-+		return ADCX140_RATIO_512;
-+	case 1024:
-+		return ADCX140_RATIO_1024;
-+	case 2048:
-+		return ADCX140_RATIO_2048;
-+	default:
-+		break;
++	struct soc_bytes_ext *be = (struct soc_bytes_ext *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = be->dobj.private;
++	struct snd_soc_component *scomp = scontrol->scomp;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct snd_ctl_tlv header;
++	struct snd_ctl_tlv __user *tlvd = (struct snd_ctl_tlv __user *)binary_data;
++	size_t data_size;
++	int ret;
++	int err;
++
++	ret = pm_runtime_get_sync(scomp->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(scomp->dev, "error: bytes_ext get failed to resume %d\n", ret);
++		pm_runtime_put_noidle(scomp->dev);
++		return ret;
 +	}
-+	return -EINVAL;
++
++	/* set the ABI header values */
++	cdata->data->magic = SOF_ABI_MAGIC;
++	cdata->data->abi = SOF_ABI_VERSION;
++	/* get all the component data from DSP */
++	ret = snd_sof_ipc_set_get_comp_data(scontrol, SOF_IPC_COMP_GET_DATA, SOF_CTRL_TYPE_DATA_GET,
++					    scontrol->cmd, false);
++	if (ret < 0)
++		goto out;
++
++	/* check data size doesn't exceed max coming from topology */
++	if (cdata->data->size > be->max - sizeof(const struct sof_abi_hdr)) {
++		dev_err_ratelimited(scomp->dev, "error: user data size %d exceeds max size %zu.\n",
++				    cdata->data->size,
++				    be->max - sizeof(const struct sof_abi_hdr));
++		ret = -EINVAL;
++		goto out;
++	}
++
++	data_size = cdata->data->size + sizeof(const struct sof_abi_hdr);
++
++	header.numid = scontrol->cmd;
++	header.length = data_size;
++	if (copy_to_user(tlvd, &header, sizeof(const struct snd_ctl_tlv))) {
++		ret = -EFAULT;
++		goto out;
++	}
++
++	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
++		ret = -EFAULT;
++out:
++	pm_runtime_mark_last_busy(scomp->dev);
++	err = pm_runtime_put_autosuspend(scomp->dev);
++	if (err < 0)
++		dev_err_ratelimited(scomp->dev, "error: bytes_ext get failed to idle %d\n", err);
++
++	return ret;
 +}
 +
-+static int adcx140_fs_rate(unsigned int rate)
-+{
-+	switch (rate) {
-+	case 7350:
-+	case 8000:
-+		return ADCX140_8_OR_7_35KHZ;
-+	case 14700:
-+	case 16000:
-+		return ADCX140_16_OR_14_7KHZ;
-+	case 22050:
-+	case 24000:
-+		return ADCX140_24_OR_22_05KHZ;
-+	case 29400:
-+	case 32000:
-+		return ADCX140_32_OR_29_4KHZ;
-+	case 44100:
-+	case 48000:
-+		return ADCX140_48_OR_44_1KHZ;
-+	case 88200:
-+	case 96000:
-+		return ADCX140_96_OR_88_2KHZ;
-+	case 176400:
-+	case 192000:
-+		return ADCX140_192_OR_176_4KHZ;
-+	case 352800:
-+	case 384000:
-+		return ADCX140_384_OR_352_8KHZ;
-+	case 705600:
-+	case 768000:
-+		return ADCX140_768_OR_705_6KHZ;
-+	default:
-+		break;
-+	}
-+	return -EINVAL;
-+}
-+
- static int adcx140_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
- 			     struct snd_soc_dai *dai)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
- 	u8 data = 0;
-+	u8 mst_cfg0 = 0;
+ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+ 			  unsigned int __user *binary_data,
+ 			  unsigned int size)
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 196cbd322893..9f645a2e5a6c 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -142,6 +142,8 @@ int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
+ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+ 			  unsigned int __user *binary_data,
+ 			  unsigned int size);
++int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int __user *binary_data,
++				   unsigned int size);
  
- 	switch (params_width(params)) {
- 	case 16:
-@@ -640,6 +714,60 @@ static int adcx140_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
+ /*
+  * Topology.
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 49fae48961a9..d5efac3af5c2 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -3688,6 +3688,7 @@ static const struct snd_soc_tplg_kcontrol_ops sof_io_ops[] = {
+ /* vendor specific bytes ext handlers available for binding */
+ static const struct snd_soc_tplg_bytes_ext_ops sof_bytes_ext_ops[] = {
+ 	{SOF_TPLG_KCTL_BYTES_ID, snd_sof_bytes_ext_get, snd_sof_bytes_ext_put},
++	{SOF_TPLG_KCTL_BYTES_VOLATILE_RO, snd_sof_bytes_ext_volatile_get},
+ };
  
-+	if (adcx140->master) {
-+		u8 mst_cfg1 = 0;
-+		u8 gpio_cfg0 = 0;
-+		unsigned int bclk_ratio;
-+		int ret;
-+
-+		mst_cfg0 = ADCX140_MST_SLV_CFG_BIT;
-+		if (params_rate(params) % 1000)
-+			mst_cfg0 |= ADCX140_FS_MODE_BIT; /* 44.1 kHz et al */
-+
-+		ret = adcx140_fs_rate(params_rate(params));
-+		if (ret < 0) {
-+			dev_err(component->dev, "%s: Unsupported rate %d\n",
-+				__func__, params_rate(params));
-+			return ret;
-+		}
-+		mst_cfg1 |= ret;
-+
-+		/* In slave mode when using automatic clock configuration,
-+		 * the codec figures out the BCLK to FSYNC ratio itself. But
-+		 * here in master mode, we need to tell it.
-+		 */
-+
-+		bclk_ratio = snd_soc_params_to_frame_size(params);
-+		ret = adcx140_fs_bclk_ratio(bclk_ratio);
-+		if (ret < 0) {
-+			dev_err(component->dev, "%s: Unsupported bclk_ratio %d\n",
-+				__func__, bclk_ratio);
-+			return ret;
-+		}
-+		mst_cfg1 |= ret;
-+
-+		/* The codec can receive MCLK on any input: GPIO, GPI0..3.
-+		 * While in future it would be nice to have these selectable
-+		 * via clk_id for instance, for now we fix GPIO1 as the MCLK
-+		 * source.
-+		 */
-+		gpio_cfg0 |= ADCX140_GPIO1_MCLK;
-+
-+		snd_soc_component_update_bits(component, ADCX140_MST_CFG1,
-+					      ADCX140_FS_RATE_MSK |
-+					      ADCX140_RATIO_MSK,
-+					      mst_cfg1);
-+
-+		snd_soc_component_update_bits(component, ADCX140_GPIO_CFG0,
-+					      ADCX140_GPIO1_CFG_MSK,
-+					      gpio_cfg0);
-+	}
-+
-+	snd_soc_component_update_bits(component, ADCX140_MST_CFG0,
-+				      ADCX140_FS_MODE_BIT |
-+				      ADCX140_MST_SLV_CFG_BIT,
-+				      mst_cfg0);
-+
- 	snd_soc_component_update_bits(component, ADCX140_ASI_CFG0,
- 			    ADCX140_WORD_LEN_MSK, data);
- 
-@@ -652,16 +780,16 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	struct snd_soc_component *component = codec_dai->component;
- 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
- 	u8 iface_reg1 = 0;
--	u8 iface_reg2 = 0;
- 	int offset = 0;
- 	int width = adcx140->slot_width;
- 
- 	/* set master/slave audio interface */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		iface_reg2 |= ADCX140_BCLK_FSYNC_MASTER;
-+		adcx140->master = 1;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFS:
-+		adcx140->master = 0;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFM:
- 	case SND_SOC_DAIFMT_CBM_CFS:
-@@ -714,8 +842,6 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 				      ADCX140_BCLKINV_BIT |
- 				      ADCX140_ASI_FORMAT_MSK,
- 				      iface_reg1);
--	snd_soc_component_update_bits(component, ADCX140_MST_CFG0,
--				      ADCX140_BCLK_FSYNC_MASTER, iface_reg2);
- 
- 	/* Configure data offset */
- 	snd_soc_component_update_bits(component, ADCX140_ASI_CFG1,
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index eedbc1d7221f..bac34800b189 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -145,4 +145,39 @@
- #define ADCX140_GPO_CFG_MAX		4
- #define ADCX140_GPO_DRV_MAX		5
- 
-+/* MST_CFG0 */
-+#define ADCX140_MST_SLV_CFG_BIT	BIT(7)
-+#define ADCX140_FS_MODE_BIT	BIT(3)
-+
-+/* MST_CFG1 */
-+#define ADCX140_8_OR_7_35KHZ	(0 << 4)
-+#define ADCX140_16_OR_14_7KHZ	(1 << 4)
-+#define ADCX140_24_OR_22_05KHZ	(2 << 4)
-+#define ADCX140_32_OR_29_4KHZ	(3 << 4)
-+#define ADCX140_48_OR_44_1KHZ	(4 << 4)
-+#define ADCX140_96_OR_88_2KHZ	(5 << 4)
-+#define ADCX140_192_OR_176_4KHZ	(6 << 4)
-+#define ADCX140_384_OR_352_8KHZ	(7 << 4)
-+#define ADCX140_768_OR_705_6KHZ	(8 << 4)
-+#define ADCX140_FS_RATE_MSK	GENMASK(7, 4)
-+
-+#define ADCX140_RATIO_16	0
-+#define ADCX140_RATIO_24	1
-+#define ADCX140_RATIO_32	2
-+#define ADCX140_RATIO_48	3
-+#define ADCX140_RATIO_64	4
-+#define ADCX140_RATIO_96	5
-+#define ADCX140_RATIO_128	6
-+#define ADCX140_RATIO_192	7
-+#define ADCX140_RATIO_256	8
-+#define ADCX140_RATIO_384	9
-+#define ADCX140_RATIO_512	10
-+#define ADCX140_RATIO_1024	11
-+#define ADCX140_RATIO_2048	12
-+#define ADCX140_RATIO_MSK	GENMASK(3, 0)
-+
-+/* GPIO_CFG0 */
-+#define ADCX140_GPIO1_MCLK	(10 << 4)
-+#define ADCX140_GPIO1_CFG_MSK	GENMASK(7, 4)
-+
- #endif /* _TLV320ADCX140_ */
+ static struct snd_soc_tplg_ops sof_tplg_ops = {
 -- 
-2.20.1
+2.27.0
 
