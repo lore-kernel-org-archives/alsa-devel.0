@@ -2,91 +2,86 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5768CC433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 07:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 042FFC43461
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 08:36:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 074882192A
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 07:02:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2EE5221741
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 08:36:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MLt69rE0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="S8Pqi4NX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 074882192A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P1ZvetnP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="gtebpoEt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EE5221741
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2086E1766;
-	Tue,  8 Sep 2020 09:01:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2086E1766
+	by alsa0.perex.cz (Postfix) with ESMTPS id 563E01756;
+	Tue,  8 Sep 2020 10:35:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 563E01756
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599548550;
-	bh=qBdUsuxe1NSfWczf9V3iKBaOrowKcZoqR6JM0ysjyFA=;
-	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MLt69rE0fUVU+MahavEMc9ojnBklgsbZho3siDBuYieEs/44zque9hpzjBeNPHQpm
-	 J3eR38+6TB8TqLS9CnYUZBfO/TOJ0bm4/WUGkofVp2Yf36IE+CdTFOsfoWdLx99gYy
-	 pZc+zG0OkHkYBjhYsMgNEOpEDSn/EXJa/RJlQBkU=
+	s=default; t=1599554199;
+	bh=lU1JYhFjtS9w80IITJi3DKI5Ng4lNFjHQndMQlFhDEE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=P1ZvetnPsKCaMui7i9sY76bi9MNf6HkHxk3+PbwbWk0VXDmrbQMONmfG6EO7sQy7s
+	 nzoKw0hbPV14+VWGkPbYKt+VSZskIQhDGO+ZeNqlNMTZUPg3x3NpHhAlZ3j+wZb62R
+	 MnrKrT8s8eYhqZYqnZ37OQgScfiE8O4/SE26pMJ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E035F8015F;
-	Tue,  8 Sep 2020 09:01:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C617FF801F2;
+	Tue,  8 Sep 2020 10:35:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4D1BF80264; Tue,  8 Sep 2020 09:01:38 +0200 (CEST)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
- [IPv6:2607:f8b0:4864:20::549])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B71FCF80264; Tue,  8 Sep 2020 10:35:46 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88D36F8010B
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 09:01:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88D36F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 607BFF8015F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 10:35:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 607BFF8015F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="S8Pqi4NX"
-Received: by mail-pg1-x549.google.com with SMTP id 8so2580689pgz.15
- for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2020 00:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=sender:date:message-id:mime-version:subject:from:to:cc;
- bh=GGO09v4RsoA264YQ6kRkEpuItBUA5pTf+ywKZtOwt4I=;
- b=S8Pqi4NXQayFPEsxd8n6xAPCW7RbwGqrft1PGOfCY3V7JItEI5OmZz0tB+2L2Infw1
- it2H2rgLhPREMvb7AwuTU3/OZKs08xhRf3stq7TLtmp5K4cUoHgpeULeSTYAgRhUIKmj
- vz8Up/lJcw+YGNSXMswqjnrwcyC8QVr55M2F8pZkNoI+1H4ToCYGQ9zfJa6iZFrja3vy
- TYhaWWkbZbdtp5fvCmvl8rfObzkLDWGucZivk4oa0mzmSDGjsLfmq+72Z0GOaoUDbwIb
- L46bg2urzY4cTvKvd3lcvkdqBCQy/yIDXfBiytlkoY/M0l7xMaVKA7vG/AL/mECzFZWZ
- c6/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
- :to:cc;
- bh=GGO09v4RsoA264YQ6kRkEpuItBUA5pTf+ywKZtOwt4I=;
- b=sjR120FbTAkxzM/hKh3ATTqxR8EL/EdE7isXLcqB7BGH9bIPIUNZIn5T4v3s2OI+hO
- 358oprt4aWRlOMrj9ikpnz45iFUA3GHsUA7Vw5pFOAOB32o+q0Ll5l1OmYR4Kl3XMxwN
- N7IwT2wQwpjfDjx6HNwg14cutgjPJsPtPbMCCCL8YAPuwmJ8FaOElT/T1eeBJ9DTcXAu
- bYai8RUQvBfdRHWPdJB8m1zH2zZ+L3z4dPIHnYKG+WbrGfWPARdUpyxP8UgC7Q2lR6K9
- 9sj4Xf1NYBCEHIssJj/eV9ULtsa+pZ7OlMWOnmwykPTV6XaU24CshtS7fUJKkotk3V/F
- 6xLg==
-X-Gm-Message-State: AOAM531Qp4gU6WvCEbm/Ras54sJkwuS4RVtXohozM99TnKYT+OVAAzr0
- ZC2rOss97ikeygIz38SkIoRjlRHY0+S6
-X-Google-Smtp-Source: ABdhPJyyWf+zX3jQmr1NwyyD6EfFM7Z5I2vo1dE34iE7m1AWJldL9aVo9FHgBP/A2vVd2bQAXV60tDRrwFCa
-X-Received: from tzungbi-z840.tpe.corp.google.com
- ([2401:fa00:1:10:725a:fff:fe41:c6a5])
- (user=tzungbi job=sendgmr) by 2002:a05:6a00:a:: with SMTP id
- h10mr15587280pfk.150.1599548491669; Tue, 08 Sep 2020 00:01:31 -0700 (PDT)
-Date: Tue,  8 Sep 2020 15:00:44 +0800
-Message-Id: <20200908070044.1142644-1-tzungbi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH] ASoC: mt6359: fix failed to parse DT properties
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org, jiaxin.yu@mediatek.com
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="gtebpoEt"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; l=1856; q=dns/txt; s=axis-central1;
+ t=1599554141; x=1631090141;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=xp2jtEwWlIVWqx9i65+JtXtOEPvP+lssrgvRxVi0wCI=;
+ b=gtebpoEtsfn4axqr8EQRKbAwawjMX3QPVVJpQ+Ub9hU5DVV+k0GuFNGW
+ bNQA+Aq5B8X+pQZru82h5a//8XorOxtANDiT90vf1w3H/sCYGO1muEZX5
+ EHib6eXp3nFFa0XhamWqCW3YTLei2M0hV5BAdJFbAUiguZLfh7XmOskG1
+ aXvj2gMMCSGTVa8eNaU2FdRmvC+4+8/FChhKB77fw6B7w2tTf38HYvglu
+ 8FfeCwBPuVpnrRTRn7p0rd+ZTwK8y3qEuzsgpirODiemV+fCtctzp8iN7
+ vF3A7beM++lbcPSsl2Qu/KivZDlFKVeWtneTjOwR7aH7OZzddec5G315h A==;
+IronPort-SDR: SUM5QoENwhtyx2B6qE8P7GTzyoyjJY/j3tg8kW/LjcD9A9JjlDi8579OLER5ex99nYk/jFJQiZ
+ 71ngP+kiNNrKNgMVcvLmi2Q9teAg86SsJtZk7szJhtFQ6y7GuXbizqNStR5BLurjxR2VZLy1cN
+ JOkQZma0/nTQuUC1vdIECEpZNKsXpLViSrZJcQ4XoyvCe6bAyHSvvFKe9Oa8I+DskxYlRFeE3k
+ jDm19QdWRfM4un6np6SmHs0zXO7qHJaK/KwtAQzaCbnIH6pv8zotoXnBVsl+F4rgAJ36UMTkHq
+ nr4=
+X-IronPort-AV: E=Sophos;i="5.76,405,1592863200"; d="scan'208";a="12651992"
+From: Camel Guo <camel.guo@axis.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
+ <dmurphy@ti.com>
+Subject: [PATCH 2/2] ASoC: tlv320adcx140: Wake up codec before accessing
+ register
+Date: Tue, 8 Sep 2020 10:35:21 +0200
+Message-ID: <20200908083521.14105-2-camel.guo@axis.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200908083521.14105-1-camel.guo@axis.com>
+References: <20200908083521.14105-1-camel.guo@axis.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
+ Camel Guo <camelg@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,66 +97,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mt6359 platform device is instantiated by mfd_add_devices().  In the
-case, dev->of_node is NULL so that mt6359_parse_dt() always fails to
-parse the desired DT properties.
+From: Camel Guo <camelg@axis.com>
 
-Gets the DT properties via dev->parent->of_node.
+According to its datasheet, after reset this codec goes into sleep
+mode. In this mode, any register accessing should be avoided except for
+exiting sleep mode. Hence this commit moves SLEEP_CFG access before any
+register accessing.
 
-Fixes: 8061734ab654 ("ASoC: mediatek: mt6359: add codec driver")
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Camel Guo <camelg@axis.com>
 ---
-Previous discussion: https://mailman.alsa-project.org/pipermail/alsa-devel/2020-September/173773.html
+ sound/soc/codecs/tlv320adcx140.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
- sound/soc/codecs/mt6359.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/mt6359.c b/sound/soc/codecs/mt6359.c
-index 72f05335b420..81aafb553bdd 100644
---- a/sound/soc/codecs/mt6359.c
-+++ b/sound/soc/codecs/mt6359.c
-@@ -2636,8 +2636,13 @@ static int mt6359_parse_dt(struct mt6359_priv *priv)
- {
- 	int ret;
- 	struct device *dev = priv->dev;
-+	struct device_node *np;
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 597dd1062943..6d456aa269ad 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -842,6 +842,18 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 	if (ret)
+ 		goto out;
  
--	ret = of_property_read_u32(dev->of_node, "mediatek,dmic-mode",
-+	np = of_get_child_by_name(dev->parent->of_node, "mt6359codec");
-+	if (!np)
-+		return -EINVAL;
++	if (adcx140->supply_areg == NULL)
++		sleep_cfg_val |= ADCX140_AREG_INTERNAL;
 +
-+	ret = of_property_read_u32(np, "mediatek,dmic-mode",
- 				   &priv->dmic_one_wire_mode);
- 	if (ret) {
- 		dev_warn(priv->dev, "%s() failed to read dmic-mode\n",
-@@ -2645,7 +2650,7 @@ static int mt6359_parse_dt(struct mt6359_priv *priv)
- 		priv->dmic_one_wire_mode = 0;
- 	}
++	ret = regmap_write(adcx140->regmap, ADCX140_SLEEP_CFG, sleep_cfg_val);
++	if (ret) {
++		dev_err(adcx140->dev, "setting sleep config failed %d\n", ret);
++		goto out;
++	}
++
++	/* 8.4.3: Wait >= 1ms after entering active mode. */
++	usleep_range(1000, 100000);
++
+ 	pdm_count = device_property_count_u32(adcx140->dev,
+ 					      "ti,pdm-edge-select");
+ 	if (pdm_count <= ADCX140_NUM_PDM_EDGES && pdm_count > 0) {
+@@ -889,18 +901,6 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 	if (ret)
+ 		goto out;
  
--	ret = of_property_read_u32(dev->of_node, "mediatek,mic-type-0",
-+	ret = of_property_read_u32(np, "mediatek,mic-type-0",
- 				   &priv->mux_select[MUX_MIC_TYPE_0]);
- 	if (ret) {
- 		dev_warn(priv->dev, "%s() failed to read mic-type-0\n",
-@@ -2653,7 +2658,7 @@ static int mt6359_parse_dt(struct mt6359_priv *priv)
- 		priv->mux_select[MUX_MIC_TYPE_0] = MIC_TYPE_MUX_IDLE;
- 	}
- 
--	ret = of_property_read_u32(dev->of_node, "mediatek,mic-type-1",
-+	ret = of_property_read_u32(np, "mediatek,mic-type-1",
- 				   &priv->mux_select[MUX_MIC_TYPE_1]);
- 	if (ret) {
- 		dev_warn(priv->dev, "%s() failed to read mic-type-1\n",
-@@ -2661,7 +2666,7 @@ static int mt6359_parse_dt(struct mt6359_priv *priv)
- 		priv->mux_select[MUX_MIC_TYPE_1] = MIC_TYPE_MUX_IDLE;
- 	}
- 
--	ret = of_property_read_u32(dev->of_node, "mediatek,mic-type-2",
-+	ret = of_property_read_u32(np, "mediatek,mic-type-2",
- 				   &priv->mux_select[MUX_MIC_TYPE_2]);
- 	if (ret) {
- 		dev_warn(priv->dev, "%s() failed to read mic-type-2\n",
+-	if (adcx140->supply_areg == NULL)
+-		sleep_cfg_val |= ADCX140_AREG_INTERNAL;
+-
+-	ret = regmap_write(adcx140->regmap, ADCX140_SLEEP_CFG, sleep_cfg_val);
+-	if (ret) {
+-		dev_err(adcx140->dev, "setting sleep config failed %d\n", ret);
+-		goto out;
+-	}
+-
+-	/* 8.4.3: Wait >= 1ms after entering active mode. */
+-	usleep_range(1000, 100000);
+-
+ 	ret = regmap_update_bits(adcx140->regmap, ADCX140_BIAS_CFG,
+ 				ADCX140_MIC_BIAS_VAL_MSK |
+ 				ADCX140_MIC_BIAS_VREF_MSK, bias_cfg);
 -- 
-2.28.0.526.ge36021eeef-goog
+2.20.1
 
