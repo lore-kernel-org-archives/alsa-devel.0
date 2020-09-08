@@ -2,95 +2,87 @@ Return-Path: <SRS0=EqiG=CR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64E43C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 00:39:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1460C433E2
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 03:10:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A28921D1B
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 00:39:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 97A942137B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Sep 2020 03:10:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uWqWY+kr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F8CWiqHc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A28921D1B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XeyjncYC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97A942137B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2377B176E;
-	Tue,  8 Sep 2020 02:38:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2377B176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC3491698;
+	Tue,  8 Sep 2020 05:09:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC3491698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599525552;
-	bh=ctoKTx1LxpELF0DaW7iLAQXVARfAP/iIOI3LcLTMSlQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1599534643;
+	bh=6NlH9irnoRPgx7TGfqvmnjr8LQqCP1rwy0xZMlAJBMY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uWqWY+krsnshNRDRZWgKHnuPn1XI7zuzHPWor44ZapfNpn8sAp0EpWL1t3N8QbXXY
-	 IfDDaRUMriMdZF0ry7exCBO5jl+Ul5vsy+CxhqHkJ1SvWOeROpqLj3JZlQgcrmefs5
-	 X4uDsRfuR0pW16KbFWN1/YfncjiwGuOfpr8AL8Ms=
+	b=XeyjncYCBMLcBprGVbQNfvgicPLjNXsOMjxx3zOw/5YjIl9UIVvntLL77FAnAW/UW
+	 3AVhnMBvfFcLY38fNtP9784xSlgOS6TjOFBGAEWKhAkU39fRi4guQUnt4Km3i2al7/
+	 xTid/98FnC/fs3MNrv8xDM8dWM+rb0/fk9AP1Q58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9478BF800D3;
-	Tue,  8 Sep 2020 02:38:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85B4AF800FD;
+	Tue,  8 Sep 2020 05:09:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBAB1F80227; Tue,  8 Sep 2020 02:38:18 +0200 (CEST)
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
- [IPv6:2607:f8b0:4864:20::d42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0925F800B9
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 02:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0925F800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="F8CWiqHc"
-Received: by mail-io1-xd42.google.com with SMTP id g128so15243507iof.11
- for <alsa-devel@alsa-project.org>; Mon, 07 Sep 2020 17:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=YDR6IsWSX2xd81R8pk5pE8RqAtPXHJYLYB8HvcgF40Q=;
- b=F8CWiqHclIEdY8g1HNYHVl1wXcuDgUrP5VqGkVOqMlgxVsnhY/g3zHfKmnNqKfx5rr
- lXjBlca+wJp2qFC+oRwEyKderhMcdUV0i/HGtdc+kmTwSgcLTkHx1gZV650Qtwgr8DSN
- cfbpMV23yjcPd2htmPPRJE+sb8EX9u2sUA0i0hkP47BGaSgO+bEOZhwsIV53SLn+pjEc
- 4auekbs2AZ/26MipcOlJbnv0c4YNagTq8IBYIigGIHdxugF7rPGLDzNt/NRCnmEBxZqX
- hHbmHjn91tAT2P+0g2zQy+6XpNSZP+H0QwsX3ytZmPsllFgKw2pVcNFXHbJCDD9pkPK1
- yIOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=YDR6IsWSX2xd81R8pk5pE8RqAtPXHJYLYB8HvcgF40Q=;
- b=HrTCbpz4H2NJ6T+Aoh1HihqdtqGZrxL1VnhIuocvpumZ7UCsvBl/2wT2zPOZ3o8YkO
- SNaXtLdEID3zaF+kERlfBJM90ebdoyFckqHehcveKZtc3Nbt9wTmnGAOipNqg98iRObm
- K5n0miekUVA40TuiHVt55pQuzKtlRUNWEHQ7leHQOIGQOtfz8DYK1YbUS/AEg7/2WE+J
- RqspETxEJfqcQI+rR16fapu7n6G+3EvLN/x4UbU0ZTDGtMuatNg0VhS7AjYYQLkEZax6
- NNSxFQDndcdqy5D1rRwsRooZwetDgGnk8rpCUA2qR1MEjDRbAr45Wu6ZYea6F+Ap/z9D
- jKtQ==
-X-Gm-Message-State: AOAM531wrbLNOa9I4EOo19ZR/AvBeHsgqSCi2K1Sxhob6MdMsy6QSswS
- 5N1+tQRa0VD5RqSMacpoY3/1dfmLjQFAkDHgaDc=
-X-Google-Smtp-Source: ABdhPJyKNOiTqAZYzxBv2arYN0x03aWPF1RbNx7tn+o1OGJW+GJAeuV1DOsC/QQ8ZOF2/hEVe7ATtCVswkAox0zLEAo=
-X-Received: by 2002:a5d:8604:: with SMTP id f4mr254925iol.196.1599525489023;
- Mon, 07 Sep 2020 17:38:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <1598348388-2518-1-git-send-email-yangtiezhu@loongson.cn>
- <s5hsgcb59gw.wl-tiwai@suse.de>
-In-Reply-To: <s5hsgcb59gw.wl-tiwai@suse.de>
-From: Huacai Chen <chenhuacai@gmail.com>
-Date: Tue, 8 Sep 2020 08:37:56 +0800
-Message-ID: <CAAhV-H5V5adhY2OjJLxW7x3zDaHGgBxxy45hjf22+qMSEBQuww@mail.gmail.com>
+ id 3F513F8015F; Tue,  8 Sep 2020 05:09:50 +0200 (CEST)
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4CF2BF8015F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2020 05:09:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CF2BF8015F
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+ by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx+MXr9VZf2fcSAA--.2842S3;
+ Tue, 08 Sep 2020 11:09:31 +0800 (CST)
 Subject: Re: [PATCH v2] Revert "ALSA: hda: Add support for Loongson 7A1000
  controller"
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- stable <stable@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>, Xuefeng Li <lixuefeng@loongson.cn>
+To: Huacai Chen <chenhuacai@gmail.com>, Takashi Iwai <tiwai@suse.de>
+References: <1598348388-2518-1-git-send-email-yangtiezhu@loongson.cn>
+ <s5hsgcb59gw.wl-tiwai@suse.de>
+ <CAAhV-H5V5adhY2OjJLxW7x3zDaHGgBxxy45hjf22+qMSEBQuww@mail.gmail.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <bf50515b-a018-a66d-188a-4901428e66a6@loongson.cn>
+Date: Tue, 8 Sep 2020 11:09:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAAhV-H5V5adhY2OjJLxW7x3zDaHGgBxxy45hjf22+qMSEBQuww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dx+MXr9VZf2fcSAA--.2842S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1rAw1DZryfuF4xJF1DKFg_yoW5GF4kpw
+ 1FyF4avr4Dtr4UJa1qvr909r18tw45AasrX3s7Jr1jvF12gr1kJryxJF4SgFs8Gry5ZFW7
+ t398twsrWFyDG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+ rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+ 1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+ 6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+ 4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+ 7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+ 1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+ 67vIY487MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+ W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+ 1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+ IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+ cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
+ 73UjIFyTuYvjfUn2-eDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Cc: alsa-devel@alsa-project.org, Xuefeng Li <lixuefeng@loongson.cn>,
+ LKML <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,61 +98,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi, all
+On 09/08/2020 08:37 AM, Huacai Chen wrote:
+> Hi, all
+>
+> This patch should be backported to 5.4.
 
-This patch should be backported to 5.4.
+Hi,
 
-Huacai
+Commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
+7A1000 controller") has been not yet merged into 5.4, so no
+need to backport.
 
-On Tue, Aug 25, 2020 at 6:03 PM Takashi Iwai <tiwai@suse.de> wrote:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_intel.c?h=v5.4
+
+Thanks,
+Tiezhu
+
 >
-> On Tue, 25 Aug 2020 11:39:48 +0200,
-> Tiezhu Yang wrote:
-> >
-> > This reverts commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
-> > 7A1000 controller") to fix the following error on the Loongson LS7A
-> > platform:
-> >
-> > rcu: INFO: rcu_preempt self-detected stall on CPU
-> > <SNIP>
-> > NMI backtrace for cpu 0
-> > CPU: 0 PID: 68 Comm: kworker/0:2 Not tainted 5.8.0+ #3
-> > Hardware name:  , BIOS
-> > Workqueue: events azx_probe_work [snd_hda_intel]
-> > <SNIP>
-> > Call Trace:
-> > [<ffffffff80211a64>] show_stack+0x9c/0x130
-> > [<ffffffff8065a740>] dump_stack+0xb0/0xf0
-> > [<ffffffff80665774>] nmi_cpu_backtrace+0x134/0x140
-> > [<ffffffff80665910>] nmi_trigger_cpumask_backtrace+0x190/0x200
-> > [<ffffffff802b1abc>] rcu_dump_cpu_stacks+0x12c/0x190
-> > [<ffffffff802b08cc>] rcu_sched_clock_irq+0xa2c/0xfc8
-> > [<ffffffff802b91d4>] update_process_times+0x2c/0xb8
-> > [<ffffffff802cad80>] tick_sched_timer+0x40/0xb8
-> > [<ffffffff802ba5f0>] __hrtimer_run_queues+0x118/0x1d0
-> > [<ffffffff802bab74>] hrtimer_interrupt+0x12c/0x2d8
-> > [<ffffffff8021547c>] c0_compare_interrupt+0x74/0xa0
-> > [<ffffffff80296bd0>] __handle_irq_event_percpu+0xa8/0x198
-> > [<ffffffff80296cf0>] handle_irq_event_percpu+0x30/0x90
-> > [<ffffffff8029d958>] handle_percpu_irq+0x88/0xb8
-> > [<ffffffff80296124>] generic_handle_irq+0x44/0x60
-> > [<ffffffff80b3cfd0>] do_IRQ+0x18/0x28
-> > [<ffffffff8067ace4>] plat_irq_dispatch+0x64/0x100
-> > [<ffffffff80209a20>] handle_int+0x140/0x14c
-> > [<ffffffff802402e8>] irq_exit+0xf8/0x100
-> >
-> > Because AZX_DRIVER_GENERIC can not work well for Loongson LS7A HDA
-> > controller, it needs some workarounds which are not merged into the
-> > upstream kernel at this time, so it should revert this patch now.
-> >
-> > Fixes: 61eee4a7fc40 ("ALSA: hda: Add support for Loongson 7A1000 controller")
-> > Cc: <stable@vger.kernel.org> # 5.9-rc1+
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >
-> > v2: update commit message
+> Huacai
 >
-> Applied now.  Thanks.
->
->
-> Takashi
+> On Tue, Aug 25, 2020 at 6:03 PM Takashi Iwai <tiwai@suse.de> wrote:
+>> On Tue, 25 Aug 2020 11:39:48 +0200,
+>> Tiezhu Yang wrote:
+>>> This reverts commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
+>>> 7A1000 controller") to fix the following error on the Loongson LS7A
+>>> platform:
+>>>
+>>> rcu: INFO: rcu_preempt self-detected stall on CPU
+>>> <SNIP>
+>>> NMI backtrace for cpu 0
+>>> CPU: 0 PID: 68 Comm: kworker/0:2 Not tainted 5.8.0+ #3
+>>> Hardware name:  , BIOS
+>>> Workqueue: events azx_probe_work [snd_hda_intel]
+>>> <SNIP>
+>>> Call Trace:
+>>> [<ffffffff80211a64>] show_stack+0x9c/0x130
+>>> [<ffffffff8065a740>] dump_stack+0xb0/0xf0
+>>> [<ffffffff80665774>] nmi_cpu_backtrace+0x134/0x140
+>>> [<ffffffff80665910>] nmi_trigger_cpumask_backtrace+0x190/0x200
+>>> [<ffffffff802b1abc>] rcu_dump_cpu_stacks+0x12c/0x190
+>>> [<ffffffff802b08cc>] rcu_sched_clock_irq+0xa2c/0xfc8
+>>> [<ffffffff802b91d4>] update_process_times+0x2c/0xb8
+>>> [<ffffffff802cad80>] tick_sched_timer+0x40/0xb8
+>>> [<ffffffff802ba5f0>] __hrtimer_run_queues+0x118/0x1d0
+>>> [<ffffffff802bab74>] hrtimer_interrupt+0x12c/0x2d8
+>>> [<ffffffff8021547c>] c0_compare_interrupt+0x74/0xa0
+>>> [<ffffffff80296bd0>] __handle_irq_event_percpu+0xa8/0x198
+>>> [<ffffffff80296cf0>] handle_irq_event_percpu+0x30/0x90
+>>> [<ffffffff8029d958>] handle_percpu_irq+0x88/0xb8
+>>> [<ffffffff80296124>] generic_handle_irq+0x44/0x60
+>>> [<ffffffff80b3cfd0>] do_IRQ+0x18/0x28
+>>> [<ffffffff8067ace4>] plat_irq_dispatch+0x64/0x100
+>>> [<ffffffff80209a20>] handle_int+0x140/0x14c
+>>> [<ffffffff802402e8>] irq_exit+0xf8/0x100
+>>>
+>>> Because AZX_DRIVER_GENERIC can not work well for Loongson LS7A HDA
+>>> controller, it needs some workarounds which are not merged into the
+>>> upstream kernel at this time, so it should revert this patch now.
+>>>
+>>> Fixes: 61eee4a7fc40 ("ALSA: hda: Add support for Loongson 7A1000 controller")
+>>> Cc: <stable@vger.kernel.org> # 5.9-rc1+
+>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>> ---
+>>>
+>>> v2: update commit message
+>> Applied now.  Thanks.
+>>
+>>
+>> Takashi
+
