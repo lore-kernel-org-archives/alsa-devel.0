@@ -2,81 +2,90 @@ Return-Path: <SRS0=lIjM=CS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8097CC433E2
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 13:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C19D5C43461
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 13:51:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B07D2087C
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 13:50:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6702421D7D
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 13:51:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="by++aMG0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B07D2087C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lZZZ2OMh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6702421D7D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE5D716BE;
-	Wed,  9 Sep 2020 15:49:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE5D716BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1392016EF;
+	Wed,  9 Sep 2020 15:50:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1392016EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599659437;
-	bh=KoyLEV3ITUFM98M8gfMWgIn5sXzdWHPpSiv4ic0RkG4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1599659490;
+	bh=csbk76HPxEpVjZcdTZair9543gmoXwhOjntdqutj4o4=;
+	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=by++aMG0E7Uwr3lNlKf0rNaDQbv6NkdEBiH3E5NthAaJ5nyOFwixW7OikyDO51onA
-	 4cD6vZl1R8ptJoQTP/ChCSbEorFmvqlVM9RyTJSH97nlDpP3STHv1WR6R4rSIuMWdy
-	 CLSSKRbUo0K39gr0Wk4vwgRGFSFQhonwnX7vB0AE=
+	b=lZZZ2OMh4vkh4sc0+dMAsYUlR+A/xPdaNLQIi4cMS9xcxwUNL9zAHq7TIuQ63sQRu
+	 B9DSjNz5ch973+VgxMYYVblnN4SyMiT9nePdK9VTFgSM7e1SDkBRL2VtUaodt7LJLH
+	 rWmudrQCh/MERoqCRfK9giO65KlaGHPlABQ0J/Co=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B190F8021C;
-	Wed,  9 Sep 2020 15:49:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EB21F80256;
+	Wed,  9 Sep 2020 15:49:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BE2BF80256; Wed,  9 Sep 2020 15:49:43 +0200 (CEST)
+ id A7EB9F80240; Wed,  9 Sep 2020 15:49:44 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 489A5F800FD
- for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2020 15:49:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 489A5F800FD
-IronPort-SDR: Pl2iOje6YWJEkLp4LNlTcsLYapPbHM/HDwiovG7OgFMde4gcyKSpTb/N6zlzpRRFecKRCzqnfD
- M4DgSzDOC1PQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="158362301"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; d="scan'208";a="158362301"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 442C6F800E9
+ for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2020 15:49:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 442C6F800E9
+IronPort-SDR: WycWT5DZbJzonyX5X2vj43Dl72Ux7PxrZOF+g2VRjpn0GzSgQsDPqsGUN4vtYcgSFvmh5MB6W4
+ tfru+0tcHjEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="158362305"
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; d="scan'208";a="158362305"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Sep 2020 06:49:25 -0700
-IronPort-SDR: J9ZzMi6jOr8Viwindwex+txw607dpwD5Fa4XeUXIVX9U5IGEvxo4qYCMsrizptiWvTbehfXK4K
- ojFv1wNnlekQ==
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; d="scan'208";a="505456860"
+ 09 Sep 2020 06:49:28 -0700
+IronPort-SDR: sFssLIFzQLYHtp+bRlAXqcPi/JwshKYi+q1O0Z7KA8MEtPD+GjaYyUqC2hHShd7TpC0EuB8aNu
+ qKQrZjtKeNnQ==
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; d="scan'208";a="505456876"
 Received: from rsetyawa-mobl1.amr.corp.intel.com (HELO [10.212.20.145])
  ([10.212.20.145])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Sep 2020 06:49:24 -0700
-Subject: Re: [PATCH] soundwire: bus: add enumerated slave to device list
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org,
- yung-chuan.liao@linux.intel.com
-References: <20200909082711.11670-1-srinivas.kandagatla@linaro.org>
+ 09 Sep 2020 06:49:27 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <80081c70-9137-c9f0-9813-8166275ef7af@linux.intel.com>
-Date: Wed, 9 Sep 2020 08:37:22 -0500
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
+ <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
+ <20200904050244.GT2639@vkoul-mobl>
+ <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+ <20200909075555.GK77521@vkoul-mobl>
+Message-ID: <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
+Date: Wed, 9 Sep 2020 08:48:21 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200909082711.11670-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200909075555.GK77521@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ tiwai@suse.de, gregkh@linuxfoundation.org,
+ open list <linux-kernel@vger.kernel.org>, broonie@kernel.org,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,100 +102,108 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-On 9/9/20 3:27 AM, Srinivas Kandagatla wrote:
-> Currently slave devices are only added either from device tree or acpi
-> entries. However lets say, there is wrong or no entry of a slave device
-> in DT that is enumerated, then there is no way for user to know all
-> the enumerated devices on the bus.
-
-Sorry Srinivas, I don't understand your point.
-
-The sysfs entries will include all devices that are described in 
-platform firmware (be it DT or ACPI).
-
-If you add to sysfs entries unknown devices which happen to be present 
-on the bus, then what? How would you identify them from the devices that 
-are described in firmware?
-
-Also the sysfs entries describe properties, but if you haven't bound a 
-driver then how would this work?
-
-I really feel this deserves more explanations on the problem statement 
-and what you are hoping to achieve in this case.
-
-Thanks!
-
+>>>> + *	25		0 (Reserved)
+>>>> + *	24:22		Function Number [2:0]
+>>>> + *	21		Entity[6]
+>>>> + *	20:19		Control Selector[5:4]
+>>>> + *	18		0 (Reserved)
+>>>> + *	17:15		Control Number[5:3]
+>>>> + *	14		Next
+>>>> + *	13		MBQ
+>>>> + *	12:7		Entity[5:0]
+>>>> + *	6:3		Control Selector[3:0]
+>>>> + *	2:0		Control Number[2:0]
+>>>> + */
+>>>> +
+>>>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)						\
+>>>> +	(BIT(30)							|	\
+>>>
+>>> Programmatically this is fine, but then since we are defining for the
+>>> description above, IMO it would actually make sense for this to be defined
+>>> as FIELD_PREP:
+>>>
+>>>           FIELD_PREP(GENMASK(30, 26), 1)
+>>>
+>>> or better
+>>>
+>>>           u32_encode_bits(GENMASK(30, 26), 1)
+>>>
+>>>> +	FIELD_PREP(GENMASK(24, 22), FIELD_GET(GENMASK(2, 0), (fun)))	|	\
+>>>
+>>> Why not use u32_encode_bits(GENMASK(24, 22), (fun)) instead for this and
+>>> below?
+>>
+>> Because your comment for the v1 review was to use FIELD_PREP/FIELD_GET, and
+>> your other patches for bitfield access only use FIELD_PREP/FIELD_GET.
 > 
-> To fix this add slave device by default if there is no matching dt or
-> acpi entry, so that we can see this in sysfs entry.
+> yes and looking at this, I feel u32_encode_bits(GENMASK(24, 22), (fun))
+> would look better than FIELD_PREP(GENMASK(24, 22), FIELD_GET(GENMASK(2, 0), (fun)))
 > 
-> In my case I had a wrong address entry in DT, However I had no way to
-> know what devices are actually enumerated on the bus!
+> Do you agree?
+
+The Function (fun) case is the easy one: the value is not split in two.
+
+But look at the entity case, it's split in two:
+
+FIELD_PREP(BIT(21), FIELD_GET(BIT(6), (ent)))			FIELD_PREP(GENMASK(12, 
+7), FIELD_GET(GENMASK(5, 0), (ent)))
+
+same for control
+
+FIELD_PREP(GENMASK(20, 19), FIELD_GET(GENMASK(5, 4), (ctl)))	|	
+FIELD_PREP(GENMASK(6, 3), FIELD_GET(GENMASK(3, 0), (ctl)))	|	
+
+and same for channel number
+
+FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), (ch)))	|	
+FIELD_PREP(GENMASK(2, 0), FIELD_GET(GENMASK(2, 0), (ch))))
+
+I don't see how we can avoid using the FIELD_GET to extract the relevant 
+bits from entity, control, channel number values.
+
+Or I am missing your point completely.
+
+
+>>> And while at it, consider defining masks for various fields rather than
+>>> using numbers in GENMASK() above, that would look better, be more
+>>> readable and people can reuse it.
+>>
+>> Actually on this one I disagree. These fields are not intended to be used by
+>> anyone, the goal is precisely to hide them behind regmap, and the use of raw
+>> numbers makes it easier to cross-check the documentation and the code.
+>> Adding a separate set of definitions would not increase readability.
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->   drivers/soundwire/bus.c      | 1 +
->   drivers/soundwire/bus.h      | 2 ++
->   drivers/soundwire/bus_type.c | 6 ++++++
->   drivers/soundwire/slave.c    | 4 ++--
->   4 files changed, 11 insertions(+), 2 deletions(-)
+> Which one would you prefer:
 > 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index e6e0fb9a81b4..55d9c22c4ec5 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -699,6 +699,7 @@ static int sdw_program_device_num(struct sdw_bus *bus)
->   
->   		if (!found) {
->   			/* TODO: Park this device in Group 13 */
-> +			sdw_slave_add(bus, &id, NULL);
->   			dev_err(bus->dev, "Slave Entry not found\n");
->   		}
->   
-> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-> index 82484f741168..1517d6789dff 100644
-> --- a/drivers/soundwire/bus.h
-> +++ b/drivers/soundwire/bus.h
-> @@ -19,6 +19,8 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
->   int sdw_of_find_slaves(struct sdw_bus *bus);
->   void sdw_extract_slave_id(struct sdw_bus *bus,
->   			  u64 addr, struct sdw_slave_id *id);
-> +int sdw_slave_add(struct sdw_bus *bus, struct sdw_slave_id *id,
-> +		  struct fwnode_handle *fwnode);
->   int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
->   			  struct fwnode_handle *fwnode);
->   int sdw_master_device_del(struct sdw_bus *bus);
-> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-> index 6fba55898cf0..ac036223046f 100644
-> --- a/drivers/soundwire/bus_type.c
-> +++ b/drivers/soundwire/bus_type.c
-> @@ -84,6 +84,12 @@ static int sdw_drv_probe(struct device *dev)
->   	const struct sdw_device_id *id;
->   	int ret;
->   
-> +	/*
-> +	 * fw description is mandatory to bind
-> +	 */
-> +	if (!dev->fwnode || !dev->of_node)
-> +		return -ENODEV;
-> +
->   	id = sdw_get_device_id(slave, drv);
->   	if (!id)
->   		return -ENODEV;
-> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-> index 0839445ee07b..24a16ebf9ae2 100644
-> --- a/drivers/soundwire/slave.c
-> +++ b/drivers/soundwire/slave.c
-> @@ -20,8 +20,8 @@ struct device_type sdw_slave_type = {
->   	.uevent =	sdw_slave_uevent,
->   };
->   
-> -static int sdw_slave_add(struct sdw_bus *bus,
-> -			 struct sdw_slave_id *id, struct fwnode_handle *fwnode)
-> +int sdw_slave_add(struct sdw_bus *bus,
-> +		  struct sdw_slave_id *id, struct fwnode_handle *fwnode)
->   {
->   	struct sdw_slave *slave;
->   	int ret;
+>          #define SDCA_FUN_MASK           GENMASK(24, 22)
 > 
+>          foo |= u32_encode_bits(SDCA_FUN_MASK, fun)
+> 
+> Or the one proposed...?
+
+Same as above, let's see what this does with the control case where we'd 
+need to have four definitions:
+
+#define SDCA_CONTROL_DEST_MASK1 GENMASK(20, 19)
+#define SDCA_CONTROL_ORIG_MASK1 GENMASK(5, 4)
+#define SDCA_CONTROL_DEST_MASK2 GENMASK(6, 3)
+#define SDCA_CONTROL_ORIG_MASK2 GENMASK(3, 0)
+
+And the code would look like
+
+foo |= u32_encode_bits(SDCA_CONTROL_DEST_MASK1, 
+FIELD_GET(SDCA_CONTROL_ORIG_MASK1, fun));
+foo |= u32_encode_bits(SDCA_CONTROL_DEST_MASK2, 
+FIELD_GET(SDCA_CONTROL_ORIG_MASK2, fun));
+
+The original suggestion was:
+
+FIELD_PREP(GENMASK(20, 19), FIELD_GET(GENMASK(5, 4), (ctl)))	|	
+FIELD_PREP(GENMASK(6, 3), FIELD_GET(GENMASK(3, 0), (ctl)))	|	
+
+I prefer the original... Adding these defines doesn't really add value 
+because
+a) the values will not be reused anywhere else.
+b) we need 12 of those defines
+b) we need a prefix for those defines which makes the code heavier
+
