@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D200C43461
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 16:50:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39CC6C43461
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 16:50:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7B5121919
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 16:50:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3C712087C
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 16:50:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="myGX9lCk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7B5121919
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S/86VHtL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3C712087C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1830A74C;
-	Wed,  9 Sep 2020 18:49:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1830A74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBAC816D9;
+	Wed,  9 Sep 2020 18:50:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBAC816D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599670203;
-	bh=BpYTfDEXMA6s3cszSkJYCvTAaW1UIuR240HATVX1ll4=;
+	s=default; t=1599670256;
+	bh=iwquHq+M3gdlgks1zL6xp8MghsvXnPEJw8VBzHIcMQo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=myGX9lCkPcs2ZgwFj6pb1IlPfTb3GCtMWWkzgFPvYNp4cQLjPsp+eJX3A9sQlTov3
-	 uxMLx9nlP/W3SeFCADVrlGSWB4ui4ViZ5w+frhH5jSgwmTLuDT8Mvcji7p31ijvi9h
-	 iHAp1SpSKveR2ETcknt6iEvOVS33zWrNKRFi+G7M=
+	b=S/86VHtLu7vPu55PQX05BcAkhyonymbR28vG3RvtkNpXm0dxieHWPK1FXDaxrraax
+	 Dg4LYE2w5mHKzN8HrZf+fwbd+gd/S7eYpZAfJY/qm3dVEBKLTcTYJANaRnUjUjOIsc
+	 Hi00dI72neBtZp9efA5We4JsrVHJ1svtPHpiRJI0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94FC6F8015F;
-	Wed,  9 Sep 2020 18:49:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 950D6F80274;
+	Wed,  9 Sep 2020 18:49:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 290E3F80256; Wed,  9 Sep 2020 18:49:11 +0200 (CEST)
+ id 356D2F8015F; Wed,  9 Sep 2020 18:49:11 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F23BAF8021C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF776F800E9
  for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2020 18:49:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F23BAF8021C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF776F800E9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D2178AE59;
+ by mx2.suse.de (Postfix) with ESMTP id CFD7CAE18;
  Wed,  9 Sep 2020 16:49:15 +0000 (UTC)
-Date: Wed, 09 Sep 2020 18:44:15 +0200
-Message-ID: <s5hv9gmrjc0.wl-tiwai@suse.de>
+Date: Wed, 09 Sep 2020 18:44:02 +0200
+Message-ID: <s5hwo12rjcd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH 04/19] ALSA: pcm: Remove unused inline function
- snd_mask_sizeof
-In-Reply-To: <20200909135744.33464-1-yuehaibing@huawei.com>
-References: <20200909135744.33464-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH 09/19] ALSA: pci/asihpi: Remove unused function
+ hpi_stream_group_get_map()
+In-Reply-To: <20200909134927.33964-1-yuehaibing@huawei.com>
+References: <20200909134927.33964-1-yuehaibing@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,7 +78,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 09 Sep 2020 15:57:44 +0200,
+On Wed, 09 Sep 2020 15:49:27 +0200,
 YueHaibing wrote:
 > 
 > There is no caller in tree, so can remove it.
