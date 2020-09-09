@@ -2,64 +2,83 @@ Return-Path: <SRS0=lIjM=CS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DCCBC433E2
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 02:02:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3271AC43461
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 06:27:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B12120758
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 02:02:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFD7920C09
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Sep 2020 06:27:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c0JcJImU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B12120758
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O+jtc2Jy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="FFf6yfDs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFD7920C09
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 956301706;
-	Wed,  9 Sep 2020 04:01:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 956301706
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5DA116EF;
+	Wed,  9 Sep 2020 08:26:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5DA116EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599616952;
-	bh=YFtJAILOKQ218J1vypQsXxauO96OlwqcXC9fFqt64i8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=c0JcJImUam77WkrdKpNfaZmC44nmtPFEcpOzCL17oz9cboDieH7x0hv18NGzXYIwf
-	 i+OfKm7sMP0dJCraH7wTML6WbiJdE6pY8WV7YtN9j48zY/M0MAwbgIHI8J9otAjy9e
-	 1C486aFmKX575UTHM+okus0ilgrISVerzrxSvhaA=
+	s=default; t=1599632857;
+	bh=e/ZBcQKT82oAYWdfyTAVwhkKixk9eFrrms8Prt8GvBA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=O+jtc2JylmdrkHlMkR57Nh5vR/zpPT/c9VkTSs2tm5+5yzT1/s30h99M8JiM+ER6Q
+	 F9z1nYwydws8ECHY1ReK4E7po64qOYyT5CWScp5jKUpSV/dsYMNuWadioJUpXDEKlG
+	 BnZS+f91QudTTvYNxJsBE1D/NQzFL4n4MzG3O1KQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 386B4F8021C;
-	Wed,  9 Sep 2020 04:01:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4ADDBF800E9;
+	Wed,  9 Sep 2020 08:26:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7F3FF80227; Wed,  9 Sep 2020 04:01:40 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 8CACDF8021C; Wed,  9 Sep 2020 08:26:40 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDF6AF800FD
- for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2020 04:01:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDF6AF800FD
-Received: from [123.114.44.221] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1kFpQR-0001uy-88; Wed, 09 Sep 2020 02:01:32 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: tiwai@suse.de,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek - The Mic on a RedmiBook doesn't work
-Date: Wed,  9 Sep 2020 10:00:41 +0800
-Message-Id: <20200909020041.8967-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 157D8F800E9
+ for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2020 08:26:29 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 411ECA003F;
+ Wed,  9 Sep 2020 08:26:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 411ECA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1599632788; bh=6TM8UZlhBVv9GZrB00/bGCYuJ/Qyusmp7Cmt1ltZKcU=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=FFf6yfDs3hx+hvXuYuWrkEfLUTOhqOAtk4wkhSPmdAVgR+55abBg9kGOR/HUGfNJJ
+ Z5S2vP0gJXEQG/RBsVWsmRabvxqKUGHStNN06cMAPG+G1A3UBMmR0DJRiPUnfV3L7W
+ I/6xuxSFxXgi5ZdnRcLvIMBY8M+Bs6Bt3Gc4IPzU=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed,  9 Sep 2020 08:26:13 +0200 (CEST)
+Subject: Re: [PATCH] soundwire: Add generic bandwidth allocation algorithm
+To: Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org, 
+ vkoul@kernel.org
+References: <20200908131520.5712-1-yung-chuan.liao@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <fdf22a3c-457f-09ef-8dc5-c0f3871cf2ce@perex.cz>
+Date: Wed, 9 Sep 2020 08:26:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: kailang@realtek.com, stable@vger.kernel.org
+In-Reply-To: <20200908131520.5712-1-yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ hui.wang@canonical.com, srinivas.kandagatla@linaro.org, bard.liao@intel.com,
+ jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,66 +94,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Mic connects to the Nid 0x19, but the configuration of Nid 0x19
-is not defined to Mic, and also need to set the coeff to enable the
-auto detection on the Nid 0x19. After this change, the Mic plugging
-in or plugging out could be detected and could record the sound from
-the Mic.
+Dne 08. 09. 20 v 15:15 Bard Liao napsal(a):
+> This algorithm computes bus parameters like clock frequency, frame
+> shape and port transport parameters based on active stream(s) running
+> on the bus.
+> 
+> Developers can also implement their own .compute_params() callback for
+> specific resource management algorithm, and set if before calling
+> sdw_add_bus_master()
+> 
+> Credits: this patch is based on an earlier internal contribution by
+> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. All hard-coded
+> values were removed from the initial contribution to use BIOS
+> information instead.
+> 
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
+>  drivers/soundwire/Kconfig                     |   5 +
+>  drivers/soundwire/Makefile                    |   3 +
+>  drivers/soundwire/bus.c                       |   6 +
+>  drivers/soundwire/bus.h                       |  46 +-
+>  .../soundwire/generic_bandwidth_allocation.c  | 427 ++++++++++++++++++
+>  drivers/soundwire/intel.c                     |   3 +
+>  drivers/soundwire/stream.c                    |  12 +
+>  include/linux/soundwire/sdw.h                 |   3 +
+>  8 files changed, 503 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/soundwire/generic_bandwidth_allocation.c
 
-And the coeff value is suggested by Kailang of Realtek.
+I did testing and I've not found any issues. The abstraction looks good.
 
-Cc: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Acked-by: Jaroslav Kysela <perex@perex.cz>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index abfc602c3b92..85e207173f5d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6228,6 +6228,7 @@ enum {
- 	ALC269_FIXUP_LEMOTE_A1802,
- 	ALC269_FIXUP_LEMOTE_A190X,
- 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
-+	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7591,6 +7592,16 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE
- 	},
-+	[ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x45 },
-+			{ 0x20, AC_VERB_SET_PROC_COEF, 0x5089 },
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC289_FIXUP_ASUS_GA401
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7888,6 +7899,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1b35, 0x1236, "CZC TMI", ALC269_FIXUP_CZC_TMI),
- 	SND_PCI_QUIRK(0x1b35, 0x1237, "CZC L101", ALC269_FIXUP_CZC_L101),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
-+	SND_PCI_QUIRK(0x1d72, 0x1602, "RedmiBook", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
-@@ -8065,6 +8077,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC298_FIXUP_HUAWEI_MBX_STEREO, .name = "huawei-mbx-stereo"},
- 	{.id = ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE, .name = "alc256-medion-headset"},
- 	{.id = ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc298-samsung-headphone"},
-+	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-headset"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
 -- 
-2.25.1
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
