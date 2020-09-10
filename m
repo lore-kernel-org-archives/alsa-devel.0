@@ -2,79 +2,69 @@ Return-Path: <SRS0=ofM/=CT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62E1EC43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 06:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D473BC433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 07:30:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDA2120829
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 06:40:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 34FB12078B
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 07:30:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hPZSdAZR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aIihw9ny"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDA2120829
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cqRAvEwi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34FB12078B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 412761661;
-	Thu, 10 Sep 2020 08:39:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 412761661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33CAF844;
+	Thu, 10 Sep 2020 09:29:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33CAF844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599720049;
-	bh=t2SyhHS+Ohd0sGWn6FEslrgMgIs2UDqjysK6cgXfMYo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1599723048;
+	bh=Ef8TkvKH+Gu2gMwmaDkICNJPw3AcfMtnVdzuI+raO6k=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hPZSdAZR9hIVv0/EnYkA3HDBc3fhjpK4P5/IakgHJzwJwUDIqOMbR05VsWALc8dH7
-	 MHPu79DvfFIytQ+s6ONnvEPmRI+4JP3CA5rsWuE8DUrT66A4/LFW58d3JvFIKj+Q9l
-	 nOA+nFmF4zc48XWiGupMFre+9UBgPchN7s7CeLvw=
+	b=cqRAvEwikVhzi1vvel/Gnfcqg2KJjnLro6WXNLgGOyAkC5vAU3EKzeI45BW9waOrm
+	 s/ldL34sM5hcpWNp1z/npgT75Mzok0NtmT+qB9uDFMjTBap7n+9/bcy/ErT7Knr6RB
+	 WVk5Lea3w1SaKKEEKTLjPJoxPW+Ca8WUffCJrcBs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BD16F800D0;
-	Thu, 10 Sep 2020 08:39:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99073F801F2;
+	Thu, 10 Sep 2020 09:29:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AD48F80264; Thu, 10 Sep 2020 08:39:57 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A9CAF800E9
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 08:39:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A9CAF800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aIihw9ny"
-Received: from localhost (unknown [122.179.50.55])
+ id 4C38CF80264; Thu, 10 Sep 2020 09:29:52 +0200 (CEST)
+Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 188872222B;
- Thu, 10 Sep 2020 06:39:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599719987;
- bh=t2SyhHS+Ohd0sGWn6FEslrgMgIs2UDqjysK6cgXfMYo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=aIihw9nyRXIuI9jthRt+2eE6WGIfqmusB3vrU2veny44vxhfhVC2pSM5ZmTsc+Rbs
- 5FP0KkQoBVKABmPSh8J/9OwTryW8LSPwQsg88lZzt5xhdfDD0bb395EeT5IZazR03d
- jFJJEm/FfswnnqykbLW4awC/XzA+b/Ie1ksDumKQ=
-Date: Thu, 10 Sep 2020 12:09:40 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 2/2] soundwire: qcom: get max rows and cols info from
- compatible
-Message-ID: <20200910063940.GR77521@vkoul-mobl>
-References: <20200909160912.3656-1-srinivas.kandagatla@linaro.org>
- <20200909160912.3656-3-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C2F8F800D0
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 09:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C2F8F800D0
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 63B7C9D187AFAC1DC36D;
+ Thu, 10 Sep 2020 15:29:38 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
+ 15:29:31 +0800
+From: YueHaibing <yuehaibing@huawei.com>
+To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+ <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
+Subject: [PATCH -next] soundwire: intel: Fix -Wunused-function warning
+Date: Thu, 10 Sep 2020 15:29:06 +0800
+Message-ID: <20200910072906.28284-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+In-Reply-To: <20200909131531.31380-1-yuehaibing@huawei.com>
+References: <20200909131531.31380-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909160912.3656-3-srinivas.kandagatla@linaro.org>
-Cc: sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -91,149 +81,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 09-09-20, 17:09, Srinivas Kandagatla wrote:
-> currently the max rows and cols values are hardcoded. In reality
-> these values depend on the IP version. So get these based on
-> device tree compatible strings.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/soundwire/qcom.c | 46 +++++++++++++++++++++++++++-------------
->  1 file changed, 31 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index 1ec0ee931f5b..03c5bc05fc6e 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -69,11 +69,6 @@
->  #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
->  			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
->  
-> -#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
-> -#define SWRM_DEFAULT_ROWS	48
-> -#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
-> -#define SWRM_DEFAULT_COL	16
-> -#define SWRM_MAX_COL_VAL	7
->  #define SWRM_SPECIAL_CMD_ID	0xF
->  #define MAX_FREQ_NUM		1
->  #define TIMEOUT_MS		(2 * HZ)
-> @@ -107,6 +102,8 @@ struct qcom_swrm_ctrl {
->  	unsigned int version;
->  	int num_din_ports;
->  	int num_dout_ports;
-> +	int cols_index;
-> +	int rows_index;
->  	unsigned long dout_port_mask;
->  	unsigned long din_port_mask;
->  	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
-> @@ -116,6 +113,21 @@ struct qcom_swrm_ctrl {
->  	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
->  };
->  
-> +struct qcom_swrm_data {
-> +	int default_cols;
-> +	int default_rows;
+If CONFIG_PM is not set, build warns:
 
-unsigned int for these?
+drivers/soundwire/intel.c:488:12: warning: 'intel_link_power_down' defined but not used [-Wunused-function]
 
-> +};
-> +
-> +static struct qcom_swrm_data swrm_v1_3_data = {
-> +	.default_rows = 48,
-> +	.default_cols = 16,
-> +};
-> +
-> +static struct qcom_swrm_data swrm_v1_5_data = {
-> +	.default_rows = 50,
-> +	.default_cols = 16,
-> +};
-> +
->  #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
->  
->  static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
-> @@ -302,8 +314,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
->  	u32 val;
->  
->  	/* Clear Rows and Cols */
-> -	val = (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
-> -	       SWRM_MIN_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
-> +	val = ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
-> +		ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
+Mark the functions __maybe_unused and remove the CONFIG_PM dependency.
 
-use FIELD_{GET|SET} / u32_encode_bits for these
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/soundwire/intel.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-Please rebase on sdw-next, this has already been updated in next
-
->  
->  	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
->  
-> @@ -382,8 +394,8 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
->  	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
->  	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
->  
-> -	val |= (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
-> -		SWRM_MAX_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
-> +	val |= ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
-> +	       ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
->  
->  	return ctrl->reg_write(ctrl, reg, val);
->  }
-> @@ -784,6 +796,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  	struct sdw_master_prop *prop;
->  	struct sdw_bus_params *params;
->  	struct qcom_swrm_ctrl *ctrl;
-> +	const struct qcom_swrm_data *data;
->  	struct resource *res;
->  	int ret;
->  	u32 val;
-> @@ -792,6 +805,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  	if (!ctrl)
->  		return -ENOMEM;
->  
-> +	data = of_device_get_match_data(dev);
-
-how about checking data is valid?
-
-> +	ctrl->rows_index = sdw_find_row_index(data->default_rows);
-> +	ctrl->cols_index = sdw_find_col_index(data->default_cols);
->  #ifdef CONFIG_SLIMBUS
->  	if (dev->parent->bus == &slimbus_bus) {
->  #else
-> @@ -844,8 +860,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  	params = &ctrl->bus.params;
->  	params->max_dr_freq = DEFAULT_CLK_FREQ;
->  	params->curr_dr_freq = DEFAULT_CLK_FREQ;
-> -	params->col = SWRM_DEFAULT_COL;
-> -	params->row = SWRM_DEFAULT_ROWS;
-> +	params->col = data->default_cols;
-> +	params->row = data->default_rows;
->  	ctrl->reg_read(ctrl, SWRM_MCP_STATUS, &val);
->  	params->curr_bank = val & SWRM_MCP_STATUS_BANK_NUM_MASK;
->  	params->next_bank = !params->curr_bank;
-> @@ -855,8 +871,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  	prop->num_clk_gears = 0;
->  	prop->num_clk_freq = MAX_FREQ_NUM;
->  	prop->clk_freq = &qcom_swrm_freq_tbl[0];
-> -	prop->default_col = SWRM_DEFAULT_COL;
-> -	prop->default_row = SWRM_DEFAULT_ROWS;
-> +	prop->default_col = data->default_cols;
-> +	prop->default_row = data->default_rows;
->  
->  	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
->  
-> @@ -907,8 +923,8 @@ static int qcom_swrm_remove(struct platform_device *pdev)
->  }
->  
->  static const struct of_device_id qcom_swrm_of_match[] = {
-> -	{ .compatible = "qcom,soundwire-v1.3.0", },
-> -	{ .compatible = "qcom,soundwire-v1.5.1", },
-> +	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
-> +	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
->  	{/* sentinel */},
->  };
->  
-> -- 
-> 2.21.0
-
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index e047910d73f5..48ae8800594a 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -400,7 +400,7 @@ static void intel_shim_glue_to_master_ip(struct sdw_intel *sdw)
+ }
+ 
+ /* this needs to be called with shim_lock */
+-static void intel_shim_master_ip_to_glue(struct sdw_intel *sdw)
++static void __maybe_unused intel_shim_master_ip_to_glue(struct sdw_intel *sdw)
+ {
+ 	unsigned int link_id = sdw->instance;
+ 	void __iomem *shim = sdw->link_res->shim;
+@@ -485,7 +485,7 @@ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+ 	mutex_unlock(sdw->link_res->shim_lock);
+ }
+ 
+-static int intel_link_power_down(struct sdw_intel *sdw)
++static int __maybe_unused intel_link_power_down(struct sdw_intel *sdw)
+ {
+ 	u32 link_control, spa_mask, cpa_mask;
+ 	unsigned int link_id = sdw->instance;
+@@ -1540,8 +1540,6 @@ int intel_master_process_wakeen_event(struct platform_device *pdev)
+  * PM calls
+  */
+ 
+-#ifdef CONFIG_PM
+-
+ static int __maybe_unused intel_suspend(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+@@ -1596,7 +1594,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int intel_suspend_runtime(struct device *dev)
++static int __maybe_unused intel_suspend_runtime(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1751,7 +1749,7 @@ static int __maybe_unused intel_resume(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int intel_resume_runtime(struct device *dev)
++static int __maybe_unused intel_resume_runtime(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1924,8 +1922,6 @@ static int intel_resume_runtime(struct device *dev)
+ 	return ret;
+ }
+ 
+-#endif
+-
+ static const struct dev_pm_ops intel_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
+ 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
 -- 
-~Vinod
+2.17.1
+
+
