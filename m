@@ -7,84 +7,83 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 066EFC43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 05:26:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95BE1C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 05:26:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EC0F207FB
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 05:26:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 976A1207FB
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 05:26:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AyQw/juj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Jly6RuxB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EC0F207FB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ExulBuZv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="obdOf2tn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 976A1207FB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89386167B;
-	Thu, 10 Sep 2020 07:25:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89386167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C2641683;
+	Thu, 10 Sep 2020 07:25:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C2641683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599715559;
-	bh=OTuUQ/rz3IDO86eVgFErLLaQkDdJD7fTsTfRL1IqJuU=;
+	s=default; t=1599715604;
+	bh=5w9J+xjw+KADu43HrT2SGD2Yj1rY8JxM2qzrQ5u2zco=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AyQw/jujBGq5mX7J5kIHiV4Q7BZrOOCISc5rLsBJS7if2CgvuIpIjLyuSn+is+T1R
-	 VeL5Xs1sO1K0XxhYhviyiq3GM9UX8dDf8psZhpyQD08ghvho+BveFYoaw7BblIdzIj
-	 3M/9eWsNcpdGqz2TUWTcfOjOUQShE/qikHn5dbkU=
+	b=ExulBuZvCiE8zfedJMPLkyEL7RRheGlKptM1z2knMutiuIZlmpG+HwGNcsM3xY8hl
+	 PP2GMGqlt5JxSbtYOg2MFfBqe9g971xb2kH6lDCEJTYOs2tLBpGvU1XFDumkdjUEqT
+	 Z/JpP46+Kb7JaDqU7JCEscB+jr/JIoK/P1CDw2M8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58686F8028C;
-	Thu, 10 Sep 2020 07:24:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82A57F802D2;
+	Thu, 10 Sep 2020 07:24:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0A56F8028C; Thu, 10 Sep 2020 07:24:21 +0200 (CEST)
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
- [IPv6:2607:f8b0:4864:20::641])
+ id A4388F80272; Thu, 10 Sep 2020 07:24:28 +0200 (CEST)
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com
+ [IPv6:2607:f8b0:4864:20::433])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C618F800D0
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 07:24:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C618F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C00EF80272
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 07:24:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C00EF80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="Jly6RuxB"
-Received: by mail-pl1-x641.google.com with SMTP id d19so346387pld.0
- for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2020 22:24:09 -0700 (PDT)
+ header.b="obdOf2tn"
+Received: by mail-pf1-x433.google.com with SMTP id f18so3951705pfa.10
+ for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2020 22:24:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=2nWlloeWe4+nv6hVrTbPWUl2P9w8K0JESAZLCRmELVU=;
- b=Jly6RuxBojd9khDo1aBZFbbE7iUymQQYlkNgHAGTRC/IGga0p/m/w/CkOY9snpatGR
- 58eOqJx6SKkTxAE7U7cwXh+zZp5T1+Qvnop0cEBrwdZuw/FUw5znODV105LJmAW6iRXP
- eWukC6v5ZlhBlERJkU+Nt8ElBhRHBHnxo5s7I=
+ bh=I5mAYkplhRci1nZmKpafUoabwwT6ae+kB3CchB9eTv8=;
+ b=obdOf2tnFCnuUpd5EMvQmrs6DyxiVGB7KJGZPIMeNFY1Zsk5yLrUdEsW3SmCKjgsks
+ dODGM7TF0wyeJ3Qet10GqWH1AOnFddSAIde4CvWWiSbMCRxuAmEwQsYHc+IK1HUmJCnv
+ LKqAf5geBJB5Z1Xtm905CyXcW2hjxZI3gmmNU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=2nWlloeWe4+nv6hVrTbPWUl2P9w8K0JESAZLCRmELVU=;
- b=F3HZL/JE8qyoF9PRuFPWCTkqkKxEfY/s/FLOqVfqTwecnxXpindT2HNm7KQXstElZy
- l2SWTFnZedyAkthJlhXurisJ4WJQ+TMzKe8ZCEF+h0uEO5/jvCOaVrLMQpG1ySmOrHr3
- 8BudmPmQb2rotrsIrSvGiLz1IzPyrNhMZ0FRtt0piFQj09dMDbUgnDyT1D1CTUipCouZ
- KB+H4Yxa59CE18+Ee1ay24pp69YrpGlfpkeh08mlLiXRmqn0RoZK70bzj5Ljv2ZYUTTw
- 3fx7wSjuUmGDwFVI1P98iaV1Cm6GPwAskKLmRUvJg5W8zvK2/q09k+msa1I9G6BHAWm2
- Q8Og==
-X-Gm-Message-State: AOAM530gmXjglnzVFSXxUorv1LkoiwWot4Dtz6zvSUsslOsAal9qeApS
- p1RBVKkzqHvzalbBxz+SwBIGcA==
-X-Google-Smtp-Source: ABdhPJwiwRt7uJD2Tdw1Iu+DXvUoRD4x3qop7uDcJyYhptNWqo3qcCeWVelp64P4NCI+7u30w1o/aw==
-X-Received: by 2002:a17:90a:fb52:: with SMTP id
- iq18mr3855544pjb.162.1599715447176; 
- Wed, 09 Sep 2020 22:24:07 -0700 (PDT)
+ bh=I5mAYkplhRci1nZmKpafUoabwwT6ae+kB3CchB9eTv8=;
+ b=qxCOQ9xSl1uBL46rzGGnBC+C3kGyZeWRGY//ltvAgKZkp1LBMsza5FIN1HcI9Xvaws
+ YkOZ9D//5xXMxwdZA1rFcHeyS829gOoDwa7g2JQo8Q6eUnMv7nBHzQ9xSdz1II29fv9s
+ iItJmNMmZg/RPXFl7gRkhmXjRUh4Ij9nKR+v9CtqjD1kF3tvZjoBIZ3zwKewPBu1BuxR
+ o0mDpRKhnFNy9dUe6O06SPq5HSnPIVogx7BhoCcpQaDLL06maAMNWn+DZXU5Ove5CiZg
+ CBkGnVvSCrGyz91vpjsMBIgRrgaIfUOjmXHftVjsqj821JnJvaFGn6LIGXBFX44vxmuk
+ I0iA==
+X-Gm-Message-State: AOAM531bvU062YDT5kvozwQZa57C+PkW592gIcOgrTt8Ntr9uwgKEsd0
+ K/gwGoaGZhcK2Fqge9OJnIrXLg==
+X-Google-Smtp-Source: ABdhPJyVv5j4ZNaFs+8HL6T1pHq/bEctlj2L34Gi96/K2v+DnJpMI8yGe9Vy0Ew4w2fJ7DTZd3bpew==
+X-Received: by 2002:a63:b64a:: with SMTP id v10mr3024855pgt.192.1599715454140; 
+ Wed, 09 Sep 2020 22:24:14 -0700 (PDT)
 Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
- by smtp.gmail.com with ESMTPSA id jz6sm772242pjb.22.2020.09.09.22.24.02
+ by smtp.gmail.com with ESMTPSA id h6sm4298462pfb.217.2020.09.09.22.24.09
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 09 Sep 2020 22:24:06 -0700 (PDT)
+ Wed, 09 Sep 2020 22:24:13 -0700 (PDT)
 From: Cheng-Yi Chiang <cychiang@chromium.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH v8 1/3] ASoC: hdmi-codec: Use set_jack ops to set jack
-Date: Thu, 10 Sep 2020 13:23:45 +0800
-Message-Id: <20200910052347.1790735-2-cychiang@chromium.org>
+Subject: [PATCH v8 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+Date: Thu, 10 Sep 2020 13:23:46 +0800
+Message-Id: <20200910052347.1790735-3-cychiang@chromium.org>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 In-Reply-To: <20200910052347.1790735-1-cychiang@chromium.org>
 References: <20200910052347.1790735-1-cychiang@chromium.org>
@@ -118,160 +117,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use set_jack ops to set jack so machine drivers do not need to include
-hdmi-codec.h explicitly.
+Add devicetree bindings documentation file for sc7180 sound card.
 
 Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 ---
- include/sound/hdmi-codec.h                           |  3 ---
- sound/soc/codecs/hdmi-codec.c                        | 12 ++++--------
- sound/soc/mediatek/mt8173/mt8173-rt5650.c            |  5 ++---
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c   |  5 ++---
- .../mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c |  5 ++---
- sound/soc/rockchip/rockchip_max98090.c               |  3 +--
- 6 files changed, 11 insertions(+), 22 deletions(-)
+ .../bindings/sound/qcom,sc7180.yaml           | 130 ++++++++++++++++++
+ 1 file changed, 130 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 7754631a3102..b55970859a13 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -117,9 +117,6 @@ struct hdmi_codec_pdata {
- struct snd_soc_component;
- struct snd_soc_jack;
- 
--int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
--			       struct snd_soc_jack *jack);
--
- #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
- 
- #endif /* __HDMI_CODEC_H__ */
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 8c6f540533ba..d1de5bcd5daa 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -698,13 +698,9 @@ static void plugged_cb(struct device *dev, bool plugged)
- 		hdmi_codec_jack_report(hcp, 0);
- }
- 
--/**
-- * hdmi_codec_set_jack_detect - register HDMI plugged callback
-- * @component: the hdmi-codec instance
-- * @jack: ASoC jack to report (dis)connection events on
-- */
--int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
--			       struct snd_soc_jack *jack)
-+static int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
-+				      struct snd_soc_jack *jack,
-+				      void *data)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
- 	int ret = -EOPNOTSUPP;
-@@ -720,7 +716,6 @@ int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
- 	}
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
- 
- static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
- {
-@@ -806,6 +801,7 @@ static const struct snd_soc_component_driver hdmi_driver = {
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
- 	.non_legacy_dai_naming	= 1,
-+	.set_jack		= hdmi_codec_set_jack_detect,
- };
- 
- static int hdmi_codec_probe(struct platform_device *pdev)
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index 347b095d478d..c28ebf891cb0 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -11,7 +11,6 @@
- #include <linux/of_gpio.h>
- #include <sound/soc.h>
- #include <sound/jack.h>
--#include <sound/hdmi-codec.h>
- #include "../../codecs/rt5645.h"
- 
- #define MCLK_FOR_CODECS		12288000
-@@ -154,8 +153,8 @@ static int mt8173_rt5650_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
--	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
--					  &mt8173_rt5650_hdmi_jack);
-+	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
-+					  &mt8173_rt5650_hdmi_jack, NULL);
- }
- 
- enum {
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 06d0a4f80fc1..e53c6200d5a7 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -10,7 +10,6 @@
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
--#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -369,8 +368,8 @@ static int mt8183_da7219_max98357_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
--	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
--					  &priv->hdmi_jack);
-+	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
-+					  &priv->hdmi_jack, NULL);
- }
- 
- static struct snd_soc_dai_link mt8183_da7219_dai_links[] = {
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 07410d7afaa9..327dfad41e31 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -9,7 +9,6 @@
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
--#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -350,8 +349,8 @@ mt8183_mt6358_ts3a227_max98357_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
--	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
--					  &priv->hdmi_jack);
-+	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
-+					  &priv->hdmi_jack, NULL);
- }
- 
- static struct snd_soc_dai_link mt8183_mt6358_ts3a227_dai_links[] = {
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 9acfd024aa5d..c8f1a28a92b7 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -12,7 +12,6 @@
- #include <linux/gpio.h>
- #include <linux/of_gpio.h>
- #include <sound/core.h>
--#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -238,7 +237,7 @@ static int rk_hdmi_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
--	return hdmi_codec_set_jack_detect(component, &rk_hdmi_jack);
-+	return snd_soc_component_set_jack(component, &rk_hdmi_jack, NULL);
- }
- 
- /* max98090 dai_link */
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+new file mode 100644
+index 000000000000..a1fc53e33b07
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+@@ -0,0 +1,130 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
++
++maintainers:
++  - Rohit kumar <rohitkr@codeaurora.org>
++  - Cheng-Yi Chiang <cychiang@chromium.org>
++
++description:
++  This binding describes the SC7180 sound card which uses LPASS for audio.
++
++properties:
++  compatible:
++    const: qcom,sc7180-sndcard
++
++  audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source.
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^dai-link(@[0-9])?$":
++    description:
++      Each subnode represents a dai link. Subnodes of each dai links would be
++      cpu/codec dais.
++
++    type: object
++
++    properties:
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
++      reg:
++        description: dai link address.
++
++      cpu:
++        description: Holds subnode which indicates cpu dai.
++        type: object
++        properties:
++          sound-dai: true
++
++      codec:
++        description: Holds subnode which indicates codec dai.
++        type: object
++        properties:
++          sound-dai: true
++
++    required:
++      - link-name
++      - cpu
++      - codec
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - model
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++
++  - |
++    sound {
++        compatible = "qcom,sc7180-sndcard";
++        model = "sc7180-snd-card";
++
++        audio-routing =
++                    "Headphone Jack", "HPOL",
++                    "Headphone Jack", "HPOR";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dai-link@0 {
++            link-name = "MultiMedia0";
++            reg = <0>;
++            cpu {
++                sound-dai = <&lpass_cpu 0>;
++            };
++
++            codec {
++                sound-dai = <&alc5682 0>;
++            };
++        };
++
++        dai-link@1 {
++            link-name = "MultiMedia1";
++            reg = <1>;
++            cpu {
++                sound-dai = <&lpass_cpu 1>;
++            };
++
++            codec {
++                sound-dai = <&max98357a>;
++            };
++        };
++
++        dai-link@2 {
++            link-name = "MultiMedia2";
++            reg = <2>;
++            cpu {
++                sound-dai = <&lpass_hdmi 0>;
++            };
++
++            codec {
++                sound-dai = <&msm_dp>;
++            };
++        };
++    };
 -- 
 2.28.0.526.ge36021eeef-goog
 
