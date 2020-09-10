@@ -2,85 +2,107 @@ Return-Path: <SRS0=ofM/=CT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02271C43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 07:57:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9168C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 08:10:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2470320829
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 07:57:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 36B66204EC
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 08:10:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="He6oPYDZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="n/jZExQU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2470320829
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F4+pSZJu";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HfnozHbW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36B66204EC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79515167D;
-	Thu, 10 Sep 2020 09:56:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79515167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D186844;
+	Thu, 10 Sep 2020 10:09:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D186844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599724641;
-	bh=EIVAu80ZZAnKZCw30xDCRNxn76x5kWo7Ht/KFkkUMKQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=He6oPYDZA0KZSqYBzJjJbqo0mhYzg+qcD6OdPJR3HceAHgwlZVgmUadbmUByTfii5
-	 pQ8L2ft7/3VrH6AxdM6Ue9UrhKZ5XUC8rKhiqzj5uzgcVgyWQrBW3krBCytvZifxtr
-	 EPp/6udSbiY4jzncAxD7TZlDLbbXnW3Ff9Ai3UyE=
+	s=default; t=1599725448;
+	bh=DR98Hi6kcFCnOM6iwD5sBng+7YNap/nakuLle9t5lJM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=F4+pSZJuFx8VKVuwrkT92PDDZJEcrVRMQnRZ0nAthggNGKzh4ydVp+qhDYS6qditD
+	 sq5o4qwQSzkb/MDR29z+diNhMZ5qpDtThKHUnIJK7z5bFDTXPgAJJ//qOkkE8a7Qf4
+	 0O774FSrcIFPldar4zDC0wyPOiUcq5ZNWXJzUg5M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01D91F802C2;
-	Thu, 10 Sep 2020 09:54:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 224BAF800D0;
+	Thu, 10 Sep 2020 10:09:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C608DF801F2; Thu, 10 Sep 2020 09:54:50 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2E310F80264; Thu, 10 Sep 2020 10:09:57 +0200 (CEST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BC73F80264
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 09:54:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BC73F80264
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDF1EF800D0
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 10:09:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDF1EF800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="n/jZExQU"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08A7saLh078055;
- Thu, 10 Sep 2020 02:54:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1599724476;
- bh=d8aaEEEqhdAcIGs3M4AAwCP4B/RKpo4KytEfLks0u/o=;
- h=From:To:CC:Subject:Date;
- b=n/jZExQUK4HfNhmsPpOXJgQQ8M5ykyLZ8FsnXi83OqPkooYHCFZnO/DU2vso2jvbC
- KCTqFI06S+ns857rgoRoz6SCZdki8CYum6gqvixoFQaGw/69+oIs2ir7cbnpCquj12
- 5WwO216dqsfdSL3hmiswKCMUT53OQ2z/e84fAQ8E=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08A7saDo110099;
- Thu, 10 Sep 2020 02:54:36 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Sep 2020 02:54:35 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Sep 2020 02:54:35 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08A7sXCS123142;
- Thu, 10 Sep 2020 02:54:34 -0500
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>
-Subject: [PATCH 0/2] ASoC: ti: j721e-evm: Support for j7200 variant
-Date: Thu, 10 Sep 2020 10:54:31 +0300
-Message-ID: <20200910075433.26718-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="HfnozHbW"
+Received: by mail-wr1-x444.google.com with SMTP id c18so5624561wrm.9
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 01:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=HW5X6FWMv5/e4KSBh82l0NpUQWigGJ0PbEh/1MkAVKU=;
+ b=HfnozHbWaTguajYcFNCVKxZ75ih8D/HaTbS53P9AhX6OU9DY9b7kQa5XoK9ZDPIxub
+ zJe8aLjRn9bjJ5T3+tEDTbLvam1KHVi5P9mMtPf8daiKa/RSLEzjln21/fTxFXLpfTXW
+ DKsaaIKEPDTGy7ODLODbWhH2nMKYMmm144Pz7c5NEuokuV+78OaRiJGNz5ljTTrv2mXi
+ R4VXcAYCkdUJd3ToDY7dbZH2g1UwXOvC74FNzUZlOmnFypZz2GUMA7AXvZ01Rg+0Rh1I
+ uF3+Sc6P73+SmQC1I05a9Kg17PHHd8xtExKuT9X1rujIXJRtv49pCn6nwwP0bHgqVpx0
+ qDfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=HW5X6FWMv5/e4KSBh82l0NpUQWigGJ0PbEh/1MkAVKU=;
+ b=bhGdcRokSxLvS7OaOswT1yyOSNHdRvRBYiRYn2aG9BDk/WHes6/BR9JVcVUAqQGlbl
+ xfy1ZwckXOTw843I6u0bqJMFfteW8JHOzEDkGO+PMHBTbIQMD+5YtwflH8C3UoapIguG
+ rNzf405HuVO64xXV/xz5Z5Aoe6uJkjjTn0rF4kwhJ9f1Xtg3FrGZANFOJM7/6jsD1mFg
+ 9rzGvh3FUiH3WQoYsY9a7q/iOoRUxnEoizSbTLaZ1+CzyggMFaPWuOB/eDeI39hDiKij
+ wONRmfDvbRttZ2soynIxih5mwud39Y8tyqf8vAdk+Ae1YyVD3dWAAQBV7t9Pfl7OImEZ
+ v2rg==
+X-Gm-Message-State: AOAM530nzXHtGU90BlobVKrfdB7Mhnr+Iojjo6GxI6zUbhR7CdO2/E8+
+ w95Pk0f51xwFUXAYQcn+jwqpkg==
+X-Google-Smtp-Source: ABdhPJyC24439Plq0OYUSmUtWSm/IIc4tZh9ord4BIkHn4H3dQ3W41vvJq9aF+i00RtWqgOdPeQmOw==
+X-Received: by 2002:adf:8544:: with SMTP id 62mr7749987wrh.262.1599725381930; 
+ Thu, 10 Sep 2020 01:09:41 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id 197sm2616771wme.10.2020.09.10.01.09.40
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 10 Sep 2020 01:09:41 -0700 (PDT)
+Subject: Re: [PATCH 2/2] soundwire: qcom: get max rows and cols info from
+ compatible
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200909160912.3656-1-srinivas.kandagatla@linaro.org>
+ <20200909160912.3656-3-srinivas.kandagatla@linaro.org>
+ <20200910063940.GR77521@vkoul-mobl>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <c14cf97f-5a42-95a5-d44c-bc6ac9ea35a3@linaro.org>
+Date: Thu, 10 Sep 2020 09:09:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+In-Reply-To: <20200910063940.GR77521@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -97,28 +119,159 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-When j7200 SOM is connected to the CPB, the audio setup is a bit different:
-Only 48KHz family have clock path, 44.1KHz is not supported.
 
-Update the binding documentation and add support for the j7200 version of CPB
-to the driver.
+On 10/09/2020 07:39, Vinod Koul wrote:
+> On 09-09-20, 17:09, Srinivas Kandagatla wrote:
+>> currently the max rows and cols values are hardcoded. In reality
+>> these values depend on the IP version. So get these based on
+>> device tree compatible strings.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   drivers/soundwire/qcom.c | 46 +++++++++++++++++++++++++++-------------
+>>   1 file changed, 31 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+>> index 1ec0ee931f5b..03c5bc05fc6e 100644
+>> --- a/drivers/soundwire/qcom.c
+>> +++ b/drivers/soundwire/qcom.c
+>> @@ -69,11 +69,6 @@
+>>   #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
+>>   			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
+>>   
+>> -#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
+>> -#define SWRM_DEFAULT_ROWS	48
+>> -#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
+>> -#define SWRM_DEFAULT_COL	16
+>> -#define SWRM_MAX_COL_VAL	7
+>>   #define SWRM_SPECIAL_CMD_ID	0xF
+>>   #define MAX_FREQ_NUM		1
+>>   #define TIMEOUT_MS		(2 * HZ)
+>> @@ -107,6 +102,8 @@ struct qcom_swrm_ctrl {
+>>   	unsigned int version;
+>>   	int num_din_ports;
+>>   	int num_dout_ports;
+>> +	int cols_index;
+>> +	int rows_index;
+>>   	unsigned long dout_port_mask;
+>>   	unsigned long din_port_mask;
+>>   	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
+>> @@ -116,6 +113,21 @@ struct qcom_swrm_ctrl {
+>>   	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
+>>   };
+>>   
+>> +struct qcom_swrm_data {
+>> +	int default_cols;
+>> +	int default_rows;
+> 
+> unsigned int for these?
+Yes, we could do that but does it really add anything, given the range 
+is up to 256.
 
-Regards,
-Peter
----
-Peter Ujfalusi (2):
-  ASoC: dt-bindings: ti,j721e-cpb-audio: Document support for j7200-cpb
-  ASoC: ti: j721e-evm: Add support for j7200-cpb audio
+> 
+>> +};
+>> +
+>> +static struct qcom_swrm_data swrm_v1_3_data = {
+>> +	.default_rows = 48,
+>> +	.default_cols = 16,
+>> +};
+>> +
+>> +static struct qcom_swrm_data swrm_v1_5_data = {
+>> +	.default_rows = 50,
+>> +	.default_cols = 16,
+>> +};
+>> +
+>>   #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
+>>   
+>>   static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
+>> @@ -302,8 +314,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>>   	u32 val;
+>>   
+>>   	/* Clear Rows and Cols */
+>> -	val = (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
+>> -	       SWRM_MIN_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
+>> +	val = ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
+>> +		ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
+> 
+> use FIELD_{GET|SET} / u32_encode_bits for these
+> 
+> Please rebase on sdw-next, this has already been updated in next
 
- .../bindings/sound/ti,j721e-cpb-audio.yaml    | 92 ++++++++++++++-----
- sound/soc/ti/j721e-evm.c                      | 11 +++
- 2 files changed, 81 insertions(+), 22 deletions(-)
+Yes, I will do that!
+> 
+>>   
+>>   	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+>>   
+>> @@ -382,8 +394,8 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
+>>   	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
+>>   	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
+>>   
+>> -	val |= (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
+>> -		SWRM_MAX_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
+>> +	val |= ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
+>> +	       ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
+>>   
+>>   	return ctrl->reg_write(ctrl, reg, val);
+>>   }
+>> @@ -784,6 +796,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	struct sdw_master_prop *prop;
+>>   	struct sdw_bus_params *params;
+>>   	struct qcom_swrm_ctrl *ctrl;
+>> +	const struct qcom_swrm_data *data;
+>>   	struct resource *res;
+>>   	int ret;
+>>   	u32 val;
+>> @@ -792,6 +805,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	if (!ctrl)
+>>   		return -ENOMEM;
+>>   
+>> +	data = of_device_get_match_data(dev);
+> 
+> how about checking data is valid?
+I think the check would be unnecessary here, as we would not endup here 
+without a matching compatible!
 
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+--srini
+> 
+>> +	ctrl->rows_index = sdw_find_row_index(data->default_rows);
+>> +	ctrl->cols_index = sdw_find_col_index(data->default_cols);
+>>   #ifdef CONFIG_SLIMBUS
+>>   	if (dev->parent->bus == &slimbus_bus) {
+>>   #else
+>> @@ -844,8 +860,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	params = &ctrl->bus.params;
+>>   	params->max_dr_freq = DEFAULT_CLK_FREQ;
+>>   	params->curr_dr_freq = DEFAULT_CLK_FREQ;
+>> -	params->col = SWRM_DEFAULT_COL;
+>> -	params->row = SWRM_DEFAULT_ROWS;
+>> +	params->col = data->default_cols;
+>> +	params->row = data->default_rows;
+>>   	ctrl->reg_read(ctrl, SWRM_MCP_STATUS, &val);
+>>   	params->curr_bank = val & SWRM_MCP_STATUS_BANK_NUM_MASK;
+>>   	params->next_bank = !params->curr_bank;
+>> @@ -855,8 +871,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	prop->num_clk_gears = 0;
+>>   	prop->num_clk_freq = MAX_FREQ_NUM;
+>>   	prop->clk_freq = &qcom_swrm_freq_tbl[0];
+>> -	prop->default_col = SWRM_DEFAULT_COL;
+>> -	prop->default_row = SWRM_DEFAULT_ROWS;
+>> +	prop->default_col = data->default_cols;
+>> +	prop->default_row = data->default_rows;
+>>   
+>>   	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
+>>   
+>> @@ -907,8 +923,8 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+>>   }
+>>   
+>>   static const struct of_device_id qcom_swrm_of_match[] = {
+>> -	{ .compatible = "qcom,soundwire-v1.3.0", },
+>> -	{ .compatible = "qcom,soundwire-v1.5.1", },
+>> +	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
+>> +	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+>>   	{/* sentinel */},
+>>   };
+>>   
+>> -- 
+>> 2.21.0
+> 
