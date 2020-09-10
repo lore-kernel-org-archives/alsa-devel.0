@@ -2,96 +2,105 @@ Return-Path: <SRS0=ofM/=CT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8349EC433E2
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 04:36:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC82CC43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 05:25:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8DCF2075B
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 04:36:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2308920809
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 05:25:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t2vhsixl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="X7L9xsXp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8DCF2075B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eWJC47h7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Hhsh2bxV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2308920809
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 691991686;
-	Thu, 10 Sep 2020 06:35:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 691991686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AF491658;
+	Thu, 10 Sep 2020 07:24:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AF491658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599712584;
-	bh=5jKSS5yurRr9Xy52qK0mfI5RR/k4NOIzgmiLmn4TD0E=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=t2vhsixld1UUKbQ7+yFH6i169wRWdHDRdmJXkNEhA5lNucUuoXGFORjWKhSBcy15X
-	 Qr2I3ElJY9AwUys6vpChPjpkPqM+w3fsgY7/WvL8XjJ9Uu9QMhDJMndiWWHweqEnKz
-	 igaMR23scugwR11sd/dGfmHCAit/qKx2f8FWBnh8=
+	s=default; t=1599715506;
+	bh=ob7/ihHXWjrlHc4p8IUuNMrHrlGlOEx+kimnJyZMChI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=eWJC47h74lnrDVVgdeEgwBxpekGyTi6GiGKjXllnwLx5YqiN8pGno/SD3caOLhwuA
+	 v91Ec9upoMnRJ20fWy7aBdFsuoatEiw6c39DbQ7Jn9bCyolNoQ9dMH65QVeeOodNEc
+	 bJIzZ2REAYxRd+CJGmkmpbtyXiVUflmtDWgvMIRc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64F6EF802C2;
-	Thu, 10 Sep 2020 06:34:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4927F801F2;
+	Thu, 10 Sep 2020 07:24:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FC23F8028E; Thu, 10 Sep 2020 06:33:59 +0200 (CEST)
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
- [IPv6:2607:f8b0:4864:20::449])
+ id DD722F801F2; Thu, 10 Sep 2020 07:24:12 +0200 (CEST)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E23AF800D0
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 06:33:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E23AF800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 780FFF800E9
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 07:24:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 780FFF800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="X7L9xsXp"
-Received: by mail-pf1-x449.google.com with SMTP id h15so3705778pfr.3
- for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2020 21:33:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=sender:date:in-reply-to:message-id:mime-version:references:subject
- :from:to:cc; bh=hX4LArcIeiO7DYSi2U69MGeuOS3UcDbsbvMpax4YZiQ=;
- b=X7L9xsXpI8xisXTHeGC3144T4IPbYh15nR9ONudmSIjCs0g684NnQ161VNfT0XemSd
- YZVVV6Wgq8zZcltxC81G8LV7o5VNNpnSvcWnTrWbzD+8xu3WlPdM3WDd/qpxKnlB77VY
- OqFNlTsANHLCwtVg72haywnIi4EUyVft/tNX5keDqxz0RBfAE4aDcEPsZ8KY360Q3BHd
- oNbV8yZho2aBeRrYBi9gkDvLujhsQ9QLNyT1d7R+irORYSPGkvS7eDUUt2DCgve4hF40
- 7J57IHVh5fvtZYGRIGqsbvOtswn5L7NG+OR34FbTTAIt3CSgzvzQx4pokCzYwdLc8wuk
- Jx3g==
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="Hhsh2bxV"
+Received: by mail-pl1-x642.google.com with SMTP id a8so345944plm.2
+ for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2020 22:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7svLiscymaKWnrmSH+/5tItXplbBkAtLS63Umu4TPdE=;
+ b=Hhsh2bxV4Or8CULTUAvwBr178gZdx0OqNzPQZVuQALAru6ozgr8fpT759Ok0lPsug5
+ zx9Z7bzzJtG25wsjB1tRWcHw6X429Mjvx828TrKs6mXV8NcEQOpZkDnzpmIFEalPbQJg
+ 2PVLw2xiD8rfoJvStbp/R2tu1kSAvhB5rh8jw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=hX4LArcIeiO7DYSi2U69MGeuOS3UcDbsbvMpax4YZiQ=;
- b=Yb0fjUXKgj6ep4V6OruWQ2jws+COlSx655V0Npjl8Zg0nGwEFwpvx7ppyMkAlHpZad
- 0u9D8tDz9tV6brJuUWwdy0/iecc6PoVCf41dQy0HrDNgWPgUTYRC4eYfr9KG/LOKtrBo
- hZeFwCAp+11+MuEQby3AQUkZEKcJAJb+KTMbO4yndwEwjPoZHSqd4iyAyXbmqE/MfgIC
- FthsSAveKDUkFx9pGaheHXhw/DRsq+9VVNHaniKdG18MQ1M0xXU+l1N7w8ZV88gJEf+q
- SOOb5CYn0ighxwq6jdH348UQqvRTA9m0Kftc68FjngkDgn38VmJQbKvhi0yGTl3/Ebfy
- bxtg==
-X-Gm-Message-State: AOAM531btN5+PhMhDSBlee/wuXBfvroy5xlkKFncL+GJAuyMoFk1ZPBV
- Hdm7bTDjjQESuqRpKeb/szELP5pVyoqg
-X-Google-Smtp-Source: ABdhPJyWRnHMvm3L2Eu/UMmLMq9QF4ZQmZIK24+n8KT9ZqVUNNrMza56akTJLqby1J700xPh5ROXIGhRiQQW
-X-Received: from tzungbi-z840.tpe.corp.google.com
- ([2401:fa00:1:10:725a:fff:fe41:c6a5])
- (user=tzungbi job=sendgmr) by 2002:a62:5586:0:b029:13e:d13d:a12c with SMTP id
- j128-20020a6255860000b029013ed13da12cmr3550982pfb.20.1599712424246; Wed, 09
- Sep 2020 21:33:44 -0700 (PDT)
-Date: Thu, 10 Sep 2020 12:33:30 +0800
-In-Reply-To: <20200910043331.3808223-1-tzungbi@google.com>
-Message-Id: <20200910043331.3808223-2-tzungbi@google.com>
-Mime-Version: 1.0
-References: <20200910043331.3808223-1-tzungbi@google.com>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7svLiscymaKWnrmSH+/5tItXplbBkAtLS63Umu4TPdE=;
+ b=PD6MYgPnuENlGVdL7YeAgdpYuJeFwPjVfagn/ZtYVKtnlCxitW5ZK5mxj+4yPZ6BKG
+ iAvp2DPS2SQZ1n7vgy6c+CTNl8kJ5EP8UQlvrrl+Nu+agJRkE0CiQPskl+VFOSpOLQuG
+ cCqMDv78zAjZH/jzV+Yp+Y0l7qwKG3VUKCUaqITdoOhYLpfdFr/RLkfIk3HjGdcrM9pX
+ f5AJJQAevjh5FCrVfs45RmZZ1KvfxCBRE0BmEvixAblDdanqStxy4NgefGedyTNaOAGk
+ 1b53E6ue1Eqfr93USZ7bvhu7WmUKWUuJuIBQOQmEMlMCnaFaHPQc3gisBkRpWh8+wwGZ
+ JYKg==
+X-Gm-Message-State: AOAM531KWmU6p0yBIOzVOom5XnfN3a3gk6L7CnRDchGTy3LNjskA0ga+
+ koAHJQpPKd44Un0+v1QDTbWFlg==
+X-Google-Smtp-Source: ABdhPJzMsuHQbv/HPSO541eGjwLrqzhteTkAkNdW0UtyqGCzZyJpwlC086qrl60aF0WceS74rgYSdw==
+X-Received: by 2002:a17:902:bd48:: with SMTP id
+ b8mr3945861plx.139.1599715438084; 
+ Wed, 09 Sep 2020 22:23:58 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
+ by smtp.gmail.com with ESMTPSA id m14sm4289645pfo.202.2020.09.09.22.23.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 09 Sep 2020 22:23:57 -0700 (PDT)
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/3] Add documentation and machine driver for SC7180 sound
+ card
+Date: Thu, 10 Sep 2020 13:23:44 +0800
+Message-Id: <20200910052347.1790735-1-cychiang@chromium.org>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH RESEND 1/2] ASoC: rt1015p: add codec driver
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org, robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, tzungbi@google.com
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@codeaurora.org>, Heiko Stuebner <heiko@sntech.de>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>,
+ Cheng-Yi Chiang <cychiang@chromium.org>, Patrick Lai <plai@codeaurora.org>,
+ linux-rockchip@lists.infradead.org, Andy Gross <agross@kernel.org>,
+ dgreid@chromium.org, devicetree@vger.kernel.org, tzungbi@chromium.org,
+ Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,233 +116,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Adds rt1015p codec driver.
+Note:
+- The machine driver patch is made by the collaboration of
+  Cheng-Yi Chiang <cychiang@chromium.org>
+  Rohit kumar <rohitkr@codeaurora.org>
+  Ajit Pandey <ajitp@codeaurora.org>
+  But Ajit has left codeaurora.
+- This patch series needs HDMI DAI name defined in sc7180-lpass.h.
+  https://patchwork.kernel.org/patch/11745565/
 
-Rt1015p is a rt1015 variant.
-- It doesn't support I2C.
-- It only supports S24, 48kHz, 64FS.
+Changes from v1 to v2:
+- Ducumentation: Addressed all suggestions from Doug.
+- Machine driver:
+  - Fix comment style for license.
+  - Sort includes.
+  - Remove sc7180_snd_hw_params.
+  - Remove sc7180_dai_init and use aux device instead for headset jack registration.
+  - Statically define format for Primary MI2S.
+  - Atomic is not a concern because there is mutex in card to make sure
+    startup and shutdown happen sequentially.
+  - Fix missing return -EINVAL in startup.
+  - Use static sound card.
+  - Use devm_kzalloc to avoid kfree.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/codecs/Kconfig   |   7 ++
- sound/soc/codecs/Makefile  |   2 +
- sound/soc/codecs/rt1015p.c | 148 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 157 insertions(+)
- create mode 100644 sound/soc/codecs/rt1015p.c
+Changes from v2 to v3:
+- Ducumentation: Addressed suggestions from Srini.
+- Machine driver:
+  - Reuse qcom_snd_parse_of to parse properties.
+  - Remove playback-only and capture-only.
+  - Misc fixes to address comments.
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e6c71ca0cd9b..1cf686eb6a51 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -155,6 +155,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_RT298
- 	imply SND_SOC_RT1011
- 	imply SND_SOC_RT1015
-+	imply SND_SOC_RT1015P
- 	imply SND_SOC_RT1305
- 	imply SND_SOC_RT1308
- 	imply SND_SOC_RT5514
-@@ -1032,6 +1033,7 @@ config SND_SOC_RL6231
- 	default y if SND_SOC_RT5682=y
- 	default y if SND_SOC_RT1011=y
- 	default y if SND_SOC_RT1015=y
-+	default y if SND_SOC_RT1015P=y
- 	default y if SND_SOC_RT1305=y
- 	default y if SND_SOC_RT1308=y
- 	default m if SND_SOC_RT5514=m
-@@ -1049,6 +1051,7 @@ config SND_SOC_RL6231
- 	default m if SND_SOC_RT5682=m
- 	default m if SND_SOC_RT1011=m
- 	default m if SND_SOC_RT1015=m
-+	default m if SND_SOC_RT1015P=m
- 	default m if SND_SOC_RT1305=m
- 	default m if SND_SOC_RT1308=m
- 
-@@ -1081,6 +1084,10 @@ config SND_SOC_RT1015
- 	tristate
- 	depends on I2C
- 
-+config SND_SOC_RT1015P
-+	tristate
-+	depends on GPIOLIB
-+
- config SND_SOC_RT1305
- 	tristate
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 9a3f58c1069a..2e5a79b55102 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -159,6 +159,7 @@ snd-soc-rl6231-objs := rl6231.o
- snd-soc-rl6347a-objs := rl6347a.o
- snd-soc-rt1011-objs := rt1011.o
- snd-soc-rt1015-objs := rt1015.o
-+snd-soc-rt1015p-objs := rt1015p.o
- snd-soc-rt1305-objs := rt1305.o
- snd-soc-rt1308-objs := rt1308.o
- snd-soc-rt1308-sdw-objs := rt1308-sdw.o
-@@ -465,6 +466,7 @@ obj-$(CONFIG_SND_SOC_RL6231)	+= snd-soc-rl6231.o
- obj-$(CONFIG_SND_SOC_RL6347A)	+= snd-soc-rl6347a.o
- obj-$(CONFIG_SND_SOC_RT1011)	+= snd-soc-rt1011.o
- obj-$(CONFIG_SND_SOC_RT1015)	+= snd-soc-rt1015.o
-+obj-$(CONFIG_SND_SOC_RT1015P)	+= snd-soc-rt1015p.o
- obj-$(CONFIG_SND_SOC_RT1305)	+= snd-soc-rt1305.o
- obj-$(CONFIG_SND_SOC_RT1308)	+= snd-soc-rt1308.o
- obj-$(CONFIG_SND_SOC_RT1308_SDW)	+= snd-soc-rt1308-sdw.o
-diff --git a/sound/soc/codecs/rt1015p.c b/sound/soc/codecs/rt1015p.c
-new file mode 100644
-index 000000000000..59bb60682270
---- /dev/null
-+++ b/sound/soc/codecs/rt1015p.c
-@@ -0,0 +1,148 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// rt1015p.c  --  RT1015P ALSA SoC audio amplifier driver
-+//
-+// Copyright 2020 The Linux Foundation. All rights reserved.
-+
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include <sound/soc-dapm.h>
-+
-+struct rt1015p_priv {
-+	struct gpio_desc *sdb;
-+	int sdb_switch;
-+};
-+
-+static int rt1015p_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct rt1015p_priv *rt1015p =
-+		snd_soc_component_get_drvdata(component);
-+
-+	if (!rt1015p->sdb)
-+		return 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (rt1015p->sdb_switch) {
-+			gpiod_set_value(rt1015p->sdb, 1);
-+			dev_dbg(component->dev, "set sdb to 1");
-+		}
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		gpiod_set_value(rt1015p->sdb, 0);
-+		dev_dbg(component->dev, "set sdb to 0");
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt1015p_sdb_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct rt1015p_priv *rt1015p =
-+		snd_soc_component_get_drvdata(component);
-+
-+	if (event & SND_SOC_DAPM_POST_PMU)
-+		rt1015p->sdb_switch = 1;
-+	else if (event & SND_SOC_DAPM_POST_PMD)
-+		rt1015p->sdb_switch = 0;
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget rt1015p_dapm_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("Speaker"),
-+	SND_SOC_DAPM_OUT_DRV_E("SDB", SND_SOC_NOPM, 0, 0, NULL, 0,
-+			rt1015p_sdb_event,
-+			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+};
-+
-+static const struct snd_soc_dapm_route rt1015p_dapm_routes[] = {
-+	{"SDB", NULL, "HiFi Playback"},
-+	{"Speaker", NULL, "SDB"},
-+};
-+
-+static const struct snd_soc_component_driver rt1015p_component_driver = {
-+	.dapm_widgets		= rt1015p_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(rt1015p_dapm_widgets),
-+	.dapm_routes		= rt1015p_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(rt1015p_dapm_routes),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static const struct snd_soc_dai_ops rt1015p_dai_ops = {
-+	.trigger        = rt1015p_daiops_trigger,
-+};
-+
-+static struct snd_soc_dai_driver rt1015p_dai_driver = {
-+	.name = "HiFi",
-+	.playback = {
-+		.stream_name	= "HiFi Playback",
-+		.formats	= SNDRV_PCM_FMTBIT_S24,
-+		.rates		= SNDRV_PCM_RATE_48000,
-+		.channels_min	= 1,
-+		.channels_max	= 2,
-+	},
-+	.ops    = &rt1015p_dai_ops,
-+};
-+
-+static int rt1015p_platform_probe(struct platform_device *pdev)
-+{
-+	struct rt1015p_priv *rt1015p;
-+
-+	rt1015p = devm_kzalloc(&pdev->dev, sizeof(*rt1015p), GFP_KERNEL);
-+	if (!rt1015p)
-+		return -ENOMEM;
-+
-+	rt1015p->sdb = devm_gpiod_get_optional(&pdev->dev,
-+				"sdb", GPIOD_OUT_LOW);
-+	if (IS_ERR(rt1015p->sdb))
-+		return PTR_ERR(rt1015p->sdb);
-+
-+	dev_set_drvdata(&pdev->dev, rt1015p);
-+
-+	return devm_snd_soc_register_component(&pdev->dev,
-+			&rt1015p_component_driver,
-+			&rt1015p_dai_driver, 1);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id rt1015p_device_id[] = {
-+	{ .compatible = "realtek,rt1015p" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, rt1015p_device_id);
-+#endif
-+
-+static struct platform_driver rt1015p_platform_driver = {
-+	.driver = {
-+		.name = "rt1015p",
-+		.of_match_table = of_match_ptr(rt1015p_device_id),
-+	},
-+	.probe = rt1015p_platform_probe,
-+};
-+module_platform_driver(rt1015p_platform_driver);
-+
-+MODULE_DESCRIPTION("ASoC RT1015P driver");
-+MODULE_LICENSE("GPL v2");
+Changes from v3 to v4:
+- Ducumentation: Addressed suggestions from Rob.
+ - Remove definition of dai.
+ - Use 'sound-dai: true' for sound-dai schema.
+ - Add reg property to pass 'make dt_binding_check' check although reg is not used in the driver.
+- Machine driver:
+ - Add Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+
+Changes from v4 to v5:
+- Documentation: Addressed suggestions from Rob.
+ - Add definition for "#address-cells" and "#size-cells".
+ - Add additionalProperties: false
+ - Add required properties.
+
+Changes from v5 to v6:
+- Documentation: Addressed suggestions from Rob.
+ - Drop contains in compatible strings.
+ - Only allow dai-link@[0-9]
+ - Remove reg ref since it has a type definition already.
+
+Changes from v6 to v7
+- Documentation:
+  - Add headset-jack and hdmi-jack to specify the codec
+    responsible for jack detection.
+- HDMI codec driver:
+  - Use component set_jack ops instead of exporting hdmi_codec_set_jack_detect.
+- Machine driver:
+  - Removed aux device following Stephan's suggestion.
+  - Use headset-jack and hdmi-jack to specify the codec
+    responsible for jack detection.
+  - Add support for HDMI(actually DP) playback.
+
+Changes from v7 to v8
+- Documentation:
+  - Remove headset-jack and hdmi-jack.
+- Machine driver:
+  - Let machine driver decide whether there is a jack on the DAI.
+
+Ajit Pandey (1):
+  ASoC: qcom: sc7180: Add machine driver for sound card registration
+
+Cheng-Yi Chiang (2):
+  ASoC: hdmi-codec: Use set_jack ops to set jack
+  ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+
+ .../bindings/sound/qcom,sc7180.yaml           | 130 +++++++++
+ include/sound/hdmi-codec.h                    |   3 -
+ sound/soc/codecs/hdmi-codec.c                 |  12 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c     |   5 +-
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  |   5 +-
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   |   5 +-
+ sound/soc/qcom/Kconfig                        |  12 +
+ sound/soc/qcom/Makefile                       |   2 +
+ sound/soc/qcom/sc7180.c                       | 270 ++++++++++++++++++
+ sound/soc/rockchip/rockchip_max98090.c        |   3 +-
+ 10 files changed, 425 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+ create mode 100644 sound/soc/qcom/sc7180.c
+
 -- 
 2.28.0.526.ge36021eeef-goog
 
