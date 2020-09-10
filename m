@@ -7,75 +7,99 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D333C43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 16:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34C14C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 17:26:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D84B121D91
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 16:46:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D556B208E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 17:26:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eRZ225MY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D84B121D91
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CPi4jEvL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com header.i=@semihalf-com.20150623.gappssmtp.com header.b="VdZmhk1u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D556B208E4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=semihalf.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6617A16E0;
-	Thu, 10 Sep 2020 18:45:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6617A16E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 215131673;
+	Thu, 10 Sep 2020 19:25:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 215131673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599756391;
-	bh=G6tcEmTvEGdYVtduK3MEnDuyF8PnKQr07KRiCLZ99jo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eRZ225MYouzpGr1MIb7BlM4GqFzanR3woZXzxJM9vJP/naJOv4b1rNGT8da5FnuEN
-	 1DZIdwyCml6aAyMETsnUde7x3oX3ZpDFyUFfIJuGvhgg8WH7Zq9FfK27yEsQAnWaTj
-	 cQxHF6gdL/0nQ9U+4BwNHuVmfEQ9MZ1TQCJdoJPc=
+	s=default; t=1599758807;
+	bh=qCRCZEhe2Fk9+VY1atg5zA+52UtAT2DNRWU42koClcE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CPi4jEvLhXsfCs3YrhsBhOliQ8J08kvZuJ11Z85Mxhoy7jmtiLhpOSf37edvNMEYB
+	 Fp6Ih00BN2AqDVU3ycFLfcwvW3+/xc7Rt1TzyOcSKtZ8GC+7CGwy7dUbvXVeG9LMGb
+	 KIX11/44oiRQooVWPcjt6lBI7tHnNEkdFoj4zdxc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9779F802DF;
-	Thu, 10 Sep 2020 18:43:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF3F3F801F2;
+	Thu, 10 Sep 2020 19:25:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 201BAF802E1; Thu, 10 Sep 2020 18:43:22 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CD537F801F2; Thu, 10 Sep 2020 19:25:54 +0200 (CEST)
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com
+ [IPv6:2a00:1450:4864:20::243])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0172F802DF
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 18:43:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0172F802DF
-IronPort-SDR: 37Fd7JY4yPx38mYHkcPYlTyXCFBXaXgBt0vXP4ETCG5cW6kdjG7e0gFUVVGiSE6m9FEB2LsO/r
- 7NzSLZphTY4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="146299759"
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; d="scan'208";a="146299759"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Sep 2020 09:43:05 -0700
-IronPort-SDR: Xrg102ZboDBU19uLjmL3HT98xJhZyrtnZAaHgJab1EIHMJqNxfkBztH7AMxu7+rRqaNMVUyZxL
- T9MJ+iNlWMJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; d="scan'208";a="304937951"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga006.jf.intel.com with ESMTP; 10 Sep 2020 09:43:00 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 4/4] ASoC: SOF: Intel: hda-loader: s/master/primary
-Date: Thu, 10 Sep 2020 19:41:25 +0300
-Message-Id: <20200910164125.2033062-5-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200910164125.2033062-1-kai.vehmanen@linux.intel.com>
-References: <20200910164125.2033062-1-kai.vehmanen@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Jaska Uimonen <jaska.uimonen@intel.com>,
- Seppo Ingalsuo <seppo.ingalsuo@intel.com>, kai.vehmanen@linux.intel.com,
- lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 114BCF800D0
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 19:25:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 114BCF800D0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com
+ header.i=@semihalf-com.20150623.gappssmtp.com header.b="VdZmhk1u"
+Received: by mail-lj1-x243.google.com with SMTP id b19so9190157lji.11
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 10:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id;
+ bh=Kk0XQNKqYfxJTLaKrt8nQK8M1p7oRPoQlJZqqiNIcnU=;
+ b=VdZmhk1u/YdRZKjJ5HfFDnNdo3EYFX+MLk+JF10ESprrhiw/HkwpYwd9hb2BXxOSZb
+ 1R6kX2YF3Z5KTjtdw9DREuqmDhsjpBdQpuZvG+dzOZCbWrIPtfMDI8Sg6xIVID2VDLtH
+ j/1DSHYlmXBz0a65LmcFaYTMF9+X55ydI5wBdAO85PCKGSrlP+784kBfpkB8RMyxCvWM
+ bnFbS6e+nMOePh1kffzQF2sxpaxg+CwDoskZKUWFdn0LE12yfbAdcck3yK6gyXqMcXdY
+ yc8JBs1MbLaM9HelB2F0rzxlcigJMYmw7nA4FFghcwKeU49MeZ8yUrDScWZfvqOfJtWh
+ zgaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=Kk0XQNKqYfxJTLaKrt8nQK8M1p7oRPoQlJZqqiNIcnU=;
+ b=m41iQu1bs/Zl/m1sohb6FdXduJcx5yCqK7GzErYRlV6j8LHHSwI96xQch6LQj5YOPm
+ HGP+Z5X+Q7Wty/AnZohX685VfBptAyGFC+mLiM4M2ve54+FKzhoN7OuIEcYr86Zrw10G
+ 1wrX1iMA7tj3NIBR0bUFWv82GPEXKl2V6EI+GVbb94lLhTj2jeSxkr/KX/jQ86hSeFiV
+ Ml2puto/7Fr7EhsU/ASl9vUpmhTis5QCVeLZKt13x+ZI56y3R7sSF7Ow8VWRLbyeWLPz
+ ndbLMXF1GF13v40oKw0w4+Z9Z2NFA63BOmlGZfX41HrPS3MwiIXD54E9vBfAilgsf+I0
+ iEkA==
+X-Gm-Message-State: AOAM530k0VfGzfl1dpi+edsE1RTix6vJbxVca/CeQHe9Q2C9Kmb+DTYh
+ TrSphjsuLS4ba/BOYfJ+ckToEw==
+X-Google-Smtp-Source: ABdhPJxudeY6fTGVl5c0g/UH6MTEHtKcAfGOUGOnRU0QFxMEzqkONNtOjgzMNh65NumDGs9moMoQuA==
+X-Received: by 2002:a05:651c:3c2:: with SMTP id
+ f2mr4828475ljp.14.1599758742622; 
+ Thu, 10 Sep 2020 10:25:42 -0700 (PDT)
+Received: from rad-H81M-S1.semihalf.local
+ (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+ by smtp.gmail.com with ESMTPSA id f6sm1755079ljj.28.2020.09.10.10.25.41
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 10 Sep 2020 10:25:41 -0700 (PDT)
+From: Radoslaw Biernacki <rad@semihalf.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH V6] ASoC: Intel: boards: Use FS as nau8825 sysclk in
+ nau88125_* machine
+Date: Thu, 10 Sep 2020 19:25:38 +0200
+Message-Id: <20200910172538.31425-1-rad@semihalf.com>
+X-Mailer: git-send-email 2.17.1
+Cc: Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
+ Todd Broch <tbroch@google.com>, Harshapriya <harshapriya.n@intel.com>,
+ Radoslaw Biernacki <rad@semihalf.com>, John Hsu <KCHSU0@nuvoton.com>,
+ linux-kernel@vger.kernel.org, michal.sienkiewicz@intel.com,
+ Ben Zhang <benzh@chromium.org>, Mac Chiang <mac.chiang@intel.com>,
+ Yong Zhi <yong.zhi@intel.com>, Marcin Wojtas <mw@semihalf.com>,
+ Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
+ Alex Levin <levinale@google.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,32 +115,258 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Since 256xFS clocks cannot be generated by SKL, the NAU8825 is
+configured to re-generate its system clock from the BCLK using the
+FLL. The link is configured to use a 48kHz frame rate, and 24 bits in
+25-bit slot. The SSP configuration is extracted from NHLT settings and
+not dynamically changed. Listening tests and measurements do not show
+any distortion or issues
 
-Use inclusive language for DSP cores.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
-Reviewed-by: Seppo Ingalsuo <seppo.ingalsuo@intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Signed-off-by: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Radoslaw Biernacki <rad@semihalf.com>
 ---
- sound/soc/sof/intel/hda-loader.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 5515c75e53e4..dfbfc89ffe70 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -426,7 +426,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+Notes:
+    v1 -> v2:
+     - adding same changes to skl_nau88l25_max98357a.c
+    v2 -> v3:
+     - removing msleep() in SNDRV_PCM_TRIGGER_RESUME as it unnecessarily increase
+       playback/capture latency while actually FLL does not require it.
+     - simplifing commit message
+    v3 -> v4:
+     - simplifing the PM resume callback code for setting the FLL
+     - adding comment for the stream START/RESUME sequence which prevent audio pops
+     - fixing mising var initialization in platform_clock_control()
+    v4 -> v5:
+     - removed stray change ~ SSP0 ops
+    v5 -> v6:
+     - fixing typos and comment style
+
+ .../soc/intel/boards/skl_nau88l25_max98357a.c | 62 +++++++++++-------
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 63 ++++++++++++-------
+ 2 files changed, 83 insertions(+), 42 deletions(-)
+
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index d7b8154c43a4..12595138f44b 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/delay.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/pcm.h>
+@@ -47,12 +48,12 @@ enum {
+ };
+ 
+ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+-	struct snd_kcontrol *k, int  event)
++	struct snd_kcontrol *k, int event)
+ {
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	struct snd_soc_card *card = dapm->card;
+ 	struct snd_soc_dai *codec_dai;
+-	int ret;
++	int ret = 0;
+ 
+ 	codec_dai = snd_soc_card_get_codec_dai(card, SKL_NUVOTON_CODEC_DAI);
+ 	if (!codec_dai) {
+@@ -60,14 +61,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
  	}
  
- 	/*
--	 * return master core id if both fw copy
-+	 * return primary core id if both fw copy
- 	 * and stream clean up are successful
- 	 */
- 	if (!ret)
+-	if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		ret = snd_soc_dai_set_sysclk(codec_dai,
+-				NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+-		if (ret < 0) {
+-			dev_err(card->dev, "set sysclk err = %d\n", ret);
+-			return -EIO;
+-		}
+-	} else {
++	if (!SND_SOC_DAPM_EVENT_ON(event)) {
+ 		ret = snd_soc_dai_set_sysclk(codec_dai,
+ 				NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
+ 		if (ret < 0) {
+@@ -292,24 +286,50 @@ static const struct snd_soc_ops skylake_nau8825_fe_ops = {
+ 	.startup = skl_fe_startup,
+ };
+ 
+-static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
++static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+-	int ret;
+-
+-	ret = snd_soc_dai_set_sysclk(codec_dai,
+-			NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+-
+-	if (ret < 0)
+-		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		/* Since 256xFS clocks cannot be generated by SKL, the NAU8825
++		 * is configured to re-generate its system clock from the BCLK
++		 * using the FLL.
++		 * We must switch system clock (FLL to use BCLK) here as it is
++		 * not given earlier by FW (like in hw_param). We let nau8825 to
++		 * use internal VCO clock till now which reduces the audible
++		 * pop's.
++		 */
++	case SNDRV_PCM_TRIGGER_RESUME:
++		/* Once device resumes, the system will only enable power
++		 * sequence for playback without doing hardware parameter, audio
++		 * format, and PLL configure. In the mean time, the jack
++		 * detection sequence has changed PLL parameters and switched to
++		 * internal clock. Thus, the playback signal distorted without
++		 * correct PLL parameters. Therefore we need to configure PLL
++		 * again
++		 */
++		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL_FS, 0,
++					     SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
++			break;
++		}
++		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
++					  runtime->rate * 256);
++		if (ret < 0)
++			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
++		break;
++	}
+ 
+ 	return ret;
+ }
+ 
+-static const struct snd_soc_ops skylake_nau8825_ops = {
+-	.hw_params = skylake_nau8825_hw_params,
++static struct snd_soc_ops skylake_nau8825_ops = {
++	.trigger = skylake_nau8825_trigger,
+ };
+ 
+ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 4b317bcf6ea0..38faaf20306e 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -12,6 +12,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/delay.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+@@ -57,12 +58,12 @@ static const struct snd_kcontrol_new skylake_controls[] = {
+ };
+ 
+ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+-		struct snd_kcontrol *k, int  event)
++		struct snd_kcontrol *k, int event)
+ {
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	struct snd_soc_card *card = dapm->card;
+ 	struct snd_soc_dai *codec_dai;
+-	int ret;
++	int ret = 0;
+ 
+ 	codec_dai = snd_soc_card_get_codec_dai(card, SKL_NUVOTON_CODEC_DAI);
+ 	if (!codec_dai) {
+@@ -70,14 +71,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
+ 	}
+ 
+-	if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		ret = snd_soc_dai_set_sysclk(codec_dai,
+-				NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+-		if (ret < 0) {
+-			dev_err(card->dev, "set sysclk err = %d\n", ret);
+-			return -EIO;
+-		}
+-	} else {
++	if (!SND_SOC_DAPM_EVENT_ON(event)) {
+ 		ret = snd_soc_dai_set_sysclk(codec_dai,
+ 				NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
+ 		if (ret < 0) {
+@@ -85,6 +79,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 			return -EIO;
+ 		}
+ 	}
++
+ 	return ret;
+ }
+ 
+@@ -344,24 +339,50 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
++static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+-	int ret;
+-
+-	ret = snd_soc_dai_set_sysclk(codec_dai,
+-			NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+-
+-	if (ret < 0)
+-		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		/* Since 256xFS clocks cannot be generated by SKL, the NAU8825
++		 * is configured to re-generate its system clock from the BCLK
++		 * using the FLL.
++		 * We must switch system clock (FLL to use BCLK) here as it is
++		 * not given earlier by FW (like in hw_param). We let nau8825 to
++		 * use internal VCO clock till now which reduces the audible
++		 * pop's.
++		 */
++	case SNDRV_PCM_TRIGGER_RESUME:
++		/* Once device resumes, the system will only enable power
++		 * sequence for playback without doing hardware parameter, audio
++		 * format, and PLL configure. In the mean time, the jack
++		 * detection sequence has changed PLL parameters and switched to
++		 * internal clock. Thus, the playback signal distorted without
++		 * correct PLL parameters. Therefore we need to configure PLL
++		 * again
++		 */
++		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL_FS, 0,
++					     SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
++			break;
++		}
++		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
++					  runtime->rate * 256);
++		if (ret < 0)
++			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
++		break;
++	}
+ 
+ 	return ret;
+ }
+ 
+-static const struct snd_soc_ops skylake_nau8825_ops = {
+-	.hw_params = skylake_nau8825_hw_params,
++static struct snd_soc_ops skylake_nau8825_ops = {
++	.trigger = skylake_nau8825_trigger,
+ };
+ 
+ static const unsigned int channels_dmic[] = {
 -- 
-2.27.0
+2.17.1
 
