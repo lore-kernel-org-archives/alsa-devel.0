@@ -2,66 +2,79 @@ Return-Path: <SRS0=ofM/=CT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2AB7C43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 14:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3E01C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 14:23:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B1DF20732
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 14:18:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AAC020BED
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 14:23:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iImIDg0n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B1DF20732
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aWnU2XcH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BAfnSibZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AAC020BED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B56D16A8;
-	Thu, 10 Sep 2020 16:17:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B56D16A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BE8716B4;
+	Thu, 10 Sep 2020 16:22:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BE8716B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599747484;
-	bh=uP1j1rDdfs4WA3LqGBeDpRQhW1w2PIGmYAnZFJWKoNs=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=iImIDg0nqYp+IzjMCRmBfRtlwmMxurioM1KUapHGyzveX+e9O9IPlr6Q7E0HkEkeB
-	 lYa3DeRiNRVJ8lRKUJBiep3ghuVzzITRIkS+H6PfJAyZQWEjxHXimvonLBbB8OnByz
-	 pVJHPFzmJFvyCE91kMHoitbkzwykU/a2SiattIlA=
+	s=default; t=1599747787;
+	bh=Sf1qebIUqiaky7hv/BnFelFwbArV0b890mZdIPxHgfk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aWnU2XcHS5xyywKqxM22isaLfhY7wKavB2I2/sp+5tOZg52614i3muHeBCtMPnFGv
+	 bKfkKNJOYm+Tk8NTJbqyZDXthZqQ7/SOtfVzGIy0ekWZJqGkVja3C5zrOxy9qYHrOg
+	 JhccRuRkwNwKirwy4EIOOUnu6AWplpGBO6M1KlxA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D6F8F800D0;
-	Thu, 10 Sep 2020 16:17:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31D60F801F2;
+	Thu, 10 Sep 2020 16:22:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79386F80264; Thu, 10 Sep 2020 16:17:12 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 856D6F800E9; Thu, 10 Sep 2020 16:22:15 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AF81F800E9
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 16:22:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AF81F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="BAfnSibZ"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F04EF800E9
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 16:17:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F04EF800E9
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 784D020182C;
- Thu, 10 Sep 2020 16:17:04 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 940D0200788;
- Thu, 10 Sep 2020 16:17:01 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E0D26402CA;
- Thu, 10 Sep 2020 16:16:57 +0200 (CEST)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ak4458: Add DSD support for ak4458 and ak4497
-Date: Thu, 10 Sep 2020 22:10:32 +0800
-Message-Id: <1599747032-20055-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by mail.kernel.org (Postfix) with ESMTPSA id 885CE2075B;
+ Thu, 10 Sep 2020 14:22:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1599747727;
+ bh=Sf1qebIUqiaky7hv/BnFelFwbArV0b890mZdIPxHgfk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=BAfnSibZvJFwZ5iViUavWC2EqcP/X1N1HUfi+qrjt0yNALHtsLMs+EZIDJcUzJyqY
+ /ZmyEI18F/rIQV2QXTumUdsuxI4Ai9tY7IHyz4uLe8kbjjXw1jxjpU11e71fCtHh0k
+ 9pGFi9nLMwTB/FL7ASk40CzRyP/ItUCctdwvSoWs=
+Date: Thu, 10 Sep 2020 15:21:21 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: ak4458: Add DSD support for ak4458 and ak4497
+Message-ID: <20200910142121.GC4898@sirena.org.uk>
+References: <1599747032-20055-1-git-send-email-shengjiu.wang@nxp.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="qtZFehHsKgwS5rPz"
+Content-Disposition: inline
+In-Reply-To: <1599747032-20055-1-git-send-email-shengjiu.wang@nxp.com>
+X-Cookie: I disagree with unanimity.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,223 +90,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ak4458 can't support DSD512 format, but ak4497 can, so add
-a new variable in ak4458_drvdata to distinguish these two
-platform.
 
-In hw_params(), calculate bit clock according to different DSD
-format and configure DSD register.
+--qtZFehHsKgwS5rPz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak4458.c | 82 +++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/ak4458.h |  5 ++-
- 2 files changed, 79 insertions(+), 8 deletions(-)
+On Thu, Sep 10, 2020 at 10:10:32PM +0800, Shengjiu Wang wrote:
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 763e6839428f..9054964d5cfa 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -31,11 +31,13 @@ static const char *ak4458_supply_names[AK4458_NUM_SUPPLIES] = {
- struct ak4458_drvdata {
- 	struct snd_soc_dai_driver *dai_drv;
- 	const struct snd_soc_component_driver *comp_drv;
-+	bool  dsd512;	/* DSD512 is supported or not */
- };
- 
- /* AK4458 Codec Private Data */
- struct ak4458_priv {
- 	struct regulator_bulk_data supplies[AK4458_NUM_SUPPLIES];
-+	const struct ak4458_drvdata *drvdata;
- 	struct device *dev;
- 	struct regmap *regmap;
- 	struct gpio_desc *reset_gpiod;
-@@ -136,6 +138,10 @@ static const char * const ak4458_ats_select_texts[] = {
- /* DIF2 bit Audio Interface Format Setting(BICK fs) */
- static const char * const ak4458_dif_select_texts[] = {"32fs,48fs", "64fs",};
- 
-+/* DSD input pin select */
-+static const char * const ak4497_dsd_input_path_select[] = {
-+	"16_17_19pin", "3_4_5pin"};
-+
- static const struct soc_enum ak4458_dac1_dem_enum =
- 	SOC_ENUM_SINGLE(AK4458_01_CONTROL2, 1,
- 			ARRAY_SIZE(ak4458_dem_select_texts),
-@@ -175,6 +181,10 @@ static const struct soc_enum ak4458_dif_enum =
- 	SOC_ENUM_SINGLE(AK4458_00_CONTROL1, 3,
- 			ARRAY_SIZE(ak4458_dif_select_texts),
- 			ak4458_dif_select_texts);
-+static const struct soc_enum ak4497_dsdp_enum =
-+	SOC_ENUM_SINGLE(AK4458_09_DSD2, 2,
-+			ARRAY_SIZE(ak4497_dsd_input_path_select),
-+			ak4497_dsd_input_path_select);
- 
- static int get_digfil(struct snd_kcontrol *kcontrol,
- 		      struct snd_ctl_elem_value *ucontrol)
-@@ -282,6 +292,7 @@ static const struct snd_kcontrol_new ak4497_snd_controls[] = {
- 	SOC_ENUM("AK4497 Sound Mode", ak4458_sm_enum),
- 	SOC_ENUM("AK4497 Attenuation transition Time Setting",
- 		 ak4458_ats_enum),
-+	SOC_ENUM("AK4497 DSD Data Input Pin", ak4497_dsdp_enum),
- };
- 
- /* ak4497 dapm widgets */
-@@ -325,12 +336,54 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
- 	int pcm_width = max(params_physical_width(params), ak4458->slot_width);
--	int nfs1;
--	u8 format;
-+	u8 format, dsdsel0, dsdsel1;
-+	int nfs1, dsd_bclk;
- 
- 	nfs1 = params_rate(params);
- 	ak4458->fs = nfs1;
- 
-+	/* calculate bit clock */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_DSD_U8:
-+	case SNDRV_PCM_FORMAT_DSD_U16_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U16_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_BE:
-+		dsd_bclk = nfs1 * params_physical_width(params);
-+		switch (dsd_bclk) {
-+		case 2822400:
-+			dsdsel0 = 0;
-+			dsdsel1 = 0;
-+			break;
-+		case 5644800:
-+			dsdsel0 = 1;
-+			dsdsel1 = 0;
-+			break;
-+		case 11289600:
-+			dsdsel0 = 0;
-+			dsdsel1 = 1;
-+			break;
-+		case 22579200:
-+			if (ak4458->drvdata->dsd512) {
-+				dsdsel0 = 1;
-+				dsdsel1 = 1;
-+			} else {
-+				dev_err(dai->dev, "DSD512 not supported.\n");
-+				return -EINVAL;
-+			}
-+			break;
-+		default:
-+			dev_err(dai->dev, "Unsupported dsd bclk.\n");
-+			return -EINVAL;
-+		}
-+
-+		snd_soc_component_update_bits(component, AK4458_06_DSD1,
-+					      AK4458_DSDSEL_MASK, dsdsel0);
-+		snd_soc_component_update_bits(component, AK4458_09_DSD2,
-+					      AK4458_DSDSEL_MASK, dsdsel1);
-+		break;
-+	}
-+
- 	/* Master Clock Frequency Auto Setting Mode Enable */
- 	snd_soc_component_update_bits(component, AK4458_00_CONTROL1, 0x80, 0x80);
- 
-@@ -355,6 +408,9 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 		case SND_SOC_DAIFMT_DSP_B:
- 			format = AK4458_DIF_32BIT_MSB;
- 			break;
-+		case SND_SOC_DAIFMT_PDM:
-+			format = AK4458_DIF_32BIT_MSB;
-+			break;
- 		default:
- 			return -EINVAL;
- 		}
-@@ -393,6 +449,7 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_LEFT_J:
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 	case SND_SOC_DAIFMT_DSP_B:
-+	case SND_SOC_DAIFMT_PDM:
- 		ak4458->fmt = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 		break;
- 	default:
-@@ -401,6 +458,12 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
-+	/* DSD mode */
-+	snd_soc_component_update_bits(component, AK4458_02_CONTROL3,
-+				      AK4458_DP_MASK,
-+				      ak4458->fmt == SND_SOC_DAIFMT_PDM ?
-+				      AK4458_DP_MASK : 0);
-+
- 	ak4458_rstn_control(component, 0);
- 	ak4458_rstn_control(component, 1);
- 
-@@ -472,7 +535,10 @@ static int ak4458_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 
- #define AK4458_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE |\
- 			 SNDRV_PCM_FMTBIT_S24_LE |\
--			 SNDRV_PCM_FMTBIT_S32_LE)
-+			 SNDRV_PCM_FMTBIT_S32_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U8 |\
-+			 SNDRV_PCM_FMTBIT_DSD_U16_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U32_LE)
- 
- static const unsigned int ak4458_rates[] = {
- 	8000, 11025,  16000, 22050,
-@@ -668,11 +734,13 @@ static const struct regmap_config ak4458_regmap = {
- static const struct ak4458_drvdata ak4458_drvdata = {
- 	.dai_drv = &ak4458_dai,
- 	.comp_drv = &soc_codec_dev_ak4458,
-+	.dsd512 = false,
- };
- 
- static const struct ak4458_drvdata ak4497_drvdata = {
- 	.dai_drv = &ak4497_dai,
- 	.comp_drv = &soc_codec_dev_ak4497,
-+	.dsd512 = true,
- };
- 
- static const struct dev_pm_ops ak4458_pm = {
-@@ -684,7 +752,6 @@ static const struct dev_pm_ops ak4458_pm = {
- static int ak4458_i2c_probe(struct i2c_client *i2c)
- {
- 	struct ak4458_priv *ak4458;
--	const struct ak4458_drvdata *drvdata;
- 	int ret, i;
- 
- 	ak4458 = devm_kzalloc(&i2c->dev, sizeof(*ak4458), GFP_KERNEL);
-@@ -698,7 +765,7 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 	i2c_set_clientdata(i2c, ak4458);
- 	ak4458->dev = &i2c->dev;
- 
--	drvdata = of_device_get_match_data(&i2c->dev);
-+	ak4458->drvdata = of_device_get_match_data(&i2c->dev);
- 
- 	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev, "reset",
- 						      GPIOD_OUT_LOW);
-@@ -720,8 +787,9 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 		return ret;
- 	}
- 
--	ret = devm_snd_soc_register_component(ak4458->dev, drvdata->comp_drv,
--					      drvdata->dai_drv, 1);
-+	ret = devm_snd_soc_register_component(ak4458->dev,
-+					      ak4458->drvdata->comp_drv,
-+					      ak4458->drvdata->dai_drv, 1);
- 	if (ret < 0) {
- 		dev_err(ak4458->dev, "Failed to register CODEC: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
-index f906215f7e4e..9548c5d78621 100644
---- a/sound/soc/codecs/ak4458.h
-+++ b/sound/soc/codecs/ak4458.h
-@@ -83,4 +83,7 @@
- #define AK4458_ATS_SHIFT	6
- #define AK4458_ATS_MASK		GENMASK(7, 6)
- 
--#endif /* _AK4458_H */
-+#define AK4458_DSDSEL_MASK		(0x1 << 0)
-+#define AK4458_DP_MASK			(0x1 << 7)
-+
-+#endif
--- 
-2.27.0
+> ak4458 can't support DSD512 format, but ak4497 can, so add
+> a new variable in ak4458_drvdata to distinguish these two
+> platform.
 
+> In hw_params(), calculate bit clock according to different DSD
+> format and configure DSD register.
+
+> +	SOC_ENUM("AK4497 DSD Data Input Pin", ak4497_dsdp_enum),
+
+This control name doesn't seem to match up with the description - it's
+talking about a pin but the description sounds like setting a different
+format for the data?
+
+--qtZFehHsKgwS5rPz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9aNmAACgkQJNaLcl1U
+h9BvlQf/eYFovk6PSnGjHMoTkXtDd6ZSB8Bjxc2PaaM25GOwNdAcktYXdamyEJM6
+8w+4vwJdhd4xAgWbaO9KAOdoyfrGCPqSEmv3Q97DT/gZRQ3xAAlyujp+5M4tE0QI
+O9GMTIJsvZO7UtU9izkr8vuwA1W/1HoTmHVmLQ6XcjP3h/z0R8dn2BqxKZKLlN9i
+SkbS+otZRdb0bBP3sDSVXdRn5T4RREx3BQEQOjzHEcIhJEuviqrc47/A9VcrUjfs
+pf7VFaoeNZCjGUy0CDeLElP3UtQQMMc6RWsPPdIk1QOlMAdy6j3/BYtxa7ubbqcR
+xV7s7W5Gf1fTY+siHZzyoPPCQ6M5RA==
+=tBUD
+-----END PGP SIGNATURE-----
+
+--qtZFehHsKgwS5rPz--
