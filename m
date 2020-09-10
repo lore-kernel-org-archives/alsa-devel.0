@@ -7,88 +7,88 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B448AC43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 10:20:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55641C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 10:21:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B50F920829
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 10:20:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8303A2145D
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Sep 2020 10:21:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C2/UX9iJ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="az80YPjH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B50F920829
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="niv9c1OG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qytJ0anu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8303A2145D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AA731675;
-	Thu, 10 Sep 2020 12:19:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AA731675
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6CC41696;
+	Thu, 10 Sep 2020 12:20:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6CC41696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599733241;
-	bh=ISG9W9caWeen137uNyEwZVXtTRBf5uzko88ylHyy8IM=;
+	s=default; t=1599733284;
+	bh=KZtSlzSXkXFx9K6eLkTfrhxWBUhV+bRbyl8qR7DR/mw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C2/UX9iJb48oxbKvZlnsbQlYS191ISxVx/59ePxjLbnkRKhooWrGhPb+I9OntpFL1
-	 Vh7zY9h3Qrs4P2/jyKzd8wPqVP3f+Wj1BBgSdmqcjWXf16RXF8alxRdheICef6VRGd
-	 HxfSBFr7bta8ks04c3b+2nOMVh/ff3GV/F6I2j3E=
+	b=niv9c1OGeVGafvGKVJ3eP67uEWviM2J3zmw+Ayg/ziBd3/ynUVTuLqFAFhEbEUYeZ
+	 JQY/c3i6I6pyDQJIYl8TRtORUMmhcusAzw0Z8wk/9JdvW7zwEyJwWJjoYm+W1UTb7O
+	 gdWbWUL1cTDpTEG6HfQmEtT6IJuEEFwFvbm8dAuc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DA76F80272;
-	Thu, 10 Sep 2020 12:18:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28985F802D2;
+	Thu, 10 Sep 2020 12:18:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BE31F802DD; Thu, 10 Sep 2020 12:18:06 +0200 (CEST)
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
+ id 3065CF8026F; Thu, 10 Sep 2020 12:18:07 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3D2AF80277
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 12:17:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3D2AF80277
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE62DF8026F
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 12:17:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE62DF8026F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="az80YPjH"
-Received: by mail-wm1-x341.google.com with SMTP id k18so5216304wmj.5
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 03:17:55 -0700 (PDT)
+ header.b="qytJ0anu"
+Received: by mail-wr1-x441.google.com with SMTP id e16so6103315wrm.2
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 03:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=3VQ3bGKtBxRBApFT2T0Tmq9tmwkVFZ1oYNu2zUBN5wY=;
- b=az80YPjHOHIydGMO4T0LCTDhmktqPRLH6LMmcI2oOStXcYNtT0Dn7k16T1eCHa50G3
- H5VaiOhNbxhjav3+6kIsqF4W59WVmKeZzc7P6l7vHIilMC0ioTST56K4cv8mEaJUkDC+
- BTrl1LvDD0+HWfW2uTpJkmtltkX2ebwsoEE4bfw1X94WXAhjW2U66ZpZbaem5yqxSepM
- 3AlVagzgxU8t3loxozOB4CLpOjHAHIfgsEz4gT7M42O4YpBKaMD+Preinl7Wcv0TOPpk
- vLhBN+SkhzHl+q8xfsu6XCF4F0y7yFSrNgcld7WpxN5T/S7iaC1Y61KNSai/YOR8xd62
- iPLg==
+ bh=35FP4zv+pwkbGr1a0ICMd6sQ90vGjx362WgHWWdE2EE=;
+ b=qytJ0anu0r8iejL2J6YFmry4i70Yz/OxSO1hg0YXgpdvILS87SEuM+OW/N06uatodz
+ PxYfg+QYPOwoxehP3B4PVH7HPiFr7AvPe1OGaELzxBmV8IGd8EGASeJC12C9VE6aOfXj
+ ELoDnCUfz2fhMZxAnb0fX9axz9fdFuTIrGUY6ncQU1vrXqrNMWGwHirCdtdDrcF5tLwt
+ nz4alzp1i/jrRUVE8npi1+JiG6oduIEDZHsIgpN3crEIVyP/DG9cituiP4B3LG7sL2MR
+ o0ZODSoIXBmYK62jfACiBuEneyDJHaaSJLAwewbUAyCOlxYo1NvpAwkeppcil4ggIabb
+ WFPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=3VQ3bGKtBxRBApFT2T0Tmq9tmwkVFZ1oYNu2zUBN5wY=;
- b=jOJTPZ/uyZfE8Gm5/ChaHAGIJAAE0Y8mrMHRkRJG5xr6OvH+o7KA0gGd7k4BijBsKc
- VigxLGth0sZ72OaQGBsRaa1r5ZtOOMawZoDejl9HckMr/d/uzYDowoeIaT45FJXMsUyp
- eVseXbODerruZkjlpCvdQlhZzRIVF0gL60rC/bJBejkqOLxzvwSHwKouqv3A/5IK2Fbi
- vRnCPi48RmxJH7wnKeM6XmFqF2LofOX45mh5PWzOFmdIaNTFLTyJaejf8yvMGAXszHKH
- 4ZFPa+F4adGsQ+5OPSa2t+QCb6mvwmmdDaFqScxHJBiZTv49bj8bZhPTlG08HBUGIb8M
- 7WNg==
-X-Gm-Message-State: AOAM531wTcRsYRPggqCVI9ZEVnfq1T4bdmH0kd19xLnnf/uKSPPvSUXC
- 0tFWehysjCleNmP39fyEcE5e6Q==
-X-Google-Smtp-Source: ABdhPJzN1Uau/E0JLtlzAH0YotHH2e/OT0iND+6DjIa5vN8pMGBuma/nMuts/1GRS+oCzezB4dPzzA==
-X-Received: by 2002:a1c:9dd5:: with SMTP id g204mr7550515wme.162.1599733074961; 
- Thu, 10 Sep 2020 03:17:54 -0700 (PDT)
+ bh=35FP4zv+pwkbGr1a0ICMd6sQ90vGjx362WgHWWdE2EE=;
+ b=AAXO4NzLIIwJNdYwkvE90RJCY40K8bCLcwjwHfuskPOfPLjFX/EB7NDATLd7F0Sn+/
+ IA6ssjbWUbNDCpDtrpzpe3ByrYO87iEq1bQOL/Ab50iHHgZI/kI+rDa60kJ6hVT6VShw
+ 1o+rKY/WRumgjeHoO2H/NyjbGGJHSq0+huRFaORcr9igXKJ0zqJeG1r5EHlAhyRtPPtO
+ Lcj/mZMzubKmNLp5OpTn8YLbpr1imFQ5GfVOvRy+uVll1CqAUarAVjpkmlWpzUg1mnaT
+ FDyG7si2kVreSyGdpx2m5dzPY6FjwNz17ObE7FlDSW9uBkLB1NslWEEp4quPj4+Vwm1Q
+ Y+sg==
+X-Gm-Message-State: AOAM532SBUNgtMBYa0teb1kH6eLSd+faVMhOmnl4G81pYsTLc020WR43
+ 524HECiGXeXrDQDnRMAQ83TSog==
+X-Google-Smtp-Source: ABdhPJwwyy6FJ4lFjbkvIsHCWHQE2fqsNe40JDp5tIgVLRzzrHZGi8Opl4fcPMyaHoVU6nJlbkLJtg==
+X-Received: by 2002:adf:9e43:: with SMTP id v3mr8377833wre.306.1599733071084; 
+ Thu, 10 Sep 2020 03:17:51 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id m4sm8851731wro.18.2020.09.10.03.17.53
+ by smtp.gmail.com with ESMTPSA id m4sm8851731wro.18.2020.09.10.03.17.49
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 10 Sep 2020 03:17:54 -0700 (PDT)
+ Thu, 10 Sep 2020 03:17:50 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 6/8] ASoC: q6dsp: q6afe: update q6afe_set_param to support
- global clocks
-Date: Thu, 10 Sep 2020 11:17:30 +0100
-Message-Id: <20200910101732.23484-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/8] ASoC: q6dsp: q6afe: prepare afe_apr_send_pkt to take
+ response opcode
+Date: Thu, 10 Sep 2020 11:17:27 +0100
+Message-Id: <20200910101732.23484-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200910101732.23484-1-srinivas.kandagatla@linaro.org>
 References: <20200910101732.23484-1-srinivas.kandagatla@linaro.org>
@@ -113,97 +113,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Previously there was no case where we need to set clock or send commands
-that are not associated with q6afe ports, now we have cases like clock
-voting and clock consumers like codecs that needed these clocks.
-
-update q6afe_set_param() to support such cases, including token passing.
+Update afe_apr_send_pkt() to take response opcode that it should wait for.
+This is helpful in cases where we expect response other than the
+actual command opcode.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6afe.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 51c94dd9998d..9ed5537ee58e 100644
+index 8ceefb431bcb..f934c69f0a14 100644
 --- a/sound/soc/qcom/qdsp6/q6afe.c
 +++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -967,14 +967,13 @@ static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
- 	return ret;
- }
+@@ -902,10 +902,9 @@ int q6afe_get_port_id(int index)
+ EXPORT_SYMBOL_GPL(q6afe_get_port_id);
  
--static int q6afe_port_set_param(struct q6afe_port *port, void *data,
--				int param_id, int module_id, int psize)
-+static int q6afe_set_param(struct q6afe *afe, struct q6afe_port *port,
-+			   void *data, int param_id, int module_id, int psize,
-+			   int token)
+ static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
+-			    struct q6afe_port *port)
++			    struct q6afe_port *port, uint32_t rsp_opcode)
  {
- 	struct afe_svc_cmd_set_param *param;
- 	struct afe_port_param_data_v2 *pdata;
--	struct q6afe *afe = port->afe;
- 	struct apr_pkt *pkt;
--	u16 port_id = port->id;
- 	int ret, pkt_size;
- 	void *p, *pl;
+ 	wait_queue_head_t *wait = &port->wait;
+-	struct apr_hdr *hdr = &pkt->hdr;
+ 	int ret;
  
-@@ -995,7 +994,7 @@ static int q6afe_port_set_param(struct q6afe_port *port, void *data,
- 	pkt->hdr.pkt_size = pkt_size;
- 	pkt->hdr.src_port = 0;
- 	pkt->hdr.dest_port = 0;
--	pkt->hdr.token = port->token;
-+	pkt->hdr.token = token;
- 	pkt->hdr.opcode = AFE_SVC_CMD_SET_PARAM;
+ 	mutex_lock(&afe->lock);
+@@ -919,7 +918,7 @@ static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
+ 		goto err;
+ 	}
  
- 	param->payload_size = sizeof(*pdata) + psize;
-@@ -1008,13 +1007,19 @@ static int q6afe_port_set_param(struct q6afe_port *port, void *data,
+-	ret = wait_event_timeout(*wait, (port->result.opcode == hdr->opcode),
++	ret = wait_event_timeout(*wait, (port->result.opcode == rsp_opcode),
+ 				 msecs_to_jiffies(TIMEOUT_MS));
+ 	if (!ret) {
+ 		ret = -ETIMEDOUT;
+@@ -976,7 +975,7 @@ static int q6afe_port_set_param(struct q6afe_port *port, void *data,
+ 	pdata->param_id = param_id;
+ 	pdata->param_size = psize;
  
- 	ret = afe_apr_send_pkt(afe, pkt, port, AFE_SVC_CMD_SET_PARAM);
+-	ret = afe_apr_send_pkt(afe, pkt, port);
++	ret = afe_apr_send_pkt(afe, pkt, port, AFE_SVC_CMD_SET_PARAM);
  	if (ret)
--		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
--		       port_id, ret);
-+		dev_err(afe->dev, "AFE set params failed %d\n", ret);
+ 		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
+ 		       port_id, ret);
+@@ -1025,7 +1024,7 @@ static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
+ 	pdata->param_id = param_id;
+ 	pdata->param_size = psize;
  
- 	kfree(pkt);
- 	return ret;
- }
+-	ret = afe_apr_send_pkt(afe, pkt, port);
++	ret = afe_apr_send_pkt(afe, pkt, port, AFE_PORT_CMD_SET_PARAM_V2);
+ 	if (ret)
+ 		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
+ 		       port_id, ret);
+@@ -1155,7 +1154,7 @@ int q6afe_port_stop(struct q6afe_port *port)
+ 	stop->port_id = port_id;
+ 	stop->reserved = 0;
  
-+static int q6afe_port_set_param(struct q6afe_port *port, void *data,
-+				int param_id, int module_id, int psize)
-+{
-+	return q6afe_set_param(port->afe, port, data, param_id, module_id,
-+			       psize, port->token);
-+}
-+
- static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
- 				   int param_id, int module_id, int psize)
- {
-@@ -1064,7 +1069,7 @@ static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
- 	return ret;
- }
+-	ret = afe_apr_send_pkt(afe, pkt, port);
++	ret = afe_apr_send_pkt(afe, pkt, port, AFE_PORT_CMD_DEVICE_STOP);
+ 	if (ret)
+ 		dev_err(afe->dev, "AFE close failed %d\n", ret);
  
--static int q6afe_set_lpass_clock(struct q6afe_port *port,
-+static int q6afe_port_set_lpass_clock(struct q6afe_port *port,
- 				 struct afe_clk_cfg *cfg)
- {
- 	return q6afe_port_set_param_v2(port, cfg,
-@@ -1111,7 +1116,7 @@ int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
- 		ccfg.clk_src = clk_src;
- 		ccfg.clk_root = clk_root;
- 		ccfg.clk_set_mode = Q6AFE_LPASS_MODE_CLK1_VALID;
--		ret = q6afe_set_lpass_clock(port, &ccfg);
-+		ret = q6afe_port_set_lpass_clock(port, &ccfg);
- 		break;
+@@ -1467,7 +1466,7 @@ int q6afe_port_start(struct q6afe_port *port)
  
- 	case LPAIF_OSR_CLK:
-@@ -1120,7 +1125,7 @@ int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
- 		ccfg.clk_src = clk_src;
- 		ccfg.clk_root = clk_root;
- 		ccfg.clk_set_mode = Q6AFE_LPASS_MODE_CLK2_VALID;
--		ret = q6afe_set_lpass_clock(port, &ccfg);
-+		ret = q6afe_port_set_lpass_clock(port, &ccfg);
- 		break;
- 	case Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT ... Q6AFE_LPASS_CLK_ID_QUI_MI2S_OSR:
- 	case Q6AFE_LPASS_CLK_ID_MCLK_1 ... Q6AFE_LPASS_CLK_ID_INT_MCLK_1:
+ 	start->port_id = port_id;
+ 
+-	ret = afe_apr_send_pkt(afe, pkt, port);
++	ret = afe_apr_send_pkt(afe, pkt, port, AFE_PORT_CMD_DEVICE_START);
+ 	if (ret)
+ 		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
+ 			port_id, ret);
 -- 
 2.21.0
 
