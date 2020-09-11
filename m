@@ -7,87 +7,86 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEB03C43461
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 02:50:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70B01C433E2
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 02:51:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5F0F20770
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 02:50:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBD3D207EA
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 02:51:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="outE/qrP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="EqW17f9W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5F0F20770
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b0/P1NHR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="dLZIjf7n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBD3D207EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 524B7167A;
-	Fri, 11 Sep 2020 04:49:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 524B7167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 457A1167E;
+	Fri, 11 Sep 2020 04:50:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 457A1167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599792643;
-	bh=+7XPOf8k5zb89pgz4nbiePGnw3IRzf6dziKyfdZ0i6c=;
+	s=default; t=1599792690;
+	bh=4EX5/X0/cMfjgR/scmTtcnPu4AZznHKUFlnkJONkMyk=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=outE/qrP8yeDIk6liBCEMM6njVqjBny/8mdeBFt5oANLRdjaxi6ASU5bmc7y96ZvF
-	 8qUhf5SXWuiXlvNFWB36n6Iqah6Zgk8hyvR8KkdSGzZV7c6bkVxjCvS6He4oL7J+ff
-	 N7elcmQREHZvksJRZnhBFqFXtowxPCLoWGmvzh3o=
+	b=b0/P1NHRqcRG0RQgTwPlJHFPuwZMNLQtccNoywsNoj+lwQuZx8QYH2LTZMi0hCtBt
+	 dgtgB8ybsqVOG6QFBPSopwbTbxqulEwmuABJWX/+GVTzILM2d5fnBoK5dh52wjKF/O
+	 f14emKI0rnOZTR8sCBD+IYFFPuFtfJ/IISOcAOrs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0379F80274;
-	Fri, 11 Sep 2020 04:49:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65DA0F802C2;
+	Fri, 11 Sep 2020 04:49:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1736F8021C; Fri, 11 Sep 2020 04:48:58 +0200 (CEST)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
- [IPv6:2607:f8b0:4864:20::549])
+ id 693DDF802C2; Fri, 11 Sep 2020 04:49:04 +0200 (CEST)
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com
+ [IPv6:2607:f8b0:4864:20::84a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C54CAF80227
- for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2020 04:48:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C54CAF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6034FF80240
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2020 04:48:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6034FF80240
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="EqW17f9W"
-Received: by mail-pg1-x549.google.com with SMTP id k9so5069149pgs.20
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 19:48:54 -0700 (PDT)
+ header.b="dLZIjf7n"
+Received: by mail-qt1-x84a.google.com with SMTP id e11so5578842qth.21
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2020 19:48:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=sender:date:in-reply-to:message-id:mime-version:references:subject
- :from:to:cc; bh=4pIPobb5AlgUGEMfysrRJHFq6zLtRtS5EYu72+YPbUM=;
- b=EqW17f9WxN1mDEFhB/Wlj2aTOV0oShJcWsNESsBp4Hng1bSJaPNXH95M2pYVuYqzXN
- KCX5EdsNNM+gHjNttBdt6Qu/7bgXLzqUgCMwX4WsA8hVmERQ1s+NDAZhSewIiLG1uGMP
- ADD5IKd+PXLYgz5W8GrwnchdZswZVVN/A3N1UgKMLu7q0Wer7dmf/9RjwKnuezlRlTRy
- lgh3xm0paudRTXqeaNXZ3MhNxYjr/Owieee5SbH92zNYMHRfZRsewY1nsj0P6JppKfrd
- 9oRLgaUI8nMo7qEOBUJXupA6BIMENdI0SIedRfjPpyYFU9J7BdXBG3/CS/iMHtZ6jVPs
- J/cg==
+ :from:to:cc; bh=OL6Xca6wUTPR4KoDA1xBq3ODskMxZl1kDYmO7BayCTk=;
+ b=dLZIjf7n0npnKd6VdQ//HGxZeCosdJZA3pvmsUmXYVUE/733J5SFK6o8U2lpv8RBPt
+ hfvAE0s/nKApYLm2W2T8h/TtgDZCWJUOtUCXi2kwm3XBeH+wPmD8CerR52z2G/hQRJ2R
+ yB2QYDAYuS52CkrvREjjyA1s8lRFQCl0wtjYwmJKcOyCBmLu7aNf4XtCFldqD+wB9gcV
+ qqxeoLGMHFn+KoC3rZcxmCeMwm4/VJWbjn3IJVHhMqstsX8LZQn4dcpxEWRut3VVc7NX
+ Ay/yK58EhKVAF88//yuY2BQ0dAH/udf//+HLzLGDYLa3R4txJiLLG6xGN7Sp5YiQ4/I0
+ sR3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=4pIPobb5AlgUGEMfysrRJHFq6zLtRtS5EYu72+YPbUM=;
- b=tPPpxLsmh/GQ1JxjwIk14xYYztQT4W/BdO6kvZ0o590eaDE/VBdFppn96HKBVO+moA
- d1Z7f0hd6iUgQd9YAMCq01mTTkzkVkrCs47mdOhvfmt/5an0LebbvB9yZMNkqhMqPvA6
- nq8kgae/LQe+ultjE8+pwBXB59hoFTNLmD1JHjlXW7fxq2TWwA95MSND8NFWV7eo5VPk
- DST6x0I1L7M0aDLc1nIibFYpQC3b5fp9QtCxq4zSfaGeG8TG0AWF6eivn820S8AUF3ec
- ErS7f+pFDeSJyUqHGE5x4ugLjLqKIrcj5vezF56yFe6ympakvaFdL8BZp+0kthM/cHpd
- CEig==
-X-Gm-Message-State: AOAM533Sr8WwuGEtQVJrpJAtwcAgZsmb1acuXqBjKXXMJHhquZrvEoS5
- pkokTqS0YDIJUGHfR8RJilJIysWoAa0S
-X-Google-Smtp-Source: ABdhPJy6essnKk+7oD+gP3wuNyoJ4kJ9U7Z/b6znYdo0xqyVr7uOCVdHo42opLwfPWFPjvac97+xFCELDrFR
+ bh=OL6Xca6wUTPR4KoDA1xBq3ODskMxZl1kDYmO7BayCTk=;
+ b=qMFG/QxptlvR31tgHREzGCEmBTyeikQ96RGJIjQB4Dnm34/Rqg3Oy1ayul7Xf7uBeY
+ ncbPburJ3LQdXsWqTKalbtQIitab24fJHSQ5FB4BZ5WCzPv61vSZ0jdOf7TCuHoDP9XK
+ poC5p9WCTiSbgLljInJ1lGrSATWMmmEgTlMDXAvDDG5P8vkK++oj4+AdoVkEVER8+2wV
+ 7TVIJxpadXC36fK6jk1QP2CI9ZgTrCGHiSwTT1DVi//kzXXsgJrZr2Jl7y0GAwMeDopZ
+ 6gIZR1LfFiCuy4mLd6BUB+zFzi566E4T+k4jHTfFhhjCSrZ2jVrzMs+d7u1Z5wQrYuJs
+ mlEg==
+X-Gm-Message-State: AOAM530a/JdAC2x2YxLyDwFor7gFpHy+COALpFbZURs3PI1Celm85uq1
+ zTQdRIRR93DwgioB5TK8aNUH6wY37vqK
+X-Google-Smtp-Source: ABdhPJytnnY1L+ZcVp1rnBboTBm+V2Y6jLV/v4L2ZulAlFV9n0VOjVW5DEEiQmMM5ybQ3zgxVrhZId/WvKbk
 X-Received: from tzungbi-z840.tpe.corp.google.com
  ([2401:fa00:1:10:725a:fff:fe41:c6a5])
- (user=tzungbi job=sendgmr) by 2002:a17:902:6bc9:b029:d0:cb2d:f272 with SMTP
- id m9-20020a1709026bc9b02900d0cb2df272mr207398plt.11.1599792532293; Thu, 10
- Sep 2020 19:48:52 -0700 (PDT)
-Date: Fri, 11 Sep 2020 10:48:32 +0800
+ (user=tzungbi job=sendgmr) by 2002:a0c:d848:: with SMTP id
+ i8mr119788qvj.31.1599792536009; Thu, 10 Sep 2020 19:48:56 -0700 (PDT)
+Date: Fri, 11 Sep 2020 10:48:33 +0800
 In-Reply-To: <20200911024833.1673961-1-tzungbi@google.com>
-Message-Id: <20200911024833.1673961-2-tzungbi@google.com>
+Message-Id: <20200911024833.1673961-3-tzungbi@google.com>
 Mime-Version: 1.0
 References: <20200911024833.1673961-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH 1/2] ASoC: dt-bindings: mt8183-da7219: add compatible string
- for using rt1015p
+Subject: [PATCH 2/2] ASoC: mediatek: mt8183-da7219: support machine driver
+ with rt1015p
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org, robh+dt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -107,26 +106,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Machines with rt1015p should use the compatible string
-"mediatek,mt8183_da7219_rt1015p".
+Supports machine driver with rt1015p ("mt8183_da7219_rt1015p").
+Embeds in the existing mt8183-da7219-max98357.c because they share
+most of the code.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- .../devicetree/bindings/sound/mt8183-da7219-max98357.txt         | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/mediatek/Kconfig                    |  1 +
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  | 40 +++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt b/Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt
-index 6787ce8789dd..f276dfc74b46 100644
---- a/Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt
-@@ -3,6 +3,7 @@ MT8183 with MT6358, DA7219, MAX98357, and RT1015 CODECS
- Required properties:
- - compatible : "mediatek,mt8183_da7219_max98357" for MAX98357A codec
-                "mediatek,mt8183_da7219_rt1015" for RT1015 codec
-+               "mediatek,mt8183_da7219_rt1015p" for RT1015P codec
- - mediatek,headset-codec: the phandles of da7219 codecs
- - mediatek,platform: the phandle of MT8183 ASoC platform
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index f7bc007bbdec..76e055d1dfb2 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -140,6 +140,7 @@ config SND_SOC_MT8183_DA7219_MAX98357A
+ 	select SND_SOC_MT6358
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_RT1015
++	select SND_SOC_RT1015P
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_BT_SCO
+ 	select SND_SOC_HDMI_CODEC
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index 06d0a4f80fc1..68fe23b96b14 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -348,6 +348,12 @@ SND_SOC_DAILINK_DEFS(i2s3_rt1015,
+ 			   COMP_CODEC(DA7219_DEV_NAME, DA7219_CODEC_DAI)),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
++SND_SOC_DAILINK_DEFS(i2s3_rt1015p,
++	DAILINK_COMP_ARRAY(COMP_CPU("I2S3")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("rt1015p", "HiFi"),
++			   COMP_CODEC(DA7219_DEV_NAME, DA7219_CODEC_DAI)),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++
+ SND_SOC_DAILINK_DEFS(i2s5,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("I2S5")),
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("bt-sco", "bt-sco-pcm")),
+@@ -641,6 +647,23 @@ static struct snd_soc_card mt8183_da7219_rt1015_card = {
+ 	.num_configs = ARRAY_SIZE(mt8183_da7219_rt1015_codec_conf),
+ };
+ 
++static struct snd_soc_card mt8183_da7219_rt1015p_card = {
++	.name = "mt8183_da7219_rt1015p",
++	.owner = THIS_MODULE,
++	.controls = mt8183_da7219_max98357_snd_controls,
++	.num_controls = ARRAY_SIZE(mt8183_da7219_max98357_snd_controls),
++	.dapm_widgets = mt8183_da7219_max98357_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(mt8183_da7219_max98357_dapm_widgets),
++	.dapm_routes = mt8183_da7219_max98357_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(mt8183_da7219_max98357_dapm_routes),
++	.dai_link = mt8183_da7219_dai_links,
++	.num_links = ARRAY_SIZE(mt8183_da7219_dai_links),
++	.aux_dev = &mt8183_da7219_max98357_headset_dev,
++	.num_aux_devs = 1,
++	.codec_conf = mt6358_codec_conf,
++	.num_configs = ARRAY_SIZE(mt6358_codec_conf),
++};
++
+ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card;
+@@ -696,6 +719,19 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+ 				dai_link->platforms = i2s3_rt1015_platforms;
+ 				dai_link->num_platforms =
+ 					ARRAY_SIZE(i2s3_rt1015_platforms);
++			} else if (card == &mt8183_da7219_rt1015p_card) {
++				dai_link->be_hw_params_fixup =
++					mt8183_rt1015_i2s_hw_params_fixup;
++				dai_link->ops = &mt8183_da7219_i2s_ops;
++				dai_link->cpus = i2s3_rt1015p_cpus;
++				dai_link->num_cpus =
++					ARRAY_SIZE(i2s3_rt1015p_cpus);
++				dai_link->codecs = i2s3_rt1015p_codecs;
++				dai_link->num_codecs =
++					ARRAY_SIZE(i2s3_rt1015p_codecs);
++				dai_link->platforms = i2s3_rt1015p_platforms;
++				dai_link->num_platforms =
++					ARRAY_SIZE(i2s3_rt1015p_platforms);
+ 			}
+ 		}
+ 
+@@ -742,6 +778,10 @@ static const struct of_device_id mt8183_da7219_max98357_dt_match[] = {
+ 		.compatible = "mediatek,mt8183_da7219_rt1015",
+ 		.data = &mt8183_da7219_rt1015_card,
+ 	},
++	{
++		.compatible = "mediatek,mt8183_da7219_rt1015p",
++		.data = &mt8183_da7219_rt1015p_card,
++	},
+ 	{}
+ };
+ #endif
 -- 
 2.28.0.526.ge36021eeef-goog
 
