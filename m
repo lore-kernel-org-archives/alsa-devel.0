@@ -2,88 +2,93 @@ Return-Path: <SRS0=2sca=CU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1561BC43461
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 09:21:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F5FBC433E2
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 09:22:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 618A7221EE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 09:21:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 574382087C
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Sep 2020 09:22:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NcJVqWVf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="XKuj/FAT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 618A7221EE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S0ZtfsmP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="JlokXir+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 574382087C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D0E21668;
-	Fri, 11 Sep 2020 11:20:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D0E21668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DDE0167F;
+	Fri, 11 Sep 2020 11:21:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DDE0167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1599816081;
-	bh=zSIN3tuGPgnprggFieabZse1yQesiWyDa4V9nPqNHKc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NcJVqWVfApj05CGkwqMvtA+/k3WLGrZmQkDpRAHKzuk3xS3u0hjiyjgLnVLmVDwdw
-	 /1rf+8DDBgTFGTfMnJX+g0iZxMscaHNTIdfpmAsQzYYVlZnx4xL2yzDLQMsKNmvnso
-	 T8s8EbHBRyuAgeHe8wAqul+L3IhPUnlQerKuJMdU=
+	s=default; t=1599816134;
+	bh=oSwSZia1WSdkoCdBcTyXea4VQv9UyVjgf9OUyypqtoA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=S0ZtfsmPJ3oIzSxvmsz7mfbYZqitqv+53YAuhobsfdW+YGLYOYhYEEeplrre+G+Ar
+	 pOHh7RlLmvzYPlcXI1f1PzWS9DvC0yL+i6OrBbIOw01JpCH2PGLvUfgsFB4ONnwVSj
+	 k2mytJAQt7/omPvz91mq6bM3c0pn9rsWvsJrFQBw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE54CF8021C;
-	Fri, 11 Sep 2020 11:20:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E570F80240;
+	Fri, 11 Sep 2020 11:20:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3E62F80227; Fri, 11 Sep 2020 11:20:28 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+ id D8DBEF8028B; Fri, 11 Sep 2020 11:20:36 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A9AEF80100
- for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2020 11:20:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A9AEF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37F84F80240
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2020 11:20:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37F84F80240
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="XKuj/FAT"
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+ dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="JlokXir+"
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
  by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 08B9HhWY013223; Fri, 11 Sep 2020 11:20:24 +0200
+ 08B9GrU1022506; Fri, 11 Sep 2020 11:20:24 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
  h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=zPssAz57qPbck8kfcp9veYTq0xH11iTPM9Ncg86DhkU=;
- b=XKuj/FATPflF8FXfZDEYytr1MlZgK2wRKnYAHcDRqt2zyAMcb53GqDFVW8A1mnQATy7x
- cVyLDJcRNIK7TAN8zNlI1QG9YropmGb+Cr5JpZ8BLQtWf6vREJdnGW2KyAcIUdPBjwkm
- fOXmCb1ZNyG4AHWrHXvOzrP3QKp1jjc6TwhqvFzbwuXdrKE0WNYiCQHJTK61cn6492ng
- 4LvXngSkPkhkAsy2QMDaUYs9ENkgAb1O9Athni0nAUus608bBvSZ9lvOmqVUz15NU4Bz
- 0EZ0rxemEGqt2epCy0fk/oWpwSb7A2+lZwKeJ60UkAx21gUSwl9LbeSoUhRMZ3iDwtLl yQ== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=STMicroelectronics;
+ bh=3OR8qxZpq3JUZtn+62eu3HHTqXzgdbLMzpf40hJBmi0=;
+ b=JlokXir+4V+MLlcPGz7yfLqDge+HwQS//ZGrCDY6Q2ctmwVeySzbg2YiiYCtz9qgF5ND
+ NBSI58IRoi7wwyHvDSEVP6/uQSVYKFX0d1eazQKJSruCQzSlCN7q1NaOeBlRtNU8KlpE
+ JBM3SkQNR8IUwBf5hjiND2XUKUHXj78oOdjqRDDjOnN0gRNFepP9GsxVLLzqcdC9Efqx
+ 5xQm4SPUUxhwFdB6qXF7QD6dFJc7FyRkdskms9eG7dZUcXFERcc6y/YJN3zIlKyfVLG8
+ QZaR2K20CXkGH4mBKSE9fPYEiFUE6idqcQLB2mQuyc2mrGivTeEZIm4uDB2RJqeV/W9l RQ== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 33c1jfgn2b-1
+ by mx07-00178001.pphosted.com with ESMTP id 33c0ev88a1-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Fri, 11 Sep 2020 11:20:24 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9629A10002A;
- Fri, 11 Sep 2020 11:20:23 +0200 (CEST)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 42FBA100034;
+ Fri, 11 Sep 2020 11:20:24 +0200 (CEST)
 Received: from Webmail-eu.st.com (gpxdag6node5.st.com [10.75.127.81])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6E0DA21FEBE;
- Fri, 11 Sep 2020 11:20:23 +0200 (CEST)
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2DD1721FEBE;
+ Fri, 11 Sep 2020 11:20:24 +0200 (CEST)
 Received: from localhost (10.75.127.44) by GPXDAG6NODE5.st.com (10.75.127.81)
  with Microsoft SMTP Server (TLS) id 15.0.1473.3;
- Fri, 11 Sep 2020 11:20:22 +0200
+ Fri, 11 Sep 2020 11:20:23 +0200
 From: Olivier Moysan <olivier.moysan@st.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <alexandre.torgue@st.com>, <robh@kernel.org>,
  <mark.rutland@arm.com>, <arnaud.pouliquen@st.com>
-Subject: [PATCH 0/2] ASoC: stm32: i2s: add master clock provider
-Date: Fri, 11 Sep 2020 11:19:50 +0200
-Message-ID: <20200911091952.14696-1-olivier.moysan@st.com>
+Subject: [PATCH 1/2] ASoC: dt-bindings: add mclk provider support to stm32 i2s
+Date: Fri, 11 Sep 2020 11:19:51 +0200
+Message-ID: <20200911091952.14696-2-olivier.moysan@st.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200911091952.14696-1-olivier.moysan@st.com>
+References: <20200911091952.14696-1-olivier.moysan@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To GPXDAG6NODE5.st.com
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To GPXDAG6NODE5.st.com
  (10.75.127.81)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235, 18.0.687
  definitions=2020-09-11_03:2020-09-10,
@@ -106,16 +111,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add master clock generation support in STM32 I2S driver.
+Add master clock provider support to STM32 I2S.
 
-Olivier Moysan (2):
-  ASoC: dt-bindings: add mclk provider support to stm32 i2s
-  ASoC: stm32: i2s: add master clock provider
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- .../bindings/sound/st,stm32-i2s.yaml          |   4 +
- sound/soc/stm/stm32_i2s.c                     | 310 +++++++++++++++---
- 2 files changed, 270 insertions(+), 44 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+index f32410890589..6feb5a09c184 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+@@ -54,6 +54,10 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  "#clock-cells":
++    description: Configure the I2S device as MCLK clock provider.
++    const: 0
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
 -- 
 2.17.1
 
