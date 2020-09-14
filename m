@@ -2,82 +2,94 @@ Return-Path: <SRS0=y4EY=CX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A32E0C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FFF6C433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:58:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06A0620829
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:58:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C1F7820732
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:58:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oEZ4k/rc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMgC1upo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06A0620829
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D4iXpHBC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mhT31ujO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1F7820732
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7225C1690;
-	Mon, 14 Sep 2020 16:57:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7225C1690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54EBA82B;
+	Mon, 14 Sep 2020 16:57:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54EBA82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600095507;
-	bh=KWJqdkCZgyPNohCJGNbpJs+BDsJjwqiEDY4HQiidrKA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1600095526;
+	bh=LH0NaDnKAHcVRn3lT3rDdtXF2qEXbg0yWEOD4MwwB8g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oEZ4k/rc5TfhKbF70z213PGVYeUPXqfg14mSudnIKskdoTh7wH6y4YyHEYrjOUqzt
-	 vTH1jKREyykxjrEsNzy2stzI2iHKq22s18d2AXSbNwVVKsWKYHQ7pJYpVcRPri38xI
-	 fR2bC36upL9rDi41bKzCo5V9wjaeoRtipok2Po1A=
+	b=D4iXpHBCTBxsi08Xh9nwS7kWEJRjzFU9xpZhByZyFNHUh3uUO6jhLyl4S3rzDXq8M
+	 bdN82TIADcSUj9MztvfKu6xhdvq4TvCWUMFNwbxpgykyPpK42XEJOilQIpWuB4kROl
+	 cGz9BjDDe9FLqgiLyA2DP9d4+yWngpS8+Q1YKguo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EB09F8015D;
-	Mon, 14 Sep 2020 16:56:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 396CFF802C3;
+	Mon, 14 Sep 2020 16:56:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 874CAF801F7; Mon, 14 Sep 2020 16:56:02 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAF1CF80150
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 16:55:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAF1CF80150
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nMgC1upo"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id CB0C5F802C3; Mon, 14 Sep 2020 16:56:14 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A4152206BE;
- Mon, 14 Sep 2020 14:55:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600095355;
- bh=KWJqdkCZgyPNohCJGNbpJs+BDsJjwqiEDY4HQiidrKA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=nMgC1upoTFCiy5eHK/tlQaqhKy3LYIebNGb4AsZoIG0TZg+BAQvAmGQSGZG+lYuJj
- R1W9ZAwpOQPRg47m0w8k0XP4gtIL96YXA57/PFPOVgY9yPKoaZryyww5EY6CqzBE6a
- nWbqPjP5tT8Lapr348vslBaMpk9/fJh09rj592pg=
-Date: Mon, 14 Sep 2020 15:55:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Chanho Park <parkch98@gmail.com>
-Subject: Re: [PATCH] ASoC: tas6424: disable regulators when probe error
-Message-ID: <20200914145506.GF4821@sirena.org.uk>
-References: <20200912023151.213930-1-chanho61.park@samsung.com>
- <20200914112709.GA4821@sirena.org.uk>
- <CAPTzV144n2z--Us6OpK-FKb64Bsz+x+CQu1HiBDr2XHETQmTvw@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0E13F802C4
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 16:56:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0E13F802C4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="mhT31ujO"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=eBdiOi8NPtkzomu53YzYl2srwsK9DIz9xkGY00o46Kk=; b=mhT31ujOX1b/Ylsrk64JksEtAs
+ 9CsPlcH5hAWD0aGXvHImC3hCRVvIHTJrcou6cXnGT54zAGvwj93b4D9EhPcRhshY3Bs3eyUJoDDyp
+ /nP9B5kyV1bnmLEL7rLke8gT4SbmI5kPok0oRcdYsOzZhnvD9awZgmS7snbozBo6+h50CW3ovdNEQ
+ rNvm9WYDfrFebi3DEiL1j7UwRmtNNj8nVOQuwfdDkaun+xRqe4fJEwflFg4tSbH6LwHenuvtKtx+3
+ Mi3qOKO7kSBa3khR/+Da8yUmsINC/i/NvEQMvxt0qK0LL1lZ69X5uBkVi4w6Gw41ABUYpEPOn6KWS
+ UikZ1UiA==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92]
+ helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kHptG-0001vR-DT; Mon, 14 Sep 2020 14:55:34 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Joonyoung Shim <jy0922.shim@samsung.com>,
+ Seung-Woo Kim <sw0312.kim@samsung.com>, Ben Skeggs <bskeggs@redhat.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Tomasz Figa <tfiga@chromium.org>,
+ Matt Porter <mporter@kernel.crashing.org>, iommu@lists.linux-foundation.org
+Subject: [PATCH 04/17] drm/nouveau/gk20a: stop setting DMA_ATTR_NON_CONSISTENT
+Date: Mon, 14 Sep 2020 16:44:20 +0200
+Message-Id: <20200914144433.1622958-5-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
+References: <20200914144433.1622958-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="XuV1QlJbYrcVoo+x"
-Content-Disposition: inline
-In-Reply-To: <CAPTzV144n2z--Us6OpK-FKb64Bsz+x+CQu1HiBDr2XHETQmTvw@mail.gmail.com>
-X-Cookie: Disc space -- the final frontier!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, Chanho Park <chanho61.park@samsung.com>,
- dannenberg@ti.com
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>, netdev@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,40 +105,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+DMA_ATTR_NON_CONSISTENT is a no-op except on PARISC and some mips
+configs, so don't set it in this ARM specific driver part.
 
---XuV1QlJbYrcVoo+x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On Mon, Sep 14, 2020 at 11:52:15PM +0900, Chanho Park wrote:
-> On Mon, Sep 14, 2020 at 8:27 PM Mark Brown <broonie@kernel.org> wrote:
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
+index 985f2990ab0dda..13d4d7ac0697b4 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
+@@ -594,8 +594,7 @@ gk20a_instmem_new(struct nvkm_device *device, int index,
+ 
+ 		nvkm_info(&imem->base.subdev, "using IOMMU\n");
+ 	} else {
+-		imem->attrs = DMA_ATTR_NON_CONSISTENT |
+-			      DMA_ATTR_WEAK_ORDERING |
++		imem->attrs = DMA_ATTR_WEAK_ORDERING |
+ 			      DMA_ATTR_WRITE_COMBINE;
+ 
+ 		nvkm_info(&imem->base.subdev, "using DMA API\n");
+-- 
+2.28.0
 
-> > Please think hard before including complete backtraces in upstream
-> > reports, they are very large and contain almost no useful information
-> > relative to their size so often obscure the relevant content in your
-> > message. If part of the backtrace is usefully illustrative (it often is
-> > for search engines if nothing else) then it's usually better to pull out
-> > the relevant sections.
-
-> Thanks for your suggestion.
-> I'll respin this patch without the call stack messages.
-
-It's fine, I've already applied it - just please bear this in mind for
-future things.
-
---XuV1QlJbYrcVoo+x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9fhEkACgkQJNaLcl1U
-h9AtNQf9HgxmzZxTVQlfjBNeFM5yBqURDHqgtUJbisZOOpjn+VX48uJl8byD0z4I
-6IEUlXwCEAg4WXDF7PgnKXmG3hkmLCDfYkJtkcU2qjgNgDxDsa59javXplzGs+oV
-a8chwo357spK9SogK4HAHe2nizTi3w5g9S29X70i4bIStGAbZOAcAlAT1JgCA09W
-Mv7H2gmhxr8cffv+OQ31/Jy/PbeIc0zEgXDEZsrGi/zE5mcKdVelPUf7PnO20zra
-zJU0mDXZogBMQCrTXPSr+qCjhUGPVAHsk/Pxa9PoymvJ/6e2EYUehu/VcHXdD6UR
-R6HSvX6mo5dJtvQptcF2oqjNnaKXJg==
-=s88B
------END PGP SIGNATURE-----
-
---XuV1QlJbYrcVoo+x--
