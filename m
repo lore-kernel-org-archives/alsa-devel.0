@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1097C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:40:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B93EC433E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:41:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1105420EDD
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:40:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F33E2074B
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:41:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jd3Vg1bj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="an12vcgs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1105420EDD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OHuleNuI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="f8A/tP09"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F33E2074B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3834416D2;
-	Mon, 14 Sep 2020 17:40:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3834416D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2EB6169F;
+	Mon, 14 Sep 2020 17:40:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2EB6169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600098057;
-	bh=RoTPtd9qHHuk1GM7mtTLP95n0k7SzFhORIof1s3mXI4=;
+	s=default; t=1600098105;
+	bh=K8GDmgIFok61DBUhIpFd8GKKp/6PoQOtGoTpJAfvjV4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Jd3Vg1bjrQznvFjDh2TgtH7hMskbUFdW+3NQRrh1mnDj2+wQHF0jbXiF+fZy2FN3y
-	 +r/YFCqC0t0QT5QT5ufrE/ZBeRb2pNgvzJE6Qs8o9HpQwksN0U8itH3lzo1gRMsrN+
-	 erfC0t0YEKtSTye1Q6oX4oKDO3jWWOqZ14tYNw5k=
+	b=OHuleNuIY21tep+fKf7nAiYKOXRxREArPY8NzH0NSX46lRMBoqJFRj89+qXVFiih+
+	 Rq/vnc3tFX1D6pGfoR9y65oKX/1rOEGQi+wLXLDTylpHW1cysp4NdnnX15/B/dr66F
+	 BEoyneXefYh0Ocmkbo28EfzE7ygsIvtbCQERkrR4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13347F802DD;
-	Mon, 14 Sep 2020 17:38:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A276CF802EC;
+	Mon, 14 Sep 2020 17:38:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F93CF802DB; Mon, 14 Sep 2020 17:38:19 +0200 (CEST)
+ id D50ECF802D2; Mon, 14 Sep 2020 17:38:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D30DF8015A
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 17:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D30DF8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9001F80105
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 17:38:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9001F80105
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="an12vcgs"
+ header.b="f8A/tP09"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0F5892193E;
- Mon, 14 Sep 2020 15:38:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AC67C208DB;
+ Mon, 14 Sep 2020 15:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600097889;
- bh=RoTPtd9qHHuk1GM7mtTLP95n0k7SzFhORIof1s3mXI4=;
+ s=default; t=1600097892;
+ bh=K8GDmgIFok61DBUhIpFd8GKKp/6PoQOtGoTpJAfvjV4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=an12vcgsLuq8dJy3avIewd9JstauxKo62seMlj12DUNw3bW7UjfEsJsX6MQnWjpUq
- ZNSgQKrQh4ZtDER7l7MUuGRfIuAhBOrjUQm/iYdmvY1VLD0rRlB14FWBcZyPlDhumj
- uRXdoq4OFhaqzm0J4VpPvm6Tc8OKPDUrUR6f/kAg=
+ b=f8A/tP09/VdJtaE+8mhb6hj4aJFUw7hWS4RjTJvFMbVRTV5DlQoZSeJ/dbIyjjK6P
+ otm4FHhaHt6yHc8pfIbd0RU0UCXy1svPu77Xkmmpo7xGIg1W+cIY1YOaIUF32oqnhW
+ wz1S8q3dSA8dQD+UQq7ICE8A2tAgWVYdTZ+JU19w=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: himadrispandya@gmail.com,
 	dvyukov@google.com,
 	linux-usb@vger.kernel.org
-Subject: [PATCH v3 11/11] ALSA: remove calls to usb_pipe_type_check for
- control endpoints
-Date: Mon, 14 Sep 2020 17:37:56 +0200
-Message-Id: <20200914153756.3412156-12-gregkh@linuxfoundation.org>
+Subject: [PATCH v3 02/11] USB: add usb_control_msg_send() and
+ usb_control_msg_recv()
+Date: Mon, 14 Sep 2020 17:37:47 +0200
+Message-Id: <20200914153756.3412156-3-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
 References: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
@@ -77,8 +77,7 @@ Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, johan.hedberg@gmail.com,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, marcel@holtmann.org,
  linux-kernel@vger.kernel.org, tiwai@suse.com, stern@rowland.harvard.ed,
- linux-bluetooth@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
- Alan Stern <stern@rowland.harvard.edu>
+ linux-bluetooth@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,57 +93,193 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A USB device will always haev a bi-directional endpoint 0, that's just
-how the devices work, so no need to check for that in a few quirk tests
-as it will always pass.
+New core functions to make sending/receiving USB control messages easier
+and saner.
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Alexander Tsoy <alexander@tsoy.me>
-Cc: alsa-devel@alsa-project.org
-Reported-by: Alan Stern <stern@rowland.harvard.edu>
+In discussions, it turns out that the large majority of users of
+usb_control_msg() do so in potentially incorrect ways.  The most common
+issue is where a "short" message is received, yet never detected
+properly due to "incorrect" error handling.
+
+Handle all of this in the USB core with two new functions to try to make
+working with USB control messages simpler.
+
+No more need for dynamic data, messages can be on the stack, and only
+"complete" send/receive will work without causing an error.
+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
 v3:
  - no change from v2
 
 v2:
- - new patch, was not in v1 series, suggested by Alan.
+ - no change from v1
 
- sound/usb/quirks.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/usb/core/message.c | 133 +++++++++++++++++++++++++++++++++++++
+ include/linux/usb.h        |   6 ++
+ 2 files changed, 139 insertions(+)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 1b482848e73b..395d1ea6f03f 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -885,8 +885,6 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
- {
- 	int ret;
+diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
+index ae1de9cc4b09..1dc53b12a26a 100644
+--- a/drivers/usb/core/message.c
++++ b/drivers/usb/core/message.c
+@@ -162,6 +162,139 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
+ }
+ EXPORT_SYMBOL_GPL(usb_control_msg);
  
--	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
--		return -EINVAL;
- 	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 				  0xaf, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				  1, 0, NULL, 0, 1000);
-@@ -994,8 +992,6 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
++/**
++ * usb_control_msg_send - Builds a control "send" message, sends it off and waits for completion
++ * @dev: pointer to the usb device to send the message to
++ * @endpoint: endpoint to send the message to
++ * @request: USB message request value
++ * @requesttype: USB message request type value
++ * @value: USB message value
++ * @index: USB message index value
++ * @driver_data: pointer to the data to send
++ * @size: length in bytes of the data to send
++ * @timeout: time in msecs to wait for the message to complete before timing
++ *	out (if 0 the wait is forever)
++ *
++ * Context: !in_interrupt ()
++ *
++ * This function sends a control message to a specified endpoint that is not
++ * expected to fill in a response (i.e. a "send message") and waits for the
++ * message to complete, or timeout.
++ *
++ * Do not use this function from within an interrupt context. If you need
++ * an asynchronous message, or need to send a message from within interrupt
++ * context, use usb_submit_urb(). If a thread in your driver uses this call,
++ * make sure your disconnect() method can wait for it to complete. Since you
++ * don't have a handle on the URB used, you can't cancel the request.
++ *
++ * The data pointer can be made to a reference on the stack, or anywhere else,
++ * as it will not be modified at all.  This does not have the restriction that
++ * usb_control_msg() has where the data pointer must be to dynamically allocated
++ * memory (i.e. memory that can be successfully DMAed to a device).
++ *
++ * Return: If successful, 0 is returned, Otherwise, a negative error number.
++ */
++int usb_control_msg_send(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 const void *driver_data, __u16 size, int timeout)
++{
++	unsigned int pipe = usb_sndctrlpipe(dev, endpoint);
++	int ret;
++	u8 *data = NULL;
++
++	if (usb_pipe_type_check(dev, pipe))
++		return -EINVAL;
++
++	if (size) {
++		data = kmemdup(driver_data, size, GFP_KERNEL);
++		if (!data)
++			return -ENOMEM;
++	}
++
++	ret = usb_control_msg(dev, pipe, request, requesttype, value, index,
++			      data, size, timeout);
++	kfree(data);
++
++	if (ret < 0)
++		return ret;
++	if (ret == size)
++		return 0;
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(usb_control_msg_send);
++
++/**
++ * usb_control_msg_recv - Builds a control "receive" message, sends it off and waits for completion
++ * @dev: pointer to the usb device to send the message to
++ * @endpoint: endpoint to send the message to
++ * @request: USB message request value
++ * @requesttype: USB message request type value
++ * @value: USB message value
++ * @index: USB message index value
++ * @driver_data: pointer to the data to be filled in by the message
++ * @size: length in bytes of the data to be received
++ * @timeout: time in msecs to wait for the message to complete before timing
++ *	out (if 0 the wait is forever)
++ *
++ * Context: !in_interrupt ()
++ *
++ * This function sends a control message to a specified endpoint that is
++ * expected to fill in a response (i.e. a "receive message") and waits for the
++ * message to complete, or timeout.
++ *
++ * Do not use this function from within an interrupt context. If you need
++ * an asynchronous message, or need to send a message from within interrupt
++ * context, use usb_submit_urb(). If a thread in your driver uses this call,
++ * make sure your disconnect() method can wait for it to complete. Since you
++ * don't have a handle on the URB used, you can't cancel the request.
++ *
++ * The data pointer can be made to a reference on the stack, or anywhere else
++ * that can be successfully written to.  This function does not have the
++ * restriction that usb_control_msg() has where the data pointer must be to
++ * dynamically allocated memory (i.e. memory that can be successfully DMAed to a
++ * device).
++ *
++ * The "whole" message must be properly received from the device in order for
++ * this function to be successful.  If a device returns less than the expected
++ * amount of data, then the function will fail.  Do not use this for messages
++ * where a variable amount of data might be returned.
++ *
++ * Return: If successful, 0 is returned, Otherwise, a negative error number.
++ */
++int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 void *driver_data, __u16 size, int timeout)
++{
++	unsigned int pipe = usb_rcvctrlpipe(dev, endpoint);
++	int ret;
++	u8 *data;
++
++	if (!size || !driver_data || usb_pipe_type_check(dev, pipe))
++		return -EINVAL;
++
++	data = kmalloc(size, GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	ret = usb_control_msg(dev, pipe, request, requesttype, value, index,
++			      data, size, timeout);
++
++	if (ret < 0)
++		goto exit;
++
++	if (ret == size) {
++		memcpy(driver_data, data, size);
++		ret = 0;
++	} else {
++		ret = -EINVAL;
++	}
++
++exit:
++	kfree(data);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(usb_control_msg_recv);
++
+ /**
+  * usb_interrupt_msg - Builds an interrupt urb, sends it off and waits for completion
+  * @usb_dev: pointer to the usb device to send the message to
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index 0b3963d7ec38..a5460f08126e 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -1802,6 +1802,12 @@ extern int usb_bulk_msg(struct usb_device *usb_dev, unsigned int pipe,
+ 	int timeout);
  
- 	dev_dbg(&dev->dev, "Waiting for Axe-Fx III to boot up...\n");
- 
--	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
--		return -EINVAL;
- 	/* If the Axe-Fx III has not fully booted, it will timeout when trying
- 	 * to enable the audio streaming interface. A more generous timeout is
- 	 * used here to detect when the Axe-Fx III has finished booting as the
-@@ -1127,8 +1123,6 @@ static int snd_usb_motu_m_series_boot_quirk(struct usb_device *dev)
- {
- 	int ret;
- 
--	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
--		return -EINVAL;
- 	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 			      1, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 			      0x0, 0, NULL, 0, 1000);
+ /* wrappers around usb_control_msg() for the most common standard requests */
++int usb_control_msg_send(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 const void *data, __u16 size, int timeout);
++int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 void *data, __u16 size, int timeout);
+ extern int usb_get_descriptor(struct usb_device *dev, unsigned char desctype,
+ 	unsigned char descindex, void *buf, int size);
+ extern int usb_get_status(struct usb_device *dev,
 -- 
 2.28.0
 
