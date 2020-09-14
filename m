@@ -2,77 +2,94 @@ Return-Path: <SRS0=y4EY=CX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 019E1C43461
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 08:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9684AC43461
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 10:48:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01D67221F0
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 08:59:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82118207BB
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 10:48:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ODz1+fxG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01D67221F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VKa6TQu7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/Y6K+/P"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82118207BB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F3CD1694;
-	Mon, 14 Sep 2020 10:59:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F3CD1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8798167A;
+	Mon, 14 Sep 2020 12:47:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8798167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600073995;
-	bh=2KHTyYsC4dmh1Kz4Yq9kAh0nkCZcqCi5YE14/yI8QFI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ODz1+fxGthhGa1Ie1ptZqlJz0pjUkjixs/pacGaBwS6rwNAOYGnnwPZfG9ILNEJoH
-	 n/Q7LFJGZUxB6La9HYq/Fn2K+IT7hfOs28V5+56r+vUk4ddKuIGoYimwBVyF3nN8U2
-	 f4bKzKoospr/SoNscizNeRb1rE9fea1dwOLlH39g=
+	s=default; t=1600080500;
+	bh=2C3L4m6JqJ0nZHVMbLFTQl6O6Q77c7uYhw5iz1pa3p8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VKa6TQu7MNAzFinenxlINj8jdKYDYFI/1Ov44cAg8veUjjzJxksudaFiGMQi44fua
+	 e7rF4//4dNhOKQmp5ctA/m0lYupjlvvhp37Y/rECaMz/kJGOA7ocuuVu0O9p6chLxE
+	 NCrwTSQhXf9OkI5cFJ4eLsZjJp6RkFc50PJHHNa4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4252F802BE;
-	Mon, 14 Sep 2020 10:58:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26B12F80150;
+	Mon, 14 Sep 2020 12:47:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92A36F80150; Mon, 14 Sep 2020 10:58:11 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 57E2BF8015A; Mon, 14 Sep 2020 12:47:28 +0200 (CEST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 281DFF80150
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 10:58:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 281DFF80150
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08E8vqaiF030357,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08E8vqaiF030357
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 14 Sep 2020 16:57:52 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 14 Sep 2020 16:57:51 +0800
-Received: from derek-pvm.localdomain (172.22.239.23) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 14 Sep 2020 16:57:50 +0800
-From: <derek.fang@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] ASoC: rt1015: Fix DC calibration on bypass boost mode
-Date: Mon, 14 Sep 2020 16:57:18 +0800
-Message-ID: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
-X-Mailer: git-send-email 2.7.4
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7510F800F1
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 12:47:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7510F800F1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="X/Y6K+/P"
+Received: by mail-qk1-x742.google.com with SMTP id o16so16317644qkj.10
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 03:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=wZH/jMrnhxDGa2Hx9c9vkwQ/mFENngwhEAvrQNpRWk8=;
+ b=X/Y6K+/Px0NX64zhrgpov07rhAb/tILbtnASBoeej1aI5ScBxpo/mnlgjj7vuYarQ4
+ y6Qkv0cYAUFZ9xB2u37kJqwQXa5NywisM6th3uUySuMR8Nw34d2/DVrq7eF+V01xN1vW
+ 3jPnRsqB3QIieaSp2g/iC1jpElLi8cWI6e5G13o0gLY5NVoTHt3Jqj/u3YEPH+c70t7N
+ 55mdYrppINs2ssqSaGPTwIVE/SHkI3atkB0Pl9ThjOf4FTg5K+WQlb58tPb+OMomCfPF
+ Tl0jNND0MoBQAwWdUr2JRQXj55oxaFg3B99WKXRFDxpW8kxuo3qcgmI+tCe7KvfeZU15
+ lxuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=wZH/jMrnhxDGa2Hx9c9vkwQ/mFENngwhEAvrQNpRWk8=;
+ b=uhqsfwrwPYCt0MhP81UMsIwLLsremT66bgDf3BHZ4GUpJUtaotrjdbPWShclTti2ET
+ RMSWx8Z50+GSdq5gfp+7Uw3n1gN/cjM0CidZvswq79x2kS5egDvEQnfuBr/gdS0HHbP2
+ QMceJnB1ymtysEw8HzhLAcIg/SvPRDg/tCbgq9b9+oFRZ4KgiZBD5ik8U7ySa8foQ4Vy
+ Xh9eSPgMFdkfF4NGs2DzPCIkTi9AkGR8VHjupmFMknMtHUifAm8pxEF27Hl1uLb3o92j
+ /8TMAnRaEtjflck02cU3FYqVedDGeQMC3erXpX9EDnaWjX0LRQ/2CMXHnbAZD5EC9fqr
+ b1rA==
+X-Gm-Message-State: AOAM532II0QLmFx0tdcBNFih8mAWzoKuWudGI7SNNpGP4ZnowDqCtvuu
+ sFkelCvkKJ3zZOzdImKc5EksJ2DY+XEMVVs6XeI=
+X-Google-Smtp-Source: ABdhPJzpfag3UOMHPurYcykEgT1/WEh/BxCPmhjQDi42pmbr6hedv9Uzlg/KKTAbj2ctZhjEMjMmU0kre6J17dYlBlI=
+X-Received: by 2002:ae9:eb57:: with SMTP id b84mr12199593qkg.450.1600080440994; 
+ Mon, 14 Sep 2020 03:47:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.239.23]
-X-ClientProxiedBy: RTEXMB02.realtek.com.tw (172.21.6.95) To
- RTEXMB01.realtek.com.tw (172.21.6.94)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, kent_chen@realtek.com, derek.fang@realtek.com,
- shumingf@realtek.com, flove@realtek.com
+References: <20200911083048.29055-1-shengjiu.wang@nxp.com>
+ <20200911104042.GC4895@sirena.org.uk>
+In-Reply-To: <20200911104042.GC4895@sirena.org.uk>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Mon, 14 Sep 2020 18:47:10 +0800
+Message-ID: <CAA+D8APvRMXkrYPdGd7H1+hj8AFP7=nvZ0QbpnH8o52-sh50GQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: ak4458: Add DSD support for ak4458 and ak4497
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,102 +105,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: "derek.fang" <derek.fang@realtek.com>
+Hi Mark
 
-Fix the DC calibration unsuccessful issue on rt1015
-bypass boost mode.
+On Fri, Sep 11, 2020 at 6:43 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Sep 11, 2020 at 04:30:48PM +0800, Shengjiu Wang wrote:
+>
+> > Add a new kcontrol for ak4497 codec for ak4497 has a specific
+> > pin selection.
+>
+> What exactly is this pin selection about - is it something that will
+> change at runtime or should it be configured by the board in the DT?
 
-Signed-off-by: derek.fang <derek.fang@realtek.com>
----
- sound/soc/codecs/rt1015.c | 48 +++++++++++++++++++++++++++++++++--------------
- sound/soc/codecs/rt1015.h |  1 +
- 2 files changed, 35 insertions(+), 14 deletions(-)
+It is to select which pin group is used for DSD. it won't be changed
+at runtime.  So do you think it is better configured by DT?
 
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 548f686..ba1b6b3 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -484,6 +484,33 @@ static int rt1015_bypass_boost_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static void rt1015_calibrate(struct rt1015_priv *rt1015)
-+{
-+	struct snd_soc_component *component = rt1015->component;
-+	struct regmap *regmap = rt1015->regmap;
-+
-+	snd_soc_dapm_mutex_lock(&component->dapm);
-+	regcache_cache_bypass(regmap, true);
-+
-+	regmap_write(regmap, RT1015_PWR1, 0xd7df);
-+	regmap_write(regmap, RT1015_PWR4, 0x00b2);
-+	regmap_write(regmap, RT1015_CLSD_INTERNAL8, 0x2008);
-+	regmap_write(regmap, RT1015_CLSD_INTERNAL9, 0x0140);
-+	regmap_write(regmap, RT1015_GAT_BOOST, 0x0efe);
-+	regmap_write(regmap, RT1015_PWR_STATE_CTRL, 0x000d);
-+	regmap_write(regmap, RT1015_PWR_STATE_CTRL, 0x000e);
-+	regmap_write(regmap, RT1015_DC_CALIB_CLSD1, 0x5a00);
-+	regmap_write(regmap, RT1015_DC_CALIB_CLSD1, 0x5a01);
-+	regmap_write(regmap, RT1015_DC_CALIB_CLSD1, 0x5a05);
-+	msleep(500);
-+	regmap_write(regmap, RT1015_PWR1, 0x0);
-+
-+	regcache_cache_bypass(regmap, false);
-+	regcache_mark_dirty(regmap);
-+	regcache_sync(regmap);
-+	snd_soc_dapm_mutex_unlock(&component->dapm);
-+}
-+
- static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
-@@ -494,20 +521,12 @@ static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
- 
- 	if (!rt1015->dac_is_used) {
- 		rt1015->bypass_boost = ucontrol->value.integer.value[0];
--		if (rt1015->bypass_boost == RT1015_Bypass_Boost) {
--			snd_soc_component_write(component,
--				RT1015_PWR4, 0x00b2);
--			snd_soc_component_write(component,
--				RT1015_CLSD_INTERNAL8, 0x2008);
--			snd_soc_component_write(component,
--				RT1015_CLSD_INTERNAL9, 0x0140);
--			snd_soc_component_write(component,
--				RT1015_GAT_BOOST, 0x0efe);
--			snd_soc_component_write(component,
--				RT1015_PWR_STATE_CTRL, 0x000d);
--			msleep(500);
--			snd_soc_component_write(component,
--				RT1015_PWR_STATE_CTRL, 0x000e);
-+		if (rt1015->bypass_boost == RT1015_Bypass_Boost &&
-+			!rt1015->cali_done) {
-+			rt1015_calibrate(rt1015);
-+			rt1015->cali_done = 1;
-+
-+			regmap_write(rt1015->regmap, RT1015_MONO_DYNA_CTRL, 0x0010);
- 		}
- 	} else
- 		dev_err(component->dev, "DAC is being used!\n");
-@@ -888,6 +907,7 @@ static int rt1015_probe(struct snd_soc_component *component)
- 
- 	rt1015->component = component;
- 	rt1015->bclk_ratio = 0;
-+	rt1015->cali_done = 0;
- 	snd_soc_component_write(component, RT1015_BAT_RPO_STEP1, 0x061c);
- 
- 	return 0;
-diff --git a/sound/soc/codecs/rt1015.h b/sound/soc/codecs/rt1015.h
-index 7bd159e..4d11f58 100644
---- a/sound/soc/codecs/rt1015.h
-+++ b/sound/soc/codecs/rt1015.h
-@@ -389,6 +389,7 @@ struct rt1015_priv {
- 	int bypass_boost;
- 	int amp_ver;
- 	int dac_is_used;
-+	int cali_done;
- };
- 
- #endif /* __RT1015_H__ */
--- 
-2.7.4
-
+best regards
+wang shengjiu
