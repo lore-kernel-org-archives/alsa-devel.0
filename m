@@ -3,73 +3,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A24C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D0A9C43461
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:54:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69E8C20715
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:54:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC59420715
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:54:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e7+69ky7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xK9lRKLu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69E8C20715
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CAPKDzAx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQ+mmVTd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC59420715
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDCF4167F;
-	Mon, 14 Sep 2020 16:53:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDCF4167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23FC81682;
+	Mon, 14 Sep 2020 16:53:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23FC81682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600095270;
-	bh=1qKTCFyAmrhl/DWjwf+6VgDKAdfgJ17CixfdpPZvgzg=;
+	s=default; t=1600095282;
+	bh=kCXyTf1F7Hpnepe9H5+3ZGjjOSqK9omemapi+1z8niw=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e7+69ky7KfuMCic1L3+D6blKzYBlX8hIZAbqjY0PcfBqZI4TRmU+4XiN4e3Jsnd15
-	 gAvBNYfQTwVrD+Z18AMkdt4bjnKUAXfjcUIbGxjYpLSiVvB/gxBQN4PqdDA0UWBCdb
-	 Rl2j5haDXJDgpiiGq4sucjh+QlIVHi+i1unXftAc=
+	b=CAPKDzAxXSe4j4FAv+zwQHZO/+WSnvr2WU8/WthMVyH896l1YNUtgBKVLg/NRRKqW
+	 2b0vLLQ9Q5miCE4CZBbWcvhNIW2WBtJ3Vm7fei8XyS2r9VDIpdIuyZnJx9Pw9KUBSi
+	 8rDqOBgpDabJAnT3AOrzxGZobMEBHCcwkSJowrGI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5B1DF802C3;
-	Mon, 14 Sep 2020 16:52:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBBC7F802C4;
+	Mon, 14 Sep 2020 16:52:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D384FF802C3; Mon, 14 Sep 2020 16:52:15 +0200 (CEST)
+ id 286DBF802DB; Mon, 14 Sep 2020 16:52:18 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82A49F80105
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 16:52:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82A49F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0164F8015D
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 16:52:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0164F8015D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xK9lRKLu"
+ header.b="HQ+mmVTd"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id ED2A020936;
- Mon, 14 Sep 2020 14:52:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 01AF3206BE;
+ Mon, 14 Sep 2020 14:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600095123;
- bh=1qKTCFyAmrhl/DWjwf+6VgDKAdfgJ17CixfdpPZvgzg=;
+ s=default; t=1600095128;
+ bh=kCXyTf1F7Hpnepe9H5+3ZGjjOSqK9omemapi+1z8niw=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=xK9lRKLus8ZTZ5sP7mazOB8h5jM837B0pptkzyLD7irDdWvrqWKnFOsSh1FQKxzaG
- SD9XV4grMNOZdvog2Y5Jgr/u+ynVWIydfGDhPRSTjw5deRqvotddJbb0lVL9IaRBB1
- pyqgJpp/UhbMLVVR5MGBbR/5ktLTsFN23YwgzodY=
-Date: Mon, 14 Sep 2020 15:51:15 +0100
+ b=HQ+mmVTd/Cmn8rjCBgAGHyPV4yGPcho6YAR4+viBxQ8bRlaBaAiGbkCElS+fi/Xcb
+ RqJhUJeotTCUpxgJQBLUYSLflaw8/deEksAfxkKKyVDJ+UXTgCUSfGDhTB5vm/BstA
+ YOhbKgm8cRPpvO3SwZPObPgpXdUQb2lA+ykO2QZA=
+Date: Mon, 14 Sep 2020 15:51:20 +0100
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- lgirdwood@gmail.com
-In-Reply-To: <20200910124110.19361-1-peter.ujfalusi@ti.com>
-References: <20200910124110.19361-1-peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 0/2] ASoC: ti: j721e-evm: Support for j7200 variant
-Message-Id: <160009506911.439.3955483489656494834.b4-ty@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+To: "derek.fang@realtek.com" <derek.fang@realtek.com>, lgirdwood@gmail.com
+In-Reply-To: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
+References: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: rt1015: Fix DC calibration on bypass boost mode
+Message-Id: <160009506912.439.3488273269065935384.b4-ty@kernel.org>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, kent_chen@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,17 +85,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Sep 2020 15:41:08 +0300, Peter Ujfalusi wrote:
-> Changes since v1:
-> - Suffix the 2359296000 constant with 'u' to silence C90 warning
-> 
-> When j7200 SOM is connected to the CPB, the audio setup is a bit different:
-> Only 48KHz family have clock path, 44.1KHz is not supported.
-> 
-> Update the binding documentation and add support for the j7200 version of CPB
-> to the driver.
-> 
-> [...]
+On Mon, 14 Sep 2020 16:57:18 +0800, derek.fang@realtek.com wrote:
+> Fix the DC calibration unsuccessful issue on rt1015
+> bypass boost mode.
 
 Applied to
 
@@ -103,10 +95,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: ti, j721e-cpb-audio: Document support for j7200-cpb
-      commit: 18790b1b514a202bae2863a4206b731d95302c85
-[2/2] ASoC: ti: j721e-evm: Add support for j7200-cpb audio
-      commit: 18c140f4a2de8fa674d52fe522a47133bc124f81
+[1/2] ASoC: rt1015: Fix DC calibration on bypass boost mode
+      commit: da145172b236b1ac322fa81f6250aa59074eba68
+[2/2] ASoC: rt1015: Fix the failure to flush DAC data before playback
+      commit: 8d9a14fc7371a18d54226bf2542f77b11e5a7101
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
