@@ -2,74 +2,73 @@ Return-Path: <SRS0=y4EY=CX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D0A9C43461
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:54:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84C04C43461
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:55:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC59420715
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:54:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D00FE206BE
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 14:55:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CAPKDzAx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQ+mmVTd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC59420715
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k/Aku6XK";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fHEYHty1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D00FE206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23FC81682;
-	Mon, 14 Sep 2020 16:53:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23FC81682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57EAA16A3;
+	Mon, 14 Sep 2020 16:54:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57EAA16A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600095282;
-	bh=kCXyTf1F7Hpnepe9H5+3ZGjjOSqK9omemapi+1z8niw=;
+	s=default; t=1600095323;
+	bh=0Rdhj23dSlc9B+I6Z1sKv+n1S1msaVOGFY5Rifck8UY=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CAPKDzAxXSe4j4FAv+zwQHZO/+WSnvr2WU8/WthMVyH896l1YNUtgBKVLg/NRRKqW
-	 2b0vLLQ9Q5miCE4CZBbWcvhNIW2WBtJ3Vm7fei8XyS2r9VDIpdIuyZnJx9Pw9KUBSi
-	 8rDqOBgpDabJAnT3AOrzxGZobMEBHCcwkSJowrGI=
+	b=k/Aku6XK7wvMC0x+d1H16ggbe/uLzq+kmfWcmRjvSnHCTFIaBtw6LNhIAeCvkE2uF
+	 u/eOcyqBlbBwrCt0g7PIiJTJxCcCfVOAe+aq12ecYTlotSMdP6PBoEuHFqu4DeG8xH
+	 78pDuCdF5fFktv8gBa2MbCm3z1dyToE/fe/iNypI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBBC7F802C4;
-	Mon, 14 Sep 2020 16:52:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24A01F802DF;
+	Mon, 14 Sep 2020 16:52:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 286DBF802DB; Mon, 14 Sep 2020 16:52:18 +0200 (CEST)
+ id AC29AF802E2; Mon, 14 Sep 2020 16:52:21 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0164F8015D
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 16:52:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0164F8015D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15924F802DD
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 16:52:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15924F802DD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HQ+mmVTd"
+ header.b="fHEYHty1"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 01AF3206BE;
- Mon, 14 Sep 2020 14:52:07 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 24C3320829;
+ Mon, 14 Sep 2020 14:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600095128;
- bh=kCXyTf1F7Hpnepe9H5+3ZGjjOSqK9omemapi+1z8niw=;
+ s=default; t=1600095133;
+ bh=0Rdhj23dSlc9B+I6Z1sKv+n1S1msaVOGFY5Rifck8UY=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=HQ+mmVTd/Cmn8rjCBgAGHyPV4yGPcho6YAR4+viBxQ8bRlaBaAiGbkCElS+fi/Xcb
- RqJhUJeotTCUpxgJQBLUYSLflaw8/deEksAfxkKKyVDJ+UXTgCUSfGDhTB5vm/BstA
- YOhbKgm8cRPpvO3SwZPObPgpXdUQb2lA+ykO2QZA=
-Date: Mon, 14 Sep 2020 15:51:20 +0100
+ b=fHEYHty1PVdcEQnikpPvfiPNka9hST336BpqbxHDCMnUueClin5G5K5kX2SKqMrj8
+ jsuZ/zPMJHvowVIOH3/2O/2zvMvRtCaCuFp+uzqWxLkRq9yBg4vxOJSLZ1QQR3jVmA
+ /cQV/jesqMRC/2qgYMcibLfSSnzrVbtumNbPSyU0=
+Date: Mon, 14 Sep 2020 15:51:25 +0100
 From: Mark Brown <broonie@kernel.org>
-To: "derek.fang@realtek.com" <derek.fang@realtek.com>, lgirdwood@gmail.com
-In-Reply-To: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
-References: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
-Subject: Re: [PATCH 1/2] ASoC: rt1015: Fix DC calibration on bypass boost mode
-Message-Id: <160009506912.439.3488273269065935384.b4-ty@kernel.org>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, kent_chen@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+To: robh+dt@kernel.org, Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20200911024833.1673961-1-tzungbi@google.com>
+References: <20200911024833.1673961-1-tzungbi@google.com>
+Subject: Re: [PATCH 0/2] ASoC: mediatek: mt8183-da7219: support machine driver
+ for rt1015p
+Message-Id: <160009506912.439.1847050038899323133.b4-ty@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,9 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 14 Sep 2020 16:57:18 +0800, derek.fang@realtek.com wrote:
-> Fix the DC calibration unsuccessful issue on rt1015
-> bypass boost mode.
+On Fri, 11 Sep 2020 10:48:31 +0800, Tzung-Bi Shih wrote:
+> The series reuses mt8183-da7219-max98357.c for supporting machine
+> driver with rt1015p speaker amplifier.
+> 
+> The 1st patch adds document for the new proposed compatible string.
+> 
+> The 2nd patch changes the machine driver to support "RT1015P" codec.
+> 
+> [...]
 
 Applied to
 
@@ -95,10 +100,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt1015: Fix DC calibration on bypass boost mode
-      commit: da145172b236b1ac322fa81f6250aa59074eba68
-[2/2] ASoC: rt1015: Fix the failure to flush DAC data before playback
-      commit: 8d9a14fc7371a18d54226bf2542f77b11e5a7101
+[1/2] ASoC: dt-bindings: mt8183-da7219: add compatible string for using rt1015p
+      commit: 5d1e0557520862c3a73b8b6a809807be1b522c3f
+[2/2] ASoC: mediatek: mt8183-da7219: support machine driver with rt1015p
+      commit: 7e5bfdddd8772011a2d38cf6be821d616db6cf8c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
