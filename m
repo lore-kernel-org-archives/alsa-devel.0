@@ -2,82 +2,83 @@ Return-Path: <SRS0=y4EY=CX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B52DAC433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:44:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB783C43461
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:45:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 067892074B
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:44:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F161B2074B
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:45:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MNHAgozV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="slOTrpDg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 067892074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jdhimi0v";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WFV00sYP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F161B2074B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DC6816D2;
-	Mon, 14 Sep 2020 17:43:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DC6816D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 821B116EA;
+	Mon, 14 Sep 2020 17:44:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 821B116EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600098289;
-	bh=ZF6e8qPp/x3cgiilsgfoCgjGrTbb3zvBv90RHrPV+xs=;
+	s=default; t=1600098309;
+	bh=9e9ZbvMGYk/Ejz0s9gld8mWLyBfUmNRh8gmdGNZ//Vw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MNHAgozVY/wUG7W2UltvgKyTpahq56yTl0j+HeGBa3R29VeQdYO4YtXm5pdp8Uism
-	 zsfDCiTyOLEs9Yogzqd8uGiodWnCAv/BX6g4DzqevBWg+MZpmKfdzaJ+ZRfXj1yRKk
-	 Ww91fhI0ZbYHpxma9EGa79Ac77kbsSY3F+WNy5Jk=
+	b=Jdhimi0vh+dy//9e5XujKcfT9IKZzdvNYpslF8ji4XgssqNK3H9e5oNSwuUYgN2a4
+	 NsL5e1nvoEDcGHuzqqvreSZNMo3n7waBfJ6muRUvuHKpW6jsIg2xTRHMVl2O1hDQfS
+	 ok/6o6w9rrAUw6Tp777sFN1BEKvtS9+E0tzUXPPo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52315F80329;
-	Mon, 14 Sep 2020 17:38:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51015F80334;
+	Mon, 14 Sep 2020 17:38:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8ED7F80317; Mon, 14 Sep 2020 17:38:32 +0200 (CEST)
+ id 87001F80335; Mon, 14 Sep 2020 17:38:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 266B9F802F8
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 17:38:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 266B9F802F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94B2DF802FD
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 17:38:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94B2DF802FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="slOTrpDg"
+ header.b="WFV00sYP"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 39577221E8;
- Mon, 14 Sep 2020 15:38:23 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 96F76221F0;
+ Mon, 14 Sep 2020 15:38:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600097903;
- bh=ZF6e8qPp/x3cgiilsgfoCgjGrTbb3zvBv90RHrPV+xs=;
+ s=default; t=1600097906;
+ bh=9e9ZbvMGYk/Ejz0s9gld8mWLyBfUmNRh8gmdGNZ//Vw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=slOTrpDgeHjQbWkHqV4jrt+Wl87Mpt9WiyvTGUvE3nwYjwvIJhBuF+Tmgb3oKkZWt
- Y9v5C6qorLQEPWlS5MmGgEyKRsXDX8KyjqOnIaFvWb9h6uwdlRNETi+mx3ZQimhZca
- rji9N8mMnksjjNs6soNvXHdAHCmED+6rI4UUf5tQ=
+ b=WFV00sYPH5iGgMgQ1McSQ7D8AQH69Ut47xObQdZ5OVRKlLtMK/L3RiVy5XiPHTPx8
+ LhUw+tqv2+TB/TbU8aHYgasjMi9b4nWrlHxUyitVJkYbgpy/02ztqU+l40noTn8Wxk
+ 85cSJqJ3o6Htt3anFz5qtG3o3oXXSjOEXryd4sjA=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: himadrispandya@gmail.com,
 	dvyukov@google.com,
 	linux-usb@vger.kernel.org
-Subject: [PATCH v3 07/11] sound: 6fire: move to use usb_control_msg_send() and
+Subject: [PATCH v3 08/11] sound: line6: move to use usb_control_msg_send() and
  usb_control_msg_recv()
-Date: Mon, 14 Sep 2020 17:37:52 +0200
-Message-Id: <20200914153756.3412156-8-gregkh@linuxfoundation.org>
+Date: Mon, 14 Sep 2020 17:37:53 +0200
+Message-Id: <20200914153756.3412156-9-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
 References: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, johan.hedberg@gmail.com,
- Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- marcel@holtmann.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- stern@rowland.harvard.ed, linux-bluetooth@vger.kernel.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>, alsa-devel@alsa-project.org,
+ johan.hedberg@gmail.com, Takashi Iwai <tiwai@suse.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, marcel@holtmann.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, stern@rowland.harvard.ed,
+ linux-bluetooth@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,14 +95,12 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The usb_control_msg_send() and usb_control_msg_recv() calls can return
-an error if a "short" write/read happens, so move the driver over to
-using those calls instead, saving some logic in the wrapper functions
-that were being used in this driver.
-
-This also resolves a long-staging bug where data on the stack was being
-sent in a USB control message, which was not allowed.
+an error if a "short" write/read happens, and they can handle data off
+of the stack, so move the driver over to using those calls instead,
+saving some logic when dynamically allocating memory.
 
 Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 Cc: alsa-devel@alsa-project.org
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -112,112 +111,214 @@ v3:
 v2:
  - Added reviewed-by from Takashi
 
- sound/usb/6fire/firmware.c | 38 +++++++++++++-------------------------
- 1 file changed, 13 insertions(+), 25 deletions(-)
+ sound/usb/line6/driver.c   | 69 +++++++++++++++-----------------------
+ sound/usb/line6/podhd.c    | 17 ++++------
+ sound/usb/line6/toneport.c |  8 ++---
+ 3 files changed, 37 insertions(+), 57 deletions(-)
 
-diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
-index 69137c14d0dc..5b8994070c96 100644
---- a/sound/usb/6fire/firmware.c
-+++ b/sound/usb/6fire/firmware.c
-@@ -158,29 +158,17 @@ static int usb6fire_fw_ihex_init(const struct firmware *fw,
- static int usb6fire_fw_ezusb_write(struct usb_device *device,
- 		int type, int value, char *data, int len)
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 60674ce4879b..601292c51491 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -337,23 +337,18 @@ int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
  {
--	int ret;
+ 	struct usb_device *usbdev = line6->usbdev;
+ 	int ret;
+-	unsigned char *len;
++	u8 len;
+ 	unsigned count;
+ 
+ 	if (address > 0xffff || datalen > 0xff)
+ 		return -EINVAL;
+ 
+-	len = kmalloc(1, GFP_KERNEL);
+-	if (!len)
+-		return -ENOMEM;
 -
--	ret = usb_control_msg(device, usb_sndctrlpipe(device, 0), type,
--			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--			value, 0, data, len, HZ);
--	if (ret < 0)
--		return ret;
--	else if (ret != len)
--		return -EIO;
--	return 0;
-+	return usb_control_msg_send(device, 0, type,
-+				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-+				    value, 0, data, len, HZ);
- }
+ 	/* query the serial number: */
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+-			      (datalen << 8) | 0x21, address,
+-			      NULL, 0, LINE6_TIMEOUT * HZ);
+-
+-	if (ret < 0) {
++	ret = usb_control_msg_send(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
++				   (datalen << 8) | 0x21, address, NULL, 0,
++				   LINE6_TIMEOUT * HZ);
++	if (ret) {
+ 		dev_err(line6->ifcdev, "read request failed (error %d)\n", ret);
+ 		goto exit;
+ 	}
+@@ -362,45 +357,41 @@ int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
+ 	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
+ 		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
  
- static int usb6fire_fw_ezusb_read(struct usb_device *device,
- 		int type, int value, char *data, int len)
+-		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+-				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
+-				      USB_DIR_IN,
+-				      0x0012, 0x0000, len, 1,
+-				      LINE6_TIMEOUT * HZ);
+-		if (ret < 0) {
++		ret = usb_control_msg_recv(usbdev, 0, 0x67,
++					   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
++					   0x0012, 0x0000, &len, 1,
++					   LINE6_TIMEOUT * HZ);
++		if (ret) {
+ 			dev_err(line6->ifcdev,
+ 				"receive length failed (error %d)\n", ret);
+ 			goto exit;
+ 		}
+ 
+-		if (*len != 0xff)
++		if (len != 0xff)
+ 			break;
+ 	}
+ 
+ 	ret = -EIO;
+-	if (*len == 0xff) {
++	if (len == 0xff) {
+ 		dev_err(line6->ifcdev, "read failed after %d retries\n",
+ 			count);
+ 		goto exit;
+-	} else if (*len != datalen) {
++	} else if (len != datalen) {
+ 		/* should be equal or something went wrong */
+ 		dev_err(line6->ifcdev,
+ 			"length mismatch (expected %d, got %d)\n",
+-			(int)datalen, (int)*len);
++			(int)datalen, len);
+ 		goto exit;
+ 	}
+ 
+ 	/* receive the result: */
+-	ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+-			      0x0013, 0x0000, data, datalen,
+-			      LINE6_TIMEOUT * HZ);
+-
+-	if (ret < 0)
++	ret = usb_control_msg_recv(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
++				   0x0013, 0x0000, data, datalen, LINE6_TIMEOUT * HZ);
++	if (ret)
+ 		dev_err(line6->ifcdev, "read failed (error %d)\n", ret);
+ 
+ exit:
+-	kfree(len);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(line6_read_data);
+@@ -423,12 +414,10 @@ int line6_write_data(struct usb_line6 *line6, unsigned address, void *data,
+ 	if (!status)
+ 		return -ENOMEM;
+ 
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+-			      0x0022, address, data, datalen,
+-			      LINE6_TIMEOUT * HZ);
+-
+-	if (ret < 0) {
++	ret = usb_control_msg_send(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
++				   0x0022, address, data, datalen, LINE6_TIMEOUT * HZ);
++	if (ret) {
+ 		dev_err(line6->ifcdev,
+ 			"write request failed (error %d)\n", ret);
+ 		goto exit;
+@@ -437,14 +426,10 @@ int line6_write_data(struct usb_line6 *line6, unsigned address, void *data,
+ 	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
+ 		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
+ 
+-		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0),
+-				      0x67,
+-				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
+-				      USB_DIR_IN,
+-				      0x0012, 0x0000,
+-				      status, 1, LINE6_TIMEOUT * HZ);
+-
+-		if (ret < 0) {
++		ret = usb_control_msg_recv(usbdev, 0, 0x67,
++					   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
++					   0x0012, 0x0000, status, 1, LINE6_TIMEOUT * HZ);
++		if (ret) {
+ 			dev_err(line6->ifcdev,
+ 				"receiving status failed (error %d)\n", ret);
+ 			goto exit;
+diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
+index eef45f7fef0d..a1261f55d62b 100644
+--- a/sound/usb/line6/podhd.c
++++ b/sound/usb/line6/podhd.c
+@@ -183,29 +183,25 @@ static const struct attribute_group podhd_dev_attr_group = {
+ static int podhd_dev_start(struct usb_line6_podhd *pod)
  {
--	int ret = usb_control_msg(device, usb_rcvctrlpipe(device, 0), type,
--			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE, value,
--			0, data, len, HZ);
--	if (ret < 0)
--		return ret;
--	else if (ret != len)
--		return -EIO;
--	return 0;
-+	return usb_control_msg_recv(device, 0, type,
-+				    USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-+				    value, 0, data, len, HZ);
+ 	int ret;
+-	u8 *init_bytes;
++	u8 init_bytes[8];
+ 	int i;
+ 	struct usb_device *usbdev = pod->line6.usbdev;
+ 
+-	init_bytes = kmalloc(8, GFP_KERNEL);
+-	if (!init_bytes)
+-		return -ENOMEM;
+-
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
++	ret = usb_control_msg_send(usbdev, 0,
+ 					0x67, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+ 					0x11, 0,
+ 					NULL, 0, LINE6_TIMEOUT * HZ);
+-	if (ret < 0) {
++	if (ret) {
+ 		dev_err(pod->line6.ifcdev, "read request failed (error %d)\n", ret);
+ 		goto exit;
+ 	}
+ 
+ 	/* NOTE: looks like some kind of ping message */
+-	ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
++	ret = usb_control_msg_recv(usbdev, 0, 0x67,
+ 					USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+ 					0x11, 0x0,
+ 					init_bytes, 3, LINE6_TIMEOUT * HZ);
+-	if (ret < 0) {
++	if (ret) {
+ 		dev_err(pod->line6.ifcdev,
+ 			"receive length failed (error %d)\n", ret);
+ 		goto exit;
+@@ -220,13 +216,12 @@ static int podhd_dev_start(struct usb_line6_podhd *pod)
+ 			goto exit;
+ 	}
+ 
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
++	ret = usb_control_msg_send(usbdev, 0,
+ 					USB_REQ_SET_FEATURE,
+ 					USB_TYPE_STANDARD | USB_RECIP_DEVICE | USB_DIR_OUT,
+ 					1, 0,
+ 					NULL, 0, LINE6_TIMEOUT * HZ);
+ exit:
+-	kfree(init_bytes);
+ 	return ret;
  }
  
- static int usb6fire_fw_fpga_write(struct usb_device *device,
-@@ -230,7 +218,7 @@ static int usb6fire_fw_ezusb_upload(
- 	/* upload firmware image */
- 	data = 0x01; /* stop ezusb cpu */
- 	ret = usb6fire_fw_ezusb_write(device, 0xa0, 0xe600, &data, 1);
--	if (ret < 0) {
-+	if (ret) {
- 		kfree(rec);
- 		release_firmware(fw);
- 		dev_err(&intf->dev,
-@@ -242,7 +230,7 @@ static int usb6fire_fw_ezusb_upload(
- 	while (usb6fire_fw_ihex_next_record(rec)) { /* write firmware */
- 		ret = usb6fire_fw_ezusb_write(device, 0xa0, rec->address,
- 				rec->data, rec->len);
--		if (ret < 0) {
-+		if (ret) {
- 			kfree(rec);
- 			release_firmware(fw);
- 			dev_err(&intf->dev,
-@@ -257,7 +245,7 @@ static int usb6fire_fw_ezusb_upload(
- 	if (postdata) { /* write data after firmware has been uploaded */
- 		ret = usb6fire_fw_ezusb_write(device, 0xa0, postaddr,
- 				postdata, postlen);
--		if (ret < 0) {
-+		if (ret) {
- 			dev_err(&intf->dev,
- 				"unable to upload ezusb firmware %s: post urb.\n",
- 				fwname);
-@@ -267,7 +255,7 @@ static int usb6fire_fw_ezusb_upload(
+diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
+index 94dd5e7ab2e6..a9b56085b76a 100644
+--- a/sound/usb/line6/toneport.c
++++ b/sound/usb/line6/toneport.c
+@@ -126,11 +126,11 @@ static int toneport_send_cmd(struct usb_device *usbdev, int cmd1, int cmd2)
+ {
+ 	int ret;
  
- 	data = 0x00; /* resume ezusb cpu */
- 	ret = usb6fire_fw_ezusb_write(device, 0xa0, 0xe600, &data, 1);
--	if (ret < 0) {
-+	if (ret) {
- 		dev_err(&intf->dev,
- 			"unable to upload ezusb firmware %s: end message.\n",
- 			fwname);
-@@ -302,7 +290,7 @@ static int usb6fire_fw_fpga_upload(
- 	end = fw->data + fw->size;
+-	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+-			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+-			      cmd1, cmd2, NULL, 0, LINE6_TIMEOUT * HZ);
++	ret = usb_control_msg_send(usbdev, 0, 0x67,
++				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
++				   cmd1, cmd2, NULL, 0, LINE6_TIMEOUT * HZ);
  
- 	ret = usb6fire_fw_ezusb_write(device, 8, 0, NULL, 0);
 -	if (ret < 0) {
 +	if (ret) {
- 		kfree(buffer);
- 		release_firmware(fw);
- 		dev_err(&intf->dev,
-@@ -327,7 +315,7 @@ static int usb6fire_fw_fpga_upload(
- 	kfree(buffer);
- 
- 	ret = usb6fire_fw_ezusb_write(device, 9, 0, NULL, 0);
--	if (ret < 0) {
-+	if (ret) {
- 		dev_err(&intf->dev,
- 			"unable to upload fpga firmware: end urb.\n");
+ 		dev_err(&usbdev->dev, "send failed (error %d)\n", ret);
  		return ret;
-@@ -363,7 +351,7 @@ int usb6fire_fw_init(struct usb_interface *intf)
- 	u8 buffer[12];
- 
- 	ret = usb6fire_fw_ezusb_read(device, 1, 0, buffer, 8);
--	if (ret < 0) {
-+	if (ret) {
- 		dev_err(&intf->dev,
- 			"unable to receive device firmware state.\n");
- 		return ret;
+ 	}
 -- 
 2.28.0
 
