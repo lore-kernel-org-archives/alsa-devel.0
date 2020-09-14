@@ -2,71 +2,76 @@ Return-Path: <SRS0=y4EY=CX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E07C43461
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:40:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D8D0C43461
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:40:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E958C2193E
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:40:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 84AFE206E9
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 15:40:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IVXK/gdG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0Ax3veUW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E958C2193E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lVoGriDC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="s+qqpD6S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84AFE206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F28BC16D0;
-	Mon, 14 Sep 2020 17:39:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F28BC16D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03FB716DA;
+	Mon, 14 Sep 2020 17:39:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03FB716DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600097999;
-	bh=eMnr+X3ACCBlvUcal7w11UX5fuuRTjnCIruIdTho9mY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IVXK/gdGIi1iZAIHjxbArNHr7XSc/n6vlnhuSwuIZUjHz3aAAbKBM94QZMuTnIkbh
-	 XuluInkVuLaj/1v1C+fNJsspsDqmE2p9q2s+Kt8zZVjtuuusUXC7jsugAj9Vldbvsx
-	 PHIgwOICA+U37+3WV2WgKeAwQF8zDgRApHLM+yMo=
+	s=default; t=1600098047;
+	bh=Lac+oh0BmkC+rJKg3GvLrnq3erNRzPkU1hCh3fX7DZQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lVoGriDCrElA/pIPzulBEYGdsmIFR0dtAjgImn5bIjxrsKnGk8zDKteJ0CfYp/aRw
+	 1KloTnRLmK3JzpUM7uf5rnL22/MHUB78Nc9h1KJk2sQKCdjKHrmJ2sBWBQ1zpjv5wY
+	 97TOkqji4taFFxCAUHH4TdyzjSZ+jGOAeH7NfysE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96A51F802C3;
-	Mon, 14 Sep 2020 17:38:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39670F8020B;
+	Mon, 14 Sep 2020 17:38:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4086DF800AA; Mon, 14 Sep 2020 17:38:13 +0200 (CEST)
+ id 53EDBF802D2; Mon, 14 Sep 2020 17:38:18 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED4A0F80105
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 17:38:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED4A0F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80105F80150
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 17:38:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80105F80150
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="0Ax3veUW"
+ header.b="s+qqpD6S"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 28CD120EDD;
- Mon, 14 Sep 2020 15:38:01 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 460A0217BA;
+ Mon, 14 Sep 2020 15:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600097881;
- bh=eMnr+X3ACCBlvUcal7w11UX5fuuRTjnCIruIdTho9mY=;
- h=From:To:Cc:Subject:Date:From;
- b=0Ax3veUWya2pauThyCeqC044APqyL6V/aqtPNVrTaTYfcQqtVxDnXxkIcr1psOgIM
- TTYoB4t4vYmxxKpa21YExO0UKGXlblUkC6KCLR4AbaHKorJkvArXPcCV4/ReplxRoa
- auKSCyMB+dvEXpOu5HePg0CKpK0OLbUQsm3atgvI=
+ s=default; t=1600097886;
+ bh=Lac+oh0BmkC+rJKg3GvLrnq3erNRzPkU1hCh3fX7DZQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=s+qqpD6SUDjRr4uC3qrwB0h4mkyNZeQPS3scNncX7vvfUHm1q8c2CW7jqWlWvlYkO
+ hDoFChKszsshTdleYvOk/xbGGFuFTdKRfvmDTR/tquWqXrONldN7SDiMYV+eF8hW5A
+ dPCeqVoBJDL+RgdgfxR2GShvIVfJ6Kzz5lhVOubw=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: himadrispandya@gmail.com,
 	dvyukov@google.com,
 	linux-usb@vger.kernel.org
-Subject: [PATCH v3 00/11] USB: new USB control message helper functions
-Date: Mon, 14 Sep 2020 17:37:45 +0200
-Message-Id: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
+Subject: [PATCH v3 10/11] Bluetooth: ath3k: use usb_control_msg_send() and
+ usb_control_msg_recv()
+Date: Mon, 14 Sep 2020 17:37:55 +0200
+Message-Id: <20200914153756.3412156-11-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
+References: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, johan.hedberg@gmail.com,
@@ -88,92 +93,207 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In a recent discussion about a USB networking bug found by syzbot, and
-fixed by Himadri Pandya, the design of the existing usb_control_msg()
-call was brought up as not being the "nicest" thing to use by Dmitry
-Vyukov:
-        https://lore.kernel.org/r/CACT4Y+YbDODLRFn8M5QcY4CazhpeCaunJnP_udXtAs0rYoASSg@mail.gmail.com
+The usb_control_msg_send() and usb_control_msg_recv() calls can return
+an error if a "short" write/read happens, and they can handle data off
+of the stack, so move the driver over to using those calls instead,
+saving some logic when dynamically allocating memory.
 
-The function makes it hard to get right, in that it will return the
-number of bytes sent/received, but almost no one checks to see if a
-short read/write happens.  With a malicious, or broken, USB device, this
-can cause drivers to act on data that they did not anticipate, and
-sometimes copy internal kernel data out to userspace.
+Cc: Marcel Holtmann <marcel@holtmann.org>
+Cc: Johan Hedberg <johan.hedberg@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v3:
+ - no change from v2
 
-So let's fix this up by creating two new functions,
-usb_control_msg_send() and usb_control_msg_recv().  These functions
-either complete the full transation, or they return an error, a short
-send/recv is now an error.
+v2:
+ - no change from v1
 
-They also accept data off of the stack, saving individual drivers the
-pain of having to constantly allocate memory on their own for tiny
-messages, thereby saving overall kernel code space.
+ drivers/bluetooth/ath3k.c | 90 +++++++++++----------------------------
+ 1 file changed, 26 insertions(+), 64 deletions(-)
 
-The api also does not require a raw USB "pipe" to be sent to the
-function, as we know the direction, so just pass in the endpoint number
-instead, again making it easier on the USB driver author to use.
-
-This series first takes a helper function out of the sound core for
-verifying USB endpoints to be able to use internally, and then adds the
-new functions, converts over some internal USB code to use them, and
-then starts to clean up some drivers using these new functions, as an
-example of the savings that can happen by using these functions.
-
-Thanks to Dmitry and Himadri for the idea on how to do all of this.
-
-greg k-h
-
------
-
-Changes from v2:
-	- add Andy's reviewed-by: to patch 3
-	- remove unneeded change in usb_enable_link_state() in hub.c
-	  in patch 4
-
-Changes from v1:
-        - added acks from Takashi Iwai
-        - dropped changes to one function in patch 04 thanks to review
-          from Alan Stern
-        - typo fix in comment in patch 01
-        - added new patch 11 to remove some unneeded checks in the sound
-          drivers for endpoint statuses that would always be true.
-
-
-
-Greg Kroah-Hartman (11):
-  USB: move snd_usb_pipe_sanity_check into the USB core
-  USB: add usb_control_msg_send() and usb_control_msg_recv()
-  USB: core: message.c: use usb_control_msg_send() in a few places
-  USB: core: hub.c: use usb_control_msg_send() in a few places
-  USB: legousbtower: use usb_control_msg_recv()
-  sound: usx2y: move to use usb_control_msg_send()
-  sound: 6fire: move to use usb_control_msg_send() and
-    usb_control_msg_recv()
-  sound: line6: move to use usb_control_msg_send() and
-    usb_control_msg_recv()
-  sound: hiface: move to use usb_control_msg_send()
-  Bluetooth: ath3k: use usb_control_msg_send() and
-    usb_control_msg_recv()
-  ALSA: remove calls to usb_pipe_type_check for control endpoints
-
- drivers/bluetooth/ath3k.c       |  90 +++++------------
- drivers/usb/core/hub.c          |  99 ++++++++----------
- drivers/usb/core/message.c      | 171 ++++++++++++++++++++++++++++----
- drivers/usb/core/urb.c          |  31 ++++--
- drivers/usb/misc/legousbtower.c |  60 ++++-------
- include/linux/usb.h             |   7 ++
- sound/usb/6fire/firmware.c      |  38 +++----
- sound/usb/helper.c              |  16 +--
- sound/usb/helper.h              |   1 -
- sound/usb/hiface/pcm.c          |  14 ++-
- sound/usb/line6/driver.c        |  69 +++++--------
- sound/usb/line6/podhd.c         |  17 ++--
- sound/usb/line6/toneport.c      |   8 +-
- sound/usb/mixer_scarlett_gen2.c |   2 +-
- sound/usb/quirks.c              |  12 +--
- sound/usb/usx2y/us122l.c        |  42 ++------
- 16 files changed, 336 insertions(+), 341 deletions(-)
-
+diff --git a/drivers/bluetooth/ath3k.c b/drivers/bluetooth/ath3k.c
+index 4ce270513695..1472cccfd0b3 100644
+--- a/drivers/bluetooth/ath3k.c
++++ b/drivers/bluetooth/ath3k.c
+@@ -212,19 +212,16 @@ static int ath3k_load_firmware(struct usb_device *udev,
+ 
+ 	BT_DBG("udev %p", udev);
+ 
+-	pipe = usb_sndctrlpipe(udev, 0);
+-
+ 	send_buf = kmalloc(BULK_SIZE, GFP_KERNEL);
+ 	if (!send_buf) {
+ 		BT_ERR("Can't allocate memory chunk for firmware");
+ 		return -ENOMEM;
+ 	}
+ 
+-	memcpy(send_buf, firmware->data, FW_HDR_SIZE);
+-	err = usb_control_msg(udev, pipe, USB_REQ_DFU_DNLOAD, USB_TYPE_VENDOR,
+-			      0, 0, send_buf, FW_HDR_SIZE,
+-			      USB_CTRL_SET_TIMEOUT);
+-	if (err < 0) {
++	err = usb_control_msg_send(udev, 0, USB_REQ_DFU_DNLOAD, USB_TYPE_VENDOR,
++				   0, 0, firmware->data, FW_HDR_SIZE,
++				   USB_CTRL_SET_TIMEOUT);
++	if (err) {
+ 		BT_ERR("Can't change to loading configuration err");
+ 		goto error;
+ 	}
+@@ -259,44 +256,17 @@ static int ath3k_load_firmware(struct usb_device *udev,
+ 
+ static int ath3k_get_state(struct usb_device *udev, unsigned char *state)
+ {
+-	int ret, pipe = 0;
+-	char *buf;
+-
+-	buf = kmalloc(sizeof(*buf), GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	pipe = usb_rcvctrlpipe(udev, 0);
+-	ret = usb_control_msg(udev, pipe, ATH3K_GETSTATE,
+-			      USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
+-			      buf, sizeof(*buf), USB_CTRL_SET_TIMEOUT);
+-
+-	*state = *buf;
+-	kfree(buf);
+-
+-	return ret;
++	return usb_control_msg_recv(udev, 0, ATH3K_GETSTATE,
++				    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
++				    state, 1, USB_CTRL_SET_TIMEOUT);
+ }
+ 
+ static int ath3k_get_version(struct usb_device *udev,
+ 			struct ath3k_version *version)
+ {
+-	int ret, pipe = 0;
+-	struct ath3k_version *buf;
+-	const int size = sizeof(*buf);
+-
+-	buf = kmalloc(size, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	pipe = usb_rcvctrlpipe(udev, 0);
+-	ret = usb_control_msg(udev, pipe, ATH3K_GETVERSION,
+-			      USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
+-			      buf, size, USB_CTRL_SET_TIMEOUT);
+-
+-	memcpy(version, buf, size);
+-	kfree(buf);
+-
+-	return ret;
++	return usb_control_msg_recv(udev, 0, ATH3K_GETVERSION,
++				    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
++				    version, sizeof(*version), USB_CTRL_SET_TIMEOUT);
+ }
+ 
+ static int ath3k_load_fwfile(struct usb_device *udev,
+@@ -316,13 +286,10 @@ static int ath3k_load_fwfile(struct usb_device *udev,
+ 	}
+ 
+ 	size = min_t(uint, count, FW_HDR_SIZE);
+-	memcpy(send_buf, firmware->data, size);
+ 
+-	pipe = usb_sndctrlpipe(udev, 0);
+-	ret = usb_control_msg(udev, pipe, ATH3K_DNLOAD,
+-			USB_TYPE_VENDOR, 0, 0, send_buf,
+-			size, USB_CTRL_SET_TIMEOUT);
+-	if (ret < 0) {
++	ret = usb_control_msg_send(udev, 0, ATH3K_DNLOAD, USB_TYPE_VENDOR, 0, 0,
++				   firmware->data, size, USB_CTRL_SET_TIMEOUT);
++	if (ret) {
+ 		BT_ERR("Can't change to loading configuration err");
+ 		kfree(send_buf);
+ 		return ret;
+@@ -355,23 +322,19 @@ static int ath3k_load_fwfile(struct usb_device *udev,
+ 	return 0;
+ }
+ 
+-static int ath3k_switch_pid(struct usb_device *udev)
++static void ath3k_switch_pid(struct usb_device *udev)
+ {
+-	int pipe = 0;
+-
+-	pipe = usb_sndctrlpipe(udev, 0);
+-	return usb_control_msg(udev, pipe, USB_REG_SWITCH_VID_PID,
+-			USB_TYPE_VENDOR, 0, 0,
+-			NULL, 0, USB_CTRL_SET_TIMEOUT);
++	usb_control_msg_send(udev, 0, USB_REG_SWITCH_VID_PID, USB_TYPE_VENDOR,
++			     0, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
+ }
+ 
+ static int ath3k_set_normal_mode(struct usb_device *udev)
+ {
+ 	unsigned char fw_state;
+-	int pipe = 0, ret;
++	int ret;
+ 
+ 	ret = ath3k_get_state(udev, &fw_state);
+-	if (ret < 0) {
++	if (ret) {
+ 		BT_ERR("Can't get state to change to normal mode err");
+ 		return ret;
+ 	}
+@@ -381,10 +344,9 @@ static int ath3k_set_normal_mode(struct usb_device *udev)
+ 		return 0;
+ 	}
+ 
+-	pipe = usb_sndctrlpipe(udev, 0);
+-	return usb_control_msg(udev, pipe, ATH3K_SET_NORMAL_MODE,
+-			USB_TYPE_VENDOR, 0, 0,
+-			NULL, 0, USB_CTRL_SET_TIMEOUT);
++	return usb_control_msg_send(udev, 0, ATH3K_SET_NORMAL_MODE,
++				    USB_TYPE_VENDOR, 0, 0, NULL, 0,
++				    USB_CTRL_SET_TIMEOUT);
+ }
+ 
+ static int ath3k_load_patch(struct usb_device *udev)
+@@ -397,7 +359,7 @@ static int ath3k_load_patch(struct usb_device *udev)
+ 	int ret;
+ 
+ 	ret = ath3k_get_state(udev, &fw_state);
+-	if (ret < 0) {
++	if (ret) {
+ 		BT_ERR("Can't get state to change to load ram patch err");
+ 		return ret;
+ 	}
+@@ -408,7 +370,7 @@ static int ath3k_load_patch(struct usb_device *udev)
+ 	}
+ 
+ 	ret = ath3k_get_version(udev, &fw_version);
+-	if (ret < 0) {
++	if (ret) {
+ 		BT_ERR("Can't get version to change to load ram patch err");
+ 		return ret;
+ 	}
+@@ -449,13 +411,13 @@ static int ath3k_load_syscfg(struct usb_device *udev)
+ 	int clk_value, ret;
+ 
+ 	ret = ath3k_get_state(udev, &fw_state);
+-	if (ret < 0) {
++	if (ret) {
+ 		BT_ERR("Can't get state to change to load configuration err");
+ 		return -EBUSY;
+ 	}
+ 
+ 	ret = ath3k_get_version(udev, &fw_version);
+-	if (ret < 0) {
++	if (ret) {
+ 		BT_ERR("Can't get version to change to load ram patch err");
+ 		return ret;
+ 	}
+@@ -529,7 +491,7 @@ static int ath3k_probe(struct usb_interface *intf,
+ 			return ret;
+ 		}
+ 		ret = ath3k_set_normal_mode(udev);
+-		if (ret < 0) {
++		if (ret) {
+ 			BT_ERR("Set normal mode failed");
+ 			return ret;
+ 		}
 -- 
 2.28.0
 
