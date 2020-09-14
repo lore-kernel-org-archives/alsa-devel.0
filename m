@@ -7,68 +7,64 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2484C433E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 08:59:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 019E1C43461
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 08:59:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F61220756
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 08:59:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01D67221F0
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Sep 2020 08:59:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CSj6FnAE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F61220756
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ODz1+fxG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01D67221F0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88CFF829;
-	Mon, 14 Sep 2020 10:58:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88CFF829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F3CD1694;
+	Mon, 14 Sep 2020 10:59:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F3CD1694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600073940;
-	bh=XB/k5QAYBlWGFRP24rCB3iMO6nWrTr5DTabEHXAecv0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CSj6FnAEjQBOFN/IdhDQv3mgJd8M7jSVrrskcyRBO8X8uCGMu7I8wEBnJZyKd1/Ra
-	 lMamjnFU2LSyyB6x1RSwf27KFLFBoaSblj4FlQbHWNOL7U7hchBN9MgOxGdpdqK926
-	 bf9qLugITxyj5GXdr8Rg5j1m+uEZsLjEASjtjK44=
+	s=default; t=1600073995;
+	bh=2KHTyYsC4dmh1Kz4Yq9kAh0nkCZcqCi5YE14/yI8QFI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ODz1+fxGthhGa1Ie1ptZqlJz0pjUkjixs/pacGaBwS6rwNAOYGnnwPZfG9ILNEJoH
+	 n/Q7LFJGZUxB6La9HYq/Fn2K+IT7hfOs28V5+56r+vUk4ddKuIGoYimwBVyF3nN8U2
+	 f4bKzKoospr/SoNscizNeRb1rE9fea1dwOLlH39g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F8D5F80105;
-	Mon, 14 Sep 2020 10:58:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4252F802BE;
+	Mon, 14 Sep 2020 10:58:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B137EF8015C; Mon, 14 Sep 2020 10:58:07 +0200 (CEST)
+ id 92A36F80150; Mon, 14 Sep 2020 10:58:11 +0200 (CEST)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 080E2F80105
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 10:57:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 080E2F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 281DFF80150
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2020 10:58:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 281DFF80150
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08E8vqajF030357,
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08E8vqaiF030357,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08E8vqajF030357
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08E8vqaiF030357
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Mon, 14 Sep 2020 16:57:52 +0800
 Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
  RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 14 Sep 2020 16:57:52 +0800
+ 15.1.2044.4; Mon, 14 Sep 2020 16:57:51 +0800
 Received: from derek-pvm.localdomain (172.22.239.23) by
  RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 14 Sep 2020 16:57:51 +0800
+ 15.1.2044.4; Mon, 14 Sep 2020 16:57:50 +0800
 From: <derek.fang@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 2/2] ASoC: rt1015: Fix the failure to flush DAC data before
- playback
-Date: Mon, 14 Sep 2020 16:57:19 +0800
-Message-ID: <1600073839-6762-2-git-send-email-derek.fang@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt1015: Fix DC calibration on bypass boost mode
+Date: Mon, 14 Sep 2020 16:57:18 +0800
+Message-ID: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
-References: <1600073839-6762-1-git-send-email-derek.fang@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [172.22.239.23]
@@ -94,166 +90,97 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: "derek.fang" <derek.fang@realtek.com>
 
-Fix the failure to flush DAC data before playback.
+Fix the DC calibration unsuccessful issue on rt1015
+bypass boost mode.
 
 Signed-off-by: derek.fang <derek.fang@realtek.com>
 ---
- sound/soc/codecs/rt1015.c | 63 +++++++++++++++++++++++++++++++++++++++++------
- sound/soc/codecs/rt1015.h |  7 ++++++
- 2 files changed, 63 insertions(+), 7 deletions(-)
+ sound/soc/codecs/rt1015.c | 48 +++++++++++++++++++++++++++++++++--------------
+ sound/soc/codecs/rt1015.h |  1 +
+ 2 files changed, 35 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index ba1b6b3..25fe2dd 100644
+index 548f686..ba1b6b3 100644
 --- a/sound/soc/codecs/rt1015.c
 +++ b/sound/soc/codecs/rt1015.c
-@@ -534,6 +534,32 @@ static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
+@@ -484,6 +484,33 @@ static int rt1015_bypass_boost_get(struct snd_kcontrol *kcontrol,
  	return 0;
  }
  
-+static void rt1015_flush_work(struct work_struct *work)
++static void rt1015_calibrate(struct rt1015_priv *rt1015)
 +{
-+	struct rt1015_priv *rt1015 = container_of(work, struct rt1015_priv,
-+						flush_work.work);
 +	struct snd_soc_component *component = rt1015->component;
-+	unsigned int val, i = 0, count = 20;
++	struct regmap *regmap = rt1015->regmap;
 +
-+	while (i < count) {
-+		usleep_range(1000, 1500);
-+		dev_dbg(component->dev, "Flush DAC (retry:%u)\n", i);
-+		regmap_read(rt1015->regmap, RT1015_CLK_DET, &val);
-+		if (val & 0x800)
-+			break;
-+		i++;
-+	}
++	snd_soc_dapm_mutex_lock(&component->dapm);
++	regcache_cache_bypass(regmap, true);
 +
-+	regmap_write(rt1015->regmap, RT1015_SYS_RST1, 0x0597);
-+	regmap_write(rt1015->regmap, RT1015_SYS_RST1, 0x05f7);
-+	regmap_write(rt1015->regmap, RT1015_MAN_I2C, 0x0028);
++	regmap_write(regmap, RT1015_PWR1, 0xd7df);
++	regmap_write(regmap, RT1015_PWR4, 0x00b2);
++	regmap_write(regmap, RT1015_CLSD_INTERNAL8, 0x2008);
++	regmap_write(regmap, RT1015_CLSD_INTERNAL9, 0x0140);
++	regmap_write(regmap, RT1015_GAT_BOOST, 0x0efe);
++	regmap_write(regmap, RT1015_PWR_STATE_CTRL, 0x000d);
++	regmap_write(regmap, RT1015_PWR_STATE_CTRL, 0x000e);
++	regmap_write(regmap, RT1015_DC_CALIB_CLSD1, 0x5a00);
++	regmap_write(regmap, RT1015_DC_CALIB_CLSD1, 0x5a01);
++	regmap_write(regmap, RT1015_DC_CALIB_CLSD1, 0x5a05);
++	msleep(500);
++	regmap_write(regmap, RT1015_PWR1, 0x0);
 +
-+	if (val & 0x800)
-+		dev_dbg(component->dev, "Flush DAC completed.\n");
-+	else
-+		dev_warn(component->dev, "Fail to flush DAC data.\n");
++	regcache_cache_bypass(regmap, false);
++	regcache_mark_dirty(regmap);
++	regcache_sync(regmap);
++	snd_soc_dapm_mutex_unlock(&component->dapm);
 +}
 +
- static const struct snd_kcontrol_new rt1015_snd_controls[] = {
- 	SOC_SINGLE_TLV("DAC Playback Volume", RT1015_DAC1, RT1015_DAC_VOL_SFT,
- 		127, 0, dac_vol_tlv),
-@@ -587,12 +613,7 @@ static int r1015_dac_event(struct snd_soc_dapm_widget *w,
- 		break;
+ static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
+ 		struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -494,20 +521,12 @@ static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
  
- 	case SND_SOC_DAPM_POST_PMU:
+ 	if (!rt1015->dac_is_used) {
+ 		rt1015->bypass_boost = ucontrol->value.integer.value[0];
 -		if (rt1015->bypass_boost == RT1015_Bypass_Boost) {
--			regmap_write(rt1015->regmap, RT1015_MAN_I2C, 0x00a8);
--			regmap_write(rt1015->regmap, RT1015_SYS_RST1, 0x0597);
--			regmap_write(rt1015->regmap, RT1015_SYS_RST1, 0x05f7);
--			regmap_write(rt1015->regmap, RT1015_MAN_I2C, 0x0028);
--		}
-+		regmap_write(rt1015->regmap, RT1015_MAN_I2C, 0x00a8);
- 		break;
- 
- 	case SND_SOC_DAPM_POST_PMD:
-@@ -608,6 +629,8 @@ static int r1015_dac_event(struct snd_soc_dapm_widget *w,
- 				RT1015_SYS_RST1, 0x05f5);
+-			snd_soc_component_write(component,
+-				RT1015_PWR4, 0x00b2);
+-			snd_soc_component_write(component,
+-				RT1015_CLSD_INTERNAL8, 0x2008);
+-			snd_soc_component_write(component,
+-				RT1015_CLSD_INTERNAL9, 0x0140);
+-			snd_soc_component_write(component,
+-				RT1015_GAT_BOOST, 0x0efe);
+-			snd_soc_component_write(component,
+-				RT1015_PWR_STATE_CTRL, 0x000d);
+-			msleep(500);
+-			snd_soc_component_write(component,
+-				RT1015_PWR_STATE_CTRL, 0x000e);
++		if (rt1015->bypass_boost == RT1015_Bypass_Boost &&
++			!rt1015->cali_done) {
++			rt1015_calibrate(rt1015);
++			rt1015->cali_done = 1;
++
++			regmap_write(rt1015->regmap, RT1015_MONO_DYNA_CTRL, 0x0010);
  		}
- 		rt1015->dac_is_used = 0;
-+
-+		cancel_delayed_work_sync(&rt1015->flush_work);
- 		break;
+ 	} else
+ 		dev_err(component->dev, "DAC is being used!\n");
+@@ -888,6 +907,7 @@ static int rt1015_probe(struct snd_soc_component *component)
  
- 	default:
-@@ -616,6 +639,24 @@ static int r1015_dac_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int rt1015_amp_drv_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct rt1015_priv *rt1015 = snd_soc_component_get_drvdata(component);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		if (rt1015->hw_config == RT1015_HW_28)
-+			schedule_delayed_work(&rt1015->flush_work, msecs_to_jiffies(10));
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt1015_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("LDO2", RT1015_PWR1, RT1015_PWR_LDO2_BIT, 0,
- 		NULL, 0),
-@@ -649,6 +690,8 @@ static const struct snd_soc_dapm_widget rt1015_dapm_widgets[] = {
- 		r1015_dac_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
- 		SND_SOC_DAPM_POST_PMD),
- 
-+	SND_SOC_DAPM_OUT_DRV_E("Amp Drv", SND_SOC_NOPM, 0, 0, NULL, 0,
-+			rt1015_amp_drv_event, SND_SOC_DAPM_POST_PMU),
- 	SND_SOC_DAPM_OUTPUT("SPO"),
- };
- 
-@@ -667,7 +710,8 @@ static const struct snd_soc_dapm_route rt1015_dapm_routes[] = {
- 	{ "DAC", NULL, "MIXERV" },
- 	{ "DAC", NULL, "SUMV" },
- 	{ "DAC", NULL, "VREFLV" },
--	{ "SPO", NULL, "DAC" },
-+	{ "Amp Drv", NULL, "DAC" },
-+	{ "SPO", NULL, "Amp Drv" },
- };
- 
- static int rt1015_hw_params(struct snd_pcm_substream *substream,
-@@ -910,6 +954,8 @@ static int rt1015_probe(struct snd_soc_component *component)
- 	rt1015->cali_done = 0;
+ 	rt1015->component = component;
+ 	rt1015->bclk_ratio = 0;
++	rt1015->cali_done = 0;
  	snd_soc_component_write(component, RT1015_BAT_RPO_STEP1, 0x061c);
  
-+	INIT_DELAYED_WORK(&rt1015->flush_work, rt1015_flush_work);
-+
  	return 0;
- }
- 
-@@ -917,6 +963,7 @@ static void rt1015_remove(struct snd_soc_component *component)
- {
- 	struct rt1015_priv *rt1015 = snd_soc_component_get_drvdata(component);
- 
-+	cancel_delayed_work_sync(&rt1015->flush_work);
- 	regmap_write(rt1015->regmap, RT1015_RESET, 0);
- }
- 
-@@ -1042,6 +1089,8 @@ static int rt1015_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	rt1015->hw_config = (i2c->addr == 0x29) ? RT1015_HW_29 : RT1015_HW_28;
-+
- 	regmap_read(rt1015->regmap, RT1015_DEVICE_ID, &val);
- 	if ((val != RT1015_DEVICE_ID_VAL) && (val != RT1015_DEVICE_ID_VAL2)) {
- 		dev_err(&i2c->dev,
 diff --git a/sound/soc/codecs/rt1015.h b/sound/soc/codecs/rt1015.h
-index 4d11f58..d3fdd30 100644
+index 7bd159e..4d11f58 100644
 --- a/sound/soc/codecs/rt1015.h
 +++ b/sound/soc/codecs/rt1015.h
-@@ -373,6 +373,11 @@ enum {
- 	RT1015_Bypass_Boost,
- };
- 
-+enum {
-+	RT1015_HW_28 = 0,
-+	RT1015_HW_29,
-+};
-+
- struct rt1015_priv {
- 	struct snd_soc_component *component;
- 	struct regmap *regmap;
-@@ -390,6 +395,8 @@ struct rt1015_priv {
+@@ -389,6 +389,7 @@ struct rt1015_priv {
+ 	int bypass_boost;
  	int amp_ver;
  	int dac_is_used;
- 	int cali_done;
-+	int hw_config;
-+	struct delayed_work flush_work;
++	int cali_done;
  };
  
  #endif /* __RT1015_H__ */
