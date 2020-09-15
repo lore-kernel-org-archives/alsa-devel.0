@@ -2,96 +2,92 @@ Return-Path: <SRS0=FUiO=CY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB257C43461
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:07:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D49E4C43461
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:07:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F371620756
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:06:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE1642078E
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:07:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LLWM9132";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VcqG6mYy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F371620756
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O/PMxihX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dJDHqhDL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE1642078E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06D3A844;
-	Tue, 15 Sep 2020 21:06:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06D3A844
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB0141689;
+	Tue, 15 Sep 2020 21:07:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB0141689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600196818;
-	bh=Ao1EEjbySbGDfqz/yMgDK7uIIQmqhNdczkDQhw9oTzg=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1600196870;
+	bh=eFKRLsM1wi5VpXmo7Rx+cZCFXk0sF3mV9/p1jJ+if5s=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LLWM91320y+jWKSRmhmbvD2BlJseG8FYNGc56oSg5UAJtLUSOE8CZhaKpTe6KvlQW
-	 Z/RYPyhi24UwXa2XIpZndooh6lQ/OuZfA1RBjGQ7qCa+OH2PJ9+52Vsh0fUSdy2l+w
-	 CWjzFc8I9OPNNS7ZhAY2nzo6VIK82F1LzpcWuT7Q=
+	b=O/PMxihX+kUKd8deE4neRSCvZvTb+87s8mjFapPWWlZeUjGnHg1b1NLBibpyo136m
+	 JZY7JzcIk6mkg5G5xHFo00fWpoLO7gpP1FIi4b7WSCzVDL167REpSLZ64D0d1S6/Yl
+	 51j790wyVvqOoGPyoo1Sd1xBAZ6RURdH/vcCv//Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FF6FF80159;
-	Tue, 15 Sep 2020 21:06:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5E9CF8027C;
+	Tue, 15 Sep 2020 21:06:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8F81F80212; Tue, 15 Sep 2020 21:06:05 +0200 (CEST)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ id 34CADF80290; Tue, 15 Sep 2020 21:06:25 +0200 (CEST)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77A8FF800F1
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 21:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77A8FF800F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E6F6F8025E
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 21:06:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E6F6F8025E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VcqG6mYy"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ5pRn058642;
- Tue, 15 Sep 2020 14:05:51 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dJDHqhDL"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6HwF013519;
+ Tue, 15 Sep 2020 14:06:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600196751;
- bh=FwOp1+5tY+FzI+nWDtzQ/kM21d7eLdPx/kZA6dPG+Rk=;
- h=Subject:From:To:CC:References:Date:In-Reply-To;
- b=VcqG6mYy7tqwIB8G28svBpcMM2FbvJFBSCBgmQLAi4Hi5IbNgT6FHWGI3FFZJ2eo8
- Mq64x9ulrjuMzFQrFmo1X82smEKecxdpzfTu0AgQnh81mWfE4k15mzNWqPtIfoFMBk
- uRNr5ioCDWXky4tFxBNC6UznhMvLgQ3cEFtdg1MM=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ5pnO038065;
- Tue, 15 Sep 2020 14:05:51 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ s=ti-com-17Q1; t=1600196777;
+ bh=DkyZu5LoKU5RAM9n+bYIZ61osvE1080309ep6aCvTeQ=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=dJDHqhDLlbu/voylnBEqiHCcamsxrLf7XEuptb+xoVF1Dy5AtnD6Zdb+GfFaiKH14
+ 0mQ8Swajq7q18FBSuLLnOa7qwHAJPg/3/+xrEPYEoHHisv5tqt5I0parp7Hs2OuFUF
+ boZeL5akkfU/5gvYj5CbHftCbDOExC0ehAQB9neo=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FJ6HI8060486
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 15 Sep 2020 14:06:17 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 14:05:51 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 14:06:17 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 14:05:51 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ5okH006371;
- Tue, 15 Sep 2020 14:05:50 -0500
-Subject: Re: [PATCH v2 2/3] ASoC: tlv320adcx140: Add support for configuring
- GPIO pin
+ Frontend Transport; Tue, 15 Sep 2020 14:06:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6HpF008040;
+ Tue, 15 Sep 2020 14:06:17 -0500
 From: Dan Murphy <dmurphy@ti.com>
-To: Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <tiwai@suse.com>
-References: <20200911080753.30342-1-camel.guo@axis.com>
- <20200911080753.30342-2-camel.guo@axis.com>
- <da35edb3-bc41-967c-d530-4df4363ddddf@ti.com>
-Message-ID: <6833eff3-39d3-f707-d0e6-c0db9f86157c@ti.com>
-Date: Tue, 15 Sep 2020 14:05:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
+ <robh+dt@kernel.org>
+Subject: [PATCH 2/6] ASoC: tlv320adcx140: Fix BCLK inversion for DSP modes
+Date: Tue, 15 Sep 2020 14:06:02 -0500
+Message-ID: <20200915190606.1744-2-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200915190606.1744-1-dmurphy@ti.com>
+References: <20200915190606.1744-1-dmurphy@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <da35edb3-bc41-967c-d530-4df4363ddddf@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Camel Guo <camelg@axis.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>, camel.guo@axis.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,15 +103,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Camel
+Fix the BCLK inversion for DSP modes
+This is how it is defined by ASoC:
+ * BCLK:
+ * - "normal" polarity means signal is available at rising edge of BCLK
+ * - "inverted" polarity means signal is available at falling edge of BCLK
 
-On 9/15/20 1:41 PM, Dan Murphy wrote:
-> Camel
->
-> On 9/11/20 3:07 AM, Camel Guo wrote:
->> From: Camel Guo <camelg@axis.com>
+The adcx140 defines the BCLK edge based on coding type.
+The PCM (DSP_A/B) should drive on rising and sample on falling edge, so
+from ASoC pov, it is IB_NF. But from the codec pov if it is configured in
+DSP mode, then the BCLK should not be inverted, defaults to the coding
+standard.
 
+For i2s, it is NB_NF from ASoC pov (drive on falling, sample on rising).
+From the codec's pov BCLK should not invert either, as this is the default
+for the coding.
 
-One other thing for the device tree you need to add Rob Herring and 
-devicetree@vger.kernel.org
+So, inversion must take the format into account:
+IB_NF + DSP_A/B == the codec bclk inversion should be disabled
+NB_NF + DSP_A/B == the codec bclk inversion should be enabled
+NB_NF + I2S == the codec bclk inversion should be disabled
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 44 +++++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 3909c1cf52be..73d18e8002e4 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -673,7 +673,7 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	u8 iface_reg1 = 0;
+ 	u8 iface_reg2 = 0;
+ 	int offset = 0;
+-	int width = adcx140->slot_width;
++	bool inverted_bclk = false;
+ 
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -689,24 +689,6 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* signal polarity */
+-	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+-	case SND_SOC_DAIFMT_NB_IF:
+-		iface_reg1 |= ADCX140_FSYNCINV_BIT;
+-		break;
+-	case SND_SOC_DAIFMT_IB_IF:
+-		iface_reg1 |= ADCX140_BCLKINV_BIT | ADCX140_FSYNCINV_BIT;
+-		break;
+-	case SND_SOC_DAIFMT_IB_NF:
+-		iface_reg1 |= ADCX140_BCLKINV_BIT;
+-		break;
+-	case SND_SOC_DAIFMT_NB_NF:
+-		break;
+-	default:
+-		dev_err(component->dev, "Invalid DAI clock signal polarity\n");
+-		return -EINVAL;
+-	}
+-
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+@@ -716,16 +698,36 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		iface_reg1 |= ADCX140_LEFT_JUST_BIT;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		offset += (adcx140->tdm_delay * width + 1);
++		offset = 1;
++		inverted_bclk = true;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		offset += adcx140->tdm_delay * width;
++		inverted_bclk = true;
+ 		break;
+ 	default:
+ 		dev_err(component->dev, "Invalid DAI interface format\n");
+ 		return -EINVAL;
+ 	}
+ 
++	/* signal polarity */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_NF:
++	case SND_SOC_DAIFMT_IB_IF:
++		inverted_bclk = !inverted_bclk;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		iface_reg1 |= ADCX140_FSYNCINV_BIT;
++		break;
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	default:
++		dev_err(component->dev, "Invalid DAI clock signal polarity\n");
++		return -EINVAL;
++	}
++
++	if (inverted_bclk)
++		iface_reg1 |= ADCX140_BCLKINV_BIT;
++
+ 	adcx140->dai_fmt = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
+ 	adcx140_pwr_ctrl(adcx140, false);
+-- 
+2.28.0
 
