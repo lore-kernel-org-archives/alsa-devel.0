@@ -5,77 +5,91 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01449C43461
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05FEDC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:36:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C0DF206A2
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:35:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D5B6206B6
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:36:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="npOCWFD0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C0DF206A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BWDbstzI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BF8Ybwry"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D5B6206B6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF3B71698;
-	Tue, 15 Sep 2020 18:34:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF3B71698
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0A6416AE;
+	Tue, 15 Sep 2020 18:35:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0A6416AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600187738;
-	bh=0fIiUO71NBpAgzUIOUmUjSZDhfoFe3LqScbIu87z5vA=;
+	s=default; t=1600187767;
+	bh=yZxQIPZxN1PJXsPOHZ8+4ZcYUTuXsjpfr+n7bk7VVck=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=npOCWFD02+LK4udox3Gos9r8J0/9q0LTzImn8Yadgq1cb1lIMVXDNffiEiE0S3YdP
-	 E3PHvC1obdmN2tE8V0fppYYDMOX+bw2jzielpFgtMx310lwvTzyotwpcGEnctxJ3Dh
-	 +8W/twuhXzK//BGxXJlM3aowoaqdMbRDfks+lZdI=
+	b=BWDbstzI680PJqg0OQPxi3BNKrrB6xcXtshJ66CRCTzi29SWKJIr6W2dAjOdZwWr3
+	 uUNi8NiIuV2xoLPvPkyxKcRJ7QT8M4DCAuyQ7zYHTMZUU5pLP6R4VVvfZ/TN5UF3mc
+	 d0Td362uw9i61K7tvxuLYp2K70ZGzRaH1co+MFyE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08F42F80323;
-	Tue, 15 Sep 2020 18:31:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 421D1F80341;
+	Tue, 15 Sep 2020 18:31:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 901D5F802F8; Tue, 15 Sep 2020 18:30:59 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 694E7F8033F; Tue, 15 Sep 2020 18:31:27 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D05A9F80276
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 18:30:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D05A9F80276
-IronPort-SDR: Ouzzf4fh60J9c0dmTetuG5wTVB6gAo7HXkXXIV6QCCNWzzNyWmLwcq2ZGJZn4LzF9+VzZHq4Al
- VjXWt+yYC4Vw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177365977"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="177365977"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2020 09:30:52 -0700
-IronPort-SDR: v/5nEoRbRIFNIusNOPL+r7Y7NlO7SyvMjwyGXTVF/kz3Yabl7KSIvdNKk5IFt0IcG/YbCaLHdj
- BK/cvwnnENJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="302218811"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga003.jf.intel.com with ESMTP; 15 Sep 2020 09:30:48 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 07/13] ASoC: Intel: catpt: Event tracing
-Date: Tue, 15 Sep 2020 18:29:38 +0200
-Message-Id: <20200915162944.16241-8-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200915162944.16241-1-cezary.rojewski@intel.com>
-References: <20200915162944.16241-1-cezary.rojewski@intel.com>
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, andriy.shevchenko@linux.intel.com,
- filip.kaczmarski@intel.com, harshapriya.n@intel.com, marcin.barlik@intel.com,
- zwisler@google.com, lgirdwood@gmail.com, tiwai@suse.com,
- filip.proborszcz@intel.com, broonie@kernel.org,
- amadeuszx.slawinski@linux.intel.com, michal.wasko@intel.com,
- cujomalainey@chromium.org, krzysztof.hejmowski@intel.com,
- ppapierkowski@habana.ai, vamshi.krishna.gopal@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35FA3F80332
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 18:31:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35FA3F80332
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="BF8Ybwry"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=Y4Zt5Q6wslvCqwY7SHiicX4jOFlI8lEV5uqNCn2aPDc=; b=BF8YbwryBXqc7mtPROjOHHMQzI
+ aCOvb2dbe8fLen0MFlQ6bZdJO1rQP3g4d4dO9bC7wb3bPnpXsd//7pQm0XAe1CmnocDvI3mNw9x84
+ DqMUZtD3QsVy3CT7VDTqkPTc3a5yO5/TZLXDAt220oVQgGJ5BfYy8yaS2AQg9qMpEcy+I3LkNY7il
+ JzIkJb66RHJirHSLpWuLrzgjJYckHJ3vo00GUu01LuPsQths42SyDL/0HOTCDVBBkLabE6ifyxjAQ
+ ojf3+iDcfdbfdvsdoVmpGVpJvbYCHk+tqW16FLi5PeV0QL06+xx8fYIueiaHF7UduNRuvBDsvbu9C
+ G1h7Ntow==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92]
+ helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kIDqu-00064n-5h; Tue, 15 Sep 2020 16:30:44 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Joonyoung Shim <jy0922.shim@samsung.com>,
+ Seung-Woo Kim <sw0312.kim@samsung.com>, Ben Skeggs <bskeggs@redhat.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Tomasz Figa <tfiga@chromium.org>,
+ Matt Porter <mporter@kernel.crashing.org>, iommu@lists.linux-foundation.org
+Subject: [PATCH 17/18] dma-iommu: implement ->alloc_noncoherent
+Date: Tue, 15 Sep 2020 17:51:21 +0200
+Message-Id: <20200915155122.1768241-18-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200915155122.1768241-1-hch@lst.de>
+References: <20200915155122.1768241-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>, netdev@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,110 +105,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define tracing macros for easy catpt debug. These cover all IPC message
-types: requests, replies and notifications.
+Implement the alloc_noncoherent method to provide memory that is neither
+coherent not contiguous.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
+ drivers/iommu/dma-iommu.c | 41 +++++++++++++++++++++++++++++++++++----
+ 1 file changed, 37 insertions(+), 4 deletions(-)
 
-Changes in v2:
-- trace.h events for updating registers have been removed and usages
-  replaced by dev_dbg (SRAMPGE/ LPCS)
-- trace.h events for catpt_mbank and catpt_mregion have been removed
-
- sound/soc/intel/catpt/trace.h | 83 +++++++++++++++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
- create mode 100644 sound/soc/intel/catpt/trace.h
-
-diff --git a/sound/soc/intel/catpt/trace.h b/sound/soc/intel/catpt/trace.h
-new file mode 100644
-index 000000000000..bb3d627dbeaf
---- /dev/null
-+++ b/sound/soc/intel/catpt/trace.h
-@@ -0,0 +1,83 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2020 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Cezary Rojewski <cezary.rojewski@intel.com>
-+ */
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 00a5b49248e334..c12c1dc43d312e 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -572,6 +572,7 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
+  * @size: Size of buffer in bytes
+  * @dma_handle: Out argument for allocated DMA handle
+  * @gfp: Allocation flags
++ * @prot: pgprot_t to use for the remapped mapping
+  * @attrs: DMA attributes for this allocation
+  *
+  * If @size is less than PAGE_SIZE, then a full CPU page will be allocated,
+@@ -580,14 +581,14 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
+  * Return: Mapped virtual address, or NULL on failure.
+  */
+ static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
+-		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs)
++		dma_addr_t *dma_handle, gfp_t gfp, pgprot_t prot,
++		unsigned long attrs)
+ {
+ 	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+ 	struct iommu_dma_cookie *cookie = domain->iova_cookie;
+ 	struct iova_domain *iovad = &cookie->iovad;
+ 	bool coherent = dev_is_dma_coherent(dev);
+ 	int ioprot = dma_info_to_prot(DMA_BIDIRECTIONAL, coherent, attrs);
+-	pgprot_t prot = dma_pgprot(dev, PAGE_KERNEL, attrs);
+ 	unsigned int count, min_size, alloc_sizes = domain->pgsize_bitmap;
+ 	struct page **pages;
+ 	struct sg_table sgt;
+@@ -1030,8 +1031,10 @@ static void *iommu_dma_alloc(struct device *dev, size_t size,
+ 	gfp |= __GFP_ZERO;
+ 
+ 	if (IS_ENABLED(CONFIG_DMA_REMAP) && gfpflags_allow_blocking(gfp) &&
+-	    !(attrs & DMA_ATTR_FORCE_CONTIGUOUS))
+-		return iommu_dma_alloc_remap(dev, size, handle, gfp, attrs);
++	    !(attrs & DMA_ATTR_FORCE_CONTIGUOUS)) {
++		return iommu_dma_alloc_remap(dev, size, handle, gfp,
++				dma_pgprot(dev, PAGE_KERNEL, attrs), attrs);
++	}
+ 
+ 	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+ 	    !gfpflags_allow_blocking(gfp) && !coherent)
+@@ -1052,6 +1055,34 @@ static void *iommu_dma_alloc(struct device *dev, size_t size,
+ 	return cpu_addr;
+ }
+ 
++#ifdef CONFIG_DMA_REMAP
++static void *iommu_dma_alloc_noncoherent(struct device *dev, size_t size,
++		dma_addr_t *handle, enum dma_data_direction dir, gfp_t gfp)
++{
++	if (!gfpflags_allow_blocking(gfp)) {
++		struct page *page;
 +
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM intel_catpt
++		page = dma_common_alloc_pages(dev, size, handle, dir, gfp);
++		if (!page)
++			return NULL;
++		return page_address(page);
++	}
 +
-+#if !defined(__SND_SOC_INTEL_CATPT_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define __SND_SOC_INTEL_CATPT_TRACE_H
++	return iommu_dma_alloc_remap(dev, size, handle, gfp | __GFP_ZERO,
++				     PAGE_KERNEL, 0);
++}
 +
-+#include <linux/types.h>
-+#include <linux/tracepoint.h>
++static void iommu_dma_free_noncoherent(struct device *dev, size_t size,
++		void *cpu_addr, dma_addr_t handle, enum dma_data_direction dir)
++{
++	__iommu_dma_unmap(dev, handle, size);
++	__iommu_dma_free(dev, size, cpu_addr);
++}
++#else
++#define iommu_dma_alloc_noncoherent		NULL
++#define iommu_dma_free_noncoherent		NULL
++#endif /* CONFIG_DMA_REMAP */
 +
-+DECLARE_EVENT_CLASS(catpt_ipc_msg,
-+
-+	TP_PROTO(u32 header),
-+
-+	TP_ARGS(header),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, header)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->header = header;
-+	),
-+
-+	TP_printk("0x%08x", __entry->header)
-+);
-+
-+DEFINE_EVENT(catpt_ipc_msg, catpt_irq,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
-+
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_request,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
-+
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_reply,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
-+
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_notify,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
-+
-+TRACE_EVENT_CONDITION(catpt_ipc_payload,
-+
-+	TP_PROTO(const u8 *data, size_t size),
-+
-+	TP_ARGS(data, size),
-+
-+	TP_CONDITION(data && size),
-+
-+	TP_STRUCT__entry(
-+		__dynamic_array(u8, buf, size)
-+	),
-+
-+	TP_fast_assign(
-+		memcpy(__get_dynamic_array(buf), data, size);
-+	),
-+
-+	TP_printk("%u byte(s)%s",
-+		  __get_dynamic_array_len(buf),
-+		  __print_hex_dump("", DUMP_PREFIX_NONE, 16, 4,
-+				   __get_dynamic_array(buf),
-+				   __get_dynamic_array_len(buf), false))
-+);
-+
-+#endif /* __SND_SOC_INTEL_CATPT_TRACE_H */
-+
-+/* This part must be outside protection */
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE trace
-+#include <trace/define_trace.h>
+ static int iommu_dma_mmap(struct device *dev, struct vm_area_struct *vma,
+ 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+ 		unsigned long attrs)
+@@ -1122,6 +1153,8 @@ static const struct dma_map_ops iommu_dma_ops = {
+ 	.free			= iommu_dma_free,
+ 	.alloc_pages		= dma_common_alloc_pages,
+ 	.free_pages		= dma_common_free_pages,
++	.alloc_noncoherent	= iommu_dma_alloc_noncoherent,
++	.free_noncoherent	= iommu_dma_free_noncoherent,
+ 	.mmap			= iommu_dma_mmap,
+ 	.get_sgtable		= iommu_dma_get_sgtable,
+ 	.map_page		= iommu_dma_map_page,
 -- 
-2.17.1
+2.28.0
 
