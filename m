@@ -5,86 +5,86 @@ X-Spam-Level:
 X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E94B5C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 18:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5218FC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 18:42:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 143AF20B1F
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 18:36:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BFC992068D
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 18:42:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vCdnxNQn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tTHNFN4J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 143AF20B1F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ab+jSxC0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IJx8XQmM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFC992068D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45F55843;
-	Tue, 15 Sep 2020 20:35:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F55843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39786820;
+	Tue, 15 Sep 2020 20:41:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39786820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600194976;
-	bh=ZhkHjCvkkQec0ktrAK4d5jZtmrV31bUtcWfdnilBtcY=;
+	s=default; t=1600195324;
+	bh=yQvZv2SDZWNARuhnM61zIhbp8dONlx2HAXSJSMDrPdY=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vCdnxNQn8AWLAhcXpC0JnDo4b5JbcQtPNMj0Tmt2Y7+RLNkU7ySjJIkTbb4p3uNbK
-	 4lGkNKvnetVupDcWfelkepNe2v/r/nS2VfW4Ub6ouA7f7IzvokJJVjGCZ6SC5NWZ1m
-	 Fmc/qVqoV8DGeZuBnrrjiuB+pOZR2JFMMmPzj7LU=
+	b=Ab+jSxC0Pnf2SaLMq/34cf+P+TFdtAhZ3Vh5RyPWL7HkpVLPS6Cr9yJPdk9cxW/ow
+	 MDS8a3kI5f3nX0g4ErTxqfNqi4aqZVUElkwqPn/yufC082mNRREvBHXiRsf9zG7s+r
+	 z6Ysa+kLI3zS1X0cbsr6IyZ5qBuW2xrevemEnH48=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C253DF80159;
-	Tue, 15 Sep 2020 20:35:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B0F9F800F1;
+	Tue, 15 Sep 2020 20:41:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2C14F80212; Tue, 15 Sep 2020 20:35:23 +0200 (CEST)
+ id A6A9CF80212; Tue, 15 Sep 2020 20:41:11 +0200 (CEST)
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D51CEF800E5
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 20:35:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D51CEF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC7C8F800F1
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 20:41:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC7C8F800F1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tTHNFN4J"
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FIZ9UQ123866;
- Tue, 15 Sep 2020 13:35:09 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IJx8XQmM"
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FIf1S2125142;
+ Tue, 15 Sep 2020 13:41:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600194909;
- bh=UszCv9uVkM6PK+sqMVwp2CVdUVj7Jk1RWLM5JKbHtRM=;
+ s=ti-com-17Q1; t=1600195261;
+ bh=/tdoN0OYwR8m4NawnYuovScUnXtRzZKV8TbiOry6es4=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=tTHNFN4JihS0CL8pNA5AtMiow+W7m0/rEwdt/WutzZFbJxcLQit9bDrECs3eeUD1E
- 8/IYTQug8A+EiKRdJGHau64Ae2VfdIwhDixgD8u8OzQ/KiqIY7GI8N2u4kTNYZtQ3l
- Uds6yndxSfcqBFLZeRpGvwKEpx2YS6okpfxIe4k4=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FIZ9jm052646
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 15 Sep 2020 13:35:09 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ b=IJx8XQmM6o7a7eLjI0Fc9mEIJJCh+o0GU0kW922XsnCUFnr0WVOfqe+qH4GKu9Mg6
+ ycf1wbiBdaeHRHRHNRntzTZPkA4OLzrYvE2XCxANyi/J+NwTT8Sj/6V46WS5JuveMl
+ z1PPPEth1FYjVOz5bemdqqobb0/54GeihqLcjdGY=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIf16D002249;
+ Tue, 15 Sep 2020 13:41:01 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 13:35:09 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 13:41:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 13:35:09 -0500
+ Frontend Transport; Tue, 15 Sep 2020 13:41:00 -0500
 Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIZ9xv013241;
- Tue, 15 Sep 2020 13:35:09 -0500
-Subject: Re: [PATCH v2 1/3] dt-bindings: tlv320adcx140: Add GPIO config and
- drive config
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIf0mM041635;
+ Tue, 15 Sep 2020 13:41:00 -0500
+Subject: Re: [PATCH v2 2/3] ASoC: tlv320adcx140: Add support for configuring
+ GPIO pin
 To: Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
  <broonie@kernel.org>, <tiwai@suse.com>
 References: <20200911080753.30342-1-camel.guo@axis.com>
+ <20200911080753.30342-2-camel.guo@axis.com>
 From: Dan Murphy <dmurphy@ti.com>
-Message-ID: <3ae63976-1e78-df28-9c76-d8f74c733eec@ti.com>
-Date: Tue, 15 Sep 2020 13:35:04 -0500
+Message-ID: <da35edb3-bc41-967c-d530-4df4363ddddf@ti.com>
+Date: Tue, 15 Sep 2020 13:41:00 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200911080753.30342-1-camel.guo@axis.com>
+In-Reply-To: <20200911080753.30342-2-camel.guo@axis.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -111,37 +111,70 @@ Camel
 On 9/11/20 3:07 AM, Camel Guo wrote:
 > From: Camel Guo <camelg@axis.com>
 >
-> Add properties for configuring the General Purpose Input Outputs (GPIO).
-
-s/Outputs/Output
-
-There is only one for the x140
-
-> There are 2 settings for GPIO, configuration and the output drive type.
+> Add support to configure the GPIO pin to the specific configuration.
+> The GPIO pin can be configured as GPO, IRQ, SDOUT2, PDMCLK, MICBASE_EN,
+> GPI, MCLK, SDIN, PDMDIN1, PDMDIN2, PDMDIN3 or PDMDIN4 and the output
+> drive can be configured with various configuration.
 >
 > Signed-off-by: Camel Guo <camelg@axis.com>
 > ---
->   .../bindings/sound/tlv320adcx140.yaml         | 44 +++++++++++++++++++
->   1 file changed, 44 insertions(+)
+>   sound/soc/codecs/tlv320adcx140.c | 44 ++++++++++++++++++++++++++++++++
+>   sound/soc/codecs/tlv320adcx140.h |  4 +++
+>   2 files changed, 48 insertions(+)
 >
-> diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-> index f578f17f3e04..7b0b4554da59 100644
-> --- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-> +++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-> @@ -134,6 +134,49 @@ patternProperties:
->          4d - Drive weak low and active high
->          5d - Drive Hi-Z and active high
+> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+> index f33ee604ee78..97f16fbba441 100644
+> --- a/sound/soc/codecs/tlv320adcx140.c
+> +++ b/sound/soc/codecs/tlv320adcx140.c
+> @@ -837,6 +837,46 @@ static int adcx140_configure_gpo(struct adcx140_priv *adcx140)
 >   
-> +  ti,gpio-config:
-> +    description: |
-> +       Defines the configuration and output driver for the general purpose
+>   }
+>   
+> +static int adcx140_configure_gpio(struct adcx140_priv *adcx140)
+> +{
+> +	int gpio_count = 0;
+> +	u32 gpio_outputs[2];
 
-s/driver/drive
+This is #defined in configure_gpo and configure_gpi would like to see 
+the consistency here.
 
-You capitalized the General Purpose Input and Output in the commit 
-message but kept it lower case here.
+> +	u32 gpio_output_val = 0;
+> +	int ret;
+> +
+> +	gpio_count = device_property_count_u32(adcx140->dev,
+> +			"ti,gpio-config");
+> +	if (gpio_count == 0)
+> +		return 0;
+> +
+> +	if (gpio_count != 2)
+Same comment as above.
+> +		return -EINVAL;
+> +
+> +	ret = device_property_read_u32_array(adcx140->dev, "ti,gpio-config",
+> +			gpio_outputs, gpio_count);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (gpio_outputs[0] > ADCX140_GPIO_CFG_MAX) {
+> +		dev_err(adcx140->dev, "GPIO config out of range\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (gpio_outputs[1] > ADCX140_GPIO_DRV_MAX) {
+> +		dev_err(adcx140->dev, "GPIO drive out of range\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	gpio_output_val = gpio_outputs[0] << ADCX140_GPIO_SHIFT
+> +		| gpio_outputs[1];
+> +
+> +	ret = regmap_write(adcx140->regmap, ADCX140_GPIO_CFG0, gpio_output_val);
+> +	if (ret)
+> +		return ret;
 
-Beyond these
+Just do return regmap_write no reason to check it. It is checked by the 
+caller.
 
-Acked-by: Dan Murphy <dmurphy@ti.com>
+
+Dan
 
