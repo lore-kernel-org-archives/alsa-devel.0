@@ -5,78 +5,91 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F37BC43461
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D852C43461
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:40:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05CB620738
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:39:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 928D8206B6
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:40:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GXrYjWA/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05CB620738
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nq/gkgQo";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n3p/yVJZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 928D8206B6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86F2C1685;
-	Tue, 15 Sep 2020 18:38:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86F2C1685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14752169E;
+	Tue, 15 Sep 2020 18:39:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14752169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600187964;
-	bh=go3b0w+uY7rquGnuH4Di5QOF5NrTkvaY8DMkHEDtQUk=;
+	s=default; t=1600188008;
+	bh=YEvjY/IN8RUzi9046PTjTQXIsi1BQfWlok3YoL/u5o8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GXrYjWA/vkZJdOSpkdxFhwKbrjdDDAnUu3U7/TTstSj84qBKBZwWteQtZRqTprSk1
-	 a/qBMgxRKdFbZp5OrRiTqmlO/pU6ruLBYWUJQ4R58qerZpTQ60bFoYgXa2weDUCysX
-	 re1LnIgWzFwz36bbS48XUTVgHb/Q9qJPzxy0GBzY=
+	b=nq/gkgQo6wFFlJ8XSJFpbBJ6PuLSD4FJh0oBfCAWo4wvYibMfjBG6OZdDIoakmDyi
+	 vNtHMqVkjQ/q9HRB+8c8IPnnI7SKz9Wrf3eUGVRgdjUn52Q5vzvs1Dj00EuaTxDIId
+	 VmXAMGrvqgMX4BQeswrBO1zQ0eHITP5KxzUOjjXg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC653F8035E;
-	Tue, 15 Sep 2020 18:31:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D127AF802C3;
+	Tue, 15 Sep 2020 18:33:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F619F8034C; Tue, 15 Sep 2020 18:31:37 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id E900DF802D2; Tue, 15 Sep 2020 18:33:35 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34666F8033F
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 18:31:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34666F8033F
-IronPort-SDR: FXNZfpKjHW4mzIf/Om4/2SHFktcLFfJ6E9u474Z7v5MFFKVmiJTCWtq3VX3TeRenE9BdI1eSlM
- K2LJGMoTx1DA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177366041"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="177366041"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2020 09:31:04 -0700
-IronPort-SDR: eqgyAMWphnK7GrRsWpRTGR5AD5znZWGsCz16jWLrNlwoN752+JRFnE9iLlQmsGamcbmCuCelKQ
- Dft8G8EazSxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="302218876"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga003.jf.intel.com with ESMTP; 15 Sep 2020 09:31:00 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 10/13] ASoC: Intel: haswell: Remove haswell-solution
- specific code
-Date: Tue, 15 Sep 2020 18:29:41 +0200
-Message-Id: <20200915162944.16241-11-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200915162944.16241-1-cezary.rojewski@intel.com>
-References: <20200915162944.16241-1-cezary.rojewski@intel.com>
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, andriy.shevchenko@linux.intel.com,
- filip.kaczmarski@intel.com, harshapriya.n@intel.com, marcin.barlik@intel.com,
- zwisler@google.com, lgirdwood@gmail.com, tiwai@suse.com,
- filip.proborszcz@intel.com, broonie@kernel.org,
- amadeuszx.slawinski@linux.intel.com, michal.wasko@intel.com,
- cujomalainey@chromium.org, krzysztof.hejmowski@intel.com,
- ppapierkowski@habana.ai, vamshi.krishna.gopal@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEE06F802BE
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 18:33:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEE06F802BE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="n3p/yVJZ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=3uuWATlux5CLwoYUg+NN5gOtHb6T7EXPohKT/lTJKJI=; b=n3p/yVJZRK+wbxyYEp8pkVnF7d
+ hOOHcYTdFzo7akNyeet0DZXxccLdgZIoOr6taxspBy/6Nw2HzuudIL5cO3cux/0Ps1kPOPpCaDuiZ
+ 71xYegixSYfkkcrW3QjKCgmzELBA6x8wDtzWuiR4saDycE2AC35+V5oi4+daZIEjq2ToSWnv4R9cJ
+ boT1A66ZJ9G2igo0eQXvpTU9Ka7B0HiUCVukCMermJx4dV3Bpp33w8WLP0t3lZ8ajE4VQW97wGslQ
+ 7cj3CUwUESH+xL2nh4b2897z9ZoRIetEyG0yjYlRcvvUAz2cF1ga1smN8Gnx/99jq8B/YKpwQ7hY/
+ 2LJFzrkw==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92]
+ helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kIDt1-0006DO-8d; Tue, 15 Sep 2020 16:32:55 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Joonyoung Shim <jy0922.shim@samsung.com>,
+ Seung-Woo Kim <sw0312.kim@samsung.com>, Ben Skeggs <bskeggs@redhat.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Tomasz Figa <tfiga@chromium.org>,
+ Matt Porter <mporter@kernel.crashing.org>, iommu@lists.linux-foundation.org
+Subject: [PATCH 18/18] firewire-ohci: use dma_alloc_pages
+Date: Tue, 15 Sep 2020 17:51:22 +0200
+Message-Id: <20200915155122.1768241-19-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200915155122.1768241-1-hch@lst.de>
+References: <20200915155122.1768241-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>, netdev@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,83 +105,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove code specific to sound/soc/intel/haswell. Update BE dai_link
-definition to provide seamless transition to catpt solution.
+Use dma_alloc_pages to allocate DMAable pages instead of hoping that
+the architecture either has GFP_DMA32 or not more than 4G of memory.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
+ drivers/firewire/ohci.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-No changes since initial version.
-
- sound/soc/intel/boards/haswell.c | 28 ++++------------------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
-
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index 744b7b5b8106..c268405e5594 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -13,9 +13,6 @@
- #include <sound/soc-acpi.h>
- #include <sound/pcm_params.h>
+diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
+index 020cb15a4d8fcc..9811c40956e54d 100644
+--- a/drivers/firewire/ohci.c
++++ b/drivers/firewire/ohci.c
+@@ -674,17 +674,16 @@ static void ar_context_link_page(struct ar_context *ctx, unsigned int index)
  
--#include "../common/sst-dsp.h"
--#include "../haswell/sst-haswell-ipc.h"
--
- #include "../../codecs/rt5640.h"
+ static void ar_context_release(struct ar_context *ctx)
+ {
++	struct device *dev = ctx->ohci->card.device;
+ 	unsigned int i;
  
- /* Haswell ULT platforms have a Headphone and Mic jack */
-@@ -77,25 +74,6 @@ static const struct snd_soc_ops haswell_rt5640_ops = {
- 	.hw_params = haswell_rt5640_hw_params,
- };
+ 	vunmap(ctx->buffer);
  
--static int haswell_rtd_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
--	struct sst_pdata *pdata = dev_get_platdata(component->dev);
--	struct sst_hsw *haswell = pdata->dsp;
--	int ret;
--
--	/* Set ADSP SSP port settings */
--	ret = sst_hsw_device_set_config(haswell, SST_HSW_DEVICE_SSP_0,
--		SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
--		SST_HSW_DEVICE_CLOCK_MASTER, 9);
--	if (ret < 0) {
--		dev_err(rtd->dev, "failed to set device config\n");
--		return ret;
--	}
--
--	return 0;
--}
--
- SND_SOC_DAILINK_DEF(dummy,
- 	DAILINK_COMP_ARRAY(COMP_DUMMY()));
+-	for (i = 0; i < AR_BUFFERS; i++)
+-		if (ctx->pages[i]) {
+-			dma_unmap_page(ctx->ohci->card.device,
+-				       ar_buffer_bus(ctx, i),
+-				       PAGE_SIZE, DMA_FROM_DEVICE);
+-			__free_page(ctx->pages[i]);
+-		}
++	for (i = 0; i < AR_BUFFERS; i++) {
++		if (ctx->pages[i])
++			dma_free_pages(dev, PAGE_SIZE, ctx->pages[i],
++				       ar_buffer_bus(ctx, i), DMA_FROM_DEVICE);
++	}
+ }
  
-@@ -117,13 +95,15 @@ SND_SOC_DAILINK_DEF(codec,
- SND_SOC_DAILINK_DEF(platform,
- 	DAILINK_COMP_ARRAY(COMP_PLATFORM("haswell-pcm-audio")));
+ static void ar_context_abort(struct ar_context *ctx, const char *error_msg)
+@@ -970,6 +969,7 @@ static void ar_context_tasklet(unsigned long data)
+ static int ar_context_init(struct ar_context *ctx, struct fw_ohci *ohci,
+ 			   unsigned int descriptors_offset, u32 regs)
+ {
++	struct device *dev = ohci->card.device;
+ 	unsigned int i;
+ 	dma_addr_t dma_addr;
+ 	struct page *pages[AR_BUFFERS + AR_WRAPAROUND_PAGES];
+@@ -980,17 +980,13 @@ static int ar_context_init(struct ar_context *ctx, struct fw_ohci *ohci,
+ 	tasklet_init(&ctx->tasklet, ar_context_tasklet, (unsigned long)ctx);
  
-+SND_SOC_DAILINK_DEF(ssp0_port,
-+	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
-+
- static struct snd_soc_dai_link haswell_rt5640_dais[] = {
- 	/* Front End DAI links */
- 	{
- 		.name = "System",
- 		.stream_name = "System Playback/Capture",
- 		.dynamic = 1,
--		.init = haswell_rtd_init,
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-@@ -167,7 +147,7 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
- 		.ops = &haswell_rt5640_ops,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
--		SND_SOC_DAILINK_REG(dummy, codec, dummy),
-+		SND_SOC_DAILINK_REG(ssp0_port, codec, platform),
- 	},
- };
+ 	for (i = 0; i < AR_BUFFERS; i++) {
+-		ctx->pages[i] = alloc_page(GFP_KERNEL | GFP_DMA32);
++		ctx->pages[i] = dma_alloc_pages(dev, PAGE_SIZE, &dma_addr,
++						DMA_FROM_DEVICE, GFP_KERNEL);
+ 		if (!ctx->pages[i])
+ 			goto out_of_memory;
+-		dma_addr = dma_map_page(ohci->card.device, ctx->pages[i],
+-					0, PAGE_SIZE, DMA_FROM_DEVICE);
+-		if (dma_mapping_error(ohci->card.device, dma_addr)) {
+-			__free_page(ctx->pages[i]);
+-			ctx->pages[i] = NULL;
+-			goto out_of_memory;
+-		}
+ 		set_page_private(ctx->pages[i], dma_addr);
++		dma_sync_single_for_device(dev, dma_addr, PAGE_SIZE,
++					   DMA_FROM_DEVICE);
+ 	}
  
+ 	for (i = 0; i < AR_BUFFERS; i++)
 -- 
-2.17.1
+2.28.0
 
