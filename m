@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76036C43461
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F37BC43461
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:39:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE6ED206BE
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:39:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 05CB620738
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 16:39:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bKpnNlfU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE6ED206BE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GXrYjWA/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05CB620738
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 624921663;
-	Tue, 15 Sep 2020 18:38:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 624921663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86F2C1685;
+	Tue, 15 Sep 2020 18:38:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86F2C1685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600187946;
-	bh=dUteBxx+9AlSMIpxgevWBJwj7PpPeg6k7TvZl94d8dw=;
+	s=default; t=1600187964;
+	bh=go3b0w+uY7rquGnuH4Di5QOF5NrTkvaY8DMkHEDtQUk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bKpnNlfUw8+n/ePEWVBRj0L102GwEIv+4fMx+8+Tfx1TGGfMm1RC1wGEDQ6O0ZwcI
-	 R5ir6G1Zw0IfM7j9Bo1GswlneM3RfQI0/tbLQlrHDX3HJ2GSnHmVQfhdbOud/90P2j
-	 yRPhorofHLpgTEmfpvxsH/0flyzW4acEQNocpjCE=
+	b=GXrYjWA/vkZJdOSpkdxFhwKbrjdDDAnUu3U7/TTstSj84qBKBZwWteQtZRqTprSk1
+	 a/qBMgxRKdFbZp5OrRiTqmlO/pU6ruLBYWUJQ4R58qerZpTQ60bFoYgXa2weDUCysX
+	 re1LnIgWzFwz36bbS48XUTVgHb/Q9qJPzxy0GBzY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DD56F8033F;
-	Tue, 15 Sep 2020 18:31:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC653F8035E;
+	Tue, 15 Sep 2020 18:31:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1E9AF80339; Tue, 15 Sep 2020 18:31:35 +0200 (CEST)
+ id 1F619F8034C; Tue, 15 Sep 2020 18:31:37 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D71ABF80332
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 18:31:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D71ABF80332
-IronPort-SDR: ZfZ1eync0zqCFMGZhTBt9tMpxkssV3JWFqUKzAAuPMndoMD0ukml0qieSsLLfgPsD4SUWz4eis
- gUOMKj/jirag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177366057"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="177366057"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34666F8033F
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 18:31:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34666F8033F
+IronPort-SDR: FXNZfpKjHW4mzIf/Om4/2SHFktcLFfJ6E9u474Z7v5MFFKVmiJTCWtq3VX3TeRenE9BdI1eSlM
+ K2LJGMoTx1DA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177366041"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="177366041"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2020 09:31:12 -0700
-IronPort-SDR: F1F33agzB4zsgt/6Liq2oSvquaW6nh7Yq9oSuzomqr+Zdc6Nz7JJ1mOxAkMbKMsZCJlnH9hQPL
- 8UI1U2m97LvQ==
+ 15 Sep 2020 09:31:04 -0700
+IronPort-SDR: eqgyAMWphnK7GrRsWpRTGR5AD5znZWGsCz16jWLrNlwoN752+JRFnE9iLlQmsGamcbmCuCelKQ
+ Dft8G8EazSxw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="302218927"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; d="scan'208";a="302218876"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga003.jf.intel.com with ESMTP; 15 Sep 2020 09:31:08 -0700
+ by orsmga003.jf.intel.com with ESMTP; 15 Sep 2020 09:31:00 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 12/13] ASoC: Intel: bdw-5650: Remove haswell-solution
+Subject: [PATCH v5 10/13] ASoC: Intel: haswell: Remove haswell-solution
  specific code
-Date: Tue, 15 Sep 2020 18:29:43 +0200
-Message-Id: <20200915162944.16241-13-cezary.rojewski@intel.com>
+Date: Tue, 15 Sep 2020 18:29:41 +0200
+Message-Id: <20200915162944.16241-11-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200915162944.16241-1-cezary.rojewski@intel.com>
 References: <20200915162944.16241-1-cezary.rojewski@intel.com>
@@ -96,89 +96,76 @@ Remove code specific to sound/soc/intel/haswell. Update BE dai_link
 definition to provide seamless transition to catpt solution.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 ---
 
 No changes since initial version.
 
- sound/soc/intel/boards/bdw-rt5650.c | 36 -----------------------------
- 1 file changed, 36 deletions(-)
+ sound/soc/intel/boards/haswell.c | 28 ++++------------------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
-index 1412a9941ed4..c44315af6a4c 100644
---- a/sound/soc/intel/boards/bdw-rt5650.c
-+++ b/sound/soc/intel/boards/bdw-rt5650.c
-@@ -16,9 +16,6 @@
- #include <sound/soc.h>
+diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
+index 744b7b5b8106..c268405e5594 100644
+--- a/sound/soc/intel/boards/haswell.c
++++ b/sound/soc/intel/boards/haswell.c
+@@ -13,9 +13,6 @@
  #include <sound/soc-acpi.h>
+ #include <sound/pcm_params.h>
  
 -#include "../common/sst-dsp.h"
 -#include "../haswell/sst-haswell-ipc.h"
 -
- #include "../../codecs/rt5645.h"
+ #include "../../codecs/rt5640.h"
  
- struct bdw_rt5650_priv {
-@@ -138,30 +135,6 @@ static struct snd_soc_ops bdw_rt5650_ops = {
- 	.hw_params = bdw_rt5650_hw_params,
+ /* Haswell ULT platforms have a Headphone and Mic jack */
+@@ -77,25 +74,6 @@ static const struct snd_soc_ops haswell_rt5640_ops = {
+ 	.hw_params = haswell_rt5640_hw_params,
  };
  
--#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
--static int bdw_rt5650_rtd_init(struct snd_soc_pcm_runtime *rtd)
+-static int haswell_rtd_init(struct snd_soc_pcm_runtime *rtd)
 -{
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
 -	struct sst_pdata *pdata = dev_get_platdata(component->dev);
--	struct sst_hsw *broadwell = pdata->dsp;
+-	struct sst_hsw *haswell = pdata->dsp;
 -	int ret;
 -
--	/* Set ADSP SSP port settings
--	 * clock_divider = 4 means BCLK = MCLK/5 = 24MHz/5 = 4.8MHz
--	 */
--	ret = sst_hsw_device_set_config(broadwell, SST_HSW_DEVICE_SSP_0,
+-	/* Set ADSP SSP port settings */
+-	ret = sst_hsw_device_set_config(haswell, SST_HSW_DEVICE_SSP_0,
 -		SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
--		SST_HSW_DEVICE_TDM_CLOCK_MASTER, 4);
+-		SST_HSW_DEVICE_CLOCK_MASTER, 9);
 -	if (ret < 0) {
--		dev_err(rtd->dev, "error: failed to set device config\n");
+-		dev_err(rtd->dev, "failed to set device config\n");
 -		return ret;
 -	}
 -
 -	return 0;
 -}
--#endif
 -
- static const unsigned int channels[] = {
- 	2, 4,
- };
-@@ -251,10 +224,8 @@ SND_SOC_DAILINK_DEF(platform,
- SND_SOC_DAILINK_DEF(be,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5650:00", "rt5645-aif1")));
+ SND_SOC_DAILINK_DEF(dummy,
+ 	DAILINK_COMP_ARRAY(COMP_DUMMY()));
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- SND_SOC_DAILINK_DEF(ssp0_port,
- 	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
--#endif
+@@ -117,13 +95,15 @@ SND_SOC_DAILINK_DEF(codec,
+ SND_SOC_DAILINK_DEF(platform,
+ 	DAILINK_COMP_ARRAY(COMP_PLATFORM("haswell-pcm-audio")));
  
- static struct snd_soc_dai_link bdw_rt5650_dais[] = {
++SND_SOC_DAILINK_DEF(ssp0_port,
++	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
++
+ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
  	/* Front End DAI links */
-@@ -263,9 +234,6 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
- 		.stream_name = "System Playback",
+ 	{
+ 		.name = "System",
+ 		.stream_name = "System Playback/Capture",
  		.dynamic = 1,
- 		.ops = &bdw_rt5650_fe_ops,
--#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
--		.init = bdw_rt5650_rtd_init,
--#endif
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST,
- 			SND_SOC_DPCM_TRIGGER_POST
-@@ -289,11 +257,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+-		.init = haswell_rtd_init,
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
- 		.init = bdw_rt5650_init,
--#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
--		SND_SOC_DAILINK_REG(dummy, be, dummy),
--#else
- 		SND_SOC_DAILINK_REG(ssp0_port, be, platform),
--#endif
+@@ -167,7 +147,7 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
+ 		.ops = &haswell_rt5640_ops,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+-		SND_SOC_DAILINK_REG(dummy, codec, dummy),
++		SND_SOC_DAILINK_REG(ssp0_port, codec, platform),
  	},
  };
  
