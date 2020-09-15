@@ -5,79 +5,81 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E9AAC2D0E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:09:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59F8EC433E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:10:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBD942078E
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:09:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93C2E20756
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Sep 2020 19:10:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EM8q1OC6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f+eXQdfT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBD942078E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DVckwgdq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IO5DMOoX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93C2E20756
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DB531694;
-	Tue, 15 Sep 2020 21:08:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DB531694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B0AA1676;
+	Tue, 15 Sep 2020 21:09:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B0AA1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600196970;
-	bh=LnLrweuDDGN9zLmtGzgdvCrZR+MH3yUMQX6AOYqFQ+k=;
+	s=default; t=1600197014;
+	bh=m0xkLEu8BLbZKsEEBW9qzMsiQIZsGaZgIyuB2OCvEHM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EM8q1OC6SibsTxsZ/UFwuxO/1h2QYunKI0SQZRpJyfAqvn4abwMJMVeHZXzNa9RuW
-	 9aZ+R4vroT6m1QUxgT9G6z1jnOL6w8+zzg1vcy7f8lGax0VtDOgOVznmFd7KxRg/Oh
-	 VbsQjCSFYwOQ8MoyfpVF8Gu2Uw81yBjV6AZFPQRk=
+	b=DVckwgdq35Fsg3WhpmkFi8tsTsKxo/vZdY4JuoPatYjNGEavz8K9z6aLYVQPbfQub
+	 Tn/4h820fBEJYNXxbDvv1zhxO1yi649zpNABXUtFKVbjfy2YvQOcFnrAeeNYYeOP1t
+	 b4KU8ps4Cy8X3HIja4vCx7QV7e+OnsjPV7zQ5H84=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7F1DF802E0;
-	Tue, 15 Sep 2020 21:06:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E70B3F802E7;
+	Tue, 15 Sep 2020 21:06:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B802F802E2; Tue, 15 Sep 2020 21:06:42 +0200 (CEST)
+ id 9913DF802E1; Tue, 15 Sep 2020 21:06:42 +0200 (CEST)
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66B89F802DF
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 21:06:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66B89F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66BE3F802E0
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2020 21:06:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66BE3F802E0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f+eXQdfT"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6Yx1060938;
- Tue, 15 Sep 2020 14:06:34 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IO5DMOoX"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6T8e060905;
+ Tue, 15 Sep 2020 14:06:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600196794;
- bh=lfBspNnpVGK9fOkXASWVZnL//G/ZoFt7Tt8VaXOOno0=;
+ s=ti-com-17Q1; t=1600196789;
+ bh=D4KwWA3PAUDgR7udHAL3tu/8wxSo8YWIeqTiceCZ3J0=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=f+eXQdfTJJPzfZ18SP6Yppv/ZTZ/M8SnbGBwRIuXdaalF2w1f7DFZMjXBl3f5iH/0
- Ovj6VPYU85xQA1Loly7Z5ZePVTi6T7i7Xfi9FydFLeh5+qKXGHpmwosdzqu5NAbRLA
- Rxf8L3EuUYRYdS+0jaRDoN0+1XmFP0J3AqUZ1sRM=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6Yp9039687;
- Tue, 15 Sep 2020 14:06:34 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ b=IO5DMOoX3KpUlEAILLPSCVQ9CkqRfGBaw0gaW/H9C9AT1GyXdyO9709jDW8uGLYZR
+ hv+7Ix/O8WpANRpaXr0yMYRw0/xrP+RtZ+nqeKPCptZmATY2KyM1Ezpww4KlsThPJt
+ nwNTqYEkLhWW0qC2T/eIFdmiBd4UfVUdroy7d5ys=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FJ6TYe060751
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 15 Sep 2020 14:06:29 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 14:06:34 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 14:06:29 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 14:06:34 -0500
+ Frontend Transport; Tue, 15 Sep 2020 14:06:29 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6YED008324;
- Tue, 15 Sep 2020 14:06:34 -0500
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6Tiq102549;
+ Tue, 15 Sep 2020 14:06:29 -0500
 From: Dan Murphy <dmurphy@ti.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
  <robh+dt@kernel.org>
-Subject: [PATCH 5/6] dt-bindings: tlv320adcx140: Add slot programming property
-Date: Tue, 15 Sep 2020 14:06:05 -0500
-Message-ID: <20200915190606.1744-5-dmurphy@ti.com>
+Subject: [PATCH 4/6] ASoC: tlv320adcx140: Add the config to configure Tx ASI
+ output
+Date: Tue, 15 Sep 2020 14:06:04 -0500
+Message-ID: <20200915190606.1744-4-dmurphy@ti.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200915190606.1744-1-dmurphy@ti.com>
 References: <20200915190606.1744-1-dmurphy@ti.com>
@@ -102,42 +104,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a property to configure the each channel to a specific TDM slot.
+Add code to allow the ASI Tx output to be placed into High-z mode
+during unused ASI cycles.  This allows for other devices that may be on
+the bus to drive the ASI out. By default the 320adcx140 sends 0's for
+unused cycles.
 
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- .../bindings/sound/tlv320adcx140.yaml          | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ sound/soc/codecs/tlv320adcx140.c | 11 +++++++++++
+ sound/soc/codecs/tlv320adcx140.h |  1 +
+ 2 files changed, 12 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-index e79f8d1891e4..dfc00308da94 100644
---- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-+++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-@@ -114,6 +114,24 @@ properties:
-       When set the device will set the Tx ASI output to a Hi-Z state for unused
-       data cycles. Default is to drive the output low on unused ASI cycles.
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 73d18e8002e4..7fa5c8682c51 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -839,6 +839,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 	u32 gpi_input_val = 0;
+ 	int i;
+ 	int ret;
++	bool tx_high_z;
  
-+  ti,slot-mapping:
-+    type: boolean
-+    description: |
-+      Each channel can be assigned a specific TDM slot for either a left or
-+      right channel. The left channel values are from 0-31d and the right
-+      channel values are from 32-63d. If the right channel value is 32 then the
-+      right channel slot will be slot 31.
-+      The array index is sequential audio channel to be set.
-+      [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8]
-+      If the channel is not to be used then the channel should be set to it's
-+      default value.
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 1
-+    maxItems: 8
-+    items:
-+      maximum: 63
-+    default: [0, 1, 2, 3, 4, 5, 6, 7]
+ 	ret = device_property_read_u32(adcx140->dev, "ti,mic-bias-source",
+ 				      &bias_source);
+@@ -930,6 +931,16 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 	if (ret)
+ 		dev_err(adcx140->dev, "setting MIC bias failed %d\n", ret);
+ 
++	tx_high_z = device_property_read_bool(adcx140->dev, "ti,asi-tx-drive");
++	if (tx_high_z) {
++		ret = regmap_update_bits(adcx140->regmap, ADCX140_ASI_CFG0,
++				 ADCX140_TX_FILL, ADCX140_TX_FILL);
++		if (ret) {
++			dev_err(adcx140->dev, "Setting Tx drive failed %d\n", ret);
++			goto out;
++		}
++	}
 +
- patternProperties:
-   '^ti,gpo-config-[1-4]$':
-     $ref: /schemas/types.yaml#/definitions/uint32-array
+ 	adcx140_pwr_ctrl(adcx140, true);
+ out:
+ 	return ret;
+diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
+index 94c6d1fd2977..107bd7927d9c 100644
+--- a/sound/soc/codecs/tlv320adcx140.h
++++ b/sound/soc/codecs/tlv320adcx140.h
+@@ -146,5 +146,6 @@
+ #define ADCX140_GPO_CFG_MAX		4
+ #define ADCX140_GPO_DRV_MAX		5
+ 
++#define ADCX140_TX_FILL    BIT(0)
+ 
+ #endif /* _TLV320ADCX140_ */
 -- 
 2.28.0
 
