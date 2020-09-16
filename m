@@ -2,92 +2,96 @@ Return-Path: <SRS0=58lj=CZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24045C433E2
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C094C433E2
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:24:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B4A521974
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:23:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 49FCB2220E
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:24:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EGD8/l+K";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zwpPinI/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B4A521974
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XsPDDK+0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w5xzwJ7D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49FCB2220E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCFC3168B;
-	Wed, 16 Sep 2020 11:22:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCFC3168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDC76167A;
+	Wed, 16 Sep 2020 11:23:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDC76167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600248224;
-	bh=ST44XWI4JEq9jDCOsNTEzqbIQc3wrwZ3vQpyZ+GQc5I=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EGD8/l+K8q+jFnVCsYbdTKeVuNP7t20Oj1TXuuXqrMNa3ZQOONctPRHrcZGbXMr11
-	 UjAgEVt+Bo7WG1JvpH0mc1pG9fswZimyyjFoaQ3pbyYywzd4QYWy/csQUSWauxeWuu
-	 3VwQEACeCvEisU/QBFbghZf2CD3kDzcCFb87/VVE=
+	s=default; t=1600248270;
+	bh=msscQpqw+/OtH84jf84XfxvF0YvZPKPe+xa5CAJn1F4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XsPDDK+0qhLFizb9sndqKoIMfdGeD0umUOSUxJPx/rBgUZ1XlusFc4rr5TcHN9waB
+	 SEQl6cBQiT5uewOMMkyUxXpVfp+JBNpcSgvGvl6rIi37cfQ7+u4sQJQbEA5Whe5SfK
+	 YE6iStuggy7SLSQ8cRkAeaI4CUTU41t7m7EWHclY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97CB6F8020B;
-	Wed, 16 Sep 2020 11:22:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5ACBF800E8;
+	Wed, 16 Sep 2020 11:22:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5440F800E8; Wed, 16 Sep 2020 11:21:58 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+ id 2C49DF802C4; Wed, 16 Sep 2020 11:22:05 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9FB4F800F1
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 11:21:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9FB4F800F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6091F800E8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 11:21:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6091F800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="zwpPinI/"
-Received: by mail-wr1-x42d.google.com with SMTP id g4so6124076wrs.5
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 02:21:49 -0700 (PDT)
+ header.b="w5xzwJ7D"
+Received: by mail-wr1-x441.google.com with SMTP id j2so6100682wrx.7
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 02:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=QcLuhNnrX/nQCZhthEE8aR8w/AwdzuMVVfrZbO3TD9g=;
- b=zwpPinI/Rr9H8iwdQqSgkeJmlIy6IG6vrUVdUIT8CJAniqdNZru9Waie7WlTmyyT1S
- Nug/KefJnhLLIoDZ2hqapgVx3xE9lSEoMX3AWOv7ZC+TyZc/6H5pvGPsGuXFv/C0KQT6
- ds804bTLAjuXkMty18ffemSkElCgDebaL6XPpqiNgr+YPSuMW14nwpACjiHu5buFb+u+
- l6cN2v5iIrJfjl077t+XwqGqbO7ZYbdr98esIhyh1G67UtA15RMhbXGjoCn4l7I70fEw
- aFY2KjAQOMlJfO0+6KcsfM5GFVks9TY+KQSRKTlAWzKIVHqtdLiSDZn/f/+E1KXdEZrE
- jygw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=c2gVxrCi9glLMLKPFqRHtDRqN+v92yDNp7cQSvfaLDs=;
+ b=w5xzwJ7DEAAVAV+qbGoXJ6NjZjrZ6PgJlINE91hIc/LkQBKQD/vSESjvFvHK/rIwZZ
+ SRnlEsoJb73EUj3Bvr7QesMw2Kuv+Mm7mC2P36u8np53qUMnHDQVW2asJP7tMKeEIqQG
+ GW/HFYKGTVg0cD1RJ4U9WNfxd6ajeHCVn93GNrMo9hDftXdcvE2hibJb1O1LhKePT/9n
+ 31rw1dg77mBJz+bXwT2jJ4Y3Avso6SHljzemA3MV4K3l32i1ax6mWjwJPeG29adaG8n2
+ jfOo5/9FryA/mmglJdLRc4QrvZ8MjCgJBm2N/sbAl/wiUGYQ/PNJ5dH8TO00959krWQX
+ D/UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=QcLuhNnrX/nQCZhthEE8aR8w/AwdzuMVVfrZbO3TD9g=;
- b=gu8v/UkXMP7LUzTnD475u6BurYxYhyGwS2tPDyC6BcHmZwwts9lDxbU19SevbK6IdI
- 5YXKkjQXo+bArMNdkwxx+0ZGbuwFid9nVWWqbrrQGXN+hmYXnjtk1iKam6229b1sK+da
- tDhqrv5YPc68jlx2EHOz1+hyT96m84JJDwtd1EtA4miI9ngg8WSktAvFixTe/JIdsX2s
- 9k7rzjyRzg22S4PgpbGPLD0FhK3kaoKkKiD7e0jJVCr0FbkjAkGlVwAh/1dkxjukunbG
- dUO+VCiFrAQY0oIj5SZzqodhOHVBG+Fhdp9p+VNAmNqIgfQru1b4WPN1x6OMeC3M4gxK
- 1rrQ==
-X-Gm-Message-State: AOAM532NTaiQMPpFzu24O+4hCDeRsfHq0uIhTZDK5LTDurD1+C96ZnH1
- H+LocS6r+dJcddyA4dzcLiPHKg==
-X-Google-Smtp-Source: ABdhPJy5m+mdqlv4OG5JdIdq8YqyOLfF8S9OUft4LXq72Toaw/0mXAlfmewTtZX/SaRKGmW8bN6d1Q==
-X-Received: by 2002:adf:e449:: with SMTP id t9mr26130245wrm.154.1600248108935; 
- Wed, 16 Sep 2020 02:21:48 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=c2gVxrCi9glLMLKPFqRHtDRqN+v92yDNp7cQSvfaLDs=;
+ b=UIOVuRpSfhkDcAmqLZrOrr6/Bembr8bDSLBOXRIOcn7EV50poTsSIFoNq2NceI449z
+ Dk/yIJAzC9bqSziqMvxaT3lyXGD2eSAtYvkyDPHF17U/i0Zs9sHwRh7gyujNryIKiegH
+ T3SzXY4XEyYTbXU92AiINYoWVAc+K9NPpSDqJLl+Rn13BHnR7eva7Cg9+Lpw2ehPIyfn
+ Fb030XDsnVENAh+PXg82edYFvtv8Z4Yjkp8JeKrKg3EIMWI+9my9Cd29iO2t6/nuP3+/
+ xXLHTxqspGth+S/lO23Y1balbf9pFQ6my11N//gR5mtLmwerAljxcl2VahEu/DdnpqiF
+ sqOQ==
+X-Gm-Message-State: AOAM530L/rVLaY1CLwNJvZPMIS//PnheDPu7MWLM8pR3lQMSpuv/Sk4s
+ ohWYKd0rDPfWCKsM3ZVS8TY7Ig==
+X-Google-Smtp-Source: ABdhPJzpE2u5fAA8akBuiUTzr9BhpJMZooLP80YXNif8VNm8muuwqItlwE86ob4OsL4witjZHhwE/A==
+X-Received: by 2002:adf:dd88:: with SMTP id x8mr16476022wrl.54.1600248112307; 
+ Wed, 16 Sep 2020 02:21:52 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id f6sm32181670wro.5.2020.09.16.02.21.47
+ by smtp.gmail.com with ESMTPSA id f6sm32181670wro.5.2020.09.16.02.21.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Sep 2020 02:21:48 -0700 (PDT)
+ Wed, 16 Sep 2020 02:21:51 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org,
 	yung-chuan.liao@linux.intel.com
-Subject: [PATCH v2 0/3] soundwire: qcom: fix IP version v1.5.1 support
-Date: Wed, 16 Sep 2020 10:21:22 +0100
-Message-Id: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 2/3] soundwire: qcom: add support to block packing mode
+Date: Wed, 16 Sep 2020 10:21:24 +0100
+Message-Id: <20200916092125.30898-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
+References: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: sanyog.r.kale@intel.com,
@@ -109,30 +113,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-While testing Qualcomm soundwire controller version 1.5.1, found two issue,
-Firstly the frame shape information configured vs the bus parameters
-are out of sync. secondly some ports on this ip version require
-block packing mode support.
+This patch adds support to block pack mode, which is required
+on Qcom soundwire controllers v1.5.x on few ports!
 
-With this patchset I was able to test 2 WSA speakers!
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-Also I found a regression due to move to REG_FIELD, which patch 1 fixes it!
-
-thanks,
-srini
-
-Changes since v1:
- - rebased on top of REG_FILED patch or soundwire-next branch
- - udated qcom_swrm_data to use u32 instead of int as suggested by VKoul
-
-Srinivas Kandagatla (3):
-  soundwire: qcom: clear BIT FIELDs before value set.
-  soundwire: qcom: add support to block packing mode
-  soundwire: qcom: get max rows and cols info from compatible
-
- drivers/soundwire/qcom.c | 76 ++++++++++++++++++++++++++++++----------
- 1 file changed, 58 insertions(+), 18 deletions(-)
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 5d26361ab4f6..76963a7bdaa3 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -54,6 +54,7 @@
+ #define SWRM_MCP_SLV_STATUS					0x1090
+ #define SWRM_MCP_SLV_STATUS_MASK				GENMASK(1, 0)
+ #define SWRM_DP_PORT_CTRL_BANK(n, m)	(0x1124 + 0x100 * (n - 1) + 0x40 * m)
++#define SWRM_DP_BLOCK_CTRL3_BANK(n, m)	(0x1138 + 0x100 * (n - 1) + 0x40 * m)
+ #define SWRM_DP_PORT_CTRL_EN_CHAN_SHFT				0x18
+ #define SWRM_DP_PORT_CTRL_OFFSET2_SHFT				0x10
+ #define SWRM_DP_PORT_CTRL_OFFSET1_SHFT				0x08
+@@ -82,6 +83,7 @@ struct qcom_swrm_port_config {
+ 	u8 si;
+ 	u8 off1;
+ 	u8 off2;
++	u8 bp_mode;
+ };
+ 
+ struct qcom_swrm_ctrl {
+@@ -396,14 +398,22 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
+ {
+ 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+ 	u32 value;
++	int reg = SWRM_DP_PORT_CTRL_BANK((params->port_num), bank);
++	int ret;
+ 
+ 	value = params->offset1 << SWRM_DP_PORT_CTRL_OFFSET1_SHFT;
+ 	value |= params->offset2 << SWRM_DP_PORT_CTRL_OFFSET2_SHFT;
+ 	value |= params->sample_interval - 1;
+ 
+-	return ctrl->reg_write(ctrl,
+-			       SWRM_DP_PORT_CTRL_BANK((params->port_num), bank),
+-			       value);
++	ret = ctrl->reg_write(ctrl, reg, value);
++
++	if (!ret && params->blk_pkg_mode) {
++		reg = SWRM_DP_BLOCK_CTRL3_BANK(params->port_num, bank);
++
++		ret = ctrl->reg_write(ctrl, reg, 1);
++	}
++
++	return ret;
+ }
+ 
+ static int qcom_swrm_port_enable(struct sdw_bus *bus,
+@@ -451,6 +461,7 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
+ 			p_rt->transport_params.sample_interval = pcfg->si + 1;
+ 			p_rt->transport_params.offset1 = pcfg->off1;
+ 			p_rt->transport_params.offset2 = pcfg->off2;
++			p_rt->transport_params.blk_pkg_mode = pcfg->bp_mode;
+ 		}
+ 
+ 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
+@@ -461,6 +472,7 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
+ 					pcfg->si + 1;
+ 				p_rt->transport_params.offset1 = pcfg->off1;
+ 				p_rt->transport_params.offset2 = pcfg->off2;
++				p_rt->transport_params.blk_pkg_mode = pcfg->bp_mode;
+ 				i++;
+ 			}
+ 		}
+@@ -707,6 +719,7 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+ 	u8 off1[QCOM_SDW_MAX_PORTS];
+ 	u8 off2[QCOM_SDW_MAX_PORTS];
+ 	u8 si[QCOM_SDW_MAX_PORTS];
++	u8 bp_mode[QCOM_SDW_MAX_PORTS] = { 0, };
+ 	int i, ret, nports, val;
+ 
+ 	ctrl->reg_read(ctrl, SWRM_COMP_PARAMS, &val);
+@@ -749,10 +762,13 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = of_property_read_u8_array(np, "qcom,ports-block-pack-mode",
++					bp_mode, nports);
+ 	for (i = 0; i < nports; i++) {
+ 		ctrl->pconfig[i].si = si[i];
+ 		ctrl->pconfig[i].off1 = off1[i];
+ 		ctrl->pconfig[i].off2 = off2[i];
++		ctrl->pconfig[i].bp_mode = bp_mode[i];
+ 	}
+ 
+ 	return 0;
 -- 
 2.21.0
 
