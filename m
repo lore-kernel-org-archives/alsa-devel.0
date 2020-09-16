@@ -2,96 +2,92 @@ Return-Path: <SRS0=58lj=CZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2745C433E2
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24045C433E2
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:23:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBBF92080C
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:22:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B4A521974
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 09:23:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H7FHWv39";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x/WKrGKl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBBF92080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EGD8/l+K";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zwpPinI/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B4A521974
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D6651658;
-	Wed, 16 Sep 2020 11:22:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D6651658
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCFC3168B;
+	Wed, 16 Sep 2020 11:22:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCFC3168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600248171;
-	bh=l4CKBXWuOs7ZvtnHXgc4AFiuYlEgUk+xIYN4bMA21iE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=H7FHWv39fWP0raAd/QeUD10uD9v7EJiKM3onVeWV+FB+xhyPqv9AelkWngTg3fZ17
-	 yzgZtbGvapVfMdKjmkZFYn1jpga+eeyVBAsb5ESNhQkJ082p0pCMsjM+hUV2eHn0f9
-	 Wqriz68zGvuxrasnU98ceroL0+UmSrfNp37Koh0o=
+	s=default; t=1600248224;
+	bh=ST44XWI4JEq9jDCOsNTEzqbIQc3wrwZ3vQpyZ+GQc5I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EGD8/l+K8q+jFnVCsYbdTKeVuNP7t20Oj1TXuuXqrMNa3ZQOONctPRHrcZGbXMr11
+	 UjAgEVt+Bo7WG1JvpH0mc1pG9fswZimyyjFoaQ3pbyYywzd4QYWy/csQUSWauxeWuu
+	 3VwQEACeCvEisU/QBFbghZf2CD3kDzcCFb87/VVE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BDBCF8015A;
-	Wed, 16 Sep 2020 11:22:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97CB6F8020B;
+	Wed, 16 Sep 2020 11:22:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8FF5F8015D; Wed, 16 Sep 2020 11:21:58 +0200 (CEST)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
+ id D5440F800E8; Wed, 16 Sep 2020 11:21:58 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98FE3F8015A
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 11:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98FE3F8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9FB4F800F1
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 11:21:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9FB4F800F1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="x/WKrGKl"
-Received: by mail-wm1-x344.google.com with SMTP id b79so2188646wmb.4
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 02:21:52 -0700 (PDT)
+ header.b="zwpPinI/"
+Received: by mail-wr1-x42d.google.com with SMTP id g4so6124076wrs.5
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 02:21:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=LAN7y6gmMq3/PD5iIj3RPLoID/sAvRO9lIlKiy0ArFU=;
- b=x/WKrGKlNXI82tMCd+If83qGZ4A5V0aiez3Q4+B/y4E0Ii27Gjq07m6Z3gwi1CG23y
- E24ooW4ovp0kMi0yOQcyXv7z+vkI5TYNGoLhtxjhqXR1005UJQA6IfOBBL0u2SNze86C
- +UpBB3Gz9ifTz7wnsgQoURBYlUCWQT83Sti5onaAGBlWfOrkbf9n7Eci4PFLJ1LppDBK
- oiKJcSU+bNjwayoeta4NHd107xBTta+5YhPBCBp18zPBNZ3DmZLRE/XGW9dQqW5Tf0x7
- L/9c27aVxvMpRr0DewhXER6jKs50HLLrVjSdAXAQ/LCkdhQ6UgibO7ErYRNCu1fqLfqU
- JGgA==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=QcLuhNnrX/nQCZhthEE8aR8w/AwdzuMVVfrZbO3TD9g=;
+ b=zwpPinI/Rr9H8iwdQqSgkeJmlIy6IG6vrUVdUIT8CJAniqdNZru9Waie7WlTmyyT1S
+ Nug/KefJnhLLIoDZ2hqapgVx3xE9lSEoMX3AWOv7ZC+TyZc/6H5pvGPsGuXFv/C0KQT6
+ ds804bTLAjuXkMty18ffemSkElCgDebaL6XPpqiNgr+YPSuMW14nwpACjiHu5buFb+u+
+ l6cN2v5iIrJfjl077t+XwqGqbO7ZYbdr98esIhyh1G67UtA15RMhbXGjoCn4l7I70fEw
+ aFY2KjAQOMlJfO0+6KcsfM5GFVks9TY+KQSRKTlAWzKIVHqtdLiSDZn/f/+E1KXdEZrE
+ jygw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=LAN7y6gmMq3/PD5iIj3RPLoID/sAvRO9lIlKiy0ArFU=;
- b=AY4Y4ut12oLOlc5mErmekrjg8koKA4NqNBy8OpxxzalGyXWSmEA7XPk30tEqXmCMMl
- axGBlNjgdwL2h1DNLJY++eTaa6bM+CQkZpC7E5bxMYnZS3e2ggLproqGhlbyligHws2I
- MQz+/GEsHLuI+Xl/MRGbuoSMqrEFmsJ0bEejJ1Sk8Q/fo4gxwqYp/cXdRjRsj3S/fqsY
- R52bglUkAp3iadiK2G27b1DHCt2/WvYgvqPKX+fIrClwJRkJ2auaRB0dH65dzMvQE48N
- 256bGuHZoxORVPJqTpw5Fzj+unNaYYfngROhj+k0itSVRCTMPDnVMZTbUdSlgHU3FuX+
- kKlw==
-X-Gm-Message-State: AOAM532WHMeYvA/1K/nQ/Dp9iQSrA1mK/M27UhsYSF5+jNXHgZzLA4j5
- G+dVVbH3PHgrJXZlWqw46r/wtQ==
-X-Google-Smtp-Source: ABdhPJwuzWJ4qsPKBeZ7Q5Qn1v4IuB+iXGGLmkSzblCo6ZCfthm5bcvzLrZLaYJTBbDvBAJj+277cQ==
-X-Received: by 2002:a1c:bdd4:: with SMTP id n203mr3612728wmf.119.1600248110995; 
- Wed, 16 Sep 2020 02:21:50 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=QcLuhNnrX/nQCZhthEE8aR8w/AwdzuMVVfrZbO3TD9g=;
+ b=gu8v/UkXMP7LUzTnD475u6BurYxYhyGwS2tPDyC6BcHmZwwts9lDxbU19SevbK6IdI
+ 5YXKkjQXo+bArMNdkwxx+0ZGbuwFid9nVWWqbrrQGXN+hmYXnjtk1iKam6229b1sK+da
+ tDhqrv5YPc68jlx2EHOz1+hyT96m84JJDwtd1EtA4miI9ngg8WSktAvFixTe/JIdsX2s
+ 9k7rzjyRzg22S4PgpbGPLD0FhK3kaoKkKiD7e0jJVCr0FbkjAkGlVwAh/1dkxjukunbG
+ dUO+VCiFrAQY0oIj5SZzqodhOHVBG+Fhdp9p+VNAmNqIgfQru1b4WPN1x6OMeC3M4gxK
+ 1rrQ==
+X-Gm-Message-State: AOAM532NTaiQMPpFzu24O+4hCDeRsfHq0uIhTZDK5LTDurD1+C96ZnH1
+ H+LocS6r+dJcddyA4dzcLiPHKg==
+X-Google-Smtp-Source: ABdhPJy5m+mdqlv4OG5JdIdq8YqyOLfF8S9OUft4LXq72Toaw/0mXAlfmewTtZX/SaRKGmW8bN6d1Q==
+X-Received: by 2002:adf:e449:: with SMTP id t9mr26130245wrm.154.1600248108935; 
+ Wed, 16 Sep 2020 02:21:48 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id f6sm32181670wro.5.2020.09.16.02.21.49
+ by smtp.gmail.com with ESMTPSA id f6sm32181670wro.5.2020.09.16.02.21.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Sep 2020 02:21:49 -0700 (PDT)
+ Wed, 16 Sep 2020 02:21:48 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org,
 	yung-chuan.liao@linux.intel.com
-Subject: [PATCH v2 1/3] soundwire: qcom: clear BIT FIELDs before value set.
-Date: Wed, 16 Sep 2020 10:21:23 +0100
-Message-Id: <20200916092125.30898-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 0/3] soundwire: qcom: fix IP version v1.5.1 support
+Date: Wed, 16 Sep 2020 10:21:22 +0100
+Message-Id: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
-References: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: sanyog.r.kale@intel.com,
@@ -113,43 +109,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-According to usage (bitfields.h) of REG_FIELDS,
-Modify is:
-  reg &= ~REG_FIELD_C;
-  reg |= FIELD_PREP(REG_FIELD_C, c);
+While testing Qualcomm soundwire controller version 1.5.1, found two issue,
+Firstly the frame shape information configured vs the bus parameters
+are out of sync. secondly some ports on this ip version require
+block packing mode support.
 
-Patch ("soundwire: qcom : use FIELD_{GET|PREP}") seems to have
-accidentally removed clearing bit field while modifying the register.
+With this patchset I was able to test 2 WSA speakers!
 
-Fix this by adding back clear register mask before setting it up!
+Also I found a regression due to move to REG_FIELD, which patch 1 fixes it!
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 4 ++++
- 1 file changed, 4 insertions(+)
+thanks,
+srini
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d7aabdaffee3..5d26361ab4f6 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -311,6 +311,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 
- 	/* Configure No pings */
- 	ctrl->reg_read(ctrl, SWRM_MCP_CFG_ADDR, &val);
-+	val &= ~SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK;
- 	val |= FIELD_PREP(SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK, SWRM_DEF_CMD_NO_PINGS);
- 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
- 
-@@ -372,6 +373,9 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
- 
- 	ctrl->reg_read(ctrl, reg, &val);
- 
-+	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
-+	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
-+
- 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MAX_COL_VAL);
- 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
- 
+Changes since v1:
+ - rebased on top of REG_FILED patch or soundwire-next branch
+ - udated qcom_swrm_data to use u32 instead of int as suggested by VKoul
+
+Srinivas Kandagatla (3):
+  soundwire: qcom: clear BIT FIELDs before value set.
+  soundwire: qcom: add support to block packing mode
+  soundwire: qcom: get max rows and cols info from compatible
+
+ drivers/soundwire/qcom.c | 76 ++++++++++++++++++++++++++++++----------
+ 1 file changed, 58 insertions(+), 18 deletions(-)
+
 -- 
 2.21.0
 
