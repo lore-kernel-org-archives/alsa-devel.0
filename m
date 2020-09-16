@@ -2,71 +2,100 @@ Return-Path: <SRS0=58lj=CZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E126C43461
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 10:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BED2BC433E2
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 11:47:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 574D62076B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 10:26:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A5B72220A
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 11:47:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rVPApH07"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 574D62076B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lO6vActA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QXK9GTpN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A5B72220A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE19E168C;
-	Wed, 16 Sep 2020 12:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE19E168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38AF61687;
+	Wed, 16 Sep 2020 13:46:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38AF61687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600251983;
-	bh=QIwWMb0Z/vx9e9ZbqP7FXfrEH8pQZtbdMigaol3pVtM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1600256867;
+	bh=w7XuHkweMYu5TotGlDL+IWoGFu3Ys6N3VsreCGyY0Hc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rVPApH07ZchS4fO7fIUvaBOJcKShAkET+F5OWre1FEXj2LA+a8apVoDCGeQv+LW4d
-	 jFPNHOM+6mzF9WOBwd3l/XUWYpaM730INurUlBcVF+PoZT3F8/JX/sIRQm8+++/R/W
-	 CwG2RpIUxgPJ6OYaop6n4PuZCKTBbnna6aChEGOE=
+	b=lO6vActAYf59L2v2VpK9Ta+0lDOWnzAPvTKS6ZE+ztFRFxuqFhKJQLPMF+IQTS/uu
+	 sKLIvT2If36u+Elne+Vefp5AdqCNmkpqyoBpb4e+mEtHaMZpfPu3SuNIqq2LR5ZRSu
+	 SDNKrronRCwXdvKrqDVeWDyl/bdn6hPQY2iAJ+Ww=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7011F802DB;
-	Wed, 16 Sep 2020 12:23:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4405F80150;
+	Wed, 16 Sep 2020 13:46:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AABFAF802D2; Wed, 16 Sep 2020 12:23:44 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id 8C9DDF8015A; Wed, 16 Sep 2020 13:46:54 +0200 (CEST)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7496F800F1
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 12:23:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7496F800F1
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 68E691A0028;
- Wed, 16 Sep 2020 12:23:29 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AC78B1A0065;
- Wed, 16 Sep 2020 12:23:24 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D895E4029E;
- Wed, 16 Sep 2020 12:23:18 +0200 (CEST)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com
-Subject: [PATCH 2/3] ASoC: fsl_sai: Add fsl_sai_check_version function
-Date: Wed, 16 Sep 2020 18:16:26 +0800
-Message-Id: <1600251387-1863-3-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600251387-1863-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1600251387-1863-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id F32C6F800F1
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 13:46:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F32C6F800F1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QXK9GTpN"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GBkfEo058813;
+ Wed, 16 Sep 2020 06:46:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1600256801;
+ bh=f39L0NtWeT8nBr11AnFqXf2qSwpEqyvlCAO4NHzHrU0=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=QXK9GTpNryajUTxJIsXPNZHPLqrQAG++6RL8xwA3V9ppbIcLLnB/lOtyNJULXStcr
+ 71TU6C9oESqozmPi6m/I/lr9VojL59oyE9CKQbphi4U/1AYCGmRqH6HvYSf8qgoKtJ
+ XqPHG9p7MayDqEuA/U40mJJGTe/kr0o8ciEqgf6Q=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GBkfmm116875
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 16 Sep 2020 06:46:41 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
+ Sep 2020 06:46:40 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 16 Sep 2020 06:46:40 -0500
+Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GBkekj049033;
+ Wed, 16 Sep 2020 06:46:40 -0500
+Subject: Re: [PATCH v2 3/3] ASoC: tlv320adcx140: Add proper support for master
+ mode
+To: Camel Guo <camelg@axis.com>, Camel Guo <Camel.Guo@axis.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>
+References: <20200911080753.30342-1-camel.guo@axis.com>
+ <20200911080753.30342-3-camel.guo@axis.com>
+ <c2fb617e-fa61-e9d1-449f-7d8806168b9a@ti.com>
+ <507f2f53-e236-f894-cb17-4fc84cf00326@axis.com>
+From: Dan Murphy <dmurphy@ti.com>
+Message-ID: <7065684e-5e57-8c63-daef-89f4b2ab1605@ti.com>
+Date: Wed, 16 Sep 2020 06:46:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <507f2f53-e236-f894-cb17-4fc84cf00326@axis.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ kernel <kernel@axis.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,126 +111,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-fsl_sai_check_version can help to parse the version info
-in VERID and PARAM registers.
+Camel
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 47 +++++++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_sai.h | 28 ++++++++++++++++++++++++
- 2 files changed, 75 insertions(+)
+On 9/16/20 2:52 AM, Camel Guo wrote:
+> Please forget about this patch since Dan will upload a similar one.
+>
+> @Dan, see my comment below.
+>
+I have cc'd you on my patchset and as you can see I did not add any of 
+the master mode programming only setting of the master mode bits.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 24ca528ca2be..738b4dda7847 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -946,6 +946,48 @@ static struct regmap_config fsl_sai_regmap_config = {
- 	.cache_type = REGCACHE_FLAT,
- };
- 
-+static int fsl_sai_check_version(struct device *dev)
-+{
-+	struct fsl_sai *sai = dev_get_drvdata(dev);
-+	unsigned char ofs = sai->soc_data->reg_offset;
-+	unsigned int val;
-+	int ret;
-+
-+	if (FSL_SAI_TCSR(ofs) == FSL_SAI_VERID)
-+		return 0;
-+
-+	ret = regmap_read(sai->regmap, FSL_SAI_VERID, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	dev_dbg(dev, "VERID: 0x%016X\n", val);
-+
-+	sai->verid.major = (val & FSL_SAI_VERID_MAJOR_MASK) >>
-+			   FSL_SAI_VERID_MAJOR_SHIFT;
-+	sai->verid.minor = (val & FSL_SAI_VERID_MINOR_MASK) >>
-+			   FSL_SAI_VERID_MINOR_SHIFT;
-+	sai->verid.feature = val & FSL_SAI_VERID_FEATURE_MASK;
-+
-+	ret = regmap_read(sai->regmap, FSL_SAI_PARAM, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	dev_dbg(dev, "PARAM: 0x%016X\n", val);
-+
-+	/* Max slots per frame, power of 2 */
-+	sai->param.slot_num = 1 <<
-+		((val & FSL_SAI_PARAM_SPF_MASK) >> FSL_SAI_PARAM_SPF_SHIFT);
-+
-+	/* Words per fifo, power of 2 */
-+	sai->param.fifo_depth = 1 <<
-+		((val & FSL_SAI_PARAM_WPF_MASK) >> FSL_SAI_PARAM_WPF_SHIFT);
-+
-+	/* Number of datalines implemented */
-+	sai->param.dataline = val & FSL_SAI_PARAM_DLN_MASK;
-+
-+	return 0;
-+}
-+
- static int fsl_sai_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -1070,6 +1112,11 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, sai);
- 
-+	/* Get sai version */
-+	ret = fsl_sai_check_version(&pdev->dev);
-+	if (ret < 0)
-+		dev_warn(&pdev->dev, "Error reading SAI version: %d\n", ret);
-+
- 	pm_runtime_enable(&pdev->dev);
- 	regcache_cache_only(sai->regmap, true);
- 
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index d16fc4241f41..ba7425a9e217 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -223,6 +223,32 @@ struct fsl_sai_soc_data {
- 	unsigned int reg_offset;
- };
- 
-+/**
-+ * struct fsl_sai_verid - version id data
-+ * @major: major version number
-+ * @minor: minor version number
-+ * @feature: feature specification number
-+ *           0000000000000000b - Standard feature set
-+ *           0000000000000000b - Standard feature set
-+ */
-+struct fsl_sai_verid {
-+	u32 major;
-+	u32 minor;
-+	u32 feature;
-+};
-+
-+/**
-+ * struct fsl_sai_param - parameter data
-+ * @slot_num: The maximum number of slots per frame
-+ * @fifo_depth: The number of words in each FIFO (depth)
-+ * @dataline: The number of datalines implemented
-+ */
-+struct fsl_sai_param {
-+	u32 slot_num;
-+	u32 fifo_depth;
-+	u32 dataline;
-+};
-+
- struct fsl_sai {
- 	struct platform_device *pdev;
- 	struct regmap *regmap;
-@@ -243,6 +269,8 @@ struct fsl_sai {
- 	const struct fsl_sai_soc_data *soc_data;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
-+	struct fsl_sai_verid verid;
-+	struct fsl_sai_param param;
- };
- 
- #define TX 1
--- 
-2.27.0
+So this patch is still viable it's just the master mode bit programming 
+that needs to be looked at.
+
+Dan
 
