@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB62BC2D0E3
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1322CC433E2
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:21:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 058EF22283
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:20:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 637D722286
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:21:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r5az5hyC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 058EF22283
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="spgPhO5I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 637D722286
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73EA51695;
-	Wed, 16 Sep 2020 15:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73EA51695
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2FA916B4;
+	Wed, 16 Sep 2020 15:20:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2FA916B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600262434;
-	bh=3EUpFQ+4awmG+CmFdRtiBRlAZdy81IM7gd/0eEGzORM=;
+	s=default; t=1600262488;
+	bh=F0fqKcFGtiOEt0zT1vSVz8+Bq6aru1PqMp++S4Dd2fw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r5az5hyChOTB9c2UEX4BAQOuTnOQwMzxdfwFxasevVg3pfIb0sHSiDRgoiwz1WwnX
-	 W3pz1lHhG0nuWN87TEcgBfnM4o1dy3060VsBeJbdo8iWAgcx9E7NAafXF80/ZBe/bm
-	 TbIMIUvZQ27cgCwd83C5+RYApFW3vTaM5JfTUmsY=
+	b=spgPhO5IQ8UzkXq4u/8m8X4E32vlA3+ctALY5IBupQmgWujPnpfBK9s/01rVsvkBo
+	 EcE2iHyBviqzppFwTJVyOJdp6S27Ok8E0dJnqi4DsoZBA1ErnPV1ZkgU4t4IK1JUmv
+	 qZ51dYDB6BQAd3vQsSUAzKsg1cfRTVwx5F0CCz5g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F27BF80150;
-	Wed, 16 Sep 2020 15:19:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA15BF8015D;
+	Wed, 16 Sep 2020 15:20:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47895F8015A; Wed, 16 Sep 2020 15:19:43 +0200 (CEST)
+ id 657F8F801F7; Wed, 16 Sep 2020 15:20:07 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 96FD3F800E8
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 15:19:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96FD3F800E8
+ by alsa1.perex.cz (Postfix) with ESMTP id C0C4BF8015A
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 15:20:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0C4BF8015A
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1600262375795070887-webhooks-bot@alsa-project.org>
-References: <1600262375795070887-webhooks-bot@alsa-project.org>
+In-Reply-To: <1600262404591196060-webhooks-bot@alsa-project.org>
+References: <1600262404591196060-webhooks-bot@alsa-project.org>
 Subject: aplay: playing mono audio file alteres pulseaudio default Master left
  or right volume level
-Message-Id: <20200916131943.47895F8015A@alsa1.perex.cz>
-Date: Wed, 16 Sep 2020 15:19:43 +0200 (CEST)
+Message-Id: <20200916132007.657F8F801F7@alsa1.perex.cz>
+Date: Wed, 16 Sep 2020 15:20:07 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,7 +81,7 @@ The actual behaviour in the example of above is when playing the audio file, the
 
 This issue happens also with other R/L volume level, the case of above is just an example.
 
-**Important to note the case does not happen with stereo audio file** where audio sounds on left only channel without altering the volume level as we can expect.
+**Important to note the case does not happen with stereo audio file** where audio sounds on left only channel without altering the volume level of right channel as we can expect.
 
 ### Steps to repeat issue:
 
