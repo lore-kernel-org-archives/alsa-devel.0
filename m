@@ -6,77 +6,91 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC0D3C43461
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 19:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86DA3C43461
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 19:54:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0DA1520936
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 19:27:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E8A921582
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 19:54:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XMvVThV6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DA1520936
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F07LVAp9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E8A921582
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B51782E;
-	Wed, 16 Sep 2020 21:27:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B51782E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 344E484D;
+	Wed, 16 Sep 2020 21:53:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 344E484D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600284478;
-	bh=4ThOD9KVdGV/arucUsJ6aZylQGo9xSf9mNkj6xhVjLU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1600286072;
+	bh=C2pcznvPgKAf9jZzrQpS0iwBUifo2OIBkav09/Oj4wU=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XMvVThV6h1iioNUhX2MlDclXbVS7kJaEztTu4quu/uRfpR9hfW9kO9+CDYvPPMR6s
-	 cn1VXYp5AU538B5+R0n3auHgfIEZATveX8zefNw0IRFy5AToXlwZE+OJOgUMuBdOTs
-	 FnYlYSiRQS4nXTfQwF52Nea3gpvqXDJuqW6dVJsQ=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73F36F800F1;
-	Wed, 16 Sep 2020 21:27:02 +0200 (CEST)
+	b=F07LVAp9M2pNmGt/59UBNbE5ybAsurll4MbFFnLDzuykfDlTBArJztU1of73RS9E+
+	 xcTy4oqBgIOR9sA+cTzCxcNZ/ev932CijNtYaoZOPEnLDej1uXGXzh5jZHRfTvi9vf
+	 GvDw2l91BcHaq8MkR6VDVBC+kiaZdOU+uWxYRHaw=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id A2FFBF800E8;
+	Wed, 16 Sep 2020 21:53:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE01BF8015A; Wed, 16 Sep 2020 21:26:45 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id C359BF8015A; Wed, 16 Sep 2020 21:53:40 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BEABF800E8
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 21:26:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BEABF800E8
-IronPort-SDR: hbfGURS0ZTKv/C/bThyuIaErEbFVSohAERmDkchs0xOLWwZghqiheTtEYd0Pll1Xch/Nf6GjaS
- BHWIu7KyW1Sg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139058915"
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; d="scan'208";a="139058915"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 966FDF800E8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 21:53:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 966FDF800E8
+IronPort-SDR: da9kZiGwbsGA3C+t5hPfVH7BzSbdc9R3bNFxdCP1A/3Yh0QMsvaja+mmc2y9iG3fflnr5RUTpW
+ /PPcNPxCc//w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="147242163"
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; d="scan'208";a="147242163"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2020 12:25:58 -0700
-IronPort-SDR: RWmOuU45gJ522HRgspBlhHTEfDkjCDAjDJ2IIWWaCyDNgcRw5+3tnxOPfrEHYCxx/pJhDF9Q3v
- p2/7SK3cjpFw==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Sep 2020 12:53:22 -0700
+IronPort-SDR: KLquimiHydZb/JxLvK7a6GqIgdwvnPW4Sjldr7PNYsnzW5PlqVQ7sN5Xz0q/64K6kmjhKX4Mbh
+ DfDFM3W1ViIg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; d="scan'208";a="336142762"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga008.jf.intel.com with ESMTP; 16 Sep 2020 12:25:53 -0700
-Received: from andy by smile with local (Exim 4.94)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1kIcrF-00H9bG-4F; Wed, 16 Sep 2020 22:12:45 +0300
-Date: Wed, 16 Sep 2020 22:12:45 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v5 01/13] ASoC: Intel: Add catpt device
-Message-ID: <20200916191245.GF3956970@smile.fi.intel.com>
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; d="scan'208";a="483444491"
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137])
+ by orsmga005.jf.intel.com with ESMTP; 16 Sep 2020 12:53:20 -0700
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX604.ger.corp.intel.com (163.33.146.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 16 Sep 2020 20:53:19 +0100
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Wed, 16 Sep 2020 20:53:19 +0100
+From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: RE: [PATCH v5 01/13] ASoC: Intel: Add catpt device
+Thread-Topic: [PATCH v5 01/13] ASoC: Intel: Add catpt device
+Thread-Index: AQHWi32GW37jr4EJj0CkLtYrpbvLFKlrU1CAgAAZhACAACqUUP//+5CAgAAWE5A=
+Date: Wed, 16 Sep 2020 19:53:19 +0000
+Message-ID: <d41e06595a9944afaa2c119ecb8efae1@intel.com>
 References: <20200915162944.16241-1-cezary.rojewski@intel.com>
  <20200915162944.16241-2-cezary.rojewski@intel.com>
  <20200916152455.GP3956970@smile.fi.intel.com>
  <20200916165614.GC3956970@smile.fi.intel.com>
  <9050ad4f60764a55a98579e494bd53f0@intel.com>
+ <20200916191245.GF3956970@smile.fi.intel.com>
+In-Reply-To: <20200916191245.GF3956970@smile.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9050ad4f60764a55a98579e494bd53f0@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Cc: "pierre-louis.bossart@linux.intel.com"
  <pierre-louis.bossart@linux.intel.com>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kaczmarski,
@@ -90,7 +104,7 @@ Cc: "pierre-louis.bossart@linux.intel.com"
  "Wasko, Michal" <michal.wasko@intel.com>,
  "cujomalainey@chromium.org" <cujomalainey@chromium.org>, "Hejmowski,
  Krzysztof" <krzysztof.hejmowski@intel.com>, "Papierkowski,
- Piotr \(Habana\)" <ppapierkowski@habana.ai>, "Gopal,
+ Piotr \(Habana\)" <ppapierkowski@habana.ai>, "Gopal, 
  Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -107,50 +121,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 16, 2020 at 06:30:27PM +0000, Rojewski, Cezary wrote:
-> > On Wed, Sep 16, 2020 at 06:24:56PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Sep 15, 2020 at 06:29:32PM +0200, Cezary Rojewski wrote:
-> > > > Declare base structures, registers and device routines for the catpt
-> > > > solution. Catpt deprecates and is a direct replacement for
-> > > > sound/soc/intel/haswell. Supports Lynxpoint and Wildcat Point both.
+> On Wed, Sep 16, 2020 at 06:30:27PM +0000, Rojewski, Cezary wrote:
+> > > On Wed, Sep 16, 2020 at 06:24:56PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Sep 15, 2020 at 06:29:32PM +0200, Cezary Rojewski wrote:
+> > > > > Declare base structures, registers and device routines for the ca=
+tpt
+> > > > > solution. Catpt deprecates and is a direct replacement for
+> > > > > sound/soc/intel/haswell. Supports Lynxpoint and Wildcat Point bot=
+h.
+> > > >
+> > > > Few nit-picks below. Overall looks good, FWIW,
+> > > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > > >
-> > > Few nit-picks below. Overall looks good, FWIW,
-> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> > Actually hold on. See below.
-> > 
-> > > > +void catpt_sram_init(struct resource *sram, u32 start, u32 size);
-> > > > +void catpt_sram_free(struct resource *sram);
-> > > > +struct resource *
-> > > > +catpt_request_region(struct resource *root, resource_size_t size);
-> > 
-> > These seems dangling declarations that has to be moved to the
-> > corresponding
-> > patch. Please, revisit entire series to be sure that:
-> > 
-> > - each patch doesn't add any warnings on W=1
-> > - each patch doesn't have dangling stuff
-> > - each patch is bisectable for compilation and run-time
-> > 
-> 
-> TLDR: you want patches:
-> 6/13 ASoC: Intel: catpt: PCM operations
-> 5/13 ASoC: Intel: catpt: Add IPC messages
-> 4/13 ASoC: Intel: catpt: Implement IPC protocol
-> 3/13 ASoC: Intel: catpt: Firmware loading and context restore
-> 2/13 ASoC: Intel: catpt: Define DSP operations
-> 1/13 ASoC: Intel: Add catpt device
-> 
-> squashed. There is no other way to achieve that without combining
-> all the core-code together. fs and traces can be provided separately,
-> but not the first 6.
+> > > Actually hold on. See below.
+> > >
+> > > > > +void catpt_sram_init(struct resource *sram, u32 start, u32 size)=
+;
+> > > > > +void catpt_sram_free(struct resource *sram);
+> > > > > +struct resource *
+> > > > > +catpt_request_region(struct resource *root, resource_size_t size=
+);
+> > >
+> > > These seems dangling declarations that has to be moved to the
+> > > corresponding
+> > > patch. Please, revisit entire series to be sure that:
+> > >
+> > > - each patch doesn't add any warnings on W=3D1
+> > > - each patch doesn't have dangling stuff
+> > > - each patch is bisectable for compilation and run-time
+> > >
+> >
+> > TLDR: you want patches:
+> > 6/13 ASoC: Intel: catpt: PCM operations
+> > 5/13 ASoC: Intel: catpt: Add IPC messages
+> > 4/13 ASoC: Intel: catpt: Implement IPC protocol
+> > 3/13 ASoC: Intel: catpt: Firmware loading and context restore
+> > 2/13 ASoC: Intel: catpt: Define DSP operations
+> > 1/13 ASoC: Intel: Add catpt device
+> >
+> > squashed. There is no other way to achieve that without combining
+> > all the core-code together. fs and traces can be provided separately,
+> > but not the first 6.
+>=20
+> No. My point is introduce header (declaration) with definition (c-file)
+> together. Like those three of four functions.
+>=20
 
-No. My point is introduce header (declaration) with definition (c-file)
-together. Like those three of four functions.
+Problem is that all of these are intertwined. I'll end up creating
+patches which will be constantly updating files added by the opening
+patch e.g.: core.h. Even if I'm to let's say, separate "just" pcm
+operations, then the following:
 
+int catpt_register_plat_component(struct catpt_dev *cdev);
+void catpt_stream_update_position(struct catpt_dev *cdev,
+                                  struct catpt_stream_runtime *stream,
+                                  struct catpt_notify_position *pos);
+struct catpt_stream_runtime *
+catpt_stream_find(struct catpt_dev *cdev, u8 stream_hw_id);
+int catpt_arm_stream_templates(struct catpt_dev *cdev);
 
--- 
-With Best Regards,
-Andy Shevchenko
+have to removed initially from core.h. These, however, are part of
+standard ipc flow and device probing. In consequence I'll have to update
+the programming flow later on for these files.
 
+I'll dig again and see what and where could be split.
+Hope I'm wrong and the results won't be as ugly as I think they're
+going to be.
+
+Thanks for your input Andy, once again!
+Czarek
 
