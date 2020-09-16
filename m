@@ -2,94 +2,94 @@ Return-Path: <SRS0=58lj=CZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B079EC43461
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 15:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE48C43461
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 15:44:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9E2F22285
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 15:43:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 97D0422285
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 15:44:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pfmrOKEZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x96G+S6z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9E2F22285
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cHwOip8S";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zcjWfK5j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97D0422285
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A9C91691;
-	Wed, 16 Sep 2020 17:42:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A9C91691
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCFE41684;
+	Wed, 16 Sep 2020 17:43:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCFE41684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600271027;
-	bh=nBxlD5bkAZ3BsXsWaOEr4xMDUm6pfF5Q7hvXgCNXp0c=;
+	s=default; t=1600271072;
+	bh=EbHvEEo/9t9IH8ZxixuFj6Tqz5BodAfxexsSnx6LRd8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pfmrOKEZXUY95U9mFxU8Okn+WVhLViKkdso8RQ53VAvllCSe9mcD3mXVybltgy5KL
-	 nShpCmRNL+W02sHFfbPLsXDb3wm2H3IJIau9aQ1GBGluHa7K7Wfrly6A7Xwb0YVqUY
-	 XNwYhdjXOw9O6C3kM5vCXKX3hCyZR4aLf9vlxswE=
+	b=cHwOip8S5uxqjqIbCmcHFi2csfTJvB4GY5Bd7BUP6avf6AsCcGxFTLyd59ABZxq9H
+	 SHN2EoGS403Y9yCm6CX48Px2/ei37ynpHAPi9GGjhDdHXDHaQmHABON7b6Do+kToi4
+	 bG5Kg5kUIaNwGrpZcLT5hOyYJV9gh0lWBkJ7MMBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32D47F80150;
-	Wed, 16 Sep 2020 17:41:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AED7F802E2;
+	Wed, 16 Sep 2020 17:41:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BD8DF802C3; Wed, 16 Sep 2020 17:41:20 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id B34A3F802E3; Wed, 16 Sep 2020 17:41:23 +0200 (CEST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C5CAF80150
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 17:41:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C5CAF80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id B947CF8015D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 17:41:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B947CF8015D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="x96G+S6z"
-Received: by mail-wr1-x441.google.com with SMTP id s12so7375467wrw.11
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 08:41:10 -0700 (PDT)
+ header.b="zcjWfK5j"
+Received: by mail-wr1-x444.google.com with SMTP id a17so7419085wrn.6
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 08:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=QR4X/TKCD+d57b2Ze0jlcbxYS6HqjaoNPSGjtgtVeZ8=;
- b=x96G+S6zKbDmbASlvP7erU7iD+GDKspcvh52WK9lO3bptq4o/JN2t6vGLMOkkB5KOG
- Qc5PuhIaOF4Et5HnoBGWs6yPo2pNJ6//0n37joIqJr9LQ+aqEq+DaPbC29flNyFfasUR
- HxACTxe9CJRbPdlbPFOSEBXE94Py6lsccWUI2TS//pkF1pNnwgZVfa+ZI99aXcgKCvlD
- nSNfrCnoJSrykTuLW/uEyIFR82beHvuaOV1doArQS2pa7/XzLVvZUb7CDbP+3JZ0MLU7
- Y3rJNI5f+jALXdF0UEASyVU/p6v8/1Xunbt9Jyr0XrEhRMBwwKeyf5L81A9pB+4eX8TG
- efJQ==
+ bh=j7U04XxCq+61JwDLpYnpauOtw8AQMg5GwCJMJAegysE=;
+ b=zcjWfK5jdTcoSX69FvF8etBcZ0/k01BHqXFlUvcOL8WjJUhxJVPyXschbpxMX0NvPg
+ aIc/MyPaqkNDZyxHFYf0nxmEwArRKcgyiy11a+MzDC+XdXZxcHgiTFjVnj+PcyxNw3+X
+ +C7HuA623CZFdi/P3/thUpCJJkLVf59MPfhDD5lv2qcSheCCE73i8U6vowq6aqSzlNNZ
+ 4a47k+BTEr1H+q0KnHBSNPCf4yEgC89gw5CLjYXNcEbq708A3wA2iWGcuXW+HRTtU/VF
+ hS1WdKT1hnTF+GyglvkYEumVjggZYx+mNOwKrzgOo1UMFlJ5MkC+nlb2f4dF+IXz/ahe
+ ITUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=QR4X/TKCD+d57b2Ze0jlcbxYS6HqjaoNPSGjtgtVeZ8=;
- b=eVrdt4Xm/6ZBgHSuvMcf9e9+86/lJUks0eXjH3xlajdgYw8c/UJVfKeK1ncjjuOV6h
- PIscjPRLK7SoSTkkd9qtAdCmOZN8eSBvuOokKE8eRlQWsXJOZKjbZj0kG0gT0furTzR9
- toSO0qSsyzTSLblym4NSNT0vqlyb+jHV0s/TOolDtkM6ZUkOP2CFE47+iRFdNCiQNe5t
- RpcNcOCkmsU/syzvw4pcmpmRdGkkxl++SuwJfvj7b/T/D/+tAXTxkKxcBc6dvzihoGUm
- LMyOjLpeAjJR9BOVVb0/tJEcemITolEidrGzo9DH1Y7qhTBLFb7/FS7akYRYKYVB0ukK
- 6mdg==
-X-Gm-Message-State: AOAM533yZBf/D/BKOtqEjLhdfQuE7wO/narMmfTe82Xc5gk5OIcRKXJx
- uaVIhdRXMbm2cYZTXTDbN3LLew==
-X-Google-Smtp-Source: ABdhPJxvV/oYmxQjdvC/nE1y4Kgb+u9RgTb9KXGP+lXTt6/rlDcYaUJwo3RYwi7k/zRFDaSSopmDiA==
-X-Received: by 2002:a05:6000:100c:: with SMTP id
- a12mr29222491wrx.115.1600270868971; 
- Wed, 16 Sep 2020 08:41:08 -0700 (PDT)
+ bh=j7U04XxCq+61JwDLpYnpauOtw8AQMg5GwCJMJAegysE=;
+ b=FkGIqA5MKUOT/+OETGQuJM7Ez0geagviwAX+BX2/JSY4ePaTRCFHepKnVw/6PE1TdK
+ k/PmkfR09lP8Evq2AY4MqnEXBgDwWJKySxDmk3CVJ4Q60TW7JHAb1d5jZU6n7lme+RuZ
+ KZjiNCorHOeL/mDhQfsq1zW7oSM+CMD7Z/SZ5YAWOYndZuK42WS5eBLxEU3oG22a5KT0
+ G9++bNhRt4nyPgR77hSa1v1FpRhh73ZK7oLRhvasrp2hkSba0ElhiVs4apcFuE3Yea2g
+ ibEWWO3pfG/VqZfKtw4GagI6qTT5M+6uTfXoH+GtF426aDsoE8ZvHwnJ4UI6w9aIqkEA
+ 8PmQ==
+X-Gm-Message-State: AOAM531IP1fEyF/UGpjNy94Y4ujF5j78B6SIP+yNwpv8bp7w+AJYdcCy
+ 9UK3GDrKb9U1TUMuRYN/gVog3Q==
+X-Google-Smtp-Source: ABdhPJxxkkIzx3lElJ4LtY9VVWlYPU45BQqngRTlRJSr1UcBdag1LOfRXz1qqaLisniM93cpf/LuTQ==
+X-Received: by 2002:a5d:5106:: with SMTP id s6mr29222629wrt.166.1600270871654; 
+ Wed, 16 Sep 2020 08:41:11 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id t22sm7223901wmt.1.2020.09.16.08.41.07
+ by smtp.gmail.com with ESMTPSA id t22sm7223901wmt.1.2020.09.16.08.41.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Sep 2020 08:41:08 -0700 (PDT)
+ Wed, 16 Sep 2020 08:41:10 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org,
 	yung-chuan.liao@linux.intel.com
-Subject: [PATCH v3 1/3] soundwire: qcom: clear BIT FIELDs before value set.
-Date: Wed, 16 Sep 2020 16:40:59 +0100
-Message-Id: <20200916154101.2254-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 3/3] soundwire: qcom: get max rows and cols info from
+ compatible
+Date: Wed, 16 Sep 2020 16:41:01 +0100
+Message-Id: <20200916154101.2254-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200916154101.2254-1-srinivas.kandagatla@linaro.org>
 References: <20200916154101.2254-1-srinivas.kandagatla@linaro.org>
@@ -114,45 +114,135 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-According to usage (bitfields.h) of REG_FIELDS,
-Modify is:
-  reg &= ~REG_FIELD_C;
-  reg |= FIELD_PREP(REG_FIELD_C, c);
-
-Patch ("soundwire: qcom : use FIELD_{GET|PREP}") seems to have
-accidentally removed clearing bit field while modifying the register.
-
-Fix this by using u32_replace_bits() to clear and set the values.
+currently the max rows and cols values are hardcoded. In reality
+these values depend on the IP version. So get these based on
+device tree compatible strings.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/qcom.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soundwire/qcom.c | 46 +++++++++++++++++++++++++++-------------
+ 1 file changed, 31 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d7aabdaffee3..0036d3248fb4 100644
+index 5a61d82310fd..88ea31265941 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -311,7 +311,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+@@ -66,11 +66,6 @@
+ #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
+ 			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
  
- 	/* Configure No pings */
- 	ctrl->reg_read(ctrl, SWRM_MCP_CFG_ADDR, &val);
--	val |= FIELD_PREP(SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK, SWRM_DEF_CMD_NO_PINGS);
-+	val = u32_replace_bits(val, SWRM_DEF_CMD_NO_PINGS, SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK);
- 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
+-#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
+-#define SWRM_DEFAULT_ROWS	48
+-#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
+-#define SWRM_DEFAULT_COL	16
+-#define SWRM_MAX_COL_VAL	7
+ #define SWRM_SPECIAL_CMD_ID	0xF
+ #define MAX_FREQ_NUM		1
+ #define TIMEOUT_MS		(2 * HZ)
+@@ -104,6 +99,8 @@ struct qcom_swrm_ctrl {
+ 	unsigned int version;
+ 	int num_din_ports;
+ 	int num_dout_ports;
++	int cols_index;
++	int rows_index;
+ 	unsigned long dout_port_mask;
+ 	unsigned long din_port_mask;
+ 	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
+@@ -113,6 +110,21 @@ struct qcom_swrm_ctrl {
+ 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
+ };
  
- 	/* Configure number of retries of a read/write cmd */
-@@ -372,8 +372,8 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
++struct qcom_swrm_data {
++	u32 default_cols;
++	u32 default_rows;
++};
++
++static struct qcom_swrm_data swrm_v1_3_data = {
++	.default_rows = 48,
++	.default_cols = 16,
++};
++
++static struct qcom_swrm_data swrm_v1_5_data = {
++	.default_rows = 50,
++	.default_cols = 16,
++};
++
+ #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
+ 
+ static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
+@@ -299,8 +311,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 	u32 val;
+ 
+ 	/* Clear Rows and Cols */
+-	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
+-	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MIN_COL_VAL);
++	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
++	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
+ 
+ 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+ 
+@@ -374,8 +386,8 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
  
  	ctrl->reg_read(ctrl, reg, &val);
  
--	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MAX_COL_VAL);
--	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
-+	val = u32_replace_bits(val, SWRM_MAX_COL_VAL, SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK);
-+	val = u32_replace_bits(val, SWRM_MAX_ROW_VAL, SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK);
+-	val = u32_replace_bits(val, SWRM_MAX_COL_VAL, SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK);
+-	val = u32_replace_bits(val, SWRM_MAX_ROW_VAL, SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK);
++	val = u32_replace_bits(val, ctrl->cols_index, SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK);
++	val = u32_replace_bits(val, ctrl->rows_index, SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK);
  
  	return ctrl->reg_write(ctrl, reg, val);
  }
+@@ -776,6 +788,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	struct sdw_master_prop *prop;
+ 	struct sdw_bus_params *params;
+ 	struct qcom_swrm_ctrl *ctrl;
++	const struct qcom_swrm_data *data;
+ 	int ret;
+ 	u32 val;
+ 
+@@ -783,6 +796,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	if (!ctrl)
+ 		return -ENOMEM;
+ 
++	data = of_device_get_match_data(dev);
++	ctrl->rows_index = sdw_find_row_index(data->default_rows);
++	ctrl->cols_index = sdw_find_col_index(data->default_cols);
+ #if IS_ENABLED(CONFIG_SLIMBUS)
+ 	if (dev->parent->bus == &slimbus_bus) {
+ #else
+@@ -832,8 +848,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	params = &ctrl->bus.params;
+ 	params->max_dr_freq = DEFAULT_CLK_FREQ;
+ 	params->curr_dr_freq = DEFAULT_CLK_FREQ;
+-	params->col = SWRM_DEFAULT_COL;
+-	params->row = SWRM_DEFAULT_ROWS;
++	params->col = data->default_cols;
++	params->row = data->default_rows;
+ 	ctrl->reg_read(ctrl, SWRM_MCP_STATUS, &val);
+ 	params->curr_bank = val & SWRM_MCP_STATUS_BANK_NUM_MASK;
+ 	params->next_bank = !params->curr_bank;
+@@ -843,8 +859,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	prop->num_clk_gears = 0;
+ 	prop->num_clk_freq = MAX_FREQ_NUM;
+ 	prop->clk_freq = &qcom_swrm_freq_tbl[0];
+-	prop->default_col = SWRM_DEFAULT_COL;
+-	prop->default_row = SWRM_DEFAULT_ROWS;
++	prop->default_col = data->default_cols;
++	prop->default_row = data->default_rows;
+ 
+ 	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
+ 
+@@ -895,8 +911,8 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id qcom_swrm_of_match[] = {
+-	{ .compatible = "qcom,soundwire-v1.3.0", },
+-	{ .compatible = "qcom,soundwire-v1.5.1", },
++	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
++	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+ 	{/* sentinel */},
+ };
+ 
 -- 
 2.21.0
 
