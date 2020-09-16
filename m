@@ -2,58 +2,96 @@ Return-Path: <SRS0=58lj=CZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6383EC433E2
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:09:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48119C433E2
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:13:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39CD622274
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:09:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1632222261
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Sep 2020 13:13:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QcekYtus"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39CD622274
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k8Ny9DSl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1632222261
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF9F016B6;
-	Wed, 16 Sep 2020 15:09:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF9F016B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81C461698;
+	Wed, 16 Sep 2020 15:12:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81C461698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600261793;
-	bh=exJ4B0E8ZOtJLqRGXEepgGDMdI5G6V3kXysajnFYBl8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1600261996;
+	bh=pB5SBQDgGhv4Y3C60n++erIF3u0a62gG38AqoxUyhm0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QcekYtusHlsFwnXZnPY9o64OzIbVV+yzSEk5aNSK6VdzwmyPvWKMQjdMJD4oUErMt
-	 I/JeCMeOR27UlbgvBVDaZkncMZLQMcrIT+DEpsdN0RnNY/dhM3Y2lXzxtf3T2CsiZQ
-	 cy71ENe4lALnP9l92pPd9kwSKRgawYD+eOS6LsIM=
+	b=k8Ny9DSlJnQQ9RAtqkTEUxAdjjWX3rE21kJEcNR8OaKfvgbDVs0aN2zbnW833QdBp
+	 W1Ew5WxTxv7TQGOta/6Khu/APy7qH9fk/Bwr73s5eASKMieDeTRnICnPH6RNBDuY+Q
+	 gVQ5kcpN9D6CwMUuf8Q8cQoGku60o+Lt7fzagnw0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70C8BF800BB;
-	Wed, 16 Sep 2020 15:09:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0935BF80150;
+	Wed, 16 Sep 2020 15:12:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E85F9F80292; Wed, 16 Sep 2020 15:09:00 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 980B5F8015A
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 15:08:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 980B5F8015A
+ id D22B5F8015A; Wed, 16 Sep 2020 15:12:23 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D1D0F800BB
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 15:12:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D1D0F800BB
+IronPort-SDR: e1Iy5BhPVuZj2xXTZ9sGFNmn+5z3EfgI2/bdfqsoF0Fs8wmmAL25+CTq7iBpL6UvUiZ4QFmpS9
+ lod0ceHhGbiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="139466140"
+X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; d="scan'208";a="139466140"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Sep 2020 06:12:17 -0700
+IronPort-SDR: MVS8Hy5teS3hg1wO0idxtJ8DVPmkc0coiYjpFJO/ilmoKoFGp0/oIZtyk58SFaqekoLTdCuIH5
+ y30DXIdCUMWg==
+X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; d="scan'208";a="507163140"
+Received: from gopikapa-mobl.amr.corp.intel.com (HELO [10.209.66.210])
+ ([10.209.66.210])
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Sep 2020 06:12:16 -0700
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200904050244.GT2639@vkoul-mobl>
+ <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+ <20200909075555.GK77521@vkoul-mobl>
+ <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
+ <20200910062223.GQ77521@vkoul-mobl>
+ <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
+ <20200911070649.GU77521@vkoul-mobl>
+ <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
+ <20200914050825.GA2968@vkoul-mobl>
+ <11feabb2-dc8b-7acc-6e4d-0903fc435b00@linux.intel.com>
+ <20200916123545.GK2968@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d717f109-7ffd-11cb-f44d-f6c0b48d4985@linux.intel.com>
+Date: Wed, 16 Sep 2020 08:11:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200916123545.GK2968@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1600261734400299072-webhooks-bot@alsa-project.org>
-References: <1600261734400299072-webhooks-bot@alsa-project.org>
-Subject: aplay: playing mono audio file alteres pulseaudio default Master left
- or right volume level
-Message-Id: <20200916130900.E85F9F80292@alsa1.perex.cz>
-Date: Wed, 16 Sep 2020 15:09:00 +0200 (CEST)
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ tiwai@suse.de, gregkh@linuxfoundation.org,
+ open list <linux-kernel@vger.kernel.org>, broonie@kernel.org,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,44 +107,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #55 was edited from maxmbed:
-
-### Description
-
-I am encountering an unexpected behaviour with pulse audio master volume in my application. 
-
-If I set for example left channel to 100% and right channel 0%, and play mono audio file (i.e. audio file with 1 channel only), then I would expect to hear only the audio file on left channel.
-
-The actual behaviour in the example of above is when playing the audio file, the Master volume right channel will be automatically adjusted to 50%. If play again it increases to 75% and so on. 
-
-This issue happens also with other R/L volume level, the case of above is just an example.
-
-**Important to note the case does not happen with stereo audio file** where audio sounds on left only channel as we can expect.
-
-### Steps to repeat issue:
-
-(a) Set mixer Lch to 100%, Rch to 0%
-```
-$ amixer -D default sset Master 65535,0
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 65536
-  Mono:
-  Front Left: Playback 65535 [100%] [on]
-  Front Right: Playback 0 [0%] [on]
-```
-
-(b) Play mono audio file
-```
-$ aplay -D default ringtone.wav
-Playing WAVE 'ringtone.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-```
 
 
-### Request
-(1) Is it by design expected ? 
-(2) Is there a way to prevent this phenomenon (command option) ?
+On 9/16/20 7:35 AM, Vinod Koul wrote:
+> On 14-09-20, 09:44, Pierre-Louis Bossart wrote:
+>>> For LSB bits, I dont think this is an issue. I expect it to work, for example:
+>>> #define CONTROL_LSB_MASK  GENMASK(2, 0)
+>>>           foo |= u32_encode_bits(control, CONTROL_LSB_MASK);
+>>>
+>>> would mask the control value and program that in specific bitfeild.
+>>>
+>>> But for MSB bits, I am not sure above will work so, you may need to extract
+>>> the bits and then use, for example:
+>>> #define CONTROL_MSB_BITS        GENMASK(5, 3)
+>>> #define CONTROL_MSB_MASK        GENMASK(17, 15)
+>>>
+>>>           control = FIELD_GET(CONTROL_MSB_BITS, control);
+>>>           foo |= u32_encode_bits(control, CONTROL_MSB_MASK);
+>>>
+>>>> If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am all
+>>>> ears. At the end of the day, the mapping is pre-defined and we don't have
+>>>> any degree of freedom. What I do want is that this macro/inline function is
+>>>> shared by all codec drivers so that we don't have different interpretations
+>>>> of how the address is constructed.
+>>>
+>>> Absolutely, this need to be defined here and used by everyone else.
+>>
+>> Compare:
+>>
+>> #define SDCA_CONTROL_MSB_BITS        GENMASK(5, 3)
+>> #define SDCA_CONTROL_MSB_MASK        GENMASK(17, 15)
+>> #define SDCA_CONTROL_LSB_MASK        GENMASK(2, 0)
+>>
+>> foo |= u32_encode_bits(control, SDCA_CONTROL_LSB_MASK);
+>> control = FIELD_GET(SDCA_CONTROL_MSB_BITS, control);
+>> foo |= u32_encode_bits(control, SDCA_CONTROL_MSB_MASK);
+>>
+>> with the original proposal:
+>>
+>> foo |= FIELD_GET(GENMASK(2, 0), control))	
+>> foo |= FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), control))	
+>>
+>> it gets worse when the LSB positions don't match, you need another variable
+>> and an additional mask.
+>>
+>> I don't see how this improves readability? I get that hard-coding magic
+>> numbers is a bad thing in general, but in this case there are limited
+>> benefits to the use of additional defines.
+> 
+> I think it would be prudent to define the masks and use them rather than
+> magic values. Also it makes it future proof
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/55
-Repository URL: https://github.com/alsa-project/alsa-utils
+I don't see your point at all. The values cannot be modified, a 
+different macro would be needed for a standard change.
+
+Anyways, I am not going to argue further, I'll use your code example as 
+is and move on.
