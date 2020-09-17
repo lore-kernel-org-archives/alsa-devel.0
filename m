@@ -2,83 +2,83 @@ Return-Path: <SRS0=Aorx=C2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9A6AC433E2
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 13:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8E04C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 13:07:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C67A52083B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 13:06:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C5CB21974
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 13:07:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZOeg/iGK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mi3s2YQg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C67A52083B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gipDPQA4";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKa1R18d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C5CB21974
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27DCD846;
-	Thu, 17 Sep 2020 15:05:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27DCD846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 119621675;
+	Thu, 17 Sep 2020 15:06:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 119621675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600347985;
-	bh=VWZZoKhUjroNLpll2eU5vjUqNxtnR3wkR+uu5Ss0zr8=;
+	s=default; t=1600348038;
+	bh=tXED9ypy+kPPeF6JnxWh9p1oi/UnOkEUioVzoMCVEKY=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZOeg/iGKtTTauCe+jKe9/527rFIKq/D5QZb09Vec0MIRsapfhMH4LPJYcuHdN6f4a
-	 cu5vNaKDRTrjeTFbqWzwAahNDLg5M1IMoRmm4b4vtyYehaMz3Q7WETH3NTOV4kkDoR
-	 yZzSrBdiX8GkSRiiC1nj01fcKsyUcUsyZ6P9JYrQ=
+	b=gipDPQA4FZy1hSRWncg/ZVPEwR/N5KfffFPhI6wNKyyULqScXxoGtNTje/SP6x35s
+	 QDfpSfVE9oKqRDQy/Lhn6mcxWRBHjxqRki9lzgF0tpz9rytM9prGA5G1htZsyB++a1
+	 rp2qxtPDHTeMRriVtCuygAACQg+zeIZJzg8owlGw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1032F80134;
-	Thu, 17 Sep 2020 15:05:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05E77F801EC;
+	Thu, 17 Sep 2020 15:06:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86293F80212; Thu, 17 Sep 2020 15:05:33 +0200 (CEST)
+ id D647BF8027C; Thu, 17 Sep 2020 15:06:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 160F0F801EC
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 15:05:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 160F0F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0D36F801EC
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 15:06:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D36F801EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mi3s2YQg"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 52B782083B;
- Thu, 17 Sep 2020 13:05:23 +0000 (UTC)
+ header.b="EKa1R18d"
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9FD0721582;
+ Thu, 17 Sep 2020 13:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600347923;
- bh=VWZZoKhUjroNLpll2eU5vjUqNxtnR3wkR+uu5Ss0zr8=;
+ s=default; t=1600347968;
+ bh=tXED9ypy+kPPeF6JnxWh9p1oi/UnOkEUioVzoMCVEKY=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=mi3s2YQgpeZZBpneKJuKUPowYJRNqmmOg9EnsuaQ6g7HwF8jYnhjAbFZq+G1I7ATn
- qMvrjkVDAonhONz4GUA8SHPmq0sMe7Jov1R5tPypU7ue+bWqQFozkiUnzir8+uMs9H
- dLNQL6u2z+vGlf08u1vwiMKYG0Z94iXzUizJeZpM=
-Date: Thu, 17 Sep 2020 14:04:34 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Xu Wang <vulab@iscas.ac.cn>
-Subject: Re: [PATCH] fsl: imx-audmix : Replace seq_printf with seq_puts
-Message-ID: <20200917130434.GD4755@sirena.org.uk>
-References: <20200916061420.10403-1-vulab@iscas.ac.cn>
+ b=EKa1R18dcUNG0h4K1M5wBdM61S+UmlO6CGmeNC9qh6hvHzKYFRm/Yz6dtJJA4y9gY
+ DtyWtXehwfUlvH8J4KxAEC4EcATZCsALthOIEz954Urds10Xe0O+TAywErn5RXF2DK
+ PiwLxzsSlCMtQOkrPI12LMIczSu6ZYLdTJmDQHls=
+Date: Thu, 17 Sep 2020 15:06:40 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] soundwire: sysfs: add slave status and device number
+ before probe
+Message-ID: <20200917130640.GA3643521@kroah.com>
+References: <20200916201504.52211-1-pierre-louis.bossart@linux.intel.com>
+ <20200916201504.52211-3-pierre-louis.bossart@linux.intel.com>
+ <20200917091938.GB52206@kroah.com>
+ <2fc52eda-5c4a-e970-8a74-43c2037f9e0f@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="MAH+hnPXVZWQ5cD/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916061420.10403-1-vulab@iscas.ac.cn>
-X-Cookie: If you fail to plan, plan to fail.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- festevam@gmail.com, s.hauer@pengutronix.de, tiwai@suse.com,
- lgirdwood@gmail.com, nicoleotsuka@gmail.com, linux-imx@nxp.com,
- kernel@pengutronix.de, shawnguo@kernel.org, shengjiu.wang@gmail.com,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <2fc52eda-5c4a-e970-8a74-43c2037f9e0f@linux.intel.com>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.de, vkoul@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,33 +94,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, Sep 17, 2020 at 07:54:50AM -0500, Pierre-Louis Bossart wrote:
+> Thanks for the review Greg,
+> 
+> > > +int sdw_slave_status_sysfs_init(struct sdw_slave *slave)
+> > > +{
+> > > +	return device_add_group(&slave->dev, &sdw_slave_status_attr_group);
+> > 
+> > DOesn't this race with userspace?  Why not make this part of the default
+> > set of device attributes and have the driver core create them
+> > automatically?
+> 
+> What did you mean by 'default set of device attributes', would you mind
+> providing a pointer to an example so that I can look into this?
 
---MAH+hnPXVZWQ5cD/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Set the "groups" pointer in any one of the normal driver core structures
+(struct device_type, struct device, struct device_driver), or the
+"bus_groups", "dev_groups", or "drv_groups" pointer in struct bus_type.
 
-On Wed, Sep 16, 2020 at 06:14:20AM +0000, Xu Wang wrote:
+that should give you something to go on :)
 
-> A multiplication for the size determination of a memory allocation
-> indicated that an array data structure should be processed.
-> Thus use the corresponding function "devm_kcalloc".
+thanks,
 
-This looks fine but the subject says it's about seq_puts() not
-kcalloc().
-
---MAH+hnPXVZWQ5cD/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9jXuEACgkQJNaLcl1U
-h9B3BQf/VarUuMPYus5VLpA+zmE+7JqUAcO3omQ6LMqaF7VBOQhDHlE45z4cWL+z
-puS/DV1XmM5bSGn+ZwcwBh6GvfamDg5oyGSTs8OkwMeWxCanjvexEE81RTAvzCgT
-qkAdheP90NZtRKHJImUV6KfmiTJXB2nokridUP+vC2L98aZjAYbVFuJ5CMkEuKOk
-jOzrE81vM69mIfnFnvcHRv7wH+WZszcgxc/WDTFDfYSQB5mMgBvVDT9mUPRJtjkj
-NdND/4RmGRSXcQ5l7iHszGwtUBSAGVVycv45pBPcm1z1Z/XXh0R4M9SbrICmDbZM
-g6zIaexA3gXNIUwR2p0czzGdbUD3ww==
-=AGo/
------END PGP SIGNATURE-----
-
---MAH+hnPXVZWQ5cD/--
+greg k-h
