@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D4D7C43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:19:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E7DCC43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:20:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83F322076E
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:19:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7D9020EDD
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:20:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QfTMU9Pj";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZezngZwD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83F322076E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cp6afDi9";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Upx+hOpc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7D9020EDD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17E691703;
-	Mon, 21 Sep 2020 10:18:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17E691703
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55708171F;
+	Mon, 21 Sep 2020 10:19:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55708171F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600676374;
-	bh=pV5NUEmeW9mZ1TS+/Jc3oFxArHOIVWs9UQjncMMV5dA=;
+	s=default; t=1600676415;
+	bh=dFPbOAJ+oeV4JL1+FvEz/lM51pVEtTgDCeXjIbkcrXE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QfTMU9PjydaBOP9xFHGSQYgtccmYwiTIGvxsbXquu+yZXdkoL4RUWVPIA2L7PCe/w
-	 u5kiHiUwqkSb+aYOSdkHZWY9RBqNIsteL6cWyeE8Uw80F3g9cgnVv8zQIKWhQYfRu2
-	 er45DE3fQZlOUVHJcHbqKwZjwbjnQUPNWKND8y6k=
+	b=cp6afDi9FJcxaBKkMFbFqBIeVVrd0CFovl7rmZI5jkqcADrPUS6I9OIjr16oPzuq1
+	 /N5FAEc3ERDqyXbptp0B9Ap1pNYObSBX+hk+hzjMtCCKG3TXfZ4lpjVB8xERsZh8Pn
+	 eaUgU0OmJ77qT18l37ZNm6/yL1x4u7ZGc/VrmuoQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3DBEF80344;
-	Mon, 21 Sep 2020 10:10:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5CB2F8034B;
+	Mon, 21 Sep 2020 10:10:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2734BF80212; Thu, 17 Sep 2020 18:55:39 +0200 (CEST)
+ id D66D3F80212; Thu, 17 Sep 2020 18:55:48 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E04C5F80134
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:55:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E04C5F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50A10F800E8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:55:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50A10F800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZezngZwD"
+ header.b="Upx+hOpc"
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 647A521D24;
- Thu, 17 Sep 2020 16:55:14 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 58EBE2064B;
+ Thu, 17 Sep 2020 16:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600361729;
- bh=pV5NUEmeW9mZ1TS+/Jc3oFxArHOIVWs9UQjncMMV5dA=;
+ s=default; t=1600361744;
+ bh=dFPbOAJ+oeV4JL1+FvEz/lM51pVEtTgDCeXjIbkcrXE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZezngZwDO3KQgBWc5kH7o+363k3VkzXLGbSLbSc0tebpQso6t6pYwNkEyZCDiQPmV
- SDInDhjroyojBh7Mphf9Czz2rjH6R5ZkFLMbtuCEXnnrfdP8uQrsgKQcvItrVphoK1
- F0JF12gmB5ueiJxBeEsZOAKj0ouhtPyo/iU8CgBA=
+ b=Upx+hOpc9J/lcbE9OKI5mOafpckAkFpvyhiPVxHgkbSz/QxP6k6EPmqz7szVNd/39
+ 6eOasWlgoMnY4DHRsjiBftWmNe9v14c9O6l5BB0m6Ua3DO2E5DUk2JBB65TQTF4fN+
+ Sxhxa+BRxFcOEfuTjStNi0ooVufbYHRCNy1c+vnE=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -113,10 +113,10 @@ To: Linus Walleij <linus.walleij@linaro.org>,
  linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-stm32@st-md-mailman.stormreply.com,
  linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v2 06/13] dt-bindings: gpio: gpio-vf610: fix iMX 7ULP
- compatible matching
-Date: Thu, 17 Sep 2020 18:52:54 +0200
-Message-Id: <20200917165301.23100-7-krzk@kernel.org>
+Subject: [PATCH v2 07/13] dt-bindings: media: include common schema in GPIO
+ controllers
+Date: Thu, 17 Sep 2020 18:52:55 +0200
+Message-Id: <20200917165301.23100-8-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200917165301.23100-1-krzk@kernel.org>
 References: <20200917165301.23100-1-krzk@kernel.org>
@@ -137,14 +137,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The i.MX 7ULP DTSes use two compatibles so update the binding to fix
-dtbs_check warnings like:
-
-  arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
-    compatible: ['fsl,imx7ulp-gpio', 'fsl,vf610-gpio'] is too long
-
-  arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
-    compatible: Additional items are not allowed ('fsl,vf610-gpio' was unexpected)
+Include the common GPIO schema in GPIO controllers to be sure all common
+properties are properly validated.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
@@ -153,28 +147,23 @@ Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Changes since v1:
 1. New patch
 ---
- Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-index 82f3e4b407d1..7a5745255969 100644
---- a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-+++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-@@ -22,9 +22,11 @@ allOf:
+diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+index 9ea827092fdd..3f72c37b99f7 100644
+--- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+@@ -24,6 +24,9 @@ description: |
+   serializer will output it on a local I2C bus. In the other direction all I2C
+   traffic received over GMSL by the MAX9286 is output on the local I2C bus.
  
++allOf:
++  - $ref: /schemas/gpio/gpio-common.yaml#
++
  properties:
-   compatible:
--    enum:
--      - fsl,vf610-gpio
--      - fsl,imx7ulp-gpio
-+    oneOf:
-+      - const: fsl,vf610-gpio
-+      - items:
-+          - const: fsl,imx7ulp-gpio
-+          - const: fsl,vf610-gpio
- 
-   reg:
-     description: The first reg tuple represents the PORT module, the second tuple
+   '#address-cells':
+     const: 1
 -- 
 2.17.1
 
