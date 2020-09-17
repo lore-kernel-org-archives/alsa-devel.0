@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7BAEC43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 11:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 087CCC433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 11:02:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F2ED2074B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 11:01:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1EE7E21655
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 11:02:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EhbDfc+m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F2ED2074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VGx0Lecz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EE7E21655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F16021658;
-	Thu, 17 Sep 2020 13:00:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F16021658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98C511680;
+	Thu, 17 Sep 2020 13:01:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98C511680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600340505;
-	bh=F4NJiNqRiE+jYL+CHn3PHByogBCTkqj17SFNTqms6Eo=;
+	s=default; t=1600340549;
+	bh=9MayRoqi7yFKWMIEI8RqvUi6OUGd4x9XRKTRE0LiKU8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EhbDfc+mH037pq+4gZwKvh2lSkORX2CQUcE2E7FUl7N0q+0oZvTj+rbNtp45dY36J
-	 1Ir6usYubHj7N89oROltt4pFn5a9HuI7HrD2HvOdmb8/OMm4IKLDzZKT55M8oexl9w
-	 PAddTkQ5KQOoCMmJtM1aAIsgQnIGXWMVZE5yKato=
+	b=VGx0LecziWUBQkAAWLtXzFIy2t9uYA8Hwu62wCxyKnUasvhnWTrFWa9m+Npfhv4T2
+	 Z/Qroxqf0bqBt8SKPQq+iSLAdtRelHmAlDjZJcoaMMIaUFH4AnX/MHEFK/D8oS2gHv
+	 H6DfUflkZHJfsDuttq4+tdXIVZp1YxuefyVUygEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CB81F802EB;
-	Thu, 17 Sep 2020 12:58:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D977F802F7;
+	Thu, 17 Sep 2020 12:58:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F0B0F80134; Thu, 17 Sep 2020 12:58:20 +0200 (CEST)
+ id A6DCAF802DD; Thu, 17 Sep 2020 12:58:21 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5791F80212
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 12:58:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5791F80212
-IronPort-SDR: Nh85PVbjd0lnDYYSRtHr5b9HyClmCH1anGZRpHOFopPUV/ExUh5LysoPFaV8Kds/uV/SOQ8vlR
- tvi0UU5HoprA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="157075350"
-X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; d="scan'208";a="157075350"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 624DDF800E8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 12:58:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 624DDF800E8
+IronPort-SDR: Lpbi96bmVsQnP4QUGQYN+d9qM89zKu2ZzggL0efv4aDpONSz2YxDMsRqW0Zxhab5j4KP7RfxMf
+ Q3P+2zb+XmcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="157075359"
+X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; d="scan'208";a="157075359"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2020 03:58:09 -0700
-IronPort-SDR: zyygQoHMec5O3N8OwFRQbA4NGBo/K4rxSrgqvrysOt4Kf/D3BEwcIgPXDI62Bvq8R5g93ItjO7
- ELroKM8EM9xA==
+ 17 Sep 2020 03:58:13 -0700
+IronPort-SDR: iTUzxgGAt5zUuwEtwgQN5CGC8+QkMBuUpd3csi7n4glypYNCWwE6NCT4WTelCy2z599Qv1dEZr
+ vSeavlrMnwMQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; d="scan'208";a="320177323"
+X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; d="scan'208";a="320177345"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga002.jf.intel.com with ESMTP; 17 Sep 2020 03:58:07 -0700
+ by orsmga002.jf.intel.com with ESMTP; 17 Sep 2020 03:58:11 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 3/8] ASoC: SOF: debug: update test for pm_runtime_get_sync()
-Date: Thu, 17 Sep 2020 13:56:28 +0300
-Message-Id: <20200917105633.2579047-4-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 5/8] ASoC: SOF: (cosmetic) remove redundant "ret" variable uses
+Date: Thu, 17 Sep 2020 13:56:30 +0300
+Message-Id: <20200917105633.2579047-6-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200917105633.2579047-1-kai.vehmanen@linux.intel.com>
 References: <20200917105633.2579047-1-kai.vehmanen@linux.intel.com>
@@ -90,31 +90,203 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 
-We need to avoid reporting an error for -EACCESS when pm_runtime is
-not enabled.
+In some cases no "ret" variable is even needed, those functions always
+return 0 anyway, in other cases "ret" initialisation is redundant.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/control.c  | 22 +++++++---------------
+ sound/soc/sof/topology.c | 24 +++++++++++-------------
+ 2 files changed, 18 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 8e15f105d1d5..9419a99bab53 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -405,7 +405,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index 5419c93badd2..63ead9ebc4c6 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -221,7 +221,6 @@ int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
+ 	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
+ 	struct sof_abi_hdr *data = cdata->data;
+ 	size_t size;
+-	int ret = 0;
+ 
+ 	if (be->max > sizeof(ucontrol->value.bytes.data)) {
+ 		dev_err_ratelimited(scomp->dev,
+@@ -235,15 +234,13 @@ int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
+ 		dev_err_ratelimited(scomp->dev,
+ 				    "error: DSP sent %zu bytes max is %d\n",
+ 				    size, be->max);
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
  	}
  
- 	ret = pm_runtime_get_sync(sdev->dev);
--	if (ret < 0) {
-+	if (ret < 0 && ret != -EACCES) {
- 		dev_err_ratelimited(sdev->dev,
- 				    "error: debugfs write failed to resume %d\n",
- 				    ret);
+ 	/* copy back to kcontrol */
+ 	memcpy(ucontrol->value.bytes.data, data, size);
+ 
+-out:
+-	return ret;
++	return 0;
+ }
+ 
+ int snd_sof_bytes_put(struct snd_kcontrol *kcontrol,
+@@ -424,7 +421,6 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_tlv __user *tlvd =
+ 		(struct snd_ctl_tlv __user *)binary_data;
+ 	int data_size;
+-	int ret = 0;
+ 
+ 	/*
+ 	 * Decrement the limit by ext bytes header size to
+@@ -443,20 +439,16 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+ 	if (data_size > be->max) {
+ 		dev_err_ratelimited(scomp->dev, "error: user data size %d exceeds max size %d.\n",
+ 				    data_size, be->max);
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	header.numid = scontrol->cmd;
+ 	header.length = data_size;
+-	if (copy_to_user(tlvd, &header, sizeof(const struct snd_ctl_tlv))) {
+-		ret = -EFAULT;
+-		goto out;
+-	}
++	if (copy_to_user(tlvd, &header, sizeof(const struct snd_ctl_tlv)))
++		return -EFAULT;
+ 
+ 	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
+-		ret = -EFAULT;
++		return -EFAULT;
+ 
+-out:
+-	return ret;
++	return 0;
+ }
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index d5efac3af5c2..fa85a22b5880 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -63,7 +63,7 @@ static int ipc_pcm_params(struct snd_sof_widget *swidget, int dir)
+ 	struct sof_ipc_pcm_params pcm;
+ 	struct snd_pcm_hw_params *params;
+ 	struct snd_sof_pcm *spcm;
+-	int ret = 0;
++	int ret;
+ 
+ 	memset(&pcm, 0, sizeof(pcm));
+ 
+@@ -121,7 +121,7 @@ static int ipc_trigger(struct snd_sof_widget *swidget, int cmd)
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+ 	struct sof_ipc_stream stream;
+ 	struct sof_ipc_reply reply;
+-	int ret = 0;
++	int ret;
+ 
+ 	/* set IPC stream params */
+ 	stream.hdr.size = sizeof(stream);
+@@ -1033,7 +1033,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	struct sof_ipc_ctrl_data *cdata;
+ 	int tlv[TLV_ITEMS];
+ 	unsigned int i;
+-	int ret = 0;
++	int ret;
+ 
+ 	/* validate topology data */
+ 	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN) {
+@@ -1098,7 +1098,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d\n",
+ 		scontrol->comp_id, scontrol->num_channels);
+ 
+-	return ret;
++	return 0;
+ 
+ out_free_table:
+ 	if (le32_to_cpu(mc->max) > 1)
+@@ -1151,7 +1151,7 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
+ 		container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
+ 	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
+ 	int max_size = sbe->max;
+-	int ret = 0;
++	int ret;
+ 
+ 	/* init the get/put bytes data */
+ 	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
+@@ -1204,7 +1204,7 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
+ 		}
+ 	}
+ 
+-	return ret;
++	return 0;
+ 
+ out_free:
+ 	kfree(scontrol->control_data);
+@@ -1223,7 +1223,7 @@ static int sof_control_load(struct snd_soc_component *scomp, int index,
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+ 	struct snd_soc_dobj *dobj;
+ 	struct snd_sof_control *scontrol;
+-	int ret = -EINVAL;
++	int ret;
+ 
+ 	dev_dbg(scomp->dev, "tplg: load control type %d name : %s\n",
+ 		hdr->type, hdr->name);
+@@ -1276,7 +1276,7 @@ static int sof_control_load(struct snd_soc_component *scomp, int index,
+ 
+ 	dobj->private = scontrol;
+ 	list_add(&scontrol->list, &sdev->kcontrol_list);
+-	return ret;
++	return 0;
+ }
+ 
+ static int sof_control_unload(struct snd_soc_component *scomp,
+@@ -2659,7 +2659,7 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
+ 	struct snd_soc_tplg_private *private = &pcm->priv;
+ 	struct snd_sof_pcm *spcm;
+ 	int stream;
+-	int ret = 0;
++	int ret;
+ 
+ 	/* nothing to do for BEs atm */
+ 	if (!pcm)
+@@ -3350,7 +3350,6 @@ static int sof_link_hda_unload(struct snd_sof_dev *sdev,
+ 			       struct snd_soc_dai_link *link)
+ {
+ 	struct snd_soc_dai *dai;
+-	int ret = 0;
+ 
+ 	dai = snd_soc_find_dai(link->cpus);
+ 	if (!dai) {
+@@ -3359,7 +3358,7 @@ static int sof_link_hda_unload(struct snd_sof_dev *sdev,
+ 		return -EINVAL;
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int sof_link_unload(struct snd_soc_component *scomp,
+@@ -3492,7 +3491,6 @@ static int sof_route_load(struct snd_soc_component *scomp, int index,
+ 	    sink_swidget->id != snd_soc_dapm_buffer) {
+ 		dev_dbg(scomp->dev, "warning: neither Linked source component %s nor sink component %s is of buffer type, ignoring link\n",
+ 			route->source, route->sink);
+-		ret = 0;
+ 		goto err;
+ 	} else {
+ 		ret = sof_ipc_tx_message(sdev->ipc,
+@@ -3526,7 +3524,7 @@ static int sof_route_load(struct snd_soc_component *scomp, int index,
+ 		/* add route to route list */
+ 		list_add(&sroute->list, &sdev->route_list);
+ 
+-		return ret;
++		return 0;
+ 	}
+ 
+ err:
 -- 
 2.27.0
 
