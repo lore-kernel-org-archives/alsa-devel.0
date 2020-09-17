@@ -6,77 +6,77 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37232C2BBD1
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 15:17:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D56FC433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 15:30:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14416221F1
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 15:17:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 459DA22247
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 15:30:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b2jvaVK0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14416221F1
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ixrqwZDV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 459DA22247
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAE2016AF;
-	Thu, 17 Sep 2020 17:16:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAE2016AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CBB0169F;
+	Thu, 17 Sep 2020 17:29:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CBB0169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600355849;
-	bh=tFZv+qHHRo67CJaaVd1B9IKL5s7P2tUSirNTPBRuKPA=;
+	s=default; t=1600356649;
+	bh=xqnaVuMFxfmnGwaK5XCFxXNuxqM60JqlvXRUCEv24bI=;
 	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b2jvaVK0DD0d3TJ9Khj8pDbhwTsUWFKuQ6GxM4z0AYYBbiDmfCCQMXV8xla5/3Amp
-	 EfYFhdzq/Ycr+Ac6WKQFZgYeGveIlbc07WDJJdtHX2FWcjhnaArUfKViDK3aFvh9Qb
-	 lru0TCiqhahlq7HsdGgFWaJEXSqADriIKSNI12HI=
+	b=ixrqwZDVkgN/6ed6Of4lYvcHtDBzWORbAEam3+6tdlTVMfIQsS//Pr5JM29cn3eoQ
+	 TF233X766KrrbxiSfPRD49yu92rnHb2vzdiEqjsFRZv6f25+ZdeEdAmmmfI2ga0SO6
+	 PvBMm+70wEjhPPnvueBe8W+J7EfqQaHjM5qbf7dU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDA10F8025E;
-	Thu, 17 Sep 2020 17:15:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEBB9F801EC;
+	Thu, 17 Sep 2020 17:29:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8ED51F8027C; Thu, 17 Sep 2020 17:15:49 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 18675F80212; Thu, 17 Sep 2020 17:29:55 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 697FDF801EC
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 17:15:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 697FDF801EC
-IronPort-SDR: chrcYo8OQSFVWk/1hvhlhMIq7UZX/LmphmeaieoXpbDyNsncO+wOCv2nq4Z6cbIJEj98c99gLb
- 8SidsbNVGjdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159020925"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="159020925"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6453F80134
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 17:29:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6453F80134
+IronPort-SDR: sgRheoZBXgYeHg2TRC0sq0q9zcZLrlN1r06/JrrG7zM9yNpdU6Qd3yxFO4lLu/sEYNz3VxycsV
+ zgJKUMOA1GiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221270924"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="221270924"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2020 08:15:10 -0700
-IronPort-SDR: nMxuXjfgoNr3nx4pITyVmEFqEYR7K/KwiwIzZuBHPQmP1pn9CX7udJZjUAa2QxNNtVXtWRHw59
- hxejY5vbZzeg==
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Sep 2020 08:29:39 -0700
+IronPort-SDR: 15tWBKuLbRiil3HRgMKliUCqNU81jhIYXe3ryDwKOs4fjqnMXDtPV6tSPKXMdG4UD7DRLoJcaN
+ Yd6QyQ/M6+bw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="320256860"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="320260504"
 Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
- by orsmga002.jf.intel.com with ESMTP; 17 Sep 2020 08:15:08 -0700
+ by orsmga002.jf.intel.com with ESMTP; 17 Sep 2020 08:29:38 -0700
 Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
  IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 17 Sep 2020 16:15:07 +0100
+ 15.1.1713.5; Thu, 17 Sep 2020 16:29:36 +0100
 Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
  irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Thu, 17 Sep 2020 16:15:07 +0100
+ Thu, 17 Sep 2020 16:29:36 +0100
 From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: RE: [PATCH v5 01/13] ASoC: Intel: Add catpt device
-Thread-Topic: [PATCH v5 01/13] ASoC: Intel: Add catpt device
-Thread-Index: AQHWi32GW37jr4EJj0CkLtYrpbvLFKlrU1CAgAGfiDA=
-Date: Thu, 17 Sep 2020 15:15:07 +0000
-Message-ID: <106a660275de43fd93cce153b529ef2a@intel.com>
+Subject: RE: [PATCH v5 02/13] ASoC: Intel: catpt: Define DSP operations
+Thread-Topic: [PATCH v5 02/13] ASoC: Intel: catpt: Define DSP operations
+Thread-Index: AQHWi32IyHHVImF91k6rxcFTJOLC7alrWLCAgAGd/EA=
+Date: Thu, 17 Sep 2020 15:29:36 +0000
+Message-ID: <96ee725f1aa746c78ee380bb8e754ff3@intel.com>
 References: <20200915162944.16241-1-cezary.rojewski@intel.com>
- <20200915162944.16241-2-cezary.rojewski@intel.com>
- <20200916152455.GP3956970@smile.fi.intel.com>
-In-Reply-To: <20200916152455.GP3956970@smile.fi.intel.com>
+ <20200915162944.16241-3-cezary.rojewski@intel.com>
+ <20200916154409.GQ3956970@smile.fi.intel.com>
+In-Reply-To: <20200916154409.GQ3956970@smile.fi.intel.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -118,120 +118,226 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-09-16 5:24 PM, Andy Shevchenko wrote:
-> On Tue, Sep 15, 2020 at 06:29:32PM +0200, Cezary Rojewski wrote:
->> Declare base structures, registers and device routines for the catpt
->> solution. Catpt deprecates and is a direct replacement for
->> sound/soc/intel/haswell. Supports Lynxpoint and Wildcat Point both.
+On 2020-09-16 5:44 PM, Andy Shevchenko wrote:
+> On Tue, Sep 15, 2020 at 06:29:33PM +0200, Cezary Rojewski wrote:
+>> Implement dsp lifecycle functions such as core RESET and STALL,
+>> SRAM power control and LP clock selection. This also adds functions for
+>> handling transport over DW DMA controller.
 >=20
-> Few nit-picks below. Overall looks good, FWIW,
+> Some nit-picks below. FWIW,
 > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 >=20
 ...
 
->> +#include <linux/acpi.h>
->> +#include <linux/dma-mapping.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/pm_runtime.h>
->=20
->> +#include <linux/pci.h>
->=20
-> Perhaps sorted?
->=20
-Ack. fixed in v6.
-
->> +#include <sound/soc.h>
->> +#include <sound/soc-acpi.h>
->> +#include <sound/soc-acpi-intel-match.h>
->> +#include "core.h"
->> +#include "registers.h"
 >> +
->> +#define CREATE_TRACE_POINTS
->> +#include "trace.h"
->> +
->> +static int __maybe_unused catpt_suspend(struct device *dev)
+>> +int catpt_dmac_probe(struct catpt_dev *cdev)
 >> +{
->> +	struct catpt_dev *cdev =3D dev_get_drvdata(dev);
->> +	struct dma_chan *chan;
+>> +	struct dw_dma_chip *dmac;
 >> +	int ret;
 >> +
->> +	chan =3D catpt_dma_request_config_chan(cdev);
->> +	if (IS_ERR(chan))
->> +		return PTR_ERR(chan);
->> +
->> +	memset(&cdev->dx_ctx, 0, sizeof(cdev->dx_ctx));
->> +	ret =3D catpt_ipc_enter_dxstate(cdev, CATPT_DX_STATE_D3, &cdev->dx_ctx=
-);
->> +	if (ret) {
->> +		ret =3D CATPT_IPC_ERROR(ret);
->> +		goto exit;
->> +	}
->> +
->> +	ret =3D catpt_dsp_stall(cdev, true);
->> +	if (ret)
->> +		goto exit;
->> +
->> +	ret =3D catpt_store_memdumps(cdev, chan);
->> +	if (ret) {
->> +		dev_err(cdev->dev, "store memdumps failed: %d\n", ret);
->> +		goto exit;
->> +	}
->> +
->> +	ret =3D catpt_store_module_states(cdev, chan);
->> +	if (ret) {
->> +		dev_err(cdev->dev, "store module states failed: %d\n", ret);
->> +		goto exit;
->> +	}
->> +
->> +	ret =3D catpt_store_streams_context(cdev, chan);
->> +	if (ret) {
->> +		dev_err(cdev->dev, "store streams ctx failed: %d\n", ret);
->> +		goto exit;
->> +	}
+>> +	dmac =3D devm_kzalloc(cdev->dev, sizeof(*dmac), GFP_KERNEL);
+>> +	if (!dmac)
+>> +		return -ENOMEM;
 >=20
->> +exit:
+>> +	dmac->regs =3D cdev->lpe_ba +
+>> +		     cdev->spec->host_dma_offset[CATPT_DMA_DEVID];
 >=20
-> I would rather name it as 'out_dma_release' or so to explain what's going=
- to be
-> done.
+> One line?
 >=20
+It's exactly 81 after one-lining - that's why I kept it as is.
 
-I find more descriptive labels inviting reader into: "this is an error
-path" thinking and that's why I prefer to stick with simple 'exit'. If
-you think that's not a way to go, can change this.
-
->> +	dma_release_channel(chan);
+>> +	dmac->dev =3D cdev->dev;
+>> +	dmac->irq =3D cdev->irq;
+>> +
+>> +	ret =3D dma_coerce_mask_and_coherent(cdev->dev, DMA_BIT_MASK(31));
 >> +	if (ret)
 >> +		return ret;
->> +	return cdev->spec->power_down(cdev);
+>> +	/*
+>> +	 * Caller is responsible for putting device in D0 to allow
+>> +	 * for I/O and memory access before probing DW.
+>> +	 */
+>> +	ret =3D dw_dma_probe(dmac);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	cdev->dmac =3D dmac;
+>> +	return 0;
 >> +}
 >> +
->> +static int __maybe_unused catpt_resume(struct device *dev)
+>> +void catpt_dmac_remove(struct catpt_dev *cdev)
 >> +{
->> +	struct catpt_dev *cdev =3D dev_get_drvdata(dev);
->> +	int ret, i;
+>> +	/*
+>> +	 * As do_dma_remove() juggles with pm_runtime_get_xxx() and
+>> +	 * pm_runtime_put_xxx() while both ADSP and DW 'devices' are part of
+>> +	 * the same module, caller makes sure pm_runtime_disable() is invoked
+>> +	 * before removing DW to prevent postmortem resume and suspend.
+>> +	 */
+>> +	dw_dma_remove(cdev->dmac);
+>> +}
 >> +
->> +	ret =3D cdev->spec->power_up(cdev);
->> +	if (ret)
->> +		return ret;
+>> +static void catpt_dsp_set_srampge(struct catpt_dev *cdev, struct resour=
+ce *sram,
+>> +				  unsigned long mask, unsigned long new)
+>> +{
+>> +	unsigned long old;
+>> +	u32 off =3D sram->start;
+>> +	u32 b =3D __ffs(mask);
 >> +
->> +	if (!module_is_live(dev->driver->owner)) {
->> +		dev_info(dev, "module unloading, skipping fw boot\n");
->> +		return 0;
->> +	}
->> +
->> +	ret =3D catpt_boot_firmware(cdev, true);
->> +	if (ret) {
->> +		dev_err(cdev->dev, "boot firmware failed: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	/* reconfigure SSP devices after dx transition */
+>> +	old =3D catpt_readl_pci(cdev, VDRTCTL0) & mask;
 >=20
-> Dx ?
+>> +	dev_dbg(cdev->dev, "SRAMPGE [0x%08lx] 0x%08lx -> 0x%08lx",
+>> +		mask, old, new);
+>=20
+> I saw use of trace points, this looks like non-production leftover.
 >=20
 
-Reworded in v6, thanks.
+In case of all dev_dbg(s) you had mentioned here, I've added these
+intentionally - this is similar to ASoC core logging: entire DAI and
+board connection process is logged via dev_dbg as there is no need to
+show these to user by default. Logging SRAMPGE/LPCS and block
+sanitization is useful for developers.
+
+I've given thought to traces on several occasions and ultimately decided
+to leave this only for IPC communication with ADSP.
+
+>> +	if (old =3D=3D new)
+>> +		return;
+>> +
+>> +	catpt_updatel_pci(cdev, VDRTCTL0, mask, new);
+>> +	/* wait for SRAM power gating to propagate */
+>> +	udelay(60);
+>> +
+>> +	/*
+>> +	 * Dummy read as the very first access after block enable
+>> +	 * to prevent byte loss in future operations.
+>> +	 */
+>> +	for_each_clear_bit_from(b, &new, fls_long(mask)) {
+>> +		u8 buf[4];
+>> +
+>> +		/* newly enabled: new bit=3D0 while old bit=3D1 */
+>> +		if (test_bit(b, &old)) {
+>=20
+>> +			dev_dbg(cdev->dev, "sanitize block %ld: off 0x%08x\n",
+>> +				b - __ffs(mask), off);
+>=20
+> So does this.
+>=20
+
+Please see above.
+
+>> +			memcpy_fromio(buf, cdev->lpe_ba + off, sizeof(buf));
+>> +		}
+>> +		off +=3D CATPT_MEMBLOCK_SIZE;
+>> +	}
+>> +}
+>> +
+>> +void catpt_dsp_update_srampge(struct catpt_dev *cdev, struct resource *=
+sram,
+>> +			      unsigned long mask)
+>> +{
+>> +	struct resource *res;
+>> +	unsigned long new =3D 0;
+>> +
+>> +	/* flag all busy blocks */
+>> +	for (res =3D sram->child; res; res =3D res->sibling) {
+>> +		u32 h, l;
+>> +
+>> +		h =3D (res->end - sram->start) / CATPT_MEMBLOCK_SIZE;
+>> +		l =3D (res->start - sram->start) / CATPT_MEMBLOCK_SIZE;
+>> +		new |=3D GENMASK(h, l);
+>=20
+> I think better assembly will be generated with
+>=20
+> 	(BIT(h - l + 1) - 1) << l
+>=20
+> Looking at the above calculus it seems (needs to be carefully checked!) c=
+an be
+>=20
+> 	u32 bits =3D DIV_ROUND_UP(resource_size(res), CATPT_MEMBLOCK_SIZE);
+> 	u32 shift =3D (res->start - sram->start) / CATPT_MEMBLOCK_SIZE;
+>=20
+> 	new |=3D (BIT(bits) - 1) << shift;
+>=20
+> Note, your approach is also good from readability point of view, so just =
+weight
+> pros and cons and choose best one.
+>=20
+
+I'm up for performance change later on - I'm still yet to complete all
+the missing pieces for FW and SW flow documentation. Code as it is
+written now helps me during that process. Once docs are done,
+performance could overtake readability here and there.
+
+>> +	}
+>> +
+>> +	/* offset value given mask's start and invert it as ON=3Db0 */
+>> +	new =3D ~(new << __ffs(mask)) & mask;
+>> +
+>> +	/* disable core clock gating */
+>> +	catpt_updatel_pci(cdev, VDRTCTL2, CATPT_VDRTCTL2_DCLCGE, 0);
+>> +
+>> +	catpt_dsp_set_srampge(cdev, sram, mask, new);
+>> +
+>> +	/* enable core clock gating */
+>> +	catpt_updatel_pci(cdev, VDRTCTL2, CATPT_VDRTCTL2_DCLCGE,
+>> +			  CATPT_VDRTCTL2_DCLCGE);
+>> +}
+>> +
+>> +int catpt_dsp_stall(struct catpt_dev *cdev, bool stall)
+>> +{
+>> +	u32 reg, val;
+>> +
+>> +	val =3D stall ? CATPT_CS_STALL : 0;
+>> +	catpt_updatel_shim(cdev, CS1, CATPT_CS_STALL, val);
+>> +
+>> +	return catpt_readl_poll_shim(cdev, CS1,
+>> +				     reg, (reg & CATPT_CS_STALL) =3D=3D val,
+>> +				     500, 10000);
+>> +}
+>> +
+>> +static int catpt_dsp_reset(struct catpt_dev *cdev, bool reset)
+>> +{
+>> +	u32 reg, val;
+>> +
+>> +	val =3D reset ? CATPT_CS_RST : 0;
+>> +	catpt_updatel_shim(cdev, CS1, CATPT_CS_RST, val);
+>> +
+>> +	return catpt_readl_poll_shim(cdev, CS1,
+>> +				     reg, (reg & CATPT_CS_RST) =3D=3D val,
+>> +				     500, 10000);
+>> +}
+>> +
+>> +void lpt_dsp_pll_shutdown(struct catpt_dev *cdev, bool enable)
+>> +{
+>> +	u32 val;
+>> +
+>> +	val =3D enable ? LPT_VDRTCTL0_APLLSE : 0;
+>> +	catpt_updatel_pci(cdev, VDRTCTL0, LPT_VDRTCTL0_APLLSE, val);
+>> +}
+>> +
+>> +void wpt_dsp_pll_shutdown(struct catpt_dev *cdev, bool enable)
+>> +{
+>> +	u32 val;
+>> +
+>> +	val =3D enable ? WPT_VDRTCTL2_APLLSE : 0;
+>> +	catpt_updatel_pci(cdev, VDRTCTL2, WPT_VDRTCTL2_APLLSE, val);
+>> +}
+>> +
+>> +static int catpt_dsp_select_lpclock(struct catpt_dev *cdev, bool lp, bo=
+ol waiti)
+>> +{
+>> +	u32 mask, reg, val;
+>> +	int ret;
+>> +
+>> +	mutex_lock(&cdev->clk_mutex);
+>> +
+>> +	val =3D lp ? CATPT_CS_LPCS : 0;
+>> +	reg =3D catpt_readl_shim(cdev, CS1) & CATPT_CS_LPCS;
+>=20
+>> +	dev_dbg(cdev->dev, "LPCS [0x%08lx] 0x%08x -> 0x%08x",
+>> +		CATPT_CS_LPCS, reg, val);
+>=20
+> Leftover?
+>=20
+Please see the above (dev_dbg chapter).
 
