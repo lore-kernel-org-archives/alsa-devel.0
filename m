@@ -2,103 +2,57 @@ Return-Path: <SRS0=Aorx=C2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59495C43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 01:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CE63C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 03:32:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6CAB2076D
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 01:55:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 160B520936
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 03:32:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CpyXyOgO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kKCLvI75"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6CAB2076D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OwWWF75m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 160B520936
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 520CD1612;
-	Thu, 17 Sep 2020 03:54:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 520CD1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8BD515F9;
+	Thu, 17 Sep 2020 05:31:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8BD515F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600307701;
-	bh=SGMkKGWfWVLIda8hQeToQIb+2HexmKXGBlk/aCKDKrc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1600313540;
+	bh=SnzmcvK2XGiaPPfM4fft1MPoub3yoSDTjRUgu2honAc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CpyXyOgOIugvGXGJfY79D0KAA7Vu/4HMNmxQd1nHBtzbk1bdaBDb1knEXTVdGZa4a
-	 WMvrYoItwaEZNMNWMyJ/1+SAzBB/YAKJ5w5xP6JtNQ+EAqqRbxQcuZus4UXc2inFz4
-	 bKdy96Dmb6yArXA/kwSW1yGRO4s6dkXdxZPWG50Y=
+	b=OwWWF75m1oA5cM74pKADTTLRgYq/kGwJVIloLrsGenMA4gBQ9YQlxMlu9ol94juvg
+	 1D7z5f88DAO6z0WIHuwETzZSU1ms9Eccqj5i8yVt7ORjGt+EGVJ+5aFl5P3TkA3TAa
+	 +InKtxBXpS5dqy7XSnNi4SzKlQsQkp5f9yXIvHEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0D17F80212;
-	Thu, 17 Sep 2020 03:54:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51E07F801EC;
+	Thu, 17 Sep 2020 05:31:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7821DF80276; Thu, 17 Sep 2020 03:54:09 +0200 (CEST)
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
- [IPv6:2607:f8b0:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14CDEF80134
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 03:54:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14CDEF80134
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="kKCLvI75"
-Received: by mail-pf1-x441.google.com with SMTP id o20so195058pfp.11
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2020 18:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=dgnODGIAWL13nIbhEz3ezEHyZ73l+QamiC/feoln9pA=;
- b=kKCLvI754VQRS48l6o9prlDOUU+078HIdKfltH5m2ufXjuitexI7+27BaPPbM7YOID
- U4w8RnHLvpLY6DPhDtH3pQ47Rn2QsEssszplv8yr+YnXJ+rGa7Z5m2m57TcVX7Ak+Oy1
- HsAT+RyItKoLxTRjYInlcUVR46IQszNC9caKIBbvexWbuSURvAc4MRb7ULAPtnXFWxEl
- 0SKF+LI7ZsEnX+o8uZzG1pKsT4P50TqHlS4lKHl8Qt/9CH5Q6Y7YqZxoZAf/k5zH6tAb
- TUp/JF4nyi97FbyqS/39j2QdLJ2Vz7Ueo6qTZqvhHjxpgIPFFbbJpThvMPx6urXE0CfF
- SDmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=dgnODGIAWL13nIbhEz3ezEHyZ73l+QamiC/feoln9pA=;
- b=YFkcfN+2dTzV7jEaoWISXDrSrTfX42EWfxGfWP6N3627GXdhLOw3jgJiF8A5/NT1MJ
- GskGJm4BiZJaXWwzGvO2/oAa5BBUywFGzNtnkiVtg39OHWGs4OsaCRr7mk4gPxym3uvl
- HMD6IliQGJ0jfV0YM1Wqj5yBk09qlmypkY62D+VnSPOiK71onhSYp9tY+YmLQUOcQS91
- grZMm/RF8rY3ohN1k2TKilXmRg9m1R3VzsJBFj4IClEnrM7ClgFhUU6XS+PXjzqRMy/y
- T44e7/hjcF5P8YnnloqgLwu4Ok1RqTqKZiPZUzr6klJhh+BE73rafesmsA1HmLzp1Zo0
- DVgg==
-X-Gm-Message-State: AOAM533TO9GKESrNmnkttYCmIPyD1aMTUlR7Kz2Hg6aX5Xix+QD7a+Vb
- U/BXI6jcCgNUd1Z7ZerWq2g=
-X-Google-Smtp-Source: ABdhPJxnNOKTfJ7qLfSj/RIBwWtTsFveH5xnCH12xhYaBkeSNyJehUmbC9p4FCNpFJCk1tW0zIOOLg==
-X-Received: by 2002:aa7:9635:0:b029:142:2501:3980 with SMTP id
- r21-20020aa796350000b029014225013980mr9025261pfg.69.1600307640882; 
- Wed, 16 Sep 2020 18:54:00 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
- by smtp.gmail.com with ESMTPSA id gd14sm4050934pjb.0.2020.09.16.18.54.00
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Wed, 16 Sep 2020 18:54:00 -0700 (PDT)
-Date: Wed, 16 Sep 2020 18:50:49 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 3/3] ASoC: fsl_sai: Set MCLK input or output direction
-Message-ID: <20200917015048.GD22566@Asurada-Nvidia>
-References: <1600251387-1863-1-git-send-email-shengjiu.wang@nxp.com>
- <1600251387-1863-4-git-send-email-shengjiu.wang@nxp.com>
+ id C864AF80212; Thu, 17 Sep 2020 05:31:27 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id BDE70F800E8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 05:31:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDE70F800E8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600251387-1863-4-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- lgirdwood@gmail.com, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
- broonie@kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1600313482498797894-webhooks-bot@alsa-project.org>
+References: <1600313482498797894-webhooks-bot@alsa-project.org>
+Subject: "aplay -D oss -l" still reads sound cards through ALSA, not OSS
+Message-Id: <20200917033127.C864AF80212@alsa1.perex.cz>
+Date: Thu, 17 Sep 2020 05:31:27 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,37 +68,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 16, 2020 at 06:16:27PM +0800, Shengjiu Wang wrote:
-> SAI support select MCLK direction with version.major > 3
-> and version.minor > 1, the default direction is input,
-> set it to be output according to DT property.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+alsa-project/alsa-utils issue #56 was opened from yurivict:
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+I don't have any ALSA devices, only OSS devices.
 
-> ---
->  sound/soc/fsl/fsl_sai.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 738b4dda7847..5117c1cd5682 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -1117,6 +1117,13 @@ static int fsl_sai_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		dev_warn(&pdev->dev, "Error reading SAI version: %d\n", ret);
->  
-> +	/* Select MCLK direction */
-> +	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
-> +	    sai->verid.major >= 3 && sai->verid.minor >= 1) {
-> +		regmap_update_bits(sai->regmap, FSL_SAI_MCTL,
-> +				   FSL_SAI_MCTL_MCLK_EN, FSL_SAI_MCTL_MCLK_EN);
-> +	}
-> +
->  	pm_runtime_enable(&pdev->dev);
->  	regcache_cache_only(sai->regmap, true);
->  
-> -- 
-> 2.27.0
-> 
+When the OSS PCM is selected ```aplay``` still tries to read ALSA devices:
+```
+$ /usr/bin/aplay -D oss -l
+aplay: device_list:272: no soundcards found...
+```
+
+```
+$ /usr/bin/aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+oss
+    Open Sound System
+```
+
+alsa-lib-1.1.8
+alsa-plugins-oss-1.1.6
+alsa-utils-1.1.8
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/56
+Repository URL: https://github.com/alsa-project/alsa-utils
