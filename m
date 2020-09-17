@@ -6,74 +6,70 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8981CC43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:05:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 406E7C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:05:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6B2220717
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:05:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 81007206C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:05:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SKS6+niE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KvMZfo4k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6B2220717
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mrHG42Py";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="zj9ZNv8l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81007206C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B2FA1684;
-	Thu, 17 Sep 2020 21:04:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B2FA1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9E011698;
+	Thu, 17 Sep 2020 21:04:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9E011698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600369514;
-	bh=WzQSueMrPjH1L0bv8gkr24oYRFWKRtRXu3TB/kv+Fws=;
+	s=default; t=1600369535;
+	bh=araJfiJ+kmWz4pIb/SGg02CpwFKtGCvtcajg+qf9GYw=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SKS6+niEWPTmq/XXAhGgyGrVN/wAQ2v4uUjauYADmEb30oeDA48B3hhxi4DNKH/2W
-	 laAQsew/bc3YdDhTAY+TbtWpNQ2kJxGy5VWAhybXUBipvkZlSuUR1xUIWmoiLmXqRI
-	 rJXhK58iKq8nRMrdZC1lWsDQjxKXKiGygdabHlm0=
+	b=mrHG42Py/UcRo+8W4XAu1ayw/gmziH7lvqq6U0apyIkIuH+6mHfGlE/t94NPQ1XY+
+	 +tgyY+cOYOXxycf/vA0eDfZRQv4422j6dD8UHJ5yXcklEE+zOi05kXdNuryMQpFwt/
+	 WUgH2RZhHw3CvEaCDfN3K5drxHc4Y9VqvljE/50Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C49AEF8032A;
-	Thu, 17 Sep 2020 20:58:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1FD9F80334;
+	Thu, 17 Sep 2020 20:58:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08F49F80331; Thu, 17 Sep 2020 20:58:42 +0200 (CEST)
+ id 90B0FF80335; Thu, 17 Sep 2020 20:58:47 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E03DCF8032A
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 20:58:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E03DCF8032A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BC12F80333
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 20:58:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BC12F80333
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KvMZfo4k"
+ header.b="zj9ZNv8l"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0020F22208;
- Thu, 17 Sep 2020 18:58:37 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 104AB206A1;
+ Thu, 17 Sep 2020 18:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600369118;
- bh=WzQSueMrPjH1L0bv8gkr24oYRFWKRtRXu3TB/kv+Fws=;
+ s=default; t=1600369123;
+ bh=araJfiJ+kmWz4pIb/SGg02CpwFKtGCvtcajg+qf9GYw=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=KvMZfo4kro2jTQb5Wgt+VFDai1DJo7YYwmtvW3jtJMW8zaJqwHI8+l85SzRbpn/BS
- lUU/oqMaCrHn5ly2TQ81LBThPqH282ocOnCeL8oXxylFcSnPfSnwkPZZnVy6Q/yaCZ
- VQ2yEsjJx+uXouSwzqwgRIBEQuiXwJAsP58Jdo5U=
-Date: Thu, 17 Sep 2020 19:57:48 +0100
+ b=zj9ZNv8lweI4Sr+NvvM6UEgFWEf2eI3JkmwiJE4OZg/jTvgS2FNAHLy5LpFpVn0nf
+ yYnLR1jtk+posThYcFbTj1St3H2vuDmFQnyTMzWBKd76qH/Gh0+220DfpIRguOPwey
+ 4KpItyWpzI5Pb75LTx+ZEuYYDqCZQUQiqPgBxWkM=
+Date: Thu, 17 Sep 2020 19:57:53 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Xiubo Li <Xiubo.Lee@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
- Timur Tabi <timur@kernel.org>, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
-In-Reply-To: <1600104274-13110-1-git-send-email-viorel.suman@oss.nxp.com>
-References: <1600104274-13110-1-git-send-email-viorel.suman@oss.nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_audmix: make clock and output src write only
-Message-Id: <160036900934.20113.8635457303400843609.b4-ty@kernel.org>
-Cc: Viorel Suman <viorel.suman@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Viorel Suman <viorel.suman@nxp.com>
+To: tiwai@suse.com, lgirdwood@gmail.com, perex@perex.cz, timur@kernel.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, alsa-devel@alsa-project.org
+In-Reply-To: <1600323079-5317-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1600323079-5317-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2 0/3] ASoC: fsl_sai: update the register list
+Message-Id: <160036900933.20113.13971334794679632002.b4-ty@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,11 +85,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 14 Sep 2020 20:24:34 +0300, Viorel Suman (OSS) wrote:
-> "alsactl -f state.conf store/restore" sequence fails because setting
-> "mixing clock source" and "output source" requires active TDM clock
-> being started for configuration propagation. Make these two controls
-> write only so that their values are not stored at "alsactl store".
+On Thu, 17 Sep 2020 14:11:16 +0800, Shengjiu Wang wrote:
+> As sai ip is upgraded, so update sai register list.
+> 
+> Shengjiu Wang (3):
+>   ASoC: fsl_sai: Add new added registers and new bit definition
+>   ASoC: fsl_sai: Add fsl_sai_check_version function
+>   ASoC: fsl_sai: Set MCLK input or output direction
+> 
+> [...]
 
 Applied to
 
@@ -101,8 +101,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_audmix: make clock and output src write only
-      commit: 944c517b8c838832a166f1c89afbf8724f4a6b49
+[1/3] ASoC: fsl_sai: Add new added registers and new bit definition
+      commit: 0b2cbce6898600aae5e87285f1c2000162d59c76
+[2/3] ASoC: fsl_sai: Add fsl_sai_check_version function
+      commit: 1dc658b13c1c365274b27bfc3c4d4f2955348fb8
+[3/3] ASoC: fsl_sai: Set MCLK input or output direction
+      commit: a57d4e8730c1a55b2547ff81aef4753b67121cb8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
