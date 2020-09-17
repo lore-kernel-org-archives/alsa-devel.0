@@ -2,84 +2,95 @@ Return-Path: <SRS0=Aorx=C2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5631EC433E2
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 14:59:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2E09C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 15:16:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81065206E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 14:59:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA30422265
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 15:16:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P0OOMknx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81065206E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cwWH+yHh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BeCOCdSy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA30422265
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 646C41694;
-	Thu, 17 Sep 2020 16:58:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 646C41694
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEF9B1697;
+	Thu, 17 Sep 2020 17:15:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEF9B1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600354739;
-	bh=pKaAuDvGB/C6N6KvHR5VbVQaztn+eUBcLfnIeIVqVhc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1600355795;
+	bh=bPYFxc2nUhlnEcR1Xw96u98jDeriVIG6jPqaEebTnYE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P0OOMknx+lhoU5PZxVjjDHwpZAS13snw0hUITpWq5mAM5h+xQEePWIjRgKdtwgxOW
-	 iW4M8t2voz+crscIlEXhl/HwX2v67v9udeXUB8ToQDNCNRys3Bvj501tMpQfuHBLa8
-	 07zSuoohSqsrM8uxKDJpt6FT9dpV3sgdZH4o97f4=
+	b=cwWH+yHhkUPf7RuQG3cI8EFpTLWnn1wJBMMzr9n9V6f2ZKjQkCdS93ly91dzGku0Q
+	 A3nf12ukOfnhJEILOGktjSOqPJHjujeiozAxC66HqApVnDoWAzNvxW97b97L/KLhVn
+	 vyw/Zcz4ae9IxXFR7mlUZqKLnG7hVQmIDL71pLgw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3ACEF801EC;
-	Thu, 17 Sep 2020 16:58:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E8C4F80212;
+	Thu, 17 Sep 2020 17:15:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CABEF80212; Thu, 17 Sep 2020 16:58:07 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 30DBFF80134; Thu, 17 Sep 2020 17:15:44 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78EE9F800E8
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 16:57:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78EE9F800E8
-IronPort-SDR: tKTNdr7yg2Y5bo1PKroD9chFU2hRReNNrH4Q4FYzB/eciprvt0O4eCVBRYEMqnlS/oartcEcHU
- dUszoJMwIfmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="177808351"
-X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; d="scan'208";a="177808351"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2020 07:57:52 -0700
-IronPort-SDR: pg7Ga93qDEfqoiULyMwkPsCole5yC5TMhFe7avJbqOtnN+/p1zBsishXco8MAF9iLS/5CBrx7d
- KUtQsfpxRuiw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; d="scan'208";a="336447259"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga008.jf.intel.com with ESMTP; 17 Sep 2020 07:57:47 -0700
-Received: from andy by smile with local (Exim 4.94)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1kIvM0-00HLqb-D6; Thu, 17 Sep 2020 17:57:44 +0300
-Date: Thu, 17 Sep 2020 17:57:44 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v6 00/14] ASoC: Intel: Catpt - Lynx and Wildcat point
-Message-ID: <20200917145744.GP3956970@smile.fi.intel.com>
-References: <20200917141242.9081-1-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57431F800E8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 17:15:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57431F800E8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BeCOCdSy"
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HFFXRu101141;
+ Thu, 17 Sep 2020 10:15:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1600355733;
+ bh=zJUvUPlDG3fjTS6W6hFpNIPLT9BdATy27+PbP+vGrPs=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=BeCOCdSyBx881M4VX9eLbF/b3wotePX5ouLGLCmPnRF1IEbV4bxpZrJdGfR/FHZ7V
+ wjyNgtTgNVK1fFFL2wjQSVXP87c0bIbKLNy5ogG3Gl7zGB+bUH4vonwcM91+kWfH2M
+ y8V/6HIYDzMWzK74m9gaHS5hE9C9Rh+7WETtmg50=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HFFXSS120076;
+ Thu, 17 Sep 2020 10:15:33 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 10:15:33 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Sep 2020 10:15:33 -0500
+Received: from [10.250.32.129] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HFFWuJ008246;
+ Thu, 17 Sep 2020 10:15:32 -0500
+Subject: Re: [PATCH 5/6] dt-bindings: tlv320adcx140: Add slot programming
+ property
+To: Mark Brown <broonie@kernel.org>
+References: <20200915190606.1744-1-dmurphy@ti.com>
+ <20200915190606.1744-5-dmurphy@ti.com> <20200917130236.GA2954@sirena.org.uk>
+From: Dan Murphy <dmurphy@ti.com>
+Message-ID: <f4a83c01-58e2-1b7a-677e-44d5bde7b175@ti.com>
+Date: Thu, 17 Sep 2020 10:15:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917141242.9081-1-cezary.rojewski@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- filip.kaczmarski@intel.com, harshapriya.n@intel.com, marcin.barlik@intel.com,
- zwisler@google.com, lgirdwood@gmail.com, tiwai@suse.com,
- filip.proborszcz@intel.com, broonie@kernel.org,
- amadeuszx.slawinski@linux.intel.com, michal.wasko@intel.com,
- cujomalainey@chromium.org, krzysztof.hejmowski@intel.com,
- ppapierkowski@habana.ai, vamshi.krishna.gopal@intel.com
+In-Reply-To: <20200917130236.GA2954@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ camel.guo@axis.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,252 +106,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 17, 2020 at 04:12:28PM +0200, Cezary Rojewski wrote:
-> Implement support for Lynxpoint and Wildcat Point AudioDSP. Catpt
-> solution deprecates existing sound/soc/intel/haswell which is removed in
-> the following series. This cover-letter is followed by 'Developer's deep
-> dive' message schedding light on catpt's key concepts and areas
-> addressed.
-> 
-> Due to high range of errors and desynchronization from recommendations
-> set by Windows solution, re-write came as a lower-cost solution compared
-> to refactoring /haswell/ with several series of patches.
-> 
-> Series is dependent on linux-spi change:
-> spi: pxa2xx: Add SSC2 and SSPSP2 SSP registers
-> https://www.spinics.net/lists/linux-spi/msg23885.html
-> which has been already merged and is now part of linux-spi tree.
-> 
-> Bulk of series content is device driver core code - everything up to
-> patch 7/14 - with fs entries and trace macros introduced right after.
-> While each core patch is shaped in such a way that no unavailable
-> members are ever called, until patch 10/14 is applied, no code
-> compilation can occur as no Makefile is present. Once said patch is
-> added, Makefile and Kconfig are implemented and driver module compiles
-> as expected.
-> 
-> 
-> Special thanks go to Marcin Barlik and Piotr Papierkowski for sharing
-> their LPT/WPT AudioDSP architecture expertise as well as helping
-> backtrack its historical background.
-> My thanks go to Amadeusz Slawinski for reviews and improvements proposed
-> on and off the internal list. Most of internal diff below is his
-> contribution.
-> Krzysztof Hejmowski helped me setup my own Xtensa environment and
-> recompile LPT/WPT FW binary sources what sped up the development greatly.
-> 
-> This would not have been possible without help from these champions,
-> especially considering how quickly the catpt was written: 2 weeks
-> features, 3 weeks optimizations. Thank you.
-> 
-> Userspace-exposed members are compatible with what is exposed by
-> deprecated solution as well as FW binary being re-used thus no harm is
-> done. The only visible differences are: the newly added 'Loopback Mute'
-> kcontrol and volume support extending to quad from stereo.
-> 
-> On top of fixing erros and design flows, catpt also adds module reload,
-> dynamic SRAM memory allocation during PCM runtime and exposes missing
-> userspace API: 'Loopback Mute' kcontrol, quad volume controls and sysfs
-> fw-version entries. Event tracing is provided to easy solution
-> debugging.
-> 
-> Following are not included in this update and are scheduled as later
-> addition:
-> - fw logging
-> - module (library) support
-> 
-> Note: LPT power up/down sequences might get aligned with WPT once enough
-> testing is done as capabilities are shared for both DSPs.
-> Note #2: Both LPT and WPT power up/down sequences may get optimized in
-> future updates as thanks to help from the Windows team, most of nuances
-> behind why/what/when in regard to hw registers have been backtracked and
-> reviewed again.
-> 
-> Link to developer's deep dive message:
-> https://www.spinics.net/lists/alsa-devel/msg113563.html
-> 
-> 
-> Changes in v6:
-> - reordered and reorganized code for patches 1/13 - 8/13 of v5, so each
->   patches makes use of no member or function which is unavailable to it.
->   Series size increased from 13 to 14 patches: addition of base members
->   e.g.: registers has been split from addition of device.c file which
->   describes acpi device behavior
+Mark
 
-I like how it looks now from split perspective.
+On 9/17/20 8:02 AM, Mark Brown wrote:
+> On Tue, Sep 15, 2020 at 02:06:05PM -0500, Dan Murphy wrote:
+>
+>> +  ti,slot-mapping:
+>> +    type: boolean
+>> +    description: |
+>> +      Each channel can be assigned a specific TDM slot for either a left or
+>> +      right channel. The left channel values are from 0-31d and the right
+>> +      channel values are from 32-63d. If the right channel value is 32 then the
+>> +      right channel slot will be slot 31.
+>> +      The array index is sequential audio channel to be set.
+>> +      [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8]
+>> +      If the channel is not to be used then the channel should be set to it's
+>> +      default value.
+> This is something I'd expect to be done by the machine driver rather
+> than in the CODEC specific DT bindings, and apart from anything else
+> everything involved in the DAI will need to agree on the mapping so this
+> doesn't look like something that should be done in a device specific
+> binding.
 
-It misses all the rest either being addressed or commented. Can you comment on
-v5 why none of the change is being addressed?
+Here is the use case from our customers
 
-> Changes in v5:
-> https://www.spinics.net/lists/alsa-devel/msg115621.html
-> Basically everything below is result of Andy's review. Thank you Andy
-> for taking time into this detailed review
-> 
-> - catpt now makes use of common linux/pxa2xx_ssp.h header file, removing
->   redundant SSP register declarations in the process. As stated in the
->   opening, this is dependent upon linux-spi change:
->   spi: pxa2xx: Add SSC2 and SSPSP2 SSP registers
-> 
-> - updated Kconfig by removing DMADEVICES and adding COMPILE_TEST
->   as optional depends-on
-> - updated all register macros definitions to be more safe against common
->   arithmetics when specifying macro's parameters
-> - removed CONFIG_PM and CONFIG_PM_SLEEP usage in favor of __maybe_unused
-> - all 'if (ret < 0)' converted to simple 'if (ret)' whenever possible
-> - fixed erroneous check for platform_device_register_data within
->   catpt_register_board()
-> - _SLAVE/_MASTER replaced with more inclusive _CONSUMER/_PROVIDER for
->   enum catpt_ssp_mode
-> - catpt_acpi_probe() is now making use of high-level wrappers for
->   ioremapping and resource assignment, reducing function's code size
-> - due to improved catpt_acpi_probe() behavior, catpt_acpi_remove() needs
->   not to cast dma_free_coherent() any longer
-> - DMA source and destrination maxburst now of value 16, see:
-> https://www.spinics.net/lists/alsa-devel/msg114394.html
-> 
-> - simplified catpt_dsp_update_lpclock() as list_for_each_entry() is
->   empty-safe by default
-> - dropped '_SSP_' from all names of all CATPT_SSP_SSXXX_DEFAULT macros
-> - catpt_updatel_pci now makes use of linux/pci.h and uapi/linux/pci.h
->   constants such as: PCI_PM_CTRL_STATE_MASK and PCI_D3hot
-> 
-> 
-> Changes in v4:
-> https://www.spinics.net/lists/alsa-devel/msg113762.html
-> - fixed compilation with i386 kconfig (conflicting names)
-> - streamlined naming for SHIM and PCI registers to match SSP ones
->   (SHIM_REG -> SHIM)
-> - catpt_component_probe removed and kcontrols again initializzed
->   statically via snd_kcontrol_new array: this is to remove
->   kctl->id.device shenanigans
-> - renamed catpt_set_ctlvol to catpt_set_dspvol - function name wasn't
->   matching its purpose
-> 
-> 
-> Changes in v3:
-> - fixed IRAM mask usage in lpt_dsp_power_up (dsp.c)
-> - updated dbg message formatting in catpt_restore_fwimage as suggested
->   by Andy
-> - fixed alignment for struct catpt_ssp_device_format
-> - catpt_set_ctlvol now verifies all-equal scenario based on all
->   channels rather than just first two as requested by Amadeo
-> - fixed SPDX for registers.h
-> 
-> 
-> Changes in v2:
-> https://www.spinics.net/lists/alsa-devel/msg113660.html
-> - fixed SPDX formatting for all header files as well as pcm.c
-> - fixed size provided to memcpy() in fw_build_read() as reported by Mark
-> - renamed struct catpt_pdata to struct catpt_spec (cosmetic)
-> - fixed erroneous path in catpt_load_block: region is properly released
-> - trace.h events for updating registers have been removed and usages
->   replaced by dev_dbg (SRAMPGE/ LPCS)
-> 
-> - as requested by Andy, struct resource has replaced struct catpt_mbank
->   and struct catpt_mregion. This change cascaded into:
-> 
->   - catpt_mbank_size and catpt_mregion_size replaced by resource_size
->   - catpt_mregion_intersects replaced by resource_overlaps
->   - all catpt_mbank_ and catpt_mregion_ handlers found in loader.c
->     (_request, _reserve, _release, _extract, _split, _join) have been
->     removed
->   - __request_region and __release_region have been enlisted in their
->     place
->   - catpt_mregion_intersecting renamed to catpt_resource_overlapping
->   - catpt_request_region helper has been provided to deal with -size
->     based requests
->       o haven't found direct replacements in resource.c/ ioport.h for
->       both functions
-> 
->   - catpt_mbank_create and catpt_mbank_remove renamed to catpt_sram_init
->     and catpt_sram_free respectively
->   - catpt_sram_init now returns void instead of int and has been
->     converted to simple initialized. This change ultimately cascaded
->     into:
->       o both SRAM banks initialization being moved to catpt_dev_init
->         from catpt_acpi_probe (device.c)
->       o catpt_dev::spec is now initialized first, with catpt_dev_init
->         following it soon after
->       o catpt_acpi_probe erroneous path has been simplified as SRAM
->         banks no longer need to be freed
-> 
->   - catpt_sram_free now frees all resources via child -> sibling
->     enumeration rather than region_list iteration
->   - catpt_dsp_update_srampge and catpt_dsp_set_srampge now accept new
->     argument: unsigned long mask. Caused by removal of catpt_mbank -
->     mask is taken directly from catpt_dev::spec::d/iram_mask
->   - trace.h events for catpt_mbank and catpt_mregion have been removed
-> 
-> 
-> Diff against last drop on internal list:
-> https://www.spinics.net/lists/alsa-devel/msg113549.html
-> - replaced spinlock with mutex for mregion allocation and release to
->   address sleeping in atomic context warnings
-> - fixed coredump fw_hash dumping
-> - kcontrol values are now always stored regardless of stream of interest
->   is running or not
-> - kcontrol values are now applied after stream is prepared instead of
->   ignoring what has been set by user initially
-> - catpt_pdata instances have been renamed from hsw_ and bdw_ to lpt_ and
->   wpt_ respectively
-> - reordered Makefile .o(s) (cosmetic)
-> 
-> Cezary Rojewski (14):
->   ASoC: Intel: Add catpt base members
->   ASoC: Intel: catpt: Implement IPC protocol
->   ASoC: Intel: catpt: Add IPC message handlers
->   ASoC: Intel: catpt: Define DSP operations
->   ASoC: Intel: catpt: Firmware loading and context restore
->   ASoC: Intel: catpt: PCM operations
->   ASoC: Intel: catpt: Device driver lifecycle
->   ASoC: Intel: catpt: Event tracing
->   ASoC: Intel: catpt: Simple sysfs attributes
->   ASoC: Intel: Select catpt and deprecate haswell
->   ASoC: Intel: haswell: Remove haswell-solution specific code
->   ASoC: Intel: broadwell: Remove haswell-solution specific code
->   ASoC: Intel: bdw-5650: Remove haswell-solution specific code
->   ASoC: Intel: bdw-5677: Remove haswell-solution specific code
-> 
->  sound/soc/intel/Kconfig             |   24 +-
->  sound/soc/intel/Makefile            |    2 +-
->  sound/soc/intel/boards/Kconfig      |    8 +-
->  sound/soc/intel/boards/bdw-rt5650.c |   36 -
->  sound/soc/intel/boards/bdw-rt5677.c |   33 -
->  sound/soc/intel/boards/broadwell.c  |   33 -
->  sound/soc/intel/boards/haswell.c    |   28 +-
->  sound/soc/intel/catpt/Makefile      |    6 +
->  sound/soc/intel/catpt/core.h        |  189 +++++
->  sound/soc/intel/catpt/device.c      |  354 ++++++++
->  sound/soc/intel/catpt/dsp.c         |  572 +++++++++++++
->  sound/soc/intel/catpt/fs.c          |   79 ++
->  sound/soc/intel/catpt/ipc.c         |  298 +++++++
->  sound/soc/intel/catpt/loader.c      |  671 +++++++++++++++
->  sound/soc/intel/catpt/messages.c    |  313 +++++++
->  sound/soc/intel/catpt/messages.h    |  401 +++++++++
->  sound/soc/intel/catpt/pcm.c         | 1212 +++++++++++++++++++++++++++
->  sound/soc/intel/catpt/registers.h   |  178 ++++
->  sound/soc/intel/catpt/trace.h       |   83 ++
->  19 files changed, 4377 insertions(+), 143 deletions(-)
->  create mode 100644 sound/soc/intel/catpt/Makefile
->  create mode 100644 sound/soc/intel/catpt/core.h
->  create mode 100644 sound/soc/intel/catpt/device.c
->  create mode 100644 sound/soc/intel/catpt/dsp.c
->  create mode 100644 sound/soc/intel/catpt/fs.c
->  create mode 100644 sound/soc/intel/catpt/ipc.c
->  create mode 100644 sound/soc/intel/catpt/loader.c
->  create mode 100644 sound/soc/intel/catpt/messages.c
->  create mode 100644 sound/soc/intel/catpt/messages.h
->  create mode 100644 sound/soc/intel/catpt/pcm.c
->  create mode 100644 sound/soc/intel/catpt/registers.h
->  create mode 100644 sound/soc/intel/catpt/trace.h
-> 
-> -- 
-> 2.17.1
-> 
+Customers need the ability to not transmit on a TDM slot, since another 
+device could be using the slot.
+For example, the customer has an amp and dig microphone sharing one TDM 
+bus. The amp uses slot 0 while dig microphone use slots 1-3.
+In another example, customers use 2 dig microphones. One device 
+transmits on slots 0-3, the second device transmits on slots 4-7.
+In a third example, customers use 4 dig microphones. Device 1 uses Slots 
+0-3, Device 2 uses Slots 4-7, Device 3 uses Slots 8-11, and Device 4 
+uses Slots 12-15.
 
--- 
-With Best Regards,
-Andy Shevchenko
+The dai-tdm-slot-num would be a good candidate to add to the sound card 
+to define the slot number but it's definition is "Number of slots in 
+use." So it is not really setting the needed slot.
+I am not finding any good way to assign specific slots to specific channels.
 
+I can add DAI slot numbering parameter for specific codecs.
 
+Dan
