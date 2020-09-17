@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F26A3C43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFF79C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:04:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58B642085B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:04:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2426A20853
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:04:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uI5LWZIW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GI21qcXE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58B642085B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sE+AKGU0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ADR2dVWR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2426A20853
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 965421684;
-	Thu, 17 Sep 2020 21:03:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 965421684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 982FE1698;
+	Thu, 17 Sep 2020 21:03:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 982FE1698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600369453;
-	bh=XKnazpfmRK7Z8j3eyFrJRLYU8mkw0ZAcQ1dMq+PPpVU=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1600369472;
+	bh=CVDmgxGyA7cpvTQu42ofHENQ5z/H41BZE5Ht5owFFoA=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uI5LWZIWCfcxVBy9dyPH1pY6OxMY+tkWcnqyVJrzZAfFJ6cq/JWoai/MXltONQsQS
-	 XAb/HKmTAjAovEegS7UR099jpuO7jY2jpBfmOSZv2Xi4IY+Lj4CfXoE47d9TehYyrJ
-	 1QL7Nbg7X0zz0tdwzejXu8yenSasTsYzGSoaGFSA=
+	b=sE+AKGU0S4WHuX1A2vkqH0YwO1+ETiQJcvZz+LGJG7gpmD87tzXTAaW41IgG2d/Cj
+	 TKAzjDfTmni/FdQuUUBc5KPjguHr8lu1OA8Y4bzRarDicILADVoTzqAYTj8g5OFu2A
+	 Z29rQG61Ngyw1t0I7pRmdonj2yFqCEOeu8+R05Ro=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7666DF8031A;
-	Thu, 17 Sep 2020 20:58:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84A15F80322;
+	Thu, 17 Sep 2020 20:58:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 551FDF80321; Thu, 17 Sep 2020 20:58:32 +0200 (CEST)
+ id CCE71F80328; Thu, 17 Sep 2020 20:58:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF369F80317
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 20:58:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF369F80317
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2186DF80322
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 20:58:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2186DF80322
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GI21qcXE"
+ header.b="ADR2dVWR"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D67AB221F1;
- Thu, 17 Sep 2020 18:58:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0C721221E3;
+ Thu, 17 Sep 2020 18:58:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600369108;
- bh=XKnazpfmRK7Z8j3eyFrJRLYU8mkw0ZAcQ1dMq+PPpVU=;
+ s=default; t=1600369113;
+ bh=CVDmgxGyA7cpvTQu42ofHENQ5z/H41BZE5Ht5owFFoA=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=GI21qcXEg+RVsZ7JgoRVYBzO4tZIcIjM9M7rL8mXnsr9jaw3pah3t+yPhmqutdDau
- ACQtlPA8Z3M/9OOEeOuebD1raviy0FpK7A53FbkpdUwu7r9dFNPUoWigcUzjaKh/WS
- GQ57WUwN3nOmcqldV9cD49Op4PMzPYgfpnymV66A=
-Date: Thu, 17 Sep 2020 19:57:38 +0100
+ b=ADR2dVWRCVro7vZdLrnCBgcOfwqDA0PE+3WXzXoStrj0NnlkT6KPIIl1DmqTWC1x7
+ gvjoCBT5eGhj1s1LTo36sQ3CKfGtdU0uCq0MMT+Elf2Uwkx3GxUlc3XNdUzzrDdGvs
+ F34ICzyqNZBYWrNbmcwH9a0cjMzvIK4prIFT9BTE=
+Date: Thu, 17 Sep 2020 19:57:43 +0100
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
- Dan Murphy <dmurphy@ti.com>
-In-Reply-To: <20200915190606.1744-1-dmurphy@ti.com>
-References: <20200915190606.1744-1-dmurphy@ti.com>
-Subject: Re: [PATCH 1/6] ASoC: tlv320adcx140: Idle the device while writing
- registers
-Message-Id: <160036900934.20113.7109708512695608892.b4-ty@kernel.org>
-Cc: camel.guo@axis.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+To: Jonathan Bakker <xc-racer2@live.ca>, Sangbeom Kim <sbkim73@samsung.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20200902160025.20922-1-krzk@kernel.org>
+References: <20200902160025.20922-1-krzk@kernel.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: aries-wm8994: Match compatibles with
+ enum
+Message-Id: <160036900935.20113.14067381532897187524.b4-ty@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,12 +87,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Sep 2020 14:06:01 -0500, Dan Murphy wrote:
-> It was observed that if the device was active and register writes were
-> performed there were some unwanted behaviors particularly when writing
-> the word length and some filter options. So when writing to the device
-> the device should be placed in sleep mode and then exit sleep mode once
-> the register update is complete.
+On Wed, 2 Sep 2020 18:00:25 +0200, Krzysztof Kozlowski wrote:
+> The common pattern for enumerating compatibles is enum, not oneOf.
 
 Applied to
 
@@ -99,18 +96,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: tlv320adcx140: Idle the device while writing registers
-      commit: df16e2210454ca0b8a59caf364dd287fbb76a804
-[2/6] ASoC: tlv320adcx140: Fix BCLK inversion for DSP modes
-      commit: 244ac15de75ca62ed7a09c7291b67aeead9e12ac
-[3/6] ASoC: tlv320adcx140: Add ASI Tx drive
-      commit: 38b9b7ca6f08489f3065e081e71c743775ed50c8
-[4/6] ASoC: tlv320adcx140: Add the config to configure Tx ASI output
-      commit: 42d5031d3ee858bc14df704439eefdbf38b8f628
-[5/6] dt-bindings: tlv320adcx140: Add slot programming property
-      (no commit info)
-[6/6] ASoC: tlv320adcx140: Add channel slot programming
-      (no commit info)
+[1/1] ASoC: dt-bindings: aries-wm8994: Match compatibles with enum
+      commit: cac17861c950832a60d405f597c2acc2f40a0136
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
