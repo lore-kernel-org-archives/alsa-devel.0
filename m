@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29A6DC43461
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 16:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56AA0C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 16:03:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7212C22226
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 16:02:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C0B522228
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 16:03:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lKc6oBVW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7212C22226
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lmyIA4It"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C0B522228
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F161216CF;
-	Thu, 17 Sep 2020 18:01:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F161216CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 090A016DE;
+	Thu, 17 Sep 2020 18:02:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 090A016DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600358551;
-	bh=KbrbpvAFoOB45QJfsucpAP/5TTd95oB4Mk1JgUeOkEI=;
+	s=default; t=1600358598;
+	bh=aRFxK9LkeRPl22+QvTaA3s5I5mZybxp+xQ5K8SDU1eU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lKc6oBVWSDFaeBef+BsBy8LLSndCLNkl7MO/8insYaMdtlYjKQ9W8nFGeVv7w7rlO
-	 eR6sZNYCgDyTuhX7xdb0etAZ6BH2K0mKlXc5EnLzSSrbf3shRHCgy8d8DCFWPg8e76
-	 dp/mdkhlQA9U3HHiCu/8wHjKk+fZoTPMt4OrQvC4=
+	b=lmyIA4It19wK0evJ6HDIjqpxtUXUpbFFSDo31U2qgyqtfCe/1Pf/a6dsEyqiJ2xY5
+	 L+LCbCx5PuiQYXj5GilkGKNbs+nqWPhBEz/KuoYbDH5N36doIA75gHmGxG/qtq8nrB
+	 1O3SMzIYX0ySPmOIHwF6yZ87Kl2pVzfXaWxCggPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D750F8027C;
-	Thu, 17 Sep 2020 18:00:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32CCEF800E8;
+	Thu, 17 Sep 2020 18:00:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 677AEF8028B; Thu, 17 Sep 2020 18:00:51 +0200 (CEST)
+ id 0B428F802C3; Thu, 17 Sep 2020 18:00:57 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9D7FF8013A
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:00:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9D7FF8013A
-IronPort-SDR: 0hA84Ot8uBbfBPUd19Miey/G8OUD0Anig+e3/MKxtKdn2BpB7NO9Sokf471NRNA0vCSYr1Lm0Z
- 1qmKUsnVvXSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159030324"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="159030324"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 546BCF800E8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:00:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 546BCF800E8
+IronPort-SDR: 3caAtD2UFzIOmZPs1uQ1jANCdp9SsLiy8fVkBzdPsZPdlLAav40yYXtNK2cs+mdXMP1IkWDaTX
+ CpQKUiTq6CIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159030332"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="159030332"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2020 09:00:22 -0700
-IronPort-SDR: 5+GvrKSdYmQCeCXSPPfSRnH/tqbMJ+f7lZCpRFLdFSVrxeBitX60USGeclFlqR5bYWmxbtjqCV
- ruCcscN6+iVQ==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="483800850"
+ 17 Sep 2020 09:00:23 -0700
+IronPort-SDR: qP/TMbutnj53o5idjtyPLJkwpDrCOImz2wQe87buSHbNuAhLY/69npe9kG0tjWG9e8mRoINXUf
+ +g4H6dzClOYQ==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; d="scan'208";a="483800867"
 Received: from apauly-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.254.96.60])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2020 09:00:21 -0700
+ 17 Sep 2020 09:00:22 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 1/2] soundwire: bus: add enumerated Slave device to device
- list
-Date: Thu, 17 Sep 2020 11:00:06 -0500
-Message-Id: <20200917160007.153106-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 2/2] soundwire: sysfs: add slave status and device number
+ before probe
+Date: Thu, 17 Sep 2020 11:00:07 -0500
+Message-Id: <20200917160007.153106-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200917160007.153106-1-pierre-louis.bossart@linux.intel.com>
 References: <20200917160007.153106-1-pierre-louis.bossart@linux.intel.com>
@@ -92,97 +92,170 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+The MIPI DisCo device properties that are read by the driver from
+platform firmware, or hard-coded in the driver, should only be
+provided as sysfs entries when a driver probes successfully.
 
-Currently Slave devices are only added on startup, either from Device
-Tree or ACPI entries. However Slave devices that are physically
-present on the bus, but not described in platform firmware, will never
-be added to the device list. The user/integrator can only know the
-list of devices by looking a dynamic debug logs.
+However the device status and device number is updated even when there
+is no driver present, and hence can be updated when a Slave device is
+detected on the bus without being described in platform firmware and
+without any driver registered/probed.
 
-This patch suggests adding a Slave device eveb there is no matching DT or
-ACPI entry, so that we can see this in sysfs entry.
+As suggested by GregKH, the attribute group for Slave status and
+device number is is added by default upon device registration.
 
-Initial code from Srinivas. Comments, fixes for ACPI probe and edits
-of commit message by Pierre.
+Credits to Vinod Koul for the status_show() function, shared in a
+separate patch and used as is here. The status table was modified to
+remove an unnecessary enum and status_show() is handled in a different
+group attribute than what was suggested by Vinod.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Tested-by: Srinivas Kandgatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c      | 9 +++++++++
- drivers/soundwire/bus.h      | 2 ++
- drivers/soundwire/bus_type.c | 9 +++++++++
- drivers/soundwire/slave.c    | 4 ++--
- 4 files changed, 22 insertions(+), 2 deletions(-)
+ .../ABI/testing/sysfs-bus-soundwire-slave     | 18 ++++++
+ drivers/soundwire/slave.c                     |  2 +
+ drivers/soundwire/sysfs_local.h               |  4 ++
+ drivers/soundwire/sysfs_slave.c               | 59 ++++++++++++++++++-
+ 4 files changed, 82 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 02574b4bb179..81807b332a12 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -741,6 +741,15 @@ static int sdw_program_device_num(struct sdw_bus *bus)
- 
- 		if (!found) {
- 			/* TODO: Park this device in Group 13 */
+diff --git a/Documentation/ABI/testing/sysfs-bus-soundwire-slave b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+index db4c9511d1aa..425adf7b8aec 100644
+--- a/Documentation/ABI/testing/sysfs-bus-soundwire-slave
++++ b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+@@ -1,3 +1,21 @@
++What:		/sys/bus/soundwire/devices/sdw:.../dev-status/status
++		/sys/bus/soundwire/devices/sdw:.../dev-status/device_number
 +
-+			/*
-+			 * add Slave device even if there is no platform
-+			 * firmware description. There will be no driver probe
-+			 * but the user/integration will be able to see the
-+			 * device, enumeration status and device number in sysfs
-+			 */
-+			sdw_slave_add(bus, &id, NULL);
++Date:		September 2020
 +
- 			dev_err(bus->dev, "Slave Entry not found\n");
- 		}
- 
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index c53345fbc4c7..fd251c1eb925 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -19,6 +19,8 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
- int sdw_of_find_slaves(struct sdw_bus *bus);
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			  u64 addr, struct sdw_slave_id *id);
-+int sdw_slave_add(struct sdw_bus *bus, struct sdw_slave_id *id,
-+		  struct fwnode_handle *fwnode);
- int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
- 			  struct fwnode_handle *fwnode);
- int sdw_master_device_del(struct sdw_bus *bus);
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 6fba55898cf0..575b9bad99d5 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
-@@ -84,6 +84,15 @@ static int sdw_drv_probe(struct device *dev)
- 	const struct sdw_device_id *id;
- 	int ret;
- 
-+	/*
-+	 * fw description is mandatory to bind
-+	 */
-+	if (!dev->fwnode)
-+		return -ENODEV;
++Contact:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
++		Bard Liao <yung-chuan.liao@linux.intel.com>
++		Vinod Koul <vkoul@kernel.org>
 +
-+	if (!IS_ENABLED(CONFIG_ACPI) && !dev->of_node)
-+		return -ENODEV;
++Description:	SoundWire Slave status
 +
- 	id = sdw_get_device_id(slave, drv);
- 	if (!id)
- 		return -ENODEV;
++		These properties report the Slave status, e.g. if it
++		is UNATTACHED or not, and in the latter case show the
++		device_number. This status information is useful to
++		detect devices exposed by platform firmware but not
++		physically present on the bus, and conversely devices
++		not exposed in platform firmware but enumerated.
++
+ What:		/sys/bus/soundwire/devices/sdw:.../dev-properties/mipi_revision
+ 		/sys/bus/soundwire/devices/sdw:.../dev-properties/wake_capable
+ 		/sys/bus/soundwire/devices/sdw:.../dev-properties/test_mode_capable
 diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 4a250d33de5d..19b012310c29 100644
+index 19b012310c29..a08f4081c1c4 100644
 --- a/drivers/soundwire/slave.c
 +++ b/drivers/soundwire/slave.c
-@@ -20,8 +20,8 @@ struct device_type sdw_slave_type = {
- 	.uevent =	sdw_slave_uevent,
- };
+@@ -6,6 +6,7 @@
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
++#include "sysfs_local.h"
  
--static int sdw_slave_add(struct sdw_bus *bus,
--			 struct sdw_slave_id *id, struct fwnode_handle *fwnode)
-+int sdw_slave_add(struct sdw_bus *bus,
-+		  struct sdw_slave_id *id, struct fwnode_handle *fwnode)
+ static void sdw_slave_release(struct device *dev)
  {
- 	struct sdw_slave *slave;
- 	int ret;
+@@ -51,6 +52,7 @@ int sdw_slave_add(struct sdw_bus *bus,
+ 	slave->dev.bus = &sdw_bus_type;
+ 	slave->dev.of_node = of_node_get(to_of_node(fwnode));
+ 	slave->dev.type = &sdw_slave_type;
++	slave->dev.groups = sdw_slave_status_attr_groups;
+ 	slave->bus = bus;
+ 	slave->status = SDW_SLAVE_UNATTACHED;
+ 	init_completion(&slave->enumeration_complete);
+diff --git a/drivers/soundwire/sysfs_local.h b/drivers/soundwire/sysfs_local.h
+index ff60adee3c41..7268bc24c538 100644
+--- a/drivers/soundwire/sysfs_local.h
++++ b/drivers/soundwire/sysfs_local.h
+@@ -8,6 +8,10 @@
+  * SDW sysfs APIs -
+  */
+ 
++/* basic attributes to report status of Slave (attachment, dev_num) */
++extern const struct attribute_group *sdw_slave_status_attr_groups[];
++
++/* additional device-managed properties reported after driver probe */
+ int sdw_slave_sysfs_init(struct sdw_slave *slave);
+ int sdw_slave_sysfs_dpn_init(struct sdw_slave *slave);
+ 
+diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
+index f510071b0add..99c0bdd4a726 100644
+--- a/drivers/soundwire/sysfs_slave.c
++++ b/drivers/soundwire/sysfs_slave.c
+@@ -16,10 +16,14 @@
+ 
+ /*
+  * The sysfs for Slave reflects the MIPI description as given
+- * in the MIPI DisCo spec
++ * in the MIPI DisCo spec. dev-status properties come directly
++ * from the MIPI SoundWire specification.
+  *
+  * Base file is device
+  *	|---- modalias
++ *	|---- dev-status
++ *		|---- status
++ *		|---- device_number
+  *	|---- dev-properties
+  *		|---- mipi_revision
+  *		|---- wake_capable
+@@ -212,3 +216,56 @@ int sdw_slave_sysfs_init(struct sdw_slave *slave)
+ 
+ 	return 0;
+ }
++
++/*
++ * the status is shown in capital letters for UNATTACHED and RESERVED
++ * on purpose, to highligh users to the fact that these status values
++ * are not expected.
++ */
++static const char *const slave_status[] = {
++	[SDW_SLAVE_UNATTACHED] =  "UNATTACHED",
++	[SDW_SLAVE_ATTACHED] = "Attached",
++	[SDW_SLAVE_ALERT] = "Alert",
++	[SDW_SLAVE_RESERVED] = "RESERVED",
++};
++
++static ssize_t status_show(struct device *dev,
++			   struct device_attribute *attr, char *buf)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++
++	return sprintf(buf, "%s\n", slave_status[slave->status]);
++}
++static DEVICE_ATTR_RO(status);
++
++static ssize_t device_number_show(struct device *dev,
++				  struct device_attribute *attr, char *buf)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++
++	if (slave->status == SDW_SLAVE_UNATTACHED)
++		return sprintf(buf, "%s", "N/A");
++	else
++		return sprintf(buf, "%d", slave->dev_num);
++}
++static DEVICE_ATTR_RO(device_number);
++
++static struct attribute *slave_status_attrs[] = {
++	&dev_attr_status.attr,
++	&dev_attr_device_number.attr,
++	NULL,
++};
++
++/*
++ * we don't use ATTRIBUTES_GROUP here since we want to add a subdirectory
++ * for device-status
++ */
++static const struct attribute_group sdw_slave_status_attr_group = {
++	.attrs	= slave_status_attrs,
++	.name = "dev-status",
++};
++
++const struct attribute_group *sdw_slave_status_attr_groups[] = {
++	&sdw_slave_status_attr_group,
++	NULL
++};
 -- 
 2.25.1
 
