@@ -2,123 +2,124 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD3B7C43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:12:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 388EDC43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:13:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B985120874
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:12:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8566620874
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:13:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S0hp7Yxh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=netronome-com.20150623.gappssmtp.com header.i=@netronome-com.20150623.gappssmtp.com header.b="Xm9muXpL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B985120874
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=netronome.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oxusfwfW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="gXtNWWra"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8566620874
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 341111681;
-	Mon, 21 Sep 2020 10:12:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 341111681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 153CF1684;
+	Mon, 21 Sep 2020 10:12:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 153CF1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600675975;
-	bh=hk9nCyF/JI11/AhY4FIhKKTnq4cuJbUe4goriWcv4DM=;
+	s=default; t=1600675986;
+	bh=ImtDkhOM3E58XUZj9vjsNqp730R4NQ3rMHUu/Xaa14E=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S0hp7YxhthDg2Nwo1jurpkrmrWFic4U2PJUVbAemb76whH3mgbYa0cm6nD2rl11Zw
-	 pIm7jR3vBgqOME3kbg2I6mVxXxDBGu8FehLsANzngHBfB+0lUe9Gq5dUMuczbIdmfi
-	 j89FsQuBRMYnGf5GXDEMd8U/Pp267/6cL9jEYcOk=
+	b=oxusfwfWUIr/XuPgxB8Ya18MFwIDb4RgzAJyzgDNHXyn0Xy6twGQ7DOJWpQsBr0Ih
+	 ZtAM7YNNnxl2b3fIMbqeFIX/kPb8HwPytF2TqH6/bfvlUTISEFeZacRn7w173xljQK
+	 kDCkEdW0XgQCTAGBQRVbJGJvwShxCUOS1+qDrrdk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7D76F8028E;
-	Mon, 21 Sep 2020 10:10:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25D25F802C3;
+	Mon, 21 Sep 2020 10:10:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99994F80212; Thu, 17 Sep 2020 10:03:48 +0200 (CEST)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 73DFEF80212; Thu, 17 Sep 2020 22:12:40 +0200 (CEST)
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
+ [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAFA8F800E8
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 10:03:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAFA8F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1DE9F80134
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 22:12:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1DE9F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=netronome-com.20150623.gappssmtp.com
- header.i=@netronome-com.20150623.gappssmtp.com header.b="Xm9muXpL"
-Received: by mail-wm1-x342.google.com with SMTP id k18so1037645wmj.5
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 01:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=netronome-com.20150623.gappssmtp.com; s=20150623;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=TUShtxADeMIRUv08jDyFnIdO2h4AVdi1g89uLOtrWXw=;
- b=Xm9muXpLMfdw+3JTaQ5+6nxJDSneO0K8th2wgQ0VLh2VI2BmK+XWoQ9cDtIn8+KaRJ
- B45Xbntr5JjNU8mF7nIZd8VP+CTHviEtF1Um5VazOhr6GEQCgh9bbRNIM6C+XWioNjmk
- ImuOo8Gi8eD0FtSQ7hHZ1yPAo82BLFHJwGGg0UxKCYs0oMSSpMWIe45dJUN+DzUELaKQ
- JzvvcS8KVPQMZJTfgm/lLBewbBl9UGKGHM3XV6hYGQwunOqgCSfJKO8sQaLl1M6X9BRD
- K+XM2hJttDJQqNZl5Xftk9yd2fnhmTZR2ol6vfSH0itoQkT2+o/FcX7saxpuLl0f47l5
- EzpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=TUShtxADeMIRUv08jDyFnIdO2h4AVdi1g89uLOtrWXw=;
- b=S58g3qNtzwkiu56oPJkhXFABYGiU1MGipxwVhOnc/HWi3e7TOWrYqLUpomZE0WL/ru
- Az8gdxmqJ4DYfm9ZJzEBkv5UffBfZscXqiiv/p5gsZXX59NwWeHcCFPpeyEc2sfQEImK
- ToD853SwXC11UyD5Hyctd21kF0pfJn9LpjCX1pw0MRpqSzxAZzMWQ6cXHi8gfWJWfcOk
- 2HY1v/yRuNxrrCWxjgqzQLeozqbDaBsRtc95PrQGoiHyhdSt140BrBKcz8PG0QooEcVR
- 7KOVO1jMc1mqifdUYtBW6NWRwui8KV4XMsKMSsZUgPT+Y9pWzYkAGk7rjworrgvY9vRz
- qowQ==
-X-Gm-Message-State: AOAM533ZPjEjAjKbK3qA/vFxMYwzdyJCISEjLJEMkGPOQzHiwpx1Zdcl
- Bks/oo/OykaeHmsCELIPhYIFLg==
-X-Google-Smtp-Source: ABdhPJzTwzfeJOnCQh65prZummqH9JR09Yxja+zvv2OTSAZpPcom4k7xuvXSyH3Yv50qn/8+2aIWyQ==
-X-Received: by 2002:a1c:e256:: with SMTP id z83mr8793930wmg.33.1600329817598; 
- Thu, 17 Sep 2020 01:03:37 -0700 (PDT)
-Received: from netronome.com ([2001:982:756:703:d63d:7eff:fe99:ac9d])
- by smtp.gmail.com with ESMTPSA id a13sm9836030wme.26.2020.09.17.01.03.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 17 Sep 2020 01:03:36 -0700 (PDT)
-Date: Thu, 17 Sep 2020 10:03:35 +0200
-From: Simon Horman <simon.horman@netronome.com>
-To: Joe Perches <joe@perches.com>
-Subject: Re: [oss-drivers] [trivial PATCH] treewide: Convert switch/case
- fallthrough; to break;
-Message-ID: <20200917080334.GB5769@netronome.com>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+ dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com
+ header.b="gXtNWWra"
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi
+ [62.78.145.57])
+ by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7270FFD1;
+ Thu, 17 Sep 2020 22:12:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+ s=mail; t=1600373554;
+ bh=ImtDkhOM3E58XUZj9vjsNqp730R4NQ3rMHUu/Xaa14E=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gXtNWWraWwEmJdkNh1LFbj1LUPr5Rh6c2/gqhc04TotlmCEVMe9driHUsSEp7s6IV
+ v0lgY95h6Z5kaJoqD7Viq+KMIl50T/q4bx5UMjGwUaP1gbIrkc4dOJceRtJNIijJj8
+ rmxsypz7uhzzO3+03nbKH86AhoEVZASp7Sw6kvqs=
+Date: Thu, 17 Sep 2020 23:12:04 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 09/13] dt-bindings: pinctrl: include common schema in
+ GPIO controllers
+Message-ID: <20200917201204.GG3969@pendragon.ideasonboard.com>
+References: <20200917165301.23100-1-krzk@kernel.org>
+ <20200917165301.23100-10-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Mailman-Approved-At: Mon, 21 Sep 2020 10:10:23 +0200
-Cc: linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
- oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
- alsa-devel <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org,
- linux-mips@vger.kernel.org, linux-ide@vger.kernel.org, dm-devel@redhat.com,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- sparclinux@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
- linux-rtc@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-atm-general@lists.sourceforge.net, linux-afs@lists.infradead.org,
- coreteam@netfilter.org, intel-wired-lan@lists.osuosl.org,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-mmc@vger.kernel.org, Kees Cook <kees.cook@canonical.com>,
- linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
- intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
- storagedev@microchip.com, ceph-devel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
- Jiri Kosina <trivial@kernel.org>, linux-parisc@vger.kernel.org,
- netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- Nick Desaulniers <ndesaulniers@google.com>,
- LKML <linux-kernel@vger.kernel.org>, iommu@lists.linux-foundation.org,
- netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
- bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20200917165301.23100-10-krzk@kernel.org>
+X-Mailman-Approved-At: Mon, 21 Sep 2020 10:10:22 +0200
+Cc: Amelie Delaunay <amelie.delaunay@st.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org,
+ Stefan Agner <stefan@agner.ch>, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Paul Cercueil <paul@crapouillou.net>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Chris Brandt <chris.brandt@renesas.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-riscv@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com,
+ Alexandre Torgue <alexandre.torgue@st.com>, linux-renesas-soc@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ Anson Huang <Anson.Huang@nxp.com>, Lee Jones <lee.jones@linaro.org>,
+ Takashi Iwai <tiwai@suse.com>, Magnus Damm <magnus.damm@gmail.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, Chen-Yu Tsai <wens@csie.org>,
+ Andy Gross <agross@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
+ NXP Linux Team <linux-imx@nxp.com>, Andy Teng <andy.teng@mediatek.com>,
+ Jacopo Mondi <jacopo+renesas@jmondi.org>, Sungbo Eo <mans0n@gorani.run>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Ray Jui <rjui@broadcom.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Sean Wang <sean.wang@mediatek.com>,
+ Maxime Ripard <mripard@kernel.org>, linux-gpio@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Sricharan R <sricharan@codeaurora.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Hoan Tran <hoan@os.amperecomputing.com>, linux-arm-kernel@lists.infradead.org,
+ Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+ Scott Branden <sbranden@broadcom.com>, linux-unisoc@lists.infradead.org,
+ - <patches@opensource.cirrus.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Liam Girdwood <lgirdwood@gmail.com>, Serge Semin <fancer.lancer@gmail.com>,
+ linux-kernel@vger.kernel.org,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Yash Shah <yash.shah@sifive.com>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Mark Brown <broonie@kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, linux-media@vger.kernel.org,
+ Shawn Guo <shawnguo@kernel.org>,
+ Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -134,40 +135,191 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
-> fallthrough to a separate case/default label break; isn't very readable.
-> 
-> Convert pseudo-keyword fallthrough; statements to a simple break; when
-> the next label is case or default and the only statement in the next
-> label block is break;
-> 
-> Found using:
-> 
-> $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
-> 
-> Miscellanea:
-> 
-> o Move or coalesce a couple label blocks above a default: block.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+Hi Krzysztof,
 
-...
+Thank you for the patch.
 
-> diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c
-> index 252fe06f58aa..1d5b87079104 100644
-> --- a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c
-> +++ b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c
-> @@ -345,7 +345,7 @@ static int matching_bar(struct nfp_bar *bar, u32 tgt, u32 act, u32 tok,
->  		baract = NFP_CPP_ACTION_RW;
->  		if (act == 0)
->  			act = NFP_CPP_ACTION_RW;
-> -		fallthrough;
-> +		break;
->  	case NFP_PCIE_BAR_PCIE2CPP_MapType_FIXED:
->  		break;
->  	default:
+On Thu, Sep 17, 2020 at 06:52:57PM +0200, Krzysztof Kozlowski wrote:
+> Include the common GPIO schema in GPIO controllers to be sure all common
+> properties are properly validated.
 
-This is a cascading fall-through handling all map types.
-I don't think this change improves readability.
+Shouldn't we delete the properties that are now redundant from these
+schemas ?
 
-...
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. New patch
+> ---
+>  .../devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml      | 3 +++
+>  .../bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml          | 1 +
+>  .../devicetree/bindings/pinctrl/cirrus,lochnagar.yaml          | 3 +++
+>  Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml | 3 +++
+>  .../devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml   | 3 +++
+>  Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml  | 3 +++
+>  .../devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml      | 3 +++
+>  .../devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml      | 3 +++
+>  .../devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml       | 3 +++
+>  .../devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml      | 3 +++
+>  .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml          | 3 +++
+>  11 files changed, 31 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> index 33391d30c00c..51bfc214bba6 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> @@ -15,6 +15,9 @@ description: |
+>    GPIO function selection & GPIO attributes configuration. Please refer to
+>    pinctrl-bindings.txt in this directory for common binding part and usage.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: actions,s500-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> index 7556be6e2754..55662f8d1f94 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> @@ -143,6 +143,7 @@ allOf:
+>    # boards are defining it at the moment so it would generate a lot of
+>    # warnings.
+>  
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+>    - if:
+>        properties:
+>          compatible:
+> diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> index 420d74856032..ed478b0ed4cc 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> @@ -31,6 +31,9 @@ description: |
+>    This binding must be part of the Lochnagar MFD binding:
+>      [4] ../mfd/cirrus,lochnagar.yaml
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      enum:
+> diff --git a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> index 44c04d11ae4c..ffa64832b4f9 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> @@ -59,6 +59,9 @@ properties:
+>  patternProperties:
+>    "^gpio@[0-9]$":
+>      type: object
+> +    allOf:
+> +      - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>      properties:
+>        compatible:
+>          enum:
+> diff --git a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> index 152c151c27ad..7d0a4cb96f39 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> @@ -14,6 +14,9 @@ description: |+
+>    required property:
+>    - compatible: "syscon"
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: mediatek,mt6779-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> index 5556def6b99b..bc8bc0ac1926 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> @@ -12,6 +12,9 @@ maintainers:
+>  description: |
+>    The Mediatek's Pin controller is used to control SoC pins.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: mediatek,mt8192-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> index c64c93206817..22a6b80b4c0e 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found in the
+>    IPQ6018 platform.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,ipq6018-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> index 1f0f5757f9e1..9855d859fe61 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found in the
+>    MSM8226 platform.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,msm8226-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> index 8508c57522fd..e5757b6ced40 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found in the
+>    SM8250 platform.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,sm8250-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> index b7911a994f3a..4d7bf4340262 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> @@ -10,6 +10,9 @@ maintainers:
+>    - Chris Brandt <chris.brandt@renesas.com>
+>    - Geert Uytterhoeven <geert+renesas@glider.be>
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  description:
+>    The Renesas SoCs of the RZ/A2 series feature a combined Pin and GPIO
+>    controller.
+> diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> index 72877544ca78..28b861362ba0 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> @@ -56,6 +56,9 @@ properties:
+>  patternProperties:
+>    '^gpio@[0-9a-f]*$':
+>      type: object
+> +    allOf:
+> +      - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>      properties:
+>        gpio-controller: true
+>        '#gpio-cells':
+
+-- 
+Regards,
+
+Laurent Pinchart
