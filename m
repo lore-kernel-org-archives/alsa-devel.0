@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-14.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D698C43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47EE8C43464
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:23:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2D7120773
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:22:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A262C20709
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:23:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E7w8KpcA";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="voWH5Mj8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2D7120773
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m4SEJ/a6";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ehh/IOcV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A262C20709
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66943177A;
-	Mon, 21 Sep 2020 10:22:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66943177A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FB281791;
+	Mon, 21 Sep 2020 10:22:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FB281791
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600676571;
-	bh=4dW5n48JqvNP10b6scxas3MFTEWsL4Xf/7dxjZPBmik=;
+	s=default; t=1600676603;
+	bh=3CcSAgmJymqX4erpPOGNuiR94tStAH1tIhGienjiYwc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E7w8KpcA31usSZ/34FPULQcbAVTNAlYICaF2DTV1syCH97LRk6CzrGVDJfDJ5tDnm
-	 GJBO3A7G5tvhSXklX8pOO82kcSi/5fX1HySvVQRztPac3ewFf/Mf902PK10Bj3wxX8
-	 /VgyurghrdcjNbTZ1EKFbdEjHdw1YgY1QaeD/5VM=
+	b=m4SEJ/a6gzyNAAHvZsFkbpZF5i9gX7dxWXNLPZD6LMrQMWPukrAAL4H80+GB69mEv
+	 yn+MdPGT/Qnb/vX8lNF54ZQGSgONluSt3drvNuZmcFaUHaoM17ibhTHbcvPYq7tDVB
+	 67C+19Z//hkSiOfb146JiVT7wBPP4/qiKP8C2opg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1FABF8036E;
-	Mon, 21 Sep 2020 10:11:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EFDFF80372;
+	Mon, 21 Sep 2020 10:11:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CD3EF80212; Thu, 17 Sep 2020 18:56:48 +0200 (CEST)
+ id 1D547F80212; Thu, 17 Sep 2020 18:57:02 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A100F80134
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:56:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A100F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07D23F80134
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:56:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07D23F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="voWH5Mj8"
+ header.b="ehh/IOcV"
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9D4092064B;
- Thu, 17 Sep 2020 16:56:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7E0292220E;
+ Thu, 17 Sep 2020 16:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600361802;
- bh=4dW5n48JqvNP10b6scxas3MFTEWsL4Xf/7dxjZPBmik=;
+ s=default; t=1600361815;
+ bh=3CcSAgmJymqX4erpPOGNuiR94tStAH1tIhGienjiYwc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=voWH5Mj8BlY0YQbektVPJVIihTg4JqOT0bdGzRFdwEuQJQYXAZe22zdzn6SIFqo+L
- WYVQYHdMqQ9HBxLjIUTDxVs7XjFArq2WAuDZpxQHcbFzeZs98yKrot5dAlXsjPI6pH
- sALQqtb7ax8x+xX+P3HSx9zP5MxhbwecFqbmuxQE=
+ b=ehh/IOcVlyp+UzApCJd2uZjTnmaJ85CG1bFw5Xp5VD6lgKUEw8ObK1OdLXYqAxsAI
+ /FQXYjYHs/evznTntqzPiI+ybw3MYVG6jh3P53c2dKcURoHyEflt5A0qgMIexJ4Coz
+ hWB1F8aIxFFehtu2IMK2+HseBdDD+lc6ZKAlu6is=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -113,9 +113,10 @@ To: Linus Walleij <linus.walleij@linaro.org>,
  linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-stm32@st-md-mailman.stormreply.com,
  linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v2 11/13] arm64: dts: imx8mq-librem5: correct GPIO hog property
-Date: Thu, 17 Sep 2020 18:52:59 +0200
-Message-Id: <20200917165301.23100-12-krzk@kernel.org>
+Subject: [PATCH v2 12/13] arm64: dts: imx8mq-librem5: align GPIO hog names
+ with dtschema
+Date: Thu, 17 Sep 2020 18:53:00 +0200
+Message-Id: <20200917165301.23100-13-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200917165301.23100-1-krzk@kernel.org>
 References: <20200917165301.23100-1-krzk@kernel.org>
@@ -136,7 +137,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Correct the name of property for GPIO specifier in GPIO hog.
+dtschema expects GPIO hogs to end with 'hog' suffix.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
@@ -144,18 +145,18 @@ Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index 56295dd2fa8f..e4dedcb58f76 100644
+index e4dedcb58f76..6cbcee2fb938 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -251,7 +251,7 @@
+@@ -249,7 +249,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pmic_5v>;
  
- 	pmic-5v {
+-	pmic-5v {
++	pmic-5v-hog {
  		gpio-hog;
--		gpio = <&gpio1 1 GPIO_ACTIVE_HIGH>;
-+		gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
+ 		gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
  		input;
- 	};
- };
 -- 
 2.17.1
 
