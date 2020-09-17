@@ -2,89 +2,100 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B80C43465
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:14:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FB1FC43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:15:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A10420874
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:14:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 447DF2076E
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:15:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SLfrIArJ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fZQF13za"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A10420874
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uEZVgiRT";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D9Cnb7fg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 447DF2076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3AE5169B;
-	Mon, 21 Sep 2020 10:13:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3AE5169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C853B167A;
+	Mon, 21 Sep 2020 10:14:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C853B167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600676087;
-	bh=SaUuOqHHtnvYUPpS52BsZpQ+3kerk21TuzKHbDtuJDM=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1600676142;
+	bh=C80Dy7apqk6dg+gWzX7fICrl89osqssnzRXg7TSaDA4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=SLfrIArJ40VMT6Y3MB8DRUOrHa+MhhElo4q8ENolJVG1WY4K1ekxjRZFgU24TrhL2
-	 TCkdpkkty9m8uGbVys/maLh9BjvWi9ltUo8dYtA/G9moEmGk3OV7l0oY65/iCqAaIY
-	 KHjZkN7CQD2qCEkh+dIuscbtyY02ctNDM/hZsDto=
+	b=uEZVgiRTJJ4fzGytOuuZIJjl4+uoKo9XGtFlyUl5bss/0MqzSStipbpD4HM44HCDt
+	 jThtNJg/TSmoPuuLnFp9CvyvnDV5sqRA2hRb4/i9M+3uaBDT6aDl5MrdtN/exvq4EI
+	 iyth2slci1X2CnSyM4RpYxzjFlJdMRFEpal7Pkok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8F19F802E8;
-	Mon, 21 Sep 2020 10:10:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBDFCF80308;
+	Mon, 21 Sep 2020 10:10:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 668B5F8010A; Sun, 20 Sep 2020 05:47:08 +0200 (CEST)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com
- [IPv6:2607:f8b0:4864:20::432])
+ id D9CFBF80329; Thu, 17 Sep 2020 16:19:29 +0200 (CEST)
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com
+ [IPv6:2a00:1450:4864:20::642])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D9DAF8010A
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2020 05:46:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D9DAF8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42B03F8032A
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 16:19:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42B03F8032A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="fZQF13za"
-Received: by mail-pf1-x432.google.com with SMTP id d9so6170285pfd.3
- for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2020 20:46:58 -0700 (PDT)
+ header.b="D9Cnb7fg"
+Received: by mail-ej1-x642.google.com with SMTP id lo4so3517860ejb.8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 07:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=L0haqhM/f4eHwinidXOfbxQ8n/VFYGprkopkW/9Mi0U=;
- b=fZQF13zaRINdZJJZFFeQBgkl/Kqfur1EWGIfvSsU6QfdB5QR6QSWhqNmzNyo3KlL7k
- J0gDVMErSIb6LcjlkkSsL+DE9aLKnNw07DnZ2dnsXsJFGaJODsIhxj0OKj3nWWxnR9sK
- yHSYnrp0ciKJX2Bki5Xsgz33JxE3Iqy/dG0d2SwmK2IPFAiVf5lWTHX5TUHV1C/yGW5d
- WGqDP2Af3M49zNZbF9E/1+sLbwoFznmGDKAgYLc9Gub+S8+OvXi5SnIdpo9aAt4AFNcu
- sQnUV7LiDJXGG+qkwjAmXwtYhuufad0i0raWYSWcYX14P4fOIHiGxxwZHxruPqf1LC1v
- klcw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=4QdmLHNgHWV7EyDtK4mu8SWh5osx/6ArPk9SW2Wk9JU=;
+ b=D9Cnb7fgSHrvuQt0e1Tnf0E5ipLGZaJKw+XvFXRqkdYGdK7C8Nn3GXQ/YWDZdYk1M8
+ uIICO/VqVzPETutVmfHYjeJKQgxxtchOj/8REl0Mz1L9KfqIPsHSF/Ce9ie35frZKAd0
+ qRGHJTXLvfDgvtzArrDFUp3NT04cRD7BkjXVp5JltB/HTNjMrq0flignNFWCcdaOWpLb
+ XSfb16AscCIv7WzkxG/2cPTHSIQIiYh4yJpv6YBfAgLk9baCGNDKO7dPkPmovGdX9SDy
+ dxXdn1Y2g6xqR8WNdJmlXWr2fYT5JQMlQjU51a9hVOoArjj6UGQV6MgsHvxPE0UAPbyQ
+ +v2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=L0haqhM/f4eHwinidXOfbxQ8n/VFYGprkopkW/9Mi0U=;
- b=VJPxzvgDVdoIEsnSRCR16N4MoXm92CcYw1IYxUY1nTqcCPMiKtnN8+1KcQQpUlBFH4
- /KvjCTS57spdg11XdhnH4j2zCWCIBg2zwzqRmEh0vkq/C6EtdD57JyCF00AK+UuX3Git
- qTHvv12lSnFvdCyvJ7kPTtqr1sx7hAdrI1aUnz9SG9p18nunaaAxwScrk58GX2jud4LQ
- lsD9LHcaOQs9LdzyNwHan1hM21TN/kUTpZ+gCdi0oblOM1WLW99QoekyAgh3oR2Vvn20
- FVq3EvZmjAh9GIto4X27bhsWm4QZDU/SvMEqpHvzCf5gQu2v0j/Ofg655lxgFMSkqK7p
- o9Eg==
-X-Gm-Message-State: AOAM530SEwQ8mcnF7Zvi53MsO6BTaffS4htiQchMh8S8+9p9oFiBxb4y
- AZNA+MU3n8z5eyQXLlg43sW/OO5wM/SYv7pERb9ocrdifYk=
-X-Google-Smtp-Source: ABdhPJxkdw2iMnD0nr1OtwZlgO9EDz11/8DiEnKPxDKtU3DyUBfOjxANVDOQPW8HCGl9ZPSbUmiqT0K5fV41SVHO9qo=
-X-Received: by 2002:a05:6a00:1703:b029:142:2f13:f1c5 with SMTP id
- h3-20020a056a001703b02901422f13f1c5mr20273286pfc.29.1600573614795; Sat, 19
- Sep 2020 20:46:54 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=4QdmLHNgHWV7EyDtK4mu8SWh5osx/6ArPk9SW2Wk9JU=;
+ b=IgXuAJRzfD8GMRCLuYHmUDmZD+FnjqRbjxeAmheAEG1iU5zK86EgydTKAZaxwwK4M4
+ 6m6JY39tINMR5DBRh1Xtr9ANc5+PtCf06z8+OIh4VBIIZVAfVZHb3GUv1lkTCIQXeWRx
+ OzHC87LphByE/sIpc45gF7nniXDU2/sXoFwfOAYXT0OZ4FdxiPg0wAoYt9caVWsHfnUC
+ IgEbbdM+G1YaORfGSJ6EC+BSbtQm3ByYHGaN4VTTxdK45zw62L47SkbCWtovlqb3jzxl
+ pd1WBGbgJJr1FNYxI0aHoa7QtGjhFAy/YxkuKTmyo4Aa86PaaeMbIArKNi9OIc/JO2IR
+ RJ4w==
+X-Gm-Message-State: AOAM530x0jYDZq4ZZeJQgXCam23EAJQGJio12w/oc6XewPZ8OXkBQKqc
+ csrKDl/LmoU8mFFY4Ox0Tkg=
+X-Google-Smtp-Source: ABdhPJyLUxBjXuAJW1BD8Nd5aF9NxUTWesVyqfUAkVN5f650FWip28Le9/P6ASLfBJ8o03MyXSzPvQ==
+X-Received: by 2002:a17:906:250a:: with SMTP id
+ i10mr30382001ejb.202.1600352356709; 
+ Thu, 17 Sep 2020 07:19:16 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+ by smtp.gmail.com with ESMTPSA id j14sm16675661edr.91.2020.09.17.07.19.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 17 Sep 2020 07:19:15 -0700 (PDT)
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: cros_ec_codec: fix kconfig dependency warning for
+ SND_SOC_CROS_EC_CODEC
+Date: Thu, 17 Sep 2020 17:18:04 +0300
+Message-Id: <20200917141803.92889-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From: Brian McCarter <bibocc@gmail.com>
-Date: Sat, 19 Sep 2020 22:46:24 -0500
-Message-ID: <CAF12ROm9XmBtfZL4ZrwfPL_=0JO1XsUs682FqsSL7ouW__TQmA@mail.gmail.com>
-Subject: USB-Audio.conf patch for ASUS Xonar SE IEC958
-To: alsa-devel@alsa-project.org
-Content-Type: multipart/mixed; boundary="000000000000bfa1d305afb695ed"
-X-Mailman-Approved-At: Mon, 21 Sep 2020 10:10:22 +0200
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Mon, 21 Sep 2020 10:10:23 +0200
+Cc: alsa-devel@alsa-project.org, paul@pgazz.com,
+ Necip Fazil Yildiran <fazilyildiran@gmail.com>, linux-kernel@vger.kernel.org,
+ jeho@cs.utexas.edu, ardb@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,32 +111,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---000000000000bfa1d305afb695ed
-Content-Type: text/plain; charset="UTF-8"
+When SND_SOC_CROS_EC_CODEC is enabled and CRYPTO is disabled, it results
+in the following Kbuild warning:
 
-Hello,
+WARNING: unmet direct dependencies detected for CRYPTO_LIB_SHA256
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - SND_SOC_CROS_EC_CODEC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && CROS_EC [=y]
 
-I recently purchased an ASUS Xonar SE sound card and found that the IEC958
-output did not work under ALSA.  The attached patch to alsa-lib enables the
-output.  I can see that the SE is among several other Xonar models which
-require special treatment to enable the S/PDIF output, but this one appears
-to be the only one which puts the digital output on PCM #2.
+The reason is that SND_SOC_CROS_EC_CODEC selects CRYPTO_LIB_SHA256 without
+depending on or selecting CRYPTO while CRYPTO_LIB_SHA256 is subordinate to
+CRYPTO.
 
-Brian McCarter
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
---000000000000bfa1d305afb695ed
-Content-Type: text/x-patch; charset="US-ASCII"; name="xonar-se.patch"
-Content-Disposition: attachment; filename="xonar-se.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kfak2h260>
-X-Attachment-Id: f_kfak2h260
+Fixes: 93fa0af4790a ("ASoC: cros_ec_codec: switch to library API for SHA-256")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-ZGlmZiAtdXJOIGEvc3JjL2NvbmYvY2FyZHMvVVNCLUF1ZGlvLmNvbmYgYi9zcmMvY29uZi9jYXJk
-cy9VU0ItQXVkaW8uY29uZgotLS0gYS9zcmMvY29uZi9jYXJkcy9VU0ItQXVkaW8uY29uZgkyMDIw
-LTA2LTI5IDA1OjUxOjA4LjAwMDAwMDAwMCAtMDUwMAorKysgYi9zcmMvY29uZi9jYXJkcy9VU0It
-QXVkaW8uY29uZgkyMDIwLTA5LTE5IDIyOjE4OjQ1LjkxNDk3MDcyMiAtMDUwMApAQCAtNDIsNiAr
-NDIsNyBAQAogCSJBU1VTIFhPTkFSIFU1IiAxCiAJIlhPTkFSIFU1IiAxCiAJIlhPTkFSIFNPVU5E
-IENBUkQiIDEKKwkiWG9uYXIgU291bmRDYXJkIiAyCiAJCiAJIyBUaGUgYmVsb3cgZG9uJ3QgaGF2
-ZSBkaWdpdGFsIGluL291dCwgc28gcHJldmVudCB0aGVtIGZyb20gYmVpbmcgb3BlbmVkLgogCSJB
-bmRyZWEgUHVyZUF1ZGlvIFVTQi1TQSBIZWFkc2V0IiA5OTkK
---000000000000bfa1d305afb695ed--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 946a70210f49..601ea45d3ea6 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -540,6 +540,7 @@ config SND_SOC_CQ0093VC
+ config SND_SOC_CROS_EC_CODEC
+ 	tristate "codec driver for ChromeOS EC"
+ 	depends on CROS_EC
++	select CRYPTO
+ 	select CRYPTO_LIB_SHA256
+ 	help
+ 	  If you say yes here you will get support for the
+-- 
+2.25.1
+
