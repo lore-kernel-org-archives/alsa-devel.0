@@ -6,69 +6,69 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 642F2C2BBD1
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:00:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 483CDC43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:00:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3778B21973
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:00:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 801FC206A1
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Sep 2020 19:00:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q253OYUz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="18GS+sSR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3778B21973
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dkXr0WFD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FAnInw9q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 801FC206A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF9A6165D;
-	Thu, 17 Sep 2020 20:59:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF9A6165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7B3E168D;
+	Thu, 17 Sep 2020 20:59:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7B3E168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600369216;
-	bh=u9mh+AijHpIErfNJNMJUrUaC6C9FZk2VizltieCw06o=;
+	s=default; t=1600369227;
+	bh=uQL/O+dIRBcVS0wEYhmb9uUButshwPZ/YTlprzgtQeM=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q253OYUzh4FFAjyZCVhFM/d7rOg8bD6SRGLbgGW6CAGNr7booy08CyoCwXSKgBJ51
-	 Ak1mZcUt8L+PlByK2JDihvwdqGhnLMwV7rKXiwafBw7KZhTa1H1MRR/W4L2B6G28el
-	 tQTKYEquW+JzCa9KuTFKt0WpWuCAjZn/CvsfX48Y=
+	b=dkXr0WFDBdPuj+LqZjiBlDKowaUTgKQI7g3npG9pCx8lgm5xSwdjMR4PrsGxBXCX4
+	 2l4GZcqq623dDcaiJHTQ0u/c6x9QTu/d1Yp4sPAYflyWsflFq4TW3ZP553AWVP+469
+	 7W589Qz9BRG1PNZxsLszkRW+EcFDo21BiacnwOns=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE6E3F8027C;
-	Thu, 17 Sep 2020 20:57:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F37B3F802DB;
+	Thu, 17 Sep 2020 20:58:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74ADEF802C3; Thu, 17 Sep 2020 20:57:53 +0200 (CEST)
+ id 11F48F802DC; Thu, 17 Sep 2020 20:57:59 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C257DF8027C
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 20:57:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C257DF8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id A398DF802BE
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 20:57:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A398DF802BE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="18GS+sSR"
+ header.b="FAnInw9q"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DA57C2072E;
- Thu, 17 Sep 2020 18:57:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7B214221E3;
+ Thu, 17 Sep 2020 18:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600369069;
- bh=u9mh+AijHpIErfNJNMJUrUaC6C9FZk2VizltieCw06o=;
+ s=default; t=1600369075;
+ bh=uQL/O+dIRBcVS0wEYhmb9uUButshwPZ/YTlprzgtQeM=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=18GS+sSRmXkfQPQoq0QI1aSD0JTO4Nn8ExBaxdDJWZEbO+AKnxDHV/GgRGLQ1zVqf
- iiprAp+e9ZUc6oHr0OTbwarnFysovMP+n8njdmlL5HAC5mj4PFHrMPNpdHKP0PqIm4
- jdLl+WcLQ8kCDw+efrXm5NUbdQZGpFYsynBRMbKU=
-Date: Thu, 17 Sep 2020 19:56:59 +0100
+ b=FAnInw9q2E3d5j/MkfJqcZV9I3ZYoMkBNCDCcRyViZXt+52pkBcumPTIyjKZAWLQo
+ hABqixID7pcQTffpa2EYfa08SUqJqd97KOgcqgPO9T53pm0PjGGN9Ffwcgt+jux8jN
+ POyPk2bFRslZAEHbynGbz9Vn21zQlFX5TDPWCvFc=
+Date: Thu, 17 Sep 2020 19:57:05 +0100
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20200917103609.2559916-1-kai.vehmanen@linux.intel.com>
-References: <20200917103609.2559916-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: Add support for tgl-h
-Message-Id: <160036900934.20113.13931109991929748377.b4-ty@kernel.org>
-Cc: pierre-louis.bossart@linux.intel.com, Rander Wang <rander.wang@intel.com>,
- daniel.baluta@nxp.com, lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com
+In-Reply-To: <20200917105633.2579047-1-kai.vehmanen@linux.intel.com>
+References: <20200917105633.2579047-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 0/8] ASoC: SOF: small fixes for 5.10
+Message-Id: <160036900934.20113.14063684004477951915.b4-ty@kernel.org>
+Cc: pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com,
+ lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,10 +84,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Sep 2020 13:36:09 +0300, Kai Vehmanen wrote:
-> SOF will support tgl-h and tgl-lp in different FW binaries due to
-> hardware difference, so create another dev_desc entry with FW name
-> of sof-tgl-h.ri and dsp_desc named tglh_chip_info for tgl-h.
+On Thu, 17 Sep 2020 13:56:25 +0300, Kai Vehmanen wrote:
+> Series that adds debug support for IMX platforms, more details to
+> FW version information, adds missing -EACCESS handling to
+> pm_runtime_get_sync() calls and a set of minor cosmetic, trace
+> verbosity and coding style issues.
+> 
+> Guennadi Liakhovetski (3):
+>   ASoC: SOF: (cosmetic) remove redundant "ret" variable uses
+>   ASoC: SOF: remove several superfluous type-casts
+>   ASoC: SOF: fix range checks
+> 
+> [...]
 
 Applied to
 
@@ -95,8 +103,22 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: Intel: Add support for tgl-h
-      commit: 30ee3738f849b3f4af623c20adec73cdc4573a2e
+[1/8] ASoC: SOF: imx: Add debug support for imx platforms
+      commit: 18ebffe4d043bf5f3a9b669d8d91f855bde8f6b7
+[2/8] ASoC: SOF: Add `src_hash` to `sof_ipc_fw_version` structure
+      commit: 6eab771472af50e11a484d56ba444e2ec82e9126
+[3/8] ASoC: SOF: debug: update test for pm_runtime_get_sync()
+      commit: 7db6db9d1a4a7864cd2557e983e06f3adf788c6a
+[4/8] ASoC: SOF: control: update test for pm_runtime_get_sync()
+      commit: 99ceec5ca0cb29e3b1d556d108ddc54654377792
+[5/8] ASoC: SOF: (cosmetic) remove redundant "ret" variable uses
+      commit: b9f8e1387cf0c9911b26c9d1fca84605d923de66
+[6/8] ASoC: SOF: remove several superfluous type-casts
+      commit: db69bcf915a37d7b8e54acf5f67d09d8159eb616
+[7/8] ASoC: SOF: fix range checks
+      commit: 0e4ea878708be903566ad93d4972ad3dd4c1c30e
+[8/8] ASoC: SOF: Intel: hda: reduce verbosity of boot error logs
+      commit: 776100a4ce6da8f7fa451509e46852d69c2162a8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
