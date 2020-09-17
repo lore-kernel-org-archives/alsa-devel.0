@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-14.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 570ADC43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:21:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B68E0C43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:22:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A38BD20773
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:21:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACCA920773
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:22:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PE939mB/";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLjPKbr7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A38BD20773
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R+0CrT0U";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GRH/P+hm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACCA920773
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 172061741;
-	Mon, 21 Sep 2020 10:21:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 172061741
+	by alsa0.perex.cz (Postfix) with ESMTPS id 190CD176A;
+	Mon, 21 Sep 2020 10:21:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 190CD176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600676511;
-	bh=dV0RJmZrCOhLfLOZpDoJWxNcxKwbXemwt+fCiTuTk1A=;
+	s=default; t=1600676533;
+	bh=BHBvTl9J5bVNGcjbgF1Wrd0LOUeqr0pjrgInbdXE4tc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PE939mB/hJM/FWCzt42VxHxaJFxjKxnkj2XUTEgd2VDhLLiQOqEz3EzAQ5eG5aW+y
-	 LNyVwy7oA4XDAqbo5amIkR2xB2dAv8En8L2WsXRjbMvQkanFcnKLqPbSqRMGn77JQx
-	 beIsd1w9GkXGJ/sGRyQjo4Ezg3YFW0Frygfyzg30=
+	b=R+0CrT0UMzgnnKzkNl/W5yP6jkfSGioqVnC/9BBdkRcDc4Jo/zTD+NzW1OBwb9acw
+	 O6aIRdoh+BzoKet4F+tMuEzBnuQ9Tbly2xTbsPI4lddZ47Z6P6QCzZgbycU61xeiEz
+	 e7+KnePD13rVmQRg9vLt98nnNzBoBssqlp6LKLA0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7F39F80363;
-	Mon, 21 Sep 2020 10:10:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82040F80368;
+	Mon, 21 Sep 2020 10:10:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22B19F80212; Thu, 17 Sep 2020 18:56:21 +0200 (CEST)
+ id E9C5EF80212; Thu, 17 Sep 2020 18:56:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8891F80134
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:56:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8891F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B065F800E8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2020 18:56:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B065F800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RLjPKbr7"
+ header.b="GRH/P+hm"
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 12A3720838;
- Thu, 17 Sep 2020 16:55:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C26952078D;
+ Thu, 17 Sep 2020 16:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600361773;
- bh=dV0RJmZrCOhLfLOZpDoJWxNcxKwbXemwt+fCiTuTk1A=;
+ s=default; t=1600361787;
+ bh=BHBvTl9J5bVNGcjbgF1Wrd0LOUeqr0pjrgInbdXE4tc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=RLjPKbr7P21OXEU7ceJ2mx37qg3eABYBb3zaPjWzAU7DOqdbgooe8f/mo1/RL9uyZ
- rf73qne7R+Ov8bfBF6rrWyb0+F6Vt3UP4YOiozO6nIOfPQMAkOCDNvMWHR0HXAxP8r
- c0d+uXN9tlXLN0vLlmNC159+wVc0Lb9RcmWL0J/A=
+ b=GRH/P+hmbkvZV1XUdX3hrXr/M7yIadjWJCzkILNlNjfuSFyrmNOxxyOBSVjiJTn4J
+ gKvBNwbvbYzo0IGdWxTLE2oG9gmZ6oXMt70NrCbSqHARK+31sF7Rx0nhtl11Izm9do
+ rhuxXTc0Y62DIAey7vczzig9Bz3xjl9vz5LWXWP8=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -113,10 +113,10 @@ To: Linus Walleij <linus.walleij@linaro.org>,
  linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-stm32@st-md-mailman.stormreply.com,
  linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v2 09/13] dt-bindings: pinctrl: include common schema in GPIO
- controllers
-Date: Thu, 17 Sep 2020 18:52:57 +0200
-Message-Id: <20200917165301.23100-10-krzk@kernel.org>
+Subject: [PATCH v2 10/13] ASoC: dt-bindings: zl38060: include common schema in
+ GPIO controllers
+Date: Thu, 17 Sep 2020 18:52:58 +0200
+Message-Id: <20200917165301.23100-11-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200917165301.23100-1-krzk@kernel.org>
 References: <20200917165301.23100-1-krzk@kernel.org>
@@ -147,171 +147,23 @@ Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Changes since v1:
 1. New patch
 ---
- .../devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml      | 3 +++
- .../bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml          | 1 +
- .../devicetree/bindings/pinctrl/cirrus,lochnagar.yaml          | 3 +++
- Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml | 3 +++
- .../devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml   | 3 +++
- Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml  | 3 +++
- .../devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml      | 3 +++
- .../devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml      | 3 +++
- .../devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml       | 3 +++
- .../devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml      | 3 +++
- .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml          | 3 +++
- 11 files changed, 31 insertions(+)
+ Documentation/devicetree/bindings/sound/zl38060.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
-index 33391d30c00c..51bfc214bba6 100644
---- a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
-@@ -15,6 +15,9 @@ description: |
-   GPIO function selection & GPIO attributes configuration. Please refer to
-   pinctrl-bindings.txt in this directory for common binding part and usage.
+diff --git a/Documentation/devicetree/bindings/sound/zl38060.yaml b/Documentation/devicetree/bindings/sound/zl38060.yaml
+index 338e2a13c775..0e3d8c854806 100644
+--- a/Documentation/devicetree/bindings/sound/zl38060.yaml
++++ b/Documentation/devicetree/bindings/sound/zl38060.yaml
+@@ -15,6 +15,9 @@ maintainers:
+   - Jaroslav Kysela <perex@perex.cz>
+   - Takashi Iwai <tiwai@suse.com>
  
 +allOf:
 +  - $ref: /schemas/gpio/gpio-common.yaml#
 +
  properties:
    compatible:
-     const: actions,s500-pinctrl
-diff --git a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-index 7556be6e2754..55662f8d1f94 100644
---- a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-@@ -143,6 +143,7 @@ allOf:
-   # boards are defining it at the moment so it would generate a lot of
-   # warnings.
- 
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-   - if:
-       properties:
-         compatible:
-diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
-index 420d74856032..ed478b0ed4cc 100644
---- a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
-@@ -31,6 +31,9 @@ description: |
-   This binding must be part of the Lochnagar MFD binding:
-     [4] ../mfd/cirrus,lochnagar.yaml
- 
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- properties:
-   compatible:
-     enum:
-diff --git a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
-index 44c04d11ae4c..ffa64832b4f9 100644
---- a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
-@@ -59,6 +59,9 @@ properties:
- patternProperties:
-   "^gpio@[0-9]$":
-     type: object
-+    allOf:
-+      - $ref: /schemas/gpio/gpio-common.yaml#
-+
-     properties:
-       compatible:
-         enum:
-diff --git a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
-index 152c151c27ad..7d0a4cb96f39 100644
---- a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
-@@ -14,6 +14,9 @@ description: |+
-   required property:
-   - compatible: "syscon"
- 
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- properties:
-   compatible:
-     const: mediatek,mt6779-pinctrl
-diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
-index 5556def6b99b..bc8bc0ac1926 100644
---- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
-@@ -12,6 +12,9 @@ maintainers:
- description: |
-   The Mediatek's Pin controller is used to control SoC pins.
- 
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- properties:
-   compatible:
-     const: mediatek,mt8192-pinctrl
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
-index c64c93206817..22a6b80b4c0e 100644
---- a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
-@@ -13,6 +13,9 @@ description: |
-   This binding describes the Top Level Mode Multiplexer block found in the
-   IPQ6018 platform.
- 
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- properties:
-   compatible:
-     const: qcom,ipq6018-pinctrl
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
-index 1f0f5757f9e1..9855d859fe61 100644
---- a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
-@@ -13,6 +13,9 @@ description: |
-   This binding describes the Top Level Mode Multiplexer block found in the
-   MSM8226 platform.
- 
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- properties:
-   compatible:
-     const: qcom,msm8226-pinctrl
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
-index 8508c57522fd..e5757b6ced40 100644
---- a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
-@@ -13,6 +13,9 @@ description: |
-   This binding describes the Top Level Mode Multiplexer block found in the
-   SM8250 platform.
- 
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- properties:
-   compatible:
-     const: qcom,sm8250-pinctrl
-diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
-index b7911a994f3a..4d7bf4340262 100644
---- a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
-@@ -10,6 +10,9 @@ maintainers:
-   - Chris Brandt <chris.brandt@renesas.com>
-   - Geert Uytterhoeven <geert+renesas@glider.be>
- 
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- description:
-   The Renesas SoCs of the RZ/A2 series feature a combined Pin and GPIO
-   controller.
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-index 72877544ca78..28b861362ba0 100644
---- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-@@ -56,6 +56,9 @@ properties:
- patternProperties:
-   '^gpio@[0-9a-f]*$':
-     type: object
-+    allOf:
-+      - $ref: /schemas/gpio/gpio-common.yaml#
-+
-     properties:
-       gpio-controller: true
-       '#gpio-cells':
+     const: mscc,zl38060
 -- 
 2.17.1
 
