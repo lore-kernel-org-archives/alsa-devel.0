@@ -2,82 +2,92 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C1ADC43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 782FBC43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 06:06:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B84823772
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:19:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2AC92084C
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 06:06:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TgrLnM3n";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kcAQpHWG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B84823772
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P6QmG8Rz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="w7QUU6zU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2AC92084C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FC19176A;
-	Fri, 18 Sep 2020 04:18:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FC19176A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 308F616F1;
+	Fri, 18 Sep 2020 08:05:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 308F616F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600395565;
-	bh=eiz7aoc8IANfM5Zam+W3qobqu1VmS3mANYdwlS2WVIc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TgrLnM3nukgKNeJnjyB8PFQLcxTCZYxLv8gp91DWetr7p48BkXeKj02zog1voeYQ1
-	 xaBtds9LGIMeDll+tnAvyI7gN/q+5+UHMtQJLXp5lB1fseXWsPB2VkYh/8VAGStzyL
-	 FDl6+EKhaEE5is2E5AmCAP/36dfm01vB/YWFL7q0=
+	s=default; t=1600409167;
+	bh=sDdrS4raCXL0zcWypwYEC398WOQGMh3ERUVCICQWIGU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=P6QmG8Rz0jrmSaItgkSdu4dxZ/1duw3dAKelmQbh7+KXiXWcIPy1YpAlnCbgjD/LD
+	 Tc905bCYRvMF+cVfkV/cSLok3fRGik/WaWI45pZ8QPywJn03BJPv5SujHtem7hV/me
+	 qGIZCkUnpnjMjoAdyVWIcQ1/yAXSfYvBSHZYQCrI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4A5DF801F7;
-	Fri, 18 Sep 2020 04:17:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF06FF8015A;
+	Fri, 18 Sep 2020 08:05:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68539F802D2; Fri, 18 Sep 2020 04:17:51 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAE82F801F7
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:17:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAE82F801F7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kcAQpHWG"
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
- [73.47.72.35])
+ id 3F563F8015A; Fri, 18 Sep 2020 08:05:15 +0200 (CEST)
+Received: from mail29.static.mailgun.info (mail29.static.mailgun.info
+ [104.130.122.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 50621238EE;
- Fri, 18 Sep 2020 02:17:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600395466;
- bh=eiz7aoc8IANfM5Zam+W3qobqu1VmS3mANYdwlS2WVIc=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kcAQpHWGOGfAIoGTX7UJzvpx+wtvbs9cvfvvdaIOcZ4NY4OBDM4MzLjm4H9O6Bz86
- wfCe+EiJxzOPsbRiKygNO9AOZiXh65DHohAVckwsG/lIcCOw24VDcZhbK55tlK5lHs
- wsqBlgFNcqTxICz6erq5SBNUswo7HxPeSIRHoKjo=
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 52/64] ALSA: hda: Fix potential race in unsol
- event handler
-Date: Thu, 17 Sep 2020 22:16:31 -0400
-Message-Id: <20200918021643.2067895-52-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918021643.2067895-1-sashal@kernel.org>
-References: <20200918021643.2067895-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id C74A7F8013A
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 08:05:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C74A7F8013A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="w7QUU6zU"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1600409104; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=lGV2hx35OB+wkZdH46JM2MKBQLWUa4ptpNDwYKwWuvc=;
+ b=w7QUU6zUFhCl1o9+5dWB0RjAA+/hlHdb+JFhovu9FMkT+OTX0OCBBW7KrcZ3aRgJI5EcSeS3
+ D0MBfgdIJsycgYxINj6iI6WnJCsVzymznu2VtZHOGkBLtSNGV75aesIXlSxP6sdOYXnomFhp
+ EFGGaBcqYd5BBSUVQxXLcwrd8ys=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f644e0e4ab73023a7d169bd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 06:05:02
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 9D4CEC433FF; Fri, 18 Sep 2020 06:05:02 +0000 (UTC)
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id EB125C433CA;
+ Fri, 18 Sep 2020 06:04:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB125C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/5] Qualcomm's lpass-hdmi ASoC driver to support audio
+ over dp port
+Date: Fri, 18 Sep 2020 11:34:39 +0530
+Message-Id: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,53 +103,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+These patches are to support audio over DP port on Qualcomm's SC7180 LPASS Asoc.
+It includes machine driver, cpu driver, platform driver updates for HDMI path support, 
+device tree documention, lpass variant structure optimization and configuration changes.
+These patches depends on the DP patch series 
+https://patchwork.kernel.org/project/dri-devel/list/?series=332029
 
-[ Upstream commit c637fa151259c0f74665fde7cba5b7eac1417ae5 ]
+changes since V5:
+    -- Removed unused struct regmap *map in lpass_platform_alloc_hdmidmactl_fields.
+    -- DMA alloc and free API signature change in lpass-apq8016.c, lpass-ipq806x.c 
+    -- Keeping API "irqreturn_t lpass_platform_hdmiif_irq" under ifdef macro
+Changes Since v4:
+    -- Updated with single compatible node for both I2S and HDMI.
+Changes Since v3:
+    -- Removed id in lpass variant structure and used snd_soc_dai_driver id.
+Changes Since v2:
+	-- Audio buffer size(i.e. LPASS_PLATFORM_BUFFER_SIZE) in lpass-platform.c increased.
+Changes Since v1:
+	-- Commit messages are updated
+	-- Addressed Rob Herring review comments
 
-The unsol event handling code has a loop retrieving the read/write
-indices and the arrays without locking while the append to the array
-may happen concurrently.  This may lead to some inconsistency.
-Although there hasn't been any proof of this bad results, it's still
-safer to protect the racy accesses.
+V Sujith Kumar Reddy (5):
+  ASoC: Add sc7180-lpass binding header hdmi define
+  ASoC: dt-bindings: Add dt binding for lpass hdmi
+  Asoc:qcom:lpass-cpu:Update dts property read API
+  ASoC: qcom: Add support for lpass hdmi driver
+  ASoC: qcom: sc7180: Add support for audio over DP
 
-This patch adds the spinlock protection around the unsol handling loop
-for addressing it.  Here we take bus->reg_lock as the writer side
-snd_hdac_bus_queue_event() is also protected by that lock.
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  74 ++-
+ include/dt-bindings/sound/sc7180-lpass.h           |   1 +
+ sound/soc/qcom/Kconfig                             |   5 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/lpass-apq8016.c                     |   4 +-
+ sound/soc/qcom/lpass-cpu.c                         |  39 +-
+ sound/soc/qcom/lpass-hdmi.c                        | 596 +++++++++++++++++++++
+ sound/soc/qcom/lpass-hdmi.h                        | 129 +++++
+ sound/soc/qcom/lpass-ipq806x.c                     |   4 +-
+ sound/soc/qcom/lpass-lpaif-reg.h                   |  52 +-
+ sound/soc/qcom/lpass-platform.c                    | 468 ++++++++++++----
+ sound/soc/qcom/lpass-sc7180.c                      | 116 +++-
+ sound/soc/qcom/lpass.h                             | 119 +++-
+ 13 files changed, 1451 insertions(+), 158 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-hdmi.c
+ create mode 100644 sound/soc/qcom/lpass-hdmi.h
 
-Link: https://lore.kernel.org/r/20200516062556.30951-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/hda/hdac_bus.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 0e81ea89a5965..e3f68a76d90eb 100644
---- a/sound/hda/hdac_bus.c
-+++ b/sound/hda/hdac_bus.c
-@@ -155,6 +155,7 @@ static void process_unsol_events(struct work_struct *work)
- 	struct hdac_driver *drv;
- 	unsigned int rp, caddr, res;
- 
-+	spin_lock_irq(&bus->reg_lock);
- 	while (bus->unsol_rp != bus->unsol_wp) {
- 		rp = (bus->unsol_rp + 1) % HDA_UNSOL_QUEUE_SIZE;
- 		bus->unsol_rp = rp;
-@@ -166,10 +167,13 @@ static void process_unsol_events(struct work_struct *work)
- 		codec = bus->caddr_tbl[caddr & 0x0f];
- 		if (!codec || !codec->dev.driver)
- 			continue;
-+		spin_unlock_irq(&bus->reg_lock);
- 		drv = drv_to_hdac_driver(codec->dev.driver);
- 		if (drv->unsol_event)
- 			drv->unsol_event(codec, res);
-+		spin_lock_irq(&bus->reg_lock);
- 	}
-+	spin_unlock_irq(&bus->reg_lock);
- }
- 
- /**
 -- 
-2.25.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
