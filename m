@@ -2,81 +2,83 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36F87C43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 11:20:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 585D3C43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 11:27:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C042321D42
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 11:20:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DDD3E21D42
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 11:27:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rhKkoyCk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="myX2BtAE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C042321D42
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VX1Az5Bi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="nV12yoOn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDD3E21D42
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D91D116B9;
-	Fri, 18 Sep 2020 13:19:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D91D116B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7566516B9;
+	Fri, 18 Sep 2020 13:26:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7566516B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600428019;
-	bh=MsHAcHW7aH++paDGdWzrEb54PdjaLyqzMLktk5Kc1cU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rhKkoyCkRWsxX+Gz6qpfu9qG/ZIEvBl3dGVfooLzw2cw88EVy6MyB4wsOSS9Lmm2X
-	 zL28T6jVi3aS/sVl6WqW/yi6cQ/01at15DOKKay44n/bkU/sxWBxKmChlXhd/+wIHC
-	 X9vML8qAW7pahy+Li6ADNHMcHFpRKcOrZwVsFUJ0=
+	s=default; t=1600428457;
+	bh=p4gLwOTXI2+3jP4zc7Yz+ZicFx0pazEsFwsxu1l5wno=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VX1Az5Bi3VMo1uOZ5pLusivepmnZJ7Pu7AFeqmZ+1S+aFI/+3sD9z/ndmf5IXtAUR
+	 0TIVEX60YL83hLE7vA8s/C6XjYoY5XjDgYa8hEjhRnJ24FCkqTF6frpboRJqv9ldNd
+	 epUFciit4u3rFZ5EhKPdK0cPMKXwz3a73Sz/uJvU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A92AF80150;
-	Fri, 18 Sep 2020 13:19:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3ECAF8012D;
+	Fri, 18 Sep 2020 13:26:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AEDC6F8015A; Fri, 18 Sep 2020 13:19:27 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3C2DF800E8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 13:19:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3C2DF800E8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="myX2BtAE"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id EEBFBF8015A; Fri, 18 Sep 2020 13:26:45 +0200 (CEST)
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9BA3721D42;
- Fri, 18 Sep 2020 11:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600427954;
- bh=MsHAcHW7aH++paDGdWzrEb54PdjaLyqzMLktk5Kc1cU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=myX2BtAEzZUSkE8tvtPHDRXahOOD8k9Ubiolzed8AKc/hHGVuKVAsGjT/WNYJjgNZ
- 9tT3n/BA9VOH3NnDLVwarGinaahFaCHdcG9fWKGuENAxsnyWwU+iwvQIfUjmIpzwp3
- LLQojBsHk5QMRst7AbU5sXHk3zNx7SPuJrsIV/IU=
-Date: Fri, 18 Sep 2020 12:18:23 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Camel Guo <camel.guo@axis.com>
-Subject: Re: [PATCH v4] ASoC: tlv320adcx140: Add support for configuring GPIO
- pin
-Message-ID: <20200918111823.GE5703@sirena.org.uk>
-References: <20200918073229.27348-1-camel.guo@axis.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94ADCF8012D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 13:26:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94ADCF8012D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="nV12yoOn"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; l=2871; q=dns/txt; s=axis-central1;
+ t=1600428400; x=1631964400;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=nf9xyKjOJLYLLbRB2/HBWzS8DPHd3qUqka4CHMmC6qo=;
+ b=nV12yoOncZEy5pWYIahalrsKlOHvI7yyQXvSKbKvgEMv6iPt8YXhEV3M
+ I/4Jw+XCZT9X/YSSK+x98INrBdMpPKqTwEsCbxdHzBAekEDatamdSg+ef
+ x8cRH60Zkem5LTtBYlACI1u11Oe2K3umxPLu+I7PANFTHhxyltiU196zL
+ 4xyZrtmCC71Afde0qBxcrfvoUeiRX6DADsX6mCRxccTekv1iMT9gzgBhN
+ D4OERwhEG2VgEyPJu/yKdZcJyFxwqv2Nq8nVAWTylXMNrnEiYYTfzoGko
+ pAHSKZfQoQPXoqaJwTsdE4Dp7D3ozdzLRtGxufUOJDKWQnx+PRxZmL8jY A==;
+IronPort-SDR: Wm68cUyutQ/yZufGg2RwvdgbyWG4H6Us9tO92e0nTRFhcL5G7fU2xmjltFz4EL6lutkaTb21Mx
+ akPkFIUJ/kazqwkvHURjIqsrnL/0XAxDhDhahUzXf6ARYEw/DLK1faCn1aBQsvduNODlhk0/fv
+ R2fTtMY4d4AYk2nymM6/apcdM3weTefCZm9YfEUuOQ0UB9cEcH0tR9wdyjLgBWi+5xb0tfkW3g
+ 2uMIDBAGbqx7i++lzvnX0nveQUcLUDaAWWiZZUxRH/AT8Y7oBRS2Nc+DNkbXUvs/FFnSOjGXHV
+ 9t4=
+X-IronPort-AV: E=Sophos;i="5.77,274,1596492000"; d="scan'208";a="12636759"
+From: Camel Guo <camel.guo@axis.com>
+To: <robh+dt@kernel.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+ <tiwai@suse.com>, <dmurphy@ti.com>
+Subject: [PATCH v4 1/2] dt-bindings: tlv320adcx140: Add GPIO config and drive
+ config
+Date: Fri, 18 Sep 2020 13:26:21 +0200
+Message-ID: <20200918112622.17262-1-camel.guo@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="7LkOrbQMr4cezO2T"
-Content-Disposition: inline
-In-Reply-To: <20200918073229.27348-1-camel.guo@axis.com>
-X-Cookie: Beware of geeks bearing graft.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Camel Guo <camelg@axis.com>, tiwai@suse.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, kernel@axis.com,
- dmurphy@ti.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@axis.com,
+ linux-kernel@vger.kernel.org, Camel Guo <camelg@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,36 +94,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Camel Guo <camelg@axis.com>
 
---7LkOrbQMr4cezO2T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add properties for configuring the General Purpose Input Output (GPIO).
+There are 2 settings for GPIO, configuration and the output drive type.
 
-On Fri, Sep 18, 2020 at 09:32:29AM +0200, Camel Guo wrote:
-> From: Camel Guo <camelg@axis.com>
->=20
-> Add support to configure the GPIO pin to the specific configuration.
-> The GPIO pin can be configured as GPO, IRQ, SDOUT2, PDMCLK, MICBASE_EN,
-> GPI, MCLK, SDIN, PDMDIN1, PDMDIN2, PDMDIN3 or PDMDIN4 and the output
-> drive can be configured with various configuration.
+Signed-off-by: Camel Guo <camelg@axis.com>
+Acked-by: Dan Murphy <dmurphy@ti.com>
+---
+ v4:
+  - Rebase
+ v3: 
+  - Fix typo
+  - Add Acked-By from Dan 
 
-This needs a DT bindings update for the new property (I thought there
-was one in prior versions)?
+ .../bindings/sound/tlv320adcx140.yaml         | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
---7LkOrbQMr4cezO2T
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+index e79f8d1891e4..798b366fe6d1 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -140,6 +140,49 @@ patternProperties:
+        4d - Drive weak low and active high
+        5d - Drive Hi-Z and active high
+ 
++  ti,gpio-config:
++    description: |
++       Defines the configuration and output drive for the General Purpose
++       Input and Output pin (GPIO1). Its value is a pair, the first value is for
++       the configuration type and the second value is for the output drive
++       type. The array is defined as <GPIO1_CFG GPIO1_DRV>
++
++       configuration for the GPIO pin can be one of the following:
++       0 - disabled
++       1 - GPIO1 is configured as a general-purpose output (GPO)
++       2 - (default) GPIO1 is configured as a device interrupt output (IRQ)
++       3 - GPIO1 is configured as a secondary ASI output (SDOUT2)
++       4 - GPIO1 is configured as a PDM clock output (PDMCLK)
++       8 - GPIO1 is configured as an input to control when MICBIAS turns on or
++           off (MICBIAS_EN)
++       9 - GPIO1 is configured as a general-purpose input (GPI)
++       10 - GPIO1 is configured as a master clock input (MCLK)
++       11 - GPIO1 is configured as an ASI input for daisy-chain (SDIN)
++       12 - GPIO1 is configured as a PDM data input for channel 1 and channel 2
++            (PDMDIN1)
++       13 - GPIO1 is configured as a PDM data input for channel 3 and channel 4
++            (PDMDIN2)
++       14 - GPIO1 is configured as a PDM data input for channel 5 and channel 6
++            (PDMDIN3)
++       15 - GPIO1 is configured as a PDM data input for channel 7 and channel 8
++            (PDMDIN4)
++
++       output drive type for the GPIO pin can be one of the following:
++       0 - Hi-Z output
++       1 - Drive active low and active high
++       2 - (default) Drive active low and weak high
++       3 - Drive active low and Hi-Z
++       4 - Drive weak low and active high
++       5 - Drive Hi-Z and active high
++
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32-array
++      - minItems: 2
++        maxItems: 2
++        items:
++          maximum: 15
++        default: [2, 2]
++
+ required:
+   - compatible
+   - reg
+@@ -156,6 +199,7 @@ examples:
+         ti,mic-bias-source = <6>;
+         ti,pdm-edge-select = <0 1 0 1>;
+         ti,gpi-config = <4 5 6 7>;
++        ti,gpio-config = <10 2>;
+         ti,gpo-config-1 = <0 0>;
+         ti,gpo-config-2 = <0 0>;
+         reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+-- 
+2.20.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9kl34ACgkQJNaLcl1U
-h9Caawf9GXOYrnjVLp87TQZt8xe7Ma3EOFI2Tc7RfEd0fV9GhihVv06LXY61dCC9
-vGoDaFvEJ5XJhiN0AXHz8qG7/LhTWP7oM/EWTP7c6SP3HPclcyBet8v4Dnisp1TJ
-S41dZp6tDDTM8Cmm45Uk9M+9KBz61XDHnx+VlhPVrUZ/6ta+iUd2huMi2VH41chs
-pwzjHmc4Pzle5Yu0SfydG4F0m8X+zsiWIEXiiuwDDP3K8Gj01oZLoVsSY1VUD0m3
-DIzPdFyH+3PJrT+aKIfUcYDpVaWr2mx/48X2H6zIRtbgso+3fhocd8e9VAj2PdwN
-JO5+gqFHeNjMWH7e5xYPs7y+YBgshw==
-=CrlN
------END PGP SIGNATURE-----
-
---7LkOrbQMr4cezO2T--
