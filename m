@@ -2,98 +2,140 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C48C43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A71BEC43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:27:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3B5B206D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:27:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 158CF206D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:27:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pDAiDTYr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aYwKf0it"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3B5B206D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d5ZslSN4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wsnGvCVQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 158CF206D9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48C1D16EA;
-	Mon, 21 Sep 2020 10:26:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48C1D16EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8556A17FA;
+	Mon, 21 Sep 2020 10:26:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8556A17FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600676827;
-	bh=EEM99riwTvUHxfmDwjStK4pTCU0mJ095/iumT0sU8zw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pDAiDTYrhhNk8/J8fv18ZsaWTfjNeAhmDVIs5UJ7d47EOOTb/liGDDoKK0AiJpZWs
-	 oEj+CIr8oD7jYeEknh+gLWGVbza021gaeXz5bAg/KILPYvvDhy70XGo8ntdQ9ImI1u
-	 4hvjSxsWdgmqdOUqSldIiMbY+fIW6ArZ/xZGYXQU=
+	s=default; t=1600676865;
+	bh=BzRCCHrMyRtEbFXS+WPF2C06UQOXtwZQ6+AR7KwiNeY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=d5ZslSN4exGV8JdQRQbL8MSUCKzUoAfGQvKQl1YU5I8sAWqSrhvEVcpDEkWlmAX8j
+	 s1+aO49bHjZIuKWxu6LgzRueT7/hA8xWHEmfVAOCt1YzF3Ud0LA/jb0POgYcfQJZ1L
+	 7Ffcs3xurlyZqr8BP7ptU7uvSJ+UQksFSDwB/PFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EB63F803BD;
-	Mon, 21 Sep 2020 10:11:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15D72F803CC;
+	Mon, 21 Sep 2020 10:11:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1CC9F8015A; Fri, 18 Sep 2020 15:14:19 +0200 (CEST)
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
- [IPv6:2a00:1450:4864:20::643])
+ id A1BF7F8015A; Fri, 18 Sep 2020 16:30:21 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99347F8012D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 16:30:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99347F8012D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="wsnGvCVQ"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com
+ [209.85.210.45])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 499F0F8012D
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 15:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 499F0F8012D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="aYwKf0it"
-Received: by mail-ej1-x643.google.com with SMTP id lo4so8032282ejb.8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 06:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=h9RM0lB/HRjVWapVwauDh3GcmVkeqJuprfSIbmmhiDw=;
- b=aYwKf0itNWEbbNcpboiYR4ONcLbgu3ObEd8tjxkeDdZnZ6Ev9olACStb/a/TzbN+BN
- ZU15wqlx+uG+mxetzn8hNmbTk/gvwv/O3ujdy+KQJFSU3BBEB+I5Sz4NzI+Ez2SlOjeC
- DIqh08RTMQyIXUIgIAgggQEAO4t2wFb2dC2cvPKkV2/Pkh1VIko0DXj+V0h/FX9P4ZKO
- Kr9kzPae0p5JquoI4C/TMHIcE4BYyzrB5GK8L8z6wQ9eRcJ4VFCtHWtVBVlz7eqcLaHI
- VP59D/Ztj/r6qADoQ3AAUSKlHMTeEJ9Q4Ynp4lEGxCBIIl0JaQFUjRGST6mssueHLRHQ
- Uyzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=h9RM0lB/HRjVWapVwauDh3GcmVkeqJuprfSIbmmhiDw=;
- b=e9MwVweie18kCesrUq/xQMmfN+EmLs0bn1YAAwhq+Qpfi4/Ngie0rAgrGgXYUR6853
- AF4TP9MmclFWefxgPy8oEgZinVY1mXAYmDsXywHXVGMysJsuOZTxPqLtcxNvntRjb2MF
- C81Kp9F4j+clu7CTngCsLamNUEgImkfiU/fuomGAyG3qgVqzbxMYDaB0Kt47rlHTptJP
- cqdRu5WSQC4qWAelxPQtrnhqB2tZ5rg3hhZWXM8fQNTY5hailtInwbpVwy73fe1JiEoW
- G93q2dBrEd3SeqepzELtrHe04DaLARGMMfk3jN/abBZ53OGI9/7LKFcrp2uqfvWtAKio
- 5h3Q==
-X-Gm-Message-State: AOAM530cQ8RjnfPF88F1tCvWfw+8wuguDzJxJL68EJiuYmsfxWmRq9bN
- LPSGUpdCHHXSQgdMDOFwexQ=
-X-Google-Smtp-Source: ABdhPJxFvCYXn6QKQxQjig9/JET66Bd4HCmh6BMLITBLNBgrZEU132Msm0GVujJ6ehpBMuGZV8HT3g==
-X-Received: by 2002:a17:906:cf8b:: with SMTP id
- um11mr37458262ejb.540.1600434848122; 
- Fri, 18 Sep 2020 06:14:08 -0700 (PDT)
-Received: from localhost.localdomain ([85.153.229.188])
- by smtp.gmail.com with ESMTPSA id s14sm1530082eju.84.2020.09.18.06.14.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 18 Sep 2020 06:14:07 -0700 (PDT)
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To: broonie@kernel.org
-Subject: [PATCH] ASoC: fix kconfig dependency warnings for SND_SOC_WM8731
-Date: Fri, 18 Sep 2020 16:12:58 +0300
-Message-Id: <20200918131257.5860-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ by mail.kernel.org (Postfix) with ESMTPSA id ECEE62395B
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 14:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1600439416;
+ bh=BzRCCHrMyRtEbFXS+WPF2C06UQOXtwZQ6+AR7KwiNeY=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=wsnGvCVQtY3Fjm96gabQ3yL4JGp4SlDe9LHAm1jvpUvHr4V01rcYNvZ8aAR5/K6DI
+ 4ZbsvZ+rAFCvVqvjpfACz0NLKa8hCi2rM2fn+sntjgW8FTh7cdsNOd+SljkNn6CNLZ
+ +rN4wh+xCQKm+ZXfiYaJE9WT1AOlwD7HPuVdyYqE=
+Received: by mail-ot1-f45.google.com with SMTP id m13so1053313otl.9
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 07:30:15 -0700 (PDT)
+X-Gm-Message-State: AOAM533/Z0TvsYtF1kSen7bfDoSwdfyU2tG7v55S4yw7MpmZbm0qFAyW
+ Q+YgSgjQW/pvRSx7X8wcL8hNYR2eMNKUEJgmWQ==
+X-Google-Smtp-Source: ABdhPJwB1Ma/MKweZxwzRdC4MQG3s3W4wg0oVoNXdP8sSb8gUQ626v5DX61EKMyUVGmHFAKJsNKSrOjgarNcaCyLkpU=
+X-Received: by 2002:a05:6830:1008:: with SMTP id
+ a8mr21429982otp.107.1600439413814; 
+ Fri, 18 Sep 2020 07:30:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200917165301.23100-1-krzk@kernel.org>
+ <20200917165301.23100-2-krzk@kernel.org>
+In-Reply-To: <20200917165301.23100-2-krzk@kernel.org>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Fri, 18 Sep 2020 08:30:02 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
+Message-ID: <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO
+ controllers
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Mon, 21 Sep 2020 10:10:23 +0200
-Cc: paul@pgazz.com, alsa-devel@alsa-project.org, jeho@cs.utexas.edu,
- linux-kernel@vger.kernel.org, Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Cc: Amelie Delaunay <amelie.delaunay@st.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Stefan Agner <stefan@agner.ch>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Paul Cercueil <paul@crapouillou.net>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Chris Brandt <chris.brandt@renesas.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Fabio Estevam <festevam@gmail.com>, "moderated list:ARM/STM32 ARCHITECTURE"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ "open list:MEDIA DRIVERS FOR RENESAS - FCP"
+ <linux-renesas-soc@vger.kernel.org>,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ Anson Huang <Anson.Huang@nxp.com>, Lee Jones <lee.jones@linaro.org>,
+ Takashi Iwai <tiwai@suse.com>, Magnus Damm <magnus.damm@gmail.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, Chen-Yu Tsai <wens@csie.org>,
+ Andy Gross <agross@kernel.org>,
+ "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE"
+ <bcm-kernel-feedback-list@broadcom.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Andy Teng <andy.teng@mediatek.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>,
+ Sungbo Eo <mans0n@gorani.run>, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ devicetree@vger.kernel.org, Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Ray Jui <rjui@broadcom.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Sean Wang <sean.wang@mediatek.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Sricharan R <sricharan@codeaurora.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Hoan Tran <hoan@os.amperecomputing.com>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+ Scott Branden <sbranden@broadcom.com>, linux-unisoc@lists.infradead.org,
+ - <patches@opensource.cirrus.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Liam Girdwood <lgirdwood@gmail.com>, Serge Semin <fancer.lancer@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Yash Shah <yash.shah@sifive.com>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Shawn Guo <shawnguo@kernel.org>,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,106 +151,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SND_SOC_WM8731 was made visible and dependent on other symbols with commit
-1291e14175e6 ("ASoC: codecs: Make OF supported CODECs visible in Kconfig").
-To this respect, the symbols selecting SND_SOC_WM8731 turned out to be
-overlooking its dependencies.
+On Thu, Sep 17, 2020 at 10:53 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Convert parts of gpio.txt bindings into common dtschema file for GPIO
+> controllers.  The schema enforces proper naming of GPIO controller nodes
+> and GPIO hogs.
 
-For example, enabling SND_SOC_DB1200 and disabling SND_SOC_I2C_AND_SPI
-results in the following Kconfig warning since SND_SOC_DB1200 selects
-SND_SOC_WM8731 but does not account for its dependencies:
+Did you not see my previous reply about a common schema? We already
+have a common GPIO and hog schema in dtschema. Please add to it
+whatever is missing.
 
-WARNING: unmet direct dependencies detected for SND_SOC_WM8731
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_I2C_AND_SPI [=n]
-  Selected by [y]:
-  - SND_SOC_DB1200 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AU1XPSC [=y]
+My goal is all common schema end up in dtschema, but I haven't pushed
+folks to do that yet. Ones I've done are there though. One issue is
+what's in dtschema should be GPL/BSD and the existing text bindings
+are default GPL, so there's a relicensing exercise. In some cases, the
+schema is there but I haven't copied over the descriptions.
 
-Switch reverse dependencies on SND_SOC_WM8731 to normal dependencies.
+Rob
 
-Fixes: 1291e14175e6 ("ASoC: codecs: Make OF supported CODECs visible in Kconfig")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- sound/soc/atmel/Kconfig | 7 +++----
- sound/soc/au1x/Kconfig  | 3 +--
- sound/soc/pxa/Kconfig   | 4 ++--
- 3 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 71f2d42188c4..abb1284835c0 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -44,8 +44,8 @@ config SND_AT91_SOC_SAM9G20_WM8731
- 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
-+	depends on SND_SOC_WM8731
- 	select SND_ATMEL_SOC_SSC_PDC
--	select SND_SOC_WM8731
- 	help
- 	  Say Y if you want to add support for SoC audio on WM8731-based
- 	  AT91sam9g20 evaluation board.
-@@ -64,8 +64,8 @@ config SND_AT91_SOC_SAM9X5_WM8731
- 	tristate "SoC Audio support for WM8731-based at91sam9x5 board"
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
-+	depends on SND_SOC_WM8731
- 	select SND_ATMEL_SOC_SSC_DMA
--	select SND_SOC_WM8731
- 	help
- 	  Say Y if you want to add support for audio SoC on an
- 	  at91sam9x5 based board that is using WM8731 codec.
-@@ -110,8 +110,7 @@ config SND_ATMEL_SOC_I2S
- config SND_SOC_MIKROE_PROTO
- 	tristate "Support for Mikroe-PROTO board"
- 	depends on OF
--	depends on SND_SOC_I2C_AND_SPI
--	select SND_SOC_WM8731
-+	depends on SND_SOC_I2C_AND_SPI && SND_SOC_WM8731
- 	help
- 	  Say Y or M if you want to add support for MikroElektronika PROTO Audio
- 	  Board. This board contains the WM8731 codec, which can be configured
-diff --git a/sound/soc/au1x/Kconfig b/sound/soc/au1x/Kconfig
-index 38de7c0efbc7..749e59fddfcd 100644
---- a/sound/soc/au1x/Kconfig
-+++ b/sound/soc/au1x/Kconfig
-@@ -53,12 +53,11 @@ config SND_SOC_DB1000
- 
- config SND_SOC_DB1200
- 	tristate "DB1200/DB1300/DB1550 Audio support"
--	depends on SND_SOC_AU1XPSC
-+	depends on SND_SOC_AU1XPSC && SND_SOC_WM8731
- 	select SND_SOC_AU1XPSC_AC97
- 	select SND_SOC_AC97_CODEC
- 	select SND_SOC_WM9712
- 	select SND_SOC_AU1XPSC_I2S
--	select SND_SOC_WM8731
- 	help
- 	  Select this option to enable audio (AC97 and I2S) on the
- 	  Alchemy/AMD/RMI/NetLogic Db1200, Db1550 and Db1300 evaluation boards.
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 0ac85eada75c..eeb1dde59468 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -44,8 +44,8 @@ config SND_MMP_SOC_SSPA
- config SND_PXA2XX_SOC_CORGI
- 	tristate "SoC Audio support for Sharp Zaurus SL-C7x0"
- 	depends on SND_PXA2XX_SOC && PXA_SHARP_C7xx && I2C
-+	depends on SND_SOC_WM8731
- 	select SND_PXA2XX_SOC_I2S
--	select SND_SOC_WM8731
- 	help
- 	  Say Y if you want to add support for SoC audio on Sharp
- 	  Zaurus SL-C7x0 models (Corgi, Shepherd, Husky).
-@@ -70,8 +70,8 @@ config SND_PXA2XX_SOC_Z2
- config SND_PXA2XX_SOC_POODLE
- 	tristate "SoC Audio support for Poodle"
- 	depends on SND_PXA2XX_SOC && MACH_POODLE && I2C
-+	depends on SND_SOC_WM8731
- 	select SND_PXA2XX_SOC_I2S
--	select SND_SOC_WM8731
- 	help
- 	  Say Y if you want to add support for SoC audio on Sharp
- 	  Zaurus SL-5600 model (Poodle).
--- 
-2.25.1
-
+> +    description:
+> +      Indicates the start and size of the GPIOs that can't be used.
+> +
+> +  ngpios:
+> +    description: |
+> +      Optionally, a GPIO controller may have a "ngpios" property. This property
+> +      indicates the number of in-use slots of available slots for GPIOs. The
+> +      typical example is something like this: the hardware register is 32 bits
+> +      wide, but only 18 of the bits have a physical counterpart. The driver is
+> +      generally written so that all 32 bits can be used, but the IP block is
+> +      reused in a lot of designs, some using all 32 bits, some using 18 and
+> +      some using 12. In this case, setting "ngpios = <18>;" informs the driver
+> +      that only the first 18 GPIOs, at local offset 0 .. 17, are in use.
+> +
+> +      If these GPIOs do not happen to be the first N GPIOs at offset 0...N-1,
+> +      an additional set of tuples is needed to specify which GPIOs are
+> +      unusable, with the gpio-reserved-ranges binding.
+> +
+> +patternProperties:
+> +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
+> +    type: object
+> +    description:
+> +      The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
+> +      providing automatic GPIO request and configuration as part of the
+> +      gpio-controller's driver probe function.
+> +      Each GPIO hog definition is represented as a child node of the GPIO controller.
+> +
+> +    properties:
+> +      gpio-hog: true
+> +      gpios: true
+> +      input: true
+> +      output-high: true
+> +      output-low: true
+> +      line-name:
+> +        description:
+> +          The GPIO label name. If not present the node name is used.
+> +
+> +    required:
+> +      - gpio-hog
+> +      - gpios
+> +
+> +    oneOf:
+> +      - required:
+> +          - input
+> +      - required:
+> +          - output-high
+> +      - required:
+> +          - output-low
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - "#gpio-cells"
+> +  - gpio-controller
+> +
+> +examples:
+> +  - |
+> +    gpio-controller@15000000 {
+> +        compatible = "foo";
+> +        reg = <0x15000000 0x1000>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        ngpios = <18>;
+> +        gpio-reserved-ranges = <0 4>, <12 2>;
+> +        gpio-line-names = "MMC-CD", "MMC-WP", "VDD eth", "RST eth", "LED R",
+> +                          "LED G", "LED B", "Col A", "Col B", "Col C", "Col D",
+> +                          "Row A", "Row B", "Row C", "Row D", "NMI button",
+> +                          "poweroff", "reset";
+> +    };
+> +
+> +  - |
+> +    gpio-controller@1400 {
+> +        compatible = "fsl,qe-pario-bank-a", "fsl,qe-pario-bank";
+> +        reg = <0x1400 0x18>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +
+> +        line-b-hog {
+> +            gpio-hog;
+> +            gpios = <6 0>;
+> +            input;
+> +            line-name = "foo-bar-gpio";
+> +        };
+> +    };
+> --
+> 2.17.1
+>
