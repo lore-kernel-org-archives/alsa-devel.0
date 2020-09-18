@@ -2,73 +2,73 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 814F1C43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:11:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC07EC43464
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:11:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4811221EC
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:11:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1632123899
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:11:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YfoHp8RG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="c4IAykhG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4811221EC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N/nUAb/y";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="E7gx+7BY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1632123899
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BE8C1738;
-	Fri, 18 Sep 2020 04:10:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BE8C1738
+	by alsa0.perex.cz (Postfix) with ESMTPS id A193F1740;
+	Fri, 18 Sep 2020 04:10:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A193F1740
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600395061;
-	bh=LJr5lMTFye2vxGi0Lfw2VYCci9SKwWK0bBAKI4s7QuI=;
+	s=default; t=1600395102;
+	bh=3DMF38mldNUYA7yCL5j6zamAk3sB0jOQDvUCBZLfLl4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YfoHp8RGga/Cb5nHpEo0bl0Hj9AqJwWXI1t3PHBQBCO1kOy8XsVP7joyJlXrMMghT
-	 RVLr2f6nxy4PcUSFcoamkZHpxP6L/lyvx2BBKjHclE0W52Ixy42tiDlyTH1MI0udWE
-	 Fp4EarfBNP7ukb/qM34ie7+NyHYBe2Xv3dZ0Ha38=
+	b=N/nUAb/yXQ7B48e+9zye/+X3VsWx8m9ws+2B7vOadfGICyxvu4Q6lpBC7QI8qjl5m
+	 OfhY1giFP3D4pTQrGRbFLLTEBWh4KJ0PTGbpnKpFfKq024U+juPAdTvK1yKtxBiraT
+	 q23VRNGdamv4UxGwACZx7Kg4Z+GODrUV6BndPnUg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58EBAF801F7;
-	Fri, 18 Sep 2020 04:09:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D557F8015D;
+	Fri, 18 Sep 2020 04:09:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDACEF802A7; Fri, 18 Sep 2020 04:09:35 +0200 (CEST)
+ id 528DBF802C3; Fri, 18 Sep 2020 04:09:48 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00D59F800E8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:09:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00D59F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3938F802C4
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:09:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3938F802C4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="c4IAykhG"
+ header.b="E7gx+7BY"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B1A43238E6;
- Fri, 18 Sep 2020 02:09:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B52282399C;
+ Fri, 18 Sep 2020 02:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600394968;
- bh=LJr5lMTFye2vxGi0Lfw2VYCci9SKwWK0bBAKI4s7QuI=;
+ s=default; t=1600394980;
+ bh=3DMF38mldNUYA7yCL5j6zamAk3sB0jOQDvUCBZLfLl4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=c4IAykhG9ecNVmISTOzYATAVyRR6vmWbtt3q+jqWaW7K+RMiOqjq5SbaTRR3lIH3a
- tEgh6yYVsqB4gTnDAEyHH79ShOwuF1EU13A0hraJ+KeWngWBjGPER4fZ7ETie2vug8
- PyawQbukcYia+fLZGcaZf/4RQkDvyfrdBwyTWVT4=
+ b=E7gx+7BYnC04ED1FWpWz+eFOz0lE1lREsuqAW534Q+kYJ7kUqaqN4QdFO9YfxR0zE
+ MZ0Ug8LrmQIt5leSevPchrLffSmSvpiW5PNhu2we+2qsPgh5yahDVFVsEVFFBbhSos
+ Y0aVj2AUzzLWl/nFY+bQkpCu2UnFOo4DtFOGlhy0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 070/206] ALSA: hda: Clear RIRB status before
- reading WP
-Date: Thu, 17 Sep 2020 22:05:46 -0400
-Message-Id: <20200918020802.2065198-70-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 080/206] ALSA: usb-audio: Don't create a mixer
+ element with bogus volume range
+Date: Thu, 17 Sep 2020 22:05:56 -0400
+Message-Id: <20200918020802.2065198-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -76,9 +76,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Viswanath L <viswanathl@nvidia.com>, Takashi Iwai <tiwai@suse.de>,
- alsa-devel@alsa-project.org, Mohan Kumar <mkumard@nvidia.com>,
- Sasha Levin <sashal@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,55 +93,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mohan Kumar <mkumard@nvidia.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 6d011d5057ff88ee556c000ac6fe0be23bdfcd72 ]
+[ Upstream commit e9a0ef0b5ddcbc0d56c65aefc0f18d16e6f71207 ]
 
-RIRB interrupt status getting cleared after the write pointer is read
-causes a race condition, where last response(s) into RIRB may remain
-unserviced by IRQ, eventually causing azx_rirb_get_response to fall
-back to polling mode. Clearing the RIRB interrupt status ahead of
-write pointer access ensures that this condition is avoided.
+Some USB-audio descriptors provide a bogus volume range (e.g. volume
+min and max are identical), which confuses user-space.
+This patch makes the driver skipping such a control element.
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-Signed-off-by: Viswanath L <viswanathl@nvidia.com>
-Link: https://lore.kernel.org/r/1580983853-351-1-git-send-email-viswanathl@nvidia.com
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206221
+Link: https://lore.kernel.org/r/20200214144928.23628-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_controller.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/usb/mixer.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index fa261b27d8588..8198d2e53b7df 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -1169,16 +1169,23 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
- 		if (snd_hdac_bus_handle_stream_irq(bus, status, stream_update))
- 			active = true;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 45bd3d54be54b..451b8ea383c61 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1699,6 +1699,16 @@ static void __build_feature_ctl(struct usb_mixer_interface *mixer,
+ 	/* get min/max values */
+ 	get_min_max_with_quirks(cval, 0, kctl);
  
--		/* clear rirb int */
- 		status = azx_readb(chip, RIRBSTS);
- 		if (status & RIRB_INT_MASK) {
-+			/*
-+			 * Clearing the interrupt status here ensures that no
-+			 * interrupt gets masked after the RIRB wp is read in
-+			 * snd_hdac_bus_update_rirb. This avoids a possible
-+			 * race condition where codec response in RIRB may
-+			 * remain unserviced by IRQ, eventually falling back
-+			 * to polling mode in azx_rirb_get_response.
-+			 */
-+			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 			active = true;
- 			if (status & RIRB_INT_RESPONSE) {
- 				if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
- 					udelay(80);
- 				snd_hdac_bus_update_rirb(bus);
- 			}
--			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 		}
- 	} while (active && ++repeat < 10);
- 
++	/* skip a bogus volume range */
++	if (cval->max <= cval->min) {
++		usb_audio_dbg(mixer->chip,
++			      "[%d] FU [%s] skipped due to invalid volume\n",
++			      cval->head.id, kctl->id.name);
++		snd_ctl_free_one(kctl);
++		return;
++	}
++
++
+ 	if (control == UAC_FU_VOLUME) {
+ 		check_mapped_dB(map, cval);
+ 		if (cval->dBmin < cval->dBmax || !cval->initialized) {
 -- 
 2.25.1
 
