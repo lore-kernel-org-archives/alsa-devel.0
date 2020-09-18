@@ -7,77 +7,81 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 766F4C43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 19:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15964C43464
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 19:08:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88006207D3
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 19:07:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DF0CC21707
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 19:08:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tcjNMX+2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Gi7uKkM9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88006207D3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DOO1oaEy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FRo7ilWB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF0CC21707
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CB6416A3;
-	Fri, 18 Sep 2020 21:07:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CB6416A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50E2316A4;
+	Fri, 18 Sep 2020 21:07:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50E2316A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600456076;
-	bh=rs0U90cvMniyQwj+KcKcEtZxaMtpSO3IW2NIdR+tdAI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tcjNMX+2fTh2NFhDFK2yzmv80w+kmVCfEUjMQ5hWNEgAWmzhl6Z5Cr32R59D3rJTV
-	 XBpOJ2LCjcDCQ5NYUqMfi51iG4Qj9+mHeu9OsD4tKFqeW0rf+4YgKaTe8/As+9GfDz
-	 KfC3Cw59nneqJibCRSIB654u1ZqxJyMvVWltNPAc=
+	s=default; t=1600456123;
+	bh=p0I3jt0zTGiBSIi3m/DRv4Sfl5/mOAiB0Gqqvt6pDLA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DOO1oaEypQZs/05rI0UDnrM/A+2KS4nKj3e39GLBw2TEQ6qqGmYw/op0vRGQZqqun
+	 AXtJ+nf/oo+z23WbhOjqdYS6PB+xd89z/lb5K+HfPFCoxFCXA3G0QWRO0oVQD7bsuF
+	 l98LQKvEXgl+LU5r+wrl73mv37UsH7ebRvMy6wmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E18CF8020B;
-	Fri, 18 Sep 2020 21:06:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86748F8015C;
+	Fri, 18 Sep 2020 21:06:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1FF6F8020B; Fri, 18 Sep 2020 21:06:10 +0200 (CEST)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ id 5ACEAF802D2; Fri, 18 Sep 2020 21:06:15 +0200 (CEST)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A91BAF8013A
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 21:05:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A91BAF8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A78DFF8015A
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 21:06:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A78DFF8015A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Gi7uKkM9"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IJ5tlL084774;
- Fri, 18 Sep 2020 14:05:55 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FRo7ilWB"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IJ603B041397;
+ Fri, 18 Sep 2020 14:06:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600455955;
- bh=CoXhZYsCP8vlZjkExtcfpn4Zh4jMPI7Jl8YtUqogz7E=;
- h=From:To:CC:Subject:Date;
- b=Gi7uKkM9NcR8XxGj4RxCXIu7pAerEZL6eJ0jZhQ/7YIq+zOQT0+rBRC4+a7EkJuIL
- +rwfSj/p4ue6+Qn/j9c8FJup/iGYp0mhHF1ppA4/IIgNGe7usZdnYU9Nx0fADc2w/4
- iYJtZ5TakjbTqF8R/qRUhmAMJcLiF9GHPTB3k3Vo=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IJ5t3X100400;
- Fri, 18 Sep 2020 14:05:55 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ s=ti-com-17Q1; t=1600455960;
+ bh=dTAM7ZNYGRkaUHqtwQ2Jc2yzxy7+xjgyUcfu900PcvM=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=FRo7ilWBEk+jMnvWMm4uu4oQt2Ldbz/CCuX/9BqHLMtgC1AJSjBGYBX00dYsnSXGW
+ F/5rcjKJZ8NIRi6rewI8PForP/VBMOr2qzml3jU8gGKHbEG3DJsdCpNUech4ia2Cfd
+ uvBS4LTxmumItHpmSu2C9Jp7Ly/dWUp6y3gRILIo=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IJ60Cp047438
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 18 Sep 2020 14:06:00 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Sep 2020 14:05:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 14:06:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Sep 2020 14:05:55 -0500
+ Frontend Transport; Fri, 18 Sep 2020 14:06:00 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IJ5shj082266;
- Fri, 18 Sep 2020 14:05:54 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IJ60as012332;
+ Fri, 18 Sep 2020 14:06:00 -0500
 From: Dan Murphy <dmurphy@ti.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
  <robh+dt@kernel.org>
-Subject: [PATCH 1/9] ASoC: tas2770: Fix calling reset in probe
-Date: Fri, 18 Sep 2020 14:05:40 -0500
-Message-ID: <20200918190548.12598-1-dmurphy@ti.com>
+Subject: [PATCH 3/9] dt-bindings: tas2770: Fix I2C addresses for the TAS2770
+Date: Fri, 18 Sep 2020 14:05:42 -0500
+Message-ID: <20200918190548.12598-3-dmurphy@ti.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200918190548.12598-1-dmurphy@ti.com>
+References: <20200918190548.12598-1-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -99,39 +103,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-tas2770_reset is called during i2c probe. The reset calls the
-snd_soc_component_write which depends on the tas2770->component being
-available. The component pointer is not set until codec_probe so move
-the reset to the codec_probe after the pointer is set.
+The I2C addresses listed in the yaml are not correct. The addresses can
+range from 0x41 through 0x48 based on register configurations. Fix the
+example and the description.
 
-Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
+Fixes: 4b7151dadfd4 ("dt-bindings: ASoC: Add tas2770 smart PA dt bindings")
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- sound/soc/codecs/tas2770.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/tas2770.yaml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index c09851834395..03d7ad1885b8 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -575,6 +575,8 @@ static int tas2770_codec_probe(struct snd_soc_component *component)
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.yaml b/Documentation/devicetree/bindings/sound/tas2770.yaml
+index 33a90f829c80..bb26d081c9fa 100644
+--- a/Documentation/devicetree/bindings/sound/tas2770.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2770.yaml
+@@ -24,7 +24,7 @@ properties:
+   reg:
+     maxItems: 1
+     description: |
+-       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
++       I2C address of the device can be between 0x41 to 0x48.
  
- 	tas2770->component = component;
- 
-+	tas2770_reset(tas2770);
-+
- 	return 0;
- }
- 
-@@ -771,8 +773,6 @@ static int tas2770_i2c_probe(struct i2c_client *client,
- 	tas2770->channel_size = 0;
- 	tas2770->slot_width = 0;
- 
--	tas2770_reset(tas2770);
--
- 	result = tas2770_register_codec(tas2770);
- 	if (result)
- 		dev_err(tas2770->dev, "Register codec failed.\n");
+   reset-gpio:
+     description: GPIO used to reset the device.
+@@ -62,9 +62,9 @@ examples:
+    i2c0 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+-     codec: codec@4c {
++     codec: codec@41 {
+        compatible = "ti,tas2770";
+-       reg = <0x4c>;
++       reg = <0x41>;
+        #sound-dai-cells = <1>;
+        interrupt-parent = <&gpio1>;
+        interrupts = <14>;
 -- 
 2.28.0
 
