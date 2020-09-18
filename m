@@ -7,68 +7,68 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66258C43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:16:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FAA8C43464
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:17:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCDB6238A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:16:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0F098239D1
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:17:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qbdlk9kK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mid7EQjM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCDB6238A0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bebi4XCD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0X6wVneT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F098239D1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F17A17D7;
-	Fri, 18 Sep 2020 04:15:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F17A17D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6623C17F0;
+	Fri, 18 Sep 2020 04:16:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6623C17F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600395405;
-	bh=7ijBAKzbzL0P/b4iOpJn8EUDsQXKg0GqQ7+MvRna7d4=;
+	s=default; t=1600395444;
+	bh=rbY38R2MTUHiLfLudude9YVe8QTK+qxZFgcLZXsi02w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qbdlk9kK8Y22vbsYnUbJzcgK6fhHzjwwGk0xS65YYZj+CWAqdQRp6YVGOdEEV2A3W
-	 EAEm/Cx5WkkkS7IHRGlibyX8CDplPItQ2zzYZm1M6p/XA/s5o//HnHC9CTHMk7mvNG
-	 9XngJ19DBSPsiDzpKcyIxEFiwDcI63mjjdnn4k8g=
+	b=bebi4XCDORn4BJZgBjvxMarnnrn9rbJdJktw5h9yEey615WXkrLJt5LSjvNbfW/lZ
+	 cgjKdTlEQHs2LhZ+d3uMxgVaN38Eqsr9QCOHkdAqhU29km7c/dxCzWeMyH18Pk3uC5
+	 44SCgA9WE5WhGCnW1cnv+zbX9zPa6Hm7aKlaCn44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34B59F800E8;
-	Fri, 18 Sep 2020 04:15:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A483F8015C;
+	Fri, 18 Sep 2020 04:16:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04811F801F7; Fri, 18 Sep 2020 04:15:42 +0200 (CEST)
+ id 02925F802BE; Fri, 18 Sep 2020 04:16:14 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE4D2F8012D
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:15:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE4D2F8012D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64ED9F8015C
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:16:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64ED9F8015C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mid7EQjM"
+ header.b="0X6wVneT"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6957C23770;
- Fri, 18 Sep 2020 02:15:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3D7F22399C;
+ Fri, 18 Sep 2020 02:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600395335;
- bh=7ijBAKzbzL0P/b4iOpJn8EUDsQXKg0GqQ7+MvRna7d4=;
+ s=default; t=1600395367;
+ bh=rbY38R2MTUHiLfLudude9YVe8QTK+qxZFgcLZXsi02w=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=mid7EQjMfWFarV4r7xntr8iPo1ewKsLHD2bFwltaKFoV1/W0qy/+2oQu3unDyyyEV
- UFhqFm6IeIr3u0UjHXa36rCRVsPynqNY0Z78hp5ESDy+ecms4dGWjCwPrGK2aQmsgf
- zy8wQhOYxeTeTLzPL2W8nSkSiXfds1ZAb49WNHiw=
+ b=0X6wVneTwlo4VINF38pTrxdLnpFc+LbO8erfpgFIQQKWfGAZsdoQgfXDsbfJiVBYC
+ 2qjdOVDqvlGGEIjLItXNZpYkvwYNJbS4iMTtC0iGXzyN2T8v3XyY7krVWoAcedIrPP
+ HAQQYBQA+7W5vikKYcERwFcC+QSUXE8WQkPyaWg0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 32/90] ALSA: hda: Clear RIRB status before reading
- WP
-Date: Thu, 17 Sep 2020 22:13:57 -0400
-Message-Id: <20200918021455.2067301-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 61/90] ALSA: usb-audio: Fix case when USB MIDI
+ interface has more than one extra endpoint descriptor
+Date: Thu, 17 Sep 2020 22:14:26 -0400
+Message-Id: <20200918021455.2067301-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021455.2067301-1-sashal@kernel.org>
 References: <20200918021455.2067301-1-sashal@kernel.org>
@@ -76,9 +76,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Viswanath L <viswanathl@nvidia.com>, Takashi Iwai <tiwai@suse.de>,
- alsa-devel@alsa-project.org, Mohan Kumar <mkumard@nvidia.com>,
- Sasha Levin <sashal@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Andreas Steinmetz <ast@domdv.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,55 +93,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mohan Kumar <mkumard@nvidia.com>
+From: Andreas Steinmetz <ast@domdv.de>
 
-[ Upstream commit 6d011d5057ff88ee556c000ac6fe0be23bdfcd72 ]
+[ Upstream commit 5c6cd7021a05a02fcf37f360592d7c18d4d807fb ]
 
-RIRB interrupt status getting cleared after the write pointer is read
-causes a race condition, where last response(s) into RIRB may remain
-unserviced by IRQ, eventually causing azx_rirb_get_response to fall
-back to polling mode. Clearing the RIRB interrupt status ahead of
-write pointer access ensures that this condition is avoided.
+The Miditech MIDIFACE 16x16 (USB ID 1290:1749) has more than one extra
+endpoint descriptor.
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-Signed-off-by: Viswanath L <viswanathl@nvidia.com>
-Link: https://lore.kernel.org/r/1580983853-351-1-git-send-email-viswanathl@nvidia.com
+The first extra descriptor is: 0x06 0x30 0x00 0x00 0x00 0x00
+
+As the code in snd_usbmidi_get_ms_info() looks only at the
+first extra descriptor to find USB_DT_CS_ENDPOINT the device
+as such is recognized but there is neither input nor output
+configured.
+
+The patch iterates through the extra descriptors to find the
+proper one. With this patch the device is correctly configured.
+
+Signed-off-by: Andreas Steinmetz <ast@domdv.de>
+Link: https://lore.kernel.org/r/1c3b431a86f69e1d60745b6110cdb93c299f120b.camel@domdv.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_controller.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/usb/midi.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index bd0e4710d15d7..79043b481d7b6 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -1158,16 +1158,23 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
- 		if (snd_hdac_bus_handle_stream_irq(bus, status, stream_update))
- 			active = true;
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index 0676e7d485def..b8d4b5b3e54a1 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1805,6 +1805,28 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
+ 	return 0;
+ }
  
--		/* clear rirb int */
- 		status = azx_readb(chip, RIRBSTS);
- 		if (status & RIRB_INT_MASK) {
-+			/*
-+			 * Clearing the interrupt status here ensures that no
-+			 * interrupt gets masked after the RIRB wp is read in
-+			 * snd_hdac_bus_update_rirb. This avoids a possible
-+			 * race condition where codec response in RIRB may
-+			 * remain unserviced by IRQ, eventually falling back
-+			 * to polling mode in azx_rirb_get_response.
-+			 */
-+			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 			active = true;
- 			if (status & RIRB_INT_RESPONSE) {
- 				if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
- 					udelay(80);
- 				snd_hdac_bus_update_rirb(bus);
- 			}
--			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 		}
- 	} while (active && ++repeat < 10);
- 
++static struct usb_ms_endpoint_descriptor *find_usb_ms_endpoint_descriptor(
++					struct usb_host_endpoint *hostep)
++{
++	unsigned char *extra = hostep->extra;
++	int extralen = hostep->extralen;
++
++	while (extralen > 3) {
++		struct usb_ms_endpoint_descriptor *ms_ep =
++				(struct usb_ms_endpoint_descriptor *)extra;
++
++		if (ms_ep->bLength > 3 &&
++		    ms_ep->bDescriptorType == USB_DT_CS_ENDPOINT &&
++		    ms_ep->bDescriptorSubtype == UAC_MS_GENERAL)
++			return ms_ep;
++		if (!extra[0])
++			break;
++		extralen -= extra[0];
++		extra += extra[0];
++	}
++	return NULL;
++}
++
+ /*
+  * Returns MIDIStreaming device capabilities.
+  */
+@@ -1842,11 +1864,8 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
+ 		ep = get_ep_desc(hostep);
+ 		if (!usb_endpoint_xfer_bulk(ep) && !usb_endpoint_xfer_int(ep))
+ 			continue;
+-		ms_ep = (struct usb_ms_endpoint_descriptor *)hostep->extra;
+-		if (hostep->extralen < 4 ||
+-		    ms_ep->bLength < 4 ||
+-		    ms_ep->bDescriptorType != USB_DT_CS_ENDPOINT ||
+-		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL)
++		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
++		if (!ms_ep)
+ 			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
 -- 
 2.25.1
 
