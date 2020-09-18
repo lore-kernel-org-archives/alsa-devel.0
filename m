@@ -2,92 +2,96 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7D1BC43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 17:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1274CC43465
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 17:24:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66A2521534
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 17:07:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8685221734
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 17:24:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DqzUT49W";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="eQjKGeEP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66A2521534
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EQ4r+IYb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8685221734
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6971716BB;
-	Fri, 18 Sep 2020 19:06:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6971716BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA471694;
+	Fri, 18 Sep 2020 19:23:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA471694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600448826;
-	bh=JgXwqCZ/pFCUfZx9+NzK7onVcuxROsfgQL99Vk/F7vI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DqzUT49WBFY2hTM9FKEJ+9jBDHCbfs3Ni4UoZ8mghuJKjZPXjenUvgDTRCOUbhUkP
-	 6ZYU4s7I0oIoqRz2zaCdcs2rlufcLu/yHcBKHSMi6RoojdAfIFsCY/DZ2o1rJtCvl6
-	 RTs3atxgqZAkXiJ35JSctgxuZ3hOEa8bhRjil/Eo=
+	s=default; t=1600449859;
+	bh=/38sCnnGHcfMZ3Sjv2gPt67SF3hZdmylDOkWmbxNVvM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EQ4r+IYbOKvZno5cgpXquOu7FwNn1nuHDqzdXDYAxg6ePoAlsG+ZfFqmUA55WDv77
+	 a1D3Ddw1L2TZkvgID7IVwaILpk/xaFtJFksVn1IcMKnRl2dA6Ep2cShltB5clBp0N4
+	 1u1XsQqVpcxBw4G+JMWHfP3OMS5HEKYbYQfELC9o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93251F80150;
-	Fri, 18 Sep 2020 19:06:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EAF7F80150;
+	Fri, 18 Sep 2020 19:23:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87154F8015A; Fri, 18 Sep 2020 19:06:13 +0200 (CEST)
-Received: from so254-54.mailgun.net (so254-54.mailgun.net [198.61.254.54])
+ id 72677F8015A; Fri, 18 Sep 2020 19:23:28 +0200 (CEST)
+Received: from mail-io1-f67.google.com (mail-io1-f67.google.com
+ [209.85.166.67])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADADAF8012D
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 19:06:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADADAF8012D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="eQjKGeEP"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1600448763; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GvoHhNZXEhEePaycPGrMSPaqU1/ITiUda54Uc4ClNck=;
- b=eQjKGeEP90tmabHWr5O4EFfEycmCOHuw57BerP1ScJLDmSWHPL/2EI2+W0wJAjT2l41AaoCq
- 9e3jCFKulVKcp6KsweINURNuHtosRpQ51Heuu4KwsTwddhiAWw8IlE84vELJOM+NjFwMKlPc
- IIs9GtAbYFzWWwOno+wVw9Bogho=
-X-Mailgun-Sending-Ip: 198.61.254.54
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f64e8f94398385e3007cd2d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 17:06:01
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id ABCF0C433CA; Fri, 18 Sep 2020 17:06:00 +0000 (UTC)
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id A29BCC433C8;
- Fri, 18 Sep 2020 17:05:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A29BCC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Asoc: qcom: lpass-cpu: Enable MI2S BCLK and LRCLK together
-Date: Fri, 18 Sep 2020 22:24:33 +0530
-Message-Id: <1600448073-6709-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-Cc: vsujithk <vsujithk@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57CD5F8013A
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 19:23:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57CD5F8013A
+Received: by mail-io1-f67.google.com with SMTP id v8so889527iom.6
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 10:23:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=saPAo/gkpaoA/GYSZXQC6We2mkx7qeNuAH87yYUAsJQ=;
+ b=WH+A1GKEYpG/IhwRxvispbltzzKPFh5793zDwtmkpEWKPFIvatkWvVE9QqUGBUS+QU
+ tKlg3sucoqM9ahQttEATI73qP6Tlng8jrifh0o2Y1VDkJKYv0QgbtHNiNqHZ0YqemHkZ
+ voglCwv+VkkatieU8tsXrVb0hAMTHZiAZMxGWdQPG8NMqvOa4O1XVysFm2S/0J6ZZk+0
+ cW78XpRTmojXVVjiXBnXocSC6P0ikXF1NaKnt+9nbSICfMjRhomAZdvqtw75UYdA486b
+ jVg5JwOX8PpaWLTQfSe1zo+tupBqlGlhAlTU+CWWeqyP9Ixwn5841AN+qTnbSDJMfOU7
+ CKPQ==
+X-Gm-Message-State: AOAM5323vLSikHzkQa75Ri/CdXdofrG2ekD0G5crrjdaOGiJwHRLa7zY
+ gIckyD2kWLw8Jj+VcZi9tg==
+X-Google-Smtp-Source: ABdhPJyQ+DL7qDKH3YsIUl8R6ZI+YVf+VlM/80iVcWJIL+opE0hCMTL+s+EECMXJ3hDnBHuyiPrigA==
+X-Received: by 2002:a02:7fcf:: with SMTP id r198mr30732372jac.24.1600449796568; 
+ Fri, 18 Sep 2020 10:23:16 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+ by smtp.gmail.com with ESMTPSA id z26sm1983844ilf.60.2020.09.18.10.23.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 18 Sep 2020 10:23:15 -0700 (PDT)
+Received: (nullmailer pid 3819029 invoked by uid 1000);
+ Fri, 18 Sep 2020 17:23:13 -0000
+Date: Fri, 18 Sep 2020 11:23:13 -0600
+From: Rob Herring <robh@kernel.org>
+To: "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
+Message-ID: <20200918172313.GA3818893@bogus>
+References: <1600247876-8013-1-git-send-email-viorel.suman@oss.nxp.com>
+ <1600247876-8013-3-git-send-email-viorel.suman@oss.nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600247876-8013-3-git-send-email-viorel.suman@oss.nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Viorel Suman <viorel.suman@nxp.com>, Viorel Suman <viorel.suman@gmail.com>,
+ Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,53 +107,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: vsujithk <vsujithk@codeaurora.org>
+On Wed, 16 Sep 2020 12:17:56 +0300, Viorel Suman (OSS) wrote:
+> From: Viorel Suman <viorel.suman@nxp.com>
+> 
+> XCVR (Audio Transceiver) is a new IP module found on i.MX8MP.
+> 
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> ---
+>  .../devicetree/bindings/sound/fsl,xcvr.yaml        | 104 +++++++++++++++++++++
+>  1 file changed, 104 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
+> 
 
-Update lpass-cpu.c to enable I2S BCLK and LRCLK together.
-Remove BCLK enable in lpass_cpu_daiops_startup and
-add in lpass_cpu_daiops_trigger API.
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-cpu.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 41a2470..8db2cdb 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -80,14 +80,6 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
- 		dev_err(dai->dev, "error in enabling mi2s osr clk: %d\n", ret);
- 		return ret;
- 	}
--
--	ret = clk_prepare_enable(drvdata->mi2s_bit_clk[dai->driver->id]);
--	if (ret) {
--		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
--		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
--		return ret;
--	}
--
- 	return 0;
- }
- 
-@@ -310,6 +302,14 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		if (ret)
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
-+
-+		ret = clk_prepare_enable(drvdata->mi2s_bit_clk[id]);
-+		if (ret) {
-+			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-+			clk_disable_unprepare(drvdata->mi2s_osr_clk[id]);
-+			return ret;
-+		}
-+
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Error: Documentation/devicetree/bindings/sound/fsl,xcvr.example.dts:29.30-31 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/sound/fsl,xcvr.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1366: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1365072
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
