@@ -2,93 +2,91 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39DC0C43463
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 16:07:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D5C5C43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 16:19:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A71E5206A4
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 16:07:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63E3323888
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 16:19:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oN2ww+ze";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sMuOUFRp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A71E5206A4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QpviZrfQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HbR3v7+r"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63E3323888
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 247011699;
-	Fri, 18 Sep 2020 18:06:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 247011699
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF59316A6;
+	Fri, 18 Sep 2020 18:18:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF59316A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600445225;
-	bh=1pPWI3tGqdE3sjl7n8Nkm/Du5Ii/JiP1sJP58en8Fy8=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1600445989;
+	bh=+mi8moqPWfbART1JEMWeRGM8LGlgHFxfIFyJepgTfqE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oN2ww+zeUqDKHKuvWhYvPJunAF8RR5MoTPzpHcf76r1uk2MDIN2VQb5wR4uxRFCO+
-	 ZiN1NicXNUAUL+hRTjd0OYD8aZgBztE1xbzQMggfjCgYGIWKFAIJVzB62G9DlJ6824
-	 ftDEhX5R59HCas9CmrmQ8MpO6QKzwXctThJwjAXA=
+	b=QpviZrfQfCXvhGAK2vUUqMbInrt36dA/LOJjpmRGvNkgRDzDs9helOLFO/bIb7slg
+	 R/CRRO2ExG3NIbRDI/5oqzq4RrervTU3k2ah5YZ2POUDWOX8QT14icbK/gjfEIb/i1
+	 lH5Npxni/ECwu0cqpNzyqTHlL5vSlsomisrUz6Fo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D91DF80150;
-	Fri, 18 Sep 2020 18:06:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46106F80150;
+	Fri, 18 Sep 2020 18:18:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCDF8F800E8; Fri, 18 Sep 2020 18:06:12 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A9B1BF8015C; Fri, 18 Sep 2020 18:18:57 +0200 (CEST)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF69BF800E8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 18:06:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF69BF800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9CA2F8013A
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 18:18:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9CA2F8013A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sMuOUFRp"
-Received: from [10.20.113.185] (unknown [12.97.180.36])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 55424206A4;
- Fri, 18 Sep 2020 16:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600445163;
- bh=1pPWI3tGqdE3sjl7n8Nkm/Du5Ii/JiP1sJP58en8Fy8=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=sMuOUFRpKhNx62cOeLq8r3XiweG3+oH+HQ5ARJFYrqRwI0rtwsXirIB8NlHDGu75P
- e/thqMV7HSpbh5YQpTfErTaxp2vvG3jgp5HhHsesYWxbd2rtaHY0RNKn6qtsVW1U4X
- 2OUqEA6d7Wt97I57tgwnc5CC2ttU5meMjx3RzqU0=
-Subject: Re: [PATCH 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
-To: "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>
-References: <1600247876-8013-1-git-send-email-viorel.suman@oss.nxp.com>
- <1600247876-8013-2-git-send-email-viorel.suman@oss.nxp.com>
- <20200917071431.GA17970@Asurada-Nvidia>
- <VI1PR0401MB2272659A8126D01D9A53F7C5923F0@VI1PR0401MB2272.eurprd04.prod.outlook.com>
-From: Timur Tabi <timur@kernel.org>
-Message-ID: <f4d4cd9d-b716-cd7b-da55-7d1a2d003344@kernel.org>
-Date: Fri, 18 Sep 2020 11:06:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HbR3v7+r"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIibu127362;
+ Fri, 18 Sep 2020 11:18:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1600445924;
+ bh=6QokZMF6RjHPEWc7NrsYM8QzQWnzdKBphxV83v/HNCQ=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=HbR3v7+r6RcOZeXd3znZjkqt0+J8qmEw5P6mnitDZ4o+fRAs5o4de/SnyHET9PlUD
+ CQhcauE9seb557szWWO1VaxiV6YzkUqXedL0OaS3u7IIXn9Qio22Ql/8T6w9b9Oz7V
+ V3OdDCBz7CWCkSMg//SN2ypH+jSCFd3Ixz2IXgVo=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IGIiHs053210
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 18 Sep 2020 11:18:44 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Sep 2020 11:18:44 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Sep 2020 11:18:43 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIhVp037825;
+ Fri, 18 Sep 2020 11:18:43 -0500
+From: Dan Murphy <dmurphy@ti.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>
+Subject: [PATCH 2/2] ASoC: tas2770: Add missing bias level power states
+Date: Fri, 18 Sep 2020 11:18:42 -0500
+Message-ID: <20200918161842.4451-2-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200918161842.4451-1-dmurphy@ti.com>
+References: <20200918161842.4451-1-dmurphy@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <VI1PR0401MB2272659A8126D01D9A53F7C5923F0@VI1PR0401MB2272.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Viorel Suman <viorel.suman@gmail.com>,
- Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
- Fabio Estevam <festevam@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,14 +102,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 9/18/20 9:21 AM, Viorel Suman (OSS) wrote:
->>> +static const u32 fsl_xcvr_earc_channels[] = { 1, 2, 8, 16, 32, }; /*
->>> +one bit 6, 12 ? */
->> What's the meaning of the comments?
-> Just a thought noted as comment. HDMI2.1 spec defines 6- and 12-channels layout when
-> one bit audio stream is transmitted - I was wandering how can this be enforced. Is a @todo like of comment.
+Add the BIAS_STANDBY and BIAS_PREPARE to the set_bias_level or else the
+driver will return -EINVAL which is not correct as they are valid
+states.
 
-Please don't add comments that other developers could never understand.
+Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tas2770.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-The text that you just wrote here would be a great starting point for a 
-better comment.
+diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
+index 03d7ad1885b8..7c6f61946ab3 100644
+--- a/sound/soc/codecs/tas2770.c
++++ b/sound/soc/codecs/tas2770.c
+@@ -57,7 +57,12 @@ static int tas2770_set_bias_level(struct snd_soc_component *component,
+ 			TAS2770_PWR_CTRL_MASK,
+ 			TAS2770_PWR_CTRL_ACTIVE);
+ 		break;
+-
++	case SND_SOC_BIAS_STANDBY:
++	case SND_SOC_BIAS_PREPARE:
++		snd_soc_component_update_bits(component,
++			TAS2770_PWR_CTRL,
++			TAS2770_PWR_CTRL_MASK, TAS2770_PWR_CTRL_MUTE);
++		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		snd_soc_component_update_bits(component,
+ 			TAS2770_PWR_CTRL,
+-- 
+2.28.0
+
