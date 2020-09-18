@@ -2,84 +2,139 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3250FC43463
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 13:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F454C43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 14:22:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DC7120878
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 13:59:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8830208C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 14:22:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q2aV0baQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DC7120878
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mPk/nFn0";
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="fPvum+n4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8830208C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7628F16B9;
-	Fri, 18 Sep 2020 15:58:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7628F16B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE49316BE;
+	Fri, 18 Sep 2020 16:21:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE49316BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600437555;
-	bh=LDHaEVsyhIG/cMAiqgbkNxEoHFVOytcW31eA1s45lbY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1600438951;
+	bh=GeIJuooE+elHSIP1LctGo/q8zUEaD0jnWqkX5WIw23Q=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q2aV0baQVnWh6richc82gDoe5TWbsZNSHTkIeuazRa/rqPOamnXTLg2CsPjklseKG
-	 yZsX38Jq2BqFTXBnA1rm2mqRyemaMNQvvzQ1qd3r5+oc+aQxNkIUBWby4ROM3UzLax
-	 RjlFEfs3+qU+o4eaDDaaN/pQc9iOmF/MqvZQcvkc=
+	b=mPk/nFn0KJ+r9MRwIe9Mj283GXGUdO11zw/R9QVTc2gM2gkXoHQady2VJEWoHfec8
+	 znm+M8mgCoJbfFFG7d0WfcN6FZnwf9NKD1xpq2gRCz8RduYUNp9YbnReEeQhtTXlPC
+	 qtYEV68PkptXcPArzqaBjSn+MBvk64qohvspS2bs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 055E2F80150;
-	Fri, 18 Sep 2020 15:58:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EC05F800E8;
+	Fri, 18 Sep 2020 16:21:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C8CDF800E8; Fri, 18 Sep 2020 15:58:23 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 55169F8015A; Fri, 18 Sep 2020 16:21:39 +0200 (CEST)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr70052.outbound.protection.outlook.com [40.107.7.52])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79EBDF800E8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 15:58:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79EBDF800E8
-IronPort-SDR: 6CYrldjbaYPvF385G1Pz5EqK9JL+RLqRWVqkOHY3HmqgEG7Ins9UIaL+vyf72rXDx69bu8H9lj
- MadEmnA+8Pwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147678957"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="147678957"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Sep 2020 06:58:14 -0700
-IronPort-SDR: fk9+0WrxQep8vMFPHxyIeXp3i4hvNc1YCr3WHVfIr53GEKU7mR88AkxO6MLQH7fO/MbjVIlJBa
- zIWrAFB2YPOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="336812153"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga008.jf.intel.com with ESMTP; 18 Sep 2020 06:58:00 -0700
-Received: from andy by smile with local (Exim 4.94)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1kJGra-0000F2-Bm; Fri, 18 Sep 2020 16:55:46 +0300
-Date: Fri, 18 Sep 2020 16:55:46 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v6 00/14] ASoC: Intel: Catpt - Lynx and Wildcat point
-Message-ID: <20200918135546.GE3956970@smile.fi.intel.com>
-References: <20200917141242.9081-1-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 529D6F800E8
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 16:21:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 529D6F800E8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
+ header.i=@NXP1.onmicrosoft.com header.b="fPvum+n4"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RxQKs5t6KtU2Xj/Ilc7xpe6t8R8OkSxF9P4oxwAXJWphoQv7Y3nuUsC+NIE4pfPN9u34VHQ/oNyV9wTOTT5KynvW/jQvBQaDF2m0NYfTm2W7gHxo7wgRPwI1num5LUjC2N16s4krnNIQ10KzyVIR38du0gzv4ryvwjND1fNnHAtGJG31nzpqqRGWCafoZLk+OTF8UlPCSh4rSAqlqfr5zsKVm2mVqn1CCvlRrxMMenCb0xooYGqMGqr4ipHySIU8YQb7k5S+uESrL+99FjVB5tonldPBHhIbqVJCvDojQeHHbQlmRkqSQwmhGp4S7jbRrfFQCtJlHh9zBZFuqpMcjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kf+9JHemzgUGqRt041FNR8uy/cdOZuWl5UbLEczzYWE=;
+ b=REYe5w55XlOo5LxJTz0qjTKKPVUmwLYPSGSCyFqijxTBOQEGhw8frtwpaGG6iGuyibDMny5pWVEUB46U2rl9rUKCD80SBWXzcew2vJoeby1MtNxzvO17Ru10w6madsMIHG2qkadpBz7oIW78Vs0uHRb4iOcw45D/ets5m0Hx9//wvHUHpK7x1S1L36MOSbdUqUR7/SZx/3UuF9/7bLd/zbAyCcvecMO9YiaD/dNkixxaChcHplMWex9D6P3kxdI8FYZjxv33Sw7P/OOUQO4TaAQ5vAUcB84J+2pN8hQpvrL6c75345/K562YLpHHu2PLSzdyi+THmMBSuYrp7mxGfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kf+9JHemzgUGqRt041FNR8uy/cdOZuWl5UbLEczzYWE=;
+ b=fPvum+n4lBiJm1B/yO14fGuHwB4lU+dpqa6EEr2vCpkqKN52pzUQKaZBIZDxP8oEF2df9SFb6m6Au/Zk5YOVgirybMhy5YJoqeCFgpxNd8mIliNkWYLn91H+3gEK424yMxnAKQlSfhwEYuv5YeAz5IJizaMzpMeuf2Ie6tT8ZPg=
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB4093.eurprd04.prod.outlook.com
+ (2603:10a6:803:40::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15; Fri, 18 Sep
+ 2020 14:21:32 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3391.011; Fri, 18 Sep 2020
+ 14:21:32 +0000
+From: "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>, "Viorel Suman (OSS)"
+ <viorel.suman@oss.nxp.com>
+Subject: RE: [PATCH 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+Thread-Topic: [PATCH 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+Thread-Index: AQHWjApN0GGys4KDOUW4RdRuflK20alsbEuAgAIJndA=
+Date: Fri, 18 Sep 2020 14:21:31 +0000
+Message-ID: <VI1PR0401MB2272659A8126D01D9A53F7C5923F0@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+References: <1600247876-8013-1-git-send-email-viorel.suman@oss.nxp.com>
+ <1600247876-8013-2-git-send-email-viorel.suman@oss.nxp.com>
+ <20200917071431.GA17970@Asurada-Nvidia>
+In-Reply-To: <20200917071431.GA17970@Asurada-Nvidia>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [86.127.156.60]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f3ab6e4b-08c5-4814-790e-08d85bde2429
+x-ms-traffictypediagnostic: VI1PR04MB4093:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB4093C10CB11D4B0816A881EFD33F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: C2u1dlHvvdM3gt095OcR/sO4baFd6ojSXih93e+q6t/Q5JPE2IWJF6L9mc51fPwRhHpVPmBuQ6BjwYJeGp51a/iTLZHCDPJyt74vP5CunyM5KGrqM2GLuSYg2TzZYVASLs48yw36+zujF5xYCdy/ZVArdbogVmrqz+9mWZNOKgCPxX90BJ2xWvzST5d/QgVesQoLtFeUJ1oQ8DMTZmPM5d13J/d3Pm/nCQ99rtaGNSSg/f9M1pG07yX33pSpoKrMSekgpNOIdzIb+DERRY/xDUR1AZVRls/GvSC3jUN9AJO2moh3G0MXJLchXAbP6X6HW+mVC3sphWlQlpzjV+0oLA==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR0401MB2272.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(33656002)(83380400001)(66946007)(66446008)(64756008)(66556008)(66476007)(316002)(8676002)(6506007)(4326008)(7696005)(71200400001)(26005)(5660300002)(186003)(86362001)(110136005)(54906003)(76116006)(2906002)(55016002)(478600001)(9686003)(7416002)(8936002)(52536014);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: M4mRlQSFvpzaB6KBtk9hhHu66/7JiXb9r9yTt+kwVAyRsDt1sDYLG7FnXldIYwOOwuvk90U1hFHt5qrchUe1y3hzqtIWV+3fjw6/WzCamIhEK0yOcUD1q5HxxwBgaoH9W962kgQ8/W/WZsK7izL7GP+C8Bi3Jj8ZxQlwCMuRzF+9ESrBSBrHRNMXFX3aQgUx4SpMT2rCO7adANt6Rokf1XXRgl2l/1gHtDTSx/tuQ3PGdYGUWviBSNywHhu1EmQ4/NpyyHaMoyBRgFpv2rUQBlu5Mz725SoYPEmq5fBd0X/wHTKdGSQpnGqCelR/Dz/1qvVeHTxJlEmgD98/Nxl1Hp44UA7aarNNfSxTwR1zgFARuaeV9AroYSFBRvjMBLsoT65WUC6Dvly1W9I1/2iWWVrcA5zX7Ke2bjr/889p9iI3sJwl4dg3/nNp0WD6fpWRjnz4WIrtExtGesLX2DawMEc6CfZWdADgwh1z6+GllmxkNKdH7hffpgvwQ+9vo2zbO01G6rrsKy6m8EnS1S0QDFG/c47kiPmr//KpN4z2yH/oLd/o2HBvJHErDHCuPQIR9/FwBwFjRuk2YrQH/RJksGFsSJoDR1JQ0iEkr8oSvTI66FoQr20MAGXFGqsTLJsrk89DMcddBXWF4zH/q6rklA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917141242.9081-1-cezary.rojewski@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- filip.kaczmarski@intel.com, harshapriya.n@intel.com, marcin.barlik@intel.com,
- zwisler@google.com, lgirdwood@gmail.com, tiwai@suse.com,
- filip.proborszcz@intel.com, broonie@kernel.org,
- amadeuszx.slawinski@linux.intel.com, michal.wasko@intel.com,
- cujomalainey@chromium.org, krzysztof.hejmowski@intel.com,
- ppapierkowski@habana.ai, vamshi.krishna.gopal@intel.com
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3ab6e4b-08c5-4814-790e-08d85bde2429
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2020 14:21:31.9960 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ss/XjU7ErlcL2LdPktnZQHb3pEvD9FSAGOpOajFs2ZC5ox+8bVEAbVu2Qt8R9HqJAkTw4O80/xxucv+0+yxZOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4093
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Viorel Suman <viorel.suman@gmail.com>,
+ Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
+ Fabio Estevam <festevam@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,252 +150,154 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 17, 2020 at 04:12:28PM +0200, Cezary Rojewski wrote:
-> Implement support for Lynxpoint and Wildcat Point AudioDSP. Catpt
-> solution deprecates existing sound/soc/intel/haswell which is removed in
-> the following series. This cover-letter is followed by 'Developer's deep
-> dive' message schedding light on catpt's key concepts and areas
-> addressed.
-> 
-> Due to high range of errors and desynchronization from recommendations
-> set by Windows solution, re-write came as a lower-cost solution compared
-> to refactoring /haswell/ with several series of patches.
-> 
-> Series is dependent on linux-spi change:
-> spi: pxa2xx: Add SSC2 and SSPSP2 SSP registers
-> https://www.spinics.net/lists/linux-spi/msg23885.html
-> which has been already merged and is now part of linux-spi tree.
-> 
-> Bulk of series content is device driver core code - everything up to
-> patch 7/14 - with fs entries and trace macros introduced right after.
-> While each core patch is shaped in such a way that no unavailable
-> members are ever called, until patch 10/14 is applied, no code
-> compilation can occur as no Makefile is present. Once said patch is
-> added, Makefile and Kconfig are implemented and driver module compiles
-> as expected.
-> 
-> 
-> Special thanks go to Marcin Barlik and Piotr Papierkowski for sharing
-> their LPT/WPT AudioDSP architecture expertise as well as helping
-> backtrack its historical background.
-> My thanks go to Amadeusz Slawinski for reviews and improvements proposed
-> on and off the internal list. Most of internal diff below is his
-> contribution.
-> Krzysztof Hejmowski helped me setup my own Xtensa environment and
-> recompile LPT/WPT FW binary sources what sped up the development greatly.
-> 
-> This would not have been possible without help from these champions,
-> especially considering how quickly the catpt was written: 2 weeks
-> features, 3 weeks optimizations. Thank you.
-> 
-> Userspace-exposed members are compatible with what is exposed by
-> deprecated solution as well as FW binary being re-used thus no harm is
-> done. The only visible differences are: the newly added 'Loopback Mute'
-> kcontrol and volume support extending to quad from stereo.
-> 
-> On top of fixing erros and design flows, catpt also adds module reload,
-> dynamic SRAM memory allocation during PCM runtime and exposes missing
-> userspace API: 'Loopback Mute' kcontrol, quad volume controls and sysfs
-> fw-version entries. Event tracing is provided to easy solution
-> debugging.
-> 
-> Following are not included in this update and are scheduled as later
-> addition:
-> - fw logging
-> - module (library) support
-> 
-> Note: LPT power up/down sequences might get aligned with WPT once enough
-> testing is done as capabilities are shared for both DSPs.
-> Note #2: Both LPT and WPT power up/down sequences may get optimized in
-> future updates as thanks to help from the Windows team, most of nuances
-> behind why/what/when in regard to hw registers have been backtracked and
-> reviewed again.
-> 
-> Link to developer's deep dive message:
-> https://www.spinics.net/lists/alsa-devel/msg113563.html
+Hi Nicolin,
 
-Okay, I don't see any reason to resend a series right now and all my comments
-that left are rather nit-picks, so
+Thank you for your review.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > +static const u32 fsl_xcvr_earc_channels[] =3D { 1, 2, 8, 16, 32, }; /*
+> > +one bit 6, 12 ? */
+>=20
+> What's the meaning of the comments?
 
-> Changes in v6:
-> - reordered and reorganized code for patches 1/13 - 8/13 of v5, so each
->   patches makes use of no member or function which is unavailable to it.
->   Series size increased from 13 to 14 patches: addition of base members
->   e.g.: registers has been split from addition of device.c file which
->   describes acpi device behavior
-> 
-> 
-> Changes in v5:
-> https://www.spinics.net/lists/alsa-devel/msg115621.html
-> Basically everything below is result of Andy's review. Thank you Andy
-> for taking time into this detailed review
-> 
-> - catpt now makes use of common linux/pxa2xx_ssp.h header file, removing
->   redundant SSP register declarations in the process. As stated in the
->   opening, this is dependent upon linux-spi change:
->   spi: pxa2xx: Add SSC2 and SSPSP2 SSP registers
-> 
-> - updated Kconfig by removing DMADEVICES and adding COMPILE_TEST
->   as optional depends-on
-> - updated all register macros definitions to be more safe against common
->   arithmetics when specifying macro's parameters
-> - removed CONFIG_PM and CONFIG_PM_SLEEP usage in favor of __maybe_unused
-> - all 'if (ret < 0)' converted to simple 'if (ret)' whenever possible
-> - fixed erroneous check for platform_device_register_data within
->   catpt_register_board()
-> - _SLAVE/_MASTER replaced with more inclusive _CONSUMER/_PROVIDER for
->   enum catpt_ssp_mode
-> - catpt_acpi_probe() is now making use of high-level wrappers for
->   ioremapping and resource assignment, reducing function's code size
-> - due to improved catpt_acpi_probe() behavior, catpt_acpi_remove() needs
->   not to cast dma_free_coherent() any longer
-> - DMA source and destrination maxburst now of value 16, see:
-> https://www.spinics.net/lists/alsa-devel/msg114394.html
-> 
-> - simplified catpt_dsp_update_lpclock() as list_for_each_entry() is
->   empty-safe by default
-> - dropped '_SSP_' from all names of all CATPT_SSP_SSXXX_DEFAULT macros
-> - catpt_updatel_pci now makes use of linux/pci.h and uapi/linux/pci.h
->   constants such as: PCI_PM_CTRL_STATE_MASK and PCI_D3hot
-> 
-> 
-> Changes in v4:
-> https://www.spinics.net/lists/alsa-devel/msg113762.html
-> - fixed compilation with i386 kconfig (conflicting names)
-> - streamlined naming for SHIM and PCI registers to match SSP ones
->   (SHIM_REG -> SHIM)
-> - catpt_component_probe removed and kcontrols again initializzed
->   statically via snd_kcontrol_new array: this is to remove
->   kctl->id.device shenanigans
-> - renamed catpt_set_ctlvol to catpt_set_dspvol - function name wasn't
->   matching its purpose
-> 
-> 
-> Changes in v3:
-> - fixed IRAM mask usage in lpt_dsp_power_up (dsp.c)
-> - updated dbg message formatting in catpt_restore_fwimage as suggested
->   by Andy
-> - fixed alignment for struct catpt_ssp_device_format
-> - catpt_set_ctlvol now verifies all-equal scenario based on all
->   channels rather than just first two as requested by Amadeo
-> - fixed SPDX for registers.h
-> 
-> 
-> Changes in v2:
-> https://www.spinics.net/lists/alsa-devel/msg113660.html
-> - fixed SPDX formatting for all header files as well as pcm.c
-> - fixed size provided to memcpy() in fw_build_read() as reported by Mark
-> - renamed struct catpt_pdata to struct catpt_spec (cosmetic)
-> - fixed erroneous path in catpt_load_block: region is properly released
-> - trace.h events for updating registers have been removed and usages
->   replaced by dev_dbg (SRAMPGE/ LPCS)
-> 
-> - as requested by Andy, struct resource has replaced struct catpt_mbank
->   and struct catpt_mregion. This change cascaded into:
-> 
->   - catpt_mbank_size and catpt_mregion_size replaced by resource_size
->   - catpt_mregion_intersects replaced by resource_overlaps
->   - all catpt_mbank_ and catpt_mregion_ handlers found in loader.c
->     (_request, _reserve, _release, _extract, _split, _join) have been
->     removed
->   - __request_region and __release_region have been enlisted in their
->     place
->   - catpt_mregion_intersecting renamed to catpt_resource_overlapping
->   - catpt_request_region helper has been provided to deal with -size
->     based requests
->       o haven't found direct replacements in resource.c/ ioport.h for
->       both functions
-> 
->   - catpt_mbank_create and catpt_mbank_remove renamed to catpt_sram_init
->     and catpt_sram_free respectively
->   - catpt_sram_init now returns void instead of int and has been
->     converted to simple initialized. This change ultimately cascaded
->     into:
->       o both SRAM banks initialization being moved to catpt_dev_init
->         from catpt_acpi_probe (device.c)
->       o catpt_dev::spec is now initialized first, with catpt_dev_init
->         following it soon after
->       o catpt_acpi_probe erroneous path has been simplified as SRAM
->         banks no longer need to be freed
-> 
->   - catpt_sram_free now frees all resources via child -> sibling
->     enumeration rather than region_list iteration
->   - catpt_dsp_update_srampge and catpt_dsp_set_srampge now accept new
->     argument: unsigned long mask. Caused by removal of catpt_mbank -
->     mask is taken directly from catpt_dev::spec::d/iram_mask
->   - trace.h events for catpt_mbank and catpt_mregion have been removed
-> 
-> 
-> Diff against last drop on internal list:
-> https://www.spinics.net/lists/alsa-devel/msg113549.html
-> - replaced spinlock with mutex for mregion allocation and release to
->   address sleeping in atomic context warnings
-> - fixed coredump fw_hash dumping
-> - kcontrol values are now always stored regardless of stream of interest
->   is running or not
-> - kcontrol values are now applied after stream is prepared instead of
->   ignoring what has been set by user initially
-> - catpt_pdata instances have been renamed from hsw_ and bdw_ to lpt_ and
->   wpt_ respectively
-> - reordered Makefile .o(s) (cosmetic)
-> 
-> Cezary Rojewski (14):
->   ASoC: Intel: Add catpt base members
->   ASoC: Intel: catpt: Implement IPC protocol
->   ASoC: Intel: catpt: Add IPC message handlers
->   ASoC: Intel: catpt: Define DSP operations
->   ASoC: Intel: catpt: Firmware loading and context restore
->   ASoC: Intel: catpt: PCM operations
->   ASoC: Intel: catpt: Device driver lifecycle
->   ASoC: Intel: catpt: Event tracing
->   ASoC: Intel: catpt: Simple sysfs attributes
->   ASoC: Intel: Select catpt and deprecate haswell
->   ASoC: Intel: haswell: Remove haswell-solution specific code
->   ASoC: Intel: broadwell: Remove haswell-solution specific code
->   ASoC: Intel: bdw-5650: Remove haswell-solution specific code
->   ASoC: Intel: bdw-5677: Remove haswell-solution specific code
-> 
->  sound/soc/intel/Kconfig             |   24 +-
->  sound/soc/intel/Makefile            |    2 +-
->  sound/soc/intel/boards/Kconfig      |    8 +-
->  sound/soc/intel/boards/bdw-rt5650.c |   36 -
->  sound/soc/intel/boards/bdw-rt5677.c |   33 -
->  sound/soc/intel/boards/broadwell.c  |   33 -
->  sound/soc/intel/boards/haswell.c    |   28 +-
->  sound/soc/intel/catpt/Makefile      |    6 +
->  sound/soc/intel/catpt/core.h        |  189 +++++
->  sound/soc/intel/catpt/device.c      |  354 ++++++++
->  sound/soc/intel/catpt/dsp.c         |  572 +++++++++++++
->  sound/soc/intel/catpt/fs.c          |   79 ++
->  sound/soc/intel/catpt/ipc.c         |  298 +++++++
->  sound/soc/intel/catpt/loader.c      |  671 +++++++++++++++
->  sound/soc/intel/catpt/messages.c    |  313 +++++++
->  sound/soc/intel/catpt/messages.h    |  401 +++++++++
->  sound/soc/intel/catpt/pcm.c         | 1212 +++++++++++++++++++++++++++
->  sound/soc/intel/catpt/registers.h   |  178 ++++
->  sound/soc/intel/catpt/trace.h       |   83 ++
->  19 files changed, 4377 insertions(+), 143 deletions(-)
->  create mode 100644 sound/soc/intel/catpt/Makefile
->  create mode 100644 sound/soc/intel/catpt/core.h
->  create mode 100644 sound/soc/intel/catpt/device.c
->  create mode 100644 sound/soc/intel/catpt/dsp.c
->  create mode 100644 sound/soc/intel/catpt/fs.c
->  create mode 100644 sound/soc/intel/catpt/ipc.c
->  create mode 100644 sound/soc/intel/catpt/loader.c
->  create mode 100644 sound/soc/intel/catpt/messages.c
->  create mode 100644 sound/soc/intel/catpt/messages.h
->  create mode 100644 sound/soc/intel/catpt/pcm.c
->  create mode 100644 sound/soc/intel/catpt/registers.h
->  create mode 100644 sound/soc/intel/catpt/trace.h
-> 
-> -- 
-> 2.17.1
-> 
+Just a thought noted as comment. HDMI2.1 spec defines 6- and 12-channels la=
+yout when
+one bit audio stream is transmitted - I was wandering how can this be enfor=
+ced. Is a @todo like of comment.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>=20
+> > +static const int fsl_xcvr_phy_arc_cfg[] =3D {
+> > +	FSL_XCVR_PHY_CTRL_ARC_MODE_SE_EN,
+> FSL_XCVR_PHY_CTRL_ARC_MODE_CM_EN,
+> > +};
+>=20
+> Nit: better be u32 vs. int?
 
+Yes, will fix it in v2.
+
+>=20
+> > +/** phy: true =3D> phy, false =3D> pll */ static int
+> > +fsl_xcvr_ai_write(struct fsl_xcvr *xcvr, u8 reg, u32 data, bool phy)
+> > +{
+> > +	u32 val, idx, tidx;
+> > +
+> > +	idx  =3D BIT(phy ? 26 : 24);
+> > +	tidx =3D BIT(phy ? 27 : 25);
+> > +
+> > +	regmap_write(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL_CLR, 0xFF);
+> > +	regmap_write(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL_SET, reg);
+> > +	regmap_write(xcvr->regmap, FSL_XCVR_PHY_AI_WDATA, data);
+> > +	regmap_write(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL_TOG, idx);
+> > +
+> > +	do {
+> > +		regmap_read(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL, &val);
+> > +	} while ((val & idx) !=3D ((val & tidx) >> 1));
+>=20
+> Might regmap_read_poll_timeout() be better? And it seems to poll intentio=
+nally
+> with no sleep nor timeout -- would be nice to have a line of comments to =
+explain
+> why.
+
+No particular reason to do it with no sleep or timeout here, will check and=
+ fix it in v2.
+
+>=20
+> > > +static int fsl_xcvr_runtime_resume(struct device *dev)
+> > +{
+> > +	struct fsl_xcvr *xcvr =3D dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->ipg_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start IPG clock.\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->pll_ipg_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start PLL IPG clock.\n");
+>=20
+> Should it disable ipg_clk?
+
+Yes, thank you, will fix in v2.
+
+>=20
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->phy_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start PHY clock: %d\n", ret);
+> > +		clk_disable_unprepare(xcvr->ipg_clk);
+>=20
+> Should it disable pll_ipg_clk?
+
+Yes, will fix in v2.
+
+>=20
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->spba_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start SPBA clock.\n");
+> > +		clk_disable_unprepare(xcvr->phy_clk);
+> > +		clk_disable_unprepare(xcvr->ipg_clk);
+>=20
+> Ditto
+
+Ok.
+
+>=20
+> > +		return ret;
+> > +	}
+> > +
+> > +	regcache_cache_only(xcvr->regmap, false);
+> > +	regcache_mark_dirty(xcvr->regmap);
+> > +	ret =3D regcache_sync(xcvr->regmap);
+> > +
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to sync regcache.\n");
+> > +		return ret;
+>=20
+> What about those clocks? Probably better to have some error-out labels at=
+ the
+> end of the function?
+
+Make sense, will fix in v2.
+
+>=20
+> > +	}
+> > +
+> > +	reset_control_assert(xcvr->reset);
+> > +	reset_control_deassert(xcvr->reset);
+> > +
+> > +	ret =3D fsl_xcvr_load_firmware(xcvr);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to load firmware.\n");
+> > +		return ret;
+>=20
+> Ditto
+>=20
+> > +	}
+> > +
+> > +	/* Release M0+ reset */
+> > +	ret =3D regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL,
+> > +				 FSL_XCVR_EXT_CTRL_CORE_RESET, 0);
+> > +	if (ret < 0) {
+> > +		dev_err(dev, "M0+ core release failed: %d\n", ret);
+> > +		return ret;
+>=20
+> Ditto
+>=20
+> > +	}
+> > +	mdelay(50);
+>=20
+> Any reason to use mdelay over msleep for a 50ms wait? May add a line of
+> comments if mdelay is a must?
+
+No particular reason, will fix it in v2.
+
+Thank you,
+Viorel
 
