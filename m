@@ -2,73 +2,73 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1DA7C43465
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:12:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99043C43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:13:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1041423976
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:12:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B522235F7
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:13:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n6uStMlI";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bcG2zI2W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1041423976
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TN+fdLpq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="C2r5w3JB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B522235F7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94423175B;
-	Fri, 18 Sep 2020 04:11:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94423175B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92B7D1777;
+	Fri, 18 Sep 2020 04:12:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92B7D1777
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600395159;
-	bh=UE/zt5ax6H4v0FXSLXqzggbfZMly0u9H1SyLBDH6LOw=;
+	s=default; t=1600395207;
+	bh=/iP9Ag19GgBHLvoiSq8lhc67xp8mDrrl8ZQW/1k9LsQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n6uStMlIjrS5UDiRxj2nmXJHP/YX46NOxhx4zupaHISimJkqP3UHKUG8vQ3wlh9n8
-	 IomYTacAJCZuFJYMyqb+ZiVR77kjTtileMhhHgnEVoWs3BvpXBWoZ5Wlp6q5JMOoph
-	 BY8jXS5RjGdg2zBk2Z+iUXavAqIPH4KJV3H2r9jk=
+	b=TN+fdLpqekk4yI7OoGrK7BXMW+m6YdmOZ7WRsYT2cM1Eq6f2b2ZCijR9jlpiqNqEc
+	 kOl236T/sGJ3+4rYorMFiJRjNHW+Pyx7IHPscvN6i+NGSHVgZzStkan4xx+kbaAoJW
+	 znLXSkBcGZPMpgOeY3r4ik4/WXW/Jep6FVUavPy0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 865E6F8015A;
-	Fri, 18 Sep 2020 04:11:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34911F8015D;
+	Fri, 18 Sep 2020 04:12:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62230F801F7; Fri, 18 Sep 2020 04:11:29 +0200 (CEST)
+ id 2697FF802D2; Fri, 18 Sep 2020 04:11:59 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E2EDF8015A
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:11:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E2EDF8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F482F800E8
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:11:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F482F800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bcG2zI2W"
+ header.b="C2r5w3JB"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0FA0023119;
- Fri, 18 Sep 2020 02:11:20 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id ECB74208E4;
+ Fri, 18 Sep 2020 02:11:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600395081;
- bh=UE/zt5ax6H4v0FXSLXqzggbfZMly0u9H1SyLBDH6LOw=;
+ s=default; t=1600395111;
+ bh=/iP9Ag19GgBHLvoiSq8lhc67xp8mDrrl8ZQW/1k9LsQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bcG2zI2WjGyn6lrR6xhAPMa+tUkLu31zkcIDFE6Q6s10AKIinNXjd2Uj8mF0FuHPP
- rHuDzpVO7XFhLt5/jt3Diiv6i94NI20VbdTt+L6WhcnTRU1MFgya8Y4YefUZWCV+Nv
- U9tLB5ReJkmt/du7msN/Pzww2R5MWJmOvCr2w2WY=
+ b=C2r5w3JBt1m/iQ32nKbrzswZWsp2vfR9nxkYyHda6nsE2WaSTeSWz+DeMC1uFkbkP
+ 9TtGZ/6f45eTKCsIpvlbl91uupNQuex4TA070BocLIR9yPeP1kDY6E1MoTlgWydblH
+ oI/RkzEN1Vjc5A4Ykz9m00/WAKG/m5htCUyhsp10=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 164/206] ALSA: hda: Fix potential race in unsol
- event handler
-Date: Thu, 17 Sep 2020 22:07:20 -0400
-Message-Id: <20200918020802.2065198-164-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 185/206] ASoC: img-i2s-out: Fix runtime PM
+ imbalance on error
+Date: Thu, 17 Sep 2020 22:07:41 -0400
+Message-Id: <20200918020802.2065198-185-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -76,8 +76,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Dinghao Liu <dinghao.liu@zju.edu.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,53 +93,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit c637fa151259c0f74665fde7cba5b7eac1417ae5 ]
+[ Upstream commit 65bd91dd6957390c42a0491b9622cf31a2cdb140 ]
 
-The unsol event handling code has a loop retrieving the read/write
-indices and the arrays without locking while the append to the array
-may happen concurrently.  This may lead to some inconsistency.
-Although there hasn't been any proof of this bad results, it's still
-safer to protect the racy accesses.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+the call returns an error code. Thus a pairing decrement is needed
+on the error handling path to keep the counter balanced.
 
-This patch adds the spinlock protection around the unsol handling loop
-for addressing it.  Here we take bus->reg_lock as the writer side
-snd_hdac_bus_queue_event() is also protected by that lock.
-
-Link: https://lore.kernel.org/r/20200516062556.30951-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Link: https://lore.kernel.org/r/20200529012230.5863-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_bus.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/img/img-i2s-out.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 714a51721a313..ab9236e4c157e 100644
---- a/sound/hda/hdac_bus.c
-+++ b/sound/hda/hdac_bus.c
-@@ -155,6 +155,7 @@ static void process_unsol_events(struct work_struct *work)
- 	struct hdac_driver *drv;
- 	unsigned int rp, caddr, res;
+diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
+index fc2d1dac63339..798ab579564cb 100644
+--- a/sound/soc/img/img-i2s-out.c
++++ b/sound/soc/img/img-i2s-out.c
+@@ -350,8 +350,10 @@ static int img_i2s_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	chan_control_mask = IMG_I2S_OUT_CHAN_CTL_CLKT_MASK;
  
-+	spin_lock_irq(&bus->reg_lock);
- 	while (bus->unsol_rp != bus->unsol_wp) {
- 		rp = (bus->unsol_rp + 1) % HDA_UNSOL_QUEUE_SIZE;
- 		bus->unsol_rp = rp;
-@@ -166,10 +167,13 @@ static void process_unsol_events(struct work_struct *work)
- 		codec = bus->caddr_tbl[caddr & 0x0f];
- 		if (!codec || !codec->dev.driver)
- 			continue;
-+		spin_unlock_irq(&bus->reg_lock);
- 		drv = drv_to_hdac_driver(codec->dev.driver);
- 		if (drv->unsol_event)
- 			drv->unsol_event(codec, res);
-+		spin_lock_irq(&bus->reg_lock);
+ 	ret = pm_runtime_get_sync(i2s->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(i2s->dev);
+ 		return ret;
++	}
+ 
+ 	img_i2s_out_disable(i2s);
+ 
+@@ -491,8 +493,10 @@ static int img_i2s_out_probe(struct platform_device *pdev)
+ 			goto err_pm_disable;
  	}
-+	spin_unlock_irq(&bus->reg_lock);
- }
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(&pdev->dev);
+ 		goto err_suspend;
++	}
  
- /**
+ 	reg = IMG_I2S_OUT_CTL_FRM_SIZE_MASK;
+ 	img_i2s_out_writel(i2s, reg, IMG_I2S_OUT_CTL);
 -- 
 2.25.1
 
