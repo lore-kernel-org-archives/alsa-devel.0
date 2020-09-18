@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15C99C43463
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68FE4C43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:03:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DFE92087D
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:02:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76CB623600
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 02:03:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vf3SZa99";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GmMSy7i3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DFE92087D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r4apHwO2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CyoXwP1j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76CB623600
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 308281655;
-	Fri, 18 Sep 2020 04:01:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 308281655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1615616A8;
+	Fri, 18 Sep 2020 04:02:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1615616A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600394557;
-	bh=QXOztF3wtrFt4Gt65qXn7Z12bKc9kPi5YfxXn+YXy1g=;
+	s=default; t=1600394610;
+	bh=L/RPD5vnKSQDqRYPSE4OdlONRIwszqPQ8jg7XI6cdII=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vf3SZa99KSVJPWhkaIrZSATmjd9IY/qe/pS3AGyssTl3IjuYqDz8cnuqtTTsyMG2S
-	 1gSo0W4uVDKfVvE2ywX1JbQ1DwaKgwiKWE+3oS48sKoF0zGZdfoopYm5UFpBCd85A2
-	 xf85eyrrIhBS8n4voRqB/F2KIcUbyJhmHE4RujvE=
+	b=r4apHwO2pq5UNRc6XQVGpIA3uYnw8Pi7y8h/tn8AFDaRT8TDYRWs7GQA+RjnWpUPw
+	 ljjpCKed0X1Bref8G5PslBzsbkzq2Xt8NFm/gKF8aO9f2KzXJFZVzk0YB0gyFzXkO7
+	 qbTx17+2SnDzk6GC7pgiC6cJh4yWzKYOSxtKViM0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A82A1F80150;
-	Fri, 18 Sep 2020 04:01:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 260F1F8012D;
+	Fri, 18 Sep 2020 04:02:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67995F8015A; Fri, 18 Sep 2020 04:01:44 +0200 (CEST)
+ id 634FDF801F7; Fri, 18 Sep 2020 04:02:33 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 464C1F800E8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:01:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 464C1F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id E41EAF8012D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 04:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E41EAF8012D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GmMSy7i3"
+ header.b="CyoXwP1j"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9556B21734;
- Fri, 18 Sep 2020 02:01:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D789823731;
+ Fri, 18 Sep 2020 02:02:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600394494;
- bh=QXOztF3wtrFt4Gt65qXn7Z12bKc9kPi5YfxXn+YXy1g=;
+ s=default; t=1600394548;
+ bh=L/RPD5vnKSQDqRYPSE4OdlONRIwszqPQ8jg7XI6cdII=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GmMSy7i3dE0tsQdo7zBaPY/WCCQG16W9gBVUs5rFDMF8U/9kxgE/aGI+wf4i/rn+1
- QQsqG7UGZFcZpeb349elopnrc5C8kp33NjPwoM4DJ+xSiTzcEhoWx0K38GO3HPUg8a
- B0i5PHxxzA6MKzbh3gmZ/7wzB8bD6OmP9MWeJk/I=
+ b=CyoXwP1jSOVifoGU6ru/+ba8p8k5SRpxPz3yJSenh220EhaYr4aZlC7TVR0XWTmFC
+ kItfh6IwSYaatLlINHVe2H1GYSiccf98wmzKLvZjlxRyyrK29G6DF/P/gijtQvPxPn
+ Cs67RLG4Ztbj2ni1stlBIlm10eeuyI7KmCm5MOp4=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 019/330] ASoC: kirkwood: fix IRQ error handling
-Date: Thu, 17 Sep 2020 21:55:59 -0400
-Message-Id: <20200918020110.2063155-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 065/330] ASoC: max98090: remove msleep in PLL
+ unlocked workaround
+Date: Thu, 17 Sep 2020 21:56:45 -0400
+Message-Id: <20200918020110.2063155-65-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -75,8 +76,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Russell King <rmk+kernel@armlinux.org.uk>,
- Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,34 +94,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Tzung-Bi Shih <tzungbi@google.com>
 
-[ Upstream commit 175fc928198236037174e5c5c066fe3c4691903e ]
+[ Upstream commit acb874a7c049ec49d8fc66c893170fb42c01bdf7 ]
 
-Propagate the error code from request_irq(), rather than returning
--EBUSY.
+It was observed Baytrail-based chromebooks could cause continuous PLL
+unlocked when using playback stream and capture stream simultaneously.
+Specifically, starting a capture stream after started a playback stream.
+As a result, the audio data could corrupt or turn completely silent.
 
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk
+As the datasheet suggested, the maximum PLL lock time should be 7 msec.
+The workaround resets the codec softly by toggling SHDN off and on if
+PLL failed to lock for 10 msec.  Notably, there is no suggested hold
+time for SHDN off.
+
+On Baytrail-based chromebooks, it would easily happen continuous PLL
+unlocked if there is a 10 msec delay between SHDN off and on.  Removes
+the msleep().
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20191122073114.219945-2-tzungbi@google.com
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/max98090.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index 6f69f314f2c2a..d2d5c25bf5502 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -132,7 +132,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
- 				  "kirkwood-i2s", priv);
- 		if (err)
--			return -EBUSY;
-+			return err;
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 45da2b51543e7..6b9d326e11b07 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2112,10 +2112,16 @@ static void max98090_pll_work(struct max98090_priv *max98090)
  
- 		/*
- 		 * Enable Error interrupts. We're only ack'ing them but
+ 	dev_info_ratelimited(component->dev, "PLL unlocked\n");
+ 
++	/*
++	 * As the datasheet suggested, the maximum PLL lock time should be
++	 * 7 msec.  The workaround resets the codec softly by toggling SHDN
++	 * off and on if PLL failed to lock for 10 msec.  Notably, there is
++	 * no suggested hold time for SHDN off.
++	 */
++
+ 	/* Toggle shutdown OFF then ON */
+ 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
+ 			    M98090_SHDNN_MASK, 0);
+-	msleep(10);
+ 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
+ 			    M98090_SHDNN_MASK, M98090_SHDNN_MASK);
+ 
 -- 
 2.25.1
 
