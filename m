@@ -2,73 +2,71 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02260C43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 21:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 474AFC43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 21:31:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE735222BB
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 21:30:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D15FD222BB
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 21:31:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RfoDtRob"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE735222BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s/PYZoTZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D15FD222BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F2E71697;
-	Fri, 18 Sep 2020 23:30:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F2E71697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 550F31689;
+	Fri, 18 Sep 2020 23:30:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 550F31689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600464654;
-	bh=krDdy9/EKLkT4ugtm1qYksI6SoSpaa9EEuH+3nugvNQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RfoDtRobbO6eLk5syYbJhzMc8r4yGWunNcrHwx4lwSY2WcDlo0prYARLPfw20x4Fz
-	 hfdqvblE5EWj1QLlk6ecSJTPoubuo/v8VRDo5/URG5NVrN6SYJuGn3AsoQszGE5xIc
-	 AO8phpwUUAlgi9UkN9Ob6DCz3mXng4uIWLx7CPkE=
+	s=default; t=1600464701;
+	bh=BbODXysvngekJJPn3DFokm1Bo0vSrPxkQWDW9oOTHiE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=s/PYZoTZM+Y0KUqGa3Sw6ChmLXG00ZWud17WuXGwHoC6qtes6uP/nWsFoB/IulP8W
+	 +ExfnHgGXU07pTdoJTUcqN7vt0kL0alrwMu2GRxriRr3ooldYnwwEnXHpfNgkzJ2fY
+	 a1/TLhpxU51X4qqJ+9DtVop9zrDTF/U4OlbEglX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91990F8015A;
-	Fri, 18 Sep 2020 23:29:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B969CF802BE;
+	Fri, 18 Sep 2020 23:29:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C39FF8015D; Fri, 18 Sep 2020 23:29:06 +0200 (CEST)
+ id E7B84F8015A; Fri, 18 Sep 2020 23:29:09 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98DBAF8013A
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 23:28:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98DBAF8013A
-IronPort-SDR: lw2r1BKtCa9SMGX1hM3TmWW/8M2lU09pkmiVc3/i0LDIDNRVZ6HCAkbjsbl7aj2rOS/weKfmY6
- HaXKIW0i789w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="160953754"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="160953754"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E34CF80150
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 23:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E34CF80150
+IronPort-SDR: IzywTtAoNGvuVWkR8M4C1N9KcePU1sas0GYqtxs7cXmS1/wZKIwC5V2UHG3aw2F9fM/QwxlgPT
+ l/ZljPDJhNLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="160953751"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="160953751"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Sep 2020 14:28:50 -0700
-IronPort-SDR: b608rRHMo1AS7GcBlGZpFKG8LW4JBr+Ctw2ee7xXgmWxZaSio1aSeQK8ZnRDO5/pAx7aN6+hxV
- xnpJoZCAhnsA==
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="452919318"
+ 18 Sep 2020 14:28:49 -0700
+IronPort-SDR: UyeQ4D6v47HmtObiSPQUXLVl4yIpcaJVILb3wYs5droR9+f/ia/8rDuIvl2e2Tg3H2xrPpVXR7
+ SU+6ns8d+Flg==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="452919312"
 Received: from msalazar-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.41.172])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Sep 2020 14:28:50 -0700
+ 18 Sep 2020 14:28:48 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] topology: use inclusive language for fsync
-Date: Fri, 18 Sep 2020 16:28:31 -0500
-Message-Id: <20200918212832.249184-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/3] alsa-lib/ASoC: use inclusive language for
+ bclk/fsync/topology
+Date: Fri, 18 Sep 2020 16:28:29 -0500
+Message-Id: <20200918212832.249184-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918212832.249184-1-pierre-louis.bossart@linux.intel.com>
-References: <20200918212832.249184-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
@@ -88,139 +86,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-use fsync_provider for structure fields, 'codec_provider' and
-'codec_consumer' for options and modify #defines to use CP and CC
-suffixes.
+The SOF (Sound Open Firmware) tree contains a lot of references in
+topology files to 'codec_slave'/'codec_master' terms, which in turn
+come from alsa-lib and ALSA/ASoC topology support at the kernel
+level. These terms are no longer compatible with the guidelines
+adopted by the kernel community [1] and need to change in
+backwards-compatible ways.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/sound/uapi/asoc.h | 11 +++++++----
- include/topology.h        |  2 +-
- src/topology/pcm.c        | 39 +++++++++++++++++++++++++++------------
- 3 files changed, 35 insertions(+), 17 deletions(-)
+The main/secondary terms typically suggested in guidelines don't mean
+anything for clocks, this patchset suggests instead the use of
+'provider' and 'consumer' terms, with the 'codec' prefix kept to make
+it clear that the codec is the reference. The CM/CS suffixes are also
+replaced by CP/CC.
 
-diff --git a/include/sound/uapi/asoc.h b/include/sound/uapi/asoc.h
-index ceafb1a9..f32c5697 100644
---- a/include/sound/uapi/asoc.h
-+++ b/include/sound/uapi/asoc.h
-@@ -178,10 +178,13 @@
- #define SND_SOC_TPLG_BCLK_CS         SND_SOC_TPLG_BCLK_CC
- 
- /* DAI topology FSYNC parameter
-- * For the backwards capability, by default codec is fsync master
-+ * For the backwards capability, by default codec is fsync provider
-  */
--#define SND_SOC_TPLG_FSYNC_CM         0 /* codec is fsync master */
--#define SND_SOC_TPLG_FSYNC_CS         1 /* codec is fsync slave */
-+#define SND_SOC_TPLG_FSYNC_CP         0 /* codec is fsync provider */
-+#define SND_SOC_TPLG_FSYNC_CC         1 /* codec is fsync consumer */
-+/* keep previous definitions for compatibility */
-+#define SND_SOC_TPLG_FSYNC_CM         SND_SOC_TPLG_FSYNC_CP
-+#define SND_SOC_TPLG_FSYNC_CS         SND_SOC_TPLG_FSYNC_CC
- 
- /*
-  * Block Header.
-@@ -339,7 +342,7 @@ struct snd_soc_tplg_hw_config {
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
- 	__u8 bclk_provider;	/* SND_SOC_TPLG_BCLK_ value */
--	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
-+	__u8 fsync_provider;	/* SND_SOC_TPLG_FSYNC_ value */
- 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
- 	__le16 reserved;	/* for 32bit alignment */
- 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
-diff --git a/include/topology.h b/include/topology.h
-index 6c970649..4ade20df 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -1029,7 +1029,7 @@ struct snd_tplg_hw_config_template {
- 	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
- 	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
- 	unsigned char  bclk_provider;   /* SND_SOC_TPLG_BCLK_ value */
--	unsigned char  fsync_master;    /* SND_SOC_TPLG_FSYNC_ value */
-+	unsigned char  fsync_provider;  /* SND_SOC_TPLG_FSYNC_ value */
- 	unsigned char  mclk_direction;  /* SND_SOC_TPLG_MCLK_ value */
- 	unsigned short reserved;        /* for 32bit alignment */
- 	unsigned int mclk_rate;	        /* MCLK or SYSCLK freqency in Hz */
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index f05df348..888aa59a 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -1504,8 +1504,15 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
- 			continue;
- 		}
- 
--		if (strcmp(id, "fsync") == 0 ||
--		    strcmp(id, "fsync_master") == 0) {
-+		provider_legacy = false;
-+		if (strcmp(id, "fsync_master") == 0) {
-+			SNDERR("deprecated option %s, please use 'fsync'\n", id);
-+			provider_legacy = true;
-+		}
-+
-+		if (provider_legacy ||
-+		    strcmp(id, "fsync") == 0) {
-+
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
- 
-@@ -1515,11 +1522,19 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
- 				 */
- 				SNDERR("deprecated fsync value '%s'", val);
- 
--				hw_cfg->fsync_master = SND_SOC_TPLG_FSYNC_CS;
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CC;
- 			} else if (!strcmp(val, "codec_slave")) {
--				hw_cfg->fsync_master = SND_SOC_TPLG_FSYNC_CS;
--			} else if (!strcmp(val, "codec_master")) {
--				hw_cfg->fsync_master = SND_SOC_TPLG_FSYNC_CM;
-+				SNDERR("deprecated fsync value '%s', use 'codec_consumer'", val);
-+
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CC;
-+			} else if (!strcmp(val, "codec_consumer")) {
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CC;
-+ 			} else if (!strcmp(val, "codec_master")) {
-+				SNDERR("deprecated fsync value '%s', use 'codec_provider'", val);
-+
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CP;
-+			} else if (!strcmp(val, "codec_provider")) {
-+				hw_cfg->fsync_provider = SND_SOC_TPLG_FSYNC_CP;
- 			}
- 			continue;
- 		}
-@@ -1648,10 +1663,10 @@ int tplg_save_hw_config(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 				       hc->bclk_rate);
- 	if (err >= 0 && hc->invert_bclk)
- 		err = tplg_save_printf(dst, pfx, "\tbclk_invert 1\n");
--	if (err >= 0 && hc->fsync_master)
--		err = tplg_save_printf(dst, pfx, "\tfsync_master '%s'\n",
--				       hc->fsync_master == SND_SOC_TPLG_FSYNC_CS ?
--						"codec_slave" : "codec_master");
-+	if (err >= 0 && hc->fsync_provider)
-+		err = tplg_save_printf(dst, pfx, "\tfsync_provider '%s'\n",
-+				       hc->fsync_provider == SND_SOC_TPLG_FSYNC_CC ?
-+						"codec_consumer" : "codec_provider");
- 	if (err >= 0 && hc->fsync_rate)
- 		err = tplg_save_printf(dst, pfx, "\tfsync_freq %u\n",
- 				       hc->fsync_rate);
-@@ -1808,7 +1823,7 @@ static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
- 	cfg->invert_bclk = tpl->invert_bclk;
- 	cfg->invert_fsync = tpl->invert_fsync;
- 	cfg->bclk_provider = tpl->bclk_provider;
--	cfg->fsync_master = tpl->fsync_master;
-+	cfg->fsync_provider = tpl->fsync_provider;
- 	cfg->mclk_direction = tpl->mclk_direction;
- 	cfg->reserved = tpl->reserved;
- 	cfg->mclk_rate = tpl->mclk_rate;
-@@ -2191,7 +2206,7 @@ next:
- 		hw->invert_bclk = link->hw_config[i].invert_bclk;
- 		hw->invert_fsync = link->hw_config[i].invert_fsync;
- 		hw->bclk_provider = link->hw_config[i].bclk_provider;
--		hw->fsync_master = link->hw_config[i].fsync_master;
-+		hw->fsync_provider = link->hw_config[i].fsync_provider;
- 		hw->mclk_direction = link->hw_config[i].mclk_direction;
- 		hw->mclk_rate = link->hw_config[i].mclk_rate;
- 		hw->bclk_rate = link->hw_config[i].bclk_rate;
+It can be argued that the change of suffix is invasive, but finding a
+replacement that keeps the M and S shortcuts has proven difficult in
+quite a few contexts.
+
+The previous definitions are kept for backwards-compatibility so this
+change should not have any functional impact. It is suggested that new
+contributions only use the new terms but there is no requirement to
+transition immediately to the new definitions for existing code. Intel
+will however update all its past contributions related to bit
+clock/frame sync configurations immediately.
+
+This suggestion is easier to review first at the alsa-lib level, and
+if agreed follow-up contributions for the Linux kernel [2] and SOF
+firmware [3] will be provided.
+
+Feedback welcome
+~Pierre
+
+[1] https://lkml.org/lkml/2020/7/4/229
+[2] https://github.com/plbossart/sound/tree/fix/inclusive-language-bclk-fsync
+[3] https://github.com/plbossart/sof/tree/fix/inclusive-language-bclk-fsync
+
+Changes since RFC:
+replaced 'follower' by 'consumer' as suggested by Jaroslav and Marc
+minor cleanups
+
+Pierre-Louis Bossart (3):
+  topology: use inclusive language for bclk
+  topology: use inclusive language for fsync
+  topology: use inclusive language in documentation
+
+ include/sound/uapi/asoc.h | 22 +++++++-----
+ include/topology.h        |  8 ++---
+ src/topology/pcm.c        | 75 +++++++++++++++++++++++++++------------
+ 3 files changed, 71 insertions(+), 34 deletions(-)
+
 -- 
 2.25.1
 
