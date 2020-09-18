@@ -2,82 +2,58 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D0CAC43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 07:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F364C43463
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 09:54:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E8342076D
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 07:33:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB09D21D42
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 09:54:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mXmLNIui";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="bWB/+FBP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E8342076D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AaUJ3u/W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB09D21D42
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3D0C16F6;
-	Fri, 18 Sep 2020 09:32:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D0C16F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E13016CD;
+	Fri, 18 Sep 2020 11:53:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E13016CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600414417;
-	bh=1MUGv41U4VYBQ6UoGVU7XKKNE5xC6tvnCslS+jNtJGQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mXmLNIuiyAwjXN/+B8+mKFjAb941yZuS+dH+3dsPHpMKJwwSmtBtv+sE6townnuuS
-	 jHPfzlOYhHMUHc0D6VdQmnyZLMs5SybRTenmwXra8R9235WWuGPYZ0jYH34NaoSwSy
-	 cOkkMQOU59/m1maoeJUlAudlyR+QwzupaxMNgxvs=
+	s=default; t=1600422860;
+	bh=No3YwQt+y8uaY6knBKrmUH//NUaW/xUcFy8kQ/BF2dQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AaUJ3u/Wjnz5LcuMKq1XMlHLPELcVr2FJDPy4mTATR4mrq5lNjqdHzXAgojSbsm0m
+	 t0TMc+vSTk0xTU7cXtSPylBIatssd/+bLS52p3rZBDfMckJ9Hffh2SFHHRDXyEep7O
+	 CNfdlpg2VP/jMb3P25uj96m9non3Jkcir8kXLD0Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41FB5F80150;
-	Fri, 18 Sep 2020 09:32:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D81BF8012D;
+	Fri, 18 Sep 2020 11:53:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F975F8013A; Fri, 18 Sep 2020 09:32:46 +0200 (CEST)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C66AF8013A
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 09:32:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C66AF8013A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="bWB/+FBP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; l=2795; q=dns/txt; s=axis-central1;
- t=1600414360; x=1631950360;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=Oe/kyqOSS+vfTj2Z8DmOJ/QTD4lls0VVIA5KQlOYFoA=;
- b=bWB/+FBPLr91+cD5LWTZSt38A3N1VQMqTRd8Cq8KspOjA/XyL2HJpwmV
- 8A5Faj2IrNuyD7Ma8rOGRpgc5vRARJpVKfu11Ngee6zHfuOCd97vsdbZa
- RMJIgun2mpcSufT7XWgXXMErWORlSQ/c9lCnF5XtnmmrTFj2MlbHmWRHu
- W24Bj6rEjOWFKmnVGmAsaB82Q9t4Nifep9F4Zw1Fn4us3/BoIPlhzXMoD
- G2R9rUBNjrTlnf/D9ptAidK9ERIBY2CYy5rwg9MUvpSuzjlHk/i16mxot
- qUkald7ZrUplKAwu6dm0XtrCT15qKmoUfQPwc2/Pz+0eFc75YzRoFsUFa g==;
-IronPort-SDR: g9KO4QFRGuI7AzF3iVWt7fmncB6/fVBHINfXbzLhJHMQ2Vc+92pfEtd82Xjr+oKxls3MbeS0oe
- iS+jHKAiYGTJ2YqtyP1ea04tDpg1uZl6vMNSp37r/FfIO0tv4bzDbLWFA+muiaR3TVB+ZCv/rY
- 5qoFneBOQ+bezyd/2sXjYp5WkK4fUkgOiZlsoQKn3CZC4Jv73zkIlav10bWFCeaskWjz/HF8oX
- ggCePMMNi3d2CiIUbT7ir7YQfbv5SiiqbLBt+t+wPVk/ezjEljJGnz8WzP7hpJPtcxzSgLdjXC
- CCY=
-X-IronPort-AV: E=Sophos;i="5.77,274,1596492000"; d="scan'208";a="13094802"
-From: Camel Guo <camel.guo@axis.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
- <dmurphy@ti.com>
-Subject: [PATCH v4] ASoC: tlv320adcx140: Add support for configuring GPIO pin
-Date: Fri, 18 Sep 2020 09:32:29 +0200
-Message-ID: <20200918073229.27348-1-camel.guo@axis.com>
-X-Mailer: git-send-email 2.20.1
+ id 3695DF8015A; Fri, 18 Sep 2020 11:53:29 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1437EF8013A
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 11:53:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1437EF8013A
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Camel Guo <camelg@axis.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1600422797261694908-webhooks-bot@alsa-project.org>
+References: <1600422797261694908-webhooks-bot@alsa-project.org>
+Subject: aplay: playing mono audio file alteres pulseaudio default Master left
+ or right volume level
+Message-Id: <20200918095329.3695DF8015A@alsa1.perex.cz>
+Date: Fri, 18 Sep 2020 11:53:29 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,99 +69,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Camel Guo <camelg@axis.com>
+alsa-project/alsa-utils issue #55 was edited from maxmbed:
 
-Add support to configure the GPIO pin to the specific configuration.
-The GPIO pin can be configured as GPO, IRQ, SDOUT2, PDMCLK, MICBASE_EN,
-GPI, MCLK, SDIN, PDMDIN1, PDMDIN2, PDMDIN3 or PDMDIN4 and the output
-drive can be configured with various configuration.
+I am encountering an unexpected behaviour with pulse audio master volume in my application. 
 
-Signed-off-by: Camel Guo <camelg@axis.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
----
- v4:
-  - Rebase and fix merge conflict
-  - Add Acked-by from Dan 
- v3: 
-  - Add ADCX140_NUM_GPIO_CFGS avoiding using magic number
-  - Remove unneeded check on ret in adcx140_configure_gpio
+### Description
 
- sound/soc/codecs/tlv320adcx140.c | 40 ++++++++++++++++++++++++++++++++
- sound/soc/codecs/tlv320adcx140.h |  5 ++++
- 2 files changed, 45 insertions(+)
+If I set for example left channel to 100% and right channel 0%, and play mono audio file (i.e. audio file with 1 channel only), then I would expect to hear only the audio file on left channel.
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 28dbd7d5e149..53a80246aee1 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -861,6 +861,42 @@ static int adcx140_configure_gpo(struct adcx140_priv *adcx140)
- 
- }
- 
-+static int adcx140_configure_gpio(struct adcx140_priv *adcx140)
-+{
-+	int gpio_count = 0;
-+	u32 gpio_outputs[ADCX140_NUM_GPIO_CFGS];
-+	u32 gpio_output_val = 0;
-+	int ret;
-+
-+	gpio_count = device_property_count_u32(adcx140->dev,
-+			"ti,gpio-config");
-+	if (gpio_count == 0)
-+		return 0;
-+
-+	if (gpio_count != ADCX140_NUM_GPIO_CFGS)
-+		return -EINVAL;
-+
-+	ret = device_property_read_u32_array(adcx140->dev, "ti,gpio-config",
-+			gpio_outputs, gpio_count);
-+	if (ret)
-+		return ret;
-+
-+	if (gpio_outputs[0] > ADCX140_GPIO_CFG_MAX) {
-+		dev_err(adcx140->dev, "GPIO config out of range\n");
-+		return -EINVAL;
-+	}
-+
-+	if (gpio_outputs[1] > ADCX140_GPIO_DRV_MAX) {
-+		dev_err(adcx140->dev, "GPIO drive out of range\n");
-+		return -EINVAL;
-+	}
-+
-+	gpio_output_val = gpio_outputs[0] << ADCX140_GPIO_SHIFT
-+		| gpio_outputs[1];
-+
-+	return regmap_write(adcx140->regmap, ADCX140_GPIO_CFG0, gpio_output_val);
-+}
-+
- static int adcx140_codec_probe(struct snd_soc_component *component)
- {
- 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
-@@ -958,6 +994,10 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 			return ret;
- 	}
- 
-+	ret = adcx140_configure_gpio(adcx140);
-+	if (ret)
-+		return ret;
-+
- 	ret = adcx140_configure_gpo(adcx140);
- 	if (ret)
- 		goto out;
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index 107bd7927d9c..d7d4e3a88b5c 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -148,4 +148,9 @@
- 
- #define ADCX140_TX_FILL    BIT(0)
- 
-+#define ADCX140_NUM_GPIO_CFGS		2
-+#define ADCX140_GPIO_SHIFT		4
-+#define ADCX140_GPIO_CFG_MAX		15
-+#define ADCX140_GPIO_DRV_MAX		5
-+
- #endif /* _TLV320ADCX140_ */
--- 
-2.20.1
+The actual behaviour in the example of above is when playing the audio file, the Master volume right channel will be automatically adjusted to 50%. If play again it increases to 75% and so on. 
 
+This issue happens also with other R/L volume level, the case of above is just an example.
+
+**Important to note the case does not happen with stereo audio file** where audio sounds on left only channel as we can expected.
+
+### Steps to repeat issue:
+
+(a) Set mixer Lch to 100%, Rch to 0%
+```
+$ amixer -D default sset Master 65535,0
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65536
+  Mono:
+  Front Left: Playback 65535 [100%] [on]
+  Front Right: Playback 0 [0%] [on]
+```
+
+(b) Play mono audio file
+```
+$ aplay -D default ringtone.wav
+Playing WAVE 'ringtone.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
+```
+
+
+### Request
+(1) Is it by design expected ? 
+(2) Is there a way to prevent this phenomenon (command option) ?
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/55
+Repository URL: https://github.com/alsa-project/alsa-utils
