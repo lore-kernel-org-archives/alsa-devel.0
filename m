@@ -2,85 +2,80 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8F3AC43464
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 14:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FBAAC43464
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 14:59:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D333B208C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 14:26:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DCA9F21973
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 14:59:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QFQusgKk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D333B208C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sj+lC4TE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCA9F21973
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C197016CC;
-	Fri, 18 Sep 2020 16:25:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C197016CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BC1116C5;
+	Fri, 18 Sep 2020 16:58:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BC1116C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600439197;
-	bh=0HyxU8n/RVVdRH/gPRozSO+RwkrksisJb+6HenCxpdM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1600441145;
+	bh=XQT60u6MkyCyY1ca/H6h9n77MVUAHABuju6d7WaIq5Q=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QFQusgKkamPgXeYHFBdaLZ6KZesu72FwllNlyJpcroYtV9Bk7azctG3jsgwDRFjh0
-	 NoHnE/D7t3wH1PgzJ8Uooc3zEDxhuFPh/2LUS3r+pqWGJ9ksIsADa6oCzrrrV3vR/J
-	 WnpV77ZLxVzyIagw+6BtpvnlLpRUqTdNu7uwjBg8=
+	b=sj+lC4TEbDoMhIEdJNjrxx8Q0osjmlmw7sLo4Fiutz9JedpHKlYoNOLf/oH0aOIt6
+	 jd40LlCebuoRrXp1VgS6qLvwBhRZGMMoKpIfjSsnUu7VD+oC7j9fkw0W34bW0wFRaS
+	 qDsAVmlNHl3mopDIC38UD7umaVXB0jowQ3mwGOnA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9AA59F8015D;
-	Fri, 18 Sep 2020 16:24:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F08FF8013A;
+	Fri, 18 Sep 2020 16:58:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D556BF800E8; Fri, 18 Sep 2020 16:24:54 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id C9118F8015A; Fri, 18 Sep 2020 16:58:11 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8ED40F800E8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 16:24:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ED40F800E8
-IronPort-SDR: 8zBxVr3xgmlZT+xRj2R0ahxXBQ+yNtENnClMBViveNCoIBVCrKpdVhm0FabzkkgaTGH9h/pZTO
- /pdPJLYYfI+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="157336302"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="157336302"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DDCFF8013A
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 16:58:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DDCFF8013A
+IronPort-SDR: gwDEYoc8N3MUk6exDFn3xuMP/takxJNXgZEP6+BoeYEqsdFf1H6HLmkWZJu3dJiqs2nExK6xT6
+ GleHgAdf/AcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="244786074"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="244786074"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Sep 2020 07:24:41 -0700
-IronPort-SDR: 9H0j1WCh4LHBop/GgIdiwl89F+leKXJLfERJFpJTSsvvYxREg4ncgdiwBknKa9sfDkEo87AVW6
- qFwhlhfr0FLg==
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="332653963"
-Received: from tsecasiu-mobl.amr.corp.intel.com (HELO [10.213.179.236])
- ([10.213.179.236])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Sep 2020 07:24:40 -0700
-Subject: Re: [PATCH v2 2/2] soundwire: sysfs: add slave status and device
- number before probe
-To: Vinod Koul <vkoul@kernel.org>
-References: <20200917160007.153106-1-pierre-louis.bossart@linux.intel.com>
- <20200917160007.153106-3-pierre-louis.bossart@linux.intel.com>
- <20200918121614.GS2968@vkoul-mobl>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c8729c1d-6d36-ad34-34c3-899ba0f5366d@linux.intel.com>
-Date: Fri, 18 Sep 2020 09:21:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Sep 2020 07:57:51 -0700
+IronPort-SDR: w3I6Ato49uOIcbk2c4ZCM6yaermzI3geyVGfzN05Nw17/tFFmrP9vpwnKc4YpAALoFHGl5TUpT
+ o7/YRoEDq2rA==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; d="scan'208";a="484238360"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Sep 2020 07:57:50 -0700
+Date: Fri, 18 Sep 2020 17:56:21 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: HDA: Early Forbid of runtime PM
+In-Reply-To: <alpine.DEB.2.22.394.2008281800180.3186@eliteleevi.tm.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2009181739320.3186@eliteleevi.tm.intel.com>
+References: <1598569536-9450-1-git-send-email-harshapriya.n@intel.com>
+ <s5h5z93ns23.wl-tiwai@suse.de>
+ <alpine.DEB.2.22.394.2008281800180.3186@eliteleevi.tm.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-In-Reply-To: <20200918121614.GS2968@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Takashi Iwai <tiwai@suse.de>, Harsha Priya <harshapriya.n@intel.com>,
+ alsa-devel@alsa-project.org, Emmanuel Jillela <emmanuel.jillela@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,55 +91,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
+On Fri, 28 Aug 2020, Kai Vehmanen wrote:
 
-
->>    * Base file is device
->>    *	|---- modalias
->> + *	|---- dev-status
->> + *		|---- status
->> + *		|---- device_number
+> On Fri, 28 Aug 2020, Takashi Iwai wrote:
+> > Thanks.  The only concern is about the influence on the relevant ASoC
+> > code, especially hdac_hda.c.
+> > 
+> > Kai, could you check whether this still works?
 > 
-> Any reason why we want this under dev-status.
+> I did queue a SOF CI job for this v2 patch and I'm seeing some failures
+> in module load/unload test that might be related and need checking before
+> we merge:
 > 
-> Both the status and device_number belong to the device, so we can
-> put them under device and use device properties
+> https://sof-ci.01.org/linuxpr/PR2403/build4400/devicetest/
 
-We already use directories for device-level and port-level properties, I 
-just thought it be cleaner to continue this model. We might also expand 
-the information later on, e.g. provide interrupt status.
+ok this took a bit longer than expected, but we've been debugging this 
+with Emmanuel and found the rootcause.
 
-I don't mind if we remove the directory and move everything up one 
-level, but it wouldn't be consistent with the previous work.
+So if we take this patch in and forbid runtime PM in device_new, it then 
+becomes mandatory for all controllers to call set_default_power_save(). In 
+SOF, this is only added recently to some machine drivers (notably the 
+widely used generic HDA machine driver), which explains why tests pass on 
+many targets. However, on platforms that use other machine drivers, 
+set_default_power_save()/snd_hda_set_power_save() is not called, and 
+device will never hit suspend (and this fails the tests).
 
->> +static ssize_t device_number_show(struct device *dev,
->> +				  struct device_attribute *attr, char *buf)
->> +{
->> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
->> +
->> +	if (slave->status == SDW_SLAVE_UNATTACHED)
->> +		return sprintf(buf, "%s", "N/A");
-> 
-> Do we really want N/A here, 0 should imply UNATTACHED and then the
-> status_show would tell UNATTACHED.
+To further complicate the matter, recently merged "ASoC: Intel: 
+skl_hda_dsp_generic: Fix NULLptr dereference in autosuspend delay" will 
+cause tests to fail on more platforms as HDMI/DP codec's powersave 
+settings are not set.
 
-Actually no. If you look at the standard, 'Unattached' is an 'internal 
-state of a Slave that indicates that it is not synchronized with to the 
-Frame boundaries within the Bitstream'. A Slave device can only become 
-attached and report it's presence as Device0 in a PING frame once it's 
-ATTACHED - which in turn means the device has been able to sync for 15 
-frames. A device number of zero means the device is able to respond to 
-command but has not yet been enumerated, or was enumerated previously 
-but lost sync or went through a reset sequence and reattached. A device 
-number of zero does not mean the device is unattached, the logic is as 
-follow:
+The original patch is ok, but to merge it without a lot of regressions, 
+we need to rework how powersave initial settings are done in SOF and other 
+ASoC controllers using HDAC. I do think this is the right solution.
 
-Attached -> Device 0 or 1..11
-Unattached -> No concept of device number (or not an observable value).
+Br, Kai
 
-We should not overload what 'Device0' means and instead follow the 
-standard to the letter. We also don't want the attribute to come and go 
-dynamically, so N/A (Not Applicable) is IMHO the only way to convey this 
-meaning.
-
-Does this help?
