@@ -2,77 +2,80 @@ Return-Path: <SRS0=g50q=C3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91460C43463
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 12:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A944C43464
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 12:06:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 95B0C20848
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 12:03:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37FAD20872
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Sep 2020 12:06:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n0uaSJMi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HpjNoPkr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95B0C20848
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S8thyGRH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HnZP6spy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37FAD20872
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1625B16CE;
-	Fri, 18 Sep 2020 14:02:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1625B16CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 947561687;
+	Fri, 18 Sep 2020 14:05:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 947561687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600430614;
-	bh=hPQbvKMhsX/VBlMqQXADrTEDn/hz9SyKcPsiDbJyVwM=;
+	s=default; t=1600430766;
+	bh=j1ySg9PF3kTDNfU/g06Co3f2/sTYU3bo+wWMQL/nnf0=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n0uaSJMie72ultl1BnWGi9O2nw5HfR2hy98qf8Hd5SFj010n68EvJjuILDT0MdZb5
-	 d39XbqHxeq3jPkZRdOtyZM9yN7UG775DCLS77q0GJpZzgv1zPoLJPHcg/APsHGHJJ1
-	 41wDHrmHaFRSDxuDpfl+YAs4c5swGKuMRUjQCZQE=
+	b=S8thyGRHeoUGKgWsbbjewS5GzkjeRpBGdLHzsUREae8ngFFkUGTXSqlC74R1//IpD
+	 jIsMbDIOBCP3Y0qaVeulJRLiZpachxSDiSOH8/+Z5vr/oPsf8DSrZo4sJLaDKTU+0M
+	 5I3A2avg53RD0P6pfChKm9p1x63Uf6MdVxN52N34=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9792F80150;
-	Fri, 18 Sep 2020 14:02:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C4D6F800E8;
+	Fri, 18 Sep 2020 14:05:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D31FF8015C; Fri, 18 Sep 2020 14:02:42 +0200 (CEST)
+ id 66FE4F8015A; Fri, 18 Sep 2020 14:05:14 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A324EF8013A
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 14:02:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A324EF8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0689AF800E8
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 14:05:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0689AF800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HpjNoPkr"
+ header.b="HnZP6spy"
 Received: from localhost (unknown [136.185.124.244])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0F42420848;
- Fri, 18 Sep 2020 12:02:31 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8479720848;
+ Fri, 18 Sep 2020 12:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600430553;
- bh=hPQbvKMhsX/VBlMqQXADrTEDn/hz9SyKcPsiDbJyVwM=;
+ s=default; t=1600430706;
+ bh=j1ySg9PF3kTDNfU/g06Co3f2/sTYU3bo+wWMQL/nnf0=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HpjNoPkrE9MhPcKSNoWS4AFSrH990PR0b+eFy8zWF9xLAN4zp7QfHCeIch2vD1AG8
- zi1nmNt7va/tjAe5q4YzH/APAdXoChNm2WVJvNNjQtSLtM2nQpPhgj4A8cL/lB8+Ba
- hFfzoGmn0sFRmwdfbjPcNF7U0JQBteg0GN0gEGQ8=
-Date: Fri, 18 Sep 2020 17:32:29 +0530
+ b=HnZP6spyTomOdDXJX2A4nhCWu5tu5PFCp3ehLsTIyXB8syLzEA5C02w+y0pd/q10U
+ L9J2GSSQq2V7OnFm3ZXHoj462rQLQCesuvLp4ERlHc7VS+sjLN7vBvRfuTb4cqca+6
+ UR0c4hQ2LTqfvaJ1dfJTo0gvlFv+Trbp3SMS5U2Q=
+Date: Fri, 18 Sep 2020 17:35:02 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v4 0/3] soundwire: qcom: fix IP version v1.5.1 support
-Message-ID: <20200918120229.GQ2968@vkoul-mobl>
-References: <20200917120138.11313-1-srinivas.kandagatla@linaro.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] soundwire: bus: add enumerated Slave device to
+ device list
+Message-ID: <20200918120502.GR2968@vkoul-mobl>
+References: <20200917160007.153106-1-pierre-louis.bossart@linux.intel.com>
+ <20200917160007.153106-2-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917120138.11313-1-srinivas.kandagatla@linaro.org>
-Cc: sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <20200917160007.153106-2-pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,17 +91,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 17-09-20, 13:01, Srinivas Kandagatla wrote:
-> While testing Qualcomm soundwire controller version 1.5.1, found two issue,
-> Firstly the frame shape information configured vs the bus parameters
-> are out of sync. secondly some ports on this ip version require
-> block packing mode support.
+On 17-09-20, 11:00, Pierre-Louis Bossart wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > 
-> With this patchset I was able to test 2 WSA speakers!
+> Currently Slave devices are only added on startup, either from Device
+> Tree or ACPI entries. However Slave devices that are physically
+> present on the bus, but not described in platform firmware, will never
+> be added to the device list. The user/integrator can only know the
+> list of devices by looking a dynamic debug logs.
 > 
-> Also I found a regression due to move to REG_FIELD, which patch 1 fixes it!
+> This patch suggests adding a Slave device eveb there is no matching DT or
+> ACPI entry, so that we can see this in sysfs entry.
+> 
+> Initial code from Srinivas. Comments, fixes for ACPI probe and edits
+> of commit message by Pierre.
 
-Applied all, thanks
+You should add yours as Co-developed. That is the standard tag for these
+things
+
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/bus.c      | 9 +++++++++
+>  drivers/soundwire/bus.h      | 2 ++
+>  drivers/soundwire/bus_type.c | 9 +++++++++
+>  drivers/soundwire/slave.c    | 4 ++--
+>  4 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 02574b4bb179..81807b332a12 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -741,6 +741,15 @@ static int sdw_program_device_num(struct sdw_bus *bus)
+>  
+>  		if (!found) {
+>  			/* TODO: Park this device in Group 13 */
+> +
+> +			/*
+> +			 * add Slave device even if there is no platform
+> +			 * firmware description. There will be no driver probe
+> +			 * but the user/integration will be able to see the
+> +			 * device, enumeration status and device number in sysfs
+> +			 */
+> +			sdw_slave_add(bus, &id, NULL);
+> +
+>  			dev_err(bus->dev, "Slave Entry not found\n");
+>  		}
+>  
+> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> index c53345fbc4c7..fd251c1eb925 100644
+> --- a/drivers/soundwire/bus.h
+> +++ b/drivers/soundwire/bus.h
+> @@ -19,6 +19,8 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+>  int sdw_of_find_slaves(struct sdw_bus *bus);
+>  void sdw_extract_slave_id(struct sdw_bus *bus,
+>  			  u64 addr, struct sdw_slave_id *id);
+> +int sdw_slave_add(struct sdw_bus *bus, struct sdw_slave_id *id,
+> +		  struct fwnode_handle *fwnode);
+>  int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
+>  			  struct fwnode_handle *fwnode);
+>  int sdw_master_device_del(struct sdw_bus *bus);
+> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+> index 6fba55898cf0..575b9bad99d5 100644
+> --- a/drivers/soundwire/bus_type.c
+> +++ b/drivers/soundwire/bus_type.c
+> @@ -84,6 +84,15 @@ static int sdw_drv_probe(struct device *dev)
+>  	const struct sdw_device_id *id;
+>  	int ret;
+>  
+> +	/*
+> +	 * fw description is mandatory to bind
+> +	 */
+> +	if (!dev->fwnode)
+> +		return -ENODEV;
+> +
+> +	if (!IS_ENABLED(CONFIG_ACPI) && !dev->of_node)
+> +		return -ENODEV;
+> +
+>  	id = sdw_get_device_id(slave, drv);
+>  	if (!id)
+>  		return -ENODEV;
+> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+> index 4a250d33de5d..19b012310c29 100644
+> --- a/drivers/soundwire/slave.c
+> +++ b/drivers/soundwire/slave.c
+> @@ -20,8 +20,8 @@ struct device_type sdw_slave_type = {
+>  	.uevent =	sdw_slave_uevent,
+>  };
+>  
+> -static int sdw_slave_add(struct sdw_bus *bus,
+> -			 struct sdw_slave_id *id, struct fwnode_handle *fwnode)
+> +int sdw_slave_add(struct sdw_bus *bus,
+> +		  struct sdw_slave_id *id, struct fwnode_handle *fwnode)
+>  {
+>  	struct sdw_slave *slave;
+>  	int ret;
+> -- 
+> 2.25.1
 
 -- 
 ~Vinod
