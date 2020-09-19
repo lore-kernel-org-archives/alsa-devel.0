@@ -2,78 +2,78 @@ Return-Path: <SRS0=3Slh=C4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 618A6C43463
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2020 11:14:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 229C8C43463
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2020 11:20:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C1D621481
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2020 11:14:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 84CF721481
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Sep 2020 11:20:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gvZOP46I";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="o2XpqPbg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C1D621481
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KVp2xooP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="L5wLmMlR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84CF721481
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8470E168B;
-	Sat, 19 Sep 2020 13:13:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8470E168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB1AE168F;
+	Sat, 19 Sep 2020 13:19:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB1AE168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600514080;
-	bh=3BCWu3jCK4lynjY+TDXCs5NcDU6Wo6bMjv7wDYfjaIs=;
+	s=default; t=1600514414;
+	bh=IT2ne0SjjgFpnx3UEgWv/Q7vVvCeyE83s3LUez6XYe8=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gvZOP46Im859ZVOsAKrYMxqKY1wqOAsPLr5Jsyw62H9cLOh3bqmEFdrN8Fd6OSBmb
-	 vHW1ePWYqN7o18rJaJMxCwb14R3mq12LMGhLkSVCH6e2jhE0iG2S51xlbWwwUA+yzN
-	 jvPwMjThJtRhaz6jXA3IVh+W6oQm7Y9GV/6AsTGI=
+	b=KVp2xooPW7SplgNGwi2hW7JiurDhgzYqXSuqH6oQetN9UUAq+K4cFYM4uxqKNLiQu
+	 OEP/HK2vXBHbM7XdpEqZ77YHNuQHq8wrfylTtWkDMj90/K9rvK3kQPbJdZtpNkN6BI
+	 4zrZabW2/oBRXi8jWS9wBOo4XaUjN83JXT4gJHB4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BC6BF801EC;
-	Sat, 19 Sep 2020 13:13:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 784C6F801EC;
+	Sat, 19 Sep 2020 13:19:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28B68F80212; Sat, 19 Sep 2020 13:13:48 +0200 (CEST)
+ id 54BE5F80212; Sat, 19 Sep 2020 13:19:22 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E7D7F800EA
- for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2020 13:13:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E7D7F800EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72BA7F8012D
+ for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2020 13:19:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72BA7F8012D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="o2XpqPbg"
+ header.b="L5wLmMlR"
 Received: from localhost (unknown [171.48.27.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 56DC721481;
- Sat, 19 Sep 2020 11:13:38 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8B70C21481;
+ Sat, 19 Sep 2020 11:19:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600514019;
- bh=3BCWu3jCK4lynjY+TDXCs5NcDU6Wo6bMjv7wDYfjaIs=;
+ s=default; t=1600514357;
+ bh=IT2ne0SjjgFpnx3UEgWv/Q7vVvCeyE83s3LUez6XYe8=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=o2XpqPbgq0Ulch8zTGluM/eKpz/wDiB2pf4crdCaakFwacltFabcugPJQXb3c/NwE
- Zi/VlvDAehyVjytUulKuXnEvnHCmb/a7dKRk6zToNWCklN7Q7cVXIXkbR1hpb6a3lV
- CrCnNAjKtccgZAbaY3KCIcXc7zSjcEpBLKeMOH7o=
-Date: Sat, 19 Sep 2020 16:43:30 +0530
+ b=L5wLmMlRjvHb1RL+LjeAx3BQHX3DIarTIOMtlof5Ca8xbYcjq5UhulG9C5pQ9udGm
+ PXbby0oK52F1CvWgZmK6/pzHj+zRhKOKR0r92sX/KJSoOZgDXkAUd8Pe7vH+cjZXsZ
+ ldkAEQkKa8XJ4HgGR1i7/3aPx6pjLhSvvQSCc3G0=
+Date: Sat, 19 Sep 2020 16:49:11 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] soundwire: bus: add enumerated Slave device to
- device list
-Message-ID: <20200919111330.GV2968@vkoul-mobl>
+Subject: Re: [PATCH v2 2/2] soundwire: sysfs: add slave status and device
+ number before probe
+Message-ID: <20200919111911.GW2968@vkoul-mobl>
 References: <20200917160007.153106-1-pierre-louis.bossart@linux.intel.com>
- <20200917160007.153106-2-pierre-louis.bossart@linux.intel.com>
- <20200918120502.GR2968@vkoul-mobl>
- <eb02ba7f-5f80-cfde-9225-064d185fd64d@linux.intel.com>
+ <20200917160007.153106-3-pierre-louis.bossart@linux.intel.com>
+ <20200918121614.GS2968@vkoul-mobl>
+ <c8729c1d-6d36-ad34-34c3-899ba0f5366d@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eb02ba7f-5f80-cfde-9225-064d185fd64d@linux.intel.com>
+In-Reply-To: <c8729c1d-6d36-ad34-34c3-899ba0f5366d@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org,
  Bard liao <yung-chuan.liao@linux.intel.com>,
@@ -93,34 +93,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 18-09-20, 08:54, Pierre-Louis Bossart wrote:
+On 18-09-20, 09:21, Pierre-Louis Bossart wrote:
 > 
 > 
-> On 9/18/20 7:05 AM, Vinod Koul wrote:
-> > On 17-09-20, 11:00, Pierre-Louis Bossart wrote:
-> > > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > 
-> > > Currently Slave devices are only added on startup, either from Device
-> > > Tree or ACPI entries. However Slave devices that are physically
-> > > present on the bus, but not described in platform firmware, will never
-> > > be added to the device list. The user/integrator can only know the
-> > > list of devices by looking a dynamic debug logs.
-> > > 
-> > > This patch suggests adding a Slave device eveb there is no matching DT or
-> > > ACPI entry, so that we can see this in sysfs entry.
-> > > 
-> > > Initial code from Srinivas. Comments, fixes for ACPI probe and edits
-> > > of commit message by Pierre.
+> 
+> > >    * Base file is device
+> > >    *	|---- modalias
+> > > + *	|---- dev-status
+> > > + *		|---- status
+> > > + *		|---- device_number
 > > 
-> > You should add yours as Co-developed. That is the standard tag for these
-> > things
+> > Any reason why we want this under dev-status.
+> > 
+> > Both the status and device_number belong to the device, so we can
+> > put them under device and use device properties
 > 
-> ok, I've never used this tag before but it seems appropriate indeed, thanks
-> for the suggestion.
-> 
-> Should I add your Co-developed tag to the second patch as well then?
+> We already use directories for device-level and port-level properties, I
+> just thought it be cleaner to continue this model. We might also expand the
+> information later on, e.g. provide interrupt status.
 
-Sure
+Right now we have directories for N ports (needs a dir due to nature of
+N ports) and 'properties' derived from Disco/firmware.
+So Nport and properties makes sense. But for generic device level stuff
+like device number, status and future interrupt or anything should be at
+device level.
+
+> I don't mind if we remove the directory and move everything up one level,
+> but it wouldn't be consistent with the previous work.
+
+Just because we had directory for a reason, adding a directory to
+conform to that does make it better. IMO device files should be at
+device directory
+
+> 
+> > > +static ssize_t device_number_show(struct device *dev,
+> > > +				  struct device_attribute *attr, char *buf)
+> > > +{
+> > > +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> > > +
+> > > +	if (slave->status == SDW_SLAVE_UNATTACHED)
+> > > +		return sprintf(buf, "%s", "N/A");
+> > 
+> > Do we really want N/A here, 0 should imply UNATTACHED and then the
+> > status_show would tell UNATTACHED.
+> 
+> Actually no. If you look at the standard, 'Unattached' is an 'internal state
+> of a Slave that indicates that it is not synchronized with to the Frame
+> boundaries within the Bitstream'. A Slave device can only become attached
+> and report it's presence as Device0 in a PING frame once it's ATTACHED -
+> which in turn means the device has been able to sync for 15 frames. A device
+> number of zero means the device is able to respond to command but has not
+> yet been enumerated, or was enumerated previously but lost sync or went
+> through a reset sequence and reattached. A device number of zero does not
+> mean the device is unattached, the logic is as follow:
+> 
+> Attached -> Device 0 or 1..11
+> Unattached -> No concept of device number (or not an observable value).
+> 
+> We should not overload what 'Device0' means and instead follow the standard
+> to the letter. We also don't want the attribute to come and go dynamically,
+> so N/A (Not Applicable) is IMHO the only way to convey this meaning.
+> 
+> Does this help?
+
+Ok lets retain this.
 
 -- 
 ~Vinod
