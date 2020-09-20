@@ -2,117 +2,117 @@ Return-Path: <SRS0=okCM=C5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 046B1C43465
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 18:46:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9614EC43463
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 18:53:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CEF820575
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 18:46:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C70D207D3
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 18:53:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F7pxwaTB";
-	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="rAQrhhB5";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AbCyfx6U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CEF820575
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F0I2eRtQ";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="oFC6W7pv";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VReChI7L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C70D207D3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E92A15F2;
-	Sun, 20 Sep 2020 20:45:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E92A15F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ABCE1607;
+	Sun, 20 Sep 2020 20:52:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ABCE1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600627584;
-	bh=bZ2EnYEWFewPiVyiZAM9DVj8IzBWpOvF/wsLvkqSxZM=;
+	s=default; t=1600627990;
+	bh=5fnMLhiLFWH5jsnpoEP8cZP4tMCIFx0i5yUjBSSU6JA=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F7pxwaTB+mNAoEzZA3x2bMRP15aoCU7/UbziKo76PMpttyJFdBjFM2M5XmP8tDFJ1
-	 B506uLkUMwkEYGxfe9mbt3Of4D2HQ6Y/FQfhAE0Xt1Z+rtHOPiO4V1Pw11nmaisRXZ
-	 XJonpsrh7awU2A/BCII/DL3uLjUq6qrtnTkikf2U=
+	b=F0I2eRtQrml2A97rMujBAYIuCIhjf8mNbCNltLPsgjRUlU9nS9y7Gt5EiuEemE/Df
+	 corn+dehowrJ/urWPpGoJZjjrrUfQZ7ApB4Z8nR1DTKd2+fS8frN3EUGQScMkUeikl
+	 UXq5zui+Yqh5PryEq0zBmW9rLXQB0I2uANmaXZOs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B68FF8010A;
-	Sun, 20 Sep 2020 20:45:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13FF2F80229;
+	Sun, 20 Sep 2020 20:52:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9927AF80229; Sun, 20 Sep 2020 20:45:32 +0200 (CEST)
+ id DB029F80232; Sun, 20 Sep 2020 20:52:17 +0200 (CEST)
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
  [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E465F8010A
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2020 20:45:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E465F8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 570E8F8010A
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2020 20:52:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 570E8F8010A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="rAQrhhB5"; 
+ header.b="oFC6W7pv"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="AbCyfx6U"
+ header.i=@messagingengine.com header.b="VReChI7L"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id 12AC9580195;
- Sun, 20 Sep 2020 14:45:28 -0400 (EDT)
+ by mailnew.nyi.internal (Postfix) with ESMTP id 2F68C5800A3;
+ Sun, 20 Sep 2020 14:52:14 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Sun, 20 Sep 2020 14:45:28 -0400
+ by compute3.internal (MEProxy); Sun, 20 Sep 2020 14:52:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  subject:to:cc:references:from:message-id:date:mime-version
  :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=U
- ktx1VRTJlKt926xOC0fJTdMwvcW/tqqviFWzSCgYTM=; b=rAQrhhB5BY0ozfCkJ
- ULTtKfgOS3lObtqJesEa7hjgZauSluJH9jNbISNOMO3zbDec68JUb5gZBeBOpok5
- m+9OAWwbJ+jfiMXM8DdSxxpFbnDtZX7H5mBhFPCWOg3SPbUBGuLMVgXbLLWUqlSi
- 4oUigGIyYSul7rZXoxrx2t1mmg50ixyI+VX5MBEnDo5++2Ew/1y65jFYb/sMkjGx
- 4Re53tg45uWn7be/XhNg6csizZBb+cvXfZ330fbWNX+PfUjqALaJif1tcU3/C9Gs
- V8r7cadIatj9uJRQ6XUdmhXYJtUUj5QeYQbi8zwlkKUuLfMqpZ556n+0COra6Mz7
- /7tsg==
+ aKCWb+alngLYqUciWW42BXBdBSdxoHktDXuWpsVbrI=; b=oFC6W7pv/B3eHmUKR
+ 5P4lPrdAPq4Je35suAc4Jnc9Y2mx/f6alNQMyaLHujFUmtjAblXP8YV3sB4JgOaj
+ 1q/URKWa54gXKwZ+/qa6myvdQuwdPT4XX2QjfDa/MEbOzNmMph1xbHpcBftlqmmu
+ le8crrD+s5xT9ff+Ts9ghK+W5mZvai7etQMyvaOuHlaRsthzlOsp9htLJy1PzWRD
+ 9MoTVVTd9nlXjl/qu7K6zEiVIJYXpY97A1uKCFcCuxQzyluAwqlJqtARhADODX4m
+ PevuLPGAdXAJyeAz9/ND4/uM5bPN2Jca/tw5hqd5Dsu5Jzgx/zANMe5Tg/Lrxk8k
+ lGE8g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:content-type
  :date:from:in-reply-to:message-id:mime-version:references
  :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm3; bh=Uktx1VRTJlKt926xOC0fJTdMwvcW/tqqviFWzSCgY
- TM=; b=AbCyfx6U/EbMMaPCWW1L77lTvD7DlIDa0Az2WEgvymv2ZaG96RfPHawTu
- WS4z/r/r19hSvIlclTboFKRiY6hy8R/0hUM9Z/T994jKm/GF5bAdfkQ4RVA+glbp
- vcsFZtxbEem/BAdBusZEoSGnQ7LMUllTlAYs9jLiCb1GtB/U3z8jgRVgkzExp7Hj
- uur7YrQhy0pnbBe1AyOBtC0HnfFauPD4WOC4kH5yJqNft38GQwX3rILolLrkdiij
- ON154Jscjw4AakZWff6WsEpBqomqgpy8QZnpj/QC/G7bf16t33PMokahpcZ/VI8Y
- 3ydIJLbCGGub5YfsTxUmQ1yqp4nUQ==
-X-ME-Sender: <xms:RqNnXwSI0Wrg8dfDYN4_sS3QU-0_62cUy31SVgAMDBEJwXLz2dZ5Zg>
- <xme:RqNnX9ydEN93faF_-710xV6VuUdqP6V1fJiAA4_uxVacTfwmox-_apY7Ef8Z3Kpfg
- 7xtLWGKoBzc1FHO_Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgdduvdejucetufdoteggodetrfdotf
+ :x-sasl-enc; s=fm3; bh=UaKCWb+alngLYqUciWW42BXBdBSdxoHktDXuWpsVb
+ rI=; b=VReChI7L+/asa/We8ef+cHzapzCWscrW00o9/Tfxe2AJkNafuoRlHDFSE
+ 7v+Vt1cfM3xe8ypmDp9uu84JbASRu0Z3noC77ROi5XTYvw7SG6z1ARLg59WhAnEb
+ 06ZmZGW9JIdH0l/mjewLKaidA4o7YBtYCwZLHXxAmOVGijvIJa+NlKT+ds3I8Du4
+ CeA8dQ2wj6NPc4EQ3WLqZiMLPZM2aERJ5zWgPtRe0kZKKexocea8CENl+QdgoWc4
+ Ek2qvqXRJY8GohzinSi9Q1Ulwfn9YAYA8kJagh8aI03yBTA3dnbOYX8W9tfiNjye
+ gm/Gnii7e0RJTF6HExOZamm+WnZRA==
+X-ME-Sender: <xms:3KRnX-urMvU9Q17WZsg0I44fQd7RIohRuDcYbdqPfEOkN_HSvw7QKA>
+ <xme:3KRnXzdxonus58aXIzgMhbuV6GwFTaCm7tmXVnE_a9_XrlPdLFCOn6uZvGCy4SDKd
+ LppPbNlmkbgjJVnRA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgddufedtucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
  cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
  vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
- ftrfgrthhtvghrnhepgfelkeduveejtdejhfeiledvhfeggeeiieeklefhfeefffffffeg
- udetteelieejnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
- hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
- nhgurdhorhhg
-X-ME-Proxy: <xmx:R6NnX902Fy5EhF0jiUx3_Pl0HOoeA9_3WEGJyerJ-_8NP2iFAF6tfA>
- <xmx:R6NnX0BWzPk2KOx8Oh9NsQCn8idrKwokWSLrylMqMrQTCSRKu4jDOQ>
- <xmx:R6NnX5j9wTAF8rmwFN0dXZm0MetMKinuMIZyFkp0Z48pEnTnSMtfzQ>
- <xmx:SKNnXyZCTMzcRgmjMOOqgzJNPEPVkdOzn-SsTtg1jQcKIkNyZPwHpQ>
+ ftrfgrthhtvghrnhepuddvleffkeejhfduieelheejteehleefieeikefgteeugefhtdev
+ keefvefgheeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepjedtrddufe
+ ehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+ lhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:3KRnX5z29Z1ju_ZDS9Yav0YREkL2MbH_JK_QZbayg1l6Jm2d8ZYvIw>
+ <xmx:3KRnX5OU_SGLZL2fXculMRXlA0MoH1mOV6ohI9_0vZy6CHbNSI9Kpw>
+ <xmx:3KRnX-8YPPoC05bhO1FvnIhRo9PVg-ScC41SsnoO6PzLS6pJ21RX4g>
+ <xmx:3qRnX5VoP_9B6N7A2NI8mlo0RSDz8KMC6osnEwfyAMBz4uPqugmjRg>
 Received: from [192.168.50.169]
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 63E06328005A;
- Sun, 20 Sep 2020 14:45:26 -0400 (EDT)
-Subject: Re: [PATCH v3 05/19] ASoc: sun4i-i2s: Add 20 and 24 bit support
+ by mail.messagingengine.com (Postfix) with ESMTPA id 1E85B3280065;
+ Sun, 20 Sep 2020 14:52:12 -0400 (EDT)
+Subject: Re: [PATCH v3 06/19] ASoC: sun4i-i2s: Fix sun8i volatile regs
 To: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
 References: <20200920180758.592217-1-peron.clem@gmail.com>
- <20200920180758.592217-6-peron.clem@gmail.com>
+ <20200920180758.592217-7-peron.clem@gmail.com>
 From: Samuel Holland <samuel@sholland.org>
-Message-ID: <2d2799c5-62e8-8e64-c739-3d85b89c1178@sholland.org>
-Date: Sun, 20 Sep 2020 13:45:25 -0500
+Message-ID: <497a7062-4acf-d928-c2ee-ec595ed6799b@sholland.org>
+Date: Sun, 20 Sep 2020 13:52:11 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200920180758.592217-6-peron.clem@gmail.com>
+In-Reply-To: <20200920180758.592217-7-peron.clem@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -136,21 +136,61 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On 9/20/20 1:07 PM, Clément Péron wrote:
-> From: Marcus Cooper <codekipper@gmail.com>
+> The FIFO TX reg is volatile and sun8i i2s register
+> mapping is different from sun4i.
 > 
-> Extend the functionality of the driver to include support of 20 and
-> 24 bits per sample.
+> Even if in this case it's doesn't create an issue,
+> Avoid setting some regs that are undefined in sun8i.
 > 
-> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 > Signed-off-by: Clément Péron <peron.clem@gmail.com>
 > Acked-by: Maxime Ripard <mripard@kernel.org>
 > ---
->  sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
 > 
-As I have mentioned before, if you want to support a 32-bit slot width on sun4i
-variants (which patch 2 does via TDM and this patch does via PCM format), you
-need to fix sun4i_i2s_get_wss() to return "3", not "4", for a 32-bit input.
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index ce4913f0ffe4..a35be0e2baf5 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -1126,12 +1126,19 @@ static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+>  
+>  static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>  {
+> -	if (reg == SUN8I_I2S_INT_STA_REG)
+> +	switch (reg) {
+> +	case SUN4I_I2S_FIFO_CTRL_REG:
+
+Please check if this breaks audio recording with runtime PM enabled. I noticed
+this with an older revision of the series that also changed
+sun4i_i2s_volatile_reg. Marking SUN4I_I2S_FIFO_CTRL_REG as volatile broke
+setting of SUN4I_I2S_FIFO_CTRL_TX_MODE/RX_MODE, because the set_fmt() callback
+is not run with a runtime PM reference held, and volatile registers are not
+written by regcache_sync() during sun4i_i2s_runtime_resume().
+
+As a workaround, I moved the TX_MODE/RX_MODE initialization to hw_params(), but
+I am not sure it is the right thing to do:
+
+https://github.com/smaeul/linux/commit/5e40ac610986.patch
 
 Cheers,
 Samuel
+
+> +	case SUN4I_I2S_FIFO_RX_REG:
+> +	case SUN4I_I2S_FIFO_STA_REG:
+> +	case SUN4I_I2S_RX_CNT_REG:
+> +	case SUN4I_I2S_TX_CNT_REG:
+> +	case SUN8I_I2S_FIFO_TX_REG:
+> +	case SUN8I_I2S_INT_STA_REG:
+>  		return true;
+> -	if (reg == SUN8I_I2S_FIFO_TX_REG)
+> -		return false;
+>  
+> -	return sun4i_i2s_volatile_reg(dev, reg);
+> +	default:
+> +		return false;
+> +	}
+>  }
+>  
+>  static const struct reg_default sun4i_i2s_reg_defaults[] = {
+> 
+
