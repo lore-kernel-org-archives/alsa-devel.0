@@ -5,67 +5,67 @@ X-Spam-Level:
 X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09814C43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42937C43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:28:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B243920874
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9728720809
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:28:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CslSFgTX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B243920874
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HUsDNMNa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9728720809
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1158D169D;
-	Mon, 21 Sep 2020 09:27:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1158D169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FE761680;
+	Mon, 21 Sep 2020 09:27:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FE761680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600673314;
-	bh=9m1Bq1+lLKjkQjdVZ2BzCZY4sKlgaipmgohvZ14YkZI=;
+	s=default; t=1600673325;
+	bh=Ti0TSr1YtP/t9iyu5kvokKVtzRGT7+IVg2TUlU0Nto0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CslSFgTXEkFtJrcops3WfdU/ua7g1uaktZ1iHeBWnnc8mRQNJmcMFgoMCpeUJblzr
-	 6EREt/BiQWElGUmEuW6kgfxon890su3zXUj/d6HRMFUnP54b0BuAR1tro+xPcd5xFv
-	 npmKOTRL4MZ/bXV/nPbitKt//YKwTzbDbsEmzdZw=
+	b=HUsDNMNaD90xR2temK+Attt9ugaWcLj/IIEdbitfeM4I+znS5U4jWbvCjih0fn3gG
+	 H8yWkPVZYjj8Aksud6qPiEdG9hF2Fq7/2F5wvjZf25rufroNQMH6RD/E9z0FVxGNrA
+	 YYfCYT8senQADV6zpCwO55ebV/flA9LvDgEgVWBM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D29CAF8028E;
-	Mon, 21 Sep 2020 09:26:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D303F802C3;
+	Mon, 21 Sep 2020 09:26:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64834F8028D; Mon, 21 Sep 2020 09:26:06 +0200 (CEST)
+ id 7327BF80162; Mon, 21 Sep 2020 09:26:06 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46F4BF80171
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 09:25:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46F4BF80171
-IronPort-SDR: glRKwYo0uwnNeDtSVnC6uGasetOWoHirU1OeDkH4xVZWflHDj2LY69PPCh13LdeP8OQ2WSXgpP
- 12QMJBefauKQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="139824327"
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="139824327"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5A6DF80162
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 09:25:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A6DF80162
+IronPort-SDR: FLd/ef3dS+ujYYh3jvwP/mgDWSQDO3r/zYc1YFsdjKU+InIxOGgDJrLm0hArg4JyCVkUwb7nQH
+ 2+qiACCKqW1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="139824323"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="139824323"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2020 00:25:57 -0700
-IronPort-SDR: qVMxYWARWXK3ntzuJG4+M42B4oPESz9UEp+IA1jqDd0eQrWGJnmu0VmYIBu/apJxn1DcW/raU1
- nXuZrG66+RrQ==
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="485325712"
+ 21 Sep 2020 00:25:54 -0700
+IronPort-SDR: tJCyL5LH767pRUhzpKyMpYvg2ZQhRGpRCNFUjrrH30LVD2+umg+ssvdfqr5oNI1cJfjXIlPW6B
+ SBJOXJxZCp5A==
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="485325687"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2020 00:25:54 -0700
+ 21 Sep 2020 00:25:50 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 3/3] soundwire: cadence: add data port test fail interrupt
-Date: Mon, 21 Sep 2020 03:32:07 +0800
-Message-Id: <20200920193207.31241-4-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/3] soundwire: intel: enable test modes
+Date: Mon, 21 Sep 2020 03:32:06 +0800
+Message-Id: <20200920193207.31241-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200920193207.31241-1-yung-chuan.liao@linux.intel.com>
 References: <20200920193207.31241-1-yung-chuan.liao@linux.intel.com>
@@ -91,80 +91,83 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The Master ports can report errors in test data modes, enable the
-interrupt and just log a message. This capability is useful for Master
-sink ports only (Master source ports generate data).
+This patch adds debugfs support to override the Master and Slave data
+modes. The settings only take effect prior to a new stream being
+prepared/enabled, or on resume.
+
+The test mode can be set to verify data integrity and detect bus
+clashes, but can only be used to test capture paths. In this case the
+input generated by a Slave source port is replaced by a fixed or
+cyclical patterns.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ drivers/soundwire/intel.c | 42 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 19d445ef6764..9fa55164354a 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -175,6 +175,7 @@ MODULE_PARM_DESC(cdns_mcp_int_mask, "Cadence MCP IntMask");
- #define CDNS_DPN_HCTRL_LCTRL			GENMASK(10, 8)
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 7dc6569ac431..6a1e862b16c3 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -262,6 +262,42 @@ static int intel_reg_show(struct seq_file *s_file, void *data)
+ }
+ DEFINE_SHOW_ATTRIBUTE(intel_reg);
  
- #define CDNS_PORTCTRL				0x130
-+#define CDNS_PORTCTRL_TEST_FAILED		BIT(1)
- #define CDNS_PORTCTRL_DIRN			BIT(7)
- #define CDNS_PORTCTRL_BANK_INVERT		BIT(8)
- 
-@@ -870,6 +871,19 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- 		dev_err_ratelimited(cdns->dev, "Bus clash for data word\n");
- 	}
- 
-+	if (cdns->bus.params.m_data_mode != SDW_PORT_DATA_MODE_NORMAL &&
-+	    int_status & CDNS_MCP_INT_DPINT) {
-+		u32 port_intstat;
++static int intel_set_m_datamode(void *data, u64 value)
++{
++	struct sdw_intel *sdw = data;
++	struct sdw_bus *bus = &sdw->cdns.bus;
 +
-+		/* just log which ports report an error */
-+		port_intstat = cdns_readl(cdns, CDNS_MCP_PORT_INTSTAT);
-+		dev_err_ratelimited(cdns->dev, "DP interrupt: PortIntStat %8x\n",
-+				    port_intstat);
++	if (value > SDW_PORT_DATA_MODE_STATIC_1)
++		return -EINVAL;
 +
-+		/* clear status w/ write1 */
-+		cdns_writel(cdns, CDNS_MCP_PORT_INTSTAT, port_intstat);
-+	}
++	/* Userspace changed the hardware state behind the kernel's back */
++	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
 +
- 	if (int_status & CDNS_MCP_INT_SLAVE_MASK) {
- 		/* Mask the Slave interrupt and wake thread */
- 		cdns_updatel(cdns, CDNS_MCP_INTMASK,
-@@ -994,7 +1008,9 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
- 	mask |= CDNS_MCP_INT_CTRL_CLASH | CDNS_MCP_INT_DATA_CLASH |
- 		CDNS_MCP_INT_PARITY;
- 
--	/* no detection of port interrupts for now */
-+	/* port interrupt limited to test modes for now */
-+	if (cdns->bus.params.m_data_mode != SDW_PORT_DATA_MODE_NORMAL)
-+		mask |= CDNS_MCP_INT_DPINT;
- 
- 	/* enable detection of RX fifo level */
- 	mask |= CDNS_MCP_INT_RX_WL;
-@@ -1624,11 +1640,16 @@ void sdw_cdns_config_stream(struct sdw_cdns *cdns,
++	bus->params.m_data_mode = value;
++
++	return 0;
++}
++DEFINE_DEBUGFS_ATTRIBUTE(intel_set_m_datamode_fops, NULL,
++			 intel_set_m_datamode, "%llu\n");
++
++static int intel_set_s_datamode(void *data, u64 value)
++{
++	struct sdw_intel *sdw = data;
++	struct sdw_bus *bus = &sdw->cdns.bus;
++
++	if (value > SDW_PORT_DATA_MODE_STATIC_1)
++		return -EINVAL;
++
++	/* Userspace changed the hardware state behind the kernel's back */
++	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
++
++	bus->params.s_data_mode = value;
++
++	return 0;
++}
++DEFINE_DEBUGFS_ATTRIBUTE(intel_set_s_datamode_fops, NULL,
++			 intel_set_s_datamode, "%llu\n");
++
+ static void intel_debugfs_init(struct sdw_intel *sdw)
  {
- 	u32 offset, val = 0;
+ 	struct dentry *root = sdw->cdns.bus.debugfs;
+@@ -274,6 +310,12 @@ static void intel_debugfs_init(struct sdw_intel *sdw)
+ 	debugfs_create_file("intel-registers", 0400, sdw->debugfs, sdw,
+ 			    &intel_reg_fops);
  
--	if (dir == SDW_DATA_DIR_RX)
-+	if (dir == SDW_DATA_DIR_RX) {
- 		val = CDNS_PORTCTRL_DIRN;
++	debugfs_create_file("intel-m-datamode", 0200, sdw->debugfs, sdw,
++			    &intel_set_m_datamode_fops);
++
++	debugfs_create_file("intel-s-datamode", 0200, sdw->debugfs, sdw,
++			    &intel_set_s_datamode_fops);
++
+ 	sdw_cdns_debugfs_init(&sdw->cdns, sdw->debugfs);
+ }
  
-+		if (cdns->bus.params.m_data_mode != SDW_PORT_DATA_MODE_NORMAL)
-+			val |= CDNS_PORTCTRL_TEST_FAILED;
-+	}
- 	offset = CDNS_PORTCTRL + pdi->num * CDNS_PORT_OFFSET;
--	cdns_updatel(cdns, offset, CDNS_PORTCTRL_DIRN, val);
-+	cdns_updatel(cdns, offset,
-+		     CDNS_PORTCTRL_DIRN | CDNS_PORTCTRL_TEST_FAILED,
-+		     val);
- 
- 	val = pdi->num;
- 	val |= CDNS_PDI_CONFIG_SOFT_RESET;
 -- 
 2.17.1
 
