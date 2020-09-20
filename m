@@ -7,73 +7,73 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D6C7C43465
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 14:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E3D2C43465
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 14:10:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A00521789
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 14:09:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67B3A21531
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 14:10:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ssHyYXsI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="my7AamuI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A00521789
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kryMJqF4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tLu+eCAh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67B3A21531
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AB4486E;
-	Sun, 20 Sep 2020 16:08:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AB4486E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A22921697;
+	Sun, 20 Sep 2020 16:09:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A22921697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600610945;
-	bh=5Nu/Q5V28hWJU3Crt7+FLHDN+lSqZIJn2t8MycJ4Kfc=;
+	s=default; t=1600610998;
+	bh=lu9h9XynfWiHeNchuTVq0VmpBRgsLcjroJ08RriK6FQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ssHyYXsI+aRvoDD+2BClOBSMB0YO/i/brTFHzw+VGVHPfPCx3P4NOYGvhBws5Xq/a
-	 wgGWQ92IHdVmnqBGjBOsB06WXHTPqrs06GLzA7Sjjuv7viRMgQOtkl5lMayu+v6vm0
-	 Zc8sqJ8Sk7ax3GUkY10iSPP+QDEAsUHTzHLxR9CE=
+	b=kryMJqF4+SFw4o7jxlBcYEzm75qdissHm+A5UEMVAilrzUdbhgJ4Y3b7fVS7BLyZu
+	 T9GffxlPhnZEAmgrK+cLGGujbUN4sZ5Um+tu99KOWN1PoGTh7L0DOWJpqrn+s4TgYn
+	 wIadHZwdI9VQ568xYTxWCJNd/8Iy9fSgAa1bjdmM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3542F80229;
-	Sun, 20 Sep 2020 16:08:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 394A1F8023E;
+	Sun, 20 Sep 2020 16:08:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4378DF80232; Sun, 20 Sep 2020 16:08:13 +0200 (CEST)
+ id 17E7AF80256; Sun, 20 Sep 2020 16:08:31 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0655BF8010F
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2020 16:08:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0655BF8010F
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7D10F80234
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2020 16:08:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7D10F80234
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="my7AamuI"
+ header.b="tLu+eCAh"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C05FC21531;
- Sun, 20 Sep 2020 14:07:58 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0AC2621531;
+ Sun, 20 Sep 2020 14:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600610879;
- bh=5Nu/Q5V28hWJU3Crt7+FLHDN+lSqZIJn2t8MycJ4Kfc=;
+ s=default; t=1600610900;
+ bh=lu9h9XynfWiHeNchuTVq0VmpBRgsLcjroJ08RriK6FQ=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=my7AamuI0IRhPPpTH8LoiNnx+5ToKW4tisR+RYX62c0lCpubPnNVu35GdWXBc2RqE
- BncX3ahljtB9G9+fJyoK6vnft7jC2L8PKTHeIHBUJ0hLizAQty/w7wk5tOL0RQd562
- xvfzpRl+X/f0CbrhiyMVi/j5k1OB0ObMhpYkNLEE=
-Date: Sun, 20 Sep 2020 16:08:24 +0200
+ b=tLu+eCAhLmynwau/OgjdgXITj8Uu3Ajyw7j6L6WMWTBtOCQUoxWo96pINqGo/ITMB
+ iLoj0ieZJon4iv+bsf0rstdavCuZDRNOCuxN4mFQi7hrQT+zsjVJE3jrAAC9dKoSX8
+ Rim6zO4acLR631zEPonMI5FK/X8l5Rf9YUot6uBQ=
+Date: Sun, 20 Sep 2020 16:08:46 +0200
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH 07/20] dt-bindings: usb: renesas,usb3-peri: Document
- r8a774e1 support
-Message-ID: <20200920140824.GA2915460@kroah.com>
+Subject: Re: [PATCH 11/20] dt-bindings: usb: renesas,usbhs: Add r8a774e1
+ support
+Message-ID: <20200920140846.GB2915460@kroah.com>
 References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-8-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CA+V-a8vJ2n3KEL8P+XmVob2zjoWaX+s4a6c1TV_WoPFkwdkZmA@mail.gmail.com>
+ <1594919915-5225-12-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8vuR-7vqxNnrqQ5Ysf3Xjvhp3xRZ33i8+6nEGFLJciT3A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+V-a8vJ2n3KEL8P+XmVob2zjoWaX+s4a6c1TV_WoPFkwdkZmA@mail.gmail.com>
+In-Reply-To: <CA+V-a8vuR-7vqxNnrqQ5Ysf3Xjvhp3xRZ33i8+6nEGFLJciT3A@mail.gmail.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>,
  Geert Uytterhoeven <geert+renesas@glider.be>,
  linux-pci <linux-pci@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
@@ -107,7 +107,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Sep 19, 2020 at 11:50:07AM +0100, Lad, Prabhakar wrote:
+On Sat, Sep 19, 2020 at 11:54:05AM +0100, Lad, Prabhakar wrote:
 > Hi Greg,
 > 
 > On Thu, Jul 16, 2020 at 6:19 PM Lad Prabhakar
@@ -118,12 +118,12 @@ On Sat, Sep 19, 2020 at 11:50:07AM +0100, Lad, Prabhakar wrote:
 > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 > > ---
-> >  Documentation/devicetree/bindings/usb/renesas,usb3-peri.yaml | 1 +
+> >  Documentation/devicetree/bindings/usb/renesas,usbhs.yaml | 1 +
 > >  1 file changed, 1 insertion(+)
 > >
 > Could you please pick this patch.
 
-Don't DT patches have to be acked by a DT maintainer first?
+Same here, doesn't a DT maintainer have to ack this?
 
 thanks,
 
