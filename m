@@ -3,74 +3,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4CA3C43465
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 17:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2241EC43465
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 17:03:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F16D0206BE
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 17:02:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B38DE2073A
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 17:03:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z8DMTADo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DR67Vkjk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F16D0206BE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OA012fp8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mdrq8lxr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B38DE2073A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C93316D7;
-	Mon, 21 Sep 2020 19:02:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C93316D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4357016BB;
+	Mon, 21 Sep 2020 19:02:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4357016BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600707771;
-	bh=+knWzm3xj2gskwUc9VYhgeLl1eQQ+hq8DGmvHZBEvB0=;
+	s=default; t=1600707818;
+	bh=2aslu1ivz1KEDe+tgjaIkEZwIP4cmYNaWXIHYB/Mrvs=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z8DMTADolUrYpSybYW61I/t3F/3G3MpVHmcLYJWbILa5Vzohlhx0mP1m/J9E1lztu
-	 aLPCtVY34Yp1FsIEPaSdXyYH346VJApOKScvodhk6unhPeayK2ksxECY5+PZgixLPK
-	 QCbKyq+ffaw2FaN8E8uSc7Z+sa2BjAgvPbu9pvtc=
+	b=OA012fp8zqXqBIMZQJaDjJYUoelQguOwjmuZVnc0jo0fHw2YpPDaR1mWvbw2cvt65
+	 6kfx41kUBwb610vsaOklMRj97Bw23v6xegi2AWOmH6rHekVVXZFEGVTrp9MycWfLjf
+	 VgBhS1OplCcBov5B3HzVyzBPcQycZIl0GTWt0Odo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D810BF802E3;
-	Mon, 21 Sep 2020 18:59:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7906FF802FD;
+	Mon, 21 Sep 2020 18:59:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0461FF802E1; Mon, 21 Sep 2020 18:58:59 +0200 (CEST)
+ id 2EA6BF802FE; Mon, 21 Sep 2020 18:59:10 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B03BF802DF
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 18:58:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B03BF802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4484AF802E2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 18:59:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4484AF802E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DR67Vkjk"
+ header.b="Mdrq8lxr"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4BB8420C09;
- Mon, 21 Sep 2020 16:58:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 43BE22223E;
+ Mon, 21 Sep 2020 16:59:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600707535;
- bh=+knWzm3xj2gskwUc9VYhgeLl1eQQ+hq8DGmvHZBEvB0=;
+ s=default; t=1600707540;
+ bh=2aslu1ivz1KEDe+tgjaIkEZwIP4cmYNaWXIHYB/Mrvs=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=DR67VkjkH2w8LYQ91CjXT9tVvpO+pyX9G1WD4sFJ/5T2McpNoiwky20+SpLMX6Gsj
- Kv9I3eDtc0/QRK+Yr3NmiTW0pNy+HPzOECEQpPlfsmMfLolofmbWAK2ozffESGYl6Q
- oZWmtT2AwIrkUBmmIRWXCYr0XaJn6QQXLC6y6f6w=
-Date: Mon, 21 Sep 2020 17:58:03 +0100
+ b=Mdrq8lxrcFaRKCbAdI1pJrMMTz13ehyh4nVZMmxjWt4U6fqycdz6vbLR+6kNpG+Rn
+ dTPR7lbLWUlqzgGV/pYdbh1Z0wQuPpJZFbIRR3hUkYcZy31bVBaSQdToxYafAsyvzk
+ nRXK0149eFO7ZwAr+k07G/1hp8j8EgI/RKnBaYds=
+Date: Mon, 21 Sep 2020 17:58:08 +0100
 From: Mark Brown <broonie@kernel.org>
-To: devicetree@vger.kernel.org, lgirdwood@gmail.com, dmurphy@ti.com,
- Camel Guo <camel.guo@axis.com>, tiwai@suse.com, robh+dt@kernel.org
-In-Reply-To: <20200916075949.28479-1-camel.guo@axis.com>
-References: <20200916075949.28479-1-camel.guo@axis.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: tlv320adcx140: Add GPIO config and
- drive config
-Message-Id: <160070745846.56122.15642862327141755501.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Camel Guo <camelg@axis.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20200921105038.2909899-1-kai.vehmanen@linux.intel.com>
+References: <20200921105038.2909899-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: pm: Fix prepare callback behavior for OF
+ usecase
+Message-Id: <160070745847.56122.5442062495067528588.b4-ty@kernel.org>
+Cc: ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com,
+ pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,9 +85,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Sep 2020 09:59:48 +0200, Camel Guo wrote:
-> Add properties for configuring the General Purpose Input Output (GPIO).
-> There are 2 settings for GPIO, configuration and the output drive type.
+On Mon, 21 Sep 2020 13:50:38 +0300, Kai Vehmanen wrote:
+> On i.MX platforms PM is not managed via ACPI although CONFIG_ACPI
+> can be set. So, in order to correctly set the system target state
+> we introduce a flag for platforms that require to use acpi target
+> states.
 
 Applied to
 
@@ -96,10 +97,8 @@ Applied to
 
 Thanks!
 
-[1/2] dt-bindings: tlv320adcx140: Add GPIO config and drive config
-      commit: 15b3d324c8980022071710b5096b705eb6b74fca
-[2/2] ASoC: tlv320adcx140: Add support for configuring GPIO pin
-      commit: d5214321498a43558d9ffcce4153775c2c296bad
+[1/1] ASoC: SOF: pm: Fix prepare callback behavior for OF usecase
+      commit: 43437d0417a36bc9174deedce4ecc2c516ffde57
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
