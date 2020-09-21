@@ -2,67 +2,70 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07968C43465
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41737C43464
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:41:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A311207BC
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:38:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 23311207BC
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:41:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F0ubdmEP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A311207BC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nSKXEpHc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23311207BC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E354F17AC;
-	Mon, 21 Sep 2020 10:37:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E354F17AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FA8E1787;
+	Mon, 21 Sep 2020 10:40:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FA8E1787
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600677515;
-	bh=TXLstKBxgDifAcr1Is47kOou6Xh6+6ZrYOOjDBMTeVg=;
+	s=default; t=1600677689;
+	bh=/Uc8+uhMWsBJuSuM2T2XUGreXoNC/flU57zbnQQv41E=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F0ubdmEPLBJR37584dB1gY0ZBzosAdLGIfQd3O5Bs2SRdX3u+g9qfbEs8OhLUbX+j
-	 L77P4PzCIy0I2e5i158LGyjOTHoahAdVBEvw7Bfkdyq8SIs6c0dtz4/GyJMg7ogAeU
-	 HcuRT5lveXLFZ8FO/Kx4pa4V7OqLqlJyE9VyAbJQ=
+	b=nSKXEpHc4B6cnCTSO31Yz6csxn+Eooz3o5udNBS4BzCcBA/YoN31a5hSA/f/fhx5w
+	 O1E8fC4K9OP7dAutYZ1J7EsBVA3hPl+RtUhmEfINW8sJuLq1RPG3a0K8B4ry8KdC6Q
+	 J32tgoQuCpfFxVy5hKA1sLobRoNZjSnvX1O0yK5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 852FEF80161;
-	Mon, 21 Sep 2020 10:37:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 312C8F80161;
+	Mon, 21 Sep 2020 10:40:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FD8DF80162; Mon, 21 Sep 2020 10:37:42 +0200 (CEST)
+ id 4C0FBF80162; Mon, 21 Sep 2020 10:40:38 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AB88F8015F
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 10:37:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AB88F8015F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07092F8015F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 10:40:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07092F8015F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 12FD5B4FC;
- Mon, 21 Sep 2020 08:38:12 +0000 (UTC)
-Date: Mon, 21 Sep 2020 10:37:35 +0200
-Message-ID: <s5htuvrpltc.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 85BB8B4FC;
+ Mon, 21 Sep 2020 08:41:03 +0000 (UTC)
+Date: Mon, 21 Sep 2020 10:40:27 +0200
+Message-ID: <s5hsgbbplok.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ALSA: compat_ioctl: avoid compat_alloc_user_space
-In-Reply-To: <20200918095642.1446243-1-arnd@arndb.de>
-References: <20200918095642.1446243-1-arnd@arndb.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] Revert "ALSA: usb-audio: Disable Lenovo P620 Rear line-in
+ volume control"
+In-Reply-To: <20200915103925.12777-1-kai.heng.feng@canonical.com>
+References: <20200915103925.12777-1-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, hch@lst.de
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Andrew Oakley <andrew@adoakley.name>, open list <linux-kernel@vger.kernel.org>,
+ Chris Boyle <chris@boyle.name>, tiwai@suse.com,
+ "Alexander A. Klimov" <grandmaster@al2klimov.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,19 +81,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Sep 2020 11:56:19 +0200,
-Arnd Bergmann wrote:
+On Tue, 15 Sep 2020 12:39:23 +0200,
+Kai-Heng Feng wrote:
 > 
-> Using compat_alloc_user_space() tends to add complexity
-> to the ioctl handling, so I am trying to remove it everywhere.
+> This reverts commit 34dedd2a83b241ba6aeb290260313c65dc58660e.
 > 
-> The two callers in sound/core can rewritten to just call
-> the same code that operates on a kernel pointer as the
-> native handler.
+> According to Realtek, volume FU works for line-in.
 > 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> I can confirm volume control works after device firmware is updated.
 
-Applied now.  Thanks!
+A slight concern is what happens if you apply this change to the
+device before the firmware update.
 
+Also, after this revert, does the mixer control appear properly?
+
+
+thanks,
 
 Takashi
+
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  sound/usb/mixer_maps.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+> index 5b43e9e40e49..c369c81e74c4 100644
+> --- a/sound/usb/mixer_maps.c
+> +++ b/sound/usb/mixer_maps.c
+> @@ -371,7 +371,6 @@ static const struct usbmix_name_map asus_rog_map[] = {
+>  };
+>  
+>  static const struct usbmix_name_map lenovo_p620_rear_map[] = {
+> -	{ 19, NULL, 2 }, /* FU, Volume */
+>  	{ 19, NULL, 12 }, /* FU, Input Gain Pad */
+>  	{}
+>  };
+> -- 
+> 2.17.1
+> 
