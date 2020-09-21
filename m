@@ -8,90 +8,89 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48EB5C43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:32:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C6FFC43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:32:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1FB420684
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:32:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E42CD20773
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:32:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oH8f3FVc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jnag0fqD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1FB420684
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nSJvulSg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IHedG0vW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42CD20773
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33F4616E7;
-	Mon, 21 Sep 2020 12:31:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33F4616E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FD9D1701;
+	Mon, 21 Sep 2020 12:31:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FD9D1701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600684320;
-	bh=4/IDvTQPnUbOdxL+1N+6f3R3qxNHZgCrX7Ul0vD2cl8=;
+	s=default; t=1600684362;
+	bh=YkAZHIqttnR+8m+uZlRMYJVNyrEfuMy5SJ3/4qbG9ok=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oH8f3FVcoL02JDjlBRFyhN+VlmboqanA6hLPDYq9k0k6nROQNvXHMvjswatoWSERX
-	 E4AIcOJ29OOXtvwVz8U/0mYYUEWwSfk1qfYEsPd/ZtQPsaTv/aYfO35KUz35wrB2II
-	 zK1xQGXND2oJzUtp2L8Ger6ckBbI/ZPG/AgxqaU4=
+	b=nSJvulSgtHWEPkf0mZ2BmBYXbze6SexaSkrE7KQtKdaVXPrvC28Ri5LkJ1tJUCHvN
+	 SJUxN+AA1cLgqSB28gundfnuxBqoVjdVMONmxcsZrECnSFI9/642iqcvjk5aavdnml
+	 nYheAjeZ+jyZZnNJTHIlNzQDvONBpbvG3F1KtO34=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C198F80315;
-	Mon, 21 Sep 2020 12:28:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3B17F80317;
+	Mon, 21 Sep 2020 12:28:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE263F802FE; Mon, 21 Sep 2020 12:28:03 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ id 2043BF80304; Mon, 21 Sep 2020 12:28:06 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22744F80161
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 12:27:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22744F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 396B0F802DB
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 12:27:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 396B0F802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="jnag0fqD"
-Received: by mail-wr1-x444.google.com with SMTP id g4so12137990wrs.5
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 03:27:43 -0700 (PDT)
+ header.b="IHedG0vW"
+Received: by mail-wr1-x441.google.com with SMTP id e16so12166816wrm.2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 03:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=edlSUT/Y078NXbAZqDd8CvaKkdPfuHJQ/JeQ1t1s3zw=;
- b=jnag0fqDdXTzH7mJmr/nHlCqEUC2q1l0NOwme88e8hBjTYY8yvZxkoFcn5x2oxWOFg
- GxaB2+IakXYFHyl1hJIAk9vBDGCwfnx9exyigyT7DB2XlY+s/RifWzoYU4umXVUfUNof
- Wtha0ZzWvQ6ziUsmsqC1BE8gEiXietWKSgZLVqgIKZdLaOSjmqIdMsrHTbIbeVyrFzn2
- J4XDrv5R1jyjikClYuEb4z/BDp02aV+u/zfAI7lU5py/chj8whvxZ7o6F/SM+Ub098HK
- pEppTaatuCVvCTO/zImKSqN2xgMo/8rt0IF4RG2aGT6oCt6qGY8bhA6MZCprotV3kqfZ
- EE/w==
+ bh=SUVIxl5BYolVip4ZPyodUNNPga8sBfd676yD0NuAt4Y=;
+ b=IHedG0vW9UU+XQPNRqvk7Cb6wMYdd1thMl9pgjksErL76FaiLiwWghXnrWTf2PFPvF
+ RIEodkMANh7i2aEWiNi5Xtz/+SsDEgtM9I6QLVvbFy3+qwSPnsVXwq05NmsI/e8Aoqfp
+ hzLbxFNQMpW5arNozbwAC5i7ciwAsMJnngQfwWed/lDJZHru8N81RRhS5BbLzsHTgKCL
+ xGxdDvmXt/FOlCdDy1gxhs3sHwvorAiIJk5JFRb+zTzDvsHEMHE2BvgewxiQR1wQnl3E
+ i3IUPK49t6YPngxCUZwfr82Xv2FwkpArekDImtJURFqh4pw1a+bKmN4OEc1yTh5NsUpN
+ D9Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=edlSUT/Y078NXbAZqDd8CvaKkdPfuHJQ/JeQ1t1s3zw=;
- b=dRncM8GB0DU6lUnAKOEXPt4p941akrKF4K0tWj7TgAAcWKZvfoVYENw9TTt4rAQ0Rj
- RFD1FMMm3Sc43JPQ8kElICv3oDAxC8eHkvvz/jXmBkx4gWtrVw/OW7YbqoPviglu00Mv
- V66m9OWEy0e7lTNGeR2oztbVbHw7JeFX5sq8btX6LkVogtUwd3dQd1VfVPobe0rd7a6W
- JadKD11xXp7xvo1N1iLmLfPnDGFz+79zJNe54T4ulkuHgXnSKUAOO3GuXELoTtGWrWo8
- 70u1HnDypZF/PIerRqg2Xl1Qhiy6tdmwU5wF263bPDwcBkQ9o3OyxPEjk2ZvZHBACXSZ
- ZGtg==
-X-Gm-Message-State: AOAM5324Doo6hK+Pmmz/ckdlRfDwqgiSvBt+/ni84e1uMEFq8/CnkCCn
- AHCv/QdAY4GjiQdqKBt2T5w=
-X-Google-Smtp-Source: ABdhPJxmFW+NaCfURDMye6Dosi+5xOQ1AdjDzKmNSK/hSvD75t+zteXJgK4z547kQ2tx9GTkQqXoAQ==
-X-Received: by 2002:a5d:4710:: with SMTP id y16mr53373939wrq.203.1600684058897; 
- Mon, 21 Sep 2020 03:27:38 -0700 (PDT)
+ bh=SUVIxl5BYolVip4ZPyodUNNPga8sBfd676yD0NuAt4Y=;
+ b=tSQrkCCKv5pBmiecSktKCOEApuqGPkEndVxCNuo0t3aeC57LAkQw4NJo1fi3Opt/0C
+ nL21Dk9JUodVqv9LiQUwA1du/YxpONwqRvQ1LqMFVw07ujlo6gA01f3nVPebhlV/cy1l
+ cmciB3QrlBo4DMBJRQISXeiLWyYoMiB+LFeJ4O5VEzgQjn8irk66z7izPeS9Tat/DKUY
+ uHgVE4BRHPZQcFSPeFIKk9uAci7fdHHRBX0KNR4eSgXIid9Xc0bL/2fbNFyNZsKY/6Lr
+ YgMt/n5HK6YX1buAIVRH0k7aEG+AD2a64ZE4X9wHhJm66DSd8Hmrk9S7bATqeXDgfhDU
+ /Fog==
+X-Gm-Message-State: AOAM531a8pV0vnmaEPh7Fd067tpNqYvv+1XUsiwwgodpjJ4SS6gOK90J
+ c+nwXiOCwnZyJOVHu3KGOVM=
+X-Google-Smtp-Source: ABdhPJywGur0//dGuTvYT+x0vHWsW6qDoeNQvEl5jqNVb8ymdsdvTJ8F0ELiftzQUySC5ZdJY9VZdQ==
+X-Received: by 2002:adf:f011:: with SMTP id j17mr30143476wro.276.1600684071510; 
+ Mon, 21 Sep 2020 03:27:51 -0700 (PDT)
 Received: from localhost.localdomain
  (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
- by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.37
+ by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.50
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Sep 2020 03:27:37 -0700 (PDT)
+ Mon, 21 Sep 2020 03:27:50 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v4 03/22] ASoC: sun4i-i2s: Change get_sr() and get_wss() to be
- more explicit
-Date: Mon, 21 Sep 2020 12:27:12 +0200
-Message-Id: <20200921102731.747736-4-peron.clem@gmail.com>
+Subject: [PATCH v4 13/22] arm64: dts: allwinner: a64: Add DAI node for HDMI
+Date: Mon, 21 Sep 2020 12:27:22 +0200
+Message-Id: <20200921102731.747736-14-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200921102731.747736-1-peron.clem@gmail.com>
 References: <20200921102731.747736-1-peron.clem@gmail.com>
@@ -119,125 +118,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are actually using a complex formula to just return a bunch of
-simple values. Also this formula is wrong for sun4i.
+From: Marcus Cooper <codekipper@gmail.com>
 
-Replace this with a simpler switch case.
+Add the new DAI block for I2S2 which is used for HDMI audio.
 
-Also drop the i2s params not used.
-
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 69 +++++++++++++++++++++++--------------
- 1 file changed, 44 insertions(+), 25 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 0633b9fba3d7..11bbcbe24d6b 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -175,8 +175,8 @@ struct sun4i_i2s_quirks {
- 	unsigned int			num_mclk_dividers;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index dc238814013c..51cc30e84e26 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -846,6 +846,20 @@ i2s1: i2s@1c22400 {
+ 			status = "disabled";
+ 		};
  
- 	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
--	s8	(*get_sr)(const struct sun4i_i2s *, int);
--	s8	(*get_wss)(const struct sun4i_i2s *, int);
-+	int	(*get_sr)(unsigned int width);
-+	int	(*get_wss)(unsigned int width);
- 	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
- 				unsigned int channels,	unsigned int slots,
- 				unsigned int slot_width);
-@@ -381,37 +381,56 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
-+static int sun4i_i2s_get_sr(unsigned int width)
- {
--	if (width < 16 || width > 24)
--		return -EINVAL;
--
--	if (width % 4)
--		return -EINVAL;
-+	switch (width) {
-+	case 16:
-+		return 0x0;
-+	case 20:
-+		return 0x1;
-+	case 24:
-+		return 0x2;
-+	}
- 
--	return (width - 16) / 4;
-+	return -EINVAL;
- }
- 
--static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
-+static int sun4i_i2s_get_wss(unsigned int width)
- {
--	if (width < 16 || width > 32)
--		return -EINVAL;
--
--	if (width % 4)
--		return -EINVAL;
-+	switch (width) {
-+	case 16:
-+		return 0x0;
-+	case 20:
-+		return 0x1;
-+	case 24:
-+		return 0x2;
-+	case 32:
-+		return 0x3;
-+	}
- 
--	return (width - 16) / 4;
-+	return -EINVAL;
- }
- 
--static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
-+static int sun8i_i2s_get_sr_wss(unsigned int width)
- {
--	if (width % 4)
--		return -EINVAL;
--
--	if (width < 8 || width > 32)
--		return -EINVAL;
-+	switch (width) {
-+	case 8:
-+		return 0x1;
-+	case 12:
-+		return 0x2;
-+	case 16:
-+		return 0x3;
-+	case 20:
-+		return 0x4;
-+	case 24:
-+		return 0x5;
-+	case 28:
-+		return 0x6;
-+	case 32:
-+		return 0x7;
-+	}
- 
--	return (width - 8) / 4 + 1;
-+	return -EINVAL;
- }
- 
- static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-@@ -572,11 +591,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	i2s->playback_dma_data.addr_width = width;
- 
--	sr = i2s->variant->get_sr(i2s, word_size);
-+	sr = i2s->variant->get_sr(word_size);
- 	if (sr < 0)
- 		return -EINVAL;
- 
--	wss = i2s->variant->get_wss(i2s, slot_width);
-+	wss = i2s->variant->get_wss(slot_width);
- 	if (wss < 0)
- 		return -EINVAL;
- 
++		i2s2: i2s@1c22800 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun50i-a64-i2s",
++				     "allwinner,sun8i-h3-i2s";
++			reg = <0x01c22800 0x400>;
++			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
++			clock-names = "apb", "mod";
++			resets = <&ccu RST_BUS_I2S2>;
++			dma-names = "rx", "tx";
++			dmas = <&dma 27>, <&dma 27>;
++			status = "disabled";
++		};
++
+ 		dai: dai@1c22c00 {
+ 			#sound-dai-cells = <0>;
+ 			compatible = "allwinner,sun50i-a64-codec-i2s";
 -- 
 2.25.1
 
