@@ -2,140 +2,97 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A71BEC43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:27:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB66AC43464
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:29:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 158CF206D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:27:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 16ED8206D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:29:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d5ZslSN4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wsnGvCVQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 158CF206D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GhIRiN1A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16ED8206D9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8556A17FA;
-	Mon, 21 Sep 2020 10:26:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8556A17FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9200C17EF;
+	Mon, 21 Sep 2020 10:28:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9200C17EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600676865;
-	bh=BzRCCHrMyRtEbFXS+WPF2C06UQOXtwZQ6+AR7KwiNeY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1600676944;
+	bh=aA6DpVOhVmKq1EyX/ZaXo/RiJr343ksIPQPXm+UiN2g=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d5ZslSN4exGV8JdQRQbL8MSUCKzUoAfGQvKQl1YU5I8sAWqSrhvEVcpDEkWlmAX8j
-	 s1+aO49bHjZIuKWxu6LgzRueT7/hA8xWHEmfVAOCt1YzF3Ud0LA/jb0POgYcfQJZ1L
-	 7Ffcs3xurlyZqr8BP7ptU7uvSJ+UQksFSDwB/PFw=
+	b=GhIRiN1A7Yfigtd25F59UW1HkhIpNB4ai/nzgXSA8gwZ9qkvwP4qMd20D3uVE3q6S
+	 q2wZ6Ww3FwlImBq9Qlx3pw56W9aAnWorlB7pu50SWx6+wEjgIdPMI1nDm8InKxjX9M
+	 VV/ymNiz5L+8IkNrsW+u8vF9K4CmqOpfWniNEV5M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15D72F803CC;
-	Mon, 21 Sep 2020 10:11:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 117DCF80171;
+	Mon, 21 Sep 2020 10:22:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1BF7F8015A; Fri, 18 Sep 2020 16:30:21 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B6C20F801EC; Mon, 21 Sep 2020 10:22:39 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99347F8012D
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 16:30:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99347F8012D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="wsnGvCVQ"
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com
- [209.85.210.45])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id ECEE62395B
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 14:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600439416;
- bh=BzRCCHrMyRtEbFXS+WPF2C06UQOXtwZQ6+AR7KwiNeY=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=wsnGvCVQtY3Fjm96gabQ3yL4JGp4SlDe9LHAm1jvpUvHr4V01rcYNvZ8aAR5/K6DI
- 4ZbsvZ+rAFCvVqvjpfACz0NLKa8hCi2rM2fn+sntjgW8FTh7cdsNOd+SljkNn6CNLZ
- +rN4wh+xCQKm+ZXfiYaJE9WT1AOlwD7HPuVdyYqE=
-Received: by mail-ot1-f45.google.com with SMTP id m13so1053313otl.9
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2020 07:30:15 -0700 (PDT)
-X-Gm-Message-State: AOAM533/Z0TvsYtF1kSen7bfDoSwdfyU2tG7v55S4yw7MpmZbm0qFAyW
- Q+YgSgjQW/pvRSx7X8wcL8hNYR2eMNKUEJgmWQ==
-X-Google-Smtp-Source: ABdhPJwB1Ma/MKweZxwzRdC4MQG3s3W4wg0oVoNXdP8sSb8gUQ626v5DX61EKMyUVGmHFAKJsNKSrOjgarNcaCyLkpU=
-X-Received: by 2002:a05:6830:1008:: with SMTP id
- a8mr21429982otp.107.1600439413814; 
- Fri, 18 Sep 2020 07:30:13 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCE3BF8015F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 10:22:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCE3BF8015F
+IronPort-SDR: DUEkrvPYvT3ZVbcZPlftXXZ36/IxiwLehygmcyQip26OWmm7TQNWHGV2mob9HljJf8lDrW2Ig8
+ HHMFHy45n6Ng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="148084680"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="148084680"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Sep 2020 01:22:30 -0700
+IronPort-SDR: 6C60UxQb0GHDdFKyIHdyi1KCMTv7lBRai9I8E9wx7SVauw0irJ+svuoaM5rOqv55nvU7IplbI2
+ gRPnca98YzBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="337792604"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by orsmga008.jf.intel.com with ESMTP; 21 Sep 2020 01:22:26 -0700
+Received: from andy by smile with local (Exim 4.94)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1kKGsv-000gbr-5e; Mon, 21 Sep 2020 11:09:17 +0300
+Date: Mon, 21 Sep 2020 11:09:17 +0300
+From: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
+To: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v6 09/14] ASoC: Intel: catpt: Simple sysfs attributes
+Message-ID: <20200921080917.GL3956970@smile.fi.intel.com>
+References: <20200917141242.9081-1-cezary.rojewski@intel.com>
+ <20200917141242.9081-10-cezary.rojewski@intel.com>
+ <8edff9bc51ea441dac454cbb6869317f@intel.com>
+ <20200919144204.GD2712238@kroah.com>
+ <dfdb29d1c5f04d88970757e1ec9596d9@intel.com>
 MIME-Version: 1.0
-References: <20200917165301.23100-1-krzk@kernel.org>
- <20200917165301.23100-2-krzk@kernel.org>
-In-Reply-To: <20200917165301.23100-2-krzk@kernel.org>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Fri, 18 Sep 2020 08:30:02 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
-Message-ID: <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
-Subject: Re: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO
- controllers
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Mon, 21 Sep 2020 10:10:23 +0200
-Cc: Amelie Delaunay <amelie.delaunay@st.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Stefan Agner <stefan@agner.ch>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Paul Cercueil <paul@crapouillou.net>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Chris Brandt <chris.brandt@renesas.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Fabio Estevam <festevam@gmail.com>, "moderated list:ARM/STM32 ARCHITECTURE"
- <linux-stm32@st-md-mailman.stormreply.com>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- "open list:MEDIA DRIVERS FOR RENESAS - FCP"
- <linux-renesas-soc@vger.kernel.org>,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Anson Huang <Anson.Huang@nxp.com>, Lee Jones <lee.jones@linaro.org>,
- Takashi Iwai <tiwai@suse.com>, Magnus Damm <magnus.damm@gmail.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, Chen-Yu Tsai <wens@csie.org>,
- Andy Gross <agross@kernel.org>,
- "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE"
- <bcm-kernel-feedback-list@broadcom.com>, NXP Linux Team <linux-imx@nxp.com>,
- Andy Teng <andy.teng@mediatek.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>,
- Sungbo Eo <mans0n@gorani.run>, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- devicetree@vger.kernel.org, Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Ray Jui <rjui@broadcom.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Sean Wang <sean.wang@mediatek.com>,
- Maxime Ripard <mripard@kernel.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Sricharan R <sricharan@codeaurora.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Hoan Tran <hoan@os.amperecomputing.com>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
- Scott Branden <sbranden@broadcom.com>, linux-unisoc@lists.infradead.org,
- - <patches@opensource.cirrus.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Liam Girdwood <lgirdwood@gmail.com>, Serge Semin <fancer.lancer@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Yash Shah <yash.shah@sifive.com>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Shawn Guo <shawnguo@kernel.org>,
- =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dfdb29d1c5f04d88970757e1ec9596d9@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kaczmarski,
+ Filip" <filip.kaczmarski@intel.com>, "N,
+ Harshapriya" <harshapriya.n@intel.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Barlik,
+ Marcin" <marcin.barlik@intel.com>, "zwisler@google.com" <zwisler@google.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>,
+ "Proborszcz, Filip" <filip.proborszcz@intel.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "amadeuszx.slawinski@linux.intel.com" <amadeuszx.slawinski@linux.intel.com>,
+ "Wasko, Michal" <michal.wasko@intel.com>,
+ "cujomalainey@chromium.org" <cujomalainey@chromium.org>, "Hejmowski,
+ Krzysztof" <krzysztof.hejmowski@intel.com>, "Papierkowski,
+ Piotr \(Habana\)" <ppapierkowski@habana.ai>, "Gopal,
+ Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -151,109 +108,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 17, 2020 at 10:53 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> Convert parts of gpio.txt bindings into common dtschema file for GPIO
-> controllers.  The schema enforces proper naming of GPIO controller nodes
-> and GPIO hogs.
+On Sun, Sep 20, 2020 at 05:03:00PM +0000, Rojewski, Cezary wrote:
+> On 2020-09-19 4:42 PM, gregkh@linuxfoundation.org wrote:
+> > On Fri, Sep 18, 2020 at 03:22:13PM +0000, Rojewski, Cezary wrote:
+> >> On 2020-09-17 4:12 PM, Cezary Rojewski wrote:
+> >>> Add sysfs entries for displaying version of FW currently in use as well
+> >>> as binary dump of entire version info, including build and log providers
+> >>> hashes.
 
-Did you not see my previous reply about a common schema? We already
-have a common GPIO and hog schema in dtschema. Please add to it
-whatever is missing.
+...
 
-My goal is all common schema end up in dtschema, but I haven't pushed
-folks to do that yet. Ones I've done are there though. One issue is
-what's in dtschema should be GPL/BSD and the existing text bindings
-are default GPL, so there's a relicensing exercise. In some cases, the
-schema is there but I haven't copied over the descriptions.
+> >> Greg, would you mind taking a look at these sysfs entries added for new
+> >> catpt driver (Audio DSP driver for Haswell and Broadwell machines)?
+> > 
+> > Why me?
+> > 
+> 
+> Andy (CC'ed) suggested that it's best if sysfs code is routed through you.
+> Given your input, I believe he was right.
 
-Rob
+'routed' probably is not what I meant, rather 'reviewed'. Because I remember
+that sysfs got new support for attributes thru certain members of the driver
+structure. Also I'm not sure I know the policy about binary attributes (it's
+possible that my knowledge is interfering with sysctl binary attributes that
+are no-no nowadays).
+
+Anyway, thanks for looking into this!
+
+> >> Link to opening post for the series:
+> >> [PATCH v6 00/14] ASoC: Intel: Catpt - Lynx and Wildcat point
+> >> https://www.spinics.net/lists/alsa-devel/msg115765.html
+> > 
+> > Does lore.kernel.org handle alsa-devel yet?
+> > 
+> 
+> Believe it does as alsa-devel archive can be found on lore.kernel.org.
+> Not really the guy to answer integration questions, though.
+
+...
+
+> >>> +	ret = catpt_sysfs_create(cdev);
+> >>> +	if (ret)
+> >>> +		goto board_err;
+> > 
+> > Why are you calling a specific function to do all of this?  Why not
+> > provide a default_groups pointer which allows the driver core to
+> > automatically create/destroy the sysfs files for you in a race-free
+> > manner with userspace?
+> > 
+> > That's the recommended way, you should never have to manually create
+> > files.
+> 
+> Thanks, that's something new. As this is simple device-driver, I believe
+> you meant usage of sysfs_(add|remove)_group() or their "device"
+> equivalents: device_(add|remove)_group(), is that correct? Haven't found
+> any usage of default_group within /sound/ subsystem what cannot be said
+> about the functions I've just mentioned.
+> 
+> Feel free to correct me if I'm wrong about this.
+
+It's a member of the struct device_driver, if I'm not mistaken.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> +    description:
-> +      Indicates the start and size of the GPIOs that can't be used.
-> +
-> +  ngpios:
-> +    description: |
-> +      Optionally, a GPIO controller may have a "ngpios" property. This property
-> +      indicates the number of in-use slots of available slots for GPIOs. The
-> +      typical example is something like this: the hardware register is 32 bits
-> +      wide, but only 18 of the bits have a physical counterpart. The driver is
-> +      generally written so that all 32 bits can be used, but the IP block is
-> +      reused in a lot of designs, some using all 32 bits, some using 18 and
-> +      some using 12. In this case, setting "ngpios = <18>;" informs the driver
-> +      that only the first 18 GPIOs, at local offset 0 .. 17, are in use.
-> +
-> +      If these GPIOs do not happen to be the first N GPIOs at offset 0...N-1,
-> +      an additional set of tuples is needed to specify which GPIOs are
-> +      unusable, with the gpio-reserved-ranges binding.
-> +
-> +patternProperties:
-> +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
-> +    type: object
-> +    description:
-> +      The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
-> +      providing automatic GPIO request and configuration as part of the
-> +      gpio-controller's driver probe function.
-> +      Each GPIO hog definition is represented as a child node of the GPIO controller.
-> +
-> +    properties:
-> +      gpio-hog: true
-> +      gpios: true
-> +      input: true
-> +      output-high: true
-> +      output-low: true
-> +      line-name:
-> +        description:
-> +          The GPIO label name. If not present the node name is used.
-> +
-> +    required:
-> +      - gpio-hog
-> +      - gpios
-> +
-> +    oneOf:
-> +      - required:
-> +          - input
-> +      - required:
-> +          - output-high
-> +      - required:
-> +          - output-low
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - "#gpio-cells"
-> +  - gpio-controller
-> +
-> +examples:
-> +  - |
-> +    gpio-controller@15000000 {
-> +        compatible = "foo";
-> +        reg = <0x15000000 0x1000>;
-> +        gpio-controller;
-> +        #gpio-cells = <2>;
-> +        ngpios = <18>;
-> +        gpio-reserved-ranges = <0 4>, <12 2>;
-> +        gpio-line-names = "MMC-CD", "MMC-WP", "VDD eth", "RST eth", "LED R",
-> +                          "LED G", "LED B", "Col A", "Col B", "Col C", "Col D",
-> +                          "Row A", "Row B", "Row C", "Row D", "NMI button",
-> +                          "poweroff", "reset";
-> +    };
-> +
-> +  - |
-> +    gpio-controller@1400 {
-> +        compatible = "fsl,qe-pario-bank-a", "fsl,qe-pario-bank";
-> +        reg = <0x1400 0x18>;
-> +        gpio-controller;
-> +        #gpio-cells = <2>;
-> +
-> +        line-b-hog {
-> +            gpio-hog;
-> +            gpios = <6 0>;
-> +            input;
-> +            line-name = "foo-bar-gpio";
-> +        };
-> +    };
-> --
-> 2.17.1
->
