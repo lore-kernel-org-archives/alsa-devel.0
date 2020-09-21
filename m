@@ -5,92 +5,93 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46677C43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:36:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C631C43464
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:37:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B68120EDD
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:36:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D8942145D
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:37:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P/6itXJM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gt5MPgd+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B68120EDD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X+4LQDJi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f7TSlv3Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D8942145D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F16901716;
-	Mon, 21 Sep 2020 12:35:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F16901716
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11FC516F7;
+	Mon, 21 Sep 2020 12:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11FC516F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600684606;
-	bh=NdGyoRYkKZvP01+kEb44ZuymONqz4VyR72Pt7Pzwt3k=;
+	s=default; t=1600684639;
+	bh=eWiiq5Url4azgTOk6WrrOLGo89ieP4u00auyyK+0BG8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P/6itXJMM6QSTU5MuzGinG6Nsbw7y1GONJ0jbkDOns6KFZCa5I8RvWkCjVBqp7gLt
-	 0FGlT7NwGel+PnjoKYyhofXmE69zsBUtnYeFgWKr1g2EsX1RFpYhTXCprCN1rYIo4l
-	 VLqBr3BVFl1X+a3AkYSx5rHSKnKFm+akMk10LKes=
+	b=X+4LQDJiieNiZggrUoz7hHOQFBiY4meDO7l6QQELWz1kHVOWYRN6h9fKyem1d3luN
+	 2u0xZQAapMrRn4fIYQ3dmZEiBG1UgqXW2iM15/ZpGkcutLgrlfC81AYzFkIawN3gW+
+	 2Nu3YCMO/dV3Y7GqiMybC1964gtJ04Mg21Si70BY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A909F8034D;
-	Mon, 21 Sep 2020 12:28:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42C5BF80350;
+	Mon, 21 Sep 2020 12:28:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 062E9F80316; Mon, 21 Sep 2020 12:28:17 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ id 681BBF80315; Mon, 21 Sep 2020 12:28:18 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A31CDF802DD
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 12:27:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A31CDF802DD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B35EF802E0
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 12:27:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B35EF802E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Gt5MPgd+"
-Received: by mail-wr1-x444.google.com with SMTP id t10so12155926wrv.1
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 03:27:53 -0700 (PDT)
+ header.b="f7TSlv3Z"
+Received: by mail-wr1-x441.google.com with SMTP id c18so12147386wrm.9
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 03:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=sjb20+qzG//QXYZPPH3YllTlMZ4wlxmmKse+Y7AgH+E=;
- b=Gt5MPgd+eGWukOpWw3gbzAbL/PMs4sfkNXWEj1w69UzlkmLKPkcHZeZasIzmb1EkoU
- 8Wn3kISsGZC+6gp3TOi5DFPsEr2e0Hit+oIaKb+m+eDAlwXaEYwaygKvHnLhupgDSTEc
- zZEf1ju1cx0aEbHoIntF4ShFl04am+xCvdxE+zcsnMDTz6QGReRqugsf9gWC7+CRa/lX
- 08XS3vFRbOTlVi7keYC/7pBxmphOJqYEmKIYPLA6fK25bTNF01GyqvkW33Wl0HsgpYFz
- 3KCiWyXJUfeYNplFTh5xZpEglbWdi6JcV6JxZgggAvUbsafJXsTPD/4tsDO7dr1w7J7s
- nPRQ==
+ bh=x/iq/UaybIFP5fVA6Ln+hpouuRJu9kADukrtHp3BLVg=;
+ b=f7TSlv3Zki9LVbtvu9NTG3s0n6hpuVnFM4+BDV1KEd+sdjo0/0RIPme/6ti1gx6khV
+ DzTa1eRKRHfldjY21P8bYwuO1QyW4Msnmk6zxA/NWGd1keNd8nfDeDL93cXk3jPDmDVW
+ duxZ5dXVHcn4IyOQlQ+4WUVj1UxdK3lWj2WKYyu84zSn8zZE9VQUM5n3YOa+N6jvPr4R
+ DNIkDdugvM9ta8xIWyCq9kivXj/Ga19PAc9rgCh46UvBCxXIYaKbMzPjViGyevQEgVSq
+ K/eh9qn69H8FHONI9nH9+tanPIpG2bC9FWE5/1NHcVPfC0Z3rMKjVjBHrNQ42iHDs+pi
+ 8mOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=sjb20+qzG//QXYZPPH3YllTlMZ4wlxmmKse+Y7AgH+E=;
- b=QYg1e8JZ10LpNeQ2FxR3jVxa9DWNpAsTPiQc6MUwfHRqEB+Fd5xz4gED0eros+XhwV
- 8DCpQu2zi6IUnU2H0xtKHPsFFaCDYE+74WagDLabUUSelfTsHbQejFyPiSRQIkUEN7ID
- a+OucZsHrya8c4lWQHk9Z8AZBvskyNr3QdPDiuoxyPNTEuRf7FcHAWxtJrbzcI3a1pYM
- M8RfYME+n5E0ATqsmV2szn1uP1OkavKL67t+HF4KuJbMqoEZu1vgI0tiVqYY7wM019cs
- iK5VKw8xtlTo2KQ9UfaUIhFcCZYfw7GqktTIO4IzxNJkxGRr8ZqyRrYCmHT1Bx3nhA63
- nonQ==
-X-Gm-Message-State: AOAM5304G8VzPLFMhUXC1qNkw3VBqlpqgkMC9ovCzzUbGkrfscgg4ElU
- YKWHV//sFcHr1EcR7uYLtkw=
-X-Google-Smtp-Source: ABdhPJzA1z3pUFLEYQEpVnYpNBuM/NODfBo4WWIgEhPHBWxV0uyy/NRr5b+d/VxrtgC/ZJKR3iLlGw==
-X-Received: by 2002:adf:e481:: with SMTP id i1mr51402018wrm.391.1600684070367; 
- Mon, 21 Sep 2020 03:27:50 -0700 (PDT)
+ bh=x/iq/UaybIFP5fVA6Ln+hpouuRJu9kADukrtHp3BLVg=;
+ b=sgfUCPvbJkO3adeo9pEuz+d2Jmxtl5fSdKyo1a4eol5gH0SjHNZkta3nDx2aiP1Pe7
+ oUG4El3efxD/3Dt8u6jFwe4L7QbVODp5dd4U64Pgtsgjyg54+uPBY6VPibFCkTAVOSFD
+ tLQidmbNik6DVLI+jf11niFmZUj5tbehaX2eH9XoHFYfbBS8sz+k74kXmzOSwmlmWSqq
+ ElQwmai2PRu1H8ZOhPKfE4+V0b7qRVdXYGWMQ9RScg2ZJT9SmSqS4kjfog3Y26vZ6kcu
+ b8M3Q0139/0Xdw7/3adfb17SFylE9yekZzaoqR3OFTqEbC/2qu2vZt8HZ2g1QUHgyg7H
+ D93Q==
+X-Gm-Message-State: AOAM531GdSScg5grPkNatCa6bMfjAP77IJNwh0v+MAhfaFRiNgawrW7z
+ 0j7tNeeVQRvEJmtoGfoteSw=
+X-Google-Smtp-Source: ABdhPJya/DfIfX42lmgcaaMFvDOf6VbMI/5f6dCC2Jc+wM8fb/BSa4GzprNf9ummrrBnFz+joK74qw==
+X-Received: by 2002:a5d:6049:: with SMTP id j9mr47888141wrt.295.1600684068018; 
+ Mon, 21 Sep 2020 03:27:48 -0700 (PDT)
 Received: from localhost.localdomain
  (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
- by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.49
+ by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.46
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Sep 2020 03:27:49 -0700 (PDT)
+ Mon, 21 Sep 2020 03:27:47 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v4 12/22] arm: dts: sunxi: h3/h5: Add HDMI audio
-Date: Mon, 21 Sep 2020 12:27:21 +0200
-Message-Id: <20200921102731.747736-13-peron.clem@gmail.com>
+Subject: [PATCH v4 10/22] arm64: dts: allwinner: h6: Enable HDMI sound for
+ Beelink GS1
+Date: Mon, 21 Sep 2020 12:27:19 +0200
+Message-Id: <20200921102731.747736-11-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200921102731.747736-1-peron.clem@gmail.com>
 References: <20200921102731.747736-1-peron.clem@gmail.com>
@@ -118,55 +119,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Marcus Cooper <codekipper@gmail.com>
+Now that HDMI sound node is available in the SoC dtsi.
+Enable it for this board.
 
-Add a simple-soundcard to link audio between HDMI and I2S.
-
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm/boot/dts/sunxi-h3-h5.dtsi | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index 3dca6d89cab9..7168e9412410 100644
---- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-+++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-@@ -105,6 +105,25 @@ de: display-engine {
- 		status = "disabled";
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+index 3f7ceeb1a767..049c21718846 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+@@ -118,6 +118,14 @@ hdmi_out_con: endpoint {
  	};
+ };
  
-+	hdmi_sound: hdmi-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "sun8i-h3-hdmi";
-+		simple-audio-card,mclk-fs = <128>;
-+		simple-audio-card,frame-inversion;
-+		status = "disabled";
++&hdmi_sound {
++	status = "okay";
++};
 +
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi>;
-+		};
++&i2s1 {
++	status = "okay";
++};
 +
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s2>;
-+			dai-tdm-slot-num = <2>;
-+			dai-tdm-slot-width = <32>;
-+		};
-+	};
-+
- 	soc {
- 		compatible = "simple-bus";
- 		#address-cells = <1>;
-@@ -806,6 +825,7 @@ csi: camera@1cb0000 {
- 		};
- 
- 		hdmi: hdmi@1ee0000 {
-+			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun8i-h3-dw-hdmi",
- 				     "allwinner,sun8i-a83t-dw-hdmi";
- 			reg = <0x01ee0000 0x10000>;
+ &mdio {
+ 	ext_rgmii_phy: ethernet-phy@1 {
+ 		compatible = "ethernet-phy-ieee802.3-c22";
 -- 
 2.25.1
 
