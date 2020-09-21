@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2136DC43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:30:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 931DDC43465
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:31:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3524520809
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:30:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F21442085B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 07:31:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HK2KeuZm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3524520809
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gOHwDtRK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F21442085B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D74E167A;
-	Mon, 21 Sep 2020 09:29:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D74E167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 668E5167C;
+	Mon, 21 Sep 2020 09:31:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 668E5167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600673449;
-	bh=eZovonrUWNuH+G8+edaDB+AVr2Pp+AjC1w1pRtuKOCc=;
+	s=default; t=1600673515;
+	bh=6DBuSA5//Hsy8G0vVBVY6I1FZbOm9+aAH7dfAeOnUQY=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HK2KeuZmFHWax+e/Z+tGIB7eInkLiabAmTLRM6vPilNzRnxs1RS9nyRrgVEdHkvDy
-	 KbmG+c33bnGubBDhsjwW1mQmaAI5tB5p8ICNenjC3PcZrwEZmXHVBJHBONWTH/VNdE
-	 aXiLtby8xW7D0DTb/8yHa47KFwLMjS4xERQeduRw=
+	b=gOHwDtRKkEHOWjN4Weyg39nqPT/DWskx+Z85VaZ71r0bo1U2JlJpuYUB0nrivUiI2
+	 gCkL9VQ/TPS3P5+fI/K82/bftbfvcc49OV4HbC6GmKq9sDgvWEm5nHLFzQKSHzEjvj
+	 9rOo0vjKQQIARVOpBG7Vg3pgFKT43sXhRT3T17rU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1647CF80161;
-	Mon, 21 Sep 2020 09:29:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03570F80161;
+	Mon, 21 Sep 2020 09:31:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9DEBF80161; Mon, 21 Sep 2020 09:29:57 +0200 (CEST)
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
- [209.85.167.194])
+ id 90EF2F801EC; Mon, 21 Sep 2020 09:31:03 +0200 (CEST)
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
+ [209.85.167.193])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5948CF80171
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 09:29:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5948CF80171
-Received: by mail-oi1-f194.google.com with SMTP id i17so15874186oig.10
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 00:29:49 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2D03F800B2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 09:30:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2D03F800B2
+Received: by mail-oi1-f193.google.com with SMTP id i17so15876613oig.10
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 00:30:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=90EhcBzbpe2vvxa0ohP9B+Dh75rNdKfJSEph9k8z+pM=;
- b=J9DEuAJhuBgO0jC5o+Y/eRCqcdUZjKi0IPAy2ntVWcyvGON7v7uOlJDzgiJNQ48cnM
- rwV/tOO7fBdR0xlY698+8TB9u/yWsZYU7vFJ1XS5W+OYYNqyRaCoZg+ar6qN3ocic4RB
- dggPOuL9yePkghitn97biQd4RvaFzQbcHLtjQkHTJthAxw4EfoyUZfOh1/1SKFrnkA35
- fMX9ea2CAirGoJ7po56tozcG/M37oFWX+jIu6WrluMvA21r0ZOpQbmztstVCL0RkAwZf
- NV+dChc2C5Yt6MSJL7A4e6X4rDca3O7iSsu3hYv1suCDXdgpkSwcvL30c2J/GqPuSSpC
- AvFA==
-X-Gm-Message-State: AOAM53365wU407YhPYvL06AoVY1m/sNjchkVYsgR78KL2mahFJAz0hlx
- Z190PK5YXn48NUsXB/vDox2gM7/0nOcprs1kzZs=
-X-Google-Smtp-Source: ABdhPJyf/sKRes03lyRebHMYTTNhwUI3iObyZWkgpxFfbC1QJaXNYOyLYBpf0EYemOiZ0DhKCpWF7uMdeYorWHg/2u4=
-X-Received: by 2002:aca:52d6:: with SMTP id g205mr16832418oib.54.1600673388389; 
- Mon, 21 Sep 2020 00:29:48 -0700 (PDT)
+ bh=bvT46MVLA1wc77+QBaxqpfVEdVrcHoplawt2ilNveyU=;
+ b=AVIsuHxOkgdPgMwdI0rTUA/LHZiaiWGTryI/xvozQ2ii7FOrwjzxTFu9tD5nb7Uymr
+ 8Fd4zeyd9y10crdizafD0LhXv9rXOLo6LnHk9OJuFCtGCT0oVF3izdqK9L1RdwRXtNfD
+ /WJ6E6/zELT8zk/wIocrn4tm/NCIxs8XU/Ezfsw+fd99tOJv5clV6QxSzJUVONnaM5Ec
+ RHIPynab3grXxX9Suwtt7vYKSpIm5nw7ZXvhRVcA3aMdn6vylY5UyqfweFAnQK5WzmNh
+ QE1JZSEcDVEwaI9i32YiDORnBkQ1x3ekwOUd9U/PCyviK5OjXUFPwXjFbasBXb7UeuWs
+ L41w==
+X-Gm-Message-State: AOAM531UmbnTTFqW9QM9E/AK0YFLplzBcm9qrp7Fo3EkWEpxSBchpPQU
+ VjCDig31Eiun3pGx0cxuglH4Wb7skINgmVvqRms=
+X-Google-Smtp-Source: ABdhPJz9xmN9krNVkmFntK1fJCP4SVdiOQdSlUn0glZjdNUu0BDHNFHEgQW2lXttV0KKLloQqhm28dH1yGE42S/hfkE=
+X-Received: by 2002:aca:4441:: with SMTP id r62mr15852660oia.153.1600673451338; 
+ Mon, 21 Sep 2020 00:30:51 -0700 (PDT)
 MIME-Version: 1.0
 References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-12-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CA+V-a8vuR-7vqxNnrqQ5Ysf3Xjvhp3xRZ33i8+6nEGFLJciT3A@mail.gmail.com>
- <20200920140846.GB2915460@kroah.com>
-In-Reply-To: <20200920140846.GB2915460@kroah.com>
+ <1594919915-5225-8-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8vJ2n3KEL8P+XmVob2zjoWaX+s4a6c1TV_WoPFkwdkZmA@mail.gmail.com>
+ <20200920140824.GA2915460@kroah.com>
+In-Reply-To: <20200920140824.GA2915460@kroah.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 21 Sep 2020 09:29:36 +0200
-Message-ID: <CAMuHMdUNvODmaJDaLi45Q8wpCaZaTA4HnmW_Y0BLwkXw8UxgEQ@mail.gmail.com>
-Subject: Re: [PATCH 11/20] dt-bindings: usb: renesas,
- usbhs: Add r8a774e1 support
+Date: Mon, 21 Sep 2020 09:30:39 +0200
+Message-ID: <CAMuHMdUyXMfZcVKkqaZHJ8tJf-3Kotqg+S2NHMZT0VFO0ZJJww@mail.gmail.com>
+Subject: Re: [PATCH 07/20] dt-bindings: usb: renesas,usb3-peri: Document
+ r8a774e1 support
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Cc: alsa-devel <alsa-devel@alsa-project.org>,
@@ -114,7 +114,7 @@ Hi Greg,
 
 On Sun, Sep 20, 2020 at 4:08 PM Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
-> On Sat, Sep 19, 2020 at 11:54:05AM +0100, Lad, Prabhakar wrote:
+> On Sat, Sep 19, 2020 at 11:50:07AM +0100, Lad, Prabhakar wrote:
 > > On Thu, Jul 16, 2020 at 6:19 PM Lad Prabhakar
 > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
 > > >
@@ -123,15 +123,14 @@ On Sun, Sep 20, 2020 at 4:08 PM Greg Kroah-Hartman
 > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 > > > ---
-> > >  Documentation/devicetree/bindings/usb/renesas,usbhs.yaml | 1 +
+> > >  Documentation/devicetree/bindings/usb/renesas,usb3-peri.yaml | 1 +
 > > >  1 file changed, 1 insertion(+)
 > > >
 > > Could you please pick this patch.
 >
-> Same here, doesn't a DT maintainer have to ack this?
+> Don't DT patches have to be acked by a DT maintainer first?
 
-And so *he did:
-https://lore.kernel.org/r/20200721033544.GA3505976@bogus
+https://lore.kernel.org/r/20200721033508.GA3504365@bogus
 
 Gr{oetje,eeting}s,
 
