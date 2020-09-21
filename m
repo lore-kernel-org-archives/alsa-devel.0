@@ -2,69 +2,69 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1305C43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F54BC43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:02:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D8472151B
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:02:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D46C32151B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:02:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JJKU8mVE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D8472151B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ENkLsjsO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D46C32151B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C13716C1;
-	Mon, 21 Sep 2020 14:01:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C13716C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 589D716EA;
+	Mon, 21 Sep 2020 14:01:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 589D716EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600689732;
-	bh=fGXGtvjCtmO/FFKQnUInZWSReaBY3VIrvSlzXsmPHks=;
+	s=default; t=1600689766;
+	bh=2wDtttnptiiCanCg+XKZtgjP24B9zUX20rkd41IJeXQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JJKU8mVEJD5CYKHIWbdBhSgeWJ33PwYPiiOq1Ikv3j/3GrwPFEPh7vsVVJ9M5oTd4
-	 4z7JWtVIL18E36Gnek3ID2wXp36qBM7QFFu/eSQKM5X+G9mfzTwwc1Qx9YgdspkfzL
-	 mKcfYzEO22Q3YE/U0XmaJnp6+NQSccRKkvUQhcmo=
+	b=ENkLsjsOd8PfrGw0cQkwdaYS4aICD49ReDm/umUiFVH1fpZfMA0D2AFN/bodXm1aW
+	 I7jHVNE13hfoe9NgXBbnTXB6cOaOQESYawNxTkm4rpoiC8TS1cwlD6vtEMQk9InSPg
+	 noJ4rvWAWY9umojqAKsMKOcQ2qmtiBfpNnYe3UgI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD030F80338;
-	Mon, 21 Sep 2020 13:56:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15419F80341;
+	Mon, 21 Sep 2020 13:56:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CAD6F80308; Mon, 21 Sep 2020 13:56:22 +0200 (CEST)
+ id A0444F80308; Mon, 21 Sep 2020 13:56:24 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75A1AF802E9
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 13:56:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75A1AF802E9
-IronPort-SDR: gkZ5ZH2eQ9gFoLp9vHnVO4Wp6tc4dl/BSMTwJFU40uGIZ9Z+Ceao5Aeg2C+5PlBOptofXlT64k
- tgn3pVFyJC3Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="159657303"
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="159657303"
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE52BF802FB
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 13:56:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE52BF802FB
+IronPort-SDR: 3rJwIokKUapEEbfXQ9SDPxwDMTS5aa83w3+owJI1lnB1nM8WUUYSnDLDfW1cpTlUK1XMeXdaiX
+ REQxfdd4jH1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="159657314"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="159657314"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2020 04:56:14 -0700
-IronPort-SDR: hxAiOe/dGO3H/dPeKCrEwPUQjsPSGTsykj5B/sYSwymzL4kFEBkqkprjZxlkP+5u1A0GsQdZl1
- Nku6rsvJFhFw==
+ 21 Sep 2020 04:56:19 -0700
+IronPort-SDR: fie3EJ++cb+f6wj7RACmIlIj7GAfghOh0dE+8PsvJY4Hn+FvKSeAdhsbdjyf870Z7mBYnDysq+
+ PUf/KGYr9N+w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="304486453"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="304486464"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga003.jf.intel.com with ESMTP; 21 Sep 2020 04:56:11 -0700
+ by orsmga003.jf.intel.com with ESMTP; 21 Sep 2020 04:56:15 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v7 08/14] ASoC: Intel: catpt: Event tracing
-Date: Mon, 21 Sep 2020 13:54:18 +0200
-Message-Id: <20200921115424.4105-9-cezary.rojewski@intel.com>
+Subject: [PATCH v7 09/14] ASoC: Intel: catpt: Simple sysfs attributes
+Date: Mon, 21 Sep 2020 13:54:19 +0200
+Message-Id: <20200921115424.4105-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200921115424.4105-1-cezary.rojewski@intel.com>
 References: <20200921115424.4105-1-cezary.rojewski@intel.com>
@@ -92,206 +92,149 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define tracing macros for easy catpt debug. These cover all IPC message
-types: requests, replies and notifications.
+Add sysfs entries for displaying version of FW currently in use as well
+as dumping full FW information including build and log-providers hashes.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
 
+Changes in v7:
+- fixed licence header for fs.c
+- renamed fs.c to sysfs.c to better match its purpose
+- added documentation within Documentation/ABI/testing for entries
+  exposed by catpt
+- bin_attribute fw_build replaced by attribute fw_info:
+  fw_info contains full FW information and after successful handshake,
+  it's always available (stored in driver data) so no need to invoke
+  GET_FW_VERSION IPC again, just dump the stored information
+- rather than manually creating and removing sysfs files, now makes use
+  of dev_groups member of struct device_driver 
+
 Changes in v6:
-- trace usage now part of this patch instead of being separated from it
+- functions declaration and usage now part of this patch instead of
+  being separated from it
 
 Changes in v2:
-- trace.h events for updating registers have been removed and usages
-  replaced by dev_dbg (SRAMPGE/ LPCS)
-- trace.h events for catpt_mbank and catpt_mregion have been removed
+- fixed size provided to memcpy() in fw_build_read() as reported by Mark
 
- sound/soc/intel/catpt/device.c |  3 ++
- sound/soc/intel/catpt/ipc.c    | 11 +++++
- sound/soc/intel/catpt/trace.h  | 83 ++++++++++++++++++++++++++++++++++
- 3 files changed, 97 insertions(+)
- create mode 100644 sound/soc/intel/catpt/trace.h
+ .../ABI/testing/sysfs-bus-pci-devices-catpt   | 16 +++++
+ sound/soc/intel/catpt/core.h                  |  1 +
+ sound/soc/intel/catpt/device.c                |  1 +
+ sound/soc/intel/catpt/sysfs.c                 | 58 +++++++++++++++++++
+ 4 files changed, 76 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-catpt
+ create mode 100644 sound/soc/intel/catpt/sysfs.c
 
+diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-catpt b/Documentation/ABI/testing/sysfs-bus-pci-devices-catpt
+new file mode 100644
+index 000000000000..8a200f4eefbd
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-catpt
+@@ -0,0 +1,16 @@
++What:		/sys/devices/pci0000:00/<dev>/fw_version
++Date:		September 2020
++Contact:	Cezary Rojewski <cezary.rojewski@intel.com>
++Description:
++		Version of AudioDSP firmware ASoC catpt driver is
++		communicating with.
++		Format: %d.%d.%d.%d, type:major:minor:build.
++
++What:		/sys/devices/pci0000:00/<dev>/fw_info
++Date:		September 2020
++Contact:	Cezary Rojewski <cezary.rojewski@intel.com>
++Description:
++		Detailed AudioDSP firmware build information including
++		build hash and log-providers hash. This information is
++		obtained during initial handshake with firmware.
++		Format: %s.
+diff --git a/sound/soc/intel/catpt/core.h b/sound/soc/intel/catpt/core.h
+index a29b4c0232cb..19eda125ee59 100644
+--- a/sound/soc/intel/catpt/core.h
++++ b/sound/soc/intel/catpt/core.h
+@@ -14,6 +14,7 @@
+ #include "registers.h"
+ 
+ struct catpt_dev;
++extern const struct attribute_group *catpt_attr_groups[];
+ 
+ void catpt_sram_init(struct resource *sram, u32 start, u32 size);
+ void catpt_sram_free(struct resource *sram);
 diff --git a/sound/soc/intel/catpt/device.c b/sound/soc/intel/catpt/device.c
-index e7dc2fb69ea8..c02d46e5bc81 100644
+index c02d46e5bc81..2d53efa656b1 100644
 --- a/sound/soc/intel/catpt/device.c
 +++ b/sound/soc/intel/catpt/device.c
-@@ -25,6 +25,9 @@
- #include "core.h"
- #include "registers.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "trace.h"
-+
- static int __maybe_unused catpt_suspend(struct device *dev)
- {
- 	struct catpt_dev *cdev = dev_get_drvdata(dev);
-diff --git a/sound/soc/intel/catpt/ipc.c b/sound/soc/intel/catpt/ipc.c
-index 9e4e33d99c03..473f43f6b792 100644
---- a/sound/soc/intel/catpt/ipc.c
-+++ b/sound/soc/intel/catpt/ipc.c
-@@ -9,6 +9,7 @@
- #include "core.h"
- #include "messages.h"
- #include "registers.h"
-+#include "trace.h"
- 
- #define CATPT_IPC_TIMEOUT_MSECS	300
- 
-@@ -56,6 +57,9 @@ static void catpt_dsp_send_tx(struct catpt_dev *cdev,
- {
- 	u32 header = tx->header | CATPT_IPCC_BUSY;
- 
-+	trace_catpt_ipc_request(header);
-+	trace_catpt_ipc_payload(tx->data, tx->size);
-+
- 	if (tx->size)
- 		memcpy_toio(catpt_outbox_addr(cdev), tx->data, tx->size);
- 	catpt_writel_shim(cdev, IPCC, header);
-@@ -155,12 +159,14 @@ catpt_dsp_notify_stream(struct catpt_dev *cdev, union catpt_notify_msg msg)
- 	switch (msg.notify_reason) {
- 	case CATPT_NOTIFY_POSITION_CHANGED:
- 		memcpy_fromio(&pos, catpt_inbox_addr(cdev), sizeof(pos));
-+		trace_catpt_ipc_payload((u8 *)&pos, sizeof(pos));
- 
- 		catpt_stream_update_position(cdev, stream, &pos);
- 		break;
- 
- 	case CATPT_NOTIFY_GLITCH_OCCURRED:
- 		memcpy_fromio(&glitch, catpt_inbox_addr(cdev), sizeof(glitch));
-+		trace_catpt_ipc_payload((u8 *)&glitch, sizeof(glitch));
- 
- 		dev_warn(cdev->dev, "glitch %d at pos: 0x%08llx, wp: 0x%08x\n",
- 			 glitch.type, glitch.presentation_pos,
-@@ -182,6 +188,7 @@ static void catpt_dsp_copy_rx(struct catpt_dev *cdev, u32 header)
- 	if (ipc->rx.size && ipc->rx.rsp.status == CATPT_REPLY_SUCCESS) {
- 		memcpy_fromio(ipc->rx.data, catpt_outbox_addr(cdev),
- 			      ipc->rx.size);
-+		trace_catpt_ipc_payload(ipc->rx.data, ipc->rx.size);
- 	}
- }
- 
-@@ -196,6 +203,7 @@ static void catpt_dsp_process_response(struct catpt_dev *cdev, u32 header)
- 		u32 off = msg.mailbox_address << 3;
- 
- 		memcpy_fromio(&config, cdev->lpe_ba + off, sizeof(config));
-+		trace_catpt_ipc_payload((u8 *)&config, sizeof(config));
- 
- 		catpt_ipc_arm(ipc, &config);
- 		complete(&cdev->fw_ready);
-@@ -236,6 +244,7 @@ irqreturn_t catpt_dsp_irq_thread(int irq, void *dev_id)
- 	u32 ipcd;
- 
- 	ipcd = catpt_readl_shim(cdev, IPCD);
-+	trace_catpt_ipc_notify(ipcd);
- 
- 	/* ensure there is delayed reply or notification to process */
- 	if (!(ipcd & CATPT_IPCD_BUSY))
-@@ -259,6 +268,7 @@ irqreturn_t catpt_dsp_irq_handler(int irq, void *dev_id)
- 	u32 isc, ipcc;
- 
- 	isc = catpt_readl_shim(cdev, ISC);
-+	trace_catpt_irq(isc);
- 
- 	/* immediate reply */
- 	if (isc & CATPT_ISC_IPCCD) {
-@@ -266,6 +276,7 @@ irqreturn_t catpt_dsp_irq_handler(int irq, void *dev_id)
- 		catpt_updatel_shim(cdev, IMC, CATPT_IMC_IPCCD, CATPT_IMC_IPCCD);
- 
- 		ipcc = catpt_readl_shim(cdev, IPCC);
-+		trace_catpt_ipc_reply(ipcc);
- 		catpt_dsp_copy_rx(cdev, ipcc);
- 		complete(&cdev->ipc.done_completion);
- 
-diff --git a/sound/soc/intel/catpt/trace.h b/sound/soc/intel/catpt/trace.h
+@@ -338,6 +338,7 @@ static struct platform_driver catpt_acpi_driver = {
+ 		.name = "intel_catpt",
+ 		.acpi_match_table = catpt_ids,
+ 		.pm = &catpt_dev_pm,
++		.dev_groups = catpt_attr_groups,
+ 	},
+ };
+ module_platform_driver(catpt_acpi_driver);
+diff --git a/sound/soc/intel/catpt/sysfs.c b/sound/soc/intel/catpt/sysfs.c
 new file mode 100644
-index 000000000000..bb3d627dbeaf
+index 000000000000..20c46ccfe26c
 --- /dev/null
-+++ b/sound/soc/intel/catpt/trace.h
-@@ -0,0 +1,83 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2020 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Cezary Rojewski <cezary.rojewski@intel.com>
-+ */
++++ b/sound/soc/intel/catpt/sysfs.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2020 Intel Corporation. All rights reserved.
++//
++// Author: Cezary Rojewski <cezary.rojewski@intel.com>
++//
 +
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM intel_catpt
++#include <linux/pm_runtime.h>
++#include "core.h"
 +
-+#if !defined(__SND_SOC_INTEL_CATPT_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define __SND_SOC_INTEL_CATPT_TRACE_H
++static ssize_t fw_version_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
++{
++	struct catpt_dev *cdev = dev_get_drvdata(dev);
++	struct catpt_fw_version version;
++	int ret;
 +
-+#include <linux/types.h>
-+#include <linux/tracepoint.h>
++	pm_runtime_get_sync(cdev->dev);
 +
-+DECLARE_EVENT_CLASS(catpt_ipc_msg,
++	ret = catpt_ipc_get_fw_version(cdev, &version);
 +
-+	TP_PROTO(u32 header),
++	pm_runtime_mark_last_busy(cdev->dev);
++	pm_runtime_put_autosuspend(cdev->dev);
 +
-+	TP_ARGS(header),
++	if (ret)
++		return CATPT_IPC_ERROR(ret);
 +
-+	TP_STRUCT__entry(
-+		__field(u32, header)
-+	),
++	return sprintf(buf, "%d.%d.%d.%d\n", version.type, version.major,
++		       version.minor, version.build);
++}
 +
-+	TP_fast_assign(
-+		__entry->header = header;
-+	),
++static DEVICE_ATTR_RO(fw_version);
 +
-+	TP_printk("0x%08x", __entry->header)
-+);
++static ssize_t fw_info_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
++{
++	struct catpt_dev *cdev = dev_get_drvdata(dev);
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_irq,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++	return sprintf(buf, "%s\n", cdev->ipc.config.fw_info);
++}
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_request,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++static DEVICE_ATTR_RO(fw_info);
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_reply,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++static struct attribute *catpt_attrs[] = {
++	&dev_attr_fw_version.attr,
++	&dev_attr_fw_info.attr,
++	NULL
++};
 +
-+DEFINE_EVENT(catpt_ipc_msg, catpt_ipc_notify,
-+	TP_PROTO(u32 header),
-+	TP_ARGS(header)
-+);
++static const struct attribute_group catpt_attr_group = {
++	.attrs = catpt_attrs,
++};
 +
-+TRACE_EVENT_CONDITION(catpt_ipc_payload,
 +
-+	TP_PROTO(const u8 *data, size_t size),
-+
-+	TP_ARGS(data, size),
-+
-+	TP_CONDITION(data && size),
-+
-+	TP_STRUCT__entry(
-+		__dynamic_array(u8, buf, size)
-+	),
-+
-+	TP_fast_assign(
-+		memcpy(__get_dynamic_array(buf), data, size);
-+	),
-+
-+	TP_printk("%u byte(s)%s",
-+		  __get_dynamic_array_len(buf),
-+		  __print_hex_dump("", DUMP_PREFIX_NONE, 16, 4,
-+				   __get_dynamic_array(buf),
-+				   __get_dynamic_array_len(buf), false))
-+);
-+
-+#endif /* __SND_SOC_INTEL_CATPT_TRACE_H */
-+
-+/* This part must be outside protection */
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE trace
-+#include <trace/define_trace.h>
++const struct attribute_group *catpt_attr_groups[] = {
++	&catpt_attr_group,
++	NULL
++};
 -- 
 2.17.1
 
