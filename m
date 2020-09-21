@@ -7,66 +7,65 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 234BBC43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F977C43464
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:13:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F6322145D
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:12:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39A1920874
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:13:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D7NtcONz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F6322145D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kj0wC24A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39A1920874
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD32316D6;
-	Mon, 21 Sep 2020 13:12:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD32316D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40EE21701;
+	Mon, 21 Sep 2020 13:12:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40EE21701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600686772;
-	bh=uhbNTzc/KZ7g7bnT5JGWLw+GBHH5ssnl9xr6JaO9NlY=;
+	s=default; t=1600686815;
+	bh=21JbM/1pnOVI3XFz/wTmPl/Ucfktxi4dBJCx7rW1eGM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D7NtcONzuU2wgGT1SLfoOD3BrGIxuK7soLm/2oPwKWijhSh1nr9pJ8Z8jU5GHNo64
-	 LOuGGf1X15HB1w753OiIk9yRMVb4R0xNgLRPnwudeBKP7VuSTQEAGKCntx0PCEfaHP
-	 BrgBN4R0BuiiOdNu5QEZ5pzv62fJTGwzx1ztexIs=
+	b=Kj0wC24AsAO80uriAS6NJ1GE2uCnSVH4Sc33r2e11ulLN+qs1WILDT0GStGr9M5l3
+	 C61EWfWGojFHk2exIZP1xvBV44q4Up5GpRhQ9VQW/fJSwYQ0RavjoPnJSn4oBc95iZ
+	 V0NuvYryvDhU0YUgj7oocZNLUK5QsZEPaS1QfkbA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 313FEF802DB;
-	Mon, 21 Sep 2020 13:10:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F5A1F802DD;
+	Mon, 21 Sep 2020 13:10:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9AF4F802D2; Mon, 21 Sep 2020 13:10:17 +0200 (CEST)
+ id 89A7BF802C4; Mon, 21 Sep 2020 13:10:18 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 111C1F80162
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 13:10:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 111C1F80162
-IronPort-SDR: 0QbsbUXncyV06x4i1VBJFA7zWrGdkCyGnnSy2On+4lMABD5xND8Z7nASAEcbc42Pl/IoJzcuqD
- jl8y8/RsTB+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="148011226"
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="148011226"
+ by alsa1.perex.cz (Postfix) with ESMTPS id F09D5F801EC
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 13:10:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F09D5F801EC
+IronPort-SDR: 9NWC55sKNpu5Z/XC6WktoARSkHC8bcp7DE0FzbY+pDJRZYCvwg0lubW4gfmjSw8vD6NUnU2m7x
+ zfb8QYpq2phg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="148011249"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="148011249"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2020 04:09:56 -0700
-IronPort-SDR: GTd7PmXJUFIBQDbHpPojJEsGAdfbe2k+GWTN0CGf5rsvf8g9C2ZHAfJyEAyPOhxjN6DSYw+QVP
- CqxsoHu26JTg==
+ 21 Sep 2020 04:10:04 -0700
+IronPort-SDR: wQbmQEW5DaCyH4A9cQYw2lxzfIIzqJQ639hOqKQRr++w+CMtGooro+MnHSo7Z0LOnBrv2dbTdr
+ Aivf8+uT5CFQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="321730216"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="321730270"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga002.jf.intel.com with ESMTP; 21 Sep 2020 04:09:55 -0700
+ by orsmga002.jf.intel.com with ESMTP; 21 Sep 2020 04:10:03 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 1/5] ASoC: SOF: control: fix size checks for ext_bytes control
- .get()
-Date: Mon, 21 Sep 2020 14:08:10 +0300
-Message-Id: <20200921110814.2910477-2-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 5/5] ASoC: SOF: topology: remove const in sizeof()
+Date: Mon, 21 Sep 2020 14:08:14 +0300
+Message-Id: <20200921110814.2910477-6-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200921110814.2910477-1-kai.vehmanen@linux.intel.com>
 References: <20200921110814.2910477-1-kai.vehmanen@linux.intel.com>
@@ -93,60 +92,31 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-cppcheck complains twice:
+We should only use the type, the const attribute makes no sense in
+sizeof().
 
-sound/soc/sof/control.c:436:2: style: Assignment of function parameter
-has no effect outside the function. [uselessAssignmentArg]
- size -= sizeof(const struct snd_ctl_tlv);
- ^
-
-sound/soc/sof/control.c:436:7: style: Variable 'size' is assigned a
-value that is never used. [unreadVariable]
- size -= sizeof(const struct snd_ctl_tlv);
-
-Somehow we dropped the checks for the size argument when upstreaming
-the code, somewhere between v5 and v6.
-
-Re-add a size check to avoid providing userspace with more data that
-it asked for.
-
-Also fix all error codes, we should return -ENOSPC instead of -EINVAL.
-
-Fixes: c3078f5397046 ('ASoC: SOF: Add Sound Open Firmware KControl support')
+Reported-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/control.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/sof/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
-index 58f8c998e6af..8d499d0e331d 100644
---- a/sound/soc/sof/control.c
-+++ b/sound/soc/sof/control.c
-@@ -432,7 +432,9 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
- 	 * Decrement the limit by ext bytes header size to
- 	 * ensure the user space buffer is not exceeded.
- 	 */
--	size -= sizeof(const struct snd_ctl_tlv);
-+	if (size < sizeof(struct snd_ctl_tlv))
-+		return -ENOSPC;
-+	size -= sizeof(struct snd_ctl_tlv);
- 
- 	/* set the ABI header values */
- 	cdata->data->magic = SOF_ABI_MAGIC;
-@@ -448,6 +450,10 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
- 
- 	data_size = cdata->data->size + sizeof(const struct sof_abi_hdr);
- 
-+	/* make sure we don't exceed size provided by user space for data */
-+	if (data_size > size)
-+		return -ENOSPC;
-+
- 	header.numid = scontrol->cmd;
- 	header.length = data_size;
- 	if (copy_to_user(tlvd, &header, sizeof(const struct snd_ctl_tlv)))
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index eaa1122d5a68..1e42eb32f3b7 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1201,7 +1201,7 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
+ 			ret = -EINVAL;
+ 			goto out_free;
+ 		}
+-		if (cdata->data->size + sizeof(const struct sof_abi_hdr) !=
++		if (cdata->data->size + sizeof(struct sof_abi_hdr) !=
+ 		    le32_to_cpu(control->priv.size)) {
+ 			dev_err(scomp->dev,
+ 				"error: Conflict in bytes vs. priv size.\n");
 -- 
 2.27.0
 
