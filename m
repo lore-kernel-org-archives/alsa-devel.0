@@ -2,94 +2,99 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4368C43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 486F9C43466
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:29:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32D9C2073A
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:29:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1370207BC
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 10:29:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D4d/fJSE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iz+Z733T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32D9C2073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="smBZmKGH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mzu+l6L7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1370207BC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5C5816E6;
-	Mon, 21 Sep 2020 12:28:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5C5816E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C79C716F4;
+	Mon, 21 Sep 2020 12:28:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C79C716F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600684160;
-	bh=SDjPaz5r4hBTPNYDgfhF2Wsms4YbmCG8uc0YlL41szo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=D4d/fJSEKxdwj+HmEpM1eQRiQvg5f2xzmZO+XAOkEhwtKDEzjGWfkaH2BaP6rXUIK
-	 6Ptg/oZzrYlACD93j5QBX3oC7IJV3YR7fNPhxsnWlr4bczRMqQXadQBjOJDjf58N+6
-	 8jCeFxBR/kEUe7RhYiEy2fLGnsvPPA4xN6UItWPg=
+	s=default; t=1600684180;
+	bh=c0Jmkle34lcelvv1AxYeXtRnxz1TEmNAwZTA+1Ou7jA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=smBZmKGH0I1oCaznee6i+/zGlVv1Vqd5AduTUPAY7odePnWDOOdRONTUwT9pqyVEM
+	 J1T0HcoERiXdHf+PE/gZnYIshrPaaHi+bt0MEL4d+jtMecPdLtGV+K5jGbW5zfr8wT
+	 7XldDawioDeEyS4mfbpIjD09yl7UVvuQrjFxXr70=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E5DAF802DF;
-	Mon, 21 Sep 2020 12:27:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5265BF802E8;
+	Mon, 21 Sep 2020 12:27:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDEA2F802C3; Mon, 21 Sep 2020 12:27:49 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id 15479F802DF; Mon, 21 Sep 2020 12:27:54 +0200 (CEST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65C21F800B2
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 12:27:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65C21F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5565F80171
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 12:27:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5565F80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Iz+Z733T"
-Received: by mail-wm1-x343.google.com with SMTP id z9so12039363wmk.1
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 03:27:38 -0700 (PDT)
+ header.b="mzu+l6L7"
+Received: by mail-wm1-x341.google.com with SMTP id z9so12039883wmk.1
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 03:27:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=x2WLEdeeGcltAWo8WKHO00MVpZ/wRFMHljgIRKBGWy4=;
- b=Iz+Z733TJ1+3EQ02j3WYFm6pns0QaBjrQebc820NfBFhOCixG28nAEyxfY87Z2y+VY
- VHkmUoAEt3oGiaGtiPPKwRVEjQJuWRg/S3TcfRXAFkR7yFeZbSNzPHhS5g65WFK7dDXs
- bQPtHUg1KJo3xt3jkyWiIDMEcBO5RyHNQA3EOEpEwviaUDqJ3cqDHcOHzbESinW4JV2b
- BZUYom/D+V4v1i7yBtCWIOhcEURWhgcVkOwtDIVOzIuPSd9yPhIplpYPxBMTkgdVDsuB
- 2wzvcQ34rm2vtfsfaZytDRTgyBjJ3QhmlVXtmi5CCL5/xOv7Wo49+qfQupsJavqEDGG2
- RENA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=JlxXAFB85DXviVVzU9snS3b51VMvFbEM+bK6288hNSg=;
+ b=mzu+l6L70rHWw0alVLJS5Xuc5z3XOKT9BcnycIXjFHNqrl4CM9G5faKlLdvqc71WwL
+ d4rScfG8Izjpemku5/Hf/d2ewvtMS0d3bNP9BJ8ZLj0yryjreBacKfctPMrWABZUDN87
+ 22foMN7nBJy/5zPjEQaqzxB97NviGimJp0WsOb0qx/K+cw7OS/Mk4UHfIo5e4sfvhJh5
+ v9CrMxXA1xc2tQ06PaeuCoU+Iy98t0lptrj64j+76hxZdHF62my761mgrAfu26c6EL5y
+ gx6eGgmDbMjWUCoFN3WDIKG9JfItCszqLMsauUlgUuNTSwGvNxrnuNhlpCqvol+eUQCO
+ c8Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=x2WLEdeeGcltAWo8WKHO00MVpZ/wRFMHljgIRKBGWy4=;
- b=IC0mCFLGoXxMLM34u92NN85Xwth/CYg76NCDlvg9AZJnvnKvyCe1bVBajyVEMjLxoG
- hbKRSDSCTf47N4fgH3ELTWgiEiSvidxNsq1sSfuGDEq042r5KljYEEtdyruNg50+gEQl
- vCmQAjelH+20KoJfLspmQEjD2FZLOU8k4bv70o1WMCDw+oBzBB5AFnSapmJyxuiTAbeX
- oM7avjQFzC8rwUr158Jsv7zDibL9wZeTLPzXjg6XrrWacKlqd5bNLVEW3dAJMbirY0Zw
- fBoMdx2Vyw8SwiUPwmyrlJN0prQG87XjBYEg40qC+fpeuEpbr/rFSODWsKKrOIN24JJW
- 6HHQ==
-X-Gm-Message-State: AOAM5322q811ICotkN0/p5MoxbIcz6H9HVgvin/H8JEjDCeyrL3Ifx39
- nT9QJMecYxqBfmBTmMJj5qw=
-X-Google-Smtp-Source: ABdhPJw0iTYMGy5cZtIp9s0Ds4et/1goix1pDoK1k9qkOojOrT/4rfrt/9Uh470FTX8QZVSXHHZH8A==
-X-Received: by 2002:a7b:c0ca:: with SMTP id s10mr29366124wmh.103.1600684054964; 
- Mon, 21 Sep 2020 03:27:34 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=JlxXAFB85DXviVVzU9snS3b51VMvFbEM+bK6288hNSg=;
+ b=SnNd53oNE0A7O/9eZjDUUN20a/1paHjl6H6BWRMsCZ8O4qE0a8ml1GSZy4KC5YoxRw
+ U3TBcQNcAIeW3+jn1yJ2Qo3osB9SrJLcHzenp4aoLXPyEI4su+bNN5ERE3uOGRVt3/nA
+ sQAUa8EIqU5EHaWFTHEndYpDyoQ52l7pN/ssX4O6rzxk/E+eR1v/QatxwA4y1q+0+JgZ
+ ZLjNdElBeNPVUEzUo0YV4J7Z1eLYv7aVwsAjCIsl8P5uG+U4uhUZMVUtoHvsjrCsp9VS
+ gbwEvOoP9WHKNSj4VCPiY2b6cg6M6MTPYnUcs2f+JXLaSMwmvk4AZg+Xi83sg6asxToY
+ J/5Q==
+X-Gm-Message-State: AOAM530KqSN9a1ixD43TG+/k/aHMAk/WPDSSdtHqCRFbeCQftX2q0CbT
+ KvbN7XtINAW2ncoJvOClY/M=
+X-Google-Smtp-Source: ABdhPJy+o10p7bdBaRs62LuKVHz3cb/5w4lrcjRBwwPC64AOJbj/lNF89WZZ4kbdQLrmaqQ8JKCEpA==
+X-Received: by 2002:a05:600c:ce:: with SMTP id
+ u14mr30536852wmm.137.1600684063220; 
+ Mon, 21 Sep 2020 03:27:43 -0700 (PDT)
 Received: from localhost.localdomain
  (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
- by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.34
+ by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Sep 2020 03:27:34 -0700 (PDT)
+ Mon, 21 Sep 2020 03:27:42 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v4 00/22] Add Allwinner H3/H5/H6/A64 HDMI audio
-Date: Mon, 21 Sep 2020 12:27:09 +0200
-Message-Id: <20200921102731.747736-1-peron.clem@gmail.com>
+Subject: [PATCH v4 06/22] ASoc: sun4i-i2s: Add 20 and 24 bit support
+Date: Mon, 21 Sep 2020 12:27:15 +0200
+Message-Id: <20200921102731.747736-7-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200921102731.747736-1-peron.clem@gmail.com>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -114,89 +119,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+From: Marcus Cooper <codekipper@gmail.com>
 
-New test done by Maxime using TDM show that's LRCK is indeed inverted
-so I drop the patch reverted in v2.
+Extend the functionality of the driver to include support of 20 and
+24 bits per sample.
 
-And HDMI requires an inverted LRCK so let's readd the frame-inversion
-in the device-tree.
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Acked-by: Maxime Ripard <mripard@kernel.org>
+---
+ sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-I have also added a patch to change set_chan_cfg.
-
-Please note that I can't test TDM and only have a Allwinner H6.
-So test and comment on other Allwinner chips are welcome!
-
-Regards,
-Clement
-
-Change since v3:
-- add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is enabled
-- readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
-- Fix get_wss() for sun4i
-- Add a commit to fix checkpatch warning
-
-Change since v2:
-- rebase on next-20200918
-- drop revert LRCK polarity patch
-- readd simple-audio-card,frame-inversion in dts
-- Add patch for changing set_chan_cfg params
-
-Change since v1:
-- rebase on next-20200828
-- add revert LRCK polarity
-- remove all simple-audio-card,frame-inversion in dts
-- add Ondrej patches for Orange Pi board
-- Add arm64 defconfig patch
-
-Clément Péron (6):
-  ASoC: sun4i-i2s: Change set_chan_cfg() params
-  ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
-  ASoC: sun4i-i2s: Fix sun8i volatile regs
-  arm64: dts: allwinner: h6: Enable HDMI sound for Beelink GS1
-  arm64: defconfig: Enable Allwinner i2s driver
-  ASoC: sun4i-i2s: fix coding-style for callback definition
-
-Jernej Skrabec (3):
-  ASoC: sun4i-i2s: Add support for H6 I2S
-  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
-  arm64: dts: allwinner: h6: Add HDMI audio node
-
-Marcus Cooper (9):
-  ASoC: sun4i-i2s: Set sign extend sample
-  ASoc: sun4i-i2s: Add 20 and 24 bit support
-  arm: dts: sunxi: h3/h5: Add DAI node for HDMI
-  arm: dts: sunxi: h3/h5: Add HDMI audio
-  arm64: dts: allwinner: a64: Add DAI node for HDMI
-  arm64: dts: allwinner: a64: Add HDMI audio
-  arm: sun8i: h3: Add HDMI audio to Orange Pi 2
-  arm: sun8i: h3: Add HDMI audio to Beelink X2
-  arm64: dts: allwinner: a64: Add HDMI audio to Pine64
-
-Ondrej Jirman (3):
-  arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
-  ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
-  arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
-
-Samuel Holland (1):
-  ASoC: sun4i-i2s: Fix setting of FIFO modes
-
- .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
- arch/arm/boot/dts/sun8i-h3-beelink-x2.dts     |   8 +
- arch/arm/boot/dts/sun8i-h3-orangepi-2.dts     |   8 +
- arch/arm/boot/dts/sun8i-h3-orangepi-one.dts   |   8 +
- arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts    |   8 +
- arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  33 ++
- .../boot/dts/allwinner/sun50i-a64-pine64.dts  |   8 +
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  34 ++
- .../dts/allwinner/sun50i-h5-orangepi-pc2.dts  |   8 +
- .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   8 +
- .../dts/allwinner/sun50i-h6-orangepi-3.dts    |   8 +
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  33 ++
- arch/arm64/configs/defconfig                  |   1 +
- sound/soc/sunxi/sun4i-i2s.c                   | 374 +++++++++++++++---
- 14 files changed, 487 insertions(+), 54 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index b31454eee43c..60b2fec1bbe9 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -590,6 +590,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case 16:
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 		break;
++	case 32:
++		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++		break;
+ 	default:
+ 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
+ 			params_physical_width(params));
+@@ -1071,6 +1074,10 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
+ 
++#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++			 SNDRV_PCM_FMTBIT_S20_LE | \
++			 SNDRV_PCM_FMTBIT_S24_LE)
++
+ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 	.probe = sun4i_i2s_dai_probe,
+ 	.capture = {
+@@ -1078,14 +1085,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.ops = &sun4i_i2s_dai_ops,
+ 	.symmetric_rates = 1,
 -- 
 2.25.1
 
