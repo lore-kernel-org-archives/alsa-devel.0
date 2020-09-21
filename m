@@ -2,108 +2,80 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0313DC43465
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13F34C43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:11:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0029C20874
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:00:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC44720874
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 11:11:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dj/Rco1v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0029C20874
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LzhzKGmo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC44720874
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69AFC15E5;
-	Mon, 21 Sep 2020 12:59:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69AFC15E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA48116A9;
+	Mon, 21 Sep 2020 13:10:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA48116A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600686021;
-	bh=mnEbZ+Hr5aTpdpJlN5ycSvjEzl7k4f91TBGhTihiM2o=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1600686662;
+	bh=yj2te0E3a5OPVVRrcSyjSFgQxEJItGgK5m27TnMFvsM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dj/Rco1v4u4jdFQB/CTRnSMhA7MHYkGjGdlV0kSM4dQF2tBbBFz6r2lKcFFue5Op5
-	 aPYepSNSE5SxPXcS/QEHhPCPtvwgkbJxT/KSEpozrkwaxdDxbv+6qQT6wOw501dHyk
-	 D9SZ81s46eh4RzPlVKckucrLqiUjnZBpqUGVU/2M=
+	b=LzhzKGmo12V3mA6oRU0qAFLeqUvMybu8khwNWsJvSos1nCj2ndMY6FFXHeJAsMByN
+	 WNKUsCbzA5G9SEaJNNgyIJX8DCBUuAZfm71czDJQ2ZVMmbT0h9OOVCv7qWW5isQgsm
+	 n1exWf+xEJl6GeUB6xfNBW+INZw3Nac3/enM5HWk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC817F80162;
-	Mon, 21 Sep 2020 12:59:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57B6FF8021C;
+	Mon, 21 Sep 2020 13:10:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2E2BF80171; Mon, 21 Sep 2020 12:59:28 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 08005F8028D; Mon, 21 Sep 2020 13:10:10 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27CBFF800B2
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 12:59:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27CBFF800B2
-IronPort-SDR: 9+ACTPBiuBKJLw//0F9xvEuWCtZdqkEksqZSGanUT9dBdcLS1aTmgbn80AWnkEqnN9Xh7Jw2qh
- e2WHXrcK4T5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="159649193"
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="159649193"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE024F8015F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 13:10:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE024F8015F
+IronPort-SDR: 7BSJkGzFMBALyyVv10MvBOsAwOXN5nOkHAD60zGR0fpdFsHzVlq4Cm3MvX7P+YfpAS8YzS3PtG
+ 7g0inN5DCb5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="148011228"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="148011228"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2020 03:59:16 -0700
-IronPort-SDR: SwSHsDegSmkq8YQVoQoaakynq3/s6W8Zlq0zIteVZXfLNI7pj6LWEOxQdxlvJ0FEacpw9oNl/8
- nDD0IOFjsBhA==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Sep 2020 04:09:58 -0700
+IronPort-SDR: sZb3YD/SU92iLH9J5oPbRE4F6JwW6ZAusxo1F+BaBsze0SwZvPoIyFJ0xhbdmTAQEagFtKUsfb
+ gkItN/GN9GRA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="509958769"
-Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
- by fmsmga006.fm.intel.com with ESMTP; 21 Sep 2020 03:59:14 -0700
-Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
- IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 21 Sep 2020 11:59:13 +0100
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
- irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Mon, 21 Sep 2020 11:59:13 +0100
-From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: RE: [PATCH v5 01/13] ASoC: Intel: Add catpt device
-Thread-Topic: [PATCH v5 01/13] ASoC: Intel: Add catpt device
-Thread-Index: AQHWi32GW37jr4EJj0CkLtYrpbvLFKlrU1CAgAGfiDCABgJSEA==
-Date: Mon, 21 Sep 2020 10:59:13 +0000
-Message-ID: <f4a2b707794c4b95b031f0566fd5b76a@intel.com>
-References: <20200915162944.16241-1-cezary.rojewski@intel.com>
- <20200915162944.16241-2-cezary.rojewski@intel.com>
- <20200916152455.GP3956970@smile.fi.intel.com>
- <106a660275de43fd93cce153b529ef2a@intel.com>
-In-Reply-To: <106a660275de43fd93cce153b529ef2a@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="321730224"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga002.jf.intel.com with ESMTP; 21 Sep 2020 04:09:57 -0700
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 2/5] ASoC: SOF: control: fix size checks for volatile
+ ext_bytes control .get()
+Date: Mon, 21 Sep 2020 14:08:11 +0300
+Message-Id: <20200921110814.2910477-3-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200921110814.2910477-1-kai.vehmanen@linux.intel.com>
+References: <20200921110814.2910477-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
-Cc: "pierre-louis.bossart@linux.intel.com"
- <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kaczmarski,
- Filip" <filip.kaczmarski@intel.com>, "N,
- Harshapriya" <harshapriya.n@intel.com>, "Barlik,
- Marcin" <marcin.barlik@intel.com>, "zwisler@google.com" <zwisler@google.com>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>,
- "Proborszcz, Filip" <filip.proborszcz@intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "amadeuszx.slawinski@linux.intel.com" <amadeuszx.slawinski@linux.intel.com>,
- "Wasko, Michal" <michal.wasko@intel.com>,
- "cujomalainey@chromium.org" <cujomalainey@chromium.org>, "Hejmowski,
- Krzysztof" <krzysztof.hejmowski@intel.com>, "Papierkowski,
- Piotr \(Habana\)" <ppapierkowski@habana.ai>, "Gopal, 
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,74 +91,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-09-17 5:15 PM, Rojewski, Cezary wrote:
-> On 2020-09-16 5:24 PM, Andy Shevchenko wrote:
->> On Tue, Sep 15, 2020 at 06:29:32PM +0200, Cezary Rojewski wrote:
->>> Declare base structures, registers and device routines for the catpt
->>> solution. Catpt deprecates and is a direct replacement for
->>> sound/soc/intel/haswell. Supports Lynxpoint and Wildcat Point both.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-...
+Mirror addition of checks for regular ext_bytes controls.
 
->>> +static int __maybe_unused catpt_suspend(struct device *dev)
->>> +{
->>> +	struct catpt_dev *cdev =3D dev_get_drvdata(dev);
->>> +	struct dma_chan *chan;
->>> +	int ret;
->>> +
->>> +	chan =3D catpt_dma_request_config_chan(cdev);
->>> +	if (IS_ERR(chan))
->>> +		return PTR_ERR(chan);
->>> +
->>> +	memset(&cdev->dx_ctx, 0, sizeof(cdev->dx_ctx));
->>> +	ret =3D catpt_ipc_enter_dxstate(cdev, CATPT_DX_STATE_D3, &cdev->dx_ct=
-x);
->>> +	if (ret) {
->>> +		ret =3D CATPT_IPC_ERROR(ret);
->>> +		goto exit;
->>> +	}
->>> +
->>> +	ret =3D catpt_dsp_stall(cdev, true);
->>> +	if (ret)
->>> +		goto exit;
->>> +
->>> +	ret =3D catpt_store_memdumps(cdev, chan);
->>> +	if (ret) {
->>> +		dev_err(cdev->dev, "store memdumps failed: %d\n", ret);
->>> +		goto exit;
->>> +	}
->>> +
->>> +	ret =3D catpt_store_module_states(cdev, chan);
->>> +	if (ret) {
->>> +		dev_err(cdev->dev, "store module states failed: %d\n", ret);
->>> +		goto exit;
->>> +	}
->>> +
->>> +	ret =3D catpt_store_streams_context(cdev, chan);
->>> +	if (ret) {
->>> +		dev_err(cdev->dev, "store streams ctx failed: %d\n", ret);
->>> +		goto exit;
->>> +	}
->>
->>> +exit:
->>
->> I would rather name it as 'out_dma_release' or so to explain what's goin=
-g to be
->> done.
->>
->=20
-> I find more descriptive labels inviting reader into: "this is an error
-> path" thinking and that's why I prefer to stick with simple 'exit'. If
-> you think that's not a way to go, can change this.
->=20
+Fixes: 783560d02dd61 ('ASoC: SOF: Implement snd_sof_bytes_ext_volatile_get kcontrol IO')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/soc/sof/control.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-As I'm sending v7, goto labels have been updated to be move readable as
-you requested: 'release_dma_chan'.
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index 8d499d0e331d..9465611156d5 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -369,6 +369,14 @@ int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int _
+ 	int ret;
+ 	int err;
+ 
++	/*
++	 * Decrement the limit by ext bytes header size to
++	 * ensure the user space buffer is not exceeded.
++	 */
++	if (size < sizeof(struct snd_ctl_tlv))
++		return -ENOSPC;
++	size -= sizeof(struct snd_ctl_tlv);
++
+ 	ret = pm_runtime_get_sync(scomp->dev);
+ 	if (ret < 0 && ret != -EACCES) {
+ 		dev_err_ratelimited(scomp->dev, "error: bytes_ext get failed to resume %d\n", ret);
+@@ -396,6 +404,12 @@ int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int _
+ 
+ 	data_size = cdata->data->size + sizeof(const struct sof_abi_hdr);
+ 
++	/* make sure we don't exceed size provided by user space for data */
++	if (data_size > size) {
++		ret = -ENOSPC;
++		goto out;
++	}
++
+ 	header.numid = scontrol->cmd;
+ 	header.length = data_size;
+ 	if (copy_to_user(tlvd, &header, sizeof(const struct snd_ctl_tlv))) {
+-- 
+2.27.0
 
-Notice that 'if' preceding 'exit' label can be simplified: drop goto,
-drop redundant brackets.
-
-I've added that into v7 update too.
-
-Thanks,
-Czarek
