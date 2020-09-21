@@ -2,81 +2,120 @@ Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7891C43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 542CBC43464
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:30:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DE7320719
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:05:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A421720EDD
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 12:30:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tjQ6SD54"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DE7320719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p7vQks8Y";
+	dkim=temperror (0-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="BmH4loHf";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uCP6Fvdb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A421720EDD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2BE216C1;
-	Mon, 21 Sep 2020 14:04:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2BE216C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFD9E1698;
+	Mon, 21 Sep 2020 14:29:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFD9E1698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600689940;
-	bh=AA9eZtvjtvLyMhjI5WztkXpysF+nOXqQoEmmQCVIbF4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1600691427;
+	bh=RHKQR7CbzI0F6ZRKVieWVWj1G/b0kU9KL/lrLU/cXIE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tjQ6SD54Z18DoYCWMa8GAnpL7/17blFeuujSYWhOsVpsRGI739Fg+VdDzYlPol7jU
-	 Puo3gPcMxWZPRxvok9Yh9ce2NiB7kXgLqONknKauMjPNBjIm4Hyrk2eNKMMDsWDSJi
-	 f4pPHkcfNUfDhDeyGjkux8xZVm/L4rItXS4ZZTr4=
+	b=p7vQks8YtkAzrCtD3qcegVofoA+inq4l2seDVvi9tpn6ES0cUgYmUV6SmP0Ozbndd
+	 pVx8Wh9eu+HNT7Ue1gYlMt1OeJrszGQQ9Xjs38BFyhy+XMBC55jRqIcPk6hFkgvjtL
+	 0W5KhJ+w6jBNnJP0OqrMsq7Q1haHc/18ZmcjmkUc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D0D7F80368;
-	Mon, 21 Sep 2020 13:56:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 560ECF80161;
+	Mon, 21 Sep 2020 14:29:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51F81F80369; Mon, 21 Sep 2020 13:56:47 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B61C5F80162; Mon, 21 Sep 2020 14:29:30 +0200 (CEST)
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com
+ [64.147.123.18])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E280F8035F
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 13:56:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E280F8035F
-IronPort-SDR: sDI9PReEcUcpORAD3CSEZsZ8DSSLPEOijqdHXkI0Ga3bSX1V/lEJPUNzv7bimCcs7LURvDc+GJ
- egK3PlJSFGfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="159657341"
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="159657341"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2020 04:56:39 -0700
-IronPort-SDR: 5Yme8YrE4QdR9l01RSrRCCPzw7DYbR7xx1vRynxcrs/VJwbcECAfbJBT7daK4S8U+Foad81PZY
- lMu4A45ZyYlw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; d="scan'208";a="304486541"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga003.jf.intel.com with ESMTP; 21 Sep 2020 04:56:35 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v7 14/14] ASoC: Intel: Select catpt and deprecate haswell
-Date: Mon, 21 Sep 2020 13:54:24 +0200
-Message-Id: <20200921115424.4105-15-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200921115424.4105-1-cezary.rojewski@intel.com>
-References: <20200921115424.4105-1-cezary.rojewski@intel.com>
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, andriy.shevchenko@linux.intel.com,
- filip.kaczmarski@intel.com, harshapriya.n@intel.com,
- gregkh@linuxfoundation.org, marcin.barlik@intel.com, zwisler@google.com,
- lgirdwood@gmail.com, tiwai@suse.com, filip.proborszcz@intel.com,
- broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
- michal.wasko@intel.com, cujomalainey@chromium.org,
- krzysztof.hejmowski@intel.com, ppapierkowski@habana.ai,
- vamshi.krishna.gopal@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86057F8010A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 14:29:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86057F8010A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="BmH4loHf"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="uCP6Fvdb"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailnew.west.internal (Postfix) with ESMTP id 46BABB57;
+ Mon, 21 Sep 2020 08:29:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Mon, 21 Sep 2020 08:29:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=R
+ HKQR7CbzI0F6ZRKVieWVWj1G/b0kU9KL/lrLU/cXIE=; b=BmH4loHf/twmMvruG
+ h+1fAO/CvxSkfl44OnYhWxEx9nAlNqB9xc0MBQipOjf3YpW9p4Y2UxFv5u1jwwEk
+ 7itf8mgtLdyHUTNFAlgVz11YQvxeLAMdIXXbcBdiSvpXLoJ4iL8W4GXRL2AX9l4C
+ w4d/8tRbIVhEJUimi7VoZszz/9dNSk/KQ/rw/7NHU0LJq6ICr2MalqxmZHNtvdCO
+ GoS/5WX4ZxAXn3mj+IOgBmejzXi9Iydb/8cyfzXDvqVbHQeTJmGoEOEXwWPEAOmp
+ MTQ3yIHAKIweDxETUuvLopmQ+JEaX7JiLaADyZS4QitYgrwa7a+/18eOkmQ8RUDM
+ +Dfpw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:content-type
+ :date:from:in-reply-to:message-id:mime-version:references
+ :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm3; bh=RHKQR7CbzI0F6ZRKVieWVWj1G/b0kU9KL/lrLU/cX
+ IE=; b=uCP6FvdbREPriWo7tBN7COrxikiM1temZ9SQ7f1vnlWJXXvpTgR8/9WKF
+ kGwplJwffLMMZMU3LkW4bYkyd6g7UFI9QfVFjeAJjXI/SRHxXt3Cet9h5D8+gfnF
+ OukGuVCqfRLO46NtvgMf/Rt2q6Vl4DxvzUFlQLq5CfjVCkYbMLCPv961KFo4RiMh
+ ARu2F1aqKZfZaXxMvQx8XhOmZKqk7TSCFEzY102TvWsSUKDor6w+NO2M5GZABkbO
+ XXF1vINgJBGIMsRMFOd4simfgjl+K3nqKrJoyEfVUe4Ozfw/CbYRhN/yJyHBan4s
+ PFJzTtoMmqieBbOhGHyPo+R6I9ysg==
+X-ME-Sender: <xms:n5xoX2Urj45I8RuFot4ZW1GTKO1jGOAaFRwEfOPzw3-hYRLhznqFMQ>
+ <xme:n5xoXylUBDPDNvKOWfMGfVZeTqjyqmZDH_cMYtsDFq1fOKmJc7UloqI4F4-VuT8lU
+ l0xdfK5E8_JQdgkrU8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgdehgecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddunecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+ htvghrnhepheelvdfhkeelgfevleekleduvefftefhudekvdffhffhgeefuefgheegfeej
+ vedtnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+ frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:n5xoX6YDobf3ogp7c8SHV-Yk_rRA2uc1uDT86C0UPE5mNFI5wgY1cA>
+ <xmx:n5xoX9UdwW79t8SEbNgS2451IJpJPK2zkH1UejK3VnnXZ18zE4yFDg>
+ <xmx:n5xoXwnWphsACygt4earwWgNmDEcjJ9UZiDhs4nrWeCxNQGLQO3IGQ>
+ <xmx:oJxoX786_gnFaDjZ6XBX4Ymq0ztTe-t6QLlEfLX6vTz5qNRVAAO84E4SLM4>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 7F091328005A;
+ Mon, 21 Sep 2020 08:29:19 -0400 (EDT)
+Date: Mon, 21 Sep 2020 14:29:18 +0200
+From: Maxime Ripard <maxime@cerno.tech>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Subject: Re: [PATCH v4 02/22] ASoC: sun4i-i2s: Change set_chan_cfg() params
+Message-ID: <20200921122918.kzzu623wui277nwr@gilmour.lan>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
+ <20200921102731.747736-3-peron.clem@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200921102731.747736-3-peron.clem@gmail.com>
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-sunxi@googlegroups.com, Takashi Iwai <tiwai@suse.com>,
+ Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,129 +131,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Prevent sound/soc/intel/haswell code compile and select catpt instead as
-a recommended solution. Userspace-exposed members are compatible with
-what is exposed by deprecated solution thus no harm is done. The only
-visible difference is the newly added 'Loopback Mute' kcontrol.
+On Mon, Sep 21, 2020 at 12:27:11PM +0200, Cl=E9ment P=E9ron wrote:
+> As slots and slot_width can be overwritter in case set_tdm() is
+> called. Avoid to have this logic in set_chan_cfg().
+>=20
+> Instead pass the required values as params to set_chan_cfg().
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
+It's not really clear here what the issue is, and how passing the slots
+and slot_width as arguments addresses it
 
-Changes in v7:
-- patch: 10/14 'ASoC: Intel: Select catpt and deprecate haswell' has
-  been moved to the back of the list: enable catpt after machine boards
-  have been prepared for it first
+> This also fix a bug when i2s->slot_width is set for TDM but not
+> properly used in set_chan_cfg().
 
-Changes in v5:
-- remove DMADEVICES depends on: DW_DMAC_CORE already covers that
-- add optional COMPILE_TEST depends on
+Which bug?
 
- sound/soc/intel/Kconfig        | 24 ++++++++++++------------
- sound/soc/intel/Makefile       |  2 +-
- sound/soc/intel/boards/Kconfig |  8 ++++----
- sound/soc/intel/catpt/Makefile |  6 ++++++
- 4 files changed, 23 insertions(+), 17 deletions(-)
- create mode 100644 sound/soc/intel/catpt/Makefile
+Also, Fixes tag?
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 0e48c4f532ce..dfc20f2bb859 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -47,21 +47,21 @@ config SND_SOC_INTEL_SST_FIRMWARE
- 	# Haswell/Broadwell/Baytrail legacy and will be set
- 	# when these platforms are enabled
- 
--config SND_SOC_INTEL_HASWELL
--	tristate "Haswell/Broadwell Platforms"
-+config SND_SOC_INTEL_CATPT
-+	tristate "Haswell and Broadwell"
-+	depends on ACPI || COMPILE_TEST
- 	depends on SND_DMA_SGBUF
--	depends on DMADEVICES && ACPI
--	select SND_SOC_INTEL_SST
--	select SND_SOC_INTEL_SST_ACPI
--	select SND_SOC_INTEL_SST_FIRMWARE
-+	select DW_DMAC_CORE
- 	select SND_SOC_ACPI_INTEL_MATCH
- 	help
--	  If you have a Intel Haswell or Broadwell platform connected to
--	  an I2S codec, then enable this option by saying Y or m. This is
--	  typically used for Chromebooks. This is a recommended option.
--	  This option is mutually exclusive with the SOF support on
--	  Broadwell. If you want to enable SOF on Broadwell, you need to
--	  deselect this option first.
-+	  Enable support for Intel(R) Haswell and Broadwell platforms
-+	  with I2S codec present. This is a recommended option.
-+	  Say Y or m if you have such device.
-+	  If unsure, say N.
-+
-+config SND_SOC_INTEL_HASWELL
-+	tristate
-+	select SND_SOC_INTEL_CATPT
- 
- config SND_SOC_INTEL_BAYTRAIL
- 	tristate "Baytrail (legacy) Platforms"
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 04ee48204fc9..c88c615f85f7 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -3,9 +3,9 @@
- obj-$(CONFIG_SND_SOC) += common/
- 
- # Platform Support
--obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
- obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += baytrail/
- obj-$(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM) += atom/
-+obj-$(CONFIG_SND_SOC_INTEL_CATPT) += catpt/
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += skylake/
- obj-$(CONFIG_SND_SOC_INTEL_KEEMBAY) += keembay/
- 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 12dd41796e82..6afdd9ac4478 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -26,7 +26,7 @@ config SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES
- 	  interface.
- 	  If unsure select N.
- 
--if SND_SOC_INTEL_HASWELL
-+if SND_SOC_INTEL_CATPT
- 
- config SND_SOC_INTEL_HASWELL_MACH
- 	tristate "Haswell Lynxpoint"
-@@ -40,9 +40,9 @@ config SND_SOC_INTEL_HASWELL_MACH
- 	  Say Y or m if you have such a device.
- 	  If unsure select "N".
- 
--endif ## SND_SOC_INTEL_HASWELL
-+endif ## SND_SOC_INTEL_CATPT
- 
--if SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
-+if SND_SOC_INTEL_CATPT || SND_SOC_SOF_BROADWELL
- 
- config SND_SOC_INTEL_BDW_RT5650_MACH
- 	tristate "Broadwell with RT5650 codec"
-@@ -83,7 +83,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
- 	  Ultrabook platforms.
- 	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
--endif ## SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
-+endif ## SND_SOC_INTEL_CATPT || SND_SOC_SOF_BROADWELL
- 
- if SND_SOC_INTEL_BAYTRAIL
- 
-diff --git a/sound/soc/intel/catpt/Makefile b/sound/soc/intel/catpt/Makefile
-new file mode 100644
-index 000000000000..c393a45795da
---- /dev/null
-+++ b/sound/soc/intel/catpt/Makefile
-@@ -0,0 +1,6 @@
-+snd-soc-catpt-objs := device.o dsp.o loader.o ipc.o messages.o pcm.o sysfs.o
-+
-+# tell define_trace.h where to find the trace header
-+CFLAGS_device.o := -I$(src)
-+
-+obj-$(CONFIG_SND_SOC_INTEL_CATPT) += snd-soc-catpt.o
--- 
-2.17.1
-
+Thanks!
+Maxime
