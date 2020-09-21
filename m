@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D4AC43463
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:29:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05EB2C43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:30:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F6E6206D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:29:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C436206D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 08:30:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vM5b0bC4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F6E6206D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VUbT19tF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C436206D9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA6B617F0;
-	Mon, 21 Sep 2020 10:28:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA6B617F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE80017FC;
+	Mon, 21 Sep 2020 10:29:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE80017FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600676977;
-	bh=Nx1pAzFY4vm34mJtJyfDdogxGpBmnK2+HD4VuqNqqEo=;
+	s=default; t=1600677010;
+	bh=vLjIUdpdWD9e2w/UcnEZS/0eXKN+9EbD2+YLZ4BHXek=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vM5b0bC4OlSkQRqJ383cg/MeDBTZ1fkgj1mHvTN3lRXTh0z52bcpBN2Oh4z/WHEcO
-	 u3xbJJ9IEtkHg6bKOzO0zk2eXHEl2nXyyLYiJghRl9YIoRRXn+LXZNnSaFk2/thHmT
-	 /CBgyhgEFsfFJmwH3v5zkYZ8IJQuQWWpmXO/52Fw=
+	b=VUbT19tFGXtHGy/zVUX7cmBTiDmwwtO7aiM3JcQYETxbzpYtCPi0iIhwMx/fCnztA
+	 Yq92KuuTAHT1v1rd4BpSFuQoP6onowrfR+/jwr0HjAR592E4d+saP5C3TGA4TQa5KQ
+	 ygzFIyu5D2gn8GojtyJ5cxZqayumkxRlikzkkewE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFB0FF8021C;
-	Mon, 21 Sep 2020 10:25:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 688ADF802DB;
+	Mon, 21 Sep 2020 10:25:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1F8CF8028E; Mon, 21 Sep 2020 10:24:58 +0200 (CEST)
+ id 11AE2F802DB; Mon, 21 Sep 2020 10:25:42 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DB3BF8020B
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 10:24:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DB3BF8020B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45DCAF8028D
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 10:25:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45DCAF8028D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6010DB288;
- Mon, 21 Sep 2020 08:25:26 +0000 (UTC)
-Date: Mon, 21 Sep 2020 10:24:50 +0200
-Message-ID: <s5h1rivr0z1.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 4D189ADD2;
+ Mon, 21 Sep 2020 08:26:10 +0000 (UTC)
+Date: Mon, 21 Sep 2020 10:25:33 +0200
+Message-ID: <s5hzh5jpmde.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: trix@redhat.com
-Subject: Re: [PATCH] ALSA: asihpi: fix iounmap in error handler
-In-Reply-To: <20200913165230.17166-1-trix@redhat.com>
-References: <20200913165230.17166-1-trix@redhat.com>
+To: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek - Couldn't detect Mic if booting with
+ headset plugged
+In-Reply-To: <20200914065118.19238-1-hui.wang@canonical.com>
+References: <20200914065118.19238-1-hui.wang@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- ndesaulniers@google.com, tiwai@suse.com, eblennerhassett@audioscience.com,
- clang-built-linux@googlegroups.com, natechancellor@gmail.com
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,31 +78,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 13 Sep 2020 18:52:30 +0200,
-trix@redhat.com wrote:
+On Mon, 14 Sep 2020 08:51:18 +0200,
+Hui Wang wrote:
 > 
-> From: Tom Rix <trix@redhat.com>
+> We found a Mic detection issue on many Lenovo laptops, those laptops
+> belong to differnt models and they have different audio design like
+> internal mic connects to the codec or PCH, they all have this problem,
+> the problem is if plugging a headset before powerup/reboot the
+> machine, after booting up, the headphone could be detected but Mic
+> couldn't. If we plug out and plug in the headset, both headphone and
+> Mic could be detected then.
 > 
-> clang static analysis flags this problem
-> hpioctl.c:513:7: warning: Branch condition evaluates to
->   a garbage value
->                 if (pci.ap_mem_base[idx]) {
->                     ^~~~~~~~~~~~~~~~~~~~
+> Through debugging we found the codec on those laptops are same, it is
+> alc257, and if we don't disable the 3k pulldown in alc256_shutup(),
+> the issue will be fixed. So far there is no pop noise or power
+> consumption regression on those laptops after this change.
 > 
-> If there is a failure in the middle of the memory space loop,
-> only some of the memory spaces need to be cleaned up.
-> 
-> At the error handler, idx holds the number of successful
-> memory spaces mapped.  So rework the handler loop to use the
-> old idx.
-> 
-> There is a second problem, the memory space loop conditionally
-> iomaps()/sets the mem_base so it is necessay to initize pci.
-> 
-> Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Cc: Kailang Yang <kailang@realtek.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-Thanks, applied.
+Applied now.  Thanks.
 
 
 Takashi
