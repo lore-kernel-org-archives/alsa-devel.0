@@ -1,104 +1,81 @@
-Return-Path: <SRS0=okCM=C5=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=AR4N=C6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7C45C43463
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 21:33:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D802C43463
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 02:00:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48EB02084C
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Sep 2020 21:33:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03546207BB
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 02:00:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p+OIcFue";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VSMIJzXr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48EB02084C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vAqcHczX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03546207BB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 713681667;
-	Sun, 20 Sep 2020 23:32:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 713681667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2543E1671;
+	Mon, 21 Sep 2020 03:59:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2543E1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600637599;
-	bh=G0baGaaUwbcpztGQRDKDSWKlpOPb8UTNeF9yVluXCns=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=p+OIcFueABkXGPPlgJ13pDg99jI+W3o7iewqWJb8etz+gzvHT9lmseq7KpAaFVSup
-	 RzQsGYJ+PRLhZgcu9dDnERejFDxBjJyL56psEgnvXmXx0Z/Hys9OMfnb+qoRAle6/9
-	 atVIlycO09ARa5rwp11mCmqaIUbPwIj/GXq5ADik=
+	s=default; t=1600653630;
+	bh=xIwrm7z23oIBGeDpQbcKW1MvHRZZBqn1qtEFrS5U6zg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vAqcHczX8HHEGPO2eD7eNag4Y57RK+O77+5q3ND6Pr6otk5/0y9TyAXDRGiNc1/hV
+	 +S1LJr4i9WxmllatWkveqh6OGmQkP/s9VPZkC9FJBlhGeQ6SXyS5mH3xGTkQnFU5zp
+	 5wG2BR4DRpz6RQ3qqiyDzKKWHwAxjdzZZBiNDHdQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF90DF80229;
-	Sun, 20 Sep 2020 23:32:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9ACA4F80161;
+	Mon, 21 Sep 2020 03:59:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7A09F80232; Sun, 20 Sep 2020 23:32:26 +0200 (CEST)
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
- [IPv6:2607:f8b0:4864:20::d42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71ED0F8010A
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2020 23:32:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71ED0F8010A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="VSMIJzXr"
-Received: by mail-io1-xd42.google.com with SMTP id z25so13340406iol.10
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2020 14:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=zl4uqFm3yPB6x7Hy8vdaFwmv1E7h2D7sRx3SQmvIRXU=;
- b=VSMIJzXr04+KE0LLcVJ20lZzuJ6LTNdJ2ytVxu/nLeGeHOuSwD7AWKA20qISHSLDVW
- BP8HMh8KqUMfBtunEPGWpR1h3160kQz1nsHRD7Jy8Ew/c3QYX6hr+oIt9bDWGCLnSRgA
- DRC2rZajZaroGhdB3Sa5BrfxfuwLYaeCdB+K+3iqLGymh0eu9rUdJBNKzrlZgPXBfAfV
- U6W84E93GKxLIsbtrU7es9LzPNuCmnTa5qCgoD1NJTY6CU/jexGAsyTK34COFsxb+R3K
- SI7CiUyzFIFCPQkS2R69DAKddcQd/IIr5qs1XiCF0ahobHCw8vdXRx95yL7V9zbXqvcG
- KhKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=zl4uqFm3yPB6x7Hy8vdaFwmv1E7h2D7sRx3SQmvIRXU=;
- b=DPXtRY/B8J1UXn8Ru5UHeC27AfGaI0lfyOQlMEIXJ9zqG5Pkb88yWo95muw9gZTK8j
- Z+SngD3rQORdHQVKvGo0Mha1+vsZy1BNNQeM6Cv3s8WBmcYL3RNM9SKYz9T2cWxuS5m3
- Q+Z6M878rCd6Le+S4CTjNQvErG7iqmS0izAX2YMyKxIQfaF19EahuwRPtS9PUzIJWY/j
- UFU6BNYijbfoIO2lGE1V5ZrIuoVv8s59jNPSb28phqhUFwP4ZC0srq74wbRdjFHmgi8Z
- 0hhVMDOJyJGKWo+X98F902+kGXRF3WbQOFEu/vrSXLVenz3I0cV3mX2A+zmU/n6nTb2+
- rAHg==
-X-Gm-Message-State: AOAM532bgkTVEoQMePoAFqlSgEcFtF0PGt5b4SPU4goiKXo7D9k9WaRe
- w0Ut3yPJ5B6/adnGvDm725rOrv0Cprf44ncdyWs=
-X-Google-Smtp-Source: ABdhPJzBIdXB8dWyLH0FcLOI7kzaUQSBoFIW/9bNwv9d/zobjxL/7xzmN/ng0VcJW6M1oEZlXTgmu3yobI0sbINo6ps=
-X-Received: by 2002:a02:734f:: with SMTP id a15mr38597014jae.120.1600637534793; 
- Sun, 20 Sep 2020 14:32:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200920180758.592217-1-peron.clem@gmail.com>
- <20200920180758.592217-6-peron.clem@gmail.com>
- <2d2799c5-62e8-8e64-c739-3d85b89c1178@sholland.org>
-In-Reply-To: <2d2799c5-62e8-8e64-c739-3d85b89c1178@sholland.org>
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date: Sun, 20 Sep 2020 23:32:03 +0200
-Message-ID: <CAJiuCcfH3Z=-ow0S1Za_Qtvx_Bnjic9ivNEtGUmyVTgetgkZhQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/19] ASoc: sun4i-i2s: Add 20 and 24 bit support
-To: Samuel Holland <samuel@sholland.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree <devicetree@vger.kernel.org>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- linux-sunxi <linux-sunxi@googlegroups.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Maxime Ripard <mripard@kernel.org>, Marcus Cooper <codekipper@gmail.com>,
- Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+ id C98BAF80162; Mon, 21 Sep 2020 03:59:37 +0200 (CEST)
+Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
+ by alsa1.perex.cz (Postfix) with ESMTP id E526EF8010A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 03:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E526EF8010A
+Received: from localhost (unknown [159.226.5.99])
+ by APP-05 (Coremail) with SMTP id zQCowADXPij8CGhfhanfAA--.57694S2;
+ Mon, 21 Sep 2020 09:59:24 +0800 (CST)
+From: Xu Wang <vulab@iscas.ac.cn>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, shengjiu.wang@gmail.com, lgirdwood@gmail.com,
+ broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] fsl: imx-audmix : Use devm_kcalloc() instead of devm_kzalloc()
+Date: Mon, 21 Sep 2020 01:59:18 +0000
+Message-Id: <20200921015918.24157-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowADXPij8CGhfhanfAA--.57694S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1UKw1fAr43Ar4rJr17trb_yoW8Aw45pa
+ 1ktFW0qFyjyF4Yvr1kKr4kWasxAa97Ca18t3W2gw1avwnxKr4kGFsYqr1UZFWFyF9YkF45
+ K3y8Ja4YvFyUAr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUU9014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+ rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+ 1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+ 6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+ 4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+ Yx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbV
+ WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
+ xVA2Y2ka0xkIwI1lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+ v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+ 1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+ AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+ MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+ VFxhVjvjDU0xZFpf9x0JUPnYwUUUUU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgUGA1z4jA6odQAAsx
+Cc: linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,53 +91,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Samuel,
+A multiplication for the size determination of a memory allocation
+indicated that an array data structure should be processed.
+Thus use the corresponding function "devm_kcalloc".
 
-On Sun, 20 Sep 2020 at 20:45, Samuel Holland <samuel@sholland.org> wrote:
->
-> On 9/20/20 1:07 PM, Cl=C3=A9ment P=C3=A9ron wrote:
-> > From: Marcus Cooper <codekipper@gmail.com>
-> >
-> > Extend the functionality of the driver to include support of 20 and
-> > 24 bits per sample.
-> >
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > Acked-by: Maxime Ripard <mripard@kernel.org>
-> > ---
-> >  sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> >
-> As I have mentioned before, if you want to support a 32-bit slot width on=
- sun4i
-> variants (which patch 2 does via TDM and this patch does via PCM format),=
- you
-> need to fix sun4i_i2s_get_wss() to return "3", not "4", for a 32-bit inpu=
-t.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ sound/soc/fsl/imx-audmix.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Sorry I didn't get it the first time.
+diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
+index 202fb8950078..cbdc0a2c09c5 100644
+--- a/sound/soc/fsl/imx-audmix.c
++++ b/sound/soc/fsl/imx-audmix.c
+@@ -185,20 +185,20 @@ static int imx_audmix_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	priv->num_dai = 2 * num_dai;
+-	priv->dai = devm_kzalloc(&pdev->dev, priv->num_dai *
++	priv->dai = devm_kcalloc(&pdev->dev, priv->num_dai,
+ 				 sizeof(struct snd_soc_dai_link), GFP_KERNEL);
+ 	if (!priv->dai)
+ 		return -ENOMEM;
+ 
+ 	priv->num_dai_conf = num_dai;
+-	priv->dai_conf = devm_kzalloc(&pdev->dev, priv->num_dai_conf *
++	priv->dai_conf = devm_kcalloc(&pdev->dev, priv->num_dai_conf,
+ 				      sizeof(struct snd_soc_codec_conf),
+ 				      GFP_KERNEL);
+ 	if (!priv->dai_conf)
+ 		return -ENOMEM;
+ 
+ 	priv->num_dapm_routes = 3 * num_dai;
+-	priv->dapm_routes = devm_kzalloc(&pdev->dev, priv->num_dapm_routes *
++	priv->dapm_routes = devm_kcalloc(&pdev->dev, priv->num_dapm_routes,
+ 					 sizeof(struct snd_soc_dapm_route),
+ 					 GFP_KERNEL);
+ 	if (!priv->dapm_routes)
+@@ -208,7 +208,7 @@ static int imx_audmix_probe(struct platform_device *pdev)
+ 		struct snd_soc_dai_link_component *dlc;
+ 
+ 		/* for CPU/Codec/Platform x 2 */
+-		dlc = devm_kzalloc(&pdev->dev, 6 * sizeof(*dlc), GFP_KERNEL);
++		dlc = devm_kcalloc(&pdev->dev, 6, sizeof(*dlc), GFP_KERNEL);
+ 		if (!dlc) {
+ 			dev_err(&pdev->dev, "failed to allocate dai_link\n");
+ 			return -ENOMEM;
+-- 
+2.17.1
 
-Is using a switch case is a correct solution?
-
-static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
-{
-switch (width)
-{
-case 16:
-return 0x0;
-case 20:
-return 0x1;
-case 24:
-return 0x2;
-case 32:
-return 0x3;
-}
-
-return -EINVAL;
-}
-
-Clement
-
->
-> Cheers,
-> Samuel
