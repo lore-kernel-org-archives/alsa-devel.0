@@ -7,77 +7,75 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11340C43468
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 14:45:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 670EBC43465
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 14:46:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73EC921D91
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 14:45:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA63420735
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 14:46:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eE6Bkf3K";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dDGU34LG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73EC921D91
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GVLPstKS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="V1yKOsJL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA63420735
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9ED616DE;
-	Mon, 21 Sep 2020 16:44:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9ED616DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44B0516DF;
+	Mon, 21 Sep 2020 16:45:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44B0516DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600699547;
-	bh=Y/rU4Kl8mzIytkEa5q3OGx+tpP2TRJ7q1NdFMAg0QeQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eE6Bkf3KOnkNuylXsQYngGVjCg8ZjgjGcJtMtZAI2zD3gVNQwnzxUj4nHk3glhx9+
-	 d8eD+epQAkqBkz4W+hlf5vs2Rb9uq2JxGlpZ24tkh95QdmdpkDgICQicy5AlqOS/aK
-	 sChbucGeN3t76I/nH1iYENwmL4p06nnlKZ3JApdc=
+	s=default; t=1600699595;
+	bh=n4ccT9AAlLEmEj4CplM7KOfPW9h4l6di6si+GpkT5jE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=GVLPstKS14gRSEVa/ZOl1r+Xy5C10QETQ0Dt7erEw/GCqazRyZHPPqGP0gLBgLeXk
+	 CVkhGd/3q6Mjr5eKaL7oHaIPzKMLuT+IKyHVaA9+XfCBKDsZHZaw/1qyJteXUUTLUb
+	 o0KW+wf3fhHuX5ZKhPPP769Bfq71yydD37dmIQsM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7997DF802FF;
-	Mon, 21 Sep 2020 16:41:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6DC3F8031A;
+	Mon, 21 Sep 2020 16:41:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C9DEF80305; Mon, 21 Sep 2020 16:41:15 +0200 (CEST)
+ id 537A6F80329; Mon, 21 Sep 2020 16:41:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AA2DF802E0
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 16:40:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AA2DF802E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id C71F3F8031A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 16:41:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C71F3F8031A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dDGU34LG"
+ header.b="V1yKOsJL"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D2F372388E;
- Mon, 21 Sep 2020 14:40:56 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D4578221EC;
+ Mon, 21 Sep 2020 14:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600699257;
- bh=Y/rU4Kl8mzIytkEa5q3OGx+tpP2TRJ7q1NdFMAg0QeQ=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=dDGU34LGyePs9qNHVgXrh0IWle3mmW0gWoSvzOiHs1lGNNx9kOFnlK/oLBrZ8XJP3
- trAOrjbiXPGHDbqPokr4RB3r0UqCR/0mlTJM/unKMaavQSBaX71Coq06/HvOTNeC9c
- O+7sUcYmQxF3+6XNBDIMAm803onDHQXDkSX3OfP4=
+ s=default; t=1600699276;
+ bh=n4ccT9AAlLEmEj4CplM7KOfPW9h4l6di6si+GpkT5jE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=V1yKOsJLd/QYngFzExG4KW39pDoq4D3D5s6hgNPwq594atkmgmpZ3n/y/s/knJ5Aq
+ vYlL+VygxEuPctkzxntnhvLfNw7Jr8/yXu1q5tEjLFAw4quY7cfbvSyNgJt6EEXYka
+ T/G29s1aj0YaJpsAHbnmzETi5sfyUd+7AJXInZfw=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 02/15] ASoC: pcm3168a: ignore 0 Hz settings
-Date: Mon, 21 Sep 2020 10:40:41 -0400
-Message-Id: <20200921144054.2135602-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 1/9] ASoC: wm8994: Skip setting of the
+ WM8994_MICBIAS register for WM1811
+Date: Mon, 21 Sep 2020 10:41:06 -0400
+Message-Id: <20200921144114.2135773-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200921144054.2135602-1-sashal@kernel.org>
-References: <20200921144054.2135602-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,39 +91,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-[ Upstream commit 7ad26d6671db758c959d7e1d100b138a38483612 ]
+[ Upstream commit 811c5494436789e7149487c06e0602b507ce274b ]
 
-Some sound card try to set 0 Hz as reset, but it is impossible.
-This patch ignores it to avoid error return.
+The WM8994_MICBIAS register is not available in the WM1811 CODEC so skip
+initialization of that register for that device.
+This suppresses an error during boot:
+"wm8994-codec: ASoC: error at snd_soc_component_update_bits on wm8994-codec"
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87a6yjy5sy.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200827173357.31891-1-s.nawrocki@samsung.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/wm8994.c  | 2 ++
+ sound/soc/codecs/wm_hubs.c | 3 +++
+ sound/soc/codecs/wm_hubs.h | 1 +
+ 3 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 88b75695fbf7f..b37e5fbbd301a 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -302,6 +302,13 @@ static int pcm3168a_set_dai_sysclk(struct snd_soc_dai *dai,
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(dai->component);
- 	int ret;
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 01acb8da2f48e..cd089b4143029 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -4051,11 +4051,13 @@ static int wm8994_component_probe(struct snd_soc_component *component)
+ 			wm8994->hubs.dcs_readback_mode = 2;
+ 			break;
+ 		}
++		wm8994->hubs.micd_scthr = true;
+ 		break;
  
-+	/*
-+	 * Some sound card sets 0 Hz as reset,
-+	 * but it is impossible to set. Ignore it here
-+	 */
-+	if (freq == 0)
+ 	case WM8958:
+ 		wm8994->hubs.dcs_readback_mode = 1;
+ 		wm8994->hubs.hp_startup_mode = 1;
++		wm8994->hubs.micd_scthr = true;
+ 
+ 		switch (control->revision) {
+ 		case 0:
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index fed6ea9b019f7..da7fa6f5459e6 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -1227,6 +1227,9 @@ int wm_hubs_handle_analogue_pdata(struct snd_soc_component *component,
+ 		snd_soc_component_update_bits(component, WM8993_ADDITIONAL_CONTROL,
+ 				    WM8993_LINEOUT2_FB, WM8993_LINEOUT2_FB);
+ 
++	if (!hubs->micd_scthr)
 +		return 0;
 +
- 	if (freq > PCM3168A_MAX_SYSCLK)
- 		return -EINVAL;
+ 	snd_soc_component_update_bits(component, WM8993_MICBIAS,
+ 			    WM8993_JD_SCTHR_MASK | WM8993_JD_THR_MASK |
+ 			    WM8993_MICB1_LVL | WM8993_MICB2_LVL,
+diff --git a/sound/soc/codecs/wm_hubs.h b/sound/soc/codecs/wm_hubs.h
+index ee339ad8514d1..1433d73e09bf8 100644
+--- a/sound/soc/codecs/wm_hubs.h
++++ b/sound/soc/codecs/wm_hubs.h
+@@ -31,6 +31,7 @@ struct wm_hubs_data {
+ 	int hp_startup_mode;
+ 	int series_startup;
+ 	int no_series_update;
++	bool micd_scthr;
  
+ 	bool no_cache_dac_hp_direct;
+ 	struct list_head dcs_cache;
 -- 
 2.25.1
 
