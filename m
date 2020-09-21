@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7583C43464
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 09:44:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B9ABC43464
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 09:44:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CE762158C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 09:44:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2852D21789
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Sep 2020 09:44:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="le6+4/RD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CE762158C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vt3aJ7Gm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2852D21789
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AD6A16FA;
-	Mon, 21 Sep 2020 11:43:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AD6A16FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DB7C1700;
+	Mon, 21 Sep 2020 11:43:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DB7C1700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600681443;
-	bh=UC3QxJDZ40YaHUw7nI2AEGOwo8sUAnILDElnnCVR7UA=;
+	s=default; t=1600681489;
+	bh=cCCqLbHtpfMLn2ao9XU9YIoRvMrwy1zaoMYBT8odZ9U=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=le6+4/RDeoMnMt+IL+WIznaUdwA6fhYK9FxzOALpX6w21YOz5KmRvNc0FBmjbSZPS
-	 R91MeEOaMoZx7klcH5HVpnp1QQzHTDHP2jQqd6ux+X77va86SGqg80MeF9vHwiGwr5
-	 Fhj88nceVe74+05SiVsLF0v0wk289HRXHMam/E7o=
+	b=vt3aJ7GmgEUJVD8ArIW3VLqubyXzV72ruEgkRDmxz5rtY4LlxQQCtpavfH8YigJ/b
+	 VOU6cJyZw1u633jwW59ToIB9Iy4sJPUmPY3vkadzQKVIHrE54JIyTRRA25fY3uzhOA
+	 R5lZWE2oBFSqwcEdZJFcYt9dy17zzIJuFei193pA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6AC4F8010A;
-	Mon, 21 Sep 2020 11:43:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AB0EF8021C;
+	Mon, 21 Sep 2020 11:43:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A667F8020B; Mon, 21 Sep 2020 11:43:11 +0200 (CEST)
+ id 43FA9F8028D; Mon, 21 Sep 2020 11:43:24 +0200 (CEST)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C051F8010A
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 11:43:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C051F8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B0C2F8020B
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 11:43:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B0C2F8020B
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08L9goijF019252,
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08L9hE1T1019325,
  This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08L9goijF019252
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08L9hE1T1019325
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 21 Sep 2020 17:42:50 +0800
+ Mon, 21 Sep 2020 17:43:14 +0800
 Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 21 Sep 2020 17:42:50 +0800
+ 15.1.2044.4; Mon, 21 Sep 2020 17:43:14 +0800
 Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
  (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 21 Sep
- 2020 17:42:49 +0800
+ 2020 17:43:13 +0800
 From: <shumingf@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] ASoC: rt700: wait for the delayed work to finish when the
+Subject: [PATCH 2/2] ASoC: rt711: wait for the delayed work to finish when the
  system suspends
-Date: Mon, 21 Sep 2020 17:42:44 +0800
-Message-ID: <20200921094244.31869-1-shumingf@realtek.com>
+Date: Mon, 21 Sep 2020 17:43:08 +0800
+Message-ID: <20200921094308.31921-1-shumingf@realtek.com>
 X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -97,21 +97,22 @@ To avoid the IO error, we need to cancel the delayed work and wait for it to fin
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
- sound/soc/codecs/rt700-sdw.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/rt711-sdw.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
-index ead4918bbf90..c7deb4e4fcf1 100644
---- a/sound/soc/codecs/rt700-sdw.c
-+++ b/sound/soc/codecs/rt700-sdw.c
-@@ -490,6 +490,9 @@ static int __maybe_unused rt700_dev_suspend(struct device *dev)
- 	if (!rt700->hw_init)
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index 28d663673320..3a8ca600d1cf 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -491,6 +491,10 @@ static int __maybe_unused rt711_dev_suspend(struct device *dev)
+ 	if (!rt711->hw_init)
  		return 0;
  
-+	cancel_delayed_work_sync(&rt700->jack_detect_work);
-+	cancel_delayed_work_sync(&rt700->jack_btn_check_work);
++	cancel_delayed_work_sync(&rt711->jack_detect_work);
++	cancel_delayed_work_sync(&rt711->jack_btn_check_work);
++	cancel_work_sync(&rt711->calibration_work);
 +
- 	regcache_cache_only(rt700->regmap, true);
+ 	regcache_cache_only(rt711->regmap, true);
  
  	return 0;
 -- 
