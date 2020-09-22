@@ -2,101 +2,87 @@ Return-Path: <SRS0=PysP=C7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 655B8C2D0E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD98C2D0E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:45:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0AD623600
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:31:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1551D2388B
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:45:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ug2wtV7z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0AD623600
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MlXCa7z5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R6seZPA/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1551D2388B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD22E1704;
-	Tue, 22 Sep 2020 13:31:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD22E1704
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0400616FD;
+	Tue, 22 Sep 2020 13:44:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0400616FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600774316;
-	bh=5yIFvDjT1r4GJKIAXxfShr8f3UeaEs0ptqG2sZYvOI4=;
+	s=default; t=1600775119;
+	bh=3OhywcltP9VHm6MmXFAi4kj4+8+FaFh5Jl0cjhgWevI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ug2wtV7zC20HAKs7vGFyGv5gMiKpPP7zj9MiCQpnSgxfCez+auhcnM3aSI1xDOaBK
-	 gG8H9mlB7tRrsBlDM2CGhB1zl+5v1UAB/3HNkSLWZ11r/rSjLLK3Qi8mHY67FDMzd5
-	 m6YMgVJfKitauR0tkbBqL7GqU4xKKUaBWGO/ZqUg=
+	b=MlXCa7z5isPw0hVQUS9BXnfbqTXjV565z4ja9e3u6JGiO6dU2MWVltHiF4k+8D919
+	 lvwlyssndQj+8JOC8lHCJBUG1+8S/Ne++jRrS37dcZAvsv1EKc2hf5twYtWIrZWuca
+	 p/2STr8CAJKMs3Mc0dEa6z+CMgkUaTEZUX7qqCNQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DF70F800ED;
-	Tue, 22 Sep 2020 13:31:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D18EF8015F;
+	Tue, 22 Sep 2020 13:44:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35967F80234; Tue, 22 Sep 2020 13:31:05 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id EE824F80229; Tue, 22 Sep 2020 13:44:26 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49B1BF800ED
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 13:44:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49B1BF800ED
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="R6seZPA/"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75BA4F800ED
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 13:30:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75BA4F800ED
-IronPort-SDR: G76GS9EW6rf1H7xuLcv0E1ocBqQGlsvF2ZzPsYccgyYCFTb5dsf9UaM9BWbBkJLkLQY3CLmhte
- hzsQjWiSMkHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="222175323"
-X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; d="scan'208";a="222175323"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2020 04:30:54 -0700
-IronPort-SDR: rhQ5WO6uG5cZi1OI1thThlPCd7oRMavKgxuzUFw7t1bOscAamdscF/GhI/FBFeNcv5ZAx2G7Su
- sLvlRb56h+/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; d="scan'208";a="338263555"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga008.jf.intel.com with ESMTP; 22 Sep 2020 04:30:50 -0700
-Received: from andy by smile with local (Exim 4.94)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1kKgVS-0014y3-Qw; Tue, 22 Sep 2020 14:30:46 +0300
-Date: Tue, 22 Sep 2020 14:30:46 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v7 03/14] ASoC: Intel: catpt: Add IPC message handlers
-Message-ID: <20200922113046.GN3956970@smile.fi.intel.com>
-References: <20200921115424.4105-1-cezary.rojewski@intel.com>
- <20200921115424.4105-4-cezary.rojewski@intel.com>
- <20200921125934.GT3956970@smile.fi.intel.com>
- <55266617b42843839fb85309d3097fd6@intel.com>
- <20200921184129.GH3956970@smile.fi.intel.com>
- <191afe965b1e46799bf776be3254d28f@intel.com>
- <20200922090442.GJ3956970@smile.fi.intel.com>
- <4e51e628f9df457c8253a3ef6d7095eb@intel.com>
- <20200922112910.GM3956970@smile.fi.intel.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id 22C62214F1;
+ Tue, 22 Sep 2020 11:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1600775052;
+ bh=3OhywcltP9VHm6MmXFAi4kj4+8+FaFh5Jl0cjhgWevI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=R6seZPA/KYfch3970nAndvescUMM14RveYUo8rkB69y4KfOAWHalRvlDVbbLGz0xD
+ xHFTtQR7oplTb/Vvc2IisPURG10cscMznhU8yXAZ0N/mf+kVyArQ5LTW/Ii7maQv72
+ JABAfDNdUV2pBtjZaHU/tWkZ9jouuf240imOrPZo=
+Date: Tue, 22 Sep 2020 12:43:19 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v6 3/5] Asoc:qcom:lpass-cpu:Update dts property read API
+Message-ID: <20200922114319.GR4792@sirena.org.uk>
+References: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
+ <1600409084-29093-4-git-send-email-srivasam@codeaurora.org>
+ <040290a8-26a3-ab9c-04dc-beb23ee827e8@linaro.org>
+ <20200922110825.GN4792@sirena.org.uk>
+ <3866ce69-b7d0-5eb5-e0aa-874d150cd47a@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="TMgB3/Ch1aWgZB1L"
 Content-Disposition: inline
-In-Reply-To: <20200922112910.GM3956970@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Cc: "pierre-louis.bossart@linux.intel.com"
- <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kaczmarski,
- Filip" <filip.kaczmarski@intel.com>, "N,
- Harshapriya" <harshapriya.n@intel.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Barlik,
- Marcin" <marcin.barlik@intel.com>, "zwisler@google.com" <zwisler@google.com>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>,
- "Proborszcz, Filip" <filip.proborszcz@intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "amadeuszx.slawinski@linux.intel.com" <amadeuszx.slawinski@linux.intel.com>,
- "Wasko, Michal" <michal.wasko@intel.com>,
- "cujomalainey@chromium.org" <cujomalainey@chromium.org>, "Hejmowski,
- Krzysztof" <krzysztof.hejmowski@intel.com>, "Papierkowski,
- Piotr \(Habana\)" <ppapierkowski@habana.ai>, "Gopal,
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
+In-Reply-To: <3866ce69-b7d0-5eb5-e0aa-874d150cd47a@linaro.org>
+X-Cookie: Love thy neighbor, tune thy piano.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ V Sujith Kumar Reddy <vsujithk@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+ bjorn.andersson@linaro.org, agross@kernel.org, rohitkr@codeaurora.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,39 +98,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Sep 22, 2020 at 02:29:10PM +0300, Andy Shevchenko wrote:
-> On Tue, Sep 22, 2020 at 11:04:31AM +0000, Rojewski, Cezary wrote:
-> > On 2020-09-22 11:04 AM, Andy Shevchenko wrote:
-> > > On Mon, Sep 21, 2020 at 08:48:12PM +0000, Rojewski, Cezary wrote:
 
-...
+--TMgB3/Ch1aWgZB1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > > And here basically enough check is info against NULL, right?
-> > > Just try to look at different possibilities how to make code simpler and neater.
-> > > 
-> > >> Didn't compile this, some typecheck fixes might be in order and so on.
-> > > 
-> > 
-> > What you meant is:
-> > 	if (i == 4 && !info) // instead of 'info < eof'
-> > 
-> > right?
-> 
-> Simply if (!info)...
+On Tue, Sep 22, 2020 at 12:22:38PM +0100, Srinivas Kandagatla wrote:
+> On 22/09/2020 12:08, Mark Brown wrote:
 
-	if (info)
-		memcpy();
+> I agree with you on this and I see the point, but Rob had a very different
+> opinion about the reg-names bindings to start with.
 
-of course, otherwise it will crash.
+> This topic been discussed in the past with Rob in many instances ex: https://lore.kernel.org/linux-devicetree/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
 
-> > If 4th space is last char in this string then info would end up being
-> > non-NULL and equal to 'eof' and thus memcpy() would get invoked with
-> > size=eof-info=0.
-> 
-> ...which is not a problem.
+> According to him, reg-names seems to be highly discouraged as it came along
+> for the OMAP folks and was related to the hwmods stuff.
 
--- 
-With Best Regards,
-Andy Shevchenko
+That's very much specific to reg, it's not true of the use of names in
+general - Rob mentions cases like interrupts for example.
 
+--TMgB3/Ch1aWgZB1L
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9p41YACgkQJNaLcl1U
+h9AuWQf/ca9nQ2PmzHcNzlz7TsFIO+ht142QjTqAQlUdhHDiYcPpG9jqzYi81epi
+FLGHcE+NK0CCvc7fgnWsPv776/Fbj2+19GtH1bbQxARF2Oc9fkBvzP7x9lV92iUh
+KZ7aX5RAgvA+87nDF2jmOgfcJbeTnMw3ToKLbvlEqS4k+zsXhSWFuGbgCogexiSg
+TGI8So/Mp296hyFsgLFYIyF4pc2FPP9gulIwzyk+tPanIXZIXMgrWJvGVvq/BXp+
+32W1NMxm0HX5mY4vdAqPid7EiP+7wZCp/YtxmoOiY9XhqK38c5YZnqQV8rv+azpO
+ffsGe76ABBy85FJ4OdxsXt+7iw3cZg==
+=oQkO
+-----END PGP SIGNATURE-----
+
+--TMgB3/Ch1aWgZB1L--
