@@ -7,58 +7,59 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97CB5C2D0E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 10:59:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 251BBC2D0E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:00:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE94F20BED
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 10:59:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B8DE20888
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:00:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="txw7K0hg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE94F20BED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ruTVZNuP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B8DE20888
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F2B5170F;
-	Tue, 22 Sep 2020 12:59:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F2B5170F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A37F51706;
+	Tue, 22 Sep 2020 12:59:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A37F51706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600772391;
-	bh=H/RbrVWPrdmzmgT6yL5IOJ5BamOJre2Z4ITFZPr0Zng=;
+	s=default; t=1600772434;
+	bh=eSJEJBXMn6hWRUwe3I5sJBH0OHmzwG7htb2mS6mqAvU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=txw7K0hg5auNjNx63bLXJr0HbmHspAiHNsU7fM/TCjHIF5sMaZJOQ52NRhkv3/eCz
-	 Rk0CT2GmPCzt8811kfu0uD/VaVPwWfhsT08zxrt5OUPmSnP8rPwxmSzBQnoQ57Q5jW
-	 3gAgTbWyTCU76JIeQgagIAJVcCiM4aiC8/dxEnIM=
+	b=ruTVZNuPlqTYyH2E2rKUj6LxK1Hq5q3owYleLIUS/i0jmZqYP4zP5bj1yrqTUFtoO
+	 MUZJohTNExRbfFbSxP+Bql0hfe59QszuYkc1QpkJt83+mYKk9X9v/PkXPzUVbyEcFj
+	 Cfa61B6uZWI/HkRvGLNHMg1sFmBSjAj7it/TYc0c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D184F802E0;
-	Tue, 22 Sep 2020 12:56:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48D1BF80259;
+	Tue, 22 Sep 2020 12:56:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFF23F802DD; Tue, 22 Sep 2020 12:56:33 +0200 (CEST)
+ id 7DEE3F802DB; Tue, 22 Sep 2020 12:56:34 +0200 (CEST)
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
- by alsa1.perex.cz (Postfix) with ESMTP id 72964F80256
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 12:56:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72964F80256
+ by alsa1.perex.cz (Postfix) with ESMTP id 69D6FF80232
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 12:56:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69D6FF80232
 Received: from uucp (helo=alpha)
  by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
- id 1kKfxr-000822-01; Tue, 22 Sep 2020 12:56:03 +0200
+ id 1kKfxr-000822-00; Tue, 22 Sep 2020 12:56:03 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
- id B061AC0FFF; Tue, 22 Sep 2020 10:49:34 +0200 (CEST)
-Date: Tue, 22 Sep 2020 10:49:34 +0200
+ id AF6B3C0FE6; Tue, 22 Sep 2020 10:48:48 +0200 (CEST)
+Date: Tue, 22 Sep 2020 10:48:48 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 07/18] 53c700: improve non-coherent DMA handling
-Message-ID: <20200922084934.GB8477@alpha.franken.de>
+Subject: Re: [PATCH 06/18] lib82596: move DMA allocation into the callers of
+ i82596_probe
+Message-ID: <20200922084848.GA8477@alpha.franken.de>
 References: <20200915155122.1768241-1-hch@lst.de>
- <20200915155122.1768241-8-hch@lst.de>
+ <20200915155122.1768241-7-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915155122.1768241-8-hch@lst.de>
+In-Reply-To: <20200915155122.1768241-7-hch@lst.de>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
  nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
@@ -87,26 +88,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Sep 15, 2020 at 05:51:11PM +0200, Christoph Hellwig wrote:
-> Switch the 53c700 driver to only use non-coherent descriptor memory if it
-> really has to because dma_alloc_coherent fails.  This doesn't matter for
-> any of the platforms it runs on currently, but that will change soon.
-> 
-> To help with this two new helpers to transfer ownership to and from the
-> device are added that abstract the syncing of the non-coherent memory.
-> The two current bidirectional cases are mapped to transfers to the
-> device, as that appears to what they are used for.  Note that for parisc,
-> which is the only architecture this driver needs to use non-coherent
-> memory on, the direction argument of dma_cache_sync is ignored, so this
-> will not change behavior in any way.
+On Tue, Sep 15, 2020 at 05:51:10PM +0200, Christoph Hellwig wrote:
+> This allows us to get rid of the LIB82596_DMA_ATTR defined and prepare
+> for untangling the coherent vs non-coherent DMA allocation API.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/scsi/53c700.c | 113 +++++++++++++++++++++++-------------------
->  drivers/scsi/53c700.h |  17 ++++---
->  2 files changed, 72 insertions(+), 58 deletions(-)
+>  drivers/net/ethernet/i825xx/lasi_82596.c | 24 ++++++++++------
+>  drivers/net/ethernet/i825xx/lib82596.c   | 36 ++++++++----------------
+>  drivers/net/ethernet/i825xx/sni_82596.c  | 19 +++++++++----
+>  3 files changed, 40 insertions(+), 39 deletions(-)
 
-Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de> (SNI part)
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
