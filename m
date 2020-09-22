@@ -2,59 +2,114 @@ Return-Path: <SRS0=PysP=C7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75530C2D0E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 08:40:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9694BC2D0E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 08:41:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 612982084C
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 08:40:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CD1F22085B
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 08:41:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iY+UexgX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 612982084C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cmSaGxpD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NuVLgPgz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD1F22085B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A9A016A4;
-	Tue, 22 Sep 2020 10:40:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A9A016A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 215BC16A1;
+	Tue, 22 Sep 2020 10:40:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 215BC16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600764052;
-	bh=nuYGqNWBAfs3mDcoIRhiSmBRUGr3YZKcEPG7C6CnVqo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=iY+UexgXhJNbj/YzqQCQkA0bFfhulP9K42VQBoynLCH81joe8N9H0H9aq86Rlv0Wg
-	 t11SfWlrXeOQTuUBqG4d/dYtJh1+REULsQvP7QGmW0rDAZGz6LLcPQumCqPODFH7Oa
-	 CIfp0yjZuccngjgSbCuRRGNefyFg6l9jSE8+hDtI=
+	s=default; t=1600764104;
+	bh=vs+Ma0kjstiD+hy/a52XpqFHgEUZ5Ni71IqOzANoUAA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cmSaGxpDwFWWUiWxDsxauWKhRLscK9ZT3tgit0gP7cZE4KRVf2+RS1c8UN4EGx2EC
+	 zayLmmH++ifQoSIkTzWCWYJEHI9PIUY5+iB8dpiTpeGW+QxRpwR5aWQY7jC33qvV79
+	 mhuI2+noeXd9ZSUYKwmC1sjyO4C+XftpOoQZdEss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83159F8023E;
-	Tue, 22 Sep 2020 10:39:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B782EF80232;
+	Tue, 22 Sep 2020 10:40:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B318AF8010A; Tue, 22 Sep 2020 10:39:08 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E44AFF80232; Tue, 22 Sep 2020 10:40:52 +0200 (CEST)
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com
+ [IPv6:2607:f8b0:4864:20::b43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CBD6F80229
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 10:38:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CBD6F80229
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 71755AFEC;
- Tue, 22 Sep 2020 08:39:34 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: seq: oss: Avoid mutex lock for a long-time ioctl
-Date: Tue, 22 Sep 2020 10:38:56 +0200
-Message-Id: <20200922083856.28572-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: Pavel Machek <pavel@ucw.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63308F80234
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 10:40:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63308F80234
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="NuVLgPgz"
+Received: by mail-yb1-xb43.google.com with SMTP id k18so3556902ybh.1
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 01:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=N+OZiUP1vnnZHS8QHCk/3wxoJQlfFggJgv3Kp7po0iw=;
+ b=NuVLgPgziheHwTfP5LjhFY4SesKJN6z12RILB1pN4/SeYDJzsHHvNKezR7ZYNY4dks
+ R0rzGhN6Udmt//3tnPZXjgTsNr/c3ToPlEYCpNKg+XX1/tON4IljkX1fpQmsFLu4fysH
+ ZjJ86XJRSYLhpVFJDKRk9CJOC4RjlB+fC4P1iwaz1sZk4aKze740Q52vngewtGl/oIyY
+ Y45SYNMv6ibCl+2Vx1HERK0vRajzkUQ1kQpv9q64EgtEFcw7fBDhONQWuRZU8tl15Q5p
+ dapvzfVuitIIPO3bUQ/+iHaSDz56C4mqO4AuLzfsHRSyNQkmm471kLn7Lwusf38OStzE
+ yLyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=N+OZiUP1vnnZHS8QHCk/3wxoJQlfFggJgv3Kp7po0iw=;
+ b=BPfhtZX6dfu4xEBjk70yDq0vVEgoorQcbNamUeALmM6A/IJj5WWX2takNz4QAnh1vr
+ PpLoCqllWW71zCjZHoqO/0dSqc1uGF8WxXkgS74f/SI6BIPvcCsepoLUEhzwPWFekxt+
+ D06DFs+RmuZExc5aQ3DDGAdJDf8ptzyJ80970bfD45eT3c2NHS8skvC0mj6IaU4/3xkM
+ MBOHD8pPlGM+etEtZxI/oHnHJZC6Od7eqOOeuolmoJug6P3L1aQjL8JRTdptxP0he7kC
+ Hk6CYdX/kvldww70cUH9kYpPBIXpp2YFqdinWOAFiSrZDUqNlTUYZtIKEWqQVoKJzdt3
+ yMkw==
+X-Gm-Message-State: AOAM533dK0OIFrb5jLvQTSNwjRXA8Q4tiwIRwzijiiTzOlzG4pmQKTaU
+ OtF5C9FOCxOl1LBldnqA8whw5+gjPpNNZ/np0vc=
+X-Google-Smtp-Source: ABdhPJz7tp5/sbJjNYhmIjZ7Es4Bbt3UXUUN5/fc2NbqpCJMyZa2zZxOrHHSujRQO3IVOmIzjvH6zmqGIz2tZe5DpxI=
+X-Received: by 2002:a25:aba1:: with SMTP id v30mr5709473ybi.518.1600764043123; 
+ Tue, 22 Sep 2020 01:40:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-8-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8vJ2n3KEL8P+XmVob2zjoWaX+s4a6c1TV_WoPFkwdkZmA@mail.gmail.com>
+ <20200920140824.GA2915460@kroah.com>
+ <CAMuHMdUyXMfZcVKkqaZHJ8tJf-3Kotqg+S2NHMZT0VFO0ZJJww@mail.gmail.com>
+ <20200922083909.GA2092905@kroah.com>
+In-Reply-To: <20200922083909.GA2092905@kroah.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Tue, 22 Sep 2020 09:40:16 +0100
+Message-ID: <CA+V-a8u_0+XqyBiV6vxuc1d6_eDZdzO8dy3qBrmO1ke3L4BROQ@mail.gmail.com>
+Subject: Re: [PATCH 07/20] dt-bindings: usb: renesas,usb3-peri: Document
+ r8a774e1 support
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel <alsa-devel@alsa-project.org>,
+ linux-pci <linux-pci@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-ide@vger.kernel.org, Linux I2C <linux-i2c@vger.kernel.org>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>,
+ Magnus Damm <magnus.damm@gmail.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+ linux-media <linux-media@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Niklas <niklas.soderlund@ragnatech.se>, Rob Herring <robh+dt@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ USB list <linux-usb@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+ dmaengine <dmaengine@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,43 +125,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Recently we applied a fix to cover the whole OSS sequencer ioctls with
-the mutex for dealing with the possible races.  This works fine in
-general, but in theory, this may lead to unexpectedly long stall if an
-ioctl like SNDCTL_SEQ_SYNC is issued and an event with the far future
-timestamp was queued.
+On Tue, Sep 22, 2020 at 9:38 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Sep 21, 2020 at 09:30:39AM +0200, Geert Uytterhoeven wrote:
+> > Hi Greg,
+> >
+> > On Sun, Sep 20, 2020 at 4:08 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > On Sat, Sep 19, 2020 at 11:50:07AM +0100, Lad, Prabhakar wrote:
+> > > > On Thu, Jul 16, 2020 at 6:19 PM Lad Prabhakar
+> > > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > > >
+> > > > > Document RZ/G2H (R8A774E1) SoC bindings.
+> > > > >
+> > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > > > > ---
+> > > > >  Documentation/devicetree/bindings/usb/renesas,usb3-peri.yaml | 1 +
+> > > > >  1 file changed, 1 insertion(+)
+> > > > >
+> > > > Could you please pick this patch.
+> > >
+> > > Don't DT patches have to be acked by a DT maintainer first?
+> >
+> > https://lore.kernel.org/r/20200721033508.GA3504365@bogus
+>
+> Ah, missed that, sorry.  This, and patch 11/20, now queued up.
+>
+Thank you.
 
-For fixing such a potential stall, this patch changes the mutex lock
-applied conditionally excluding such an ioctl command.  Also, change
-the mutex_lock() with the interruptible version for user to allow
-escaping from the big-hammer mutex.
-
-Fixes: 80982c7e834e ("ALSA: seq: oss: Serialize ioctls")
-Suggested-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/seq/oss/seq_oss.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/core/seq/oss/seq_oss.c b/sound/core/seq/oss/seq_oss.c
-index c8b9c0b315d8..250a92b18726 100644
---- a/sound/core/seq/oss/seq_oss.c
-+++ b/sound/core/seq/oss/seq_oss.c
-@@ -174,9 +174,12 @@ odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	if (snd_BUG_ON(!dp))
- 		return -ENXIO;
- 
--	mutex_lock(&register_mutex);
-+	if (cmd != SNDCTL_SEQ_SYNC &&
-+	    mutex_lock_interruptible(&register_mutex))
-+		return -ERESTARTSYS;
- 	rc = snd_seq_oss_ioctl(dp, cmd, arg);
--	mutex_unlock(&register_mutex);
-+	if (cmd != SNDCTL_SEQ_SYNC)
-+		mutex_unlock(&register_mutex);
- 	return rc;
- }
- 
--- 
-2.16.4
-
+Cheers,
+Prabhakar
