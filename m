@@ -2,82 +2,90 @@ Return-Path: <SRS0=PysP=C7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5CF0C4363D
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 17:47:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B6BCC2D0E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 22:41:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0612923600
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 17:47:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 874CB221EB
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 22:41:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YFdOrWC8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WzHe7Ivk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0612923600
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jSlOot7j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 874CB221EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E38A1717;
-	Tue, 22 Sep 2020 19:46:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E38A1717
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D90E170F;
+	Wed, 23 Sep 2020 00:40:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D90E170F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600796868;
-	bh=oenH9vdrSeEwpGAAQSosUc2ancjCFiFt+bS7Q3FodvE=;
+	s=default; t=1600814467;
+	bh=gbEAxkn5EFYLfhnvdXugFIbd/2dFmwM9EFdIMoT7IyI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YFdOrWC8JWGhtbOQEcCwiwUKxedAS09TJx1ySwW6pDiO6s4pG5+obzMwjr4ZWHFLT
-	 fEn4ScL6ngbpTgqLaCz+HP3cPNyHy1k+9IFqdxRnTXhO6ecBcz4AZ5BPvTEbF0N4pi
-	 qS0SsfpK9sU+9Uat7+7Jem80EEC2Nco01Zy1WftI=
+	b=jSlOot7j4vhRDhO7haLs+IOmBeC5l18mKvYREafMnNpKF9gaeGq1W5Vyhwv/82Wxf
+	 t3BmRh09x4m+PkopCwQ4QUhpd2iVcw9FsV+5NGHRsrgLhOvn5pcyoQoHIklNIlcnBT
+	 gla3SccCzjTKMAdwXzGSYLeth6H3+rVbOuVNrMVw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A864F80229;
-	Tue, 22 Sep 2020 19:46:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 033C0F80229;
+	Wed, 23 Sep 2020 00:40:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7222AF80232; Tue, 22 Sep 2020 19:46:55 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id EE1DAF80232; Wed, 23 Sep 2020 00:40:13 +0200 (CEST)
+Received: from mail-il1-f195.google.com (mail-il1-f195.google.com
+ [209.85.166.195])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FE19F800ED
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 19:46:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FE19F800ED
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WzHe7Ivk"
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 41889235FD;
- Tue, 22 Sep 2020 17:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600796808;
- bh=oenH9vdrSeEwpGAAQSosUc2ancjCFiFt+bS7Q3FodvE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=WzHe7IvkaPznnNvUEzD3HwVFa5e3MVZPSx77gO0aZ7obkzaUe+1w5lnx9cjPynG49
- S4IcH0FK0xhrWB4p729EYloa8Vtdxk0cBD/6um7Dk3R9Tt+j56tb1o176lW6K32VR1
- PpShnQ1Ju8htQOEUxZl8dNJGKjSJbShLV1eRTv3s=
-Date: Tue, 22 Sep 2020 13:46:47 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.8 03/20] ASoC: wm8994: Skip setting of the
- WM8994_MICBIAS register for WM1811
-Message-ID: <20200922174647.GP2431@sasha-vm>
-References: <20200921144027.2135390-1-sashal@kernel.org>
- <20200921144027.2135390-3-sashal@kernel.org>
- <20200921150701.GA12231@sirena.org.uk>
- <20200922142515.GN2431@sasha-vm>
- <20200922144221.GW4792@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 946E2F800ED
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 00:40:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 946E2F800ED
+Received: by mail-il1-f195.google.com with SMTP id h2so18918171ilo.12
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 15:40:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=Ts/H5lGkxCVpSIUsT+nwlHs+QYSEjYzumhKnYN5QEbQ=;
+ b=LoSbyVoS3iA1zJhqokpzlQHYeKHTL6GNM/DOumxYCyU+nZU7b/fhDBXz8nf+1pB818
+ QI2wrTsJ72liLEYHHUsRyM3zjzY2QhMv4w7izSpzECfRwka2PIY+rDTqWLZoXlPzKAEO
+ MxWRX0WY8gcz9qX/UIcLu77vfprvOctwwMRx+ElkJ/506Wd5lLuZlQazjKTHTE8G7h5L
+ 7skArkkjeenCS4jejvOOpsOq4odBWSostHJBqYNDgQZzUb4DMyvrXVjv709aEdEb6ZGV
+ dyf+DQ3ve/Qr5vsvHXGkAY7mpxcTCJ9BjXIdmUgyazw6NzaVkPD0SlaTCKqCGJwcZ4ca
+ BLUA==
+X-Gm-Message-State: AOAM532AbatifFmgicdDnxjzZFlE/JZOct70zcwqHabbuCgv3ebIjo4A
+ M627DamCf3yFiRxGFT+Mcg==
+X-Google-Smtp-Source: ABdhPJzHf0W5nJgwpFfumBS1r8ILyOBzztbl7WxBBhsWTRLofS+g1hJjBquRMnQNVN/s/620iReBwg==
+X-Received: by 2002:a92:5ac9:: with SMTP id b70mr6098813ilg.110.1600814401820; 
+ Tue, 22 Sep 2020 15:40:01 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+ by smtp.gmail.com with ESMTPSA id s17sm9889563ilb.24.2020.09.22.15.40.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 22 Sep 2020 15:40:01 -0700 (PDT)
+Received: (nullmailer pid 3391920 invoked by uid 1000);
+ Tue, 22 Sep 2020 22:40:00 -0000
+Date: Tue, 22 Sep 2020 16:40:00 -0600
+From: Rob Herring <robh@kernel.org>
+To: Olivier Moysan <olivier.moysan@st.com>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: add mclk provider support to
+ stm32 i2s
+Message-ID: <20200922224000.GA3391859@bogus>
+References: <20200911091952.14696-1-olivier.moysan@st.com>
+ <20200911091952.14696-2-olivier.moysan@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922144221.GW4792@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
+In-Reply-To: <20200911091952.14696-2-olivier.moysan@st.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, alexandre.torgue@st.com, lgirdwood@gmail.com,
+ tiwai@suse.com, arnaud.pouliquen@st.com, linux-kernel@vger.kernel.org,
+ broonie@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,23 +101,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Sep 22, 2020 at 03:42:21PM +0100, Mark Brown wrote:
->On Tue, Sep 22, 2020 at 10:25:15AM -0400, Sasha Levin wrote:
->> On Mon, Sep 21, 2020 at 04:07:01PM +0100, Mark Brown wrote:
->
->> > This is pretty much a cosmetic change - previously we were silently not
->> > reading the register, this just removes the attempt to read it since we
->> > added an error message in the core.
->
->> Right, the only reason I took it is that error message - I find that
->> bogus error messages have almost the same (bad) impact as real kernel
->> bugs.
->
->The point is that the error message isn't present in stable kernels so
->there is no impact on any user visible behaviour.
+On Fri, 11 Sep 2020 11:19:51 +0200, Olivier Moysan wrote:
+> Add master clock provider support to STM32 I2S.
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+> ---
+>  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Ah, I see. I'll drop it. Thanks!
-
--- 
-Thanks,
-Sasha
+Reviewed-by: Rob Herring <robh@kernel.org>
