@@ -7,141 +7,71 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4159C2D0E2
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 10:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90E55C2D0E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 10:57:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 489292073A
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 10:41:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B4D5C208A9
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 10:57:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X3iLkbTU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="RAPzGpwE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 489292073A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ceHpt17z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4D5C208A9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99E4B16D3;
-	Tue, 22 Sep 2020 12:40:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99E4B16D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A5DE16EB;
+	Tue, 22 Sep 2020 12:56:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A5DE16EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600771294;
-	bh=8xHY17Zamom0flJ6EUl/RVYPgmWszH2rihIBZBSuSvA=;
+	s=default; t=1600772238;
+	bh=cHKW2bc0fotxQTnBQ7o6D31JTnl/iy74sh354wVcCpM=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X3iLkbTU07MqqWcD+SuTmNsDK3zPwBZ3U4rGsy+qbk0U92ZqXJAXqrNUrJVMjHA7N
-	 m6Qm26sVE6REpN99NyWFlRW0HMfP/hTEpimCJ1bJMfzuOk0S+EjmT6XJplLBhi9nLl
-	 4ifthTzIP3pg3gkRNBdpBBE8fOe93rhi3ubqRksY=
+	b=ceHpt17zwBLObOTUvepxQte8Xk4wrzPp9uxv5MkgbWNJLMar4dkD7p//zfH7ftj10
+	 +Ref2sbjml07s2uwY5hMDjv6kl90KxLwCrDSeyj/MWmJ+3+XOy9XtRoRBWoKVLRxZt
+	 gxUhtI4t0NOmA1+k+O5MMJoTazGl2cHUr71B4SjI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93FEEF80256;
-	Tue, 22 Sep 2020 12:39:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A3D9F802A2;
+	Tue, 22 Sep 2020 12:56:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4836BF80162; Mon, 21 Sep 2020 11:55:39 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1C1EF8010A
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2020 11:55:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1C1EF8010A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="RAPzGpwE"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 08L9pWWu008800; Mon, 21 Sep 2020 04:55:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=WW55bEkB7c/YZlSmO/EfsOHzstbkfstuef6OZNz+13c=;
- b=RAPzGpwEZK3EtSkcJz7IYXubWw2d6vb6Z6COv6mOaxlza+Ftd/N2PHUA2t3OLLhg9MRd
- dxTDwjvSV/TID0foNaLZz3+H9VO8ks5/8xrChPwooO9+ksEz/70TxbI5uYBWyRrU36sq
- Ze9KCk7CYEZkWRqrzvTMiTRivlzUuGb1JvFVsYtmpwUKuG7SzkKExtro+H7XbmuipSmU
- k8r1CiI8Zlx7e8Tsj9mAdmuSctFUgls3OecRoKIuIwYX5KuT41ylOE4qZuquJ4PIdGs4
- yHgXUdbVhSQT27Y9wzfFVRDnPRPEFVTRMBnMxBB4w0623C05G4+qIMNcp5ckp8uAITlz zA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 33nfd221ju-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 21 Sep 2020 04:55:21 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 21 Sep
- 2020 10:55:19 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 21 Sep 2020 10:55:19 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E4D5A2C3;
- Mon, 21 Sep 2020 09:55:18 +0000 (UTC)
-Date: Mon, 21 Sep 2020 09:55:18 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 09/13] dt-bindings: pinctrl: include common schema in
- GPIO controllers
-Message-ID: <20200921095518.GQ10899@ediswmail.ad.cirrus.com>
-References: <20200917165301.23100-1-krzk@kernel.org>
- <20200917165301.23100-10-krzk@kernel.org>
+ id 02E14F802C3; Tue, 22 Sep 2020 12:56:26 +0200 (CEST)
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+ by alsa1.perex.cz (Postfix) with ESMTP id C68A3F8015F
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 12:56:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C68A3F8015F
+Received: from uucp (helo=alpha)
+ by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+ id 1kKfxr-000822-04; Tue, 22 Sep 2020 12:56:03 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+ id 1F9C4C0FFF; Tue, 22 Sep 2020 10:50:49 +0200 (CEST)
+Date: Tue, 22 Sep 2020 10:50:49 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 11/18] lib82596: convert to dma_alloc_noncoherent
+Message-ID: <20200922085049.GE8477@alpha.franken.de>
+References: <20200915155122.1768241-1-hch@lst.de>
+ <20200915155122.1768241-12-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917165301.23100-10-krzk@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- bulkscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 suspectscore=0
- mlxlogscore=998 adultscore=0 clxscore=1015 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210071
-X-Mailman-Approved-At: Tue, 22 Sep 2020 12:39:49 +0200
-Cc: Amelie Delaunay <amelie.delaunay@st.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org,
- Stefan Agner <stefan@agner.ch>, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Paul Cercueil <paul@crapouillou.net>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Chris Brandt <chris.brandt@renesas.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- linux-riscv@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
- linux-stm32@st-md-mailman.stormreply.com,
- Alexandre Torgue <alexandre.torgue@st.com>, linux-renesas-soc@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Anson Huang <Anson.Huang@nxp.com>, Lee Jones <lee.jones@linaro.org>,
- Takashi Iwai <tiwai@suse.com>, Magnus Damm <magnus.damm@gmail.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, Chen-Yu Tsai <wens@csie.org>,
- Andy Gross <agross@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
- NXP Linux Team <linux-imx@nxp.com>, Andy Teng <andy.teng@mediatek.com>,
- Jacopo Mondi <jacopo+renesas@jmondi.org>, Sungbo Eo <mans0n@gorani.run>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Ray Jui <rjui@broadcom.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Sean Wang <sean.wang@mediatek.com>,
- Maxime Ripard <mripard@kernel.org>, linux-gpio@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Sricharan R <sricharan@codeaurora.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Hoan Tran <hoan@os.amperecomputing.com>, linux-arm-kernel@lists.infradead.org,
- Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
- Scott Branden <sbranden@broadcom.com>, linux-unisoc@lists.infradead.org,
- - <patches@opensource.cirrus.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Liam Girdwood <lgirdwood@gmail.com>, Serge Semin <fancer.lancer@gmail.com>,
- linux-kernel@vger.kernel.org,
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Yash Shah <yash.shah@sifive.com>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Mark Brown <broonie@kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, linux-media@vger.kernel.org,
- Shawn Guo <shawnguo@kernel.org>,
- Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
+In-Reply-To: <20200915155122.1768241-12-hch@lst.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+ nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ linux-mm@kvack.org, linux1394-devel@lists.sourceforge.net,
+ Marek Szyprowski <m.szyprowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ Joonyoung Shim <jy0922.shim@samsung.com>, linux-scsi@vger.kernel.org,
+ Ben Skeggs <bskeggs@redhat.com>, Matt Porter <mporter@kernel.crashing.org>,
+ linux-media@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+ netdev@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
+ linux-mips@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+ iommu@lists.linux-foundation.org, Stefan Richter <stefanr@s5r6.in-berlin.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -157,17 +87,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 17, 2020 at 06:52:57PM +0200, Krzysztof Kozlowski wrote:
-> Include the common GPIO schema in GPIO controllers to be sure all common
-> properties are properly validated.
+On Tue, Sep 15, 2020 at 05:51:15PM +0200, Christoph Hellwig wrote:
+> Use the new non-coherent DMA API including proper ownership transfers.
+> This includes moving the DMA helpers to lib82596 based of an ifdef to
+> avoid include order problems.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
+>  drivers/net/ethernet/i825xx/lasi_82596.c |  25 ++---
+>  drivers/net/ethernet/i825xx/lib82596.c   | 114 ++++++++++++++---------
+>  drivers/net/ethernet/i825xx/sni_82596.c  |   4 -
+>  3 files changed, 80 insertions(+), 63 deletions(-)
 
-For the Cirrus bits:
+Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de> (SNI part)
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
