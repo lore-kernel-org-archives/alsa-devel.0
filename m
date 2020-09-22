@@ -2,76 +2,112 @@ Return-Path: <SRS0=PysP=C7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BBBBC4727E
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:02:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AD20C2D0E2
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:05:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E29520B1F
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:02:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E935D207C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 11:05:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UKFSpmJo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E29520B1F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rlDxNX/D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E935D207C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DAF7616F2;
-	Tue, 22 Sep 2020 13:01:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAF7616F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5821F16D1;
+	Tue, 22 Sep 2020 13:04:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5821F16D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600772537;
-	bh=JflKRj7cSPOsPwyXVigeXxyE6HZG8QQheRheaaW/Bjg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1600772738;
+	bh=kakvoiEfaQGRMKZOV3SHp1EWK/zNA3NmVVAsz+tKQkY=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UKFSpmJoIDVp2jl8Zu3mK/k36AB0xkcsiFNvAtWrf92rKAzyfJ/bjGt5aab95srAd
-	 t/BCxcURSQic8UhVPap9VwFKQdgOTfsf3aHRTDdlYPt4n5V26FCS9RBqpg6TkQ0p6H
-	 64JcB+tcNlRjn9nPnz8rNIu5O9EfDOFVR5qdCFDM=
+	b=rlDxNX/DbxAsRf+yZAayPFnnCAReD9X4avIuT3PS1xM1CAmfPHOyOMWjy+DiubYUX
+	 Vi/p0mkv+cu98Of4CkXzz1w0RItxnwmNjLPB6ilPRdBppLjHmbphm00M930qEXWgwr
+	 QXd/pzCDxWuWaqAvYUEwxu3v8cPkrTttIUZSrzag=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D124F80305;
-	Tue, 22 Sep 2020 12:56:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5CDCF8015F;
+	Tue, 22 Sep 2020 13:04:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8B46F802E2; Tue, 22 Sep 2020 12:56:39 +0200 (CEST)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
- by alsa1.perex.cz (Postfix) with ESMTP id 0B1E0F8015F
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 12:56:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B1E0F8015F
-Received: from uucp (helo=alpha)
- by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
- id 1kKfxr-000822-06; Tue, 22 Sep 2020 12:56:03 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
- id 4F214C0FFF; Tue, 22 Sep 2020 10:51:34 +0200 (CEST)
-Date: Tue, 22 Sep 2020 10:51:34 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 13/18] 53c700: convert to dma_alloc_noncoherent
-Message-ID: <20200922085134.GG8477@alpha.franken.de>
-References: <20200915155122.1768241-1-hch@lst.de>
- <20200915155122.1768241-14-hch@lst.de>
+ id 3999DF80229; Tue, 22 Sep 2020 13:04:46 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 148F1F800ED
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 13:04:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 148F1F800ED
+IronPort-SDR: jiT1UzUuoevkAiGDJgoU8rWpBT5OH7hTTrdFvL5exPFc0gceblyc9alUcz+xSyA5KRYTNkug3S
+ aJtAalApsUNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148242569"
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; d="scan'208";a="148242569"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Sep 2020 04:04:34 -0700
+IronPort-SDR: lsbafTbOZkBJTUW4tVhLDOxBcabUSVRBtObTVeME75m2+BX6EQlt7MlmwztSiL+gDgmWeAs5JU
+ NDAvneEIKnzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; d="scan'208";a="334963608"
+Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
+ by fmsmga004.fm.intel.com with ESMTP; 22 Sep 2020 04:04:32 -0700
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 22 Sep 2020 12:04:31 +0100
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Tue, 22 Sep 2020 12:04:31 +0100
+From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: RE: [PATCH v7 03/14] ASoC: Intel: catpt: Add IPC message handlers
+Thread-Topic: [PATCH v7 03/14] ASoC: Intel: catpt: Add IPC message handlers
+Thread-Index: AQHWkA4pBFUDuLKjeUm4qjF+MvEK1aly/TsAgABnvpD///fKgIAAMnCAgAC+vgCAADFoEA==
+Date: Tue, 22 Sep 2020 11:04:31 +0000
+Message-ID: <4e51e628f9df457c8253a3ef6d7095eb@intel.com>
+References: <20200921115424.4105-1-cezary.rojewski@intel.com>
+ <20200921115424.4105-4-cezary.rojewski@intel.com>
+ <20200921125934.GT3956970@smile.fi.intel.com>
+ <55266617b42843839fb85309d3097fd6@intel.com>
+ <20200921184129.GH3956970@smile.fi.intel.com>
+ <191afe965b1e46799bf776be3254d28f@intel.com>
+ <20200922090442.GJ3956970@smile.fi.intel.com>
+In-Reply-To: <20200922090442.GJ3956970@smile.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915155122.1768241-14-hch@lst.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
- nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- linux-mm@kvack.org, linux1394-devel@lists.sourceforge.net,
- Marek Szyprowski <m.szyprowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
- Joonyoung Shim <jy0922.shim@samsung.com>, linux-scsi@vger.kernel.org,
- Ben Skeggs <bskeggs@redhat.com>, Matt Porter <mporter@kernel.crashing.org>,
- linux-media@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
- netdev@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
- linux-mips@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
- iommu@lists.linux-foundation.org, Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc: "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kaczmarski,
+ Filip" <filip.kaczmarski@intel.com>, "N,
+ Harshapriya" <harshapriya.n@intel.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Barlik,
+ Marcin" <marcin.barlik@intel.com>, "zwisler@google.com" <zwisler@google.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>,
+ "Proborszcz, Filip" <filip.proborszcz@intel.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "amadeuszx.slawinski@linux.intel.com" <amadeuszx.slawinski@linux.intel.com>,
+ "Wasko, Michal" <michal.wasko@intel.com>,
+ "cujomalainey@chromium.org" <cujomalainey@chromium.org>, "Hejmowski,
+ Krzysztof" <krzysztof.hejmowski@intel.com>, "Papierkowski,
+ Piotr \(Habana\)" <ppapierkowski@habana.ai>, "Gopal, 
+ Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,16 +123,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Sep 15, 2020 at 05:51:17PM +0200, Christoph Hellwig wrote:
-> Use the new non-coherent DMA API including proper ownership transfers.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/scsi/53c700.c | 20 ++++++++++++++------
->  1 file changed, 14 insertions(+), 6 deletions(-)
+On 2020-09-22 11:04 AM, Andy Shevchenko wrote:
+> On Mon, Sep 21, 2020 at 08:48:12PM +0000, Rojewski, Cezary wrote:
+>> On 2020-09-21 8:41 PM, Andy Shevchenko wrote:
 
-Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+...
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+>> While this should never happen (means user is somehow not making use of
+>> officially released firmware binary), coredumps are useful only if you
+>> have access to debug tools. In cases you'd mentioned, invalid hash would
+>> have been dumped to coredump and crash reader simply wouldn't have been
+>> able to navigate to actual build for it. The rest of the coredump is sti=
+ll
+>> vital though.
+>>
+>> memcpy() could be gated behind an 'if' for safety if needed:
+>>
+>> 	info =3D cdev->ipc.config.fw_info;
+>> 	eof =3D info + FW_INFO_SIZE_MAX;
+>> 	/* navigate to fifth info segment (fw hash) */
+>> 	for (i =3D 0; i < 4 && info < eof; i++, info++)
+>> 		/* info segments are separated by space each */
+>> 		if ((info =3D strnchr(info, eof - info, ' ')) =3D=3D NULL)
+>> 			break;
+>=20
+>> 	if (i =3D=3D 4 && info < eof)
+>> 		memcpy(pos, info, min(eof - info, CATPT_DUMP_HASH_SIZE));
+>=20
+> And here basically enough check is info against NULL, right?
+> Just try to look at different possibilities how to make code simpler and =
+neater.
+>=20
+>> Didn't compile this, some typecheck fixes might be in order and so on.
+>=20
+
+What you meant is:
+	if (i =3D=3D 4 && !info) // instead of 'info < eof'
+
+right?
+
+If 4th space is last char in this string then info would end up being
+non-NULL and equal to 'eof' and thus memcpy() would get invoked with
+size=3Deof-info=3D0.
+
+catpt_coredump() is here to gather debug info for Intel folks to analyze
+in case of critical error. In ideal world, it should not be required at
+all as when we get here, there are bigger problems on our head.
+Above solution is simpler than what is prevent in v7 while also
+maintaining good readability - variable names - plus comments which you
+suggested.
+
+Czarek
+
