@@ -2,70 +2,82 @@ Return-Path: <SRS0=PysP=C7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 674BAC4363D
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 15:59:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5CF0C4363D
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 17:47:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ACBFA2084C
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 15:59:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0612923600
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Sep 2020 17:47:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cKsU5KEo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACBFA2084C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YFdOrWC8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WzHe7Ivk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0612923600
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDB731724;
-	Tue, 22 Sep 2020 17:58:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDB731724
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E38A1717;
+	Tue, 22 Sep 2020 19:46:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E38A1717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600790382;
-	bh=TsDOA7aV10KA66dES+2ACqtLJItls343iQDkUJADYqo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1600796868;
+	bh=oenH9vdrSeEwpGAAQSosUc2ancjCFiFt+bS7Q3FodvE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cKsU5KEomcGYmF25KRSmMMz19RUMNuKbHOXX5dwX9E7N4Rmsk5/cw/3KoCeIZVRR/
-	 BX1DghfdFLrcZFIk3Yd3v7jRKvAtTJyorD4DaReWdbLZCQ/AuZOdHSVLC4KKwwd5+1
-	 0xNlVGGETk8A7QrTO5FX4aybxTNtRfCoR+HZzSSE=
+	b=YFdOrWC8JWGhtbOQEcCwiwUKxedAS09TJx1ySwW6pDiO6s4pG5+obzMwjr4ZWHFLT
+	 fEn4ScL6ngbpTgqLaCz+HP3cPNyHy1k+9IFqdxRnTXhO6ecBcz4AZ5BPvTEbF0N4pi
+	 qS0SsfpK9sU+9Uat7+7Jem80EEC2Nco01Zy1WftI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57BF9F800ED;
-	Tue, 22 Sep 2020 17:58:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A864F80229;
+	Tue, 22 Sep 2020 19:46:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63E50F80232; Tue, 22 Sep 2020 17:58:51 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 7222AF80232; Tue, 22 Sep 2020 19:46:55 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 073C8F800ED;
- Tue, 22 Sep 2020 17:58:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 073C8F800ED
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5F43EACA1;
- Tue, 22 Sep 2020 15:59:15 +0000 (UTC)
-Date: Tue, 22 Sep 2020 17:58:38 +0200
-Message-ID: <s5h8sd1yf9t.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
-Subject: Re: [PATCH v3 1/1] ALSA: hda: Refactor calculating SDnFMT according
- to specification
-In-Reply-To: <20200922153332.4919-1-pawel.harlozinski@linux.intel.com>
-References: <20200922153332.4919-1-pawel.harlozinski@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: cezary.rojewski@intel.com, patch@alsa-project.org,
- kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
- amadeuszx.slawinski@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FE19F800ED
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2020 19:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FE19F800ED
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="WzHe7Ivk"
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 41889235FD;
+ Tue, 22 Sep 2020 17:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1600796808;
+ bh=oenH9vdrSeEwpGAAQSosUc2ancjCFiFt+bS7Q3FodvE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=WzHe7IvkaPznnNvUEzD3HwVFa5e3MVZPSx77gO0aZ7obkzaUe+1w5lnx9cjPynG49
+ S4IcH0FK0xhrWB4p729EYloa8Vtdxk0cBD/6um7Dk3R9Tt+j56tb1o176lW6K32VR1
+ PpShnQ1Ju8htQOEUxZl8dNJGKjSJbShLV1eRTv3s=
+Date: Tue, 22 Sep 2020 13:46:47 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.8 03/20] ASoC: wm8994: Skip setting of the
+ WM8994_MICBIAS register for WM1811
+Message-ID: <20200922174647.GP2431@sasha-vm>
+References: <20200921144027.2135390-1-sashal@kernel.org>
+ <20200921144027.2135390-3-sashal@kernel.org>
+ <20200921150701.GA12231@sirena.org.uk>
+ <20200922142515.GN2431@sasha-vm>
+ <20200922144221.GW4792@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200922144221.GW4792@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,67 +93,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 22 Sep 2020 17:33:32 +0200,
-Pawel Harlozinski wrote:
-> 
-> Fix setting SDnFMT based on :wq
-> High Definition Audio Specification Rev. 1.0a page 48.
-> 
-> Bits per Sample (BITS):
-> 000 = 8 bits. The data will be packed in memory in 8-bit containers on 16-bit boundaries.
-> 001 = 16 bits. The data will be packed in memory in 16-bit containers on 16-bit boundaries.
-> 010 = 20 bits. The data will be packed in memory in 32-bit containers on 32-bit boundaries.
-> 011 = 24 bits. The data will be packed in memory in 32-bit containers on 32-bit boundaries.
-> 100 = 32 bits. The data will be packed in memory in 32-bit containers on 32-bit boundaries.
-> 101-111 = Reserved
-> 
-> Set SDnFMT depending on which format was given.
-> Henceforth split cases for formats 20, 24, 32 bits,
-> but leave constraints to maxbps.
-> 
-> Signed-off-by: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
+On Tue, Sep 22, 2020 at 03:42:21PM +0100, Mark Brown wrote:
+>On Tue, Sep 22, 2020 at 10:25:15AM -0400, Sasha Levin wrote:
+>> On Mon, Sep 21, 2020 at 04:07:01PM +0100, Mark Brown wrote:
+>
+>> > This is pretty much a cosmetic change - previously we were silently not
+>> > reading the register, this just removes the attempt to read it since we
+>> > added an error message in the core.
+>
+>> Right, the only reason I took it is that error message - I find that
+>> bogus error messages have almost the same (bad) impact as real kernel
+>> bugs.
+>
+>The point is that the error message isn't present in stable kernels so
+>there is no impact on any user visible behaviour.
 
-As I repeatedly wrote, the bits 20 and 24 cases never hit practically,
-hence this "refactoring" doesn't give any change in reality.  Your
-commit misses that point.
+Ah, I see. I'll drop it. Thanks!
 
-That said, this can be taken as a complementary for the theoretical
-case, but the situation has to be clarified in the commit log, and the
-subject should be adjusted as well.
-
-
-thanks,
-
-Takashi
-
-> 
-> ---
-> 
->  v3: drop gerrit Change-Id
->  v2: leave constraints to maxbps
->  
->  sound/hda/hdac_device.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-> index 3e9e9ac804f6..ccc47a10ba63 100644
-> --- a/sound/hda/hdac_device.c
-> +++ b/sound/hda/hdac_device.c
-> @@ -764,7 +764,14 @@ unsigned int snd_hdac_calc_stream_format(unsigned int rate,
->  		val |= AC_FMT_BITS_16;
->  		break;
->  	case 20:
-> +		val |= AC_FMT_BITS_20;
-> +		break;
->  	case 24:
-> +		if (maxbps >= 24)
-> +			val |= AC_FMT_BITS_24;
-> +		else
-> +			val |= AC_FMT_BITS_20;
-> +		break;
->  	case 32:
->  		if (maxbps >= 32 || format == SNDRV_PCM_FORMAT_FLOAT_LE)
->  			val |= AC_FMT_BITS_32;
-> -- 
-> 2.17.1
-> 
+-- 
+Thanks,
+Sasha
