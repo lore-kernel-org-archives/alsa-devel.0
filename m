@@ -6,77 +6,77 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D91DC2D0A8
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 18:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0337EC2D0A8
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 18:32:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 773792220D
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 18:24:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFD4E208B6
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 18:32:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m4NdV0zO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 773792220D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BXj8/rzC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFD4E208B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 767761789;
-	Wed, 23 Sep 2020 20:23:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 767761789
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5079A1790;
+	Wed, 23 Sep 2020 20:31:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5079A1790
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600885473;
-	bh=c6vhnUifbcXUzvUL6srk16+A9Zvz4tZ/QMSdnuJZgjg=;
+	s=default; t=1600885938;
+	bh=MFc9c2b/ArcPKHjdgrOSsxGQKJSTvzpCD8ZDkhBBKtA=;
 	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m4NdV0zO5P7D7Z3ktZPNlR5qX2Ov6dH5/4JIZvhEfHPmYSs3TV+gsjn/7x0HpPACN
-	 0rCbeMa9+M6Wu5A+EdxlIjXOzaDl6NROr+usvhcrG843y4Ai4j//hU+J1ymsDFocvv
-	 c5qLm7DUgfe91ebOZpVzyQuQC+VcKcAwxJWGKve0=
+	b=BXj8/rzCHBTpZKXM1zg9r/rdIly7glJJUfaYrPRiMbW8I/p15G1BSj1nXfSlrQCyx
+	 +fP9v6dRc4U/2Q+R+GAVB76HERkfRyjHHt3smX2gIrDuVjZIhzZD6aPcDgajAlIGcc
+	 2i4dN18+8M5nif20IGPu4NQfzsElLMGhEoQIZ+m0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E53E4F80162;
-	Wed, 23 Sep 2020 20:23:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAE7FF80162;
+	Wed, 23 Sep 2020 20:31:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD868F80171; Wed, 23 Sep 2020 20:23:41 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 80985F80171; Wed, 23 Sep 2020 20:31:25 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC0C9F8010A
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 20:23:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC0C9F8010A
-IronPort-SDR: ehQUil6Wjksr0FhnBLRIylqPaAK6G7yz8CbTNGNMLoeTWZu48vhCKVLz56YE262Ng4JlXUxGna
- qqJGC0CCQnFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="161912943"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="161912943"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7837FF800B4
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 20:31:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7837FF800B4
+IronPort-SDR: g76qON5yAHVGIOGJ2wBaKDNDeCWvG7IUihq0bl2Nwv1xqdD2/RozCtJZ+24iu9kkaQnRdMpibi
+ efwhsJyPrfQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="140455215"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="140455215"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2020 11:23:25 -0700
-IronPort-SDR: 5xA+jmxdBzAZjrUFSOrSwPtsvwButHMxxQ3kRQgYuVSK7ne3GnCM6P8nxI4tt3fc7NX779LwKg
- mrng5L38mTwg==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Sep 2020 11:31:11 -0700
+IronPort-SDR: Xxhecg6XWUINdIZUqTWmlCBrMJEJsblDIqSq9uvAa8EXVAfAFUo/IHBqhs0YThBU+nn4Cb+VAJ
+ d++1nZvAlnJA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="455016784"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="347454706"
 Received: from irsmsx603.ger.corp.intel.com ([163.33.146.9])
- by orsmga004.jf.intel.com with ESMTP; 23 Sep 2020 11:23:23 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 23 Sep 2020 11:31:09 -0700
 Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
  irsmsx603.ger.corp.intel.com (163.33.146.9) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 23 Sep 2020 19:23:23 +0100
+ 15.1.1713.5; Wed, 23 Sep 2020 19:31:08 +0100
 Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
  irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Wed, 23 Sep 2020 19:23:23 +0100
+ Wed, 23 Sep 2020 19:31:08 +0100
 From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: RE: [PATCH v8 06/14] ASoC: Intel: catpt: PCM operations
-Thread-Topic: [PATCH v8 06/14] ASoC: Intel: catpt: PCM operations
-Thread-Index: AQHWkaS+5APyIDnUPUWmt/ijNOLtz6l2LgcAgABaW+A=
-Date: Wed, 23 Sep 2020 18:23:22 +0000
-Message-ID: <bd5b35fd96be42579bf6d7861379772f@intel.com>
+Subject: RE: [PATCH v8 09/14] ASoC: Intel: catpt: Simple sysfs attributes
+Thread-Topic: [PATCH v8 09/14] ASoC: Intel: catpt: Simple sysfs attributes
+Thread-Index: AQHWkaTF8FtHOnXp5EyniIeRoD2hOql2KHaAgABilbA=
+Date: Wed, 23 Sep 2020 18:31:08 +0000
+Message-ID: <4e590f061dec474195a10482b1a9bc22@intel.com>
 References: <20200923122508.3360-1-cezary.rojewski@intel.com>
- <20200923122508.3360-7-cezary.rojewski@intel.com>
- <20200923135422.GM3956970@smile.fi.intel.com>
-In-Reply-To: <20200923135422.GM3956970@smile.fi.intel.com>
+ <20200923122508.3360-10-cezary.rojewski@intel.com>
+ <20200923133427.GL3956970@smile.fi.intel.com>
+In-Reply-To: <20200923133427.GL3956970@smile.fi.intel.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -85,8 +85,8 @@ dlp-product: dlpe-windows
 dlp-reaction: no-action
 dlp-version: 11.5.1.3
 x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 Cc: "pierre-louis.bossart@linux.intel.com"
  <pierre-louis.bossart@linux.intel.com>,
@@ -119,178 +119,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-09-23 3:54 PM, Andy Shevchenko wrote:
-> On Wed, Sep 23, 2020 at 02:25:00PM +0200, Cezary Rojewski wrote:
->> DSP designed for Lynxpoint and Wildcat Point offers no dynamic topology
->> i.e. all pipelines are already defined within firmware and host is
->> relegated to allocing stream for predefined pins. This is represented by
->> 'catpt_topology' member.
->>
-
-...
-
->> +static u32 catpt_get_channel_map(enum catpt_channel_config config)
->> +{
->> +	switch (config) {
->> +	case CATPT_CHANNEL_CONFIG_MONO:
->> +		return (GENMASK(31, 4) | CATPT_CHANNEL_CENTER);
->=20
-> In all cases outer parentheses are not needed. Also I expected to see DUA=
-L MONO
-> case here, rather than below.
->=20
-
-Ack for the parentheses but what's wrong with the sweet '_STEREO' name?
-This function is based on internal equivalent. As I aim to ease any
-further debug/development by aligning with Windows equivalent, name
-changes for no real reason do not help with that goal.
-
-If I'm missing something about 'DUAL MONO', feel free to correct me.
-
->> +	case CATPT_CHANNEL_CONFIG_STEREO:
->> +		return (GENMASK(31, 8) | CATPT_CHANNEL_LEFT
->> +				       | (CATPT_CHANNEL_RIGHT << 4));
->> +
->> +	case CATPT_CHANNEL_CONFIG_2_POINT_1:
->> +		return (GENMASK(31, 12) | CATPT_CHANNEL_LEFT
->> +					| (CATPT_CHANNEL_RIGHT << 4)
->> +					| (CATPT_CHANNEL_LFE << 8));
->> +
->> +	case CATPT_CHANNEL_CONFIG_3_POINT_0:
->> +		return (GENMASK(31, 12) | CATPT_CHANNEL_LEFT
->> +					| (CATPT_CHANNEL_CENTER << 4)
->> +					| (CATPT_CHANNEL_RIGHT << 8));
->> +
->> +	case CATPT_CHANNEL_CONFIG_3_POINT_1:
->> +		return (GENMASK(31, 16) | CATPT_CHANNEL_LEFT
->> +					| (CATPT_CHANNEL_CENTER << 4)
->> +					| (CATPT_CHANNEL_RIGHT << 8)
->> +					| (CATPT_CHANNEL_LFE << 12));
->> +
->> +	case CATPT_CHANNEL_CONFIG_QUATRO:
->> +		return (GENMASK(31, 16) | CATPT_CHANNEL_LEFT
->> +					| (CATPT_CHANNEL_RIGHT << 4)
->> +					| (CATPT_CHANNEL_LEFT_SURROUND << 8)
->> +					| (CATPT_CHANNEL_RIGHT_SURROUND << 12));
->> +
->> +	case CATPT_CHANNEL_CONFIG_4_POINT_0:
->> +		return (GENMASK(31, 16) | CATPT_CHANNEL_LEFT
->> +					| (CATPT_CHANNEL_CENTER << 4)
->> +					| (CATPT_CHANNEL_RIGHT << 8)
->> +					| (CATPT_CHANNEL_CENTER_SURROUND << 12));
->> +
->> +	case CATPT_CHANNEL_CONFIG_5_POINT_0:
->> +		return (GENMASK(31, 20) | CATPT_CHANNEL_LEFT
->> +					| (CATPT_CHANNEL_CENTER << 4)
->> +					| (CATPT_CHANNEL_RIGHT << 8)
->> +					| (CATPT_CHANNEL_LEFT_SURROUND << 12)
->> +					| (CATPT_CHANNEL_RIGHT_SURROUND << 16));
->> +
->> +	case CATPT_CHANNEL_CONFIG_5_POINT_1:
->> +		return (GENMASK(31, 24) | CATPT_CHANNEL_CENTER
->> +					| (CATPT_CHANNEL_LEFT << 4)
->> +					| (CATPT_CHANNEL_RIGHT << 8)
->> +					| (CATPT_CHANNEL_LEFT_SURROUND << 12)
->> +					| (CATPT_CHANNEL_RIGHT_SURROUND << 16)
->> +					| (CATPT_CHANNEL_LFE << 20));
->> +
->> +	case CATPT_CHANNEL_CONFIG_DUAL_MONO:
->> +		return (GENMASK(31, 8) | CATPT_CHANNEL_LEFT
->> +				       | (CATPT_CHANNEL_LEFT << 4));
->> +
->> +	default:
->> +		return U32_MAX;
->> +	}
->> +}
->> +
-
-...
-
->> +#define DSP_VOLUME_MAX	S32_MAX /* 0db */
->=20
->> +static const u32 volume_map[] =3D {
->> +	DSP_VOLUME_MAX >> 30,
->> +	DSP_VOLUME_MAX >> 29,
->> +	DSP_VOLUME_MAX >> 28,
->> +	DSP_VOLUME_MAX >> 27,
->> +	DSP_VOLUME_MAX >> 26,
->> +	DSP_VOLUME_MAX >> 25,
->> +	DSP_VOLUME_MAX >> 24,
->> +	DSP_VOLUME_MAX >> 23,
->> +	DSP_VOLUME_MAX >> 22,
->> +	DSP_VOLUME_MAX >> 21,
->> +	DSP_VOLUME_MAX >> 20,
->> +	DSP_VOLUME_MAX >> 19,
->> +	DSP_VOLUME_MAX >> 18,
->> +	DSP_VOLUME_MAX >> 17,
->> +	DSP_VOLUME_MAX >> 16,
->> +	DSP_VOLUME_MAX >> 15,
->> +	DSP_VOLUME_MAX >> 14,
->> +	DSP_VOLUME_MAX >> 13,
->> +	DSP_VOLUME_MAX >> 12,
->> +	DSP_VOLUME_MAX >> 11,
->> +	DSP_VOLUME_MAX >> 10,
->> +	DSP_VOLUME_MAX >> 9,
->> +	DSP_VOLUME_MAX >> 8,
->> +	DSP_VOLUME_MAX >> 7,
->> +	DSP_VOLUME_MAX >> 6,
->> +	DSP_VOLUME_MAX >> 5,
->> +	DSP_VOLUME_MAX >> 4,
->> +	DSP_VOLUME_MAX >> 3,
->> +	DSP_VOLUME_MAX >> 2,
->> +	DSP_VOLUME_MAX >> 1,
->> +	DSP_VOLUME_MAX >> 0,
->> +};
->=20
-> Why not to get rid of this table completely?
->=20
-
-I don't see anything wrong with this lookup table. If you insist I can
-get rid of it - that's the last piece of /haswell/ that survived the
-"cleanup" afterall..
-
->> +static u32 ctlvol_to_dspvol(u32 value)
->> +{
->> +	if (value >=3D ARRAY_SIZE(volume_map))
->> +		value =3D 0;
->> +	return volume_map[value];
->=20
-> 	if (value > 30)
-> 		value =3D 0;
-> 	return DSP_VOLUME_MAX >> (30 - value);
->=20
-
-I suppose 'DSP_VOLUME_STEP_MAX 30' is to be defined right next to
-DSP_VOLUME_MAX.
-
-As I said in earlier responses, please note size of this table is
-helpful when assigning kcontrol info in catpt_volume_info(). Macro will
-take its place then.
-
->> +}
->> +
->> +static u32 dspvol_to_ctlvol(u32 volume)
->> +{
->> +	int i;
->> +
->> +	for (i =3D 0; i < ARRAY_SIZE(volume_map); i++)
->> +		if (volume_map[i] >=3D volume)
->> +			return i;
->> +	return i - 1;
->=20
-> fls() ?
->=20
-
-Well, fls(DSP_VOLUME_MAX) yields 31 which is inappropriate for
-kcontrol with value range: 0-30.
-
-Guess you meant: __fls(). Following is the implementation (accounting
-for edge cases):
-	if (volume > DSP_VOLUME_MAX)
-		return DSP_VOLUME_STEP_MAX;
-	return volume ? __fls(volume) : 0;
-
-
-Thanks,
-Czarek
-
+T24gMjAyMC0wOS0yMyAzOjM0IFBNLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6DQo+IE9uIFdlZCwg
+U2VwIDIzLCAyMDIwIGF0IDAyOjI1OjAzUE0gKzAyMDAsIENlemFyeSBSb2pld3NraSB3cm90ZToN
+Cj4+IEFkZCBzeXNmcyBlbnRyaWVzIGZvciBkaXNwbGF5aW5nIHZlcnNpb24gb2YgRlcgY3VycmVu
+dGx5IGluIHVzZSBhcyB3ZWxsDQo+PiBhcyBkdW1waW5nIGZ1bGwgRlcgaW5mb3JtYXRpb24gaW5j
+bHVkaW5nIGJ1aWxkIGFuZCBsb2ctcHJvdmlkZXJzIGhhc2hlcy4NCg0KLi4uDQoNCj4+ICAgI2lu
+Y2x1ZGUgInJlZ2lzdGVycy5oIg0KPiANCj4+ICAgc3RydWN0IGNhdHB0X2RldjsNCj4+ICtleHRl
+cm4gY29uc3Qgc3RydWN0IGF0dHJpYnV0ZV9ncm91cCAqY2F0cHRfYXR0cl9ncm91cHNbXTsNCj4g
+DQo+IEdyb3VwaW5nIHRoZXNlIGFyZSBub3Qgb2theSDigJQgdGhleSBhcmUgZGlmZmVyZW50IGJ5
+IG1lYW5pbmcsIGp1c3QgcHV0IGJsYW5rDQo+IGxpbmUgaW4gYmV0d2Vlbi4NCj4gDQoNClN1cmUs
+IGFjay4NCg0KLi4uDQoNCj4+ICsjaW5jbHVkZSA8bGludXgvcG1fcnVudGltZS5oPg0KPj4gKyNp
+bmNsdWRlICJjb3JlLmgiDQo+PiArDQo+PiArc3RhdGljIHNzaXplX3QgZndfdmVyc2lvbl9zaG93
+KHN0cnVjdCBkZXZpY2UgKmRldiwNCj4+ICsJCQkgICAgICAgc3RydWN0IGRldmljZV9hdHRyaWJ1
+dGUgKmF0dHIsIGNoYXIgKmJ1ZikNCj4+ICt7DQo+PiArCXN0cnVjdCBjYXRwdF9kZXYgKmNkZXYg
+PSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4+ICsJc3RydWN0IGNhdHB0X2Z3X3ZlcnNpb24gdmVy
+c2lvbjsNCj4+ICsJaW50IHJldDsNCj4gDQo+PiArCXBtX3J1bnRpbWVfZ2V0X3N5bmMoY2Rldi0+
+ZGV2KTsNCj4+ICsNCj4+ICsJcmV0ID0gY2F0cHRfaXBjX2dldF9md192ZXJzaW9uKGNkZXYsICZ2
+ZXJzaW9uKTsNCj4+ICsNCj4+ICsJcG1fcnVudGltZV9tYXJrX2xhc3RfYnVzeShjZGV2LT5kZXYp
+Ow0KPj4gKwlwbV9ydW50aW1lX3B1dF9hdXRvc3VzcGVuZChjZGV2LT5kZXYpOw0KPiANCj4gSXMg
+aXQgc3ViamVjdCB0byBjaGFuZ2UgYXQgcnVuLXRpbWU/DQo+IA0KDQpObyBpdCBkb2VzIG5vdC4g
+SG93ZXZlciwgSSBkbyBub3QgaW50ZW50IHRvIGhhdmUgdGhlIGZ3X3ZlcnNpb24gb2NjdXB5DQpt
+ZW1vcnkgZm9yIGRldmljZSdzIGRydmRhdGEgKGkuZS4gc2VuZCB0aGUgSVBDIGludGVybmFsbHkg
+YW5kIHN0b3JlIGl0DQppbnNpZGUgc3RydWN0IGNhdHB0X2RldikuIFNvLCBJJ2QgcmF0aGVyIHdh
+a2UgdGhlIGRldmljZSwgZHVtcCB0aGUNCnZlcnNpb24gYW5kIGxlYXZlIHRoZSBieXRlcyBhbG9u
+ZS4NCg0KT25lIGNvdWxkIHRoaW5rIGFib3V0IHN0YXRpY3MgYnV0IHRoZW4gYWdhaW4sIGhvdyBt
+YW55IHRpbWVzIHRoaXMgc3lzZnMNCmZpbGUgaXMgZ29pbmcgdG8gZ2V0IHJlYWQgYW55d2F5Pw0K
+SXQncyBtb3JlIHJlYWRhYmxlIGFuZCBzaW1wbGUgdGhpcyB3YXksIGxvc2luZyBub3RoaW5nIGlu
+IHJldHVybiBUQkguDQoNCj4+ICsJaWYgKHJldCkNCj4+ICsJCXJldHVybiBDQVRQVF9JUENfRVJS
+T1IocmV0KTsNCj4+ICsNCj4+ICsJcmV0dXJuIHNwcmludGYoYnVmLCAiJWQuJWQuJWQuJWRcbiIs
+IHZlcnNpb24udHlwZSwgdmVyc2lvbi5tYWpvciwNCj4+ICsJCSAgICAgICB2ZXJzaW9uLm1pbm9y
+LCB2ZXJzaW9uLmJ1aWxkKTsNCj4+ICt9DQo+IA0KPj4gKw0KPiANCj4gVGhpcyBibGFuayBsaW5l
+IGlzIG5vdCBuZWVkZWQuDQo+IA0KDQpBY2suDQoNCj4+ICtzdGF0aWMgREVWSUNFX0FUVFJfUk8o
+ZndfdmVyc2lvbik7DQo+PiArDQo+PiArc3RhdGljIHNzaXplX3QgZndfaW5mb19zaG93KHN0cnVj
+dCBkZXZpY2UgKmRldiwNCj4+ICsJCQkgICAgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgKmF0dHIs
+IGNoYXIgKmJ1ZikNCj4+ICt7DQo+PiArCXN0cnVjdCBjYXRwdF9kZXYgKmNkZXYgPSBkZXZfZ2V0
+X2RydmRhdGEoZGV2KTsNCj4+ICsNCj4+ICsJcmV0dXJuIHNwcmludGYoYnVmLCAiJXNcbiIsIGNk
+ZXYtPmlwYy5jb25maWcuZndfaW5mbyk7DQo+PiArfQ0KPiANCj4+ICsNCj4gDQo+IFRoaXMgYmxh
+bmsgbGluZSBpcyBub3QgbmVlZGVkLg0KPiANCg0KQWNrLg0K
