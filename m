@@ -2,69 +2,72 @@ Return-Path: <SRS0=GKc0=DA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10B9DC2D0A8
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 12:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FABAC2D0A8
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 12:29:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D2A52137B
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 12:28:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC05B21BE5
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 12:29:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S7C3tOL0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D2A52137B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AKke8g+a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC05B21BE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DC3916D7;
-	Wed, 23 Sep 2020 14:27:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DC3916D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3398E16C0;
+	Wed, 23 Sep 2020 14:28:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3398E16C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600864122;
-	bh=v8oKS/2bKnnw84Yi/XXtUVgJ8lhMLhsIQKwuduNg54c=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=S7C3tOL0OBMfJmLAgAWRwmU+81vI02PM6AwNymIn+mVMW5/YTtpuoAkNTSnZkKiy/
-	 jd9jYQedKZ+fAU0dOs9ox9AyeGRHBoEl8QOSzZXoNBFVn+XbBCjMf+M/Xt3JRZoXGq
-	 /q8ElEjZrYpB8K36aa+Uw2RnS0jUGAx+btUssFDg=
+	s=default; t=1600864166;
+	bh=93HNljzIbW7JvYf8NqdporRfr4bFNeJZTThgiTbAy+8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AKke8g+a5MSWZB2gU5doPHRh+EM0YdPkaXJQ4wfA8OKBUqLUUEFUd+4AzJhtW7WK9
+	 puxGbDZeEM0XmQeBA3Fdu6MXH9EJ56n1hosSi6sNXhhnjoqGsaz2aZshQw0z9bSfEL
+	 gZV09njbV0Y5i6SBXUgtPoOkg6qAE1hEdrSO9JKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D302F802DF;
-	Wed, 23 Sep 2020 14:26:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7157DF802E3;
+	Wed, 23 Sep 2020 14:26:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50D9CF802E0; Wed, 23 Sep 2020 14:26:14 +0200 (CEST)
+ id A32BAF802E3; Wed, 23 Sep 2020 14:26:16 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 882B9F80162
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 14:25:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 882B9F80162
-IronPort-SDR: +3T0+D6Zy2Q2bl9uNj93zAT60wiL5zAZkXs6Y7lgdaSBvQBmD4KoTYyD4GPztQ8gR0Smdp4Ca9
- AqRmWg+JU+9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="160948202"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="160948202"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA0EFF8015F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 14:26:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA0EFF8015F
+IronPort-SDR: twfoXAlEEPWsoEgt1pzrvE81VEqRY/1nbRE00pKeM8mEfthsmaikqKE5nRw8oBxyobR0Dukplz
+ T+gEbU1Qerag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="160948214"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="160948214"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2020 05:25:54 -0700
-IronPort-SDR: Q9aS9L7wzHCcjylawC8PAGBaa6VywpzBYpPpnEdF21Le0HGN7uD3PQDq/lFlXWhwQZRdAukuj4
- r5Qr1ByxEFQQ==
+ 23 Sep 2020 05:26:06 -0700
+IronPort-SDR: dlI+laRgc7JIBxyjZeDxbVOMZWSg1ihrSQQfThvAiPER7D0MyMUsHKEB47+7cMkH/xDWAHJQ5K
+ PPp6oy52sbyg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="347338101"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="347338167"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 23 Sep 2020 05:25:50 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 23 Sep 2020 05:26:02 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v8 00/14] ASoC: Intel: Catpt - Lynx and Wildcat point
-Date: Wed, 23 Sep 2020 14:24:54 +0200
-Message-Id: <20200923122508.3360-1-cezary.rojewski@intel.com>
+Subject: [PATCH v8 03/14] ASoC: Intel: catpt: Add IPC message handlers
+Date: Wed, 23 Sep 2020 14:24:57 +0200
+Message-Id: <20200923122508.3360-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200923122508.3360-1-cezary.rojewski@intel.com>
+References: <20200923122508.3360-1-cezary.rojewski@intel.com>
 Cc: pierre-louis.bossart@linux.intel.com,
  Cezary Rojewski <cezary.rojewski@intel.com>, andriy.shevchenko@linux.intel.com,
  filip.kaczmarski@intel.com, harshapriya.n@intel.com,
@@ -89,272 +92,484 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Implement support for Lynxpoint and Wildcat Point AudioDSP. Catpt
-solution deprecates existing sound/soc/intel/haswell which is removed in
-the following series.
+Declare global and stream IPC message handlers for all known message
+types.
 
-Due to high range of errors and desynchronization from recommendations
-set by Windows solution, re-write came as a lower-cost solution compared
-to refactoring /haswell/ with several series of patches.
-
-Series is dependent on linux-spi change:
-spi: pxa2xx: Add SSC2 and SSPSP2 SSP registers
-https://www.spinics.net/lists/linux-spi/msg23885.html
-which has been already merged and is now part of linux-spi tree.
-
-Bulk of series content is device driver core code - everything up to
-patch 7/14 - with fs entries and trace macros introduced right after.
-While each core patch is shaped in such a way that no unavailable
-members are ever called, until patch 14/14 is applied, no code
-compilation can occur as no Makefile is present. Once said patch is
-added, Makefile and Kconfig are implemented and driver module compiles
-as expected.
-
-
-Special thanks go to Marcin Barlik and Piotr Papierkowski for sharing
-their LPT/WPT AudioDSP architecture expertise as well as helping
-backtrack its historical background.
-My thanks go to Amadeusz Slawinski for reviews and improvements proposed
-on and off the internal list. Most of internal diff below is his
-contribution.
-Krzysztof Hejmowski helped me setup my own Xtensa environment and
-recompile LPT/WPT FW binary sources what sped up the development greatly.
-
-This would not have been possible without help from these champions,
-especially considering how quickly the catpt was written: 2 weeks
-features, 3 weeks optimizations. Thank you.
-
-Userspace-exposed members are compatible with what is exposed by
-deprecated solution as well as FW binary being re-used thus no harm is
-done. The only visible differences are: the newly added 'Loopback Mute'
-kcontrol and volume support extending to quad from stereo.
-
-On top of fixing erros and design flows, catpt also adds module reload,
-dynamic SRAM memory allocation during PCM runtime and exposes missing
-userspace API: 'Loopback Mute' kcontrol, quad volume controls and sysfs
-fw-version entries. Event tracing is provided to easy solution
-debugging.
-
-Following are not included in this update and are scheduled as later
-addition:
-- fw logging
-- module (library) support
-
-Note: LPT power up/down sequences might get aligned with WPT once enough
-testing is done as capabilities are shared for both DSPs.
-Note #2: Both LPT and WPT power up/down sequences may get optimized in
-future updates as thanks to help from the Windows team, most of nuances
-behind why/what/when in regard to hw registers have been backtracked and
-reviewed again.
-
-Link to developer's deep dive message:
-https://www.spinics.net/lists/alsa-devel/msg113563.html
-
-
-Changes in v8:
-- updated catpt_arrange_page_table() with GENMASK and U32_MAX usage
-- made use of PFN_DOWN() replacing explicit right shitfs by PAGE_SIZE
-- made fw hash dumping in catpt_coredump() more readable and removed
-  hardcodes
-- catpt_coredump() dumps fw hash now only if said segment has been found
-  within fw_info
-- shortened _MSECS suffixes to _MS
-- IPC structs no longer contain enum members
-- simplified definition of catpt_set_dspvol()
-
-
-Changes in v7:
-https://www.spinics.net/lists/alsa-devel/msg116019.html
-- fixed licence header for fs.c
-- renamed fs.c to sysfs.c to better match its purpose
-- added documentation within Documentation/ABI/testing for entries
-  exposed by catpt
-- bin_attribute fw_build replaced by attribute fw_info:
-  fw_info contains full FW information and after successful handshake,
-  it's always available (stored in driver data) so no need to invoke
-  GET_FW_VERSION IPC again, just dump the stored information
-- rather than manually creating and removing sysfs files, now makes use
-  of dev_groups member of struct device_driver 
-- patch: 10/14 'ASoC: Intel: Select catpt and deprecate haswell' has
-  been moved to the back of the list: enable catpt after machine boards
-  have been prepared for it first
-- improved readability of several goto labels
-
-
-Changes in v6:
-https://www.spinics.net/lists/alsa-devel/msg115765.html
-- reordered and reorganized code for patches 1/13 - 8/13 of v5, so each
-  patches makes use of no member or function which is unavailable to it.
-  Series size increased from 13 to 14 patches: addition of base members
-  e.g.: registers has been split from addition of device.c file which
-  describes acpi device behavior
-
-
-Changes in v5:
-https://www.spinics.net/lists/alsa-devel/msg115621.html
-Basically everything below is result of Andy's review. Thank you Andy
-for taking time into this detailed review
-
-- catpt now makes use of common linux/pxa2xx_ssp.h header file, removing
-  redundant SSP register declarations in the process. As stated in the
-  opening, this is dependent upon linux-spi change:
-  spi: pxa2xx: Add SSC2 and SSPSP2 SSP registers
-
-- updated Kconfig by removing DMADEVICES and adding COMPILE_TEST
-  as optional depends-on
-- updated all register macros definitions to be more safe against common
-  arithmetics when specifying macro's parameters
-- removed CONFIG_PM and CONFIG_PM_SLEEP usage in favor of __maybe_unused
-- all 'if (ret < 0)' converted to simple 'if (ret)' whenever possible
-- fixed erroneous check for platform_device_register_data within
-  catpt_register_board()
-- _SLAVE/_MASTER replaced with more inclusive _CONSUMER/_PROVIDER for
-  enum catpt_ssp_mode
-- catpt_acpi_probe() is now making use of high-level wrappers for
-  ioremapping and resource assignment, reducing function's code size
-- due to improved catpt_acpi_probe() behavior, catpt_acpi_remove() needs
-  not to cast dma_free_coherent() any longer
-- DMA source and destrination maxburst now of value 16, see:
-https://www.spinics.net/lists/alsa-devel/msg114394.html
-
-- simplified catpt_dsp_update_lpclock() as list_for_each_entry() is
-  empty-safe by default
-- dropped '_SSP_' from all names of all CATPT_SSP_SSXXX_DEFAULT macros
-- catpt_updatel_pci now makes use of linux/pci.h and uapi/linux/pci.h
-  constants such as: PCI_PM_CTRL_STATE_MASK and PCI_D3hot
-
-
-Changes in v4:
-https://www.spinics.net/lists/alsa-devel/msg113762.html
-- fixed compilation with i386 kconfig (conflicting names)
-- streamlined naming for SHIM and PCI registers to match SSP ones
-  (SHIM_REG -> SHIM)
-- catpt_component_probe removed and kcontrols again initializzed
-  statically via snd_kcontrol_new array: this is to remove
-  kctl->id.device shenanigans
-- renamed catpt_set_ctlvol to catpt_set_dspvol - function name wasn't
-  matching its purpose
-
-
-Changes in v3:
-- fixed IRAM mask usage in lpt_dsp_power_up (dsp.c)
-- updated dbg message formatting in catpt_restore_fwimage as suggested
-  by Andy
-- fixed alignment for struct catpt_ssp_device_format
-- catpt_set_ctlvol now verifies all-equal scenario based on all
-  channels rather than just first two as requested by Amadeo
-- fixed SPDX for registers.h
-
-Changes in v2:
-https://www.spinics.net/lists/alsa-devel/msg113660.html
-- fixed SPDX formatting for all header files as well as pcm.c
-- fixed size provided to memcpy() in fw_build_read() as reported by Mark
-- renamed struct catpt_pdata to struct catpt_spec (cosmetic)
-- fixed erroneous path in catpt_load_block: region is properly released
-- trace.h events for updating registers have been removed and usages
-  replaced by dev_dbg (SRAMPGE/ LPCS)
-
-- as requested by Andy, struct resource has replaced struct catpt_mbank
-  and struct catpt_mregion. This change cascaded into:
-
-  - catpt_mbank_size and catpt_mregion_size replaced by resource_size
-  - catpt_mregion_intersects replaced by resource_overlaps
-  - all catpt_mbank_ and catpt_mregion_ handlers found in loader.c
-    (_request, _reserve, _release, _extract, _split, _join) have been
-    removed
-  - __request_region and __release_region have been enlisted in their
-    place
-  - catpt_mregion_intersecting renamed to catpt_resource_overlapping
-  - catpt_request_region helper has been provided to deal with -size
-    based requests
-      o haven't found direct replacements in resource.c/ ioport.h for
-      both functions
-
-  - catpt_mbank_create and catpt_mbank_remove renamed to catpt_sram_init
-    and catpt_sram_free respectively
-  - catpt_sram_init now returns void instead of int and has been
-    converted to simple initialized. This change ultimately cascaded
-    into:
-      o both SRAM banks initialization being moved to catpt_dev_init
-        from catpt_acpi_probe (device.c)
-      o catpt_dev::spec is now initialized first, with catpt_dev_init
-        following it soon after
-      o catpt_acpi_probe erroneous path has been simplified as SRAM
-        banks no longer need to be freed
-
-  - catpt_sram_free now frees all resources via child -> sibling
-    enumeration rather than region_list iteration
-  - catpt_dsp_update_srampge and catpt_dsp_set_srampge now accept new
-    argument: unsigned long mask. Caused by removal of catpt_mbank -
-    mask is taken directly from catpt_dev::spec::d/iram_mask
-  - trace.h events for catpt_mbank and catpt_mregion have been removed
-
-
-Diff against last drop on internal list:
-https://www.spinics.net/lists/alsa-devel/msg113549.html
-- replaced spinlock with mutex for mregion allocation and release to
-  address sleeping in atomic context warnings
-- fixed coredump fw_hash dumping
-- kcontrol values are now always stored regardless of stream of interest
-  is running or not
-- kcontrol values are now applied after stream is prepared instead of
-  ignoring what has been set by user initially
-- catpt_pdata instances have been renamed from hsw_ and bdw_ to lpt_ and
-  wpt_ respectively
-- reordered Makefile .o(s) (cosmetic)
-
-
-Cezary Rojewski (14):
-  ASoC: Intel: Add catpt base members
-  ASoC: Intel: catpt: Implement IPC protocol
-  ASoC: Intel: catpt: Add IPC message handlers
-  ASoC: Intel: catpt: Define DSP operations
-  ASoC: Intel: catpt: Firmware loading and context restore
-  ASoC: Intel: catpt: PCM operations
-  ASoC: Intel: catpt: Device driver lifecycle
-  ASoC: Intel: catpt: Event tracing
-  ASoC: Intel: catpt: Simple sysfs attributes
-  ASoC: Intel: haswell: Remove haswell-solution specific code
-  ASoC: Intel: broadwell: Remove haswell-solution specific code
-  ASoC: Intel: bdw-5650: Remove haswell-solution specific code
-  ASoC: Intel: bdw-5677: Remove haswell-solution specific code
-  ASoC: Intel: Select catpt and deprecate haswell
-
- .../ABI/testing/sysfs-bus-pci-devices-catpt   |   16 +
- sound/soc/intel/Kconfig                       |   24 +-
- sound/soc/intel/Makefile                      |    2 +-
- sound/soc/intel/boards/Kconfig                |    8 +-
- sound/soc/intel/boards/bdw-rt5650.c           |   36 -
- sound/soc/intel/boards/bdw-rt5677.c           |   33 -
- sound/soc/intel/boards/broadwell.c            |   33 -
- sound/soc/intel/boards/haswell.c              |   28 +-
- sound/soc/intel/catpt/Makefile                |    6 +
- sound/soc/intel/catpt/core.h                  |  187 +++
- sound/soc/intel/catpt/device.c                |  348 +++++
- sound/soc/intel/catpt/dsp.c                   |  578 ++++++++
- sound/soc/intel/catpt/ipc.c                   |  298 ++++
- sound/soc/intel/catpt/loader.c                |  671 +++++++++
- sound/soc/intel/catpt/messages.c              |  313 +++++
- sound/soc/intel/catpt/messages.h              |  401 ++++++
- sound/soc/intel/catpt/pcm.c                   | 1211 +++++++++++++++++
- sound/soc/intel/catpt/registers.h             |  178 +++
- sound/soc/intel/catpt/sysfs.c                 |   57 +
- sound/soc/intel/catpt/trace.h                 |   83 ++
- 20 files changed, 4368 insertions(+), 143 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-catpt
- create mode 100644 sound/soc/intel/catpt/Makefile
- create mode 100644 sound/soc/intel/catpt/core.h
- create mode 100644 sound/soc/intel/catpt/device.c
- create mode 100644 sound/soc/intel/catpt/dsp.c
- create mode 100644 sound/soc/intel/catpt/ipc.c
- create mode 100644 sound/soc/intel/catpt/loader.c
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/catpt/core.h     |   2 +
+ sound/soc/intel/catpt/dsp.c      | 106 +++++++++++
+ sound/soc/intel/catpt/ipc.c      |   4 +
+ sound/soc/intel/catpt/messages.c | 313 +++++++++++++++++++++++++++++++
+ 4 files changed, 425 insertions(+)
  create mode 100644 sound/soc/intel/catpt/messages.c
- create mode 100644 sound/soc/intel/catpt/messages.h
- create mode 100644 sound/soc/intel/catpt/pcm.c
- create mode 100644 sound/soc/intel/catpt/registers.h
- create mode 100644 sound/soc/intel/catpt/sysfs.c
- create mode 100644 sound/soc/intel/catpt/trace.h
 
+diff --git a/sound/soc/intel/catpt/core.h b/sound/soc/intel/catpt/core.h
+index 8819d928e891..3c860c0645dc 100644
+--- a/sound/soc/intel/catpt/core.h
++++ b/sound/soc/intel/catpt/core.h
+@@ -127,4 +127,6 @@ int catpt_dsp_send_msg_timeout(struct catpt_dev *cdev,
+ int catpt_dsp_send_msg(struct catpt_dev *cdev, struct catpt_ipc_msg request,
+ 		       struct catpt_ipc_msg *reply);
+ 
++int catpt_coredump(struct catpt_dev *cdev);
++
+ #endif
+diff --git a/sound/soc/intel/catpt/dsp.c b/sound/soc/intel/catpt/dsp.c
+index b0a61fcca50c..9d988b05c8cf 100644
+--- a/sound/soc/intel/catpt/dsp.c
++++ b/sound/soc/intel/catpt/dsp.c
+@@ -5,6 +5,7 @@
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+ 
++#include <linux/devcoredump.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/firmware.h>
+ #include "core.h"
+@@ -136,3 +137,108 @@ void catpt_dmac_remove(struct catpt_dev *cdev)
+ 	 */
+ 	dw_dma_remove(cdev->dmac);
+ }
++
++#define CATPT_DUMP_MAGIC		0xcd42
++#define CATPT_DUMP_SECTION_ID_FILE	0x00
++#define CATPT_DUMP_SECTION_ID_IRAM	0x01
++#define CATPT_DUMP_SECTION_ID_DRAM	0x02
++#define CATPT_DUMP_SECTION_ID_REGS	0x03
++#define CATPT_DUMP_HASH_SIZE		20
++
++struct catpt_dump_section_hdr {
++	u16 magic;
++	u8 core_id;
++	u8 section_id;
++	u32 size;
++};
++
++int catpt_coredump(struct catpt_dev *cdev)
++{
++	struct catpt_dump_section_hdr *hdr;
++	size_t dump_size, regs_size;
++	u8 *dump, *pos;
++	const char *eof;
++	char *info;
++	int i;
++
++	regs_size = CATPT_SHIM_REGS_SIZE;
++	regs_size += CATPT_DMA_COUNT * CATPT_DMA_REGS_SIZE;
++	regs_size += CATPT_SSP_COUNT * CATPT_SSP_REGS_SIZE;
++	dump_size = resource_size(&cdev->dram);
++	dump_size += resource_size(&cdev->iram);
++	dump_size += regs_size;
++	/* account for header of each section and hash chunk */
++	dump_size += 4 * sizeof(*hdr) + CATPT_DUMP_HASH_SIZE;
++
++	dump = vzalloc(dump_size);
++	if (!dump)
++		return -ENOMEM;
++
++	pos = dump;
++
++	hdr = (struct catpt_dump_section_hdr *)pos;
++	hdr->magic = CATPT_DUMP_MAGIC;
++	hdr->core_id = cdev->spec->core_id;
++	hdr->section_id = CATPT_DUMP_SECTION_ID_FILE;
++	hdr->size = dump_size - sizeof(*hdr);
++	pos += sizeof(*hdr);
++
++	info = cdev->ipc.config.fw_info;
++	eof = info + FW_INFO_SIZE_MAX;
++	/* navigate to fifth info segment (fw hash) */
++	for (i = 0; i < 4 && info < eof; i++, info++) {
++		/* info segments are separated by space each */
++		info = strnchr(info, eof - info, ' ');
++		if (!info)
++			break;
++	}
++
++	if (i == 4 && info)
++		memcpy(pos, info, min_t(u32, eof - info, CATPT_DUMP_HASH_SIZE));
++	pos += CATPT_DUMP_HASH_SIZE;
++
++	hdr = (struct catpt_dump_section_hdr *)pos;
++	hdr->magic = CATPT_DUMP_MAGIC;
++	hdr->core_id = cdev->spec->core_id;
++	hdr->section_id = CATPT_DUMP_SECTION_ID_IRAM;
++	hdr->size = resource_size(&cdev->iram);
++	pos += sizeof(*hdr);
++
++	memcpy_fromio(pos, cdev->lpe_ba + cdev->iram.start, hdr->size);
++	pos += hdr->size;
++
++	hdr = (struct catpt_dump_section_hdr *)pos;
++	hdr->magic = CATPT_DUMP_MAGIC;
++	hdr->core_id = cdev->spec->core_id;
++	hdr->section_id = CATPT_DUMP_SECTION_ID_DRAM;
++	hdr->size = resource_size(&cdev->dram);
++	pos += sizeof(*hdr);
++
++	memcpy_fromio(pos, cdev->lpe_ba + cdev->dram.start, hdr->size);
++	pos += hdr->size;
++
++	hdr = (struct catpt_dump_section_hdr *)pos;
++	hdr->magic = CATPT_DUMP_MAGIC;
++	hdr->core_id = cdev->spec->core_id;
++	hdr->section_id = CATPT_DUMP_SECTION_ID_REGS;
++	hdr->size = regs_size;
++	pos += sizeof(*hdr);
++
++	memcpy_fromio(pos, catpt_shim_addr(cdev), CATPT_SHIM_REGS_SIZE);
++	pos += CATPT_SHIM_REGS_SIZE;
++
++	for (i = 0; i < CATPT_SSP_COUNT; i++) {
++		memcpy_fromio(pos, catpt_ssp_addr(cdev, i),
++			      CATPT_SSP_REGS_SIZE);
++		pos += CATPT_SSP_REGS_SIZE;
++	}
++	for (i = 0; i < CATPT_DMA_COUNT; i++) {
++		memcpy_fromio(pos, catpt_dma_addr(cdev, i),
++			      CATPT_DMA_REGS_SIZE);
++		pos += CATPT_DMA_REGS_SIZE;
++	}
++
++	dev_coredumpv(cdev->dev, dump, dump_size, GFP_KERNEL);
++
++	return 0;
++}
+diff --git a/sound/soc/intel/catpt/ipc.c b/sound/soc/intel/catpt/ipc.c
+index 7474bc73c73a..d5edf3eebdf8 100644
+--- a/sound/soc/intel/catpt/ipc.c
++++ b/sound/soc/intel/catpt/ipc.c
+@@ -168,6 +168,10 @@ static void catpt_dsp_process_response(struct catpt_dev *cdev, u32 header)
+ 
+ 	switch (msg.global_msg_type) {
+ 	case CATPT_GLB_REQUEST_CORE_DUMP:
++		dev_err(cdev->dev, "ADSP device coredump received\n");
++		ipc->ready = false;
++		catpt_coredump(cdev);
++		/* TODO: attempt recovery */
+ 		break;
+ 
+ 	case CATPT_GLB_STREAM_MESSAGE:
+diff --git a/sound/soc/intel/catpt/messages.c b/sound/soc/intel/catpt/messages.c
+new file mode 100644
+index 000000000000..a793d114afa4
+--- /dev/null
++++ b/sound/soc/intel/catpt/messages.c
+@@ -0,0 +1,313 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2020 Intel Corporation. All rights reserved.
++//
++// Author: Cezary Rojewski <cezary.rojewski@intel.com>
++//
++
++#include <linux/slab.h>
++#include "core.h"
++#include "messages.h"
++#include "registers.h"
++
++int catpt_ipc_get_fw_version(struct catpt_dev *cdev,
++			     struct catpt_fw_version *version)
++{
++	union catpt_global_msg msg = CATPT_GLOBAL_MSG(GET_FW_VERSION);
++	struct catpt_ipc_msg request = {{0}}, reply;
++	int ret;
++
++	request.header = msg.val;
++	reply.size = sizeof(*version);
++	reply.data = version;
++
++	ret = catpt_dsp_send_msg(cdev, request, &reply);
++	if (ret)
++		dev_err(cdev->dev, "get fw version failed: %d\n", ret);
++
++	return ret;
++}
++
++struct catpt_alloc_stream_input {
++	enum catpt_path_id path_id:8;
++	enum catpt_stream_type stream_type:8;
++	enum catpt_format_id format_id:8;
++	u8 reserved;
++	struct catpt_audio_format input_format;
++	struct catpt_ring_info ring_info;
++	u8 num_entries;
++	/* flex array with entries here */
++	struct catpt_memory_info persistent_mem;
++	struct catpt_memory_info scratch_mem;
++	u32 num_notifications; /* obsolete */
++} __packed;
++
++int catpt_ipc_alloc_stream(struct catpt_dev *cdev,
++			   enum catpt_path_id path_id,
++			   enum catpt_stream_type type,
++			   struct catpt_audio_format *afmt,
++			   struct catpt_ring_info *rinfo,
++			   u8 num_modules,
++			   struct catpt_module_entry *modules,
++			   struct resource *persistent,
++			   struct resource *scratch,
++			   struct catpt_stream_info *sinfo)
++{
++	union catpt_global_msg msg = CATPT_GLOBAL_MSG(ALLOCATE_STREAM);
++	struct catpt_alloc_stream_input input;
++	struct catpt_ipc_msg request, reply;
++	size_t size, arrsz;
++	u8 *payload;
++	off_t off;
++	int ret;
++
++	off = offsetof(struct catpt_alloc_stream_input, persistent_mem);
++	arrsz = sizeof(*modules) * num_modules;
++	size = sizeof(input) + arrsz;
++
++	payload = kzalloc(size, GFP_KERNEL);
++	if (!payload)
++		return -ENOMEM;
++
++	memset(&input, 0, sizeof(input));
++	input.path_id = path_id;
++	input.stream_type = type;
++	input.format_id = CATPT_FORMAT_PCM;
++	input.input_format = *afmt;
++	input.ring_info = *rinfo;
++	input.num_entries = num_modules;
++	input.persistent_mem.offset = catpt_to_dsp_offset(persistent->start);
++	input.persistent_mem.size = resource_size(persistent);
++	if (scratch) {
++		input.scratch_mem.offset = catpt_to_dsp_offset(scratch->start);
++		input.scratch_mem.size = resource_size(scratch);
++	}
++
++	/* re-arrange the input: account for flex array 'entries' */
++	memcpy(payload, &input, sizeof(input));
++	memmove(payload + off + arrsz, payload + off, sizeof(input) - off);
++	memcpy(payload + off, modules, arrsz);
++
++	request.header = msg.val;
++	request.size = size;
++	request.data = payload;
++	reply.size = sizeof(*sinfo);
++	reply.data = sinfo;
++
++	ret = catpt_dsp_send_msg(cdev, request, &reply);
++	if (ret)
++		dev_err(cdev->dev, "alloc stream type %d failed: %d\n",
++			type, ret);
++
++	kfree(payload);
++	return ret;
++}
++
++int catpt_ipc_free_stream(struct catpt_dev *cdev, u8 stream_hw_id)
++{
++	union catpt_global_msg msg = CATPT_GLOBAL_MSG(FREE_STREAM);
++	struct catpt_ipc_msg request;
++	int ret;
++
++	request.header = msg.val;
++	request.size = sizeof(stream_hw_id);
++	request.data = &stream_hw_id;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "free stream %d failed: %d\n",
++			stream_hw_id, ret);
++
++	return ret;
++}
++
++int catpt_ipc_set_device_format(struct catpt_dev *cdev,
++				struct catpt_ssp_device_format *devfmt)
++{
++	union catpt_global_msg msg = CATPT_GLOBAL_MSG(SET_DEVICE_FORMATS);
++	struct catpt_ipc_msg request;
++	int ret;
++
++	request.header = msg.val;
++	request.size = sizeof(*devfmt);
++	request.data = devfmt;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "set device format failed: %d\n", ret);
++
++	return ret;
++}
++
++int catpt_ipc_enter_dxstate(struct catpt_dev *cdev, enum catpt_dx_state state,
++			    struct catpt_dx_context *context)
++{
++	union catpt_global_msg msg = CATPT_GLOBAL_MSG(ENTER_DX_STATE);
++	struct catpt_ipc_msg request, reply;
++	int ret;
++
++	request.header = msg.val;
++	request.size = sizeof(state);
++	request.data = &state;
++	reply.size = sizeof(*context);
++	reply.data = context;
++
++	ret = catpt_dsp_send_msg(cdev, request, &reply);
++	if (ret)
++		dev_err(cdev->dev, "enter dx state failed: %d\n", ret);
++
++	return ret;
++}
++
++int catpt_ipc_get_mixer_stream_info(struct catpt_dev *cdev,
++				    struct catpt_mixer_stream_info *info)
++{
++	union catpt_global_msg msg = CATPT_GLOBAL_MSG(GET_MIXER_STREAM_INFO);
++	struct catpt_ipc_msg request = {{0}}, reply;
++	int ret;
++
++	request.header = msg.val;
++	reply.size = sizeof(*info);
++	reply.data = info;
++
++	ret = catpt_dsp_send_msg(cdev, request, &reply);
++	if (ret)
++		dev_err(cdev->dev, "get mixer info failed: %d\n", ret);
++
++	return ret;
++}
++
++int catpt_ipc_reset_stream(struct catpt_dev *cdev, u8 stream_hw_id)
++{
++	union catpt_stream_msg msg = CATPT_STREAM_MSG(RESET_STREAM);
++	struct catpt_ipc_msg request = {{0}};
++	int ret;
++
++	msg.stream_hw_id = stream_hw_id;
++	request.header = msg.val;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "reset stream %d failed: %d\n",
++			stream_hw_id, ret);
++
++	return ret;
++}
++
++int catpt_ipc_pause_stream(struct catpt_dev *cdev, u8 stream_hw_id)
++{
++	union catpt_stream_msg msg = CATPT_STREAM_MSG(PAUSE_STREAM);
++	struct catpt_ipc_msg request = {{0}};
++	int ret;
++
++	msg.stream_hw_id = stream_hw_id;
++	request.header = msg.val;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "pause stream %d failed: %d\n",
++			stream_hw_id, ret);
++
++	return ret;
++}
++
++int catpt_ipc_resume_stream(struct catpt_dev *cdev, u8 stream_hw_id)
++{
++	union catpt_stream_msg msg = CATPT_STREAM_MSG(RESUME_STREAM);
++	struct catpt_ipc_msg request = {{0}};
++	int ret;
++
++	msg.stream_hw_id = stream_hw_id;
++	request.header = msg.val;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "resume stream %d failed: %d\n",
++			stream_hw_id, ret);
++
++	return ret;
++}
++
++struct catpt_set_volume_input {
++	u32 channel;
++	u32 target_volume;
++	u64 curve_duration;
++	u32 curve_type;
++} __packed;
++
++int catpt_ipc_set_volume(struct catpt_dev *cdev, u8 stream_hw_id,
++			 u32 channel, u32 volume,
++			 u32 curve_duration,
++			 enum catpt_audio_curve_type curve_type)
++{
++	union catpt_stream_msg msg = CATPT_STAGE_MSG(SET_VOLUME);
++	struct catpt_ipc_msg request;
++	struct catpt_set_volume_input input;
++	int ret;
++
++	msg.stream_hw_id = stream_hw_id;
++	input.channel = channel;
++	input.target_volume = volume;
++	input.curve_duration = curve_duration;
++	input.curve_type = curve_type;
++
++	request.header = msg.val;
++	request.size = sizeof(input);
++	request.data = &input;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "set stream %d volume failed: %d\n",
++			stream_hw_id, ret);
++
++	return ret;
++}
++
++struct catpt_set_write_pos_input {
++	u32 new_write_pos;
++	bool end_of_buffer;
++	bool low_latency;
++} __packed;
++
++int catpt_ipc_set_write_pos(struct catpt_dev *cdev, u8 stream_hw_id,
++			    u32 pos, bool eob, bool ll)
++{
++	union catpt_stream_msg msg = CATPT_STAGE_MSG(SET_WRITE_POSITION);
++	struct catpt_ipc_msg request;
++	struct catpt_set_write_pos_input input;
++	int ret;
++
++	msg.stream_hw_id = stream_hw_id;
++	input.new_write_pos = pos;
++	input.end_of_buffer = eob;
++	input.low_latency = ll;
++
++	request.header = msg.val;
++	request.size = sizeof(input);
++	request.data = &input;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "set stream %d write pos failed: %d\n",
++			stream_hw_id, ret);
++
++	return ret;
++}
++
++int catpt_ipc_mute_loopback(struct catpt_dev *cdev, u8 stream_hw_id, bool mute)
++{
++	union catpt_stream_msg msg = CATPT_STAGE_MSG(MUTE_LOOPBACK);
++	struct catpt_ipc_msg request;
++	int ret;
++
++	msg.stream_hw_id = stream_hw_id;
++	request.header = msg.val;
++	request.size = sizeof(mute);
++	request.data = &mute;
++
++	ret = catpt_dsp_send_msg(cdev, request, NULL);
++	if (ret)
++		dev_err(cdev->dev, "mute loopback failed: %d\n", ret);
++
++	return ret;
++}
 -- 
 2.17.1
 
