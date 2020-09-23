@@ -7,73 +7,74 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9434EC2D0A8
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:39:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96649C2D0A8
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:39:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DD642065E
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:39:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA906206D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:39:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W/tHN+Tp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DD642065E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pTC5XO+G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA906206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E5791773;
-	Wed, 23 Sep 2020 19:38:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E5791773
+	by alsa0.perex.cz (Postfix) with ESMTPS id 954EE178C;
+	Wed, 23 Sep 2020 19:38:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 954EE178C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600882749;
-	bh=nMGiGN6zGtF23AHaZJLD/PivAynCWvjgeLLtWmE+h80=;
+	s=default; t=1600882759;
+	bh=GU9Lb/LbbBYtmtefwnV6PFjvKULxF/WtEVyQHgqtsrI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W/tHN+TpXQLQY7Ma0HGeOG0ZCtWbNi1z9LhmDsfTKkzR7qRlegDfFau6MXaChhctS
-	 XMryS7unN3Chx7sZZ/igUyvvRlrsEgpwKTjgmh6CnR/E4igB6Uj+lBPmKMc2kzQfN7
-	 ghooAt2SHvkDLN0orI1X7hnr83csnywQswaWVUE8=
+	b=pTC5XO+GN35dGOC1MSed1C+Wz5IMHoTFc0+aA7oRM/f5HBJZPZpBHNjdtI4/P2QYm
+	 EwW4Q5aC33JTEGaST6bArFvDT0fTGopSTaFreCLA0JQq8AitVB1ZmzUdoYcgkJeROp
+	 b4hEwVgCwoWREIFWPqJcjBnuKJ26jBD5Fud9W1OY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8248EF802E2;
-	Wed, 23 Sep 2020 19:36:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A53B1F802E9;
+	Wed, 23 Sep 2020 19:36:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 949E2F8010A; Wed, 23 Sep 2020 19:35:57 +0200 (CEST)
+ id 83468F801EC; Wed, 23 Sep 2020 19:35:58 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D38FF801EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 19:35:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D38FF801EB
-IronPort-SDR: RZojeUF0T9TvI8X9hsmsaxkXL5LXI+FSwPxhzmEbt2O0cHLthqY3BN4grAzL9YuFvXVTsloPIP
- TBJr+9GnIMlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148628859"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="148628859"
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9D53F801EC
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 19:35:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9D53F801EC
+IronPort-SDR: 8yhXJ5SNg/e4fUkB26ge3SeELp/CbpfS1drz1VWODvHNgn8/eIU9MvqXLauuTe35w8G9rQ14Rv
+ TaaMsyoGIbeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148628883"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="148628883"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2020 10:35:37 -0700
-IronPort-SDR: YDZ7REhGjkzPgP2algDjdk6GtwVuLPYqf3ki0LZf3SAfZ/j0etnjXd3S5AGTN/T0gFhDBO4Ow5
- HA6Etf1Ip8xw==
+ 23 Sep 2020 10:35:44 -0700
+IronPort-SDR: 0d+hgktfVYMlm/Ok6EDb2fu/2eVKrfWQSKCImUmIidiP9yYbgsvIk87XLMoDUIrYxAzb9RS9ec
+ bUXJRN4C+tSw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="335562352"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="335562403"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 10:35:35 -0700
+ by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 10:35:42 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 2/6] ASoC: Intel: sof_sdw: remove ternary operator
-Date: Wed, 23 Sep 2020 20:33:54 +0300
-Message-Id: <20200923173358.3247215-3-kai.vehmanen@linux.intel.com>
+Subject: [PATCH v2 5/6] ASoC: Intel: sof_sdw_rt700: add codec prefix
+Date: Wed, 23 Sep 2020 20:33:57 +0300
+Message-Id: <20200923173358.3247215-6-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200923173358.3247215-1-kai.vehmanen@linux.intel.com>
 References: <20200923173358.3247215-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jaska Uimonen <jaska.uimonen@intel.com>, kai.vehmanen@linux.intel.com,
- lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,41 +92,37 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-cppcheck reports the following warning:
+Somehow for this codec we never used any prefix for the controls,
+likely because the test platform has a single SoundWire device.
 
-sound/soc/intel/boards/sof_sdw.c:866:46: style: Clarify calculation
-precedence for '&' and '?'. [clarifyCalculation]
- hdmi_num = sof_sdw_quirk & SOF_SDW_TGL_HDMI ?
-                                             ^
-
-There's no reason to use the ternary operator here, we might as well
-use a regular if-else construct.
+Follow the convention and use the codec prefix across the board to
+avoid possible conflicts.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_sdw_rt700.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index efd96c9c6e39..4b1cd3011d37 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -863,8 +863,10 @@ static int sof_card_dai_links_create(struct device *dev,
- 	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++)
- 		codec_info_list[i].amp_num = 0;
+diff --git a/sound/soc/intel/boards/sof_sdw_rt700.c b/sound/soc/intel/boards/sof_sdw_rt700.c
+index bff69cfe27f4..21e7e4a81779 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt700.c
++++ b/sound/soc/intel/boards/sof_sdw_rt700.c
+@@ -23,9 +23,9 @@ static const struct snd_soc_dapm_widget rt700_widgets[] = {
  
--	hdmi_num = sof_sdw_quirk & SOF_SDW_TGL_HDMI ?
--				SOF_TGL_HDMI_COUNT : SOF_PRE_TGL_HDMI_COUNT;
-+	if (sof_sdw_quirk & SOF_SDW_TGL_HDMI)
-+		hdmi_num = SOF_TGL_HDMI_COUNT;
-+	else
-+		hdmi_num = SOF_PRE_TGL_HDMI_COUNT;
+ static const struct snd_soc_dapm_route rt700_map[] = {
+ 	/* Headphones */
+-	{ "Headphones", NULL, "HP" },
+-	{ "Speaker", NULL, "SPK" },
+-	{ "MIC2", NULL, "AMIC" },
++	{ "Headphones", NULL, "rt700 HP" },
++	{ "Speaker", NULL, "rt700 SPK" },
++	{ "rt700 MIC2", NULL, "AMIC" },
+ };
  
- 	ssp_mask = SOF_SSP_GET_PORT(sof_sdw_quirk);
- 	/*
+ static const struct snd_kcontrol_new rt700_controls[] = {
 -- 
 2.27.0
 
