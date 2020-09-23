@@ -2,107 +2,83 @@ Return-Path: <SRS0=GKc0=DA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-	autolearn_force=no version=3.4.0
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E9BC2D0A8
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 778D8C2D0A8
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:36:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51A642388A
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:33:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F351520773
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:36:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m2XForVm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="k77NYtKg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51A642388A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pWJhAa8K";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="mMHTLgjP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F351520773
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A8D31680;
-	Wed, 23 Sep 2020 10:33:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A8D31680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 766ED170E;
+	Wed, 23 Sep 2020 10:35:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 766ED170E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600850032;
-	bh=U//EXy7tHJRso7X6jKrQ53leXqv7JnK42q4790hMryI=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=m2XForVmfegcnZncNlWjcK6JjHf1jpfDWrYlcPyv/fshivDPjYfyHgs8axanmk6dM
-	 tXxGn59BucMwTyneGP1JzYnYQXFilb/M8gwqE9bXDTXm5drUCdFzFPirBy2+wfyLpv
-	 mzVXGJD/g7M/nX66V+yyzsuWttNqLbe2Ld8r4BZg=
+	s=default; t=1600850165;
+	bh=VjBtrSHGHcT19Pvg8/6wdfdL+hxR0DQu8lIqrdm3NaY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pWJhAa8K42c1MVlNAifhbFDRJUHwNhMuEazFH1r+sXnnUtFCkqq/M/jkSCH37s842
+	 1uCi9ysCVnypB8LU2cJKmLwpEFy1QXBCRp2NYO00FRwp9YETHSGhtJWVdwMGnpDarg
+	 ikOhRrWMHUAzMGDZ+0Rg/dMYu3cMDgDmTf84AIRU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D90CEF80162;
-	Wed, 23 Sep 2020 10:33:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE96DF801EB;
+	Wed, 23 Sep 2020 10:35:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AB8DF80171; Wed, 23 Sep 2020 10:32:59 +0200 (CEST)
-Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 80C0EF8015F; Wed, 23 Sep 2020 10:35:13 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FA22F8015F
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 10:32:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FA22F8015F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="k77NYtKg"
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N8Shb2108840;
- Wed, 23 Sep 2020 08:32:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=NdXDzPdjbfkaULNKbSWYA1LbQygF53AGsX+jS6bcmYs=;
- b=k77NYtKg3nNRzgM7+tlEDwtNYdlHE+Urg9at7ZfO1hQAEhAJRtKzH4iMdrbfjxsV3gKr
- XeOoDRDEhnBq43fAp7qrr3/uXWamQxtjvekjOJb5chsmCYlKZr9YW8v7NKRTwdETDiLL
- Q8eBstv16ac+deqOeVNn3h8YEIGDIpEwguvO38aeJ/xULvhKWKnJj9WJcLeBX0WaILFv
- 6pg+BnvjBPQEXUMv0+s7GFeaLlSRZOfwR2mxl2rm2stZ3UP2Go8JK3beC1a3VeaPWkYs
- WD4qEGbGLzocySeSAQOBb6hVR7virCD0AjzwrkoRJ+gH0wV14dAB4B/HYMXK2cPpUXsP yw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2120.oracle.com with ESMTP id 33ndnuh3qq-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 23 Sep 2020 08:32:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N8U1nh016306;
- Wed, 23 Sep 2020 08:32:47 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
- by aserp3020.oracle.com with ESMTP id 33r28uu7qm-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 23 Sep 2020 08:32:47 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
- by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08N8WghJ003938;
- Wed, 23 Sep 2020 08:32:46 GMT
-Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Wed, 23 Sep 2020 01:32:42 -0700
-Date: Wed, 23 Sep 2020 11:32:35 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH] soundwire: remove an unnecessary NULL check
-Message-ID: <20200923083235.GB1454948@mwanda>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60CE2F8015F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 10:35:02 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A43BDA0040;
+ Wed, 23 Sep 2020 10:35:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A43BDA0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1600850101; bh=JNl8ewmOiJon2kQ6+ph78p4AVqfPkHp4/2SQg4Iqq74=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=mMHTLgjPVxxwG3A1jlauItxZSfPfvh4rMs9rnS9YaNzjaLbqsa98Lv1bm+qHpuBqJ
+ 1MUGcOD8Gnp6BKgYUFcz+jwvTeTPDzm+i3lCYtW9YnZJXeD4X8mQmL+f5ldoqnJwGc
+ Lbqv2u1/P59YA/y/b3cdjhCZhTf+V2LxWiAWDDLg=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 23 Sep 2020 10:34:52 +0200 (CEST)
+Subject: Re: [PATCH 5/6] ASoC: Intel: sof_sdw_rt700: add codec prefix
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, 
+ broonie@kernel.org
+References: <20200923080514.3242858-1-kai.vehmanen@linux.intel.com>
+ <20200923080514.3242858-6-kai.vehmanen@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <b9481c23-5a09-0518-b05b-c01b2d04e102@perex.cz>
+Date: Wed, 23 Sep 2020 10:34:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752
- signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- mlxlogscore=999
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230069
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752
- signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009230069
-Cc: Sanyog Kale <sanyog.r.kale@intel.com>, kernel-janitors@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
+In-Reply-To: <20200923080514.3242858-6-kai.vehmanen@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, ranjani.sridharan@linux.intel.com,
+ lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,35 +94,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The "bus" pointer isn't NULL so the address to a non-zero offset in
-middle of "bus" cannot be NULL.  Delete the NULL check.
+Dne 23. 09. 20 v 10:05 Kai Vehmanen napsal(a):
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+> Somehow for this codec we never used any prefix for the controls,
+> likely because the test platform has a single SoundWire device.
+> 
+> Follow the convention and use the codec prefix across the board to
+> avoid possible conflicts.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> ---
+>  sound/soc/intel/boards/sof_sdw_rt700.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_sdw_rt700.c b/sound/soc/intel/boards/sof_sdw_rt700.c
+> index bff69cfe27f4..21e7e4a81779 100644
+> --- a/sound/soc/intel/boards/sof_sdw_rt700.c
+> +++ b/sound/soc/intel/boards/sof_sdw_rt700.c
+> @@ -23,9 +23,9 @@ static const struct snd_soc_dapm_widget rt700_widgets[] = {
+>  
+>  static const struct snd_soc_dapm_route rt700_map[] = {
+>  	/* Headphones */
+> -	{ "Headphones", NULL, "HP" },
+> -	{ "Speaker", NULL, "SPK" },
+> -	{ "MIC2", NULL, "AMIC" },
+> +	{ "Headphones", NULL, "rt700 HP" },
+> +	{ "Speaker", NULL, "rt700 SPK" },
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/soundwire/generic_bandwidth_allocation.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+> +	{ "rt700 MIC2", NULL, "AMIC" },
 
-diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
-index 6088775b67a5..fdc0db71360e 100644
---- a/drivers/soundwire/generic_bandwidth_allocation.c
-+++ b/drivers/soundwire/generic_bandwidth_allocation.c
-@@ -342,15 +342,11 @@ static int sdw_select_row_col(struct sdw_bus *bus, int clk_freq)
- static int sdw_compute_bus_params(struct sdw_bus *bus)
- {
- 	unsigned int max_dr_freq, curr_dr_freq = 0;
--	struct sdw_master_prop *mstr_prop = NULL;
-+	struct sdw_master_prop *mstr_prop = &bus->prop;
- 	int i, clk_values, ret;
- 	bool is_gear = false;
- 	u32 *clk_buf;
- 
--	mstr_prop = &bus->prop;
--	if (!mstr_prop)
--		return -EINVAL;
--
- 	if (mstr_prop->num_clk_gears) {
- 		clk_values = mstr_prop->num_clk_gears;
- 		clk_buf = mstr_prop->clk_gears;
+This line looks suspicious. Perhaps, the prefix should be added before AMIC ?
+
+						Jaroslav
+
 -- 
-2.28.0
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
