@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B63A4C2D0A8
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:40:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43604C4727D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:40:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E2E7721D92
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:40:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7EFEC2067B
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 17:40:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lvtbj4f+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2E7721D92
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nOt2rHTM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EFEC2067B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1911B1789;
-	Wed, 23 Sep 2020 19:39:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1911B1789
+	by alsa0.perex.cz (Postfix) with ESMTPS id D719A176B;
+	Wed, 23 Sep 2020 19:39:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D719A176B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600882804;
-	bh=JZdNWiAtwsXi8M7Ue1N47z3h8VysgdrY1/k9zFgBbyU=;
+	s=default; t=1600882843;
+	bh=3IO+knDuCFLTeruAhWehFc+YqHwiVTp3lRuUbVs6qJc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lvtbj4f+Veqwy52JcMWjp8dO0we1+fOEdtgqk2bpMFuOtAXNpYxXyCvdPw1DytodL
-	 2GdIaZvUyklJ7fEmlW3UGFZjY/0KNeAX1aFBpPgQtfiWqGIFsYTd9H9wOfiktaNJMg
-	 dixhaJHzdRKQoYcF6CvrI5HWesvir1hTYBU29Qbg=
+	b=nOt2rHTMXkTzduUGckWEaRnqXL4KpOiQj8rCMA9XiYex4T21Ndpt9G3w65CC60HW4
+	 /EUunoyA29sm3IVY7w/j/oK5SqM0DbIaZKRzV1FoGUIOtQlAouXUOq8vYGufUVLweC
+	 eFAMFu3Mih57ROi9zqD45VfCNPoVNiLv8PZeMs4U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2226F802F7;
-	Wed, 23 Sep 2020 19:36:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB7EEF802F8;
+	Wed, 23 Sep 2020 19:36:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8328F802DC; Wed, 23 Sep 2020 19:35:58 +0200 (CEST)
+ id 32680F802E0; Wed, 23 Sep 2020 19:35:59 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC603F80171
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 19:35:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC603F80171
-IronPort-SDR: y2c2S16RM2ezypW21/BDZgz4gXUDK8TwIWBSUWsWe8S7zlOqtU5ZCXMFjmRw4toP16M4v63+na
- NQsrWcbRWxeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148628875"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="148628875"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3C68F80254
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 19:35:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3C68F80254
+IronPort-SDR: UqyCWQnGvpdXNr0Y72mYfx54DYXsj83i2QWV5mwc3JMN1X6CFFbV8oD8unx2rWi+gWtiGW40b4
+ FCYXIZQsBRXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148628888"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="148628888"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2020 10:35:39 -0700
-IronPort-SDR: +hF7gvzQ5yZDVhS3tA+F6+ay5KOzpsy59ebEr3ymgb1Tcay25WhhGEGVGG0fWXIo8tZtHNHiW2
- ubS6lT7fG2CA==
+ 23 Sep 2020 10:35:46 -0700
+IronPort-SDR: YV5jMVM2kJ/j8QREj+ZEK1wqpusGzmDm3/lKbVf1mgG8m0P64ZPThB7oVmRhu0BYoKoKqeWCBi
+ 4zjrDLkVRHRA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="335562356"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="335562446"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 10:35:37 -0700
+ by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 10:35:44 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 3/6] ASoC: Intel: add codec name prefix to ACPI machine
- description
-Date: Wed, 23 Sep 2020 20:33:55 +0300
-Message-Id: <20200923173358.3247215-4-kai.vehmanen@linux.intel.com>
+Subject: [PATCH v2 6/6] ASoC: Intel: add support for new SoundWire hardware
+ layout on TGL
+Date: Wed, 23 Sep 2020 20:33:58 +0300
+Message-Id: <20200923173358.3247215-7-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200923173358.3247215-1-kai.vehmanen@linux.intel.com>
 References: <20200923173358.3247215-1-kai.vehmanen@linux.intel.com>
@@ -91,306 +91,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-The current SOF machine driver adds a name prefix for each codec,
-mainly to differentiate ALSA controls for left and right amplifiers.
+The creativity of hardware folks is endless, with a complete
+permutation of rt711 (was link0 now link1), rt1308 (was link1 now
+link2) and rt715 (was link3 now link0).
 
-This is a good idea, but the machine driver duplicates some of the
-information that already exists in ACPI descriptors, so add those
-prefixes there. Follow-up patches will make use of the information
-encoded in these tables and remove duplication.
+Someday we will get all this information from platform firmware, for
+now let's add the mapping table.
 
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- include/sound/soc-acpi.h                          |  2 ++
- sound/soc/intel/common/soc-acpi-intel-cml-match.c | 10 ++++++++++
- sound/soc/intel/common/soc-acpi-intel-cnl-match.c |  1 +
- sound/soc/intel/common/soc-acpi-intel-icl-match.c |  6 ++++++
- sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 14 ++++++++++++++
- 5 files changed, 33 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c              |  9 ++++
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 53 +++++++++++++++++++
+ 2 files changed, 62 insertions(+)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index b77b05c413a3..b16a844d16ef 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -93,11 +93,13 @@ struct snd_soc_acpi_endpoint {
-  * @adr: 64 bit ACPI _ADR value
-  * @num_endpoints: number of endpoints for this device
-  * @endpoints: array of endpoints
-+ * @name_prefix: string used for codec controls
-  */
- struct snd_soc_acpi_adr_device {
- 	const u64 adr;
- 	const u8 num_endpoints;
- 	const struct snd_soc_acpi_endpoint *endpoints;
-+	const char *name_prefix;
- };
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 8e191a8d5dc5..b56df04775c2 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -48,6 +48,15 @@ static int sof_sdw_quirk_cb(const struct dmi_system_id *id)
+ }
  
- /**
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-index ec01884ef93d..26dde88bb227 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-@@ -98,6 +98,7 @@ static const struct snd_soc_acpi_adr_device rt700_1_adr[] = {
- 		.adr = 0x000110025D070000,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt700"
- 	}
- };
- 
-@@ -115,6 +116,7 @@ static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
- 		.adr = 0x000020025D071100,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt711"
- 	}
- };
- 
-@@ -123,6 +125,7 @@ static const struct snd_soc_acpi_adr_device rt1308_1_single_adr[] = {
- 		.adr = 0x000120025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt1308-1"
- 	}
- };
- 
-@@ -131,6 +134,7 @@ static const struct snd_soc_acpi_adr_device rt1308_1_group1_adr[] = {
- 		.adr = 0x000120025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "rt1308-1"
- 	}
- };
- 
-@@ -139,6 +143,7 @@ static const struct snd_soc_acpi_adr_device rt1308_2_group1_adr[] = {
- 		.adr = 0x000220025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1308-2"
- 	}
- };
- 
-@@ -147,6 +152,7 @@ static const struct snd_soc_acpi_adr_device rt715_3_adr[] = {
- 		.adr = 0x000320025D071500,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt715"
- 	}
- };
- 
-@@ -155,6 +161,7 @@ static const struct snd_soc_acpi_adr_device rt711_sdca_0_adr[] = {
- 		.adr = 0x000030025D071101,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt711"
- 	}
- };
- 
-@@ -163,6 +170,7 @@ static const struct snd_soc_acpi_adr_device rt1316_1_group1_adr[] = {
- 		.adr = 0x000131025D131601, /* unique ID is set for some reason */
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "rt1316-1"
- 	}
- };
- 
-@@ -171,6 +179,7 @@ static const struct snd_soc_acpi_adr_device rt1316_2_group1_adr[] = {
- 		.adr = 0x000230025D131601,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1316-2"
- 	}
- };
- 
-@@ -179,6 +188,7 @@ static const struct snd_soc_acpi_adr_device rt714_3_adr[] = {
- 		.adr = 0x000330025D071401,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt714"
- 	}
- };
- 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index 7d61e0da808b..b80f032a8b76 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -39,6 +39,7 @@ static const struct snd_soc_acpi_adr_device rt5682_2_adr[] = {
- 		.adr = 0x000220025D568200,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt5682"
- 	}
- };
- 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-index ebe13197410f..9a529a785288 100644
---- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-@@ -59,6 +59,7 @@ static const struct snd_soc_acpi_adr_device rt700_0_adr[] = {
- 		.adr = 0x000010025D070000,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt700"
- 	}
- };
- 
-@@ -76,6 +77,7 @@ static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
- 		.adr = 0x000020025D071100,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt711"
- 	}
- };
- 
-@@ -84,6 +86,7 @@ static const struct snd_soc_acpi_adr_device rt1308_1_adr[] = {
- 		.adr = 0x000120025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt1308-1"
- 	}
- };
- 
-@@ -92,6 +95,7 @@ static const struct snd_soc_acpi_adr_device rt1308_1_group1_adr[] = {
- 		.adr = 0x000120025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "rt1308-1"
- 	}
- };
- 
-@@ -100,6 +104,7 @@ static const struct snd_soc_acpi_adr_device rt1308_2_group1_adr[] = {
- 		.adr = 0x000220025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1308-2"
- 	}
- };
- 
-@@ -108,6 +113,7 @@ static const struct snd_soc_acpi_adr_device rt715_3_adr[] = {
- 		.adr = 0x000320025D071500,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt715"
- 	}
- };
- 
+ static const struct dmi_system_id sof_sdw_quirk_table[] = {
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A3E")
++		},
++		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
++					SOF_RT715_DAI_ID_FIX),
++	},
+ 	{
+ 		.callback = sof_sdw_quirk_cb,
+ 		.matches = {
 diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-index 6816847bee40..76f4eaf684b0 100644
+index 76f4eaf684b0..9f243e60b95c 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-@@ -40,6 +40,7 @@ static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
- 		.adr = 0x000020025D071100,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
+@@ -44,6 +44,15 @@ static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
+ 	}
+ };
+ 
++static const struct snd_soc_acpi_adr_device rt711_1_adr[] = {
++	{
++		.adr = 0x000120025D071100,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
 +		.name_prefix = "rt711"
- 	}
- };
- 
-@@ -48,11 +49,13 @@ static const struct snd_soc_acpi_adr_device rt1308_1_dual_adr[] = {
- 		.adr = 0x000120025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "rt1308-1"
- 	},
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device rt1308_1_dual_adr[] = {
  	{
- 		.adr = 0x000122025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1308-2"
- 	}
- };
- 
-@@ -61,6 +64,7 @@ static const struct snd_soc_acpi_adr_device rt1308_1_single_adr[] = {
  		.adr = 0x000120025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt1308-1"
+@@ -68,6 +77,15 @@ static const struct snd_soc_acpi_adr_device rt1308_1_single_adr[] = {
  	}
  };
  
-@@ -69,6 +73,7 @@ static const struct snd_soc_acpi_adr_device rt1308_1_group1_adr[] = {
++static const struct snd_soc_acpi_adr_device rt1308_2_single_adr[] = {
++	{
++		.adr = 0x000220025D130800,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "rt1308-1"
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device rt1308_1_group1_adr[] = {
+ 	{
  		.adr = 0x000120025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "rt1308-1"
+@@ -86,6 +104,15 @@ static const struct snd_soc_acpi_adr_device rt1308_2_group1_adr[] = {
  	}
  };
  
-@@ -77,6 +82,7 @@ static const struct snd_soc_acpi_adr_device rt1308_2_group1_adr[] = {
- 		.adr = 0x000220025D130800,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1308-2"
- 	}
- };
- 
-@@ -85,6 +91,7 @@ static const struct snd_soc_acpi_adr_device rt715_3_adr[] = {
- 		.adr = 0x000320025D071500,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
++static const struct snd_soc_acpi_adr_device rt715_0_adr[] = {
++	{
++		.adr = 0x000021025D071500,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
 +		.name_prefix = "rt715"
- 	}
- };
- 
-@@ -93,11 +100,13 @@ static const struct snd_soc_acpi_adr_device mx8373_1_adr[] = {
- 		.adr = 0x000123019F837300,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "Right"
- 	},
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device rt715_3_adr[] = {
  	{
- 		.adr = 0x000127019F837300,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "Left"
- 	}
+ 		.adr = 0x000320025D071500,
+@@ -235,6 +262,25 @@ static const struct snd_soc_acpi_link_adr tgl_3_in_1_mono_amp[] = {
+ 	{}
  };
  
-@@ -106,6 +115,7 @@ static const struct snd_soc_acpi_adr_device rt5682_0_adr[] = {
- 		.adr = 0x000021025D568200,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt5682"
- 	}
- };
++static const struct snd_soc_acpi_link_adr tgl_sdw_rt711_link1_rt1308_link2_rt715_link0[] = {
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt711_1_adr),
++		.adr_d = rt711_1_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(rt1308_2_single_adr),
++		.adr_d = rt1308_2_single_adr,
++	},
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt715_0_adr),
++		.adr_d = rt715_0_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_link_adr tgl_3_in_1_sdca[] = {
+ 	{
+ 		.mask = BIT(0),
+@@ -295,6 +341,13 @@ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_machines);
  
-@@ -114,6 +124,7 @@ static const struct snd_soc_acpi_adr_device rt711_sdca_0_adr[] = {
- 		.adr = 0x000030025D071101,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt711"
- 	}
- };
- 
-@@ -122,6 +133,7 @@ static const struct snd_soc_acpi_adr_device rt1316_1_group1_adr[] = {
- 		.adr = 0x000131025D131601, /* unique ID is set for some reason */
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "rt1316-1"
- 	}
- };
- 
-@@ -130,6 +142,7 @@ static const struct snd_soc_acpi_adr_device rt1316_2_group1_adr[] = {
- 		.adr = 0x000230025D131601,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1316-2"
- 	}
- };
- 
-@@ -138,6 +151,7 @@ static const struct snd_soc_acpi_adr_device rt714_3_adr[] = {
- 		.adr = 0x000330025D071401,
- 		.num_endpoints = 1,
- 		.endpoints = &single_endpoint,
-+		.name_prefix = "rt714"
- 	}
- };
- 
+ /* this table is used when there is no I2S codec present */
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
++	{
++		.link_mask = 0x7,
++		.links = tgl_sdw_rt711_link1_rt1308_link2_rt715_link0,
++		.drv_name = "sof_sdw",
++		.sof_fw_filename = "sof-tgl.ri",
++		.sof_tplg_filename = "sof-tgl-rt715-rt711-rt1308-mono.tplg",
++	},
+ 	{
+ 		.link_mask = 0xF, /* 4 active links required */
+ 		.links = tgl_3_in_1_default,
 -- 
 2.27.0
 
