@@ -2,69 +2,86 @@ Return-Path: <SRS0=GKc0=DA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84F40C4727E
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 12:45:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1593FC2D0A8
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 13:18:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A459220C09
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 12:45:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AAF872220D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 13:18:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ujb/OIFE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A459220C09
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rivzzGTe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAF872220D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA02C16FB;
-	Wed, 23 Sep 2020 14:44:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA02C16FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A34C516F5;
+	Wed, 23 Sep 2020 15:17:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A34C516F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600865149;
-	bh=XozQpiTz+hVWILj32fco/I1Gc3kOn6P0TqAbtG0HxXo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1600867127;
+	bh=5lDCOr8nlJUOCmqktnfahYKtXNbNG55Xtf81dJf4Chw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ujb/OIFE2Q3Zk4pwwFKpYcfV9BBRp7mlL6UQC1ihfH6EfgHHglVbjpxVREklDUdG2
-	 q/i+FZ5o3pVukctml3R24GlavdnHVoG/XemB6A3NEJdxHF2xJ700pTO2dhaJsljTwI
-	 Qdh7XCdegsTHQ3m9yBgyqBKj/OuhMK82bW3d/lcw=
+	b=rivzzGTeSnV4oCnh0ES11X0nzkdBxasL1CyAQ2rHR/SHokyhVdq4DzlsAaBi+vk1y
+	 YTIMmPEoqVnNAxfh8K5x35YovmJgNeOw9zJaaXVxcomSR3qweJ/fd7RBg6F5OsRizg
+	 UsgoJH3zcPd6x+LI/m+FvWQftSiZBB564EToWq+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C51FF8015F;
-	Wed, 23 Sep 2020 14:44:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23034F8010A;
+	Wed, 23 Sep 2020 15:17:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E525F80162; Wed, 23 Sep 2020 14:44:57 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5A1DFF80162; Wed, 23 Sep 2020 15:17:55 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88B88F8010A
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 14:44:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88B88F8010A
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id EECDCAD21;
- Wed, 23 Sep 2020 12:45:23 +0000 (UTC)
-Date: Wed, 23 Sep 2020 14:44:46 +0200
-Message-ID: <s5hblhwwtkx.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>
-Subject: Re: [PATCH] ALSA: usb-audio: Add mixer support for Pioneer DJ
- DJM-250MK2
-In-Reply-To: <20200922144206.10472-1-konference@frantovo.cz>
-References: <20200922144206.10472-1-konference@frantovo.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <franta-linux@frantovo.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA1B7F8010A
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 15:17:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA1B7F8010A
+IronPort-SDR: D3XnUPDgEyZDHU0MLv5InZ3GUGcYr/61vH28LU56pQMjj+wJxtY95zuyqsTQMViAdMcxhSRu1S
+ /H/wn5GvVnCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="161817477"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="161817477"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Sep 2020 06:17:39 -0700
+IronPort-SDR: J/0Xcgev9aUeqi0JIeDa+fFkBzaE+vTJWWSNusXu5OeNrtroIgMVRA3ae7x3OEZL7en/Pw7OOR
+ vcn548ctRprw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="338656838"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by orsmga008.jf.intel.com with ESMTP; 23 Sep 2020 06:17:35 -0700
+Received: from andy by smile with local (Exim 4.94)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1kL4eJ-001OzB-Aw; Wed, 23 Sep 2020 16:17:31 +0300
+Date: Wed, 23 Sep 2020 16:17:31 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v8 02/14] ASoC: Intel: catpt: Implement IPC protocol
+Message-ID: <20200923131731.GE3956970@smile.fi.intel.com>
+References: <20200923122508.3360-1-cezary.rojewski@intel.com>
+ <20200923122508.3360-3-cezary.rojewski@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923122508.3360-3-cezary.rojewski@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ filip.kaczmarski@intel.com, harshapriya.n@intel.com,
+ gregkh@linuxfoundation.org, marcin.barlik@intel.com, zwisler@google.com,
+ lgirdwood@gmail.com, tiwai@suse.com, filip.proborszcz@intel.com,
+ broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
+ michal.wasko@intel.com, cujomalainey@chromium.org,
+ krzysztof.hejmowski@intel.com, ppapierkowski@habana.ai,
+ vamshi.krishna.gopal@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,25 +97,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 22 Sep 2020 16:42:06 +0200,
-František Kučera wrote:
+On Wed, Sep 23, 2020 at 02:24:56PM +0200, Cezary Rojewski wrote:
+> Implement IRQ handlers for immediate and delayed replies and
+> notifications. Communication is synchronous and allows for serialization
+> of maximum one message at a time.
 > 
-> From: František Kučera <franta-linux@frantovo.cz>
-> 
-> This patch extends support for DJM-250MK2 and allows mapping
-> playback and capture channels to available sources.
-> Configures the card through USB commands.
-> 
-> Signed-off-by: František Kučera <franta-linux@frantovo.cz>
+> DSP may respond with ADSP_PENDING status for a request - known as
+> delayed reply - and when situation occurs, framework keeps the lock and
+> awaits upcoming response through IPCD channel which is handled in
+> bottom-half. Immediate replies spawn no BH at all as their processing is
+> very short.
 
-Applied now.  Thanks.
+...
 
-BTW, at the next time when you resubmit a patch, please put "v2" or
-such prefix in the subject, e.g.
-  [PATCH v2] ALSA: usb-audio: ....
+> +static void catpt_dsp_send_tx(struct catpt_dev *cdev,
+> +			      const struct catpt_ipc_msg *tx)
+> +{
+> +	u32 header = tx->header | CATPT_IPCC_BUSY;
 
-Also, putting the changed points from the previous revision in the
-patch description (or after the line "---") would be helpful, too.
+> +	if (tx->size)
+
+This check is not needed.
+
+> +		memcpy_toio(catpt_outbox_addr(cdev), tx->data, tx->size);
+> +	catpt_writel_shim(cdev, IPCC, header);
+> +}
+
+...
+
+> +	ret = ipc->rx.rsp.status;
+> +	if (reply) {
+
+> +		reply->header = ipc->rx.header;
+
+So, even in case of error the header is still updated?
+
+> +		if (!ret && reply->data && reply->size)
+
+> +			memcpy(reply->data, ipc->rx.data, ipc->rx.size);
+
+This I didn't get. You copy data by using source size?!
+
+> +	}
+> +
+> +	return ret;
+
+I guess the above piece may be refactored, but I don't know how until it is
+clear why it's written like this.
+
+...
+
+> +static void catpt_dsp_copy_rx(struct catpt_dev *cdev, u32 header)
+> +{
+> +	struct catpt_ipc *ipc = &cdev->ipc;
+> +
+> +	ipc->rx.header = header;
+> +	if (ipc->rx.size && ipc->rx.rsp.status == CATPT_REPLY_SUCCESS) {
+
+Check for size is redundant.
+
+> +		memcpy_fromio(ipc->rx.data, catpt_outbox_addr(cdev),
+> +			      ipc->rx.size);
+> +	}
+
+Can be done like
+
+	if (status != SUCCESS)
+		return;
+	memcpy_fromio(...);
+
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Takashi
