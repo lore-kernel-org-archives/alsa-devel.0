@@ -2,81 +2,107 @@ Return-Path: <SRS0=GKc0=DA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EC2AC2D0A8
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E9BC2D0A8
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:33:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF63B235FC
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:12:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51A642388A
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Sep 2020 08:33:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ewuVUB2O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF63B235FC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m2XForVm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="k77NYtKg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51A642388A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 712D016F4;
-	Wed, 23 Sep 2020 10:11:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 712D016F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A8D31680;
+	Wed, 23 Sep 2020 10:33:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A8D31680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600848724;
-	bh=kZNsLboqergst/y0Bxui5L7yBiv0roaNgp0SkMuuivY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ewuVUB2ON1sBfLGCwp0s53Bus3uUlcVfOmD0QhdAPadJiG3XK3cYXq5+0zav4ilYo
-	 U/7ufbcV/Ek8coV92Ismc3uUBJB03uK6UHx59oeSUEEZjjEatqFit1fKgU5H53SIbD
-	 OEbdhYLTRPRsSjLUOPmXh9W7Lva6N4iHmoSfkbqk=
+	s=default; t=1600850032;
+	bh=U//EXy7tHJRso7X6jKrQ53leXqv7JnK42q4790hMryI=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=m2XForVmfegcnZncNlWjcK6JjHf1jpfDWrYlcPyv/fshivDPjYfyHgs8axanmk6dM
+	 tXxGn59BucMwTyneGP1JzYnYQXFilb/M8gwqE9bXDTXm5drUCdFzFPirBy2+wfyLpv
+	 mzVXGJD/g7M/nX66V+yyzsuWttNqLbe2Ld8r4BZg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1ABBF802FD;
-	Wed, 23 Sep 2020 10:07:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D90CEF80162;
+	Wed, 23 Sep 2020 10:33:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBA79F802C4; Wed, 23 Sep 2020 10:07:43 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 5AB8DF80171; Wed, 23 Sep 2020 10:32:59 +0200 (CEST)
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7079F8010A
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 10:07:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7079F8010A
-IronPort-SDR: wccTlD4SZBXMA4NXoDCdf2hGrPFLG7ZTbTHBiw5nvjCPuvE6HK6WcSbzkN41bfawMph/j3Dl0c
- Qs2A2sbYRPDA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="158178503"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="158178503"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2020 01:07:03 -0700
-IronPort-SDR: 0XZX5PimAujP4ZTvsB2Su1iIanLSDoiMBPkN3R3uhLiTMkpQEsULPYayCP+kfEu8sUUFq+flza
- hsL6Ld6clXWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; d="scan'208";a="335371208"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 01:07:01 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 1/6] ASOC: Intel: sof_sdw: restore playback functionality with
- max98373 amps
-Date: Wed, 23 Sep 2020 11:05:09 +0300
-Message-Id: <20200923080514.3242858-2-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200923080514.3242858-1-kai.vehmanen@linux.intel.com>
-References: <20200923080514.3242858-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FA22F8015F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2020 10:32:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FA22F8015F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="k77NYtKg"
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+ by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N8Shb2108840;
+ Wed, 23 Sep 2020 08:32:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=NdXDzPdjbfkaULNKbSWYA1LbQygF53AGsX+jS6bcmYs=;
+ b=k77NYtKg3nNRzgM7+tlEDwtNYdlHE+Urg9at7ZfO1hQAEhAJRtKzH4iMdrbfjxsV3gKr
+ XeOoDRDEhnBq43fAp7qrr3/uXWamQxtjvekjOJb5chsmCYlKZr9YW8v7NKRTwdETDiLL
+ Q8eBstv16ac+deqOeVNn3h8YEIGDIpEwguvO38aeJ/xULvhKWKnJj9WJcLeBX0WaILFv
+ 6pg+BnvjBPQEXUMv0+s7GFeaLlSRZOfwR2mxl2rm2stZ3UP2Go8JK3beC1a3VeaPWkYs
+ WD4qEGbGLzocySeSAQOBb6hVR7virCD0AjzwrkoRJ+gH0wV14dAB4B/HYMXK2cPpUXsP yw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by userp2120.oracle.com with ESMTP id 33ndnuh3qq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 23 Sep 2020 08:32:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N8U1nh016306;
+ Wed, 23 Sep 2020 08:32:47 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+ by aserp3020.oracle.com with ESMTP id 33r28uu7qm-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 23 Sep 2020 08:32:47 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+ by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08N8WghJ003938;
+ Wed, 23 Sep 2020 08:32:46 GMT
+Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Wed, 23 Sep 2020 01:32:42 -0700
+Date: Wed, 23 Sep 2020 11:32:35 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] soundwire: remove an unnecessary NULL check
+Message-ID: <20200923083235.GB1454948@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Keyon Jie <yang.jie@linux.intel.com>, lgirdwood@gmail.com,
- Rander Wang <rander.wang@intel.com>, ranjani.sridharan@linux.intel.com,
- daniel.baluta@nxp.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752
+ signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
+ mlxlogscore=999
+ suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009230069
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752
+ signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009230069
+Cc: Sanyog Kale <sanyog.r.kale@intel.com>, kernel-janitors@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,128 +118,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+The "bus" pointer isn't NULL so the address to a non-zero offset in
+middle of "bus" cannot be NULL.  Delete the NULL check.
 
-The Max98373 amplifier provides I/V feedback information, which keeps
-a DAPM path active even when there is no playback happening. This
-prevents entry in low-power mode. Rather than adding new controls and
-require UCM/user interaction, the method previously applied is to
-enable/disable the Speaker pin during the dailink trigger operations.
-
-Recent changes in the SoundWire stream management moved the stream
-trigger to the dailink trigger. This change removed the Maxim-specific
-pin handling and resulted in a regression. This patch restores
-functionality by combining the SoundWire stream trigger with the pin
-enable/disable.
-
-Fixes: 7eec07f389a60 ('ASOC: Intel: sof_sdw: add dailink .trigger callback')
-Fixes: 5595f95c32650 ('ASOC: Intel: sof_sdw: add dailink .prepare and .hw_free callback').
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Keyon Jie <yang.jie@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- sound/soc/intel/boards/sof_sdw.c          |  6 ++--
- sound/soc/intel/boards/sof_sdw_common.h   |  3 ++
- sound/soc/intel/boards/sof_sdw_max98373.c | 36 ++++++++++++++++++++++-
- 3 files changed, 41 insertions(+), 4 deletions(-)
+ drivers/soundwire/generic_bandwidth_allocation.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 210b66d1f9a2..efd96c9c6e39 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -225,7 +225,7 @@ int sdw_startup(struct snd_pcm_substream *substream)
- 	return sdw_startup_stream(substream);
- }
- 
--static int sdw_prepare(struct snd_pcm_substream *substream)
-+int sdw_prepare(struct snd_pcm_substream *substream)
+diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
+index 6088775b67a5..fdc0db71360e 100644
+--- a/drivers/soundwire/generic_bandwidth_allocation.c
++++ b/drivers/soundwire/generic_bandwidth_allocation.c
+@@ -342,15 +342,11 @@ static int sdw_select_row_col(struct sdw_bus *bus, int clk_freq)
+ static int sdw_compute_bus_params(struct sdw_bus *bus)
  {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sdw_stream_runtime *sdw_stream;
-@@ -244,7 +244,7 @@ static int sdw_prepare(struct snd_pcm_substream *substream)
- 	return sdw_prepare_stream(sdw_stream);
- }
+ 	unsigned int max_dr_freq, curr_dr_freq = 0;
+-	struct sdw_master_prop *mstr_prop = NULL;
++	struct sdw_master_prop *mstr_prop = &bus->prop;
+ 	int i, clk_values, ret;
+ 	bool is_gear = false;
+ 	u32 *clk_buf;
  
--static int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
-+int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sdw_stream_runtime *sdw_stream;
-@@ -284,7 +284,7 @@ static int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--static int sdw_hw_free(struct snd_pcm_substream *substream)
-+int sdw_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sdw_stream_runtime *sdw_stream;
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index 6a5d46589baf..f3cb6796363e 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -79,6 +79,9 @@ struct mc_private {
- extern unsigned long sof_sdw_quirk;
- 
- int sdw_startup(struct snd_pcm_substream *substream);
-+int sdw_prepare(struct snd_pcm_substream *substream);
-+int sdw_trigger(struct snd_pcm_substream *substream, int cmd);
-+int sdw_hw_free(struct snd_pcm_substream *substream);
- void sdw_shutdown(struct snd_pcm_substream *substream);
- 
- /* generic HDMI support */
-diff --git a/sound/soc/intel/boards/sof_sdw_max98373.c b/sound/soc/intel/boards/sof_sdw_max98373.c
-index 905582aaf58c..cfdf970c5800 100644
---- a/sound/soc/intel/boards/sof_sdw_max98373.c
-+++ b/sound/soc/intel/boards/sof_sdw_max98373.c
-@@ -55,9 +55,43 @@ static int spk_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
-+static int max98373_sdw_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	int ret;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		/* enable max98373 first */
-+		ret = max98373_trigger(substream, cmd);
-+		if (ret < 0)
-+			break;
-+
-+		ret = sdw_trigger(substream, cmd);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		ret = sdw_trigger(substream, cmd);
-+		if (ret < 0)
-+			break;
-+
-+		ret = max98373_trigger(substream, cmd);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- static const struct snd_soc_ops max_98373_sdw_ops = {
- 	.startup = sdw_startup,
--	.trigger = max98373_trigger,
-+	.prepare = sdw_prepare,
-+	.trigger = max98373_sdw_trigger,
-+	.hw_free = sdw_hw_free,
- 	.shutdown = sdw_shutdown,
- };
- 
+-	mstr_prop = &bus->prop;
+-	if (!mstr_prop)
+-		return -EINVAL;
+-
+ 	if (mstr_prop->num_clk_gears) {
+ 		clk_values = mstr_prop->num_clk_gears;
+ 		clk_buf = mstr_prop->clk_gears;
 -- 
-2.27.0
+2.28.0
 
