@@ -2,89 +2,83 @@ Return-Path: <SRS0=rARa=DB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1113CC4363D
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Sep 2020 14:27:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58A23C4363D
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Sep 2020 14:29:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1D522220D
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Sep 2020 14:27:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4CE902220D
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Sep 2020 14:29:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B+P2zSqs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="i81BquZJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1D522220D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kgp+RytP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CE902220D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F293117CF;
-	Thu, 24 Sep 2020 16:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F293117CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A23C117D7;
+	Thu, 24 Sep 2020 16:28:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A23C117D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1600957676;
-	bh=mOL6B1UB58ZkMzD/MGiAhTCQ4yj/CGWXmfmcZHxTBjo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=B+P2zSqspfQiyHcopfMj1Jl5mstfaRMdGngjXXoBgMiCaWkLkPvlV1gTk4DGfahr4
-	 ICLb/hTJMsi8uOKo7adMsIqbFAPuo+YH4CRM7sS5PtIeLRnkZuetC4MZagiIunDTq2
-	 yhmG3VqYGxWyunRe3ewd7YEFxXZeTly2FzbiEAMs=
+	s=default; t=1600957753;
+	bh=uY3+iyYBox8s7Z39XGZsnEmbmyCjnzRSwdpGk0veWzI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Kgp+RytPB8YplvexGh7WCRODR4TqyxcYYDj7dmFc1iPPo9NoTbMXzqnFRgaDi9uoK
+	 igPqJ1L/rYGIciL8dfaKA7zqpmw4DaNsoAuduWoGvbu6pRmnjU5EyJFUKq+B0CZH/g
+	 j0Ydu3IrDCeJFeTXZJmF3fR2q6TqQY0RM1JbHs4Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AB50F80232;
-	Thu, 24 Sep 2020 16:27:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CCD6F80232;
+	Thu, 24 Sep 2020 16:28:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4BDE5F80234; Thu, 24 Sep 2020 16:27:04 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ id D5D35F80256; Thu, 24 Sep 2020 16:28:19 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38BEEF8015F
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2020 16:26:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38BEEF8015F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="i81BquZJ"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OEQoJW019153;
- Thu, 24 Sep 2020 09:26:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600957610;
- bh=S0oklTWVRLtvAe47nGWVNe8PvFK3wOI3GW207rmLdlw=;
- h=From:To:CC:Subject:Date;
- b=i81BquZJ/hAFJAhyt/QSfoLFJIKHd0ynVGMTCMNkUyE3JPqNeMXgQQ7KkEJKfk6YW
- 2b/b4zyeEKJaLvzJb+8wBprVtbB+UZzgHIrkRUaWWz5O3rVZ0V8GthrE6ozF3hAbdC
- ktPNtRT7jevDHoD0LbwimT2PBI48HNNZeB7IdFH8=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08OEQnnL005185
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 24 Sep 2020 09:26:49 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Sep 2020 09:26:49 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Sep 2020 09:26:49 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OEQn4Q034659;
- Thu, 24 Sep 2020 09:26:49 -0500
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
- <robh+dt@kernel.org>
-Subject: [PATCH] dt-bindings: tas2770: Mark ti,asi-format to deprecated
-Date: Thu, 24 Sep 2020 09:26:41 -0500
-Message-ID: <20200924142641.12355-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C3F5F8015F
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2020 16:28:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C3F5F8015F
+IronPort-SDR: Q8lXGrO73K2hydWyyx6AQmleDyXdOxC59lMswqfbxPlFmokJtaULbTta6bNmytC0V3n+D7Riwk
+ PHJRMhWYiWZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="160504244"
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; d="scan'208";a="160504244"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Sep 2020 07:28:09 -0700
+IronPort-SDR: ZBuiUzklK9kbVteGq8egxw2aEjZO0AJGFJlKdGZFdw2N6jV0GIeJG0WgMUkfR09FSrl4S1SzUx
+ iFKL0VaDzHQg==
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; d="scan'208";a="336000019"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Sep 2020 07:28:07 -0700
+Date: Thu, 24 Sep 2020 17:26:34 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/5] ASoC: SOF: fix kcontrol size checks
+In-Reply-To: <20200924113508.GD4754@sirena.org.uk>
+Message-ID: <alpine.DEB.2.22.394.2009241724010.3186@eliteleevi.tm.intel.com>
+References: <20200921110814.2910477-1-kai.vehmanen@linux.intel.com>
+ <160073312817.6173.14263034136602358389.b4-ty@kernel.org>
+ <alpine.DEB.2.22.394.2009240841280.3186@eliteleevi.tm.intel.com>
+ <20200924105645.GA4754@sirena.org.uk>
+ <alpine.DEB.2.22.394.2009241426320.3186@eliteleevi.tm.intel.com>
+ <20200924113508.GD4754@sirena.org.uk>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, lgirdwood@gmail.com,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,26 +94,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mark the property ti,asi-format to deprecated as it is no longer
-supported.
+Hi,
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- Documentation/devicetree/bindings/sound/tas2770.yaml | 1 +
- 1 file changed, 1 insertion(+)
+On Thu, 24 Sep 2020, Mark Brown wrote:
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2770.yaml b/Documentation/devicetree/bindings/sound/tas2770.yaml
-index 9fdf614add55..07e7f9951d2e 100644
---- a/Documentation/devicetree/bindings/sound/tas2770.yaml
-+++ b/Documentation/devicetree/bindings/sound/tas2770.yaml
-@@ -44,6 +44,7 @@ properties:
-     description: TDM TX voltage sense time slot.
- 
-   ti,asi-format:
-+    deprecated: true
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: Sets TDM RX capture edge.
-     enum:
--- 
-2.28.0
+> On Thu, Sep 24, 2020 at 02:30:23PM +0300, Kai Vehmanen wrote:
+> > yes, the series was based on broonie/for-5.10 for sending, and I tested 
+> > again and both of the dropped patches still apply on top of for-5.10. They 
+>
+> Well, that's the only thing I can think of - that git thought they
+> didn't actaully have any changes in them when it tried to apply them.
 
+ack. I'll resend them -- let's see if they go through the system this 
+time. :) In any case these were just coding style updates, so not urgent 
+in any case.
+
+Br, Kai
