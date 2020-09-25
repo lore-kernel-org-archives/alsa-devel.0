@@ -2,102 +2,81 @@ Return-Path: <SRS0=F9G0=DC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A4A5C4727D
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A0AC4741F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:53:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B334208B6
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:51:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8C7422B2D
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:53:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b3EJBnA7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Dzn6BomX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B334208B6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fJ5tXyR7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YTdBKkL5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8C7422B2D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC3C518E4;
-	Fri, 25 Sep 2020 18:50:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC3C518E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E631718D5;
+	Fri, 25 Sep 2020 18:52:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E631718D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601052705;
-	bh=9/glAxDIrsWjuNXdKv6lI+F0DPhWMZjpATf92Ws/f4Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601052818;
+	bh=pAs4PaULX4H5SxYmIVtY8k566DgwXqnpA8RvoFzZpYM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b3EJBnA7CZMr2TkPuNHAxAR+tbvQ+Dl+OLAEt6R7W1yskW8hmai1Ql+kDi2Gujd/Q
-	 /2mPxquCSLkUL5wKAR72rgV3enJxJkpepGIqnljIfpTRpcygEujXySbzArMtINpBuW
-	 yKfSfizFKSrZIAAicibCdrIZvsVdGMjZ5cF8hQWQ=
+	b=fJ5tXyR79R0uBnTJQz/ZmJb8ZmfXYkiBczdApn3vabPkZ9SFIHUIQPOcxkvEvL4Ir
+	 tPPnRhQPtukYq0KzNqSZER6fWCxRRravpRRTT/wW0R6Xz+WtjFJqJ7DgAztpdUCZB8
+	 PLhpThFY0wRMOGA2rALcj3/UXE/QEbbo9F9O9nwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17B52F802A9;
-	Fri, 25 Sep 2020 18:49:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BDA8F80171;
+	Fri, 25 Sep 2020 18:52:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45FE5F80254; Fri, 25 Sep 2020 18:49:20 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 25431F801EB; Fri, 25 Sep 2020 18:52:46 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B03FF80171
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 18:49:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B03FF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE0F8F800DA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 18:52:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE0F8F800DA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Dzn6BomX"
-Received: by mail-wr1-x444.google.com with SMTP id o5so4279202wrn.13
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 09:49:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Ssju2WyDh5j0zn3FxJ2qEeLRsDGQouz5zG8/DyJr+lg=;
- b=Dzn6BomXQuuqwu3kVz3HW4HYjLiPHh1aPVbOzCQ5eMeP17ZUB7G+mzMUI5Q9/d8H5h
- uBKJ6Q+5/bBdz+OoxUXwamCFnPFrwgu4ad9ZSx1CFgy1kCNCfj3JY3LXk2R0RrHzuMeM
- lWHk+++DMbaDyqNL4vUFDw3KsCxvWyZ+kU81EnEsZXaYKYWMl8xhhz00oJm5KlfM2qtO
- eY5NQXnlfPXmTCa70WJEzQbEbwOG37iF8tvkXOqITxcGKdr7+4df9D7ic8UUvbSbtCB4
- 1uWCnXgyAjn3x0rqBPdQ7BQZQsq8xDT5RNpC6/ggkU8bxnOpCTKSbtHe4X3esZfbjWpH
- DfxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Ssju2WyDh5j0zn3FxJ2qEeLRsDGQouz5zG8/DyJr+lg=;
- b=aY7jnvv7+kR9x4lHo583H1QmnGZVkpTt5MO0v8HeK7VTMpcjXSD2fAw6dlMUzp0JRm
- N+hj1u2jTyJUCw7dE7a2XYEleLu3nARBFzFeCj42revJs0lOsYAwJ1SdAgJXJy+YFDoL
- i8i3xbwSnWNTTHZ+QZNzE+4aHWji0GWqaC0YpiNDKgTE4jZwvU5XdaypyVz3wK5tUqEO
- xUTszM60asIVUV8/YFJjljl5ZcksSbnRYqLPgcC8xsbzMjpVXhT8VHMngmpIdAmjtEKp
- USWxIyJbefQ3kxhl/VydiEletAAFNXjOOGcu7OVuJ+UbQfw3B/GJ6gif4QWHOh2S1lGn
- c+uQ==
-X-Gm-Message-State: AOAM532ERYbxa7/iPGd9bZylQru7tSqydDgWOlpSRjhnHqT+vb4vzw9R
- 3stvHIqQn3y3Zb2059fMVRdBpAdLoRxElg==
-X-Google-Smtp-Source: ABdhPJzF6a15K9ycGmVQMoYUKXDCxa73oBO2AW6MOErQWnTaGG1fXrd/DW0LDyQxA24LHKih8B4Vkg==
-X-Received: by 2002:adf:ec4d:: with SMTP id w13mr5667896wrn.334.1601052547018; 
- Fri, 25 Sep 2020 09:49:07 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id a5sm3604247wrp.37.2020.09.25.09.49.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 25 Sep 2020 09:49:06 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v2 1/2] regmap: add support to regmap_field_bulk_alloc/free
- apis
-Date: Fri, 25 Sep 2020 17:48:55 +0100
-Message-Id: <20200925164856.10315-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
-References: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="YTdBKkL5"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 414C2208B6;
+ Fri, 25 Sep 2020 16:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601052754;
+ bh=pAs4PaULX4H5SxYmIVtY8k566DgwXqnpA8RvoFzZpYM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=YTdBKkL5tYw/mImn8swZhrGk9vzf6nzl7Hw0XikzigszJWCPBiP+hWaf/13VbN389
+ 5FIClElHwfvwmJnLWq40CsK3iFZD6ElWocTEo+6s1fIGB2yQyY4hiuAK019ZjvVNCA
+ cRFeddNyhDjvsggDQf+fZfo+WddkNz8XZaVKIJ6A=
+Date: Fri, 25 Sep 2020 17:51:39 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Tuo Li <t-li20@mails.tsinghua.edu.cn>
+Subject: Re: [PATCH] ALSA: rockchip: fix a possible divide-by-zero bug in
+ rockchip_i2s_hw_params()
+Message-ID: <20200925165139.GH4841@sirena.org.uk>
+References: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, srivasam@codeaurora.org, lgirdwood@gmail.com,
- gregkh@linuxfoundation.org, rafael@kernel.org, tiwai@suse.com,
- rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="VaKJWhUROU/xPxjb"
+Content-Disposition: inline
+In-Reply-To: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
+X-Cookie: Onward through the fog.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org,
+ baijiaju1990@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,152 +92,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Usage of regmap_field_alloc becomes much overhead when number of fields
-exceed more than 3.
-QCOM LPASS driver has extensively converted to use regmap_fields.
 
-Using new bulk api to allocate fields makes it much more cleaner code to read!
+--VaKJWhUROU/xPxjb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- drivers/base/regmap/regmap.c | 100 +++++++++++++++++++++++++++++++++++
- include/linux/regmap.h       |  11 ++++
- 2 files changed, 111 insertions(+)
+On Sun, Aug 30, 2020 at 05:51:06PM +0800, Tuo Li wrote:
+> The variable bclk_rate is checked in:
+>   if (bclk_rate && mclk_rate % bclk_rate)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index aec3f26bf711..8d6aedce666d 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -1270,6 +1270,106 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(devm_regmap_field_alloc);
- 
-+
-+/**
-+ * regmap_field_bulk_alloc() - Allocate and initialise a bulk register field.
-+ *
-+ * @regmap: regmap bank in which this register field is located.
-+ * @rm_field: regmap register fields within the bank.
-+ * @reg_field: Register fields within the bank.
-+ * @num_fields: Number of register fields.
-+ *
-+ * The return value will be an -ENOMEM on error or zero for success.
-+ * Newly allocated regmap_fields should be freed by calling
-+ * regmap_field_bulk_free()
-+ */
-+int regmap_field_bulk_alloc(struct regmap *regmap,
-+			    struct regmap_field **rm_field,
-+			    struct reg_field *reg_field,
-+			    int num_fields)
-+{
-+	struct regmap_field *rf;
-+	int i;
-+
-+	rf = kcalloc(num_fields, sizeof(*rf), GFP_KERNEL);
-+	if (!rf)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < num_fields; i++) {
-+		regmap_field_init(&rf[i], regmap, reg_field[i]);
-+		rm_field[i] = &rf[i];
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(regmap_field_bulk_alloc);
-+
-+/**
-+ * devm_regmap_field_bulk_alloc() - Allocate and initialise a bulk register
-+ * fields.
-+ *
-+ * @dev: Device that will be interacted with
-+ * @regmap: regmap bank in which this register field is located.
-+ * @rm_field: regmap register fields within the bank.
-+ * @reg_field: Register fields within the bank.
-+ * @num_fields: Number of register fields.
-+ *
-+ * The return value will be an -ENOMEM on error or zero for success.
-+ * Newly allocated regmap_fields will be automatically freed by the
-+ * device management code.
-+ */
-+int devm_regmap_field_bulk_alloc(struct device *dev,
-+				 struct regmap *regmap,
-+				 struct regmap_field **rm_field,
-+				 struct reg_field *reg_field,
-+				 int num_fields)
-+{
-+	struct regmap_field *rf;
-+	int i;
-+
-+	rf = devm_kcalloc(dev, num_fields, sizeof(*rf), GFP_KERNEL);
-+	if (!rf)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < num_fields; i++) {
-+		regmap_field_init(&rf[i], regmap, reg_field[i]);
-+		rm_field[i] = &rf[i];
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_alloc);
-+
-+/**
-+ * regmap_field_bulk_free() - Free register field allocated using
-+ *                       regmap_field_bulk_alloc.
-+ *
-+ * @field: regmap fields which should be freed.
-+ */
-+void regmap_field_bulk_free(struct regmap_field *field)
-+{
-+	kfree(field);
-+}
-+EXPORT_SYMBOL_GPL(regmap_field_bulk_free);
-+
-+/**
-+ * devm_regmap_field_bulk_free() - Free a bulk register field allocated using
-+ *                            devm_regmap_field_bulk_alloc.
-+ *
-+ * @dev: Device that will be interacted with
-+ * @field: regmap field which should be freed.
-+ *
-+ * Free register field allocated using devm_regmap_field_bulk_alloc(). Usually
-+ * drivers need not call this function, as the memory allocated via devm
-+ * will be freed as per device-driver life-cycle.
-+ */
-+void devm_regmap_field_bulk_free(struct device *dev,
-+				 struct regmap_field *field)
-+{
-+	devm_kfree(dev, field);
-+}
-+EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_free);
-+
- /**
-  * devm_regmap_field_free() - Free a register field allocated using
-  *                            devm_regmap_field_alloc.
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 0c49d59168b5..a35ec0a0d6e0 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -1189,6 +1189,17 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
- 		struct regmap *regmap, struct reg_field reg_field);
- void devm_regmap_field_free(struct device *dev,	struct regmap_field *field);
- 
-+int regmap_field_bulk_alloc(struct regmap *regmap,
-+			     struct regmap_field **rm_field,
-+			     struct reg_field *reg_field,
-+			     int num_fields);
-+void regmap_field_bulk_free(struct regmap_field *field);
-+int devm_regmap_field_bulk_alloc(struct device *dev, struct regmap *regmap,
-+				 struct regmap_field **field,
-+				 struct reg_field *reg_field, int num_fields);
-+void devm_regmap_field_bulk_free(struct device *dev,
-+				 struct regmap_field *field);
-+
- int regmap_field_read(struct regmap_field *field, unsigned int *val);
- int regmap_field_update_bits_base(struct regmap_field *field,
- 				  unsigned int mask, unsigned int val,
--- 
-2.21.0
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
+--VaKJWhUROU/xPxjb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9uIBoACgkQJNaLcl1U
+h9BPeAf9H4D1Q4H2endgDKFyhv77X9QSGBc0ttIMBIVm0+Sak3GDEkoTnPh6d9Ug
+JUOIrJ0MsnS1f4sLC2Vj/NASTEa+cBQLQ2Vup5OBfkCQXBaWSm3J+UwQzujiX3o6
+K/1Z4eyCfi83a5nWTlGqrzA7VLcG8Og4YcttIXGxXcOOctfzXrH+NUtZDzXvxxfm
+Bn7o/Ja/4wlLRPpbXPowMn7sNlZrxwNAtNhmOobCOgZtCGPhJLvdrEk035oQK/82
+y+s3JQChKzfTsDyyo10KR/nC7unePe9EWdsuEobaX47B2OywzsjRX4nD9Jw8NjRD
+WRUxBaZJYk3Pblx0uegXkIv09S+Z+A==
+=kTPr
+-----END PGP SIGNATURE-----
+
+--VaKJWhUROU/xPxjb--
