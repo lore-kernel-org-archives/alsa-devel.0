@@ -3,80 +3,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D13DC4741F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 19:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4880C4727E
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:05:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF42123718
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 19:30:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DCA61208B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:05:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JUAtxcAr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TPLPzGJr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF42123718
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yxm3+aUm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCA61208B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B231E18ED;
-	Fri, 25 Sep 2020 21:29:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B231E18ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6B6E18ED;
+	Fri, 25 Sep 2020 22:04:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6B6E18ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601062245;
-	bh=Qnb4GmVJK+KSCmaIF8ewnftUKFwuL9MIqaQIMNr/Qzw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1601064343;
+	bh=AQB0BSahI8L+ibi41O7GQSP+8qyylkecT77e4VugyHU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JUAtxcArUIJcN8zdRH5J0dlA4lN1cNhxtqyVmIxH7iKtUs945zsxh+gRNyR2UENCZ
-	 LB1jrDDV/6qfQPXZradbjob5MpRi5QqQNSs4UV1hCxriTlJFsfiHXMy0OcXocICM8D
-	 GCWiCvw6x+0wZU07CaMLB/Aj3kauFRUOQvsD/XRU=
+	b=Yxm3+aUmsS48yUhD2TCE6VJQjPjaR69FQmhKBDbJfS3krNGY7kqn2028WLMf0/Ef1
+	 VX7U0zGqTLmWYaru02/Q9yBROCTp5qTaN0FZJ/nKCRChbnntxfXrbIOwyeAnfQKgT4
+	 E57mPIf4WQFCs5XoL2PJNAcDZ9hEqvQuNwJ47Ts8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D3BCF80171;
-	Fri, 25 Sep 2020 21:29:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F881F80171;
+	Fri, 25 Sep 2020 22:04:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F3F7F801EB; Fri, 25 Sep 2020 21:29:49 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1874DF80162
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 21:29:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1874DF80162
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TPLPzGJr"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 1D3EAF801EB; Fri, 25 Sep 2020 22:04:51 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 97E2A2344C;
- Fri, 25 Sep 2020 19:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601062179;
- bh=Qnb4GmVJK+KSCmaIF8ewnftUKFwuL9MIqaQIMNr/Qzw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=TPLPzGJrSwQ0wxzHBcU6TR3tcD6MY9WSGBpePQIRe5XEDzKYOeVVrfPb4kAL62Wap
- xXlF4cGDV5hJPlr4h72d1KC5PnVzMWTnK9RE9dT3Sny6+xFHB6WvNzz2B506eBw26s
- o8N6VSV5tPwW5UVDzEiRnc1iHxdHX3k0LtJFBOqw=
-Date: Fri, 25 Sep 2020 20:28:44 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Tuo Li <t-li20@mails.tsinghua.edu.cn>
-Subject: Re: [PATCH] ASoC: rockchip: fix a possible divide-by-zero bug in
- rockchip_i2s_hw_params()
-Message-ID: <20200925192844.GA10127@sirena.org.uk>
-References: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 836E1F800F6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 22:04:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 836E1F800F6
+IronPort-SDR: IO11BqXJ6QofPczpJ8LFDTq24Qaqhwr7mr7Gz9B8iY4HDMuPI1eRDH2b/pVCTmCHCT0ACZEBiV
+ Tle39PknCgrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="179730561"
+X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; d="scan'208";a="179730561"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Sep 2020 13:04:39 -0700
+IronPort-SDR: 2b2H5dMyniOM5AIj71g4pWIkeKp2HAvhdGVEx7iu1gCcuubqOdUAeV6O11NBwerhRIDvPYuYZc
+ lz0kKELc1Puw==
+X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; d="scan'208";a="513072616"
+Received: from mfischmx-mobl1.amr.corp.intel.com (HELO [10.209.30.115])
+ ([10.209.30.115])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Sep 2020 13:04:39 -0700
+Subject: Re: More Generic Audio Graph Sound Card idea
+To: Mark Brown <broonie@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
+ <097e3fc4-4a84-e101-e6b6-045c3e9e5bfc@nvidia.com>
+ <87imdczd4i.wl-kuninori.morimoto.gx@renesas.com>
+ <87blhuljkb.wl-kuninori.morimoto.gx@renesas.com>
+ <20200925192202.GA9831@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <aceb1334-9b3f-7a62-60e9-6028059d4bf7@linux.intel.com>
+Date: Fri, 25 Sep 2020 15:04:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
-Content-Disposition: inline
-In-Reply-To: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
-X-Cookie: Dime is money.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org,
- baijiaju1990@gmail.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20200925192202.GA9831@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Sameer Pujar <spujar@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,37 +97,77 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---jRHKVT23PllUwdXP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Sun, Aug 30, 2020 at 05:51:06PM +0800, Tuo Li wrote:
-> The variable bclk_rate is checked in:
->   if (bclk_rate && mclk_rate % bclk_rate)
+On 9/25/20 2:22 PM, Mark Brown wrote:
+> On Fri, Sep 25, 2020 at 10:43:59AM +0900, Kuninori Morimoto wrote:
+> 
+>> But multi-Codec side is difficult.
+>> Because it is selected via "endpoint" via CPU.
+>> No way to select it via "port" and/or "ports".
+> 
+> Indeed.
+> 
+>> We might want to select Multi-CPU/Codec by using multi deivces ?
+>> in such case, using "ports" idea is not enough.
+> 
+>> Using extra device like DSP can be more generic ?
+> 
+>> 	<--- multi-CPU --->
+>> 	            *******
+>> 	CPU0-1 <--> *     * <--> Codec0
+>> 	CPU0-2 <--> *     *
+>> 	CPU0-3 <--> *     *
+>> 	            *******
+> 
+> I think this is what we want for SoCs, represent the DSPs explicitly and
+> then have the FEs and BEs all be ports on the DSP.  I think a similar
+> thing would also work for legacy (I2S & so on) DAIs where we've got more
+> endpoints on the DAI - if we define slots on the DAI then from the point
+> of view of the DT bindings it's just a very, very inflexible DSP:
+> 
+>          CPU1 <--> DAI slot A <--> Codec1-1
+>                \-> DAI slot B <--> Codec1-2
+>          CPU2 <--> DAI slot C <--> Codec1-3
+> 
+> or whatever.  This doesn't allow for really complex setups that change
+> the slot mapping at runtime (TBH those probably need custom cards
+> anyway) but I think it should support most cases where TDM causes
+> difficulties today.  I'm not sure if we need this for more modern buses
+> like SoundWire, I'd hope we can dynamically assign slots at runtime more
+> easily, but ICBW.
 
-This doesn't apply against current code, please check and resend:
+SoundWire doesn't have a notion of 'slot'. Instead you program the data 
+ports for the type of audio data to be transmitted/received.
 
-HEAD is now at bbd59df075ab Merge series "ASoC: Intel: sdw machine driver updates for 5.10" from Kai Vehmanen <kai.vehmanen@linux.intel.com>:
-Applying: ASoC: rockchip: fix a possible divide-by-zero bug in rockchip_i2s_hw_params()
-Using index info to reconstruct a base tree...
-M	sound/soc/rockchip/rockchip_i2s.c
-Falling back to patching base and 3-way merge...
-Auto-merging sound/soc/rockchip/rockchip_i2s.c
-CONFLICT (content): Merge conflict in sou
+See some pointers at 
+https://mipi.org/sites/default/files/MIPI-SoundWire-webinar-20150121-final.pdf
+Pages 42-47 describe the main concepts.
 
---jRHKVT23PllUwdXP
-Content-Type: application/pgp-signature; name="signature.asc"
+The actual bit allocation can be done in different ways. On the Intel 
+side, we use a dynamic allocation. It's my understanding that Qualcomm 
+have a static allocation for their amplifier links.
 
------BEGIN PGP SIGNATURE-----
+In most cases, a sink port receives exactly what it needs, but for 
+playback we have cases where all amplifiers receive the same data (we 
+call this 'mirror mode', and each amplifier will be configured to render 
+a specific channel from the data received. This is useful to deal with 
+orientation/posture changes where the data transmitted on the wires 
+doesn't need to be changed. This avoid dynamic re-configurations on the 
+DSP + bus sides, only the amplifier settings need to be modified - 
+typically via controls.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9uROsACgkQJNaLcl1U
-h9C92gf/RsB/lEQG1UKkloEDE1VbvFPSaiYS79/aMhlVUBUW116VogCV7sq/mQ10
-WEG6ygMD4mUoU9PAYXPpn8+boQJ9fVNNYF76UmKpMHm6ZjopJ6gZZ/ARj3jBje4H
-QgtJEYhcYFodqFs5LP5sVswlq06rguAH1cYrHgM9YYYZtWimsqfD2SD63QZaog8m
-eBgk0duJ4ys5HzfPUhpfRgXjH8r6LNHCLRQy8UW1vHHYG3yfpUA9YNLITMHWbyq0
-eDUZJzcpnErjHj3FaHoxjm4ohvOnlVMz+U9+LEjuz0Z8VfBk3SE7C6Rj1dN3JpdA
-vR+WgSZG2A7qGkMp20/0IX+qKdILbA==
-=cION
------END PGP SIGNATURE-----
+That said, the mapping of data ports between CPU and codec sides is 
+rather static, mostly because devices typically dedicate specific data 
+ports to specific functionality. SDCA will not change this, quite the 
+opposite, the mapping between ports and audio functionality behind the 
+port will be defined in platform firmware.
 
---jRHKVT23PllUwdXP--
+It's a bit of a stretch but conceptually there is some level of overlap 
+between SoundWire data ports and TDM slots, e.g. if in a TDM link you 
+used slots 4,5 for headset playback, you might use data port 2 on a 
+SoundWire link. It's however a 'logical' mapping, the actual position of 
+the bits in the frame is handled by the bit allocation.
+
+Hope this helps!
+-Pierre
+
