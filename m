@@ -2,77 +2,86 @@ Return-Path: <SRS0=F9G0=DC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F760C4727E
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:48:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F296C4727E
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:51:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9750F2086A
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:48:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CE832086A
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:51:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rUo1HnUU";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="urarfz8P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9750F2086A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G00wg5rH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CE832086A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10F551A9C;
-	Fri, 25 Sep 2020 22:47:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10F551A9C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 149DB194A;
+	Fri, 25 Sep 2020 22:50:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 149DB194A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601066898;
-	bh=QSevX1flL8R5A+fqYXDssSpKP80IyBfwUR79zCY1bHU=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1601067089;
+	bh=sIEdRQnQrYofDtlsEoOOaB5GOZHb4ow977skj545eUo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rUo1HnUUm7XgjSWxL4VQSPg4TlO+C3yaxftZoB4T9hgh2wDwrtr8R5Qq1E1UnQ6GF
-	 7mRJ+/JVEIzD/va/vMnwPXgzYnvJD1058iyDCsubqBp0YHXnjntxSgcVF9HNpeMkOr
-	 mcKWm8Jj9Y62r6jkUdufUghjE8Vzvz+L7pjOGOLo=
+	b=G00wg5rHRFRdKCFaRi51JfmTUIaldsfgw7d/CNmns6rTOWZVALojip3LFMigdb+Ub
+	 ZAZG3bNzk99seCwnuPbyv5Z0fSKc1fR8TtgRwc3Ae0rAppB2VDdrRBzB71wft0dwRF
+	 Yvg9WlrDgFXiISD+BDDRX/OULVB2LBFfElAcWtZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7D31F80303;
-	Fri, 25 Sep 2020 22:43:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99FA3F80171;
+	Fri, 25 Sep 2020 22:50:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2740F802F9; Fri, 25 Sep 2020 22:43:01 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 690C7F802EB
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 22:42:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 690C7F802EB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="urarfz8P"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 0E5E3F801EB; Fri, 25 Sep 2020 22:50:38 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D5C7421D42;
- Fri, 25 Sep 2020 20:42:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601066576;
- bh=QSevX1flL8R5A+fqYXDssSpKP80IyBfwUR79zCY1bHU=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=urarfz8PuyF+GFxvTcJYGPU6CbYQ8EubrmxlSDW9MN3ATbi+2rDYcNTjBeE48/ruw
- crrsbsCFqMnUqSLnZQTb0cnZqgn/dcxsCC/GFG10dW40H5dXz45Mdu4W9z6BfPF+ok
- YKR556UJKd7h3q8k7lWpnMA3X9s5YP8+egymxK/I=
-Date: Fri, 25 Sep 2020 21:42:01 +0100
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, tiwai@suse.com, linux-arm-kernel@lists.infradead.org,
- festevam@gmail.com, Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org,
- nicoleotsuka@gmail.com, shawnguo@kernel.org, perex@perex.cz, linux-imx@nxp.com,
- s.hauer@pengutronix.de, Xu Wang <vulab@iscas.ac.cn>, shengjiu.wang@gmail.com,
- alsa-devel@alsa-project.org, kernel@pengutronix.de, timur@kernel.org
-In-Reply-To: <20200921015918.24157-1-vulab@iscas.ac.cn>
-References: <20200921015918.24157-1-vulab@iscas.ac.cn>
-Subject: Re: [PATCH] fsl: imx-audmix : Use devm_kcalloc() instead of
- devm_kzalloc()
-Message-Id: <160106647647.2866.12055149870190769449.b4-ty@kernel.org>
-Cc: linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 818EBF80162
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 22:50:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 818EBF80162
+IronPort-SDR: jOryV21eAVkkUQszjoclH9wVAFcYla1DYxO8IObV0EUHh2BD6BA2jgVBV2rTBKp+GdceKRUQQi
+ T7NOjcqRmcgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="161720454"
+X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; d="scan'208";a="161720454"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Sep 2020 13:50:31 -0700
+IronPort-SDR: +y6XqKiIGhPS/JZn//b7Bwn6ep2Yt7DVCF/Q15C/VDqdsaNsWNEFyIQRI2y7HcpZQPwubBzrQK
+ BY0jWSXE0+Pw==
+X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; d="scan'208";a="513140872"
+Received: from mfischmx-mobl1.amr.corp.intel.com (HELO [10.209.30.115])
+ ([10.209.30.115])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Sep 2020 13:50:30 -0700
+Subject: Re: More Generic Audio Graph Sound Card idea
+To: Mark Brown <broonie@kernel.org>
+References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
+ <097e3fc4-4a84-e101-e6b6-045c3e9e5bfc@nvidia.com>
+ <87imdczd4i.wl-kuninori.morimoto.gx@renesas.com>
+ <87blhuljkb.wl-kuninori.morimoto.gx@renesas.com>
+ <20200925192202.GA9831@sirena.org.uk>
+ <aceb1334-9b3f-7a62-60e9-6028059d4bf7@linux.intel.com>
+ <20200925201057.GI4841@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <085030a3-201a-70d9-5f04-89bb19b98532@linux.intel.com>
+Date: Fri, 25 Sep 2020 15:50:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200925201057.GI4841@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Sameer Pujar <spujar@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,35 +97,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 21 Sep 2020 01:59:18 +0000, Xu Wang wrote:
-> A multiplication for the size determination of a memory allocation
-> indicated that an array data structure should be processed.
-> Thus use the corresponding function "devm_kcalloc".
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+> If a device is hard limited to particular slots we can presumably
+> discover that (either through the spec or by keying off the ID
+> registers) and do the right thing?  In any case if we need a firmware
+> mapping for DT systems it sounds like something that works for TDM
+> should be mappable onto SoundWire channels easily enough.
 
-[1/1] ASoC: fsl: imx-audmix: Use devm_kcalloc() instead of devm_kzalloc()
-      commit: f95cc5c18c15a425c3dceec48df6b4e27a202dda
+yes, if we can define a notion of logical TDM 'slot group' (e.g. 
+headphone, mic, streamA, <add tag here>, etc), then the mapping with 
+SoundWire data ports is straightforward. The mapping would typically 
+come from platform firmware, not by checking device registers.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+The actual value of a TDM slot which defines the transport position is 
+however irrelevant for SoundWire.
