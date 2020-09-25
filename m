@@ -2,91 +2,95 @@ Return-Path: <SRS0=F9G0=DC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60094C4363D
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:50:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 938A5C4363D
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:51:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86A4721D42
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:50:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E73F208B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 16:51:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B/X9choa";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wlDKkuOT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86A4721D42
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h7ODaJla";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M/XtpBob"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E73F208B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8E2A18CD;
-	Fri, 25 Sep 2020 18:49:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8E2A18CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD10518E0;
+	Fri, 25 Sep 2020 18:50:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD10518E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601052608;
-	bh=Px5nAcPpYDkZFWRvioh3B0jeHy/Ozcv7/J//GYsfXUk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=B/X9choaUAlnipbleTHjdI2e0RWTVOU2F+RioUQ4AwclUTntLPx3WzOgaQ8Hn4Bwa
-	 kzhrEiTwJsEQIVyEo3tjP5eQXn2Q/QYpMDwI4Cu1CmWnyqH6RLhNXswLToAwaf7fPa
-	 32JUyRpzyYbtHTcUmpROGW/YTwvnkCu5Iw09nlIQ=
+	s=default; t=1601052660;
+	bh=H0DMnkJkEyWkAoJo1m0n1iJGu/lBiLQLXP5joqeztT4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=h7ODaJlakPTXOLSVP3kkShYmcYJF0BVw3ZGgVrGRP/5f9q9TZJwmt9WjifyFDKi1h
+	 TSHEVgs+E+W8U+NSf09kSKmgGCIcmDe/LJ5V1UtbWbenFTHiOqq+0s9j62gjQnVSaE
+	 O+ZtX9lceFGBtIBZFAiCm2kwKOfA+m/rE2H18uXA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45817F801EC;
-	Fri, 25 Sep 2020 18:49:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0BC4F80171;
+	Fri, 25 Sep 2020 18:49:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50275F8021C; Fri, 25 Sep 2020 18:49:15 +0200 (CEST)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
+ id CC033F802A2; Fri, 25 Sep 2020 18:49:18 +0200 (CEST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0051BF80162
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 18:49:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0051BF80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8EF6F800DA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 18:49:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8EF6F800DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="wlDKkuOT"
-Received: by mail-wm1-x344.google.com with SMTP id k18so4036207wmj.5
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 09:49:06 -0700 (PDT)
+ header.b="M/XtpBob"
+Received: by mail-wr1-x442.google.com with SMTP id x14so4291670wrl.12
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 09:49:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=KAVHadJMWaOUAME/cTANgTaibLVBRhnV+ozPkRyx2uI=;
- b=wlDKkuOTF9Ng5bzaN8zpq9oI6NbkUhCn4VjnowPslZgL3DnzYy/Ow7dhZJ2x6Uez//
- iaTGws471/l4w1oQCG8/M2pOpTJ3BRHIMYAvCD3pqrPsFSag2oWvetn4u9Lsi4tKfYY7
- 6bjOcrA48Pw8KvhCS3yWrEKz9759QAT1ARw+r86265A5jr+phUXwGtPcU277iVc0W3+6
- xW09moaoce4DkiJrxNJOgu5MSIdgr6xGR3cJ40beJpHwZGb41swD30z+wobyMYgwCaK2
- OEJQ6bo4XSuOcuyFc1kqvN5u8qbw4HNJ5NE+7M6HqZIhln6CkrGpPfgN8HrjhG3u6ngh
- Ss4w==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=9+lQmvGIW34Fed8sffLC/RmBoE8wLwQ9s9GB7PfHXuY=;
+ b=M/XtpBobcAIos+IdHsIK68CgjPPg2rsTajJNuovI45M/2jPmSRHobGneHaX9YLNRP3
+ pTCMj+z1dh3MXU4NBXKht0kqjDD29ym7UXPVGQop6w+sq427UZstFfc+2nmCE1NtwCPy
+ Y6vmo6TRTuFHeG+0gQX2OFxHS8IetqimALxKatB+YUMcPKNiN/D1RJY0kK4lRjEKK325
+ lZm5ryF8uY6UFRGrmI510cJm2MLnhVyN9v0A1rrePF9aC+OQpzZN6HJOt2/AEPiYx/5x
+ qeyqEKi3qiOt7qhb0EJQAWdtBN043nHeA928CHBkxLNnoeWx68GtBUUMnoPa/Cqr8dEV
+ 3k1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=KAVHadJMWaOUAME/cTANgTaibLVBRhnV+ozPkRyx2uI=;
- b=By8Q6DTlgSPIMFPeGG4lS+Nn3eZhWeSdDHMeoGi2MssHfHIwYQuAZuJBj+uj3oWJWU
- oHSi/EJ4SEa08G8QX0CAN6ZsucCMy2FjfZ6WBQC3dPMJVOzOFnH20Jh1jfzNF9weBf/W
- uuuzxCUzOjdzfbtAe4nBxAnjsAiVv1GWbGgTQN+rTACkhHfI0KlBGsgzuQq1uWjPjtei
- tNK7DUxrNT2oHnLclwAGfNTDJPjINvHowuWTh2izlOhmzPNxGHuxC/FEuhpzjHm4re/x
- Be96GVL1ayxwmzsqIEn4XOpOj9878pyidS8+SSiIOQqxdYI1NNAIBhZeZ43wSCMNpVtZ
- ECLw==
-X-Gm-Message-State: AOAM532/fhfyukys2q+ydzBog+7f9Lt43oIpwu3O0P/2Xo4A+nnbv/If
- pfxAXaw/8OPwUl3or2rmJfNTAw==
-X-Google-Smtp-Source: ABdhPJyF9JnvhthbbiF7ViftBxVVevHX8DkysJ5M8eqxXYmL++NqE7FmpiVX7Z6WGHYZD71ptZ7GIQ==
-X-Received: by 2002:a1c:7418:: with SMTP id p24mr4079590wmc.123.1601052545293; 
- Fri, 25 Sep 2020 09:49:05 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=9+lQmvGIW34Fed8sffLC/RmBoE8wLwQ9s9GB7PfHXuY=;
+ b=qbDjtdusK185LggQTZk/GV8kllbas1b0YhqkuwRGQQmTH/g5cnSDVY+b8WWceiM/yJ
+ C27ImVx3OFM3x7hWsib/ywYikwmqlZ52GtZgIwUXSdMp3lrauoxTsHoxkUhCvSa7i8U4
+ kx4XkaqtZOdVFzGYi8YoCt2ZavFbrh6jSYxVJmHv1rcTOzbmU054vR10uVIfbUJM4EQ0
+ DEqQ+bdzjHqQjK8WVy4KpydPh5Wzg+Dous49iM8xXM7cKjCE+BHRSG0dUYBNpmKmeJjy
+ OKob9PLJYkVriz53QM465P5cK1yOTwj2OX1O2IIfTNKRfl0Zu9qdqxKjwuCuGk2vFqBJ
+ F5bg==
+X-Gm-Message-State: AOAM531G7RQIgbCQpHCFIhv1MlN3wJXUHNoDxTLPeSZRoed1f8w2+4DZ
+ kBktM4ojv2efrx9pmw0KWmzrjw==
+X-Google-Smtp-Source: ABdhPJx/JB5PBClWY2jrtfogYCCMqfSI3zpnGS+eBAJ/wTTG6XHNczADwF1DBHMnRE49dlurlJ67xg==
+X-Received: by 2002:a5d:4a0e:: with SMTP id m14mr5799478wrq.313.1601052548481; 
+ Fri, 25 Sep 2020 09:49:08 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id a5sm3604247wrp.37.2020.09.25.09.49.03
+ by smtp.gmail.com with ESMTPSA id a5sm3604247wrp.37.2020.09.25.09.49.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 25 Sep 2020 09:49:04 -0700 (PDT)
+ Fri, 25 Sep 2020 09:49:07 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 0/2] regmap: add support to regmap_field_bulk_alloc/free
-Date: Fri, 25 Sep 2020 17:48:54 +0100
-Message-Id: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 2/2] ASoC: lpass-platform: use devm_regmap_field_bulk_alloc
+Date: Fri, 25 Sep 2020 17:48:56 +0100
+Message-Id: <20200925164856.10315-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
+References: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, srivasam@codeaurora.org, lgirdwood@gmail.com,
@@ -108,27 +112,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Usage of regmap_field_alloc becomes much overhead when number of fields
-exceed more than 3. Most of driver seems to totally covered up with these
-allocs/free making to very hard to read the code! On such driver is QCOM LPASS
-driver has extensively converted to use regmap_fields.
+use new devm_regmap_field_bulk_alloc to allocate fields as
+it make the code more readable!
 
-This patchset add this new api and a user of it.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Tested-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-platform.c | 31 +++++++------------------------
+ 1 file changed, 7 insertions(+), 24 deletions(-)
 
-Using new bulk api to allocate fields makes it much more cleaner code to read!
-
-Changes since v1:
-	- Fix lot of spelling! No code changes!
-
-Srinivas Kandagatla (2):
-  regmap: add support to regmap_field_bulk_alloc/free apis
-  ASoC: lpass-platform: use devm_regmap_field_bulk_alloc
-
- drivers/base/regmap/regmap.c    | 100 ++++++++++++++++++++++++++++++++
- include/linux/regmap.h          |  11 ++++
- sound/soc/qcom/lpass-platform.c |  31 +++-------
- 3 files changed, 118 insertions(+), 24 deletions(-)
-
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index df692ed95503..7ac26290082f 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -56,6 +56,7 @@ static int lpass_platform_alloc_dmactl_fields(struct device *dev,
+ 	struct lpass_data *drvdata = dev_get_drvdata(dev);
+ 	struct lpass_variant *v = drvdata->variant;
+ 	struct lpaif_dmactl *rd_dmactl, *wr_dmactl;
++	int rval;
+ 
+ 	drvdata->rd_dmactl = devm_kzalloc(dev, sizeof(struct lpaif_dmactl),
+ 					  GFP_KERNEL);
+@@ -70,31 +71,13 @@ static int lpass_platform_alloc_dmactl_fields(struct device *dev,
+ 	rd_dmactl = drvdata->rd_dmactl;
+ 	wr_dmactl = drvdata->wr_dmactl;
+ 
+-	rd_dmactl->bursten = devm_regmap_field_alloc(dev, map, v->rdma_bursten);
+-	rd_dmactl->wpscnt = devm_regmap_field_alloc(dev, map, v->rdma_wpscnt);
+-	rd_dmactl->fifowm = devm_regmap_field_alloc(dev, map, v->rdma_fifowm);
+-	rd_dmactl->intf = devm_regmap_field_alloc(dev, map, v->rdma_intf);
+-	rd_dmactl->enable = devm_regmap_field_alloc(dev, map, v->rdma_enable);
+-	rd_dmactl->dyncclk = devm_regmap_field_alloc(dev, map, v->rdma_dyncclk);
++	rval = devm_regmap_field_bulk_alloc(dev, map, &rd_dmactl->bursten,
++					    &v->rdma_bursten, 6);
++	if (rval)
++		return rval;
+ 
+-	if (IS_ERR(rd_dmactl->bursten) || IS_ERR(rd_dmactl->wpscnt) ||
+-	    IS_ERR(rd_dmactl->fifowm) || IS_ERR(rd_dmactl->intf) ||
+-	    IS_ERR(rd_dmactl->enable) || IS_ERR(rd_dmactl->dyncclk))
+-		return -EINVAL;
+-
+-	wr_dmactl->bursten = devm_regmap_field_alloc(dev, map, v->wrdma_bursten);
+-	wr_dmactl->wpscnt = devm_regmap_field_alloc(dev, map, v->wrdma_wpscnt);
+-	wr_dmactl->fifowm = devm_regmap_field_alloc(dev, map, v->wrdma_fifowm);
+-	wr_dmactl->intf = devm_regmap_field_alloc(dev, map, v->wrdma_intf);
+-	wr_dmactl->enable = devm_regmap_field_alloc(dev, map, v->wrdma_enable);
+-	wr_dmactl->dyncclk = devm_regmap_field_alloc(dev, map, v->wrdma_dyncclk);
+-
+-	if (IS_ERR(wr_dmactl->bursten) || IS_ERR(wr_dmactl->wpscnt) ||
+-	    IS_ERR(wr_dmactl->fifowm) || IS_ERR(wr_dmactl->intf) ||
+-	    IS_ERR(wr_dmactl->enable) || IS_ERR(wr_dmactl->dyncclk))
+-		return -EINVAL;
+-
+-	return 0;
++	return devm_regmap_field_bulk_alloc(dev, map, &wr_dmactl->bursten,
++					    &v->wrdma_bursten, 6);
+ }
+ 
+ static int lpass_platform_pcmops_open(struct snd_soc_component *component,
 -- 
 2.21.0
 
