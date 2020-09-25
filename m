@@ -3,84 +3,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4880C4727E
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B89AC4727E
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:12:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCA61208B6
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:05:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8AC5A239D0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Sep 2020 20:12:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yxm3+aUm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCA61208B6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W4aW/7ed";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDc2OTni"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AC5A239D0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6B6E18ED;
-	Fri, 25 Sep 2020 22:04:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6B6E18ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8F2018F8;
+	Fri, 25 Sep 2020 22:12:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8F2018F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601064343;
-	bh=AQB0BSahI8L+ibi41O7GQSP+8qyylkecT77e4VugyHU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1601064775;
+	bh=coPcB8xrH+9meR5yV7FB/exsUpDLvMonBsmvDaDfFpE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yxm3+aUmsS48yUhD2TCE6VJQjPjaR69FQmhKBDbJfS3krNGY7kqn2028WLMf0/Ef1
-	 VX7U0zGqTLmWYaru02/Q9yBROCTp5qTaN0FZJ/nKCRChbnntxfXrbIOwyeAnfQKgT4
-	 E57mPIf4WQFCs5XoL2PJNAcDZ9hEqvQuNwJ47Ts8=
+	b=W4aW/7edvaSQnikDkeIO2UkuO57gN9sYUy7Wsz/qDQu60666/A0XgMRDxPWfptWVp
+	 /yLLwy9Q6YvG1pV5+sZAIpG8nuLBvxcUKn5XugeDkhaz/Uzn0TeJVKhF8+CVK2mp5C
+	 0ZkJOOO5nvevREpq+dkxqykLmjBQJ+q6Wgnlti/o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F881F80171;
-	Fri, 25 Sep 2020 22:04:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32680F80171;
+	Fri, 25 Sep 2020 22:12:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D3EAF801EB; Fri, 25 Sep 2020 22:04:51 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id B324EF801EB; Fri, 25 Sep 2020 22:12:03 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6504FF800DA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 22:11:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6504FF800DA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="UDc2OTni"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 836E1F800F6
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2020 22:04:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 836E1F800F6
-IronPort-SDR: IO11BqXJ6QofPczpJ8LFDTq24Qaqhwr7mr7Gz9B8iY4HDMuPI1eRDH2b/pVCTmCHCT0ACZEBiV
- Tle39PknCgrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="179730561"
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; d="scan'208";a="179730561"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Sep 2020 13:04:39 -0700
-IronPort-SDR: 2b2H5dMyniOM5AIj71g4pWIkeKp2HAvhdGVEx7iu1gCcuubqOdUAeV6O11NBwerhRIDvPYuYZc
- lz0kKELc1Puw==
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; d="scan'208";a="513072616"
-Received: from mfischmx-mobl1.amr.corp.intel.com (HELO [10.209.30.115])
- ([10.209.30.115])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Sep 2020 13:04:39 -0700
+ by mail.kernel.org (Postfix) with ESMTPSA id E46812399A;
+ Fri, 25 Sep 2020 20:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601064712;
+ bh=coPcB8xrH+9meR5yV7FB/exsUpDLvMonBsmvDaDfFpE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=UDc2OTniUFlc27E7Ad+6ELpSQiZ1V+fcn2ie6PdPNRWbEksExnuOwiypvXAIsrMzz
+ OXZjF0tnhlnzE3v+A5x9Ila04/sD2IbPF5GU+bltH1rbPrHfpM8inwp59KdGGn1om3
+ Eg19cPFh+nlifKR10qcm95PGzFEN3r1wOkQn5UGg=
+Date: Fri, 25 Sep 2020 21:10:57 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: More Generic Audio Graph Sound Card idea
-To: Mark Brown <broonie@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Message-ID: <20200925201057.GI4841@sirena.org.uk>
 References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
  <097e3fc4-4a84-e101-e6b6-045c3e9e5bfc@nvidia.com>
  <87imdczd4i.wl-kuninori.morimoto.gx@renesas.com>
  <87blhuljkb.wl-kuninori.morimoto.gx@renesas.com>
  <20200925192202.GA9831@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <aceb1334-9b3f-7a62-60e9-6028059d4bf7@linux.intel.com>
-Date: Fri, 25 Sep 2020 15:04:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <aceb1334-9b3f-7a62-60e9-6028059d4bf7@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200925192202.GA9831@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="QxN5xOWGsmh5a4wb"
+Content-Disposition: inline
+In-Reply-To: <aceb1334-9b3f-7a62-60e9-6028059d4bf7@linux.intel.com>
+X-Cookie: Onward through the fog.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Sameer Pujar <spujar@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>,
- jonathanh@nvidia.com
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,77 +96,60 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--QxN5xOWGsmh5a4wb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 9/25/20 2:22 PM, Mark Brown wrote:
-> On Fri, Sep 25, 2020 at 10:43:59AM +0900, Kuninori Morimoto wrote:
-> 
->> But multi-Codec side is difficult.
->> Because it is selected via "endpoint" via CPU.
->> No way to select it via "port" and/or "ports".
-> 
-> Indeed.
-> 
->> We might want to select Multi-CPU/Codec by using multi deivces ?
->> in such case, using "ports" idea is not enough.
-> 
->> Using extra device like DSP can be more generic ?
-> 
->> 	<--- multi-CPU --->
->> 	            *******
->> 	CPU0-1 <--> *     * <--> Codec0
->> 	CPU0-2 <--> *     *
->> 	CPU0-3 <--> *     *
->> 	            *******
-> 
-> I think this is what we want for SoCs, represent the DSPs explicitly and
-> then have the FEs and BEs all be ports on the DSP.  I think a similar
-> thing would also work for legacy (I2S & so on) DAIs where we've got more
-> endpoints on the DAI - if we define slots on the DAI then from the point
-> of view of the DT bindings it's just a very, very inflexible DSP:
-> 
->          CPU1 <--> DAI slot A <--> Codec1-1
->                \-> DAI slot B <--> Codec1-2
->          CPU2 <--> DAI slot C <--> Codec1-3
-> 
-> or whatever.  This doesn't allow for really complex setups that change
-> the slot mapping at runtime (TBH those probably need custom cards
-> anyway) but I think it should support most cases where TDM causes
-> difficulties today.  I'm not sure if we need this for more modern buses
-> like SoundWire, I'd hope we can dynamically assign slots at runtime more
-> easily, but ICBW.
+On Fri, Sep 25, 2020 at 03:04:37PM -0500, Pierre-Louis Bossart wrote:
+> On 9/25/20 2:22 PM, Mark Brown wrote:
 
-SoundWire doesn't have a notion of 'slot'. Instead you program the data 
-ports for the type of audio data to be transmitted/received.
+> > difficulties today.  I'm not sure if we need this for more modern buses
+> > like SoundWire, I'd hope we can dynamically assign slots at runtime more
+> > easily, but ICBW.
 
-See some pointers at 
-https://mipi.org/sites/default/files/MIPI-SoundWire-webinar-20150121-final.pdf
-Pages 42-47 describe the main concepts.
+> SoundWire doesn't have a notion of 'slot'. Instead you program the data
+> ports for the type of audio data to be transmitted/received.
 
-The actual bit allocation can be done in different ways. On the Intel 
-side, we use a dynamic allocation. It's my understanding that Qualcomm 
-have a static allocation for their amplifier links.
+...
 
-In most cases, a sink port receives exactly what it needs, but for 
-playback we have cases where all amplifiers receive the same data (we 
-call this 'mirror mode', and each amplifier will be configured to render 
-a specific channel from the data received. This is useful to deal with 
-orientation/posture changes where the data transmitted on the wires 
-doesn't need to be changed. This avoid dynamic re-configurations on the 
-DSP + bus sides, only the amplifier settings need to be modified - 
-typically via controls.
+> In most cases, a sink port receives exactly what it needs, but for playback
+> we have cases where all amplifiers receive the same data (we call this
+> 'mirror mode', and each amplifier will be configured to render a specific
+> channel from the data received. This is useful to deal with
 
-That said, the mapping of data ports between CPU and codec sides is 
-rather static, mostly because devices typically dedicate specific data 
-ports to specific functionality. SDCA will not change this, quite the 
-opposite, the mapping between ports and audio functionality behind the 
-port will be defined in platform firmware.
+Channels are essentially the same as timeslots on a TDM bus TBH.
 
-It's a bit of a stretch but conceptually there is some level of overlap 
-between SoundWire data ports and TDM slots, e.g. if in a TDM link you 
-used slots 4,5 for headset playback, you might use data port 2 on a 
-SoundWire link. It's however a 'logical' mapping, the actual position of 
-the bits in the frame is handled by the bit allocation.
+> That said, the mapping of data ports between CPU and codec sides is rather
+> static, mostly because devices typically dedicate specific data ports to
+> specific functionality. SDCA will not change this, quite the opposite, the
+> mapping between ports and audio functionality behind the port will be
+> defined in platform firmware.
 
-Hope this helps!
--Pierre
+> It's a bit of a stretch but conceptually there is some level of overlap
+> between SoundWire data ports and TDM slots, e.g. if in a TDM link you used
+> slots 4,5 for headset playback, you might use data port 2 on a SoundWire
+> link. It's however a 'logical' mapping, the actual position of the bits in
+> the frame is handled by the bit allocation.
 
+If a device is hard limited to particular slots we can presumably
+discover that (either through the spec or by keying off the ID
+registers) and do the right thing?  In any case if we need a firmware
+mapping for DT systems it sounds like something that works for TDM
+should be mappable onto SoundWire channels easily enough.
+
+--QxN5xOWGsmh5a4wb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9uTtAACgkQJNaLcl1U
+h9BZjAf/S1FSvmZTSs+LnEkPs60AAPJJQGOJaid9IbZP3zDhLBIIl2UIWDO1jh89
+Myh9rDJzVFjGd9somY0fxQbS7RhcCi0hrfE3sXHOnGVYdUMeTRr5s29TZMCj/5kC
+boZUkIxJVgtq9mfq7ytR9MWi9tIvQ2zf7nVCeyuIJ8vKGXmIyOyp6I9WOPWNKptX
+6r+TWtZvhpz+JqyvkpBWGFBM7SajXxwNA0vRZQufxn/hVhrQZHKuaKt1en8yJnrt
+3HsJhyUj6OHDNv55enLQ3hd98AGsjnrEj1C/hIBGuy8qgfNyQDrGxVfs1kNxNiJU
+FIs344XhMygjCpTgrCQw6YdySDzZZg==
+=CjHP
+-----END PGP SIGNATURE-----
+
+--QxN5xOWGsmh5a4wb--
