@@ -8,89 +8,89 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A3FAC4346E
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 19:39:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73367C4346E
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 19:40:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A365E23A50
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 19:39:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CAD052311C
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 19:40:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Aon4KHzX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BTvsFbJm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A365E23A50
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="noWs9LDv";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WuSM27ih"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAD052311C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D2901AFC;
-	Sun, 27 Sep 2020 21:38:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D2901AFC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 487881AE5;
+	Sun, 27 Sep 2020 21:39:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 487881AE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601235573;
-	bh=+RfYBz/Rj8O5KxCb8uCFafkT4TJfTlahyp2IDTlfBgc=;
+	s=default; t=1601235613;
+	bh=K4dmeNGtrcbmftZRBPeJGLx+M++AXOW7aIu4gnDm/Kk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Aon4KHzXVWfq45xEDYRdZ12nmZwiwVwP1b0reBekK5BoseF+28+NNx4WN7mC2Ny3W
-	 uXJwnpN8Ef4AcY28c7RwKFucgk2kfjoKtH5uo+cu1Rpcb5MFEa//cX7noG1yQPHzVk
-	 ZgiCPeJNvxi3Yv8mc2pPH0pFX/NzaynC8TItfQfc=
+	b=noWs9LDvGomsyszCnF049VdE51XL+49IW+rAT500245sky7khpWVRu0X0Nwwkpdwb
+	 WwgOW0y4RiMzOogYBqk65Vk4MCW2HpQPTnlN3VmRkc0USfhAYOxG1rufqbsmR2lY6x
+	 y9Gv8dfIH4UMNOPG0rrzr8uqiY+ETP2rWNlf4TLI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F1EFF80349;
-	Sun, 27 Sep 2020 21:30:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8608F8034C;
+	Sun, 27 Sep 2020 21:30:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 916E6F80303; Sun, 27 Sep 2020 21:29:55 +0200 (CEST)
+ id 6DE66F802FF; Sun, 27 Sep 2020 21:29:56 +0200 (CEST)
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
  [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F6B0F8029A
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 21:29:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F6B0F8029A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E402F802DD
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 21:29:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E402F802DD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BTvsFbJm"
-Received: by mail-wm1-x343.google.com with SMTP id s13so4378234wmh.4
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 12:29:38 -0700 (PDT)
+ header.b="WuSM27ih"
+Received: by mail-wm1-x343.google.com with SMTP id d4so4376932wmd.5
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 12:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=dZhYwaoUjzd/wEdIR2SZMGyqDMCzyDmEzzuRB3l0wN4=;
- b=BTvsFbJmBED9nWWFx0ySyEfb1ek2Lk+a2RoS+gWg+3xw8sD3JEgL0GgtQjZeGmVUOc
- DWM1C0N/ZoxPbw+FwNOb9JCEx3jP5cEO/eC/maZPLG7eBgGGBngVaOoIug4LFiaQp760
- sfUdzB3WQk03K2iVs+JADPUFO3Rcx3bNV1i4Og+NeewSxdaycKCfHTndcyag/3EJUHOA
- PbsZW0PmaRvM2a37Az7bPf30z8K5EkHAfZvWJ2HpKI+lkClZqvIll7rMAWmeWLikhw4P
- HATjfrZsgNynX90bCbYvga2B+JLvTR6e1V68dxRv/QxlH/AeyIyrYRCDfo5zuZxeEVpJ
- SMjQ==
+ bh=4HdI15SBEuyVNQNB+e23d+K5pgBDpyUoqfbF257aXR4=;
+ b=WuSM27ihaY7HvK2d2jBbe8/5M6vGm4KLG4Ix/Tru69x7t4pNz83yNOd9vreTdOqWAK
+ V61OQsNGlsVPePxpPM5ysIZSglxgADvF0EDAJqhME+KvZLA0wBsUxpEZTSVv4+9qtOjS
+ w+9xmT5szD1SZ0updA+1F5x9+PJk4GfTc9BzHRgTwXpxclppGupLuGJm34fwfiyM1Yy/
+ MPA/Hn8fsL4Sy0cS6k6zL0IvapMRHPlLnvpMPLi3Lx0bZ1QC8Ngk0c7ndbAHAXGfqlXm
+ dNraa+h3+AExmcLQfsFiB+T1Wo5v6rgJvani4PEk3RZtgYw7HG96TTGDgCAEAuLHiGhX
+ Aitg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=dZhYwaoUjzd/wEdIR2SZMGyqDMCzyDmEzzuRB3l0wN4=;
- b=kGpSkBFGYi1QKXwsSJOmJGa+z2wnOeuh9N8Lzmn3OE/b1vXlaiJKpbEfVZiYkqJ103
- hsFu5RJYQ0s21pC73jB+LQahaKPf9ZyDuCjn7V1GpbQ9lzPWpO9C3L7oii5NgCdId/eq
- 7uS9Kj6Dg2iT1g4ydKTsmefGoQlRvtjJ12OBbBNYPF6fXAHvFHH373lO4XT8uyPD3meg
- nvkFZEEFC8jP/wWOcEV+YV7HsmJbDYAAA8yX92Icz7Jdn7c5SbE8XVHZAM9sx/hiyVIU
- PPZ3cT3DlP/ggfzJ2LI9cUPFgCxdzF0TH+Q6vXABYe/Xoydid/ej0uUXz9DSorXrEHtW
- X2EA==
-X-Gm-Message-State: AOAM533XoGvuy4ZevLQ2VhQNTx4EvSkILa6ut3YldtqCAFN4NPFLmyPH
- I4RGELy86cv46dZ3c/kJ+NI=
-X-Google-Smtp-Source: ABdhPJwCdIQR98e1axxF8yYJ0f+R6ecrEmDf4R2AGdjdcLpkVOow5lcdLgZ30NtEJrSCvDX/+bjH4Q==
-X-Received: by 2002:a7b:c1d3:: with SMTP id a19mr7842009wmj.19.1601234974395; 
- Sun, 27 Sep 2020 12:29:34 -0700 (PDT)
+ bh=4HdI15SBEuyVNQNB+e23d+K5pgBDpyUoqfbF257aXR4=;
+ b=RVnX4TBNXTqzs4M2fcPyglOK1zjOL1usKilenjtOsqcBpSVQXi/YRpJN6nGNpI1+NG
+ O24hU5uKmGTrvUpEz6sXqpmKu4Qy5kMHmoZTgNpm3ONACkY0XgP9CZ/RNruvhF37H2s6
+ WMqw4msiYPxbZy9vHwvSu2APorFM6FJPwahS1kLLDituFh42C4+8lN50Mj6q2QmTO0P9
+ w6TCMQHV4CxMe+7/sFsLwWR0BKFz3ECpizDh2t9BQ7iv8r13xivDdBVkN0ihX6GtZ4G0
+ lb7mNsV8A8fzux1XEoF0lTLn8bqYKhUisLcBgC3X3UC5256dsluSJ1fVRL8smqCDV3TT
+ cC8w==
+X-Gm-Message-State: AOAM531R6MEAqDR7Xa31LSotYNNt/OUwGI1fDr0Q0gG2P8cpQKnuL1iD
+ gd0V3W4WLdA+ar2dvvgmJGU=
+X-Google-Smtp-Source: ABdhPJyURiLf4YlSa3Qa75suU5D4nme65ur4OltvA877EE1WX/lOUjgff/+olLYacFgpFL3o/xgK/Q==
+X-Received: by 2002:a7b:c210:: with SMTP id x16mr7930499wmi.37.1601234972334; 
+ Sun, 27 Sep 2020 12:29:32 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr
  (213-245-241-245.rev.numericable.fr. [213.245.241.245])
- by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.33
+ by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 27 Sep 2020 12:29:33 -0700 (PDT)
+ Sun, 27 Sep 2020 12:29:31 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v5 15/20] arm64: dts: allwinner: a64: Add HDMI audio to Pine64
-Date: Sun, 27 Sep 2020 21:29:07 +0200
-Message-Id: <20200927192912.46323-16-peron.clem@gmail.com>
+Subject: [PATCH v5 13/20] arm: sun8i: h3: Add HDMI audio to Orange Pi 2
+Date: Sun, 27 Sep 2020 21:29:05 +0200
+Message-Id: <20200927192912.46323-14-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200927192912.46323-1-peron.clem@gmail.com>
 References: <20200927192912.46323-1-peron.clem@gmail.com>
@@ -120,19 +120,19 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-Enable HDMI audio on Pine64.
+Enable HDMI audio on the Orange Pi 2.
 
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts | 8 ++++++++
+ arch/arm/boot/dts/sun8i-h3-orangepi-2.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index 329cf276561e..b54b02e59085 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -99,6 +99,10 @@ hdmi_out_con: endpoint {
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
+index 597c425d08ec..64e8e2829f27 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
+@@ -144,6 +144,14 @@ hdmi_out_con: endpoint {
  	};
  };
  
@@ -140,20 +140,13 @@ index 329cf276561e..b54b02e59085 100644
 +	status = "okay";
 +};
 +
- &i2c1 {
- 	status = "okay";
- };
-@@ -107,6 +111,10 @@ &i2c1_pins {
- 	bias-pull-up;
- };
- 
 +&i2s2 {
 +	status = "okay";
 +};
 +
- &mdio {
- 	ext_rmii_phy1: ethernet-phy@1 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
+ &ir {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&r_ir_rx_pin>;
 -- 
 2.25.1
 
