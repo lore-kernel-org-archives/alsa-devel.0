@@ -2,70 +2,107 @@ Return-Path: <SRS0=Oq54=DE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEE38C4346E
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 07:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A385C4727F
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 19:30:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6AC4C23899
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 07:08:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DF04B206E5
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Sep 2020 19:30:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="evxOz2Dd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AC4C23899
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kesdpnNS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XjgZBK2M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF04B206E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90B6A19FD;
-	Sun, 27 Sep 2020 09:07:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90B6A19FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id C568118E1;
+	Sun, 27 Sep 2020 21:29:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C568118E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601190485;
-	bh=+cDNapmqqzTI8yRi42v2wT16LJpxn6k2FX+41rkcGh4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601235021;
+	bh=lUj4XAUCUpyxfxtPcQW1mXWWKe3jFfL8px8IFe8gnu8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=evxOz2DdP7Ll3wR0iw2cbfq5Ah7yyw4a9iftVBUbgogGrgCOerLjN7G/VUB6tHNCW
-	 3eQffEvTpvur7ayrn0FXWu1hKZcw56o1QdNBeGiNtvosQxFiVZVXIKsGbzm29kWuCH
-	 +YJeCjXYhNl84/sEPcAU0n3HWoakEfOlk1DkHKkw=
+	b=kesdpnNSLZS7UIhvC++ypwwj4gyHKGLPTh6JDx0lsBYTY+2CFfDm648z6vNDwPCal
+	 VN6QiLsK5VRdcV9CVjxUDcL1z6kAKbswAkIJOHIYLuLjNDeP1fuzwilnwlW70N8zin
+	 La4z7MrH0zaGSTSgpYc0hGc+x7DiX6Gjxp9EHpHY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 073D2F801DB;
-	Sun, 27 Sep 2020 09:07:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7232F8022B;
+	Sun, 27 Sep 2020 21:29:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7499F800FD; Sun, 27 Sep 2020 09:07:13 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AECA3F8028F; Sun, 27 Sep 2020 21:29:28 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 321D0F800FD
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 09:07:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 321D0F800FD
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9BB1AABAD;
- Sun, 27 Sep 2020 07:07:02 +0000 (UTC)
-Date: Sun, 27 Sep 2020 09:07:02 +0200
-Message-ID: <s5htuvjpujt.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: syzbot <syzbot+f816042a7ae2225f25ba@syzkaller.appspotmail.com>
-Subject: Re: BUG: unable to handle kernel paging request in dqput
-In-Reply-To: <00000000000067becf05b03d8dd6@google.com>
-References: <00000000000067becf05b03d8dd6@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, adi@adirat.com,
- kadlec@blackhole.kfki.hu, syzkaller-bugs@googlegroups.com,
- linux-kernel@vger.kernel.org, davem@davemloft.net, coreteam@netfilter.org,
- netfilter-devel@vger.kernel.org, jack@suse.com, tiwai@suse.com,
- kaber@trash.net, pablo@netfilter.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C22CF800DF
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 21:29:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C22CF800DF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="XjgZBK2M"
+Received: by mail-wr1-x443.google.com with SMTP id z4so9571416wrr.4
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 12:29:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=OyfHIE0qAhOjNCFNxAQ6O7ihABXSVqgxqKsK1DQfOYg=;
+ b=XjgZBK2M1cUlt3D0plcopQaVRkhJC3WRcjSIMwCm/PMkn5cbAQD2SrKfXRGdAoJabx
+ zdfRiRQN+9alvyChbeAqfVdbrJeFtAnCUucGvASrcjHPLWaZ/QyLOOufxdJgZ3oCtmSc
+ 0Piyk2sDjWXjpEjlFYDyxB4/EWJWAEbHCryFeB7+xPmORXFjESTZrUzraAKzSN0PI8Fy
+ 7Ud3pH8FxQWLDeTdalrlEH6ue9n++GwyLFO0r7IKi0rMpvuScwjYUnIGmOW+YKgHE9OR
+ +Om3wlWhsHTRamSpjd5NbGFa19tafCPaHjVDIBKz42OFE603QcPMBrzwlTKWVjqju1IE
+ ByGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=OyfHIE0qAhOjNCFNxAQ6O7ihABXSVqgxqKsK1DQfOYg=;
+ b=hbmSccT0k0jTH6Xx4uv3E3TuuspZsSAwhK3wr8n7tFmJ06jyiu2t82REPKzt4fY4/i
+ QhRz4ZuqOY33cMheQYRNuF74ipFLZE2Xx8suDvDndmuLbycV/N2m4p8sBzb7JY5jWM1q
+ sxx0hFpvVfyEEfo9I6DWwB6LwIU5PoaYM+Ga+kB4UdCFPfVVzno4EP6dklM9NwpbaniT
+ 4t/i/fJjxNG8SATmLQWc7xY1A0j4wdXc9ndT/fgD2DuBFbOVKRU4UHh9t0+ckchWqXLf
+ bFdHgIQPVYL2TUU4wC9C8T0LaI5rop9XRyKUB5KjheGUY2bZqpiusGhGsTisWRfRmTaA
+ RlCA==
+X-Gm-Message-State: AOAM531m2KPwmmL+Ns9U9uJMP8AMPVkeVesvNxLETBtcXVJT0Hg8gkbl
+ hu/9qRGSgKcmeWABJyw2IgI=
+X-Google-Smtp-Source: ABdhPJypHB/nVvJsThv5xw8CIcWqqQsPakBV+SlU4uMQhahm5SGPXu5E70m3mk8Olaqd04lK8chq4g==
+X-Received: by 2002:a5d:68d1:: with SMTP id p17mr14672759wrw.378.1601234958534; 
+ Sun, 27 Sep 2020 12:29:18 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr
+ (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+ by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 27 Sep 2020 12:29:17 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v5 01/20] ASoC: sun4i-i2s: Add support for H6 I2S
+Date: Sun, 27 Sep 2020 21:28:53 +0200
+Message-Id: <20200927192912.46323-2-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200927192912.46323-1-peron.clem@gmail.com>
+References: <20200927192912.46323-1-peron.clem@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>,
+ linux-sunxi@googlegroups.com,
+ =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,132 +118,295 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 26 Sep 2020 22:48:15 +0200,
-syzbot wrote:
-> 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17930875900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f816042a7ae2225f25ba
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133783ab900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bb5973900000
-> 
-> The issue was bisected to:
-> 
-> commit 1d0f953086f090a022f2c0e1448300c15372db46
-> Author: Ioan-Adrian Ratiu <adi@adirat.com>
-> Date:   Wed Jan 4 22:37:46 2017 +0000
-> 
->     ALSA: usb-audio: Fix irq/process data synchronization
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=133362c3900000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10b362c3900000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=173362c3900000
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-This commit looks really irrelevant from the Oops code path.
-It must be a different reason.
+H6 I2S is very similar to that in H3, except it supports up to 16
+channels.
 
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ sound/soc/sunxi/sun4i-i2s.c | 224 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 224 insertions(+)
 
-thanks,
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index f23ff29e7c1d..2baf6c276280 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -124,6 +124,21 @@
+ #define SUN8I_I2S_RX_CHAN_SEL_REG	0x54
+ #define SUN8I_I2S_RX_CHAN_MAP_REG	0x58
+ 
++/* Defines required for sun50i-h6 support */
++#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK	GENMASK(21, 20)
++#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset)	((offset) << 20)
++#define SUN50I_H6_I2S_TX_CHAN_SEL_MASK		GENMASK(19, 16)
++#define SUN50I_H6_I2S_TX_CHAN_SEL(chan)		((chan - 1) << 16)
++#define SUN50I_H6_I2S_TX_CHAN_EN_MASK		GENMASK(15, 0)
++#define SUN50I_H6_I2S_TX_CHAN_EN(num_chan)	(((1 << num_chan) - 1))
++
++#define SUN50I_H6_I2S_TX_CHAN_MAP0_REG	0x44
++#define SUN50I_H6_I2S_TX_CHAN_MAP1_REG	0x48
++
++#define SUN50I_H6_I2S_RX_CHAN_SEL_REG	0x64
++#define SUN50I_H6_I2S_RX_CHAN_MAP0_REG	0x68
++#define SUN50I_H6_I2S_RX_CHAN_MAP1_REG	0x6C
++
+ struct sun4i_i2s;
+ 
+ /**
+@@ -474,6 +489,62 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ 	return 0;
+ }
+ 
++static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
++				      const struct snd_pcm_hw_params *params)
++{
++	unsigned int channels = params_channels(params);
++	unsigned int slots = channels;
++	unsigned int lrck_period;
++
++	if (i2s->slots)
++		slots = i2s->slots;
++
++	/* Map the channels for playback and capture */
++	regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
++	regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
++
++	/* Configure the channels */
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
++	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
++
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
++			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM_MASK,
++			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM(channels));
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
++			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM_MASK,
++			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(channels));
++
++	switch (i2s->format & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_DSP_A:
++	case SND_SOC_DAIFMT_DSP_B:
++	case SND_SOC_DAIFMT_LEFT_J:
++	case SND_SOC_DAIFMT_RIGHT_J:
++		lrck_period = params_physical_width(params) * slots;
++		break;
++
++	case SND_SOC_DAIFMT_I2S:
++		lrck_period = params_physical_width(params);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
++			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
++
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_EN_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_EN(channels));
++
++	return 0;
++}
++
+ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *params,
+ 			       struct snd_soc_dai *dai)
+@@ -699,6 +770,108 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 	return 0;
+ }
+ 
++static int sun50i_h6_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
++				     unsigned int fmt)
++{
++	u32 mode, val;
++	u8 offset;
++
++	/*
++	 * DAI clock polarity
++	 *
++	 * The setup for LRCK contradicts the datasheet, but under a
++	 * scope it's clear that the LRCK polarity is reversed
++	 * compared to the expected polarity on the bus.
++	 */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_IF:
++		/* Invert both clocks */
++		val = SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		/* Invert bit clock */
++		val = SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED |
++		      SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		/* Invert frame clock */
++		val = 0;
++		break;
++	case SND_SOC_DAIFMT_NB_NF:
++		val = SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN8I_I2S_FMT0_LRCLK_POLARITY_MASK |
++			   SUN8I_I2S_FMT0_BCLK_POLARITY_MASK,
++			   val);
++
++	/* DAI Mode */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_DSP_A:
++		mode = SUN8I_I2S_CTRL_MODE_PCM;
++		offset = 1;
++		break;
++
++	case SND_SOC_DAIFMT_DSP_B:
++		mode = SUN8I_I2S_CTRL_MODE_PCM;
++		offset = 0;
++		break;
++
++	case SND_SOC_DAIFMT_I2S:
++		mode = SUN8I_I2S_CTRL_MODE_LEFT;
++		offset = 1;
++		break;
++
++	case SND_SOC_DAIFMT_LEFT_J:
++		mode = SUN8I_I2S_CTRL_MODE_LEFT;
++		offset = 0;
++		break;
++
++	case SND_SOC_DAIFMT_RIGHT_J:
++		mode = SUN8I_I2S_CTRL_MODE_RIGHT;
++		offset = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN8I_I2S_CTRL_MODE_MASK, mode);
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
++	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
++
++	/* DAI clock master masks */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		/* BCLK and LRCLK master */
++		val = SUN8I_I2S_CTRL_BCLK_OUT |	SUN8I_I2S_CTRL_LRCK_OUT;
++		break;
++
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* BCLK and LRCLK slave */
++		val = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
++			   val);
++
++	return 0;
++}
++
+ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -979,6 +1152,22 @@ static const struct reg_default sun8i_i2s_reg_defaults[] = {
+ 	{ SUN8I_I2S_RX_CHAN_MAP_REG, 0x00000000 },
+ };
+ 
++static const struct reg_default sun50i_h6_i2s_reg_defaults[] = {
++	{ SUN4I_I2S_CTRL_REG, 0x00060000 },
++	{ SUN4I_I2S_FMT0_REG, 0x00000033 },
++	{ SUN4I_I2S_FMT1_REG, 0x00000030 },
++	{ SUN4I_I2S_FIFO_CTRL_REG, 0x000400f0 },
++	{ SUN4I_I2S_DMA_INT_CTRL_REG, 0x00000000 },
++	{ SUN4I_I2S_CLK_DIV_REG, 0x00000000 },
++	{ SUN8I_I2S_CHAN_CFG_REG, 0x00000000 },
++	{ SUN8I_I2S_TX_CHAN_SEL_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_SEL_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_MAP0_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x00000000 },
++};
++
+ static const struct regmap_config sun4i_i2s_regmap_config = {
+ 	.reg_bits	= 32,
+ 	.reg_stride	= 4,
+@@ -1006,6 +1195,19 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
+ 	.volatile_reg	= sun8i_i2s_volatile_reg,
+ };
+ 
++static const struct regmap_config sun50i_h6_i2s_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
++	.max_register	= SUN50I_H6_I2S_RX_CHAN_MAP1_REG,
++	.cache_type	= REGCACHE_FLAT,
++	.reg_defaults	= sun50i_h6_i2s_reg_defaults,
++	.num_reg_defaults	= ARRAY_SIZE(sun50i_h6_i2s_reg_defaults),
++	.writeable_reg	= sun4i_i2s_wr_reg,
++	.readable_reg	= sun8i_i2s_rd_reg,
++	.volatile_reg	= sun8i_i2s_volatile_reg,
++};
++
+ static int sun4i_i2s_runtime_resume(struct device *dev)
+ {
+ 	struct sun4i_i2s *i2s = dev_get_drvdata(dev);
+@@ -1164,6 +1366,24 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
+ 	.set_fmt		= sun4i_i2s_set_soc_fmt,
+ };
+ 
++static const struct sun4i_i2s_quirks sun50i_h6_i2s_quirks = {
++	.has_reset		= true,
++	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
++	.sun4i_i2s_regmap	= &sun50i_h6_i2s_regmap_config,
++	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
++	.bclk_dividers		= sun8i_i2s_clk_div,
++	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
++	.mclk_dividers		= sun8i_i2s_clk_div,
++	.num_mclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
++	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
++	.get_sr			= sun8i_i2s_get_sr_wss,
++	.get_wss		= sun8i_i2s_get_sr_wss,
++	.set_chan_cfg		= sun50i_h6_i2s_set_chan_cfg,
++	.set_fmt		= sun50i_h6_i2s_set_soc_fmt,
++};
++
+ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+ 					struct sun4i_i2s *i2s)
+ {
+@@ -1333,6 +1553,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
+ 		.compatible = "allwinner,sun50i-a64-codec-i2s",
+ 		.data = &sun50i_a64_codec_i2s_quirks,
+ 	},
++	{
++		.compatible = "allwinner,sun50i-h6-i2s",
++		.data = &sun50i_h6_i2s_quirks,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
+-- 
+2.25.1
 
-Takashi
-
-
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f816042a7ae2225f25ba@syzkaller.appspotmail.com
-> Fixes: 1d0f953086f0 ("ALSA: usb-audio: Fix irq/process data synchronization")
-> 
-> EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
-> Quota error (device loop0): qtree_write_dquot: Error -1622674347 occurred while creating quota
-> Quota error (device loop0): dq_insert_tree: Quota tree root isn't allocated!
-> Quota error (device loop0): qtree_write_dquot: Error -5 occurred while creating quota
-> BUG: unable to handle page fault for address: fffffbfff3e8feac
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 21ffe5067 P4D 21ffe5067 PUD 21ffe4067 PMD 0 
-> Oops: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 6845 Comm: syz-executor636 Not tainted 5.9.0-rc6-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
-> RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
-> RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
-> RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
-> RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
-> RIP: 0010:check_memory_region+0x80/0x2f0 mm/kasan/generic.c:192
-> Code: 01 00 00 00 00 fc ff df 4d 01 ea 4d 89 d6 4d 29 ce 49 83 fe 10 7f 2d 4d 85 f6 0f 84 ab 01 00 00 4c 89 cb 4c 29 d3 0f 1f 40 00 <45> 0f b6 19 45 84 db 0f 85 f3 01 00 00 49 ff c1 48 ff c3 75 eb e9
-> RSP: 0018:ffffc90001fdf9d0 EFLAGS: 00010293
-> RAX: 2234ff0efb3ccc01 RBX: fffffffffffffffe RCX: ffffffff81e00c97
-> RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff9f47f565
-> RBP: ffffffff9f47f455 R08: dffffc0000000000 R09: fffffbfff3e8feac
-> R10: fffffbfff3e8feae R11: 0000000000000000 R12: 1ffffffff3e8feac
-> R13: dffffc0000000001 R14: 0000000000000002 R15: ffffffff9f47f565
-> FS:  00000000009ac880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffffbfff3e8feac CR3: 000000009f30a000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  instrument_atomic_read include/linux/instrumented.h:56 [inline]
->  atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
->  dqput+0x77/0x770 fs/quota/dquot.c:770
->  dqput_all fs/quota/dquot.c:397 [inline]
->  __dquot_initialize+0x9e6/0xc30 fs/quota/dquot.c:1530
->  ext4_xattr_set+0x9b/0x300 fs/ext4/xattr.c:2474
->  __vfs_setxattr+0x3be/0x400 fs/xattr.c:177
->  __vfs_setxattr_noperm+0x11e/0x4b0 fs/xattr.c:208
->  vfs_setxattr+0xde/0x270 fs/xattr.c:283
->  setxattr+0x167/0x350 fs/xattr.c:548
->  path_setxattr+0x109/0x1c0 fs/xattr.c:567
->  __do_sys_setxattr fs/xattr.c:582 [inline]
->  __se_sys_setxattr fs/xattr.c:578 [inline]
->  __x64_sys_setxattr+0xb7/0xd0 fs/xattr.c:578
->  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x4447e9
-> Code: 8d d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007ffcd4905408 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-> RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00000000004447e9
-> RDX: 0000000000000000 RSI: 0000000020000140 RDI: 00000000200000c0
-> RBP: 00000000006cf018 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004023d0
-> R13: 0000000000402460 R14: 0000000000000000 R15: 0000000000000000
-> Modules linked in:
-> CR2: fffffbfff3e8feac
-> ---[ end trace a52409661d306995 ]---
-> RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
-> RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
-> RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
-> RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
-> RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
-> RIP: 0010:check_memory_region+0x80/0x2f0 mm/kasan/generic.c:192
-> Code: 01 00 00 00 00 fc ff df 4d 01 ea 4d 89 d6 4d 29 ce 49 83 fe 10 7f 2d 4d 85 f6 0f 84 ab 01 00 00 4c 89 cb 4c 29 d3 0f 1f 40 00 <45> 0f b6 19 45 84 db 0f 85 f3 01 00 00 49 ff c1 48 ff c3 75 eb e9
-> RSP: 0018:ffffc90001fdf9d0 EFLAGS: 00010293
-> RAX: 2234ff0efb3ccc01 RBX: fffffffffffffffe RCX: ffffffff81e00c97
-> RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff9f47f565
-> RBP: ffffffff9f47f455 R08: dffffc0000000000 R09: fffffbfff3e8feac
-> R10: fffffbfff3e8feae R11: 0000000000000000 R12: 1ffffffff3e8feac
-> R13: dffffc0000000001 R14: 0000000000000002 R15: ffffffff9f47f565
-> FS:  00000000009ac880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffffbfff3e8feac CR3: 000000009f30a000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-> 
