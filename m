@@ -2,98 +2,87 @@ Return-Path: <SRS0=2Byq=DF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E764DC2D0A8
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 06:54:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C44AC2D0A8
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 07:44:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E899423119
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 06:54:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ABF9B221EC
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 07:44:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jDMtty1b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E899423119
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dXJH+W/A";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TbKgtQG/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABF9B221EC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 747E31EE3;
-	Mon, 28 Sep 2020 08:53:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 747E31EE3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B03FD1AC2;
+	Mon, 28 Sep 2020 09:43:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B03FD1AC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601276045;
-	bh=UZbj4LMYyjVRoxCdRd9T/EC3be0CLxiSYn5s16cWb78=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jDMtty1bdGyyiiHGJ2bj/CJODE8c8I44dwt2w1eqvxcJSTYfWZw2bZyKiFRe4wVix
-	 YFQ6uWsW8bR97GZ4QHQvUNdJfedv0CfJC16pIh6sEDmgVhMxS12JA7NBY1qx9pfo0d
-	 iUJh1DcuGo2dhzSCtTKuOEkO0O4/KA+8JyE5oTak=
+	s=default; t=1601279070;
+	bh=qH2dWSARtBuaWEEN/JXuoSHkob43iBKDvIrf3DJvWpg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dXJH+W/A3yKPYZseS0bqcM4qLVOLE/PM6JPjbV8ATItVI0t6MjCWtD0ktEFqrEaLt
+	 iQVSsybJEsDeL7jGkv14w9LOM94TYJ4JTIZP1gaHDhrh3BXF/d8AWutxdsWl446dNJ
+	 Z2G3BJK5bjEkCmwKLhiLMEmuV5+AamxG67FEwLQU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 185ACF80247;
-	Mon, 28 Sep 2020 08:53:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B143F80115;
+	Mon, 28 Sep 2020 09:43:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2BBDF80292; Mon, 28 Sep 2020 08:53:13 +0200 (CEST)
-Received: from mail-lf1-f68.google.com (mail-lf1-f68.google.com
- [209.85.167.68])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 83E2AF801ED; Mon, 28 Sep 2020 09:43:37 +0200 (CEST)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CED97F800DF
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 08:53:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CED97F800DF
-Received: by mail-lf1-f68.google.com with SMTP id y11so9816669lfl.5
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 23:53:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=Ks9FfGEmMHZLEsPsJfUxgzn6i0sxrDqEyXegeg+9Gd4=;
- b=q141ZvMbvXY2LJUOnxzuGK9/qQg5ZoIEg6Wx9pGMmdssimrNNeOlcNf/H/Ur328+XN
- On2WfbT5WCS4ewRhCAhvZA9uuEdpHy16/QPVuyd6btpEu3h8eY33f3ux7TeFPyHMZCeF
- 67eCDzTQpvdLM6oSrOT8ub5mnm58CvRjLFU1Pu52W1lUkfunhPD+Y/FLOUQC6+CZDD0t
- KgNpKyD/6Vu3/Kb4hfSeqmIfkLk+91OOsqzpjOJw4CcwNKh7n6Vl5I9sNFfDBTqtjnky
- G9Qm/zjyQZ35N8vs7+XZU/tI1HO9oxKFKN5XfOYgAe2TY5ItLd5u9HVwqOwwjsAyldIE
- qVpQ==
-X-Gm-Message-State: AOAM5312crLggHMja/+3kfFy8x2gDn12rdQ/riaQhasK0zg98GjGKDg1
- F6ZNvqcL/5AZxuVCmdKcSp/FVHZtCHhSYA==
-X-Google-Smtp-Source: ABdhPJzT5xHRShMtQNZIHek/9j8pVXvDVXEFVIKfbwmiyAQrFCu8BcXZ5uZpMIvnkuhrQ7ZUdzdx5A==
-X-Received: by 2002:ac2:5f73:: with SMTP id c19mr3710906lfc.250.1601275983018; 
- Sun, 27 Sep 2020 23:53:03 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com.
- [209.85.167.51])
- by smtp.gmail.com with ESMTPSA id v6sm7848ljd.134.2020.09.27.23.53.02
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 27 Sep 2020 23:53:02 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id u8so9834493lff.1
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 23:53:02 -0700 (PDT)
-X-Received: by 2002:a19:b97:: with SMTP id 145mr3130963lfl.193.1601275982109; 
- Sun, 27 Sep 2020 23:53:02 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0705F800DF
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 09:43:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0705F800DF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TbKgtQG/"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08S7hIT7036172;
+ Mon, 28 Sep 2020 02:43:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1601278998;
+ bh=FOE/nGiF8tpffa8AuV0NALJigiW7nHG/Mrsvc152buA=;
+ h=From:To:CC:Subject:Date;
+ b=TbKgtQG/IV8yMud3x4m9ZTXvD3VK5EBKMqhKW+OyorjwXY202URqt+Iza6DSZZzvM
+ debiuc+ux1GN++a+NErHjMIn/kZ/o+Hm+NXBwF7fSddsaDpBsCxZzKJ6qyNj+RfGeR
+ wReXaX6XQZnhDD9RVoEGEg3PpocqlKLJKEIXSzJ4=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08S7hIw5122363
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 28 Sep 2020 02:43:18 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 28
+ Sep 2020 02:43:17 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 28 Sep 2020 02:43:17 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08S7hGwW064691;
+ Mon, 28 Sep 2020 02:43:16 -0500
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: ti: j721e-evm: Fix compiler warning when CONFIG_OF=n
+Date: Mon, 28 Sep 2020 10:43:30 +0300
+Message-ID: <20200928074330.13029-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200927192912.46323-1-peron.clem@gmail.com>
-In-Reply-To: <20200927192912.46323-1-peron.clem@gmail.com>
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 28 Sep 2020 14:52:50 +0800
-X-Gmail-Original-Message-ID: <CAGb2v660m4U1XPXWc=9G7GSW5e515VVXq7vPLJwXmAfoqWpvhA@mail.gmail.com>
-Message-ID: <CAGb2v660m4U1XPXWc=9G7GSW5e515VVXq7vPLJwXmAfoqWpvhA@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v5 00/20] Add Allwinner H3/H5/H6/A64 HDMI
- audio
-To: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree <devicetree@vger.kernel.org>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Marcus Cooper <codekipper@gmail.com>,
- linux-sunxi <linux-sunxi@googlegroups.com>, Mark Brown <broonie@kernel.org>,
- Maxime Ripard <mripard@kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,68 +98,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 28, 2020 at 3:29 AM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.c=
-om> wrote:
->
-> Hi,
->
-> This is exactly the same as v4 but with more details in some commit log
-> and also device-tree soundcard and DAI node have been merged.
->
-> Regards,
-> Clement
->
-> Change since v4;
-> - add more comment on get_wss() and set_channel_cfg() patch
-> - merge soundcard and DAI HDMI patches
->
-> Change since v3:
-> - add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is ena=
-bled
-> - readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
-> - Fix get_wss() for sun4i
-> - Add a commit to fix checkpatch warning
->
-> Change since v2:
-> - rebase on next-20200918
-> - drop revert LRCK polarity patch
-> - readd simple-audio-card,frame-inversion in dts
-> - Add patch for changing set_chan_cfg params
->
-> Change since v1:
-> - rebase on next-20200828
-> - add revert LRCK polarity
-> - remove all simple-audio-card,frame-inversion in dts
-> - add Ondrej patches for Orange Pi board
-> - Add arm64 defconfig patch
->
-> Cl=C3=A9ment P=C3=A9ron (6):
->   ASoC: sun4i-i2s: Change set_chan_cfg() params
->   ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
->   ASoC: sun4i-i2s: Fix sun8i volatile regs
->   arm64: dts: allwinner: h6: Enable HDMI sound for Beelink GS1
->   arm64: defconfig: Enable Allwinner i2s driver
->   ASoC: sun4i-i2s: fix coding-style for callback definition
->
-> Jernej Skrabec (3):
->   ASoC: sun4i-i2s: Add support for H6 I2S
->   dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
->   arm64: dts: allwinner: h6: Add DAI node and soundcard for HDMI
->
-> Marcus Cooper (7):
->   ASoC: sun4i-i2s: Set sign extend sample
->   ASoc: sun4i-i2s: Add 20 and 24 bit support
->   arm: dts: sunxi: h3/h5: Add DAI node and soundcard for HDMI
->   arm64: dts: allwinner: a64: Add DAI node and soundcard for HDMI
->   arm: sun8i: h3: Add HDMI audio to Orange Pi 2
->   arm: sun8i: h3: Add HDMI audio to Beelink X2
->   arm64: dts: allwinner: a64: Add HDMI audio to Pine64
->
-> Ondrej Jirman (3):
->   arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
->   ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
->   arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
+Remove the use of of_match_ptr() macro for of_match_table to fix compiler
+warning when CONFIG_OF=n:
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+sound/soc/ti/j721e-evm.c:528:34: warning: unused variable 'j721e_audio_of_match' [-Wunused-const-variable]
 
-for all the board DTS file changes.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/ti/j721e-evm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
+index 29b73303f3fc..a7c0484d44ec 100644
+--- a/sound/soc/ti/j721e-evm.c
++++ b/sound/soc/ti/j721e-evm.c
+@@ -895,7 +895,7 @@ static struct platform_driver j721e_soc_driver = {
+ 	.driver = {
+ 		.name = "j721e-audio",
+ 		.pm = &snd_soc_pm_ops,
+-		.of_match_table = of_match_ptr(j721e_audio_of_match),
++		.of_match_table = j721e_audio_of_match,
+ 	},
+ 	.probe = j721e_soc_probe,
+ };
+-- 
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
