@@ -2,82 +2,106 @@ Return-Path: <SRS0=ZHdS=DI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37F6FC4727C
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 13:40:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D7D8C4727C
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 13:41:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F5DA207F7
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 13:40:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7AE37207F7
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 13:41:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fWmuRg6d";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fax/Zbfn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F5DA207F7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j2CS+d5l";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M/fOxg41"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AE37207F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEE481873;
-	Thu,  1 Oct 2020 15:39:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEE481873
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60C5B1759;
+	Thu,  1 Oct 2020 15:40:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60C5B1759
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601559628;
-	bh=c57DO2nasR8VEaegnNiprVRn0qXj6+EkwwBxu5gE+7o=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fWmuRg6dUOJMQwtyxMnukpYl8/Epi/R5lJhaAkTUG50U7aNt9AcAo1WOQTmJ/Vukf
-	 reUtBHG2rkmIdojkRq6jqTpPo8fJNEMBKaCmaJlJEB9sRoddiVM8v510B8yiOm8Foj
-	 g9p+kXqhjGJqRgaDtxV06dBvyNk3CuTgohSIhCGE=
+	s=default; t=1601559681;
+	bh=kocCE7/sL3zqYYMB9j3DFscW/pkqSVZBSOKjzj3rOlY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=j2CS+d5lpcKLKxKS6kSZIZpV1g2Fgd59XlIJvgekU86Kc5ibp9fqT1Jtqdfp1/uba
+	 6yQ7b4VGn/lQbdm9xq8coyEWNq0CkB9y1PS/my5rM6sv6PEy+Bj049Ig/SFwTzwHiG
+	 2y+9hWKp9cnw3dzAHlPgINiux5nHJJq9EpR0ONeE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E6D6F801DB;
-	Thu,  1 Oct 2020 15:39:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F736F801F5;
+	Thu,  1 Oct 2020 15:40:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59450F801F5; Thu,  1 Oct 2020 15:39:36 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B330EF80228; Mon, 28 Sep 2020 08:38:16 +0200 (CEST)
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
+ [IPv6:2607:f8b0:4864:20::541])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BF4CF800AB
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 15:39:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BF4CF800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93D72F800DF
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 08:38:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93D72F800DF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Fax/Zbfn"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 506B1207F7;
- Thu,  1 Oct 2020 13:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601559567;
- bh=c57DO2nasR8VEaegnNiprVRn0qXj6+EkwwBxu5gE+7o=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Fax/ZbfnNCPOBo4Fo/2+M+OB06oay7+vnBdXT55tSdonUPyZZTjT7fNjwG6QdPvHf
- KHItJN8MKsIKFVgYkaXFz3Fw9cBCs7y05p9lcTbzDmEAJFilTlLRVBaxQYX8+fc13d
- mKIxGp6fo06YUtGhhWHY6bYh0wH63wJgCojMZUVA=
-Date: Thu, 1 Oct 2020 14:38:28 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dave Ertman <david.m.ertman@intel.com>
-Subject: Re: [PATCH 2/6] ASoC: SOF: Introduce descriptors for SOF client
-Message-ID: <20201001133828.GH6715@sirena.org.uk>
-References: <20200930225051.889607-1-david.m.ertman@intel.com>
- <20200930225051.889607-3-david.m.ertman@intel.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="M/fOxg41"
+Received: by mail-pg1-x541.google.com with SMTP id m34so7416398pgl.9
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 23:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=b0chtk5rr8XDTzC1Vz9PdERcVqFOmea/OCGt+6P6mjE=;
+ b=M/fOxg41yJtwIweGfkUXKS4DhCzSmqY2kkbgvMY2OTdmDMRgkr6K7VKGmkzPx9128L
+ 5lhw4DYpVejne21gL5f3/OUDy279MdWqYeG0dEpng6IVhVk/t6YhS92dhsN17eHRwtB4
+ myxZmB3Bs0kkOOTBjK3sYS+9+K6BpKP6gKFvCKSrttYPhYqT6Uk3vpdbftTym7bMA1jM
+ lHTTa7lyZScNA1gLd76jTM4Rr4nNcIp6Z1i9Dr/ZMPZv1eJuijohynSMjEu5xLidIfrO
+ E8cQ+6vAof+HbiNW2q+7H6EK0/zh4ZK+DryCYccV6Vr/OvXX8frUC6l/EyChq3Ddy/+Y
+ xiGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=b0chtk5rr8XDTzC1Vz9PdERcVqFOmea/OCGt+6P6mjE=;
+ b=eHTzybKGaddt98QaJOL73ElNV4cHZ/lILGLcYJIn0yW+G/G79VgaawmpHO3kHCcAAI
+ pVrtaT6EftaZ/e9LMk7H/bugtHNPUun9QDJGob2RQN0A+m8m68YQJKIeyit/MZIxciiN
+ exd5rqqO95Re3wzzWYbx/ayVFZ7rpjYNxBhl5tn70dWDBixN4SVHO5wx0tRjcFHfctqe
+ MLiZi4Af8XUqQO9AGPDh0/1pycuWyTN3BZz8mhURVoRHriUz5jZJFTX0P/3geDIju4OF
+ GKh+hz9lIEljdaZaC0BLFVthOtOdUKF1vPlHID57P/4EuPjw3RRkPXkg5WW/B068S0ob
+ 69ew==
+X-Gm-Message-State: AOAM533mtVqxVjgMy0Y/g9NTkoDD3YsznEvHeEsed16TraQFHBE9/aTG
+ g85/PTFeWklJ1YPDU+7p7Sw=
+X-Google-Smtp-Source: ABdhPJyj1jBgh+AJFzEXL5d8eOV13dyDzQzXUtModYjoFV8sYvwq0POiaz94Z4R+8E8xiDjHI1/+CQ==
+X-Received: by 2002:a63:4854:: with SMTP id x20mr138642pgk.220.1601275080603; 
+ Sun, 27 Sep 2020 23:38:00 -0700 (PDT)
+Received: from localhost (114-34-18-97.HINET-IP.hinet.net. [114.34.18.97])
+ by smtp.gmail.com with ESMTPSA id g26sm192663pfr.105.2020.09.27.23.37.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 27 Sep 2020 23:37:59 -0700 (PDT)
+From: Ajye Huang <ajye.huang@gmail.com>
+X-Google-Original-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] Modify documentation and machine driver for SC7180
+ sound card
+Date: Mon, 28 Sep 2020 14:37:42 +0800
+Message-Id: <20200928063744.525700-1-ajye_huang@compal.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="hTiIB9CRvBOLTyqY"
-Content-Disposition: inline
-In-Reply-To: <20200930225051.889607-3-david.m.ertman@intel.com>
-X-Cookie: Stay away from flying saucers today.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- ranjani.sridharan@intel.com, pierre-louis.bossart@linux.intel.com,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, parav@nvidia.com, jgg@nvidia.com
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Thu, 01 Oct 2020 15:40:07 +0200
+Cc: dianders@chromium.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
+ Patrick Lai <plai@codeaurora.org>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Mark Brown <broonie@kernel.org>,
+ Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
+ linux-arm-kernel@lists.infradead.org, cychiang@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,47 +117,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Note:
+- This patch depends on this patch series 
+ ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+ https://patchwork.kernel.org/patch/11773221/
+ ASoC: qcom: sc7180: Add machine driver for sound card registration
+ https://patchwork.kernel.org/patch/11773223/
+- The patch is made by the collaboration of
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+ Cheng-Yi Chiang <cychiang@chromium.org>
 
---hTiIB9CRvBOLTyqY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the review!
 
-On Wed, Sep 30, 2020 at 03:50:47PM -0700, Dave Ertman wrote:
+Ajye Huang (2):
+  ASoC: qcom: dt-bindings: Modify sc7180 machine bindings
+  ASoC: qcom: sc7180: Modify machine driver for 2mic
 
-> +	ret = ancillary_device_initialize(ancildev);
-> +	if (ret < 0) {
-> +		dev_err(sdev->dev, "error: failed to initialize client dev %s\n", name);
-> +		ida_simple_remove(client_ida, ancildev->id);
-> +		goto err_free;
-> +	}
-> +
-> +	return cdev;
-> +
-> +err_free:
-> +	kfree(cdev);
+ .../bindings/sound/qcom,sc7180.yaml           | 64 ++++++++++++++++++-
+ sound/soc/qcom/sc7180.c                       | 60 +++++++++++++++++
+ 2 files changed, 123 insertions(+), 1 deletion(-)
 
-It would be nice to have the ida_simple_remove() done in this unwind
-section here too for consistency.
+-- 
+2.25.1
 
-> +int sof_client_dev_register(struct snd_sof_dev *sdev, const char *name, struct ida *client_ida)
-> +{
-
-I know the hard limit on line length got raised but can we wrap this
-please?
-
---hTiIB9CRvBOLTyqY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9129MACgkQJNaLcl1U
-h9BgCwf/TnlTqeqQLpBsKun+Y9adwWfxEAt+JQ+uRkByAucjyLvF4Z+z5befNRU4
-PcbOqq9fXQDnetMVXli6qagzDbFuqEv2U+izZT5SOycU5s/SiW57Or+S88pm49zo
-j2udkxT+y/1KGX2E8kwcZdpJDM047qHArdCPWQGmYDVDKNnlYUczWGPnG0Z4+hat
-PtF8HpyBGaQV0QptGfUOWdNdoAqdMttBkOpMvVdqbsYZJi8IZIn7aM2PJjycc9dJ
-HrneQKpTLD5PMS7DmJtT0DX47rRVSbjmZHf6xHhzI7K4gkrYEGV88UOBpkPXdlQY
-yY5yguxR6f1AsP00FiropoQTTz801A==
-=F2a3
------END PGP SIGNATURE-----
-
---hTiIB9CRvBOLTyqY--
