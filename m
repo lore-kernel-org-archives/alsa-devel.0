@@ -7,90 +7,90 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58932C2D0A8
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 05:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B3BDC2D0A8
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 05:04:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E08F22262
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 05:03:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 30ECB22262
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 05:04:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GB+ynLLM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E08F22262
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ON40SMLn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30ECB22262
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A28591AF3;
-	Mon, 28 Sep 2020 07:02:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A28591AF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B277F1AFF;
+	Mon, 28 Sep 2020 07:03:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B277F1AFF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601269404;
-	bh=98fPA5hAP6rCEl3IEufuD9Lb3X1TaFuj1wbjNl6NBDM=;
+	s=default; t=1601269456;
+	bh=iH4BCtKHYZco8jOSQGiNPWj56rYDuIQ1wb3Pt3Sr0IY=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GB+ynLLMlOtyFoqtD8zxmqk0inP89WLwjLXVrRwnuAA+5zmsWtfwezVWABaqlbqcc
-	 luB5vA5X8f2Vw1Bu99HASx7x1QmvL9PmHW6syW/NcYuF/mBvyercrmuP5yIh+oj4e4
-	 4Xda2rXKrFQrDLxHo1VTDwLVldCNxUk4S3vVkwXA=
+	b=ON40SMLnJ3oCKDoDX2RMLn0wDzgsvrz0SElqk/Kpiiw/VEbMFW4C4nWrSFpr9qJVl
+	 /3mVSD2cqGO2zJf4uOdHLaYlEGOFoy0SITvx7O8vO/ZxNms+wrOvT8+cP1Gc3reATX
+	 YUaS9KLuwQpix5aAv7BzaZJvv+HcU4sUCwylTNcM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEF7FF801F9;
-	Mon, 28 Sep 2020 07:02:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F30C9F801F9;
+	Mon, 28 Sep 2020 07:03:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DE1DF80247; Mon, 28 Sep 2020 07:02:32 +0200 (CEST)
-Received: from mail-lj1-f194.google.com (mail-lj1-f194.google.com
- [209.85.208.194])
+ id 2BCC7F8023F; Mon, 28 Sep 2020 07:03:24 +0200 (CEST)
+Received: from mail-lj1-f195.google.com (mail-lj1-f195.google.com
+ [209.85.208.195])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA37AF800DF
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 07:02:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA37AF800DF
-Received: by mail-lj1-f194.google.com with SMTP id k25so7183296ljg.9
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 22:02:25 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0E05F800FD
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 07:03:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0E05F800FD
+Received: by mail-lj1-f195.google.com with SMTP id a22so7169405ljp.13
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 22:03:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc:content-transfer-encoding;
- bh=98fPA5hAP6rCEl3IEufuD9Lb3X1TaFuj1wbjNl6NBDM=;
- b=NLJRPe7IhjuT1HAlIhODRN29JrCrV52791oUeNenDpKm+j4a41C2fWkpqQ45PFDwgw
- ynOCNm2Tu8YgUALFZnVeazGEQry6ZP1OngWLtbHWcvS7dt/ePzfivLRUIfNjFFgt5IfJ
- aLv57uL+B9RkMCG6Q2KuqLVQ7KYu4Wu4KYdf2TDdJQs1GnrBbq+xitsSy6pOF4CxHpCL
- eA5fJKnytysy67b2oHw9ksCkPcKrlnaRxPtwdKHMXH1Pzc5Eub/BFes8gc5ZvmlCcMbB
- 47TBFSb/FPZEiCZDqASLNnR4KBC1s0UKF2EQxsR/BFQOzvBZkOB1SBxORsMymJgxUjpQ
- MTWg==
-X-Gm-Message-State: AOAM532N6wu/O4OzyYFNDqs5B2hTeW19e6SJ8l/zBz454GPJtD9bTwiQ
- 8bbDVXxG+lQ90GaGBK0wsmVRJoeBbXPVEg==
-X-Google-Smtp-Source: ABdhPJyytXLkOGMl7dGKxHhR8xEfHfEiLy1QjpPEwk4jdThzJEtoKELRuSxyGsnsxr8t0y4i7CLSBA==
-X-Received: by 2002:a2e:6c03:: with SMTP id h3mr4001059ljc.212.1601269344499; 
- Sun, 27 Sep 2020 22:02:24 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com.
- [209.85.167.47])
- by smtp.gmail.com with ESMTPSA id t2sm2685023lff.157.2020.09.27.22.02.24
+ bh=iH4BCtKHYZco8jOSQGiNPWj56rYDuIQ1wb3Pt3Sr0IY=;
+ b=aLkOif/Aq6DdhEz2DWvH7Mn9RX6LHxJgBreCxi8reHHfgl+kvYzP1qXfi6Rylh6so+
+ WUKeRDVI2bb0UAAIhBChVk4X3Z16PE9V4FsIgTHYVvPjRUD1CFzuRuu0VREKZpnrG9ed
+ qS9cQsyMNE9h1bn6R9VuMe8idx8TPpX0Pf4XgQiN+ElD3G529Y4aT1D8qsLH45JoVkQk
+ tApoPq9l5hPaZbtgvFAugIu1A9lphtKeX30j4A8CF6wsIf6MraOVdDvSaUGyZQW0OGrd
+ kScZRdHPHgFtU8UlhfrjzTMdEUdSoLoBLDwKc0vS0nyOZE/GQfTIyJD5m5on0noYSYM0
+ mNUA==
+X-Gm-Message-State: AOAM531+Fck3AtuKWUuCSGzhc/QKcpLt1uRH3COZxDLZ029OtdEVf1eo
+ 1n6Utmx/GsRGIVRNc1U4jPj0Ppx2Va58MQ==
+X-Google-Smtp-Source: ABdhPJykN4UOldrTpoFrilx6nkgd+J56EsTyyQc4JzXmW0j4t3LU1/uTpd5I85uOizls2/ehttpGOw==
+X-Received: by 2002:a05:651c:141:: with SMTP id
+ c1mr4649555ljd.182.1601269392581; 
+ Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com.
+ [209.85.167.53])
+ by smtp.gmail.com with ESMTPSA id j20sm2693256lfe.252.2020.09.27.22.03.12
  for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 27 Sep 2020 22:02:24 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id m5so9555621lfp.7
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 22:02:24 -0700 (PDT)
-X-Received: by 2002:a19:c6c8:: with SMTP id w191mr2894029lff.348.1601269343999; 
- Sun, 27 Sep 2020 22:02:23 -0700 (PDT)
+ Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id b22so9524670lfs.13
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
+X-Received: by 2002:ac2:5f63:: with SMTP id c3mr3034221lfc.283.1601269392234; 
+ Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200927192912.46323-1-peron.clem@gmail.com>
- <20200927192912.46323-4-peron.clem@gmail.com>
- <CAGb2v67gFTrGVs3pw5ospdSoogaA15cbuWjPQK=-Z2f4nMd9Rw@mail.gmail.com>
-In-Reply-To: <CAGb2v67gFTrGVs3pw5ospdSoogaA15cbuWjPQK=-Z2f4nMd9Rw@mail.gmail.com>
+ <20200927192912.46323-5-peron.clem@gmail.com>
+In-Reply-To: <20200927192912.46323-5-peron.clem@gmail.com>
 From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 28 Sep 2020 13:02:12 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65c2NzjxN4FSksvzQKOvZz0e9ccsKT9OuLpmUVr_WNtzQ@mail.gmail.com>
-Message-ID: <CAGb2v65c2NzjxN4FSksvzQKOvZz0e9ccsKT9OuLpmUVr_WNtzQ@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v5 03/20] ASoC: sun4i-i2s: Change get_sr()
- and get_wss() to be more explicit
+Date: Mon, 28 Sep 2020 13:03:00 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65noEYaHa=d4s1E+1+bcUFjtojvjK_DmEAyJkGU_T9cTw@mail.gmail.com>
+Message-ID: <CAGb2v65noEYaHa=d4s1E+1+bcUFjtojvjK_DmEAyJkGU_T9cTw@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v5 04/20] dt-bindings: ASoC: sun4i-i2s: Add
+ H6 compatible
 To: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Cc: devicetree <devicetree@vger.kernel.org>,
  Jernej Skrabec <jernej.skrabec@siol.net>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Rob Herring <robh@kernel.org>,
  linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
  Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Marcus Cooper <codekipper@gmail.com>,
@@ -112,27 +112,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 28, 2020 at 12:37 PM Chen-Yu Tsai <wens@csie.org> wrote:
+On Mon, Sep 28, 2020 at 3:29 AM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.c=
+om> wrote:
 >
-> On Mon, Sep 28, 2020 at 3:29 AM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail=
-.com> wrote:
-> >
-> > We are actually using a complex formula to just return a bunch of
-> > simple values. Also this formula is wrong for sun4i when calling
+> From: Jernej Skrabec <jernej.skrabec@siol.net>
+>
+> H6 I2S is very similar to H3, except that it supports up to 16 channels
+> and thus few registers have fields on different position.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-BTW, it is entirely possible that the compiler optimizes your switch-case
-back into the original complex formula you replaced. :)
-
-> > get_wss() the function return 4 instead of 3.
-> >
-> > Replace this with a simpler switch case.
-> >
-> > Also drop the i2s params which is unused and return a simple int as
-> > returning an error code could be out of range for an s8 and there is
-> > no optim to return a s8 here.
-> >
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
->
-> Fixes: 619c15f7fac9 ("ASoC: sun4i-i2s: Change SR and WSS computation")
->
-> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
