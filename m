@@ -2,75 +2,72 @@ Return-Path: <SRS0=2Byq=DF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D0B7C2D0A8
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 19:41:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59CCDC2D0A8
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 19:57:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 567212076A
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 19:40:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 548FA2076D
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 19:57:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uX7hYNgQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VD3gusU8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 567212076A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QgSnj4b2";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nfewh7dy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 548FA2076D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 883331895;
-	Mon, 28 Sep 2020 21:40:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 883331895
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57D9B1869;
+	Mon, 28 Sep 2020 21:56:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57D9B1869
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601322057;
-	bh=66dVChS3Ww4kbexNYMsWn0gXMt3x46E4BzJS4iET2xM=;
+	s=default; t=1601323034;
+	bh=KH6ZEVkfOXTAWXhHnGrzQMCMMlgk3Uf4o9uZOltZph4=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uX7hYNgQUq+bQF3VzrlxxMEVLtVdjBqDYzuGhDEynm7FhaLwYAVf8MJVTIj49X610
-	 ofHpmEgoQO04a39Ozck9K8Xx8Ist0uDXesmkrszjxGR3AQdwNKLJU6iVYs+d+WdnPd
-	 dibAKYKCFgeP4f77WsiKLLjpuZ/z65/1sjGN6y3I=
+	b=QgSnj4b2Lx3ZZ2LtLEv7q0JBpbJMjwgtzbSOow4hwqGbQGAfkZN5ZSED0M1TGGXO3
+	 5wz71Y606yqZsnJi0t23VyJbBs9+zqiaXdDvZHGdq0fToq07+pI68y5xRq/M5tgsAz
+	 xBN2z6CC2ysNTLSb8fk9dF6/6F/Jzmfojnu1k880=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDE44F80304;
-	Mon, 28 Sep 2020 21:36:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EDE5F801ED;
+	Mon, 28 Sep 2020 21:56:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23B08F802FE; Mon, 28 Sep 2020 21:36:19 +0200 (CEST)
+ id 728A1F801F9; Mon, 28 Sep 2020 21:56:21 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EE11F802FD
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 21:36:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EE11F802FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id CAE22F800DF
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 21:56:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAE22F800DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VD3gusU8"
+ header.b="nfewh7dy"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9520A2075F;
- Mon, 28 Sep 2020 19:36:14 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 467942076D;
+ Mon, 28 Sep 2020 19:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601321775;
- bh=66dVChS3Ww4kbexNYMsWn0gXMt3x46E4BzJS4iET2xM=;
+ s=default; t=1601322975;
+ bh=KH6ZEVkfOXTAWXhHnGrzQMCMMlgk3Uf4o9uZOltZph4=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=VD3gusU8MDUjmYb/gw5skxAbPVKOMPhlDttT8+qVDWjoDpS+2LX85lWalNP0f2a9B
- 7VvTDYiZrQVHQn3R+b1C981jA85W11F2cr1MqlFrqyupQRnzS0U4UYrD8NRwzJXlN8
- DuohqK8Pxph/IXsb42Un2BMjKSPq9jk7WAgjo+f8=
-Date: Mon, 28 Sep 2020 20:35:18 +0100
+ b=nfewh7dyAvXSXACqLhaejEBL7yBWg4q00iTKDSqUSp7kKud4goR+0NXIWg0dNwWen
+ jIqRbiphObmUhrH64xU8lecRsJLA+S/xmmnhPt57vE+yx/utNBzspo+1rRo1fMh3yT
+ KKm0tVO8kAsITF5FOLXbn2hkl2qaM3NUKYhaSlLE=
+Date: Mon, 28 Sep 2020 20:55:18 +0100
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
-In-Reply-To: <20200928053912.16664-1-oder_chiou@realtek.com>
-References: <20200928053912.16664-1-oder_chiou@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5682: Enable the power of "MICBIAS" and "Vref2"
- for the DMIC clock
-Message-Id: <160132168198.55254.7460102564786932622.b4-ty@kernel.org>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, cychiang@google.com,
- albertchen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87mu1abwp2.wl-kuninori.morimoto.gx@renesas.com>
+References: <87mu1abwp2.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [RESEND] ASoC: merge soc_pcm_open() rollback and soc_pcm_close()
+Message-Id: <160132291825.3990.11344479903052921582.b4-ty@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,9 +83,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Sep 2020 13:39:12 +0800, Oder Chiou wrote:
-> The power of "MICBIAS" and "Vref2" was needed while the DMIC clcok was from
-> the PLL output.
+On 28 Sep 2020 09:00:14 +0900, Kuninori Morimoto wrote:
+> 1 month past and nothing happened.
+> This is resend of v2 patch-set.
+> 
+> soc_pcm_open() does rollback when failed (A),
+> but, it is almost same as soc_pcm_close().
+> 
+> 	static int soc_pcm_open(xxx)
+> 	{
+> 		...
+> 		if (ret < 0)
+> 			goto xxx_err;
+> 		...
+> 		return 0;
+> 
+> [...]
 
 Applied to
 
@@ -96,8 +106,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682: Enable the power of "MICBIAS" and "Vref2" for the DMIC clock
-      commit: 9fe0ec27557570e4b17735da6ce265bbe20691ed
+[1/7] ASoC: soc-dai: add mark for snd_soc_dai_startup/shutdown()
+      commit: 00a0b46c99e26b30ea27c1fb4f4dbdfc6f8b1c49
+[2/7] ASoC: soc-link: add mark for snd_soc_link_startup/shutdown()
+      commit: 6064ed73cd2405d13c252b190ac64c03ab40e4b9
+[3/7] ASoC: soc-component: add mark for soc_pcm_components_open/close()
+      commit: 51aff91ad123e03d1461ec1d980efd1814dca69e
+[4/7] ASoC: soc-component: add mark for snd_soc_pcm_component_pm_runtime_get/put()
+      commit: 939a5cfb2a5609d2d6f996b5cd853397a82a92b9
+[5/7] ASoC: soc-pcm: add soc_pcm_clean() and call it from soc_pcm_open/close()
+      commit: 140a4532cdb8c44a664e7e871ea5dbaa4c2829bc
+[6/7] ASoC: soc-pcm: remove unneeded dev_err() for snd_soc_dai_startup()
+      commit: ce820145a9ec04797a417fcb01b8ff02dcfd9846
+[7/7] ASoC: soc-pcm: remove unneeded dev_err() for snd_soc_component_module/open()
+      commit: bcae16317bcfa45f6b767cf59e02e9cc72715d27
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
