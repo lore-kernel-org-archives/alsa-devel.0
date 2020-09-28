@@ -5,84 +5,59 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C44AC2D0A8
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 07:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EE61C2D0A8
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 08:03:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABF9B221EC
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 07:44:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4421122262
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 08:03:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dXJH+W/A";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TbKgtQG/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABF9B221EC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tpJBwwNG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4421122262
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B03FD1AC2;
-	Mon, 28 Sep 2020 09:43:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B03FD1AC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 576FF1B0E;
+	Mon, 28 Sep 2020 10:02:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 576FF1B0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601279070;
-	bh=qH2dWSARtBuaWEEN/JXuoSHkob43iBKDvIrf3DJvWpg=;
+	s=default; t=1601280208;
+	bh=G4RIJkW/1nPK5sFN7lex/u4PFmSezDRi77ax52LSEJE=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=dXJH+W/A3yKPYZseS0bqcM4qLVOLE/PM6JPjbV8ATItVI0t6MjCWtD0ktEFqrEaLt
-	 iQVSsybJEsDeL7jGkv14w9LOM94TYJ4JTIZP1gaHDhrh3BXF/d8AWutxdsWl446dNJ
-	 Z2G3BJK5bjEkCmwKLhiLMEmuV5+AamxG67FEwLQU=
+	b=tpJBwwNGeCo2lj0f47Om3pN5vwXux3hysQgYP7S5mxanZaelMVBrfDpZ++o5CLvjV
+	 8km2ptAbFqLJTot057Yxii0C4qaHtwoPvXgxdL3n8qWLesWtILIZn5EbpZpLkd4/pA
+	 aVaoEdfhV+KD1Ic+dOeW9rZgKP5n/9YPX5P2hG/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B143F80115;
-	Mon, 28 Sep 2020 09:43:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C09E8F801F9;
+	Mon, 28 Sep 2020 10:02:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83E2AF801ED; Mon, 28 Sep 2020 09:43:37 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 304D4F801F9; Mon, 28 Sep 2020 10:02:36 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0705F800DF
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 09:43:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0705F800DF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TbKgtQG/"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08S7hIT7036172;
- Mon, 28 Sep 2020 02:43:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601278998;
- bh=FOE/nGiF8tpffa8AuV0NALJigiW7nHG/Mrsvc152buA=;
- h=From:To:CC:Subject:Date;
- b=TbKgtQG/IV8yMud3x4m9ZTXvD3VK5EBKMqhKW+OyorjwXY202URqt+Iza6DSZZzvM
- debiuc+ux1GN++a+NErHjMIn/kZ/o+Hm+NXBwF7fSddsaDpBsCxZzKJ6qyNj+RfGeR
- wReXaX6XQZnhDD9RVoEGEg3PpocqlKLJKEIXSzJ4=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08S7hIw5122363
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 28 Sep 2020 02:43:18 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 28
- Sep 2020 02:43:17 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 28 Sep 2020 02:43:17 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08S7hGwW064691;
- Mon, 28 Sep 2020 02:43:16 -0500
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: ti: j721e-evm: Fix compiler warning when CONFIG_OF=n
-Date: Mon, 28 Sep 2020 10:43:30 +0300
-Message-ID: <20200928074330.13029-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id F41A9F80115
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 10:02:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F41A9F80115
+Received: from [117.136.56.136] (helo=localhost.localdomain)
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <hui.wang@canonical.com>)
+ id 1kMo77-0003EY-FO; Mon, 28 Sep 2020 08:02:26 +0000
+From: Hui Wang <hui.wang@canonical.com>
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.de
+Subject: [PATCH] ALSA: hda/realtek - set mic to auto detect on a HP AIO machine
+Date: Mon, 28 Sep 2020 16:01:17 +0800
+Message-Id: <20200928080117.12435-1-hui.wang@canonical.com>
+X-Mailer: git-send-email 2.17.1
+Cc: stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,33 +73,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove the use of of_match_ptr() macro for of_match_table to fix compiler
-warning when CONFIG_OF=n:
+Recently we enabled a HP AIO machine, we found the mic on the machine
+couldn't record any sound and it couldn't detect plugging and
+unplugging as well.
 
-sound/soc/ti/j721e-evm.c:528:34: warning: unused variable 'j721e_audio_of_match' [-Wunused-const-variable]
+Through debugging we found the mic is set to manual detect mode, after
+setting it to auto detect mode, it could detect plugging and
+unplugging and could record sound.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/ti/j721e-evm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-index 29b73303f3fc..a7c0484d44ec 100644
---- a/sound/soc/ti/j721e-evm.c
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -895,7 +895,7 @@ static struct platform_driver j721e_soc_driver = {
- 	.driver = {
- 		.name = "j721e-audio",
- 		.pm = &snd_soc_pm_ops,
--		.of_match_table = of_match_ptr(j721e_audio_of_match),
-+		.of_match_table = j721e_audio_of_match,
- 	},
- 	.probe = j721e_soc_probe,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d4f17b465892..4e5809648df1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6233,6 +6233,7 @@ enum {
+ 	ALC269_FIXUP_LEMOTE_A190X,
+ 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
+ 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
++	ALC274_FIXUP_HP_MIC,
  };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7612,6 +7613,14 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC289_FIXUP_ASUS_GA401
+ 	},
++	[ALC274_FIXUP_HP_MIC] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x45 },
++			{ 0x20, AC_VERB_SET_PROC_COEF, 0x5089 },
++			{ }
++		},
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7763,6 +7772,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
++	SND_PCI_QUIRK(0x103c, 0x874e, "HP", ALC274_FIXUP_HP_MIC),
+ 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+@@ -8088,6 +8098,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE, .name = "alc256-medion-headset"},
+ 	{.id = ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc298-samsung-headphone"},
+ 	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-headset"},
++	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.17.1
 
