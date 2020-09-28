@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F376C4346E
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 00:04:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D002C4346E
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 00:04:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C5352311C
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 00:04:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D55F623977
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 00:04:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f4jXBYfP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C5352311C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZMLMQS3N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D55F623977
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB1A01AEA;
-	Mon, 28 Sep 2020 02:03:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB1A01AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61DF81AFF;
+	Mon, 28 Sep 2020 02:03:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61DF81AFF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601251438;
-	bh=92ESAmX/v6Ij8jifXXl+btsTbrbpv6ebYZ5Tv/3NwHQ=;
+	s=default; t=1601251476;
+	bh=xTk30X7O3WVRpglYjXaI9SfMm4gEhdJXtBxUHTOr53o=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f4jXBYfPRaeEEYBvFzTJPvCbnSdNY0oBoQuEedyXRdXmnYYS9YVZfETa9XtcbMy84
-	 6gQIYqVqa4ji9Vcc1yDLJqbaz9trlcOJD0p4rsUw4Rh1Cubmre9GBuOffcEe8OmMiF
-	 kdvcpA0TlCerHVZqoTG43RIcBzPj9Xr6zS43nS3k=
+	b=ZMLMQS3N3S1NZldKjuXSYQliuij+90Uo/qzofs5txs9VpTCnNT5js9rM96JqUhzIU
+	 RWI60zFaLFnx8b+o2uY+Lgprr7vl41ba/5zDFCplLqr9Yuqkahx1oUMnb9eApFAiw0
+	 scL3D2Pj6OicMIaeGukISlKS0l25gD0YhxnVZncQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 527A7F802E8;
-	Mon, 28 Sep 2020 02:01:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A4FAF802F8;
+	Mon, 28 Sep 2020 02:01:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50F5BF802E9; Mon, 28 Sep 2020 02:01:22 +0200 (CEST)
+ id CAA4EF802F7; Mon, 28 Sep 2020 02:01:37 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A7576F802E7
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 02:01:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7576F802E7
-Date: 28 Sep 2020 09:01:17 +0900
-X-IronPort-AV: E=Sophos;i="5.77,311,1596466800"; d="scan'208";a="58071746"
+ by alsa1.perex.cz (Postfix) with ESMTP id 298A2F801F5
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 02:01:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 298A2F801F5
+Date: 28 Sep 2020 09:01:29 +0900
+X-IronPort-AV: E=Sophos;i="5.77,311,1596466800"; d="scan'208";a="58071773"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 28 Sep 2020 09:01:17 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 28 Sep 2020 09:01:29 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6D35E4001B44;
- Mon, 28 Sep 2020 09:01:17 +0900 (JST)
-Message-ID: <87h7ribwnb.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DF1E2400854C;
+ Mon, 28 Sep 2020 09:01:29 +0900 (JST)
+Message-ID: <87eemmbwmy.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/7] ASoC: soc-component: add mark for
- snd_soc_pcm_component_pm_runtime_get/put()
+Subject: [PATCH 6/7] ASoC: soc-pcm: remove unneeded dev_err() for
+ snd_soc_dai_startup()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87mu1abwp2.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,251 +79,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc_pcm_open() does rollback when failed (A),
-but, it is almost same as soc_pcm_close().
-
-	static int soc_pcm_open(xxx)
-	{
-		...
-		if (ret < 0)
-			goto xxx_err;
-		...
-		return 0;
-
- ^	config_err:
- |		...
- |	rtd_startup_err:
-(A)		...
- |	component_err:
- |		...
- v		return ret;
-	}
-
-The difference is
-soc_pcm_close() is for all dai/component/substream,
-rollback        is for succeeded part only.
-
-This kind of duplicated code can be a hotbed of bugs,
-thus, we want to share soc_pcm_close() and rollback.
-
-Now, soc_pcm_open/close() are handling
-	1) snd_soc_dai_startup/shutdown()
-	2) snd_soc_link_startup/shutdown()
-	3) snd_soc_component_module_get/put()
-	4) snd_soc_component_open/close()
-=>	5) pm_runtime_put/get()
-
-This patch is for 5) pm_runtime_put/get().
-
-The idea of having bit-flag or counter is not enough for this purpose.
-For example if one DAI is used for 2xPlaybacks for some reasons,
-and if 1st Playback was succeeded but 2nd Playback was failed,
-2nd Playback rollback doesn't need to call shutdown.
-But it has succeeded bit-flag or counter via 1st Playback,
-thus, 2nd Playback rollback will call unneeded shutdown.
-And 1st Playback's necessary shutdown will not be called,
-because bit-flag or counter was cleared by wrong 2nd Playback rollback.
-
-To avoid such case, this patch marks substream pointer when get() was
-succeeded. If rollback needed, it will check rollback flag and marked
-substream pointer.
-
-One note here is that it cares *current* get() only now.
-but we might want to check *whole* marked substream in the future.
-This patch is using macro named "push/pop", so that it can be easily
-update.
+snd_soc_dai_startup() itself will indicate error message,
+thus, soc_pcm_open() don't need to handle it.
+This patch removes it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-component.h |  5 +++++
- sound/soc/soc-component.c     | 38 +++++++++++++++++++++++++++++++++++
- sound/soc/soc-compress.c      | 30 ++++++++-------------------
- sound/soc/soc-pcm.c           | 17 ++++++----------
- 4 files changed, 57 insertions(+), 33 deletions(-)
+ sound/soc/soc-pcm.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index a812202ec595..2c790ce95259 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -220,6 +220,7 @@ struct snd_soc_component {
- 	/* function mark */
- 	struct snd_pcm_substream *mark_module;
- 	struct snd_pcm_substream *mark_open;
-+	void *mark_pm;
- 
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_root;
-@@ -464,5 +465,9 @@ void snd_soc_pcm_component_hw_free(struct snd_pcm_substream *substream,
- 				   struct snd_soc_component *last);
- int snd_soc_pcm_component_trigger(struct snd_pcm_substream *substream,
- 				  int cmd);
-+int snd_soc_pcm_component_pm_runtime_get(struct snd_soc_pcm_runtime *rtd,
-+					 void *stream);
-+void snd_soc_pcm_component_pm_runtime_put(struct snd_soc_pcm_runtime *rtd,
-+					  void *stream, int rollback);
- 
- #endif /* __SOC_COMPONENT_H */
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 147b46e29ff4..728e93f35ffb 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -9,6 +9,7 @@
- // Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
- //
- #include <linux/module.h>
-+#include <linux/pm_runtime.h>
- #include <sound/soc.h>
- 
- #define soc_component_ret(dai, ret) _soc_component_ret(dai, __func__, ret)
-@@ -836,3 +837,40 @@ int snd_soc_pcm_component_trigger(struct snd_pcm_substream *substream,
- 
- 	return 0;
- }
-+
-+int snd_soc_pcm_component_pm_runtime_get(struct snd_soc_pcm_runtime *rtd,
-+					 void *stream)
-+{
-+	struct snd_soc_component *component;
-+	int i, ret;
-+
-+	for_each_rtd_components(rtd, i, component) {
-+		ret = pm_runtime_get_sync(component->dev);
-+		if (ret < 0 && ret != -EACCES) {
-+			pm_runtime_put_noidle(component->dev);
-+			return soc_component_ret(component, ret);
-+		}
-+		/* mark stream if succeeded */
-+		soc_component_mark_push(component, stream, pm);
-+	}
-+
-+	return 0;
-+}
-+
-+void snd_soc_pcm_component_pm_runtime_put(struct snd_soc_pcm_runtime *rtd,
-+					  void *stream, int rollback)
-+{
-+	struct snd_soc_component *component;
-+	int i;
-+
-+	for_each_rtd_components(rtd, i, component) {
-+		if (rollback && !soc_component_mark_match(component, stream, pm))
-+			continue;
-+
-+		pm_runtime_mark_last_busy(component->dev);
-+		pm_runtime_put_autosuspend(component->dev);
-+
-+		/* remove marked stream */
-+		soc_component_mark_pop(component, stream, pm);
-+	}
-+}
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 415510909a82..3a6a60215e81 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -73,18 +73,13 @@ static int soc_compr_components_free(struct snd_compr_stream *cstream,
- static int soc_compr_open(struct snd_compr_stream *cstream)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct snd_soc_component *component = NULL, *save = NULL;
-+	struct snd_soc_component *component = NULL;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	int ret, i;
-+	int ret;
- 
--	for_each_rtd_components(rtd, i, component) {
--		ret = pm_runtime_get_sync(component->dev);
--		if (ret < 0 && ret != -EACCES) {
--			pm_runtime_put_noidle(component->dev);
--			save = component;
--			goto pm_err;
--		}
--	}
-+	ret = snd_soc_pcm_component_pm_runtime_get(rtd, cstream);
-+	if (ret < 0)
-+		goto pm_err;
- 
- 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
-@@ -113,12 +108,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- out:
- 	mutex_unlock(&rtd->card->pcm_mutex);
- pm_err:
--	for_each_rtd_components(rtd, i, component) {
--		if (component == save)
--			break;
--		pm_runtime_mark_last_busy(component->dev);
--		pm_runtime_put_autosuspend(component->dev);
--	}
-+	snd_soc_pcm_component_pm_runtime_put(rtd, cstream, 1);
- 
- 	return ret;
- }
-@@ -205,10 +195,9 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- static int soc_compr_free(struct snd_compr_stream *cstream)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct snd_soc_component *component;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	int stream, i;
-+	int stream;
- 
- 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
-@@ -237,10 +226,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 
--	for_each_rtd_components(rtd, i, component) {
--		pm_runtime_mark_last_busy(component->dev);
--		pm_runtime_put_autosuspend(component->dev);
--	}
-+	snd_soc_pcm_component_pm_runtime_put(rtd, cstream, 0);
- 
- 	return 0;
- }
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d9f9c0a243df..0934a06a9cc9 100644
+index 7f3e44918f19..070fb71fc6f6 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -678,10 +678,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+@@ -729,12 +729,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	/* startup the audio subsystem */
+ 	for_each_rtd_dais(rtd, i, dai) {
+ 		ret = snd_soc_dai_startup(dai, substream);
+-		if (ret < 0) {
+-			dev_err(dai->dev,
+-				"ASoC: can't open DAI %s: %d\n",
+-				dai->name, ret);
++		if (ret < 0)
+ 			goto err;
+-		}
  
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 
--	for_each_rtd_components(rtd, i, component) {
--		pm_runtime_mark_last_busy(component->dev);
--		pm_runtime_put_autosuspend(component->dev);
--	}
-+	snd_soc_pcm_component_pm_runtime_put(rtd, substream, 0);
- 
- 	for_each_rtd_components(rtd, i, component)
- 		if (!snd_soc_component_active(component))
-@@ -708,8 +705,9 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	for_each_rtd_components(rtd, i, component)
- 		pinctrl_pm_select_default_state(component->dev);
- 
--	for_each_rtd_components(rtd, i, component)
--		pm_runtime_get_sync(component->dev);
-+	ret = snd_soc_pcm_component_pm_runtime_get(rtd, substream);
-+	if (ret < 0)
-+		goto pm_err;
- 
- 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
-@@ -806,11 +804,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	soc_pcm_components_close(substream, 1);
- component_err:
- 	mutex_unlock(&rtd->card->pcm_mutex);
--
--	for_each_rtd_components(rtd, i, component) {
--		pm_runtime_mark_last_busy(component->dev);
--		pm_runtime_put_autosuspend(component->dev);
--	}
-+pm_err:
-+	snd_soc_pcm_component_pm_runtime_put(rtd, substream, 1);
- 
- 	for_each_rtd_components(rtd, i, component)
- 		if (!snd_soc_component_active(component))
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 			dai->tx_mask = 0;
 -- 
 2.25.1
 
