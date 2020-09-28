@@ -2,84 +2,105 @@ Return-Path: <SRS0=2Byq=DF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C551C2D0A8
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 14:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5F67C2D0A8
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 14:38:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C87702075A
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 14:36:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F3F242075A
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 14:38:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZdJREhK0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C87702075A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IvmcA0FG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKnX7n81"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3F242075A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 592EB18A1;
-	Mon, 28 Sep 2020 16:35:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 592EB18A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66A4F18BE;
+	Mon, 28 Sep 2020 16:37:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66A4F18BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601303759;
-	bh=U0WoFw0S9nIEaPDAxiIAa5dr00oo9BFKco/zOIPwT/0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1601303923;
+	bh=BDqRFb92aQqGntEIT70fEwhgguoehyUgmkElleLlB7k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZdJREhK0zg44b/4WXf8t8M+G37yLX8Zswp/px9T7zyekP0apYi7PjAjlySwQrFp78
-	 s78ADOII7lWBK6qcD+Yx0wlWI7M68aXPWj/hIlynpTycNRfiVf/HWdP5tKe4yiOhLT
-	 YFtBdNmxHHuuc8JlSgMYW6wzgMiJ6soauoULyXVY=
+	b=IvmcA0FGyue6SfFvDGApW5x/voTLjX/sgk7RoCATMe4RNJIapv3rJulRI0Uq0dUzH
+	 75zU8mjVC9w0NbP4qpmIbhNPilwNybTlzxPyMQD9Wz2o0aveQMyZxqg2bTbAT6YLBA
+	 PGLl5+uU/4cW5SJp8YLEH1s8dLcaIj2AZHZUmnuA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A231F80115;
-	Mon, 28 Sep 2020 16:35:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06D2EF800FD;
+	Mon, 28 Sep 2020 16:37:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3E92F801ED; Mon, 28 Sep 2020 16:35:06 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E933BF801ED; Mon, 28 Sep 2020 16:37:51 +0200 (CEST)
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
+ [IPv6:2607:f8b0:4864:20::d41])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A326CF800DF
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 16:34:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A326CF800DF
-IronPort-SDR: PyxwlI7c5hG4qmyDCR21SUt/jCUm006TlWLx933/Yj2VxmRW8FGv4dQ/dGdZrKpMQzmGkkEYMn
- 5d9xcIhMCXGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="159383710"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; d="scan'208";a="159383710"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2020 07:34:50 -0700
-IronPort-SDR: 7SUAblgj8WAzM5aWqlyy/thr8Y4yTgEnwsO0n7p4igrbtvtql7OcVfi4xV65GT4y2W3gxMf368
- TThZFXTGOl6g==
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; d="scan'208";a="311809845"
-Received: from itanwani-mobl.amr.corp.intel.com (HELO [10.252.134.40])
- ([10.252.134.40])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2020 07:34:48 -0700
-Subject: Re: [PATCH] ALSA: compress: allow pause and resume during draining
-To: Jaroslav Kysela <perex@perex.cz>, Gyeongtaek Lee <gt82.lee@samsung.com>,
- vkoul@kernel.org
-References: <CGME20200928105009epcas2p4a65d50d9d09800281395a490d1844ef3@epcas2p4.samsung.com>
- <000c01d69585$228db6b0$67a92410$@samsung.com>
- <7ba714ce-8b33-1b64-7503-6b155bf43909@perex.cz>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <eaa35431-01f4-f858-0673-cc3b4ddf1c5a@linux.intel.com>
-Date: Mon, 28 Sep 2020 09:34:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 276B7F800DF
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 16:37:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 276B7F800DF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="RKnX7n81"
+Received: by mail-io1-xd41.google.com with SMTP id u6so1332104iow.9
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 07:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=t4AbdMx+cx7XDkAMRw5fwKPY3/PE3Njw9O2Txe+X7KQ=;
+ b=RKnX7n81fRNP7SzOx3e5G8EXU7UK8R6fQQS/GeZPWcPNO0fHznMAlSHnQkm9nvnLrl
+ ksK9e3gFSf/5HE6q+1+k4xGuglAUG8x97sx3OWUWZKZkB0+8VC3y+pz8aziKAxRYj0p2
+ DX3eEtEQPINky7M7wVu08YpNr86aBIJoIw8Qbdg5q6UCveVdStTyLkrqhJb3ZSgzz6Bw
+ mkn7/xxOKikbGxwvlcP82/Eelx8GDoo1TZ+QrTHCpejFZtbB1SX+GfKVDGW3T/i4LHGm
+ 3jnwLLdiq78cQmGX4gRiJlxjxXVB9GdoOocjRhBSbK4ZzkMrkOdicqNLaXfmwjr1oKI3
+ FwVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=t4AbdMx+cx7XDkAMRw5fwKPY3/PE3Njw9O2Txe+X7KQ=;
+ b=S1Tw61jD6JF75tmUfq44yN5qqGbQjP8f1n9KGLLDt2W1AcgWGZnn3oFoGr9xAXUcDw
+ zPd/36PTk0W1bW9pOOOWVqR4tQKSjhiObO/FyIKBurJUw3YObSfW1hKau9ue9hKLT3EW
+ MxRJkW6ANvKk5sBmmP9FBKC4k0sN1UDJA073rRHzW2wNX31KnOrBKgEqNtdS1Ip2+yhT
+ CBBCND9vQEsCn3vEOsFubBtm2UT9/9Lo2j0iwhEUboTawJ/6ShotT79msUyVEjtG6J18
+ OBmgHbgsq/Z+aJI3MynamgN7CbtmPNJLnsH7AsOL7SBKRMdsLWtu+lt+NgRMfHNofKsp
+ aGVQ==
+X-Gm-Message-State: AOAM532rVKIoOaSMHVA8gZvN3tEVBsrkxC7g2Gi2Q/XxjQYcFqhkdYjP
+ /G/DihKsinJF89hALrTU03AO9WA6Oleb64ZRZ3Q=
+X-Google-Smtp-Source: ABdhPJxOHv47DZJ/ZpY0xtNS8oWIQF4j+pHf/JhqayP0YQAVGa58IT3sFvvEifb5VWXPoiyhxnoRD09w6fFBNOXifxA=
+X-Received: by 2002:a6b:908:: with SMTP id t8mr7098983ioi.124.1601303857337;
+ Mon, 28 Sep 2020 07:37:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7ba714ce-8b33-1b64-7503-6b155bf43909@perex.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, kimty@samsung.com,
- tiwai@suse.com, lgirdwood@gmail.com, hmseo@samsung.com, tkjung@samsung.com,
- pilsun.jang@samsung.com, s47.kang@samsung.com
+References: <20200927192912.46323-1-peron.clem@gmail.com>
+ <20200927192912.46323-2-peron.clem@gmail.com>
+ <CAGb2v65AhnqD6ec20h9vtd2GjqVsf_yz5+7VSa8giJuFJnd5ag@mail.gmail.com>
+In-Reply-To: <CAGb2v65AhnqD6ec20h9vtd2GjqVsf_yz5+7VSa8giJuFJnd5ag@mail.gmail.com>
+From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date: Mon, 28 Sep 2020 16:37:26 +0200
+Message-ID: <CAJiuCcevtzX_+02r54q6tH0+bOF=BM=knnaxN+G3QW035F8gZQ@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v5 01/20] ASoC: sun4i-i2s: Add support for
+ H6 I2S
+To: Chen-Yu Tsai <wens@csie.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: devicetree <devicetree@vger.kernel.org>,
+ Jernej Skrabec <jernej.skrabec@siol.net>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Marcus Cooper <codekipper@gmail.com>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, Mark Brown <broonie@kernel.org>,
+ Maxime Ripard <mripard@kernel.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,26 +116,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Chen-Yu,
 
+On Mon, 28 Sep 2020 at 06:40, Chen-Yu Tsai <wens@csie.org> wrote:
+>
+> On Mon, Sep 28, 2020 at 3:29 AM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail=
+.com> wrote:
+> >
+> > From: Jernej Skrabec <jernej.skrabec@siol.net>
+> >
+> > H6 I2S is very similar to that in H3, except it supports up to 16
+> > channels.
+> >
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> >  sound/soc/sunxi/sun4i-i2s.c | 224 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 224 insertions(+)
+> >
+> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > index f23ff29e7c1d..2baf6c276280 100644
+> > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > @@ -124,6 +124,21 @@
+> >  #define SUN8I_I2S_RX_CHAN_SEL_REG      0x54
+> >  #define SUN8I_I2S_RX_CHAN_MAP_REG      0x58
+> >
+> > +/* Defines required for sun50i-h6 support */
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK  GENMASK(21, 20)
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset)       ((offset) << 20=
+)
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL_MASK         GENMASK(19, 16)
+> > +#define SUN50I_H6_I2S_TX_CHAN_SEL(chan)                ((chan - 1) << =
+16)
+> > +#define SUN50I_H6_I2S_TX_CHAN_EN_MASK          GENMASK(15, 0)
+> > +#define SUN50I_H6_I2S_TX_CHAN_EN(num_chan)     (((1 << num_chan) - 1))
+> > +
+> > +#define SUN50I_H6_I2S_TX_CHAN_MAP0_REG 0x44
+> > +#define SUN50I_H6_I2S_TX_CHAN_MAP1_REG 0x48
+> > +
+> > +#define SUN50I_H6_I2S_RX_CHAN_SEL_REG  0x64
+> > +#define SUN50I_H6_I2S_RX_CHAN_MAP0_REG 0x68
+> > +#define SUN50I_H6_I2S_RX_CHAN_MAP1_REG 0x6C
+> > +
+> >  struct sun4i_i2s;
+> >
+> >  /**
+> > @@ -474,6 +489,62 @@ static int sun8i_i2s_set_chan_cfg(const struct sun=
+4i_i2s *i2s,
+> >         return 0;
+> >  }
+> >
+> > +static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> > +                                     const struct snd_pcm_hw_params *p=
+arams)
+> > +{
+> > +       unsigned int channels =3D params_channels(params);
+> > +       unsigned int slots =3D channels;
+> > +       unsigned int lrck_period;
+> > +
+> > +       if (i2s->slots)
+> > +               slots =3D i2s->slots;
+> > +
+> > +       /* Map the channels for playback and capture */
+> > +       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x765=
+43210);
+> > +       regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x765=
+43210);
+>
+> Nit, since it supports up to 16 channels, you might want to map all 16 of=
+ them
+> now, instead of having to come back and fix it later.
 
-On 9/28/20 6:13 AM, Jaroslav Kysela wrote:
-> Dne 28. 09. 20 v 12:50 Gyeongtaek Lee napsal(a):
->> With a stream with low bitrate, user can't pause or resume the stream
->> near the end of the stream because current ALSA doesn't allow it.
->> If the stream has very low bitrate enough to store whole stream into
->> the buffer, user can't do anything except stop the stream and then
->> restart it from the first.
->> If pause and resume is allowed during draining, user experience can be
->> enhanced.
-> 
-> It seems that we need a new state to handle the pause + drain condition for
-> this case.
-> 
-> With this proposed change, the pause state in drain is invisible.
+Thanks for the review. Do you mean there is missing MAP0 for RX/TX ?
 
-Indeed it's be much nicer to have a new state, e..g 
-SNDRV_PCM_STATE_DRAINING_PAUSED.
++ regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0xFEDCBA98);
+  regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
++ regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP0_REG, 0xFEDCBA98);
+  regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
 
-One concern is that states are defined in uapi/sound/asoc.h, so wouldn't 
-this have impacts on userspace as well? We'd change the value of 
-SNDRV_PCM_STATE_LAST.
+Regards,
+Clement
+
+>
+> Code wise, this patch is
+>
+> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+>
+> I don't have a scope nor logic analyzer, so I wasn't able to participate =
+in the
+> LRCK discussion.
