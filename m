@@ -2,99 +2,87 @@ Return-Path: <SRS0=2Byq=DF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF7D7C2D0A8
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 11:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33464C2D0A8
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 13:07:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F108221775
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 11:20:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A9A702074A
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Sep 2020 13:07:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k/aenZfC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="EXY1kpJ+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F108221775
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S9j/a3ax"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9A702074A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C00501F27;
-	Mon, 28 Sep 2020 13:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C00501F27
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3D22190E;
+	Mon, 28 Sep 2020 15:06:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3D22190E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601292034;
-	bh=U307HY/ZDzAMKpi8sDBhtB/MESBHBXk9DoWcq/Wt9rc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=k/aenZfC36KKL0/hhPe3+vHWYhGjdUCMx22orZROcK0tVILSvAVAMCTFTQDtTyRia
-	 2J+vkCVhfV7U6qqP81ncX76gBJ4efldDon2woJnuuintlCK+I5Faca5HlNAP0rDG5J
-	 o4FmJqbfomqGkfoeOXHylaY0GS/Z1u1Ynb7vU5w0=
+	s=default; t=1601298439;
+	bh=KevQ79nlIe0fwRknHg0bM/BfyWN1qe9xOk/dg8pefXI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=S9j/a3axTTvZ1dAeFrseeA87utWQ+kI3T7w9ykvffrwkajJL4NYrBFXalOkE29ikK
+	 Zn78EGFNopYYOudU6j59E+W4fT47l2GIJh/l7d0AimfDGIb5aVu8e5S0zfcwCgI1d7
+	 x9pMLLq/iNfdRml27/66CqTz4TufKTFxUoornC98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 403B1F802D2;
-	Mon, 28 Sep 2020 13:18:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FCD1F801ED;
+	Mon, 28 Sep 2020 15:06:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97C21F801F9; Mon, 28 Sep 2020 13:18:38 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 3C918F801F9; Mon, 28 Sep 2020 15:06:27 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A42BAF800DF
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 13:18:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A42BAF800DF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="EXY1kpJ+"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 08SBGBZE023725; Mon, 28 Sep 2020 06:18:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=aHsAD30eplTLAmyfrhAwqb/bjmQuLl4rTfeV9gEtaIw=;
- b=EXY1kpJ+Xd2zsMDwvksqlHgKAio3XoAjGDCgmD/p34L2+zI/X1Uf/f9AkzWbkUSRdtTg
- RJc3W85RdyIDgWqBgc/xao/9j1b7o7ZRVI9xDwujtGiC5EEocL+lRbYF/Ok2nDOxfvPt
- jlexAG5XjTD0ATs+AsQiVlWqcnucb2Z19DleQLMRmZS04QVQg+esdd0ycTr6Y1sbF+py
- qh6p9vYpo3oFhgLxPuqBPnFyApcOKQ/JM2WkS7cKvbSt9t33NqTOIQEbPQ/zC5G1lsQb
- DMskKFAmI/+lIqOtZf+rhHY7pWTulTmn+mPlrpms+b0lEHTmHqECIbkW73PC6oNqE7k/ kA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 33t22p25fv-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 28 Sep 2020 06:18:25 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 28 Sep
- 2020 12:18:24 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 28 Sep 2020 12:18:24 +0100
-Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com
- [198.61.64.171])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5EC9845;
- Mon, 28 Sep 2020 11:18:23 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>
-Subject: [PATCH v2 1/2] ASoC: cs4234: Add dtschema binding document
-Date: Mon, 28 Sep 2020 12:18:20 +0100
-Message-ID: <20200928111821.26967-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95BA5F800DF
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2020 15:06:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95BA5F800DF
+IronPort-SDR: ZG/E/LqEexn0wiuTKbvY04GB5z1mU9qwTD+l8IzHD4Efe2Z5egXrYNUHtLn5GJLwYektL9fViw
+ kvkAk9P+dyaQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="149652962"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; d="scan'208";a="149652962"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Sep 2020 06:04:02 -0700
+IronPort-SDR: 1EtdT+dpnkZmQWVJ+D3XW8vJR8vgwn+iaYnIVHlZQ0CZ0dLXBDQcGX4As8K0Ccz8IBE/nzMdqG
+ w1wzQjt7CN2A==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; d="scan'208";a="488569106"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Sep 2020 06:03:58 -0700
+Received: from andy by smile with local (Exim 4.94)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1kMsoq-002Z94-GA; Mon, 28 Sep 2020 16:03:52 +0300
+Date: Mon, 28 Sep 2020 16:03:52 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v9 09/14] ASoC: Intel: catpt: Simple sysfs attributes
+Message-ID: <20200928130352.GL3956970@smile.fi.intel.com>
+References: <20200926085910.21948-1-cezary.rojewski@intel.com>
+ <20200926085910.21948-10-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- bulkscore=0 phishscore=0
- clxscore=1015 adultscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
- impostorscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280091
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926085910.21948-10-cezary.rojewski@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ filip.kaczmarski@intel.com, harshapriya.n@intel.com,
+ gregkh@linuxfoundation.org, marcin.barlik@intel.com, zwisler@google.com,
+ lgirdwood@gmail.com, tiwai@suse.com, filip.proborszcz@intel.com,
+ broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
+ michal.wasko@intel.com, cujomalainey@chromium.org,
+ krzysztof.hejmowski@intel.com, ppapierkowski@habana.ai,
+ vamshi.krishna.gopal@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,96 +98,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+On Sat, Sep 26, 2020 at 10:59:05AM +0200, Cezary Rojewski wrote:
+> Add sysfs entries for displaying version of FW currently in use as well
+> as dumping full FW information including build and log-providers hashes.
 
-Document the bindings for the CS4234 ASoC codec driver.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- .../bindings/sound/cirrus,cs4234.yaml         | 74 +++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> 
+> Changes in v9:
+> - fixed newlines in sysfs as requested by Andy, left tags as no other
+>   changes done
+> 
+> Changes in v7:
+> - fixed licence header for fs.c
+> - renamed fs.c to sysfs.c to better match its purpose
+> - added documentation within Documentation/ABI/testing for entries
+>   exposed by catpt
+> - bin_attribute fw_build replaced by attribute fw_info:
+>   fw_info contains full FW information and after successful handshake,
+>   it's always available (stored in driver data) so no need to invoke
+>   GET_FW_VERSION IPC again, just dump the stored information
+> - rather than manually creating and removing sysfs files, now makes use
+>   of dev_groups member of struct device_driver 
+> 
+> Changes in v6:
+> - functions declaration and usage now part of this patch instead of
+>   being separated from it
+> 
+> Changes in v2:
+> - fixed size provided to memcpy() in fw_build_read() as reported by Mark
+> 
+>  .../ABI/testing/sysfs-bus-pci-devices-catpt   | 16 ++++++
+>  sound/soc/intel/catpt/core.h                  |  2 +
+>  sound/soc/intel/catpt/device.c                |  1 +
+>  sound/soc/intel/catpt/sysfs.c                 | 55 +++++++++++++++++++
+>  4 files changed, 74 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-catpt
+>  create mode 100644 sound/soc/intel/catpt/sysfs.c
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-catpt b/Documentation/ABI/testing/sysfs-bus-pci-devices-catpt
+> new file mode 100644
+> index 000000000000..8a200f4eefbd
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-catpt
+> @@ -0,0 +1,16 @@
+> +What:		/sys/devices/pci0000:00/<dev>/fw_version
+> +Date:		September 2020
+> +Contact:	Cezary Rojewski <cezary.rojewski@intel.com>
+> +Description:
+> +		Version of AudioDSP firmware ASoC catpt driver is
+> +		communicating with.
+> +		Format: %d.%d.%d.%d, type:major:minor:build.
+> +
+> +What:		/sys/devices/pci0000:00/<dev>/fw_info
+> +Date:		September 2020
+> +Contact:	Cezary Rojewski <cezary.rojewski@intel.com>
+> +Description:
+> +		Detailed AudioDSP firmware build information including
+> +		build hash and log-providers hash. This information is
+> +		obtained during initial handshake with firmware.
+> +		Format: %s.
+> diff --git a/sound/soc/intel/catpt/core.h b/sound/soc/intel/catpt/core.h
+> index a29b4c0232cb..88dc3fb6306f 100644
+> --- a/sound/soc/intel/catpt/core.h
+> +++ b/sound/soc/intel/catpt/core.h
+> @@ -15,6 +15,8 @@
+>  
+>  struct catpt_dev;
+>  
+> +extern const struct attribute_group *catpt_attr_groups[];
+> +
+>  void catpt_sram_init(struct resource *sram, u32 start, u32 size);
+>  void catpt_sram_free(struct resource *sram);
+>  struct resource *
+> diff --git a/sound/soc/intel/catpt/device.c b/sound/soc/intel/catpt/device.c
+> index 0d2dd919de8d..390ffb203de0 100644
+> --- a/sound/soc/intel/catpt/device.c
+> +++ b/sound/soc/intel/catpt/device.c
+> @@ -342,6 +342,7 @@ static struct platform_driver catpt_acpi_driver = {
+>  		.name = "intel_catpt",
+>  		.acpi_match_table = catpt_ids,
+>  		.pm = &catpt_dev_pm,
+> +		.dev_groups = catpt_attr_groups,
+>  	},
+>  };
+>  module_platform_driver(catpt_acpi_driver);
+> diff --git a/sound/soc/intel/catpt/sysfs.c b/sound/soc/intel/catpt/sysfs.c
+> new file mode 100644
+> index 000000000000..9579e233a15d
+> --- /dev/null
+> +++ b/sound/soc/intel/catpt/sysfs.c
+> @@ -0,0 +1,55 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+> +//
+> +// Author: Cezary Rojewski <cezary.rojewski@intel.com>
+> +//
+> +
+> +#include <linux/pm_runtime.h>
+> +#include "core.h"
+> +
+> +static ssize_t fw_version_show(struct device *dev,
+> +			       struct device_attribute *attr, char *buf)
+> +{
+> +	struct catpt_dev *cdev = dev_get_drvdata(dev);
+> +	struct catpt_fw_version version;
+> +	int ret;
+> +
+> +	pm_runtime_get_sync(cdev->dev);
+> +
+> +	ret = catpt_ipc_get_fw_version(cdev, &version);
+> +
+> +	pm_runtime_mark_last_busy(cdev->dev);
+> +	pm_runtime_put_autosuspend(cdev->dev);
+> +
+> +	if (ret)
+> +		return CATPT_IPC_ERROR(ret);
+> +
+> +	return sprintf(buf, "%d.%d.%d.%d\n", version.type, version.major,
+> +		       version.minor, version.build);
+> +}
+> +static DEVICE_ATTR_RO(fw_version);
+> +
+> +static ssize_t fw_info_show(struct device *dev,
+> +			    struct device_attribute *attr, char *buf)
+> +{
+> +	struct catpt_dev *cdev = dev_get_drvdata(dev);
+> +
+> +	return sprintf(buf, "%s\n", cdev->ipc.config.fw_info);
+> +}
+> +static DEVICE_ATTR_RO(fw_info);
+> +
+> +static struct attribute *catpt_attrs[] = {
+> +	&dev_attr_fw_version.attr,
+> +	&dev_attr_fw_info.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group catpt_attr_group = {
+> +	.attrs = catpt_attrs,
+> +};
+> +
+> +const struct attribute_group *catpt_attr_groups[] = {
+> +	&catpt_attr_group,
+> +	NULL
+> +};
+> -- 
+> 2.17.1
+> 
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml
-new file mode 100644
-index 000000000000..156560b2a980
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/cirrus,cs4234.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Cirrus Logic cs4234 audio CODEC
-+
-+maintainers:
-+  - patches@opensource.cirrus.com
-+
-+description:
-+  The CS4234 is a highly versatile CODEC that combines 4 channels of
-+  high performance analog to digital conversion, 4 channels of high
-+  performance digital to analog conversion for audio, and 1 channel of
-+  digital to analog conversion to provide a nondelayed audio reference
-+  signal to an external Class H tracking power supply. If not used to
-+  drive a tracking power supply, the 5th DAC can instead be used as a
-+  standard audio grade DAC, with performance specifications identical
-+  to that of the 4 DACs in the audio path. Additionally, the CS4234
-+  includes tunable group delay for each of the 4 audio DAC paths to
-+  provide lead time for the external switch-mode power supply, and a
-+  nondelayed path into the DAC outputs for input signals requiring a
-+  low-latency path to the outputs.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - cirrus,cs4234
-+
-+  reg:
-+    description:
-+      The 7-bit I2C address depends on the state of the ADx pins, in
-+      binary given by [0 0 1 0 AD2 AD1 AD0 0].
-+    items:
-+      minimum: 0x10
-+      maximum: 0x17
-+
-+  VA-supply:
-+    description:
-+      Analogue power supply.
-+
-+  VL-supply:
-+    description:
-+      Interface power supply.
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - VA-supply
-+  - VL-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c@e0004000 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        reg = <0xe0004000 0x1000>;
-+
-+        cs4234: codec@11 {
-+            compatible = "cirrus,cs4234";
-+            reg = <0x11>;
-+
-+            VA-supply = <&vdd3v3>;
-+            VL-supply = <&vdd3v3>;
-+
-+            reset-gpios = <&gpio 0>;
-+        };
-+    };
 -- 
-2.20.1
+With Best Regards,
+Andy Shevchenko
+
 
