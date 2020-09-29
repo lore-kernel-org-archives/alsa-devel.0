@@ -2,59 +2,62 @@ Return-Path: <SRS0=nSv5=DG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C466C4346E
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 04:31:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 532FCC4346E
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 04:32:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68F5120BED
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 04:31:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80712208FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 04:32:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d8W57s4M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68F5120BED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e6cgAyWx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80712208FE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74CE71841;
-	Tue, 29 Sep 2020 06:30:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74CE71841
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D8531871;
+	Tue, 29 Sep 2020 06:31:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D8531871
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601353909;
-	bh=BpqL03ZNj0Y0m0z8gaakbJnb9fLEczk73daq3CmJd24=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=d8W57s4MyKNBbEJkJG/6hk6Tvaonec9U7h7ijwC5+DLCR2qHVyg2CRzmG2B6phf3K
-	 bk7QlGVkTCOI6DwPgFy9ntHVRf5BXXktxwoCqimGUzq4dKPiN/AbvWGJaivZ+eITxq
-	 74/Xwj/qBI7GNm8NGhc3jk7oNXe9yeQeIfhbGEiE=
+	s=default; t=1601353962;
+	bh=mJVqQ6ACf9KEirF/V4aktLJP70S6ftoPqjYMRm5/XTA=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=e6cgAyWxgP0+rc0icL4qdHmHHayfmb/JLyOGG4Misgb85A36BguKRxPC+klOHEl4Y
+	 +QLDSVLMAEkGKtukmXYeLSr3jdvF0EgsSVxzF25QTc+1rVVn6aNbjta8E/YUjq8niI
+	 kmymljLYRFdjWkPEZSFR6WRyO4QdSnP9DTVrWPUQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A76F5F801DB;
-	Tue, 29 Sep 2020 06:30:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B18DAF8022D;
+	Tue, 29 Sep 2020 06:31:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2429EF801DB; Tue, 29 Sep 2020 06:30:54 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 14832F80115
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 06:30:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14832F80115
-Date: 29 Sep 2020 13:30:41 +0900
-X-IronPort-AV: E=Sophos;i="5.77,316,1596466800"; d="scan'208";a="58205582"
+ id 8B349F8022D; Tue, 29 Sep 2020 06:31:20 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id AEA90F800DD
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 06:31:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEA90F800DD
+Date: 29 Sep 2020 13:31:11 +0900
+X-IronPort-AV: E=Sophos;i="5.77,316,1596466800"; d="scan'208";a="58421916"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 29 Sep 2020 13:30:41 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 29 Sep 2020 13:31:11 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3C8E24192F8D;
- Tue, 29 Sep 2020 13:30:41 +0900 (JST)
-Message-ID: <87pn65gqcj.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 55B764193554;
+ Tue, 29 Sep 2020 13:31:11 +0900 (JST)
+Message-ID: <87o8lpgqbp.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/6] ASoC: merge soc_pcm_hw_param() rollback and
- soc_pcm_hw_free()
+Subject: [PATCH 1/6] ASoC: soc.h: remove for_each_rtd_dais_rollback()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87pn65gqcj.wl-kuninori.morimoto.gx@renesas.com>
+References: <87pn65gqcj.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -74,50 +77,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc_pcm_hw_params() does rollback when failed (A),
-but, it is almost same as soc_pcm_hw_free().
+commit 140a4532cdb8 ("ASoC: soc-pcm: add soc_pcm_clean() and call it
+from soc_pcm_open/close()") uses soc_pcm_clean() and then
+for_each_rtd_dais_rollback() is no longer used.
+This patch removes it.
 
-	static int soc_pcm_hw_params(xxx)
-	{
-		...
-		if (ret < 0)
-			goto xxx_err;
-		...
-		return ret;
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/soc.h | 2 --
+ 1 file changed, 2 deletions(-)
 
- ^	component_err:
- |		...
- |	interface_err:
-(A)		...
- |	codec_err:
- |		...
- v		return ret;
-	}
-
-This kind of duplicated code can be a hotbed of bugs,
-thus, this patch-set share soc_pcm_hw_free() and rollback.
-
-Kuninori Morimoto (6):
-  ASoC: soc.h: remove for_each_rtd_dais_rollback()
-  ASoC: soc-pcm: move soc_pcm_hw_free() next to soc_pcm_hw_params()
-  ASoC: soc-link: add mark for snd_soc_link_hw_params/free()
-  ASoC: soc-component: add mark for snd_soc_pcm_component_hw_params/free()
-  ASoC: soc-dai: add mark for snd_soc_dai_hw_params/free()
-  ASoC: soc-pcm: add soc_pcm_hw_clean() and call it from soc_pcm_hw_params/free()
-
- include/sound/soc-component.h |   6 +-
- include/sound/soc-dai.h       |   4 +-
- include/sound/soc-link.h      |   3 +-
- include/sound/soc.h           |   7 +-
- sound/soc/soc-component.c     |  19 ++---
- sound/soc/soc-dai.c           |  13 +++-
- sound/soc/soc-dapm.c          |   4 +-
- sound/soc/soc-link.c          |  12 +++-
- sound/soc/soc-pcm.c           | 131 ++++++++++++++--------------------
- 9 files changed, 97 insertions(+), 102 deletions(-)
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 3b038c563ae1..7541c71c9eb8 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1196,8 +1196,6 @@ struct snd_soc_pcm_runtime {
+ 	     ((i) < (rtd)->num_cpus + (rtd)->num_codecs) &&		\
+ 		     ((dai) = (rtd)->dais[i]);				\
+ 	     (i)++)
+-#define for_each_rtd_dais_rollback(rtd, i, dai)		\
+-	for (; (--(i) >= 0) && ((dai) = (rtd)->dais[i]);)
+ 
+ void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
+ 
 -- 
 2.25.1
 
