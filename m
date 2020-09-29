@@ -2,110 +2,57 @@ Return-Path: <SRS0=nSv5=DG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F042C4346E
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 09:40:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13ECBC4346E
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 09:44:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4505A20773
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 09:40:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 315AF20848
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 09:44:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="te8CuERM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4505A20773
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hw+lQRT7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 315AF20848
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 528461896;
-	Tue, 29 Sep 2020 11:39:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 528461896
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B9F21896;
+	Tue, 29 Sep 2020 11:43:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B9F21896
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601372442;
-	bh=mb0fMB7Izp2v73XcBRrc/XuH2+1YpI81QP2nqtuKDvs=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1601372674;
+	bh=KlB4XlLBzeq7prx6/68gWGzHtfQ699bPlwaW+E3oPFo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=te8CuERMJBXWtiq2mMLhcwV+3CIRX+44gh/lh8Sg1XgJjGKmAUm5XJHR0+Vg7VAfv
-	 XQ+PpeD499LhW6ZumYS5Fjc/yfns5lo1ACTd5bZsf83fEwIEtzN60uSz152HtySIkR
-	 sfMnSTrgXMjp51riOU2xp8kTUiz8UDhGIWslC/yY=
+	b=Hw+lQRT7YdqKgAouG94ExxC/A5iD3Pv1n5uC9jnDDqb+9O8MZPxyLhDu6fH0ztZih
+	 U6JNR+HqW8rOoG8hRc9ieioK3c94J8fhDVCkybJGOG/hWV3OLsAM7GnOXAd7nNFzPN
+	 Kpd9JaDTSLxgrodx0P8ZLzTA4IvYjFea3LiYOlrU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE7FBF801DB;
-	Tue, 29 Sep 2020 11:39:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E138FF801DB;
+	Tue, 29 Sep 2020 11:43:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD2C0F801F5; Tue, 29 Sep 2020 11:39:50 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8720FF800AB
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 11:39:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8720FF800AB
-IronPort-SDR: aX6GoLmfMEaXS1db33LZSFkriowh4R+FmH/MxbsEqy/noRB2DwZ5QLgzW+ythlOgn6VwuTegV7
- ctZsbM5RbrSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="163032998"
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; d="scan'208";a="163032998"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Sep 2020 02:39:39 -0700
-IronPort-SDR: n0VdGZHFvvRaQw6UPA4GpmQSAC2Hx7ZCe+ZfgfwqQA7UrOM81WKmA6Eb22DIcYqy2+Di+mWHGL
- 7h5RvNF0Jr6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; d="scan'208";a="351062315"
-Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
- by orsmga007.jf.intel.com with ESMTP; 29 Sep 2020 02:39:37 -0700
-Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
- IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 29 Sep 2020 10:39:36 +0100
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
- irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Tue, 29 Sep 2020 10:39:36 +0100
-From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: RE: [PATCH v9 02/14] ASoC: Intel: catpt: Implement IPC protocol
-Thread-Topic: [PATCH v9 02/14] ASoC: Intel: catpt: Implement IPC protocol
-Thread-Index: AQHWk+NWwUl83Zep90OOxekHAkyKjKl+AmkAgABD/WCAAPsXAIAAHbDQ
-Date: Tue, 29 Sep 2020 09:39:36 +0000
-Message-ID: <39c11ae42aa84cd3b03e8cc376e57317@intel.com>
-References: <20200926085910.21948-1-cezary.rojewski@intel.com>
- <20200926085910.21948-3-cezary.rojewski@intel.com>
- <20200928134424.GM3956970@smile.fi.intel.com>
- <407ca256d3884856b469ba65c0379d91@intel.com>
- <20200929084626.GY3956970@smile.fi.intel.com>
-In-Reply-To: <20200929084626.GY3956970@smile.fi.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 71F77F801F5; Tue, 29 Sep 2020 11:43:42 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 61BD5F800AB
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 11:43:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61BD5F800AB
 MIME-Version: 1.0
-Cc: "pierre-louis.bossart@linux.intel.com"
- <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kaczmarski,
- Filip" <filip.kaczmarski@intel.com>, "N,
- Harshapriya" <harshapriya.n@intel.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Barlik,
- Marcin" <marcin.barlik@intel.com>, "zwisler@google.com" <zwisler@google.com>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>,
- "Proborszcz, Filip" <filip.proborszcz@intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "amadeuszx.slawinski@linux.intel.com" <amadeuszx.slawinski@linux.intel.com>,
- "Wasko, Michal" <michal.wasko@intel.com>,
- "cujomalainey@chromium.org" <cujomalainey@chromium.org>, "Hejmowski,
- Krzysztof" <krzysztof.hejmowski@intel.com>,
- "ppapierkowski@habana.ai" <ppapierkowski@habana.ai>, "Gopal, 
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1601372613051136971-webhooks-bot@alsa-project.org>
+References: <1601372613051136971-webhooks-bot@alsa-project.org>
+Subject: UCM fails if driver built into kernel
+Message-Id: <20200929094342.71F77F801F5@alsa1.perex.cz>
+Date: Tue, 29 Sep 2020 11:43:42 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,138 +68,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-09-29 10:46 AM, Andy Shevchenko wrote:
-> On Mon, Sep 28, 2020 at 04:52:41PM +0000, Rojewski, Cezary wrote:
->> On 2020-09-28 3:44 PM, Andy Shevchenko wrote:
->>> On Sat, Sep 26, 2020 at 10:58:58AM +0200, Cezary Rojewski wrote:
+alsa-project/alsa-ucm-conf issue #52 was opened from caseorum:
 
-...
+Since `class/sound/card${CardNumber}/device/driver/module` does not exist if the module is built-in, `${sys:$KernelModulePath}` is left undefined.
+This is caused by b3531451db3b4ac6aa8c6a8bec3992bcf30fffe4. The fallback suggested in alsa-project/alsa-lib#79 works for at least my bdw-rt5677.
+Is there a more general solution here? Maybe `.../device/modalias`?
 
->>>> +	ret =3D ipc->rx.rsp.status;
->>>> +	if (reply) {
->>>> +		reply->header =3D ipc->rx.header;
->>>> +		if (!ret && reply->data)
->>>> +			memcpy(reply->data, ipc->rx.data, reply->size);
->>>> +	}
->>>> +
->>>> +	return ret;
->>>
->>> One more looking into this... What about
->>>
->>> 	if (reply)
->>> 		reply->header =3D ipc->rx.header;
->>>
->>> 	ret =3D ipc->rx.rsp.status; // or even directly if (status) return sta=
-tus.
->>> 	if (ret)
->>> 		return ret;
->>>
->>> 	if (reply->data)
->>> 		memcpy(reply->data, ipc->rx.data, reply->size);
->>>
->>> 	return 0;
->>>
->>> It may be verbose but I think readability is better here.
->>
->> In your example, last 'if' will cause exception if reply=3D=3DNULL.
->=20
-> Yeah, should be reply && reply->data.
->=20
->> Got your point, although that's just few lines which already involve
->> 'if' with { } spacing. After removing size-checks you suggested this
->> code is quite thin already.
->=20
-> Yes, sometimes too thin is not good in terms of readability.
->=20
-
-This will cost us additional check (2x reply=3D=3DNULL instead of 1x). Mayb=
-e
-a newline between:
-
-	reply->header =3D ipc->rx.header;
-
-	if (!ret && reply->data)
-		memcpy(reply->data, ipc->rx.data, reply->size);
-
-suffices?
-
-
-...
-
->>>> +	CATPT_CHANNEL_CONFIG_5_POINT_0	=3D 7, /* L, C, R, Ls & Rs */
->>>> +	CATPT_CHANNEL_CONFIG_5_POINT_1	=3D 8, /* L, C, R, Ls, Rs & LFE */
->>>> +	CATPT_CHANNEL_CONFIG_DUAL_MONO	=3D 9, /* One channel replicated in t=
-wo */
->>>> +	CATPT_CHANNEL_CONFIG_INVALID	=3D 10,
->>>
->>> Hmm... I think I got the point why DUAL_MONO was at the end of the swit=
-ch-case.
->>>
->>
->> Well, well. Indeed we found where Willy is..
->=20
-> So, we may return to the previous state, up to you.
->=20
-> ...
->=20
->>>> +enum catpt_mclk_frequency {
->>>> +	CATPT_MCLK_OFF =3D 0,
->>>> +	CATPT_MCLK_FREQ_6_MHZ =3D 1,
->>>> +	CATPT_MCLK_FREQ_21_MHZ =3D 2,
->>>> +	CATPT_MCLK_FREQ_24_MHZ =3D 3,
->>>> +};
->>>
->>> Looks like a 3 MHz as base frequency with multiplicators 0, 2, 7, 8.
->>
->> Naming based on FW enum type equivalent.
->=20
-> It was just an observation without any AR item :-)
-> If you really know the (hardware) background of these choices then perhap=
-s
-> comment would be good to have.
->=20
-
-In general I'm avoiding that subject here. Quite disappointed with what
-I had to face, and that's not "just" existing linux solution but every
-other component involved in LPT/WPT ADSP project.
-
-I have plans for many more comments Andy, e.g.: fw image block division
-(ascii graph and such). All of that will come in time, eventually. Not
-intending to leave catpt without maintenance like other sound/soc/intel/
-solutions once were.
-
->>>> +#define CATPT_STREAM_MSG(msg_type) \
->>>> +{ \
->>>> +	.stream_msg_type =3D CATPT_STRM_##msg_type, \
->>>> +	.global_msg_type =3D CATPT_GLB_STREAM_MESSAGE }
->>>> +#define CATPT_STAGE_MSG(msg_type) \
->>>> +{ \
->>>> +	.stage_action =3D CATPT_STG_##msg_type, \
->>>> +	.stream_msg_type =3D CATPT_STRM_STAGE_MESSAGE, \
->>>> +	.global_msg_type =3D CATPT_GLB_STREAM_MESSAGE }
->>>
->>> Hmm... This split is interesting. I would rather move } to a new line.
->>>
->>
->> As basically everything in my code, style is based on existing example -
->> usually stuff from ASoC core - here, it's include/sound/soc.h. It's full
->> of such definitions so because catpt belongs to ASoC subsystem, I've
->> used the exact same style. No problem changing if that's your preference=
-.
->=20
-> I think it's better to follow the existing style across subsystem. You ma=
-y
-> discard my (style related) comments if they contradict with used style.
->=20
-
-If there are no other concerns, either a quick spinoff (v10) or delay
-those readability improvements till series with resource_union() re-use?
-
-While catpt is a big upgrade when compared to existing /haswell/
-(obviously) there are more fruits of this rewrite: house cleaning -
-follow-up series targeting /haswell/, /baytrail/ and /common/ of
-sound/soc/intel. Guess everyone would like to see those in 5.10.
-
-Regards,
-Czarek
-
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/52
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
