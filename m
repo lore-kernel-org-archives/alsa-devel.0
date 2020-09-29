@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BE31C4727C
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 17:00:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63449C4727C
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 17:14:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79805208FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 17:00:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 86918208B8
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 17:14:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WOn99Xw0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79805208FE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q0AnZJuW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86918208B8
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87CDB17DE;
-	Tue, 29 Sep 2020 18:59:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87CDB17DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C941817DE;
+	Tue, 29 Sep 2020 19:13:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C941817DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601398818;
-	bh=Z4pr5M+zXKI0bNn0pFRyB6oZrVrVgr5f3yyrQkjV5qM=;
+	s=default; t=1601399649;
+	bh=ie8LzgdI5+SHr6RUxzpsj7sdKO/mDWGoH1OYPXGHpJ4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WOn99Xw0x7QMRLI4Ro1Bezux328JW1td96XKbhPHWj1B4KqQInRpC8sW+mP0W/djw
-	 L7fMHodw4ouZ1kRLpfTUJJ7olGKfk/6GXZggIDD8mbUaChNMv/BgNmfm/5qgaKE5AC
-	 n5z59y/WHxNiL/BeWjzkmap5UGwef80/9R3TE+no=
+	b=q0AnZJuWVenG3qbEZ1LW2DTUaRXiwqDi/rP+YuZ2P+abOx37roaFG4x7i+ElgarMX
+	 a9JOQ6X+qqFD18buOljLuPU9+2T/x3kAKB1az0MSFy1rcrXXQqIMhMERZd6MB/0WB7
+	 gh5kfv0gVXtrQIxxQNys/JrDBziSQIQ+zcwXPnOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08BD1F801DB;
-	Tue, 29 Sep 2020 18:59:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 524DBF801DB;
+	Tue, 29 Sep 2020 19:13:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F27BF801F5; Tue, 29 Sep 2020 18:59:27 +0200 (CEST)
+ id 462D3F801F5; Tue, 29 Sep 2020 19:13:18 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 2A52CF80115
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 18:59:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A52CF80115
+ by alsa1.perex.cz (Postfix) with ESMTP id 438DFF800AB
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 19:13:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 438DFF800AB
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1601398757895176888-webhooks-bot@alsa-project.org>
-References: <1601398757895176888-webhooks-bot@alsa-project.org>
+In-Reply-To: <1601399585529434919-webhooks-bot@alsa-project.org>
+References: <1601399585529434919-webhooks-bot@alsa-project.org>
 Subject: bdw-rt5677: add SOF support
-Message-Id: <20200929165927.1F27BF801F5@alsa1.perex.cz>
-Date: Tue, 29 Sep 2020 18:59:27 +0200 (CEST)
+Message-Id: <20200929171318.462D3F801F5@alsa1.perex.cz>
+Date: Tue, 29 Sep 2020 19:13:18 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,9 +68,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #53 was opened from caseorum:
+alsa-project/alsa-ucm-conf pull request #53 was edited from caseorum:
 
-
+I believe this is the "mechanism" intended in 898602208888da63d758ff3c293b5ad2ec6e6c19.
 
 Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/53
 Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/53.patch
