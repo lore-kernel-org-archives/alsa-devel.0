@@ -2,67 +2,74 @@ Return-Path: <SRS0=nSv5=DG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35DE4C4346E
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 07:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19ADFC4346E
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 07:13:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 84061207C4
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 07:06:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 35251207C4
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Sep 2020 07:13:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DcbmbPIZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84061207C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gloU72KI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35251207C4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0EB517A5;
-	Tue, 29 Sep 2020 09:05:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0EB517A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CE3C1843;
+	Tue, 29 Sep 2020 09:12:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CE3C1843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601363197;
-	bh=+RyDPIL9JUjR/hL3YYM/qYPAe1AJ1h3wUAY1M7WMiHI=;
+	s=default; t=1601363627;
+	bh=cB1S83UqNFRYzH5Raaqw/kP/8xnxkSv9hqB6GrgHWig=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DcbmbPIZe3ebO5hz8Tw+13mlhB3EALZV0S7deWP8ZPIUUcXK/X0KSDiu3tIm92rVj
-	 i9TapR3uC3pr8ZDOcyzu+6PVaDvN3SA0PQOiqB1HOWUS9GC09EBxaLDkHil0g2mV/Q
-	 ulv0ga2COl4BbDng/m3rYrxHm612LGm2A+FitV9c=
+	b=gloU72KIar3LgYJ8G5d8pWg8DqFRFPKBtbAXLXcHaLeyPSRrr42xouGvCXfS319it
+	 +t3zgbMetKgCyyQxrcAHW2LBjv0Hv0R1yvmPSgO/C3jin4gJeQvsyMlZ9XcBVfPnsE
+	 64RHZdgbWH4zC7DCsN6p+kJ7D8Usha1UQZ8xZPBM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B3D2F801DB;
-	Tue, 29 Sep 2020 09:05:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9BBAF801DB;
+	Tue, 29 Sep 2020 09:12:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF869F801F5; Tue, 29 Sep 2020 09:05:44 +0200 (CEST)
+ id 0E1EFF801F5; Tue, 29 Sep 2020 09:12:55 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC917F800AB
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 09:05:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC917F800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A645F800AB
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2020 09:12:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A645F800AB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5216DB199;
- Tue, 29 Sep 2020 07:05:36 +0000 (UTC)
-Date: Tue, 29 Sep 2020 09:05:36 +0200
-Message-ID: <s5hr1qlkqpr.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 68DF2B0B3;
+ Tue, 29 Sep 2020 07:12:44 +0000 (UTC)
+Date: Tue, 29 Sep 2020 09:12:44 +0200
+Message-ID: <s5ho8lpkqdv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/realtek - set mic to auto detect on a HP AIO
- machine
-In-Reply-To: <20200928080117.12435-1-hui.wang@canonical.com>
-References: <20200928080117.12435-1-hui.wang@canonical.com>
+To: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+Subject: Re: [PATCH] ALSA: compress: allow pause and resume during draining
+In-Reply-To: <000f01d69603$10573fb0$3105bf10$@samsung.com>
+References: <CGME20200928105009epcas2p4a65d50d9d09800281395a490d1844ef3@epcas2p4.samsung.com>
+ <000c01d69585$228db6b0$67a92410$@samsung.com>
+ <7ba714ce-8b33-1b64-7503-6b155bf43909@perex.cz>
+ <eaa35431-01f4-f858-0673-cc3b4ddf1c5a@linux.intel.com>
+ <000f01d69603$10573fb0$3105bf10$@samsung.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, lgirdwood@gmail.com,
+ kimty@samsung.com, tiwai@suse.com,
+ 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
+ vkoul@kernel.org, hmseo@samsung.com, tkjung@samsung.com,
+ pilsun.jang@samsung.com, s47.kang@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,21 +85,187 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Sep 2020 10:01:17 +0200,
-Hui Wang wrote:
+On Tue, 29 Sep 2020 03:51:35 +0200,
+Gyeongtaek Lee wrote:
 > 
-> Recently we enabled a HP AIO machine, we found the mic on the machine
-> couldn't record any sound and it couldn't detect plugging and
-> unplugging as well.
-> 
-> Through debugging we found the mic is set to manual detect mode, after
-> setting it to auto detect mode, it could detect plugging and
-> unplugging and could record sound.
-> 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> On 9/28/20 11:35 PM, Pierre-Louis Bossart wrote:
+> >On 9/28/20 6:13 AM, Jaroslav Kysela wrote:
+> >> Dne 28. 09. 20 v 12:50 Gyeongtaek Lee napsal(a):
+> >>> With a stream with low bitrate, user can't pause or resume the stream
+> >>> near the end of the stream because current ALSA doesn't allow it.
+> >>> If the stream has very low bitrate enough to store whole stream into
+> >>> the buffer, user can't do anything except stop the stream and then
+> >>> restart it from the first.
+> >>> If pause and resume is allowed during draining, user experience can be
+> >>> enhanced.
+> >> 
+> >> It seems that we need a new state to handle the pause + drain condition for
+> >> this case.
+> >> 
+> >> With this proposed change, the pause state in drain is invisible.
+> >
+> >Indeed it's be much nicer to have a new state, e..g 
+> >SNDRV_PCM_STATE_DRAINING_PAUSED.
+> Ok. I will add the new state.
+> >
+> >One concern is that states are defined in uapi/sound/asoc.h, so wouldn't 
+> >this have impacts on userspace as well? We'd change the value of 
+> >SNDRV_PCM_STATE_LAST.
+> >
+> I also agree that adding new state and increase LAST value in the header of uapi
+> could be dangerous. So, I added it to comress_offload.h for now.
+> It could be merged into snd_pcm_state_t in someday with big changes.
+> Could you review the fixed patch below?
 
-Thanks, applied.
+Hrm, this resulted in rather more complex changes than the original
+patch.  It shows that introducing yet another state is no good idea
+for this particular case.
 
+Since the possible application's behavior after this pause is as same
+as the normal pause (i.e. either resuming pause or dropping), I find
+it OK to take the original approach.
+
+
+thanks,
 
 Takashi
+
+> With a stream with low bitrate, user can't pause or resume the stream
+> near the end of the stream because current ALSA doesn't allow it.
+> If the stream has very low bitrate enough to store whole stream into
+> the buffer, user can't do anything except stop the stream and then
+> restart it from first.
+> If pause, resume are allowed during draining, user experience can be
+> enhanced.
+> 
+> New state for pause during draining is defined in compress_offload.h for
+> now. If PCM_STATEs in uapi/sound/asound.h is changed, pcm libraries and
+> userspace application will be affected.
+> 
+> Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  include/uapi/sound/compress_offload.h |  3 ++
+>  sound/core/compress_offload.c         | 47 ++++++++++++++++++++++-----
+>  2 files changed, 41 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+> index 7184265c0b0d..f30b9851d1d7 100644
+> --- a/include/uapi/sound/compress_offload.h
+> +++ b/include/uapi/sound/compress_offload.h
+> @@ -189,4 +189,7 @@ struct snd_compr_metadata {
+>  #define SND_COMPR_TRIGGER_DRAIN 7 /*FIXME move this to pcm.h */
+>  #define SND_COMPR_TRIGGER_NEXT_TRACK 8
+>  #define SND_COMPR_TRIGGER_PARTIAL_DRAIN 9
+> +
+> +/* FIXME move this to asound.h */
+> +#define	SNDRV_PCM_STATE_DRAINING_PAUSED	(SNDRV_PCM_STATE_LAST + 1)
+>  #endif
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index 0e53f6f31916..58fbe0d99431 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -151,6 +151,7 @@ static int snd_compr_free(struct inode *inode, struct file *f)
+>  	case SNDRV_PCM_STATE_RUNNING:
+>  	case SNDRV_PCM_STATE_DRAINING:
+>  	case SNDRV_PCM_STATE_PAUSED:
+> +	case SNDRV_PCM_STATE_DRAINING_PAUSED:
+>  		data->stream.ops->trigger(&data->stream, SNDRV_PCM_TRIGGER_STOP);
+>  		break;
+>  	default:
+> @@ -431,6 +432,7 @@ static __poll_t snd_compr_poll(struct file *f, poll_table *wait)
+>  	case SNDRV_PCM_STATE_RUNNING:
+>  	case SNDRV_PCM_STATE_PREPARED:
+>  	case SNDRV_PCM_STATE_PAUSED:
+> +	case SNDRV_PCM_STATE_DRAINING_PAUSED:
+>  		if (avail >= stream->runtime->fragment_size)
+>  			retval = snd_compr_get_poll(stream);
+>  		break;
+> @@ -708,11 +710,23 @@ static int snd_compr_pause(struct snd_compr_stream *stream)
+>  {
+>  	int retval;
+>  
+> -	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
+> +	switch (stream->runtime->state) {
+> +	case SNDRV_PCM_STATE_RUNNING:
+> +		retval = stream->ops->trigger(stream,
+> +			SNDRV_PCM_TRIGGER_PAUSE_PUSH);
+> +		if (!retval)
+> +			stream->runtime->state = SNDRV_PCM_STATE_PAUSED;
+> +		break;
+> +	case SNDRV_PCM_STATE_DRAINING:
+> +		retval = stream->ops->trigger(stream,
+> +			SNDRV_PCM_TRIGGER_PAUSE_PUSH);
+> +		if (!retval)
+> +			stream->runtime->state =
+> +				SNDRV_PCM_STATE_DRAINING_PAUSED;
+> +		break;
+> +	default:
+>  		return -EPERM;
+> -	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_PAUSE_PUSH);
+> -	if (!retval)
+> -		stream->runtime->state = SNDRV_PCM_STATE_PAUSED;
+> +	}
+>  	return retval;
+>  }
+>  
+> @@ -720,11 +734,22 @@ static int snd_compr_resume(struct snd_compr_stream *stream)
+>  {
+>  	int retval;
+>  
+> -	if (stream->runtime->state != SNDRV_PCM_STATE_PAUSED)
+> +	switch (stream->runtime->state) {
+> +	case SNDRV_PCM_STATE_PAUSED:
+> +		retval = stream->ops->trigger(stream,
+> +			SNDRV_PCM_TRIGGER_PAUSE_RELEASE);
+> +		if (!retval)
+> +			stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
+> +		break;
+> +	case SNDRV_PCM_STATE_DRAINING_PAUSED:
+> +		retval = stream->ops->trigger(stream,
+> +			SNDRV_PCM_TRIGGER_PAUSE_RELEASE);
+> +		if (!retval)
+> +			stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
+> +		break;
+> +	default:
+>  		return -EPERM;
+> -	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_PAUSE_RELEASE);
+> -	if (!retval)
+> -		stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
+> +	}
+>  	return retval;
+>  }
+>  
+> @@ -835,7 +860,9 @@ static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
+>  	 */
+>  
+>  	ret = wait_event_interruptible(stream->runtime->sleep,
+> -			(stream->runtime->state != SNDRV_PCM_STATE_DRAINING));
+> +			(stream->runtime->state != SNDRV_PCM_STATE_DRAINING) &&
+> +			(stream->runtime->state !=
+> +				SNDRV_PCM_STATE_DRAINING_PAUSED));
+>  	if (ret == -ERESTARTSYS)
+>  		pr_debug("wait aborted by a signal\n");
+>  	else if (ret)
+> @@ -857,6 +884,7 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
+>  	case SNDRV_PCM_STATE_SETUP:
+>  	case SNDRV_PCM_STATE_PREPARED:
+>  	case SNDRV_PCM_STATE_PAUSED:
+> +	case SNDRV_PCM_STATE_DRAINING_PAUSED:
+>  		return -EPERM;
+>  	case SNDRV_PCM_STATE_XRUN:
+>  		return -EPIPE;
+> @@ -909,6 +937,7 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
+>  	case SNDRV_PCM_STATE_SETUP:
+>  	case SNDRV_PCM_STATE_PREPARED:
+>  	case SNDRV_PCM_STATE_PAUSED:
+> +	case SNDRV_PCM_STATE_DRAINING_PAUSED:
+>  		return -EPERM;
+>  	case SNDRV_PCM_STATE_XRUN:
+>  		return -EPIPE;
+> 
+> base-commit: a1b8638ba1320e6684aa98233c15255eb803fac7
+> -- 
+> 2.21.0
+> 
+> 
