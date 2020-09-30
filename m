@@ -2,69 +2,82 @@ Return-Path: <SRS0=iKRb=DH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 392EBC4727E
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 14:16:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9F0CC4727F
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 14:22:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC1B720754
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 14:16:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CD0E520709
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 14:22:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lfMwNBqH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC1B720754
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cZaosWYK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PPLqR/Co"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD0E520709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7D16177D;
-	Wed, 30 Sep 2020 16:15:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7D16177D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 467CD17BA;
+	Wed, 30 Sep 2020 16:21:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 467CD17BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601475381;
-	bh=pVpIYQePimfTDMmM/gc4qf+EEzEFiVDmLE+j4pQi0lU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601475722;
+	bh=+1/4+dyeBa6D/R3gR5U26bTNV5IOq0cpC9OId+aQk5w=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lfMwNBqHMO7nQNkjf/YefOT2vJ49v1mXW1USQqZRkrpZLjKhby2GTkBAjhYsBkXqW
-	 C1eeOHqMQLZgT6qa40eYIZzGoiVY+OtPhPBcsTYMzALl6eH1Wi1EfosHVEjDdU/VAP
-	 3yy1ajecakEGC2GRz3RqR7V+roEu05Z12GbO+orU=
+	b=cZaosWYKa86er8WyvgAhRIV8kUQ426QWDD5n0eDuRem8lHsns/+gkGxBHP4tv7Jr0
+	 lOJiJIWyxeO0kCRA6jmnhmhfCM0JPTkB7ByWxInBm0oSrPNTvjrAsmWPfQb7ivCPE9
+	 gtqR6ujpUYyBjkcn3OlcG2J1Zz2M3l7YgTvaxsok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FB7CF800DF;
-	Wed, 30 Sep 2020 16:15:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C87B5F801D8;
+	Wed, 30 Sep 2020 16:21:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 721C3F801ED; Wed, 30 Sep 2020 16:15:29 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id E3B6DF801ED; Wed, 30 Sep 2020 16:21:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D449F800DF
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 16:15:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D449F800DF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5BDE2ABB2;
- Wed, 30 Sep 2020 14:14:51 +0000 (UTC)
-Date: Wed, 30 Sep 2020 16:14:50 +0200
-Message-ID: <s5heemjgxlx.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65001F80110
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 16:21:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65001F80110
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="PPLqR/Co"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0581220709;
+ Wed, 30 Sep 2020 14:20:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601475660;
+ bh=+1/4+dyeBa6D/R3gR5U26bTNV5IOq0cpC9OId+aQk5w=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=PPLqR/Co7uT0HnEhiAWaop5XplOF5fqsmwoBzIIGjEvmQACZdq6Kz1P517JO8+fe2
+ z5K3QXKXxESE90q1l2/sDFFwfBbWSGpIEggLOSbcQlY+DzA9oWA+VrY3dA0lNOai0B
+ M7dM3++bI6ZRq69v+Ej0o8H2l4PxITr63CeTkA7g=
+Date: Wed, 30 Sep 2020 15:20:01 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH v2 0/2] ALSA: HDA: Early Forbid of runtime PM
-In-Reply-To: <alpine.DEB.2.22.394.2009301453110.3186@eliteleevi.tm.intel.com>
+Subject: Re: [PATCH v2 2/2] ASoC: hdac_hda: allow runtime pm at end of probe
+Message-ID: <20200930142001.GI4974@sirena.org.uk>
 References: <20200930114140.3839617-1-kai.vehmanen@linux.intel.com>
- <alpine.DEB.2.22.394.2009301453110.3186@eliteleevi.tm.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com, harshapriya.n@intel.com,
- cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
- emmanuel.jillela@intel.com, broonie@kernel.org,
- ranjani.sridharan@linux.intel.com
+ <20200930114140.3839617-3-kai.vehmanen@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ZY5CS28jBCfb727c"
+Content-Disposition: inline
+In-Reply-To: <20200930114140.3839617-3-kai.vehmanen@linux.intel.com>
+X-Cookie: Doing gets it done.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: cezary.rojewski@intel.com, kailang@realtek.com, tiwai@suse.de,
+ alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ harshapriya.n@intel.com, ranjani.sridharan@linux.intel.com,
+ emmanuel.jillela@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,30 +93,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 30 Sep 2020 14:05:01 +0200,
-Kai Vehmanen wrote:
-> 
-> Hi,
-> 
-> On Wed, 30 Sep 2020, Kai Vehmanen wrote:
-> 
-> > Fix a race with runtime PM enabled during codec initialization.
-> > 
-> > For snd-hda-intel, no changes are needed in controller code, but
-> > to not break ASoC controller drivers, this V2 series adds
-> > an additional change in ASoC hdac_hda to allow runtime pm again
-> > at end of probe.
-> 
-> this is a follow-up to:
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2020-August/173141.html
-> 
-> It turns out we need to make changes both in ASoC and sound/hda at the 
-> same time, to not break anything. So again a case where either Takashi or 
-> Mark, you should take both at the same time, if code itself is ok to all.
 
-I'm fine to take into my tree if Mark can give an Ack.
+--ZY5CS28jBCfb727c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Wed, Sep 30, 2020 at 02:41:40PM +0300, Kai Vehmanen wrote:
+> Align with recent change to forbid runtime suspend during codec
+> init in snd_hda_codec_device_new(), with matching call to
+> allow suspend at end of hdac_hda_codec_probe().
 
-thanks,
+Acked-by: Mark Brown <broonie@kernel.org>
 
-Takashi
+--ZY5CS28jBCfb727c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl90lBAACgkQJNaLcl1U
+h9D0dwf/cCfRYrYawT9MsfKDZTKvkADtwsfmIA2/vo/3+iv+XsG15MJUVehFVmLT
+/ChTW+rmqGt5NijXqwfgr7SZMeTPzeX/O02wpjbxOJqUsiVZznYilW60vHEfCmZB
+HuIO3++Ocz1knOUaQaV4IWxMlDlsbu8okLCVxswUUFXAnsF6Th34MTmaqRiR2buy
+9RNsde1pyAcBTSDfc6g1d4VGxINgJlM9DFt7cLuPa4j104pUVmRGNV+EhQdePEuj
+7c3AMoRTDyXlM9villQfcSfotbiKtAP+IWGYaQAGRl8VXdM67jefMm13u6OBscuo
+Iy/7p/agmhze/zZpSIG8pnwZqoHe4A==
+=lA/E
+-----END PGP SIGNATURE-----
+
+--ZY5CS28jBCfb727c--
