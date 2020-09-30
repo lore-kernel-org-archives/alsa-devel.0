@@ -7,66 +7,79 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 195EAC4727C
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 15:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22F8DC4727C
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 15:02:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51BB9206D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 15:00:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70921206FC
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 15:02:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FDWxAZ6Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51BB9206D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b3RjZR7d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70921206FC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B955B1815;
-	Wed, 30 Sep 2020 17:00:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B955B1815
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7DD6181D;
+	Wed, 30 Sep 2020 17:01:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7DD6181D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601478056;
-	bh=2wzZIuCSV+VRwbcJc9tbNmUFlJumfTYqyUs6IvdiKxs=;
+	s=default; t=1601478142;
+	bh=qngjk5Bv4nC5duhC8a+VZ2mPIsoePjgby6dRcjuCG+E=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FDWxAZ6YlbcIjsft6+jnREVZcfiPZod5ieQFHEmMnTYYGGf6mrN8q+aMPDXsUXHj0
-	 S2xbdR0+toamhbj584D0bjxdtnSe30R/AQpRM7YX1X6Ne1PX52DQm9XJa9UzCL7FHE
-	 jnSPskeqaUUAIZll8ka/nNaUtt/f9UswDDwcoWJ4=
+	b=b3RjZR7dH4lX9y3AL10r4hN260TBqiSNAtNiSse3IoGb4mOZl862vDhp4EQ1kggMt
+	 IXzrsGGECsOX/PbOBXaeu3CsCKQS9JEJccIyIRGe2/LMvHR8A7M8Zh/4Z0SP6xsh3T
+	 dMt0RmDUN99rRTb7EEfKLt+61j/ch3uG9LO8Su1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C5BAF80110;
-	Wed, 30 Sep 2020 17:00:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63DE9F801F9;
+	Wed, 30 Sep 2020 17:01:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16AD9F801ED; Wed, 30 Sep 2020 17:00:05 +0200 (CEST)
+ id 15097F8023F; Wed, 30 Sep 2020 17:01:30 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8F7AF801D8
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 16:59:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F7AF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8627F800DF
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 17:01:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8627F800DF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 7E873AFA0;
- Wed, 30 Sep 2020 14:59:59 +0000 (UTC)
-Date: Wed, 30 Sep 2020 16:59:59 +0200
-Message-ID: <s5h8scrgvio.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6426AAB92;
+ Wed, 30 Sep 2020 15:01:23 +0000 (UTC)
+Date: Wed, 30 Sep 2020 17:01:21 +0200
+Message-ID: <s5h7dsbgvge.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v4 37/52] docs: sound: writing-an-alsa-driver.rst: get rid
- of :c:type
-In-Reply-To: <00f330aabda084ede41ceb1932d0d687c42266c3.1601467849.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH v4 22/52] docs: get rid of :c:type explicit declarations
+ for structs
+In-Reply-To: <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <00f330aabda084ede41ceb1932d0d687c42266c3.1601467849.git.mchehab+huawei@kernel.org>
+ <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Julia Lawall <Julia.Lawall@inria.fr>
+Cc: alsa-devel@alsa-project.org,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>, Tom Rix <trix@redhat.com>,
+ linux-fpga@vger.kernel.org,
+ =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>, linux-mm@kvack.org,
+ Jonathan Corbet <corbet@lwn.net>, Satya Tangirala <satyat@google.com>,
+ Eric Biggers <ebiggers@kernel.org>,
+ Alexandru Ardelean <alexandru.ardelean@analog.com>,
+ linux-media@vger.kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>,
+ linux-fscrypt@vger.kernel.org, Moritz Fischer <mdf@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Jens Axboe <axboe@kernel.dk>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+ Puranjay Mohan <puranjay12@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Randy Dunlap <rdunlap@infradead.org>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+ Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,36 +95,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 30 Sep 2020 15:25:00 +0200,
+On Wed, 30 Sep 2020 15:24:45 +0200,
 Mauro Carvalho Chehab wrote:
 > 
-> the :c:type shouldn't be used with structs with Sphinx 3,
-> as the C domain there uses .. c:struct for structs.
+> The :c:type:`foo` only works properly with structs before
+> Sphinx 3.x.
 > 
-> As we have the automarkup extension, let's just get rid of
-> all :c:type as a hole, as those will be automagically
-                   whole?
-
-> marked as such.
+> On Sphinx 3.x, structs should now be declared using the
+> .. c:struct, and referenced via :c:struct tag.
 > 
-> This solves a bunch of warnings with Sphinx 3, like those:
+> As we now have the automarkup.py macro, that automatically
+> convert:
+> 	struct foo
 > 
-> 	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:490: WARNING: Unparseable C cross-reference: 'calling snd_card_free'
-> 	Invalid C declaration: Expected end of definition. [error at 8]
-> 	  calling snd_card_free
-> 	  --------^
-> 	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3328: WARNING: Unparseable C cross-reference: 'snd_rawmidi_transmit*'
-> 	Invalid C declaration: Expected end of definition. [error at 20]
-> 	  snd_rawmidi_transmit*
-> 	  --------------------^
-> 	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3928: WARNING: Unparseable C cross-reference: 'copy_from/to_user'
-> 	Invalid C declaration: Expected end of definition. [error at 9]
-> 	  copy_from/to_user
-> 	  ---------^
+> into cross-references, let's get rid of that, solving
+> several warnings when building docs with Sphinx 3.x.
 > 
 > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+For the sound part:
+  Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
 
 thanks,
