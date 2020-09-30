@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE832C4727C
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 14:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 195EAC4727C
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 15:00:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1731206FC
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 14:59:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51BB9206D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 15:00:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QNefJcXD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1731206FC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FDWxAZ6Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51BB9206D9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55784180F;
-	Wed, 30 Sep 2020 16:58:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55784180F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B955B1815;
+	Wed, 30 Sep 2020 17:00:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B955B1815
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601477961;
-	bh=+2c4rR0PSI8hKDHZpc0G6lXquyurQCb+eF3BtHQ0m70=;
+	s=default; t=1601478056;
+	bh=2wzZIuCSV+VRwbcJc9tbNmUFlJumfTYqyUs6IvdiKxs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QNefJcXDfVAkwdQpwL4WXju7WRMIVSrcyC9qcoojWOhXs2KTOfVT6cs5iRQZJMB91
-	 lpfYsQefFxV/BYiMaVZbQ0Tv9FrVJKEhXhaJHu7Z5WZO/Gl+hll0bM02mT2jTvgQ2b
-	 AIMS9/BFj4Y9hJ/L9xki7Tbd6h4UxjAfUkWytvvE=
+	b=FDWxAZ6YlbcIjsft6+jnREVZcfiPZod5ieQFHEmMnTYYGGf6mrN8q+aMPDXsUXHj0
+	 S2xbdR0+toamhbj584D0bjxdtnSe30R/AQpRM7YX1X6Ne1PX52DQm9XJa9UzCL7FHE
+	 jnSPskeqaUUAIZll8ka/nNaUtt/f9UswDDwcoWJ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9E6EF801F9;
-	Wed, 30 Sep 2020 16:58:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C5BAF80110;
+	Wed, 30 Sep 2020 17:00:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33A10F80228; Wed, 30 Sep 2020 16:58:29 +0200 (CEST)
+ id 16AD9F801ED; Wed, 30 Sep 2020 17:00:05 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFC09F80110
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 16:58:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFC09F80110
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8F7AF801D8
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 16:59:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F7AF801D8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D5AA4B2DC;
- Wed, 30 Sep 2020 14:58:20 +0000 (UTC)
-Date: Wed, 30 Sep 2020 16:58:20 +0200
-Message-ID: <s5ha6x7gvlf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7E873AFA0;
+ Wed, 30 Sep 2020 14:59:59 +0000 (UTC)
+Date: Wed, 30 Sep 2020 16:59:59 +0200
+Message-ID: <s5h8scrgvio.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v4 39/52] docs: writing-an-alsa-driver.rst: fix some bad
- c:func: markups
-In-Reply-To: <9c68c182ae5aa978d68b64695b1e3292fcf58e76.1601467849.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH v4 37/52] docs: sound: writing-an-alsa-driver.rst: get rid
+ of :c:type
+In-Reply-To: <00f330aabda084ede41ceb1932d0d687c42266c3.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <9c68c182ae5aa978d68b64695b1e3292fcf58e76.1601467849.git.mchehab+huawei@kernel.org>
+ <00f330aabda084ede41ceb1932d0d687c42266c3.1601467849.git.mchehab+huawei@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -82,24 +82,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 30 Sep 2020 15:25:02 +0200,
+On Wed, 30 Sep 2020 15:25:00 +0200,
 Mauro Carvalho Chehab wrote:
 > 
-> Some such markups are invalid, as reported by Sphinx:
+> the :c:type shouldn't be used with structs with Sphinx 3,
+> as the C domain there uses .. c:struct for structs.
 > 
-> 	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3317: WARNING: Unparseable C cross-reference: 'snd_rawmidi_transmit*'
+> As we have the automarkup extension, let's just get rid of
+> all :c:type as a hole, as those will be automagically
+                   whole?
+
+> marked as such.
+> 
+> This solves a bunch of warnings with Sphinx 3, like those:
+> 
+> 	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:490: WARNING: Unparseable C cross-reference: 'calling snd_card_free'
+> 	Invalid C declaration: Expected end of definition. [error at 8]
+> 	  calling snd_card_free
+> 	  --------^
+> 	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3328: WARNING: Unparseable C cross-reference: 'snd_rawmidi_transmit*'
 > 	Invalid C declaration: Expected end of definition. [error at 20]
 > 	  snd_rawmidi_transmit*
 > 	  --------------------^
-> 	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3917: WARNING: Unparseable C cross-reference: 'copy_from/to_user'
+> 	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3928: WARNING: Unparseable C cross-reference: 'copy_from/to_user'
 > 	Invalid C declaration: Expected end of definition. [error at 9]
 > 	  copy_from/to_user
 > 	  ---------^
-> 
-> The first case seems to be better replaced by a literal.
-> 
-> For the second one, let's generate cross-references, by
-> spliting it in two.
 > 
 > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
