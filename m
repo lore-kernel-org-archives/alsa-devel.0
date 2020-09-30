@@ -2,96 +2,79 @@ Return-Path: <SRS0=iKRb=DH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B52A5C2D0A8
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 06:45:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB9D0C2D0A8
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 07:20:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBBB22075F
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 06:45:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E51882075F
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 07:20:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GdKvo73s";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="UQflNGkU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBBB22075F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TwcgfjRm";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="zxyvqLdK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E51882075F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F0AD182F;
-	Wed, 30 Sep 2020 08:44:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F0AD182F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E7DD1807;
+	Wed, 30 Sep 2020 09:20:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E7DD1807
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601448313;
-	bh=5B7ZwR1k5DG1hE2mkiIH/krwOLu06s3K++d7+LHGE3E=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601450451;
+	bh=4LY3KRbLaFvjihrJNPMlNk9VeBDGzziEf7YC5zvZePU=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GdKvo73spvZrJFaTtRyBRmqbFWoD8EJ4P0MXN0fgWXvlNbggaSrCQ/EV6go0s4nVH
-	 +PPnmLmqlJ3jQEDZtLW6BaTEPbx+hUq8fWg3Kf/gMu1G461YkQN6hpNlkBTNi5F11K
-	 xja832eQAlVIdMqZ8CxPeUMzjqH8nYm0I/9bWFg0=
+	b=TwcgfjRmscnkYDAvflym6TGkaTMDzMvKSTtVelErPFqDZrRvqIrROHr/6HU60+pzW
+	 uJpOLWIROnPmCl2vy5kAJ1+ZyQgUcnyMDRNRnngcsOze4zWH/B7XG1v/sfhnVYUKU5
+	 8tf6LD4T0kd7u8Iaqt6fyDkXoc3IC2kQua5C8e9s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D251F80315;
-	Wed, 30 Sep 2020 08:40:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC502F80110;
+	Wed, 30 Sep 2020 09:20:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAD5FF80317; Wed, 30 Sep 2020 08:40:50 +0200 (CEST)
-Received: from z5.mailgun.us (z5.mailgun.us [104.130.96.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C57DFF801ED; Wed, 30 Sep 2020 09:19:58 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 157DAF80306
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 08:40:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 157DAF80306
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="UQflNGkU"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1601448045; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=TYp6guGD5agN+dnDEuqk5qeGTuYSEJEDzrH+D7B0qh4=;
- b=UQflNGkUWcwcJuT5Ton13lCS2B0JKuJnrGY01z9uycJoT0QkKqwGXr9iIGP/fkIZnBcZDdcG
- yj7a4me9nuxyY2lhgHEp4txF8d3+QGtGJmJUQ5y/YS33EnzpTyPQ9KkQXq2roaUWnq0B+BbW
- KwItSu7aPz5VhyMOT0k1XUmw6To=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f74285d767da8a9bbb09c87 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 06:40:29
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 7CC15C433B2; Wed, 30 Sep 2020 06:40:29 +0000 (UTC)
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id BD3CDC4339C;
- Wed, 30 Sep 2020 06:40:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BD3CDC4339C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 6/7] Asoc: qcom: lpass-platform : Increase buffer size
-Date: Wed, 30 Sep 2020 12:09:36 +0530
-Message-Id: <1601447977-18115-7-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
-References: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
-Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F9C9F80110
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 09:19:55 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 47334A003F;
+ Wed, 30 Sep 2020 09:19:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 47334A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1601450393; bh=h9+oBBHP0KTt9VJc/OoNaNah5Dgd/JG9qgS6j/sxev4=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=zxyvqLdKKUwCGd2I9qGtLXBwN2OhhJBHJdTUf5Mbhzm7OWds1vGVFWT4EMusLgoI/
+ a5C4EjmVDio+NZVY5R8cUedU+V2dceNQvQQ6nmzOlfW8HnbVuQWWJ21MNV5jQ0ocXa
+ Y56VmQS8Fcvz/oY7WwPzHOG1TpMI2UsN0PEJ+TGU=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 30 Sep 2020 09:19:50 +0200 (CEST)
+Subject: Re: [PATCH] ALSA: hda - Don't register a cb func if it is registered
+ already
+To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org,
+ tiwai@suse.de
+References: <20200930055146.5665-1-hui.wang@canonical.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <bd05e1be-96e8-14bf-011c-b43d165abf17@perex.cz>
+Date: Wed, 30 Sep 2020 09:19:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200930055146.5665-1-hui.wang@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,30 +90,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Dne 30. 09. 20 v 7:51 Hui Wang napsal(a):
+> If the caller of enable_callback_mst() passes a cb func, the callee
+> function will malloc memory and link this cb func to the list
+> unconditionally. This will introduce problem if caller is in the
+> hda_codec_ops.init() since the init() will be repeatedly called in the
+> codec rt_resume().
+> 
+> So far, the patch_hdmi.c and patch_ca0132.c call enable_callback_mst()
+> in the hda_codec_ops.init().
 
-Increase buffer size to support audio over DP.
+Won't be better to handle this double invocation at the callback call time? I
+believe that some refcounting and pointing to one allocated callback structure
+for all instances is better.
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+					Jaroslav
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index a5ab5f1..92ccedb 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -23,7 +23,7 @@ struct lpass_pcm_data {
- 	int i2s_port;
- };
- 
--#define LPASS_PLATFORM_BUFFER_SIZE	(16 * 1024)
-+#define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
- #define LPASS_PLATFORM_PERIODS		2
- 
- static const struct snd_pcm_hardware lpass_platform_pcm_hardware = {
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
