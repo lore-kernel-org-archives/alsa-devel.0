@@ -2,73 +2,81 @@ Return-Path: <SRS0=iKRb=DH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE800C4727E
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 12:01:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A60A7C4727E
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 12:07:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 987572076B
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 12:01:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AEB6F2076B
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 12:07:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lhjv3YVA";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0YyWw8C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 987572076B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vk3/8Bwx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEB6F2076B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E824D17F2;
-	Wed, 30 Sep 2020 14:00:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E824D17F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23EE717C5;
+	Wed, 30 Sep 2020 14:06:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23EE717C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601467269;
-	bh=ISbLEyVRJ3YYEaL+4amU3UcxHwOFBV2/mqHOS1AZfTI=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1601467666;
+	bh=7Lmcebaf/ulmwBS0PbWZSQYU7QTJFIiVjqgJsB/WBeo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lhjv3YVAtOd4ih6wkzvm/qpvrDwphwhLUqnr7wIcg/GV1mpTSQWb+D97Eg5ZZ+B+q
-	 GqNEYhCWKc6WfzwL3lLMG4TbBXOF1p4gpRb5HaVw5zH7ugPxs+h3n7rKA4FJCFrH/Z
-	 r7k8DU01uOE6/Siu/zjbV1pjQQoD3z+xYXUWbOpU=
+	b=Vk3/8BwxoZQcZd5ucBmliddxbquSSQT3aHFxjB81IHoPH0MkSAavIw51QPbal+aw8
+	 B3rrnMvV7Mfw7Cx7NucWyhuLEukVdwnQDb2+9KkgJPRSEG2+Z4JPy769dgJ4tuvVPe
+	 o9agsEQA/uebhKJS60NkB4JMI5PGE9XzVAS0jpwc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B83CF80228;
-	Wed, 30 Sep 2020 14:00:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 921A2F801D8;
+	Wed, 30 Sep 2020 14:06:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2430FF8023F; Wed, 30 Sep 2020 14:00:01 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48A4AF80110
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 13:59:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48A4AF80110
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Y0YyWw8C"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 12B37F801ED; Wed, 30 Sep 2020 14:06:54 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0584A2075F;
- Wed, 30 Sep 2020 11:59:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601467195;
- bh=ISbLEyVRJ3YYEaL+4amU3UcxHwOFBV2/mqHOS1AZfTI=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Y0YyWw8CNbpdLpMe9jELYNndvNBCi6BJ6iNkKosLBzcdgYLgxa52QqbefuxM4C38U
- DF5IjxxYkZVeAEN+2DPN0RL42nd7IEpt4BjtgCmdFNA2A0u4lAITSRUxIVffdERbaK
- vjttzXi8Gn4MD1G72UdvXWZnCjRi7iFd3ywEIn38=
-Date: Wed, 30 Sep 2020 12:58:56 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Qinglang Miao <miaoqinglang@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20200929112933.46977-1-miaoqinglang@huawei.com>
-References: <20200929112933.46977-1-miaoqinglang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: soc-core: use devm_snd_soc_register_card()
-Message-Id: <160146713690.40065.6936378045479268404.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F1A2F80110
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 14:06:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F1A2F80110
+IronPort-SDR: z/TpfaAVnyF5wmyttoZoflPbp4bnoY6XBX76de/7I/OsQcrLs02TqUDfUCVI7bSAv9veqL+ctw
+ jSEg1U8s4YKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="224025585"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="224025585"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Sep 2020 05:06:42 -0700
+IronPort-SDR: iT4JrMOe85IaJ2VnC4EL7aleLLIPjiFSEgHxAFHF/KIBFBd3PdmNUoyJ3QNPLG4B9Q5vkVT/xY
+ KvPBC/vHfAbA==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="497241970"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Sep 2020 05:06:39 -0700
+Date: Wed, 30 Sep 2020 15:05:01 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH v2 0/2] ALSA: HDA: Early Forbid of runtime PM
+In-Reply-To: <20200930114140.3839617-1-kai.vehmanen@linux.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2009301453110.3186@eliteleevi.tm.intel.com>
+References: <20200930114140.3839617-1-kai.vehmanen@linux.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
+ Takashi Iwai <tiwai@suse.de>, cezary.rojewski@intel.com,
+ pierre-louis.bossart@linux.intel.com, harshapriya.n@intel.com,
+ broonie@kernel.org, ranjani.sridharan@linux.intel.com,
+ emmanuel.jillela@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,34 +92,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 29 Sep 2020 19:29:33 +0800, Qinglang Miao wrote:
-> Using devm_snd_soc_register_card() can make the code
-> shorter and cleaner.
+Hi,
 
-Applied to
+On Wed, 30 Sep 2020, Kai Vehmanen wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> Fix a race with runtime PM enabled during codec initialization.
+> 
+> For snd-hda-intel, no changes are needed in controller code, but
+> to not break ASoC controller drivers, this V2 series adds
+> an additional change in ASoC hdac_hda to allow runtime pm again
+> at end of probe.
 
-Thanks!
+this is a follow-up to:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2020-August/173141.html
 
-[1/1] ASoC: soc-core: use devm_snd_soc_register_card()
-      commit: ad61b78ea8913e5cf9c91f5527428eed1bd2a862
+It turns out we need to make changes both in ASoC and sound/hda at the 
+same time, to not break anything. So again a case where either Takashi or 
+Mark, you should take both at the same time, if code itself is ok to all.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+PS And sorry, versioning is confusing, should have sent this as V3.
+   V1 modified only realtek codec, V2 modified hda_codec.c part and
+   this V3 adds a patch to ASoC hdac_hdmi.c.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Br, Kai
