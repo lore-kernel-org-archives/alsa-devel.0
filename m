@@ -2,79 +2,72 @@ Return-Path: <SRS0=iKRb=DH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87278C4727F
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 22:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4FBDC4363D
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 23:29:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6EBA2072E
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 22:56:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 256572076A
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 23:29:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P/hwK6gk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6EBA2072E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UUhHrzSU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 256572076A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58AC782B;
-	Thu,  1 Oct 2020 00:55:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58AC782B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5296617A9;
+	Thu,  1 Oct 2020 01:28:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5296617A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601506573;
-	bh=CBdu+u3sY2Vdh8W64mojvBFbUGIlbSc0gdj7feh3hSY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601508580;
+	bh=hNsuFQX1K+8wg0nlUNaxIM0TenoClYeCEbdE1yM1dHM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P/hwK6gkSi2c9Jbwv1mWf/u1/0rBEELHXpW/XOtgTCJfZVgDHel8E/S6zefk44NH1
-	 9PO4kQjspzPGZikuWxsOkmOp9ULiTulIeGesrQ17ipFjuqyku8b2Lihc/VXSgYmNJs
-	 f25JsEw7GmWDBeJWJ76HM+c5IYm+rCo4pKMmCt5g=
+	b=UUhHrzSUA8UEbgj3IyRQmUA8dC4SOQADTFSPXJIo+oK9t6UdPw9nspP+FYwG33Agh
+	 H3/zaRGvdMKdUTI6UEHIbThuBUuJI0taHbc5Bp+Hzd1tThJt4dMxJo4y0BjlU8HNrz
+	 Ni7N/q0wuoUZ1N+yTgS980UBiiAmQgzBLf6pSG7k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 759BDF80304;
-	Thu,  1 Oct 2020 00:52:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B80E3F801D8;
+	Thu,  1 Oct 2020 01:28:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68878F802E8; Thu,  1 Oct 2020 00:51:57 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 075ADF801D8
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 00:51:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 075ADF801D8
-IronPort-SDR: 6PB3KUmGRD5sHTeGo+BUSkG7Dp8nSHAhnO+LDJoleSL/SbqYs7c16iAwdbf2/pR6i24TIahGa3
- TD9YVncCmofw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161811146"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="161811146"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Sep 2020 15:51:34 -0700
-IronPort-SDR: eGMrGZo0kmqBImXgyWnNBujHjPq6vPlXDiDgfOaWqzfkUFyhHQDyXVCAHQp/OmfihOdMHUxqG2
- Iujqtyo2zNLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="350838152"
-Received: from dmert-dev.jf.intel.com ([10.166.241.5])
- by FMSMGA003.fm.intel.com with ESMTP; 30 Sep 2020 15:51:33 -0700
-From: Dave Ertman <david.m.ertman@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/6] ASoC: SOF: Intel: Define ops for client registration
-Date: Wed, 30 Sep 2020 15:50:50 -0700
-Message-Id: <20200930225051.889607-6-david.m.ertman@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200930225051.889607-1-david.m.ertman@intel.com>
-References: <20200930225051.889607-1-david.m.ertman@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, gregkh@linuxfoundation.org, ranjani.sridharan@intel.com,
- pierre-louis.bossart@linux.intel.com,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, broonie@kernel.org, parav@nvidia.com,
- jgg@nvidia.com
+ id AB9DFF801ED; Thu,  1 Oct 2020 01:28:46 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 123F5F800DF
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 01:28:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 123F5F800DF
+Date: 01 Oct 2020 08:28:33 +0900
+X-IronPort-AV: E=Sophos;i="5.77,322,1596466800"; d="scan'208";a="58602614"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 01 Oct 2020 08:28:33 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id ACF024002C28;
+ Thu,  1 Oct 2020 08:28:33 +0900 (JST)
+Message-ID: <87v9fualv7.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 5/7] ASoC: soc-pcm: add soc_pcm_clean() and call it from
+ soc_pcm_open/close()
+In-Reply-To: <1fa68abd-a86c-7a29-6c28-9ecde75ab4c6@samsung.com>
+References: <87mu1abwp2.wl-kuninori.morimoto.gx@renesas.com>
+ <87ft72bwn4.wl-kuninori.morimoto.gx@renesas.com>
+ <CGME20200929130814eucas1p1c09e7e1fe2d808d9bd41718cadf33754@eucas1p1.samsung.com>
+ <1fa68abd-a86c-7a29-6c28-9ecde75ab4c6@samsung.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: 'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,392 +83,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Define client ops for Intel platforms. For now, we only add
-2 IPC test clients that will be used for run tandem IPC flood
-tests for.
+Hi Marek
 
-For ACPI platforms, change the Kconfig to select
-SND_SOC_SOF_PROBE_WORK_QUEUE to allow the ancillary driver
-to probe when the client is registered.
+Thank you for testing.
+I will check it
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
----
- sound/soc/sof/intel/Kconfig        |  9 ++++++
- sound/soc/sof/intel/Makefile       |  3 ++
- sound/soc/sof/intel/apl.c          | 18 +++++++++++
- sound/soc/sof/intel/bdw.c          | 18 +++++++++++
- sound/soc/sof/intel/byt.c          | 22 ++++++++++++++
- sound/soc/sof/intel/cnl.c          | 18 +++++++++++
- sound/soc/sof/intel/intel-client.c | 49 ++++++++++++++++++++++++++++++
- sound/soc/sof/intel/intel-client.h | 26 ++++++++++++++++
- 8 files changed, 163 insertions(+)
- create mode 100644 sound/soc/sof/intel/intel-client.c
- create mode 100644 sound/soc/sof/intel/intel-client.h
-
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 3aaf25e4f766..28aba42f4658 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -13,6 +13,8 @@ config SND_SOC_SOF_INTEL_ACPI
- 	def_tristate SND_SOC_SOF_ACPI
- 	select SND_SOC_SOF_BAYTRAIL  if SND_SOC_SOF_BAYTRAIL_SUPPORT
- 	select SND_SOC_SOF_BROADWELL if SND_SOC_SOF_BROADWELL_SUPPORT
-+	select SND_SOC_SOF_PROBE_WORK_QUEUE if SND_SOC_SOF_CLIENT
-+	select SND_SOC_SOF_INTEL_CLIENT if SND_SOC_SOF_CLIENT
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level
-@@ -29,6 +31,7 @@ config SND_SOC_SOF_INTEL_PCI
- 	select SND_SOC_SOF_TIGERLAKE   if SND_SOC_SOF_TIGERLAKE_SUPPORT
- 	select SND_SOC_SOF_ELKHARTLAKE if SND_SOC_SOF_ELKHARTLAKE_SUPPORT
- 	select SND_SOC_SOF_JASPERLAKE  if SND_SOC_SOF_JASPERLAKE_SUPPORT
-+	select SND_SOC_SOF_INTEL_CLIENT if SND_SOC_SOF_CLIENT
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level
-@@ -57,6 +60,12 @@ config SND_SOC_SOF_INTEL_COMMON
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level
- 
-+config SND_SOC_SOF_INTEL_CLIENT
-+	tristate
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
- if SND_SOC_SOF_INTEL_ACPI
- 
- config SND_SOC_SOF_BAYTRAIL_SUPPORT
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-index f7e9358f1f06..50e40caaa787 100644
---- a/sound/soc/sof/intel/Makefile
-+++ b/sound/soc/sof/intel/Makefile
-@@ -5,6 +5,8 @@ snd-sof-intel-bdw-objs := bdw.o
- 
- snd-sof-intel-ipc-objs := intel-ipc.o
- 
-+snd-sof-intel-client-objs := intel-client.o
-+
- snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
- 				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
- 				 hda-dai.o hda-bus.o \
-@@ -18,3 +20,4 @@ obj-$(CONFIG_SND_SOC_SOF_BROADWELL) += snd-sof-intel-bdw.o
- obj-$(CONFIG_SND_SOC_SOF_INTEL_HIFI_EP_IPC) += snd-sof-intel-ipc.o
- obj-$(CONFIG_SND_SOC_SOF_HDA_COMMON) += snd-sof-intel-hda-common.o
- obj-$(CONFIG_SND_SOC_SOF_HDA) += snd-sof-intel-hda.o
-+obj-$(CONFIG_SND_SOC_SOF_INTEL_CLIENT) += snd-sof-intel-client.o
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 9e29d4fd393a..b31353b1a3ea 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -15,9 +15,12 @@
-  * Hardware interface for audio DSP on Apollolake and GeminiLake
-  */
- 
-+#include <linux/list.h>
- #include "../sof-priv.h"
- #include "hda.h"
- #include "../sof-audio.h"
-+#include "../sof-client.h"
-+#include "intel-client.h"
- 
- static const struct snd_sof_debugfs_map apl_dsp_debugfs[] = {
- 	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000, SOF_DEBUGFS_ACCESS_ALWAYS},
-@@ -25,6 +28,16 @@ static const struct snd_sof_debugfs_map apl_dsp_debugfs[] = {
- 	{"dsp", HDA_DSP_BAR,  0, 0x10000, SOF_DEBUGFS_ACCESS_ALWAYS},
- };
- 
-+static int apl_register_clients(struct snd_sof_dev *sdev)
-+{
-+	return intel_register_ipc_test_clients(sdev);
-+}
-+
-+static void apl_unregister_clients(struct snd_sof_dev *sdev)
-+{
-+	intel_unregister_ipc_test_clients(sdev);
-+}
-+
- /* apollolake ops */
- const struct snd_sof_dsp_ops sof_apl_ops = {
- 	/* probe and remove */
-@@ -101,6 +114,10 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	.trace_release = hda_dsp_trace_release,
- 	.trace_trigger = hda_dsp_trace_trigger,
- 
-+	/* client ops */
-+	.register_clients = apl_register_clients,
-+	.unregister_clients = apl_unregister_clients,
-+
- 	/* DAI drivers */
- 	.drv		= skl_dai,
- 	.num_drv	= SOF_SKL_NUM_DAIS,
-@@ -140,3 +157,4 @@ const struct sof_intel_dsp_desc apl_chip_info = {
- 	.ssp_base_offset = APL_SSP_BASE_OFFSET,
- };
- EXPORT_SYMBOL_NS(apl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_CLIENT);
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 99fd0bd7276e..b14026c5fa97 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -12,12 +12,15 @@
-  * Hardware interface for audio DSP on Broadwell
-  */
- 
-+#include <linux/list.h>
- #include <linux/module.h>
- #include <sound/sof.h>
- #include <sound/sof/xtensa.h>
- #include "../ops.h"
- #include "shim.h"
- #include "../sof-audio.h"
-+#include "../sof-client.h"
-+#include "intel-client.h"
- 
- /* BARs */
- #define BDW_DSP_BAR 0
-@@ -563,6 +566,16 @@ static void bdw_set_mach_params(const struct snd_soc_acpi_mach *mach,
- 	mach_params->platform = dev_name(dev);
- }
- 
-+static int bdw_register_clients(struct snd_sof_dev *sdev)
-+{
-+	return intel_register_ipc_test_clients(sdev);
-+}
-+
-+static void bdw_unregister_clients(struct snd_sof_dev *sdev)
-+{
-+	intel_unregister_ipc_test_clients(sdev);
-+}
-+
- /* Broadwell DAIs */
- static struct snd_soc_dai_driver bdw_dai[] = {
- {
-@@ -638,6 +651,10 @@ const struct snd_sof_dsp_ops sof_bdw_ops = {
- 	/*Firmware loading */
- 	.load_firmware	= snd_sof_load_firmware_memcpy,
- 
-+	/* client ops */
-+	.register_clients = bdw_register_clients,
-+	.unregister_clients = bdw_unregister_clients,
-+
- 	/* DAI drivers */
- 	.drv = bdw_dai,
- 	.num_drv = ARRAY_SIZE(bdw_dai),
-@@ -662,3 +679,4 @@ EXPORT_SYMBOL_NS(bdw_chip_info, SND_SOC_SOF_BROADWELL);
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
- MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_CLIENT);
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 49f67f1b94e0..8951f756d078 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -12,13 +12,16 @@
-  * Hardware interface for audio DSP on Baytrail, Braswell and Cherrytrail.
-  */
- 
-+#include <linux/list.h>
- #include <linux/module.h>
- #include <sound/sof.h>
- #include <sound/sof/xtensa.h>
- #include "../ops.h"
- #include "shim.h"
- #include "../sof-audio.h"
-+#include "../sof-client.h"
- #include "../../intel/common/soc-intel-quirks.h"
-+#include "intel-client.h"
- 
- /* DSP memories */
- #define IRAM_OFFSET		0x0C0000
-@@ -821,6 +824,16 @@ static int byt_acpi_probe(struct snd_sof_dev *sdev)
- 	return ret;
- }
- 
-+static int byt_register_clients(struct snd_sof_dev *sdev)
-+{
-+	return intel_register_ipc_test_clients(sdev);
-+}
-+
-+static void byt_unregister_clients(struct snd_sof_dev *sdev)
-+{
-+	intel_unregister_ipc_test_clients(sdev);
-+}
-+
- /* baytrail ops */
- const struct snd_sof_dsp_ops sof_byt_ops = {
- 	/* device init */
-@@ -879,6 +892,10 @@ const struct snd_sof_dsp_ops sof_byt_ops = {
- 	.suspend = byt_suspend,
- 	.resume = byt_resume,
- 
-+	/* client ops */
-+	.register_clients = byt_register_clients,
-+	.unregister_clients = byt_unregister_clients,
-+
- 	/* DAI drivers */
- 	.drv = byt_dai,
- 	.num_drv = 3, /* we have only 3 SSPs on byt*/
-@@ -958,6 +975,10 @@ const struct snd_sof_dsp_ops sof_cht_ops = {
- 	.suspend = byt_suspend,
- 	.resume = byt_resume,
- 
-+	/* client ops */
-+	.register_clients = byt_register_clients,
-+	.unregister_clients = byt_unregister_clients,
-+
- 	/* DAI drivers */
- 	.drv = byt_dai,
- 	/* all 6 SSPs may be available for cherrytrail */
-@@ -985,3 +1006,4 @@ EXPORT_SYMBOL_NS(cht_chip_info, SND_SOC_SOF_BAYTRAIL);
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
- MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_CLIENT);
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 16db0f50d139..5d7c2a667798 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -15,10 +15,13 @@
-  * Hardware interface for audio DSP on Cannonlake.
-  */
- 
-+#include <linux/list.h>
- #include "../ops.h"
- #include "hda.h"
- #include "hda-ipc.h"
- #include "../sof-audio.h"
-+#include "../sof-client.h"
-+#include "intel-client.h"
- 
- static const struct snd_sof_debugfs_map cnl_dsp_debugfs[] = {
- 	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000, SOF_DEBUGFS_ACCESS_ALWAYS},
-@@ -231,6 +234,16 @@ static void cnl_ipc_dump(struct snd_sof_dev *sdev)
- 		hipcida, hipctdr, hipcctl);
- }
- 
-+static int cnl_register_clients(struct snd_sof_dev *sdev)
-+{
-+	return intel_register_ipc_test_clients(sdev);
-+}
-+
-+static void cnl_unregister_clients(struct snd_sof_dev *sdev)
-+{
-+	intel_unregister_ipc_test_clients(sdev);
-+}
-+
- /* cannonlake ops */
- const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	/* probe and remove */
-@@ -307,6 +320,10 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	.trace_release = hda_dsp_trace_release,
- 	.trace_trigger = hda_dsp_trace_trigger,
- 
-+	/* client ops */
-+	.register_clients = cnl_register_clients,
-+	.unregister_clients = cnl_unregister_clients,
-+
- 	/* DAI drivers */
- 	.drv		= skl_dai,
- 	.num_drv	= SOF_SKL_NUM_DAIS,
-@@ -417,3 +434,4 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- };
- EXPORT_SYMBOL_NS(jsl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_CLIENT);
-diff --git a/sound/soc/sof/intel/intel-client.c b/sound/soc/sof/intel/intel-client.c
-new file mode 100644
-index 000000000000..76811fcf65a9
---- /dev/null
-+++ b/sound/soc/sof/intel/intel-client.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright(c) 2020 Intel Corporation. All rights reserved.
-+//
-+// Author: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-+//
-+
-+#include <linux/module.h>
-+#include "../sof-priv.h"
-+#include "../sof-client.h"
-+#include "intel-client.h"
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_CLIENT)
-+DEFINE_IDA(sof_ipc_test_client_ida);
-+
-+int intel_register_ipc_test_clients(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+
-+	/*
-+	 * Register 2 IPC clients to facilitate tandem flood test. The device name below is
-+	 * appended with the device ID assigned automatically when the ancillary device is
-+	 * registered making them unique.
-+	 */
-+	ret = sof_client_dev_register(sdev, "ipc_test", &sof_ipc_test_client_ida);
-+	if (ret < 0)
-+		return ret;
-+
-+	return sof_client_dev_register(sdev, "ipc_test", &sof_ipc_test_client_ida);
-+}
-+EXPORT_SYMBOL_NS_GPL(intel_register_ipc_test_clients, SND_SOC_SOF_INTEL_CLIENT);
-+
-+void intel_unregister_ipc_test_clients(struct snd_sof_dev *sdev)
-+{
-+	struct sof_client_dev *cdev, *_cdev;
-+
-+	/* unregister ipc_test clients */
-+	list_for_each_entry_safe(cdev, _cdev, &sdev->client_list, list) {
-+		if (!strcmp(cdev->ancildev.name, "ipc_test"))
-+			sof_client_dev_unregister(cdev);
-+	}
-+
-+	ida_destroy(&sof_ipc_test_client_ida);
-+}
-+EXPORT_SYMBOL_NS_GPL(intel_unregister_ipc_test_clients, SND_SOC_SOF_INTEL_CLIENT);
-+#endif
-+
-+MODULE_LICENSE("GPL");
-+MODULE_IMPORT_NS(SND_SOC_SOF_CLIENT);
-diff --git a/sound/soc/sof/intel/intel-client.h b/sound/soc/sof/intel/intel-client.h
-new file mode 100644
-index 000000000000..49b2c6c0dcc4
---- /dev/null
-+++ b/sound/soc/sof/intel/intel-client.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2020 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-+ */
-+
-+#ifndef __INTEL_CLIENT_H
-+#define __INTEL_CLIENT_H
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_CLIENT)
-+int intel_register_ipc_test_clients(struct snd_sof_dev *sdev);
-+void intel_unregister_ipc_test_clients(struct snd_sof_dev *sdev);
-+#else
-+static inline int intel_register_ipc_test_clients(struct snd_sof_dev *sdev)
-+{
-+	return 0;
-+}
-+
-+static void intel_unregister_ipc_test_clients(struct snd_sof_dev *sdev) {}
-+#endif
-+
-+#endif
--- 
-2.26.2
-
+> On 28.09.2020 02:01, Kuninori Morimoto wrote:
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> >
+> > soc_pcm_open() does rollback when failed (A),
+> > but, it is almost same as soc_pcm_close().
+> >
+> > 	static int soc_pcm_open(xxx)
+> > 	{
+> > 		...
+> > 		if (ret < 0)
+> > 			goto xxx_err;
+> > 		...
+> > 		return 0;
+> >
+> >   ^	config_err:
+> >   |		...
+> >   |	rtd_startup_err:
+> > (A)		...
+> >   |	component_err:
+> >   |		...
+> >   v		return ret;
+> > 	}
+> >
+> > The difference is
+> > soc_pcm_close() is for all dai/component/substream,
+> > rollback        is for succeeded part only.
+> >
+> > This kind of duplicated code can be a hotbed of bugs,
+> > thus, we want to share soc_pcm_close() and rollback.
+> >
+> > Now, soc_pcm_open/close() are handling
+> > 	1) snd_soc_dai_startup/shutdown()
+> > 	2) snd_soc_link_startup/shutdown()
+> > 	3) snd_soc_component_module_get/put()
+> > 	4) snd_soc_component_open/close()
+> > 	5) pm_runtime_put/get()
+> >
+> > Now, 1) to 5) are handled.
+> > This patch adds new soc_pcm_clean() and call it from
+> > soc_pcm_open() as rollback, and from soc_pcm_close() as
+> > normal close handler.
+> >
+> > One note here is that it don't need to call snd_soc_runtime_deactivate()
+> > when rollback case, because it will be called without
+> > snd_soc_runtime_activate().
+> > It also don't need to call snd_soc_dapm_stream_stop() when rollback cas=
+e.
+> >
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> This patch landed in linux next-20200929 as commit 140a4532cdb8 ("ASoC:=20
+> soc-pcm: add soc_pcm_clean() and call it from soc_pcm_open/close()").=20
+> Sadly it causes a regression in ALSA operation on my various test=20
+> boards: Exynos4412 based Trats2, Exynos5410 based Odroid XU, Exynos5250=20
+> Snow Chromebook and other. The first app, which tries to open ALSA=20
+> device fails. Then, on the second try, it work.
+>=20
+> Here is a log from Odroid XU:
+>=20
+> [=A0=A0=A0 3.775032] max98090 1-0010: MAX98090 REVID=3D0x43
+> [=A0=A0=A0 3.781958] max98090 1-0010: use default 2.8v micbias
+> [=A0=A0=A0 3.812813] ALSA device list:
+> [=A0=A0=A0 3.814448]=A0=A0 #0: Odroid-XU
+>=20
+> # speaker-test -l1
+>=20
+> speaker-test 1.1.3
+>=20
+> Playback device is default
+> Stream parameters are 48000Hz, S16_LE, 1 channels
+> Using 16 octaves of pink noise
+> Playback open error: -22,Invalid argument
+> # speaker-test -l1
+>=20
+> speaker-test 1.1.3
+>=20
+> Playback device is default
+> Stream parameters are 48000Hz, S16_LE, 1 channels
+> Using 16 octaves of pink noise
+> Rate set to 48000Hz (requested 48000Hz)
+> Buffer size range from 128 to 131072
+> Period size range from 64 to 65536
+> Using max buffer size 131072
+> Periods =3D 4
+> was set period_size =3D 32768
+> was set buffer_size =3D 131072
+>  =A00 - Front Left
+> Time per period =3D 0.029512
+> #
+>=20
+>  > ...
+>=20
+> Best regards
+> --=20
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+>=20
