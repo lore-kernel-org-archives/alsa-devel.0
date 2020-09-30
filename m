@@ -2,80 +2,80 @@ Return-Path: <SRS0=iKRb=DH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49F7FC47420
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 11:46:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85C22C4727E
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 12:00:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 236CF2076E
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 11:46:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4DC72085B
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 12:00:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VMP8X3eF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 236CF2076E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ec9d0HSh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8situxT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4DC72085B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CEC11806;
-	Wed, 30 Sep 2020 13:45:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CEC11806
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B21717B0;
+	Wed, 30 Sep 2020 13:59:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B21717B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601466364;
-	bh=AtErgmQjcdChnbC+QsL/SVix+NMecXjPrdPiCa9WNn8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601467216;
+	bh=j7TyWiQ46A8cgocAOXeM5f1+0eI0qyuI4IcopJ3Xq28=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VMP8X3eFCNo8E2KkqIBvkxWcA9EWb2mzGm2JShwO+/FeED6FXHLdI3BrtD95dpzwm
-	 xc4ND3Az/0AxaPQiT8U9ZYIQ4G5zdtNDKMERs8GssYVyQ5raAKSAk5HPaKKi99rBVt
-	 UVgmUr9ih3DJ0tjmeai/kwdAAi6BSIrWZhlwiMOk=
+	b=Ec9d0HShxBIj7MsCLNYc/RM9xtmuzkZC+IF6zpWpxl0cVBd4S2AkV3v/F3MfUERgZ
+	 N0+QrfWYlDbkA9/yfmg9vUEAXbhmL8HBjha75eR5UlKTe8JF8dHwKId/xKWy/H33LQ
+	 x/G021N+Yj7+k8Vp4RvpvTmNxX8xf4w4BzfuzP1g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A36CF802BD;
-	Wed, 30 Sep 2020 13:43:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C546F801D8;
+	Wed, 30 Sep 2020 13:59:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7D09F802C3; Wed, 30 Sep 2020 13:43:41 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5A736F801ED; Wed, 30 Sep 2020 13:59:23 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96013F80228
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 13:43:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96013F80228
-IronPort-SDR: qvEN+W+i3OXK2PvHBSPCMZfRkAWN760dQpzns3zkd8+l2k6Vu2g0NA45k+YsCyQoccmaiSCws/
- qnrGqgRZ9ZTQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="224022348"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="224022348"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Sep 2020 04:43:28 -0700
-IronPort-SDR: 8q1IYmQV+5Dr8wftcpc/Oeo6fFjVwGtZ8gijtDH7tKjMLfj6Zyu2yU5qPrZPPGILXMgm5K0cSy
- +O7SWClq2Muw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="294583007"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga008.fm.intel.com with ESMTP; 30 Sep 2020 04:43:26 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	broonie@kernel.org
-Subject: [PATCH v2 2/2] ASoC: hdac_hda: allow runtime pm at end of probe
-Date: Wed, 30 Sep 2020 14:41:40 +0300
-Message-Id: <20200930114140.3839617-3-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200930114140.3839617-1-kai.vehmanen@linux.intel.com>
-References: <20200930114140.3839617-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8F50F80110
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2020 13:59:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8F50F80110
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="i8situxT"
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3967A2075F;
+ Wed, 30 Sep 2020 11:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601467152;
+ bh=j7TyWiQ46A8cgocAOXeM5f1+0eI0qyuI4IcopJ3Xq28=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=i8situxT7lHaqrW5D0ijbVCB0KIfk7XFB0RvE6AjJrbs5RQx3g7M6s91yj5s8zvx2
+ noAxcYVL7Uks2NrVIGmIHd18W2m90leiGA2lHQHXx2cR+U9MlQs7EYqahR89rQXa6j
+ dluo5/yAcjNy0jJjOzht9zpX+qLp3jcb0L87T61E=
+Date: Wed, 30 Sep 2020 13:59:15 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 1/2] regmap: add support to
+ regmap_field_bulk_alloc/free apis
+Message-ID: <20200930115915.GB1611809@kroah.com>
+References: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
+ <20200925164856.10315-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: cezary.rojewski@intel.com, kailang@realtek.com,
- kai.vehmanen@linux.intel.com, harshapriya.n@intel.com,
- pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
- emmanuel.jillela@intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925164856.10315-2-srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, srivasam@codeaurora.org, lgirdwood@gmail.com,
+ tiwai@suse.com, linux-kernel@vger.kernel.org, broonie@kernel.org,
+ rohitkr@codeaurora.org, rafael@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,34 +91,154 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Align with recent change to forbid runtime suspend during codec
-init in snd_hda_codec_device_new(), with matching call to
-allow suspend at end of hdac_hda_codec_probe().
+On Fri, Sep 25, 2020 at 05:48:55PM +0100, Srinivas Kandagatla wrote:
+> Usage of regmap_field_alloc becomes much overhead when number of fields
+> exceed more than 3.
+> QCOM LPASS driver has extensively converted to use regmap_fields.
+> 
+> Using new bulk api to allocate fields makes it much more cleaner code to read!
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Tested-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>  drivers/base/regmap/regmap.c | 100 +++++++++++++++++++++++++++++++++++
+>  include/linux/regmap.h       |  11 ++++
+>  2 files changed, 111 insertions(+)
+> 
+> diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+> index aec3f26bf711..8d6aedce666d 100644
+> --- a/drivers/base/regmap/regmap.c
+> +++ b/drivers/base/regmap/regmap.c
+> @@ -1270,6 +1270,106 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(devm_regmap_field_alloc);
+>  
+> +
+> +/**
+> + * regmap_field_bulk_alloc() - Allocate and initialise a bulk register field.
+> + *
+> + * @regmap: regmap bank in which this register field is located.
+> + * @rm_field: regmap register fields within the bank.
+> + * @reg_field: Register fields within the bank.
+> + * @num_fields: Number of register fields.
+> + *
+> + * The return value will be an -ENOMEM on error or zero for success.
+> + * Newly allocated regmap_fields should be freed by calling
+> + * regmap_field_bulk_free()
+> + */
+> +int regmap_field_bulk_alloc(struct regmap *regmap,
+> +			    struct regmap_field **rm_field,
+> +			    struct reg_field *reg_field,
+> +			    int num_fields)
+> +{
+> +	struct regmap_field *rf;
+> +	int i;
+> +
+> +	rf = kcalloc(num_fields, sizeof(*rf), GFP_KERNEL);
+> +	if (!rf)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < num_fields; i++) {
+> +		regmap_field_init(&rf[i], regmap, reg_field[i]);
+> +		rm_field[i] = &rf[i];
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(regmap_field_bulk_alloc);
+> +
+> +/**
+> + * devm_regmap_field_bulk_alloc() - Allocate and initialise a bulk register
+> + * fields.
+> + *
+> + * @dev: Device that will be interacted with
+> + * @regmap: regmap bank in which this register field is located.
+> + * @rm_field: regmap register fields within the bank.
+> + * @reg_field: Register fields within the bank.
+> + * @num_fields: Number of register fields.
+> + *
+> + * The return value will be an -ENOMEM on error or zero for success.
+> + * Newly allocated regmap_fields will be automatically freed by the
+> + * device management code.
+> + */
+> +int devm_regmap_field_bulk_alloc(struct device *dev,
+> +				 struct regmap *regmap,
+> +				 struct regmap_field **rm_field,
+> +				 struct reg_field *reg_field,
+> +				 int num_fields)
+> +{
+> +	struct regmap_field *rf;
+> +	int i;
+> +
+> +	rf = devm_kcalloc(dev, num_fields, sizeof(*rf), GFP_KERNEL);
+> +	if (!rf)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < num_fields; i++) {
+> +		regmap_field_init(&rf[i], regmap, reg_field[i]);
+> +		rm_field[i] = &rf[i];
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_alloc);
+> +
+> +/**
+> + * regmap_field_bulk_free() - Free register field allocated using
+> + *                       regmap_field_bulk_alloc.
+> + *
+> + * @field: regmap fields which should be freed.
+> + */
+> +void regmap_field_bulk_free(struct regmap_field *field)
+> +{
+> +	kfree(field);
+> +}
+> +EXPORT_SYMBOL_GPL(regmap_field_bulk_free);
+> +
+> +/**
+> + * devm_regmap_field_bulk_free() - Free a bulk register field allocated using
+> + *                            devm_regmap_field_bulk_alloc.
+> + *
+> + * @dev: Device that will be interacted with
+> + * @field: regmap field which should be freed.
+> + *
+> + * Free register field allocated using devm_regmap_field_bulk_alloc(). Usually
+> + * drivers need not call this function, as the memory allocated via devm
+> + * will be freed as per device-driver life-cycle.
+> + */
+> +void devm_regmap_field_bulk_free(struct device *dev,
+> +				 struct regmap_field *field)
+> +{
+> +	devm_kfree(dev, field);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_free);
+> +
+>  /**
+>   * devm_regmap_field_free() - Free a register field allocated using
+>   *                            devm_regmap_field_alloc.
+> diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+> index 0c49d59168b5..a35ec0a0d6e0 100644
+> --- a/include/linux/regmap.h
+> +++ b/include/linux/regmap.h
+> @@ -1189,6 +1189,17 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
+>  		struct regmap *regmap, struct reg_field reg_field);
+>  void devm_regmap_field_free(struct device *dev,	struct regmap_field *field);
+>  
+> +int regmap_field_bulk_alloc(struct regmap *regmap,
+> +			     struct regmap_field **rm_field,
+> +			     struct reg_field *reg_field,
+> +			     int num_fields);
+> +void regmap_field_bulk_free(struct regmap_field *field);
+> +int devm_regmap_field_bulk_alloc(struct device *dev, struct regmap *regmap,
+> +				 struct regmap_field **field,
+> +				 struct reg_field *reg_field, int num_fields);
+> +void devm_regmap_field_bulk_free(struct device *dev,
+> +				 struct regmap_field *field);
+> +
 
-In snd-hda-intel, call to snd_hda_set_power_save() at end of
-controller probe does the same thing, but ASoC controller drivers
-do not modify runtime settings for codecs, so this has to be done
-in codec drivers, and in this case in hdac_hda.
+You only have a patch that uses these last two functions, so why add all
+4?  We don't add infrastructure to the kernel without users.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/soc/codecs/hdac_hda.c | 3 +++
- 1 file changed, 3 insertions(+)
+thanks,
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index 49e6f23fc766..390dd6c7f6a5 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -481,6 +481,9 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
- 		snd_hdac_display_power(hdev->bus,
- 				       HDA_CODEC_IDX_CONTROLLER, false);
- 
-+	/* match for forbid call in snd_hda_codec_device_new() */
-+	pm_runtime_allow(&hdev->dev);
-+
- 	/*
- 	 * hdac_device core already sets the state to active and calls
- 	 * get_noresume. So enable runtime and set the device to suspend.
--- 
-2.27.0
-
+greg k-h
