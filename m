@@ -6,71 +6,71 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1657C4727E
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 22:52:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C38C4727E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 22:52:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E87172074B
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 22:52:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 09CAA20739
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 22:52:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C7cnKMjB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="I0UhHf1/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E87172074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hqP4hj0F";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vy1DPP7O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09CAA20739
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66EB81AED;
-	Fri,  2 Oct 2020 00:51:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66EB81AED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 604CB1AF3;
+	Fri,  2 Oct 2020 00:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 604CB1AF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601592742;
-	bh=dgOc7PzkS9dX0GvioWzqzTEvNibcFB20VrGfE/OrTRc=;
+	s=default; t=1601592776;
+	bh=/n/gco4NX2DaoU/FJQo82b5VNUJ7Z/azy+oVcLS+vQc=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C7cnKMjB4yOuX/vQuYuCUxr8bgL9iFXzLv9EQRR7N4YdHJBQz2qDPNfK2FT6D1/Aj
-	 Ctokr1hzgz2OHLmjFLAoxfKFJjemV0CB9xJDKbWlkgyRfgDfwWJrzv/2VBPlqmdTNl
-	 8r/beAQPgSGVQWURnE1183P0TS25wpYLpH1m2mUw=
+	b=hqP4hj0FTMFKWMiXjYPxkcj3/Y+Yy3FHMyTGRKN18RuHxSo9urEwdd9rcz9Hy3C23
+	 uBWXZox1v2m23xHqyw+P38KJ2LQ3ISSP4EHcygV36s//Fiac+ybNNqHsxMnZ3DwroO
+	 YmR2gf+/NiA5fqQmxKDybh1mar24j6pHtEkYC87M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4ED84F802FD;
-	Fri,  2 Oct 2020 00:47:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B814F80316;
+	Fri,  2 Oct 2020 00:48:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09AB5F802FE; Fri,  2 Oct 2020 00:47:54 +0200 (CEST)
+ id 72987F80307; Fri,  2 Oct 2020 00:47:58 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6089BF802EC
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 00:47:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6089BF802EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8375F802FF
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 00:47:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8375F802FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="I0UhHf1/"
+ header.b="vy1DPP7O"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1808120754;
- Thu,  1 Oct 2020 22:47:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 090A72075F;
+ Thu,  1 Oct 2020 22:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601592469;
- bh=dgOc7PzkS9dX0GvioWzqzTEvNibcFB20VrGfE/OrTRc=;
+ s=default; t=1601592474;
+ bh=/n/gco4NX2DaoU/FJQo82b5VNUJ7Z/azy+oVcLS+vQc=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=I0UhHf1/EEu41m0bagSshbbuYJCNcGfX9njUCUn6rJWKBBT9pwc0FPAKVK3pIflnp
- TS0rrRkVPHF8UE556VyO/Al3BasgRON1mQpme3kE3CmDI6L0VusmW/gnnvZp9SRySG
- /y/EsxFrPbgOOaFki3noODayaYq1VANex4yH86BU=
-Date: Thu, 01 Oct 2020 23:46:50 +0100
+ b=vy1DPP7OVlS3OGPLu21a9VAOjehvW68XI+OTMJC0OyEaTTzePcY7HBVLiLi/6WUu3
+ dNUgGFODKKLvWfShEyEAcU4V6hfpTMVesB2xKqQCxy/HOy7f9lnZYBHoXC8B2HGz65
+ XmJT8SYaq/rEGjNhcMxgQUT/cpr5vUzFf99XWnIY=
+Date: Thu, 01 Oct 2020 23:46:55 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>,
  Qinglang Miao <miaoqinglang@huawei.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Takashi Iwai <tiwai@suse.com>,
  Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>
-In-Reply-To: <20200929112939.47661-1-miaoqinglang@huawei.com>
-References: <20200929112939.47661-1-miaoqinglang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: tegra: trimslice.c: use
+In-Reply-To: <20200929112935.47035-1-miaoqinglang@huawei.com>
+References: <20200929112935.47035-1-miaoqinglang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: tegra: tegra_max98090: use
  devm_snd_soc_register_card()
-Message-Id: <160159237544.44588.10343139613050328062.b4-ty@kernel.org>
+Message-Id: <160159237544.44588.1905165232982674074.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -91,7 +91,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 29 Sep 2020 19:29:39 +0800, Qinglang Miao wrote:
+On Tue, 29 Sep 2020 19:29:35 +0800, Qinglang Miao wrote:
 > Using devm_snd_soc_register_card() can make the code
 > shorter and cleaner.
 
@@ -101,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tegra: trimslice.c: use devm_snd_soc_register_card()
-      commit: 27f41dfebf226c74691b4b30527459417b6510e8
+[1/1] ASoC: tegra: tegra_max98090: use devm_snd_soc_register_card()
+      commit: f8eeca97f71c92e12a2381708d5908716257028d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
