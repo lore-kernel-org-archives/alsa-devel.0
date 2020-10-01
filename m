@@ -7,80 +7,80 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9DA6C4363D
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B92EFC4741F
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:19:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E2A7722207
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:19:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B77A2087D
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:19:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a5OaL0Sk";
-	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="oWeSGUuJ";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iDHMAWc2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2A7722207
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HGtw2bhI";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="BruWlpCq";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="T9S8OTJI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B77A2087D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 616361819;
-	Thu,  1 Oct 2020 04:18:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 616361819
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82F53186A;
+	Thu,  1 Oct 2020 04:18:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F53186A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601518743;
-	bh=RtTHTJ7GRnxwVeH4m1M3CQVDR8T6RHgf8Bk83uhYGnY=;
+	s=default; t=1601518785;
+	bh=F5on1ukjx6UtDuGSsWQWqBU9dAQl0sQKwR/rMM/78DI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a5OaL0SkEzsg4yAnfGVXVbh+ESqlFsNdJKSsdyl5kj3yTMMYj92782vpFZqnOrDYQ
-	 jYFxEk4eDO9vou92HKx4hwOcY7AMcl42fJtz8KckYYOXHmH891nADXFXlcqFj0NcLK
-	 kawIUh9x9h5ErGo4RrGCLxa4RdIN79Z99GOpTYkU=
+	b=HGtw2bhIUl9makicpj5QE5nVLwKImhNsGkylnK9PFU6cnSSD+wEzV+jfz2Dwl0FV/
+	 XBxrCPqPfQbMOu5o15f8sJWQ/hax//YiDNUsibVxm5WhbTvHKZU68UJehTg0iaV0ne
+	 6bqNb3A1Xa/Ot+5E/Xh6vy/ufzj2jTqz7s14TCUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E438FF802E8;
-	Thu,  1 Oct 2020 04:12:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70167F80347;
+	Thu,  1 Oct 2020 04:12:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14C84F80322; Thu,  1 Oct 2020 04:12:19 +0200 (CEST)
+ id A5660F80323; Thu,  1 Oct 2020 04:12:20 +0200 (CEST)
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
  [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02B4DF802DC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08E10F802D2
  for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 04:11:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02B4DF802DC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08E10F802D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="oWeSGUuJ"; 
+ header.b="BruWlpCq"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="iDHMAWc2"
+ header.i=@messagingengine.com header.b="T9S8OTJI"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id 5BC7D580356;
- Wed, 30 Sep 2020 22:11:54 -0400 (EDT)
+ by mailnew.nyi.internal (Postfix) with ESMTP id BAE4D580367;
+ Wed, 30 Sep 2020 22:11:55 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:54 -0400
+ by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=/7xFCvVb/BiEg
- ZVhsxfjoAnZLUo5rkeF2KYy9HY3Pbc=; b=oWeSGUuJZ6mybjNLOhbi3bQTrWFkt
- hKxg4aT4bG/ztvQR8hF+pehdXxLY3IGj3MQUyghzOh/FDo8DpK6hNBnH4AC0LziA
- gjH25xehucRSwS6oNP1idXF6UY4BRiqO9ZPvd7OhTPO7/Kf5zLUSLnVL3AaLowSf
- PQG6vr2ZEqeGdBwGPJJo/5iUQxeOBNzHK/F5YfYakSV9rnR7u56hI5OFGlOqBPgR
- RyFz4y688eSiLMLFWHs/rXUQhpm/UUC7fSmUrRUDCzw82/CttD/fCtD2u4QP8B6t
- 1AI332JbAwdATLeyym7JA4nh7Pm9O1FC3G1B9iK0Mbt7neo7qOqf24mhQ==
+ :mime-version:content-transfer-encoding; s=fm3; bh=kZVStbkfKqbNP
+ xilWM9qpPf362smVG2Yvi+DiA3j29E=; b=BruWlpCqNIJKzEG9opycH5aNmftv5
+ O9xlRc8r7huTmVDhHO1IjDbecXtOrSiHDIaEpwkUKUJnE51cCznegVWnJPl7G1Lv
+ LU/vmidkssHH116ktx2mwUQWwBgeodhsvoSMUUbuAY8xIC338WygUxMhM5rzIq1B
+ AHC2jlmZ6A0RIU5KorA6EnY4w+wbUtmlQsPRSfUQqH/whJCZ0JqiAr48VXKPWhpi
+ iK5hWShS4EPS13X8bdsqm/oabboJ/9resl57PwAb6h9ZI7O5f1sB4zdDr3TtWNuG
+ ut0INtO7z50hLdAd/thEhZQBAviWFkq8vPqBk7hLPM36OATSuwGcsREaA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=/7xFCvVb/BiEgZVhsxfjoAnZLUo5rkeF2KYy9HY3Pbc=; b=iDHMAWc2
- wQlCTXbXzQ3re+PgQZw2Fu8nS67iITKEQQB0p/Nm6js97O073HMzBKbW7UmByaQr
- u3c+e9sVAIn6GajO4IfS9WpzZ5rYOU3Gu7bcd+22z3MSfAnx1f98yq5s+qZtxvEc
- L5qQD41JF0rIOJBqp3kL3MBGSz1SR/J8VphXd16l0/HgO9+K2utfyKPRmvyUVE2x
- czYFfCgzbwkMB+Tig3RvkxfsF6AlgrpaN4CvzfC38jUfKP8RL74pkl/qzjEmcmka
- 6rafF04AtKRv9jUzuESg7NZ69n+8XrC0lZlJkX+6pq+6XHzTRPTW4rUBgfQmeSuL
- g+seektGk4FujQ==
-X-ME-Sender: <xms:6jp1X2Z2OnwCZr7V8_JJ7PQnli__tqDZyn0rmjhl-JT03ldH1W8q2Q>
- <xme:6jp1X5YpQk2AQZahPB91rduhR_T79OXSdsbWiFGp00oe8FnF5un4X8rPR5pkQ77bS
- z2oydH5BR673bEQfQ>
+ fm3; bh=kZVStbkfKqbNPxilWM9qpPf362smVG2Yvi+DiA3j29E=; b=T9S8OTJI
+ 193OZWp0iTTTGiNq1OUNpSG9RbQRtkzLo8Afe/iOo49NDtowYWIkj0ZHektW3oIW
+ 2h8LehY+Ock2EGbbCo+CKFof0+WFTj+ln65OvYT0GtktKwYQVQk7V4vRlkcPzefC
+ ostb7UFNoL3ECB5QqPV01CsMZXDpXvrGJRdnJaOTgyQ3giDJT2bjF69jWq5hfoP4
+ pnDTZ4xXQsB4aOQLJSrBecmGoU7wnSo/lYWxERgFytT+TG1vmyZ7D9+wXA3K+dWa
+ 7dIgXrU1g7AvFzIKeNhApaiGYFf5uLJIjB0BmHTQepyDLVsrUGYpyIeQDP2bJjop
+ /3LX1iv33H3VJg==
+X-ME-Sender: <xms:6zp1X-9LZGoDV0gbYlcA4CamVRw0ePxI31yYcUeCyzz7QMTLiolstQ>
+ <xme:6zp1X-sqN_NSN3p8IdRBmOrzVpYU9ERxhRXLjiNkU4HCACL1J4LLr60Wn8fA7FtZ7
+ XPvloZfRL08wbfjbg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -90,21 +90,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdote
  jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
  gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
  rdhorhhg
-X-ME-Proxy: <xmx:6jp1Xw_RMLibZD8_6GzIsPQNTBgp3EBcpGwXW_pr6qcbmzNlxzuDCg>
- <xmx:6jp1X4rpU0n2odeJFyOtZ2imiM-Ka4RvMNyRgZrgsUDMwSljIPotcQ>
- <xmx:6jp1XxowCNBBE8KOoj0bMNbMmKwoDS45r35NoTV_hsoeQBMWPJQSaw>
- <xmx:6jp1X1cbgrjwKsWsc-kN9aSB40YQo3l7BD3wM7aaa_M8UvgWyDcjug>
+X-ME-Proxy: <xmx:6zp1X0DAEHE0BZOJiC2VO0nBQ1LtoGq0ZZYnCJQ6XMvZ9-ys2mcwhg>
+ <xmx:6zp1X2fHvjDtLkHCGhfKuXPICFvrBYFe5BhvHtkXs0Uj5IpLUeWXuA>
+ <xmx:6zp1XzM1mYl7PoXMyIP9uHCUvdGRbWK0qiuR6YQ8QFfc3pV5AFj5fg>
+ <xmx:6zp1X8g4cCu_mw51FWZVj-Ox72vk0fWPn2SpDi7JVrml56WmCITuJg>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 8F0143064680;
- Wed, 30 Sep 2020 22:11:53 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 014C13064610;
+ Wed, 30 Sep 2020 22:11:54 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 09/25] ASoC: sun8i-codec: Prepare to extend the DAI driver
-Date: Wed, 30 Sep 2020 21:11:32 -0500
-Message-Id: <20201001021148.15852-10-samuel@sholland.org>
+Subject: [PATCH 12/25] ASoC: sun8i-codec: Program the correct word size
+Date: Wed, 30 Sep 2020 21:11:35 -0500
+Message-Id: <20201001021148.15852-13-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
 References: <20201001021148.15852-1-samuel@sholland.org>
@@ -128,225 +128,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In preparation for adding additional DAIs to this component, convert the
-DAI driver definition to an array. Since this changes all of the lines
-in the definition anyway, let's move it closer to the ops function
-definitions, instead of on the far side of the DAPM arrays. And while
-moving the DAI driver ops, rename the set_fmt hook to match the usual
-naming scheme.
-
-Give the existing DAI an explicit ID and more meaningful stream names,
-so it will remain unique as more DAIs are added. The AIF widget streams
-must be updated to match.
+The hardware supports 8 to 24-bit word sizes on all three of its DAIs,
+only one of which is connected to the CPU DAI. Program the word size
+based on the actual selected format, instead of relying on limitations
+in another driver (which, incedentally, has patches pending to remove
+that limitation).
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 76 +++++++++++++++++++----------------
- 1 file changed, 42 insertions(+), 34 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 7590c4b04d14..346f699c2e86 100644
+index 506420fb355c..e7f01a4b4001 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -90,16 +90,21 @@
- #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_MASK	GENMASK(5, 4)
- #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
- #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
- #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
- #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
- #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
- 
-+enum {
-+	AIF1,
-+	NAIFS
-+};
-+
- struct sun8i_codec_quirks {
- 	bool legacy_widgets	: 1;
- 	bool lrck_inversion	: 1;
- };
- 
- struct sun8i_codec {
- 	struct regmap			*regmap;
- 	struct clk			*clk_module;
-@@ -160,17 +165,17 @@ static int sun8i_codec_get_hw_rate(struct snd_pcm_hw_params *params)
- 		return 0x9;
- 	case 192000:
- 		return 0xa;
- 	default:
- 		return -EINVAL;
- 	}
+@@ -43,17 +43,16 @@
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS			12
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS			8
+ #define SUN8I_AIF1CLK_CTRL				0x040
+ #define SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD		15
+ #define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV			13
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+-#define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
+ #define SUN8I_AIF1_ADCDAT_CTRL				0x044
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA		15
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA		14
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_SRC		10
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_SRC		8
+ #define SUN8I_AIF1_DACDAT_CTRL				0x048
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
+@@ -317,26 +316,40 @@ static int sun8i_codec_get_lrck_div(unsigned int channels,
+ 	return ilog2(div) - 4;
  }
  
--static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
  {
  	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
- 	u32 value;
+-	int sample_rate, lrck_div;
++	int lrck_div, sample_rate, word_size;
+ 	u8 bclk_div;
  
- 	/* clock masters */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
- 		value = 0x1;
-@@ -331,16 +336,46 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 
- 	regmap_update_bits(scodec->regmap, SUN8I_SYS_SR_CTRL,
- 			   SUN8I_SYS_SR_CTRL_AIF1_FS_MASK,
- 			   sample_rate << SUN8I_SYS_SR_CTRL_AIF1_FS);
- 
- 	return 0;
- }
- 
-+static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
-+	.set_fmt	= sun8i_codec_set_fmt,
-+	.hw_params	= sun8i_codec_hw_params,
-+};
+-	/*
+-	 * The CPU DAI handles only a sample of 16 bits. Configure the
+-	 * codec to handle this type of sample resolution.
+-	 */
++	/* word size */
++	switch (params_width(params)) {
++	case 8:
++		word_size = 0x0;
++		break;
++	case 16:
++		word_size = 0x1;
++		break;
++	case 20:
++		word_size = 0x2;
++		break;
++	case 24:
++		word_size = 0x3;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+static struct snd_soc_dai_driver sun8i_codec_dais[] = {
-+	{
-+		.name	= "sun8i-codec-aif1",
-+		.id	= AIF1,
-+		.ops	= &sun8i_codec_dai_ops,
-+		/* capture capabilities */
-+		.capture = {
-+			.stream_name	= "AIF1 Capture",
-+			.channels_min	= 1,
-+			.channels_max	= 2,
-+			.rates		= SNDRV_PCM_RATE_8000_192000,
-+			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
-+			.sig_bits	= 24,
-+		},
-+		/* playback capabilities */
-+		.playback = {
-+			.stream_name	= "AIF1 Playback",
-+			.channels_min	= 1,
-+			.channels_max	= 2,
-+			.rates		= SNDRV_PCM_RATE_8000_192000,
-+			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+	},
-+};
-+
- static const char *const sun8i_aif_stereo_mux_enum_values[] = {
- 	"Stereo", "Reverse Stereo", "Sum Mono", "Mix Mono"
- };
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16);
++			   word_size << SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ);
  
- static SOC_ENUM_DOUBLE_DECL(sun8i_aif1_ad0_stereo_mux_enum,
- 			    SUN8I_AIF1_ADCDAT_CTRL,
- 			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_SRC,
- 			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_SRC,
-@@ -433,20 +468,20 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("ADC",
- 			    SUN8I_ADC_DIG_CTRL,
- 			    SUN8I_ADC_DIG_CTRL_ENAD, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("DAC",
- 			    SUN8I_DAC_DIG_CTRL,
- 			    SUN8I_DAC_DIG_CTRL_ENDA, 0, NULL, 0),
+ 	bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params), 16);
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+ 			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
  
- 	/* AIF "ADC" Outputs */
--	SND_SOC_DAPM_AIF_OUT("AIF1 AD0L", "Capture", 0,
-+	SND_SOC_DAPM_AIF_OUT("AIF1 AD0L", "AIF1 Capture", 0,
- 			     SUN8I_AIF1_ADCDAT_CTRL,
- 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA, 0),
--	SND_SOC_DAPM_AIF_OUT("AIF1 AD0R", "Capture", 1,
-+	SND_SOC_DAPM_AIF_OUT("AIF1 AD0R", "AIF1 Capture", 1,
- 			     SUN8I_AIF1_ADCDAT_CTRL,
- 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA, 0),
- 
- 	/* AIF "ADC" Mono/Stereo Muxes */
- 	SND_SOC_DAPM_MUX("AIF1 AD0L Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif1_ad0_stereo_mux_control),
- 	SND_SOC_DAPM_MUX("AIF1 AD0R Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif1_ad0_stereo_mux_control),
-@@ -459,20 +494,20 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 
- 	/* AIF "DAC" Mono/Stereo Muxes */
- 	SND_SOC_DAPM_MUX("AIF1 DA0L Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif1_da0_stereo_mux_control),
- 	SND_SOC_DAPM_MUX("AIF1 DA0R Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif1_da0_stereo_mux_control),
- 
- 	/* AIF "DAC" Inputs */
--	SND_SOC_DAPM_AIF_IN("AIF1 DA0L", "Playback", 0,
-+	SND_SOC_DAPM_AIF_IN("AIF1 DA0L", "AIF1 Playback", 0,
- 			    SUN8I_AIF1_DACDAT_CTRL,
- 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
--	SND_SOC_DAPM_AIF_IN("AIF1 DA0R", "Playback", 1,
-+	SND_SOC_DAPM_AIF_IN("AIF1 DA0R", "AIF1 Playback", 1,
- 			    SUN8I_AIF1_DACDAT_CTRL,
- 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
- 
- 	/* ADC Inputs (connected to analog codec DAPM context) */
- 	SND_SOC_DAPM_ADC("ADCL", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_ADC("ADCR", NULL, SND_SOC_NOPM, 0, 0),
- 
- 	/* DAC Outputs (connected to analog codec DAPM context) */
-@@ -619,44 +654,16 @@ static int sun8i_codec_component_probe(struct snd_soc_component *component)
- 	/* Use AIF1CLK as the SYSCLK parent since AIF1 is used most often. */
- 	regmap_update_bits(scodec->regmap, SUN8I_SYSCLK_CTL,
- 			   BIT(SUN8I_SYSCLK_CTL_SYSCLK_SRC),
- 			   SUN8I_SYSCLK_CTL_SYSCLK_SRC_AIF1CLK);
- 
- 	return 0;
- }
- 
--static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
--	.hw_params = sun8i_codec_hw_params,
--	.set_fmt = sun8i_set_fmt,
--};
--
--static struct snd_soc_dai_driver sun8i_codec_dai = {
--	.name = "sun8i",
--	/* playback capabilities */
--	.playback = {
--		.stream_name = "Playback",
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	/* capture capabilities */
--	.capture = {
--		.stream_name = "Capture",
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--		.sig_bits = 24,
--	},
--	/* pcm operations */
--	.ops = &sun8i_codec_dai_ops,
--};
--
- static const struct snd_soc_component_driver sun8i_soc_component = {
- 	.dapm_widgets		= sun8i_codec_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(sun8i_codec_dapm_widgets),
- 	.dapm_routes		= sun8i_codec_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(sun8i_codec_dapm_routes),
- 	.probe			= sun8i_codec_component_probe,
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
-@@ -709,17 +716,18 @@ static int sun8i_codec_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
- 		ret = sun8i_codec_runtime_resume(&pdev->dev);
- 		if (ret)
- 			goto err_pm_disable;
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &sun8i_soc_component,
--				     &sun8i_codec_dai, 1);
-+					      sun8i_codec_dais,
-+					      ARRAY_SIZE(sun8i_codec_dais));
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register codec\n");
- 		goto err_suspend;
- 	}
- 
- 	return ret;
- 
- err_suspend:
+ 	lrck_div = sun8i_codec_get_lrck_div(params_channels(params),
+ 					    params_physical_width(params));
 -- 
 2.26.2
 
