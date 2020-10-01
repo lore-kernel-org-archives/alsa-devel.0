@@ -1,73 +1,64 @@
-Return-Path: <SRS0=iKRb=DH=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=ZHdS=DI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4FBDC4363D
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 23:29:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01200C4727F
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 01:34:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 256572076A
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Sep 2020 23:29:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 037A2207C3
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 01:33:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UUhHrzSU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 256572076A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oDVJtgrg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 037A2207C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5296617A9;
-	Thu,  1 Oct 2020 01:28:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5296617A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2451E17B2;
+	Thu,  1 Oct 2020 03:33:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2451E17B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601508580;
-	bh=hNsuFQX1K+8wg0nlUNaxIM0TenoClYeCEbdE1yM1dHM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UUhHrzSUA8UEbgj3IyRQmUA8dC4SOQADTFSPXJIo+oK9t6UdPw9nspP+FYwG33Agh
-	 H3/zaRGvdMKdUTI6UEHIbThuBUuJI0taHbc5Bp+Hzd1tThJt4dMxJo4y0BjlU8HNrz
-	 Ni7N/q0wuoUZ1N+yTgS980UBiiAmQgzBLf6pSG7k=
+	s=default; t=1601516037;
+	bh=Ps6wh1y9YmDgqwuHEW8RVyWRX+TCTcnaTELcxfDCmng=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=oDVJtgrgqS+7F+iSKJVk1shZ2vPa+Xjm6irUlIj2hhTa/LD1LybF8UKpjGUQrO5N3
+	 kf7ULcph0IAaF11CfMpJFkEwEYbawv6kFpOiIGwmYPSxwh3lAByCRRnjGzGM/NxWsA
+	 Zrn1pJJCNJACVJ2xy8zRVTs0zYb5RWYrVCy4erDs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B80E3F801D8;
-	Thu,  1 Oct 2020 01:28:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92A30F801ED;
+	Thu,  1 Oct 2020 03:33:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB9DFF801ED; Thu,  1 Oct 2020 01:28:46 +0200 (CEST)
+ id 2F681F801F9; Thu,  1 Oct 2020 03:33:05 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 123F5F800DF
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 01:28:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 123F5F800DF
-Date: 01 Oct 2020 08:28:33 +0900
-X-IronPort-AV: E=Sophos;i="5.77,322,1596466800"; d="scan'208";a="58602614"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 01 Oct 2020 08:28:33 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id DDACDF800DF
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 03:32:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDACDF800DF
+Date: 01 Oct 2020 10:32:48 +0900
+X-IronPort-AV: E=Sophos;i="5.77,322,1596466800"; d="scan'208";a="58615019"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 01 Oct 2020 10:32:48 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id ACF024002C28;
- Thu,  1 Oct 2020 08:28:33 +0900 (JST)
-Message-ID: <87v9fualv7.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 12174416123E;
+ Thu,  1 Oct 2020 10:32:48 +0900 (JST)
+Message-ID: <87k0waag44.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 5/7] ASoC: soc-pcm: add soc_pcm_clean() and call it from
- soc_pcm_open/close()
-In-Reply-To: <1fa68abd-a86c-7a29-6c28-9ecde75ab4c6@samsung.com>
-References: <87mu1abwp2.wl-kuninori.morimoto.gx@renesas.com>
- <87ft72bwn4.wl-kuninori.morimoto.gx@renesas.com>
- <CGME20200929130814eucas1p1c09e7e1fe2d808d9bd41718cadf33754@eucas1p1.samsung.com>
- <1fa68abd-a86c-7a29-6c28-9ecde75ab4c6@samsung.com>
+Subject: [PATCH] ASoC: soc-pcm: ignore un-needed mutex_unlock() case on
+ soc_pcm_open()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: 'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,106 +74,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Marek
+commit 140a4532cdb8c ("ASoC: soc-pcm: add soc_pcm_clean() and call it
+from soc_pcm_open/close()") switch to call soc_pcm_clean() on
+soc_pcm_open() when rollback case.
 
-Thank you for testing.
-I will check it
+But, it uses "goto err" (A) *before* mutex_lock() (B) when error of
+snd_soc_pcm_component_pm_runtime_get().
+The mutex_unlock() (C) is not needed in such case. This patch fix it.
 
-> On 28.09.2020 02:01, Kuninori Morimoto wrote:
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> >
-> > soc_pcm_open() does rollback when failed (A),
-> > but, it is almost same as soc_pcm_close().
-> >
-> > 	static int soc_pcm_open(xxx)
-> > 	{
-> > 		...
-> > 		if (ret < 0)
-> > 			goto xxx_err;
-> > 		...
-> > 		return 0;
-> >
-> >   ^	config_err:
-> >   |		...
-> >   |	rtd_startup_err:
-> > (A)		...
-> >   |	component_err:
-> >   |		...
-> >   v		return ret;
-> > 	}
-> >
-> > The difference is
-> > soc_pcm_close() is for all dai/component/substream,
-> > rollback        is for succeeded part only.
-> >
-> > This kind of duplicated code can be a hotbed of bugs,
-> > thus, we want to share soc_pcm_close() and rollback.
-> >
-> > Now, soc_pcm_open/close() are handling
-> > 	1) snd_soc_dai_startup/shutdown()
-> > 	2) snd_soc_link_startup/shutdown()
-> > 	3) snd_soc_component_module_get/put()
-> > 	4) snd_soc_component_open/close()
-> > 	5) pm_runtime_put/get()
-> >
-> > Now, 1) to 5) are handled.
-> > This patch adds new soc_pcm_clean() and call it from
-> > soc_pcm_open() as rollback, and from soc_pcm_close() as
-> > normal close handler.
-> >
-> > One note here is that it don't need to call snd_soc_runtime_deactivate()
-> > when rollback case, because it will be called without
-> > snd_soc_runtime_activate().
-> > It also don't need to call snd_soc_dapm_stream_stop() when rollback cas=
-e.
-> >
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> This patch landed in linux next-20200929 as commit 140a4532cdb8 ("ASoC:=20
-> soc-pcm: add soc_pcm_clean() and call it from soc_pcm_open/close()").=20
-> Sadly it causes a regression in ALSA operation on my various test=20
-> boards: Exynos4412 based Trats2, Exynos5410 based Odroid XU, Exynos5250=20
-> Snow Chromebook and other. The first app, which tries to open ALSA=20
-> device fails. Then, on the second try, it work.
->=20
-> Here is a log from Odroid XU:
->=20
-> [=A0=A0=A0 3.775032] max98090 1-0010: MAX98090 REVID=3D0x43
-> [=A0=A0=A0 3.781958] max98090 1-0010: use default 2.8v micbias
-> [=A0=A0=A0 3.812813] ALSA device list:
-> [=A0=A0=A0 3.814448]=A0=A0 #0: Odroid-XU
->=20
-> # speaker-test -l1
->=20
-> speaker-test 1.1.3
->=20
-> Playback device is default
-> Stream parameters are 48000Hz, S16_LE, 1 channels
-> Using 16 octaves of pink noise
-> Playback open error: -22,Invalid argument
-> # speaker-test -l1
->=20
-> speaker-test 1.1.3
->=20
-> Playback device is default
-> Stream parameters are 48000Hz, S16_LE, 1 channels
-> Using 16 octaves of pink noise
-> Rate set to 48000Hz (requested 48000Hz)
-> Buffer size range from 128 to 131072
-> Period size range from 64 to 65536
-> Using max buffer size 131072
-> Periods =3D 4
-> was set period_size =3D 32768
-> was set buffer_size =3D 131072
->  =A00 - Front Left
-> Time per period =3D 0.029512
-> #
->=20
->  > ...
->=20
-> Best regards
-> --=20
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
->=20
+	static int soc_pcm_open(...)
+	{
+		...
+		ret = snd_soc_pcm_component_pm_runtime_get(rtd, substream);
+		if (ret < 0)
+(A)			goto err;
+
+(B)		mutex_lock_nested(...);
+		...
+	err:
+(C)		mutex_unlock(..);
+		...
+	}
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 09e8d703a502..5d538520e2cf 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -706,7 +706,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 
+ 	ret = snd_soc_pcm_component_pm_runtime_get(rtd, substream);
+ 	if (ret < 0)
+-		goto err;
++		goto pm_err;
+ 
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+ 
+@@ -786,7 +786,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	snd_soc_runtime_activate(rtd, substream->stream);
+ err:
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+-
++pm_err:
+ 	if (ret < 0)
+ 		soc_pcm_clean(substream, 1);
+ 
+-- 
+2.25.1
+
