@@ -2,78 +2,57 @@ Return-Path: <SRS0=ZHdS=DI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B63EC4727C
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 05:59:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAADFC4727C
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 06:40:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2383221EC
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 05:59:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1196621481
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 06:40:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N2Pyj3Yu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KeOHILdy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2383221EC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WHvNjvkW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1196621481
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEA7E185E;
-	Thu,  1 Oct 2020 07:58:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEA7E185E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E445F187A;
+	Thu,  1 Oct 2020 08:39:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E445F187A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601531963;
-	bh=Sv0c3pAcY4Vt4EtFo1ZXj24LoHL1Z/6yh3dc/Ba75v8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1601534436;
+	bh=7ClyvoKvp/AUgm0tLbxKJZRpFnkiHGe4BqLW33CrZ1g=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N2Pyj3YuWyPonGCLEla2yMQuOPJ6Gly90kc8E3fZJnpNrQBchSiWB27cr0zZ7aVbL
-	 RlSIlIBUfiPhjUtiw7hfMTuUbNtJZYpU38VYzNfW5HB+b8RXGzlxfybF78ON6RuSfy
-	 90iRrL64lU5ORwhqrTZrtDe2EZXNUTYA0rrfjvCU=
+	b=WHvNjvkWVpX3smZwPUrOHp6wNg1cxG4o42SF03RF9rn/i+Qd0/26FTyjG2PumQQvK
+	 nKV/312PdHYJNC6Jc8uBAk62vviWkV//Hf3+2m7xo6qf/Ksc8RwwxZKNOu08x+zxNm
+	 RXPQ9OmSMZcFEWjlZBgM6LeWaObWdFsFt3l91WZo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DE2AF801DB;
-	Thu,  1 Oct 2020 07:58:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53577F801DB;
+	Thu,  1 Oct 2020 08:39:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BDB4F801F5; Thu,  1 Oct 2020 07:58:31 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3B4DF801D8
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 07:58:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3B4DF801D8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KeOHILdy"
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CE0E7221E7;
- Thu,  1 Oct 2020 05:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601531898;
- bh=Sv0c3pAcY4Vt4EtFo1ZXj24LoHL1Z/6yh3dc/Ba75v8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KeOHILdy4a6B8Dd/f47RwByzV+jE9Ch/ojh4bGcGjwTHdkoY/w0u87LlkZRLlw2+7
- j6KXjJmt6ASiKGfrNWM3YEty4IQsWydTtzojUnooctpF5LhxIO0TlHnuIvWSa6pWbg
- beonhxoianEbVW6L7nEtuSjysNwaCBj4tfHn74k4=
-Date: Thu, 1 Oct 2020 07:58:15 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Dave Ertman <david.m.ertman@intel.com>
-Subject: Re: [PATCH 0/6] Ancillary bus implementation and SOF multi-client
- support
-Message-ID: <20201001055815.GA25976@kroah.com>
-References: <20200930225051.889607-1-david.m.ertman@intel.com>
+ id 75239F801F5; Thu,  1 Oct 2020 08:39:43 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id EE527F800AB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 08:39:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE527F800AB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930225051.889607-1-david.m.ertman@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, ranjani.sridharan@intel.com,
- pierre-louis.bossart@linux.intel.com, broonie@kernel.org, parav@nvidia.com,
- jgg@nvidia.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1601534369443474054-webhooks-bot@alsa-project.org>
+References: <1601534369443474054-webhooks-bot@alsa-project.org>
+Subject: unable to initialize sum ring buffer error
+Message-Id: <20201001063943.75239F801F5@alsa1.perex.cz>
+Date: Thu,  1 Oct 2020 08:39:43 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,15 +68,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 30, 2020 at 03:50:45PM -0700, Dave Ertman wrote:
-> Brief history of Ancillary Bus 
-> ==============================
+alsa-project/alsa-lib issue #83 was opened from Komal1809:
 
-<snip>
+i am using alsa-lib-1.1.4.1 library version. Whenever trying to play audio from file using aplay  getting error as alsa-lib-1.1.4.1/src/pcm/pcm_dmix.c:1177: **(snd_pcm_dmix_open) unable to initialize sum ring buffer** 
 
-Did you send 2 copies of this?  Which one is the "correct" one to
-review?
+Note : audio is getting played at the start once system reboot
 
-confused,
-
-greg k-h
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/83
+Repository URL: https://github.com/alsa-project/alsa-lib
