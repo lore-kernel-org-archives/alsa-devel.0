@@ -2,87 +2,164 @@ Return-Path: <SRS0=cVLY=DK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8217C4363D
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:03:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCFB6C4363D
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:07:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 213B2206F8
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:03:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E9A35206CA
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:07:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nqX8azTs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="shyrkCgg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 213B2206F8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q5ISMTiw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="eFGgIOkE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9A35206CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F48218BB;
-	Sat,  3 Oct 2020 11:02:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F48218BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61288189E;
+	Sat,  3 Oct 2020 11:06:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61288189E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601715790;
-	bh=hqrEZaBVdP1bFOYZhSCJD7NnGqnDpmk80ug4DMaHxk8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1601716026;
+	bh=+3kxnkC1sHgyG1f1/K0eLeZqv2+hsYqG7sxKfOlRI+k=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nqX8azTsoL2Pf3I7FWZL/Ejnvhw8+l65JCbCAfyiVglHfbnQmxAuBSwmsQXoHJN1N
-	 2IhoICSXVOp9JR9jjWWUh9z2CavQfWgW7k0I1bzMsddCyPcYBXPqABq4BDz4jOJmsT
-	 GKse0ar2lqc5Hq5Xs+kzFxCQXq+ntPq/FbQPyBH0=
+	b=q5ISMTiw1Q7hulYK0vIW2kG8hgGZzKujfrPD8WuIb4gauK6tB7K/rj9X5bM3VnUrx
+	 YyBtsaGZ2l7QSbs30Fvax65b0vp3IdwwPZKfgi8twoPYyVUa/YodMd2Ly4CTB6Nd9T
+	 7I/U3C69dpyvgpRmAUEZta5HhT1D7X5C0sAGLwyg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFF87F801D8;
-	Sat,  3 Oct 2020 11:02:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF9AAF800BB;
+	Sat,  3 Oct 2020 11:06:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A136EF801F5; Sat,  3 Oct 2020 11:02:18 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A5044F8022B; Thu,  1 Oct 2020 16:39:30 +0200 (CEST)
+Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
+ [216.228.121.143])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21629F801D8
- for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2020 11:02:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21629F801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3A10F801F5
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 16:39:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3A10F801F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="shyrkCgg"
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2C6A5206F8;
- Sat,  3 Oct 2020 09:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601715725;
- bh=hqrEZaBVdP1bFOYZhSCJD7NnGqnDpmk80ug4DMaHxk8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=shyrkCggzPHV+MuJ+qh2IXhnAC19LCZtzVj5dXtzgmK8u7XHaZN/tP+6jPMmFMJkN
- J2w6P0A2YaodSD/1UHoZoeh+bSD/H37GYgwfQse8TiER8a2sfodTRrVKAJcJuwLu6v
- +dsGbRoitq+shp1WKW1bXnH1SNgpfmmR8jik8Oes=
-Date: Sat, 3 Oct 2020 11:02:01 +0200
-From: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Subject: Re: [PATCH 2/6] ASoC: SOF: Introduce descriptors for SOF client
-Message-ID: <20201003090201.GC114893@kroah.com>
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="eFGgIOkE"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B5f75e9a90001>; Thu, 01 Oct 2020 07:37:29 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
+ 2020 14:39:07 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 1 Oct 2020 14:39:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HBfKXIVe58kWsi35zyUGjnhH9ckU7Tycgtd25WX+3ohzB/ZRBSc5pW0NuzumqoVGDX6PwJk8hityFE3SLweTW9OV3SlT7LCtXB4YEDGBxyBRd1a43Bq0Ty2dERg6LhlRajYCP1ClrQsdxUbQP5IOmKQEkncdyBWqvtWgfdWFPno7wJ2J70QanwFKnZv7a7VZxYfMl+AV8kTsFpmkqjosXzbXeixNUxUzTtf3W1CpFBSgwJ1S++Q5TdtYx6/5LCprdEJ3PZ/hFc/nwYDpcOJIjZKVpWc+IAA1A4qH8rwHd/BoZ/ObtGn0hQBq3ETING50e1y9lXS69NrimW5U3PCS8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R8opnJkdnx1BT5xdPsU0XPki8nAL1zE2nxRm/9z9CGI=;
+ b=O1XJ+JT4hgwMn7cR/LW9cRTH4ib9bk459tymUYSbO4vWi7vJvYnCMdxB9IAEaG8zYPKN+g2xixb9ZdnYhNleLiAwmXKNEhR2QzADmFFaMQKQngib8prVDi1vJvucOXLRJcve3c8om86iORTFq5yRy9d6XjBaDQlOnmCbA/+qiWcCMQBJ+Mg1Ks8zqmuc7bmFMnFetqnPuTw51wIemnbAoGjYuXMnG1ybX7x7yRCrCt7DKdMq1dIiFM6OtqwxuRihD4fJg70qlS6R4eRRxPL2pI67DmtAo0o8EkLAZPfwTCqDtGHaA0GlFQL42x9IPFVmXm4HoZtjhx0qAl+g6LuP6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BY5PR12MB3811.namprd12.prod.outlook.com (2603:10b6:a03:1a1::27)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Thu, 1 Oct
+ 2020 14:39:06 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::3c25:6e4c:d506:6105]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::3c25:6e4c:d506:6105%6]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 14:39:06 +0000
+From: Parav Pandit <parav@nvidia.com>
+To: Jason Gunthorpe <jgg@nvidia.com>, Greg KH <gregkh@linuxfoundation.org>
+Subject: RE: [PATCH 1/6] Add ancillary bus support
+Thread-Topic: [PATCH 1/6] Add ancillary bus support
+Thread-Index: AQHWl3xK6PpW4GgCLkSFS7ZuYPaI7amClq2AgAAOyoCAAARcgIAAJuMAgAAAQ9A=
+Date: Thu, 1 Oct 2020 14:39:06 +0000
+Message-ID: <BY5PR12MB4322699D73AABCA62ED07BECDC300@BY5PR12MB4322.namprd12.prod.outlook.com>
 References: <20200930225051.889607-1-david.m.ertman@intel.com>
- <20200930225051.889607-3-david.m.ertman@intel.com>
- <20201001130245.GB2378679@kroah.com>
- <f3fa8df9fc8bcd789167f61b6c9d4df66b9b85c1.camel@intel.com>
- <20201002045357.GA34005@kroah.com>
- <ad38db14921dc5afb424db1ecac53053f15bb753.camel@intel.com>
+ <20200930225051.889607-2-david.m.ertman@intel.com>
+ <20201001110551.GD1939744@kroah.com> <20201001115847.GY816047@nvidia.com>
+ <20201001121423.GA2375307@kroah.com> <20201001143334.GA1103926@nvidia.com>
+In-Reply-To: <20201001143334.GA1103926@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [122.172.151.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fb4dc286-114a-4e73-182e-08d86617bfe2
+x-ms-traffictypediagnostic: BY5PR12MB3811:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR12MB381148D06E0D0F801112B084DC300@BY5PR12MB3811.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aMAI5sXNbRWcys2sOn1KWDY6S5HsSGrfqEjv3jBYOOUzNTLOtOafPmy58k0EmZRjVS8Jqy31tdDtUxN1P932kJy2AHr3AOCTcCcyJrCQzYfkrgI+Zj8z9ebAd1Sgl37MRTPow3Nv5i4bFKAg6IKTeSEdfe5SaGCO9QLSefvv3XdpioEqBQYl6hs73EWLOF/mi0r7Vmw+wniAwlECGR1lVf6rOSE5QzefcC1Sv816YiI2NVxK7JdrvCUZVt3IrKLNWJcuWiO+POR0P75AwhyL7375CNN4zhasjYx8Rpzt1vZfB0/1MhWpj03G/Ej6qAjRKwL9oBTsLWV69ykXrWRYhQ==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR12MB4322.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(396003)(136003)(39860400002)(346002)(376002)(366004)(66556008)(83380400001)(66476007)(64756008)(66446008)(8676002)(66946007)(55016002)(86362001)(5660300002)(186003)(4326008)(76116006)(55236004)(71200400001)(26005)(6506007)(8936002)(7416002)(52536014)(316002)(2906002)(7696005)(9686003)(478600001)(110136005)(54906003)(33656002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: oupxjMXxcGs+x8iT/mmm+ri8C/KgxZhcG+Q05LvKZceD7hQ+xEziaGTaJ1cKYUcShF6ekZqFkFE5s41iT9JlTyxeupSYk335HdTaRlCVK7jEpaKLWperP2HOZ/40iiURjmFIintGXl0/nCuw/XT+S7P57OmHqAQqrwmKgDEpfNoMjl5KtmsffoRH3fT1clM78Cuc6DJJHuKyNysMZGH32gjH+xsM5d0sB2Fqn7Fa4Ozp90tsyt6Qxxv8uniAtDej5+A2TCOCd88eo0nGL8xZLnnKnGBM8+UtbzWBHGtytcVPJqn8MjZGM+DVsYX6LxdujqeO1adm/Z8G7IQUFxeJ3vzBZTKgNg6mD4Y5vDe7Xo7MgoATtTNbbUtmjz68EU8fL86lPwPDWIHmBguerXr6VOTtjwqnJDmW7IEyBOzxJeUUznVimpblqEvhQKVN0QDBMngQvHAUos0SehNruaCPJiDgWhWT3n9Tl2MFiOnZo3Yk8kDeDW0KeBVVzw2suABy98XLP8w6zLlWkbhWcTPFWC9/8qbk0BFPcAdk+bopgHzw2zt5i7ua2eW3TfBp/xjRmKbJSTBaK4U2RtfmNe58dCqI2nmy+AtqLcJbM92Su3As5a0iRQWD5SiLuoXYcviipQlzLmxfKXupkykCf3VgkA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad38db14921dc5afb424db1ecac53053f15bb753.camel@intel.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb4dc286-114a-4e73-182e-08d86617bfe2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 14:39:06.0639 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QBJpbDD+U7g6Aqq+Eb5ErFh3TPXEocmcHpLALLP+Xxh0tPWz7CrYAJEvPcYbc5y4w3/+RDUd+uktNEbsXCY1DQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3811
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1601563049; bh=R8opnJkdnx1BT5xdPsU0XPki8nAL1zE2nxRm/9z9CGI=;
+ h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+ CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+ In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+ X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+ x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+ x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
+ x-microsoft-antispam-prvs:x-ms-oob-tlc-oobclassifiers:
+ x-ms-exchange-senderadcheck:x-microsoft-antispam:
+ x-microsoft-antispam-message-info:x-forefront-antispam-report:
+ x-ms-exchange-antispam-messagedata:Content-Type:
+ Content-Transfer-Encoding:MIME-Version:
+ X-MS-Exchange-CrossTenant-AuthAs:
+ X-MS-Exchange-CrossTenant-AuthSource:
+ X-MS-Exchange-CrossTenant-Network-Message-Id:
+ X-MS-Exchange-CrossTenant-originalarrivaltime:
+ X-MS-Exchange-CrossTenant-fromentityheader:
+ X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+ X-MS-Exchange-CrossTenant-userprincipalname:
+ X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+ b=eFGgIOkEX/Jrfoz7Bl41sMUCDsnbZ1wFwrTSKAOGy8FjvZnpTgILRUB2iLrH2Wp5K
+ C1f9nlumpF++lp58hZWx0BpvrEckuOrxTVr/j3ntUHwXsAwpjULcVYi3WPCgS6k3or
+ BK6z12I6I+xjlX8JZwhboMnCbIZLJc3j998nd8Ww47PRna2edOQDWSH+NE28FBbXoe
+ GC1Q/NwRwdNb702qF2LVUchl6ryhoz6QCIfd7JthmKYw0VQ1auG3NECkKLahuKyxig
+ ljTs+R93dslALQrRyqGvHiUwzOZYA8a1POtVQV76oI85tmWonP8o9wAtKTb85VUrsB
+ tGpGAyMwNRQXA==
+X-Mailman-Approved-At: Sat, 03 Oct 2020 11:06:14 +0200
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tiwai@suse.de" <tiwai@suse.de>,
+ Kiran Patil <kiran.patil@intel.com>, "tiwai@suse.de" <tiwai@suse.de>,
+ "ranjani.sridharan@intel.com" <ranjani.sridharan@intel.com>,
  "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
- "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "parav@nvidia.com" <parav@nvidia.com>, "jgg@nvidia.com" <jgg@nvidia.com>,
- "Ertman, David M" <david.m.ertman@intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Fred Oh <fred.oh@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ Dave Ertman <david.m.ertman@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Shiraz Saleem <shiraz.saleem@intel.com>, Parav Pandit <parav@mellanox.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,81 +175,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Oct 02, 2020 at 05:07:13PM +0000, Sridharan, Ranjani wrote:
-> On Fri, 2020-10-02 at 06:53 +0200, gregkh@linuxfoundation.org wrote:
-> > On Thu, Oct 01, 2020 at 10:16:00PM +0000, Sridharan, Ranjani wrote:
-> > > On Thu, 2020-10-01 at 15:02 +0200, Greg KH wrote:
-> > > > On Wed, Sep 30, 2020 at 03:50:47PM -0700, Dave Ertman wrote:
-> > > > > From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > > > 
-> > > > > A client in the SOF (Sound Open Firmware) context is a
-> > > > > device that needs to communicate with the DSP via IPC
-> > > > > messages. The SOF core is responsible for serializing the
-> > > > > IPC messages to the DSP from the different clients. One
-> > > > > example of an SOF client would be an IPC test client that
-> > > > > floods the DSP with test IPC messages to validate if the
-> > > > > serialization works as expected. Multi-client support will
-> > > > > also add the ability to split the existing audio cards
-> > > > > into multiple ones, so as to e.g. to deal with HDMI with a
-> > > > > dedicated client instead of adding HDMI to all cards.
-> > > > > 
-> > > > > This patch introduces descriptors for SOF client driver
-> > > > > and SOF client device along with APIs for registering
-> > > > > and unregistering a SOF client driver, sending IPCs from
-> > > > > a client device and accessing the SOF core debugfs root entry.
-> > > > > 
-> > > > > Along with this, add a couple of new members to struct
-> > > > > snd_sof_dev that will be used for maintaining the list of
-> > > > > clients.
-> > > > > 
-> > > > > Reviewed-by: Pierre-Louis Bossart <
-> > > > > pierre-louis.bossart@linux.intel.com>
-> > > > > Signed-off-by: Ranjani Sridharan <
-> > > > > ranjani.sridharan@linux.intel.com
-> > > > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > > > ---
-> > > > >  sound/soc/sof/Kconfig      |  19 ++++++
-> > > > >  sound/soc/sof/Makefile     |   3 +
-> > > > >  sound/soc/sof/core.c       |   2 +
-> > > > >  sound/soc/sof/sof-client.c | 117
-> > > > > +++++++++++++++++++++++++++++++++++++
-> > > > >  sound/soc/sof/sof-client.h |  65 +++++++++++++++++++++
-> > > > >  sound/soc/sof/sof-priv.h   |   6 ++
-> > > > >  6 files changed, 212 insertions(+)
-> > > > >  create mode 100644 sound/soc/sof/sof-client.c
-> > > > >  create mode 100644 sound/soc/sof/sof-client.h
-> > > > 
-> > > > As you are creating new sysfs directories, you should have some
-> > > > documentation for them :(
-> > > Hi Greg,
-> > > 
-> > > We are not adding any sysfs entries in this series. 
-> > 
-> > You added directories in sysfs, right?
-> Hi Greg,
-> 
-> We are not adding any sysfs directories.
 
-Really?  Then what does creating these new devices do in sysfs?  If
-nothing, then why are they being used at all?  :)
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Thursday, October 1, 2020 8:04 PM
+>=20
+> On Thu, Oct 01, 2020 at 02:14:23PM +0200, Greg KH wrote:
+> > On Thu, Oct 01, 2020 at 08:58:47AM -0300, Jason Gunthorpe wrote:
+> > > On Thu, Oct 01, 2020 at 01:05:51PM +0200, Greg KH wrote:
+> > >
+> > > > You have to be _VERY_ careful after calling
+> > > > ancillary_device_initialize(), as now you can not just free up the
+> > > > memory if something goes wrong before ancillary_device_add() is
+> > > > called, right?
+> > >
+> > > I've looked at way too many versions of this patch and related. This
+> > > is the only one so far that I didn't find various bugs on the error
+> > > cases.
+> >
+> > But you haven't seen the callers of this function.  Without this
+> > documented, you will have problems.
+>=20
+> I've seen the Intel irdma, both versions of the SOF stuff and an internal=
+ mlx5
+> patch..
+>=20
+> Look at the SOF example, it has perfectly paired error unwinds. Each func=
+tion
+> has unwind that cleans up exactly what it creates. Every 'free' unwind is
+> paired with an 'alloc' in the same function. Simple.
+> Easy to audit. Easy to correctly enhance down the road.
+>=20
+> This is the common kernel goto error design pattern.
+>=20
+> > Why is this two-step process even needed here?
+>=20
+> Initializing the refcount close to the allocation is a common design patt=
+ern as
+> is initializing it close to registration. Both options are tricky, both h=
+ave various
+> common subtle bugs, both have awkward elements.
+>=20
+> At the end of the day, after something like 20 iterations, this is the fi=
+rst series
+> that actually doesn't have error unwind bugs.
+>=20
+> Can we empower Dave to make this choice? It is not like it is wild or wei=
+rd,
+> the driver core already exposes _initialize and _add functions that work =
+in
+> exactly the same way.
+>=20
 
-> The only change in the /sys directory will be the new ancillary
-> devices created in the /sys/bus/ancillary/devices directory ie
-> snd_sof_client.ipc_test.0 and snd_sof_client.ipc_test.1.
+> > Why is this two-step process even needed here?
+> > Without this documented, you will have problems.
 
-That is what I was referring to.
+And it is also documented in "Ancillary device" section in the Documentatio=
+n/driver-api/ancillary_bus.rst
+Below is the snippet from the patch.
 
-> In the following patches, we're adding debugfs entries for the ipc
-> test clients but no other sysfs changes.
-> 
-> Is it required to add documentation for these as well?
+It is likely worth to add this part of the documentation using standard ker=
+nel kdoc format where export function definition of initialize() and add() =
+resides, so that it cannot be missed out.
 
-Why would you not document them?  If you don't do anything with these
-devices, then why even use them?  debugfs does not require sysfs
-entries, so I fail to see the need for using this api at all here...
++Registering an ancillary_device is a two-step process.  First you must=20
++call ancillary_device_initialize(), which will check several aspects of=20
++the ancillary_device struct and perform a device_initialize().  After=20
++this step completes, any error state must have a call to put_device()=20
+                                                                           =
+                         ^^^^^^^^^^^^
++in its resolution path.  The second step in registering an=20
+ +ancillary_device is to perform a call to ancillary_device_add(), which=20
++will set the name of the device and add the device to the bus.
 
-thanks,
-
-greg k-h
