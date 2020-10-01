@@ -6,73 +6,73 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6047C4727C
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 11:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E44BC4727C
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 12:15:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3CC9421707
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 11:55:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9641920B1F
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 12:15:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WmG28n3m";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="b+gClUf1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CC9421707
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KJ5sdBoh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wqv79d7g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9641920B1F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E6ED1819;
-	Thu,  1 Oct 2020 13:54:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E6ED1819
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF4B7182B;
+	Thu,  1 Oct 2020 14:14:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF4B7182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601553306;
-	bh=y6uclA8YUTuTS6/1asqPNipL+l96e6sCQ48YFkkkyB4=;
+	s=default; t=1601554526;
+	bh=ioh6F6ovm9zl9GAS8exzJ1cS8VGzMqIQ8jI7b6PJDGU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WmG28n3mnhM65pd+yBajr/RrRQkuhplStvuOP8Rx8C3eT4O1T6pYUvEDg2bWoyRlx
-	 8dJ5KQhpgegsqihvlOEIrgmeqzKq2JrKPFhF7p3nBPd6I7nOQsXfBZke4lzfpm9XJZ
-	 tSsVu7XFJ5LyQcnmLUtXAVYHKEr/gArJAS8x5IfQ=
+	b=KJ5sdBohRqwUhMOSGbiHkcAg7ntUlbZGOtFGGOsPV5AakIhbuu9qnB7d9h36WGva/
+	 gIboykV474pq931yu0sVhUy82gOuikKL8B9htyHc5iadxMbT0rrY/M1R+14JND4Guo
+	 oC/a0w0adFX6+58se+sO/crHAsYbD/YdzV8Bvuzs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E804DF801DB;
-	Thu,  1 Oct 2020 13:54:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DBFAF801DB;
+	Thu,  1 Oct 2020 14:14:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AB3EF80105; Thu,  1 Oct 2020 13:54:15 +0200 (CEST)
+ id 76792F801F5; Thu,  1 Oct 2020 14:14:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44881F80105
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 13:54:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44881F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96544F801D8
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 14:14:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96544F801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b+gClUf1"
+ header.b="wqv79d7g"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B223721481;
- Thu,  1 Oct 2020 11:54:00 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3A5D2207DE;
+ Thu,  1 Oct 2020 12:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601553241;
- bh=y6uclA8YUTuTS6/1asqPNipL+l96e6sCQ48YFkkkyB4=;
+ s=default; t=1601554461;
+ bh=ioh6F6ovm9zl9GAS8exzJ1cS8VGzMqIQ8jI7b6PJDGU=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=b+gClUf12BMjj3DfS+NY6WGy7Q2hFr5OOh1Zt5qgRAiTDuAoNG5UZVnQBpPmk25yk
- s4Gx0NipiOVqyXABzskub4Jj7UUE7N/Y5eYmkHOEca1lfp1yUVlxXAmTlv7sN7QLX6
- G4atE+LwZv/4tlJrQrQiMQAGDJArFp3orVR6hiDg=
-Date: Thu, 1 Oct 2020 13:54:02 +0200
+ b=wqv79d7gJp05Jz5eAUCLC/j84v5bUbEoLurXJnP0fenqc5EDQUBb6917ua1OI5FZk
+ otmXm58yzh26AsmaPMb3GM7PjumkBkpx9mTUVeHqjPibhaH/Asr6lR2TI3tD8tyl8+
+ EzUm2v7O654UML6ypFu4LqSrNabrhW2B3gik9Jrc=
+Date: Thu, 1 Oct 2020 14:14:23 +0200
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Subject: Re: [PATCH 1/6] Add ancillary bus support
-Message-ID: <20201001115402.GA2372306@kroah.com>
+Message-ID: <20201001121423.GA2375307@kroah.com>
 References: <20200930225051.889607-1-david.m.ertman@intel.com>
  <20200930225051.889607-2-david.m.ertman@intel.com>
- <20201001110120.GB1939744@kroah.com>
- <20201001114608.GX816047@nvidia.com>
+ <20201001110551.GD1939744@kroah.com>
+ <20201001115847.GY816047@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201001114608.GX816047@nvidia.com>
+In-Reply-To: <20201001115847.GY816047@nvidia.com>
 Cc: alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
  tiwai@suse.de, ranjani.sridharan@intel.com,
  pierre-louis.bossart@linux.intel.com,
@@ -96,32 +96,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Oct 01, 2020 at 08:46:08AM -0300, Jason Gunthorpe wrote:
-> On Thu, Oct 01, 2020 at 01:01:20PM +0200, Greg KH wrote:
-> > On Wed, Sep 30, 2020 at 03:50:46PM -0700, Dave Ertman wrote:
-> > > +int ancillary_device_initialize(struct ancillary_device *ancildev)
-> > > +{
-> > > +	struct device *dev = &ancildev->dev;
-> > > +
-> > > +	dev->bus = &ancillary_bus_type;
-> > > +
-> > > +	if (WARN_ON(!dev->parent) || WARN_ON(!ancildev->name) ||
-> > > +	    WARN_ON(!(dev->type && dev->type->release) && !dev->release))
-> > > +		return -EINVAL;
-> > 
-> > You have a lot of WARN_ON() calls in this patch.  That blows up anyone
-> > who runs with panic-on-warn, right?
+On Thu, Oct 01, 2020 at 08:58:47AM -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 01, 2020 at 01:05:51PM +0200, Greg KH wrote:
+>  
+> > You have to be _VERY_ careful after calling
+> > ancillary_device_initialize(), as now you can not just free up the
+> > memory if something goes wrong before ancillary_device_add() is called,
+> > right?
 > 
-> AFAIK this is the standard pattern to code a "can't happen"
-> assertion. Linus has been clear not to use BUG_ON, but to try and
-> recover. The WARN_ON directly points to the faulty driver so it can be
-> fixed. 
+> I've looked at way too many versions of this patch and related. This
+> is the only one so far that I didn't find various bugs on the error
+> cases.
 
-Printing an error and returning an error value also does the same exact
-thing, the developer will not have a working system.
+But you haven't seen the callers of this function.  Without this
+documented, you will have problems.
 
-Please don't abuse WARN_ON() for things that should just be normal error
-checking logic of api calls.
+Why is this two-step process even needed here?
 
 thanks,
 
