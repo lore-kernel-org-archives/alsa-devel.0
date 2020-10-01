@@ -2,107 +2,112 @@ Return-Path: <SRS0=ZHdS=DI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0C00C4363D
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A941C4363D
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:18:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C724A21D92
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:16:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C13E4222BB
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:18:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mSf8zVYo";
-	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="nl4GF0z0";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JsIK4yQS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C724A21D92
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N9hN07qp";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="St/fhDda";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Yfsk/4z3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C13E4222BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55EF0181F;
-	Thu,  1 Oct 2020 04:15:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55EF0181F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30C021843;
+	Thu,  1 Oct 2020 04:17:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30C021843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601518570;
-	bh=ZT2ffqMwaTdWcn4eNXWCJOcrSRYmA4so+LIONI/BifY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mSf8zVYoqTTg579ojLXKLUJcTIxnMgVBZYEjN+hGv4tHK5xZduXvTUOEbtzr7ten8
-	 S5EXrl7ah4cwgcBC7iWpMmTdjocmm2PdnYKjQcatxnb1bGrA32Y76AYdY6BQVrtBh9
-	 iI28KPeFRqkk/82oFal/hPqh5/G5zPBdK92dtZ/s=
+	s=default; t=1601518723;
+	bh=/ELA6Qtv3sEf3uW/B6wjUhvNmqf0uecMu1r2BzjhQH0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=N9hN07qpZo5LmQZpDCPPZa99Y60dsPAph6g+Xk2/gEJl45INMYgPlvv9l9LAuE+Co
+	 AOw+rgYTpMXHIkiyHoCPEcPLHYT63r1J0ifZuWexUyaYx9GNj9n/2LZ9/IY0s9XcHS
+	 2oY57vvwRwrU7HZO3m4dVa4l5A0cCkR16zSbsre4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 360EAF801D8;
-	Thu,  1 Oct 2020 04:12:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3350F80340;
+	Thu,  1 Oct 2020 04:12:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E41AF80304; Thu,  1 Oct 2020 04:12:10 +0200 (CEST)
+ id C3443F80273; Thu,  1 Oct 2020 04:12:17 +0200 (CEST)
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
  [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D99BF801DB
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 04:11:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D99BF801DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id E93A7F802DB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 04:11:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E93A7F802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="nl4GF0z0"; 
+ header.b="St/fhDda"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="JsIK4yQS"
+ header.i=@messagingengine.com header.b="Yfsk/4z3"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id 4A27F5800FE;
- Wed, 30 Sep 2020 22:11:52 -0400 (EDT)
+ by mailnew.nyi.internal (Postfix) with ESMTP id 4D14E580366;
+ Wed, 30 Sep 2020 22:11:55 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:52 -0400
+ by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm3; bh=k5mtpKP9oNAq+In/8Ew8k5Wo3e
- mD3VL47opFnB6ZQsk=; b=nl4GF0z09NAieUXSBaW9IRsdoHNNnFYIUBu7IuHJWB
- 83JX9NyxHDlGYgbFc0POnBwMDkbMqP9AWTnSNFLqxsj1T8R1LbiWh+a8oK3kNcqA
- 8gUgNnrlWEjEXBbAF64z0kplKv7KKfxcrDoTfW5+9JTo5ewE5sMmLco0GSwsdYvY
- LWSb+37UEwR1V5DsGo1mg9XcUBlJApjmdvX9Bsg1alPzAzkEmUnNayH13IRKkYvX
- wOYBplBwqgNpBav7NtjCSi02MfA8YGd82uqSyi5FW1LSE+kV/vlavkp/fgXUSF8C
- IUqkRKppZDGj0S1svctn5U3yyHaLfkjVfQdygeQj8adw==
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm3; bh=v4nxbZWm9jVw4
+ 1hD7CaBzWhTO3igpvEqqo4GdTdUyW0=; b=St/fhDda74+KWLFR0Br7+Gz5ryx09
+ GVkSCBNcaY3Q49mA9l1k5m0ao6ldUvHE9bxIacqJ+xE3TvAxQaSCE6F3sHmydm8C
+ pU+br1SaHRbLI5eYDS1J6aogdYPwimEjjZqAf4MMfhP2pOslxpYqaMQwUwnKOJEZ
+ inp0N502TkowGpI0w7F1+fcfVY/F3EIHg5sktmznljepvNCnXs54+08V5K06iVmZ
+ c11kD4hQh7RjeMzDhB2Bft+VmFTqCJJ/68KaJ/Tp3T7qbbqQ0gO8sO64DEIVwzXZ
+ ILOWrxvQWwKnD53w1fETCTtABCjGNLFXvpRkoYgF1xsVFGo46PE9qcKbw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=k5mtpKP9oNAq+In/8
- Ew8k5Wo3emD3VL47opFnB6ZQsk=; b=JsIK4yQSXzxJYHVubKnroNYcJpfaBssS/
- zqmA4lQy6zrYpKD89eOco92o8F64cNanu65NzLQNqhFT8rKAi+NUarqAi0tbcsUz
- NNQEIagKzH8M0ylluzXgGSUkdx26YU24GyMqPU6b8WwmSYGWVpZwPpAMhclTvzU+
- j03tIgti/qduHHeMFQVUGR5rktKsJHnxD+2ckigdvb63PrA080KxSlWdOgywW15X
- xgS3w9UCIHlF9psZ5dSBocNf39ue2urX2J78eQeAcMHegx8zJ5a/xahWLBJHjGvG
- Pre1q4LlIWAIVuXbQSvrcC4UGOswUS+J4sXe45kpgmye9MYV1geLg==
-X-ME-Sender: <xms:5Tp1X7Xa8gcSMAr0KoBTeFHoeyvVN9PiOuXfTJVVmqbEOfHH7kjLXg>
- <xme:5Tp1XznZt28QTAiqQQuV7TWVXrJYU3CeiqbWmMovKGGz4PHCNKscgc43XzOEt1k9b
- BQc-5l_dkA5RQh5Pg>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=v4nxbZWm9jVw41hD7CaBzWhTO3igpvEqqo4GdTdUyW0=; b=Yfsk/4z3
+ XuL3ncoDH1HRGrur+FJDcZET9jHry1pgjghh9+hglzigrY+3+Tfb6uqrNbcT3axn
+ yFi7aEIr9WJ6iqpJFXzxuIyXrns3OgaIfQy6UDfQAzJwwCwEn7QsBdMr0B0QmvJq
+ /flsz1abaHlSWcfReBg2872oRsrrfFRN9hJgVibo0B8vBHjTtDuUk1oBerSb18Mz
+ OkndWXGHIQw5LM+EGajEKGeQVTead40vM0XFH2DudYY1yBjoqgUdNt7OPxPhFrL7
+ G1WAr7w5c+YWiNnBnZFRHCMG1uTy7C8rlExjEgMVI6SdGydwAhAc5B7wh/p8RLhK
+ /JkUFdBD3i8Mjg==
+X-ME-Sender: <xms:6jp1X6_S-6h8RBcvS4Lrf_KNO2jT8gcsFo_GDbtRTBfRgNoz-ED9lg>
+ <xme:6jp1X6sKzHUTDhTtN33wRGja-8Wc6hEp6Ig8saowu1FSFEDLBj9IO175iLDHlVi4F
+ VNeZ7n1MxZTM50DrQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
- ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
- htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
- tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
- dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
- rhhg
-X-ME-Proxy: <xmx:5Tp1X3YLXWQ0KYm7sTL-w8N2s_BzgQhVcv8tfSdO21TOh7ElCjM3PQ>
- <xmx:5Tp1X2VRlX1hBTHE9vBa1N0E7eBwg-tt7o9V_jhGn5mOGIKV1HZQrg>
- <xmx:5Tp1X1kqFHujiZpVn2s9S71HHtdGGG9ypVjws4nVrbuTXjSlMOjS1g>
- <xmx:6Dp1X3693d4ubFls6I57Y1q7Y6K6np9XUXXtqKjv5-L8S-RC9fZf4Q>
+ fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
+ ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
+ grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
+ jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
+ gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+ rdhorhhg
+X-ME-Proxy: <xmx:6zp1XwCFepBxuPtipNrHHOS6AK18cVl7tivBFcU5U0-ffWnqxHOddQ>
+ <xmx:6zp1XycNjHiyBcyKZNnZEcX-5Rsj_vyoe7MrUvWkopPYpdIl2n7fTA>
+ <xmx:6zp1X_NnqlW4FONip4PLjK9ng54Ss5JTxXrN6WU_vaoOWhv068mqIw>
+ <xmx:6zp1X4it1B-aYke6SD4fYd8w8WhnYbHQ5o9UT_FRHOQs4B9SAuEyqQ>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 52A6D306467E;
- Wed, 30 Sep 2020 22:11:49 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 82C97306467E;
+ Wed, 30 Sep 2020 22:11:54 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 00/25] ASoC: sun8i-codec: support for AIF2 and AIF3
-Date: Wed, 30 Sep 2020 21:11:23 -0500
-Message-Id: <20201001021148.15852-1-samuel@sholland.org>
+Subject: [PATCH 11/25] ASoC: sun8i-codec: Enable all supported clock inversions
+Date: Wed, 30 Sep 2020 21:11:34 -0500
+Message-Id: <20201001021148.15852-12-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
+References: <20201001021148.15852-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
@@ -123,51 +128,167 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series adds support the other two AIFs present in the sun8i codec,
-which can be used for codec2codec DAI links.
+When using the I2S, LEFT_J, or RIGHT_J format, the hardware supports
+independent BCLK and LRCK inversion control. When using DSP_A or DSP_B,
+LRCK inversion is not supported. The register bit is repurposed to
+select between DSP_A and DSP_B. Extend the driver to support this.
 
-This series first cleans up the DAPM component driver so there is an
-organized place to put the new widgets. Then it fills out the DAI
-driver, removing assumptions that were made for AIF1 (16 bits, 2
-channels, certain clock inversions). Some new logic is required to
-handle 3 DAIs and the ADC/DAC sharing the same clock. Finally, it adds
-the new DAIs, and hooks them up with DAPM widgets and routes per the
-hardware topology.
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ sound/soc/sunxi/sun8i-codec.c | 57 +++++++++++++++++++++++------------
+ 1 file changed, 37 insertions(+), 20 deletions(-)
 
-To minimize the number of patches in this series, related device tree
-patches (increasing #sound-dai-cells, adding new DAI links) will be sent
-separately.
-
-Samuel Holland (25):
-  ASoC: sun8i-codec: Set up clock tree at probe time
-  ASoC: sun8i-codec: Swap module clock/reset dependencies
-  ASoC: sun8i-codec: Sort DAPM controls, widgets, and routes
-  ASoC: sun8i-codec: Consistently name DAPM widgets and routes
-  ASoC: sun8i-codec: Correct DAPM widget types
-  ASoC: sun8i-codec: Fix AIF widget channel references
-  ASoC: sun8i-codec: Enable AIF mono/stereo control
-  ASoC: sun8i-codec: Use snd_soc_dai_get_drvdata
-  ASoC: sun8i-codec: Prepare to extend the DAI driver
-  ASoC: sun8i-codec: Program format before clock inversion
-  ASoC: sun8i-codec: Enable all supported clock inversions
-  ASoC: sun8i-codec: Program the correct word size
-  ASoC: sun8i-codec: Round up the LRCK divisor
-  ASoC: sun8i-codec: Correct the BCLK divisor calculation
-  ASoC: sun8i-codec: Support the TDM slot binding
-  ASoC: sun8i-codec: Enforce symmetric DAI parameters
-  ASoC: sun8i-codec: Enable all supported sample rates
-  ASoC: sun8i-codec: Automatically set the system sample rate
-  ASoC: sun8i-codec: Constrain to compatible sample rates
-  ASoC: sun8i-codec: Protect the clock rate while streams are open
-  ASoC: sun8i-codec: Require an exact BCLK divisor match
-  ASoC: sun8i-codec: Enable all supported PCM formats
-  ASoC: sun8i-codec: Generalize AIF clock control
-  ASoC: sun8i-codec: Add a DAI, widgets, and routes for AIF2
-  ASoC: sun8i-codec: Add a DAI, widgets, and routes for AIF3
-
- sound/soc/sunxi/sun8i-codec.c | 1135 ++++++++++++++++++++++++++-------
- 1 file changed, 894 insertions(+), 241 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 0b713b2a2028..506420fb355c 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -39,18 +39,17 @@
+ #define SUN8I_MOD_RST_CTL_AIF1				15
+ #define SUN8I_MOD_RST_CTL_ADC				3
+ #define SUN8I_MOD_RST_CTL_DAC				2
+ #define SUN8I_SYS_SR_CTRL				0x018
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS			12
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS			8
+ #define SUN8I_AIF1CLK_CTRL				0x040
+ #define SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD		15
+-#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV		14
+-#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV		13
++#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV			13
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
+ #define SUN8I_AIF1_ADCDAT_CTRL				0x044
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA		15
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA		14
+@@ -85,16 +84,17 @@
+ #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_AIF1DA1R		10
+ #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_AIF2DACR		9
+ #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_ADCR		8
+ 
+ #define SUN8I_SYSCLK_CTL_AIF1CLK_SRC_MASK	GENMASK(9, 8)
+ #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_MASK	GENMASK(5, 4)
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
++#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK	GENMASK(14, 13)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
+ 
+ enum {
+ 	AIF1,
+ 	NAIFS
+@@ -168,17 +168,17 @@ static int sun8i_codec_get_hw_rate(struct snd_pcm_hw_params *params)
+ 	default:
+ 		return -EINVAL;
+ 	}
+ }
+ 
+ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
+-	u32 format, value;
++	u32 format, invert, value;
+ 
+ 	/* clock masters */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
+ 		value = 0x1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
+ 		value = 0x0;
+@@ -197,55 +197,72 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 		format = 0x1;
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		format = 0x2;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
++		format = 0x3;
++		invert = 0x0; /* Set LRCK_INV to 0 */
++		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		format = 0x3;
++		invert = 0x1; /* Set LRCK_INV to 1 */
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK,
+ 			   format << SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT);
+ 
+ 	/* clock inversion */
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF: /* Normal */
+ 		value = 0x0;
+ 		break;
+-	case SND_SOC_DAIFMT_IB_IF: /* Inversion */
++	case SND_SOC_DAIFMT_NB_IF: /* Inverted LRCK */
+ 		value = 0x1;
+ 		break;
++	case SND_SOC_DAIFMT_IB_NF: /* Inverted BCLK */
++		value = 0x2;
++		break;
++	case SND_SOC_DAIFMT_IB_IF: /* Both inverted */
++		value = 0x3;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV),
+-			   value << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV);
+ 
+-	/*
+-	 * It appears that the DAI and the codec in the A33 SoC don't
+-	 * share the same polarity for the LRCK signal when they mean
+-	 * 'normal' and 'inverted' in the datasheet.
+-	 *
+-	 * Since the DAI here is our regular i2s driver that have been
+-	 * tested with way more codecs than just this one, it means
+-	 * that the codec probably gets it backward, and we have to
+-	 * invert the value here.
+-	 */
+-	value ^= scodec->quirks->lrck_inversion;
++	if (format == 0x3) {
++		/* Inverted LRCK is not available in DSP mode. */
++		if (value & BIT(0))
++			return -EINVAL;
++
++		/* Instead, the bit selects between DSP A/B formats. */
++		value |= invert;
++	} else {
++		/*
++		 * It appears that the DAI and the codec in the A33 SoC don't
++		 * share the same polarity for the LRCK signal when they mean
++		 * 'normal' and 'inverted' in the datasheet.
++		 *
++		 * Since the DAI here is our regular i2s driver that have been
++		 * tested with way more codecs than just this one, it means
++		 * that the codec probably gets it backward, and we have to
++		 * invert the value here.
++		 */
++		value ^= scodec->quirks->lrck_inversion;
++	}
++
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV),
+-			   value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
++			   SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK,
++			   value << SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV);
+ 
+ 	return 0;
+ }
+ 
+ struct sun8i_codec_clk_div {
+ 	u8	div;
+ 	u8	val;
+ };
 -- 
 2.26.2
 
