@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28B89C4363D
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:14:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1F39C4363D
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:15:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 296182311A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:14:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7EF57221E8
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:15:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jujhG+ih";
-	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="ao27fuuK";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IiW/LLxg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 296182311A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CHHEwXSB";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="HUfWYknV";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="F8pXz1DG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EF57221E8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45E2117DE;
-	Thu,  1 Oct 2020 04:13:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45E2117DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6A5A178A;
+	Thu,  1 Oct 2020 04:14:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6A5A178A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601518472;
-	bh=Bsb8n4v/b0sUQ5d2UHjkfMRRItBNb3pqgzNqYwQYVJY=;
+	s=default; t=1601518501;
+	bh=U/2m3sAPesyKQ7LgLB5evqXFjQ+a6kfelWbFM+bl1kY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jujhG+ihXb+ODprirwmp3F8ScwMC9wIx+9CP7ORfcAH7JVHQcQ5SuFCdm+fXmKzJ0
-	 q6NEAwYxFDXAFQQitP6olkhBDQBe2uX0amBkmSzCnQ4jJbrYeqrnZ1srolUpHYa3py
-	 ERsVchAF+USLscBw+dCUm8jibWBt63ve/77G16Js=
+	b=CHHEwXSBU9ITRdn0FFWDafACR54anWYsh+B51DTaU+0h+G57tfNRgNEPFwwz1XevS
+	 aeYK42ZekxQKTi2o3BmVAb98SZMVKGlw7GJtskj/cyBd9U49U+hMG1cuq/I0njZRBb
+	 0N8B3UXTTaXTGJI0mzavbYrUNHEarLk/Fa6JkPFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C990F8022B;
-	Thu,  1 Oct 2020 04:12:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7E24F80315;
+	Thu,  1 Oct 2020 04:12:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9611CF80304; Thu,  1 Oct 2020 04:12:08 +0200 (CEST)
+ id 7EE90F80303; Thu,  1 Oct 2020 04:12:09 +0200 (CEST)
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
  [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C503FF802C4
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 04:11:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C503FF802C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0FF07F801F5
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 04:11:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FF07F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="ao27fuuK"; 
+ header.b="HUfWYknV"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="IiW/LLxg"
+ header.i=@messagingengine.com header.b="F8pXz1DG"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id DF307580286;
+ by mailnew.nyi.internal (Postfix) with ESMTP id 419D6580059;
  Wed, 30 Sep 2020 22:11:52 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
  by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=9H7p1rK8kVC/k
- +RZkn4ztHf0kPRd9BHXRVzfHYUG/MY=; b=ao27fuuKrtgFl9c/nYUNd4SksnGsM
- 4/Y+crUekjqT/hPoKtDTPTNp9LHLTKp2Pu5QCHuyZgcKnYxO6/FhEC7710H0lmJd
- 6+B9vVer8YUzAUrbyKsanUPmPDWLIdazIBhIIOFu5gycU/N960l3eGh6MK+MCs9v
- 27ftWG4MFkHSUxJKNxYjUnSqJpE3llV47tbD5LZUoh37uQHJnx5hhFXC3pOwnphh
- 7uBWW7bzU5zHTn9pLC0iHP1SZwOHDr6nefxu/Fr6cIRuimUKDnGA3KYBgGBH74Au
- hibzEkA+hZKzn9R7873FNwZBPG7hREC4a5zDYS2cZw0FRyWL8ABIfz4iQ==
+ :mime-version:content-transfer-encoding; s=fm3; bh=DYMO1RTQowVN/
+ z5N7yNaFPdA+DsV3y7nHtaJ9hxxb7Y=; b=HUfWYknVkjKaTblXqzPP75TA2kO23
+ azywB7IOSGIPCbuGG83a/ZBz3vxWqsYdpX/MjylqcHjKUy23RPhazDQG+Sgaf/Wd
+ sFSAlkmq04TT/9ipGsz97O0Ro6QB6dYZjC+jND/MRNl7UlhwZD1Yrj805chKmhWV
+ 734e3AI0pEjk+zNNwzRSJUkPDsr0Z/XbX/vnAr4ObEBvj+RzKeiloweF3UbxBFZP
+ lu4sZaNalxPNPaZuGFQVMleqgh/jl7hawAJ5FiwX+6ycCtPOxIZXPlWTI0kXqRBi
+ 8iuvm2+uqHm22U/8TMDYuoDEL7To2vlXC+rh0yEMFnWSuyR7c4Q4IbycA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=9H7p1rK8kVC/k+RZkn4ztHf0kPRd9BHXRVzfHYUG/MY=; b=IiW/LLxg
- WNcwFZPJrPQfExzNu25m6M8J5B/JsD9l14/Yi5WXr1ONunKTChuEUkhtqfHH39tX
- wAoWVtm/mesQ/SKOzcBmN5NcHRJz+TVh/1Oqt9qTe40f1vR9M9mCxE1OEeXhjMe1
- vmOXuhnZemtQTUXHmey0m4hvTuHhdFSUR9UrcLgIfDHiE4sCLA8jbAgfHufadkEF
- Y03DwKWgc/wq/504m5l0ew0HQ79MI2bc3TtJgcDos8+elmzUlTVEIeSfoEKR2t0B
- DmbbdN/OvPhabFo32L3VaRl4+pK/j0M3KvbYD7p30+qakzWANXVB+qJzVse3xWo5
- g7lbjQjqoocOQA==
-X-ME-Sender: <xms:6Dp1X6zukDhYsJjJxjt430oMYQIYFOnHy1BaLeWZy9h7R4K6GVaxrw>
- <xme:6Dp1X2RDqsLeL8iN7VnBWDHg8rVqqDWrp-ne1bvFccnS2XmJl-eREUNG2ebqBQ0MC
- -cvfVeZpJVkkv3nqA>
+ fm3; bh=DYMO1RTQowVN/z5N7yNaFPdA+DsV3y7nHtaJ9hxxb7Y=; b=F8pXz1DG
+ gFM4cF447gZh+imSsUY7eZ6MZbxbrCAxXO/SNpwAvj4noaiPrJ+PDLMXHNm0OcE3
+ BY8EOT5PryFn4U4jCC2+5K/637Mnt/HlkkiwV3pu13nR4Pf3hckr5QqhFsguR7zk
+ 9o30dNZmFR9ze8Rz57uOdPc4PujGbBork1gbntxs3jf+d3z9K0WjZPDaP+j6viaL
+ VpD13popuauzvg2pyHK3cmcncWeuPSkwM58G/s2knaqWPZqcotcjSDr0+9XKNpzh
+ Lykg4c5jtTJBuzl8v5e63yaPMwiC83YQQxtkDXTypot62HxdYOGKW40Peo56ChWc
+ +83Un1fNuJkXcg==
+X-ME-Sender: <xms:5jp1X4mXcg6DsroHLDjzdSb_U_OySdaQmbGVrfLrDt2SW2OdBjpXDA>
+ <xme:5jp1X323MeNo78odV2AHPSULMaI2OyzI4MTV8Oq7Yi4zEopPTZ1OmJzrmy2mLTMBT
+ AeojRN7b3qrHHSIZw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -88,23 +88,23 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdote
  ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
  grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
  jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
- gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+ gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
  rdhorhhg
-X-ME-Proxy: <xmx:6Dp1X8Xhmqo2kokoywfgo1DlER49BcujJvpalil2sGg6ySstTruIsA>
- <xmx:6Dp1XwiLSAeELrCMOnvb3xLnv6LMTcNXzOqnUb5rDWlvHRz8RftlpA>
- <xmx:6Dp1X8AmcJ65twXfEfdUspgOi559RaXtheLs6DebBYPed0_G3F8l8Q>
- <xmx:6Dp1X43FCew4KWkRKq43Xdr4XM5f14XaZHfmnxbD6xF-drVQN1UX3w>
+X-ME-Proxy: <xmx:5jp1X2rGoevjm5_qOsuDXU_k12-qsAOZ6tN4e63vx8GrCwYcG6AECQ>
+ <xmx:5jp1X0kjwMbAgLeqEyv1AHWaMVW_ciawAc0MAga_Hs5y4e3rcd42Vg>
+ <xmx:5jp1X21gElFt_sLgWy46SiX3891yIpKtpmnYMHY8dvIcze3JxrNgZg>
+ <xmx:6Dp1X3IdV_c02KgSULoEABPTk5LNBYRZzfCi85g1CzIRCiuVv2x1BQ>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 2AA89306468C;
- Wed, 30 Sep 2020 22:11:52 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 45CFE3064683;
+ Wed, 30 Sep 2020 22:11:50 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 06/25] ASoC: sun8i-codec: Fix AIF widget channel references
-Date: Wed, 30 Sep 2020 21:11:29 -0500
-Message-Id: <20201001021148.15852-7-samuel@sholland.org>
+Subject: [PATCH 02/25] ASoC: sun8i-codec: Swap module clock/reset dependencies
+Date: Wed, 30 Sep 2020 21:11:25 -0500
+Message-Id: <20201001021148.15852-3-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
 References: <20201001021148.15852-1-samuel@sholland.org>
@@ -128,53 +128,139 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Both the left and right side widgets referenced channel 0. This would
-unnecessarily power on the right side widget (and its associated path)
-when a mono stream was active.
+This matches the module power-up/down sequence from the vendor's driver.
+
+While updating these widgets/routes, reorder them to match the register
+and bit layout of the hardware. This puts them in the same place in the
+widget and route arrays (previously they were at opposite ends), and it
+makes it easier to track which parts of which registers are implemented.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 72 +++++++++++++++++++----------------
+ 1 file changed, 39 insertions(+), 33 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index d0028883950c..2c89974243e1 100644
+index 407f0fedc4ed..6887a2e897f4 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -408,31 +408,31 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("DAC",
- 			    SUN8I_DAC_DIG_CTRL,
- 			    SUN8I_DAC_DIG_CTRL_ENDA, 0, NULL, 0),
+@@ -373,16 +373,38 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
  
- 	/* AIF "ADC" Outputs */
- 	SND_SOC_DAPM_AIF_OUT("AIF1 AD0L", "Capture", 0,
- 			     SUN8I_AIF1_ADCDAT_CTRL,
- 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA, 0),
--	SND_SOC_DAPM_AIF_OUT("AIF1 AD0R", "Capture", 0,
-+	SND_SOC_DAPM_AIF_OUT("AIF1 AD0R", "Capture", 1,
- 			     SUN8I_AIF1_ADCDAT_CTRL,
- 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA, 0),
+ 	SND_SOC_DAPM_SUPPLY("AIF1CLK",
+ 			    SUN8I_SYSCLK_CTL,
+ 			    SUN8I_SYSCLK_CTL_AIF1CLK_ENA, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("SYSCLK",
+ 			    SUN8I_SYSCLK_CTL,
+ 			    SUN8I_SYSCLK_CTL_SYSCLK_ENA, 0, NULL, 0),
  
- 	/* AIF "ADC" Mixers */
- 	SOC_MIXER_ARRAY("AIF1 AD0L Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_aif1_ad0_mixer_controls),
- 	SOC_MIXER_ARRAY("AIF1 AD0R Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_aif1_ad0_mixer_controls),
++	/* Module Clocks */
++	SND_SOC_DAPM_SUPPLY("CLK AIF1",
++			    SUN8I_MOD_CLK_ENA,
++			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("CLK ADC",
++			    SUN8I_MOD_CLK_ENA,
++			    SUN8I_MOD_CLK_ENA_ADC, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("CLK DAC",
++			    SUN8I_MOD_CLK_ENA,
++			    SUN8I_MOD_CLK_ENA_DAC, 0, NULL, 0),
++
++	/* Module Resets */
++	SND_SOC_DAPM_SUPPLY("RST AIF1",
++			    SUN8I_MOD_RST_CTL,
++			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("RST ADC",
++			    SUN8I_MOD_RST_CTL,
++			    SUN8I_MOD_RST_CTL_ADC, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("RST DAC",
++			    SUN8I_MOD_RST_CTL,
++			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
++
+ 	/* Digital parts of the DACs and ADC */
+ 	SND_SOC_DAPM_SUPPLY("DAC", SUN8I_DAC_DIG_CTRL, SUN8I_DAC_DIG_CTRL_ENDA,
+ 			    0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("ADC", SUN8I_ADC_DIG_CTRL, SUN8I_ADC_DIG_CTRL_ENAD,
+ 			    0, NULL, 0),
  
  	/* AIF "DAC" Inputs */
  	SND_SOC_DAPM_AIF_IN("AIF1 DA0L", "Playback", 0,
- 			    SUN8I_AIF1_DACDAT_CTRL,
- 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
--	SND_SOC_DAPM_AIF_IN("AIF1 DA0R", "Playback", 0,
-+	SND_SOC_DAPM_AIF_IN("AIF1 DA0R", "Playback", 1,
- 			    SUN8I_AIF1_DACDAT_CTRL,
- 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
+@@ -412,60 +434,44 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 	SOC_MIXER_ARRAY("Left Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_dac_mixer_controls),
+ 	SOC_MIXER_ARRAY("Right Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_dac_mixer_controls),
+ 	SOC_MIXER_ARRAY("Left Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_input_mixer_controls),
+ 	SOC_MIXER_ARRAY("Right Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_input_mixer_controls),
+-
+-	/* Clocks */
+-	SND_SOC_DAPM_SUPPLY("MODCLK AIF1", SUN8I_MOD_CLK_ENA,
+-			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("MODCLK DAC", SUN8I_MOD_CLK_ENA,
+-			    SUN8I_MOD_CLK_ENA_DAC, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("MODCLK ADC", SUN8I_MOD_CLK_ENA,
+-			    SUN8I_MOD_CLK_ENA_ADC, 0, NULL, 0),
+-
+-	/* Module reset */
+-	SND_SOC_DAPM_SUPPLY("RST AIF1", SUN8I_MOD_RST_CTL,
+-			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("RST DAC", SUN8I_MOD_RST_CTL,
+-			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("RST ADC", SUN8I_MOD_RST_CTL,
+-			    SUN8I_MOD_RST_CTL_ADC, 0, NULL, 0),
+ };
  
- 	/* ADC Inputs (connected to analog codec DAPM context) */
- 	SND_SOC_DAPM_ADC("ADCL", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_ADC("ADCR", NULL, SND_SOC_NOPM, 0, 0),
+ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 	/* Clock Routes */
+ 	{ "AIF1CLK", NULL, "mod" },
  
- 	/* DAC Outputs (connected to analog codec DAPM context) */
+ 	{ "SYSCLK", NULL, "AIF1CLK" },
+ 
+-	{ "RST AIF1", NULL, "AIF1CLK" },
+-	{ "RST AIF1", NULL, "SYSCLK" },
+-	{ "MODCLK AIF1", NULL, "RST AIF1" },
+-	{ "AIF1 AD0L", NULL, "MODCLK AIF1" },
+-	{ "AIF1 AD0R", NULL, "MODCLK AIF1" },
+-	{ "AIF1 DA0L", NULL, "MODCLK AIF1" },
+-	{ "AIF1 DA0R", NULL, "MODCLK AIF1" },
+-
+-	{ "RST DAC", NULL, "SYSCLK" },
+-	{ "MODCLK DAC", NULL, "RST DAC" },
+-	{ "DAC", NULL, "MODCLK DAC" },
+-	{ "DACL", NULL, "DAC" },
+-	{ "DACR", NULL, "DAC" },
+-
+-	{ "RST ADC", NULL, "SYSCLK" },
+-	{ "MODCLK ADC", NULL, "RST ADC" },
+-	{ "ADC", NULL, "MODCLK ADC" },
++	{ "CLK AIF1", NULL, "AIF1CLK" },
++	{ "CLK AIF1", NULL, "SYSCLK" },
++	{ "RST AIF1", NULL, "CLK AIF1" },
++	{ "AIF1 AD0L", NULL, "RST AIF1" },
++	{ "AIF1 AD0R", NULL, "RST AIF1" },
++	{ "AIF1 DA0L", NULL, "RST AIF1" },
++	{ "AIF1 DA0R", NULL, "RST AIF1" },
++
++	{ "CLK ADC", NULL, "SYSCLK" },
++	{ "RST ADC", NULL, "CLK ADC" },
++	{ "ADC", NULL, "RST ADC" },
+ 	{ "ADCL", NULL, "ADC" },
+ 	{ "ADCR", NULL, "ADC" },
+ 
++	{ "CLK DAC", NULL, "SYSCLK" },
++	{ "RST DAC", NULL, "CLK DAC" },
++	{ "DAC", NULL, "RST DAC" },
++	{ "DACL", NULL, "DAC" },
++	{ "DACR", NULL, "DAC" },
++
+ 	/* DAC Routes */
+ 	{ "DACL", NULL, "Left Digital DAC Mixer" },
+ 	{ "DACR", NULL, "Right Digital DAC Mixer" },
+ 
+ 	/* DAC Mixer Routes */
+ 	{ "Left Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch", "AIF1 DA0L" },
+ 	{ "Left Digital DAC Mixer", "ADC Digital DAC Playback Switch", "ADCL" },
+ 
 -- 
 2.26.2
 
