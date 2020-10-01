@@ -7,80 +7,80 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12951C4363D
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:20:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C7B3C4363D
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:21:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E4D1221E7
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:20:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D4A521941
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Oct 2020 02:21:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f8cWF8QV";
-	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="DPMTZy1J";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CbXfEYTo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E4D1221E7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FTJ2pqdF";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="Rq4liLtM";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UvNxrRGK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D4A521941
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA383187D;
-	Thu,  1 Oct 2020 04:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA383187D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3684817D9;
+	Thu,  1 Oct 2020 04:20:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3684817D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601518829;
-	bh=Bo9bgtPJBh3GXujvj66fbwVze7lSU8c/0q4MYKAq+nY=;
+	s=default; t=1601518886;
+	bh=AUECoGsfYf6t1XytYqj2asga0RM/263hsJ6jJUXbq/8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f8cWF8QVbrjl5i67LNgOsbaEVGcEoeumEaYVg+kXGTysZWT1A+/SutJwxq1yqTbs2
-	 v8xGfyyv0QGDtodYZEcjpmbQOcVli1kEcOmiC4+QJq6Yc52QwXDgxTMQRaerLOc6J3
-	 Er86CXJcg5r51MVZ478Ohif62VGaDCzzXN8BNDNY=
+	b=FTJ2pqdFf6gUo2ir/KJlAhvv1k8PQatpVXQuOUKzk4Jc/9l/rzthFtK1Aoh5+Ad3w
+	 jxRywT+uxZK+/bmtTJFxv2CBx3WwGKmtuQTrbF1310w06HQf2MDUkjG+NCTjhK5BS9
+	 FtTkNF98pP7ulE6/BEEaBHmSbZl0mhe2UNpvmiec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D706F80351;
-	Thu,  1 Oct 2020 04:12:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3769AF80368;
+	Thu,  1 Oct 2020 04:12:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FB74F80339; Thu,  1 Oct 2020 04:12:24 +0200 (CEST)
+ id DA3A8F8033F; Thu,  1 Oct 2020 04:12:26 +0200 (CEST)
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
  [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11176F802DD
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 04:11:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11176F802DD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B148F802E1
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2020 04:12:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B148F802E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="DPMTZy1J"; 
+ header.b="Rq4liLtM"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="CbXfEYTo"
+ header.i=@messagingengine.com header.b="UvNxrRGK"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id 2DA4A580375;
- Wed, 30 Sep 2020 22:11:56 -0400 (EDT)
+ by mailnew.nyi.internal (Postfix) with ESMTP id D119A58037F;
+ Wed, 30 Sep 2020 22:11:57 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:56 -0400
+ by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=/bhxd1svwQTQK
- rVdAoO4naAM8pRc9Q0oebJmrLNI+Go=; b=DPMTZy1JTuNp8bGdp0k6tmWkm0J3L
- FNrdCXvI7DRMTwKyqoPpr0nziwdZxwXPRH3ICXfa5TRd0gSh/oQZwREwld7r1iLd
- r4h5U+TvOScX7uGmgeVqY2sj7dhyD8+bOK3OaAJior/yA2rFp5U2W6IAx4DAmlDS
- ZmoAegZ/pUzjSE/bLmvZ00t8gxQUWEF7NPm8FfReKdCYABww2zgNrEvVIFWYZOv5
- jrVEGMUJAoZ+eALLXENwlnwguU8WSyZ8PYNyn6bowSo+sRIC6vUCUS/T2lgS/NqV
- JojF+Hr388pZLDcBWRETR03fAyIJCt5FVY65GSv23fsYuP6oPH5D9KaVA==
+ :mime-version:content-transfer-encoding; s=fm3; bh=ESOPut2BeEWC2
+ 0YRE1QVHBEoR5y2EjI/peFt241C+gI=; b=Rq4liLtMzvb81zu7cyPA6sfd+4qJs
+ I9YsabRDGB9cYWtl/mdAbuUtqekNPn/M/kWs0lvTMx4rSKcqDcPncz1wudtMMHDb
+ L2CUZ6wUPV6VA8hUhTdlMNvOYA1eXsA1SLFIJieV9d3Y+age4NtPJ/O508Rk0dv/
+ sRezzXrd+l1cRpO94l8IIZUHO3LYeMyxPSxFcyJSHm66fYaRLDp/EHTcAhJIvfUb
+ 2nDn0XjgJW42zD908TNgwSbRXRYrCliL9lHVw2gic2Yyj6fDqc+rzIWT8FqtztAr
+ rn4mtSCCU7AHrLvW9i28E3I4ZrGyqL7rROSOzW6k6hBmSeWrEzyvPdW7A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=/bhxd1svwQTQKrVdAoO4naAM8pRc9Q0oebJmrLNI+Go=; b=CbXfEYTo
- Rdshd2dv9TwKsrbIqXmDAKxdUmZKK8NUMg5QsH7XhsTrHh8Knji5JEK4Ywaapcma
- ItReHHUQrv+hjw2JNLl4iJVyQKH6yKxpUZAM0ybZIv1fgFlDcw74qnq/UuDa3V52
- 6bmYqKOkh0lUObdOeWUvk8i0lRXHdEbOZ536ulA31eamp5JGGGBkQ4d1FxNQq8l5
- MW+26yky67HznwQwR1sTBNXwa/NEkj4t0RbCKjyjQO7zkw0bnysSxipnQoemlQ5N
- H8887GxvSIpryzeqQ+NskD10HeZDzOLfFQ590+NWSXlmrbSvhVyQXGmM5iHvKdKW
- UyEXhgfQBIKzjQ==
-X-ME-Sender: <xms:6zp1X2DdJx-yFCZPoSTazb1RTcxzvpPYfl2c3q-oBH3LjCSi9BVHWQ>
- <xme:6zp1XwieU7EqJ92VB-X224Fl-yEkEY1t1cryU4qyvTqEJo2lomgEQT73YvxVYp8sB
- Xjz9oMO8uNFZ6ZFEQ>
+ fm3; bh=ESOPut2BeEWC20YRE1QVHBEoR5y2EjI/peFt241C+gI=; b=UvNxrRGK
+ nsTegUIFxPtfVAevDHsa25FWlASpxUiMdn5yCfvFCa0k8K2+3Vl/j9bw5sdgZwrw
+ kEE0IoqLBCOp43t0fcIN5Ej9GRawvYMbbwG1rI8ICkjUHkLH8re3g2HTmk98CXtW
+ IT30sGtTHkoqT5Kh15/E3JEh/kicP6aA5XDGeDC3gn5aErzC1ozlocdFZol+Sidl
+ xI7WMf9DXhbWCacjUbzmDw1mFzMDjp3HPiK+Rys6HeC+BVdezM1LgVSuESWPDpcr
+ 1RN4q4ZtVs7lih87+tC/jQbL37bixHG51TUpqXEzc/oCeQqgP4Qbck2fc/wepMC3
+ WDrbFjjGIB5s6A==
+X-ME-Sender: <xms:7Tp1X-X-5TvZsjEQyDyAkyHNWX--1BK1B6Nh-8aYx0e0Hw1qjlK6nA>
+ <xme:7Tp1X6lhAf2Z8kK7C7Xsvi-ZA5vOwcFMbY6ZX6RGUyWg0MpLNe_kzzr2HCXceNGLd
+ CJZtjDxV1SrbDfhYA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -90,21 +90,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdote
  jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
  gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
  rdhorhhg
-X-ME-Proxy: <xmx:6zp1X5nRVTfNZB5inus4rpU-gRuY1Pb6xJ4TYS67QD0YJEC-2oNCkg>
- <xmx:6zp1X0wgydVP_i0CfFIsYZit6c5iAT-7qE5U6PfKps9w89xALsUAQA>
- <xmx:6zp1X7TM-qPshAjt3DQaD5VdPP6Onddf3SPmSacIbWqR428CvdMQ6Q>
- <xmx:7Dp1X2FScEnp1mLXIiCiyjT4JaUvyu53fZ0kHdqEBjruimiFp8Zwpg>
+X-ME-Proxy: <xmx:7Tp1XybDgIQzsNxt2W1EDQ_-dqQWjO-Zxmvr3RwvAvTZI1DVTcYUmA>
+ <xmx:7Tp1X1WnEjqNXSi59wSBUMP3pihTSVs7ES-89Qtzde0A8bq2PT9_9Q>
+ <xmx:7Tp1X4lh57BecenD5638bst0olR_TpinqjgvuUf2gphb4qU1YJ7pZg>
+ <xmx:7Tp1Xy7BHouOU4YUvo7OH_x8TzAnQFiZ1uGp74Vv_NYYq-OFsaxBkA>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 750E5306467E;
- Wed, 30 Sep 2020 22:11:55 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id D76203064683;
+ Wed, 30 Sep 2020 22:11:56 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 13/25] ASoC: sun8i-codec: Round up the LRCK divisor
-Date: Wed, 30 Sep 2020 21:11:36 -0500
-Message-Id: <20201001021148.15852-14-samuel@sholland.org>
+Subject: [PATCH 16/25] ASoC: sun8i-codec: Enforce symmetric DAI parameters
+Date: Wed, 30 Sep 2020 21:11:39 -0500
+Message-Id: <20201001021148.15852-17-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
 References: <20201001021148.15852-1-samuel@sholland.org>
@@ -128,95 +128,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The codec supports only power-of-two BCLK/LRCK divisors. If either the
-slot width or the number of slots is not a power of two, the LRCK
-divisor must be rounded up to provide enough space. To do that, use
-order_base_2 (instead of ilog2, which rounds down).
-
-Since the rounded divisor is also needed for setting the SYSCLK/BCLK
-divisor, return the order base 2 instead of fully calculating the
-hardware register encoding.
+The AIFs have a single register controlling DAI parameters in both
+directions, including BCLK/LRCK divisor word size. The DAIs produce only
+noise or silence if any of these parameters is wrong. Therefore, we need
+to enforce symmetry for these parameters, so starting a new substream
+will not break an existing substream.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index e7f01a4b4001..779853d023fe 100644
+index 0a53dc0c34d0..f21274530a0e 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -300,33 +300,35 @@ static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
- 			best_diff = diff;
- 			best_val = bdiv->val;
- 		}
- 	}
+@@ -420,16 +420,19 @@ static struct snd_soc_dai_driver sun8i_codec_dais[] = {
+ 		/* playback capabilities */
+ 		.playback = {
+ 			.stream_name	= "AIF1 Playback",
+ 			.channels_min	= 1,
+ 			.channels_max	= 2,
+ 			.rates		= SNDRV_PCM_RATE_8000_192000,
+ 			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
++		.symmetric_rates	= true,
++		.symmetric_channels	= true,
++		.symmetric_samplebits	= true,
+ 	},
+ };
  
- 	return best_val;
- }
+ static const char *const sun8i_aif_stereo_mux_enum_values[] = {
+ 	"Stereo", "Reverse Stereo", "Sum Mono", "Mix Mono"
+ };
  
--static int sun8i_codec_get_lrck_div(unsigned int channels,
--				    unsigned int word_size)
-+static int sun8i_codec_get_lrck_div_order(unsigned int slots,
-+					  unsigned int slot_width)
- {
--	unsigned int div = word_size * channels;
-+	unsigned int div = slots * slot_width;
- 
- 	if (div < 16 || div > 256)
- 		return -EINVAL;
- 
--	return ilog2(div) - 4;
-+	return order_base_2(div);
- }
- 
- static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *dai)
- {
- 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
--	int lrck_div, sample_rate, word_size;
-+	unsigned int slots = params_channels(params);
-+	unsigned int slot_width = params_width(params);
-+	int lrck_div_order, sample_rate, word_size;
- 	u8 bclk_div;
- 
- 	/* word size */
- 	switch (params_width(params)) {
- 	case 8:
- 		word_size = 0x0;
- 		break;
- 	case 16:
-@@ -346,24 +348,24 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
- 			   word_size << SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ);
- 
- 	bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params), 16);
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
- 			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
- 
--	lrck_div = sun8i_codec_get_lrck_div(params_channels(params),
--					    params_physical_width(params));
--	if (lrck_div < 0)
--		return lrck_div;
-+	/* LRCK divider (BCLK/LRCK ratio) */
-+	lrck_div_order = sun8i_codec_get_lrck_div_order(slots, slot_width);
-+	if (lrck_div_order < 0)
-+		return lrck_div_order;
- 
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
--			   lrck_div << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
-+			   (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
- 
- 	sample_rate = sun8i_codec_get_hw_rate(params);
- 	if (sample_rate < 0)
- 		return sample_rate;
- 
- 	regmap_update_bits(scodec->regmap, SUN8I_SYS_SR_CTRL,
- 			   SUN8I_SYS_SR_CTRL_AIF1_FS_MASK,
- 			   sample_rate << SUN8I_SYS_SR_CTRL_AIF1_FS);
+ static SOC_ENUM_DOUBLE_DECL(sun8i_aif1_ad0_stereo_mux_enum,
 -- 
 2.26.2
 
