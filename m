@@ -2,62 +2,63 @@ Return-Path: <SRS0=qvVP=DJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1A6BC4727E
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 01:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33BDCC4727E
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 01:47:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4228120719
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 01:46:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63446206DC
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 01:47:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oYMiQOXu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4228120719
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ip5M76al"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63446206DC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F4951B08;
-	Fri,  2 Oct 2020 03:46:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F4951B08
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38F051EDE;
+	Fri,  2 Oct 2020 03:46:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38F051EDE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601603212;
-	bh=Q8toB55vAc/+Bh+YorXz00sFa0v80/aTYHiWHnXSs0Y=;
+	s=default; t=1601603265;
+	bh=IW/gAuAL8M4CK02tjVdPmd1TTgeHMBKiphLnXsvZnLM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oYMiQOXuiRcg/l6ng8ggnOczxn/9QE7zsGOcRhZsC8f8F1xdFSEu66C0pbaQ2X6NX
-	 uJvK8VNebYZKR37++Eqspy3JY+E9R5E3sZ8Jt3iTW8F5t5uHs5qXUpzKtO9Uqjch9R
-	 tOjBKEt1KaZO7YYGJxPASUiKyHNpPK2GZq9bkymc=
+	b=ip5M76alAJj9Eoi0bxw2oO2JGZAt7WfFKesOKTvqqg3QN0XLxrTsBiNOM6IH5j/lo
+	 G3a/eICu45KFn9KLWzGdcVDmp9U/jWSj/QZiKMZ80/TeS+Noiuul1LQ5emPBbCoFgO
+	 A2J4iX0iq6/cS464PhvS+b1wdE82wqeyqtxRga1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5A0FF801ED;
-	Fri,  2 Oct 2020 03:46:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D82A4F80247;
+	Fri,  2 Oct 2020 03:46:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 688F1F801F9; Fri,  2 Oct 2020 03:45:59 +0200 (CEST)
+ id F1665F8028E; Fri,  2 Oct 2020 03:46:17 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5EE87F800E5
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 03:45:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EE87F800E5
-Date: 02 Oct 2020 10:45:48 +0900
-X-IronPort-AV: E=Sophos;i="5.77,325,1596466800"; d="scan'208";a="58497899"
+ by alsa1.perex.cz (Postfix) with ESMTP id 42698F80228
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 03:46:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42698F80228
+Date: 02 Oct 2020 10:46:10 +0900
+X-IronPort-AV: E=Sophos;i="5.77,325,1596466800"; d="scan'208";a="58497936"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2020 10:45:48 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2020 10:46:10 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 72FE740061BA;
- Fri,  2 Oct 2020 10:45:48 +0900 (JST)
-Message-ID: <878scpl7yg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id E413140061BC;
+ Fri,  2 Oct 2020 10:46:09 +0900 (JST)
+Message-ID: <877ds9l7xu.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v3 06/13] ASoC: simple-card-utils: Expose new members for
- asoc_simple_priv
-In-Reply-To: <1601573587-15288-7-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v3 07/13] ASoC: audio-graph: Update driver as per new
+ exposed members
+In-Reply-To: <1601573587-15288-8-git-send-email-spujar@nvidia.com>
 References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
- <1601573587-15288-7-git-send-email-spujar@nvidia.com>
+ <1601573587-15288-8-git-send-email-spujar@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -86,52 +87,26 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-Thank you for the patch
+> As per the members exposed earlier in the series, audio graph driver
+> is updated to make use of these. Functionally there is no change
+> in behavior if these are not populated. So following changes are made
+> as part of this.
+> 
+>  - Update 'dai_link->ops' for DPCM links if a custom 'snd_soc_ops'
+>    is defined by the vendor driver.
+> 
+>  - Consider 'force_dpcm' flag status when deciding if a DAI link
+>    needs to be treated as DPCM or not. In doing so the logic is
+>    moved to a separate inline function for a better readability.
+> 
+>  - Populate 'dpcm_selectable' flag which is then used to detect
+>    DPCM DAI links.
+> 
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
 
-> Add new members in struct 'asoc_simple_priv'. Idea is to leverage
-> simple or graph card driver as much as possible and vendor can
-> maintain a thin driver to control the behavior by populating these
-> newly exposed members.
-
-re-use simple/audio-graph driver is nice idea.
-My planning next new audio-graph2 can renuse it.
-
-> diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-> index 86a1e95..9825308 100644
-> --- a/include/sound/simple_card_utils.h
-> +++ b/include/sound/simple_card_utils.h
-> @@ -56,6 +56,10 @@ struct asoc_simple_priv {
->  	struct asoc_simple_dai *dais;
->  	struct snd_soc_codec_conf *codec_conf;
->  	struct gpio_desc *pa_gpio;
-> +	const struct snd_soc_ops *ops;
-> +	unsigned int force_dpcm:1;
-> +	uintptr_t dpcm_selectable;
-> +	void *data;
->  };
-
-I have opinions about these.
-
-About dpcm_selectable, indeed current audio-graph is using it as "uintptr_t",
-but as you know, it checks whether it was non-NULL or not only.
-This means we can use it as bit-field.
-
-BTW, do we need to have dpcm_selectable at priv ?
-
-One note is that, -scu- user is only me (locally),
-and it will be removed when audio-graph2 was created.
-(My plan is keep code for you, but remove compatible)
-
-About *data, I think we can avoid *data
-if driver side priv includes asoc_simple_priv ?
-
-	struct my_priv {
-		struct asoc_simple_priv *simple;
-		...
-	};
-
-	#define simple_to_priv(_simple) container_of((_simple), struct my_priv, simple)
-
+Can we merge [06/13] and [07/13] patches ?
 
 Thank you for your help !!
 
