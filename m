@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2362C4363D
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 20:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C806C4363D
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 20:59:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C92FD206B6
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 20:58:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D0CE5206B6
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 20:59:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qZg0dv9B";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pLwh4XEc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C92FD206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GE2KtOPL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oefR/7xO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0CE5206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 401881AC0;
-	Fri,  2 Oct 2020 22:58:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 401881AC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DBD21A94;
+	Fri,  2 Oct 2020 22:58:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DBD21A94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601672332;
-	bh=S2pK2zZphyllgyoDUlqH+n0UMNxZEfNf9+OmkuBwScQ=;
+	s=default; t=1601672365;
+	bh=J0puacgmnRfuguK83QIcHTJ2NU8YvJ8K23H6qn76ywk=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qZg0dv9Bq22c4ZFl8du42PWy0+B16tEgsEE0eqItpLJSH17iTaT7mUWtsCxjy0ijP
-	 nVt6faJUnqIdLYwhr7fluxQOcKeSfazV3oq3DGSghp7vVSCHVFXRgGP1udM/qdYFJD
-	 w5PyGToT68bLbAaTm+XgvfOcTBSHAQNpcT5b3IdI=
+	b=GE2KtOPLIqVvprJhXrLmpNSvZX10Ow/YbvhN1qGm6MQ9bQ4xtHxuGlzALMZQG1Kh4
+	 P8g0FGTS44t+2rSY/hhDp2MeH94ayMg6rm6nEgFZ03h5FoVJoBIh/9UCS6z7/Cd8AL
+	 avORauZH/0QCJjFqWL3mVObCjcXO51Bkf2G1Qs4I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5961F8028E;
-	Fri,  2 Oct 2020 22:57:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D30D2F801F9;
+	Fri,  2 Oct 2020 22:58:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9699AF8028E; Fri,  2 Oct 2020 22:57:58 +0200 (CEST)
+ id 88973F80247; Fri,  2 Oct 2020 22:58:33 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00FF9F800AB
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 22:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00FF9F800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3ECFF801F9
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 22:58:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3ECFF801F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pLwh4XEc"
+ header.b="oefR/7xO"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8D35E206B6;
- Fri,  2 Oct 2020 20:57:53 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B2E06206B6;
+ Fri,  2 Oct 2020 20:58:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601672274;
- bh=S2pK2zZphyllgyoDUlqH+n0UMNxZEfNf9+OmkuBwScQ=;
+ s=default; t=1601672309;
+ bh=J0puacgmnRfuguK83QIcHTJ2NU8YvJ8K23H6qn76ywk=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=pLwh4XEcLHi7PZ5/bow9lhh+VH5AwTBKsvoc37/61s0PqAxj/C1HgTVWOCZQEEzpf
- Mj0Mbm9oluHysFQou+S9mE3O9cDg3boPZDxWDCnMWzjfvplglxho0c+fzaH5RqGv3Z
- 9R0kr/jhyDMhOh6ks9fQNHvzbRofwGL7+sA8wAP4=
-Date: Fri, 02 Oct 2020 21:56:53 +0100
+ b=oefR/7xOOL0tH57aV3gCtChZ+mUOPM00QMUAV4v44qS/B0i3BdfBv8z5sD1alcKBc
+ x+Xwj45RUxzhFMlIRACzv2BgpplLVslufVzGtZbi5dhGPi8NpIhgXRDuxfwnNm55N+
+ nqTm73+zbk4wOxyRNPtHXGf8ZNo7FBNpf3YOJTL8=
+Date: Fri, 02 Oct 2020 21:57:29 +0100
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- alsa-devel@alsa-project.org
-In-Reply-To: <20201002160305.815523-1-codrin.ciubotariu@microchip.com>
-References: <20201002160305.815523-1-codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH 0/2] Add driver for Microchip S/PDIF RX
-Message-Id: <160167211499.21762.18186234770386677649.b4-ty@kernel.org>
+To: Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>
+In-Reply-To: <20201002172841.37344-1-broonie@kernel.org>
+References: <20201002172841.37344-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Remove unused np
+Message-Id: <160167211500.21762.1332337728354203094.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com, tiwai@suse.com,
- lgirdwood@gmail.com, ludovic.desroches@microchip.com, robh+dt@kernel.org
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,24 +90,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2 Oct 2020 19:03:03 +0300, Codrin Ciubotariu wrote:
-> The Sony/Philips Digital Interface Receiver (SPDIFRX) is a serial port
-> compliant with the IEC-60958 standard. Among its caracteristics, we
-> mention the following:
->  - SPDIF/AES-EBU Compatible Serial Port
->  - 32 Samples FIFO
->  - Data Width Configurable to 24 bits, 20 bits or 16 bits
->  - Packed and Unpacked Data Support for System Memory Optimization
->  - Line State Events Report and Source of Interrupt
->  - Line Error Rate Report
->  - Full Memory Map of 192 bits for Channel 1 and Channel 2 Status and
->    User Data
->  - First 32-bit Status A, Status B Change Report and Source of Interrupt
->  - Line Digital Filter
->  - Register Write Protection
->  - Abnormal Software Access and Internal Sequencer Integrity Check Reports
+On Fri, 2 Oct 2020 18:28:41 +0100, Mark Brown wrote:
 > 
-> [...]
+
 
 Applied to
 
@@ -115,10 +100,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: add DT bindings for Microchip S/PDIF RX Controller
-      commit: 80db8751d7c0bebe11e62df19cec9cb0a392c354
-[2/2] ASoC: mchp-spdifrx: add driver for SPDIF RX
-      commit: ef265c55c1ac0f02c74a33d8e054547f7eafc81b
+[1/1] ASoC: fsl_spdif: Remove unused np
+      commit: 1c71497bb5b819bf3a32cfc35e293060b6590c39
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
