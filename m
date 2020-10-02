@@ -2,70 +2,93 @@ Return-Path: <SRS0=qvVP=DJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB31DC4363D
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 09:27:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74CD2C4363D
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 11:21:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C081206FA
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 09:27:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF55F206DD
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 11:21:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JF0kwTs1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C081206FA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CtZqreKq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="M2CCT4ST"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF55F206DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94AC11B08;
-	Fri,  2 Oct 2020 11:26:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94AC11B08
+	by alsa0.perex.cz (Postfix) with ESMTPS id 103291EFE;
+	Fri,  2 Oct 2020 13:20:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 103291EFE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601630860;
-	bh=KIYAhUDAvLIawHhZAeX6aHOp8J3xQ4K+OB5V/HACCPM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601637698;
+	bh=IMH9pybNY6Z8AvzWBQgu+DGePwDHfA+ZcY3YZrlZigU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JF0kwTs1dIH3Gd1cF6AkkudSa8rNwtiytfhWkEDcdJ+6Y57td+kKO+JV5KVBUCG/b
-	 150i3joJO/13qpv76KwF5RHq6saO3lHGx9JgbONDWVU4va6huCwXlAWaTVXrBjI2Va
-	 XU57fAHbW2pySy7CfriNMiLV/HHPwgTOLE1VU6+M=
+	b=CtZqreKq1xMriCvfRDIlPisJ9zm85nWYvetEjEOg8Uqo0Bwbug1JQFksUqk/jSepW
+	 yYND1svttoT4m3dblc3wYHtBE3XcyW6+rE0Y+I65qnJJXdp5nPkK5VNWgAw3Stg93q
+	 dKLUrAMELRT7EUGrkfw1GMFYq+b5cuU8E56hYY04=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30EB1F801ED;
-	Fri,  2 Oct 2020 11:26:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EC4AF801ED;
+	Fri,  2 Oct 2020 13:20:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD120F800E5; Fri,  2 Oct 2020 11:26:48 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 6023EF801F9; Fri,  2 Oct 2020 13:20:44 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE8ADF800E5
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 11:26:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE8ADF800E5
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 309BFAF8D;
- Fri,  2 Oct 2020 09:26:38 +0000 (UTC)
-Date: Fri, 02 Oct 2020 11:26:38 +0200
-Message-ID: <s5h7ds9c71t.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: usb-audio: fix spelling mistake "Frequence" ->
- "Frequency"
-In-Reply-To: <8ee34833-7867-f559-0656-b4f34ea6d006@perex.cz>
-References: <20181125231208.14350-1-colin.king@canonical.com>
- <s5hmupw6y6l.wl-tiwai@suse.de>
- <8ee34833-7867-f559-0656-b4f34ea6d006@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Colin King <colin.king@canonical.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84D8BF800E5
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 13:20:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84D8BF800E5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="M2CCT4ST"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3E353206C3;
+ Fri,  2 Oct 2020 11:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601637632;
+ bh=IMH9pybNY6Z8AvzWBQgu+DGePwDHfA+ZcY3YZrlZigU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=M2CCT4STUgZKvxFoZFTOft242mYU31LqqyKR1ZMJF1NLzv6s78+RiQtTEx183w0Z2
+ B75A6yoiQfbMzCx4Vi2r/NFbfaRTBe9N90u1t8tfPK3PKjF0yjwevrcPoy4RXzvOUd
+ Fi7lknvrZlb66vd1CIDFqF1YTiqjRp9qBbcJVv2w=
+Date: Fri, 2 Oct 2020 12:19:32 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH 0/6] Ancillary bus implementation and SOF multi-client
+ support
+Message-ID: <20201002111932.GA5527@sirena.org.uk>
+References: <20201001131252.GA2382269@kroah.com>
+ <20201001144019.GJ6715@sirena.org.uk>
+ <20201001153207.GA2414635@kroah.com>
+ <20201001160316.GL6715@sirena.org.uk>
+ <20201001181624.GC3598943@kroah.com>
+ <DM6PR11MB2841EB2B3699578E9FE2AB7BDD300@DM6PR11MB2841.namprd11.prod.outlook.com>
+ <20201001193846.GW6715@sirena.org.uk>
+ <DM6PR11MB28412198BCF01BC861BCBE14DD300@DM6PR11MB2841.namprd11.prod.outlook.com>
+ <20201001201718.GZ6715@sirena.org.uk>
+ <20201002004740.GF816047@nvidia.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="+HP7ph2BbKc20aGI"
+Content-Disposition: inline
+In-Reply-To: <20201002004740.GF816047@nvidia.com>
+X-Cookie: Words must be weighed, not counted.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "tiwai@suse.de" <tiwai@suse.de>, Greg KH <gregkh@linuxfoundation.org>,
+ "Sridharan, Ranjani" <ranjani.sridharan@intel.com>,
+ "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
+ "parav@nvidia.com" <parav@nvidia.com>, "Ertman,
+ David M" <david.m.ertman@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,29 +104,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 02 Oct 2020 11:18:46 +0200,
-Jaroslav Kysela wrote:
-> 
-> Dne 26. 11. 18 v 9:27 Takashi Iwai napsal(a):
-> > On Mon, 26 Nov 2018 00:12:08 +0100,
-> > Colin King wrote:
-> >>
-> >> From: Colin Ian King <colin.king@canonical.com>
-> >>
-> >> There are spelling mistakes in equalizer name fields, fix them.
-> >>
-> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > 
-> > In general, it's not good to rename the control names even if they are
-> > fixes.  But these are rather device-specific ones, and they are EQ's,
-> > which aren't too fatal to change, so I took it as-is now.
-> 
-> It seems that this patch has not found a way to kernel. It is present
-> in #master at git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git,
-> but it is not present in linux-next.
 
-Indeed, it was applied to a wrong branch.  I cherry-picked now.
-Thanks!
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Oct 01, 2020 at 09:47:40PM -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 01, 2020 at 09:17:18PM +0100, Mark Brown wrote:
 
-Takashi
+> Instead of making ancillary bus giant, it might be interesting to use
+> a library technique to avoid the code duplication you are talking
+> about, eg
+
+>  struct my_ancillary_data {
+>       struct ancillary_device adev;
+>       struct ancillary_resource resources;
+>  }
+
+> Then each user can access the facets they need.
+
+The way most of this stuff works already it's not a table in the device
+itself, it's an array of resources with type information.  Your second
+struct there is presumably just going to be the pointer and size
+information which you *could* split out but I'm really not sure what
+you're buying there.
+
+The interesting bit isn't really the data in the devices themselves,
+it's the code that allows devices to just supply a data table and have
+things mapped through to their child devices.  That isn't particularly
+complex either, but it's still worth avoiding having lots of copies of
+it.  *None* of this bus stuff is hugely complex but we still don't want
+each device with children having to open code it all when they could
+just do something data driven.
+
+--+HP7ph2BbKc20aGI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl93DMEACgkQJNaLcl1U
+h9AO2Af9GrWLCqqHKTAj+7wm2zZT1fdzh0Sw2SDm/n6B2xHU0L5grsRGtk/5q2QU
+oobWGs/CXSoOmfgLiFqe0AiGmDqZxSFIDz1cefjNooUEy2jt/20OuycvtfBWPLK0
+v1s/2KkxbAFv0LGp2JWS/5H5aRvJhGefxoJmhVFuWOshyTqI1PRlAtxREAVY+po7
+PxTWXKZdJBtVrdxMZwIIjSZdW/IdiXKcfXNIybHnAqJ3Wnt4y1a3AllDik9bDyId
+ZlsYVID083+TcLYSjlctCx2/DbenN3wxVjsjbLhU+XD2AL03QFS7XdOhxD6mgE6s
+99MyjBGGuzW0Ynd9DDI8UV2+j5t3vA==
+=wKwV
+-----END PGP SIGNATURE-----
+
+--+HP7ph2BbKc20aGI--
