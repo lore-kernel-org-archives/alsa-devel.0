@@ -2,82 +2,73 @@ Return-Path: <SRS0=qvVP=DJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 711BEC4363D
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 21:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AE21C4363D
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 21:20:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E2BA206DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 21:08:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B7C8820754
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 21:20:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ppgrb2ul";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bjTGLVDn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E2BA206DB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WhAsvcd/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7C8820754
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7605A1AA6;
-	Fri,  2 Oct 2020 23:07:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7605A1AA6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E5491AB7;
+	Fri,  2 Oct 2020 23:19:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E5491AB7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601672906;
-	bh=NKFI118U37/X9R8l+JOxUct5ebC+vaZYVVVjk9c/ckI=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Ppgrb2ulWlk0RMtnLoKylpU0mWIRqcKIQSEHXpdnLdFnn80vznHIz2Zg4KgnYI6od
-	 DdB+f6vQIIgw0pXeMzOp9qyBSo3EkjS0fSvzpGPbOwAAxjIhuZ19fUyGVE1Ujgyi+x
-	 WjWaWzFUW/ozZTk6NBxLhPBqGYCL/xR6TyOM8Vds=
+	s=default; t=1601673618;
+	bh=9brTSjrGhv9kpjTIXVovYPeCMNLnRAONewmD5bmbXio=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WhAsvcd/K/dw+5O9cy1welm+dj2j4hr1uWw/eTwOoFrlEpcKPCCWhlqZvrgsYt1qM
+	 fXnu0/e3t9bcaT2pB2YanEIv4k4gaWWcQRfgz9qbdjfgmcm+hySXK3AcqkXiTwk38A
+	 7N50SQHhu88t2/CmL70KCZGA43X6J6rdVITIv4v4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E576DF801ED;
-	Fri,  2 Oct 2020 23:07:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C05ACF80228;
+	Fri,  2 Oct 2020 23:19:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16C4EF801F9; Fri,  2 Oct 2020 23:07:33 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B96EF800AB
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 23:07:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B96EF800AB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bjTGLVDn"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 017D9F801A3; Fri,  2 Oct 2020 23:19:25 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EC27E206C9;
- Fri,  2 Oct 2020 21:07:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601672848;
- bh=NKFI118U37/X9R8l+JOxUct5ebC+vaZYVVVjk9c/ckI=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=bjTGLVDn6xhBExBz4e3JQS6szJkptVXkmfG99KJoRX2A+3KYBSVsCJZYg43Kc8YdC
- e9X8qfN8/C2DsntJOkmS/QTU4CUFrGdzSxb9IZB1kihoIZmQHqhqE7BeHte7TaOpDO
- EDdeEdBelu1SlJPDfJL75b5mFbJJ3Apu9NmD2yXY=
-Date: Fri, 02 Oct 2020 22:06:28 +0100
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <1594818110-786-1-git-send-email-brent.lu@intel.com>
-References: <1594818110-786-1-git-send-email-brent.lu@intel.com>
-Subject: Re: [PATCH] ASoC: hdac_hdmi: remove cancel_work_sync in runtime
- suspend
-Message-Id: <160167211500.21762.13369928255363041989.b4-ty@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DF25F801A3
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 23:19:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DF25F801A3
+IronPort-SDR: HwyVtXy8NF3Dnyn/FDL/hK2I4OoZJd8eLYRFLC9YtRtAhK4Nx/fUil0RK6cuQpPTervERPXCgV
+ MSvycMB/514g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="247823956"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; d="scan'208";a="247823956"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Oct 2020 14:19:16 -0700
+IronPort-SDR: 7sQe0XRmTzbkiQa6tqH5Azg/NKZi3I4P66BfzB9BCBdMyeL7A3EIa5jL7PK51tNGkZsMg3QI0V
+ TeLbIwOaBScw==
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; d="scan'208";a="346580600"
+Received: from johnthom-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.209.158.101])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Oct 2020 14:19:15 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/4] ASoC: Intel: sof_sdw: minor corrections
+Date: Fri,  2 Oct 2020 16:18:58 -0500
+Message-Id: <20201002211902.287692-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: =?utf-8?q?-louis=2Ebossart=40linux=2Eintel=2Ecom=3E=2C_Takashi_Iwai_=3Ctiwa?=@alsa-project.org,
- =?utf-8?q?hmanen=40linux=2Eintel=2Ecom=3E=2C_Pierre-Louis_Bossart_=3Cpierre?=@alsa-project.org,
- =?utf-8?q?i=40suse=2Ecom=3E=2C_Guennadi_Liakhovetski_=3Cguennadi=2Eliakhove?=@alsa-project.org,
- =?utf-8?q?il=2Ecom=3E=2C_Amadeusz_S=C5=82awi=C5=84ski_=3Camadeuszx=2Eslawin?=@alsa-project.org,
- =?utf-8?q?linux-kernel=40vger=2Ekernel=2Eorg=2C_Kai_Vehmanen_=3Ckai=2Eve?=@alsa-project.org,
- =?utf-8?q?tski=40linux=2Eintel=2Ecom=3E=2C_Liam_Girdwood_=3Clgirdwood=40gma?=@alsa-project.org,
- =?utf-8?q?ski=40linux=2Eintel=2Ecom=3E?=@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,46 +84,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Jul 2020 21:01:50 +0800, Brent Lu wrote:
-> A deadlock is identified when there are three contexts running at the
-> same time:
-> - a HDMI jack work which is calling snd_soc_dapm_sync().
-> - user space is calling snd_pcm_release() to close pcm device.
-> - pm is calling runtime suspend function of HDMI codec driver.
-> 
-> By removing the clear_dapm_works() invocation in the
-> hdac_hdmi_runtime_suspend() function, the snd_pcm_release() could
-> always returns from dapm_power_widgets() function call without
-> blocking the hdac_hdmi_jack_dapm_work() work thread or being blocked
-> by the hdac_hdmi_runtime_suspend() function. The purpose of the jack
-> work is to enable/disable the dapm jack pin so it's not necessary to
-> cancel the work in runtime suspend function which is usually called
-> when pcm device is closed.
+This small patchset adds a missing component string needed by UCM and
+corrects a confusion on Realtek part numbers.
 
-Applied to
+Pierre-Louis Bossart (4):
+  ASoC: Intel: sof_sdw_rt1308: add extra check on init
+  ASoC: Intel: sof_sdw_rt1316: add missing component string
+  ASoC: rt715-sdw: probe with RT714 Device ID
+  ASoC: Intel: sof_sdw: add version_id to avoid rt714/rt715 confusion
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+ sound/soc/codecs/rt715-sdw.c            |  1 +
+ sound/soc/intel/boards/sof_sdw.c        | 16 ++++++++++++++++
+ sound/soc/intel/boards/sof_sdw_rt1308.c |  4 ++++
+ sound/soc/intel/boards/sof_sdw_rt1316.c |  6 ++++++
+ 4 files changed, 27 insertions(+)
 
-Thanks!
+-- 
+2.25.1
 
-[1/1] ASoC: hdac_hdmi: remove cancel_work_sync in runtime suspend
-      commit: cec6e41ce094affad3b5f9f5e5aa1f81c66ce682
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
