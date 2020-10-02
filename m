@@ -2,95 +2,81 @@ Return-Path: <SRS0=qvVP=DJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C568C4363C
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 15:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33DFBC4363C
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 15:43:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7646220708
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 15:30:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA0B92074B
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 15:43:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XGJo55tx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="ZzjSrmru"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7646220708
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sLgDNV5k";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vlFOtcqO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA0B92074B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A451C1F04;
-	Fri,  2 Oct 2020 17:29:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A451C1F04
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3359E1F07;
+	Fri,  2 Oct 2020 17:42:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3359E1F07
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601652619;
-	bh=n9czzZF7q6QV4Gp5JZeBJYRNQ7Yj2qgbCJIV2N1P2dE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XGJo55tx5C5Md/PneKMMrdBTzqf4VZbREOxQDN/jOjwgD4RFOXfkWqCrn7GYdnrTz
-	 VgIGnACFJAXhMh5qIluCTCX16AYIdrzXqufAj+ue6P9wVYZSU2fA4QevknGCStFDwK
-	 +19kdAc23VcxO8KHeuvPDwplo2gThbacmvhkikhA=
+	s=default; t=1601653390;
+	bh=v5iehWcOX0VLo1AP99P9bUun2tqq3LWKlFh9oC0pM6A=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sLgDNV5kF37Z7RLCBNZ7nnzbVIna67qXSagcvlZWtpxQrIvBw+oQstZVK/bLCVyju
+	 mCSjnxt/HOu8hvuC7Y9uuF0RuMEZO+uCMhZNQeQ812Bz06ToujTLAohxrGSyT7EoJY
+	 //JLa/cEdHIbvWd7BKOrgjP7sfGXwfSxzaQtPnec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED985F801ED;
-	Fri,  2 Oct 2020 17:29:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AED85F801ED;
+	Fri,  2 Oct 2020 17:42:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67FE8F801ED; Fri,  2 Oct 2020 17:29:19 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+ id A9AD7F801F9; Fri,  2 Oct 2020 17:42:16 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9589F800AB
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 17:42:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9589F800AB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="vlFOtcqO"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B642DF800AB
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 17:29:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B642DF800AB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="ZzjSrmru"
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 092FGmtG025137; Fri, 2 Oct 2020 17:29:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=rH5DRDsh0Q+Pmb7n88LdQ/t1cLnzwZVBzxVpYfSXUEM=;
- b=ZzjSrmrul4W3cETzEbXmFH9DTGZprBTe7Axt5fLkFo93oKDdTeg5xhjLsV+ZtffYPcrC
- rSAmqdhpV9yfTTHZQ9f6vpCeifvD1Nd04mK7Z863fS4YWDrp/60rx7e8zJ3duZTCuOpb
- +nw8xZM3+YqizZGMs1/Te8qLDu/69Ix8VPWQnamtV6D1DWVml7HaCfCJ/2wyxtPEwuIy
- h7K8VQVR6bRHE7ntHgxpRDp60H/iRAGuCc2V7OfddUenYkmsnhTXW9sVIU0DEPk72W8Y
- YUIDsPHUBBnnWQ4QDGHnVRLy9D6LT/sFIspU/Kf1oeYlJd9tnl4fgMMvFlzAUrfC/3zZ ZQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 33sts8chy3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 02 Oct 2020 17:29:08 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E371010002A;
- Fri,  2 Oct 2020 17:29:07 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B69812A562F;
- Fri,  2 Oct 2020 17:29:07 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG6NODE2.st.com (10.75.127.17)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3;
- Fri, 2 Oct 2020 17:29:07 +0200
-From: Olivier Moysan <olivier.moysan@st.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <alexandre.torgue@st.com>, <olivier.moysan@st.com>,
- <arnaud.patard@rtp-net.org>
-Subject: [PATCH 1/1] ASoC: cs42l51: add soft dependency declaration
-Date: Fri, 2 Oct 2020 17:29:04 +0200
-Message-ID: <20201002152904.16448-1-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
+ by mail.kernel.org (Postfix) with ESMTPSA id E3CF02074B;
+ Fri,  2 Oct 2020 15:42:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601653327;
+ bh=v5iehWcOX0VLo1AP99P9bUun2tqq3LWKlFh9oC0pM6A=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=vlFOtcqOxfyc22WCafJBSQo1lA+ZbQIvpliVp5g+LacQS99cqT50bn3+vFDF+rpbf
+ 9O0c5qNtP/fwlvgZ9oVP7lGlhLbedjAsUNUFgwBzyndZI4MgINYQI4itJqbXsFbSBC
+ 77+q/QTtoD8VTqtvt7RQsUcbtA/ANEIvZN+tL8ic=
+Date: Fri, 2 Oct 2020 16:41:07 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Olivier Moysan <olivier.moysan@st.com>
+Subject: Re: [PATCH 1/1] ASoC: cs42l51: add soft dependency declaration
+Message-ID: <20201002154107.GC5527@sirena.org.uk>
+References: <20201002152904.16448-1-olivier.moysan@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235, 18.0.687
- definitions=2020-10-02_10:2020-10-02,
- 2020-10-02 signatures=0
-Cc: alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="MnLPg7ZWsaic7Fhd"
+Content-Disposition: inline
+In-Reply-To: <20201002152904.16448-1-olivier.moysan@st.com>
+X-Cookie: Words must be weighed, not counted.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, alexandre.torgue@st.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com,
+ arnaud.patard@rtp-net.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,26 +92,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When configured as module, CS42L51 codec driver uses two modules
-snd-soc-cs42l51 and snd-soc-cs42l51-i2c.
-Add soft dependency on snd-soc-cs42l51-i2c in snd-soc-cs42l51,
-to allow smart module dependency solving.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- sound/soc/codecs/cs42l51.c | 1 +
- 1 file changed, 1 insertion(+)
+--MnLPg7ZWsaic7Fhd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 097c4e8d9950..1630baad42e2 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -814,4 +814,5 @@ EXPORT_SYMBOL_GPL(cs42l51_of_match);
- 
- MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
- MODULE_DESCRIPTION("Cirrus Logic CS42L51 ALSA SoC Codec Driver");
-+MODULE_SOFTDEP("pre: snd-soc-cs42l51-i2c");
- MODULE_LICENSE("GPL");
--- 
-2.17.1
+On Fri, Oct 02, 2020 at 05:29:04PM +0200, Olivier Moysan wrote:
+> When configured as module, CS42L51 codec driver uses two modules
+> snd-soc-cs42l51 and snd-soc-cs42l51-i2c.
+> Add soft dependency on snd-soc-cs42l51-i2c in snd-soc-cs42l51,
+> to allow smart module dependency solving.
 
+Doesn't the userspace tooling usually manage to figure this out from
+symbol usage?
+
+--MnLPg7ZWsaic7Fhd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl93ShIACgkQJNaLcl1U
+h9AfMgf/bO5iRl+FHKAa69Dt5NyALR5rJ9EhOt2FrK6Ql/DPOjT4GJE2wWdt/fKD
+H9c2EU6rY0lAp4X7M5PNZJrq4gOcyWdGaHfIOfXBf2qiEzN3L6AvX6iA5oBi1s3O
+eECGQmaRqcwv/nSuoOnzpkoKyywBq9+o9lkHWu1jBg7uhYU1kjp4kJmifrl1aeFU
+QrxFCjLwGSjmNFfm7v3N/33M/aNRwvhyrG9ct+19u1GabgzXBQpLqVj/7Qf1R4Ab
+4Wx8zbP9UI9kW+NLwFewr2wDMP4+WC86biyvT8yU2RYGfxzU3l5U6GtawF+TDhpR
+yBPJ2eIvTmHz66uX7dvMIHlzF2V+GA==
+=ioD8
+-----END PGP SIGNATURE-----
+
+--MnLPg7ZWsaic7Fhd--
