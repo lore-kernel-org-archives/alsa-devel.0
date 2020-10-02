@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E65CC4363D
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 04:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 339E0C4363D
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 04:12:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 070A520780
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 04:10:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A59CE20796
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 04:12:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YLvFRuej"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 070A520780
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZSy604wH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A59CE20796
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 227501AB7;
-	Fri,  2 Oct 2020 06:09:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 227501AB7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 379E81EDE;
+	Fri,  2 Oct 2020 06:11:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 379E81EDE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601611847;
-	bh=mrap6485A8wpu3STR+RnBzDDwO+V4aYm6agi4Adq4pk=;
+	s=default; t=1601611920;
+	bh=2T6j9CihrBOKsxA+kEznLrgRc8nhICWUbv0IFx48UoQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YLvFRuejVLgZ2+OTLAz/2PPq6WdnJCTGFVZB+GerbEJkEW4GIp+WmGcSqMflnuZk+
-	 FRkogqkfJH3TephyYEcqkDS2lk02G4n6t7Ug+xQLgLEZhowR4vHlRc4A/asfWR/jPi
-	 W3eujvYhX81U+sGPt5pFKtg80AJEB7G1Jg1QV4vg=
+	b=ZSy604wHEegsG8SrUrW0wsb+PxfaH4eayMBxFu1Iov+OlgHEkHbWbEr8xEUFX7AhW
+	 0iUvyIyLqMzSBg2KA0TTIev9HHIoAuQiovPed8qQbY+zX7aff/O12Wrn8gztkh23Fm
+	 VdjvFexoVfQe6iTeHOe1OlMcazDJ7mBME93e5j8Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78C47F801A3;
-	Fri,  2 Oct 2020 06:09:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 907B5F80228;
+	Fri,  2 Oct 2020 06:11:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5D31F801F9; Fri,  2 Oct 2020 06:09:50 +0200 (CEST)
+ id 6DD98F80247; Fri,  2 Oct 2020 06:11:08 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id D7BA6F801A3
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 06:09:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7BA6F801A3
+ by alsa1.perex.cz (Postfix) with ESMTP id A8F39F801A3
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 06:11:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8F39F801A3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1601611780870965958-webhooks-bot@alsa-project.org>
-References: <1601611780870965958-webhooks-bot@alsa-project.org>
+In-Reply-To: <1601611860372674942-webhooks-bot@alsa-project.org>
+References: <1601611860372674942-webhooks-bot@alsa-project.org>
 Subject: alsactl: init - add -U option to disable UCM based init
-Message-Id: <20201002040950.B5D31F801F9@alsa1.perex.cz>
-Date: Fri,  2 Oct 2020 06:09:50 +0200 (CEST)
+Message-Id: <20201002041108.6DD98F80247@alsa1.perex.cz>
+Date: Fri,  2 Oct 2020 06:11:08 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,12 +68,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #60 was opened from ahlinc:
+alsa-project/alsa-utils pull request #60 was edited from ahlinc:
 
 The reason is to use it with internal init extra commands like:
   alsactl -U -E CMD=info init
 
-Currently, if there is a valid UCM config for a card the alsactl command exits silently on the init command and don't execute any extra commands because that commands defined in common init path file _init/00main_ that don't used in case of UCM did the job.
+Currently, if there is a valid UCM config for a card the alsactl command exits silently on the init command and don't execute any extra commands because that commands defined in a common init path file _init/00main_ that don't used in case of UCM did the job.
 
 Request URL   : https://github.com/alsa-project/alsa-utils/pull/60
 Patch URL     : https://github.com/alsa-project/alsa-utils/pull/60.patch
