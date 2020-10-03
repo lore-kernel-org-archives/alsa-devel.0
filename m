@@ -1,81 +1,88 @@
-Return-Path: <SRS0=qvVP=DJ=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=cVLY=DK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51DCFC35257
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 21:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8217C4363D
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:03:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F5EF206C9
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Oct 2020 21:22:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 213B2206F8
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:03:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KDHdbgXa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F5EF206C9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nqX8azTs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="shyrkCgg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 213B2206F8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BA391AEF;
-	Fri,  2 Oct 2020 23:22:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BA391AEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F48218BB;
+	Sat,  3 Oct 2020 11:02:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F48218BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601673771;
-	bh=4FeaDq5HuaKwDNFKjHPR8zlLXx66MEqwVfArDQdUPDU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601715790;
+	bh=hqrEZaBVdP1bFOYZhSCJD7NnGqnDpmk80ug4DMaHxk8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KDHdbgXa5qyToVVvnV1XzHZzu3e+oMenmlUEPKluccTvD7HtXyilw7NGhe7IU9w5M
-	 UsGxlFtY+aRu2jPdt/j6WC2cI3Yu/ykCDMksVModd7SCmEO2dF2nxm7I4GKFdyQF9s
-	 FPXlLKuvuJ1ZIkQ1grGM/AKReD3WBGBvdKFjiF80=
+	b=nqX8azTsoL2Pf3I7FWZL/Ejnvhw8+l65JCbCAfyiVglHfbnQmxAuBSwmsQXoHJN1N
+	 2IhoICSXVOp9JR9jjWWUh9z2CavQfWgW7k0I1bzMsddCyPcYBXPqABq4BDz4jOJmsT
+	 GKse0ar2lqc5Hq5Xs+kzFxCQXq+ntPq/FbQPyBH0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55C79F802E9;
-	Fri,  2 Oct 2020 23:19:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFF87F801D8;
+	Sat,  3 Oct 2020 11:02:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D7FEF801F9; Fri,  2 Oct 2020 23:19:36 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A136EF801F5; Sat,  3 Oct 2020 11:02:18 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7CC9F80247
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2020 23:19:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7CC9F80247
-IronPort-SDR: 0LqQMZSW9w6lL7Q6YJPtM3PpjWQdn0uLbFHNtdUI8GFJFOZL7693qKzJfCf5DpssPj0EHvWt0q
- Wxylx+QzjaVQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="247823965"
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; d="scan'208";a="247823965"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Oct 2020 14:19:19 -0700
-IronPort-SDR: kQU+Ws2BkNoqLUrqGj0NM4GFprvNPaenr3sX89/Yo1UqSicEVjZXdXLfrDAXCvEX8H1iQknAl9
- l/JBNlyAVdMw==
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; d="scan'208";a="346580620"
-Received: from johnthom-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.209.158.101])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Oct 2020 14:19:18 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: Intel: sof_sdw: add version_id to avoid rt714/rt715
- confusion
-Date: Fri,  2 Oct 2020 16:19:02 -0500
-Message-Id: <20201002211902.287692-5-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201002211902.287692-1-pierre-louis.bossart@linux.intel.com>
-References: <20201002211902.287692-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21629F801D8
+ for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2020 11:02:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21629F801D8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="shyrkCgg"
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2C6A5206F8;
+ Sat,  3 Oct 2020 09:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601715725;
+ bh=hqrEZaBVdP1bFOYZhSCJD7NnGqnDpmk80ug4DMaHxk8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=shyrkCggzPHV+MuJ+qh2IXhnAC19LCZtzVj5dXtzgmK8u7XHaZN/tP+6jPMmFMJkN
+ J2w6P0A2YaodSD/1UHoZoeh+bSD/H37GYgwfQse8TiER8a2sfodTRrVKAJcJuwLu6v
+ +dsGbRoitq+shp1WKW1bXnH1SNgpfmmR8jik8Oes=
+Date: Sat, 3 Oct 2020 11:02:01 +0200
+From: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Subject: Re: [PATCH 2/6] ASoC: SOF: Introduce descriptors for SOF client
+Message-ID: <20201003090201.GC114893@kroah.com>
+References: <20200930225051.889607-1-david.m.ertman@intel.com>
+ <20200930225051.889607-3-david.m.ertman@intel.com>
+ <20201001130245.GB2378679@kroah.com>
+ <f3fa8df9fc8bcd789167f61b6c9d4df66b9b85c1.camel@intel.com>
+ <20201002045357.GA34005@kroah.com>
+ <ad38db14921dc5afb424db1ecac53053f15bb753.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Jack Yu <jack.yu@realtek.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ad38db14921dc5afb424db1ecac53053f15bb753.camel@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "tiwai@suse.de" <tiwai@suse.de>,
+ "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
+ "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "parav@nvidia.com" <parav@nvidia.com>, "jgg@nvidia.com" <jgg@nvidia.com>,
+ "Ertman, David M" <david.m.ertman@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,55 +98,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-RT715 and RT714 are essentially the same chip. In addition, there are
-two versions, one supporting SoundWire 1.1 and one supporting
-SoundWire 1.2 (SDCA).
+On Fri, Oct 02, 2020 at 05:07:13PM +0000, Sridharan, Ranjani wrote:
+> On Fri, 2020-10-02 at 06:53 +0200, gregkh@linuxfoundation.org wrote:
+> > On Thu, Oct 01, 2020 at 10:16:00PM +0000, Sridharan, Ranjani wrote:
+> > > On Thu, 2020-10-01 at 15:02 +0200, Greg KH wrote:
+> > > > On Wed, Sep 30, 2020 at 03:50:47PM -0700, Dave Ertman wrote:
+> > > > > From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > > > 
+> > > > > A client in the SOF (Sound Open Firmware) context is a
+> > > > > device that needs to communicate with the DSP via IPC
+> > > > > messages. The SOF core is responsible for serializing the
+> > > > > IPC messages to the DSP from the different clients. One
+> > > > > example of an SOF client would be an IPC test client that
+> > > > > floods the DSP with test IPC messages to validate if the
+> > > > > serialization works as expected. Multi-client support will
+> > > > > also add the ability to split the existing audio cards
+> > > > > into multiple ones, so as to e.g. to deal with HDMI with a
+> > > > > dedicated client instead of adding HDMI to all cards.
+> > > > > 
+> > > > > This patch introduces descriptors for SOF client driver
+> > > > > and SOF client device along with APIs for registering
+> > > > > and unregistering a SOF client driver, sending IPCs from
+> > > > > a client device and accessing the SOF core debugfs root entry.
+> > > > > 
+> > > > > Along with this, add a couple of new members to struct
+> > > > > snd_sof_dev that will be used for maintaining the list of
+> > > > > clients.
+> > > > > 
+> > > > > Reviewed-by: Pierre-Louis Bossart <
+> > > > > pierre-louis.bossart@linux.intel.com>
+> > > > > Signed-off-by: Ranjani Sridharan <
+> > > > > ranjani.sridharan@linux.intel.com
+> > > > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > > > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > > > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > > > > ---
+> > > > >  sound/soc/sof/Kconfig      |  19 ++++++
+> > > > >  sound/soc/sof/Makefile     |   3 +
+> > > > >  sound/soc/sof/core.c       |   2 +
+> > > > >  sound/soc/sof/sof-client.c | 117
+> > > > > +++++++++++++++++++++++++++++++++++++
+> > > > >  sound/soc/sof/sof-client.h |  65 +++++++++++++++++++++
+> > > > >  sound/soc/sof/sof-priv.h   |   6 ++
+> > > > >  6 files changed, 212 insertions(+)
+> > > > >  create mode 100644 sound/soc/sof/sof-client.c
+> > > > >  create mode 100644 sound/soc/sof/sof-client.h
+> > > > 
+> > > > As you are creating new sysfs directories, you should have some
+> > > > documentation for them :(
+> > > Hi Greg,
+> > > 
+> > > We are not adding any sysfs entries in this series. 
+> > 
+> > You added directories in sysfs, right?
+> Hi Greg,
+> 
+> We are not adding any sysfs directories.
 
-The previous configurations assumed that RT714 was SDCA-only, which
-isn't correct. Add support for the 4 possible combinations to avoid
-confusions.
+Really?  Then what does creating these new devices do in sysfs?  If
+nothing, then why are they being used at all?  :)
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Jack Yu <jack.yu@realtek.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
----
- sound/soc/intel/boards/sof_sdw.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> The only change in the /sys directory will be the new ancillary
+> devices created in the /sys/bus/ancillary/devices directory ie
+> snd_sof_client.ipc_test.0 and snd_sof_client.ipc_test.1.
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index b56df04775c2..b29946eb4355 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -295,12 +295,28 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 	},
- 	{
- 		.part_id = 0x714,
-+		.version_id = 3,
-+		.direction = {false, true},
-+		.dai_name = "rt715-aif2",
-+		.init = sof_sdw_rt715_sdca_init,
-+	},
-+	{
-+		.part_id = 0x715,
-+		.version_id = 3,
- 		.direction = {false, true},
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_sdca_init,
- 	},
-+	{
-+		.part_id = 0x714,
-+		.version_id = 2,
-+		.direction = {false, true},
-+		.dai_name = "rt715-aif2",
-+		.init = sof_sdw_rt715_init,
-+	},
- 	{
- 		.part_id = 0x715,
-+		.version_id = 2,
- 		.direction = {false, true},
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_init,
--- 
-2.25.1
+That is what I was referring to.
 
+> In the following patches, we're adding debugfs entries for the ipc
+> test clients but no other sysfs changes.
+> 
+> Is it required to add documentation for these as well?
+
+Why would you not document them?  If you don't do anything with these
+devices, then why even use them?  debugfs does not require sysfs
+entries, so I fail to see the need for using this api at all here...
+
+thanks,
+
+greg k-h
