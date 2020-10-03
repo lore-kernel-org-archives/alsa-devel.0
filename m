@@ -2,108 +2,104 @@ Return-Path: <SRS0=cVLY=DK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE645C4363D
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:34:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E195C41604
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 11:37:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C4D92067C
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 09:34:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3603206CA
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Oct 2020 11:37:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CqhdbHu/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rDgBrnRU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C4D92067C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uX7ZKPVg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="AEq2eLs9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3603206CA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7533F1940;
-	Sat,  3 Oct 2020 11:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7533F1940
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECB5318E2;
+	Sat,  3 Oct 2020 13:36:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECB5318E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601717657;
-	bh=nZRSBslVMZx2IMOBKGeafzRgeGhJfatcGqfFpCEhwoQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1601725037;
+	bh=mtVKrUIEU2P91PeqPHYfi7BiD7QWIxpTA+4pVoWAtDs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CqhdbHu/TbmlkNld8+VTrgsZviOWMQkaxPLiZ+8D9FRahxORwa6TKWecg+54O3dh2
-	 geqlDeW+RXHTlJ/t+DIxqR7qs43UQRTIzalNdPyEbnTAmJpRHyRguzfc9jsIaQkgOH
-	 ArIrOGp34tUA4iE0qW0k3D8iNNZoE5LLmidNNGWY=
+	b=uX7ZKPVgocMZ4qofDCF2v2+65czYH2k40B+E/tEfBybzwki9SzqQsyu570Cxcj/KP
+	 O7ljygEe1L3IJPgL+zqntUQpkjb5UoM0NybUl4M1z+/+Phr9Jy/rzNyzULCmQ3LUi3
+	 q/qRwIJx7itwEGs5Wax1MkbxqfLpu4LbmRUvlA6A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4039EF8022B;
-	Sat,  3 Oct 2020 11:32:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F37CF801DB;
+	Sat,  3 Oct 2020 13:36:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69C10F8022B; Sat,  3 Oct 2020 11:32:37 +0200 (CEST)
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
- [IPv6:2607:f8b0:4864:20::141])
+ id D9F66F801F5; Sat,  3 Oct 2020 13:36:24 +0200 (CEST)
+Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F125F800BB
- for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2020 11:32:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F125F800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9AA45F801D8
+ for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2020 13:36:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AA45F801D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="rDgBrnRU"
-Received: by mail-il1-x141.google.com with SMTP id j13so3451199ilc.4
- for <alsa-devel@alsa-project.org>; Sat, 03 Oct 2020 02:32:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=4WQdhvBY7Cu+BKjdKPqvJ/Sk6eBScmJA1Il/OJIwbPY=;
- b=rDgBrnRUVr0DmKj+rS3jI7rJF4bvwpd9IFiBZWo/PewjFMH9pC0KVJPsqhs9JpH3ok
- 232gvsoNInvADJblNqWm8QHatzpimcvt3MY7GJbQlJr3nDPzukg9bSmbtYfmakKrjdEc
- UCD1BWfPhzLa7s4kz9hHJ3YLSZZuZHI/qZ5RFEW/XPbv608NrQc6DyvXlc0G7bp5ycOf
- 1DPg4IKIpPBbrTUY6jywxcWSAzHLd+CfYTmoEOBWTbOwz49gpIqNmO9Sw3uPWF2Exrbu
- g2m0o7oXwUi4GZBpT0r1d9xqIs7WJI896pLleRDSyqrQiFZVjIALR08QxGHvXUOBGw8J
- DFKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=4WQdhvBY7Cu+BKjdKPqvJ/Sk6eBScmJA1Il/OJIwbPY=;
- b=a/sLCqE9/IYn9O15/eoMKBCdUJS+yVT1QFRBSc2cijE+ZocKBS13P51Yz97zuYv8rl
- GD7AQkPCcB+XvW3IdykG9tkpcgAZqUi/IpJahrGdcz0Ro6ofq7rm84qNuPBAclUieiAX
- /RYzSZ8+PiV/Olu67QvTnKmq+8AGX+C0+J3nNTJ92Ct5fGvPIZQczzKVpwnYSWqsRnBr
- OuX1MD+khQXaQTPNLpe0m1uCWH6rU2BET90sXAKW0qr0m3l+6HAB+xMHF79XhVX70Kcf
- WXH1O6ZAnRWp6oUutZeSDJeo7su+r4Gsb1ePV5DjExPWSrjmTHu55OSMbtYPTw7tphHW
- 5G/w==
-X-Gm-Message-State: AOAM531dqGZHpyXRpgnzPg6cEE2wCShO72HEtzD/fUrlZf7dkiXlSIwM
- jV/1i+JPdTEJzDs5jD3Ve10hSfcdoHmJ9T1SmM0=
-X-Google-Smtp-Source: ABdhPJwznevI08Npwv/RTZ1m5OlGQQK2mF55vXywQ3Oe368RprFs3Wb7KZq9VD5M6dksP3D8DwkZVXut+VNuWVOmC7s=
-X-Received: by 2002:a05:6e02:804:: with SMTP id
- u4mr4609563ilm.35.1601717546019; 
- Sat, 03 Oct 2020 02:32:26 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="AEq2eLs9"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1601724983; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+b3m7jKQ1O6fiYm/hL5ZFgqJTiOppqki6YMsfwFKW/s=;
+ b=AEq2eLs9fUdqO5o4NchY0EknBNCYQybXffjoGiRgxD0JHm+GIcTmfVTNbfa3ocvD0CmSZqRY
+ bYB03F2QX9HrHbVB8RG2lDFnqnFWBORIieJBNm0ncFGcIrrDjPpIFXUQpMyQQqwmmfD3is50
+ GmtBGYi2xNolBqWOISGUmF/i9PA=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f78622eaad2c3cd1cb9d97a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 03 Oct 2020 11:36:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 68A94C433CA; Sat,  3 Oct 2020 11:36:13 +0000 (UTC)
+Received: from [10.131.172.121]
+ (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id DC457C433CB;
+ Sat,  3 Oct 2020 11:36:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DC457C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH v8 5/7] ASoC: qcom: Add support for lpass hdmi driver
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, agross@kernel.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+ perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
+ <1601447977-18115-6-git-send-email-srivasam@codeaurora.org>
+ <c94cf74d-03f6-999e-012f-5d9ef2316d61@linaro.org>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited
+Message-ID: <925e2586-39dd-b1d9-174a-bda3367ab668@codeaurora.org>
+Date: Sat, 3 Oct 2020 17:06:06 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20200927192912.46323-1-peron.clem@gmail.com>
- <20200927192912.46323-10-peron.clem@gmail.com>
- <CAGb2v64uAHUd=Ag2pQDqH=gjtPVso5dnKKdCn3ihyiVh8V8L=g@mail.gmail.com>
- <CAGb2v64U9b1Ayq-XNCHb3z6spsds6eDaz3C4EsV9xFOquHrB7w@mail.gmail.com>
- <CAJiuCcfThSqpobeZW7ugnmokc4Xy0n9o+5jvOfP9eqzvDbu_BQ@mail.gmail.com>
- <20201002162434.3jeksuelrig6yyo5@gilmour.lan>
-In-Reply-To: <20201002162434.3jeksuelrig6yyo5@gilmour.lan>
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date: Sat, 3 Oct 2020 11:32:14 +0200
-Message-ID: <CAJiuCccfJP4VTrpVN0ez900zWZSUbP703Hx2qa-NKdGrXwiFyQ@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v5 09/20] arm64: dts: allwinner: h6: Add DAI
- node and soundcard for HDMI
-To: Maxime Ripard <maxime@cerno.tech>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree <devicetree@vger.kernel.org>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- linux-sunxi <linux-sunxi@googlegroups.com>, Takashi Iwai <tiwai@suse.com>,
- Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <c94cf74d-03f6-999e-012f-5d9ef2316d61@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,122 +115,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Thanks for bringing up this point Srinivas!!!
 
-On Fri, 2 Oct 2020 at 18:24, Maxime Ripard <maxime@cerno.tech> wrote:
+On 9/30/2020 8:57 PM, Srinivas Kandagatla wrote:
 >
-> On Fri, Oct 02, 2020 at 06:01:21PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Hi Chen-Yu,
-> >
-> > On Mon, 28 Sep 2020 at 07:42, Chen-Yu Tsai <wens@csie.org> wrote:
-> > >
-> > > On Mon, Sep 28, 2020 at 1:32 PM Chen-Yu Tsai <wens@csie.org> wrote:
-> > > >
-> > > > On Mon, Sep 28, 2020 at 3:29 AM Cl=C3=A9ment P=C3=A9ron <peron.clem=
-@gmail.com> wrote:
-> > > > >
-> > > > > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > >
-> > > > > Add the I2S node used by the HDMI and a simple-soundcard to
-> > > > > link audio between HDMI and I2S.
-> > > > >
-> > > > > Note that the HDMI codec requires an inverted frame clock and
-> > > > > a fixed I2S width. As there is no such option for I2S we use
-> > > > > TDM property of the simple-soundcard to do that.
-> > > > >
-> > > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > > > > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > > > > ---
-> > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++++=
-++++++
-> > > > >  1 file changed, 33 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/=
-arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > index 28c77d6872f6..a8853ee7885a 100644
-> > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > @@ -67,6 +67,25 @@ de: display-engine {
-> > > > >                 status =3D "disabled";
-> > > > >         };
-> > > > >
-> > > > > +       hdmi_sound: hdmi-sound {
-> > > > > +               compatible =3D "simple-audio-card";
-> > > > > +               simple-audio-card,format =3D "i2s";
-> > > > > +               simple-audio-card,name =3D "sun50i-h6-hdmi";
-> > > > > +               simple-audio-card,mclk-fs =3D <128>;
-> > > > > +               simple-audio-card,frame-inversion;
-> > > > > +               status =3D "disabled";
-> > > > > +
-> > > > > +               simple-audio-card,codec {
-> > > > > +                       sound-dai =3D <&hdmi>;
-> > > > > +               };
-> > > > > +
-> > > > > +               simple-audio-card,cpu {
-> > > > > +                       sound-dai =3D <&i2s1>;
-> > > > > +                       dai-tdm-slot-num =3D <2>;
-> > > >
-> > > > Doesn't this end up limiting the number of audio channels HDMI can =
-carry?
-> > > > AFAICT the TDM properties are all optional, so just leave it out.
-> > > >
-> > > > Same goes for the other two patches.
-> > > >
-> > > > > +                       dai-tdm-slot-width =3D <32>;
-> > > > > +               };
-> > > > > +       };
-> > > > > +
-> > > > >         osc24M: osc24M_clk {
-> > > > >                 #clock-cells =3D <0>;
-> > > > >                 compatible =3D "fixed-clock";
-> > > > > @@ -609,6 +628,19 @@ mdio: mdio {
-> > > > >                         };
-> > > > >                 };
-> > > > >
-> > > > > +               i2s1: i2s@5091000 {
-> > > > > +                       #sound-dai-cells =3D <0>;
-> > > > > +                       compatible =3D "allwinner,sun50i-h6-i2s";
-> > > > > +                       reg =3D <0x05091000 0x1000>;
-> > > > > +                       interrupts =3D <GIC_SPI 19 IRQ_TYPE_LEVEL=
-_HIGH>;
-> > > > > +                       clocks =3D <&ccu CLK_BUS_I2S1>, <&ccu CLK=
-_I2S1>;
-> > > > > +                       clock-names =3D "apb", "mod";
-> > > > > +                       dmas =3D <&dma 4>, <&dma 4>;
-> > > > > +                       resets =3D <&ccu RST_BUS_I2S1>;
-> > > > > +                       dma-names =3D "rx", "tx";
-> > >
-> > > Sorry, missed this one.
-> > >
-> > > Given that usage for this interface is transmt only, and there is no
-> > > RX DRQ number assigned to it, you should drop the RX DMA number and n=
-ame.
-> >
-> > Indeed if there is no DRQ number assigned we shouldn't have it in the
-> > device-tree
-
-After reviewing the H6 User Manual it seems to be assigned :
-page 269 3.10.3.3 DRQ TYPE
-port 4 =3D> I2S/PCM1-RX /  I2S/PCM1-TX
-Same for A64
-But indeed it's not mapped for H5.
-
-I will fix the yaml for H3/H5 but not for A64/H6.
-
-Regards,
-Clement
-
-
-> >
-> > but Samuel told me that the `make dtbs_check` reports:
-> >
-> > i2s@1c22800: dma-names:0: 'rx' was expected
-> > i2s@1c22800: dma-names: ['tx'] is too short
-> > i2s@1c22800: dmas: [[28, 27]] is too short
-> >
-> > Should I fix the YAML so?
 >
-> Yep :)
+> On 30/09/2020 07:39, Srinivasa Rao Mandadapu wrote:
+>> +}
+>> +
+>> +static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned 
+>> int reg)
+>> +{
+>> +    return true;
+>> +}
 >
-> Maxime
+> I did ask this question in multiple reviews, but never got an answer!
+> Are all the dp/hdmi port register range really volatile!?
+
+Sorry for incomplete response in last review comment reply.
+With making only specific DMA registers and interrupts registers true, 
+aplay was stuck.
+
+Now we identified issue causing register and made it volatile.
+With that change it seems working fine. After doing all the tests we 
+will share v9 series patch.
+
+>
+>
+>
+> --srini
+>> +
+>> +struct regmap_config lpass_hdmi_regmap_config = {
+>> +    .reg_bits = 32,
+>> +    .reg_stride = 4,
+>> +    .val_bits = 32,
+>> +    .writeable_reg = lpass_hdmi_regmap_writeable,
+>> +    .readable_reg = lpass_hdmi_regmap_readable,
+>> +    .volatile_reg = lpass_hdmi_regmap_volatile,
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
