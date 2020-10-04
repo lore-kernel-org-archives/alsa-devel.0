@@ -6,60 +6,63 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E79D8C4363C
-	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 16:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFB37C4363C
+	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 21:18:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22A3B206B5
-	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 16:23:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42FB12078A
+	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 21:18:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZvaJJhXI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22A3B206B5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BPQIs4Dq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42FB12078A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dressmaker.ca
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A8A1182B;
-	Sun,  4 Oct 2020 18:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A8A1182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70D5317FF;
+	Sun,  4 Oct 2020 23:17:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70D5317FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601828624;
-	bh=yQdV7yVVeq/qcI26O7w6P9dOkfxVfWA2rX5ncNINTbA=;
-	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ZvaJJhXIw7a6IvfuF0EywSRmgfR+posEL9ln76LT0Kr/LMWfnDujZle7Wnc7A06+d
-	 +1H6xPvaFb7ESaCk41DR3WHIbrXUNaTvK/J7N3N3PSeH9S2+qE//oNfVdTlGwDAAIw
-	 3j/xoNS2JG8H15xA3hWN/AthwNAvCUYazC52C2q8=
+	s=default; t=1601846297;
+	bh=hNFifxXGS5p+xJxOsW8EqG9noknCLsvzj1Yb/fLLM+0=;
+	h=Subject:From:To:References:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BPQIs4Dqf5yPILyckOViz3WTA+D8QiuhW11QXLg2mP9rp08fXHB3p89nIN0jsfd8K
+	 TXHr4MI+2aQghoK+vshbxmswL7Xgwe2Va0JvXC+wRfIW0E7FGrEvtHwNCqpWSAzREV
+	 zctm7D1RyLwl86hE8AHQhJBkHPm89XvlWZdmChzE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E28EDF800C9;
-	Sun,  4 Oct 2020 18:22:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDE7DF80218;
+	Sun,  4 Oct 2020 23:17:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CC75F80246; Sun,  4 Oct 2020 18:22:52 +0200 (CEST)
+ id 6A8CDF80246; Sun,  4 Oct 2020 23:17:24 +0200 (CEST)
 Received: from mail.earthlovesme.ca (24-65.162.static.aei.ca [216.162.65.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128
  bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0A45F800C9
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2020 18:22:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0A45F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC239F800C9
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2020 23:17:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC239F800C9
 Received: from localhost.localdomain (Unknown [10.10.10.3])
  by mail.earthlovesme.ca with ESMTPSA
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128)
- ; Sun, 4 Oct 2020 12:22:47 -0400
-To: alsa-devel@alsa-project.org
+ ; Sun, 4 Oct 2020 17:17:14 -0400
+Subject: Dead link in wiki under Tutorials
 From: info <info@dressmaker.ca>
-Subject: Discover a microphone device, to later discover if it is receiving
- input
+To: alsa-devel@alsa-project.org
+References: <de6ebf17-8f71-c497-28bc-7819338baddb@dressmaker.ca>
 Organization: Dressmaker Canada Inc.
-Message-ID: <de6ebf17-8f71-c497-28bc-7819338baddb@dressmaker.ca>
-Date: Sun, 4 Oct 2020 12:22:43 -0400
+Message-ID: <09f11cd1-473b-726e-84c9-3de8b9cf9fe3@dressmaker.ca>
+Date: Sun, 4 Oct 2020 17:17:10 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.5.2
 MIME-Version: 1.0
+In-Reply-To: <de6ebf17-8f71-c497-28bc-7819338baddb@dressmaker.ca>
+Content-Language: en-US
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,65 +78,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+On the page 
+https://www.alsa-project.org/wiki/Tutorials_and_Presentations there are 
+dead links.
 
+ALSA 0.9.0 HOWTO <http://www.suse.de/%7Emana/alsa090_howto.html> - Dr 
+Matthias Nagorni has writen a comprehensive tutorial for audio 
+application developers.
+is dead. The article has been removed.
 
-I am writing a program that aims to auto-discover the microphone device 
-that the user is speaking into. I started off by querying device hints 
-and collected all devices with the IO types of null, since I have not 
-found any devices with the type of Input. I am puzzled how it is 
-possible that there is no Input, where a microphone device should not be 
-able to emit sound. This is the list on my particular machine:
+Howto use the ALSA API <http://equalarea.com/paul/alsa-audio.html> - 
+Paul Davis has also written a brief explanation.
+is dead. His site has been removed from the hosting site.
 
-Name of device: sysdefault:CARD=SB
-Description of device: HDA ATI SB, ALC892 Analog
-Default Audio Device
-I/O type of device: (null)
+ALSA Sequencer (draft) 
+<http://www.alsa-project.org/%7Efrank/alsa-sequencer/> - Frank van de 
+Pol's draft on programming the alsa sequencer.
+is dead, 404 error.
 
-Name of device: front:CARD=SB,DEV=0
-Description of device: HDA ATI SB, ALC892 Analog
-Front speakers
-I/O type of device: (null)
+Kernel OSS-Emulation 
+<http://www.alsa-project.org/%7Eiwai/OSS-Emulation.html> - Takashi Iwai 
+has written some notes on how ALSA handles OSS applications.
+is dead, 404 error.
 
-Name of device: surround21:CARD=SB,DEV=0
-Description of device: HDA ATI SB, ALC892 Analog
-2.1 Surround output to Front and Subwoofer speakers
-I/O type of device: Output
+It is worth trying to restore them because there are very few resources 
+on ALSA programming.
 
-Name of device: surround41:CARD=SB,DEV=0
-Description of device: HDA ATI SB, ALC892 Analog
-4.1 Surround output to Front, Rear and Subwoofer speakers
-I/O type of device: Output
-
-Name of device: surround50:CARD=SB,DEV=0
-Description of device: HDA ATI SB, ALC892 Analog
-5.0 Surround output to Front, Center and Rear speakers
-I/O type of device: Output
-
-Name of device: surround71:CARD=SB,DEV=0
-Description of device: HDA ATI SB, ALC892 Analog
-7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-I/O type of device: Output
-
-Name of device: sysdefault:CARD=SB
-Description of device: HDA ATI SB, ALC892 Analog
-Default Audio Device
-I/O type of device: (null)
-
-Name of device: front:CARD=SB,DEV=0
-Description of device: HDA ATI SB, ALC892 Analog
-Front speakers
-I/O type of device: (null)
-
-Now, I am more puzzled, because none of them is a microphone device 
-explicitly. How can my program determine which of them is actually a 
-microphone?
-
-Also, why are devices are duplicated in the output from 
-snd_device_name_hint()? The very first device is also repeated as the 
-2nd last one...
-
-
-Regards,
+Regards
 Alex
 
