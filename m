@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86B18C4363C
-	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 10:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A16B6C4363C
+	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 10:08:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8FDD2078B
-	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 10:08:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 052B52078B
+	for <alsa-devel@archiver.kernel.org>; Sun,  4 Oct 2020 10:08:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o0zVx7Cd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8FDD2078B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eJJXBIsF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 052B52078B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69B451839;
-	Sun,  4 Oct 2020 12:07:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69B451839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EE3F1885;
+	Sun,  4 Oct 2020 12:08:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EE3F1885
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601806110;
-	bh=EQY8P632ciwWmlVUFBqXys0Mg21ZYL/30ryK34t+2Rs=;
+	s=default; t=1601806130;
+	bh=GL3EMLh16xBS+buSFl3FO4eTClMVEoTlV5NGXNJcMiM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o0zVx7Cd0jxKrp+TyCup7zUj2R2W7GU7UVuKlEfqIIrK+0JZJ42k6/DYZxlsR+KR4
-	 yBnRY5q95aUBC7ixf1bFFkr98FuLOe2hvSjKy0REMK8PVwtErbxvtrniiTkave5Y+I
-	 +uwY6Zr7XxowWNaVP/Z8gpgD6A0Di/b3SePo8o24=
+	b=eJJXBIsF/cuFlx+PsZxy6Zn3ysfhnUJ+z48+9Y95V0UlXfRb5dJN1am9mE+4crL8U
+	 8a60VwhBLlIb3VKLhBVK/GnUcGfEY4nI4E/DySb+lvm88ZpeqCxCj17G3j/4Fc9nW5
+	 5nBqLZebS9npwOh/2y5yHCDzx0deLg6bxaFG/d0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE7B3F80342;
-	Sun,  4 Oct 2020 12:02:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCDF6F80347;
+	Sun,  4 Oct 2020 12:02:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93A60F80329; Sun,  4 Oct 2020 12:02:30 +0200 (CEST)
+ id 25D35F80323; Sun,  4 Oct 2020 12:02:31 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2D66F80303
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2020 12:02:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2D66F80303
-IronPort-SDR: 6cYWdEt8yoDImB+X57+oLdjqxjEjxGOUspsCXC46vVesa0gp6U6Gkg1xAPT1j4k9ZwS3IJECt6
- +sR7upum+u3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9763"; a="163384010"
-X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; d="scan'208";a="163384010"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B6CFF802EA
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2020 12:02:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B6CFF802EA
+IronPort-SDR: wzn6NgZ3xyuEmBuR+QrQFvA9R/kxaKBj8vKH8ASAO8NglHrN13EL+qUnIkP71OqwawgG1ARoFc
+ 8BJ2zmj8s3BA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9763"; a="163384006"
+X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; d="scan'208";a="163384006"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2020 03:02:18 -0700
-IronPort-SDR: LI9wtLOCszPQVLIsTqPSSKJx4tgCixtxhiR3YRKFPLXD49MCNvHiahJdSqy7xqXz9HaK/YfxBx
- jrUpkU1JWRVw==
+ 04 Oct 2020 03:02:10 -0700
+IronPort-SDR: stfZFq4OKTvhtGI4+afSroLpnZNscdzXhJMjMWZv4XhLUn9lkL5R5WG3CN67Uxsb3MGTPMw/e7
+ DdKqN1upRrTA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; d="scan'208";a="340527949"
+X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; d="scan'208";a="340527927"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga004.fm.intel.com with ESMTP; 04 Oct 2020 03:02:14 -0700
+ by fmsmga004.fm.intel.com with ESMTP; 04 Oct 2020 03:02:07 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/13] ASoC: Intel: Remove SST-legacy specific constants
-Date: Sun,  4 Oct 2020 12:01:25 +0200
-Message-Id: <20201004100128.5842-11-cezary.rojewski@intel.com>
+Subject: [PATCH 08/13] ASoC: Intel: Remove unused DSP operations
+Date: Sun,  4 Oct 2020 12:01:23 +0200
+Message-Id: <20201004100128.5842-9-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201004100128.5842-1-cezary.rojewski@intel.com>
 References: <20201004100128.5842-1-cezary.rojewski@intel.com>
@@ -91,206 +91,359 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As sound/soc/intel/haswell and /baytrail are no more, all SST-legacy
-specific constants and registers are redundant so remove them.
+sound/soc/intel/common/ declares several helper functions for /intel/
+solutions. In practice, differences between these - /haswell/ and
+/skylake/ especially - led to many of the helpers being used only by a
+single solution. As /skylake/ makes no use of these and /haswell/ and
+/baytail/ are no more, remove the unused functions.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/common/sst-dsp-priv.h |   3 -
- sound/soc/intel/common/sst-dsp.h      | 143 --------------------------
- sound/soc/intel/common/sst-ipc.h      |   2 -
- 3 files changed, 148 deletions(-)
+ sound/soc/intel/common/sst-dsp-priv.h |  13 ---
+ sound/soc/intel/common/sst-dsp.c      | 162 --------------------------
+ sound/soc/intel/common/sst-dsp.h      |  26 -----
+ sound/soc/intel/common/sst-ipc.c      |  27 -----
+ sound/soc/intel/common/sst-ipc.h      |   1 -
+ 5 files changed, 229 deletions(-)
 
 diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-index 994698ff581e..7d9834509f4a 100644
+index 6b6738a289dc..3787ef07b840 100644
 --- a/sound/soc/intel/common/sst-dsp-priv.h
 +++ b/sound/soc/intel/common/sst-dsp-priv.h
-@@ -15,9 +15,6 @@
+@@ -146,19 +146,6 @@ struct sst_dsp {
+ 	struct snd_dma_buffer dmab;
+ };
  
- #include "../skylake/skl-sst-dsp.h"
- 
--/* do we need to remove or keep */
--#define DSP_DRAM_ADDR_OFFSET		0x400000
+-/* Size optimised DRAM/IRAM memcpy */
+-static inline void sst_dsp_write(struct sst_dsp *sst, void *src,
+-	u32 dest_offset, size_t bytes)
+-{
+-	sst->ops->ram_write(sst, sst->addr.lpe + dest_offset, src, bytes);
+-}
 -
- /*
-  * DSP Operations exported by platform Audio DSP driver.
-  */
+-static inline void sst_dsp_read(struct sst_dsp *sst, void *dest,
+-	u32 src_offset, size_t bytes)
+-{
+-	sst->ops->ram_read(sst, dest, sst->addr.lpe + src_offset, bytes);
+-}
+-
+ static inline void *sst_dsp_get_thread_context(struct sst_dsp *sst)
+ {
+ 	return sst->thread_context;
+diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
+index 36c077aa386e..229d09d61afb 100644
+--- a/sound/soc/intel/common/sst-dsp.c
++++ b/sound/soc/intel/common/sst-dsp.c
+@@ -44,38 +44,6 @@ u64 sst_shim32_read64(void __iomem *addr, u32 offset)
+ }
+ EXPORT_SYMBOL_GPL(sst_shim32_read64);
+ 
+-static inline void _sst_memcpy_toio_32(volatile u32 __iomem *dest,
+-	u32 *src, size_t bytes)
+-{
+-	int i, words = bytes >> 2;
+-
+-	for (i = 0; i < words; i++)
+-		writel(src[i], dest + i);
+-}
+-
+-static inline void _sst_memcpy_fromio_32(u32 *dest,
+-	const volatile __iomem u32 *src, size_t bytes)
+-{
+-	int i, words = bytes >> 2;
+-
+-	for (i = 0; i < words; i++)
+-		dest[i] = readl(src + i);
+-}
+-
+-void sst_memcpy_toio_32(struct sst_dsp *sst,
+-	void __iomem *dest, void *src, size_t bytes)
+-{
+-	_sst_memcpy_toio_32(dest, src, bytes);
+-}
+-EXPORT_SYMBOL_GPL(sst_memcpy_toio_32);
+-
+-void sst_memcpy_fromio_32(struct sst_dsp *sst, void *dest,
+-	void __iomem *src, size_t bytes)
+-{
+-	_sst_memcpy_fromio_32(dest, src, bytes);
+-}
+-EXPORT_SYMBOL_GPL(sst_memcpy_fromio_32);
+-
+ /* Public API */
+ void sst_dsp_shim_write(struct sst_dsp *sst, u32 offset, u32 value)
+ {
+@@ -100,29 +68,6 @@ u32 sst_dsp_shim_read(struct sst_dsp *sst, u32 offset)
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_shim_read);
+ 
+-void sst_dsp_shim_write64(struct sst_dsp *sst, u32 offset, u64 value)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&sst->spinlock, flags);
+-	sst->ops->write64(sst->addr.shim, offset, value);
+-	spin_unlock_irqrestore(&sst->spinlock, flags);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_shim_write64);
+-
+-u64 sst_dsp_shim_read64(struct sst_dsp *sst, u32 offset)
+-{
+-	unsigned long flags;
+-	u64 val;
+-
+-	spin_lock_irqsave(&sst->spinlock, flags);
+-	val = sst->ops->read64(sst->addr.shim, offset);
+-	spin_unlock_irqrestore(&sst->spinlock, flags);
+-
+-	return val;
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_shim_read64);
+-
+ void sst_dsp_shim_write_unlocked(struct sst_dsp *sst, u32 offset, u32 value)
+ {
+ 	sst->ops->write(sst->addr.shim, offset, value);
+@@ -135,18 +80,6 @@ u32 sst_dsp_shim_read_unlocked(struct sst_dsp *sst, u32 offset)
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_shim_read_unlocked);
+ 
+-void sst_dsp_shim_write64_unlocked(struct sst_dsp *sst, u32 offset, u64 value)
+-{
+-	sst->ops->write64(sst->addr.shim, offset, value);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_shim_write64_unlocked);
+-
+-u64 sst_dsp_shim_read64_unlocked(struct sst_dsp *sst, u32 offset)
+-{
+-	return sst->ops->read64(sst->addr.shim, offset);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_shim_read64_unlocked);
+-
+ int sst_dsp_shim_update_bits_unlocked(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value)
+ {
+@@ -167,24 +100,6 @@ int sst_dsp_shim_update_bits_unlocked(struct sst_dsp *sst, u32 offset,
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits_unlocked);
+ 
+-int sst_dsp_shim_update_bits64_unlocked(struct sst_dsp *sst, u32 offset,
+-				u64 mask, u64 value)
+-{
+-	bool change;
+-	u64 old, new;
+-
+-	old = sst_dsp_shim_read64_unlocked(sst, offset);
+-
+-	new = (old & (~mask)) | (value & mask);
+-
+-	change = (old != new);
+-	if (change)
+-		sst_dsp_shim_write64_unlocked(sst, offset, new);
+-
+-	return change;
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64_unlocked);
+-
+ /* This is for registers bits with attribute RWC */
+ void sst_dsp_shim_update_bits_forced_unlocked(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value)
+@@ -214,19 +129,6 @@ int sst_dsp_shim_update_bits(struct sst_dsp *sst, u32 offset,
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits);
+ 
+-int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
+-				u64 mask, u64 value)
+-{
+-	unsigned long flags;
+-	bool change;
+-
+-	spin_lock_irqsave(&sst->spinlock, flags);
+-	change = sst_dsp_shim_update_bits64_unlocked(sst, offset, mask, value);
+-	spin_unlock_irqrestore(&sst->spinlock, flags);
+-	return change;
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64);
+-
+ /* This is for registers bits with attribute RWC */
+ void sst_dsp_shim_update_bits_forced(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value)
+@@ -279,70 +181,6 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_register_poll);
+ 
+-void sst_dsp_dump(struct sst_dsp *sst)
+-{
+-	if (sst->ops->dump)
+-		sst->ops->dump(sst);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_dump);
+-
+-void sst_dsp_reset(struct sst_dsp *sst)
+-{
+-	if (sst->ops->reset)
+-		sst->ops->reset(sst);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_reset);
+-
+-int sst_dsp_boot(struct sst_dsp *sst)
+-{
+-	if (sst->ops->boot)
+-		sst->ops->boot(sst);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_boot);
+-
+-int sst_dsp_wake(struct sst_dsp *sst)
+-{
+-	if (sst->ops->wake)
+-		return sst->ops->wake(sst);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_wake);
+-
+-void sst_dsp_sleep(struct sst_dsp *sst)
+-{
+-	if (sst->ops->sleep)
+-		sst->ops->sleep(sst);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_sleep);
+-
+-void sst_dsp_stall(struct sst_dsp *sst)
+-{
+-	if (sst->ops->stall)
+-		sst->ops->stall(sst);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_stall);
+-
+-void sst_dsp_ipc_msg_tx(struct sst_dsp *dsp, u32 msg)
+-{
+-	sst_dsp_shim_write_unlocked(dsp, SST_IPCX, msg | SST_IPCX_BUSY);
+-	trace_sst_ipc_msg_tx(msg);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_ipc_msg_tx);
+-
+-u32 sst_dsp_ipc_msg_rx(struct sst_dsp *dsp)
+-{
+-	u32 msg;
+-
+-	msg = sst_dsp_shim_read_unlocked(dsp, SST_IPCX);
+-	trace_sst_ipc_msg_rx(msg);
+-
+-	return msg;
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_ipc_msg_rx);
+-
+ int sst_dsp_mailbox_init(struct sst_dsp *sst, u32 inbox_offset, size_t inbox_size,
+ 	u32 outbox_offset, size_t outbox_size)
+ {
 diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-index 427970add9c7..f580e718b183 100644
+index ebd0dc5706a0..427970add9c7 100644
 --- a/sound/soc/intel/common/sst-dsp.h
 +++ b/sound/soc/intel/common/sst-dsp.h
-@@ -12,158 +12,15 @@
- #include <linux/types.h>
- #include <linux/interrupt.h>
+@@ -212,10 +212,6 @@ void sst_dsp_shim_write(struct sst_dsp *sst, u32 offset, u32 value);
+ u32 sst_dsp_shim_read(struct sst_dsp *sst, u32 offset);
+ int sst_dsp_shim_update_bits(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value);
+-void sst_dsp_shim_write64(struct sst_dsp *sst, u32 offset, u64 value);
+-u64 sst_dsp_shim_read64(struct sst_dsp *sst, u32 offset);
+-int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
+-				u64 mask, u64 value);
+ void sst_dsp_shim_update_bits_forced(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value);
  
--/* SST Device IDs  */
--#define SST_DEV_ID_LYNX_POINT		0x33C8
--#define SST_DEV_ID_WILDCAT_POINT	0x3438
--#define SST_DEV_ID_BYT			0x0F28
--
--/* Supported SST DMA Devices */
--#define SST_DMA_TYPE_DW		1
--
--/* autosuspend delay 5s*/
--#define SST_RUNTIME_SUSPEND_DELAY	(5 * 1000)
--
- /* SST Shim register map
-  * The register naming can differ between products. Some products also
-  * contain extra functionality.
-  */
- #define SST_CSR			0x00
--#define SST_PISR		0x08
--#define SST_PIMR		0x10
- #define SST_ISRX		0x18
--#define SST_ISRD		0x20
- #define SST_IMRX		0x28
--#define SST_IMRD		0x30
- #define SST_IPCX		0x38 /* IPC IA -> SST */
- #define SST_IPCD		0x40 /* IPC SST -> IA */
--#define SST_ISRSC		0x48
--#define SST_ISRLPESC		0x50
--#define SST_IMRSC		0x58
--#define SST_IMRLPESC		0x60
--#define SST_IPCSC		0x68
--#define SST_IPCLPESC		0x70
--#define SST_CLKCTL		0x78
--#define SST_CSR2		0x80
--#define SST_LTRC		0xE0
--#define SST_HMDC		0xE8
--
--#define SST_SHIM_BEGIN		SST_CSR
--#define SST_SHIM_END		SST_HDMC
--
--#define SST_DBGO		0xF0
--
--#define SST_SHIM_SIZE		0x100
--#define SST_PWMCTRL             0x1000
--
--/* SST Shim Register bits
-- * The register bit naming can differ between products. Some products also
-- * contain extra functionality.
-- */
--
--/* CSR / CS */
--#define SST_CSR_RST		(0x1 << 1)
--#define SST_CSR_SBCS0		(0x1 << 2)
--#define SST_CSR_SBCS1		(0x1 << 3)
--#define SST_CSR_DCS(x)		(x << 4)
--#define SST_CSR_DCS_MASK	(0x7 << 4)
--#define SST_CSR_STALL		(0x1 << 10)
--#define SST_CSR_S0IOCS		(0x1 << 21)
--#define SST_CSR_S1IOCS		(0x1 << 23)
--#define SST_CSR_LPCS		(0x1 << 31)
--#define SST_CSR_24MHZ_LPCS	(SST_CSR_SBCS0 | SST_CSR_SBCS1 | SST_CSR_LPCS)
--#define SST_CSR_24MHZ_NO_LPCS	(SST_CSR_SBCS0 | SST_CSR_SBCS1)
--#define SST_BYT_CSR_RST		(0x1 << 0)
--#define SST_BYT_CSR_VECTOR_SEL	(0x1 << 1)
--#define SST_BYT_CSR_STALL	(0x1 << 2)
--#define SST_BYT_CSR_PWAITMODE	(0x1 << 3)
--
--/*  ISRX / ISC */
--#define SST_ISRX_BUSY		(0x1 << 1)
--#define SST_ISRX_DONE		(0x1 << 0)
--#define SST_BYT_ISRX_REQUEST	(0x1 << 1)
--
--/*  ISRD / ISD */
--#define SST_ISRD_BUSY		(0x1 << 1)
--#define SST_ISRD_DONE		(0x1 << 0)
--
--/* IMRX / IMC */
--#define SST_IMRX_BUSY		(0x1 << 1)
--#define SST_IMRX_DONE		(0x1 << 0)
--#define SST_BYT_IMRX_REQUEST	(0x1 << 1)
--
--/* IMRD / IMD */
--#define SST_IMRD_DONE		(0x1 << 0)
--#define SST_IMRD_BUSY		(0x1 << 1)
--#define SST_IMRD_SSP0		(0x1 << 16)
--#define SST_IMRD_DMAC0		(0x1 << 21)
--#define SST_IMRD_DMAC1		(0x1 << 22)
--#define SST_IMRD_DMAC		(SST_IMRD_DMAC0 | SST_IMRD_DMAC1)
--
--/*  IPCX / IPCC */
--#define	SST_IPCX_DONE		(0x1 << 30)
--#define	SST_IPCX_BUSY		(0x1 << 31)
--#define SST_BYT_IPCX_DONE	((u64)0x1 << 62)
--#define SST_BYT_IPCX_BUSY	((u64)0x1 << 63)
--
--/*  IPCD */
--#define	SST_IPCD_DONE		(0x1 << 30)
--#define	SST_IPCD_BUSY		(0x1 << 31)
--#define SST_BYT_IPCD_DONE	((u64)0x1 << 62)
--#define SST_BYT_IPCD_BUSY	((u64)0x1 << 63)
--
--/* CLKCTL */
--#define SST_CLKCTL_SMOS(x)	(x << 24)
--#define SST_CLKCTL_MASK		(3 << 24)
--#define SST_CLKCTL_DCPLCG	(1 << 18)
--#define SST_CLKCTL_SCOE1	(1 << 17)
--#define SST_CLKCTL_SCOE0	(1 << 16)
--
--/* CSR2 / CS2 */
--#define SST_CSR2_SDFD_SSP0	(1 << 1)
--#define SST_CSR2_SDFD_SSP1	(1 << 2)
--
--/* LTRC */
--#define SST_LTRC_VAL(x)		(x << 0)
--
--/* HMDC */
--#define SST_HMDC_HDDA0(x)	(x << 0)
--#define SST_HMDC_HDDA1(x)	(x << 7)
--#define SST_HMDC_HDDA_E0_CH0	1
--#define SST_HMDC_HDDA_E0_CH1	2
--#define SST_HMDC_HDDA_E0_CH2	4
--#define SST_HMDC_HDDA_E0_CH3	8
--#define SST_HMDC_HDDA_E1_CH0	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH0)
--#define SST_HMDC_HDDA_E1_CH1	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH1)
--#define SST_HMDC_HDDA_E1_CH2	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH2)
--#define SST_HMDC_HDDA_E1_CH3	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH3)
--#define SST_HMDC_HDDA_E0_ALLCH	(SST_HMDC_HDDA_E0_CH0 | SST_HMDC_HDDA_E0_CH1 | \
--				 SST_HMDC_HDDA_E0_CH2 | SST_HMDC_HDDA_E0_CH3)
--#define SST_HMDC_HDDA_E1_ALLCH	(SST_HMDC_HDDA_E1_CH0 | SST_HMDC_HDDA_E1_CH1 | \
--				 SST_HMDC_HDDA_E1_CH2 | SST_HMDC_HDDA_E1_CH3)
--
--
--/* SST Vendor Defined Registers and bits */
--#define SST_VDRTCTL0		0xa0
--#define SST_VDRTCTL1		0xa4
--#define SST_VDRTCTL2		0xa8
--#define SST_VDRTCTL3		0xaC
--
--/* VDRTCTL0 */
--#define SST_VDRTCL0_D3PGD		(1 << 0)
--#define SST_VDRTCL0_D3SRAMPGD		(1 << 1)
--#define SST_VDRTCL0_DSRAMPGE_SHIFT	12
--#define SST_VDRTCL0_DSRAMPGE_MASK	(0xfffff << SST_VDRTCL0_DSRAMPGE_SHIFT)
--#define SST_VDRTCL0_ISRAMPGE_SHIFT	2
--#define SST_VDRTCL0_ISRAMPGE_MASK	(0x3ff << SST_VDRTCL0_ISRAMPGE_SHIFT)
--
--/* VDRTCTL2 */
--#define SST_VDRTCL2_DCLCGE		(1 << 1)
--#define SST_VDRTCL2_DTCGE		(1 << 10)
--#define SST_VDRTCL2_APLLSE_MASK		(1 << 31)
--
--/* PMCS */
--#define SST_PMCS		0x84
--#define SST_PMCS_PS_MASK	0x3
+@@ -224,10 +220,6 @@ void sst_dsp_shim_write_unlocked(struct sst_dsp *sst, u32 offset, u32 value);
+ u32 sst_dsp_shim_read_unlocked(struct sst_dsp *sst, u32 offset);
+ int sst_dsp_shim_update_bits_unlocked(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value);
+-void sst_dsp_shim_write64_unlocked(struct sst_dsp *sst, u32 offset, u64 value);
+-u64 sst_dsp_shim_read64_unlocked(struct sst_dsp *sst, u32 offset);
+-int sst_dsp_shim_update_bits64_unlocked(struct sst_dsp *sst, u32 offset,
+-					u64 mask, u64 value);
+ void sst_dsp_shim_update_bits_forced_unlocked(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value);
  
- struct sst_dsp;
+@@ -236,21 +228,6 @@ void sst_shim32_write(void __iomem *addr, u32 offset, u32 value);
+ u32 sst_shim32_read(void __iomem *addr, u32 offset);
+ void sst_shim32_write64(void __iomem *addr, u32 offset, u64 value);
+ u64 sst_shim32_read64(void __iomem *addr, u32 offset);
+-void sst_memcpy_toio_32(struct sst_dsp *sst,
+-			void __iomem *dest, void *src, size_t bytes);
+-void sst_memcpy_fromio_32(struct sst_dsp *sst,
+-			  void *dest, void __iomem *src, size_t bytes);
+-
+-/* DSP reset & boot */
+-void sst_dsp_reset(struct sst_dsp *sst);
+-int sst_dsp_boot(struct sst_dsp *sst);
+-int sst_dsp_wake(struct sst_dsp *sst);
+-void sst_dsp_sleep(struct sst_dsp *sst);
+-void sst_dsp_stall(struct sst_dsp *sst);
+-
+-/* Msg IO */
+-void sst_dsp_ipc_msg_tx(struct sst_dsp *dsp, u32 msg);
+-u32 sst_dsp_ipc_msg_rx(struct sst_dsp *dsp);
  
+ /* Mailbox management */
+ int sst_dsp_mailbox_init(struct sst_dsp *sst, u32 inbox_offset,
+@@ -262,7 +239,4 @@ void sst_dsp_outbox_read(struct sst_dsp *sst, void *message, size_t bytes);
+ int sst_dsp_register_poll(struct sst_dsp  *ctx, u32 offset, u32 mask,
+ 		 u32 target, u32 time, char *operation);
+ 
+-/* Debug */
+-void sst_dsp_dump(struct sst_dsp *sst);
+-
+ #endif
+diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+index 6068bb697e22..89c10724d2a3 100644
+--- a/sound/soc/intel/common/sst-ipc.c
++++ b/sound/soc/intel/common/sst-ipc.c
+@@ -254,33 +254,6 @@ void sst_ipc_tx_msg_reply_complete(struct sst_generic_ipc *ipc,
+ }
+ EXPORT_SYMBOL_GPL(sst_ipc_tx_msg_reply_complete);
+ 
+-void sst_ipc_drop_all(struct sst_generic_ipc *ipc)
+-{
+-	struct ipc_message *msg, *tmp;
+-	unsigned long flags;
+-	int tx_drop_cnt = 0, rx_drop_cnt = 0;
+-
+-	/* drop all TX and Rx messages before we stall + reset DSP */
+-	spin_lock_irqsave(&ipc->dsp->spinlock, flags);
+-
+-	list_for_each_entry_safe(msg, tmp, &ipc->tx_list, list) {
+-		list_move(&msg->list, &ipc->empty_list);
+-		tx_drop_cnt++;
+-	}
+-
+-	list_for_each_entry_safe(msg, tmp, &ipc->rx_list, list) {
+-		list_move(&msg->list, &ipc->empty_list);
+-		rx_drop_cnt++;
+-	}
+-
+-	spin_unlock_irqrestore(&ipc->dsp->spinlock, flags);
+-
+-	if (tx_drop_cnt || rx_drop_cnt)
+-		dev_err(ipc->dev, "dropped IPC msg RX=%d, TX=%d\n",
+-			tx_drop_cnt, rx_drop_cnt);
+-}
+-EXPORT_SYMBOL_GPL(sst_ipc_drop_all);
+-
+ int sst_ipc_init(struct sst_generic_ipc *ipc)
+ {
+ 	int ret;
 diff --git a/sound/soc/intel/common/sst-ipc.h b/sound/soc/intel/common/sst-ipc.h
-index 9c1f59d88636..77d651e888f9 100644
+index 08c4831b2664..9c1f59d88636 100644
 --- a/sound/soc/intel/common/sst-ipc.h
 +++ b/sound/soc/intel/common/sst-ipc.h
-@@ -15,8 +15,6 @@
- #include <linux/workqueue.h>
- #include <linux/sched.h>
+@@ -82,7 +82,6 @@ struct ipc_message *sst_ipc_reply_find_msg(struct sst_generic_ipc *ipc,
+ void sst_ipc_tx_msg_reply_complete(struct sst_generic_ipc *ipc,
+ 	struct ipc_message *msg);
  
--#define IPC_MAX_MAILBOX_BYTES	256
--
- struct sst_ipc_message {
- 	u64 header;
- 	void *data;
+-void sst_ipc_drop_all(struct sst_generic_ipc *ipc);
+ int sst_ipc_init(struct sst_generic_ipc *ipc);
+ void sst_ipc_fini(struct sst_generic_ipc *ipc);
+ 
 -- 
 2.17.1
 
