@@ -6,72 +6,72 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0751BC4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1F14C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:57:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48722207EA
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B13F20E65
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:57:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KdSRVebH";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k226qli9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48722207EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n23atxVS";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bQOvT5nd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B13F20E65
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7473417A3;
-	Mon,  5 Oct 2020 19:55:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7473417A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF4C017A5;
+	Mon,  5 Oct 2020 19:56:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF4C017A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601920608;
-	bh=cyMXxcFiLhcXvzPyyhK1hJjto1RJMvdtK0k3ZZmMEsY=;
+	s=default; t=1601920652;
+	bh=SQKQkTNhfPb6XvFeRuzE4kaFpekDmiYNXRhJtOtVZQE=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KdSRVebH/jH9J4uUsjtxlF3C+Q9YtupvmGZg5Nk44pLiFsheR37N5i3i8FK1j8eD1
-	 Zg3+RHzTH5ea/Po+FicW722y+xAUCBlwayENhpxm7G1+SDBnLqBHyOy9vHaR2zRAOB
-	 A6vqYPyB8OMheSYEXDJ8jCmKohtUjLMLb6avXEYM=
+	b=n23atxVScGIeXQL6nyICqvvxLMnFZmkY3QcRDgrgiRcnChSn8VIBXwrqM1EJEJPia
+	 vCqmL1+x52fUzRlMHsM+ZnqoCIJwIsnRlMoz2uBZuHiLxH49dPpIblJASSjzJGmz1e
+	 NlsdycXWSgE9OGQyLU7i9zOiLyLsUsrR4kZK9AiE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30697F80269;
-	Mon,  5 Oct 2020 19:55:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAA73F802A0;
+	Mon,  5 Oct 2020 19:55:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11AD7F800C9; Mon,  5 Oct 2020 19:55:04 +0200 (CEST)
+ id 740EBF802A0; Mon,  5 Oct 2020 19:55:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BBDFF800C9
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 19:55:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BBDFF800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F67EF800C9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 19:55:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F67EF800C9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="k226qli9"
+ header.b="bQOvT5nd"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 12F8E207EA;
- Mon,  5 Oct 2020 17:54:57 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1872C207BC;
+ Mon,  5 Oct 2020 17:55:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601920498;
- bh=cyMXxcFiLhcXvzPyyhK1hJjto1RJMvdtK0k3ZZmMEsY=;
+ s=default; t=1601920503;
+ bh=SQKQkTNhfPb6XvFeRuzE4kaFpekDmiYNXRhJtOtVZQE=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=k226qli9dZYK2dP7B3Trm/PleOtPKInNxNi6lRtjlL0fzLUNr2SdkQPAbtIRwpj3F
- jGr0/R+adaIPDpzPr/xRYJAevA+0bGVcMO49en16zNhQ9VIeVl3Knbx7BCkDqvbJDI
- JAAGrCMmPXXS6UAccw2UJbIBuxxr0KuhtFVTlQUU=
-Date: Mon, 05 Oct 2020 18:53:55 +0100
+ b=bQOvT5ndovLzvoydmZqVFCAkMTo9euKmQMeLWCi2pG5rKUs1+LLGaH8FuCHAUq94+
+ TqQyY4jVgySrPXSJILsu50BUKulLItrd75+/f29Z8kAqJHHwSbJWYoAk71ZXxkF9jB
+ IthixkZcsnrYgvo9yYgx/6DXf3AEFW9m16lsn8FM=
+Date: Mon, 05 Oct 2020 18:54:00 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20201002211902.287692-1-pierre-louis.bossart@linux.intel.com>
-References: <20201002211902.287692-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/4] ASoC: Intel: sof_sdw: minor corrections
-Message-Id: <160192043039.23051.3761795084502724725.b4-ty@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20201005074748.3394630-1-tzungbi@google.com>
+References: <20201005074748.3394630-1-tzungbi@google.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8183-da7219: support jack detection for
+ LINEOUT
+Message-Id: <160192043040.23051.16492567737153672198.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,17 +87,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2 Oct 2020 16:18:58 -0500, Pierre-Louis Bossart wrote:
-> This small patchset adds a missing component string needed by UCM and
-> corrects a confusion on Realtek part numbers.
-> 
-> Pierre-Louis Bossart (4):
->   ASoC: Intel: sof_sdw_rt1308: add extra check on init
->   ASoC: Intel: sof_sdw_rt1316: add missing component string
->   ASoC: rt715-sdw: probe with RT714 Device ID
->   ASoC: Intel: sof_sdw: add version_id to avoid rt714/rt715 confusion
-> 
-> [...]
+On Mon, 5 Oct 2020 15:47:48 +0800, Tzung-Bi Shih wrote:
+> Supports jack detection for LINEOUT.
 
 Applied to
 
@@ -105,14 +96,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: Intel: sof_sdw_rt1308: add extra check on init
-      commit: 044eb2d13a2147a7ac15a400c2a4f020a7857c36
-[2/4] ASoC: Intel: sof_sdw_rt1316: add missing component string
-      commit: 8cc8945da74284809c8a4a575e55e91d5557b651
-[3/4] ASoC: rt715-sdw: probe with RT714 Device ID
-      commit: 4c652df83ba42fadc884541bfec856c836822302
-[4/4] ASoC: Intel: sof_sdw: add version_id to avoid rt714/rt715 confusion
-      commit: df64b9882b35671c4916574a783b614c6164980b
+[1/1] ASoC: mediatek: mt8183-da7219: support jack detection for LINEOUT
+      commit: 859ffd0af117e7ebc4d744a648551443cc90f150
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
