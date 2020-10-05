@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F01FFC4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:57:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27999C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:58:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEF9320E65
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:57:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 554D0207EA
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:58:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hGg6cPbQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aS5Y3YXq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEF9320E65
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XG+yZbJN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ixGwxmv8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 554D0207EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DC5B17C3;
-	Mon,  5 Oct 2020 19:56:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DC5B17C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5EA8179D;
+	Mon,  5 Oct 2020 19:57:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5EA8179D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601920660;
-	bh=GoTAxJOmaaCg6ov+6K3bl1sgNs5+H5zxvRggKa3ufkc=;
+	s=default; t=1601920709;
+	bh=WXHa6/wvYZth1GPUhzSzyB/GuNKAlqCbTCHovfE5AC8=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hGg6cPbQ07jvqJ6p9l5RsnF4gnXaL04tkppxKLKwkZ9nXKVaFjvUZk72BdTE/pDkj
-	 Mv5nPAbZ+FOtiUb59cujk0xFeQqlqU9tQJoko66xjT7xSEt+arjLKyQ+i/wqfuvXOc
-	 Pw/INeBifVtWi182Pdc9LT2lAn5JSJCpJHCsyJ/g=
+	b=XG+yZbJNr8S4GaxsOsW0RiwCrdnlKSaBesvn06D0rekOPDFpInKrCPq+P7wFkjWCi
+	 zsDs56aNpnIjRWWmWmaDGFtqxf9JS1u1G3grZsGucyCsuUC8U3bLH9+iLTSLNZQ/ew
+	 htXAE4WzbE0LUdfryHWMivsiej6eIvjEVSL5UHsM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE370F802DF;
-	Mon,  5 Oct 2020 19:55:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1272F802EB;
+	Mon,  5 Oct 2020 19:55:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32601F802DF; Mon,  5 Oct 2020 19:55:17 +0200 (CEST)
+ id 3C706F802E2; Mon,  5 Oct 2020 19:55:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F500F802D2
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 19:55:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F500F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2B08F802DC
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 19:55:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2B08F802DC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aS5Y3YXq"
+ header.b="ixGwxmv8"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0CCDE2083B;
- Mon,  5 Oct 2020 17:55:08 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9329E2083B;
+ Mon,  5 Oct 2020 17:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601920509;
- bh=GoTAxJOmaaCg6ov+6K3bl1sgNs5+H5zxvRggKa3ufkc=;
+ s=default; t=1601920515;
+ bh=WXHa6/wvYZth1GPUhzSzyB/GuNKAlqCbTCHovfE5AC8=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=aS5Y3YXqQGDpw+vG/NKtPZnp8IRP/oJULKXy4058439GIqe/IXCU5ZXBS6B3N+8Ae
- sJ6zL1dJDhpPPSdul1mXZrfGbLpDZawJy8OVPWBgClKsnpAazfDbBHiopH4Lf43D8N
- cgtEYsAUX6IsgcOM0DQJ7e9qBYDssW2Vn4+HezMM=
-Date: Mon, 05 Oct 2020 18:54:06 +0100
+ b=ixGwxmv8lsFDsWrAjVGiNu94jjW5itloGmDVF//3U/sS8+NeX7d1BhHWyKHT65FaY
+ TzVXByn88aOt4KHtq+Su7lJct727Uye5zYifQfEICK9W3dm1om1wRK/1lnT7/I/4hQ
+ fyvapWMjuZSTbBbRuTF5pAPXB1CGfOFEZvnGTZ4w=
+Date: Mon, 05 Oct 2020 18:54:12 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20201004090609.29066-1-cezary.rojewski@intel.com>
-References: <20201004090609.29066-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH 1/4] ASoC: Intel: bdw-rt5650: Mark FE DAIs as nonatomic
-Message-Id: <160192043040.23051.5533408178513935644.b4-ty@kernel.org>
+To: Chen-Yu Tsai <wens@csie.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Samuel Holland <samuel@sholland.org>,
+ Jaroslav Kysela <perex@perex.cz>, Maxime Ripard <mripard@kernel.org>
+In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
+References: <20201001021148.15852-1-samuel@sholland.org>
+Subject: Re: [PATCH 00/25] ASoC: sun8i-codec: support for AIF2 and AIF3
+Message-Id: <160192043040.23051.6290933944339800097.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, tiwai@suse.com, lgirdwood@gmail.com
+Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,11 +89,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 4 Oct 2020 11:06:06 +0200, Cezary Rojewski wrote:
-> PCM operations for DAI links connected with DSP platform component
-> involve communication with DSP firmware by IPCs. As IPC protocol may
-> cause thread to sleep while waiting for a response from DSP, propagate
-> that information to ALSA core by marking all FE DAIs as nonatomic.
+On Wed, 30 Sep 2020 21:11:23 -0500, Samuel Holland wrote:
+> This series adds support the other two AIFs present in the sun8i codec,
+> which can be used for codec2codec DAI links.
+> 
+> This series first cleans up the DAPM component driver so there is an
+> organized place to put the new widgets. Then it fills out the DAI
+> driver, removing assumptions that were made for AIF1 (16 bits, 2
+> channels, certain clock inversions). Some new logic is required to
+> handle 3 DAIs and the ADC/DAC sharing the same clock. Finally, it adds
+> the new DAIs, and hooks them up with DAPM widgets and routes per the
+> hardware topology.
+> 
+> [...]
 
 Applied to
 
@@ -98,14 +109,22 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: Intel: bdw-rt5650: Mark FE DAIs as nonatomic
-      commit: 4cc62da459aeee438a1fcf009e6101292025476f
-[2/4] ASoC: Intel: bdw-rt5677: Mark FE DAIs as nonatomic
-      commit: fc5c8729c1ef78d54432d68216c1b13791248bb1
-[3/4] ASoC: Intel: broadwell: Mark FE DAIs as nonatomic
-      commit: 727d7d84f74744a6f8d583eb5034e926aecc78e7
-[4/4] ASoC: Intel: haswell: Mark FE DAIs as nonatomic
-      commit: dc155ad5fa6ef7d48fb3c3cc30497b492da0749e
+[1/8] ASoC: sun8i-codec: Set up clock tree at probe time
+      commit: d8f006825ac57e34f7ed5e63a1e16d889dc1508e
+[2/8] ASoC: sun8i-codec: Swap module clock/reset dependencies
+      commit: ed3caa3bd44c9ae1cebeb32d787adc5ed35e29fa
+[3/8] ASoC: sun8i-codec: Sort DAPM controls, widgets, and routes
+      commit: d58b7247087900414aa3e988e70ecba85e06f412
+[4/8] ASoC: sun8i-codec: Consistently name DAPM widgets and routes
+      commit: 7b51f3c7029fab706e7d9ac99f67cbcf8f29beca
+[5/8] ASoC: sun8i-codec: Correct DAPM widget types
+      commit: fc5668f62d089ba69b343f0e80146f5a3bc6fa71
+[6/8] ASoC: sun8i-codec: Fix AIF widget channel references
+      commit: 4ab60cef3149d57fe56add8c60ee7e6d45816f27
+[7/8] ASoC: sun8i-codec: Enable AIF mono/stereo control
+      commit: 18ebd62c30f0380da11d6c86e20b56c771ac1e18
+[8/8] ASoC: sun8i-codec: Use snd_soc_dai_get_drvdata
+      commit: a886990c9525e83146829c7711ce444ff652c98a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
