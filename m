@@ -7,72 +7,72 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63102C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:52:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20E31C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:53:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94AB020829
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:52:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7802E20870
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:53:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cNj+5AVk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="he4TNUj1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94AB020829
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qCE3AMa8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="AOuzG7Zn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7802E20870
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 226A816BD;
-	Mon,  5 Oct 2020 06:51:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 226A816BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B48D183C;
+	Mon,  5 Oct 2020 06:52:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B48D183C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601873545;
-	bh=kNeRtafXRU90Mz5oAqGThc0vhADhH9u0iZF4YQ1JDN8=;
+	s=default; t=1601873585;
+	bh=5B7ZwR1k5DG1hE2mkiIH/krwOLu06s3K++d7+LHGE3E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cNj+5AVkVi3dt+8P/X0gCuydx6xMzEC5GmQKtxXq9tR8bC8TUn51qI316s5maIFHc
-	 d+Fm3bCXp76a0fjc4e+AFzequ2273AIYRx1n4SxRMZdcgOc3JA9urrwXO6K8OLa/58
-	 yzfgIMXEWHLTiFQPvRCaMDXZRA5myJbZCRzoeRJE=
+	b=qCE3AMa8eFKh5XnJJOr/KZgaxUpgexamAWnvqpcIBRWiLScElO0WC/3r85coR3i7d
+	 YKlGshrs++hl/pNVlbZy6R8107YL/qgR7Y3vKXJRP1qgvVgbW8YNn2OODOIDTGKvv+
+	 ofHuXfKqm4k8+a1sb/k9r8OwHQYax6yTlkkcAsIs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58DAFF802EB;
-	Mon,  5 Oct 2020 06:49:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C698F802FB;
+	Mon,  5 Oct 2020 06:49:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22451F802EC; Mon,  5 Oct 2020 06:49:20 +0200 (CEST)
-Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
+ id A28C5F802FB; Mon,  5 Oct 2020 06:49:27 +0200 (CEST)
+Received: from z5.mailgun.us (z5.mailgun.us [104.130.96.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 687F9F802DB
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 06:49:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 687F9F802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id C128BF802F8
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 06:49:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C128BF802F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="he4TNUj1"
+ header.i=@mg.codeaurora.org header.b="AOuzG7Zn"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1601873353; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1601873364; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=OyZzbSCMZvuV3yEOZsiya4LXwpjTPN3Uu7YR7mN2EKQ=;
- b=he4TNUj11YeJt8fDVQEiCV/Gfss6WO9bOJ267XIbZpDpHxhY/ArpkkqNIpgwlKuEQF96XM34
- 7dM1V/XKj8CihCNFKYXi4vwcEZqdy6UmD7+ybUqKKgAB0wN9IVIiw4ctGXMDRxmGv5S2pKoV
- t2uRgD0+rJnJkSEEp8ehLHZDMc0=
-X-Mailgun-Sending-Ip: 69.72.42.4
+ bh=TYp6guGD5agN+dnDEuqk5qeGTuYSEJEDzrH+D7B0qh4=;
+ b=AOuzG7ZnkPVkpaCmBOpfeulIno7DpWFaHv+3uwYEoUnQcrpafD0GRGLBU0NE97q4hBiTnXZi
+ bW/AQu14BwvrhHqWb6eX/Eh9BZQ1tpNXjZlvaOEfs0crI7emGqUKfJglycoZdQ2mmx+E2+dx
+ 42n0+Y4N7dIu0Se64lYXNo3/4Vo=
+X-Mailgun-Sending-Ip: 104.130.96.5
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f7aa5c8856d9308b5613a50 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 04:49:12
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f7aa5d306d81bc48db4f5d8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 04:49:23
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 281BFC433FE; Mon,  5 Oct 2020 04:49:11 +0000 (UTC)
+ id A6CE2C433A1; Mon,  5 Oct 2020 04:49:23 +0000 (UTC)
 Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id DDDF3C433A1;
- Mon,  5 Oct 2020 04:49:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DDDF3C433A1
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id BB44DC433A1;
+ Mon,  5 Oct 2020 04:49:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BB44DC433A1
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -84,14 +84,14 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v10 4/7] Asoc: qcom: lpass:Update lpaif_dmactl members order
-Date: Mon,  5 Oct 2020 10:18:27 +0530
-Message-Id: <1601873310-1894-5-git-send-email-srivasam@codeaurora.org>
+Subject: [PATCH v10 6/7] Asoc: qcom: lpass-platform : Increase buffer size
+Date: Mon,  5 Oct 2020 10:18:29 +0530
+Message-Id: <1601873310-1894-7-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1601873310-1894-1-git-send-email-srivasam@codeaurora.org>
 References: <1601873310-1894-1-git-send-email-srivasam@codeaurora.org>
 Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- Srinivasa Rao <srivasam@codeaurora.org>
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,76 +109,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 
-Update the lpaif_dmactl struct members order to match
-HDMI reg map members sequence. Separate Interface reg map
-as it is used for I2S control but not for HDMI control,
-to make use of bulk API, which makes code more readable.
+Increase buffer size to support audio over DP.
 
 Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 ---
- sound/soc/qcom/lpass-platform.c | 8 ++++----
- sound/soc/qcom/lpass.h          | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/qcom/lpass-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index e7cf4e5..db0d959 100644
+index a5ab5f1..92ccedb 100644
 --- a/sound/soc/qcom/lpass-platform.c
 +++ b/sound/soc/qcom/lpass-platform.c
-@@ -71,13 +71,13 @@ static int lpass_platform_alloc_dmactl_fields(struct device *dev,
- 	rd_dmactl = drvdata->rd_dmactl;
- 	wr_dmactl = drvdata->wr_dmactl;
+@@ -23,7 +23,7 @@ struct lpass_pcm_data {
+ 	int i2s_port;
+ };
  
--	rval = devm_regmap_field_bulk_alloc(dev, map, &rd_dmactl->bursten,
--					    &v->rdma_bursten, 6);
-+	rval = devm_regmap_field_bulk_alloc(dev, map, &rd_dmactl->intf,
-+					    &v->rdma_intf, 6);
- 	if (rval)
- 		return rval;
+-#define LPASS_PLATFORM_BUFFER_SIZE	(16 * 1024)
++#define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
+ #define LPASS_PLATFORM_PERIODS		2
  
--	return devm_regmap_field_bulk_alloc(dev, map, &wr_dmactl->bursten,
--					    &v->wrdma_bursten, 6);
-+	return devm_regmap_field_bulk_alloc(dev, map, &wr_dmactl->intf,
-+					    &v->wrdma_intf, 6);
- }
- 
- static int lpass_platform_pcmops_open(struct snd_soc_component *component,
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 51c9991..7089d4c 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -31,9 +31,9 @@ struct lpaif_i2sctl {
- 
- 
- struct lpaif_dmactl {
-+	struct regmap_field *intf;
- 	struct regmap_field *bursten;
- 	struct regmap_field *wpscnt;
--	struct regmap_field *intf;
- 	struct regmap_field *fifowm;
- 	struct regmap_field *enable;
- 	struct regmap_field *dyncclk;
-@@ -110,17 +110,17 @@ struct lpass_variant {
- 	struct reg_field bitwidth;
- 
- 	/* RD_DMA Register fields */
-+	struct reg_field rdma_intf;
- 	struct reg_field rdma_bursten;
- 	struct reg_field rdma_wpscnt;
--	struct reg_field rdma_intf;
- 	struct reg_field rdma_fifowm;
- 	struct reg_field rdma_enable;
- 	struct reg_field rdma_dyncclk;
- 
- 	/* WR_DMA Register fields */
-+	struct reg_field wrdma_intf;
- 	struct reg_field wrdma_bursten;
- 	struct reg_field wrdma_wpscnt;
--	struct reg_field wrdma_intf;
- 	struct reg_field wrdma_fifowm;
- 	struct reg_field wrdma_enable;
- 	struct reg_field wrdma_dyncclk;
+ static const struct snd_pcm_hardware lpass_platform_pcm_hardware = {
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
