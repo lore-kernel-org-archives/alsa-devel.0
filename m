@@ -2,86 +2,84 @@ Return-Path: <SRS0=eLx3=DM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50942C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 10:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 977E4C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 11:17:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36B852078E
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 10:46:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6322020776
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 11:17:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q7rKGgWy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RQ6ZPe8z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36B852078E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DNZM9Izq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6322020776
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BB6817C9;
-	Mon,  5 Oct 2020 12:45:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BB6817C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 639E617DA;
+	Mon,  5 Oct 2020 13:16:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 639E617DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601894771;
-	bh=lkng/i8tI+e14rJtzP4dBacXfMVUIrCuYChUoHpV6f4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1601896665;
+	bh=MJIEiMvn4G2SlrdVpyKZWkl6EIBAWtgTS7gZB16ilTE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q7rKGgWyEeDCkKjqOqSZVpPKNoor1M1CO45IMlGGAcb+djx/8Ex2JAmfzGz7hAi8Y
-	 V9++8iI5wLuLOQH2F0EI0HZjCNSxsbh8DtJiXl+77jcrpEvg7nFJBCdpT/dK7NDZXx
-	 m3ESoM4CQey47Yh3O09XT81IUqqsgOscse41iwSw=
+	b=DNZM9IzqBsK9MQyXifZWfAFAyCdxbtTICbs33bP80b3Si2gsGBes75+AcjsxheoW7
+	 2gMkiFEHnjM28r1uhLzvVjW+kDkIbaZFRvQpxkQRs4qBMx5iLvOLi1+xNywQ7p20Uv
+	 7Z9Wp180iMZ9S5uqzORA5tbKG/pBjnDurtmWojrs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9247DF80245;
-	Mon,  5 Oct 2020 12:45:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC88AF8025A;
+	Mon,  5 Oct 2020 13:16:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 223E2F8025A; Mon,  5 Oct 2020 12:45:19 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 434C0F80260; Mon,  5 Oct 2020 13:16:53 +0200 (CEST)
+Received: from out-2.mail.amis.net (out-2.mail.amis.net [212.18.32.14])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A085EF800C9
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 12:45:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A085EF800C9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RQ6ZPe8z"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2337AF800C9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 13:16:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2337AF800C9
+Received: from in-2.mail.amis.net (in-2.mail.amis.net [212.18.32.19])
+ by out-2.mail.amis.net (Postfix) with ESMTP id 7781681360;
+ Mon,  5 Oct 2020 13:16:46 +0200 (CEST)
+Received: from in-2.mail.amis.net (localhost [127.0.0.1])
+ by in-2.mail.amis.net (Postfix) with ESMTP id 71531C9406;
+ Mon,  5 Oct 2020 13:16:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at amis.net
+Received: from in-2.mail.amis.net ([127.0.0.1])
+ by in-2.mail.amis.net (in-2.mail.amis.net [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id js9Bz3HJPxjd; Mon,  5 Oct 2020 13:16:46 +0200 (CEST)
+Received: from smtp1.amis.net (smtp1.amis.net [212.18.32.41])
+ by in-2.mail.amis.net (Postfix) with ESMTP id 1E8FEC9402;
+ Mon,  5 Oct 2020 13:16:46 +0200 (CEST)
+Received: from localhost.localdomain (89-212-21-243.static.t-2.net
+ [89.212.21.243])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9FD372078D;
- Mon,  5 Oct 2020 10:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601894713;
- bh=lkng/i8tI+e14rJtzP4dBacXfMVUIrCuYChUoHpV6f4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=RQ6ZPe8zWyyzFtnYvrxWLKJq5zXlJLtQC4lsGf7csP83g3ZNXzldLgJ8+8fMOF2nd
- 4ZIoctkQOM3kOp3V0sP6U2y8/bq49YmOnD4pQgwIThajfej8+j5plWpGlTB+DV9tOh
- BMrClWmCkoY8DQjL8Rd0crX5uc0R1ejDc16rOlSE=
-Date: Mon, 5 Oct 2020 11:44:09 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: Re: [PATCH v8 5/7] ASoC: qcom: Add support for lpass hdmi driver
-Message-ID: <20201005104409.GA5139@sirena.org.uk>
-References: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
- <1601447977-18115-6-git-send-email-srivasam@codeaurora.org>
- <c94cf74d-03f6-999e-012f-5d9ef2316d61@linaro.org>
- <925e2586-39dd-b1d9-174a-bda3367ab668@codeaurora.org>
+ by smtp1.amis.net (Postfix) with ESMTPSA id 8D2F8C2DD2;
+ Mon,  5 Oct 2020 13:16:45 +0200 (CEST)
+From: Primoz Fiser <primoz.fiser@norik.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 2/2] ASoC: dt-bindings: fsl: add ac97 fixed mode support
+Date: Mon,  5 Oct 2020 13:16:44 +0200
+Message-Id: <20201005111644.3131604-2-primoz.fiser@norik.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201005111644.3131604-1-primoz.fiser@norik.com>
+References: <20201005111644.3131604-1-primoz.fiser@norik.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
-Content-Disposition: inline
-In-Reply-To: <925e2586-39dd-b1d9-174a-bda3367ab668@codeaurora.org>
-X-Cookie: Most of your faults are not your fault.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
- agross@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- rohitkr@codeaurora.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,41 +95,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add devicetree bindings documentation for operating SSI in AC'97
+variable/fixed mode of operation.
 
---lrZ03NoBR/3+SXJZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Primoz Fiser <primoz.fiser@norik.com>
+---
+ Documentation/devicetree/bindings/sound/fsl,ssi.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-On Sat, Oct 03, 2020 at 05:06:06PM +0530, Srinivasa Rao Mandadapu wrote:
-> On 9/30/2020 8:57 PM, Srinivas Kandagatla wrote:
+diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+index 7e15a85cecd2..abc5abe11fb9 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+@@ -43,6 +43,11 @@ Optional properties:
+ - fsl,mode:         The operating mode for the AC97 interface only.
+                     "ac97-slave" - AC97 mode, SSI is clock slave
+                     "ac97-master" - AC97 mode, SSI is clock master
++- fsl,ac97-mode:    SSI AC97 mode of operation.
++                    "variable" - AC97 Variable Mode, SLOTREQ bits determine
++                    next receive/transmit frame
++                    "fixed" - AC97 Fixed Mode, SSI transmits in accordance with
++                    AC97 Frame Rate Divider bits
+ - fsl,ssi-asynchronous:
+                     If specified, the SSI is to be programmed in asynchronous
+                     mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
+-- 
+2.25.1
 
-> > I did ask this question in multiple reviews, but never got an answer!
-> > Are all the dp/hdmi port register range really volatile!?
-
-> Sorry for incomplete response in last review comment reply.
-> With making only specific DMA registers and interrupts registers true, aplay
-> was stuck.
-
-> Now we identified issue causing register and made it volatile.
-> With that change it seems working fine. After doing all the tests we will
-> share v9 series patch.
-
-That sounds like the problem hasn't fully been understood yet and there
-might be more going on?
-
---lrZ03NoBR/3+SXJZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl96+PkACgkQJNaLcl1U
-h9CtFwf9HLMbUICJl61lY3f7S4Lrbw0Ud//67rf9LdOlVvBMsc/lIUthb3aCy4uj
-/DLWYw+3RgJtVZk87Z6LTduHcEABfTPEgg0AiIRzE4uFFAT7QmFOKU/m+jynGHka
-MEWS2WQ2d+ttBmQImAA4Srrplq9Tx4DhLaSab+j9uVE8to/K/pOcOWt7OrenqPIK
-RqySIfB8Q+TYBUJMLk7cIVr4v3AVsb/VC4rroX7+D54eiNGVQWuEO9wFq/P72qEh
-GbmKbmpVakl/Ho1IxxNvJ5svxlwDYG7wBFFWodltyDs6OCnLDhDMLc+t0a/KycSs
-Ud6mYHX+kMu0GA9mXnNEtcwvjO1nBQ==
-=1TAI
------END PGP SIGNATURE-----
-
---lrZ03NoBR/3+SXJZ--
