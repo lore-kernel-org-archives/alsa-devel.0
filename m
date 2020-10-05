@@ -2,82 +2,88 @@ Return-Path: <SRS0=FemE=DN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4834FC41604
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:22:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39D4FC41604
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:38:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D28B6206DD
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:22:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 122EF20796
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:38:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="apH3EUBC";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="A+ZE2KaS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D28B6206DD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I88Js4Aa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 122EF20796
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5BB8172E;
-	Tue,  6 Oct 2020 08:21:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5BB8172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07D16176D;
+	Tue,  6 Oct 2020 08:37:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07D16176D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601965328;
-	bh=kseTSq4ZoQgAMTbzp+IGzWV39cBms3xzRqYsfrXY9UY=;
+	s=default; t=1601966279;
+	bh=kfzkEenmVbJsdC2KTrdreashMBxFOrJdy4H2X0g00kQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=apH3EUBCUFvbasJFa32ofTZyb8UaLfNGpgwUJUczYI1j0ySHq3keB3sDbu3DaLHKn
-	 zJE2kyazqVUKWXuD/NRLKA88UIlW4eH/hW1eNaCKTgYCEjHneced5VvT34eljB3UFx
-	 R6nl6qQGLoJsjEm93OuG12AEynsmvbStLlmhyZKg=
+	b=I88Js4Aat/hCXQCl0NrggMR5FIH2cQFoxIpmksCkIA/kNIadxPJ49O9D1CC7xW/ZK
+	 zzFv/Xh6usMzVe4X7Z0HGR8sh2M6z8dFVNWXvc4InUZbxost7EJBBkUZ01PI74d4Si
+	 dARJp9DAnCvkufcCaljJROURwF4qhhPeSSMdVW94=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A43AF80218;
-	Tue,  6 Oct 2020 08:21:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EE6CF80218;
+	Tue,  6 Oct 2020 08:37:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 152A5F80246; Tue,  6 Oct 2020 08:21:16 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 72BB7F8026A; Mon,  5 Oct 2020 17:01:52 +0200 (CEST)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 294D2F8015B
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 08:21:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 294D2F8015B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="A+ZE2KaS"
-Received: from localhost (unknown [122.167.144.92])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 05AA320796;
- Tue,  6 Oct 2020 06:21:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601965269;
- bh=kseTSq4ZoQgAMTbzp+IGzWV39cBms3xzRqYsfrXY9UY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=A+ZE2KaSvisWzO2ss8iSPsD1ZGOBPTV2wp/3ft+f+60Y5cMNzl5tJ8sOgQEJMTil8
- vxTvZDxee+CTpq4W6u3QJa+OblT69TkKS1xD6J9yBzOHn2lnx1arcqlr5Xg1oJBLB1
- rk40WEmTvZ9kifk79+g+9/Zf4ZssH6fvJeLHu7Ug=
-Date: Tue, 6 Oct 2020 11:51:05 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: compress: allow pause and resume during draining
-Message-ID: <20201006062105.GQ2968@vkoul-mobl>
-References: <CGME20200929084051epcas2p35fb2228ed1bdfce6a7ddf5b37c944823@epcas2p3.samsung.com>
- <000001d6963c$3cc53690$b64fa3b0$@samsung.com>
- <s5heemlklo0.wl-tiwai@suse.de> <20201001102938.GU2968@vkoul-mobl>
- <2bf52360-bd11-b4cd-b255-8a5610b4aa5f@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 266FEF800EF
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 17:01:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 266FEF800EF
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+ id 3DF5F1C0B7C; Mon,  5 Oct 2020 17:01:43 +0200 (CEST)
+Date: Mon, 5 Oct 2020 17:01:42 +0200
+From: Pavel Machek <pavel@denx.de>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Another round of adding missing
+ 'additionalProperties'
+Message-ID: <20201005150142.GA28675@duo.ucw.cz>
+References: <20201002234143.3570746-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
 Content-Disposition: inline
-In-Reply-To: <2bf52360-bd11-b4cd-b255-8a5610b4aa5f@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com,
- Takashi Iwai <tiwai@suse.de>, s47.kang@samsung.com, lgirdwood@gmail.com,
- tiwai@suse.com, kimty@samsung.com, hmseo@samsung.com,
- Gyeongtaek Lee <gt82.lee@samsung.com>, pilsun.jang@samsung.com,
- tkjung@samsung.com
+In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailman-Approved-At: Tue, 06 Oct 2020 08:37:07 +0200
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-iio@vger.kernel.org,
+ linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
+ linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-gpio@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ openipmi-developer@lists.sourceforge.net,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-hwmon@vger.kernel.org,
+ Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ netdev@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,49 +99,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01-10-20, 10:28, Pierre-Louis Bossart wrote:
-> 
-> 
-> 
-> > > > > Hrm, this resulted in rather more complex changes than the original
-> > > > > patch.  It shows that introducing yet another state is no good idea
-> > > > > for this particular case.
-> > > > > 
-> > > > > Since the possible application's behavior after this pause is as same
-> > > > > as the normal pause (i.e. either resuming pause or dropping), I find
-> > > > > it OK to take the original approach.
-> > > > Thank you for the review.
-> > > > I think that I should resend the original patch.
-> > > 
-> > > Let's wait a bit for other opinions.  We may add rather a new flag
-> > > instead of introducing a new state, too, for example.
-> > 
-> > I was out for a week, back now ;-)
-> > 
-> > So bigger question is if kernel should handle this change or we ask
-> > userspace to handle this. Userland knows that bit rate is less so small
-> > buffer can be for longer duration so instead of sending dumb X bytes,
-> > should it not scale the buffer based on bit rate?
-> 
-> what about variable bit-rate? or cases where you have a 'bit reservoir' in
-> previous frames?
-> 
-> You really cannot in general translate bytes to time with compressed data,
-> which is the reason we introduced the API in the first place...
-> 
-> Userspace *may* know the duration for specific formats or based on metadata,
-> but in some cases the only way to know is actually to decode the data.
-> 
-> I suggest we keep the compressed API based on bytes and non-periodic events
-> when the bytes were consumed/generated.
 
-Changing the API away from bytes was not proposed so not sure...
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The SM in kernel might be bit more convoluted so was wondering if we can
-handle this in userland. The changelog for this patch says that for
-test case was sending whole file, surely that is not an optimal approach.
-Should we allow folks to send whole file to kernel and then issue
-partial drain?
+Hi!
 
--- 
-~Vinod
+> Another round of wack-a-mole. The json-schema default is additional
+> unknown properties are allowed, but for DT all properties should be
+> defined.
+
+for leds:
+
+Acked-by: Pavel Machek <pavel@ucw.cz>
+
+I assume you apply it..?
+								Pavel
+							=09
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3s1VgAKCRAw5/Bqldv6
+8owIAKDAkiq29W/tD49n7es9bNcHQLqXywCfWHIfHZ6OrlZTPZUQgy45PCK/EKM=
+=qVmv
+-----END PGP SIGNATURE-----
+
+--xHFwDpU9dbj6ez1V--
