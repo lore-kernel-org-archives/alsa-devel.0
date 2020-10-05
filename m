@@ -7,109 +7,109 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEFB6C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 09:55:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1653C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 09:56:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B822820776
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 09:55:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E930320644
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 09:56:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u61EtyKL";
-	dkim=temperror (0-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="u6sqDfvo";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DLKEkhwq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B822820776
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kE7mnj8X";
+	dkim=temperror (0-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="OJMX7z0T";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cHoI2gDa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E930320644
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23A961819;
-	Mon,  5 Oct 2020 11:54:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23A961819
+	by alsa0.perex.cz (Postfix) with ESMTPS id 384C417FB;
+	Mon,  5 Oct 2020 11:55:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 384C417FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601891741;
-	bh=NEXXz0XWlTZiojHNQZwM3xMl3xD6YBVV2lteJc7KS8E=;
+	s=default; t=1601891789;
+	bh=ODmJmm1tBDFFN0m1eB2lf8tcUekrn2Iz7wKdI9sz+ZM=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u61EtyKLFKFGXYovfospRICs1ebRVekUw/vARnEwD0MCvY+l/hJYlFODky9I18LeY
-	 OVvC48kDfcGiZaDMBsuE7qIwiD69h0rQWGXGZKpoZYw0RtQuTAeZgc2EgHIVxGnoMj
-	 iBW8iDZ4c20OuBCvKQa7b0aMCgIokSY5UAdTMzjg=
+	b=kE7mnj8X4/aovbUtcOfaQQNTCVBzJln0bUSbV5oz9wN8rwr0wiF9VzbcatKJVOFJB
+	 OCa3ZbEseQy1OQ63G3P0bjuImVH0m9JHKc1L2BnIGrZOPU+CUrzVHVr+HRKgpGLlnH
+	 0l9ujLDDGJhNOmY6oaoM1va6XvPy9zVT2mAP/pkg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFF8DF80269;
-	Mon,  5 Oct 2020 11:54:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96B68F802DC;
+	Mon,  5 Oct 2020 11:55:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFF85F8026A; Mon,  5 Oct 2020 11:54:31 +0200 (CEST)
+ id 3FA7DF802DF; Mon,  5 Oct 2020 11:55:08 +0200 (CEST)
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABB51F80260
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 11:54:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABB51F80260
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5380F80245
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 11:55:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5380F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="u6sqDfvo"; 
+ header.b="OJMX7z0T"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="DLKEkhwq"
+ header.i=@messagingengine.com header.b="cHoI2gDa"
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.nyi.internal (Postfix) with ESMTP id 45C385C0134;
- Mon,  5 Oct 2020 05:54:27 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute6.internal (MEProxy); Mon, 05 Oct 2020 05:54:27 -0400
+ by mailout.nyi.internal (Postfix) with ESMTP id D72965C00E3;
+ Mon,  5 Oct 2020 05:55:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Mon, 05 Oct 2020 05:55:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
  date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=NEXXz0XWlTZiojHNQZwM3xMl3xD
- 6YBVV2lteJc7KS8E=; b=u6sqDfvorC1NsWeqC/FKPDc+tdazdKlqZ42RWHSDggf
- MFGvfsf+YJIEycWcguOrFuM9c1+vDHdbvMnNXtRYyNQTM5Pyu6OyxI6aIs0a8any
- 3qPPhsdGFdYMebbSvd3qcNzyZ5t8tjTP+RKo1L1QqRD46qTGXDJlY2eobYuEt7jX
- z8gGsBF4gV1s5pDTVYhdIyI9k//6VQ3EC6BvGNaTFQvx/Xlqqpi6Sy/SOOra0FfK
- LGXrwg7Xeq6aAxZPKYB1g0lT31imCbdxKWX2/H/HBNkxJmXMuwanuFAjuFIlxOUy
- hbZeOk3Sv7l8mQfJPKm47/kIqzG/N9KxHXPpZttZ2Kg==
+ :content-type:in-reply-to; s=fm1; bh=ODmJmm1tBDFFN0m1eB2lf8tcUek
+ rn2Iz7wKdI9sz+ZM=; b=OJMX7z0TQznbV3q9qUPjLKDR6g+cv9h7YMdggvv2RCo
+ cuFWII9NdVJReWgrPmE7V2I80Lbn/Ov40PcrpUftYsOE6ofzxZRqwepl6c5FMmvh
+ 7I27m8hAL1t7K3yo5y2wq1/R4DBHc9Ln0tIGyNhIST8BvbLldqitw/t20BDNNaW+
+ Nwh0lo5EvUK2KybPxdPiy5S7vl2v+PI/tRgGoXnfAjjO3c6K7Lq6K7PVRvsmMgt6
+ s57X5ezKKfOgrW3MbCX3nrH7kZhWDpPZuWwTbdKDODoVCHmoLQBqgXK4zJ3nPXh0
+ g1vd/4Ucz+59VLc94VDo4NkVRx+qsIvh/mm0erZ7SXw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-type:date:from:in-reply-to
  :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NEXXz0
- XWlTZiojHNQZwM3xMl3xD6YBVV2lteJc7KS8E=; b=DLKEkhwqAtW1uS1zJza/qB
- yly2MNJ1YOgyKGylqJoWhEAdGkH4N84FfUgXXiCrruVASa7ujx3m/rH74NrVpk62
- 9ITKSK8YDQ8cpaI+zVGjtSu3O5bbCVUrrjaeRNnz/SrqK06Cmudq/hNaO9fCd8aA
- 1myLpMHWatssBErRdIBsfhzR3v8DRjxM977V64Gq0WnJ2Byf0VErWBEiPjRSLj+a
- pqICxm0Cc9Sm9ymVsijncDBDW76PPCkAKm1T5zP7hdws7ug4gUIF7OnXkbennZSa
- YggNILkGEXe1uL/Ojlioy/fji2/YB7aLntiaIoC6vI4MgdK84PRyMFQdO5m9P6+Q
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ODmJmm
+ 1tBDFFN0m1eB2lf8tcUekrn2Iz7wKdI9sz+ZM=; b=cHoI2gDazxvJJ/6OLoRFlo
+ kiqcKP37eb7gdSVPMo11Bpk+HIHUUJqgnOWO/rK7mwL2RGvxQ38X/48hZiw8yVkz
+ L+3M/AgvokAAUTxz3aGkhLxZcWw4dw3+0q8nAtldm+MuaTAMdhs9FVxZwFjMvnxA
+ Agx0sdcUAJECwNCONCjvp5haFqa9c4uS5ZvhmE1RSR/fmpITjLuGnmBxxbD7VJdf
+ LEHJPDBAzl49ZzCtFdADWFWjYp5Cj2KriUV2i4so2dDeiaFzg9X1jRwgfDq29X51
+ JcuCzFGbwn0ANeb3+DePZB58LilWL46WgNkz4X2R4q/RzpGDU5ASqLKh0oAxeLIA
  ==
-X-ME-Sender: <xms:U-16X7YH0JS0XGYRYC_83frwQhlvmqlvRngmf4SlgNEXgqeVG2FmZg>
- <xme:U-16X6boPnuf_G-3Ksb1-UY70xG2OGVgQtM-mHI6N_kbS64wEPTSRI0t8NbK5Op7g
- 6mkdDsvAEVscwlZtew>
+X-ME-Sender: <xms:dO16X7vI8WMyNkPp-vtfNBmLvrpX_oe5MQyOUxWUwOBP686au82zlw>
+ <xme:dO16X8eVpEbMa3AQ7O0GoVe6_B4CvnzCarhhfVDtm6q1VWCVRg10iFm_Ibg1z4KWw
+ T_tMbue69BAlYWXmBQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddvfecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
  ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
  gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
- udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
+ udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvnecurf
  grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:U-16X9-KNmPv2EZ0NwFvO55SehWVzD5US_V_qgJdPZeJ-Yy0sZcHbA>
- <xmx:U-16XxrndOufnx_s2_b1yqwIUK0OrBxXXuomO62-s2CYLlwZxuz9SA>
- <xmx:U-16X2qGoxxK_IcGWM5yJ8zkC49WJZLWx65v3TOHEm20Pdy9qSkL7Q>
- <xmx:U-16X2Loa2ao4oWTK1NMjCox0QyTeLesSve_F7vg6idv4PRidpuoXg>
+X-ME-Proxy: <xmx:dO16X-zneI9aR6jNg6XZXuosIVtPk4WO-0CCdJBcMKDNddhRUC8EMw>
+ <xmx:dO16X6MzTHHIsr__MIuZpZAqmE_WE_9hNWdMQqrdzP4S4z1A5OzjUA>
+ <xmx:dO16X78yXuQ026RwACjNtzqXgss0iJLWZMXEW8ybE7gy7ORo2TxsQQ>
+ <xmx:dO16X8Mfi6nIO-KEAFVJuyGU8a-9_lafIx9OyJawK_Z-66giWSZrNA>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
  [90.89.68.76])
- by mail.messagingengine.com (Postfix) with ESMTPA id B5AB2306467E;
- Mon,  5 Oct 2020 05:54:26 -0400 (EDT)
-Date: Mon, 5 Oct 2020 11:54:25 +0200
+ by mail.messagingengine.com (Postfix) with ESMTPA id 5D1FD328005E;
+ Mon,  5 Oct 2020 05:55:00 -0400 (EDT)
+Date: Mon, 5 Oct 2020 11:54:59 +0200
 From: Maxime Ripard <maxime@cerno.tech>
 To: Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH 02/25] ASoC: sun8i-codec: Swap module clock/reset
- dependencies
-Message-ID: <20201005095425.uqpd6fn3bmcqmj2u@gilmour.lan>
+Subject: Re: [PATCH 03/25] ASoC: sun8i-codec: Sort DAPM controls, widgets,
+ and routes
+Message-ID: <20201005095459.qnsyyitpizpdgs57@gilmour.lan>
 References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-3-samuel@sholland.org>
+ <20201001021148.15852-4-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="ajk663v4iqcqgffc"
+ protocol="application/pgp-signature"; boundary="kucdcmwacaveldse"
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-3-samuel@sholland.org>
+In-Reply-To: <20201001021148.15852-4-samuel@sholland.org>
 Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
@@ -130,18 +130,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---ajk663v4iqcqgffc
+--kucdcmwacaveldse
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 09:11:25PM -0500, Samuel Holland wrote:
-> This matches the module power-up/down sequence from the vendor's driver.
+On Wed, Sep 30, 2020 at 09:11:26PM -0500, Samuel Holland wrote:
+> Sort the remaining pieces of the DAPM driver so that they are all in the
+> same order among controls/widgets/routes, and so they roughly match the
+> register word and bit order of the hardware. This nicely separates the
+> AIF-related widgets from the ADC/DAC widgets, which allows the AIF
+> widgets to stay in a logical order as more AIFs are added to the driver.
 >=20
-> While updating these widgets/routes, reorder them to match the register
-> and bit layout of the hardware. This puts them in the same place in the
-> widget and route arrays (previously they were at opposite ends), and it
-> makes it easier to track which parts of which registers are implemented.
+> No widgets are renamed, to ease verification that this commit makes no
+> functional change.
 >=20
 > Signed-off-by: Samuel Holland <samuel@sholland.org>
 
@@ -149,15 +151,15 @@ Acked-by: Maxime Ripard <mripard@kernel.org>
 
 Maxime
 
---ajk663v4iqcqgffc
+--kucdcmwacaveldse
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rtUQAKCRDj7w1vZxhR
-xUBXAP4pHOdiB4ixCet41wFB1s8FTReQl6H2FtLwlw4PVDJrLwD8Ckm37XYge5Iv
-yBhx2mCwvaPJqijjiVM8OsttbXY/AAI=
-=uAAt
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rtcwAKCRDj7w1vZxhR
+xQdoAP9wDU5Pd9TTgeSgwBIK8Vwl4iYgXMJ4L+uonDPB0gHNygD/R6COTvszRw6v
+15hl7dBWlNQadtMZNespBQciQHOdQwc=
+=2dEz
 -----END PGP SIGNATURE-----
 
---ajk663v4iqcqgffc--
+--kucdcmwacaveldse--
