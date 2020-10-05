@@ -2,79 +2,76 @@ Return-Path: <SRS0=eLx3=DM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA80C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0751BC4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:56:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 947A020853
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:55:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48722207EA
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 17:56:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PARBpR7H";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UqXAPg5V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 947A020853
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KdSRVebH";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k226qli9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48722207EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0C951785;
-	Mon,  5 Oct 2020 19:55:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0C951785
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7473417A3;
+	Mon,  5 Oct 2020 19:55:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7473417A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601920554;
-	bh=VCiW3dcVnJ9y8q1OkZqogcxkqkpP/n24rMjf80efbJM=;
+	s=default; t=1601920608;
+	bh=cyMXxcFiLhcXvzPyyhK1hJjto1RJMvdtK0k3ZZmMEsY=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PARBpR7HRgt2RTt+SiVHQzIcdiiLA4gfxYLbC0IZK6m2GaqCSeHdeui/HkXf3mDS4
-	 fPiTtr/3tcREoP4Ft8YKW77rVX9/Vb8svP3KUCG6puyx5ZnqRb7oKlfK2RxKV9FjNt
-	 QWLN9/l5kq/FDr+CSE7x6olP6XHyCUXH58gLNXnk=
+	b=KdSRVebH/jH9J4uUsjtxlF3C+Q9YtupvmGZg5Nk44pLiFsheR37N5i3i8FK1j8eD1
+	 Zg3+RHzTH5ea/Po+FicW722y+xAUCBlwayENhpxm7G1+SDBnLqBHyOy9vHaR2zRAOB
+	 A6vqYPyB8OMheSYEXDJ8jCmKohtUjLMLb6avXEYM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D34EEF8025A;
-	Mon,  5 Oct 2020 19:55:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30697F80269;
+	Mon,  5 Oct 2020 19:55:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5DD1F8025A; Mon,  5 Oct 2020 19:55:00 +0200 (CEST)
+ id 11AD7F800C9; Mon,  5 Oct 2020 19:55:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C38AF80121
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 19:54:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C38AF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BBDFF800C9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 19:55:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BBDFF800C9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UqXAPg5V"
+ header.b="k226qli9"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 05F34207BC;
- Mon,  5 Oct 2020 17:54:52 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 12F8E207EA;
+ Mon,  5 Oct 2020 17:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601920493;
- bh=VCiW3dcVnJ9y8q1OkZqogcxkqkpP/n24rMjf80efbJM=;
+ s=default; t=1601920498;
+ bh=cyMXxcFiLhcXvzPyyhK1hJjto1RJMvdtK0k3ZZmMEsY=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=UqXAPg5VeIwEKjcazvYt39IGVvbdXeFcre6MDtbS0LC/FB/LnmtcRYIPdAj0ZrptE
- dEozWDSkvha6ExelpFU7XGPGUTI6bbxEF67GuALuJuYBgXiDFoSRQv03AsiCFecAVA
- DeDD1YrWTFo+JLvpRvN6c1PdDFExcUGFxA46vTF8=
-Date: Mon, 05 Oct 2020 18:53:50 +0100
+ b=k226qli9dZYK2dP7B3Trm/PleOtPKInNxNi6lRtjlL0fzLUNr2SdkQPAbtIRwpj3F
+ jGr0/R+adaIPDpzPr/xRYJAevA+0bGVcMO49en16zNhQ9VIeVl3Knbx7BCkDqvbJDI
+ JAAGrCMmPXXS6UAccw2UJbIBuxxr0KuhtFVTlQUU=
+Date: Mon, 05 Oct 2020 18:53:55 +0100
 From: Mark Brown <broonie@kernel.org>
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-In-Reply-To: <20201004094505.1041898-1-codrin.ciubotariu@microchip.com>
-References: <20201004094505.1041898-1-codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH] ASoC: mchp-spdifrx: convert to
- devm_platform_get_and_ioremap_resource
-Message-Id: <160192043040.23051.5178430968539357804.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20201002211902.287692-1-pierre-louis.bossart@linux.intel.com>
+References: <20201002211902.287692-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/4] ASoC: Intel: sof_sdw: minor corrections
+Message-Id: <160192043039.23051.3761795084502724725.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com, alexandre.belloni@bootlin.com,
- ludovic.desroches@microchip.com, nicolas.ferre@microchip.com, tiwai@suse.com
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,9 +87,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 4 Oct 2020 12:45:05 +0300, Codrin Ciubotariu wrote:
-> Use the helper function that wraps the calls to platform_get_resource()
-> and devm_ioremap_resource() together.
+On Fri, 2 Oct 2020 16:18:58 -0500, Pierre-Louis Bossart wrote:
+> This small patchset adds a missing component string needed by UCM and
+> corrects a confusion on Realtek part numbers.
+> 
+> Pierre-Louis Bossart (4):
+>   ASoC: Intel: sof_sdw_rt1308: add extra check on init
+>   ASoC: Intel: sof_sdw_rt1316: add missing component string
+>   ASoC: rt715-sdw: probe with RT714 Device ID
+>   ASoC: Intel: sof_sdw: add version_id to avoid rt714/rt715 confusion
+> 
+> [...]
 
 Applied to
 
@@ -100,8 +105,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mchp-spdifrx: convert to devm_platform_get_and_ioremap_resource
-      commit: 8031b93efa8d393b7e38fa66b836ac157a2f354d
+[1/4] ASoC: Intel: sof_sdw_rt1308: add extra check on init
+      commit: 044eb2d13a2147a7ac15a400c2a4f020a7857c36
+[2/4] ASoC: Intel: sof_sdw_rt1316: add missing component string
+      commit: 8cc8945da74284809c8a4a575e55e91d5557b651
+[3/4] ASoC: rt715-sdw: probe with RT714 Device ID
+      commit: 4c652df83ba42fadc884541bfec856c836822302
+[4/4] ASoC: Intel: sof_sdw: add version_id to avoid rt714/rt715 confusion
+      commit: df64b9882b35671c4916574a783b614c6164980b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
