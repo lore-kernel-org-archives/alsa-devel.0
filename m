@@ -7,72 +7,72 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C425C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:16:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76ACAC4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:17:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68694207F7
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:16:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8BEA207C4
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 04:17:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bjsKLAnh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="uMQoJZT8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68694207F7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FniyFK49";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="GFwLIpoK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8BEA207C4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA1961858;
-	Mon,  5 Oct 2020 06:15:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA1961858
+	by alsa0.perex.cz (Postfix) with ESMTPS id 427C51855;
+	Mon,  5 Oct 2020 06:16:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 427C51855
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601871394;
-	bh=39qNuveGcekF2/vDIxkkoYnWdjHbsYNvRygnnBh1EAA=;
+	s=default; t=1601871432;
+	bh=5B7ZwR1k5DG1hE2mkiIH/krwOLu06s3K++d7+LHGE3E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bjsKLAnhfLVnlpThByO20MKFMYyOU49NPRC9Sj9gpcehac5k10eHEe2E8nYmme4y6
-	 Tu8DkfRwmgblsA9hO4MgInrF47+O8teppMTtQtDQMj52zBRjYMzkxCRBBSWWbW6tq8
-	 8IkmkY2NORBYJVnLupIkviOzDEuLEALraLcK0b54=
+	b=FniyFK49gflrpAbC8HxvHrLUXiOV8yrjW6yGTGm/5zgirz8UHosK+g6wPLjxx2tMb
+	 vgjKip68DB+kjfatcGsHurYOUruMvNoMeps1v1SaXpv71MvkXphaBeSchjFkDd9sa+
+	 8u4KT+pU7osLEgPPrCXeT7XEfNIIxkp1TZBPQiCw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E74FF802A0;
-	Mon,  5 Oct 2020 06:14:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C6B0F802E9;
+	Mon,  5 Oct 2020 06:14:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E59CF802D2; Mon,  5 Oct 2020 06:14:18 +0200 (CEST)
-Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
+ id 2E38FF802E9; Mon,  5 Oct 2020 06:14:35 +0200 (CEST)
+Received: from z5.mailgun.us (z5.mailgun.us [104.130.96.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A567F8026A
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 06:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A567F8026A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CCA3F802E3
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 06:14:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CCA3F802E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="uMQoJZT8"
+ header.i=@mg.codeaurora.org header.b="GFwLIpoK"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1601871253; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1601871272; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=Eue6OXobtSODzsRRtxONbVDKk/A4RNjBLFr7AI3Uwek=;
- b=uMQoJZT8NnjTPuT4bpdhmtIHSxNcgWZkeLwyRpLELdRi8dTf8fPj9JmEj+GEPy7kSb3oL9jg
- A70yQJQrdSNthB2sE6IGJ/1rcW8mck7pIRj90FjBTMVgrXltNKj1zwRKFFJ3k01d253bQCLm
- cGWINlrp56QzqwT0T0QKVj2tPKM=
-X-Mailgun-Sending-Ip: 69.72.42.4
+ bh=TYp6guGD5agN+dnDEuqk5qeGTuYSEJEDzrH+D7B0qh4=;
+ b=GFwLIpoKRnZDP5YkzBirL87gYfPlNHDNvK3mt/Vlgd+VPEGDqM77rkKyyPaJqnYAA3XI8zXq
+ Wkl81Ihxlfk21wwKxej6i3UsFDwHxeA6WJZjpuFZ8ePQZgCAF4zGJParOGvLXUyeMQAsYyDa
+ q3fektNDSL/uQ8O0eNopSLOTb8w=
+X-Mailgun-Sending-Ip: 104.130.96.5
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f7a9d8ed63768e57b002640 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 04:14:06
+ 5f7a9da54f8cc67c31cbc2d2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 04:14:29
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 10B36C43387; Mon,  5 Oct 2020 04:14:06 +0000 (UTC)
+ id E291DC433B2; Mon,  5 Oct 2020 04:14:28 +0000 (UTC)
 Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 96BE8C43382;
- Mon,  5 Oct 2020 04:14:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 96BE8C43382
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 67C1DC433FF;
+ Mon,  5 Oct 2020 04:14:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 67C1DC433FF
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -84,14 +84,14 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 2/7] ASoC: dt-bindings: Add dt binding for lpass hdmi
-Date: Mon,  5 Oct 2020 09:43:30 +0530
-Message-Id: <1601871215-26200-3-git-send-email-srivasam@codeaurora.org>
+Subject: [PATCH v9 6/7] Asoc: qcom: lpass-platform : Increase buffer size
+Date: Mon,  5 Oct 2020 09:43:34 +0530
+Message-Id: <1601871215-26200-7-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1601871215-26200-1-git-send-email-srivasam@codeaurora.org>
 References: <1601871215-26200-1-git-send-email-srivasam@codeaurora.org>
 Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- Srinivasa Rao <srivasam@codeaurora.org>
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,161 +109,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 
-Adds bindings for lpass hdmi interface
-which can support audio path over dp.
+Increase buffer size to support audio over DP.
 
 Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 ---
- .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 74 +++++++++++++++-------
- 1 file changed, 52 insertions(+), 22 deletions(-)
+ sound/soc/qcom/lpass-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-index 09c9bd2..f6f9fb4 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-@@ -24,9 +24,10 @@ properties:
-       - qcom,sc7180-lpass-cpu
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index a5ab5f1..92ccedb 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -23,7 +23,7 @@ struct lpass_pcm_data {
+ 	int i2s_port;
+ };
  
-   reg:
--    maxItems: 1
-+    maxItems: 2
-     description: LPAIF core registers
--
-+  reg-names:
-+     maxItems: 2
-   clocks:
-     minItems: 3
-     maxItems: 6
-@@ -36,15 +37,16 @@ properties:
-     maxItems: 6
+-#define LPASS_PLATFORM_BUFFER_SIZE	(16 * 1024)
++#define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
+ #define LPASS_PLATFORM_PERIODS		2
  
-   interrupts:
--    maxItems: 1
-+    maxItems: 2
-     description: LPAIF DMA buffer interrupt
--
-+  interrupt-names:
-+    maxItems: 2
-   qcom,adsp:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description: Phandle for the audio DSP node
- 
-   iommus:
--    maxItems: 1
-+    maxItems: 2
-     description: Phandle to apps_smmu node with sid mask
- 
-   power-domains:
-@@ -60,10 +62,12 @@ properties:
-     const: 0
- 
- patternProperties:
--  "(^mi2s-[0-9a-f]$|mi2s)":
-+  "^dai-link@[0-9a-f]$":
-     type: object
--    description: Required properties for each DAI
--
-+    description: |
-+      LPASS CPU dai node for each I2S device. Bindings of each node
-+      depends on the specific driver providing the functionality and
-+      properties.
-     properties:
-       reg:
-         maxItems: 1
-@@ -85,9 +89,11 @@ patternProperties:
- required:
-   - compatible
-   - reg
-+  - reg-names
-   - clocks
-   - clock-names
-   - interrupts
-+  - interrupt-names
-   - '#sound-dai-cells'
- 
- additionalProperties: false
-@@ -134,13 +140,32 @@ allOf:
-     then:
-       properties:
-         clock-names:
--          items:
--            - const: pcnoc-sway-clk
--            - const: audio-core
--            - const: mclk0
--            - const: pcnoc-mport-clk
--            - const: mi2s-bit-clk0
--            - const: mi2s-bit-clk1
-+          oneOf:
-+           - items:   #for I2S
-+              - const: pcnoc-sway-clk
-+              - const: audio-core
-+              - const: mclk0
-+              - const: pcnoc-mport-clk
-+              - const: mi2s-bit-clk0
-+              - const: mi2s-bit-clk1
-+           - items:   #for HDMI
-+              - const: pcnoc-sway-clk
-+              - const: audio-core
-+              - const: pcnoc-mport-clk
-+        reg-names:
-+          anyOf:
-+            - items:   #for I2S
-+              - const: lpass-lpaif
-+            - items:   #for I2S and HDMI
-+              - const: lpass-hdmiif
-+              - const: lpass-lpaif
-+        interrupt-names:
-+          anyOf:
-+            - items:   #for I2S
-+              - const: lpass-irq-lpaif
-+            - items:   #for I2S and HDMI
-+              - const: lpass-irq-lpaif
-+              - const: lpass-irq-hdmi
-       required:
-         - iommus
-         - power-domains
-@@ -152,12 +177,15 @@ examples:
-     soc {
-         #address-cells = <2>;
-         #size-cells = <2>;
--        lpass@62f00000 {
-+        lpass@62d80000 {
-             compatible = "qcom,sc7180-lpass-cpu";
- 
--            reg = <0 0x62f00000  0 0x29000>;
--
--            iommus = <&apps_smmu 0x1020 0>;
-+            reg = <0 0x62d87000 0 0x68000>,
-+                  <0 0x62f00000 0 0x29000>;
-+            reg-names = "lpass-hdmiif",
-+                        "lpass-lpaif";
-+            iommus = <&apps_smmu 0x1020 0>,
-+                     <&apps_smmu 0x1032 0>;
-             power-domains = <&lpass_hm 0>;
- 
-             clocks = <&gcc 131>,
-@@ -171,14 +199,16 @@ examples:
-                           "mclk0", "pcnoc-mport-clk",
-                           "mi2s-bit-clk0", "mi2s-bit-clk1";
- 
--            interrupts = <0 160 1>;
--
-+            interrupts = <0 160 1>,
-+                         <0 268 1>;
-+            interrupt-names = "lpass-irq-lpaif",
-+                              "lpass-irq-hdmi";
-             #sound-dai-cells = <1>;
- 
-             #address-cells = <1>;
-             #size-cells = <0>;
-             /* Optional to set different MI2S SD lines */
--            mi2s-primary@0 {
-+            dai-link@0 {
-                 reg = <MI2S_PRIMARY>;
-                 qcom,playback-sd-lines = <1>;
-                 qcom,capture-sd-lines = <0>;
+ static const struct snd_pcm_hardware lpass_platform_pcm_hardware = {
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
