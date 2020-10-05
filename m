@@ -2,80 +2,107 @@ Return-Path: <SRS0=eLx3=DM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CADA2C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:42:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E64F9C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:42:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBD1C20776
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:42:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA448207F7
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:42:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="re1aVWyF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBD1C20776
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=Huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uq4Iq3+/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JMXtpOzB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA448207F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4260917BA;
-	Mon,  5 Oct 2020 16:41:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4260917BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BB5416A2;
+	Mon,  5 Oct 2020 16:41:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BB5416A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601908931;
-	bh=JbY8Ibqa7lalbWwQlqnbBfRpE6MkkGIZgFbehx3gB+8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601908946;
+	bh=zXcMNekq4BBEbayKNh0ZM0PQe6dlhY3ZtF3cDN6LKNM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=re1aVWyFVwrJitTEB7bn5CflclAQDNdLqviIMrudKQRYACn0f03mkZGn6Le+i9vIc
-	 I3TWjoZXWKQeEvb2gcapkuiCtrArj3VSJUG1hemyGf/xr7PU/8/MOU3EBXQsnN0hzU
-	 8ktbQ7sJ8aOc3gcsqm1sZzyL/HilgDzDZfZhqGM4=
+	b=Uq4Iq3+/AgUOdc0dEMlrbR96n1nSUiYbpXfHnuYEGKwo9kciyROyf28NKn8e7R4hH
+	 vsOTNagoK155LE2fpiGC/BVEPqelP1Y3UtgP9/ULbsq+YXg3BHLr7cqMYI69ib4aux
+	 DWajrCCKmYJIAAlMTKcuQ+dMPBVljlqEgxt/yrK0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 823B0F802EB;
-	Mon,  5 Oct 2020 16:38:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4B8EF802F9;
+	Mon,  5 Oct 2020 16:38:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F35DF8025A; Mon,  5 Oct 2020 11:36:33 +0200 (CEST)
-Received: from huawei.com (lhrrgout.huawei.com [185.176.76.210])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2AA4EF8025A; Mon,  5 Oct 2020 12:37:17 +0200 (CEST)
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
+ [IPv6:2a00:1450:4864:20::643])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 383FCF80121
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 11:36:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 383FCF80121
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
- by Forcepoint Email with ESMTP id 094B3ABD20918B3B41D5;
- Mon,  5 Oct 2020 10:36:23 +0100 (IST)
-Received: from localhost (10.52.124.175) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 5 Oct 2020
- 10:36:21 +0100
-Date: Mon, 5 Oct 2020 10:34:36 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC964F800C9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 12:37:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC964F800C9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="JMXtpOzB"
+Received: by mail-ej1-x643.google.com with SMTP id lw21so7168369ejb.6
+ for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2020 03:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=EQcMf3aBHGTHbFtiLcGPyEnLeByAfRIiKvJYpM7dHjI=;
+ b=JMXtpOzBphG2KW05zXFj2vXclgc2K+H8JNLe4wZm7v+D9biCrsBBlunvumrZBdu1ay
+ dGsC3P+vCBgpuvq8Us5VYT17QD/j1PGdTs3yayROXo3Im6WBME+yzVPRs9dhmCnhv+Kp
+ deAaGEl4mX/k8HNSg+lcAp97KgIlUIgmSSwwdLTGDqN7XE8+lWKnDQvOaVfL9MZ14U+a
+ QRIvo/0Rw3hXEZYEYP0VkWPlkV5tVRSOzoq3CiZiRn3rvyx0WeBnBNIUIK3FrMGOYn9N
+ QIQdKyuVIgtZvtCvpApddnOAphNZZn8AUAHtmpPXbjSAxqojzQj+J6GDsnofUdkYSHTP
+ MAYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=EQcMf3aBHGTHbFtiLcGPyEnLeByAfRIiKvJYpM7dHjI=;
+ b=Vl8pLz+jh8Me00sI9oaupOjQwpZteakWHFPOCHTbVEE70nSfA+oM5vx9AHy6JNJhVe
+ BL4rlr3UBi+LE5IwMFdHKpyt3TKQXf0aTXfBOjM1Fw202p69e65uWAyZ5jbwReQ7bWFP
+ /KJORd4gtmw8m5hnzHvXqCafH9eSO5b1jJuu7c7hYEZVBXJIj62m5/BcdbsGlThOLqPP
+ yfsH/ZjHMDr0hQqMf5CUTlAk2b7eqJPOhoFmITJKpzcDrCTo/bFo6S8yCtl7roYjaO1P
+ RoSz1ZyV9XXRzAf3S1ppuM3m4uluIIYMqO1bLHQf5YUgkABbALgDn2WK1pUkkwLPeoe5
+ Wlhg==
+X-Gm-Message-State: AOAM530sYI+1BnzAUPc6LxgT/FV//o+oov4cEJcZGo0bzYmEXC58fA8z
+ HxE9FhAUKbJHIKcj9GS28g0=
+X-Google-Smtp-Source: ABdhPJyAUrA9v+oT7mNxthuQoeotTCXMOOGXsGx3LdAG3pM2W9hPKJEenugRGvwJUGZXAZHqegPZ7g==
+X-Received: by 2002:a17:906:6545:: with SMTP id
+ u5mr14725364ejn.346.1601894226145; 
+ Mon, 05 Oct 2020 03:37:06 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+ by smtp.gmail.com with ESMTPSA id yz15sm7567670ejb.9.2020.10.05.03.37.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 05 Oct 2020 03:37:04 -0700 (PDT)
+Date: Mon, 5 Oct 2020 12:37:03 +0200
+From: Thierry Reding <thierry.reding@gmail.com>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Another round of adding missing
  'additionalProperties'
-Message-ID: <20201005093436.00004913@Huawei.com>
-In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
+Message-ID: <20201005103703.GN425362@ulmo>
 References: <20201002234143.3570746-1-robh@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.175]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="CQDko/0aYvuiEzgn"
+Content-Disposition: inline
+In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 X-Mailman-Approved-At: Mon, 05 Oct 2020 16:38:46 +0200
 Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-iio@vger.kernel.org,
  linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
  linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Thierry
- Reding <thierry.reding@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+ linux-leds@vger.kernel.org,
  Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
@@ -89,11 +116,10 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-iio@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
  linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-spi@vger.kernel.org, Vinod
- Koul <vkoul@kernel.org>, netdev@vger.kernel.org,
- Baolin Wang <baolin.wang7@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- "David S.
- Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
+ linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ netdev@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,101 +135,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2 Oct 2020 18:41:43 -0500
-Rob Herring <robh@kernel.org> wrote:
 
-> Another round of wack-a-mole. The json-schema default is additional
-> unknown properties are allowed, but for DT all properties should be
-> defined.
-> 
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: openipmi-developer@lists.sourceforge.net
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linux-rockchip@lists.infradead.org
-> Cc: linux-stm32@st-md-mailman.stormreply.com
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+--CQDko/0aYvuiEzgn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Rob,
+On Fri, Oct 02, 2020 at 06:41:43PM -0500, Rob Herring wrote:
+[...]
+>  .../arm/tegra/nvidia,tegra20-pmc.yaml         |  2 ++
+[...]
+>  .../bindings/sound/nvidia,tegra186-dspk.yaml  |  2 ++
+>  .../sound/nvidia,tegra210-admaif.yaml         |  2 ++
+>  .../bindings/sound/nvidia,tegra210-dmic.yaml  |  2 ++
+>  .../bindings/sound/nvidia,tegra210-i2s.yaml   |  2 ++
+[...]
+>  .../bindings/usb/nvidia,tegra-xudc.yaml       |  2 ++
+[...]
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> # for iio
+Acked-by: Thierry Reding <treding@nvidia.com>
 
+--CQDko/0aYvuiEzgn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-However, one of these made me wonder if the binding was simply wrong...
-(definitely highlights why we should have additionalProperties: false
-where ever possible).
+-----BEGIN PGP SIGNATURE-----
 
-...
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl96908ACgkQ3SOs138+
+s6Hn/g/+OAyAW+yLaNZ0EuRduaLOLtd19HpvVqZdf68FWcAxWHANPdIKnVuc++CF
+2r+nHjgPy4zI3LGP1bGlgPufCdAapy2QTx9sGt/VeTEOuo9uTjb6J4Y7xXC11qQT
+pVI+v4ofSi48FN6vY6VWsotDscDJFLkJy/eZdb1RRuU44SG4dw04Z3fn1STm9wAN
+PS6hKtpUTbZYzgI0hngx2Ph30t7fyu18NIRPsKZ6/3WgR4HwD8cdpVi+06ThN3GQ
+s5CEQ/J7l9z1tfQhUypxLic1JV21su9fCERZQd96CKyIvcpJ5RByk7d7EnnZ4A53
+ZDRzwiymRP29X0IUzvEoHc7XvUP/mIZIkRNtTc3tLGZHZ34+Gc805Hcy5slbzhRz
+V+Gl3oXG56OhWLSbyNQXOOlbJJAmdFS1IDAoV752G6kq5fFZ397AW34DLF5YJX0k
+lYF3NWBTpuxxWCGuceKkACfscLE1dAifN2Rtgf9mbM1k2mIG7mVa6tdpxJ3sjf8Y
+1T0v3HYAwfOKTajaYUY4UYLMIJcZNjjJsw/olvcM6a9c8x/g79W3BgSjS6F/pEww
+DtuObW8366dl2WoqlYTJ9eWvKXSbCHRBhPpYLamHRBOBj7HKqGSHyyq0hEGPvd6X
+Hr+OJUghj7CHS+5vXEq5oNiT4bE6x9ytJdHNf5hIiRchRu6TeOQ=
+=hMJa
+-----END PGP SIGNATURE-----
 
-
-> diff --git a/Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml b/Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml
-> index abd8d25e1136..4c1c083d0e92 100644
-> --- a/Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml
-> +++ b/Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml
-> @@ -47,11 +47,17 @@ properties:
->    vddio-supply:
->      description: Regulator that provides power to the bus
->  
-> +  spi-max-frequency: true
-> +  spi-cpha: true
-> +  spi-cpol: true
-
-It isn't completely unheard of for a device to operate in multiple SPI modes, but
-it does seem to be fairly unusual.  I took a look at the datasheet and at least
-from the provided timing diagrams, these are both required in SPI mode.
-
-http://invensense.tdk.com/wp-content/uploads/2020/09/DS-000292-ICM-42605-v1.5.pdf
-
-That doesn't make the binding wrong as such, but we could be tighter in checking this!
-
-I'll add this to my list to take a closer look at sometime soonish.
-
-Thanks.
-
-Jonathan
-
-> +
->  required:
->    - compatible
->    - reg
->    - interrupts
->  
-> +additionalProperties: false
-> +
->  examples:
->    - |
-
+--CQDko/0aYvuiEzgn--
