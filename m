@@ -2,107 +2,85 @@ Return-Path: <SRS0=eLx3=DM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E64F9C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:42:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F3BFC4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:43:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA448207F7
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:42:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DEA220776
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 14:43:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uq4Iq3+/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JMXtpOzB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA448207F7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XMHTcbGf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SD/Qgw9F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DEA220776
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BB5416A2;
-	Mon,  5 Oct 2020 16:41:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BB5416A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 227561779;
+	Mon,  5 Oct 2020 16:42:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 227561779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601908946;
-	bh=zXcMNekq4BBEbayKNh0ZM0PQe6dlhY3ZtF3cDN6LKNM=;
+	s=default; t=1601908985;
+	bh=zT1ggZQfYdTWKaaKhhfthWc1Wmu2z51MEgqhMdjk+B0=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Uq4Iq3+/AgUOdc0dEMlrbR96n1nSUiYbpXfHnuYEGKwo9kciyROyf28NKn8e7R4hH
-	 vsOTNagoK155LE2fpiGC/BVEPqelP1Y3UtgP9/ULbsq+YXg3BHLr7cqMYI69ib4aux
-	 DWajrCCKmYJIAAlMTKcuQ+dMPBVljlqEgxt/yrK0=
+	b=XMHTcbGfX2eNh3AkVHr5Vqg58mU2+qAK8SXnfabRq+ve4KEQRIlWNcS/+IQtYNVCz
+	 5xI+3A/gHXBaHHSsy1c6Jmn2rqtzg5ejMfgZcWMapT2baFX8m8ZnpR4E4DLnVEa+Wq
+	 HNbHxXQcn1LYiIH/LAAnkjWnAZaUoJfL9ociDRcc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4B8EF802F9;
-	Mon,  5 Oct 2020 16:38:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC47BF802FF;
+	Mon,  5 Oct 2020 16:38:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AA4EF8025A; Mon,  5 Oct 2020 12:37:17 +0200 (CEST)
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
- [IPv6:2a00:1450:4864:20::643])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8B6BAF80121; Mon,  5 Oct 2020 13:01:37 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC964F800C9
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 12:37:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC964F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D999F80121
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 13:01:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D999F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JMXtpOzB"
-Received: by mail-ej1-x643.google.com with SMTP id lw21so7168369ejb.6
- for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2020 03:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=EQcMf3aBHGTHbFtiLcGPyEnLeByAfRIiKvJYpM7dHjI=;
- b=JMXtpOzBphG2KW05zXFj2vXclgc2K+H8JNLe4wZm7v+D9biCrsBBlunvumrZBdu1ay
- dGsC3P+vCBgpuvq8Us5VYT17QD/j1PGdTs3yayROXo3Im6WBME+yzVPRs9dhmCnhv+Kp
- deAaGEl4mX/k8HNSg+lcAp97KgIlUIgmSSwwdLTGDqN7XE8+lWKnDQvOaVfL9MZ14U+a
- QRIvo/0Rw3hXEZYEYP0VkWPlkV5tVRSOzoq3CiZiRn3rvyx0WeBnBNIUIK3FrMGOYn9N
- QIQdKyuVIgtZvtCvpApddnOAphNZZn8AUAHtmpPXbjSAxqojzQj+J6GDsnofUdkYSHTP
- MAYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=EQcMf3aBHGTHbFtiLcGPyEnLeByAfRIiKvJYpM7dHjI=;
- b=Vl8pLz+jh8Me00sI9oaupOjQwpZteakWHFPOCHTbVEE70nSfA+oM5vx9AHy6JNJhVe
- BL4rlr3UBi+LE5IwMFdHKpyt3TKQXf0aTXfBOjM1Fw202p69e65uWAyZ5jbwReQ7bWFP
- /KJORd4gtmw8m5hnzHvXqCafH9eSO5b1jJuu7c7hYEZVBXJIj62m5/BcdbsGlThOLqPP
- yfsH/ZjHMDr0hQqMf5CUTlAk2b7eqJPOhoFmITJKpzcDrCTo/bFo6S8yCtl7roYjaO1P
- RoSz1ZyV9XXRzAf3S1ppuM3m4uluIIYMqO1bLHQf5YUgkABbALgDn2WK1pUkkwLPeoe5
- Wlhg==
-X-Gm-Message-State: AOAM530sYI+1BnzAUPc6LxgT/FV//o+oov4cEJcZGo0bzYmEXC58fA8z
- HxE9FhAUKbJHIKcj9GS28g0=
-X-Google-Smtp-Source: ABdhPJyAUrA9v+oT7mNxthuQoeotTCXMOOGXsGx3LdAG3pM2W9hPKJEenugRGvwJUGZXAZHqegPZ7g==
-X-Received: by 2002:a17:906:6545:: with SMTP id
- u5mr14725364ejn.346.1601894226145; 
- Mon, 05 Oct 2020 03:37:06 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
- by smtp.gmail.com with ESMTPSA id yz15sm7567670ejb.9.2020.10.05.03.37.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Oct 2020 03:37:04 -0700 (PDT)
-Date: Mon, 5 Oct 2020 12:37:03 +0200
-From: Thierry Reding <thierry.reding@gmail.com>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="SD/Qgw9F"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 831DF20578;
+ Mon,  5 Oct 2020 11:01:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601895686;
+ bh=zT1ggZQfYdTWKaaKhhfthWc1Wmu2z51MEgqhMdjk+B0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=SD/Qgw9FIMuzORoe+m+VTXdFP3akbnWWNU81Odi9c5GKdU7J+GKmby2c8netpfgmA
+ adZ1oHsaoFEdzavqQfYQskxWQibYcQ5HrNcWX5oNl7SvediEUDK9mfzz+po5gPOLGv
+ GYaHousl0JgdpMqFSA4SRgxVcsLFkSnV03Ue+OnE=
+Date: Mon, 5 Oct 2020 12:00:22 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Another round of adding missing
  'additionalProperties'
-Message-ID: <20201005103703.GN425362@ulmo>
+Message-ID: <20201005110022.GB5139@sirena.org.uk>
 References: <20201002234143.3570746-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="CQDko/0aYvuiEzgn"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="6sX45UoQRIJXqkqR"
 Content-Disposition: inline
 In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+X-Cookie: Most of your faults are not your fault.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Mailman-Approved-At: Mon, 05 Oct 2020 16:38:46 +0200
 Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-iio@vger.kernel.org,
  linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
  linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
  dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
  Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
@@ -110,8 +88,7 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-iio@vger.kernel.org,
  Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
  devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
  Mauro Carvalho Chehab <mchehab@kernel.org>, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- openipmi-developer@lists.sourceforge.net,
+ Bjorn Helgaas <bhelgaas@google.com>, openipmi-developer@lists.sourceforge.net,
  Bjorn Andersson <bjorn.andersson@linaro.org>, linux-hwmon@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
@@ -136,42 +113,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---CQDko/0aYvuiEzgn
+--6sX45UoQRIJXqkqR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 On Fri, Oct 02, 2020 at 06:41:43PM -0500, Rob Herring wrote:
-[...]
->  .../arm/tegra/nvidia,tegra20-pmc.yaml         |  2 ++
-[...]
->  .../bindings/sound/nvidia,tegra186-dspk.yaml  |  2 ++
->  .../sound/nvidia,tegra210-admaif.yaml         |  2 ++
->  .../bindings/sound/nvidia,tegra210-dmic.yaml  |  2 ++
->  .../bindings/sound/nvidia,tegra210-i2s.yaml   |  2 ++
-[...]
->  .../bindings/usb/nvidia,tegra-xudc.yaml       |  2 ++
-[...]
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+> Another round of wack-a-mole. The json-schema default is additional
+> unknown properties are allowed, but for DT all properties should be
+> defined.
 
---CQDko/0aYvuiEzgn
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--6sX45UoQRIJXqkqR
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl96908ACgkQ3SOs138+
-s6Hn/g/+OAyAW+yLaNZ0EuRduaLOLtd19HpvVqZdf68FWcAxWHANPdIKnVuc++CF
-2r+nHjgPy4zI3LGP1bGlgPufCdAapy2QTx9sGt/VeTEOuo9uTjb6J4Y7xXC11qQT
-pVI+v4ofSi48FN6vY6VWsotDscDJFLkJy/eZdb1RRuU44SG4dw04Z3fn1STm9wAN
-PS6hKtpUTbZYzgI0hngx2Ph30t7fyu18NIRPsKZ6/3WgR4HwD8cdpVi+06ThN3GQ
-s5CEQ/J7l9z1tfQhUypxLic1JV21su9fCERZQd96CKyIvcpJ5RByk7d7EnnZ4A53
-ZDRzwiymRP29X0IUzvEoHc7XvUP/mIZIkRNtTc3tLGZHZ34+Gc805Hcy5slbzhRz
-V+Gl3oXG56OhWLSbyNQXOOlbJJAmdFS1IDAoV752G6kq5fFZ397AW34DLF5YJX0k
-lYF3NWBTpuxxWCGuceKkACfscLE1dAifN2Rtgf9mbM1k2mIG7mVa6tdpxJ3sjf8Y
-1T0v3HYAwfOKTajaYUY4UYLMIJcZNjjJsw/olvcM6a9c8x/g79W3BgSjS6F/pEww
-DtuObW8366dl2WoqlYTJ9eWvKXSbCHRBhPpYLamHRBOBj7HKqGSHyyq0hEGPvd6X
-Hr+OJUghj7CHS+5vXEq5oNiT4bE6x9ytJdHNf5hIiRchRu6TeOQ=
-=hMJa
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl96/MYACgkQJNaLcl1U
+h9DVIAf/YahMxzxRA1HRo6CR552Pzfu8pWuFTeWzZTi4iIVW4oR/TUvjaBuMBAZF
+jIi3Kk2yR9lW+bCaPvUIjXsdB31S0iHgXORKR9ByRsx4fZS4MC/x9KFlv/v5dziQ
+nMO+lF+vyZQrYQrfwQmBJ5JdbeM9r2Oh+tUBcsKZkPsvg10glGuisr1mO1CEaEuL
+zcz31MfKpdGbLUEOlPzruZ5uNt0/FHU6FxOusAGW9lkYx+c7GjNWtdDh8h7gzd1n
+SzrDKnBlTWCZ+Owy2r9hJS6ow+fIjoYDT+Xtp6AvrSk9oJ6hggQ6NyxPpesZWbKV
+3Kfe7+KGLuHI4AMEU0u/czJWmNdEJw==
+=5yDb
 -----END PGP SIGNATURE-----
 
---CQDko/0aYvuiEzgn--
+--6sX45UoQRIJXqkqR--
