@@ -2,90 +2,78 @@ Return-Path: <SRS0=eLx3=DM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27869C46466
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 15:35:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0431DC4363A
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 15:52:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1042520637
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 15:35:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2D50220639
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Oct 2020 15:52:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UCnkQfl6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IwYynOti"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1042520637
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FB0LmHFQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D50220639
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 114EE1791;
-	Mon,  5 Oct 2020 17:34:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 114EE1791
+	by alsa0.perex.cz (Postfix) with ESMTPS id A32D6179E;
+	Mon,  5 Oct 2020 17:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A32D6179E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601912144;
-	bh=oz1iqalx3gyPbBtGl2AtGGTDb6hLeXHSf6FxZstxxbI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1601913143;
+	bh=ECteLpEYWYCm+mSfsD3H9bajG1oTzClwkS0uDSwJLd4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UCnkQfl68+oDx7a1bvDSBv6E132D5wn6eJ5Zem7C5ugy1QyjhzjOsSiZINUmDPQ7D
-	 Qy+3D5g9exgwVaTMIh1mu9Sdl7LqDgLEFMG6szDsKeU7sT6Im2RmWeI1G8yKUU2Nm9
-	 J/XEZZ1JYvbwe8f+NvJrDCkG2O8bSJpHn6BlfLfE=
+	b=FB0LmHFQ7fdN+jhvhT3ePFgeFsL2GXldDlMYYd0YFMQQ+2OgsjcjVVPKpdg6Gr6FK
+	 t6cexAYStKI2kY1Mezi1pfrspKoF/4a/C9cYfCkW4k7pgdeBpUTr3wLmxbxWByiBhT
+	 fAYm3C8covTPAleGHwk0dU6ntVA+7cWdw96qoGiA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A51AF80121;
-	Mon,  5 Oct 2020 17:34:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8086F8025A;
+	Mon,  5 Oct 2020 17:51:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42568F8025A; Mon,  5 Oct 2020 17:34:52 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5DBEBF80260; Mon,  5 Oct 2020 17:51:31 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91514F800EF
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 17:34:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91514F800EF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IwYynOti"
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 44C7C2100A;
- Mon,  5 Oct 2020 15:34:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601912086;
- bh=oz1iqalx3gyPbBtGl2AtGGTDb6hLeXHSf6FxZstxxbI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=IwYynOtiK6MoDO3ZGStdELuDUcfBjOlxIi1HzjYkM9Hz8YdxttrAdM5xxoWprx1t0
- QcHo0KfBNxcpInpFVps/E3rcbvUE/P/oCdn01hRttY3KGcE30zGoy/GVzmfCpw96Yi
- 5sFeEDgeABQ/lZvPP4SIVXL0dT183CsCIcHs6rE4=
-Date: Mon, 5 Oct 2020 17:32:55 +0200
-From: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/6] ASoC: SOF: Introduce descriptors for SOF client
-Message-ID: <20201005153255.GC2372768@kroah.com>
-References: <20200930225051.889607-1-david.m.ertman@intel.com>
- <20200930225051.889607-3-david.m.ertman@intel.com>
- <20201001130245.GB2378679@kroah.com>
- <f3fa8df9fc8bcd789167f61b6c9d4df66b9b85c1.camel@intel.com>
- <20201002045357.GA34005@kroah.com>
- <ad38db14921dc5afb424db1ecac53053f15bb753.camel@intel.com>
- <20201003090201.GC114893@kroah.com>
- <8e0bb7b90d689f98fc2dd861b4444fda9b36bab8.camel@intel.com>
- <20201005112711.GB401816@kroah.com>
- <074b20bf-ecce-82a9-574a-758da31cef06@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B18DF800C9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 17:51:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B18DF800C9
+IronPort-SDR: U11vy0wChOlX+QvwPITJUGDYlHu9v56AIc5Evkg1XxDmffi3njJmge/IMouVQ/CJQ5CU2vQG82
+ Jyu8d36UrVkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="143657222"
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; d="scan'208";a="143657222"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga107.fm.intel.com with ESMTP; 05 Oct 2020 08:51:15 -0700
+IronPort-SDR: v0pZQ0WVeZV7h2vIQykWY35/5QD9fZWc6Q3I+OJgUrDrwpu2t9CAlMsk+R4nVrGU7TIaSWUHbH
+ 55a5XsMqSI1A==
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; d="scan'208";a="417308196"
+Received: from srembels-mobl1.amr.corp.intel.com (HELO [10.212.125.28])
+ ([10.212.125.28])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Oct 2020 08:51:10 -0700
+Subject: Re: [PATCH 1/4] ASoC: Intel: bdw-rt5650: Mark FE DAIs as nonatomic
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20201004090609.29066-1-cezary.rojewski@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3ac93d7c-f87f-334b-5cd9-334788030c29@linux.intel.com>
+Date: Mon, 5 Oct 2020 09:49:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <074b20bf-ecce-82a9-574a-758da31cef06@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tiwai@suse.de" <tiwai@suse.de>, "Sridharan,
- Ranjani" <ranjani.sridharan@intel.com>,
- "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "parav@nvidia.com" <parav@nvidia.com>, "jgg@nvidia.com" <jgg@nvidia.com>,
- "Ertman, David M" <david.m.ertman@intel.com>
+In-Reply-To: <20201004090609.29066-1-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,83 +89,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 05, 2020 at 10:18:21AM -0500, Pierre-Louis Bossart wrote:
-> 
-> > > > > > > > As you are creating new sysfs directories, you should have
-> > > > > > > > some
-> > > > > > > > documentation for them :(
-> > > > > > > Hi Greg,
-> > > > > > > 
-> > > > > > > We are not adding any sysfs entries in this series.
-> > > > > > 
-> > > > > > You added directories in sysfs, right?
-> > > > > Hi Greg,
-> > > > > 
-> > > > > We are not adding any sysfs directories.
-> > > > 
-> > > > Really?  Then what does creating these new devices do in sysfs?  If
-> > > > nothing, then why are they being used at all?  :)
-> > > > 
-> > > > > The only change in the /sys directory will be the new ancillary
-> > > > > devices created in the /sys/bus/ancillary/devices directory ie
-> > > > > snd_sof_client.ipc_test.0 and snd_sof_client.ipc_test.1.
-> > > > 
-> > > > That is what I was referring to.
-> > > > 
-> > > > > In the following patches, we're adding debugfs entries for the ipc
-> > > > > test clients but no other sysfs changes.
-> > > > > 
-> > > > > Is it required to add documentation for these as well?
-> > > > 
-> > > > Why would you not document them?  If you don't do anything with these
-> > > > devices, then why even use them?  debugfs does not require sysfs
-> > > > entries, so I fail to see the need for using this api at all here...
-> > > Hi Greg,
-> > > 
-> > > Pardon my ignorance here a bit. Typically, when registering platform
-> > > devices, we've not added any documentation to highlight how they are
-> > > used. Of course thats no excuse for not doing this right.
-> > > 
-> > > But just to clarify so that we can fix this properly in the next
-> > > version, are we expected to add documentation for the directories added
-> > > in the /sys/bus (ie /sys/bus/ancillary, /sys/bus/ancillary/devices,
-> > > /sys/bus/ancillary/drivers etc) and also for the devices and drivers
-> > > added by the SOF driver?
-> > 
-> > You are using a brand-new interface, which is designed to represent
-> > things in the driver model and sysfs properly, and yet your usage
-> > doesn't actually take advantage of the driver model or sysfs at all?
-> > 
-> > That implies to me that you are using this incorrectly.
-> 
-> We are taking advantage of 'standard' sysfs capabilities, e.g. we get a
-> power/ directory and can disable pm_runtime if we chose to do so.
-> 
-> But the point is that for now we haven't added domain specific properties
-> with attributes.
-> 
-> For example, I noodled with this code last week to replace the platform
-> devices with ancillary devices in the Intel SoundWire code, and I get this
-> in sysfs:
-> 
-> root@plb:/sys/bus/ancillary/devices/soundwire_intel.link.0# ls -l
-> total 0
-> lrwxrwxrwx 1 root root    0 Oct  2 15:48 driver ->
-> ../../../../bus/ancillary/drivers/intel-sdw
-> lrwxrwxrwx 1 root root    0 Oct  5 10:12 firmware_node ->
-> ../../../LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:63/PRP00001:00
-> drwxr-xr-x 2 root root    0 Oct  5 10:12 power
-> drwxr-xr-x 5 root root    0 Oct  2 15:48 sdw-master-0
-> lrwxrwxrwx 1 root root    0 Oct  2 15:48 subsystem ->
-> ../../../../bus/ancillary
-> -rw-r--r-- 1 root root 4096 Oct  2 15:48 uevent
-> 
-> What would you want us to document here?
 
-What you think should be in the documentation to help people out with
-these devices...
 
-Anyway, this thread is long-dead due to it being only on alsa-devel, I'm
-not going to respond anymore here, thanks.
+On 10/4/20 4:06 AM, Cezary Rojewski wrote:
+> PCM operations for DAI links connected with DSP platform component
+> involve communication with DSP firmware by IPCs. As IPC protocol may
+> cause thread to sleep while waiting for a response from DSP, propagate
+> that information to ALSA core by marking all FE DAIs as nonatomic.
 
-greg k-h
+I double checked that indeed the machine drivers modified in this series 
+were the only ones without both .dynamic and .nonatomic set.
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks Cezary!
+
+> 
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>   sound/soc/intel/boards/bdw-rt5650.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+> index c44315af6a4c..aa420b201848 100644
+> --- a/sound/soc/intel/boards/bdw-rt5650.c
+> +++ b/sound/soc/intel/boards/bdw-rt5650.c
+> @@ -232,6 +232,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+>   	{
+>   		.name = "System PCM",
+>   		.stream_name = "System Playback",
+> +		.nonatomic = 1,
+>   		.dynamic = 1,
+>   		.ops = &bdw_rt5650_fe_ops,
+>   		.trigger = {
+> 
