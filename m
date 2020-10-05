@@ -2,88 +2,101 @@ Return-Path: <SRS0=FemE=DN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39D4FC41604
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:38:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 198F1C41604
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:38:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 122EF20796
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:38:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C16F4206DD
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:38:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I88Js4Aa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 122EF20796
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PhN4h+l1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yt3ruZa6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C16F4206DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07D16176D;
-	Tue,  6 Oct 2020 08:37:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07D16176D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22738177D;
+	Tue,  6 Oct 2020 08:38:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22738177D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601966279;
-	bh=kfzkEenmVbJsdC2KTrdreashMBxFOrJdy4H2X0g00kQ=;
+	s=default; t=1601966330;
+	bh=YDa9qgcYN/rLvsHl7wxHnDzXxyPxrajJMh139W2bTQc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I88Js4Aat/hCXQCl0NrggMR5FIH2cQFoxIpmksCkIA/kNIadxPJ49O9D1CC7xW/ZK
-	 zzFv/Xh6usMzVe4X7Z0HGR8sh2M6z8dFVNWXvc4InUZbxost7EJBBkUZ01PI74d4Si
-	 dARJp9DAnCvkufcCaljJROURwF4qhhPeSSMdVW94=
+	b=PhN4h+l1lNyF7m4uPLvuBPwyEiaf+e4pLBBUvGwr42SVQZ1Pb/IINN17/EKtjDM4R
+	 ld9yvT22luGXN3tZ3vIVALngOafDcyF6TNT7dgvJG46y1wipewb3nARH+o01MhQN2q
+	 pv+mcRkLklZS9XoHRCN0E2K9kYVFzlXAX5DshJrw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EE6CF80218;
-	Tue,  6 Oct 2020 08:37:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B84DCF80268;
+	Tue,  6 Oct 2020 08:37:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72BB7F8026A; Mon,  5 Oct 2020 17:01:52 +0200 (CEST)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id D27EDF8025A; Mon,  5 Oct 2020 17:39:29 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 266FEF800EF
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 17:01:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 266FEF800EF
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
- id 3DF5F1C0B7C; Mon,  5 Oct 2020 17:01:43 +0200 (CEST)
-Date: Mon, 5 Oct 2020 17:01:42 +0200
-From: Pavel Machek <pavel@denx.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C94BF800EF
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2020 17:39:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C94BF800EF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Yt3ruZa6"
+Received: from earth.universe (dyndsl-095-033-158-146.ewe-ip-backbone.de
+ [95.33.158.146])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1CD5C2085B;
+ Mon,  5 Oct 2020 15:39:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601912361;
+ bh=YDa9qgcYN/rLvsHl7wxHnDzXxyPxrajJMh139W2bTQc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Yt3ruZa68573tch0c/Ho1ALzHfCpTDMLesbdlPmWRDYNKB50IT55EoZp87fsRkzgz
+ 7+6j5JNoNjJ3AsqOjA1un0djegx8x339kHr5uakI101R3J4o5G+KgoyioglXZXg5dL
+ Bxy38eyfhsJbMySPsKZTFlatV3r6LR8AuCR8oLYA=
+Received: by earth.universe (Postfix, from userid 1000)
+ id 1CDCB3C0C87; Mon,  5 Oct 2020 17:39:19 +0200 (CEST)
+Date: Mon, 5 Oct 2020 17:39:19 +0200
+From: Sebastian Reichel <sre@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Another round of adding missing
  'additionalProperties'
-Message-ID: <20201005150142.GA28675@duo.ucw.cz>
+Message-ID: <20201005153919.llmcjbz4hiqvzd4x@earth.universe>
 References: <20201002234143.3570746-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ruzfmjzmyxibtjj5"
 Content-Disposition: inline
 In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Mailman-Approved-At: Tue, 06 Oct 2020 08:37:07 +0200
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-iio@vger.kernel.org,
- linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
  Thierry Reding <thierry.reding@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-leds@vger.kernel.org,
  Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
- linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, linux-clk@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-serial@vger.kernel.org,
  Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
  devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- openipmi-developer@lists.sourceforge.net,
- Bjorn Andersson <bjorn.andersson@linaro.org>, linux-hwmon@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, openipmi-developer@lists.sourceforge.net,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-hwmon@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- netdev@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
- Shawn Guo <shawnguo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jonathan Cameron <jic23@kernel.org>
+ Bjorn Andersson <bjorn.andersson@linaro.org>, netdev@vger.kernel.org,
+ Baolin Wang <baolin.wang7@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,38 +113,48 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---xHFwDpU9dbj6ez1V
+--ruzfmjzmyxibtjj5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
-
+On Fri, Oct 02, 2020 at 06:41:43PM -0500, Rob Herring wrote:
 > Another round of wack-a-mole. The json-schema default is additional
 > unknown properties are allowed, but for DT all properties should be
 > defined.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>=20
+> I'll take this thru the DT tree.
+>=20
+>  [...]
+>  .../bindings/power/supply/cw2015_battery.yaml |  2 ++
+>  .../bindings/power/supply/rohm,bd99954.yaml   |  8 ++++++++
+> [...]
 
-for leds:
+Acked-by: Sebastian Reichel <sre@kernel.org>
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
+-- Sebastian
 
-I assume you apply it..?
-								Pavel
-							=09
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---xHFwDpU9dbj6ez1V
+--ruzfmjzmyxibtjj5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3s1VgAKCRAw5/Bqldv6
-8owIAKDAkiq29W/tD49n7es9bNcHQLqXywCfWHIfHZ6OrlZTPZUQgy45PCK/EKM=
-=qVmv
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl97PhAACgkQ2O7X88g7
++pqkbg/9HQHD97P7Thh0rG2tNf/oTuwqdbqpGz8XffiIbWso3SaAukPavFc/b34T
+Bhf9ldAe4Jy7Sz8qDavKYO8qMWOF8av5Je5ajNG3fFmRAO28Jz1vcRsxn7JiTvlU
+SnlrNgxMlppGfzCt59G/IH6GyJVUVhZduf1HhaterbutugRNLE6LKY85rtwPlCR6
+d4+sJE+gKYJmNhxj1XYyVrXoWQs22IA8nJggb2g2l5nHfFolffKHFRXTX5Ax7WFL
+vhm/uSgz/4T9RyObm3lx4ODSSZqC3oc1E0DR3jf97rWH6xGUVFuJoAtE5ZpS5AJt
+uC3k2QQJ8mCt5fUA+khtnS4DIsF07uOzd5Hbex8NcXiFnlO/9GYWlmGXxlAnhdrk
+vSk8jlPgslc4xKpae1y8DFQiMndd9+1g0b4ZOJ6RnhaNpnOoFOIIPmC2ViRnQ8/0
+kv5w7Hop2CIxAYj3Jk1IzlmtbmJeQt39ya7uHNJhV2ISd8P3AmrkcNedPd8OV7MO
+7DrV+n/aKjH2gLYX0+377iH59APbluDQd64e+iDir2L5PP4BWXmyMOGqZ+Od7ScJ
+YT7hlpoKPVwZ1lqta77S7LDpYrRtyv8Ce5EsFineimEc1b4N51GTMh6lDPIGVcXz
+Xa1GC6kpGXU9Cx39fOb5K64cnrJ5Whplgiyv+4xd1suU1q25CZM=
+=XHTx
 -----END PGP SIGNATURE-----
 
---xHFwDpU9dbj6ez1V--
+--ruzfmjzmyxibtjj5--
