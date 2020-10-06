@@ -2,122 +2,101 @@ Return-Path: <SRS0=3CTx=DO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A49C41604
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:56:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B28CC4727E
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:56:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BE962176B
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:56:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC6F821707
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:56:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UIYuWNqK";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="duVae73q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BE962176B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZJIwSF+y";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=endlessos-org.20150623.gappssmtp.com header.i=@endlessos-org.20150623.gappssmtp.com header.b="bgGP3X3d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC6F821707
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=endlessos.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D87416D2;
-	Wed,  7 Oct 2020 17:55:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D87416D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91E5D16F4;
+	Wed,  7 Oct 2020 17:55:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91E5D16F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602086192;
-	bh=SpV5HOkr+jPyEeR2NEBBV0g2RogbzJPWrpDTgvT7CzI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UIYuWNqKCLVuu7nFy5rHqu/xQQqBz07SrWP6MnwuMT46GXP/Nmwsru1Ky4GG5HRax
-	 QHYcV3RzC+q5Gir0r+bN4semI338Mo6i++xcgo1lze2eu9A8/npju3uvAPj2k5Uyfs
-	 MfW4tS289dNe+lhbmuue4fzUNen045c9dnechSyU=
+	s=default; t=1602086196;
+	bh=98rFKXMPiqC15og4YIXkljwFjSEyr2DDiNvqAxS67Q0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZJIwSF+yJES1xSXAK/Haq/xnUJzHQml0mKueBOUjssMdJ1Dy8WS4I9reFEu/TxNIs
+	 IpREJahgc8P8diQzQLIJUpcioVx3qRPfBSkgiL/0ROAKrJvxhTk4abz2/NwaekITiu
+	 FomPSAs7T5Pi8lrO6GoC8wEpzV+ZFA5bWXq/tb4g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0CC8F80226;
-	Wed,  7 Oct 2020 17:54:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5277FF80245;
+	Wed,  7 Oct 2020 17:54:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3BCBBF80253; Tue,  6 Oct 2020 09:00:34 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id A1931F8012A; Tue,  6 Oct 2020 09:56:22 +0200 (CEST)
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
+ [IPv6:2607:f8b0:4864:20::542])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EE64F8003A
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 09:00:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EE64F8003A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 241FCF80128
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 09:56:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 241FCF80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="duVae73q"
-Received: by mail-wr1-x441.google.com with SMTP id k10so12126717wru.6
- for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2020 00:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=Oe7zU6gzISKBUmakEze1jPjt4AoCrxJWUb32hirWtf4=;
- b=duVae73qGXrIWn0dA9Y2ba0eTvLVJldQbfNGMJhbCGq9paoehFS47xcK9OLpCkH4WF
- NqBrFaENJwbrU/th8XmIkh1VS1vd2oH1s1pXzDf2b99Cb/bAZ5mIsHV6ptmyF1OBtQBy
- GT9rg4w2n4Isj8jXnTNnLi+Aw/L7SFWFx72v0bNTNomBvhPxjgr+pR8su7g3MDB9LEtn
- /vLB/qwXlI19SAUsjJySvCczuoNdnCBTeLhRqUeV/ScZadUIhYWFwLaiDoYkjoSe+gXj
- C3HqfoAXjTKslZ5dKtYyztKJYZ9eX7NM47nSfo4FbYcgGC7bh2R2dMJAzlKCSNaNoWRF
- iUUA==
+ dkim=pass (2048-bit key) header.d=endlessos-org.20150623.gappssmtp.com
+ header.i=@endlessos-org.20150623.gappssmtp.com header.b="bgGP3X3d"
+Received: by mail-pg1-x542.google.com with SMTP id o25so7553903pgm.0
+ for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2020 00:56:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=endlessos-org.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=t5k1TjFGfKLHv3RvX/XEqm6WMW98Ka1st8yEK6IBJ2w=;
+ b=bgGP3X3dHLY2qGFBCDETgUuZnETOhBrm5SSdHeWbTTxBk/0woDrgJHT2uz6IknHzoF
+ xLKHawWZGhi/41XIYsdchOctVgDI3fK7TRqBCZwtNAy/QS3ScWLiAZm9GdUq4I4Qmz+k
+ 6QOrlFQhgFAwOvPBHIjWUt8ozTG/9rJfVrPbaE17OLc+u2s7W+eADPxPp0L7JdYE0p5b
+ yBIeoSBtbs8B1Fkelb8lykJir4bBNcQNomZ2Er3wbL+4w3SnayfGn3VMGO7qdowtiBqi
+ gu42n6MqDCdfrvCXlhuPGqJoTrQz21ecrqm1Z8TQx6kUBlykRRv2u5KJ+d2SJK8cJiKV
+ htEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=Oe7zU6gzISKBUmakEze1jPjt4AoCrxJWUb32hirWtf4=;
- b=SaZbKFiCKSIrqXgbH5yBuyqY8oK42ib1se+o97BC3cUpMcoqUDWxM0GFMUCJipwmow
- 5WiuziZ8dRoTmhd9eL+f1axep3EHqjbL8iInxpGw/L1//xcvpSI3Gm0WMznKJm+nhYjk
- fEmBcyB8iqC337AKGvAJP4B2IaPKeI5atZA6eYrTB3QTv1AqHZIJiUzwY1rIfrHvlCiK
- c42XQUuQS/evJYcxlm3k0x4NavZjIki2qqgSnLOkY/hzRhOlE0UcMTTqfbt+XcXEwASM
- frr+mqI2Z0F4sIrJa5xPo+xohGMGq8rEZUOfPlx/Nm3wGqM0vNRegVV38aKPC2J01qSi
- ECOA==
-X-Gm-Message-State: AOAM530oecqQu7djnX1TcoO7NKxBt9UX96DgJYg7BrP+FoZ2g3xR23Zk
- zvW/ZN4YaVrYA+ub88scstvjlg==
-X-Google-Smtp-Source: ABdhPJzRpE6n88xNVq3Fk+xQSff8QQNC8n1c0b7ajSoy19OwpevLFHK5HQwgX5M07UqJkIIa/Io0cQ==
-X-Received: by 2002:adf:bb43:: with SMTP id x3mr3174885wrg.250.1601967621811; 
- Tue, 06 Oct 2020 00:00:21 -0700 (PDT)
-Received: from dell ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id o186sm2537036wmb.12.2020.10.06.00.00.15
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=t5k1TjFGfKLHv3RvX/XEqm6WMW98Ka1st8yEK6IBJ2w=;
+ b=oG+QrLdR+nJX5418rHy7jDWysmMVaVAqn/Di+ty3S1MTbhav9GDmA7bntfY6zMYcWH
+ y940SxVL6NarSqmeHJqCCypuaz0RSGTWUWkmSlSTpwQJIB8eSvIhvLH6L1sZ/4YX65iH
+ 4XZXXtL67prH2k+LoIX1oNoKycczhHFJnByTK3F2pbi+So1Ij0kdjESTxze7CHNSj4Ma
+ k7nwP8AYYQLyQ+4Apc8a4V2ieNU3fIb1LyWP8ktf6r9E3xMWK0Vh/86ZY+A0qnGWzfGG
+ zys4Uj5ZssEjViZjfk9G6/D6PI646EU/ihxODtpyBPUIEReeBbWwquuhm2xhXfDeIDGY
+ 36yw==
+X-Gm-Message-State: AOAM530pqalFUmKpOPt9QB0XNNSAz1qmiw4NtGSO866auA2hDlRR0yoM
+ trLZT+MOvlqEV59Q5sFV4Ai/3g==
+X-Google-Smtp-Source: ABdhPJwtHzUm2cAS9e4kkuQt6lVyfV8Hv9Sh5DvNjZO+3EmmvkTTAL2WCvuFcrnFCISreK4hCjW0Jg==
+X-Received: by 2002:aa7:8e9c:0:b029:152:8a25:548d with SMTP id
+ a28-20020aa78e9c0000b02901528a25548dmr3655973pfr.73.1601970973435; 
+ Tue, 06 Oct 2020 00:56:13 -0700 (PDT)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw.
+ [123.204.46.122])
+ by smtp.googlemail.com with ESMTPSA id n2sm1875377pja.41.2020.10.06.00.56.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Oct 2020 00:00:21 -0700 (PDT)
-Date: Tue, 6 Oct 2020 08:00:13 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Another round of adding missing
- 'additionalProperties'
-Message-ID: <20201006070013.GA6148@dell>
-References: <20201002234143.3570746-1-robh@kernel.org>
+ Tue, 06 Oct 2020 00:56:12 -0700 (PDT)
+From: Jian-Hong Pan <jhp@endlessos.org>
+To: Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable audio jacks of ASUS D700SA with
+ ALC887
+Date: Tue,  6 Oct 2020 15:53:35 +0800
+Message-Id: <20201006075334.92933-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
 X-Mailman-Approved-At: Wed, 07 Oct 2020 17:54:46 +0200
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-iio@vger.kernel.org,
- linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Thierry Reding <thierry.reding@gmail.com>, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
- linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- openipmi-developer@lists.sourceforge.net,
- Bjorn Andersson <bjorn.andersson@linaro.org>, linux-hwmon@vger.kernel.org,
- Stephen Boyd <sboyd@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- netdev@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
- Shawn Guo <shawnguo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jonathan Cameron <jic23@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ linux@endlessm.com, linux-kernel@vger.kernel.org,
+ Jian-Hong Pan <jhp@endlessos.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -133,16 +112,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 02 Oct 2020, Rob Herring wrote:
+The ASUS D700SA desktop's audio (1043:2390) with ALC887 cannot detect
+the headset microphone and another headphone jack until
+ALC887_FIXUP_ASUS_HMIC and ALC887_FIXUP_ASUS_AUDIO quirks are applied.
+The NID 0x15 maps as the headset microphone and NID 0x19 maps as another
+headphone jack. Also need the function like alc887_fixup_asus_jack to
+enable the audio jacks.
 
-> Another round of wack-a-mole. The json-schema default is additional
-> unknown properties are allowed, but for DT all properties should be
-> defined.
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+---
+ sound/pci/hda/patch_realtek.c | 41 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d4f17b465892..8d0928bdc9ff 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1929,6 +1929,8 @@ enum {
+ 	ALC1220_FIXUP_CLEVO_P950,
+ 	ALC1220_FIXUP_CLEVO_PB51ED,
+ 	ALC1220_FIXUP_CLEVO_PB51ED_PINS,
++	ALC887_FIXUP_ASUS_AUDIO,
++	ALC887_FIXUP_ASUS_HMIC,
+ };
+ 
+ static void alc889_fixup_coef(struct hda_codec *codec,
+@@ -2141,6 +2143,30 @@ static void alc1220_fixup_clevo_pb51ed(struct hda_codec *codec,
+ 	alc_fixup_headset_mode_no_hp_mic(codec, fix, action);
+ }
+ 
++static void alc887_asus_hp_automute_hook(struct hda_codec *codec,
++					 struct hda_jack_callback *jack)
++{
++	struct alc_spec *spec = codec->spec;
++	int vref;
++
++	snd_hda_gen_hp_automute(codec, jack);
++
++	vref = spec->gen.hp_jack_present ? 0xc4 : 0xc0;
++	snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
++			    vref);
++}
++
++static void alc887_fixup_asus_jack(struct hda_codec *codec,
++				     const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	if (action != HDA_FIXUP_ACT_PROBE)
++		return;
++	snd_hda_codec_write(codec, 0x1b, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
++			    0xc0);
++	spec->gen.hp_automute_hook = alc887_asus_hp_automute_hook;
++}
++
+ static const struct hda_fixup alc882_fixups[] = {
+ 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -2398,6 +2424,20 @@ static const struct hda_fixup alc882_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC1220_FIXUP_CLEVO_PB51ED,
+ 	},
++	[ALC887_FIXUP_ASUS_AUDIO] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x15, 0x02a14150 }, /* use as headset mic, without its own jack detect */
++			{ 0x19, 0x22219420 },
++			{}
++		},
++	},
++	[ALC887_FIXUP_ASUS_HMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc887_fixup_asus_jack,
++		.chained = true,
++		.chain_id = ALC887_FIXUP_ASUS_AUDIO,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+@@ -2431,6 +2471,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x13c2, "Asus A7M", ALC882_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x1043, 0x1873, "ASUS W90V", ALC882_FIXUP_ASUS_W90V),
+ 	SND_PCI_QUIRK(0x1043, 0x1971, "Asus W2JC", ALC882_FIXUP_ASUS_W2JC),
++	SND_PCI_QUIRK(0x1043, 0x2390, "Asus D700SA", ALC887_FIXUP_ASUS_HMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
+ 	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
+ 	SND_PCI_QUIRK(0x1043, 0x8691, "ASUS ROG Ranger VIII", ALC882_FIXUP_GPIO3),
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.28.0
+
