@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87120C41604
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2AD0C41604
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:57:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 641D420760
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:57:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E974820760
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:57:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="korsMm2U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 641D420760
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cUYM22d1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E974820760
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A782B1766;
-	Tue,  6 Oct 2020 08:56:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A782B1766
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67012176D;
+	Tue,  6 Oct 2020 08:56:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67012176D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601967452;
-	bh=dC2d9Qk1rV1cogMw/OtOrsgfAtYRoxM669LTUExcN+8=;
+	s=default; t=1601967469;
+	bh=wYISL1lttkFluCko7BcOtf6doVG70oGVVf8Nz9Pd0FE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=korsMm2Udl7GKyJbx63dDZMnvlZAbRYkc4nwkUB8jOQkP7hljnxPvRD2fSfaXgbQe
-	 a/mmzfxq4qcKifXnmnScK4ErO2vqnDzwllRTyIRGxkD3XpF8kaVYmZaHq6pzDkF2t2
-	 ZZn4SQoPVjpQNUgowtYtM7OIZDaXyc58YixB86GA=
+	b=cUYM22d1orQkZZqKHqT9B3k6Xz1wsWv0DRitMpNINsZIQmEXskKcU1Pd4pUIpVpKj
+	 iUpW0AMTspYyhlR/6YNs3x4ZSP15BzY8HZsa3JbjE+cI5TwRolPkNQ9hLuTmcU5cTp
+	 p776b5umE/zYCNPdn+YDnIRiopHz6oQRNl8Wj9n8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ACF8F8035F;
-	Tue,  6 Oct 2020 08:50:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF688F80362;
+	Tue,  6 Oct 2020 08:50:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51E64F80335; Tue,  6 Oct 2020 08:50:40 +0200 (CEST)
+ id 53300F8034A; Tue,  6 Oct 2020 08:50:44 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9B15F80317
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 08:50:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B15F80317
-IronPort-SDR: IA5JmvHlQtAjIqj4nzozQEWPBF1t1UZg8l1c57xcVOEc950fgRMv/yB3eiZs2IWDFt85eTorFc
- P+Y6f+ar1ULQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="249091371"
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="249091371"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79795F80337
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 08:50:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79795F80337
+IronPort-SDR: R/m5ugD7NcISgdGpe16EcvAXJ7/oEQh+n8xuXS70X9jvOM7V0EduxNPqrM0nkRpR2iw/f2dINA
+ vHgwifHGfnVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="249091387"
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="249091387"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Oct 2020 23:50:36 -0700
-IronPort-SDR: nh1w+vMu5gCBo3CR+S4gRG6/zwUoaE27LytkoKxK4Z8ytl6TCNmk+4T8CIxBC4PVUmU9so/oLC
- euOa+9XBY3AA==
+ 05 Oct 2020 23:50:40 -0700
+IronPort-SDR: Gw7Lep+ZbpHan7pk20CT2OprvTTzb2+tqkxC6Y9am0XVo5EE9jICMwfZQeero789xnyLRn+G5u
+ 4lYfQxvkTJZA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="315491323"
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="315491341"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 05 Oct 2020 23:50:32 -0700
+ by orsmga006.jf.intel.com with ESMTP; 05 Oct 2020 23:50:36 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 12/13] ASoC: Intel: Remove sst_pdata structure
-Date: Tue,  6 Oct 2020 08:49:06 +0200
-Message-Id: <20201006064907.16277-13-cezary.rojewski@intel.com>
+Subject: [PATCH v2 13/13] ASoC: Intel: Remove sst_dsp_get_thread_context
+Date: Tue,  6 Oct 2020 08:49:07 +0200
+Message-Id: <20201006064907.16277-14-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201006064907.16277-1-cezary.rojewski@intel.com>
 References: <20201006064907.16277-1-cezary.rojewski@intel.com>
@@ -91,82 +91,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-struct sst_pdata is unused among remaining /sound/soc/intel solution so
-remove it.
+While sst_dsp_get_thread_context() is declared as solution-agnostic, it
+is only used by /skylake/ solution. Majority of thread_context field
+usages are direct accesses. Improve code cohesiveness and convert to
+single usage model.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/common/sst-dsp-priv.h |  2 +-
- sound/soc/intel/common/sst-dsp.h      | 28 ---------------------------
- sound/soc/intel/skylake/skl-sst-dsp.c |  2 +-
- 3 files changed, 2 insertions(+), 30 deletions(-)
+ sound/soc/intel/common/sst-dsp-priv.h | 5 -----
+ sound/soc/intel/skylake/cnl-sst.c     | 2 +-
+ sound/soc/intel/skylake/skl-sst-ipc.c | 2 +-
+ 3 files changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-index 7d9834509f4a..5a5ce5069f9f 100644
+index 5a5ce5069f9f..de2b44568feb 100644
 --- a/sound/soc/intel/common/sst-dsp-priv.h
 +++ b/sound/soc/intel/common/sst-dsp-priv.h
-@@ -27,7 +27,7 @@ struct sst_ops {
- 	irqreturn_t (*irq_handler)(int irq, void *context);
- 
- 	/* SST init and free */
--	int (*init)(struct sst_dsp *sst, struct sst_pdata *pdata);
-+	int (*init)(struct sst_dsp *sst);
- 	void (*free)(struct sst_dsp *sst);
+@@ -98,9 +98,4 @@ struct sst_dsp {
+ 	struct snd_dma_buffer dmab;
  };
  
-diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-index 021a36b2398a..f111fd3f334b 100644
---- a/sound/soc/intel/common/sst-dsp.h
-+++ b/sound/soc/intel/common/sst-dsp.h
-@@ -26,34 +26,6 @@ struct sst_dsp_device {
- 	void *thread_context;
- };
- 
--/*
-- * SST Platform Data.
-- */
--struct sst_pdata {
--	/* ACPI data */
--	u32 lpe_base;
--	u32 lpe_size;
--	u32 pcicfg_base;
--	u32 pcicfg_size;
--	u32 fw_base;
--	u32 fw_size;
--	int irq;
+-static inline void *sst_dsp_get_thread_context(struct sst_dsp *sst)
+-{
+-	return sst->thread_context;
+-}
 -
--	/* Firmware */
--	const struct firmware *fw;
--
--	/* DMA */
--	int resindex_dma_base; /* other fields invalid if equals to -1 */
--	u32 dma_base;
--	u32 dma_size;
--	int dma_engine;
--	struct device *dma_dev;
--
--	/* DSP */
--	u32 id;
--	void *dsp;
--};
--
- /* SHIM Read / Write */
- void sst_dsp_shim_write(struct sst_dsp *sst, u32 offset, u32 value);
- u32 sst_dsp_shim_read(struct sst_dsp *sst, u32 offset);
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 225706d148d8..4ae3eae0d1fd 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -422,7 +422,7 @@ struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
- 
- 	/* Initialise SST Audio DSP */
- 	if (sst->ops->init) {
--		ret = sst->ops->init(sst, NULL);
-+		ret = sst->ops->init(sst);
- 		if (ret < 0)
- 			return NULL;
- 	}
+ #endif
+diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+index 355a7b116886..fcd8dff27ae8 100644
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -311,7 +311,7 @@ static struct sst_ops cnl_ops = {
+ static irqreturn_t cnl_dsp_irq_thread_handler(int irq, void *context)
+ {
+ 	struct sst_dsp *dsp = context;
+-	struct skl_dev *cnl = sst_dsp_get_thread_context(dsp);
++	struct skl_dev *cnl = dsp->thread_context;
+ 	struct sst_generic_ipc *ipc = &cnl->ipc;
+ 	struct skl_ipc_header header = {0};
+ 	u32 hipcida, hipctdr, hipctdd;
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 667cdddc289f..7a425271b08b 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -489,7 +489,7 @@ void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
+ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
+ {
+ 	struct sst_dsp *dsp = context;
+-	struct skl_dev *skl = sst_dsp_get_thread_context(dsp);
++	struct skl_dev *skl = dsp->thread_context;
+ 	struct sst_generic_ipc *ipc = &skl->ipc;
+ 	struct skl_ipc_header header = {0};
+ 	u32 hipcie, hipct, hipcte;
 -- 
 2.17.1
 
