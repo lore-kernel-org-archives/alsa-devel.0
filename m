@@ -7,86 +7,80 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 041A4C4363D
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0F4DC4363D
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:05:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE3AE20760
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:05:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C62320760
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:05:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iPk7HoAg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rT7YO5mX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE3AE20760
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GGFNWEsX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="svhfwihA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C62320760
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B3C616C7;
-	Tue,  6 Oct 2020 16:04:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B3C616C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id D26EB1751;
+	Tue,  6 Oct 2020 16:05:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D26EB1751
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601993100;
-	bh=Lj8LmYIDdDAeKpaYHWSshOa9hH6sWSOg/YlZHcnjBx4=;
+	s=default; t=1601993150;
+	bh=78BG9Iu2yAlND/COH/HKK6//gm3h8RbYRE58LCuOyj4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iPk7HoAgZsfgCdw7VXajWbWrj4KRoHDC4zbgi33m0b+VSROuCbQdzXEAlJ4IErOGN
-	 rSt5lBlJjfKGOzpkRHdpk6S4AQ6nrvLgcBcP9nHPj4urJc8G2SPy6S+WvrZTFNPy6h
-	 no2+srD5gKTRAFKgeX5uOZg1Ema2G/fn5X0zXIK8=
+	b=GGFNWEsXwGIGkv4xYw2dA87iu17CB4JpodqVXm2wKOiFqr+xQeMG0rFOIyQQpKpkh
+	 ZyeSvwstr8Tl4y8X8SYgN5WlZKnEv92sIRZo8bJhxxGdVTXiM4y81kKos7ROvi18VN
+	 2j6rE2VwHBv51maeGSvo6ch3GmlFY/VFnwGenYYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B810F8012B;
-	Tue,  6 Oct 2020 16:04:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23AB3F8015B;
+	Tue,  6 Oct 2020 16:04:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7747AF80163; Tue,  6 Oct 2020 16:04:05 +0200 (CEST)
+ id 853EBF80128; Tue,  6 Oct 2020 16:04:05 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7F82F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3958F80127
  for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 16:03:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7F82F80128
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3958F80127
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rT7YO5mX"
+ header.b="svhfwihA"
 Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de
  [95.90.213.189])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A664A22208;
+ by mail.kernel.org (Postfix) with ESMTPSA id BD53B2226A;
  Tue,  6 Oct 2020 14:03:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601993034;
- bh=Lj8LmYIDdDAeKpaYHWSshOa9hH6sWSOg/YlZHcnjBx4=;
+ s=default; t=1601993035;
+ bh=78BG9Iu2yAlND/COH/HKK6//gm3h8RbYRE58LCuOyj4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rT7YO5mXT3SGjUM0qXRLog3cbipq+By3tZJ6+2qtUVrK0GpL1bb2QcBHOc+1OEh9q
- O1L0bn8RYXfNetbSJvGPRZcR1ceyfhHVAQNgdw5cyom92gu0bENZBM8MxLwTXPqL7o
- adJlfz4NWC7gmleMLmxMW+HCT551Hel0dPtUUrRw=
+ b=svhfwihAjLuruTbK6MWBRvuq1rTft/Sm7MfsmPdLu7gQJ+qO5Lv3oXZrSPnPSlEOb
+ XSUh3Ov79m7rjubijWfJ/7oarjQXa4WiytH4/QVgnl3Of2fDI+UxewPvgFLWSsJLZ4
+ N9vTVwNGT75Y8cWIvBzqYNTYv+9+rybrPdG8b47o=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
  (envelope-from <mchehab@kernel.org>)
- id 1kPnZI-0019Fk-9j; Tue, 06 Oct 2020 16:03:52 +0200
+ id 1kPnZI-0019GH-L7; Tue, 06 Oct 2020 16:03:52 +0200
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
  Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v5 28/52] docs: remove sound API duplication
-Date: Tue,  6 Oct 2020 16:03:25 +0200
-Message-Id: <bce75a21aa86d04a67ba784d1a7e07a40608338b.1601992016.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v5 39/52] docs: writing-an-alsa-driver.rst: fix some bad
+ c:func: markups
+Date: Tue,  6 Oct 2020 16:03:36 +0200
+Message-Id: <185686ba69268d7c9fa1996b7a42f9f860757ff2.1601992016.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601992016.git.mchehab+huawei@kernel.org>
 References: <cover.1601992016.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
  Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-kernel@vger.kernel.org, "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
- Randy Dunlap <rdunlap@infradead.org>, Pragat Pandya <pragat.pandya@gmail.com>,
- =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
- Jason Gunthorpe <jgg@ziepe.ca>, Michael Walle <michael@walle.cc>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>,
- Jacob Keller <jacob.e.keller@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Harald Seiler <hws@denx.de>, Leonard Crestez <leonard.crestez@nxp.com>
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Takashi Iwai <tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,106 +96,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The sound API is documented on two different parts:
-under Documentation/driver-api/sound.rst and under
-Documentation/sound/kernel-api/alsa-driver-api.rst.
+Some such markups are invalid, as reported by Sphinx:
 
-The alsa-driver-api.rst seems more complete, and APIs
-are split per type. There's just one missing kernel-doc
-markup there.
+	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3317: WARNING: Unparseable C cross-reference: 'snd_rawmidi_transmit*'
+	Invalid C declaration: Expected end of definition. [error at 20]
+	  snd_rawmidi_transmit*
+	  --------------------^
+	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3917: WARNING: Unparseable C cross-reference: 'copy_from/to_user'
+	Invalid C declaration: Expected end of definition. [error at 9]
+	  copy_from/to_user
+	  ---------^
 
-Add it and drop the duplicated one.
+The first case seems to be better replaced by a literal.
+
+For the second one, let's generate cross-references, by
+spliting it in two.
 
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/index.rst            |  1 -
- Documentation/driver-api/sound.rst            | 54 -------------------
- .../sound/kernel-api/alsa-driver-api.rst      |  1 +
- 3 files changed, 1 insertion(+), 55 deletions(-)
- delete mode 100644 Documentation/driver-api/sound.rst
+ Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index 6e7c702e0268..987d6e74ea6a 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -27,7 +27,6 @@ available subsections can be seen below.
-    component
-    message-based
-    infiniband
--   sound
-    frame-buffer
-    regulator
-    iio/index
-diff --git a/Documentation/driver-api/sound.rst b/Documentation/driver-api/sound.rst
-deleted file mode 100644
-index afef6eabc073..000000000000
---- a/Documentation/driver-api/sound.rst
-+++ /dev/null
-@@ -1,54 +0,0 @@
--Sound Devices
--=============
--
--.. kernel-doc:: include/sound/core.h
--   :internal:
--
--.. kernel-doc:: sound/sound_core.c
--   :export:
--
--.. kernel-doc:: include/sound/pcm.h
--   :internal:
--
--.. kernel-doc:: sound/core/pcm.c
--   :export:
--
--.. kernel-doc:: sound/core/device.c
--   :export:
--
--.. kernel-doc:: sound/core/info.c
--   :export:
--
--.. kernel-doc:: sound/core/rawmidi.c
--   :export:
--
--.. kernel-doc:: sound/core/sound.c
--   :export:
--
--.. kernel-doc:: sound/core/memory.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_memory.c
--   :export:
--
--.. kernel-doc:: sound/core/init.c
--   :export:
--
--.. kernel-doc:: sound/core/isadma.c
--   :export:
--
--.. kernel-doc:: sound/core/control.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_lib.c
--   :export:
--
--.. kernel-doc:: sound/core/hwdep.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_native.c
--   :export:
--
--.. kernel-doc:: sound/core/memalloc.c
--   :export:
--
-diff --git a/Documentation/sound/kernel-api/alsa-driver-api.rst b/Documentation/sound/kernel-api/alsa-driver-api.rst
-index c8cc651eccf7..d24c64df7069 100644
---- a/Documentation/sound/kernel-api/alsa-driver-api.rst
-+++ b/Documentation/sound/kernel-api/alsa-driver-api.rst
-@@ -132,3 +132,4 @@ ISA DMA Helpers
- Other Helper Macros
- -------------------
- .. kernel-doc:: include/sound/core.h
-+.. kernel-doc:: sound/sound_core.c
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 85d6e9c643ef..73bbd59afc33 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -3315,8 +3315,7 @@ data and removes them from the buffer at once:
+   }
+ 
+ If you know beforehand how many bytes you can accept, you can use a
+-buffer size greater than one with the
+-:c:func:`snd_rawmidi_transmit\*()` functions.
++buffer size greater than one with the ``snd_rawmidi_transmit*()`` functions.
+ 
+ The ``trigger`` callback must not sleep. If the hardware FIFO is full
+ before the substream buffer has been emptied, you have to continue
+@@ -3916,7 +3915,7 @@ the maximum size of the proc file access.
+ 
+ The read/write callbacks of raw mode are more direct than the text mode.
+ You need to use a low-level I/O functions such as
+-:c:func:`copy_from/to_user()` to transfer the data.
++:c:func:`copy_from_user()` and :c:func:`copy_to_user()` to transfer the data.
+ 
+ ::
+ 
 -- 
 2.26.2
 
