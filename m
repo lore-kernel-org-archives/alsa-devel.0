@@ -2,75 +2,83 @@ Return-Path: <SRS0=FemE=DN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A368C41604
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 16:21:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09E06C47095
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 17:03:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED228206B5
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 16:21:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 25D92206F7
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 17:03:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BU9GCrST"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED228206B5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lm53N5BZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eULwaUX9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25D92206F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7356616B6;
-	Tue,  6 Oct 2020 18:20:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7356616B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3686116F0;
+	Tue,  6 Oct 2020 19:02:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3686116F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602001282;
-	bh=5FACkKkPigbQvpZquFZSiyrzRXyL9U2LnePewUC3eZY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=BU9GCrSTB4ynrK96GQTGvVg8lwqd8S3qoYqu0KanmsePin2hR4ilosr9QHaJ8tavY
-	 Tgh1zSGptMz6U3l+ytz/tHVA7vQ7vej3NM5eDDg1W8P1UWoiwDAsvBSXcedeFwXIdR
-	 vH5fNEeo8VtzeGeogwZlOWXZCBlV1REzPxY44J7c=
+	s=default; t=1602003828;
+	bh=QWPLv7TnBLoP2/7JXeWMeJKoqaPo0chhYdB6T3EOEmo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lm53N5BZIAKC+Ydsz4t0UBHAAIKyYOPG3l433aLFT2r9xW8MJkZX68QEfGlET1Eop
+	 B66WjTYTwa9y/NORX36Ro+8Srk4ZU/eYKWX+bOrY3MNZTsYVOUcq7m1lO/4Qa5sp98
+	 X9ffA0Q3nE9SaYioVu1QuDpB7b4x799/o9BnTH/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5E5AF80129;
-	Tue,  6 Oct 2020 18:20:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0E22F80053;
+	Tue,  6 Oct 2020 19:02:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CCE9F8012A; Tue,  6 Oct 2020 18:20:29 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 5A40FF8012A; Tue,  6 Oct 2020 19:02:54 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E98D1F80053
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 19:02:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E98D1F80053
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="eULwaUX9"
+Received: from localhost (unknown [213.57.247.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A86B4F80127
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 18:20:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A86B4F80127
-IronPort-SDR: JQCZtcnK49SFPqSRGY2i6dwrXyRKL9EmbiUNUYyMR8C1c7Ws3xtne/1M1TWpDYDL0M3DER1KrV
- k55+UVQ7IkSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="226159758"
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; d="scan'208";a="226159758"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2020 09:19:45 -0700
-IronPort-SDR: rykPb+F00eOIYzeQ87BYpQocUltM8yEEajjSDyj1Nm5O8tCPOAI6GlKp2JR9zlnMJJlExydZMi
- LOsAllcW2TdQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; d="scan'208";a="327619123"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga002.jf.intel.com with ESMTP; 06 Oct 2020 09:19:40 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: tiwai@suse.de, alsa-devel@alsa-project.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@linux.ie, dri-devel@lists.freedesktop.org,
- intel-gfx@lists.freedesktop.org, jani.nikula@intel.com
-Subject: [PATCH] ALSA: hda/i915 - fix list corruption with concurrent probes
-Date: Tue,  6 Oct 2020 19:17:22 +0300
-Message-Id: <20201006161722.500256-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
+ by mail.kernel.org (Postfix) with ESMTPSA id A68D7206DD;
+ Tue,  6 Oct 2020 17:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1602003765;
+ bh=QWPLv7TnBLoP2/7JXeWMeJKoqaPo0chhYdB6T3EOEmo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=eULwaUX94P71n9ArVaytNgtse4fJxE4xyDXdi4r4Xza+3wbj97M7FwktYYMTWuhWt
+ GFBnYuFT9HL8bAF0YZwSN2Q9ipHExKS+93j4ay6r29nozlgFA1CU/6U6hYUC0XoDN8
+ jEWuhb5WzxoIbxmLXTZC5PX9jZbAQQGIMaGCVim0=
+Date: Tue, 6 Oct 2020 20:02:41 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 1/6] Add ancillary bus support
+Message-ID: <20201006170241.GM1874917@unreal>
+References: <20201005182446.977325-1-david.m.ertman@intel.com>
+ <20201005182446.977325-2-david.m.ertman@intel.com>
+ <20201006071821.GI1874917@unreal>
+ <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, kuba@kernel.org, parav@mellanox.com,
+ tiwai@suse.de, netdev@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ fred.oh@linux.intel.com, linux-rdma@vger.kernel.org, dledford@redhat.com,
+ broonie@kernel.org, jgg@nvidia.com, gregkh@linuxfoundation.org,
+ Dave Ertman <david.m.ertman@intel.com>, dan.j.williams@intel.com,
+ shiraz.saleem@intel.com, davem@davemloft.net, kiran.patil@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,124 +94,166 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+On Tue, Oct 06, 2020 at 10:18:07AM -0500, Pierre-Louis Bossart wrote:
+> Thanks for the review Leon.
+>
+> > > Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
+> > > It enables drivers to create an ancillary_device and bind an
+> > > ancillary_driver to it.
+> >
+> > I was under impression that this name is going to be changed.
+>
+> It's part of the opens stated in the cover letter.
 
-Current hdac_i915 uses a static completion instance to wait
-for i915 driver to complete the component bind.
+ok, so what are the variants?
+system bus (sysbus), sbsystem bus (subbus), crossbus ?
 
-This design is not safe if multiple HDA controllers are active and
-communicating with different i915 instances, and can lead to list
-corruption and failed audio driver probe.
+>
+> [...]
+>
+> > > +	const struct my_driver my_drv = {
+> > > +		.ancillary_drv = {
+> > > +			.driver = {
+> > > +				.name = "myancillarydrv",
+> >
+> > Why do we need to give control over driver name to the driver authors?
+> > It can be problematic if author puts name that already exists.
+>
+> Good point. When I used the ancillary_devices for my own SoundWire test, the
+> driver name didn't seem specifically meaningful but needed to be set to
+> something, what mattered was the id_table. Just thinking aloud, maybe we can
+> add prefixing with KMOD_BUILD, as we've done already to avoid collisions
+> between device names?
 
-Fix the design by moving completion mechanism to common acomp
-code and remove the related code from hdac_i915.
+IMHO, it shouldn't be controlled by the drivers at all and need to have
+kernel module name hardwired. Users will use it later for various
+bind/unbind/autoprobe tricks and it will give predictability for them.
 
-Co-developed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/drm/drm_audio_component.h |  4 ++++
- sound/hda/hdac_component.c        |  3 +++
- sound/hda/hdac_i915.c             | 23 +++--------------------
- 3 files changed, 10 insertions(+), 20 deletions(-)
+>
+> [...]
+>
+> > > +int __ancillary_device_add(struct ancillary_device *ancildev, const char *modname)
+> > > +{
+> > > +	struct device *dev = &ancildev->dev;
+> > > +	int ret;
+> > > +
+> > > +	if (!modname) {
+> > > +		pr_err("ancillary device modname is NULL\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	ret = dev_set_name(dev, "%s.%s.%d", modname, ancildev->name, ancildev->id);
+> > > +	if (ret) {
+> > > +		pr_err("ancillary device dev_set_name failed: %d\n", ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret = device_add(dev);
+> > > +	if (ret)
+> > > +		dev_err(dev, "adding ancillary device failed!: %d\n", ret);
+> > > +
+> > > +	return ret;
+> > > +}
+> >
+> > Sorry, but this is very strange API that requires users to put
+> > internal call to "dev" that is buried inside "struct ancillary_device".
+> >
+> > For example in your next patch, you write this "put_device(&cdev->ancildev.dev);"
+> >
+> > I'm pretty sure that the amount of bugs in error unwind will be
+> > astonishing, so if you are doing wrappers over core code, better do not
+> > pass complexity to the users.
+>
+> In initial reviews, there was pushback on adding wrappers that don't do
+> anything except for a pointer indirection.
+>
+> Others had concerns that the API wasn't balanced and blurring layers.
 
-diff --git a/include/drm/drm_audio_component.h b/include/drm/drm_audio_component.h
-index a45f93487039..0d36bfd1a4cd 100644
---- a/include/drm/drm_audio_component.h
-+++ b/include/drm/drm_audio_component.h
-@@ -117,6 +117,10 @@ struct drm_audio_component {
- 	 * @audio_ops: Ops implemented by hda driver, called by DRM driver
- 	 */
- 	const struct drm_audio_component_audio_ops *audio_ops;
-+	/**
-+	 * @master_bind_complete: completion held during component master binding
-+	 */
-+	struct completion master_bind_complete;
- };
- 
- #endif /* _DRM_AUDIO_COMPONENT_H_ */
-diff --git a/sound/hda/hdac_component.c b/sound/hda/hdac_component.c
-index 89126c6fd216..bb37e7e0bd79 100644
---- a/sound/hda/hdac_component.c
-+++ b/sound/hda/hdac_component.c
-@@ -210,12 +210,14 @@ static int hdac_component_master_bind(struct device *dev)
- 			goto module_put;
- 	}
- 
-+	complete_all(&acomp->master_bind_complete);
- 	return 0;
- 
-  module_put:
- 	module_put(acomp->ops->owner);
- out_unbind:
- 	component_unbind_all(dev, acomp);
-+	complete_all(&acomp->master_bind_complete);
- 
- 	return ret;
- }
-@@ -296,6 +298,7 @@ int snd_hdac_acomp_init(struct hdac_bus *bus,
- 	if (!acomp)
- 		return -ENOMEM;
- 	acomp->audio_ops = aops;
-+	init_completion(&acomp->master_bind_complete);
- 	bus->audio_component = acomp;
- 	devres_add(dev, acomp);
- 
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 5f0a1aa6ad84..454474ac5716 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -11,8 +11,6 @@
- #include <sound/hda_i915.h>
- #include <sound/hda_register.h>
- 
--static struct completion bind_complete;
--
- #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
- 				((pci)->device == 0x0c0c) || \
- 				((pci)->device == 0x0d0c) || \
-@@ -130,19 +128,6 @@ static bool i915_gfx_present(void)
- 	return pci_dev_present(ids);
- }
- 
--static int i915_master_bind(struct device *dev,
--			    struct drm_audio_component *acomp)
--{
--	complete_all(&bind_complete);
--	/* clear audio_ops here as it was needed only for completion call */
--	acomp->audio_ops = NULL;
--	return 0;
--}
--
--static const struct drm_audio_component_audio_ops i915_init_ops = {
--	.master_bind = i915_master_bind
--};
--
- /**
-  * snd_hdac_i915_init - Initialize i915 audio component
-  * @bus: HDA core bus
-@@ -163,9 +148,7 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
- 	if (!i915_gfx_present())
- 		return -ENODEV;
- 
--	init_completion(&bind_complete);
--
--	err = snd_hdac_acomp_init(bus, &i915_init_ops,
-+	err = snd_hdac_acomp_init(bus, NULL,
- 				  i915_component_master_match,
- 				  sizeof(struct i915_audio_component) - sizeof(*acomp));
- 	if (err < 0)
-@@ -177,8 +160,8 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
- 		if (!IS_ENABLED(CONFIG_MODULES) ||
- 		    !request_module("i915")) {
- 			/* 60s timeout */
--			wait_for_completion_timeout(&bind_complete,
--						   msecs_to_jiffies(60 * 1000));
-+			wait_for_completion_timeout(&acomp->master_bind_complete,
-+						    msecs_to_jiffies(60 * 1000));
- 		}
- 	}
- 	if (!acomp->ops) {
--- 
-2.28.0
+Are you talking about internal review or public?
+If it is public, can I get a link to it?
 
+>
+> Both points have merits IMHO. Do we want wrappers for everything and
+> completely hide the low-level device?
+
+This API is partially obscures low level driver-core code and needs to
+provide clear and proper abstractions without need to remember about
+put_device. There is already _add() interface why don't you do
+put_device() in it?
+
+>
+> >
+> > > +EXPORT_SYMBOL_GPL(__ancillary_device_add);
+> > > +
+> > > +static int ancillary_probe_driver(struct device *dev)
+> > > +{
+> > > +	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
+> > > +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
+> > > +	int ret;
+> > > +
+> > > +	ret = dev_pm_domain_attach(dev, true);
+> > > +	if (ret) {
+> > > +		dev_warn(dev, "Failed to attach to PM Domain : %d\n", ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret = ancildrv->probe(ancildev, ancillary_match_id(ancildrv->id_table, ancildev));
+> >
+> > I don't think that you need to call ->probe() if ancillary_match_id()
+> > returned NULL and probably that check should be done before
+> > dev_pm_domain_attach().
+>
+> we'll look into this.
+>
+> >
+> > > +	if (ret)
+> > > +		dev_pm_domain_detach(dev, true);
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +static int ancillary_remove_driver(struct device *dev)
+> > > +{
+> > > +	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
+> > > +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
+> > > +	int ret;
+> > > +
+> > > +	ret = ancildrv->remove(ancildev);
+> > > +	dev_pm_domain_detach(dev, true);
+> > > +
+> > > +	return ret;
+> >
+> > You returned an error to user and detached from PM, what will user do
+> > with this information? Should user ignore it? retry?
+>
+> That comment was also provided in earlier reviews. In practice the error is
+> typically ignored so there was a suggestion to move the return type to void,
+> that could be done if this was desired by the majority.
+
++1 from me.
+
+>
+> [...]
+>
+> > > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> > > index 5b08a473cdba..7d596dc30833 100644
+> > > --- a/include/linux/mod_devicetable.h
+> > > +++ b/include/linux/mod_devicetable.h
+> > > @@ -838,4 +838,12 @@ struct mhi_device_id {
+> > >   	kernel_ulong_t driver_data;
+> > >   };
+> > >
+> > > +#define ANCILLARY_NAME_SIZE 32
+> > > +#define ANCILLARY_MODULE_PREFIX "ancillary:"
+> > > +
+> > > +struct ancillary_device_id {
+> > > +	char name[ANCILLARY_NAME_SIZE];
+> >
+> > I hope that this be enough.
+>
+> Are you suggesting a different value to allow for a longer string?
+
+I have no idea, but worried that there were no checks at all if name is
+more than 32. Maybe compiler warn about it?
+
+Thanks
