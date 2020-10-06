@@ -2,66 +2,91 @@ Return-Path: <SRS0=FemE=DN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 056C1C4363D
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 12:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 041A4C4363D
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:05:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D7F62075A
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 12:46:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE3AE20760
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:05:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="figr/B3/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D7F62075A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iPk7HoAg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rT7YO5mX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE3AE20760
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B930174E;
-	Tue,  6 Oct 2020 14:45:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B930174E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B3C616C7;
+	Tue,  6 Oct 2020 16:04:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B3C616C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601988362;
-	bh=gOJYgMTmeeqfyZaifMuU2TqB1UE8XNMr6XleEwkfyRU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601993100;
+	bh=Lj8LmYIDdDAeKpaYHWSshOa9hH6sWSOg/YlZHcnjBx4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=figr/B3/LGIbHKbASQjOsB4rF0Hr706LNg7c+o0ocRnptMgh2HnM5QefdECD8VkOL
-	 WSuZyqqyBtIuFGnj7ytKdUUBTW2oHqC32jiV8p48byee5aEIYF3/b1k8VaD+gSOj1s
-	 ciuyrA2voyZzpdG8Vim6+vQ3R++Uw2PWBr6GZxfE=
+	b=iPk7HoAgZsfgCdw7VXajWbWrj4KRoHDC4zbgi33m0b+VSROuCbQdzXEAlJ4IErOGN
+	 rSt5lBlJjfKGOzpkRHdpk6S4AQ6nrvLgcBcP9nHPj4urJc8G2SPy6S+WvrZTFNPy6h
+	 no2+srD5gKTRAFKgeX5uOZg1Ema2G/fn5X0zXIK8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05D46F80129;
-	Tue,  6 Oct 2020 14:45:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B810F8012B;
+	Tue,  6 Oct 2020 16:04:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01E20F8012A; Tue,  6 Oct 2020 14:45:09 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 7747AF80163; Tue,  6 Oct 2020 16:04:05 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52F5BF80053
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 14:45:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52F5BF80053
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4625EAFAE;
- Tue,  6 Oct 2020 12:45:06 +0000 (UTC)
-Date: Tue, 06 Oct 2020 14:45:06 +0200
-Message-ID: <s5hh7r75xrh.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [RFC PATCH 0/2] ALSA: hda - acomp probe fix for i915
-In-Reply-To: <s5hpn5v5z7v.wl-tiwai@suse.de>
-References: <20201006113042.471718-1-kai.vehmanen@linux.intel.com>
- <s5hpn5v5z7v.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7F82F80128
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 16:03:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7F82F80128
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="rT7YO5mX"
+Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de
+ [95.90.213.189])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id A664A22208;
+ Tue,  6 Oct 2020 14:03:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601993034;
+ bh=Lj8LmYIDdDAeKpaYHWSshOa9hH6sWSOg/YlZHcnjBx4=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=rT7YO5mXT3SGjUM0qXRLog3cbipq+By3tZJ6+2qtUVrK0GpL1bb2QcBHOc+1OEh9q
+ O1L0bn8RYXfNetbSJvGPRZcR1ceyfhHVAQNgdw5cyom92gu0bENZBM8MxLwTXPqL7o
+ adJlfz4NWC7gmleMLmxMW+HCT551Hel0dPtUUrRw=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+ (envelope-from <mchehab@kernel.org>)
+ id 1kPnZI-0019Fk-9j; Tue, 06 Oct 2020 16:03:52 +0200
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v5 28/52] docs: remove sound API duplication
+Date: Tue,  6 Oct 2020 16:03:25 +0200
+Message-Id: <bce75a21aa86d04a67ba784d1a7e07a40608338b.1601992016.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1601992016.git.mchehab+huawei@kernel.org>
+References: <cover.1601992016.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-kernel@vger.kernel.org, "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+ Randy Dunlap <rdunlap@infradead.org>, Pragat Pandya <pragat.pandya@gmail.com>,
+ =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Michael Walle <michael@walle.cc>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>,
+ Jacob Keller <jacob.e.keller@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Harald Seiler <hws@denx.de>, Leonard Crestez <leonard.crestez@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,148 +102,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 06 Oct 2020 14:13:40 +0200,
-Takashi Iwai wrote:
-> 
-> On Tue, 06 Oct 2020 13:30:40 +0200,
-> Kai Vehmanen wrote:
-> > 
-> > Hi,
-> > 
-> > this simple bugfix started to feel a bit like getting stuck in quicksand,
-> > so I'm looking for some early input via this RFC series.
-> > 
-> > Basicly hdac_i915.c should not use global state to track communication
-> > with i915 driver. But how to get handle of "hdac_bus*? I considered
-> > a few options:
-> > 
-> >   1) add hdac_bus as a member of drm_audio_component.h
-> > 	-> seems wrong as this is really an audio side implementation)
-> > 
-> >   2) embed copy of drm_audio_component to 'struct hdac_bus', so
-> >      I could use container_of() on the device handle to get
-> >      to the bus 
-> > 	-> wasted space to keep a copy at hdac_bus level
-> > 	   (note: snd-hda-codec-hdmi do this by embedding a copy
-> > 	    of ops to "struct hdmi_spec")
-> > 
-> >   3) add another devres entry to store the hdac_bus directly
-> >      in acomp_init and a new helper function to query it
-> > 
-> > I now implemented option 3 in this RFC series as it seemed cleanest
-> > and most local to hdac_component.c, where the problem stems from. It's still
-> > somewhat messy, and I'm wondering if I'm overlooking some obvious alternative.
-> > We could dig this deeper into i915 specific code, but OTOH, hdac_bus is
-> > an argument snd_hdac_acomp_init(), so it's common for all.
-> > 
-> > Kai Vehmanen (2):
-> >   ALSA: hda - keep track of HDA core bus instance in acomp
-> >   ALSA: hda/i915 - fix list corruption with concurrent probes
-> 
-> Another option would be to move the completion into the common acomp
-> helper from i915-specific one.  That is,
-> 
-> - Add bind_complete field into struct drm_audio_component,
->   initialize it at snd_hdac_acomp_init()
-> 
-> - Call complete_all(&acomp->bind_complete) at the end of
->   hdac_component_master_bind()
-> 
-> - Remove / replace i915's own completion with the hdac's one.
->   The i915_init_ops can be dropped.
+The sound API is documented on two different parts:
+under Documentation/driver-api/sound.rst and under
+Documentation/sound/kernel-api/alsa-driver-api.rst.
 
-So something like below (totally untested).
+The alsa-driver-api.rst seems more complete, and APIs
+are split per type. There's just one missing kernel-doc
+markup there.
 
+Add it and drop the duplicated one.
 
-Takashi
-
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
---- a/include/drm/drm_audio_component.h
-+++ b/include/drm/drm_audio_component.h
-@@ -117,6 +117,10 @@ struct drm_audio_component {
- 	 * @audio_ops: Ops implemented by hda driver, called by DRM driver
- 	 */
- 	const struct drm_audio_component_audio_ops *audio_ops;
-+	/**
-+	 * @master_bind_complete: completion held during component master binding
-+	 */
-+	struct completion master_bind_complete;
- };
- 
- #endif /* _DRM_AUDIO_COMPONENT_H_ */
---- a/sound/hda/hdac_component.c
-+++ b/sound/hda/hdac_component.c
-@@ -210,12 +210,14 @@ static int hdac_component_master_bind(struct device *dev)
- 			goto module_put;
- 	}
- 
-+	complete_all(&acomp->master_bind_complete);
- 	return 0;
- 
-  module_put:
- 	module_put(acomp->ops->owner);
- out_unbind:
- 	component_unbind_all(dev, acomp);
-+	complete_all(&acomp->master_bind_complete);
- 
- 	return ret;
- }
-@@ -296,6 +298,7 @@ int snd_hdac_acomp_init(struct hdac_bus *bus,
- 	if (!acomp)
- 		return -ENOMEM;
- 	acomp->audio_ops = aops;
-+	init_completion(&acomp->master_bind_complete);
- 	bus->audio_component = acomp;
- 	devres_add(dev, acomp);
- 
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -11,8 +11,6 @@
- #include <sound/hda_i915.h>
- #include <sound/hda_register.h>
- 
--static struct completion bind_complete;
+ Documentation/driver-api/index.rst            |  1 -
+ Documentation/driver-api/sound.rst            | 54 -------------------
+ .../sound/kernel-api/alsa-driver-api.rst      |  1 +
+ 3 files changed, 1 insertion(+), 55 deletions(-)
+ delete mode 100644 Documentation/driver-api/sound.rst
+
+diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+index 6e7c702e0268..987d6e74ea6a 100644
+--- a/Documentation/driver-api/index.rst
++++ b/Documentation/driver-api/index.rst
+@@ -27,7 +27,6 @@ available subsections can be seen below.
+    component
+    message-based
+    infiniband
+-   sound
+    frame-buffer
+    regulator
+    iio/index
+diff --git a/Documentation/driver-api/sound.rst b/Documentation/driver-api/sound.rst
+deleted file mode 100644
+index afef6eabc073..000000000000
+--- a/Documentation/driver-api/sound.rst
++++ /dev/null
+@@ -1,54 +0,0 @@
+-Sound Devices
+-=============
 -
- #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
- 				((pci)->device == 0x0c0c) || \
- 				((pci)->device == 0x0d0c) || \
-@@ -130,19 +128,6 @@ static bool i915_gfx_present(void)
- 	return pci_dev_present(ids);
- }
- 
--static int i915_master_bind(struct device *dev,
--			    struct drm_audio_component *acomp)
--{
--	complete_all(&bind_complete);
--	/* clear audio_ops here as it was needed only for completion call */
--	acomp->audio_ops = NULL;
--	return 0;
--}
+-.. kernel-doc:: include/sound/core.h
+-   :internal:
 -
--static const struct drm_audio_component_audio_ops i915_init_ops = {
--	.master_bind = i915_master_bind
--};
+-.. kernel-doc:: sound/sound_core.c
+-   :export:
 -
- /**
-  * snd_hdac_i915_init - Initialize i915 audio component
-  * @bus: HDA core bus
-@@ -163,9 +148,7 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
- 	if (!i915_gfx_present())
- 		return -ENODEV;
- 
--	init_completion(&bind_complete);
+-.. kernel-doc:: include/sound/pcm.h
+-   :internal:
 -
--	err = snd_hdac_acomp_init(bus, &i915_init_ops,
-+	err = snd_hdac_acomp_init(bus, NULL,
- 				  i915_component_master_match,
- 				  sizeof(struct i915_audio_component) - sizeof(*acomp));
- 	if (err < 0)
-@@ -177,7 +160,7 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
- 		if (!IS_ENABLED(CONFIG_MODULES) ||
- 		    !request_module("i915")) {
- 			/* 60s timeout */
--			wait_for_completion_timeout(&bind_complete,
-+			wait_for_completion_timeout(&acomp->master_bind_complete,
- 						   msecs_to_jiffies(60 * 1000));
- 		}
- 	}
+-.. kernel-doc:: sound/core/pcm.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/device.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/info.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/rawmidi.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/sound.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/memory.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/pcm_memory.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/init.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/isadma.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/control.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/pcm_lib.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/hwdep.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/pcm_native.c
+-   :export:
+-
+-.. kernel-doc:: sound/core/memalloc.c
+-   :export:
+-
+diff --git a/Documentation/sound/kernel-api/alsa-driver-api.rst b/Documentation/sound/kernel-api/alsa-driver-api.rst
+index c8cc651eccf7..d24c64df7069 100644
+--- a/Documentation/sound/kernel-api/alsa-driver-api.rst
++++ b/Documentation/sound/kernel-api/alsa-driver-api.rst
+@@ -132,3 +132,4 @@ ISA DMA Helpers
+ Other Helper Macros
+ -------------------
+ .. kernel-doc:: include/sound/core.h
++.. kernel-doc:: sound/sound_core.c
+-- 
+2.26.2
+
