@@ -2,69 +2,73 @@ Return-Path: <SRS0=FemE=DN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99BAEC41604
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:50:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5CB9C41604
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:51:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD07D20757
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:50:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BBAFC20757
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 06:51:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K3iBcNrv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD07D20757
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qFCG0x+W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBAFC20757
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EF80175D;
-	Tue,  6 Oct 2020 08:49:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EF80175D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C38151772;
+	Tue,  6 Oct 2020 08:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C38151772
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601967047;
-	bh=eIHiGn8ClsQW4HMCXu8UVvddPLZE0ZDua9qCIPfKidI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=K3iBcNrvV6YkOj8WZQV68lpTU2OOoA2+9RrEYh5mgOso203aKhTqd5vjc8mulio7H
-	 qpgu+UG9gvqPWPqnNa6znRsqGVJIHlx8acREw/s5sMpIEf1s64u/MSv41QC6Zu2p5s
-	 eLy1TWPNkVSWFDcJr5CeuS4wIOuuiC5pocH/Oa2g=
+	s=default; t=1601967098;
+	bh=oIUsFbJNDPjIoSDy8fp7OEyfuP/Pf4jD5BlrZHKy5Sk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qFCG0x+WtNRlzE2F+NHV4c00Xs6Z4w8s4D+PcKO01mZluSNmGmRl4w5eq0xhg4kYx
+	 0IgGc63wq0zTyGFT0RtDxg/fy8u1iyw15ibKOLRr+eWwLpKf9ZQn9OZ4CozskRcRKJ
+	 MrI79mYI3ak5AcCay6NR+CQxbQh5UTzoJ0Zln+hg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0DF9F80218;
-	Tue,  6 Oct 2020 08:49:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83A84F80246;
+	Tue,  6 Oct 2020 08:50:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF627F80246; Tue,  6 Oct 2020 08:49:55 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id B82F6F802A2; Tue,  6 Oct 2020 08:50:05 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C434F8015B
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 08:49:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C434F8015B
-IronPort-SDR: 2v4nClu72WZZ5pcVsMXAwZQwEYNeqI38cjUUGAk6NaeOqfds/FtXcu3OSdWn/VeXIru/Sz+pVx
- gOhfXhiyE+Kg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="164458087"
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="164458087"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FB8EF80246
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 08:49:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FB8EF80246
+IronPort-SDR: U8h6zLU6SLdBsfFBX1wR6tzuC+jMsDO1woJYKs1nKcSM6EEMu5JB08k0mW5g/mmSP5Ys+WVeDB
+ kSMpE3KNyVPA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="249091220"
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="249091220"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Oct 2020 23:49:45 -0700
-IronPort-SDR: SHmMxtHZ903eKnU3I2ve0iDJqo3AnHBynfXZ1lwZNSzKq3TNb8kP2AeCASmJ+5DgBAIvh8Jiw5
- uKdZQz+0ve1A==
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Oct 2020 23:49:54 -0700
+IronPort-SDR: g5TxnlOFCHld9IZ8jjLxfjp+WqjwYRdHktAvCRQE0WuAvstXu1QTCtiLxUPXgCaAae+gcsrIzm
+ ClilLDpbCSdA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="315491030"
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; d="scan'208";a="315491088"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 05 Oct 2020 23:49:40 -0700
+ by orsmga006.jf.intel.com with ESMTP; 05 Oct 2020 23:49:50 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 00/13] ASoC: Intel: Remove obsolete solutions and components
-Date: Tue,  6 Oct 2020 08:48:54 +0200
-Message-Id: <20201006064907.16277-1-cezary.rojewski@intel.com>
+Subject: [PATCH v2 02/13] ASoC: Intel: Remove max98090 support for baytrail
+ solution
+Date: Tue,  6 Oct 2020 08:48:56 +0200
+Message-Id: <20201006064907.16277-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201006064907.16277-1-cezary.rojewski@intel.com>
+References: <20201006064907.16277-1-cezary.rojewski@intel.com>
 Cc: pierre-louis.bossart@linux.intel.com,
  Cezary Rojewski <cezary.rojewski@intel.com>, andriy.shevchenko@linux.intel.com,
  filip.kaczmarski@intel.com, harshapriya.n@intel.com, marcin.barlik@intel.com,
@@ -88,102 +92,266 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Follow up to catpt series as mentioned in:
-[PATCH v10 00/14] ASoC: Intel: Catpt - Lynx and Wildcat point
-https://www.spinics.net/lists/alsa-devel/msg116440.html
+byt-max98090 is deprecated in favor of cht-bsw-max98090 used by
+sound/soc/intel/atom and SOF solutions both. Remove redundant machine
+board and all related code.
 
-As catpt is a direct replacement to sound/soc/intel/haswell, it leaves a
-lot of code redudant. The second legacy solution - baytrail - is
-deprecated for a long time by sound/soc/intel/atom with SOF flavor
-available too.
-
-This series addresses the redudancy and removes obsolete code. Along
-with the legacy solutions, all orphaned components are removed too.
-
-As a consequence, further cleanups are unlocked: sound/soc/intel/skylake
-becomes the sole user of processing code found in
-sound/soc/intel/common. Those are not part of this series.
-
-
-Changes in v2:
-- just a rebase so patch 04/13 applies cleanly
-- left the tags as no actual changes done in between
-
-
-Cezary Rojewski (13):
-  ASoC: Intel: Remove haswell solution
-  ASoC: Intel: Remove max98090 support for baytrail solution
-  ASoC: Intel: Remove rt5640 support for baytrail solution
-  ASoC: Intel: Remove baytrail solution
-  ASoC: Intel: Remove SST ACPI component
-  ASoC: Intel: Remove SST firmware components
-  ASoC: Intel: Skylake: Unassign ram_read and read_write ops
-  ASoC: Intel: Remove unused DSP operations
-  ASoC: Intel: Remove unused DSP interface fields
-  ASoC: Intel: Remove SST-legacy specific constants
-  ASoC: Intel: Make atom components independent of sst-dsp
-  ASoC: Intel: Remove sst_pdata structure
-  ASoC: Intel: Remove sst_dsp_get_thread_context
-
- include/sound/soc-acpi-intel-match.h          |    1 -
- include/trace/events/hswadsp.h                |  385 ---
- sound/soc/intel/Kconfig                       |   26 -
- sound/soc/intel/Makefile                      |    1 -
- sound/soc/intel/atom/sst/sst.c                |    1 -
- sound/soc/intel/atom/sst/sst.h                |    7 +
- sound/soc/intel/atom/sst/sst_acpi.c           |    1 -
- sound/soc/intel/atom/sst/sst_drv_interface.c  |    3 -
- sound/soc/intel/atom/sst/sst_ipc.c            |    1 -
- sound/soc/intel/atom/sst/sst_loader.c         |    1 -
- sound/soc/intel/atom/sst/sst_pvt.c            |    1 -
- sound/soc/intel/atom/sst/sst_stream.c         |    1 -
- sound/soc/intel/baytrail/Makefile             |    5 -
- sound/soc/intel/baytrail/sst-baytrail-dsp.c   |  358 ---
- sound/soc/intel/baytrail/sst-baytrail-ipc.c   |  772 ------
- sound/soc/intel/baytrail/sst-baytrail-ipc.h   |   64 -
- sound/soc/intel/baytrail/sst-baytrail-pcm.c   |  459 ----
- sound/soc/intel/boards/Kconfig                |   25 -
- sound/soc/intel/boards/Makefile               |    4 -
- sound/soc/intel/boards/byt-max98090.c         |  182 --
- sound/soc/intel/boards/byt-rt5640.c           |  224 --
- sound/soc/intel/boards/bytcht_es8316.c        |    1 -
- sound/soc/intel/boards/bytcr_rt5640.c         |    1 -
- sound/soc/intel/common/Makefile               |    4 -
- .../intel/common/soc-acpi-intel-byt-match.c   |   15 -
- sound/soc/intel/common/sst-acpi.c             |  236 --
- sound/soc/intel/common/sst-dsp-priv.h         |  284 +--
- sound/soc/intel/common/sst-dsp.c              |  162 --
- sound/soc/intel/common/sst-dsp.h              |  222 --
- sound/soc/intel/common/sst-firmware.c         | 1273 ----------
- sound/soc/intel/common/sst-ipc.c              |   27 -
- sound/soc/intel/common/sst-ipc.h              |    3 -
- sound/soc/intel/haswell/Makefile              |    5 -
- sound/soc/intel/haswell/sst-haswell-dsp.c     |  705 ------
- sound/soc/intel/haswell/sst-haswell-ipc.c     | 2222 -----------------
- sound/soc/intel/haswell/sst-haswell-ipc.h     |  527 ----
- sound/soc/intel/haswell/sst-haswell-pcm.c     | 1369 ----------
- sound/soc/intel/skylake/bxt-sst.c             |    2 -
- sound/soc/intel/skylake/cnl-sst.c             |    4 +-
- sound/soc/intel/skylake/skl-sst-dsp.c         |    2 +-
- sound/soc/intel/skylake/skl-sst-ipc.c         |    2 +-
- sound/soc/intel/skylake/skl-sst.c             |    2 -
- 42 files changed, 11 insertions(+), 9579 deletions(-)
- delete mode 100644 include/trace/events/hswadsp.h
- delete mode 100644 sound/soc/intel/baytrail/Makefile
- delete mode 100644 sound/soc/intel/baytrail/sst-baytrail-dsp.c
- delete mode 100644 sound/soc/intel/baytrail/sst-baytrail-ipc.c
- delete mode 100644 sound/soc/intel/baytrail/sst-baytrail-ipc.h
- delete mode 100644 sound/soc/intel/baytrail/sst-baytrail-pcm.c
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/intel/boards/Kconfig                |  11 --
+ sound/soc/intel/boards/Makefile               |   2 -
+ sound/soc/intel/boards/byt-max98090.c         | 182 ------------------
+ .../intel/common/soc-acpi-intel-byt-match.c   |   5 -
+ 4 files changed, 200 deletions(-)
  delete mode 100644 sound/soc/intel/boards/byt-max98090.c
- delete mode 100644 sound/soc/intel/boards/byt-rt5640.c
- delete mode 100644 sound/soc/intel/common/sst-acpi.c
- delete mode 100644 sound/soc/intel/common/sst-firmware.c
- delete mode 100644 sound/soc/intel/haswell/Makefile
- delete mode 100644 sound/soc/intel/haswell/sst-haswell-dsp.c
- delete mode 100644 sound/soc/intel/haswell/sst-haswell-ipc.c
- delete mode 100644 sound/soc/intel/haswell/sst-haswell-ipc.h
- delete mode 100644 sound/soc/intel/haswell/sst-haswell-pcm.c
 
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 6afdd9ac4478..a8da892441be 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -87,17 +87,6 @@ endif ## SND_SOC_INTEL_CATPT || SND_SOC_SOF_BROADWELL
+ 
+ if SND_SOC_INTEL_BAYTRAIL
+ 
+-config SND_SOC_INTEL_BYT_MAX98090_MACH
+-	tristate "Baytrail with MAX98090 codec"
+-	depends on I2C
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
+-	select SND_SOC_MAX98090
+-	help
+-	  This adds audio driver for Intel Baytrail platform based boards
+-	  with the MAX98090 audio codec. This driver is deprecated, use
+-	  SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH instead for better
+-	  functionality.
+-
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "Baytrail with RT5640 codec"
+ 	depends on I2C
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index de7cc9b86354..b2e5709a097b 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ snd-soc-sst-haswell-objs := haswell.o
+ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
+-snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
+ snd-soc-sst-bdw-rt5650-mach-objs := bdw-rt5650.o
+ snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
+ snd-soc-sst-broadwell-objs := broadwell.o
+@@ -44,7 +43,6 @@ snd-soc-sof-sdw-objs += sof_sdw.o				\
+ obj-$(CONFIG_SND_SOC_INTEL_SOF_RT5682_MACH) += snd-soc-sof_rt5682.o
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+-obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON) += snd-soc-sst-bxt-da7219_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_BXT_RT298_MACH) += snd-soc-sst-bxt-rt298.o
+ obj-$(CONFIG_SND_SOC_INTEL_SOF_PCM512x_MACH) += snd-soc-sst-sof-pcm512x.o
+diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
+deleted file mode 100644
+index f5097da28828..000000000000
+--- a/sound/soc/intel/boards/byt-max98090.c
++++ /dev/null
+@@ -1,182 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Intel Baytrail SST MAX98090 machine driver
+- * Copyright (c) 2014, Intel Corporation.
+- */
+-
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/acpi.h>
+-#include <linux/device.h>
+-#include <linux/gpio.h>
+-#include <linux/gpio/consumer.h>
+-#include <linux/slab.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-#include <sound/jack.h>
+-#include "../../codecs/max98090.h"
+-
+-struct byt_max98090_private {
+-	struct snd_soc_jack jack;
+-};
+-
+-static const struct snd_soc_dapm_widget byt_max98090_widgets[] = {
+-	SND_SOC_DAPM_HP("Headphone", NULL),
+-	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+-	SND_SOC_DAPM_MIC("Int Mic", NULL),
+-	SND_SOC_DAPM_SPK("Ext Spk", NULL),
+-};
+-
+-static const struct snd_soc_dapm_route byt_max98090_audio_map[] = {
+-	{"IN34", NULL, "Headset Mic"},
+-	{"Headset Mic", NULL, "MICBIAS"},
+-	{"DMICL", NULL, "Int Mic"},
+-	{"Headphone", NULL, "HPL"},
+-	{"Headphone", NULL, "HPR"},
+-	{"Ext Spk", NULL, "SPKL"},
+-	{"Ext Spk", NULL, "SPKR"},
+-};
+-
+-static const struct snd_kcontrol_new byt_max98090_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Headphone"),
+-	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+-	SOC_DAPM_PIN_SWITCH("Int Mic"),
+-	SOC_DAPM_PIN_SWITCH("Ext Spk"),
+-};
+-
+-static struct snd_soc_jack_pin hs_jack_pins[] = {
+-	{
+-		.pin	= "Headphone",
+-		.mask	= SND_JACK_HEADPHONE,
+-	},
+-	{
+-		.pin	= "Headset Mic",
+-		.mask	= SND_JACK_MICROPHONE,
+-	},
+-};
+-
+-static struct snd_soc_jack_gpio hs_jack_gpios[] = {
+-	{
+-		.name		= "hp",
+-		.report		= SND_JACK_HEADPHONE | SND_JACK_LINEOUT,
+-		.debounce_time	= 200,
+-	},
+-	{
+-		.name		= "mic",
+-		.invert		= 1,
+-		.report		= SND_JACK_MICROPHONE,
+-		.debounce_time	= 200,
+-	},
+-};
+-
+-static const struct acpi_gpio_params hp_gpios = { 0, 0, false };
+-static const struct acpi_gpio_params mic_gpios = { 1, 0, false };
+-
+-static const struct acpi_gpio_mapping acpi_byt_max98090_gpios[] = {
+-	{ "hp-gpios", &hp_gpios, 1 },
+-	{ "mic-gpios", &mic_gpios, 1 },
+-	{},
+-};
+-
+-static int byt_max98090_init(struct snd_soc_pcm_runtime *runtime)
+-{
+-	int ret;
+-	struct snd_soc_card *card = runtime->card;
+-	struct byt_max98090_private *drv = snd_soc_card_get_drvdata(card);
+-	struct snd_soc_jack *jack = &drv->jack;
+-
+-	card->dapm.idle_bias_off = true;
+-
+-	ret = snd_soc_dai_set_sysclk(asoc_rtd_to_codec(runtime, 0),
+-				     M98090_REG_SYSTEM_CLOCK,
+-				     25000000, SND_SOC_CLOCK_IN);
+-	if (ret < 0) {
+-		dev_err(card->dev, "Can't set codec clock %d\n", ret);
+-		return ret;
+-	}
+-
+-	/* Enable jack detection */
+-	ret = snd_soc_card_jack_new(runtime->card, "Headset",
+-				    SND_JACK_LINEOUT | SND_JACK_HEADSET, jack,
+-				    hs_jack_pins, ARRAY_SIZE(hs_jack_pins));
+-	if (ret)
+-		return ret;
+-
+-	return snd_soc_jack_add_gpiods(card->dev->parent, jack,
+-				       ARRAY_SIZE(hs_jack_gpios),
+-				       hs_jack_gpios);
+-}
+-
+-SND_SOC_DAILINK_DEFS(baytrail,
+-	DAILINK_COMP_ARRAY(COMP_CPU("baytrail-pcm-audio")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-193C9890:00", "HiFi")),
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("baytrail-pcm-audio")));
+-
+-static struct snd_soc_dai_link byt_max98090_dais[] = {
+-	{
+-		.name = "Baytrail Audio",
+-		.stream_name = "Audio",
+-		.init = byt_max98090_init,
+-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-			   SND_SOC_DAIFMT_CBS_CFS,
+-		SND_SOC_DAILINK_REG(baytrail),
+-	},
+-};
+-
+-static struct snd_soc_card byt_max98090_card = {
+-	.name = "byt-max98090",
+-	.owner = THIS_MODULE,
+-	.dai_link = byt_max98090_dais,
+-	.num_links = ARRAY_SIZE(byt_max98090_dais),
+-	.dapm_widgets = byt_max98090_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(byt_max98090_widgets),
+-	.dapm_routes = byt_max98090_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(byt_max98090_audio_map),
+-	.controls = byt_max98090_controls,
+-	.num_controls = ARRAY_SIZE(byt_max98090_controls),
+-	.fully_routed = true,
+-};
+-
+-static int byt_max98090_probe(struct platform_device *pdev)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct byt_max98090_private *priv;
+-	int ret_val;
+-
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv) {
+-		dev_err(&pdev->dev, "allocation failed\n");
+-		return -ENOMEM;
+-	}
+-
+-	ret_val = devm_acpi_dev_add_driver_gpios(dev->parent, acpi_byt_max98090_gpios);
+-	if (ret_val)
+-		dev_dbg(dev, "Unable to add GPIO mapping table\n");
+-
+-	byt_max98090_card.dev = &pdev->dev;
+-	snd_soc_card_set_drvdata(&byt_max98090_card, priv);
+-	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_max98090_card);
+-	if (ret_val) {
+-		dev_err(&pdev->dev,
+-			"snd_soc_register_card failed %d\n", ret_val);
+-		return ret_val;
+-	}
+-
+-	return 0;
+-}
+-
+-static struct platform_driver byt_max98090_driver = {
+-	.probe = byt_max98090_probe,
+-	.driver = {
+-		.name = "byt-max98090",
+-		.pm = &snd_soc_pm_ops,
+-	},
+-};
+-module_platform_driver(byt_max98090_driver)
+-
+-MODULE_DESCRIPTION("ASoC Intel(R) Baytrail Machine driver");
+-MODULE_AUTHOR("Omair Md Abdullah, Jarkko Nikula");
+-MODULE_LICENSE("GPL v2");
+-MODULE_ALIAS("platform:byt-max98090");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+index 1cc801ba92eb..4043a1ab44b3 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+@@ -126,11 +126,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[] = {
+ 		.drv_name = "byt-rt5640",
+ 		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
+ 	},
+-	{
+-		.id = "193C9890",
+-		.drv_name = "byt-max98090",
+-		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
+-	},
+ 	{}
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_baytrail_legacy_machines);
 -- 
 2.17.1
 
