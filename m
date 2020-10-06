@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 672C7C41604
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 16:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C77FC46466
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 16:11:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 449032075A
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 16:09:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61C2D206D4
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 16:11:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="arH+Yrh7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 449032075A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ieAjtga8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61C2D206D4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 768B31714;
-	Tue,  6 Oct 2020 18:09:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 768B31714
+	by alsa0.perex.cz (Postfix) with ESMTPS id D29A81719;
+	Tue,  6 Oct 2020 18:10:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D29A81719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602000591;
-	bh=l7rA0ekbG7xnYY6ryfhTgC+iym3ixvv3xKF30ZytTMc=;
+	s=default; t=1602000685;
+	bh=D5r5aRXKSKnmCqzBZsD9QkhpBuZsCGOFNTVk5QEsFqI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=arH+Yrh7ibw07Iqp2MDEAARyrHWNSsDtZbriK67gZuU44ScrX2mYWyGGEtL3M4if6
-	 //tZ3KdNt0EVDOHM6yzFQWu9S2tC8BDVWRi6U66jBfWp12n2Gu2cw8Am6o2mDIOsPd
-	 URYrm34RkvTGvgDiQHCXR90kAI/L22YQKIrQf0oc=
+	b=ieAjtga8JlrrhUReGSB8iScRBBPd7LnML9vuSTX3pLZR2YU/piOrEF6L67Qro+ZIB
+	 OKPwIwadHYYsvBCAZrKZnAhYoER2o9T/L/quyVWBIAPiq6+SqOsTDd/ajdSbh9y05n
+	 hzDj7ZjXqSEy82LkVGF3TSL4aZBL99QO7LHuoQ1c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBA9DF80129;
-	Tue,  6 Oct 2020 18:09:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F63FF8012C;
+	Tue,  6 Oct 2020 18:10:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29A8AF8012A; Tue,  6 Oct 2020 18:08:59 +0200 (CEST)
+ id 91348F8015B; Tue,  6 Oct 2020 18:10:33 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48464F80127
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 18:08:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48464F80127
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5667F80129
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 18:10:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5667F80129
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5EA63AC55;
- Tue,  6 Oct 2020 16:08:47 +0000 (UTC)
-Date: Tue, 06 Oct 2020 18:08:47 +0200
-Message-ID: <s5ho8lf49rk.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 09858AC8C;
+ Tue,  6 Oct 2020 16:10:22 +0000 (UTC)
+Date: Tue, 06 Oct 2020 18:10:21 +0200
+Message-ID: <s5hmu0z49oy.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] sound: drivers: portman2x4: fix repeated word 'if'
-In-Reply-To: <20201005191223.21514-1-rdunlap@infradead.org>
-References: <20201005191223.21514-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] sound: usb: endpoint.c: fix repeated word 'there'
+In-Reply-To: <20201005191244.23902-1-rdunlap@infradead.org>
+References: <20201005191244.23902-1-rdunlap@infradead.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,10 +78,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 05 Oct 2020 21:12:23 +0200,
+On Mon, 05 Oct 2020 21:12:44 +0200,
 Randy Dunlap wrote:
 > 
-> Correct duplicated word "if" to "if it".
+> Drop the duplicated word "there".
 > 
 > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 > Cc: Jaroslav Kysela <perex@perex.cz>
