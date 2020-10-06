@@ -2,85 +2,77 @@ Return-Path: <SRS0=FemE=DN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B4A2C4363D
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:06:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79DF5C4363D
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:22:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F93D20760
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:06:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BFD0720760
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Oct 2020 14:22:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AjEJnBEe";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UlOwNkdg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F93D20760
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PG7uB7p9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFD0720760
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A86631667;
-	Tue,  6 Oct 2020 16:05:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A86631667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22CC516F7;
+	Tue,  6 Oct 2020 16:21:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22CC516F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1601993196;
-	bh=hqvyr8lXdvIBi2UNaGPW4l3iT7ddrdyd24TzQLuChpU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1601994138;
+	bh=wnJ74jkTAJilfg6rEyV32/8+ot91QL4DL7QKqDhaV2I=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AjEJnBEeOI91cwm4mLyseo6lD4GFLuMuR3sFCZ7tw9gTR8zQ0bLzTPdAsJzSCKLUX
-	 spm8GUgxVFivi9fBRceHWX8577lydejumoPA5MNA+pTHKqUNkLG6lW/3vSu2y4f80n
-	 BTNhOi8hbKuULhjYeNtiC35tqGSNTMNfY9enexpk=
+	b=PG7uB7p9V26N1qOCdSV8+kEvW1Ypjrn7CzF1ole5hhRwPxjl6ly5ddAxhhV3+r3aZ
+	 Dn422w61Dsp4/4i1ypOJ6JXtv4LfKJAqmrf44GAv+g5b8ZzNZ8bBEES4B5OeLK5iYK
+	 621GV8kjl10myxkXr7rOdBUCGWXkgERSRDR6Q/N4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D1DFF80164;
-	Tue,  6 Oct 2020 16:04:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0D96F80129;
+	Tue,  6 Oct 2020 16:21:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B65B1F8012C; Tue,  6 Oct 2020 16:04:08 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC36EF80129
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 16:03:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC36EF80129
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UlOwNkdg"
-Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de
- [95.90.213.189])
+ id 48D6EF80127; Tue,  6 Oct 2020 16:21:26 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9D299221EF;
- Tue,  6 Oct 2020 14:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601993035;
- bh=hqvyr8lXdvIBi2UNaGPW4l3iT7ddrdyd24TzQLuChpU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UlOwNkdg9lk73cHokQU2d+Lvn+LLea5d1dC2llzBKuRI56Ztm0vO5k6PJ8jHAWZv6
- ioVeyIkdpwgsgOfnwDhBStNtQvMAOPiGeSJW1yKcJ64Y3t0mfm7Ynaioq/vQKDAlgM
- +IbiH8P8vAtsHbhOGme+Fz10TMGdvIxTu6KpckU0=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
- (envelope-from <mchehab@kernel.org>)
- id 1kPnZI-0019G9-JB; Tue, 06 Oct 2020 16:03:52 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v5 37/52] docs: sound: writing-an-alsa-driver.rst: get rid of
- :c:type
-Date: Tue,  6 Oct 2020 16:03:34 +0200
-Message-Id: <1776a48e52bd6db74a6eaba8839eecba4c7c55fc.1601992016.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1601992016.git.mchehab+huawei@kernel.org>
-References: <cover.1601992016.git.mchehab+huawei@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C548BF80127
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2020 16:21:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C548BF80127
+IronPort-SDR: dAG/8Rmv1Asn31KA+48Sb8aiyxKbwuotZOojscKW2jCruOOlUEnGXKOhpNqjpbAwd1zLHemRGO
+ eT1hJfWjKbgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="249215350"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; d="scan'208";a="249215350"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2020 07:18:43 -0700
+IronPort-SDR: CxxwqlZKxdTSeMPntyuvAfJUt58Anvh1RtW4I21Y2z99dDFwJZKRu3I0hZF2UWoaIKKW96Ps+f
+ CIZ22WUBhuqg==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; d="scan'208";a="527373260"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2020 07:18:38 -0700
+Date: Tue, 6 Oct 2020 17:16:55 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [RFC PATCH 0/2] ALSA: hda - acomp probe fix for i915
+In-Reply-To: <s5hh7r75xrh.wl-tiwai@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2010061704230.3186@eliteleevi.tm.intel.com>
+References: <20201006113042.471718-1-kai.vehmanen@linux.intel.com>
+ <s5hpn5v5z7v.wl-tiwai@suse.de> <s5hh7r75xrh.wl-tiwai@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Julia Lawall <Julia.Lawall@inria.fr>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,298 +88,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-the :c:type shouldn't be used with structs with Sphinx 3,
-as the C domain there uses .. c:struct for structs.
+Hi,
 
-As we have the automarkup extension, let's just get rid of
-all :c:type as a whole, as those will be automagically
-marked as such.
+On Tue, 6 Oct 2020, Takashi Iwai wrote:
 
-This solves a bunch of warnings with Sphinx 3, like those:
+> On Tue, 06 Oct 2020 14:13:40 +0200, Takashi Iwai wrote:
+> > Another option would be to move the completion into the common acomp
+> > helper from i915-specific one.  That is,
+[...]
+> So something like below (totally untested).
 
-	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:490: WARNING: Unparseable C cross-reference: 'calling snd_card_free'
-	Invalid C declaration: Expected end of definition. [error at 8]
-	  calling snd_card_free
-	  --------^
-	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3328: WARNING: Unparseable C cross-reference: 'snd_rawmidi_transmit*'
-	Invalid C declaration: Expected end of definition. [error at 20]
-	  snd_rawmidi_transmit*
-	  --------------------^
-	.../Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3928: WARNING: Unparseable C cross-reference: 'copy_from/to_user'
-	Invalid C declaration: Expected end of definition. [error at 9]
-	  copy_from/to_user
-	  ---------^
+thanks Takashi for the quick reply. I did a quick test on a system with 
+two controllers and seems to work as expected.
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../kernel-api/writing-an-alsa-driver.rst     | 105 ++++++++----------
- 1 file changed, 47 insertions(+), 58 deletions(-)
+Getting rid of i915_master_bind is a nice plus definitely for this
+option. And the change in drm headers seems simple enough.
 
-diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-index aa9d5ab183d2..85d6e9c643ef 100644
---- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-+++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-@@ -194,7 +194,7 @@ The minimum flow for PCI soundcards is as follows:
- 
- -  create ``remove`` callback.
- 
---  create a :c:type:`struct pci_driver <pci_driver>` structure
-+-  create a struct pci_driver structure
-    containing the three pointers above.
- 
- -  create an ``init`` function just calling the
-@@ -487,7 +487,7 @@ The destructor, remove callback, simply releases the card instance. Then
- the ALSA middle layer will release all the attached components
- automatically.
- 
--It would be typically just :c:func:`calling snd_card_free()`:
-+It would be typically just calling :c:func:`snd_card_free()`:
- 
- ::
- 
-@@ -560,16 +560,15 @@ return the card instance. The extra_size argument is used to allocate
- card->private_data for the chip-specific data. Note that these data are
- allocated by :c:func:`snd_card_new()`.
- 
--The first argument, the pointer of struct :c:type:`struct device
--<device>`, specifies the parent device. For PCI devices, typically
--``&pci->`` is passed there.
-+The first argument, the pointer of struct device, specifies the parent
-+device. For PCI devices, typically ``&pci->`` is passed there.
- 
- Components
- ----------
- 
- After the card is created, you can attach the components (devices) to
- the card instance. In an ALSA driver, a component is represented as a
--:c:type:`struct snd_device <snd_device>` object. A component
-+struct snd_device object. A component
- can be a PCM instance, a control interface, a raw MIDI interface, etc.
- Each such instance has one component entry.
- 
-@@ -628,7 +627,7 @@ argument of :c:func:`snd_card_new()`, i.e.
-   err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-                      sizeof(struct mychip), &card);
- 
--:c:type:`struct mychip <mychip>` is the type of the chip record.
-+struct mychip is the type of the chip record.
- 
- In return, the allocated record can be accessed as
- 
-@@ -890,7 +889,7 @@ functions.  These resources must be released in the destructor
- function (see below).
- 
- Now assume that the PCI device has an I/O port with 8 bytes and an
--interrupt. Then :c:type:`struct mychip <mychip>` will have the
-+interrupt. Then struct mychip will have the
- following fields:
- 
- ::
-@@ -1094,7 +1093,7 @@ PCI Entries
- -----------
- 
- So far, so good. Let's finish the missing PCI stuff. At first, we need a
--:c:type:`struct pci_device_id <pci_device_id>` table for
-+struct pci_device_id table for
- this chipset. It's a table of PCI vendor/device ID number, and some
- masks.
- 
-@@ -1110,19 +1109,17 @@ For example,
-   };
-   MODULE_DEVICE_TABLE(pci, snd_mychip_ids);
- 
--The first and second fields of the :c:type:`struct pci_device_id
--<pci_device_id>` structure are the vendor and device IDs. If you
--have no reason to filter the matching devices, you can leave the
--remaining fields as above. The last field of the :c:type:`struct
--pci_device_id <pci_device_id>` struct contains private data
--for this entry. You can specify any value here, for example, to define
--specific operations for supported device IDs. Such an example is found
--in the intel8x0 driver.
-+The first and second fields of the struct pci_device_id are the vendor
-+and device IDs. If you have no reason to filter the matching devices, you can
-+leave the remaining fields as above. The last field of the
-+struct pci_device_id contains private data for this entry. You can specify
-+any value here, for example, to define specific operations for supported
-+device IDs. Such an example is found in the intel8x0 driver.
- 
- The last entry of this list is the terminator. You must specify this
- all-zero entry.
- 
--Then, prepare the :c:type:`struct pci_driver <pci_driver>`
-+Then, prepare the struct pci_driver
- record:
- 
- ::
-@@ -1439,8 +1436,8 @@ corresponding argument.
- If a chip supports multiple playbacks or captures, you can specify more
- numbers, but they must be handled properly in open/close, etc.
- callbacks. When you need to know which substream you are referring to,
--then it can be obtained from :c:type:`struct snd_pcm_substream
--<snd_pcm_substream>` data passed to each callback as follows:
-+then it can be obtained from struct snd_pcm_substream data passed to each
-+callback as follows:
- 
- ::
- 
-@@ -1639,10 +1636,9 @@ In the sections below, important records are explained.
- Hardware Description
- ~~~~~~~~~~~~~~~~~~~~
- 
--The hardware descriptor (:c:type:`struct snd_pcm_hardware
--<snd_pcm_hardware>`) contains the definitions of the fundamental
--hardware configuration. Above all, you'll need to define this in the
--`PCM open callback`_. Note that the runtime instance holds the copy of
-+The hardware descriptor (struct snd_pcm_hardware) contains the definitions of
-+the fundamental hardware configuration. Above all, you'll need to define this
-+in the `PCM open callback`_. Note that the runtime instance holds the copy of
- the descriptor, not the pointer to the existing descriptor. That is,
- in the open callback, you can modify the copied descriptor
- (``runtime->hw``) as you need. For example, if the maximum number of
-@@ -1800,14 +1796,13 @@ Running Status
- ~~~~~~~~~~~~~~
- 
- The running status can be referred via ``runtime->status``. This is
--the pointer to the :c:type:`struct snd_pcm_mmap_status
--<snd_pcm_mmap_status>` record. For example, you can get the current
-+the pointer to the struct snd_pcm_mmap_status record.
-+For example, you can get the current
- DMA hardware pointer via ``runtime->status->hw_ptr``.
- 
- The DMA application pointer can be referred via ``runtime->control``,
--which points to the :c:type:`struct snd_pcm_mmap_control
--<snd_pcm_mmap_control>` record. However, accessing directly to
--this value is not recommended.
-+which points to the struct snd_pcm_mmap_control record.
-+However, accessing directly to this value is not recommended.
- 
- Private Data
- ~~~~~~~~~~~~
-@@ -1843,8 +1838,8 @@ error number such as ``-EINVAL``. To choose an appropriate error
- number, it is advised to check what value other parts of the kernel
- return when the same kind of request fails.
- 
--The callback function takes at least the argument with :c:type:`struct
--snd_pcm_substream <snd_pcm_substream>` pointer. To retrieve the chip
-+The callback function takes at least the argument with
-+struct snd_pcm_substream pointer. To retrieve the chip
- record from the given substream instance, you can use the following
- macro.
- 
-@@ -2313,10 +2308,10 @@ non-atomic contexts. For example, the function
- :c:func:`snd_pcm_period_elapsed()` is called typically from the
- interrupt handler. But, if you set up the driver to use a threaded
- interrupt handler, this call can be in non-atomic context, too. In such
--a case, you can set ``nonatomic`` filed of :c:type:`struct snd_pcm
--<snd_pcm>` object after creating it. When this flag is set, mutex
--and rwsem are used internally in the PCM core instead of spin and
--rwlocks, so that you can call all PCM functions safely in a non-atomic
-+a case, you can set ``nonatomic`` filed of struct snd_pcm object
-+after creating it. When this flag is set, mutex and rwsem are used internally
-+in the PCM core instead of spin and rwlocks, so that you can call all PCM
-+functions safely in a non-atomic
- context.
- 
- Constraints
-@@ -2357,8 +2352,7 @@ There are many different constraints. Look at ``sound/pcm.h`` for a
- complete list. You can even define your own constraint rules. For
- example, let's suppose my_chip can manage a substream of 1 channel if
- and only if the format is ``S16_LE``, otherwise it supports any format
--specified in the :c:type:`struct snd_pcm_hardware
--<snd_pcm_hardware>` structure (or in any other
-+specified in struct snd_pcm_hardware> (or in any other
- constraint_list). You can build a rule like this:
- 
- ::
-@@ -2467,7 +2461,7 @@ Definition of Controls
- 
- To create a new control, you need to define the following three
- callbacks: ``info``, ``get`` and ``put``. Then, define a
--:c:type:`struct snd_kcontrol_new <snd_kcontrol_new>` record, such as:
-+struct snd_kcontrol_new record, such as:
- 
- ::
- 
-@@ -2602,8 +2596,8 @@ info callback
- ~~~~~~~~~~~~~
- 
- The ``info`` callback is used to get detailed information on this
--control. This must store the values of the given :c:type:`struct
--snd_ctl_elem_info <snd_ctl_elem_info>` object. For example,
-+control. This must store the values of the given
-+struct snd_ctl_elem_info object. For example,
- for a boolean control with a single element:
- 
- ::
-@@ -2774,13 +2768,11 @@ In the simplest way, you can do like this:
-   if (err < 0)
-           return err;
- 
--where ``my_control`` is the :c:type:`struct snd_kcontrol_new
--<snd_kcontrol_new>` object defined above, and chip is the object
--pointer to be passed to kcontrol->private_data which can be referred
--to in callbacks.
-+where ``my_control`` is the struct snd_kcontrol_new object defined above,
-+and chip is the object pointer to be passed to kcontrol->private_data which
-+can be referred to in callbacks.
- 
--:c:func:`snd_ctl_new1()` allocates a new :c:type:`struct
--snd_kcontrol <snd_kcontrol>` instance, and
-+:c:func:`snd_ctl_new1()` allocates a new struct snd_kcontrol instance, and
- :c:func:`snd_ctl_add()` assigns the given control component to the
- card.
- 
-@@ -2797,10 +2789,9 @@ can call :c:func:`snd_ctl_notify()`. For example,
- This function takes the card pointer, the event-mask, and the control id
- pointer for the notification. The event-mask specifies the types of
- notification, for example, in the above example, the change of control
--values is notified. The id pointer is the pointer of :c:type:`struct
--snd_ctl_elem_id <snd_ctl_elem_id>` to be notified. You can
--find some examples in ``es1938.c`` or ``es1968.c`` for hardware volume
--interrupts.
-+values is notified. The id pointer is the pointer of struct snd_ctl_elem_id
-+to be notified. You can find some examples in ``es1938.c`` or ``es1968.c``
-+for hardware volume interrupts.
- 
- Metadata
- --------
-@@ -2915,9 +2906,8 @@ with an ``ac97_bus_ops_t`` record with callback functions.
- 
- The bus record is shared among all belonging ac97 instances.
- 
--And then call :c:func:`snd_ac97_mixer()` with an :c:type:`struct
--snd_ac97_template <snd_ac97_template>` record together with
--the bus pointer created above.
-+And then call :c:func:`snd_ac97_mixer()` with an struct snd_ac97_template
-+record together with the bus pointer created above.
- 
- ::
- 
-@@ -3118,11 +3108,10 @@ devices on the card, set ``MPU401_INFO_IRQ_HOOK`` (see
- 
- Usually, the port address corresponds to the command port and port + 1
- corresponds to the data port. If not, you may change the ``cport``
--field of :c:type:`struct snd_mpu401 <snd_mpu401>` manually afterward.
--However, :c:type:`struct snd_mpu401 <snd_mpu401>` pointer is
-+field of struct snd_mpu401 manually afterward.
-+However, struct snd_mpu401 pointer is
- not returned explicitly by :c:func:`snd_mpu401_uart_new()`. You
--need to cast ``rmidi->private_data`` to :c:type:`struct snd_mpu401
--<snd_mpu401>` explicitly,
-+need to cast ``rmidi->private_data`` to struct snd_mpu401 explicitly,
- 
- ::
- 
-@@ -3772,7 +3761,7 @@ For creating the SG-buffer handler, call
- :c:func:`snd_pcm_set_managed_buffer_all()` with
- ``SNDRV_DMA_TYPE_DEV_SG`` in the PCM constructor like other PCI
- pre-allocator. You need to pass ``&pci->dev``, where pci is
--the :c:type:`struct pci_dev <pci_dev>` pointer of the chip as
-+the struct pci_dev pointer of the chip as
- well.
- 
- ::
--- 
-2.26.2
+I'll do a bit more testing and send an updated set based on your approach.
 
+Br, Kai
