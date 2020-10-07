@@ -2,103 +2,104 @@ Return-Path: <SRS0=3CTx=DO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD8FC41604
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2ADBC41604
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 16:00:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A162220789
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:59:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BCA6B215A4
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 16:00:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R7PC6t3y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gtKaywzq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A162220789
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iBVHK40s";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=endlessos-org.20150623.gappssmtp.com header.i=@endlessos-org.20150623.gappssmtp.com header.b="GVjJLEf3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCA6B215A4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=endlessos.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2560316DB;
-	Wed,  7 Oct 2020 17:58:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2560316DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C7E116EE;
+	Wed,  7 Oct 2020 17:59:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C7E116EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602086388;
-	bh=Z2HLQ0krZP5LUxeUFsKXuMXqjCBMVQCbz6WLVBAKOgs=;
-	h=Subject:References:To:From:Date:In-Reply-To:List-Id:
+	s=default; t=1602086400;
+	bh=xw+j37HK77QcRnh/9w2ESgmzd2FzsBuUzwVoCjaernc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R7PC6t3yJnrcAWVDEG//2iiFqwLZTtXpjkgdNFWTPsxGcZ27IJKV0F5DQKqT4/RcT
-	 0OUCT0Pk2lfHr9D5PorRii/72+XcW6PRPGpKsZIMXCOvwU7qh/vNmqqUn881HRjOpa
-	 JXzYeuGg3T5VWrCOHBaOrQ7L24WunUZg+zisbXD0=
+	b=iBVHK40sd7SfAPwrrvAfGm/J6E6jBVZJxYhFi8+rMN68E1ggGUVO5AmcBNwgLk4/6
+	 Iqibcy6Sw6pAyEyqPOizowphPHF8uswGHNykeqGupKCzDrEs4ewW2pLwIGBFCQTe3M
+	 rn6fBQCSIebXPKqWvs4zdfUxHKHPJR189g1x6n0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C77EEF802D7;
-	Wed,  7 Oct 2020 17:54:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D437F802DA;
+	Wed,  7 Oct 2020 17:55:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31E98F80128; Wed,  7 Oct 2020 09:28:26 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+ id 058D3F80128; Wed,  7 Oct 2020 07:28:43 +0200 (CEST)
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com
+ [IPv6:2607:f8b0:4864:20::544])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF175F80090
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 09:28:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF175F80090
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E0BBF80087
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 07:28:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E0BBF80087
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="gtKaywzq"
-Received: by mail-lf1-x12b.google.com with SMTP id r127so1104031lff.12
- for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2020 00:28:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:references:to:from:message-id:date:user-agent:mime-version
- :in-reply-to:content-language;
- bh=Ql+M7CkBVgu4+ZSBxhDzGyq0UmUz0P638VyiffXun2I=;
- b=gtKaywzqhY+DHBOLOA0ZCV9qfRFmBSFvo35fPlrgjfI6tFkR9X/6YdEB4lNqEC6yTa
- ogr3eEO0fFAVpfvch8UPNeFfpJgnGvAEuURt5TedJt8UC1e7wtDSvdq2IOSdN97tbeBP
- fAsp/1IPsHiCLw6EAmIeLKneyJLYrJsAVJIz7zez0MJ5bConBCI8TwQKi+kGWmPUSHWU
- wyUxHWScvF4AcM9NSB3btsPi/7PMF9Be/m8D20oej1PKAvTvqC0RhKRgP5mbO/gMuKcR
- Fg1MXI4xCVB1vKoRfE8YnYbDNcwaVpMHIJQEMvmOTxGmr6OYReTtdpmwl9jXzbsD/yRf
- 7wIg==
+ dkim=pass (2048-bit key) header.d=endlessos-org.20150623.gappssmtp.com
+ header.i=@endlessos-org.20150623.gappssmtp.com header.b="GVjJLEf3"
+Received: by mail-pg1-x544.google.com with SMTP id r10so645851pgb.10
+ for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2020 22:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=endlessos-org.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=5R1+WgHB899glUqb8KbPKiy6g38Z8v80NhMIn5rxp+M=;
+ b=GVjJLEf3KLhU3aU5wXKe2gxs+CIz5UrbiXgK5tp94tZFODdyuKxpGx0lda16MRKAQW
+ tp+Y725uYxKcBbznp/od78gZZL5I73XJLxXNE6x4SjjDA76bwdATwgMSGfZ9bMe452aK
+ jp81rKvAVR9bvF9dg4Gc9xnViCLSHPGd5WsyBM52KO1n85gUSKizmwFMPQexg1x/rSJJ
+ S8oYJcz5OHCUUk+0NBfpF8OJnMY9Vx2MuWyY+hP2HlemeIcmDRM6EnxrbpotpWiMujWW
+ f+TRyv5b/42pv5nG4k3bVp29SwsG7OdzRhXSv94DxxOrgjSTbxnPmbSI9GlSAcBtPiUq
+ SZJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:references:to:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language;
- bh=Ql+M7CkBVgu4+ZSBxhDzGyq0UmUz0P638VyiffXun2I=;
- b=pxRsrHy3jlSN+KwryePMqVF5xG8Aju2k4cr5zMb8P1pp5EUOJuiRrj0R1DzrohJgkD
- GfhoOHQmK7FD6QjaZ6Wa/ie8lm2Vee7KIOiy3sGXoUcKqgdo9tVV8H3dTIJgdlmAvOIZ
- Xt1b+EOHPU53SOq6z71p5iPqmHPbo/IU3P4iprE2SX8cYEx1M+cjEuVO1ZYxcnuE/KdG
- VWD00+uhR/SqKb/lxpJdrmjompGwwtx3CJVSgB2yv6TNH3NeBbMLLMhwhAxtJKPSRagW
- V1/uaVmQFbht6Dy4Rn48g9L9wkfZFaD7hw/ss+Rp+1UxFNyGzyHWmhNqyF3PKLDHpr83
- CTlA==
-X-Gm-Message-State: AOAM533otXWraLnNquJCFLunAjRc96FUVj1RNgVqz2LFEeCwW4sBB0IZ
- Eh/KX4ynobRKKUpnPjSfdXfxwUovS1OL8Q==
-X-Google-Smtp-Source: ABdhPJxJV+zBv9WdGioBGEHVX98IKXUzVuW4jJVDUjjmO2TqOuTDvJWN+VwRaVFgtdtIIiqM1B+Yfg==
-X-Received: by 2002:a19:cc4e:: with SMTP id c75mr580889lfg.364.1602055696793; 
- Wed, 07 Oct 2020 00:28:16 -0700 (PDT)
-Received: from [192.168.100.249] ([156.67.88.205])
- by smtp.gmail.com with ESMTPSA id g11sm202514lfh.253.2020.10.07.00.28.15
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 07 Oct 2020 00:28:16 -0700 (PDT)
-Subject: Fwd: [alsa-devel] trying to get an eleven rack to work
-References: <62fe062c-5355-d670-4cd0-4607bd3b6131@gmail.com>
-To: alsa-devel@alsa-project.org
-From: Jerzy Dubin <jerzydubin@gmail.com>
-X-Forwarded-Message-Id: <62fe062c-5355-d670-4cd0-4607bd3b6131@gmail.com>
-Message-ID: <79f53b54-0c3f-78e1-0f04-3ec4705f3f79@gmail.com>
-Date: Wed, 7 Oct 2020 09:28:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=5R1+WgHB899glUqb8KbPKiy6g38Z8v80NhMIn5rxp+M=;
+ b=H3Q2XhrU/E/eMXuZ7GpNo3X0nhcCkWWaomwU6tSfpZePte59Cw6jLqlVqjzgl30ZPe
+ SsMa6uUvFXpeDRO61lH4pngxlJj+DG3vR7S4s8yUJR0j4VFPKu5vtm5WQS32rGU/Wp2v
+ QAqoB5BizG7GuqzTjrprp1Q0LAeDfgmsQte98G/92Lx2+e0eZIqFNdEGNUB6dzm318rg
+ 0obkyq4388fr7ZaBmGUQKhmc+vBa3QE1VvKtc36+45V0ojK3AN5bU9QJVSHzZW90ebqh
+ z8LQOchOqib6YaTTnr//LwRI+O29+k5LF9xul1f1R+oTSaQFqPHul4yBG34haUPaUy0a
+ vvbg==
+X-Gm-Message-State: AOAM532JN4WDVrmu46D8hTLuTKoUO01T4GO+C6DK5FdafPXqlmJXjjpu
+ URNO0JxtSswTvT8ML4HrkthsagTYzl2ObKzVRt0=
+X-Google-Smtp-Source: ABdhPJzxM4iKLy72jLDLQyt5SxIfiDhZJSu72jnrTucg/rLTlovJU1ezXZ9r8sEoVERDfNQGwOxdOQ==
+X-Received: by 2002:aa7:9421:0:b029:13e:d13d:a08d with SMTP id
+ y1-20020aa794210000b029013ed13da08dmr1422685pfo.36.1602048510347; 
+ Tue, 06 Oct 2020 22:28:30 -0700 (PDT)
+Received: from starnight.endlessm-sf.com
+ (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
+ by smtp.googlemail.com with ESMTPSA id j19sm1171897pfe.108.2020.10.06.22.28.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 06 Oct 2020 22:28:29 -0700 (PDT)
+From: Jian-Hong Pan <jhp@endlessos.org>
+To: Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2] ALSA: hda/realtek: Enable audio jacks of ASUS D700SA with
+ ALC887
+Date: Wed,  7 Oct 2020 13:22:25 +0800
+Message-Id: <20201007052224.22611-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <s5hmu0z5ypi.wl-tiwai@suse.de>
+References: <s5hmu0z5ypi.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <62fe062c-5355-d670-4cd0-4607bd3b6131@gmail.com>
-Content-Language: pl
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Wed, 07 Oct 2020 17:54:46 +0200
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ linux@endlessm.com, linux-kernel@vger.kernel.org,
+ Jian-Hong Pan <jhp@endlessos.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,53 +115,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Clemens,
+The ASUS D700SA desktop's audio (1043:2390) with ALC887 cannot detect
+the headset microphone and another headphone jack until
+ALC887_FIXUP_ASUS_HMIC and ALC887_FIXUP_ASUS_AUDIO quirks are applied.
+The NID 0x15 maps as the headset microphone and NID 0x19 maps as another
+headphone jack. Also need the function like alc887_fixup_asus_jack to
+enable the audio jacks.
 
-any news in this topics :
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+---
+v2:
+ - Change the magic numbers to meaningful macros.
+ - Change snd_hda_codec_write to snd_hda_set_pin_ctl and
+   snd_hda_set_pin_ctl_cache accroding to Takashi's suggestion
 
-https://mailman.alsa-project.org/pipermail/alsa-devel/2012-April/050944.html
+ sound/pci/hda/patch_realtek.c | 42 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-https://www.alsa-project.org/pipermail/alsa-devel/2012-March/050649.html
-
-
-I tried to get it work and added in sound/usb/quirks-table.h
-
-|USB_DEVICE_VENDOR_SPEC(0x0dba, 0xb011), .driver_info = (unsigned long) 
-& (const struct snd_usb_audio_quirk) { .vendor_name = "Digidesign", 
-.product_name = "Eleven Rack", .ifnum = QUIRK_ANY_INTERFACE, .type = 
-QUIRK_COMPOSITE, .data = & (const struct snd_usb_audio_quirk[]) { { 
-.ifnum = 1, .type = QUIRK_AUDIO_STANDARD_MIXER }, { .ifnum = 3, .type = 
-QUIRK_AUDIO_STANDARD_INTERFACE }, { .ifnum = 4, .type = 
-QUIRK_AUDIO_STANDARD_INTERFACE }, { .ifnum = -1 } } } } Then there was 
-problem with sample rates(|||unable to retrieve number of sample rates| ) so i modified |sound/usb/format.c (i have checked sample rates on device):
-|if (ret < 0) { switch (chip->usb_id) { case USB_ID(0x0dba, 0xb011): /* 
-Eleven Rack */ dev_info(&dev->dev, "%s(): Eleven Rack: unable to 
-retrieve number of sample rates. Set it to default value (clock 
-%d).\n",__func__, clock); fp->nr_rates = 1; fp->rate_min = 44100; 
-fp->rate_max = 44100; fp->rates = SNDRV_PCM_RATE_44100; fp->rate_table = 
-kmalloc(sizeof(int), GFP_KERNEL); if (!fp->rate_table) { ret = -ENOMEM; 
-goto err_free; } fp->rate_table[0] = 44100; return 0; default: 
-dev_err(&dev->dev, "%s(): unable to retrieve number of sample rates 
-(clock %d)\n", __func__, clock); goto err; } } Now im getting : ||[ 152.114655] usb 1-4: new high-speed USB device number 6 using 
-xhci_hcd [ 152.268388] usb 1-4: New USB device found, idVendor=0dba, 
-idProduct=b011, bcdDevice=20.01 [ 152.268393] usb 1-4: New USB device 
-strings: Mfr=1, Product=2, SerialNumber=0 [ 152.268395] usb 1-4: 
-Product: Eleven Rack [ 152.268397] usb 1-4: Manufacturer: Digidesign [ 
-152.311112] usb 1-4: parse_audio_format_rates_v2v3(): Eleven Rack: 
-unable to retrieve number of sample rates. Set it to default value 
-(clock 129). [ 152.312918] usb 1-4: 4:1: cannot set enable PITCH (v2) [ 
-152.316184] usbcore: registered new interface driver snd-usb-audio [ 
-152.364920] usb 1-4: 4:1: cannot set enable PITCH (v2) [ 152.366262] usb 
-1-4: 4:1: cannot set enable PITCH (v2) [ 152.366991] usb 1-4: 4:1: 
-cannot set enable PITCH (v2) [ 152.367432] usb 1-4: 4:1: cannot set 
-enable PITCH (v2) [ 152.368070] usb 1-4: 4:1: cannot set enable PITCH 
-(v2) [ 152.371067] usb 1-4: 4:1: cannot set enable PITCH (v2) [ 
-152.372155] usb 1-4: 4:1: cannot set enable PITCH (v2) [ 152.372496] usb 
-1-4: 4:1: cannot set enable PITCH (v2) [ 152.373180] usb 1-4: 4:1: 
-cannot set enable PITCH (v2) [ 152.373894] usb 1-4: 4:1: cannot set 
-enable PITCH (v2) [ 152.376748] usb 1-4: 4:1: cannot set enable PITCH 
-(v2) [ 152.377498] usb 1-4: 4:1: cannot set enable PITCH (v2) [ 
-152.378690] usb 1-4: 4:1: cannot set enable PITCH (v2) Should i still 
-wait for backend infrastructure ? Or there is something what i can do 
-here ? Regards, Jurek |||||
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d4f17b465892..56c3ee95c8d3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1929,6 +1929,8 @@ enum {
+ 	ALC1220_FIXUP_CLEVO_P950,
+ 	ALC1220_FIXUP_CLEVO_PB51ED,
+ 	ALC1220_FIXUP_CLEVO_PB51ED_PINS,
++	ALC887_FIXUP_ASUS_AUDIO,
++	ALC887_FIXUP_ASUS_HMIC,
+ };
+ 
+ static void alc889_fixup_coef(struct hda_codec *codec,
+@@ -2141,6 +2143,31 @@ static void alc1220_fixup_clevo_pb51ed(struct hda_codec *codec,
+ 	alc_fixup_headset_mode_no_hp_mic(codec, fix, action);
+ }
+ 
++static void alc887_asus_hp_automute_hook(struct hda_codec *codec,
++					 struct hda_jack_callback *jack)
++{
++	struct alc_spec *spec = codec->spec;
++	unsigned int vref;
++
++	snd_hda_gen_hp_automute(codec, jack);
++
++	if (spec->gen.hp_jack_present)
++		vref = AC_PINCTL_VREF_80;
++	else
++		vref = AC_PINCTL_VREF_HIZ;
++	snd_hda_set_pin_ctl(codec, 0x19, PIN_HP | vref);
++}
++
++static void alc887_fixup_asus_jack(struct hda_codec *codec,
++				     const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	if (action != HDA_FIXUP_ACT_PROBE)
++		return;
++	snd_hda_set_pin_ctl_cache(codec, 0x1b, PIN_HP);
++	spec->gen.hp_automute_hook = alc887_asus_hp_automute_hook;
++}
++
+ static const struct hda_fixup alc882_fixups[] = {
+ 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -2398,6 +2425,20 @@ static const struct hda_fixup alc882_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC1220_FIXUP_CLEVO_PB51ED,
+ 	},
++	[ALC887_FIXUP_ASUS_AUDIO] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x15, 0x02a14150 }, /* use as headset mic, without its own jack detect */
++			{ 0x19, 0x22219420 },
++			{}
++		},
++	},
++	[ALC887_FIXUP_ASUS_HMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc887_fixup_asus_jack,
++		.chained = true,
++		.chain_id = ALC887_FIXUP_ASUS_AUDIO,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+@@ -2431,6 +2472,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x13c2, "Asus A7M", ALC882_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x1043, 0x1873, "ASUS W90V", ALC882_FIXUP_ASUS_W90V),
+ 	SND_PCI_QUIRK(0x1043, 0x1971, "Asus W2JC", ALC882_FIXUP_ASUS_W2JC),
++	SND_PCI_QUIRK(0x1043, 0x2390, "Asus D700SA", ALC887_FIXUP_ASUS_HMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
+ 	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
+ 	SND_PCI_QUIRK(0x1043, 0x8691, "ASUS ROG Ranger VIII", ALC882_FIXUP_GPIO3),
+-- 
+2.28.0
 
