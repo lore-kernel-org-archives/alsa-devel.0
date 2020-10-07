@@ -2,117 +2,98 @@ Return-Path: <SRS0=3CTx=DO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3A32C4363D
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 13:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4497CC4363D
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 13:37:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 698BC20789
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 13:05:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BF77206DD
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 13:37:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TCeze50V";
-	dkim=temperror (0-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="a65ArENd";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nKBGInhj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 698BC20789
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hckTI7au";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWZaWTr0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BF77206DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 103A416BA;
-	Wed,  7 Oct 2020 15:04:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 103A416BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72EA116B6;
+	Wed,  7 Oct 2020 15:36:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72EA116B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602075943;
-	bh=tMNF6j/gbE++1XGaq2cLZBHNcmVRelETKDv8v1wucjY=;
+	s=default; t=1602077863;
+	bh=MAeEvybVEoJRT6lc2sDnUP7WRyNeQfW3/IR19lxt3n0=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TCeze50VvfYm1ApEvXMZs3BDbH43HBFl8YrdC2Gq6msKuZb/aHfEhZxgCFJum6vKh
-	 rk/eu0eU21zW3gKcNSfPgymaJl5etORk/qGKKUIQGcWA7Xo94A7KGV8IiH+TK4w8xI
-	 2fGAL6BQ9rHH4OYyi6bDEH7+c/qav8pAeIK2qpZE=
+	b=hckTI7auW0Af45ORmj447MwadC58eJkT0s697mPaDZuL2AdLEkkCd/TSBFeBC5Xfo
+	 ykka3q1mIldtVp0PZJLM8PvaXvsHsxe3cGCVkvs7xwq9F7FZDz/93EWGK/DzkVTcHY
+	 NFrhfsb2kktwQiSQ7x89lOIKK7ji+Q1UdsbfpVa8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74DC5F80127;
-	Wed,  7 Oct 2020 15:04:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13BBBF80127;
+	Wed,  7 Oct 2020 15:36:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04E88F80128; Wed,  7 Oct 2020 15:04:50 +0200 (CEST)
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
- [64.147.123.20])
+ id EB37EF80128; Wed,  7 Oct 2020 15:36:51 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61278F80087
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 15:04:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61278F80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1254DF80087
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 15:36:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1254DF80087
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="a65ArENd"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="nKBGInhj"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id C288DA5C;
- Wed,  7 Oct 2020 09:04:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Wed, 07 Oct 2020 09:04:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=n7glPiflw/igCEGVay4K6mUqzzn
- H9kxtNvx6OHbU5es=; b=a65ArENdy/CeOlw4UvlRqGVqCCZVhVlAMKSGJcVZ8M+
- wrkSLeFL+urha0w7KbKand/fZgZA72tosRFJEmF+1CzntW29gKzYJrkpg5/OvFYp
- vb3KqMZ9DwFxKBhoOhf13sqTbJiYZyUVLYYGQhCdBPU0LMcKGr5EkixnK/LpDb8h
- YCHWyvQP+MshMNCJKDuoW8C55+1TlxwJN9F7kfKnGP7uZ7n2wDgl+hdhwhUe576L
- 7ieBmyc4CoSoIanH5X7NWStTpcP9Wm7g+LZY9zplafCGbQxJO1PN+f8Wg7ulQRmE
- RmlFH1JqYj7gEZxa9HnSo1OI6Wi3iqnhIE4tZ647qkg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=n7glPi
- flw/igCEGVay4K6mUqzznH9kxtNvx6OHbU5es=; b=nKBGInhjO4W2bnuKy9JkTL
- v7RGXrV3W+5QFkiysyCV6uPI3lXBWQ9oCZHUvOA4Qg3+J4Q2TWt6qeKlxewrqyP+
- N79X2DBKXfFttrp+Ux/wbfv580ksZlr8DRVK7s8bswf0nuPL/5UtnnCp6I6a9Pmt
- BsVezJf3O703mH5wQ2px7fGHEZyx0BeB4eixRzTsKWmidvPFbYtenHVXddWaXXia
- GehE6S7Im3m+EIGu+MZ2CyofLYcO4ByLuj2bKPHze1j79hfWk6+QGO3QkojNRwwk
- AX69rYjnQUAPqYrODiibTx6v8Okm4sdbCIazkruISRlYzBCg+S+LyqohrdwiXJiA
- ==
-X-ME-Sender: <xms:6bx9X2o5ZAEH-wdzZl4rxwB2QoL5gEHWaLUVeGMc6rHVvnJ7gFxflA>
- <xme:6bx9X0rK78TMotS0OkAtseUUbXH12LW5ikJNBURxFMkPPRU_PkeaEaDsgbLQKrPfX
- CFQQ5zCSbJeWW2OaCI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeeigdeiudcutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
- ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
- eqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueeivedt
- tdegteejkedvfeegfefhnecukfhppedugedrfedrieegrddvtdejnecuvehluhhsthgvrh
- fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgr
- khgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:6bx9X7P1b-m0N8T70l8P-BPN-JCjD4QM79KTtakhH8ZO5pTI1mHemg>
- <xmx:6bx9X17bUftLNCoyiZHK4LMGw2z7eGN0neKczCxytkPo_O-wg54DGw>
- <xmx:6bx9X16f3IcN_VO0dHlDi9OglApDwF1OAvF5hq5hHuk-EHMhUtvtlQ>
- <xmx:6rx9X_lj1uyjjmV3iys_6fm8LvxP9XB3yczWDeBfJ5lo3xmOF6n3uQ>
-Received: from workstation (ae064207.dynamic.ppp.asahi-net.or.jp [14.3.64.207])
- by mail.messagingengine.com (Postfix) with ESMTPA id DC0BB3280067;
- Wed,  7 Oct 2020 09:04:39 -0400 (EDT)
-Date: Wed, 7 Oct 2020 22:04:37 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] ALSA: bebob: potential info leak in hwdep_read()
-Message-ID: <20201007130437.GA73459@workstation>
-Mail-Followup-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Clemens Ladisch <clemens@ladisch.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
-References: <20201007074928.GA2529578@mwanda>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="BWZaWTr0"
+Received: from localhost (unknown [213.57.247.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 36ABC206DD;
+ Wed,  7 Oct 2020 13:36:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1602077798;
+ bh=MAeEvybVEoJRT6lc2sDnUP7WRyNeQfW3/IR19lxt3n0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=BWZaWTr08epBHl9vryIfizBSgAF/Ov+UNRxdscWjXcpcq6behdtjEZeXEYWySAksK
+ x/uU7MM5ickJTP4tw3IbMpF7SN2aiSHWsmSzo/hbq0diLUmeiWbH7qBE3YrxGOy92L
+ 2FrLTA+J9Es8X64gnA57vhZE3UCMfPqOlHzmopRA=
+Date: Wed, 7 Oct 2020 16:36:33 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Subject: Re: [PATCH v2 1/6] Add ancillary bus support
+Message-ID: <20201007133633.GB3964015@unreal>
+References: <20201005182446.977325-2-david.m.ertman@intel.com>
+ <20201006071821.GI1874917@unreal>
+ <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
+ <20201006170241.GM1874917@unreal>
+ <BY5PR12MB43228E8DAA0B56BCF43AF3EFDC0D0@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <20201006172650.GO1874917@unreal>
+ <3ff1445d86564ef3aae28d1d1a9a19ea@intel.com>
+ <20201006192036.GQ1874917@unreal>
+ <CAPcyv4iC_KGOx7Jwax-GWxFJbfUM-2+ymSuf4zkCxG=Yob5KnQ@mail.gmail.com>
+ <cd80aad674ee48faaaedc8698c9b23e2@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007074928.GA2529578@mwanda>
-Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
- Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <cd80aad674ee48faaaedc8698c9b23e2@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "kuba@kernel.org" <kuba@kernel.org>, "parav@mellanox.com" <parav@mellanox.com>,
+ "tiwai@suse.de" <tiwai@suse.de>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
+ "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "dledford@redhat.com" <dledford@redhat.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, Parav Pandit <parav@nvidia.com>,
+ Jason Gunthorpe <jgg@nvidia.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Ertman,
+ David M" <david.m.ertman@intel.com>, "Williams,
+ Dan J" <dan.j.williams@intel.com>, "davem@davemloft.net" <davem@davemloft.net>,
+ "Patil, Kiran" <kiran.patil@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -128,47 +109,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+On Wed, Oct 07, 2020 at 01:09:55PM +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
+> >
+> > On Tue, Oct 6, 2020 at 12:21 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Tue, Oct 06, 2020 at 05:41:00PM +0000, Saleem, Shiraz wrote:
+> > > > > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
+> > > > >
+> > > > > On Tue, Oct 06, 2020 at 05:09:09PM +0000, Parav Pandit wrote:
+> > > > > >
+> > > > > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > > > > Sent: Tuesday, October 6, 2020 10:33 PM
+> > > > > > >
+> > > > > > > On Tue, Oct 06, 2020 at 10:18:07AM -0500, Pierre-Louis Bossart wrote:
+> > > > > > > > Thanks for the review Leon.
+> > > > > > > >
+> > > > > > > > > > Add support for the Ancillary Bus, ancillary_device and
+> > ancillary_driver.
+> > > > > > > > > > It enables drivers to create an ancillary_device and
+> > > > > > > > > > bind an ancillary_driver to it.
+> > > > > > > > >
+> > > > > > > > > I was under impression that this name is going to be changed.
+> > > > > > > >
+> > > > > > > > It's part of the opens stated in the cover letter.
+> > > > > > >
+> > > > > > > ok, so what are the variants?
+> > > > > > > system bus (sysbus), sbsystem bus (subbus), crossbus ?
+> > > > > > Since the intended use of this bus is to
+> > > > > > (a) create sub devices that represent 'functional separation'
+> > > > > > and
+> > > > > > (b) second use case for subfunctions from a pci device,
+> > > > > >
+> > > > > > I proposed below names in v1 of this patchset.
+> > > > >
+> > > > > > (a) subdev_bus
+> > > > >
+> > > > > It sounds good, just can we avoid "_" in the name and call it subdev?
+> > > > >
+> > > >
+> > > > What is wrong with naming the bus 'ancillary bus'? I feel it's a fitting name.
+> > > > An ancillary software bus for ancillary devices carved off a parent device
+> > registered on a primary bus.
+> > >
+> > > Greg summarized it very well, every internal conversation about this
+> > > patch with my colleagues (non-english speakers) starts with the question:
+> > > "What does ancillary mean?"
+> > > https://lore.kernel.org/alsa-devel/20201001071403.GC31191@kroah.com/
+> > >
+> > > "For non-native english speakers this is going to be rough, given that
+> > > I as a native english speaker had to go look up the word in a
+> > > dictionary to fully understand what you are trying to do with that
+> > > name."
+> >
+> > I suggested "auxiliary" in another splintered thread on this question.
+> > In terms of what the kernel is already using:
+> >
+> > $ git grep auxiliary | wc -l
+> > 507
+> > $ git grep ancillary | wc -l
+> > 153
+> >
+> > Empirically, "auxiliary" is more common and closely matches the intended function
+> > of these devices relative to their parent device.
+>
+> auxiliary bus is a befitting name as well.
 
-Thanks for the patch.
-
-On Wed, Oct 07, 2020 at 10:49:28AM +0300, Dan Carpenter wrote:
-> The "count" variable needs to be capped on every path so that we don't
-> copy too much information to the user.
-> 
-> Fixes: 618eabeae711 ("ALSA: bebob: Add hwdep interface")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  sound/firewire/bebob/bebob_hwdep.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/sound/firewire/bebob/bebob_hwdep.c b/sound/firewire/bebob/bebob_hwdep.c
-> index 45b740f44c45..c362eb38ab90 100644
-> --- a/sound/firewire/bebob/bebob_hwdep.c
-> +++ b/sound/firewire/bebob/bebob_hwdep.c
-> @@ -36,12 +36,11 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
->  	}
->  
->  	memset(&event, 0, sizeof(event));
-> +	count = min_t(long, count, sizeof(event.lock_status));
->  	if (bebob->dev_lock_changed) {
->  		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
->  		event.lock_status.status = (bebob->dev_lock_count > 0);
->  		bebob->dev_lock_changed = false;
-> -
-> -		count = min_t(long, count, sizeof(event.lock_status));
->  	}
->  
->  	spin_unlock_irq(&bebob->lock);
-> -- 
-> 2.28.0
-
-Indeed, the bug can leak the contents of kernel memory into user space
-unintentionally for the size indicated by ALSA HwDep application...
-
-I will check the other drivers in ALSA firewire stack later for safe.
-
+Let's share all options and decide later.
+I don't want to find us bikeshedding about it.
 
 Thanks
-
-Takashi Sakamoto
