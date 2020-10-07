@@ -2,97 +2,107 @@ Return-Path: <SRS0=3CTx=DO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2292C4363C
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 07:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFE72C4363C
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 07:50:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37CD320797
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 07:15:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1E2D20870
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 07:50:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZH1HVXsq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="XtU5tYzm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37CD320797
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ByoJu79f";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="g+0Lp6Cq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1E2D20870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DDEE16CE;
-	Wed,  7 Oct 2020 09:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DDEE16CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF09E16CE;
+	Wed,  7 Oct 2020 09:49:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF09E16CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602054899;
-	bh=JeoI3ziz+NTXrap41CW7jZogjojeC8FcdQLS4rEkkYg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZH1HVXsqPqvP50RMZ4dD90DPDbPIUGEN60232t3qWX5WqTfNGQ2mL378TY4u24noC
-	 DsalLMUgp9uVVnKEn52t2Uo5WHwY+tL7niKDe+sUuedEDa0HcP6lF1pUGdxz063g2P
-	 aTh4L1AMC72NSi5ODOCpvvpBlUntslqZ8W6TeSbU=
+	s=default; t=1602057042;
+	bh=G62AmzZWITxM8RuGqLvABaZIRMQoznSGdxFj9CWjOrQ=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ByoJu79fHGnt6ZvP8QWfkUH8fGWuSPu09Mq50jo87jNw16xkFYIop4/lv9u0OB1Os
+	 EEfhpWsUAzv8Zz7SAF3BVzpDgqyQTvW2QndM83ZOe+SwN394DfCfqXbrJVM9gEi7ns
+	 vbK3xQ3l/JDlMmZd/1COp+DGaArBWzdxHsyZroeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1226BF800EE;
-	Wed,  7 Oct 2020 09:14:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 828DAF80127;
+	Wed,  7 Oct 2020 09:49:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE802F80128; Wed,  7 Oct 2020 09:14:06 +0200 (CEST)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
+ id 7D052F80128; Wed,  7 Oct 2020 09:49:48 +0200 (CEST)
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5156F800EE
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 09:14:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5156F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6A3AF80090
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 09:49:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6A3AF80090
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="XtU5tYzm"
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B5f7d6a810001>; Wed, 07 Oct 2020 00:13:05 -0700
-Received: from [10.25.101.204] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
- 2020 07:13:53 +0000
-Subject: Re: [PATCH v3 09/13] ASoC: dt-bindings: tegra: Add schema for audio
- graph card
-To: Rob Herring <robh@kernel.org>
-References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
- <1601573587-15288-10-git-send-email-spujar@nvidia.com>
- <20201006203433.GA2786434@bogus>
-From: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <a5bc07d8-fb2e-e86e-f0d3-be19166ad7bb@nvidia.com>
-Date: Wed, 7 Oct 2020 12:43:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="g+0Lp6Cq"
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+ by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0977fRC4146957;
+ Wed, 7 Oct 2020 07:49:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=MbRybRL0oWTHVg9Db3cMI50wwADgdU7JagKyjCXDqzk=;
+ b=g+0Lp6CqvRV0gm/bLgb+Tq/2MurahMyOrfMDTtIjiKP/8UhcZYHn1wfCJxaIMTzW5G7q
+ ha4QxkfhlbO0jdqykryHaB5tQzJOPRcmk/MAsn8yMDmaWYQ/qJY9TcVXPi8zMD/k4ccY
+ hnz0KfLle2LO25ocVZ4c/ZeNFq+gDHulV7gCPPsfzETGfR8VJC0rkhnh+0/od4cRy7wQ
+ 3jCLmuLaCR9glmX5Zm22JzxSBq/dlnsueB/2FbGHLugHUTztR5xeWB8JCCmVig0eBotS
+ FW7Y0i+LRxh4LonMLvwgAXib7BHGTLJywTTw0l0SyE0WqQ4nqzZEf/RWnY0YJpHR7opB iA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by aserp2130.oracle.com with ESMTP id 33xetb0bk4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 07 Oct 2020 07:49:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0977epMj130306;
+ Wed, 7 Oct 2020 07:49:41 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by aserp3020.oracle.com with ESMTP id 3410jy9vyv-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 07 Oct 2020 07:49:40 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0977nZjq019420;
+ Wed, 7 Oct 2020 07:49:38 GMT
+Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Wed, 07 Oct 2020 00:49:35 -0700
+Date: Wed, 7 Oct 2020 10:49:28 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Clemens Ladisch <clemens@ladisch.de>,
+ Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: bebob: potential info leak in hwdep_read()
+Message-ID: <20201007074928.GA2529578@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20201006203433.GA2786434@bogus>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1602054785; bh=/ogdgdqjxjkT33GrVdiECGAlj2ugqSEXgT8/zYZImUA=;
- h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
- MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
- Content-Language:X-Originating-IP:X-ClientProxiedBy;
- b=XtU5tYzm3GfSAkuTvH6PQaSeYmYjAL/rAufBtULI6I/l1BCpFnrNWb/u2GuIbET8t
- i9+b6WyIVw6t7dplUat1O/UItoSMD+DLVdQpI/cO+KuU/hnS/2S5nBq68dA2uta/88
- EFJ7am0x2CxfeZL6GidrchQR7m+aunCB5+y8/ks4sh/U5cMdr7333eVaUndl7oPAeW
- UXfO6g2OvKhr0dMtWH2w7yvC1UzE/E72L4Le8CnulD1cPXxUlLQR4Lt6S9tZclsBUZ
- jaix0aRqcfKO+B0Koj1B02Wb6SmWrQin/EkmitiWvaH1osQU03KklCXK3vKK6NA+Qq
- zglpDOr/HxZMA==
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, swarren@nvidia.com, kuninori.morimoto.gx@renesas.com,
- lgirdwood@gmail.com, nicoleotsuka@gmail.com, linux-kernel@vger.kernel.org,
- nwartikar@nvidia.com, tiwai@suse.com, viswanathl@nvidia.com,
- sharadg@nvidia.com, devicetree@vger.kernel.org, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
- rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766
+ signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
+ mlxlogscore=999 spamscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070050
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766
+ signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ spamscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070050
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,83 +118,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The "count" variable needs to be capped on every path so that we don't
+copy too much information to the user.
 
->> Add YAML schema for Tegra audio graph sound card DT bindings. It uses the
->> same DT bindings provided by generic audio graph driver. Along with this
->> few standard clock DT bindings are added which are specifically required
->> for Tegra audio.
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> ---
->>   .../sound/nvidia,tegra-audio-graph-card.yaml       | 70 ++++++++++++++++++++++
->>   1 file changed, 70 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
->> new file mode 100644
->> index 0000000..b73fbe5
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
->> @@ -0,0 +1,70 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-graph-card.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Audio Graph based Tegra sound card driver
->> +
->> +description: |
->> +  This is based on generic audio graph card driver along with additional
->> +  customizations for Tegra platforms. It uses the same bindings with
->> +  additional standard clock DT bindings required for Tegra.
->> +
->> +  See{LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
->> +
->> +maintainers:
->> +  - Jon Hunter <jonathanh@nvidia.com>
->> +  - Sameer Pujar <spujar@nvidia.com>
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - const: nvidia,tegra210-audio-graph-card
->> +      - const: nvidia,tegra186-audio-graph-card
->> +
->> +  clocks:
->> +   minItems: 2
->> +
->> +  clock-names:
->> +   minItems: 2
->> +   items:
->> +     - const: pll_a
->> +     - const: plla_out0
->> +
->> +  assigned-clocks:
->> +    minItems: 1
->> +    maxItems: 3
->> +
->> +  assigned-clock-parents:
->> +    minItems: 1
->> +    maxItems: 3
->> +
->> +  assigned-clock-rates:
->> +    minItems: 1
->> +    maxItems: 3
->> +
->> +required:
->> +  - compatible
->> +  - clocks
->> +  - clock-names
->> +  - assigned-clocks
->> +  - assigned-clock-parents
-> Where's the graph? You need to define the ports and reference the common
-> schema.
+Fixes: 618eabeae711 ("ALSA: bebob: Add hwdep interface")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/firewire/bebob/bebob_hwdep.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I am looking to reference the bindings used in below doc which is not 
-yet in YAML format. Only additional properties I listed here.
-{LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-
-Should I keep this doc to *.txt format as well and later move to YAML or 
-is there a way to reference *.txt doc here?
+diff --git a/sound/firewire/bebob/bebob_hwdep.c b/sound/firewire/bebob/bebob_hwdep.c
+index 45b740f44c45..c362eb38ab90 100644
+--- a/sound/firewire/bebob/bebob_hwdep.c
++++ b/sound/firewire/bebob/bebob_hwdep.c
+@@ -36,12 +36,11 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
+ 	}
+ 
+ 	memset(&event, 0, sizeof(event));
++	count = min_t(long, count, sizeof(event.lock_status));
+ 	if (bebob->dev_lock_changed) {
+ 		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
+ 		event.lock_status.status = (bebob->dev_lock_count > 0);
+ 		bebob->dev_lock_changed = false;
+-
+-		count = min_t(long, count, sizeof(event.lock_status));
+ 	}
+ 
+ 	spin_unlock_irq(&bebob->lock);
+-- 
+2.28.0
 
