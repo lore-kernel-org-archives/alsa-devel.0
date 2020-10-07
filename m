@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9070CC41604
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E2CAC41604
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:35:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D04F0215A4
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:32:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 547C92168B
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 15:35:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ubCe5D7+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D04F0215A4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mkzGKCGA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 547C92168B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 379C416BD;
-	Wed,  7 Oct 2020 17:31:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 379C416BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF0E016C1;
+	Wed,  7 Oct 2020 17:35:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF0E016C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602084753;
-	bh=bY7qjsB7ohVTXiBaBXy2cJK56TTjmvo8jIDX71pknD8=;
+	s=default; t=1602084951;
+	bh=AlfFr/SqgFtUZbIzlVA/issFibZUx596yxerLjQRBKs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ubCe5D7+MsnHVZuqvTFFDh/W0Vpiky5XxvlakBAVrP6TZwSr15yzL9IkhFuy/lPmU
-	 fs26kr0snOO6gnxw/bWn8cBDH8h7s1lySwkIqryCaxZ5DTcRM0OvxzuQUVUmQjTDXH
-	 NOQzndRbG6UCf/Y1f4/qKiIimqmA9xcP4oYrkb8s=
+	b=mkzGKCGAGazkV88wwvmMufpcRCNxDe/gQkxW0e+D9LV8fBFCsx4uBvpJb2a4dICUN
+	 S6wHBxjd+L+Y39ksn+Vpb/WA+aCJa+QxBfpvSbBi2cYszIkbZ9FloXK2CayLbpcl+p
+	 tW90Scala1gvhJxiRD25A52XA/uuDm1tqGCilrhE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6412F80127;
-	Wed,  7 Oct 2020 17:31:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B77CF80127;
+	Wed,  7 Oct 2020 17:35:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01CE9F80128; Wed,  7 Oct 2020 17:31:41 +0200 (CEST)
+ id 941EAF80128; Wed,  7 Oct 2020 17:34:59 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0889DF80090
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 17:31:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0889DF80090
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14055F80127
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 17:34:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14055F80127
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 57BFCAD29;
- Wed,  7 Oct 2020 15:31:31 +0000 (UTC)
-Date: Wed, 07 Oct 2020 17:31:29 +0200
-Message-ID: <s5h5z7m129a.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 2D589AD68;
+ Wed,  7 Oct 2020 15:34:52 +0000 (UTC)
+Date: Wed, 07 Oct 2020 17:34:49 +0200
+Message-ID: <s5h4kn6123q.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jian-Hong Pan <jhp@endlessos.org>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable audio jacks of ASUS D700SA
- with ALC887
-In-Reply-To: <20201007052224.22611-1-jhp@endlessos.org>
-References: <s5hmu0z5ypi.wl-tiwai@suse.de>
- <20201007052224.22611-1-jhp@endlessos.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] ALSA: bebob: potential info leak in hwdep_read()
+In-Reply-To: <20201007074928.GA2529578@mwanda>
+References: <20201007074928.GA2529578@mwanda>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- linux@endlessm.com, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,25 +77,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 07 Oct 2020 07:22:25 +0200,
-Jian-Hong Pan wrote:
+On Wed, 07 Oct 2020 09:49:28 +0200,
+Dan Carpenter wrote:
 > 
-> The ASUS D700SA desktop's audio (1043:2390) with ALC887 cannot detect
-> the headset microphone and another headphone jack until
-> ALC887_FIXUP_ASUS_HMIC and ALC887_FIXUP_ASUS_AUDIO quirks are applied.
-> The NID 0x15 maps as the headset microphone and NID 0x19 maps as another
-> headphone jack. Also need the function like alc887_fixup_asus_jack to
-> enable the audio jacks.
+> The "count" variable needs to be capped on every path so that we don't
+> copy too much information to the user.
 > 
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> Signed-off-by: Kailang Yang <kailang@realtek.com>
-> ---
-> v2:
->  - Change the magic numbers to meaningful macros.
->  - Change snd_hda_codec_write to snd_hda_set_pin_ctl and
->    snd_hda_set_pin_ctl_cache accroding to Takashi's suggestion
+> Fixes: 618eabeae711 ("ALSA: bebob: Add hwdep interface")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Thanks, applied.
+Applied now.  Thanks.
 
 
 Takashi
