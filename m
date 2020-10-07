@@ -2,93 +2,84 @@ Return-Path: <SRS0=3CTx=DO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFE3FC41604
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 16:23:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3E2CC41604
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 16:27:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABFF421707
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 16:23:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 136E820708
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Oct 2020 16:27:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FklSqPR3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffkm/wdP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABFF421707
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uVNFr+jn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bUsOf0bM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 136E820708
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7A0016B3;
-	Wed,  7 Oct 2020 18:23:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7A0016B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0950C16A1;
+	Wed,  7 Oct 2020 18:26:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0950C16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602087836;
-	bh=3wrrcD3lH8xpx+ROvHVv6b93NZnSzHjbk1/6UsjW6wQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1602088028;
+	bh=cMNF5BaEAQ/zzPIeIM4YPMRm9mBWkHw0U5fvGHhhHSU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FklSqPR3RxWfmhhvqFoKr6PQN13gPefXiNqBi6R+c9NU5O7HqOZppx7eueKMHdOVx
-	 jTqEERcYtOLNZ1Y/KMalQUID4JN+A4+o3L3ZOtI8X2/eHD0vXcsvSRUvpkNPdhyztX
-	 F1twd4pcrbFLSL5NEOisGXfRuEJiPK9wqHmHoUiI=
+	b=uVNFr+jnxStdK8k5yyUe/fWjo4OSLAyFnu7iNFtOtLPreuzr5A0pcI5y7LmOUincT
+	 BLS8B8iNfwrfbPPgT3WBD6eKIjF5rSexarSmXKhJhCqLYWEqftE6kn5Rci38Jsr+f7
+	 FMbA29ndDnWecf+NIRtmLeigDEqWequIjVIW3lao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86F8CF80090;
-	Wed,  7 Oct 2020 18:23:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0E44F80128;
+	Wed,  7 Oct 2020 18:26:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 315D0F80087; Wed,  7 Oct 2020 18:23:04 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32372F80087
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 18:22:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32372F80087
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ffkm/wdP"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 5FBF3F8016A; Wed,  7 Oct 2020 18:26:16 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 49BAC215A4;
- Wed,  7 Oct 2020 16:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1602087774;
- bh=3wrrcD3lH8xpx+ROvHVv6b93NZnSzHjbk1/6UsjW6wQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ffkm/wdPG/gpHfJFBx2gBgQiTl9tiW37wxu6O+DojB1NIHxNphvaJpfCMfZSJoUgg
- 8r9i+FOII/92QwE+YDyL8zqdoDj24CAAyoiEyXCTMEMAKHSnrKgKYRZ8qyMu2HIk+p
- KP9hlUiPnKiB1IDCvFomEicTF5r9oX7KeDgXIxqw=
-Date: Wed, 7 Oct 2020 17:22:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH 0/6] Ancillary bus implementation and SOF multi-client
- support
-Message-ID: <20201007162251.GB5030@sirena.org.uk>
-References: <20200930225051.889607-1-david.m.ertman@intel.com>
- <20201001071403.GC31191@kroah.com>
- <DM6PR11MB2841742651F535F0826326CDDD310@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201003090855.GD114893@kroah.com>
- <c09c7efa75d7ea7c65ba1ac4bbb35f033ee4a9bf.camel@intel.com>
- <20201005112547.GA401816@kroah.com>
- <CAPcyv4gWc4B9U9+RcEgmbFWiZ7VpDK+kFXnhGcOUkDhVc609vQ@mail.gmail.com>
- <20201007091443.GA822254@kroah.com>
- <CAPcyv4hLVF4AdRLq2mTGJ9NBwRHm=_ANerUu0OuUPKk2XBSu_w@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F3DAF80090
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2020 18:26:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F3DAF80090
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="bUsOf0bM"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=4aUwhYiL14/onvJbUa3pnBgw1DGqYhrOPMmrEFm5Og4=; b=bUsOf0bMj5Uy+NzKjZmug5GEry
+ APb2LhIe/wuzj2n3qB/zAFoLyVzrjmNwBzAXkWoLYm3ftFj/EtmP55IwjXVjjUS3esUBXjExpSDlC
+ ScbXRbNWo05A9rvdQrOFXwml4uZhBwX5WmpFQIeUYMgwiunncwZ50IvDLvSQsHMgk5KF7tkbvj1T0
+ 6jAjmAGLTnmuigRKvu9NmCBTNruSBADUueKbyZyP+YVFbkHt//5eZjE+SIeOMXqTffFIPHu4EqUi8
+ HbBNiSmjTsBCTGWMrNrOSippi/gmdwfqYj/YJZG8nrbvvrCPvWVaicg1NZFD6C9V1PAfxa2/PZXKn
+ aNsC3K3Q==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kQCGM-0002fO-Gq; Wed, 07 Oct 2020 16:25:59 +0000
+Subject: Re: [PATCH 2/2] ASoC: Intel: catpt: Add explicit DMADEVICES kconfig
+ dependency
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20201007135701.20372-1-cezary.rojewski@intel.com>
+ <20201007135701.20372-2-cezary.rojewski@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b4895043-2a88-5eb2-443c-b5640bf90aee@infradead.org>
+Date: Wed, 7 Oct 2020 09:25:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="mxv5cy4qt+RJ9ypb"
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4hLVF4AdRLq2mTGJ9NBwRHm=_ANerUu0OuUPKk2XBSu_w@mail.gmail.com>
-X-Cookie: Two heads are more numerous than one.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tiwai@suse.de" <tiwai@suse.de>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Sridharan,
- Ranjani" <ranjani.sridharan@intel.com>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
- "parav@nvidia.com" <parav@nvidia.com>, "jgg@nvidia.com" <jgg@nvidia.com>,
- "Ertman, David M" <david.m.ertman@intel.com>
+In-Reply-To: <20201007135701.20372-2-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,42 +95,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 10/7/20 6:57 AM, Cezary Rojewski wrote:
+> catpt selects DW_DMAC_CORE which requires DMADEVICES. Fix unmet direct
+> dependencies warning by updating driver's depends-on list.
+> 
+> Fixes: 6cbfa11d2694 ("ASoC: Intel: Select catpt and deprecate haswell")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
---mxv5cy4qt+RJ9ypb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-On Wed, Oct 07, 2020 at 09:19:32AM -0700, Dan Williams wrote:
-> On Wed, Oct 7, 2020 at 2:14 AM gregkh@linuxfoundation.org
+Thanks.
 
-> > "virtual" here means "not real" :)
+> ---
+>  sound/soc/intel/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index 1278bea4e1be..a5b446d5af19 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -21,7 +21,7 @@ config SND_SOC_INTEL_SST
+>  config SND_SOC_INTEL_CATPT
+>  	tristate "Haswell and Broadwell"
+>  	depends on ACPI || COMPILE_TEST
+> -	depends on SND_DMA_SGBUF
+> +	depends on DMADEVICES && SND_DMA_SGBUF
+>  	select DW_DMAC_CORE
+>  	select SND_SOC_ACPI_INTEL_MATCH
+>  	help
+> 
 
-> Which of these aux device use cases is not a real device? One of my
-> planned usages for this facility is for the NPEM (Native PCIE
-> Enclosure Management) mechanism that can appear on any PCIE
-> bridge/endpoint. While it is true that the NPEM register set does not
-> get its own PCI-b:d:f address on the host bus, it is still
-> discoverable by a standard enumeration scheme. It is real auxiliary
-> device functionality that can appear on any PCIE device where the
-> kernel can now have one common NPEM driver for all instances in the
-> topology.
 
-Some if not all of the SOF cases are entirely software defined by the
-firmware downloaded to the audio DSPs.
+-- 
+~Randy
 
---mxv5cy4qt+RJ9ypb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9961sACgkQJNaLcl1U
-h9DlXwgAgDGmylapX/nx3eTwZNpY2SkpDt2dWNb1vUqp7z1c1u/I2SfGxl+fsbGH
-iUOET7reLpVaok4ooy8XVeOaJwql/7rRbUb4oY9zWlTp4tw8G8GtCBMtU/Ff2Imm
-ItrTGuYg9vhTMplwm3+2gug1mGnDlqzTykeufznPz37VdoAbxR0p+M2SwUNzSYm+
-kmhIZqiy6DbFzeTXt9w4u6ZNepQMKGkrQeGK5eO1zj38vCHrvrdrafHkRaIR76nv
-cu1GJuEBlx2x+8z7GprFwWl3khil6P/Td75HgIcIYADMqFb9ZENAQh2Pe8/vK/QQ
-ZzFir6Rdz9zKwqPHoJMW8iXYTj+BcQ==
-=0Bcb
------END PGP SIGNATURE-----
-
---mxv5cy4qt+RJ9ypb--
