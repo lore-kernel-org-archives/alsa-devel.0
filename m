@@ -7,72 +7,72 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29C1CC4363C
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2020 05:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC5FC47095
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2020 05:21:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 791B72173E
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2020 05:21:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5EA97206F4
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2020 05:21:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XmOCeRpj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="r2hJq3fA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 791B72173E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OGy2ot33";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="FbHRM0Nu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EA97206F4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCA33169C;
-	Thu,  8 Oct 2020 07:20:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCA33169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E31716A8;
+	Thu,  8 Oct 2020 07:20:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E31716A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602134474;
-	bh=lbm9BFxh9Kmbr+cJHZ6C2b0KqHwV9YOK7faQwnO6keo=;
+	s=default; t=1602134508;
+	bh=/vdSEvhe9iqZwj5GsZNYN8wEo4BZQA3P2+BldHcsrMI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XmOCeRpjDnuyF5TQVtkaJ8E3/wFZ2IFBW9vWdukEUruWFSQke6lFgx5berpUOl9pR
-	 dlK0ysLCFKNBkdH2zGe77EhVZbMcig3+T7eNaJj/nbr2m4voR4+K6AaY3C4DxnKzfv
-	 p2i/TI3fCXILppeq99VAokmgD4OPEyhmsZn5tqGA=
+	b=OGy2ot33YCikd2j1Wh43HmTulDkdq/8ksUfBFYSCE0w17d2feScTzCpJgd6Qz5BtK
+	 mo3xUjlLVPN7YALG04hANimdkqeyDt8kb5PC9TuwhJwaJDIxgAqrex1QG9EUAjUtkY
+	 wf8rixjazCy7j40hI0+YTu/xF43skafgAUCySYsg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90B58F80287;
-	Thu,  8 Oct 2020 07:18:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3EC1F80288;
+	Thu,  8 Oct 2020 07:18:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B024F80288; Thu,  8 Oct 2020 07:18:02 +0200 (CEST)
-Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
+ id 38C35F80296; Thu,  8 Oct 2020 07:18:07 +0200 (CEST)
+Received: from z5.mailgun.us (z5.mailgun.us [104.130.96.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFFEFF80279
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2020 07:17:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFFEFF80279
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFB45F80288
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2020 07:18:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFB45F80288
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="r2hJq3fA"
+ header.i=@mg.codeaurora.org header.b="FbHRM0Nu"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1602134280; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1602134283; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=BmGbxM/rQmgQFBEkLvQNCtbkIB+DElAyYmbt6LOXnSw=;
- b=r2hJq3fAlfQNbdypRDi7iciODOgQchTkhXXODAQABg3Q34ruZ3lTKIUq+bKdfFzd673cx+xG
- /Dt5pl+BWElrcHYUcovK+uhAIwvL24bSMmAkwrjbeLOa+61iMwNHpkS0bal0kzzWAFJdeANB
- pYB7Ut9rKOK+Pq+B1Skobxeb5sQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
+ bh=fEiNiE7WcOtOuwWFNUUBWC5/RBsAGoYkHCbf1P9TbYE=;
+ b=FbHRM0Nuxmi2mnMwMJmafnXnM/uD72xgJRj+UJ8wEan9qalrLGCvip3KhfYZH0KGPOAXP+J7
+ N+U0REHxPUTLBputv3xe35JQfMGSE4OtAa08fRGkPOz4z4J5rM2aw+dd6DD7wQpKDEVA21xn
+ EAMHUvrrfJVw26420U4UIsIl73E=
+X-Mailgun-Sending-Ip: 104.130.96.5
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f7ea103ad37af35ece6ff70 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 05:17:55
+ 5f7ea10bf9168450eac66c49 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 05:18:03
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id A5065C433B1; Thu,  8 Oct 2020 05:17:55 +0000 (UTC)
+ id 2A5C6C43387; Thu,  8 Oct 2020 05:18:02 +0000 (UTC)
 Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id E44C1C433AF;
- Thu,  8 Oct 2020 05:17:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E44C1C433AF
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 96ECCC433FE;
+ Thu,  8 Oct 2020 05:17:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 96ECCC433FE
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -84,14 +84,14 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 6/7] Asoc: qcom: lpass-platform : Increase buffer size
-Date: Thu,  8 Oct 2020 10:47:02 +0530
-Message-Id: <1602134223-2562-7-git-send-email-srivasam@codeaurora.org>
+Subject: [PATCH v11 7/7] ASoC: qcom: sc7180: Add support for audio over DP
+Date: Thu,  8 Oct 2020 10:47:03 +0530
+Message-Id: <1602134223-2562-8-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
 References: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
 Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ Srinivasa Rao <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,27 +109,183 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 
-Increase buffer size to support audio over DP.
+Add support for audio playback over DP in lpass
+sc7180 platform driver. Update lpass_variant
+structure for hdmi data configuaration.
 
 Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
 ---
- sound/soc/qcom/lpass-platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/lpass-sc7180.c | 116 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 102 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 49abbb2..36d1512 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -23,7 +23,7 @@ struct lpass_pcm_data {
- 	int i2s_port;
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index a8a3d8f..c6292f9e 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -60,38 +60,65 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+ 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+ 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
+ 	},
++	[LPASS_DP_RX] = {
++		.id = LPASS_DP_RX,
++		.name = "Hdmi",
++		.playback = {
++			.stream_name = "Hdmi Playback",
++			.formats	= SNDRV_PCM_FMTBIT_S24,
++			.rates = SNDRV_PCM_RATE_48000,
++			.rate_min	= 48000,
++			.rate_max	= 48000,
++			.channels_min	= 2,
++			.channels_max	= 2,
++		},
++		.ops    = &asoc_qcom_lpass_hdmi_dai_ops,
++	},
  };
  
--#define LPASS_PLATFORM_BUFFER_SIZE	(16 * 1024)
-+#define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
- #define LPASS_PLATFORM_PERIODS		2
+ static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+-					   int direction)
++					   int direction, unsigned int dai_id)
+ {
+ 	struct lpass_variant *v = drvdata->variant;
+ 	int chan = 0;
  
- static const struct snd_pcm_hardware lpass_platform_pcm_hardware = {
+-	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
+-		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
+-					v->rdma_channels);
++	if (dai_id == LPASS_DP_RX) {
++		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
++						v->hdmi_rdma_channels);
++
++			if (chan >= v->hdmi_rdma_channels)
++				return -EBUSY;
++		}
++		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
++	} else {
++		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
++						v->rdma_channels);
+ 
+ 		if (chan >= v->rdma_channels)
+ 			return -EBUSY;
+-	} else {
+-		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
++		} else {
++			chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
+ 					v->wrdma_channel_start +
+ 					v->wrdma_channels,
+ 					v->wrdma_channel_start);
+ 
+-		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
+-			return -EBUSY;
+-	}
+-
+-	set_bit(chan, &drvdata->dma_ch_bit_map);
++			if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
++				return -EBUSY;
++		}
+ 
++		set_bit(chan, &drvdata->dma_ch_bit_map);
++	}
+ 	return chan;
+ }
+ 
+-static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
++static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan, unsigned int dai_id)
+ {
+-	clear_bit(chan, &drvdata->dma_ch_bit_map);
++	if (dai_id == LPASS_DP_RX)
++		clear_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
++	else
++		clear_bit(chan, &drvdata->dma_ch_bit_map);
+ 
+ 	return 0;
+ }
+@@ -144,6 +171,9 @@ static struct lpass_variant sc7180_data = {
+ 	.rdma_reg_base		= 0xC000,
+ 	.rdma_reg_stride	= 0x1000,
+ 	.rdma_channels		= 5,
++	.hdmi_rdma_reg_base		= 0x64000,
++	.hdmi_rdma_reg_stride	= 0x1000,
++	.hdmi_rdma_channels		= 4,
+ 	.dmactl_audif_start	= 1,
+ 	.wrdma_reg_base		= 0x18000,
+ 	.wrdma_reg_stride	= 0x1000,
+@@ -163,7 +193,7 @@ static struct lpass_variant sc7180_data = {
+ 	.rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
+ 	.rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
+ 	.rdma_wpscnt		= REG_FIELD_ID(0xC000, 16, 19, 5, 0x1000),
+-	.rdma_intf		= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
++	.rdma_intf			= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
+ 	.rdma_fifowm		= REG_FIELD_ID(0xC000, 1, 5, 5, 0x1000),
+ 	.rdma_enable		= REG_FIELD_ID(0xC000, 0, 0, 5, 0x1000),
+ 
+@@ -174,6 +204,64 @@ static struct lpass_variant sc7180_data = {
+ 	.wrdma_fifowm		= REG_FIELD_ID(0x18000, 1, 5, 4, 0x1000),
+ 	.wrdma_enable		= REG_FIELD_ID(0x18000, 0, 0, 4, 0x1000),
+ 
++	.hdmi_tx_ctl_addr	= 0x1000,
++	.hdmi_legacy_addr	= 0x1008,
++	.hdmi_vbit_addr		= 0x610c0,
++	.hdmi_ch_lsb_addr	= 0x61048,
++	.hdmi_ch_msb_addr	= 0x6104c,
++	.ch_stride		= 0x8,
++	.hdmi_parity_addr	= 0x61034,
++	.hdmi_dmactl_addr	= 0x61038,
++	.hdmi_dma_stride	= 0x4,
++	.hdmi_DP_addr		= 0x610c8,
++	.hdmi_sstream_addr	= 0x6101c,
++	.hdmi_irq_reg_base		= 0x63000,
++	.hdmi_irq_ports		= 1,
++
++	.hdmi_rdma_dyncclk		= REG_FIELD_ID(0x64000, 14, 14, 4, 0x1000),
++	.hdmi_rdma_bursten		= REG_FIELD_ID(0x64000, 13, 13, 4, 0x1000),
++	.hdmi_rdma_burst8		= REG_FIELD_ID(0x64000, 15, 15, 4, 0x1000),
++	.hdmi_rdma_burst16		= REG_FIELD_ID(0x64000, 16, 16, 4, 0x1000),
++	.hdmi_rdma_dynburst		= REG_FIELD_ID(0x64000, 18, 18, 4, 0x1000),
++	.hdmi_rdma_wpscnt		= REG_FIELD_ID(0x64000, 10, 12, 4, 0x1000),
++	.hdmi_rdma_fifowm		= REG_FIELD_ID(0x64000, 1, 5, 4, 0x1000),
++	.hdmi_rdma_enable		= REG_FIELD_ID(0x64000, 0, 0, 4, 0x1000),
++
++	.sstream_en		= REG_FIELD(0x6101c, 0, 0),
++	.dma_sel			= REG_FIELD(0x6101c, 1, 2),
++	.auto_bbit_en	= REG_FIELD(0x6101c, 3, 3),
++	.layout			= REG_FIELD(0x6101c, 4, 4),
++	.layout_sp		= REG_FIELD(0x6101c, 5, 8),
++	.set_sp_on_en	= REG_FIELD(0x6101c, 10, 10),
++	.dp_audio		= REG_FIELD(0x6101c, 11, 11),
++	.dp_staffing_en	= REG_FIELD(0x6101c, 12, 12),
++	.dp_sp_b_hw_en	= REG_FIELD(0x6101c, 13, 13),
++
++	.mute			= REG_FIELD(0x610c8, 0, 0),
++	.as_sdp_cc		= REG_FIELD(0x610c8, 1, 3),
++	.as_sdp_ct		= REG_FIELD(0x610c8, 4, 7),
++	.aif_db4			= REG_FIELD(0x610c8, 8, 15),
++	.frequency		= REG_FIELD(0x610c8, 16, 21),
++	.mst_index		= REG_FIELD(0x610c8, 28, 29),
++	.dptx_index		= REG_FIELD(0x610c8, 30, 31),
++
++	.soft_reset		= REG_FIELD(0x1000, 31, 31),
++	.force_reset	= REG_FIELD(0x1000, 30, 30),
++
++	.use_hw_chs		= REG_FIELD(0x61038, 0, 0),
++	.use_hw_usr		= REG_FIELD(0x61038, 1, 1),
++	.hw_chs_sel		= REG_FIELD(0x61038, 2, 4),
++	.hw_usr_sel		= REG_FIELD(0x61038, 5, 6),
++
++	.replace_vbit	= REG_FIELD(0x610c0, 0, 0),
++	.vbit_stream	= REG_FIELD(0x610c0, 1, 1),
++
++	.legacy_en		=  REG_FIELD(0x1008, 0, 0),
++	.calc_en		=  REG_FIELD(0x61034, 0, 0),
++	.lsb_bits		=  REG_FIELD(0x61048, 0, 31),
++	.msb_bits		=  REG_FIELD(0x6104c, 0, 31),
++
++
+ 	.clk_name		= (const char*[]) {
+ 				   "pcnoc-sway-clk",
+ 				   "audio-core",
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
