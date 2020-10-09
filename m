@@ -2,78 +2,68 @@ Return-Path: <SRS0=04K1=DQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0458C4363D
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97816C433E7
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:36:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90817222EB
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:31:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1FF952226B
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:36:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J2c/BF/J";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="Jwxreuw6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90817222EB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d3DcdjWx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FF952226B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8C6486E;
-	Fri,  9 Oct 2020 16:30:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8C6486E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3564686E;
+	Fri,  9 Oct 2020 16:35:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3564686E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602253893;
-	bh=1VRaLop91bHWO7w5F0waUr/94jY6TlmNxj1TGrJiYqQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1602254202;
+	bh=JeXy9/LZAlMukg7QTSFvazvwRx/NuDq1Y9Vcq9I1Jxg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J2c/BF/JXRz0v+dw9o/7Pig+XXvEowqeH3s1bzj6XupSMmAFUdkImAG84isyhjVFb
-	 ry+VIHP0HEQGqnXJ8dtU6m1o88X4EVdbZfBHyjHScFkosvo3St9TyDV2xE5gbPipRg
-	 eH+0eKoM7SdASXKXTZyNmrJbJE8Zyw4D71iX5oHw=
+	b=d3DcdjWxb9ceow2WU9XZ62dwN1GSN4qZddem+azSp/lDGmyWVoch0iIFFdMuif4JL
+	 mAWCt2C1yT1C/FteWBdHSQDlRpzCutY7ahdZUKame1APRoO1rvL3QQe/udc/1Rg5Te
+	 BXlYIXWIdGnMWDFpMVsS8PhrWwGfDz2x8jyG3v7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61023F80148;
-	Fri,  9 Oct 2020 16:30:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B59C6F8015B;
+	Fri,  9 Oct 2020 16:35:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A075F8015B; Fri,  9 Oct 2020 16:30:41 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 8CDF4F80165; Fri,  9 Oct 2020 16:35:49 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F586F80128
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 16:30:34 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 3CBC4A003F;
- Fri,  9 Oct 2020 16:30:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 3CBC4A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1602253834; bh=qwdmMgYPpmlsmJhg/e35cmKYVjpkux71U4ILYwDsJHs=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=Jwxreuw64+zCdUXKC87jLHMSvZ6ZhIaeI264YZxsnSukwA/y6RXfjkvdSF5f9EV3a
- V9cfyXLRp9zqXuqFmKDjAKSs3naAseyyw93KE+Ryt+RWmT+n0TPKL4dkuNo39glYaJ
- 4aJxuZiwweP2kE1Y2pOLJTvFLxhLjGnuPPyvNwgI=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri,  9 Oct 2020 16:30:31 +0200 (CEST)
-Subject: Re: snd_pcm_status() does not update status->avail
-To: Jonas Holmberg <jonashg@axis.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, tiwai@suse.de
-References: <d9c1f37e-5c8d-f289-270e-c6cda7a56ce3@axis.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <2d4ca02d-8be3-62ca-c273-f5b277e64158@perex.cz>
-Date: Fri, 9 Oct 2020 16:30:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <d9c1f37e-5c8d-f289-270e-c6cda7a56ce3@axis.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 554D9F80128
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 16:35:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 554D9F80128
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 6D04AAED2;
+ Fri,  9 Oct 2020 14:35:42 +0000 (UTC)
+Date: Fri, 09 Oct 2020 16:35:42 +0200
+Message-ID: <s5h4kn3tqkh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 1/1] ALSA: hda: fix jack detection with Realtek codecs
+ when in D3
+In-Reply-To: <20201009140227.691140-1-kai.vehmanen@linux.intel.com>
+References: <20201009140227.691140-1-kai.vehmanen@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, alsa-devel@alsa-project.org,
+ Kailang Yang <kailang@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,70 +79,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 09. 10. 20 v 16:02 Jonas Holmberg napsal(a):
-> Hi,
-> I have a problem with status->avail not being updated when using 
-> multiple extplug plugins and softvol. I managed to get it to work with 
-> the following patch:
+On Fri, 09 Oct 2020 16:02:27 +0200,
+Kai Vehmanen wrote:
 > 
-> diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
-> index ea60eb98..89e819d6 100644
-> --- a/src/pcm/pcm_plugin.c
-> +++ b/src/pcm/pcm_plugin.c
-> @@ -551,6 +551,8 @@ static int snd_pcm_plugin_status(snd_pcm_t *pcm, 
-> snd_pcm_status_t * status)
->                  return err;
->          status->appl_ptr = *pcm->appl.ptr;
->          status->hw_ptr = *pcm->hw.ptr;
-> +       status->avail = snd_pcm_mmap_capture_avail(pcm);
-> +       status->delay = snd_pcm_mmap_capture_delay(pcm);
->          return 0;
->   }
+> In case HDA controller is active, but codec is runtime suspended, jack
+> detection is not successful and no interrupt is raised. This has been
+> observed with multiple Realtek codecs and HDA controllers from different
+> vendors. Bug does not occur if both codec and controller are active,
+> or both are in suspend. Bug can be easily hit on desktop systems with
+> no built-in speaker.
 > 
-> My question is if this is the correct solution?
-
-It seems that nobody is using those status fields. Usually,
-snd_pcm_avail_update() is used by apps. Anyway, this should be fixed for both
-directions. The avail should be probably synced to
-snd_pcm_plugin_avail_update() output:
-
-
-diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
-index ea60eb98..5739cfc2 100644
---- a/src/pcm/pcm_plugin.c
-+++ b/src/pcm/pcm_plugin.c
-@@ -541,16 +541,20 @@ static snd_pcm_sframes_t
-snd_pcm_plugin_avail_update(snd_pcm_t *pcm)
- static int snd_pcm_plugin_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- {
-        snd_pcm_plugin_t *plugin = pcm->private_data;
--       snd_pcm_sframes_t err;
-+       snd_pcm_sframes_t err, avail;
-
-        /* sync with the latest hw and appl ptrs */
--       snd_pcm_plugin_avail_update(pcm);
-+       avail = snd_pcm_plugin_avail_update(pcm);
-+       if (avail < 0)
-+               return avail;
-
-        err = snd_pcm_status(plugin->gen.slave, status);
-        if (err < 0)
-                return err;
-        status->appl_ptr = *pcm->appl.ptr;
-        status->hw_ptr = *pcm->hw.ptr;
-+       status->avail = avail;
-+       status->delay = snd_pcm_mmap_delay(pcm);
-        return 0;
- }
-
-					Jaroslav
-
+> The problem can be fixed by powering up the codec once after every
+> controller runtime resume. Even if codec goes back to suspend, the jack
+> detection will now work. Add a flag to 'hda_codec' to describe codecs
+> that require this flow from the controller driver. Mark all Realtek
+> codecs with this flag.
 > 
-> BR
-> /Jonas
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209379
+> Cc: Kailang Yang <kailang@realtek.com>
+> Co-developed-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> ---
+>  include/sound/hda_codec.h     | 1 +
+>  sound/pci/hda/hda_intel.c     | 8 ++++++--
+>  sound/pci/hda/patch_realtek.c | 6 ++++++
+>  3 files changed, 13 insertions(+), 2 deletions(-)
 > 
+> diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+> index 0fea49bfc5e8..73827b7d17e0 100644
+> --- a/include/sound/hda_codec.h
+> +++ b/include/sound/hda_codec.h
+> @@ -253,6 +253,7 @@ struct hda_codec {
+>  	unsigned int force_pin_prefix:1; /* Add location prefix */
+>  	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
+>  	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
+> +	unsigned int forced_resume:1; /* forced resume for jack */
+>  	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
+>  
+>  #ifdef CONFIG_PM
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 61e495187b1a..cfc073c992e7 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1002,12 +1002,16 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+>  	azx_init_pci(chip);
+>  	hda_intel_init_chip(chip, true);
+>  
+> -	if (status && from_rt) {
+> -		list_for_each_codec(codec, &chip->bus)
+> +	if (from_rt) {
+> +		list_for_each_codec(codec, &chip->bus) {
+> +			if (codec->forced_resume && pm_runtime_suspended(hda_codec_dev(codec)))
+> +				pm_request_resume(hda_codec_dev(codec));
+> +
+>  			if (!codec->relaxed_resume &&
+>  			    (status & (1 << codec->addr)))
+>  				schedule_delayed_work(&codec->jackpoll_work,
+>  						      codec->jackpoll_interval);
+> +		}
+>  	}
+
+Basically both pm_request_resume() and the jackpoll_work do the
+equivalent task, hence no need to do twice differently.  Actually
+pm_request_resume() looks like a better choice as it's clearer about
+what it does, so let's replace with it.
+
+Also, the pm_runtime_suspend() can be skipped here; the codec must
+have been suspended at this moment because of the pm-dependency.
+
+So, it'll be like:
+
+	if (from_rt) {
+		list_for_each_codec(codec, &chip->bus) {
+			if (codec->relaxed_resume)
+				continue;
+			if (codec->forced_resume ||
+			    (status & (1 << codec->addr)))
+				pm_request_resume(hda_codec_dev(codec));
+		}
+	}
 
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Could you check whether this still works?
+
+
+thanks,
+
+Takashi
