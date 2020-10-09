@@ -2,82 +2,69 @@ Return-Path: <SRS0=04K1=DQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFEEFC433E7
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82275C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:45:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7769A20709
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:39:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2CDB822260
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:45:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NBfILJ8Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7769A20709
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j0Px36Jf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CDB822260
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94B7F15F2;
-	Fri,  9 Oct 2020 16:38:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94B7F15F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1A0D15F2;
+	Fri,  9 Oct 2020 16:44:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1A0D15F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602254346;
-	bh=qMPUoY6V3qUORBFazuVirFE+eWJxi6hcqJVAh5P91rc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1602254741;
+	bh=ELi+elNZCtCI963bjntnjMQSyXtEqna/I3PQPiGlwDA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NBfILJ8ZPCKZvpC04FBgBWHLlRhF+R+oP82j/GV7eSBGBe/capVbvlcyQ59OKZYb1
-	 r0MDFRdxNc+4kSzJSxOYuAIAnKXpmeMHmcBsQFWVZLeF1Qc+8M2Yhcdvwki3R1CmIF
-	 S7rwXV+hTfaehM6p75ieOYtS3zOwzHFXentVpjY4=
+	b=j0Px36Jf/GOt+CXmrdeOAz9beklKZfQExj6d1H1KN1c6ZYFQhQyHa6cJ4PtDtDbQb
+	 nroxeARIyoYBxZa3ZS8RVPdy3zNAgOsr0lfj5Eps1GVGMYZsP9CXU0pMogEWvAI3Lh
+	 ZYGW5fMkYl5mkibgYvN2zbAL5UpR+FgANB99DdKQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 182C0F800BF;
-	Fri,  9 Oct 2020 16:38:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AEA1F80148;
+	Fri,  9 Oct 2020 16:44:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 639F9F80165; Fri,  9 Oct 2020 16:38:14 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6FFB4F8015B; Fri,  9 Oct 2020 16:44:48 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16295F80128
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 16:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16295F80128
-IronPort-SDR: +dGQz7H8YaFthfjFzeBarHDpcnBy6N9I6AIKjxoqTMZofn8VdL16BnsKrfDNEQH1cSqAkjFadN
- r4+60djMJY1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165553198"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="165553198"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 07:38:08 -0700
-IronPort-SDR: LWLH9QF3iFW2yamHJFMIwyGN1n4PmdveFxQ9WdHi1kMggyi27/C0XGj0tp7QEtolaYV8Ne9blW
- rvRpdVXPTFGQ==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="419467300"
-Received: from sjkim-mobl1.amr.corp.intel.com (HELO [10.212.131.60])
- ([10.212.131.60])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 07:38:07 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41213F800BF
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 16:44:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41213F800BF
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 0E543AD73;
+ Fri,  9 Oct 2020 14:44:44 +0000 (UTC)
+Date: Fri, 09 Oct 2020 16:44:43 +0200
+Message-ID: <s5hzh4vsbl0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH 1/1] ALSA: hda: fix jack detection with Realtek codecs
  when in D3
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, 
- tiwai@suse.de
+In-Reply-To: <f1c3ff3f-8f7c-a82c-b03d-32369e32e395@linux.intel.com>
 References: <20201009140227.691140-1-kai.vehmanen@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <f1c3ff3f-8f7c-a82c-b03d-32369e32e395@linux.intel.com>
-Date: Fri, 9 Oct 2020 09:38:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201009140227.691140-1-kai.vehmanen@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Kailang Yang <kailang@realtek.com>
+ <f1c3ff3f-8f7c-a82c-b03d-32369e32e395@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Kailang Yang <kailang@realtek.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,94 +80,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 10/9/20 9:02 AM, Kai Vehmanen wrote:
-> In case HDA controller is active, but codec is runtime suspended, jack
-> detection is not successful and no interrupt is raised. This has been
-> observed with multiple Realtek codecs and HDA controllers from different
-> vendors. Bug does not occur if both codec and controller are active,
-> or both are in suspend. Bug can be easily hit on desktop systems with
-> no built-in speaker.
+On Fri, 09 Oct 2020 16:38:05 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> The problem can be fixed by powering up the codec once after every
-> controller runtime resume. Even if codec goes back to suspend, the jack
-> detection will now work. Add a flag to 'hda_codec' to describe codecs
-> that require this flow from the controller driver. Mark all Realtek
-> codecs with this flag.
-
-It does make sense to request the codec to resume when the controller 
-resumes, we did the same for SoundWire IIRC.
-
-I am still confused on what happens if e.g. the controller resumes and 
-remains active, e.g. capturing from the DMIC. The codec would become 
-suspended after a while and then we would be back to the same problem, 
-wouldn't we?
-
-Or are you saying that this initial resume of the codec is enough?
-
 > 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209379
-> Cc: Kailang Yang <kailang@realtek.com>
-> Co-developed-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> ---
->   include/sound/hda_codec.h     | 1 +
->   sound/pci/hda/hda_intel.c     | 8 ++++++--
->   sound/pci/hda/patch_realtek.c | 6 ++++++
->   3 files changed, 13 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-> index 0fea49bfc5e8..73827b7d17e0 100644
-> --- a/include/sound/hda_codec.h
-> +++ b/include/sound/hda_codec.h
-> @@ -253,6 +253,7 @@ struct hda_codec {
->   	unsigned int force_pin_prefix:1; /* Add location prefix */
->   	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
->   	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
-> +	unsigned int forced_resume:1; /* forced resume for jack */
->   	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
->   
->   #ifdef CONFIG_PM
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 61e495187b1a..cfc073c992e7 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1002,12 +1002,16 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
->   	azx_init_pci(chip);
->   	hda_intel_init_chip(chip, true);
->   
-> -	if (status && from_rt) {
-> -		list_for_each_codec(codec, &chip->bus)
-> +	if (from_rt) {
-> +		list_for_each_codec(codec, &chip->bus) {
-> +			if (codec->forced_resume && pm_runtime_suspended(hda_codec_dev(codec)))
-> +				pm_request_resume(hda_codec_dev(codec));
-> +
->   			if (!codec->relaxed_resume &&
->   			    (status & (1 << codec->addr)))
->   				schedule_delayed_work(&codec->jackpoll_work,
->   						      codec->jackpoll_interval);
-> +		}
->   	}
->   
->   	/* power down again for link-controlled chips */
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index f89506dffd5b..e4ab483db72f 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -849,6 +849,12 @@ static int alc_build_controls(struct hda_codec *codec)
->   static void alc_pre_init(struct hda_codec *codec)
->   {
->   	alc_fill_eapd_coef(codec);
-> +
-> +	/*
-> +	 * if controller is resumed from suspend, while codec remains in D3, codec
-> +	 * needs to be woken up once or otherwise jack detection does not work
-> +	 */
-> +	codec->forced_resume = 1;
->   }
->   
->   #define is_s3_resume(codec) \
+> On 10/9/20 9:02 AM, Kai Vehmanen wrote:
+> > In case HDA controller is active, but codec is runtime suspended, jack
+> > detection is not successful and no interrupt is raised. This has been
+> > observed with multiple Realtek codecs and HDA controllers from different
+> > vendors. Bug does not occur if both codec and controller are active,
+> > or both are in suspend. Bug can be easily hit on desktop systems with
+> > no built-in speaker.
+> >
+> > The problem can be fixed by powering up the codec once after every
+> > controller runtime resume. Even if codec goes back to suspend, the jack
+> > detection will now work. Add a flag to 'hda_codec' to describe codecs
+> > that require this flow from the controller driver. Mark all Realtek
+> > codecs with this flag.
 > 
+> It does make sense to request the codec to resume when the controller
+> resumes, we did the same for SoundWire IIRC.
+> 
+> I am still confused on what happens if e.g. the controller resumes and
+> remains active, e.g. capturing from the DMIC. The codec would become
+> suspended after a while and then we would be back to the same problem,
+> wouldn't we?
+> 
+> Or are you saying that this initial resume of the codec is enough?
+
+When the controller is active and the codec goes to runtime suspend,
+the codec will be woken up via the unsolicited event per jack change.
+So it seems that the problem is only about the wake up from the
+controller's runtime suspend.
+
+
+thanks,
+
+Takashi
