@@ -2,95 +2,68 @@ Return-Path: <SRS0=04K1=DQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E31FC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 12:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EF55C433E7
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 12:40:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B0DB222B8
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 12:36:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 99487222B8
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 12:40:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bqNJlDbG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="PlRN6g92"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B0DB222B8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l6gta1Ul"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99487222B8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dressmaker.ca
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 941D4950;
-	Fri,  9 Oct 2020 14:35:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 941D4950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BDA8950;
+	Fri,  9 Oct 2020 14:39:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BDA8950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602247006;
-	bh=AESnrxLmZbTnhnd7ZMZRicXeBptBo7pSE9m/WI+ocoU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bqNJlDbG34Z60NxY9SuhSPkYk+ilEPpK+pCCo/7g3Jd1NfJqMVMXkLjEWo33DenNl
-	 RsKiru0Sn7Mi9Lk2ibwknHYCOuzf8TlzXn8q7CZ+PKP2Q/eNI7r9eOlIaVnU3iDUhM
-	 noMIH/7vQ3bLAbMX4hb3MPWMYIOKw8cakKBqB7+s=
+	s=default; t=1602247204;
+	bh=O8SIIfJRwWuHk98lRcVZMZnZGub2X+eLW5ZkAFQvpYk=;
+	h=Subject:From:To:References:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=l6gta1Ul9A6eg3gh3DyeIQKDpXCgdFoanGPIkLtlTFF7vmDay3CxKFLSBr7Lw5Ikb
+	 oQwg+5hoMxSiyKGrH0qqN70JdpLL0j4LWk6J0T0ltsuyMyq0jn9nUlSzhGsxMzMyy1
+	 rwc8Ip0F6ZJqpthCgmiLS48v6+/tnzP4O2cZ4U+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D625BF8014D;
-	Fri,  9 Oct 2020 14:35:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 110AAF8014D;
+	Fri,  9 Oct 2020 14:39:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 912B8F8015B; Fri,  9 Oct 2020 14:35:54 +0200 (CEST)
-Received: from esa4.microchip.iphmx.com (esa4.microchip.iphmx.com
- [68.232.154.123])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51520F80128
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 14:35:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51520F80128
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="PlRN6g92"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1602246952; x=1633782952;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=AESnrxLmZbTnhnd7ZMZRicXeBptBo7pSE9m/WI+ocoU=;
- b=PlRN6g92Gsc8FDbrTnDnESNK0pYSap5rOzEx+N7BTUk8G/DnXaZimc12
- Wn0hURa/fsfdS3r+92T/8HjFHsXBoJ5F6vAYQSnnrmzt5p3P4hl7l2Lgj
- eVFraJxI8V9pMc0ye79MrkU+TH9eBdxfffJBcPMJvrm7yZt17QCsoL/K9
- q20K1Ue/XobBES6NnVYexIOG7u/2hTVe5V2cg0OurruzdtodOAa+sorkX
- 0iTS6pCIAAsD4y0EtXEPNKIjxjf+JyrQhbo+tT8b5aMlObvDMHhohcUly
- T3TIngL56oPjGuOFNgt8WsdG3sfHt43MBApkH+CMRJxP7iCygqHLEPkPE Q==;
-IronPort-SDR: CNb0lpvZ8TrLUpmO2ImDhgrCrYBTvSGcOL+6Csja67DEwSRm/D9S8DaCVgQGkv1RWjp2pM4vU9
- 90uPw06o5llwOZuiS6jxsT3H8NzbfZVPerBtg+y7pxMQK/Z5Vyn5gheX8rsAe7KSFR29WonilI
- hMU1oY6jG8ubrmBRKgDv6FayEs0OV+WDtOJNomQ5ta65cULTjaOXqxGik2m3G3eruCFIWOtkG6
- m3+IUqhiM5dd07il/CYFX33//aKTO0+FNAvGXx0OiuUUOLrTYGHldoq0kcF21rF/VgSbV4VFuX
- XuU=
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="89704623"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 09 Oct 2020 05:35:47 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 9 Oct 2020 05:35:13 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 9 Oct 2020 05:35:02 -0700
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To: <alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: mchp-spdiftx: remove 'TX' from playback stream name
-Date: Fri, 9 Oct 2020 15:35:27 +0300
-Message-ID: <20201009123527.2770629-1-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
+ id 62A14F8015B; Fri,  9 Oct 2020 14:39:12 +0200 (CEST)
+Received: from mail.earthlovesme.ca (24-65.162.static.aei.ca [216.162.65.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2FFEF80128
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 14:39:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2FFEF80128
+Received: from localhost.localdomain (Unknown [10.10.10.3])
+ by mail.earthlovesme.ca with ESMTPSA
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128)
+ ; Fri, 9 Oct 2020 08:39:14 -0400
+Subject: Re: Discover a microphone device, to later discover if it is
+ receiving input
+From: info <info@dressmaker.ca>
+To: alsa-devel@alsa-project.org
+References: <de6ebf17-8f71-c497-28bc-7819338baddb@dressmaker.ca>
+Organization: Dressmaker Canada Inc.
+Message-ID: <5378606a-5b71-5d1b-f7f4-a6f33dce60b3@dressmaker.ca>
+Date: Fri, 9 Oct 2020 08:39:05 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: alexandre.belloni@bootlin.com, lgirdwood@gmail.com,
- nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
- broonie@kernel.org, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+In-Reply-To: <de6ebf17-8f71-c497-28bc-7819338baddb@dressmaker.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,27 +79,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Do not include the 'TX' in the stream name since it's obvious for
-playback.
+Can maintainers of this list please give a straight answer: is asking 
+questions and leaving comments here a waste of time?
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- sound/soc/atmel/mchp-spdiftx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2020-10-04 12:22 PM, info wrote:
+> Hi all,
+>
+>
+> I am writing a program that aims to auto-discover the microphone 
+> device that the user is speaking into. I started off by querying 
+> device hints and collected all devices with the IO types of null, 
+> since I have not found any devices with the type of Input. I am 
+> puzzled how it is possible that there is no Input, where a microphone 
+> device should not be able to emit sound. This is the list on my 
+> particular machine:
+>
+> Name of device: sysdefault:CARD=SB
+> Description of device: HDA ATI SB, ALC892 Analog
+> Default Audio Device
+> I/O type of device: (null)
+>
+> Name of device: front:CARD=SB,DEV=0
+> Description of device: HDA ATI SB, ALC892 Analog
+> Front speakers
+> I/O type of device: (null)
+>
+> Name of device: surround21:CARD=SB,DEV=0
+> Description of device: HDA ATI SB, ALC892 Analog
+> 2.1 Surround output to Front and Subwoofer speakers
+> I/O type of device: Output
+>
+> Name of device: surround41:CARD=SB,DEV=0
+> Description of device: HDA ATI SB, ALC892 Analog
+> 4.1 Surround output to Front, Rear and Subwoofer speakers
+> I/O type of device: Output
+>
+> Name of device: surround50:CARD=SB,DEV=0
+> Description of device: HDA ATI SB, ALC892 Analog
+> 5.0 Surround output to Front, Center and Rear speakers
+> I/O type of device: Output
+>
+> Name of device: surround71:CARD=SB,DEV=0
+> Description of device: HDA ATI SB, ALC892 Analog
+> 7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+> I/O type of device: Output
+>
+> Name of device: sysdefault:CARD=SB
+> Description of device: HDA ATI SB, ALC892 Analog
+> Default Audio Device
+> I/O type of device: (null)
+>
+> Name of device: front:CARD=SB,DEV=0
+> Description of device: HDA ATI SB, ALC892 Analog
+> Front speakers
+> I/O type of device: (null)
+>
+> Now, I am more puzzled, because none of them is a microphone device 
+> explicitly. How can my program determine which of them is actually a 
+> microphone?
+>
+> Also, why are devices are duplicated in the output from 
+> snd_device_name_hint()? The very first device is also repeated as the 
+> 2nd last one...
+>
+>
+> Regards,
+> Alex
+>
+>
 
-diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
-index 36c23eb3a5ad..82c1eecd2528 100644
---- a/sound/soc/atmel/mchp-spdiftx.c
-+++ b/sound/soc/atmel/mchp-spdiftx.c
-@@ -744,7 +744,7 @@ static struct snd_soc_dai_driver mchp_spdiftx_dai = {
- 	.probe	= mchp_spdiftx_dai_probe,
- 	.remove	= mchp_spdiftx_dai_remove,
- 	.playback = {
--		.stream_name = "S/PDIF TX Playback",
-+		.stream_name = "S/PDIF Playback",
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = MCHP_SPDIFTX_RATES,
--- 
-2.25.1
 
