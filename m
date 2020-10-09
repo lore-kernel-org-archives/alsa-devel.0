@@ -1,110 +1,61 @@
-Return-Path: <SRS0=AlSY=DP=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=04K1=DQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A515C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2020 22:42:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3F7C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 00:52:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD03822246
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Oct 2020 22:42:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A92DB22256
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 00:52:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tXJ4uFMB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="y0e6dbaE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD03822246
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bgIJmcu7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A92DB22256
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F5EE1614;
-	Fri,  9 Oct 2020 00:41:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F5EE1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D1CB1665;
+	Fri,  9 Oct 2020 02:51:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D1CB1665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602196954;
-	bh=S0BKsNkb5NbSh3Wq/ytCQD0MI5MDNwKfZ5U2HRNJlhM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tXJ4uFMBDs+Fehrcg3P6oTCT9FSY80znC5zW+lKgCDcSSnTt5IelJ9x6GH+gPxG6t
-	 pZBD9IZF8NwdKimtlFhLIXYEQ0obYYDLWO0Cii/IavDi09Cjzd8CAu7kn8y7WVAlXI
-	 V0mcmdm0q430RR7jifHnOnOO08IszEduHtVE8m3A=
+	s=default; t=1602204728;
+	bh=QvugbE8/WKPQYUzmRZU6zXc2IuegZlmesQK7Rx/5cyM=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bgIJmcu7JNfg3kXA7pre68/VHOPQc8TofTYJleRk9SYkv08J3sxlC4ytiQJQW+/p9
+	 TLc78cpy/Xpdwhjqium1AMxzy1jyCR2RiipzXJIDlkW4w/r645QJdNYvlUogwHKE30
+	 87hlBntbKZRpXsnzb8J5PDmComfJCk0SYhv2/lJc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0B1BF80163;
-	Fri,  9 Oct 2020 00:41:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1305F8015B;
+	Fri,  9 Oct 2020 02:51:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53EC8F80164; Fri,  9 Oct 2020 00:41:42 +0200 (CEST)
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com
- [IPv6:2a00:1450:4864:20::644])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE8F8F80163
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 00:41:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE8F8F80163
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="y0e6dbaE"
-Received: by mail-ej1-x644.google.com with SMTP id t25so10298979ejd.13
- for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2020 15:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=WKAAq4D39s8StG/M1lO07+d0CiCysI9oSAC/9fh4N/g=;
- b=y0e6dbaEHBOEaWBMLIsBwYXUrCmlIkVZjzL674Ojaz3MoNegh7jFicauDQc7uBzpmV
- I8yR3KOjLE9xrw+FQgK0qsWXwBXab8/hiy0NJqBkldVk/7XjIM1+v4qGGG+xtHxNVUb8
- crL5loR9gnnIkU1SFWJPBsRrF7Kp4uEsLLC/Mby2tx47G9iLQJERgds1HG9c2nbm3WHp
- vABJiB/JlPYSjmkLQ98xiY4tHPb3+htluy89bDn32BMR9eaxVeghDrvlGCI+GnSmNopp
- ez5qNI+eYRxA7+EXip3YNmdPasWUqPYcfMJ7oJE3r4lJ8nzmaelpH7HOajw6gPobWE0C
- daig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=WKAAq4D39s8StG/M1lO07+d0CiCysI9oSAC/9fh4N/g=;
- b=p7fsNj5jmofGmNcTM+cyaM3l/mzrqr7FKNSXDyA2ZMrF0HsJ3AMefCTyd57dYARII0
- kc9Z+DYjqhDPZ7l7g2RrkJi/anK/elanavCQVNzkE46W+cXvz9vm3klqO0UXDta8OhrP
- 3YSLyuPZ+2igN95Zx5r1uE1XRYuv/LuYWa7E+o4Hl0UIy3ClNFv5oo49G98eRcHtW2jf
- C4FqkA1zK6Mc2dSUVi0JS1VHg3HiSXSdDYRnaTHV1hkckJ0XOsjwr0xLLyOBtw1Ngn9N
- S4ZKAk8Ynf5oE+MIZC+vDkz5DmgwoCoL1L5MfqgR88722c9wJi8+mpb+9xpS4V2lf5Eb
- yd6A==
-X-Gm-Message-State: AOAM533szVIQQbhj0mi1RiTmizFXCyciw++3HgxieKzgXDqHH3ZbBgw+
- LIBQrK1MQbx7o92gQIV9eVN6xyge144ue4wm1JTKfQ==
-X-Google-Smtp-Source: ABdhPJzn83obXIaxacWoR+1oBmm3WlzAU5EGjnIfldcPJdG8BK/orzWfCwt859OcsJxummItwWCyBowjIZCEM2ZM9Ow=
-X-Received: by 2002:a17:906:4306:: with SMTP id
- j6mr11588545ejm.523.1602196892931; 
- Thu, 08 Oct 2020 15:41:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com>
- <20201006172317.GN1874917@unreal>
- <DM6PR11MB2841976B8E89C980CCC29AD2DD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB2841976B8E89C980CCC29AD2DD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
-From: Dan Williams <dan.j.williams@intel.com>
-Date: Thu, 8 Oct 2020 15:41:21 -0700
-Message-ID: <CAPcyv4hoS7ZT_PPrXqFBzEHBKL-O4x1jHtY8x9WWesCPA=2E0g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-To: "Ertman, David M" <david.m.ertman@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "parav@mellanox.com" <parav@mellanox.com>, Leon Romanovsky <leon@kernel.org>,
- "tiwai@suse.de" <tiwai@suse.de>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
- "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "dledford@redhat.com" <dledford@redhat.com>,
- "broonie@kernel.org" <broonie@kernel.org>, "jgg@nvidia.com" <jgg@nvidia.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "kuba@kernel.org" <kuba@kernel.org>, "Saleem,
- Shiraz" <shiraz.saleem@intel.com>, "davem@davemloft.net" <davem@davemloft.net>,
- "Patil, Kiran" <kiran.patil@intel.com>
+ id 5D483F80164; Fri,  9 Oct 2020 02:51:15 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 193EEF8015B
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 02:51:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 193EEF8015B
+Date: 09 Oct 2020 09:51:03 +0900
+X-IronPort-AV: E=Sophos;i="5.77,353,1596466800"; d="scan'208";a="59085110"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 09 Oct 2020 09:51:03 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0E4EA414FC06
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 09:51:03 +0900 (JST)
+Message-ID: <877ds08buf.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Question about buildroot vs aplay/arecord with -d
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,120 +71,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Oct 8, 2020 at 3:04 PM Ertman, David M <david.m.ertman@intel.com> wrote:
->
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Tuesday, October 6, 2020 10:23 AM
-> > To: Ertman, David M <david.m.ertman@intel.com>
-> > Cc: alsa-devel@alsa-project.org; tiwai@suse.de; broonie@kernel.org; linux-
-> > rdma@vger.kernel.org; jgg@nvidia.com; dledford@redhat.com;
-> > netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org;
-> > gregkh@linuxfoundation.org; ranjani.sridharan@linux.intel.com; pierre-
-> > louis.bossart@linux.intel.com; fred.oh@linux.intel.com;
-> > parav@mellanox.com; Saleem, Shiraz <shiraz.saleem@intel.com>; Williams,
-> > Dan J <dan.j.williams@intel.com>; Patil, Kiran <kiran.patil@intel.com>
-> > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> >
-> > On Mon, Oct 05, 2020 at 11:24:41AM -0700, Dave Ertman wrote:
-> > > Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
-> > > It enables drivers to create an ancillary_device and bind an
-> > > ancillary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each ancillary_device has a unique string based id; driver binds to
-> > > an ancillary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > ---
-> >
-> > <...>
-> >
-> > > +/**
-> > > + * __ancillary_driver_register - register a driver for ancillary bus devices
-> > > + * @ancildrv: ancillary_driver structure
-> > > + * @owner: owning module/driver
-> > > + */
-> > > +int __ancillary_driver_register(struct ancillary_driver *ancildrv, struct
-> > module *owner)
-> > > +{
-> > > +   if (WARN_ON(!ancildrv->probe) || WARN_ON(!ancildrv->remove)
-> > ||
-> > > +       WARN_ON(!ancildrv->shutdown) || WARN_ON(!ancildrv-
-> > >id_table))
-> > > +           return -EINVAL;
-> >
-> > In our driver ->shutdown is empty, it will be best if ancillary bus will
-> > do "if (->remove) ..->remove()" pattern.
-> >
->
-> Yes, looking it over, only the probe needs to mandatory.  I will change the others to the
-> conditional model, and adjust the WARN_ONs.
->
->
-> > > +
-> > > +   ancildrv->driver.owner = owner;
-> > > +   ancildrv->driver.bus = &ancillary_bus_type;
-> > > +   ancildrv->driver.probe = ancillary_probe_driver;
-> > > +   ancildrv->driver.remove = ancillary_remove_driver;
-> > > +   ancildrv->driver.shutdown = ancillary_shutdown_driver;
-> > > +
-> >
-> > I think that this part is wrong, probe/remove/shutdown functions should
-> > come from ancillary_bus_type.
->
-> From checking other usage cases, this is the model that is used for probe, remove,
-> and shutdown in drivers.  Here is the example from Greybus.
->
-> int greybus_register_driver(struct greybus_driver *driver, struct module *owner,
->                             const char *mod_name)
-> {
->         int retval;
->
->         if (greybus_disabled())
->                 return -ENODEV;
->
->         driver->driver.bus = &greybus_bus_type;
->         driver->driver.name = driver->name;
->         driver->driver.probe = greybus_probe;
->         driver->driver.remove = greybus_remove;
->         driver->driver.owner = owner;
->         driver->driver.mod_name = mod_name;
->
->
-> > You are overwriting private device_driver
-> > callbacks that makes impossible to make container_of of ancillary_driver
-> > to chain operations.
-> >
->
-> I am sorry, you lost me here.  you cannot perform container_of on the callbacks
-> because they are pointers, but if you are referring to going from device_driver
-> to the auxiliary_driver, that is what happens in auxiliary_probe_driver in the
-> very beginning.
->
-> static int auxiliary_probe_driver(struct device *dev)
-> 145 {
-> 146         struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
-> 147         struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
->
-> Did I miss your meaning?
 
-I think you're misunderstanding the cases when the
-bus_type.{probe,remove} is used vs the driver.{probe,remove}
-callbacks. The bus_type callbacks are to implement a pattern where the
-'probe' and 'remove' method are typed to the bus device type. For
-example 'struct pci_dev *' instead of raw 'struct device *'. See this
-conversion of dax bus as an example of going from raw 'struct device
-*' typed probe/remove to dax-device typed probe/remove:
+Hi ALSA ML
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=75797273189d
+I'm now using buildroot, and want to use
+aplay/arecord in the same time with -d option.
+
+This works for me
+
+	aplay -d 3 xxx
+
+And this works for me, too
+
+	arecord -d 3 yyy
+
+But, this doesn't work, and system will hung up
+
+	aplay   -d 3 xxx &
+	arecord -d 3 yyy
+
+Sometimes it will indicates this message
+
+	rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	rcu:     0-....: (1 GPs behind) idle=496/0/0x1 softirq=228/228 fqs=2172
+	(detected by 1, t=6502 jiffies, g=-103, q=17)
+	Task dump for CPU 0:
+	task:swapper/0       state:R  running task     stack:    0 pid:    0 ppid:     0 flags:0x0000002a
+	Call trace:
+	 __switch_to+0x144/0x1a0
+	 init_task+0x0/0x1780
+	 ...
+
+Do you know why this happen ?
+
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
