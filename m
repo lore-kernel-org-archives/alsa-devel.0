@@ -2,76 +2,79 @@ Return-Path: <SRS0=04K1=DQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 342CFC433E7
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:06:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D667C433E7
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:08:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7240C22267
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:06:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C43D22267
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:08:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dJF2k+np"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7240C22267
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MErdI6l9";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="5pSW4L5P"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C43D22267
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5696B15E2;
-	Fri,  9 Oct 2020 16:05:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5696B15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 725F815E2;
+	Fri,  9 Oct 2020 16:07:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 725F815E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602252373;
-	bh=FXNDkgY8l5nm7SLb7+3rqRu7+5tSpGLon2iqgnN0FkQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=dJF2k+np1dc8SlHsT7OG4ZYkRc6tETDD9HA5/WrhbSyBXnY2QAgpjYRrns85tSAjV
-	 bYgajmXNF1YMlMC0Io0Kr1YTRdC4beHunPlbySJzp51HFBGmQ0htJkH86tC3E4qmfi
-	 i8lR3F2eZiYNSrRJVrspdyfOdyyvJNNfVbB4dxiA=
+	s=default; t=1602252503;
+	bh=EMefrkiR6VErnBfysfycnwnXyiK4IqvSiZNmhaUx7xw=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MErdI6l9fQxzcqGA57vEnZ/FQY4d/BgUuInrSrPc+WHWTNvWnOwrlGxFiBBgsfUYk
+	 7L/bAj/StNIqwGS9xQf2EY/zjNeSM5xEemOpA15PdkxfQ7u5hQ8kjLq+ogkSuIWfRY
+	 jzDb+jk4+QZaecy89ZRE94qvUOPEOAaQzWne86aI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D572F80148;
-	Fri,  9 Oct 2020 16:05:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0D6DF80148;
+	Fri,  9 Oct 2020 16:07:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87BEFF8016B; Fri,  9 Oct 2020 16:05:21 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4F2DBF8015B; Fri,  9 Oct 2020 16:07:31 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0E25F80128
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 16:05:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0E25F80128
-IronPort-SDR: lD4sc2lQftX9VvuvWPRMYDLqbH7lcjlyp99NelCpz/1TdWs1KRkd595KlCFDvfRQ0d1OTFUmxp
- 37en3RLnRxcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="152406969"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="152406969"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 07:04:13 -0700
-IronPort-SDR: 7Al0+E/aw+7QVapNd/yvfh8+lS+sGMPfkLl9Tj6hJy4b3WT4ihKww67U/spiTUcFKXozxFvq3a
- RlUUqRdKFE/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="528942245"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga005.jf.intel.com with ESMTP; 09 Oct 2020 07:04:12 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Subject: [PATCH 1/1] ALSA: hda: fix jack detection with Realtek codecs when in
- D3
-Date: Fri,  9 Oct 2020 17:02:27 +0300
-Message-Id: <20201009140227.691140-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B5C5F800BF
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2020 16:07:25 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 9A304A0040;
+ Fri,  9 Oct 2020 16:07:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 9A304A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1602252444; bh=/mlODqTRA6pIsB2YAuSJv3Urebp1ojosppj7aeDvNR8=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=5pSW4L5PX+jdobcAAAh5MXYJoCbICWWPuq3QP1Os7I6IMGuMWh+vMJvqoWj4v9UjW
+ feviIdp6C5CoJvB16wYEswqMUDFxH+tS46hlODcnN2iMUgQaIxrmq/eTMJx77YOKUF
+ +6L8iFYpmLai66/GpnXsdEisi0Py7v2yFFTQkaI0=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Fri,  9 Oct 2020 16:07:22 +0200 (CEST)
+Subject: Re: Discover a microphone device, to later discover if it is
+ receiving input
+To: info <info@dressmaker.ca>, alsa-devel@alsa-project.org
+References: <de6ebf17-8f71-c497-28bc-7819338baddb@dressmaker.ca>
+ <5378606a-5b71-5d1b-f7f4-a6f33dce60b3@dressmaker.ca>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <69ba716e-d576-088f-23e5-4462933e0159@perex.cz>
+Date: Fri, 9 Oct 2020 16:07:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Kailang Yang <kailang@realtek.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <5378606a-5b71-5d1b-f7f4-a6f33dce60b3@dressmaker.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,82 +90,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In case HDA controller is active, but codec is runtime suspended, jack
-detection is not successful and no interrupt is raised. This has been
-observed with multiple Realtek codecs and HDA controllers from different
-vendors. Bug does not occur if both codec and controller are active,
-or both are in suspend. Bug can be easily hit on desktop systems with
-no built-in speaker.
+Dne 09. 10. 20 v 14:39 info napsal(a):
+> Can maintainers of this list please give a straight answer: is asking 
+> questions and leaving comments here a waste of time?
 
-The problem can be fixed by powering up the codec once after every
-controller runtime resume. Even if codec goes back to suspend, the jack
-detection will now work. Add a flag to 'hda_codec' to describe codecs
-that require this flow from the controller driver. Mark all Realtek
-codecs with this flag.
+Unfortunately, the hint list does not give information about the connected
+mixer outputs or inputs. It's just a list of available PCM devices in the system.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209379
-Cc: Kailang Yang <kailang@realtek.com>
-Co-developed-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- include/sound/hda_codec.h     | 1 +
- sound/pci/hda/hda_intel.c     | 8 ++++++--
- sound/pci/hda/patch_realtek.c | 6 ++++++
- 3 files changed, 13 insertions(+), 2 deletions(-)
+If the I/O type is (null) it means that both directions may be available.
 
-diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-index 0fea49bfc5e8..73827b7d17e0 100644
---- a/include/sound/hda_codec.h
-+++ b/include/sound/hda_codec.h
-@@ -253,6 +253,7 @@ struct hda_codec {
- 	unsigned int force_pin_prefix:1; /* Add location prefix */
- 	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
- 	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
-+	unsigned int forced_resume:1; /* forced resume for jack */
- 	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
- 
- #ifdef CONFIG_PM
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 61e495187b1a..cfc073c992e7 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1002,12 +1002,16 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
- 	azx_init_pci(chip);
- 	hda_intel_init_chip(chip, true);
- 
--	if (status && from_rt) {
--		list_for_each_codec(codec, &chip->bus)
-+	if (from_rt) {
-+		list_for_each_codec(codec, &chip->bus) {
-+			if (codec->forced_resume && pm_runtime_suspended(hda_codec_dev(codec)))
-+				pm_request_resume(hda_codec_dev(codec));
-+
- 			if (!codec->relaxed_resume &&
- 			    (status & (1 << codec->addr)))
- 				schedule_delayed_work(&codec->jackpoll_work,
- 						      codec->jackpoll_interval);
-+		}
- 	}
- 
- 	/* power down again for link-controlled chips */
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f89506dffd5b..e4ab483db72f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -849,6 +849,12 @@ static int alc_build_controls(struct hda_codec *codec)
- static void alc_pre_init(struct hda_codec *codec)
- {
- 	alc_fill_eapd_coef(codec);
-+
-+	/*
-+	 * if controller is resumed from suspend, while codec remains in D3, codec
-+	 * needs to be woken up once or otherwise jack detection does not work
-+	 */
-+	codec->forced_resume = 1;
- }
- 
- #define is_s3_resume(codec) \
+We have better device enumeration in UCM (Use Case Manager) by the use, but
+the configurations are not available for all hardware yet.
+
+BTW: Your e-mail header (From:) and signature does not seem trustly.
+
+						Jaroslav
+
+> On 2020-10-04 12:22 PM, info wrote:
+>> Hi all,
+>>
+>>
+>> I am writing a program that aims to auto-discover the microphone 
+>> device that the user is speaking into. I started off by querying 
+>> device hints and collected all devices with the IO types of null, 
+>> since I have not found any devices with the type of Input. I am 
+>> puzzled how it is possible that there is no Input, where a microphone 
+>> device should not be able to emit sound. This is the list on my 
+>> particular machine:
+>>
+>> Name of device: sysdefault:CARD=SB
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> Default Audio Device
+>> I/O type of device: (null)
+>>
+>> Name of device: front:CARD=SB,DEV=0
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> Front speakers
+>> I/O type of device: (null)
+>>
+>> Name of device: surround21:CARD=SB,DEV=0
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> 2.1 Surround output to Front and Subwoofer speakers
+>> I/O type of device: Output
+>>
+>> Name of device: surround41:CARD=SB,DEV=0
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> 4.1 Surround output to Front, Rear and Subwoofer speakers
+>> I/O type of device: Output
+>>
+>> Name of device: surround50:CARD=SB,DEV=0
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> 5.0 Surround output to Front, Center and Rear speakers
+>> I/O type of device: Output
+>>
+>> Name of device: surround71:CARD=SB,DEV=0
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> 7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+>> I/O type of device: Output
+>>
+>> Name of device: sysdefault:CARD=SB
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> Default Audio Device
+>> I/O type of device: (null)
+>>
+>> Name of device: front:CARD=SB,DEV=0
+>> Description of device: HDA ATI SB, ALC892 Analog
+>> Front speakers
+>> I/O type of device: (null)
+>>
+>> Now, I am more puzzled, because none of them is a microphone device 
+>> explicitly. How can my program determine which of them is actually a 
+>> microphone?
+>>
+>> Also, why are devices are duplicated in the output from 
+>> snd_device_name_hint()? The very first device is also repeated as the 
+>> 2nd last one...
+>>
+>>
+>> Regards,
+>> Alex
+>>
+>>
+> 
+> 
+
+
 -- 
-2.28.0
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
