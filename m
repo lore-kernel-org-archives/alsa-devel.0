@@ -1,105 +1,94 @@
-Return-Path: <SRS0=i0qO=DR=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Df35=DS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2277C433E7
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Oct 2020 20:17:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1BB4C433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Oct 2020 09:54:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00CA120731
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Oct 2020 20:17:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C279207FB
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Oct 2020 09:54:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jspR4ppp";
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="sFXPLf9L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00CA120731
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oC1CNLn/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JB7itDDf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C279207FB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBA5E83B;
-	Sat, 10 Oct 2020 22:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBA5E83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84A9E1663;
+	Sun, 11 Oct 2020 11:54:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84A9E1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602361020;
-	bh=jvimFtNbFABn0j17CiptQ6gdQetdG1mXLovo07s/kP4=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1602410091;
+	bh=Mj3d0xuSQYaI0eiKW2dQLHw7FD/MV6yfalIIf1UTxZw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=jspR4ppp/UCvz8ir33KHz0DdzLnmjwuEPOA3TMtAfw4kW9DUCoWhALzTxNurJNeJV
-	 d3Co91zY1VatAVRHJuWvvc0Yk52Dohw2ok/g3sZEe0IV9sKO1W6LddW/VlrmKkT/MS
-	 yFyj1fq+LZryFOoetkfNX/K3XSvr5RvMGJ+s1BbM=
+	b=oC1CNLn/ybK77ZmgOyx9DD2CWlA8CrNN2AGvcyERLujoarkFx15dF/irw6+Q5OyxX
+	 IBFL3jllrgzq9nWNWxhqozRBYk0rx2jQNMPAAPa6M3xjqy0mhEW2aNA8j/kxg8rdlc
+	 igwowAUK6HXeIb0nNJY9w0KitG4ijhlnNdso1cTs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 789DEF800BF;
-	Sat, 10 Oct 2020 22:16:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCCF9F8013C;
+	Sun, 11 Oct 2020 11:54:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32713F80164; Sat, 10 Oct 2020 22:16:07 +0200 (CEST)
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 64875F8016F; Sun, 11 Oct 2020 11:53:58 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C16AF80117
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2020 22:15:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C16AF80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAB64F8013C
+ for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2020 11:53:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAB64F8013C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="sFXPLf9L"
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
- by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09AKFuWl074016;
- Sat, 10 Oct 2020 20:15:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=Bqm+DhfmniCA+wmNe+7c8C8KBOd20O5sYP85AYHfTpg=;
- b=sFXPLf9LgjFhbYPZWAOGiMbjmqiW9vWXTpOAFJ+nB8P5W4PMVtiYLQ4hMe9AGMGjp3Sp
- ADsnrQuRW//8khrEOmuy0mjnwRYWVaKfSY1lQgIZNVDj6/a8ehf0FkhVfrB948vNMMqG
- hdC6Pd8Y66wsCtFl9BxWgJJjrY92kZv6l1pny8HPf07jd5zHOVA2WN0ELvbGN1DD/cOk
- NZilmXavX/7lfm2AL7HnP2ZAIP7iOarjTd913PoFLFAspDH1dhlsvrKN1Nhd8fI4nX+5
- vsoamIMc5ZGelauf9enD/X8lHGTTv4RgI7okTSxMgnW4+jztuytuIkHRP5qEeRgNQTxk RA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
- by aserp2120.oracle.com with ESMTP id 3434wk97q9-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Sat, 10 Oct 2020 20:15:56 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
- by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09AKAMem133178;
- Sat, 10 Oct 2020 20:15:55 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by userp3030.oracle.com with ESMTP id 34322r52h4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sat, 10 Oct 2020 20:15:55 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09AKFqQH032194;
- Sat, 10 Oct 2020 20:15:54 GMT
-Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Sat, 10 Oct 2020 13:15:51 -0700
-Date: Sat, 10 Oct 2020 23:15:47 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: cezary.rojewski@intel.com
-Subject: [bug report] ASoC: Intel: catpt: Firmware loading and context restore
-Message-ID: <20201010201547.GA1890676@mwanda>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="JB7itDDf"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1602410033;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=sOoB8jQSuO5gsKqZlfRKNwrr8qIfAQKIDWz24NkuNS4=;
+ b=JB7itDDfNGvCxuW7q1jv/gB0bfuxto8IF3UiM5yVfCp6N7zryi1X8sS/2hofda47VFwDF9
+ vO7gUflj5G1Z92y96uSQtaHfK0y+TzVUuYak8mKnpLurVptZoQI6/aPdCpZV3yvUMEywyf
+ ME8fHssgKgNtkdGEPwVzMO7m2mIaV3g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-hy4KnR0mMiKBKjpo6wv0zw-1; Sun, 11 Oct 2020 05:53:51 -0400
+X-MC-Unique: hy4KnR0mMiKBKjpo6wv0zw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
+ [10.5.11.11])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2C3D107ACF5;
+ Sun, 11 Oct 2020 09:53:49 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-15.ams2.redhat.com [10.36.112.15])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id B897075261;
+ Sun, 11 Oct 2020 09:53:47 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: Do not load legacy SST driver on BYT when
+ SND_SOC_SOF_BAYTRAIL is enabled
+Date: Sun, 11 Oct 2020 11:53:46 +0200
+Message-Id: <20201011095346.49589-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9770
- signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
- spamscore=0 mlxscore=0
- mlxlogscore=999 phishscore=0 suspectscore=3 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010100190
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9770
- signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- lowpriorityscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=3 impostorscore=0 clxscore=1011
- spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010100190
-Cc: alsa-devel@alsa-project.org
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,58 +104,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Cezary Rojewski,
+The legacy 80860F28 / sst_acpi_baytrail_desc match in sst_acpi_match
+is already conditional on the the newer SND_SST_IPC_ACPI driver not
+being enabled.
 
-The patch a9aa6fb3eb6c: "ASoC: Intel: catpt: Firmware loading and
-context restore" from Sep 29, 2020, leads to the following static
-checker warning:
+But now that we have an even newer driver in the form of SOF support
+for BYT devices, we also need to take this into account, so we also
+must not include the sst_acpi_baytrail_desc match when
+SND_SOC_SOF_BAYTRAIL is enabled.
 
-	sound/soc/intel/catpt/loader.c:654 catpt_first_boot_firmware()
-	warn: consider using resource_size() here
+This fixes snd-soc-sst-acpi binding to the 80860F28 platform device,
+blocking snd-sof-acpi from binding, which breaks audio support.
 
-sound/soc/intel/catpt/loader.c
-   638  int catpt_first_boot_firmware(struct catpt_dev *cdev)
-   639  {
-   640          struct resource *res;
-   641          int ret;
-   642  
-   643          ret = catpt_boot_firmware(cdev, false);
-   644          if (ret) {
-   645                  dev_err(cdev->dev, "basefw boot failed: %d\n", ret);
-   646                  return ret;
-   647          }
-   648  
-   649          /* restrict FW Core dump area */
-   650          __request_region(&cdev->dram, 0, 0x200, NULL, 0);
-   651          /* restrict entire area following BASE_FW - highest offset in DRAM */
-   652          for (res = cdev->dram.child; res->sibling; res = res->sibling)
-   653                  ;
-   654          __request_region(&cdev->dram, res->end + 1,
-   655                           cdev->dram.end - res->end, NULL, 0);
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
-It's been years since I have seen one of these warnings.  Back in the
-day we used have have a lot of off by one warnings because resource_size()
-is supposed to be calculated as "end - start + 1".  But here we are
-calculating "dram.end - res->end" so I'm not sure if the math is correct
-or not.  This is very new code so hopefully you know the answer off the
-top of your head?
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/intel/common/sst-acpi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-   656  
-   657          ret = catpt_ipc_get_mixer_stream_info(cdev, &cdev->mixer);
-   658          if (ret)
-   659                  return CATPT_IPC_ERROR(ret);
-   660  
-   661          ret = catpt_arm_stream_templates(cdev);
-   662          if (ret) {
-   663                  dev_err(cdev->dev, "arm templates failed: %d\n", ret);
-   664                  return ret;
-   665          }
-   666  
-   667          /* update dram pg for scratch and restricted regions */
-   668          catpt_dsp_update_srampge(cdev, &cdev->dram, cdev->spec->dram_mask);
-   669  
-   670          return 0;
-   671  }
+diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+index 5854868650b9..b4b2e1e0e845 100644
+--- a/sound/soc/intel/common/sst-acpi.c
++++ b/sound/soc/intel/common/sst-acpi.c
+@@ -198,7 +198,7 @@ static struct sst_acpi_desc sst_acpi_broadwell_desc = {
+ 	.dma_size = SST_LPT_DSP_DMA_SIZE,
+ };
+ 
+-#if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
++#if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI) && !IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
+ static struct sst_acpi_desc sst_acpi_baytrail_desc = {
+ 	.drv_name = "baytrail-pcm-audio",
+ 	.machines = snd_soc_acpi_intel_baytrail_legacy_machines,
+@@ -214,7 +214,7 @@ static struct sst_acpi_desc sst_acpi_baytrail_desc = {
+ static const struct acpi_device_id sst_acpi_match[] = {
+ 	{ "INT33C8", (unsigned long)&sst_acpi_haswell_desc },
+ 	{ "INT3438", (unsigned long)&sst_acpi_broadwell_desc },
+-#if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
++#if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI) && !IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
+ 	{ "80860F28", (unsigned long)&sst_acpi_baytrail_desc },
+ #endif
+ 	{ }
+-- 
+2.28.0
 
-regards,
-dan carpenter
