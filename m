@@ -2,93 +2,69 @@ Return-Path: <SRS0=KIty=DT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A446FC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 08:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 786D3C433E7
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 08:55:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBFD220773
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 08:49:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 606B420790
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 08:55:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bPIJmIw3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBFD220773
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="svp6Ywc+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 606B420790
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE8D9166B;
-	Mon, 12 Oct 2020 10:48:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE8D9166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0695D166B;
+	Mon, 12 Oct 2020 10:54:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0695D166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602492559;
-	bh=c4sr+01uSj7e12mlMB9nsGqgy082Rp65RFRa9kH0Dhw=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bPIJmIw3+mawVIa4rbW2qd/cb7f4lmN5SSJq/yYw65wzA+rQesh7sXc8bNhNG8AcW
-	 osH73vtNtL+FctwvSwehIjYThNF5Q6pGNyX0FNAOMnqObxrWUGPgtr6X/DD47kxRuP
-	 pJZnJMK3Uq9nYN+LFSOfKcN+ufemW0QK1O9rznmA=
+	s=default; t=1602492926;
+	bh=r13WDld+WZFux9ClPLm4VaS1CGr8nylJ0PGqNonc878=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=svp6Ywc+PCAUBwzSR6ThC+/kuaqa2awElXiwBLGSn9+VtFNx/hSspRMoVruQW2Gs2
+	 L1pbgKcLiZI0TZ4f6Mpzak236OVh3PKlWr5GoMyKlUDvkOk9KWTPBjMISSURDWnv7c
+	 pNJ6XaoO79T1M+0mbceFT3yuur0Fu0K7GqNAQYVg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C55CF800D8;
-	Mon, 12 Oct 2020 10:48:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 732B8F8020D;
+	Mon, 12 Oct 2020 10:54:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7457F80217; Mon, 12 Oct 2020 10:48:25 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 3DE33F80217; Mon, 12 Oct 2020 10:54:34 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F46DF800D8
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2020 10:48:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F46DF800D8
-IronPort-SDR: pOl06zbwMGGVOVj2Fw1DbwnwmzFwZXxy4QRJlpesK5S9myMuRTCZqM7fb3R/tTp8z3OS3jSHOW
- gVRN9b2kuyFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="152635249"
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; d="scan'208";a="152635249"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2020 01:48:17 -0700
-IronPort-SDR: cJ04vvycH8o/rxBNQwe89riI13jYAbkP+IJqB/80VhaGtvkcSOoZCjyT4ZtP3Vq3RGwQDdV2Kp
- KMkoODVhFp6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; d="scan'208";a="344798870"
-Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
- by fmsmga004.fm.intel.com with ESMTP; 12 Oct 2020 01:48:16 -0700
-Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
- IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 12 Oct 2020 09:48:15 +0100
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
- irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Mon, 12 Oct 2020 09:48:15 +0100
-From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: RE: [bug report] ASoC: Intel: catpt: Firmware loading and context
- restore
-Thread-Topic: [bug report] ASoC: Intel: catpt: Firmware loading and context
- restore
-Thread-Index: AQHWn0Iuu0cjdc3g0E+/qfDHce7hxKmTqVpw
-Date: Mon, 12 Oct 2020 08:48:15 +0000
-Message-ID: <423749645740488bab10cb3565426279@intel.com>
-References: <20201010201547.GA1890676@mwanda>
-In-Reply-To: <20201010201547.GA1890676@mwanda>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CFCCF80141
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2020 10:54:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CFCCF80141
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AF2B11A0EFE;
+ Mon, 12 Oct 2020 10:54:27 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 676E11A0F14;
+ Mon, 12 Oct 2020 10:54:23 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 28325402AA;
+ Mon, 12 Oct 2020 10:54:18 +0200 (CEST)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: fsl_spdif: Add support for higher sample rates
+Date: Mon, 12 Oct 2020 16:49:42 +0800
+Message-Id: <1602492582-3558-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,86 +80,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-10-10 10:15 PM, Dan Carpenter wrote:
-> Hello Cezary Rojewski,
->=20
-> The patch a9aa6fb3eb6c: "ASoC: Intel: catpt: Firmware loading and
-> context restore" from Sep 29, 2020, leads to the following static
-> checker warning:
->=20
-> 	sound/soc/intel/catpt/loader.c:654 catpt_first_boot_firmware()
-> 	warn: consider using resource_size() here
->=20
-> sound/soc/intel/catpt/loader.c
->     638  int catpt_first_boot_firmware(struct catpt_dev *cdev)
->     639  {
->     640          struct resource *res;
->     641          int ret;
->     642
->     643          ret =3D catpt_boot_firmware(cdev, false);
->     644          if (ret) {
->     645                  dev_err(cdev->dev, "basefw boot failed: %d\n", r=
-et);
->     646                  return ret;
->     647          }
->     648
->     649          /* restrict FW Core dump area */
->     650          __request_region(&cdev->dram, 0, 0x200, NULL, 0);
->     651          /* restrict entire area following BASE_FW - highest offs=
-et in DRAM */
->     652          for (res =3D cdev->dram.child; res->sibling; res =3D res=
-->sibling)
->     653                  ;
->     654          __request_region(&cdev->dram, res->end + 1,
->     655                           cdev->dram.end - res->end, NULL, 0);
->                                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-> It's been years since I have seen one of these warnings.  Back in the
-> day we used have have a lot of off by one warnings because resource_size(=
-)
-> is supposed to be calculated as "end - start + 1".  But here we are
-> calculating "dram.end - res->end" so I'm not sure if the math is correct
-> or not.  This is very new code so hopefully you know the answer off the
-> top of your head?
->=20
->=20
+Add 88200Hz and 176400Hz sample rates support for TX.
+Add 88200Hz, 176400Hz, 192000Hz sample rates support for RX.
 
-Hello Dan,
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+---
+ sound/soc/fsl/fsl_spdif.c | 16 +++++++++++++---
+ sound/soc/fsl/fsl_spdif.h |  9 ++++++++-
+ 2 files changed, 21 insertions(+), 4 deletions(-)
 
-Thanks for your report. However, I do not see any problem with above
-code.
-
-Let me elaborate the context so both parties are aware of what's going
-on:
-Host (kernel driver) is tasked with reserving entire region of DRAM past
-the module (aka resource) with highest offset. Offset is unknown
-upfront. It needs to be searched for. So, after all modules have their
-adequate DRAM space assigned, we search for the very last module. Its
-'end + 1' marks the beginning of DSP-reserved region, that is one that
-DSP firmware will be making use of internally. Host needs to reserve it
-early so further reservations (done e.g.: on audio stream open) won't
-target said region. 'dram.end' on the other hand marks the end of the
-entire block - past that point IRAM begins. Area in-between is what we
-need to flag as already in-use.
-
-Some basic math/example:
-	dram.start =3D 0x0
-	dram.end =3D 0xAFFFF
-	resource_size(dram) =3D 0xAFFFF - 0x0 + 1 =3D 0xB0000
-
-found 'res':
-	res.end =3D 0x9FFFF
-
-area to be reserved:
-	target.start =3D res.end + 1 =3D 0xA0000
-	target.end =3D dram.end =3D 0xAFFFF
-	resource_size(target) =3D 0xAFFFF - 0xA0000 + 1 =3D 0x10000
-
-and so:
-	dram.end - res.end =3D 0xAFFFF - 0x9FFFF =3D 0x10000
-what equals resource_size(target).
-
-Please, let me know if I'm missing something here.
-
-Thanks,
-Czarek
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index b0f643fefe1e..f41496cf5b63 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -429,10 +429,18 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
+ 		rate = SPDIF_TXRATE_48000;
+ 		csfs = IEC958_AES3_CON_FS_48000;
+ 		break;
++	case 88200:
++		rate = SPDIF_TXRATE_88200;
++		csfs = IEC958_AES3_CON_FS_88200;
++		break;
+ 	case 96000:
+ 		rate = SPDIF_TXRATE_96000;
+ 		csfs = IEC958_AES3_CON_FS_96000;
+ 		break;
++	case 176400:
++		rate = SPDIF_TXRATE_176400;
++		csfs = IEC958_AES3_CON_FS_176400;
++		break;
+ 	case 192000:
+ 		rate = SPDIF_TXRATE_192000;
+ 		csfs = IEC958_AES3_CON_FS_192000;
+@@ -827,7 +835,7 @@ static int fsl_spdif_rxrate_info(struct snd_kcontrol *kcontrol,
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 1;
+ 	uinfo->value.integer.min = 16000;
+-	uinfo->value.integer.max = 96000;
++	uinfo->value.integer.max = 192000;
+ 
+ 	return 0;
+ }
+@@ -1145,7 +1153,8 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 				struct clk *clk, u64 savesub,
+ 				enum spdif_txrate index, bool round)
+ {
+-	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
++	static const u32 rate[] = { 32000, 44100, 48000, 88200, 96000, 176400,
++				    192000, };
+ 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
+ 	u64 rate_ideal, rate_actual, sub;
+ 	u32 arate;
+@@ -1205,7 +1214,8 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
+ 				enum spdif_txrate index)
+ {
+-	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
++	static const u32 rate[] = { 32000, 44100, 48000, 88200, 96000, 176400,
++				    192000, };
+ 	struct platform_device *pdev = spdif_priv->pdev;
+ 	struct device *dev = &pdev->dev;
+ 	u64 savesub = 100000, ret;
+diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
+index e6c61e07bc1a..d5f1dfd58740 100644
+--- a/sound/soc/fsl/fsl_spdif.h
++++ b/sound/soc/fsl/fsl_spdif.h
+@@ -163,7 +163,9 @@ enum spdif_txrate {
+ 	SPDIF_TXRATE_32000 = 0,
+ 	SPDIF_TXRATE_44100,
+ 	SPDIF_TXRATE_48000,
++	SPDIF_TXRATE_88200,
+ 	SPDIF_TXRATE_96000,
++	SPDIF_TXRATE_176400,
+ 	SPDIF_TXRATE_192000,
+ };
+ #define SPDIF_TXRATE_MAX		(SPDIF_TXRATE_192000 + 1)
+@@ -177,15 +179,20 @@ enum spdif_txrate {
+ #define FSL_SPDIF_RATES_PLAYBACK	(SNDRV_PCM_RATE_32000 |	\
+ 					 SNDRV_PCM_RATE_44100 |	\
+ 					 SNDRV_PCM_RATE_48000 |	\
++					 SNDRV_PCM_RATE_88200 | \
+ 					 SNDRV_PCM_RATE_96000 |	\
++					 SNDRV_PCM_RATE_176400 | \
+ 					 SNDRV_PCM_RATE_192000)
+ 
+ #define FSL_SPDIF_RATES_CAPTURE		(SNDRV_PCM_RATE_16000 | \
+ 					 SNDRV_PCM_RATE_32000 |	\
+ 					 SNDRV_PCM_RATE_44100 | \
+ 					 SNDRV_PCM_RATE_48000 |	\
++					 SNDRV_PCM_RATE_88200 | \
+ 					 SNDRV_PCM_RATE_64000 | \
+-					 SNDRV_PCM_RATE_96000)
++					 SNDRV_PCM_RATE_96000 | \
++					 SNDRV_PCM_RATE_176400 | \
++					 SNDRV_PCM_RATE_192000)
+ 
+ #define FSL_SPDIF_FORMATS_PLAYBACK	(SNDRV_PCM_FMTBIT_S16_LE | \
+ 					 SNDRV_PCM_FMTBIT_S20_3LE | \
+-- 
+2.27.0
 
