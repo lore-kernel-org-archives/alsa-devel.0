@@ -2,88 +2,125 @@ Return-Path: <SRS0=KIty=DT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 527F7C433E7
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 11:37:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E73ACC433E7
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 11:55:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E582206E5
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 11:37:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8487F2145D
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 11:55:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PVYAoGI8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVYS2wSo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E582206E5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R6tZM5tl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CdVmayCO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8487F2145D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B48DE1681;
-	Mon, 12 Oct 2020 13:36:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B48DE1681
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3F2F1681;
+	Mon, 12 Oct 2020 13:54:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3F2F1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602502651;
-	bh=zPTLYmvSGS/cMRVixgLVelg6vIMfedfSXZOI3BwW4ZI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1602503699;
+	bh=dXqfDe8kzMa4kjk6lVxb6avWBjMcTvpnbjtbCFMmyCU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PVYAoGI8LtI/FkIPaDCEttIyWrvHcUoTZ6fAjGIF2lyDPwT1m7rBhVurn04k9t6bK
-	 6ujtyWz5H05kLBAwZY5wHKswrdTCNglMqqkj2+qpYq+BIyATTEptntmXHljNk8JPVi
-	 wTtLV1CjiPBmcgjhMajhpjhXnuTr8BUXOM4+SBro=
+	b=R6tZM5tl1f1fZyw57fx0Lf5bXTNg0+sGd2GkBk4RSQayCk3HRx2kciLPeYB1phEZg
+	 mcL1o0aBM0XK3t4SOTiLWVyVoDVoRmp/501B0zxzU+zcrurXjEbMEUmQBMVnP7YFf5
+	 0zHaqCwBY6mT8Xf2rJrFh2uVBx9dzrmkd1B+FVvo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2295BF8020D;
-	Mon, 12 Oct 2020 13:36:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E15CF8020D;
+	Mon, 12 Oct 2020 13:54:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32BC9F80217; Mon, 12 Oct 2020 13:36:38 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4BB3EF80217; Mon, 12 Oct 2020 13:54:06 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09037F80141
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2020 13:36:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09037F80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA96EF800D8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2020 13:54:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA96EF800D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qVYS2wSo"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0EB4E2080D;
- Mon, 12 Oct 2020 11:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1602502590;
- bh=zPTLYmvSGS/cMRVixgLVelg6vIMfedfSXZOI3BwW4ZI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qVYS2wSoxtWo/nddYYXgDZTqfEqpAKjEzcabWt2KUKl5fFUaErAeCbuX8UQjhoqlX
- RgsVuiQF9cKrZcbEZ8boWR0U4/6ZyZAqN0YHCHri+HsfepDumkZb2LNFD+oQcglTu5
- owzholIgw2Cuh2uqsh/UQuDO2KcR0LTvCBUH9APA=
-Date: Mon, 12 Oct 2020 12:36:26 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="CdVmayCO"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1602503641;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=vOqiEcErybqDI1zn02672DvUaNztooofdkAjcIgz2WI=;
+ b=CdVmayCOKdnwBX5zUPnKgwBvSbZ9HViTjWX5tcm/c2Z1x0gesbSurX/qmAluVsnuRDh5sU
+ wWCUtCBdNiLyE+eH+Fe2I3aqHDJoy6rP0nd9kgbUiidlEwmZpyTMJW0607mDM7IZVtdgqO
+ evFxSa7s/ezyerEO/nwGdgxtwYBsTkk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-52-mesDN-8iOEm43PR_gynq1Q-1; Mon, 12 Oct 2020 07:53:57 -0400
+X-MC-Unique: mesDN-8iOEm43PR_gynq1Q-1
+Received: by mail-ed1-f72.google.com with SMTP id n19so6503866eds.8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2020 04:53:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=vOqiEcErybqDI1zn02672DvUaNztooofdkAjcIgz2WI=;
+ b=twxz9DUKtyA/tt10uIaFWTY1xsj0S9tgyXLU6km0T72gZbWvrv7LwjkOrIT5Qgmwpc
+ 2y2A5hQc33WiGOOMqrIGTq1WUi9aYYDq41E0RmjHP8JVUtCBNHbYcYahrU75/jJ5tkL5
+ 5xx6znuUpdBkhSm4HvhNSFhGsZQPiK01ubR2OsTaq/P45zLiNoIzOhEgSBvxV6JYlLhS
+ HRctr3OgSFDNAX5XJyKMli7C4txBY1KNUc2nNnFGfUQOpHsls3O9RZxVVKAg3QGHqNdB
+ L/llvK7pVJ1VjZqma2m/hWSF9dT61Lo59d5Nfhu6EAX1Rwgnl76YMXKIRfoazq5TqRbs
+ 2WzA==
+X-Gm-Message-State: AOAM533ARQK/R3qHbL/0wwoKc4PKwaHlfXp5FsYmB2vlYyOPbWDIi0pr
+ 1In/8+MnS1ulWL2eX2DEeIjNl8gx1XlwDREaT951+VLpS/wRb62LtHQKs0Wefl0X6V6i94mVVlF
+ yqLQ8Zyr/Ll0yeb9MQk4Uf2E=
+X-Received: by 2002:a05:6402:22ae:: with SMTP id
+ cx14mr13891268edb.73.1602503635967; 
+ Mon, 12 Oct 2020 04:53:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyKmHL9unW5hqNPynOMLx6UjtgJb+xcV40ce/WD3DXg8Dp8mqd5pcPT4i4SDmEOZ5JLQYHrSQ==
+X-Received: by 2002:a05:6402:22ae:: with SMTP id
+ cx14mr13891252edb.73.1602503635767; 
+ Mon, 12 Oct 2020 04:53:55 -0700 (PDT)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id c5sm10673024edx.58.2020.10.12.04.53.54
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 12 Oct 2020 04:53:55 -0700 (PDT)
 Subject: Re: [PATCH v2 00/13] ASoC: Intel: Remove obsolete solutions and
  components
-Message-ID: <20201012113626.GA4332@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
 References: <20201006064907.16277-1-cezary.rojewski@intel.com>
  <cf1fb47d-412f-48fd-4501-e63f1db32bc1@redhat.com>
- <s5ha6wrretr.wl-tiwai@suse.de>
+ <s5ha6wrretr.wl-tiwai@suse.de> <20201012113626.GA4332@sirena.org.uk>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <bda70fe7-ac16-8215-5506-c4144064bcfd@redhat.com>
+Date: Mon, 12 Oct 2020 13:53:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
-In-Reply-To: <s5ha6wrretr.wl-tiwai@suse.de>
-X-Cookie: Fremen add life to spice!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, filip.proborszcz@intel.com,
- krzysztof.hejmowski@intel.com, filip.kaczmarski@intel.com,
- harshapriya.n@intel.com, lgirdwood@gmail.com, ppapierkowski@habana.ai,
- marcin.barlik@intel.com, zwisler@google.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, Hans de Goede <hdegoede@redhat.com>,
- amadeuszx.slawinski@linux.intel.com, michal.wasko@intel.com, tiwai@suse.com,
- andriy.shevchenko@linux.intel.com, cujomalainey@chromium.org,
- vamshi.krishna.gopal@intel.com
+In-Reply-To: <20201012113626.GA4332@sirena.org.uk>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, krzysztof.hejmowski@intel.com,
+ filip.kaczmarski@intel.com, harshapriya.n@intel.com, lgirdwood@gmail.com,
+ ppapierkowski@habana.ai, marcin.barlik@intel.com, zwisler@google.com,
+ alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ filip.proborszcz@intel.com, amadeuszx.slawinski@linux.intel.com,
+ michal.wasko@intel.com, tiwai@suse.com, andriy.shevchenko@linux.intel.com,
+ cujomalainey@chromium.org, vamshi.krishna.gopal@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,50 +136,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 10/12/20 1:36 PM, Mark Brown wrote:
+> On Mon, Oct 12, 2020 at 11:09:04AM +0200, Takashi Iwai wrote:
+>> Hans de Goede wrote:
+> 
+>>> replacement and dropping the old code ?  I'm not sure if that is such
+>>> a great idea, what is the fallback plan if testing does find significant
+>>> issues with the new catpt code ?
+> 
+>> I find the action a bit too rushing, too.  OTOH, the old code wasn't
+>> well maintained, honestly speaking.  So, from another perspective,
+>> switching to a new code can be seen as a better chance to fix any
+>> bugs.
+> 
+> That was my take as well - the old code seemed to be very fragile for
+> structural reasons which are hopefully addressed here and Intel seem
+> willing to actively work on supporting this version.  I have to confess
+> I had assumed Hans had seen all this stuff going past, the new driver
+> got quite a few rounds of review.
 
-On Mon, Oct 12, 2020 at 11:09:04AM +0200, Takashi Iwai wrote:
-> Hans de Goede wrote:
+My ASoC interest is 99% Intel Bay Trail / Cherry Trail support, so
+I'm not on alsa-devel list since that gets a lot more then just that.
 
-> > replacement and dropping the old code ?  I'm not sure if that is such
-> > a great idea, what is the fallback plan if testing does find significant
-> > issues with the new catpt code ?
+IOW I'm relying on being Cc-ed, which might not be the best tactic
+I guess.
 
-> I find the action a bit too rushing, too.  OTOH, the old code wasn't
-> well maintained, honestly speaking.  So, from another perspective,
-> switching to a new code can be seen as a better chance to fix any
-> bugs.
+Anyways, the Bay Trail / Cherry Trail changes here are 100% ok with me.
+I pointed out the Haswell / Broadwell bits since I was taking a look
+anyways, I don't really have a strong opinion on those, I've never seen
+a  Haswell / Broadwell machine actually using the SST/ASoC code,
+all those which I have seen use the HDA driver.
 
-That was my take as well - the old code seemed to be very fragile for
-structural reasons which are hopefully addressed here and Intel seem
-willing to actively work on supporting this version.  I have to confess
-I had assumed Hans had seen all this stuff going past, the new driver
-got quite a few rounds of review.
+And from the sounds of it for those rare Haswell / Broadwell machines
+which do use the SST code the new catpt code should be an improvement.
+So from my pov everything is good.
 
-> Of course, we could keep two stuff parallel, but it's rather
-> confusing.  And, the HSW/BDW devices that need SST are quite rare and
-> old, so the impact is limited, I guess.
+Regards,
 
-Yes, figuring out which of the various x86 audio driver options you need
-is fairly painful ATM.  Worst case it's just a revert of this removal
-commit.
+Hans
 
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+EP7kACgkQJNaLcl1U
-h9ClYAf/dhEDD58DUhFdQHw2ClS+7rFobrVIyX+Uz6fkFs60d/A7xutX5WOO9diW
-tpWT7gddCcFRgxbB0gtjQqqSEyrN6r6nok3Jk9yI1pu7maChhhsZsvVEf24VCwwI
-xYLPUH8OemHFKIsSNZG3pqI6cIKNnzFqQ7TJ9iBMAIj5cmrbHVoxiXDXtweMAk2I
-QNyezlY+4LNWdG7N9dKLz1wCV2JXSU1FrUXuUI4ZvIXpQ01l4uB/1JrgZ+LRTxeA
-WFZE4ElNQ5jCzkWcee71F68X9MFan/Iw6DCkvWTaFoY57yqHSDQc0JnqWLDG1hug
-IoeFLFFyPPZ1zdsNQhYT8jjbil95jA==
-=Gf6U
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
