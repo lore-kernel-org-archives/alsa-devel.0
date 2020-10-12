@@ -2,81 +2,66 @@ Return-Path: <SRS0=KIty=DT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E9BBC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 15:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35566C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 15:05:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3C5720870
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 15:00:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 65F4520870
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Oct 2020 15:05:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XdyToKAl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3C5720870
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XS2b0aL6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65F4520870
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C6F51684;
-	Mon, 12 Oct 2020 16:59:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C6F51684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9606F1684;
+	Mon, 12 Oct 2020 17:04:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9606F1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602514829;
-	bh=M6PZW8gYaaIiOaWs6TNXKEl2ln/GjaFu+9S3VpP7seA=;
+	s=default; t=1602515138;
+	bh=oQfLhDAVk5EAFipMlVAh6l5qH6q+HcVQGEZW1Xp04Dg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XdyToKAlEuuvRR2CGUh4ltr8yRhvrD7ZMgj00QEObIE+oX5OE8Bf5F6a+2CPWul8k
-	 X3Vv19RHGlGztcH2pKS1vuS3giqLskxj1TBHcblTPOWO29YxQlOIKqA3rKgXaU++ai
-	 ZnQwrpB/y7bOirvmuYLEST/2hL0WUphs2puV/ea0=
+	b=XS2b0aL6J2Pt46o5krDpH2r2lf5o/nE2aG8g9dFDl6DfPjrjffnyRzw9KUF+Lu4xZ
+	 UxqH6u326JPHrpPS9WZEOhxDuU181QmUqVw3iTDrC4QQC+PbGJ4p6KHT/nj2tZGDkD
+	 MOO7hcl0wJS5Th6zUhTxke8Zf6IMsEYtkRMr372c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84FF0F8020D;
-	Mon, 12 Oct 2020 16:59:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3806F8020D;
+	Mon, 12 Oct 2020 17:04:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 259CAF80217; Mon, 12 Oct 2020 16:59:27 +0200 (CEST)
+ id 06EE8F80217; Mon, 12 Oct 2020 17:04:31 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32642F80141
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2020 16:59:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32642F80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 485BAF800F6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2020 17:04:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 485BAF800F6
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 248A3AF2B;
- Mon, 12 Oct 2020 14:59:11 +0000 (UTC)
-Date: Mon, 12 Oct 2020 16:59:10 +0200
-Message-ID: <s5ha6wrpk1t.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 06C96ACAC;
+ Mon, 12 Oct 2020 15:04:21 +0000 (UTC)
+Date: Mon, 12 Oct 2020 17:04:20 +0200
+Message-ID: <s5h5z7fpjt7.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: compress: allow pause and resume during draining
-In-Reply-To: <0afa7a39-84d5-0b9b-5453-8e7848a30bb6@perex.cz>
-References: <20201006062105.GQ2968@vkoul-mobl>
- <4bbc385b-d35a-8766-7981-034455287225@linux.intel.com>
- <000d01d69d58$4e2db6f0$ea8924d0$@samsung.com>
- <s5hr1q7sa9f.wl-tiwai@suse.de>
- <831bbfcf-9720-9100-8633-65932b415cab@perex.cz>
- <s5ha6wusb2l.wl-tiwai@suse.de> <20201012052525.GH2968@vkoul-mobl>
- <s5hk0vwq65o.wl-tiwai@suse.de> <20201012122423.GJ2968@vkoul-mobl>
- <5b26cdd5-8a15-fa26-86af-13bfbfad5341@perex.cz>
- <20201012135540.GK2968@vkoul-mobl>
- <777e0046-1e3a-e702-c070-cac4c0525ccd@perex.cz>
- <s5hh7qzplsb.wl-tiwai@suse.de>
- <0afa7a39-84d5-0b9b-5453-8e7848a30bb6@perex.cz>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v5.10
+In-Reply-To: <20201012130845.816462076C@mail.kernel.org>
+References: <20201012130845.816462076C@mail.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, lgirdwood@gmail.com,
- kimty@samsung.com, s47.kang@samsung.com, tiwai@suse.com,
- 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
- Vinod Koul <vkoul@kernel.org>, hmseo@samsung.com,
- Gyeongtaek Lee <gt82.lee@samsung.com>, pilsun.jang@samsung.com,
- tkjung@samsung.com
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,33 +77,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 12 Oct 2020 16:46:56 +0200,
-Jaroslav Kysela wrote:
+On Mon, 12 Oct 2020 15:08:28 +0200,
+Mark Brown wrote:
 > 
-> Dne 12. 10. 20 v 16:21 Takashi Iwai napsal(a):
+> The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
 > 
-> > But, I doubt whether we really need to care about that; as mentioned
-> > earlier, there is little to change from the user-space side.  It just
-> > pause or resume.  The only difference is the resume target, and
-> > honestly speaking, there is no interest in it from user-space side.
-> > And, the rest is about the kernel internal, and this can be really
-> > done in the way of the original patch.  The flow is quite simple and
-> > understandable...
+>   Linux 5.9-rc8 (2020-10-04 16:04:34 -0700)
 > 
-> The core compress code already uses the state mechanism (although internally).
+> are available in the Git repository at:
 > 
-> Also, it's really unclear if all drivers were checked, if the pause triggers
-> can be called from the drain state (I know it's another point, but the drivers
-> should probably offer a flag that they support this). And why to call the
-> pause release callback when there's no pause (drain + release ioctl instead
-> drain + pause + release ioctl)? It's a clear midlevel code fault. This
-> protection should be there not in the hw drivers.
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.10
 > 
-> I refer the original patch:
->   https://lore.kernel.org/alsa-devel/000c01d69585$228db6b0$67a92410$@samsung.com/
+> for you to fetch changes up to c890e30b069a2792a5a34e8510a7a437dd6f5b3d:
+> 
+>   Merge remote-tracking branch 'asoc/for-5.10' into asoc-next (2020-10-09 15:42:31 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Updates for v5.10
+> 
+> Not a huge amount going on in the core for ASoC this time but quite a
+> lot of driver activity, especially for the Intel platforms:
+> 
+>  - Replacement of the DSP driver for some older x86 systems with a new
+>    one which was written with closer reference to the DSP firmware so
+>    should hopefully be more robust and maintainable.
+>  - A big batch of static checker and other fixes for the rest of the x86
+>    DSP drivers.
+>  - Cleanup of the error unwinding code from Morimoto-san, hopefully
+>    making it more robust.
+>  - Helpers for parsing auxiluary devices from the device tree from
+>    Stephan Gerhold.
+>  - New support for AllWinner A64, Cirrus Logic CS4234, Mediatek MT6359
+>    Microchip S/PDIF TX and RX controllers, Realtek RT1015P, and Texas
+>    Instruments J721E, TAS2110, TAS2564 and TAS2764
 
-Point taken, and yes, this should be handled conditionally only for
-the drivers that do support such a mode.
+Thanks, pulled now.
 
 
 Takashi
