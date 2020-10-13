@@ -2,91 +2,140 @@ Return-Path: <SRS0=Nc9k=DU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AB1CC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 11:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E452C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 12:16:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04F192080A
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 11:57:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F912222EB
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 12:16:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F3tGLiE5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JyHH9QCe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04F192080A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M4wzpzbc";
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="UClsDhNf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F912222EB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07F631668;
-	Tue, 13 Oct 2020 13:56:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07F631668
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAC82167B;
+	Tue, 13 Oct 2020 14:16:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAC82167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602590232;
-	bh=LCf87qwfRfVquJSMBSLMadZoYFzd1py4QT5QAhXaufg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1602591414;
+	bh=bLD01ef/B7GVtGsGnDTJk7+wGMmescYddj0gLodXipo=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F3tGLiE5gZr/IMSmY/n1hoehyMZY9HJRiv9NRT+vTqJAXCXk53yQxBkKPvOru6QN0
-	 WDpcHe0jdwkLSTBx96RPPjX7l3DPO1pEHe++yUVwHChSMLHD7UXCdKzkRmt5DGfp0i
-	 kk4iSiI9gEXe1pwoBK0dIc1DGrvRNNdbisyEjkkU=
+	b=M4wzpzbc5+vbJrX8MCuZtW6VpGWVHf7nPNhkf14xpVzMeB2R68sLJMqqb0k2cl0lJ
+	 M8q8K+sc02wWfMaC4fdRQZKm34uhooAJhUqr5kIPc9K3PeO9NivTSMk0s1yV3+eBQT
+	 N+hs+NVhJXoauWfy3aO17mQcSgEndJ86a4OKJFbs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7C96F80274;
-	Tue, 13 Oct 2020 13:55:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75117F800F6;
+	Tue, 13 Oct 2020 14:16:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D016F8026B; Tue, 13 Oct 2020 13:54:56 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE777F801A3
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 13:54:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE777F801A3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JyHH9QCe"
-Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de
- [95.90.213.178])
+ id 708A6F801A3; Tue, 13 Oct 2020 14:16:02 +0200 (CEST)
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr50047.outbound.protection.outlook.com [40.107.5.47])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DDFE02237B;
- Tue, 13 Oct 2020 11:54:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1602590081;
- bh=LCf87qwfRfVquJSMBSLMadZoYFzd1py4QT5QAhXaufg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=JyHH9QCeB8AXRiKhLf5T0okefLPKawlctsELk2byhCQhFbhreY7avPbvXcqz7SAbd
- CAkVeoUSHS0632g8d59QsZUrIDk6q2WZ6F0ZVZzbHKfAokPnspSnkpVOjxziHS0qF1
- Eic2Kwbet0jM+7a+fBbVxrXsfCNdxBkQlS1SiFso=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
- (envelope-from <mchehab@kernel.org>)
- id 1kSIt4-006CUU-EW; Tue, 13 Oct 2020 13:54:38 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: [PATCH v6 29/80] docs: remove sound API duplication
-Date: Tue, 13 Oct 2020 13:53:44 +0200
-Message-Id: <135fc08ee65363ee7a916705487cfdf928a3673b.1602589096.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1602589096.git.mchehab+huawei@kernel.org>
-References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBE8BF800F6
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 14:15:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBE8BF800F6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
+ header.i=@NXP1.onmicrosoft.com header.b="UClsDhNf"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CDvr922kq3TNvOAPTECiM1Myob5eoJkmwbE3Kj8S40iqz/dL+FqtNPFN1q8t18S42wf+4Gao3BUy9LG49Q+eGlZ2U+DC94A0VWH7fS6k51wNqVmjGcAzWeqwBG4sOeymWfhCkl5Pog1pjwDZHHHR6udgtr20WUgU5nJ5AAaf9MKBthYosu7FQFhfUX59uTLQ8UeVkpN36j2D5CBuls5FP/UgJVoYxXF53Ywg4hXy6zvNecB2kmn5CzEZPRA9yjoS8XNswcUCTi49hyeH9qu9ABGu0jK95pVVF+nQ7xn8kZWY0ysOPVmqK8jrhoIfd75nvfjekfLZsQm2lihjzD3gpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nvk1ZwiGLhZIHSOoNHEUshTwICGHh/afeaUyEjfiiLk=;
+ b=OG4PuvYaIb8bI2Jgqvyf62BCs7EqZnaW2qeNC0RazH/sVcqTRwCouGPKZvUE5KpnQnsdhxEpzhcr1osRp8qBKd6S/XPiH2Qdt7wtJ49i1a1LVYaZh7+Ga7qKth0IxBtY18wSIS+df1qxZGWf+tDby3tArA+DZbBjJk5qkfLcEnLn0fpMfM++q9XeRmFcj90O/Mc2nooNB8s/tySbzltnhX1SDO8+kowqcY+kf/j0kVb8U9EbuxeVxdIPFHAyhYwHFlVw9r/G97eMK+Rbdi9/+Ny+rqosGWHnrC3Tf6MWcfelPl9hOM67P7yxWCS4gSqON9fA7h+BH44lfNgKZ7Ut4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nvk1ZwiGLhZIHSOoNHEUshTwICGHh/afeaUyEjfiiLk=;
+ b=UClsDhNfO18MJocyGFLol0gBJ9zMMfdbT1UoZdxgITxpSH7qWJr+M49UpWsrMnkeFVvykiUsmKMU3VjicHCF6jK/GnzSxgendOtwlrqIprCpEUVy8oyf9QlA0mmTND2Ewy7zp55wBWP1qO6FTti0/VUXMjEDE83YPKweKAuDoZI=
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB5198.eurprd04.prod.outlook.com
+ (2603:10a6:803:56::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Tue, 13 Oct
+ 2020 12:15:52 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
+ 12:15:52 +0000
+From: "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To: Rob Herring <robh@kernel.org>, "Viorel Suman (OSS)"
+ <viorel.suman@oss.nxp.com>
+Subject: RE: [PATCH v3 2/2] ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
+Thread-Topic: [PATCH v3 2/2] ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
+Thread-Index: AQHWlkG0yVRccbzaGkOVtb/Lyfdk/amK8jIAgAqWdyA=
+Date: Tue, 13 Oct 2020 12:15:52 +0000
+Message-ID: <VI1PR0401MB2272C7A52819364E674BA90492040@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+References: <1601371167-32239-1-git-send-email-viorel.suman@oss.nxp.com>
+ <1601371167-32239-3-git-send-email-viorel.suman@oss.nxp.com>
+ <20201006183442.GA2591611@bogus>
+In-Reply-To: <20201006183442.GA2591611@bogus>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [86.127.156.60]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bd60ca03-baf0-4bdd-128d-08d86f71ba6b
+x-ms-traffictypediagnostic: VI1PR04MB5198:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB5198EF7A3F95497AC94C225BD3040@VI1PR04MB5198.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 713Tn/z/m4FfLCh6a4brM9A1Eu4SxUxMy/5acpjfJfGMQobmVjlaRpSE8piMyIfwvLr74OTQmnJ5MMUCPa2gt4aXM4fFPrMIaqWYJcbGV312lYeZmEOO7zkOxggSjH1ILcTFfqCuSJYO1JT4MYfbBLkQP28eNEs9npnGm+Szz2BD2EGCH1206g0lQGkIQN5HlByT+SXMwLmiFrrBKw4Ax4UrrwEmpMMOIfHkdLM0vGhjeSrxxX+PZM+sY3ILepOt8QZ/oONzJ/gtrk8EBcMh2Rx6RhkLhVa0CsM9dZjgEGCIyJtrI77fBB/pFO+67hTA1HUUo/uUSAkBztMhxEH7Dh21uWlbO4TY/+JM7x2CSWfTOiQ+ONumJGoGKRdU92mTORciDONqJDuF905MgAuHdg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR0401MB2272.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(966005)(9686003)(2906002)(83380400001)(110136005)(54906003)(55016002)(26005)(7696005)(53546011)(86362001)(33656002)(71200400001)(4326008)(186003)(83080400001)(66476007)(66556008)(7416002)(498600001)(6506007)(64756008)(66946007)(52536014)(8676002)(76116006)(66446008)(8936002)(5660300002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: ikVhjsMJS2hDHVDuScffoU1j+S0/RHeZ0T9b29T08amLxnChQlwLYR4KSAVD5TbdHaPWfN58kCdCXgx5tAd4KSsm1ZHqXCbTV/RgfTVIVXu1245gbakohPFSmZlqXSj2qM9U0cmLVQCC9XogFFWgE+iH+03pgqQ+15Qhb8Iv8AQOaWoaha+Bf7FthC5dD4ezjgznOm0om5P9aSiNYc82mupkh9pBh+MHTTPi517PgYNsdT0nfoJVhSFCYppi5mv6g3UMmKFXFnuuBYhJBHbQJZSazgbY3gESogFuYHc7wbXfbuaCur8McXxBckMtK+xQCRTJxGj86JxIjx5neWI/rzK/2zvJRMyXdaScsIbhh3WI7TTA+aR7yXddgn7hhZQSAHAA29vVerh3gw7JrMXqd73o/MNiqg9o7XFTVe6ueDrNDIk0BwNeSrU9QamZ5JqqerWvnytGFRQ2I5CtHE76TH+hVpWA2GMXjm7x1pWpaaid5IJ/Fb8t3d1tly7EMVpG/eqHaZm7Ta4UBkrywxDoncNpiHhFVe12Hu9D5SpgYHucoItFFdai4W2EUspbSrRNfIiox30niwxa7yFK12S6CR354D2429DUtebP30W1sWydS2a1Sp+3HbFvBLpS82p54Mu3aIr5Lc7Ycch4P7LHHQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
- Pragat Pandya <pragat.pandya@gmail.com>,
- =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
- Jason Gunthorpe <jgg@ziepe.ca>, Michael Walle <michael@walle.cc>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>,
- Jacob Keller <jacob.e.keller@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Harald Seiler <hws@denx.de>, Leonard Crestez <leonard.crestez@nxp.com>
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd60ca03-baf0-4bdd-128d-08d86f71ba6b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2020 12:15:52.1402 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AaUz5gjj0FNwPPimnFRizBfMSKbvS39bKOLCFgZkPS+q7WJP1waX96AH7iRwMRP0nDQQ29VcpgRGzxT7ZvJcWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5198
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Viorel Suman <viorel.suman@gmail.com>,
+ Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
+ Fabio Estevam <festevam@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,106 +151,162 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The sound API is documented on two different parts:
-under Documentation/driver-api/sound.rst and under
-Documentation/sound/kernel-api/alsa-driver-api.rst.
+Hi Rob,
 
-The alsa-driver-api.rst seems more complete, and APIs
-are split per type. There's just one missing kernel-doc
-markup there.
+Thank you for review, fixed in V4.
 
-Add it and drop the duplicated one.
+/Viorel
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/driver-api/index.rst            |  1 -
- Documentation/driver-api/sound.rst            | 54 -------------------
- .../sound/kernel-api/alsa-driver-api.rst      |  1 +
- 3 files changed, 1 insertion(+), 55 deletions(-)
- delete mode 100644 Documentation/driver-api/sound.rst
-
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index 5ef2cfe3a16b..90d02c5fb155 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -28,7 +28,6 @@ available subsections can be seen below.
-    component
-    message-based
-    infiniband
--   sound
-    frame-buffer
-    regulator
-    iio/index
-diff --git a/Documentation/driver-api/sound.rst b/Documentation/driver-api/sound.rst
-deleted file mode 100644
-index afef6eabc073..000000000000
---- a/Documentation/driver-api/sound.rst
-+++ /dev/null
-@@ -1,54 +0,0 @@
--Sound Devices
--=============
--
--.. kernel-doc:: include/sound/core.h
--   :internal:
--
--.. kernel-doc:: sound/sound_core.c
--   :export:
--
--.. kernel-doc:: include/sound/pcm.h
--   :internal:
--
--.. kernel-doc:: sound/core/pcm.c
--   :export:
--
--.. kernel-doc:: sound/core/device.c
--   :export:
--
--.. kernel-doc:: sound/core/info.c
--   :export:
--
--.. kernel-doc:: sound/core/rawmidi.c
--   :export:
--
--.. kernel-doc:: sound/core/sound.c
--   :export:
--
--.. kernel-doc:: sound/core/memory.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_memory.c
--   :export:
--
--.. kernel-doc:: sound/core/init.c
--   :export:
--
--.. kernel-doc:: sound/core/isadma.c
--   :export:
--
--.. kernel-doc:: sound/core/control.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_lib.c
--   :export:
--
--.. kernel-doc:: sound/core/hwdep.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_native.c
--   :export:
--
--.. kernel-doc:: sound/core/memalloc.c
--   :export:
--
-diff --git a/Documentation/sound/kernel-api/alsa-driver-api.rst b/Documentation/sound/kernel-api/alsa-driver-api.rst
-index c8cc651eccf7..d24c64df7069 100644
---- a/Documentation/sound/kernel-api/alsa-driver-api.rst
-+++ b/Documentation/sound/kernel-api/alsa-driver-api.rst
-@@ -132,3 +132,4 @@ ISA DMA Helpers
- Other Helper Macros
- -------------------
- .. kernel-doc:: include/sound/core.h
-+.. kernel-doc:: sound/sound_core.c
--- 
-2.26.2
-
+> -----Original Message-----
+> From: Rob Herring [mailto:robh@kernel.org]
+> Sent: Tuesday, October 6, 2020 9:35 PM
+> To: Viorel Suman (OSS) <viorel.suman@oss.nxp.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>; Mark Brown
+> <broonie@kernel.org>; Jaroslav Kysela <perex@perex.cz>; Takashi Iwai
+> <tiwai@suse.com>; Timur Tabi <timur@kernel.org>; Nicolin Chen
+> <nicoleotsuka@gmail.com>; Xiubo Li <Xiubo.Lee@gmail.com>; Fabio Estevam
+> <festevam@gmail.com>; Shengjiu Wang <shengjiu.wang@gmail.com>; Philipp
+> Zabel <p.zabel@pengutronix.de>; Cosmin-Gabriel Samoila
+> <cosmin.samoila@nxp.com>; Viorel Suman <viorel.suman@nxp.com>; Matthias
+> Schiffer <matthias.schiffer@ew.tq-group.com>; alsa-devel@alsa-project.org=
+;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linuxppc-
+> dev@lists.ozlabs.org; dl-linux-imx <linux-imx@nxp.com>; Viorel Suman
+> <viorel.suman@gmail.com>
+> Subject: Re: [PATCH v3 2/2] ASoC: dt-bindings: fsl_xcvr: Add document for=
+ XCVR
+>=20
+> On Tue, Sep 29, 2020 at 12:19:27PM +0300, Viorel Suman (OSS) wrote:
+> > From: Viorel Suman <viorel.suman@nxp.com>
+> >
+> > XCVR (Audio Transceiver) is a new IP module found on i.MX8MP.
+> >
+> > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> > ---
+> >  .../devicetree/bindings/sound/fsl,xcvr.yaml        | 103
+> +++++++++++++++++++++
+> >  1 file changed, 103 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
+> > b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
+> > new file mode 100644
+> > index 00000000..8abab2d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
+> > @@ -0,0 +1,103 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/sound/fsl,xcvr.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: NXP Audio Transceiver (XCVR) Controller
+> > +
+> > +maintainers:
+> > +  - Viorel Suman <viorel.suman@nxp.com>
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "^xcvr@.*"
+> > +
+> > +  compatible:
+> > +    const: fsl,imx8mp-xcvr
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: 20K RAM for code and data
+> > +      - description: registers space
+> > +      - description: RX FIFO address
+> > +      - description: TX FIFO address
+> > +
+> > +  reg-names:
+> > +    items:
+> > +      - const: ram
+> > +      - const: regs
+> > +      - const: rxfifo
+> > +      - const: txfifo
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: Peripheral clock
+> > +      - description: PHY clock
+> > +      - description: SPBA clock
+> > +      - description: PLL clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: ipg
+> > +      - const: phy
+> > +      - const: spba
+> > +      - const: pll_ipg
+> > +
+> > +  dmas:
+> > +    maxItems: 2
+> > +
+> > +  dma-names:
+> > +    items:
+> > +      - const: rx
+> > +      - const: tx
+> > +
+> > +  firmware-name:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    const: imx/xcvr/xcvr-imx8mp.bin
+> > +    description: |
+> > +      Should contain the name of the default firmware image
+> > +      file located on the firmware search path
+>=20
+> We generally only have this if the name/path can't be fixed (per
+> compatible) in the driver. Given you only have 1 possible value, that doe=
+sn't
+> seem to be the case here.
+>=20
+> > +
+> > +  resets:
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - interrupts
+> > +  - clocks
+> > +  - clock-names
+> > +  - dmas
+> > +  - dma-names
+> > +  - firmware-name
+> > +  - resets
+>=20
+> additionalProperties: false
+>=20
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +    #include <dt-bindings/clock/imx8mp-clock.h>
+> > +    #include <dt-bindings/reset/imx8mp-reset.h>
+> > +
+> > +    xcvr: xcvr@30cc0000 {
+> > +           compatible =3D "fsl,imx8mp-xcvr";
+> > +           reg =3D <0x30cc0000 0x800>,
+> > +                 <0x30cc0800 0x400>,
+> > +                 <0x30cc0c00 0x080>,
+> > +                 <0x30cc0e00 0x080>;
+> > +           reg-names =3D "ram", "regs", "rxfifo", "txfifo";
+> > +           interrupts =3D <0x0 128 IRQ_TYPE_LEVEL_HIGH>;
+> > +           clocks =3D <&audiomix_clk IMX8MP_CLK_AUDIOMIX_EARC_IPG>,
+> > +                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_EARC_PHY>,
+> > +                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_SPBA2_ROOT>,
+> > +                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_AUDPLL_ROOT>;
+> > +           clock-names =3D "ipg", "phy", "spba", "pll_ipg";
+> > +           dmas =3D <&sdma2 30 2 0>, <&sdma2 31 2 0>;
+> > +           dma-names =3D "rx", "tx";
+> > +           firmware-name =3D "imx/xcvr/xcvr-imx8mp.bin";
+> > +           resets =3D <&audiomix_reset 0>;
+> > +    };
+> > --
+> > 2.7.4
+> >
