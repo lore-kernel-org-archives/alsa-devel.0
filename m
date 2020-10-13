@@ -2,66 +2,79 @@ Return-Path: <SRS0=Nc9k=DU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18BE1C433E7
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 16:35:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B69AC433E7
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 17:36:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D7D9252A7
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 16:35:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B42042536D
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 17:36:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jm3n7Cjk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D7D9252A7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MCpY42vh";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="0jBiwzA4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B42042536D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C46D169E;
-	Tue, 13 Oct 2020 18:34:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C46D169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA2D442;
+	Tue, 13 Oct 2020 19:35:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA2D442
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602606922;
-	bh=hW+gZ3mX+I7TjzInjraqn47Hd+J05TcNPNYaRPcR7qs=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1602610600;
+	bh=m+v+XFwmmVe0AkbKMd8+Qti/i+hGeYVHITYxMbHxn9Y=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jm3n7CjkZOrAXQaR8oLP7mQqSPM7CQNF/vrCLRdldOUUfgKZd9J6z5DIxKFPLlxlQ
-	 EafHqkv8KkaNOI4MeF1jSS55k3Q8dr1mT7C3e/qhDis7/dDedl9sGpVtWNGSFr8Ncz
-	 qkmWp4MKWlIpn8A08O6SD2ZK6YcFGtXN/YzvUvKk=
+	b=MCpY42vhA3tVjDBBg+FMn6JAhjVn4MBDS8akQWhv5LAoS72FpgikdtAeLzT/Ceujx
+	 a9JG10aM/cYPevprCfRvj2inyk7O3XDXs/zwLeE4bzEqBFBX4PAJ0cYrRqOsKlUvIR
+	 3XIohOiXb+WvDowozCBuZ1PjhbFhpyedS1Lg7v2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C32FF8016F;
-	Tue, 13 Oct 2020 18:34:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68592F8012C;
+	Tue, 13 Oct 2020 19:35:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0759CF801A3; Tue, 13 Oct 2020 18:34:30 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 4E6B2F801A3; Tue, 13 Oct 2020 19:35:49 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24229F800CE
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 18:34:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24229F800CE
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C131EAD2E;
- Tue, 13 Oct 2020 16:34:22 +0000 (UTC)
-Date: Tue, 13 Oct 2020 18:34:22 +0200
-Message-ID: <s5hpn5mm6ep.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda/hdmi: fix incorrect locking in hdmi_pcm_close
-In-Reply-To: <20201013152628.920764-1-kai.vehmanen@linux.intel.com>
-References: <20201013152628.920764-1-kai.vehmanen@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03AA9F8012C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 19:35:42 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A82CDA003F;
+ Tue, 13 Oct 2020 19:35:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A82CDA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1602610539; bh=VyUbOVMzwcIf0YWiHD1veq8AMcmuHYi1Zy2QZLmHXP4=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=0jBiwzA4fkdDCSWFfiOo1s+lqb6Zz1toNeI5TUHnjEOm+Fidy9R8lh6sv6v84qUdw
+ LiVK4adYhkEokvnRddLWhu/xRPT8ZPglzuoMrSvnyMZGbbJSsE4pvyMzmw+bsbhxXf
+ fjuEB8W9vNt+SSnINto4PkiSpTDSbhT0DGig0FyI=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue, 13 Oct 2020 19:35:36 +0200 (CEST)
+Subject: Re: pcm_meter.c issue at s16_update
+To: Pavel Hofman <pavel.hofman@ivitera.com>, Go Peppy
+ <peppy.player@gmail.com>, alsa-devel@alsa-project.org
+References: <CAANJKekdzYeO7vp9o30a4yiB0M8mqjpuf2ZOPem4d8Ma_V8bjA@mail.gmail.com>
+ <f05763b6-7b1a-29d1-3072-0642bca3d306@ivitera.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <fb010ee6-3c20-0d2a-1be4-67500253740b@perex.cz>
+Date: Tue, 13 Oct 2020 19:35:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <f05763b6-7b1a-29d1-3072-0642bca3d306@ivitera.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,30 +90,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 13 Oct 2020 17:26:28 +0200,
-Kai Vehmanen wrote:
+Dne 17. 09. 20 v 21:13 Pavel Hofman napsal(a):
+> Hi,
 > 
-> A race exists between closing a PCM and update of ELD data. In
-> hdmi_pcm_close(), hinfo->nid value is modified without taking
-> spec->pcm_lock. If this happens concurrently while processing an ELD
-> update in hdmi_pcm_setup_pin(), converter assignment may be done
-> incorrectly.
+> Dne 15. 09. 20 v 5:40 Go Peppy napsal(a):
+>>
+>> Just to remind what the issue is - while switching from one web radio
+>> station to another there is a high CPU usage for about 20 seconds. Because
+>> of that high CPU consumption almost all other processes are blocked.
 > 
-> This bug was found by hitting a WARN_ON in snd_hda_spdif_ctls_assign()
-> in a HDMI receiver connection stress test:
-> 
-> [2739.684569] WARNING: CPU: 5 PID: 2090 at sound/pci/hda/patch_hdmi.c:1898 check_non_pcm_per_cvt+0x41/0x50 [snd_hda_codec_hdmi]
-> ...
-> [2739.684707] Call Trace:
-> [2739.684720]  update_eld+0x121/0x5a0 [snd_hda_codec_hdmi]
-> [2739.684736]  hdmi_present_sense+0x21e/0x3b0 [snd_hda_codec_hdmi]
-> [2739.684750]  check_presence_and_report+0x81/0xd0 [snd_hda_codec_hdmi]
-> [2739.684842]  intel_audio_codec_enable+0x122/0x190 [i915]
-> 
-> Fixes: 42b2987079ec ("ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode")
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> 20 seconds is only due to 32bit kernel on RPi. On 64bit machines the 
+> boundary value is usually many orders of magnitude larger, basically 
+> making the method never finish.
 
-Applied now.  Thanks.
+Could you try this patch?
+
+https://github.com/alsa-project/alsa-lib/commit/a6c8ac0c85ca1b16684a687c7000c73aa38b7776
+
+It should prevent the big copies which are definitely nonsense and this change
+does not hide the real problem.
+
+					Jaroslav
+
+> 
+> With regards,
+> 
+> Pavel.
+> 
 
 
-Takashi
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
