@@ -2,139 +2,89 @@ Return-Path: <SRS0=Nc9k=DU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8859DC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 12:20:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B0EBC433E7
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 13:02:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 226D02237B
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 12:20:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83A9722B2D
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 13:02:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iL8HP8xC";
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="QZZemehQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 226D02237B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jxUBBk7A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83A9722B2D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 325B1167B;
-	Tue, 13 Oct 2020 14:19:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 325B1167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7BB4167E;
+	Tue, 13 Oct 2020 15:01:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7BB4167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602591614;
-	bh=/yQi85Lq6qvOwv8+EfxpzgZsPhwxegxLABH8MM5srXc=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1602594156;
+	bh=TjyOf8Y31mdDt8pGjw3+e2TYZrWAE9oo4pPEMKbIYy8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iL8HP8xCTARBBbWYFuI7OUh/vyTw0e9eNHwlEwtNq8GnBJS3RpRWiKQAOjeDKUQxi
-	 88BjylhXh1++MyYQb5eZx/cvsWsA9OfX/aGnF1P5Seaw1F1oSOhKYqvvlkvznAZCz+
-	 FlLNjUjn2ax/yWA43RI64GSVhESTrPgIGngr4pOE=
+	b=jxUBBk7A94xU8CYo3lF+LdcmYWUOtWo+YBGpdKlPnIpvqWDSvVuzzvMD0S9q2KGk1
+	 hiPxogKlA7lAtdc5duAGqCk16F6yFAna6oplVqAHlVAbVSh6v7MRP1AbYjR/Xwv33n
+	 kDmfttaDSDFqoLhIDjrOL7b495KW7+a7/jsPjpcg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4EB6F80260;
-	Tue, 13 Oct 2020 14:18:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C2FAF8016F;
+	Tue, 13 Oct 2020 15:01:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D409FF8016F; Tue, 13 Oct 2020 14:17:57 +0200 (CEST)
-Received: from EUR03-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur03on0622.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe09::622])
+ id 5E756F801A3; Tue, 13 Oct 2020 15:01:44 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A2AEF801A3
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 14:17:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A2AEF801A3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="QZZemehQ"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NWGyBxG3aPayi00lO9agfZfDl3OrayteQx3Y07vSkWRzfEWxEuqoNBJhtRAlyY+D5yVExBA8tjPbYrdsPnzs6YFe8hkoj3OSNRqismf0k43mLG8aQ/y1vSAYsG5G1+1VnkRCkbQDg9ZD/wE9XwjyFN+w+5iqucWPG0Ye9NbNQkstU1fKnitLi3KVOtgTWDLA8X6H0PP6joX6gJPNvwknQzujIJUHooQNkbTp3va0MXLJTBkKEkMjt3z2BN/ZsdkD/+uLItf96IIYKXsLu90pu7Q2XVm4kEq1nrkUZ+79EXSHKeuuSCxSbDz2ruvW5oSa+lB1DWSVylhFHSr2rL2cCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IEmLAKoGOck/B2qWs94DgUNXN0XetiA7Mvy/QsLu9+I=;
- b=QvgiOtVIxryiF4JZ8d1WZT/8g4SZynUeg8CgNw3a/OGfo6n4K4jxsZfnHvNklEucbizNBLWcwQD5W6ziPG+W0Y0bKLbeoNbVMa2Jp9f5FyvhpaFGkHCf69Gpi5zwlLkL6ObkI6zroTjM5Fr7IUsA7CidvoEJu53qi89/5mcYK3plGwEcX8aNlnFKLTFBX3UMaX9dcD7LjGs5db2gePTdia3YTVhswAlAi9tbAvgL0gMpPcNxo/ABZFKj8i6xXcvDusniDlx/CDfOyPHSzW/DQJAfXM7JhG2l1RKec9CZWTDRMVQBJH463EfW/RCuEPjEl1XHsgtEn2PvrW4nIBQZpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IEmLAKoGOck/B2qWs94DgUNXN0XetiA7Mvy/QsLu9+I=;
- b=QZZemehQWWtdpsDpXqbSi9HzBObDJFPhGlvNuqyV7uFBlxAQyt1M/9Obtctlj6CQ2ncPlLHH6QmahcBKK7BJreCtj7t4k6P2R8sA1iI2Nka35cwzcfq+rl2khaa7+2FAvWeN7lkX8j++L69pJAMBkaItq5jOSgfeahywlnW84RE=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- (2603:10a6:800:31::12) by VI1PR04MB5198.eurprd04.prod.outlook.com
- (2603:10a6:803:56::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Tue, 13 Oct
- 2020 12:17:45 +0000
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
- 12:17:45 +0000
-From: "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Viorel Suman <viorel.suman@nxp.com>,
- Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v4 2/2] ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
-Date: Tue, 13 Oct 2020 15:17:33 +0300
-Message-Id: <20201013121733.83684-3-viorel.suman@oss.nxp.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201013121733.83684-1-viorel.suman@oss.nxp.com>
-References: <20201013121733.83684-1-viorel.suman@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [86.127.156.60]
-X-ClientProxiedBy: VI1PR0602CA0007.eurprd06.prod.outlook.com
- (2603:10a6:800:bc::17) To VI1PR0401MB2272.eurprd04.prod.outlook.com
- (2603:10a6:800:31::12)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 971B5F8012C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 15:01:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 971B5F8012C
+IronPort-SDR: z6C47iy/HRw9DDtZz5CFkElVfJfMpTRWuO9haqVIINKaW9Fxlvds+Op1p7yjVEci+n6J62AuHB
+ dRrQ1xoQ7l7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="166015067"
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; d="scan'208";a="166015067"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2020 06:01:20 -0700
+IronPort-SDR: 4bTd7iIIlYKzyDN8gAbflNVnBgh+UJEwC/YONZqSk9ffh/qb/den14FqT7OmP8BQiPuvJSi8yY
+ zt9TUElRw0Eg==
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; d="scan'208";a="318279779"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2020 06:01:18 -0700
+Received: from andy by smile with local (Exim 4.94)
+ (envelope-from <andriy.shevchenko@intel.com>)
+ id 1kSJwa-005pjr-Gj; Tue, 13 Oct 2020 16:02:20 +0300
+Date: Tue, 13 Oct 2020 16:02:20 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: dmaengine: Document support for TX only or RX only
+ streams
+Message-ID: <20201013130220.GQ4077@smile.fi.intel.com>
+References: <20201008161105.21804-1-broonie@kernel.org>
+ <20201009102751.GS4077@smile.fi.intel.com>
+ <20201009103124.GT4077@smile.fi.intel.com>
+ <20201012133745.GD4332@sirena.org.uk>
+ <20201012135527.GW4077@smile.fi.intel.com>
+ <20201012154803.GG4332@sirena.org.uk>
+ <20201012163147.GD4077@smile.fi.intel.com>
+ <20201012182604.GH4332@sirena.org.uk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (86.127.156.60) by
- VI1PR0602CA0007.eurprd06.prod.outlook.com (2603:10a6:800:bc::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend
- Transport; Tue, 13 Oct 2020 12:17:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c44225f1-9238-4e1f-62f7-08d86f71fdde
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5198:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB51988CEC080AA9FAFACA90F1D3040@VI1PR04MB5198.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jkmiROD8iVPE0RiQxstSC5FWSBJolNi64xpz5AvmFzxpOyUOSKgFkix6mbvskYlpTxckNs92V1hD+fDVY3ys8S17AOOjWWy4ghwNxhxkvdyvwJN+DbFLQqyzEUQexQ/rY3lpFQaXRberfxaWDiLhPOPqD7TcijwSBVTzLevuaQDQKJv/6f7Nz8/WffkuyASxesuAeZwtmX7hCpx0PBC5q58m8qc+uaoD5QmXGe2tR27lbkk8V2KfEBAuqbRNdMvTbqLlvsGlCggaBfnqtpTah5ljYVKxunc/7PYqnfa+9z5ih55D1cozgNCdTHmyWYIBQC0YaqPOOK8G7kIc0puxbbL5w7164mNANk5dQj2B+df69zZzEqaRGP5GM2DTzU1F8Cy1O9oTD1Sza7BNE1fsyOC7E1zQ4x+l8gAeVhqDSmQeZl5ftjk46n1CtggwCsRXHtvydVWsDLSYUquf2WstTYnNmtlHoqb2utJT+Gk+o9A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR0401MB2272.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(83080400001)(86362001)(186003)(8676002)(8936002)(5660300002)(66476007)(6506007)(7416002)(498600001)(66556008)(16526019)(66946007)(1076003)(69590400008)(956004)(2616005)(966005)(6512007)(6486002)(26005)(6666004)(52116002)(110136005)(2906002)(83380400001)(921003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData: gjPZWDTajjYEmIgC5dRH5gQA2Mie8mR2AfWROVU8p6T73WsXWXLBGKCdhb5+rWrBtNs4JGqOZn49B8q78fL2r7FZlGBcwfRHu02Tws22aujbJXdrGXs0yMe56XD5StCIUGJfT+5YTwJIK4Q9oQm/3fRD9fMAqQvzcYxaVoANJGg4pCNdLYRPC4vCgpbkWnzOcmu1sfsS8+3c7KhVtXLhL2LOBKijkiWgFaaRwAVQY/xLYPcwP+84bZ1pODRTF0RqMmebSPbo5PTYtH2fHYaskUjyJtoGrc+SDb3hG24ccC1VCQCts6skPssQeS28KkWPQ04KVtIamcb5WSYSJ//8cigOw1CEy0eSnrWbqA/uV7OSzZ4m/os16tlwD8DwoqDnoshOInaKIchr3giAvR48Za7I1oxP9TbFX8Y7KfgOQB9gw4URnLWZ4cW9azHJuDrMGJgTgGgFEfJESv2T0AphQ7mWeAbeKT8mBKH9H30GraNGAIyk/0PNul+HFLc5qSyodL7tIy0DqA9VWmKwJqgs7/gUAhVKCMyI18ECswChN3q65d5rPe0ovyuwu5E2g6dCdpS04PqayGpGHVIRu/LkHn3fLC19KyUf7Mip7pFvC2zZX/zRZepyMrTP6zlQxE0u89Y5bOcJMI/MoibR3jm2Iw==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c44225f1-9238-4e1f-62f7-08d86f71fdde
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 12:17:45.6581 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 78XvgaJOkLjBCWosoMpUPstSkEY9Zl/W68Td5tI0Z+PMqlO1L5TRthXfkWN7NV4OcM24TLlk+5JZijy5OmWHUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5198
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012182604.GH4332@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Michael Wei Hong Sit <michael.wei.hong.sit@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -150,126 +100,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Viorel Suman <viorel.suman@nxp.com>
+On Mon, Oct 12, 2020 at 07:26:04PM +0100, Mark Brown wrote:
+> On Mon, Oct 12, 2020 at 07:31:47PM +0300, Andy Shevchenko wrote:
+> > On Mon, Oct 12, 2020 at 04:48:03PM +0100, Mark Brown wrote:
+> > > On Mon, Oct 12, 2020 at 04:55:27PM +0300, Andy Shevchenko wrote:
+> 
+> > > > 	if (ret != DMA mode ok)
+> > > > 		ret = try PIO mode;
+> 
+> > > > which makes OF dependent parts gone along with relying on the properties rather
+> > > > than real resource availability.
+> 
+> > > I don't understand the blocker to writing that code at the minute?
+> 
+> > Return code in both cases DMA okay, DMA is not okay is 0.
+> 
+> Ah, right - we don't really expose the resulting component to the
+> drivers.  Although we don't appear to have any drivers doing the open
+> coding you suggest?  The active use case we have is for drivers
+> (currently only the STM32 SAI AFAICT) that always do DMA but only do one
+> direction (not half duplex, a single direction on a given DAI).  They
+> don't want to fall back to PIO, they want to know which channel is
+> valid.  It's not just a DMA/no DMA question, it's also which of the DMA
+> channels are valid.
 
-XCVR (Audio Transceiver) is a new IP module found on i.MX8MP.
+Looking into them I think all of the cases are requiring DMA to work.
+At least one channel. Seems no one is designed for optional DMA performance.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
----
- .../devicetree/bindings/sound/fsl,xcvr.yaml   | 104 ++++++++++++++++++
- 1 file changed, 104 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
+The problem here is they are checking for properties (meta-data) rather than
+resources (data) to be available. But since they will fail sooner or later it
+doesn't make big difference.
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-new file mode 100644
-index 000000000000..223b8ea693dc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-@@ -0,0 +1,104 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,xcvr.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP Audio Transceiver (XCVR) Controller
-+
-+maintainers:
-+  - Viorel Suman <viorel.suman@nxp.com>
-+
-+description: |
-+  NXP XCVR (Audio Transceiver) is a on-chip functional module
-+  that allows CPU to receive and transmit digital audio via
-+  HDMI2.1 eARC, HDMI1.4 ARC and SPDIF.
-+
-+properties:
-+  $nodename:
-+    pattern: "^xcvr@.*"
-+
-+  compatible:
-+    enum:
-+      - fsl,imx8mp-xcvr
-+
-+  reg:
-+    items:
-+      - description: 20K RAM for code and data
-+      - description: registers space
-+      - description: RX FIFO address
-+      - description: TX FIFO address
-+
-+  reg-names:
-+    items:
-+      - const: ram
-+      - const: regs
-+      - const: rxfifo
-+      - const: txfifo
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Peripheral clock
-+      - description: PHY clock
-+      - description: SPBA clock
-+      - description: PLL clock
-+
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: phy
-+      - const: spba
-+      - const: pll_ipg
-+
-+  dmas:
-+    items:
-+      - description: DMA controller phandle and request line for RX
-+      - description: DMA controller phandle and request line for TX
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
-+  - resets
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/imx8mp-clock.h>
-+    #include <dt-bindings/reset/imx8mp-reset.h>
-+
-+    xcvr: xcvr@30cc0000 {
-+           compatible = "fsl,imx8mp-xcvr";
-+           reg = <0x30cc0000 0x800>,
-+                 <0x30cc0800 0x400>,
-+                 <0x30cc0c00 0x080>,
-+                 <0x30cc0e00 0x080>;
-+           reg-names = "ram", "regs", "rxfifo", "txfifo";
-+           interrupts = <0x0 128 IRQ_TYPE_LEVEL_HIGH>;
-+           clocks = <&audiomix_clk IMX8MP_CLK_AUDIOMIX_EARC_IPG>,
-+                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_EARC_PHY>,
-+                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_SPBA2_ROOT>,
-+                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_AUDPLL_ROOT>;
-+           clock-names = "ipg", "phy", "spba", "pll_ipg";
-+           dmas = <&sdma2 30 2 0>, <&sdma2 31 2 0>;
-+           dma-names = "rx", "tx";
-+           resets = <&audiomix_reset 0>;
-+    };
+
+% git grep -n dma-names -- sound/soc/ | cut -f1 -d: | sort -u
+sound/soc/adi/axi-i2s.c
+sound/soc/atmel/atmel-i2s.c
+sound/soc/stm/stm32_sai_sub.c
+sound/soc/tegra/tegra210_admaif.c
+sound/soc/ti/davinci-mcasp.c
+
+axi-i2s: Checks for channels to see if capture / playback are supposed to be
+	 working, but AFAICS tries without actually checking the resources
+	 availability.
+
+	snd_soc_dai_init_dma_data(dai,
+		i2s->has_playback ? &i2s->playback_dma_data : NULL,
+		i2s->has_capture  ? &i2s->capture_dma_data  : NULL);
+
+atmel-i2s: Checks for half-duplex channel, but registers unconditionally.
+
+        snd_soc_dai_init_dma_data(dai, &dev->playback, &dev->capture);
+
+tegra210_admaif: Checks for Tx to be always present.
+
+	Custom DAI probe that simply assigns data structure pointers.
+
+davinchi-mcasp: Checks for names to be present
+
+	Custom DAI probe that simply assigns data structure pointers.
+
 -- 
-2.26.2
+With Best Regards,
+Andy Shevchenko
+
 
