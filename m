@@ -2,57 +2,115 @@ Return-Path: <SRS0=Nc9k=DU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2B6BC433E7
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 10:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A03C433E7
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 10:37:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 998C5207C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 10:07:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 396CF20870
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 10:37:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lAaLkImP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 998C5207C3
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OuiloxwB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rrHdIIkH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 396CF20870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44887167B;
-	Tue, 13 Oct 2020 12:07:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44887167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DF41167B;
+	Tue, 13 Oct 2020 12:36:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DF41167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602583675;
-	bh=AU+C6TEmeeIcL8Dz+W5SN/nwZDKXyLL6Qog9gwzgVpA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1602585456;
+	bh=7CxOrC8iZZeOojS+ldrH51PV2erlc7em4A8mfveEmyI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lAaLkImPjkTnuXdgKof6sDjHgor5aCuSeLJp0d3kKUDpOb8CyZJS2TNRhl672KYyw
-	 n8REazkMQymK/+lGNivb5ZMZRp0aldOJMmuFECCwe4y1rmydDA3F+HNE/lwzKMb3tD
-	 fQNZB2DGIb/2oTgsZgIzdrlYgczJYuVf1GcEIbxQ=
+	b=OuiloxwB100eHztpZ0xq2Seu1mRgHirUJaiaWP9+lHuTKY5aq+XJtA9vLykhYTiAk
+	 8UyYK4hRZn3qaeSNqVcn2wffQPVMWyt26qY71UK1pGPe5V0raRvWSVqpI5RquMsqAE
+	 E0pC4tI6HI5+bvqtlvTdfYHMhexaYDylCN3414P8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC8D9F800CE;
-	Tue, 13 Oct 2020 12:07:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16086F800CE;
+	Tue, 13 Oct 2020 12:36:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 067D6F801A3; Tue, 13 Oct 2020 12:06:48 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id A2BA9F800CE
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 12:06:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2BA9F800CE
+ id 49C79F801A3; Tue, 13 Oct 2020 12:36:43 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4472F800CE
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 12:36:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4472F800CE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="rrHdIIkH"
+Received: by mail-wm1-x32f.google.com with SMTP id a72so9842126wme.5
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 03:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=CiWCv3BMnudQFt/Kh0EA1mCHFgkrHwPIFYjOeIiiAgM=;
+ b=rrHdIIkHJ4RWluKR74GDVBCXZ3fHa+2GckpSDJAnPQr3LIihHVRnyUP0B3Pyy3ZhiX
+ 8rSJA7CHd4bBwm+paLicw3yVKCUd7p47cqxTVZOMI8KQTToQQIRbcEkKYaCAJv5rCfEc
+ 1bgA/vc4KEWcOYZ4uNSULZ7vzptJAjV8I6Yt5FQdZdfVDCfUWFaaYLymlxMbvCLnuB5g
+ k4Q1OxKAiRD5UMQFq/jNfia58Icqaqxjn9Zw637CxWxICuvMpdldIxOsG31VbTFTfcjx
+ fcwjAwQt64YG5s9nbZkfQG7kDKS53uzrSfQJevNyaAgzQJP/OvC7fnfI1m0PztItBYpx
+ 0bKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=CiWCv3BMnudQFt/Kh0EA1mCHFgkrHwPIFYjOeIiiAgM=;
+ b=AjGojbrAVnYgPShyxNV2niNluW4+EnvIpALi99ItQUck79WQtiDR0gJXx88ldAay9A
+ CZf+vMI46gdW3VG689QyQJDy/bgmYUIt8yzSzmE9ibQh/qmVnPWoCuRnfomURFYh6zI5
+ yVllUdDfROIP2CzYkcMpNiJVXe5eSDArlVbP29+ZSGQyY1PMq1WJ/WUM34n3QPDROOcE
+ u4jvnUDQlX+o3m5DB6Coz5wzs7ziLKu74t2lzYT3NOMXuC5tA79CmoK+JyWyHSPrb8kt
+ LomTD1dVgYMVel9erF/oBmEy+6tgs23z6CQbSzmfMdvKKhfgH0bffCi2+2JWxVSSPjlA
+ 5yPg==
+X-Gm-Message-State: AOAM530bp4romaJdoGqDOHlUUov+FzOvfC44fzp+YNsrK20LJRUEKcub
+ m5kNxpU0SIYW2QGFrXGLhQ8YpA==
+X-Google-Smtp-Source: ABdhPJxiYcDKpnTqq5SWY21dPvFP7GNAu3f5Em/slUL6EOVBNEG9+t+pGtCNV4M0EgkRnYKNBcGB0w==
+X-Received: by 2002:a1c:1905:: with SMTP id 5mr15466149wmz.32.1602585396171;
+ Tue, 13 Oct 2020 03:36:36 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id t6sm31809439wre.30.2020.10.13.03.36.34
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 13 Oct 2020 03:36:35 -0700 (PDT)
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
+ bindings
+To: Cheng-Yi Chiang <cychiang@chromium.org>, linux-kernel@vger.kernel.org
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+Date: Tue, 13 Oct 2020 11:36:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200914080619.4178587-3-cychiang@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1602583604138755083-webhooks-bot@alsa-project.org>
-References: <1602583604138755083-webhooks-bot@alsa-project.org>
-Subject: error(no sound) over boundary time [src/pcm/pcm_dshare.c]
-Message-Id: <20201013100648.067D6F801A3@alsa1.perex.cz>
-Date: Tue, 13 Oct 2020 12:06:48 +0200 (CEST)
+Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@codeaurora.org>, Heiko Stuebner <heiko@sntech.de>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>,
+ Patrick Lai <plai@codeaurora.org>, linux-rockchip@lists.infradead.org,
+ Andy Gross <agross@kernel.org>, dgreid@chromium.org,
+ devicetree@vger.kernel.org, tzungbi@chromium.org,
+ Srinivasa Rao <srivasam@codeaurora.org>, Stephan Gerhold <stephan@gerhold.net>,
+ linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,24 +126,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #84 was opened from syuuha:
+Hi Cheng,
 
-there is an issue when we use pcm_dshare over boundary time,
-eg.  will be no sound after 12 hours 
+Sorry for such late review w.r.t compatibles,
+
+On 14/09/2020 09:06, Cheng-Yi Chiang wrote:
+> +---
+> +$id:http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
+> +$schema:http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
+> +
+> +maintainers:
+> +  - Rohit kumar<rohitkr@codeaurora.org>
+> +  - Cheng-Yi Chiang<cychiang@chromium.org>
+> +
+> +description:
+> +  This binding describes the SC7180 sound card which uses LPASS for audio.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sc7180-sndcard-rt5682-m98357-1mic
+
+This information can come from the dai link description itself, why 
+should compatible string have this information?
+
+Can't we have better compatible string with actual board name or use the 
+same compatible name as used by other boards?
+
+Can you give us some details on the advantages of doing this way?
+
+Or am I missing something?
+
+AFAIU, you should add proper board name / model name to the compatible 
+string rather than describe how its connected. Connection is already 
+part of dai link definition.
+
+On the other hand model property can include variant information.
+This can also be used to set card long name which will help in UCM2.
+
+The reason I had to bring this up is because the use-space (ucm in this 
+case) will not be in a position to differentiate between different board 
+variants to select correct mixer controls, so its going to be a pain!
 
 
-[src/pcm/pcm_dshare.c] Line 114:
-
-[before]
-	/* calculate the size to transfer */
-	size = dshare->appl_ptr - dshare->last_appl_ptr;
-
-[after]
-	/* calculate the size to transfer */
-	if (dshare->appl_ptr < dshare->last_appl_ptr)
-		size = dshare->appl_ptr + (pcm->boundary - dshare->last_appl_ptr);
-	else
-		size = dshare->appl_ptr - dshare->last_appl_ptr;
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/84
-Repository URL: https://github.com/alsa-project/alsa-lib
+Thanks,
+srini
