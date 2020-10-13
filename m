@@ -2,98 +2,83 @@ Return-Path: <SRS0=Nc9k=DU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA358C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 15:07:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AABB8C433E7
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 15:16:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 083BB248D7
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 15:07:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5CE8D24900
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 15:16:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C6p1BfTq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k0BxG69A"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 083BB248D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uYhU3std";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jLfoZ6Wq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CE8D24900
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F54016A0;
-	Tue, 13 Oct 2020 17:06:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F54016A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 447551690;
+	Tue, 13 Oct 2020 17:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 447551690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602601661;
-	bh=OJC+w0qcbW9yHm4g3J8pvhMQfAwAW0kVnEPzeJJGYqE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1602602178;
+	bh=VQiYIkv8JxDfMCqXetCvnsQqRv/qB9MbycuOck8T+Ao=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C6p1BfTqyG2U0cShtDBg9l4eDERwXrx5wjlfKgPAh4CBTAWl9sxlJqk0qCC11qzKA
-	 gPjhznXnz8QkeybN1S6DNbSEbBiXOOAujzUMVwMcxsOQut+xgWSWGJUVnPXhM2KMYu
-	 n6cNCV/otPgx6YSenYnRx7kcLrHMzV4TKMsmWgbk=
+	b=uYhU3stdxZ/Mu5fcB2booVe5ZWg074y0od+alSTznfIywj0QWOnQFSZixrkcF+2CM
+	 RPER32fey7ym8av2e/ngJGbkVADIvBYr40V9pmdG0RBKUkUaUrFVeGHR1T4PDPo7sH
+	 9ndJ+LtFztFcq5XnfSOLEB6CCF+Z81vf/qhpMXSA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 345A4F80247;
-	Tue, 13 Oct 2020 17:06:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1D3CF8012C;
+	Tue, 13 Oct 2020 17:15:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28A24F80288; Tue, 13 Oct 2020 13:55:33 +0200 (CEST)
+ id D7670F801A3; Tue, 13 Oct 2020 17:15:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 525DDF8012C
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 13:54:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 525DDF8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B36AEF8012C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 17:15:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B36AEF8012C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="k0BxG69A"
-Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de
- [95.90.213.178])
+ header.b="jLfoZ6Wq"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A54B322B2C;
- Tue, 13 Oct 2020 11:54:41 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 95D1B22280;
+ Tue, 13 Oct 2020 15:15:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1602590081;
- bh=OJC+w0qcbW9yHm4g3J8pvhMQfAwAW0kVnEPzeJJGYqE=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=k0BxG69AG+5iW+BQA82ih0ugLW2wkvfA18eOnWckyri03Hb3hKXnJkJyBSgKyt9vv
- 8qgXYbd6st3EajaGj0SXB8TXpA4HXz2WPZZB1npfzfJR3XDD6vp2LpUzqevQzpFgdv
- DliuhA71qYSU87xOsMxKHif/oQPKHVkW2d/0xhUU=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
- (envelope-from <mchehab@kernel.org>)
- id 1kSIt5-006CVq-A2; Tue, 13 Oct 2020 13:54:39 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: [PATCH v6 56/80] dt-bindings: fix references to files converted to
- yaml
-Date: Tue, 13 Oct 2020 13:54:11 +0200
-Message-Id: <81fe11d0079aaa48ff85370fd359150160943341.1602589096.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1602589096.git.mchehab+huawei@kernel.org>
-References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+ s=default; t=1602602111;
+ bh=VQiYIkv8JxDfMCqXetCvnsQqRv/qB9MbycuOck8T+Ao=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=jLfoZ6WqFkBvsSOi2DL42qgNuMVnWoeJJ1W684kMk61N+vmj/UKCQMqrOU+Aa+ht/
+ D9uxHx9VrdLIDlJ2+r49BP3AUDyCtc0Zq3fTpLvyJEdSVB55hzVfiZ4nuDBBVsO5um
+ ROs0AY2Z/8Gkt3m6S/l8/N5NgNjE25qvwsLVQTNw=
+Date: Tue, 13 Oct 2020 16:15:05 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: Re: [PATCH 1/2] Asoc: qcom: lpass-cpu: Fix clock disable failure
+Message-ID: <20201013151505.GA7913@sirena.org.uk>
+References: <1602596386-9886-1-git-send-email-srivasam@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 13 Oct 2020 17:05:58 +0200
-Cc: alsa-devel@alsa-project.org, linux-pwm@vger.kernel.org,
- David Airlie <airlied@linux.ie>, Marco Felsch <m.felsch@pengutronix.de>,
- dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Kathiravan T <kathirav@codeaurora.org>,
- Thierry Reding <thierry.reding@gmail.com>, Guenter Roeck <groeck@chromium.org>,
- Lee Jones <lee.jones@linaro.org>, Cheng-Yi Chiang <cychiang@chromium.org>,
- Jonathan Corbet <corbet@lwn.net>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, Andy Gross <agross@kernel.org>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, Jyri Sarha <jsarha@ti.com>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Rob Herring <robh+dt@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Benson Leung <bleung@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Daniel Vetter <daniel@ffwll.ch>, Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Content-Disposition: inline
+In-Reply-To: <1602596386-9886-1-git-send-email-srivasam@codeaurora.org>
+X-Cookie: Great minds run in great circles.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
+ agross@kernel.org, srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,176 +94,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There were several files converted to yaml, but the .txt file
-is still referenced somewhere else.
 
-Update the references for them to point to the right file.
+--AhhlLboLdkugWU4S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../bindings/display/tilcdc/tilcdc.txt           |  2 +-
- .../devicetree/bindings/mailbox/omap-mailbox.txt |  2 +-
- .../devicetree/bindings/media/i2c/tvp5150.txt    |  2 +-
- .../bindings/pwm/google,cros-ec-pwm.yaml         |  2 +-
- .../bindings/soc/qcom/qcom,smd-rpm.yaml          |  2 +-
- .../bindings/sound/google,cros-ec-codec.yaml     |  2 +-
- MAINTAINERS                                      | 16 ++++++++--------
- 7 files changed, 14 insertions(+), 14 deletions(-)
+On Tue, Oct 13, 2020 at 07:09:46PM +0530, Srinivasa Rao Mandadapu wrote:
+> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+>=20
+> Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase
+> instead of shutdown time. Acheive this by invoking
+> clk_disable_unprepare API from cpu daiops shutdown to
+> cpu daiops trigger.
 
-diff --git a/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt b/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt
-index 8b2a71395647..3e64075ac7ec 100644
---- a/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt
-+++ b/Documentation/devicetree/bindings/display/tilcdc/tilcdc.txt
-@@ -37,7 +37,7 @@ Optional nodes:
-    supports a single port with a single endpoint.
- 
-  - See also Documentation/devicetree/bindings/display/tilcdc/panel.txt and
--   Documentation/devicetree/bindings/display/bridge/ti,tfp410.txt for connecting
-+   Documentation/devicetree/bindings/display/bridge/ti,tfp410.yaml for connecting
-    tfp410 DVI encoder or lcd panel to lcdc
- 
- [1] There is an errata about AM335x color wiring. For 16-bit color mode
-diff --git a/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt b/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
-index 35c3f56b7f7b..5fe80c1c19fc 100644
---- a/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
-+++ b/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
-@@ -69,7 +69,7 @@ The following are mandatory properties for the K3 AM65x and J721E SoCs only:
- 			the interrupt routes between the IP and the main GIC
- 			controllers. See the following binding for additional
- 			details,
--			Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.txt
-+			Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.yaml
- 
- Child Nodes:
- ============
-diff --git a/Documentation/devicetree/bindings/media/i2c/tvp5150.txt b/Documentation/devicetree/bindings/media/i2c/tvp5150.txt
-index 6c88ce858d08..719b2995dc17 100644
---- a/Documentation/devicetree/bindings/media/i2c/tvp5150.txt
-+++ b/Documentation/devicetree/bindings/media/i2c/tvp5150.txt
-@@ -56,7 +56,7 @@ Optional Connector Properties:
-                   instead of using the autodetection mechnism. Please look at
-                   [1] for more information.
- 
--[1] Documentation/devicetree/bindings/display/connector/analog-tv-connector.txt.
-+[1] Documentation/devicetree/bindings/display/connector/analog-tv-connector.yaml.
- 
- Example - three input sources:
- #include <dt-bindings/display/sdtv-standards.h>
-diff --git a/Documentation/devicetree/bindings/pwm/google,cros-ec-pwm.yaml b/Documentation/devicetree/bindings/pwm/google,cros-ec-pwm.yaml
-index 41ece1d85315..4cfbffd8414a 100644
---- a/Documentation/devicetree/bindings/pwm/google,cros-ec-pwm.yaml
-+++ b/Documentation/devicetree/bindings/pwm/google,cros-ec-pwm.yaml
-@@ -14,7 +14,7 @@ description: |
-   Google's ChromeOS EC PWM is a simple PWM attached to the Embedded Controller
-   (EC) and controlled via a host-command interface.
-   An EC PWM node should be only found as a sub-node of the EC node (see
--  Documentation/devicetree/bindings/mfd/cros-ec.txt).
-+  Documentation/devicetree/bindings/mfd/google,cros-ec.yaml).
- 
- properties:
-   compatible:
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
-index 468d658ce3e7..2684f22a1d85 100644
---- a/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
-@@ -20,7 +20,7 @@ description: |
-   present and this subnode may contain children that designate regulator
-   resources.
- 
--  Refer to Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.txt
-+  Refer to Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-   for information on the regulator subnodes that can exist under the
-   rpm_requests.
- 
-diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-index c84e656afb0a..3b9143af2c7c 100644
---- a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-+++ b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-@@ -13,7 +13,7 @@ description: |
-   Google's ChromeOS EC codec is a digital mic codec provided by the
-   Embedded Controller (EC) and is controlled via a host-command interface.
-   An EC codec node should only be found as a sub-node of the EC node (see
--  Documentation/devicetree/bindings/mfd/cros-ec.txt).
-+  Documentation/devicetree/bindings/mfd/google,cros-ec.yaml).
- 
- properties:
-   compatible:
-diff --git a/MAINTAINERS b/MAINTAINERS
-index dffa948a2124..9e0f7b68bba5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1523,7 +1523,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/arm/actions.yaml
- F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
--F:	Documentation/devicetree/bindings/dma/owl-dma.txt
-+F:	Documentation/devicetree/bindings/dma/owl-dma.yaml
- F:	Documentation/devicetree/bindings/i2c/i2c-owl.txt
- F:	Documentation/devicetree/bindings/mmc/owl-mmc.yaml
- F:	Documentation/devicetree/bindings/pinctrl/actions,s900-pinctrl.txt
-@@ -5827,7 +5827,7 @@ L:	linux-renesas-soc@vger.kernel.org
- S:	Supported
- T:	git git://linuxtv.org/pinchartl/media drm/du/next
- F:	Documentation/devicetree/bindings/display/bridge/renesas,dw-hdmi.txt
--F:	Documentation/devicetree/bindings/display/bridge/renesas,lvds.txt
-+F:	Documentation/devicetree/bindings/display/bridge/renesas,lvds.yaml
- F:	Documentation/devicetree/bindings/display/renesas,du.txt
- F:	drivers/gpu/drm/rcar-du/
- F:	drivers/gpu/drm/shmobile/
-@@ -6952,7 +6952,7 @@ M:	Frank Li <Frank.li@nxp.com>
- L:	linux-arm-kernel@lists.infradead.org
- S:	Maintained
- F:	Documentation/admin-guide/perf/imx-ddr.rst
--F:	Documentation/devicetree/bindings/perf/fsl-imx-ddr.txt
-+F:	Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
- F:	drivers/perf/fsl_imx8_ddr_perf.c
- 
- FREESCALE IMX I2C DRIVER
-@@ -6960,7 +6960,7 @@ M:	Oleksij Rempel <o.rempel@pengutronix.de>
- R:	Pengutronix Kernel Team <kernel@pengutronix.de>
- L:	linux-i2c@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/i2c/i2c-imx.txt
-+F:	Documentation/devicetree/bindings/i2c/i2c-imx.yaml
- F:	drivers/i2c/busses/i2c-imx.c
- 
- FREESCALE IMX LPI2C DRIVER
-@@ -6968,7 +6968,7 @@ M:	Dong Aisheng <aisheng.dong@nxp.com>
- L:	linux-i2c@vger.kernel.org
- L:	linux-imx@nxp.com
- S:	Maintained
--F:	Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.txt
-+F:	Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
- F:	drivers/i2c/busses/i2c-imx-lpi2c.c
- 
- FREESCALE QORIQ DPAA ETHERNET DRIVER
-@@ -11600,7 +11600,7 @@ MIPS GENERIC PLATFORM
- M:	Paul Burton <paulburton@kernel.org>
- L:	linux-mips@vger.kernel.org
- S:	Supported
--F:	Documentation/devicetree/bindings/power/mti,mips-cpc.txt
-+F:	Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
- F:	arch/mips/generic/
- F:	arch/mips/tools/generic-board-config.sh
- 
-@@ -12455,7 +12455,7 @@ NXP SGTL5000 DRIVER
- M:	Fabio Estevam <festevam@gmail.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/sound/sgtl5000.txt
-+F:	Documentation/devicetree/bindings/sound/sgtl5000.yaml
- F:	sound/soc/codecs/sgtl5000*
- 
- NXP SJA1105 ETHERNET SWITCH DRIVER
-@@ -16737,7 +16737,7 @@ SYNOPSYS DESIGNWARE DMAC DRIVER
- M:	Viresh Kumar <vireshk@kernel.org>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
- S:	Maintained
--F:	Documentation/devicetree/bindings/dma/snps-dma.txt
-+F:	Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
- F:	drivers/dma/dw/
- F:	include/dt-bindings/dma/dw-dmac.h
- F:	include/linux/dma/dw.h
--- 
-2.26.2
+I'm missing patch 2 here?
 
+> This Fix is update to the below patch.
+> https://lore.kernel.org/patchwork/patch/1308101/
+
+Fixes should be specified using tags like this:
+
+  Fixes: commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhuget=
+lbfs dependency")
+
+in the changelog.
+
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+--AhhlLboLdkugWU4S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+FxHgACgkQJNaLcl1U
+h9CSsQf6AgNY/ragXX+c9/6OMzAPmShAvnTqYcTGy6bV8AK+nCQjYvWCS789YO1q
+bUzkSCTOMLQHtcHiUKSGB+mpn8djofZCg+rSsC1thvIzpcuTZKutgDOT36/EyCCV
+u81NfxpjYVAajwjwfm010VLi2FaA5duXh8jsi3COrIO3z81ySMxK4ZTAo4BAAZDl
+Glh8soX7WO3aE26ei4zrfPUYsq1ZR4eEzFJ7AVip3mvLeMajeOg8FLXJ8lPPgr1K
+nd32a6EXpZEZGPYA6W0uyByMajSokRh4uXMQdT2NmdXVRuhnz4UyQsE3bEiGsuAe
+2AhG0/MJQMi6amyafwZfTOpLHdfubQ==
+=hBwr
+-----END PGP SIGNATURE-----
+
+--AhhlLboLdkugWU4S--
