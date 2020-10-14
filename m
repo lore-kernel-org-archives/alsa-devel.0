@@ -2,94 +2,117 @@ Return-Path: <SRS0=7Yh/=DV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 797A2C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 05:55:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BF66C433E7
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 06:21:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A4D82177B
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 05:55:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 253C322248
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 06:20:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HRQ8AQ0U";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bnhC0zvB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A4D82177B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UrrA9jiP";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="RWUvwPDK";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oxKehbA3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 253C322248
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 408A816C1;
-	Wed, 14 Oct 2020 07:54:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 408A816C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9531A16C9;
+	Wed, 14 Oct 2020 08:19:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9531A16C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602654928;
-	bh=w/Q6Y2ALEcBoX07SqJPZHTNPd5j9N71xYELA8VhNSs4=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1602656449;
+	bh=StQ2rBnkqTY4CnVT182UzR5XY4Wpk8CWnHsAXKm8VZI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HRQ8AQ0UrcFeYcdur1xxCRslCndzUVaUIH2InFduAA/I9QuSSN56E6yUpUy07VC32
-	 WPuiJhuMIO/uI3TtBh1K6sMUQgQZGvD5eLn/Oxo7+JyqZkR3VreQdFSKmAZeOaPyjB
-	 /D/89n7L4tuOQOIr4QI6KhsTF5dOfGhIBfUG+zbs=
+	b=UrrA9jiPPmq3B0zl+o1+yOFs8mqvZ/rStadmJYJ2qUSUGQt6IuZe8iUE41fYedAhG
+	 vYOyE2T2RwpfwIP+ETqYm1EeFK+P8vB7EQekxe+IMIV7mNZgGOuEYEgbfP83za2WbB
+	 LInx6gGNV2RwkIh5mYM0ErRlfI9tFgzm/5pikItU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C910FF8020D;
-	Wed, 14 Oct 2020 07:54:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F307DF8021D;
+	Wed, 14 Oct 2020 08:19:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD775F80217; Wed, 14 Oct 2020 07:54:35 +0200 (CEST)
-Received: from merlin.infradead.org (merlin.infradead.org
- [IPv6:2001:8b0:10b:1231::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9F2EDF80274; Wed, 14 Oct 2020 08:19:56 +0200 (CEST)
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com
+ [64.147.123.27])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6AD2F8012B
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 07:54:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6AD2F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 247ADF80224
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 08:19:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 247ADF80224
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="bnhC0zvB"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
- Reply-To:Cc:Content-ID:Content-Description;
- bh=VBhfFbcum7XqbvqnX65rC2cJinR64wvSqBnpbpj4otY=; b=bnhC0zvB0LmWbSJHu5QthQHi3+
- D3vU89kUm7mR9S1RpJwfliTGWEBvzkNupZKuzr1SPTGMHEv1LXTdW42vUw0CYXWUIgv1/fXcvwHyL
- qE8+/PwM3wArw7HqzNbb8lCSmHzX1SXQC5k20esROfvocGUfqmZ393Ec76b19KhNVxFR1jGjQdxfe
- +7/N297i0jo8SKe1J1DE1WUKiplPpWRwc6q8eWAjR8g8iRMh4khoX4QmCuLoEbYFXBpHefJpQf8zy
- xAqfBfMpKL+B04FbzJKTY3qApVK1i34M+C18ISTzWb9spLCoepokBzMNXmcHeBEZgz1EyTA84Ko/N
- KgHivglg==;
-Received: from [2601:1c0:6280:3f0::507c]
- by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kSZjv-0001kM-VH; Wed, 14 Oct 2020 05:54:20 +0000
-Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
-To: Udo van den Heuvel <udovdh@xs4all.nl>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
- Pavel Machek <pavel@ucw.cz>, Takashi Iwai <tiwai@suse.de>,
- moderated for non-subscribers <alsa-devel@alsa-project.org>
-References: <2835d02a-380b-6a3a-0e4d-abf07aee18bc@xs4all.nl>
- <53e698c1-86e4-8b1f-afb0-b8471349e701@xs4all.nl>
- <43b79598-1592-683f-46df-9e5489110780@infradead.org>
- <6fd1e91e-19d0-6682-dfc6-49f1cd60408b@infradead.org>
- <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
- <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
- <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
- <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
- <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
- <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
- <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
-Date: Tue, 13 Oct 2020 22:54:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="RWUvwPDK"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="oxKehbA3"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailnew.west.internal (Postfix) with ESMTP id 74E9AD15;
+ Wed, 14 Oct 2020 02:19:44 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Wed, 14 Oct 2020 02:19:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm3; bh=Pp9wIcEvE+x99
+ KLgjxwBXGZSGHDy/NDCU8B3PT8B1fk=; b=RWUvwPDKiSIayOBdArHupyy8qKbH/
+ Uwh8KxC/PDgohSbO8/2QsyRl5iNBtbA0QA0XeYdTJBVcfuImoNm4yW6S3OQMOklU
+ 1T2JSyP3KlgGz9CJgy9OviuSSovHe+qQAhwvZ8SNYJJj3Ijb8GcC+6v9ShxKQs5Z
+ 4xC6Wrdopx2u9ynv7TIzuEkTmkzQ6PmYLZgxc9V6WWLR7ECuu1yXh8UJdj3oI6xp
+ EfDsi73qY+SLcfKvHyRHfKxTSVh6+W3+rUEOCb6H/nHntXqO9UIGOP/7KNts3Yek
+ ZeLH/J7dA9BelLpSmU9mFDZ9rJWd7G+qjCAM8A4BghRnavNVN9XIJboqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm1; bh=Pp9wIcEvE+x99KLgjxwBXGZSGHDy/NDCU8B3PT8B1fk=; b=oxKehbA3
+ lhaN0Ueb8qAWh7mABc+WWKgr8bMOMe1nfrmcqJh2uPwSz1iymmtYJ5AWBOVUGEaL
+ 9QnBvEIFnO/Mjwuz4XNLjxsoz1fTAUKm11yEWSVSQZ/Z1ZVEZwcifaFKBs/z8Z+6
+ HOGQd15H6dT/40++NqJboXZUJDHvl/6KnXOv9wGzvjwlktaDYd5XQTEk9+KChQ3d
+ AS4oWORiPmGkoJ4m5Mh8kfP8quErFmXaQP5aNZdfDQZglUAAAUwV2idjIjMy/cqP
+ YMmnUVpPyepfWhYPcDF9y1QPSYkRK4MvwkcQEKBDJAq7GAFT02sAAeym2F37pfAS
+ r0grUY/FaON00Q==
+X-ME-Sender: <xms:fpiGX4-vDGH2HOTQWlHI0Kh6nScgmGnkjtvZfb1HiW6uNzbcRHxyIQ>
+ <xme:fpiGXwtW69lJ4G2qt4rGU-peucXLQfMFT7XsOPAO_0jITua-FgKDIZv5XO51McmFX
+ GtZokJXvai3ng0_7A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedriedtgddutdekucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
+ lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+ frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
+ gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
+ iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+ ugdrohhrgh
+X-ME-Proxy: <xmx:fpiGX-DcBQyc_BVjh7N5pN_PJmBmL8y2oiEZ3AThEwPT60Yip6__Qg>
+ <xmx:fpiGX4e3U4bpdeRzSxIQJFBGGa1weJFtxsihcQ4BsOKsVOSHxqaYCg>
+ <xmx:fpiGX9MyQOf3yn4cxI9GmDY_r0LBCSHyVaXYiJDP5L9qVNIEmmMPwA>
+ <xmx:f5iGX2i9ZWbTwq3b8Z44m_1-e_IgLYJHH5o1Leythwr3RXJuCLsCpLhsYCo>
+Received: from titanium.stl.sholland.net
+ (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 54CC03280064;
+ Wed, 14 Oct 2020 02:19:42 -0400 (EDT)
+From: Samuel Holland <samuel@sholland.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 01/17] ASoC: sun8i-codec: Prepare to extend the DAI driver
+Date: Wed, 14 Oct 2020 01:19:25 -0500
+Message-Id: <20201014061941.4306-2-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201014061941.4306-1-samuel@sholland.org>
+References: <20201014061941.4306-1-samuel@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Samuel Holland <samuel@sholland.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,46 +128,226 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 10/13/20 10:16 PM, Udo van den Heuvel wrote:
-> On 14-10-2020 07:07, Randy Dunlap wrote:
->> On 10/13/20 9:56 PM, Udo van den Heuvel wrote:
-> 
->>> I.e.: it looks like I will lose some funcionality when I disable
->>> SND_HDA_CODEC_REALTEK.
->>
->> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_REALTEK
->> with no LEDS. That driver apparently wants LEDS.
-> 
-> Thanks but why have I gone for years without LEDS?
-> I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
-> visible, usable, etc).
-> 
-> Please make this selectable instead of forcing more bulk into my kernel.
-> 
-> Kind regards,
-> Udo
+In preparation for adding additional DAIs to this component, convert the
+DAI driver definition to an array. Since this changes all of the lines
+in the definition anyway, let's move it closer to the ops function
+definitions, instead of on the far side of the DAPM arrays. And while
+moving the DAI driver ops, rename the set_fmt hook to match the usual
+naming scheme.
 
-Hi Takashi,
+Give the existing DAI an explicit ID and more meaningful stream names,
+so it will remain unique as more DAIs are added. The AIF widget streams
+must be updated to match.
 
-Regarding
-commit 7cdf8c49b1df0a385db06c4f9a5ba1b16510fdcc
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Thu Jun 18 13:08:31 2020 +0200
-    ALSA: hda: generic: Add a helper for mic-mute LED with LED classdev
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ sound/soc/sunxi/sun8i-codec.c | 76 +++++++++++++++++++----------------
+ 1 file changed, 42 insertions(+), 34 deletions(-)
 
-and this Kconfig entry:
-
-config SND_HDA_CODEC_REALTEK
-	tristate "Build Realtek HD-audio codec support"
-	select SND_HDA_GENERIC
-	select SND_HDA_GENERIC_LEDS
-
-it seems that LED support is not always wanted (please see above).
-I.e., user(s) would like to build a kernel without LED support at all.
-
-Can you make it a build option?
-
-thanks.
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 7590c4b04d14..6413873a0584 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -90,16 +90,21 @@
+ #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_MASK	GENMASK(5, 4)
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
+ 
++enum {
++	SUN8I_CODEC_AIF1,
++	SUN8I_CODEC_NAIFS
++};
++
+ struct sun8i_codec_quirks {
+ 	bool legacy_widgets	: 1;
+ 	bool lrck_inversion	: 1;
+ };
+ 
+ struct sun8i_codec {
+ 	struct regmap			*regmap;
+ 	struct clk			*clk_module;
+@@ -160,17 +165,17 @@ static int sun8i_codec_get_hw_rate(struct snd_pcm_hw_params *params)
+ 		return 0x9;
+ 	case 192000:
+ 		return 0xa;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ }
+ 
+-static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
+ 	u32 value;
+ 
+ 	/* clock masters */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
+ 		value = 0x1;
+@@ -331,16 +336,46 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	regmap_update_bits(scodec->regmap, SUN8I_SYS_SR_CTRL,
+ 			   SUN8I_SYS_SR_CTRL_AIF1_FS_MASK,
+ 			   sample_rate << SUN8I_SYS_SR_CTRL_AIF1_FS);
+ 
+ 	return 0;
+ }
+ 
++static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
++	.set_fmt	= sun8i_codec_set_fmt,
++	.hw_params	= sun8i_codec_hw_params,
++};
++
++static struct snd_soc_dai_driver sun8i_codec_dais[] = {
++	{
++		.name	= "sun8i-codec-aif1",
++		.id	= SUN8I_CODEC_AIF1,
++		.ops	= &sun8i_codec_dai_ops,
++		/* capture capabilities */
++		.capture = {
++			.stream_name	= "AIF1 Capture",
++			.channels_min	= 1,
++			.channels_max	= 2,
++			.rates		= SNDRV_PCM_RATE_8000_192000,
++			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
++			.sig_bits	= 24,
++		},
++		/* playback capabilities */
++		.playback = {
++			.stream_name	= "AIF1 Playback",
++			.channels_min	= 1,
++			.channels_max	= 2,
++			.rates		= SNDRV_PCM_RATE_8000_192000,
++			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
++		},
++	},
++};
++
+ static const char *const sun8i_aif_stereo_mux_enum_values[] = {
+ 	"Stereo", "Reverse Stereo", "Sum Mono", "Mix Mono"
+ };
+ 
+ static SOC_ENUM_DOUBLE_DECL(sun8i_aif1_ad0_stereo_mux_enum,
+ 			    SUN8I_AIF1_ADCDAT_CTRL,
+ 			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_SRC,
+ 			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_SRC,
+@@ -433,20 +468,20 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("ADC",
+ 			    SUN8I_ADC_DIG_CTRL,
+ 			    SUN8I_ADC_DIG_CTRL_ENAD, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("DAC",
+ 			    SUN8I_DAC_DIG_CTRL,
+ 			    SUN8I_DAC_DIG_CTRL_ENDA, 0, NULL, 0),
+ 
+ 	/* AIF "ADC" Outputs */
+-	SND_SOC_DAPM_AIF_OUT("AIF1 AD0L", "Capture", 0,
++	SND_SOC_DAPM_AIF_OUT("AIF1 AD0L", "AIF1 Capture", 0,
+ 			     SUN8I_AIF1_ADCDAT_CTRL,
+ 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA, 0),
+-	SND_SOC_DAPM_AIF_OUT("AIF1 AD0R", "Capture", 1,
++	SND_SOC_DAPM_AIF_OUT("AIF1 AD0R", "AIF1 Capture", 1,
+ 			     SUN8I_AIF1_ADCDAT_CTRL,
+ 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA, 0),
+ 
+ 	/* AIF "ADC" Mono/Stereo Muxes */
+ 	SND_SOC_DAPM_MUX("AIF1 AD0L Stereo Mux", SND_SOC_NOPM, 0, 0,
+ 			 &sun8i_aif1_ad0_stereo_mux_control),
+ 	SND_SOC_DAPM_MUX("AIF1 AD0R Stereo Mux", SND_SOC_NOPM, 0, 0,
+ 			 &sun8i_aif1_ad0_stereo_mux_control),
+@@ -459,20 +494,20 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 
+ 	/* AIF "DAC" Mono/Stereo Muxes */
+ 	SND_SOC_DAPM_MUX("AIF1 DA0L Stereo Mux", SND_SOC_NOPM, 0, 0,
+ 			 &sun8i_aif1_da0_stereo_mux_control),
+ 	SND_SOC_DAPM_MUX("AIF1 DA0R Stereo Mux", SND_SOC_NOPM, 0, 0,
+ 			 &sun8i_aif1_da0_stereo_mux_control),
+ 
+ 	/* AIF "DAC" Inputs */
+-	SND_SOC_DAPM_AIF_IN("AIF1 DA0L", "Playback", 0,
++	SND_SOC_DAPM_AIF_IN("AIF1 DA0L", "AIF1 Playback", 0,
+ 			    SUN8I_AIF1_DACDAT_CTRL,
+ 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
+-	SND_SOC_DAPM_AIF_IN("AIF1 DA0R", "Playback", 1,
++	SND_SOC_DAPM_AIF_IN("AIF1 DA0R", "AIF1 Playback", 1,
+ 			    SUN8I_AIF1_DACDAT_CTRL,
+ 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
+ 
+ 	/* ADC Inputs (connected to analog codec DAPM context) */
+ 	SND_SOC_DAPM_ADC("ADCL", NULL, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_ADC("ADCR", NULL, SND_SOC_NOPM, 0, 0),
+ 
+ 	/* DAC Outputs (connected to analog codec DAPM context) */
+@@ -619,44 +654,16 @@ static int sun8i_codec_component_probe(struct snd_soc_component *component)
+ 	/* Use AIF1CLK as the SYSCLK parent since AIF1 is used most often. */
+ 	regmap_update_bits(scodec->regmap, SUN8I_SYSCLK_CTL,
+ 			   BIT(SUN8I_SYSCLK_CTL_SYSCLK_SRC),
+ 			   SUN8I_SYSCLK_CTL_SYSCLK_SRC_AIF1CLK);
+ 
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
+-	.hw_params = sun8i_codec_hw_params,
+-	.set_fmt = sun8i_set_fmt,
+-};
+-
+-static struct snd_soc_dai_driver sun8i_codec_dai = {
+-	.name = "sun8i",
+-	/* playback capabilities */
+-	.playback = {
+-		.stream_name = "Playback",
+-		.channels_min = 1,
+-		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+-	},
+-	/* capture capabilities */
+-	.capture = {
+-		.stream_name = "Capture",
+-		.channels_min = 1,
+-		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+-		.sig_bits = 24,
+-	},
+-	/* pcm operations */
+-	.ops = &sun8i_codec_dai_ops,
+-};
+-
+ static const struct snd_soc_component_driver sun8i_soc_component = {
+ 	.dapm_widgets		= sun8i_codec_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(sun8i_codec_dapm_widgets),
+ 	.dapm_routes		= sun8i_codec_dapm_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(sun8i_codec_dapm_routes),
+ 	.probe			= sun8i_codec_component_probe,
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+@@ -709,17 +716,18 @@ static int sun8i_codec_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+ 		ret = sun8i_codec_runtime_resume(&pdev->dev);
+ 		if (ret)
+ 			goto err_pm_disable;
+ 	}
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &sun8i_soc_component,
+-				     &sun8i_codec_dai, 1);
++					      sun8i_codec_dais,
++					      ARRAY_SIZE(sun8i_codec_dais));
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register codec\n");
+ 		goto err_suspend;
+ 	}
+ 
+ 	return ret;
+ 
+ err_suspend:
 -- 
-~Randy
+2.26.2
 
