@@ -2,56 +2,58 @@ Return-Path: <SRS0=7Yh/=DV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9944C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 07:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDC3EC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 08:07:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11D58221EB
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 07:59:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A0DFB214D8
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 08:07:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pxtTvagk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11D58221EB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ucw.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="alIX2647"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0DFB214D8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E0E01721;
-	Wed, 14 Oct 2020 09:59:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E0E01721
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44407171A;
+	Wed, 14 Oct 2020 10:07:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44407171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602662396;
-	bh=ai/jiEXfoLAJ+DHnlzoeCuU0l0wI31oOjMS43dy1rmM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1602662870;
+	bh=vlRcg8HyHJWepsZoetGzwBSXaGUl12gnoxffvqIqR1Q=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pxtTvagknnaHnhCUrowGia1fojIN9NobGbr3eNvGLrGCRX0OII/8JaJI7EMIwDQht
-	 vKbI5M4kfjp92lg8+lKNZGDD3prn+mDHXWhYMWkcFjFQtCYLpJb+UA5wkeYZILubLU
-	 xvmRALsT8GLAfUzgxrzM7Pd9WmT75QQ/8r89OOEk=
+	b=alIX2647aMJfddhn5fiPydBPTuf0eFPDcueXOrThW/q54/wNCWty3/cZO8BrGxzhs
+	 vjmkMv3Wt9wcwItH9siSZicoV0j5aQ9iL6dNs7Q2LKUqJFDYUDYbVpV/fDw0NO+f8T
+	 Hs3VeUEAMPMcX692jOJi3qEDVuTByBcQXn7KCqA8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90CE6F8020D;
-	Wed, 14 Oct 2020 09:59:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4551F8020D;
+	Wed, 14 Oct 2020 10:06:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E38D7F8012B; Wed, 14 Oct 2020 09:59:03 +0200 (CEST)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 790C5F80217; Wed, 14 Oct 2020 10:06:57 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD610F8012B
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 09:58:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD610F8012B
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
- id 77A311C0B87; Wed, 14 Oct 2020 09:58:54 +0200 (CEST)
-Date: Wed, 14 Oct 2020 09:58:53 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE2B4F8012B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 10:06:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE2B4F8012B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 2DB3BAFA7;
+ Wed, 14 Oct 2020 08:06:50 +0000 (UTC)
+Date: Wed, 14 Oct 2020 10:06:49 +0200
+Message-ID: <s5h5z7dmdt2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pavel Machek <pavel@ucw.cz>
 Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
-Message-ID: <20201014075853.GB29881@amd>
+In-Reply-To: <20201014075853.GB29881@amd>
 References: <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
  <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
  <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
@@ -61,12 +63,12 @@ References: <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
  <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
  <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
  <s5hblh5mele.wl-tiwai@suse.de> <s5ha6wpmei5.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="yEPQxsgoJgBvi8ip"
-Content-Disposition: inline
-In-Reply-To: <s5ha6wpmei5.wl-tiwai@suse.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+ <20201014075853.GB29881@amd>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>,
  Randy Dunlap <rdunlap@infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -87,77 +89,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 14 Oct 2020 09:58:53 +0200,
+Pavel Machek wrote:
+> 
+> Hi!
+> 
+> > > > >>> I.e.: it looks like I will lose some funcionality when I disable
+> > > > >>> SND_HDA_CODEC_REALTEK.
+> > > > >>
+> > > > >> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_REALTEK
+> > > > >> with no LEDS. That driver apparently wants LEDS.
+> > > > > 
+> > > > > Thanks but why have I gone for years without LEDS?
+> > > > > I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
+> > > > > visible, usable, etc).
+> > > > > 
+> > > > > Please make this selectable instead of forcing more bulk into my kernel.
+> > > > 
+> > > > Hi Takashi,
+> > > > 
+> > > > Regarding
+> > > > commit 7cdf8c49b1df0a385db06c4f9a5ba1b16510fdcc
+> > > > Author: Takashi Iwai <tiwai@suse.de>
+> > > > Date:   Thu Jun 18 13:08:31 2020 +0200
+> > > >     ALSA: hda: generic: Add a helper for mic-mute LED with LED classdev
+> > > > 
+> > > > and this Kconfig entry:
+> > > > 
+> > > > config SND_HDA_CODEC_REALTEK
+> > > > 	tristate "Build Realtek HD-audio codec support"
+> > > > 	select SND_HDA_GENERIC
+> > > > 	select SND_HDA_GENERIC_LEDS
+> > > > 
+> > > > it seems that LED support is not always wanted (please see above).
+> > > > I.e., user(s) would like to build a kernel without LED support at all.
+> > > > 
+> > > > Can you make it a build option?
+> > > 
+> > > Something like this?
+> > 
+> > This one is more suitable for the merge :)
+> 
+> That will still break the build if SND_HDA_CODEC_REALTEK=y and
+> SND_HDA_GENERIC_LEDS=m, no?
 
---yEPQxsgoJgBvi8ip
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+SND_HDA_GENERIC_LEDS is a bool, and this selects the actual LEDS_*
+stuff from SND_HDA_GENERIC, so the builtin vs module problem shouldn't
+happen.  So I don't think the suggested patch would break builds.
+It'll hit an error at probe if the hardware actually uses the LEDs.
 
-Hi!
+> Lets keep things as they are.
+> 
+> Contrary to his claims, Udo very probably has LEDs in his systems...
 
-> > > >>> I.e.: it looks like I will lose some funcionality when I disable
-> > > >>> SND_HDA_CODEC_REALTEK.
-> > > >>
-> > > >> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_RE=
-ALTEK
-> > > >> with no LEDS. That driver apparently wants LEDS.
-> > > >=20
-> > > > Thanks but why have I gone for years without LEDS?
-> > > > I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
-> > > > visible, usable, etc).
-> > > >=20
-> > > > Please make this selectable instead of forcing more bulk into my ke=
-rnel.
-> > >=20
-> > > Hi Takashi,
-> > >=20
-> > > Regarding
-> > > commit 7cdf8c49b1df0a385db06c4f9a5ba1b16510fdcc
-> > > Author: Takashi Iwai <tiwai@suse.de>
-> > > Date:   Thu Jun 18 13:08:31 2020 +0200
-> > >     ALSA: hda: generic: Add a helper for mic-mute LED with LED classd=
-ev
-> > >=20
-> > > and this Kconfig entry:
-> > >=20
-> > > config SND_HDA_CODEC_REALTEK
-> > > 	tristate "Build Realtek HD-audio codec support"
-> > > 	select SND_HDA_GENERIC
-> > > 	select SND_HDA_GENERIC_LEDS
-> > >=20
-> > > it seems that LED support is not always wanted (please see above).
-> > > I.e., user(s) would like to build a kernel without LED support at all.
-> > >=20
-> > > Can you make it a build option?
-> >=20
-> > Something like this?
->=20
-> This one is more suitable for the merge :)
-
-That will still break the build if SND_HDA_CODEC_REALTEK=3Dy and
-SND_HDA_GENERIC_LEDS=3Dm, no?
-
-Lets keep things as they are.
-
-Contrary to his claims, Udo very probably has LEDs in his systems...
+Heh, a surprise :)
 
 
-							Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+thanks,
 
---yEPQxsgoJgBvi8ip
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+Gr70ACgkQMOfwapXb+vIC4wCfT4KC6/tj5oHpUZovLlQWxfP/
-ubgAnjVBdTXPjA/O6oNFfO6DvgYcSOsa
-=pwWX
------END PGP SIGNATURE-----
-
---yEPQxsgoJgBvi8ip--
+Takashi
