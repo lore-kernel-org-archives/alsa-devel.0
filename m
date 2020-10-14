@@ -2,100 +2,99 @@ Return-Path: <SRS0=7Yh/=DV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D696C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 14:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33BA6C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 14:55:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A184622201
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 14:32:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24F662222A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 14:55:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DQZvFt3y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=superlative.org header.i=@superlative.org header.b="UJMFP9mX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A184622201
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=superlative.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rm6rkXOY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="CYE0Yi8r"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24F662222A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79F0C16EE;
-	Wed, 14 Oct 2020 16:31:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79F0C16EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5850516EE;
+	Wed, 14 Oct 2020 16:54:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5850516EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602685936;
-	bh=qywDCl4U2zuqaiLLIeraKxvQHiIRr02rRbNcM377dnE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DQZvFt3ysGzGYRlxxWzYKyO60KyhT7S0EOL2jzMyoxn5MNBLU29xKhNUF8HvXlAq3
-	 EqeiX4Sv7WWaNWou7EMenyh0ZY+s1+k7pR5qQ5W4sMmyS0LFr66al3oI2tnq97BDLr
-	 FLaRNa1WO3IIeYlK/1q46OTIESQd+Oy0oZSk0dEc=
+	s=default; t=1602687334;
+	bh=UO4IGlvdB/EszASh3yvnsmWxsL/fk9QdmxJnMR50bhY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Rm6rkXOYifTN5Jt0VgWSQgTFSGgsvhC3BnBpCQGMfC73totkWfWlXJ3dyAyJoysJ2
+	 DSwVDFumSWkDLdeKmPZ5shBAdZFOht4xkA02/USi6o09aG/ITFzpDDzApeFur/jaiO
+	 oqSRlatKnjcxbXmMoMRzQtK3TVHlTUwHPQlqpZVY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FBE6F8020D;
-	Wed, 14 Oct 2020 16:31:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9B83F80268;
+	Wed, 14 Oct 2020 16:54:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD64EF80217; Wed, 14 Oct 2020 16:31:23 +0200 (CEST)
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com
- [IPv6:2607:f8b0:4864:20::c43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7EE0AF80269; Wed, 14 Oct 2020 16:54:42 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B1E9F80118
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 16:31:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B1E9F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9F86F8020D
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 16:54:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9F86F8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=superlative.org header.i=@superlative.org
- header.b="UJMFP9mX"
-Received: by mail-oo1-xc43.google.com with SMTP id l18so826315ooa.9
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 07:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=superlative.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=48cTnSqKwDUcqWSFhuGP4vMjz3kUuH/B/u1xQ0vQHGc=;
- b=UJMFP9mXb7Y1pD9e1YWQsqfVdbnYnbJKe4UadVkbyCF6pYn5yCCVDS0CU6ahdl6tOW
- /vvgvr4z3eNcUR4g4/OVHKlmoYa+pw2x36zy2KqTZHYDQlEm2NsRg+cZZTdCAulq5yGC
- AkK6K7FziRQ+eBTMs9fBgDEgKTpLg/b9U6L48dBedgiKE1qQU9wP2En/PBMRUmxtzNQv
- Xh4a5TlZNqRiPi3jOPz8WnxTEVsHKE+/NYrXPjAgdv1CNZ0T06PRdWkvafHFdn1lEn2G
- UGIPFIS8maM4tKoY+5KeOpc33ZfZVT+yUCHaOzq8gWUW/IA0U0zdP7eZwiZ11axA6WS+
- OH/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=48cTnSqKwDUcqWSFhuGP4vMjz3kUuH/B/u1xQ0vQHGc=;
- b=aa4chpGcMfBsARvij/zCheDKw7vKJvRnMNwyJfDAbuUwvyOBSyam3UEzvAZ8AJR4Ik
- /OfNQZ9L/wkus9mjWsAOpFbMHZx+Z6H8aYPMX8JFGujm02gX8BDgafNr9ZQEQnGTV+Jf
- ZXnL2IRULxPTbuUeHNklU16b7j9O8QiBT1SEU4TjxCmHG/2ZXYyFrOTu97fruPmY/3Cx
- 62UEsDcDLTNuIcegfEFIPY4JCRga0BOkjmB0/B7tpj0vZXld+5I45EYfESqnfygnf6UJ
- nJQjID4HVrZ8hljOZNyY4AIebQEVIW46nrixoqmKTmNP7pfk/WOvc/C0lTfHMSy1TFIR
- h+/Q==
-X-Gm-Message-State: AOAM533zivHYEOKXUVEl45W7l+4YJCB1Kzo7tum5U5WRCA1DfHXyqdYn
- bRm3nID8klkqKC2mcN9nlF26g1D7iYHl5Tr1lEuAVw==
-X-Google-Smtp-Source: ABdhPJzAODSyM6uPDdIVgiOR2SEk2TbW2eWS7vVHRKzxIoeAIgKda72Dk5A90Sxy++gAWkXFk+3h45+6/9qVRZq5rqg=
-X-Received: by 2002:a4a:9b01:: with SMTP id a1mr3755280ook.51.1602685873084;
- Wed, 14 Oct 2020 07:31:13 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="CYE0Yi8r"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 09EEpi7x023902; Wed, 14 Oct 2020 09:54:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=5gpOaifqkyHGSGsd6h7jaAAlzyQmydM3Z2vku9IislI=;
+ b=CYE0Yi8rJr6uMBLKvIu3qBAhGfXDBQuQtdnuGR2zSXR7zLRpCm711jYfnbcJCUhmwaD3
+ INW6bIncywPL3xJExc0wcGZ0KxJt6t/5mGUh+1ci4izXfGBmDoUUuJQfIndRtBAnYWTW
+ utRIbknon7gaNSgFTm4XZS3S9nv7j7hNVunreo8UsqTwprpbglhFFcsD82yzm2jD0cW2
+ 1m2OYEaZ6IIzMLTj2iEQfhFkxigSbOp/q9WApYyUkpBexdVHf72pUsPzgEFWl6u0sL8f
+ +BN2tdmbalFxyX1AvpPIP8tH96KosoTGxuv+fOEI1AruQAQnBtqGJqPfx2FoyMiBzdBo nw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 343ac1wbwc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 14 Oct 2020 09:54:34 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 14 Oct
+ 2020 15:54:32 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Wed, 14 Oct 2020 15:54:32 +0100
+Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com
+ [198.61.64.143])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9D41045;
+ Wed, 14 Oct 2020 14:54:31 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>, <nsaenzjulienne@suse.de>
+Subject: [PATCH 0/7] Add dts for Rpi4 + Cirrus Lochnagar and codecs
+Date: Wed, 14 Oct 2020 15:54:11 +0100
+Message-ID: <20201014145418.31838-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20191011171937.8013-1-szszoke.code@gmail.com>
- <s5hftjriy1q.wl-tiwai@suse.de>
- <CAPMdQDmY7CdbrHyOwhJNFBREQ0EO1SKufRdN_YR6TG4zmJzXpA@mail.gmail.com>
- <s5hy2k9j6no.wl-tiwai@suse.de>
- <CAPMdQDnDOF7a9vwuFa1GyFQmZQY4GvDKPeY_NMu2kUDQfqo7fg@mail.gmail.com>
- <s5hpn5kkjg2.wl-tiwai@suse.de>
- <CAPMdQDnn=M_QNWz7bNfR6vB7dr4fFRB4fQjRvXfuHzrbQak5Eg@mail.gmail.com>
- <s5hmu0okivp.wl-tiwai@suse.de>
-In-Reply-To: <s5hmu0okivp.wl-tiwai@suse.de>
-From: Mailing Lists <maillist@superlative.org>
-Date: Wed, 14 Oct 2020 15:31:02 +0100
-Message-ID: <CAPMdQDk0c5NcX1brErdaDroseLgC0oCocTnH9xKFHz-44Zjn=w@mail.gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Disable quirks for BOSS
- Katana amplifiers
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Mike Oliphant <oliphant@nostatic.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=936 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010140108
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,205 +110,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-OK, I will do that.
+This set of patches provides support for using the Cirrus Logic
+Lochnagar audio development platform plus Cirrus Logic Madera/Arizona
+codecs with the simple-card machine driver and a Raspberry Pi4. The
+ultimate aim is to provide the dts file but some updates are needed to
+the simple-card machine driver.
 
-Quick question: what is the best git I should clone to create patches
-against these days? I've been out of the loop for a few years now.
+Patches are needed to simple-card to enable support for setting the
+component sysclks and plls. The codec sysclks and plls cannot be
+placed under the clock framwork because they are I2C/SPI-connected
+peripherals and access to the registers would cause a nested get
+of the I2C/SPI bus clock. The clock framework does not support this
+and it would result in a deadlock.
 
-Cheers,
+Richard Fitzgerald (7):
+  of: base: Add of_count_phandle_with_fixed_args()
+  ASoC: simple-card: Add plls and sysclks DT schema
+  ASoC: simple-card: Support setting component plls and sysclks
+  ASoC: arizona: Allow codecs to be selected from kernel config
+  ASoC: madera: Allow codecs to be selected from kernel config
+  ARM: dts: Add dts for Raspberry Pi 4 + Cirrus Logic Lochnagar2
+  MAINTAINERS: Add dts for Cirrus Logic Lochnagar on RPi4
 
-Keith
-
-On Wed, 14 Oct 2020 at 15:00, Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Wed, 14 Oct 2020 15:56:32 +0200,
-> Mailing Lists wrote:
-> >
-> > Yes, and I don't think this is practical (at least, not obviously).
-> >
-> > The "Roland" vs "BOSS" thing is pure branding. I have BOSS branded
-> devices,
-> > like the JS-8, which work perfectly without the patch as an example. It
-> > wouldn't surprise me if there are recent Roland branded devices which
-> require
-> > the patch.
-> >
-> > So I, personally, think it is beyond brand and is device range or
-> generation
-> > specific. I guess it is possible there may be some technical
-> parameter within
-> > the device descriptor which could indicate which variant the device is,
-> but I
-> > don't know what that might be (if at all). At this point I think we
-> probably
-> > have to apply a conditional setting based on the Product ID.
-> >
-> > Given that, is it best to continue hacking these into pcm.c, or should
-> we be
-> > looking at a quirks-table way to describe these?
->
-> Currently it's better to grow the explicit allow-list, I suppose.
-> Those are still handful, hence manageable enough.
->
-> But, we should consider improving search_roland_implicit_fb(), too.
-> Both actions don't conflict, and once after we establish the better
-> implicit-fb check, the allow-list can be dropped.
->
->
-> thanks,
->
-> Takashi
->
-> >
-> > Cheers,
-> >
-> > Keith
-> >
-> > On Wed, 14 Oct 2020 at 14:47, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> >     On Wed, 14 Oct 2020 15:33:03 +0200,
-> >     Mailing Lists wrote:
-> >     >
-> >     > Thanks for the response Takashi,
-> >     >
-> >     > How should this be distinguishing between Roland and BOSS? They
-> both
-> >     have the
-> >     > vendor ID 0x0582.
-> >
-> >     Ah, right, I missed that point :-<
-> >
-> >     So the question would be rather how to detect BOSS devices
-> >     effectively...
-> >
-> >     thanks,
-> >
-> >     Takashi
-> >
-> >     >
-> >     > Cheers,
-> >     >
-> >     > Keith
-> >     >
-> >     > On Wed, 14 Oct 2020 at 14:09, Takashi Iwai <tiwai@suse.de> wrote:
-> >     >
-> >     >     On Wed, 14 Oct 2020 14:17:35 +0200,
-> >     >     Mailing Lists wrote:
-> >     >     >
-> >     >     > Following up on this, it appears there are a bunch of the
-> >     >     newer-generation
-> >     >     > Roland/Boss devices which need similar treatment.
-> >     >     >
-> >     >     > So far I have tested the GT-1, the GT-001, and the BR-80, and
-> >     others
-> >     >     have
-> >     >     > reported the RC-300 as working with similar modifications. I
-> have
-> >     been
-> >     >     using
-> >     >     > the following change to the code in pcm.c
-> >     set_sync_ep_implicit_fb_quirk:
-> >     >     >
-> >     >     >     case USB_ID(0x0582, 0x01d8): /* BOSS Katana */
-> >     >     >     case USB_ID(0x0582, 0x0130): /* BOSS Micro BR-80 */
-> >     >     >     case USB_ID(0x0582, 0x0138): /* BOSS RC-300 */
-> >     >     >     case USB_ID(0x0582, 0x01d6): /* BOSS GT-1 */
-> >     >     >     case USB_ID(0x0582, 0x01e5): /* BOSS GT-001 */
-> >     >     > /* BOSS Katana amplifiers and many other newer BOSS devices
-> do not
-> >     need
-> >     >     quirks
-> >     >     > */
-> >     >     >
-> >     >     > There's probably others too, such as the GT-100 (I believe
-> the
-> >     GT-001
-> >     >     and
-> >     >     > GT-100 have similar hardware).
-> >     >     >
-> >     >     > My question is, should this just be submitted as a patch to
-> pcm.c
-> >     or
-> >     >     would it
-> >     >     > be better handled in quirks and, if so, how?
-> >     >     >
-> >     >     > Or something else?
-> >     >
-> >     >     Do we really need this change at all?  I looked at the code
-> again,
-> >     and
-> >     >     I noticed that basically the function should return 0 without
-> >     setting
-> >     >     anything else even if you don't have the explicit ID checks
-> there.
-> >     >
-> >     >     The function looks like:
-> >     >
-> >     >     static int set_sync_ep_implicit_fb_quirk(struct
-> snd_usb_substream
-> >     *subs,
-> >     >                                              struct usb_device
-> *dev,
-> >     >                                              struct
-> >     usb_interface_descriptor
-> >     >     *altsd,
-> >     >                                              unsigned int attr)
-> >     >     {
-> >     >             ....
-> >     >             switch (subs->stream->chip->usb_id) {
-> >     >             ....
-> >     >             case USB_ID(0x0582, 0x01d8): /* BOSS Katana */
-> >     >                     /* BOSS Katana amplifiers do not need quirks */
-> >     >                     return 0;
-> >     >             }
-> >     >
-> >     >             if (attr == USB_ENDPOINT_SYNC_ASYNC &&
-> >     >                 altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
-> >     >                 altsd->bInterfaceProtocol == 2 &&
-> >     >                 altsd->bNumEndpoints == 1 &&
-> >     >                 USB_ID_VENDOR(subs->stream->chip->usb_id) ==
-> 0x0582 /*
-> >     Roland
-> >     >     */ &&
-> >     >                 search_roland_implicit_fb(dev,
-> altsd->bInterfaceNumber +
-> >     1,
-> >     >                                           altsd->bAlternateSetting,
-> >     >                                           &alts, &ep) >= 0) {
-> >     >                     goto add_sync_ep;
-> >     >             }
-> >     >
-> >     >             /* No quirk */
-> >     >             return 0;
-> >     >
-> >     >     ... and the lengthy if-conditions after the switch/case is
-> applied
-> >     >     only for Roland devices, hence it shouldn't influence on BOSS
-> >     >     devices.  After that point, the immediate return with 0, which
-> is
-> >     the
-> >     >     same as we do in switch/case.  So the explicit check of BOSS
-> devices
-> >     >     there looks superfluous.
-> >     >
-> >     >     thanks,
-> >     >
-> >     >     Takashi
-> >     >
-> >     > --
-> >     > --
-> >     > Keith A Milner
-> >     >
-> >     >
-> >
-> > --
-> > --
-> > Keith A Milner
-> >
-> >
->
-
+ .../bindings/sound/simple-card.yaml           |   56 +
+ MAINTAINERS                                   |    1 +
+ arch/arm/boot/dts/Makefile                    |    1 +
+ .../dts/bcm2711-rpi4b-cirrus-lochnagar.dts    | 1296 +++++++++++++++++
+ drivers/of/base.c                             |   42 +
+ include/linux/of.h                            |    9 +
+ include/sound/simple_card_utils.h             |   24 +
+ sound/soc/codecs/Kconfig                      |   18 +-
+ sound/soc/generic/simple-card-utils.c         |  184 +++
+ sound/soc/generic/simple-card.c               |   14 +-
+ 10 files changed, 1635 insertions(+), 10 deletions(-)
+ create mode 100644 arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dts
 
 -- 
--- 
-Keith A Milner
+2.20.1
+
