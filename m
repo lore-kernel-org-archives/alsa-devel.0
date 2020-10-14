@@ -2,82 +2,102 @@ Return-Path: <SRS0=7Yh/=DV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12F43C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 02:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F23EDC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 04:20:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5298A21775
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 02:59:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1E132222A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 04:20:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J+mrVghz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jhvl5R+m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5298A21775
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k8rgHbQs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="OCQRk2XG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1E132222A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5959416D0;
-	Wed, 14 Oct 2020 04:58:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5959416D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EA2516BB;
+	Wed, 14 Oct 2020 06:19:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EA2516BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602644379;
-	bh=sCE8LDHzvlWrzjvibU91Vup7ces7HmtycE9RnmT05ag=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1602649247;
+	bh=2Ny7BcUIi7yDelPN95PAx5itdaCMv/c5gmTpDmj9gNc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J+mrVghz0CEjTdOtaSsOE4irjWg5lRWKjMuTiedbCoEGVTOyypR9llKWwMeg2RSsz
-	 NToRMkYTt63iH+DbbXlpXf4q5TGBuzzgTnWyIoinrfIkQ5BGhpFY1QX+89JBVwo0io
-	 PE2ITExEpZXapGd3TEcngZi3ldNj+Z27bGbXYgEo=
+	b=k8rgHbQsNuGDrktJOp5+7gPbMYbbabjzRsEBkIqt44Pran5rXQWO+UTdsVUb8gxf8
+	 QjOoWJL1TdyKGO5HKq0didk2tHIetCnVe2+Uo9LdEWOb5MHjUnAOGue51VPCjGcOK6
+	 PcAUz7IzsCAc2YFYnM8mjJTGURLApCO8a/5t3iic=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC5ADF8026B;
-	Wed, 14 Oct 2020 04:57:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78C60F8020D;
+	Wed, 14 Oct 2020 06:19:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE824F80217; Wed, 14 Oct 2020 04:57:08 +0200 (CEST)
-Received: from merlin.infradead.org (merlin.infradead.org
- [IPv6:2001:8b0:10b:1231::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 19D19F80217; Wed, 14 Oct 2020 06:19:55 +0200 (CEST)
+Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E2F2F8021D;
- Wed, 14 Oct 2020 04:56:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E2F2F8021D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94A80F8012B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 06:19:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94A80F8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="Jhvl5R+m"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=bYV1w8XItU+gaKbLFzijOk8gUliJ9BqOZSyQAwLkMec=; b=Jhvl5R+mtjSDbteR8R+ac3m2mX
- cPJ/ABj9EjN8BgmtC+q3a3i1LY1Iq9t7MZzddohPwOULYGPLVMg6qXi82AksZXG1Oe0nHNIfmyIZN
- 9olVfkDT281gohBV+vY9JIKtvA4pOBh7GUzHJg9FGBfrfIKnsXqp5PekCZKst7CkZ/rbSRlCGHh9y
- 4VueywQKkF9Ny3YhQVzRAQOMXhb52dtpGA2126lR4OCMuojqWiyL0hHqBugg2ejZ1OL4BBsLgO5oh
- YPCAupCConLarB2XiQpFuHrgvUoxFEtXOhyvnwqS4BkNVaVo9INtfyAuwpjsfG/mYkh/rd9kgavo3
- isep+ZEw==;
-Received: from [2601:1c0:6280:3f0::507c] (helo=smtpauth.infradead.org)
- by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kSWy2-0005zg-KA; Wed, 14 Oct 2020 02:56:43 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] ASoC: sof: imx: fix Kconfig punctuation
-Date: Tue, 13 Oct 2020 19:56:31 -0700
-Message-Id: <20201014025633.4879-2-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201014025633.4879-1-rdunlap@infradead.org>
-References: <20201014025633.4879-1-rdunlap@infradead.org>
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="OCQRk2XG"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1602649187; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=HOggyxgAIuw5vh136a7l4IRaEFhhlZ9M1Zj7qRah5nQ=;
+ b=OCQRk2XG9xyBNa9K+EJia7KeshW32qzL/w7WHyqOzhislml02b1XjMwhl0XJg3FvVl+5ket8
+ jRPPIfm47gqcbloR1TpoplLzdNPoF0jqvSTJ+8/8K7oKgJPnWF5Teh1Jr8Iy4r5zXrx/JUgB
+ w6WUt23sBTunIkQj2Ag8byy8BXg=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f867c6183370fa1c1322f4a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 04:19:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 46CFCC433FF; Wed, 14 Oct 2020 04:19:45 +0000 (UTC)
+Received: from [192.168.29.24] (unknown [49.37.131.201])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 50618C433CB;
+ Wed, 14 Oct 2020 04:19:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 50618C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH 1/2] Asoc: qcom: lpass-cpu: Fix clock disable failure
+To: Mark Brown <broonie@kernel.org>
+References: <1602596386-9886-1-git-send-email-srivasam@codeaurora.org>
+ <20201013151505.GA7913@sirena.org.uk>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <49ac01c8-d270-5e9b-360b-87909e550360@codeaurora.org>
+Date: Wed, 14 Oct 2020 09:49:38 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
+In-Reply-To: <20201013151505.GA7913@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+Content-Language: en-US
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
+ agross@kernel.org, srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,61 +113,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add periods at the end of sentences in help text.
+Thanks  Mark Brown for your time !!!
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: sound-open-firmware@alsa-project.org
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/sof/imx/Kconfig |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On 10/13/2020 8:45 PM, Mark Brown wrote:
+> On Tue, Oct 13, 2020 at 07:09:46PM +0530, Srinivasa Rao Mandadapu wrote:
+>> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+>>
+>> Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase
+>> instead of shutdown time. Acheive this by invoking
+>> clk_disable_unprepare API from cpu daiops shutdown to
+>> cpu daiops trigger.
+> I'm missing patch 2 here?
+No.. It's a single patch. By mistake I sent with wrong header.
+>
+>> This Fix is update to the below patch.
+>> https://lore.kernel.org/patchwork/patch/1308101/
+> Fixes should be specified using tags like this:
+>
+>    Fixes: commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs dependency")
+>
+> in the changelog.
+Thanks for your guidance. I will take care of it next time.
+>
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
 
---- linux-next-20201013.orig/sound/soc/sof/imx/Kconfig
-+++ linux-next-20201013/sound/soc/sof/imx/Kconfig
-@@ -17,7 +17,7 @@ config SND_SOC_SOF_IMX_OF
- 	select SND_SOC_SOF_IMX8M if SND_SOC_SOF_IMX8M_SUPPORT
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_IMX_COMMON
- 	tristate
-@@ -30,7 +30,7 @@ config SND_SOC_SOF_IMX8_SUPPORT
- 	depends on IMX_SCU=y || IMX_SCU=SND_SOC_SOF_IMX_OF
- 	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_IMX_OF
- 	help
--	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
-+	  This adds support for Sound Open Firmware for NXP i.MX8 platforms.
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-@@ -40,13 +40,13 @@ config SND_SOC_SOF_IMX8
- 	select SND_SOC_SOF_XTENSA
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_IMX8M_SUPPORT
- 	bool "SOF support for i.MX8M"
- 	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_OF
- 	help
--	  This adds support for Sound Open Firmware for NXP i.MX8M platforms
-+	  This adds support for Sound Open Firmware for NXP i.MX8M platforms.
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-@@ -56,6 +56,6 @@ config SND_SOC_SOF_IMX8M
- 	select SND_SOC_SOF_XTENSA
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
