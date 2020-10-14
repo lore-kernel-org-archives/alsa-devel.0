@@ -1,69 +1,83 @@
-Return-Path: <SRS0=Nc9k=DU=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=7Yh/=DV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9529C433E7
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 21:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9800CC433E7
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 02:58:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58473208D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Oct 2020 21:00:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FF3021775
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 02:57:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ilA9I8qP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58473208D5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=scripple.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PjZkm+nQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Tx7e5f0J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FF3021775
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5749F16B3;
-	Tue, 13 Oct 2020 22:59:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5749F16B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B284316AC;
+	Wed, 14 Oct 2020 04:57:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B284316AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602622827;
-	bh=kChyVfQl72ndY4H2OM+A+yxqQYA2xFlS7a5RJ94jvCg=;
-	h=From:Subject:To:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ilA9I8qPoeZx2FKLUf5JssOzgSoeBJSz5mPAnwJYxKL2VfckzSwVFRzCBK38hyhSb
-	 27PUlznhkc2vbz9Rpi1aOfvexRuTajsH2wuyZe04xAIzyCvbx5yxs7DMLSEWZOKBfz
-	 i+sFgkIwq3QgDRyLVBcKYUZbN9MnnyEmFq79gI28=
+	s=default; t=1602644275;
+	bh=x7jWPaupvt55uZm9sQKcznNBmUsbObHfqd1kfpg+p9M=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=PjZkm+nQRzhC02pKRihUF51jY9BzsZNOp1PCKHnjRoTi7fnK8K4VG+58gSc760i0g
+	 9dpiW3uKLC4BuwWqjfwAAdPl+1tA2wxu0UJsuE2EiNERB/qYT9rncTQDV0zQu95RkC
+	 ocdZXINRkyah9a1XtgVUGvIsQcnAi85tRQcxoTS0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 050C7F8012C;
-	Tue, 13 Oct 2020 22:59:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31EFEF800F6;
+	Wed, 14 Oct 2020 04:57:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DDBFF801A3; Tue, 13 Oct 2020 22:59:35 +0200 (CEST)
-Received: from host.schells.com (host.schells.com [162.211.87.148])
+ id C82F2F80224; Wed, 14 Oct 2020 04:57:01 +0200 (CEST)
+Received: from merlin.infradead.org (merlin.infradead.org
+ [IPv6:2001:8b0:10b:1231::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 287B6F8012C
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 22:59:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 287B6F8012C
-Received: from ip72-222-173-254.ph.ph.cox.net ([72.222.173.254]
- helo=benji.seadrac.com) by host.schells.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94)
- (envelope-from <alsa@scripple.org>) id 1kSROP-0003A8-6s
- for alsa-devel@alsa-project.org; Tue, 13 Oct 2020 13:59:33 -0700
-Received: from [IPv6:::1] (localhost [IPv6:::1])
- by benji.seadrac.com (Postfix) with ESMTP id D9DC7239FF8
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2020 13:59:27 -0700 (MST)
-From: alsa@scripple.org
-Subject: Accessing pending hw_params in SND_PCM_HOOK_TYPE_HW_PARAMS call back
-To: alsa-devel@alsa-project.org
-Message-ID: <162e9d94-86f6-864e-443b-6a2096d1f33d@schells.com>
-Date: Tue, 13 Oct 2020 13:59:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 895C2F8020D;
+ Wed, 14 Oct 2020 04:56:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 895C2F8020D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="Tx7e5f0J"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=CaF6pMpXPj5y/q+2oCFYautSjCvrlnVUKiL8TX8FfZ8=; b=Tx7e5f0JRJxaO1FNHRXJzycOiW
+ 2SWRueV/pUtbwH0R2rUa4ghPihWX1aP8F98evI/gfj1rERqulrxPHJj3LWLHV8NeuDuO7+tWLLQS8
+ XGVCDbZ7Gw19J1mmrKJ4SexAmSn1YiFN1EjlYTnX3CLLWOw9owBtsz7T37u41DhY+eu2lmR11hGTR
+ pR7DDjLbamnNg3q2dNtv/VPtOE+AYmqATScHnYfywMf9fx00Bw9lUpfxpzXI7YHaZhGaj2jGH1zjh
+ UaveJyjRljskx2KYt+wfIFtBJxxtQ03d+kkg3wXdNpTGlZjp8bW5EfxCos19a0GEEUmqDoSGKqB+e
+ 45lIwUhg==;
+Received: from [2601:1c0:6280:3f0::507c] (helo=smtpauth.infradead.org)
+ by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kSWy9-0005zg-D8; Wed, 14 Oct 2020 02:56:49 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] ASoC: sof: Kconfig: fix Kconfig punctuation and wording
+Date: Tue, 13 Oct 2020 19:56:33 -0700
+Message-Id: <20201014025633.4879-4-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201014025633.4879-1-rdunlap@infradead.org>
+References: <20201014025633.4879-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Id: cs@schells.com
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,90 +93,151 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+Add periods at the end of sentences in help text.
+Drop "a" in one place where it is not needed.
+Fix a verb.
+Add some capitalization.
 
-I'll try again with a more specific question.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/sof/Kconfig |   42 ++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-Is there a way one can access the hw_params that cause the 
-SND_PCM_HOOK_TYPE_HW_PARAMS call back to be called inside the call back 
-function?
-
-The hook only provides access to the snd_pcm_t object, but all the 
-public calls to get hw_params fail because it's not in a prepared state yet.
-
-If there isn't a way to get them now could we please add the ability 
-with a patch like the one below?
-
-With this patch a call to snd_pcm_hook_get_hw_params provides access to 
-the pending hw_params structure and the pending parameters can be 
-accessed with standard calls like snd_pcm_hw_params_get_channels.
-
-Hopefully I'm just missing how to get them without the patch, but if not 
-they really should be made accessible.
-
-
-diff --git a/alsa-lib-1.1.8/include/pcm.h b/pcm.h
-index 5b07823..0cf5dca 100644
---- a/alsa-lib-1.1.8/include/pcm.h
-+++ b/pcm.h
-@@ -1181,6 +1181,7 @@ typedef struct _snd_pcm_hook snd_pcm_hook_t;
-  /** PCM hook callback function */
-  typedef int (*snd_pcm_hook_func_t)(snd_pcm_hook_t *hook);
-  snd_pcm_t *snd_pcm_hook_get_pcm(snd_pcm_hook_t *hook);
-+snd_pcm_hw_params_t *snd_pcm_hook_get_hw_params(snd_pcm_hook_t *hook);
-  void *snd_pcm_hook_get_private(snd_pcm_hook_t *hook);
-  void snd_pcm_hook_set_private(snd_pcm_hook_t *hook, void *private_data);
-  int snd_pcm_hook_add(snd_pcm_hook_t **hookp, snd_pcm_t *pcm,
-
-
-
-diff --git a/alsa-lib-1.1.8/src/pcm/pcm_hooks.c b/pcm_hooks.c
-index 4416d36..f56c3af 100644
---- a/alsa-lib-1.1.8/src/pcm/pcm_hooks.c
-+++ b/pcm_hooks.c
-@@ -38,6 +38,7 @@ const char *_snd_module_pcm_hooks = "";
-  #ifndef DOC_HIDDEN
-  struct _snd_pcm_hook {
-         snd_pcm_t *pcm;
-+       snd_pcm_hw_params_t *params;
-         snd_pcm_hook_func_t func;
-         void *private_data;
-         struct list_head list;
-@@ -117,6 +118,7 @@ static int snd_pcm_hooks_hw_params(snd_pcm_t *pcm, 
-snd_pcm_hw_params_t *params)
-                 return err;
-         list_for_each_safe(pos, next, 
-&h->hooks[SND_PCM_HOOK_TYPE_HW_PARAMS]) {
-                 snd_pcm_hook_t *hook = list_entry(pos, snd_pcm_hook_t, 
-list);
-+               hook->params = params;
-                 err = hook->func(hook);
-                 if (err < 0)
-                         return err;
-@@ -563,6 +565,17 @@ snd_pcm_t *snd_pcm_hook_get_pcm(snd_pcm_hook_t *hook)
-         return hook->pcm;
-  }
-
-+/**
-+ * \brief Get hw_params handle for a PCM hook
-+ * \param hook PCM hook handle
-+ * \return hw_params handle
-+ */
-+snd_pcm_hw_params_t *snd_pcm_hook_get_hw_params(snd_pcm_hook_t *hook)
-+{
-+       assert(hook);
-+       return hook->params;
-+}
-+
-  /**
-   * \brief Get callback function private data for a PCM hook
-   * \param hook PCM hook handle
-@@ -609,6 +622,7 @@ int snd_pcm_hook_add(snd_pcm_hook_t **hookp, 
-snd_pcm_t *pcm,
-         if (!h)
-                 return -ENOMEM;
-         h->pcm = pcm;
-+       h->params = NULL;
-         h->func = func;
-         h->private_data = private_data;
-         hooks = pcm->private_data;
+--- linux-next-20201013.orig/sound/soc/sof/Kconfig
++++ linux-next-20201013/sound/soc/sof/Kconfig
+@@ -2,7 +2,7 @@
+ config SND_SOC_SOF_TOPLEVEL
+ 	bool "Sound Open Firmware Support"
+ 	help
+-	  This adds support for Sound Open Firmware (SOF). SOF is a free and
++	  This adds support for Sound Open Firmware (SOF). SOF is free and
+ 	  generic open source audio DSP firmware for multiple devices.
+ 	  Say Y if you have such a device that is supported by SOF.
+ 	  If unsure select "N".
+@@ -16,8 +16,8 @@ config SND_SOC_SOF_PCI
+ 	select SND_SOC_ACPI if ACPI
+ 	help
+ 	  This adds support for PCI enumeration. This option is
+-	  required to enable Intel Skylake+ devices
+-	  Say Y if you need this option
++	  required to enable Intel Skylake+ devices.
++	  Say Y if you need this option.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_SOF_ACPI
+@@ -28,8 +28,8 @@ config SND_SOC_SOF_ACPI
+ 	select IOSF_MBI if X86 && PCI
+ 	help
+ 	  This adds support for ACPI enumeration. This option is required
+-	  to enable Intel Broadwell/Baytrail/Cherrytrail devices
+-	  Say Y if you need this option
++	  to enable Intel Broadwell/Baytrail/Cherrytrail devices.
++	  Say Y if you need this option.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_SOF_OF
+@@ -54,12 +54,12 @@ config SND_SOC_SOF_DEVELOPER_SUPPORT
+ 	bool "SOF developer options support"
+ 	depends on EXPERT
+ 	help
+-	  This option unlock SOF developer options for debug/performance/
++	  This option unlocks SOF developer options for debug/performance/
+ 	  code hardening.
+ 	  Distributions should not select this option, only SOF development
+ 	  teams should select it.
+-	  Say Y if you are involved in SOF development and need this option
+-	  If not, select N
++	  Say Y if you are involved in SOF development and need this option.
++	  If not, select N.
+ 
+ if SND_SOC_SOF_DEVELOPER_SUPPORT
+ 
+@@ -72,13 +72,13 @@ config SND_SOC_SOF_NOCODEC_SUPPORT
+ 	  This adds support for a dummy/nocodec machine driver fallback
+ 	  option if no known codec is detected. This is typically only
+ 	  enabled for developers or devices where the sound card is
+-	  controlled externally
+-	  This option is mutually exclusive with the Intel HDAudio support,
+-	  selecting it may have negative impacts and prevent e.g. microphone
++	  controlled externally.
++	  This option is mutually exclusive with the Intel HDAudio support.
++	  Selecting it may have negative impacts and prevent e.g. microphone
+ 	  functionality from being enabled on Intel CoffeeLake and later
+ 	  platforms.
+ 	  Distributions should not select this option!
+-	  Say Y if you need this nocodec fallback option
++	  Say Y if you need this nocodec fallback option.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_SOF_STRICT_ABI_CHECKS
+@@ -92,8 +92,8 @@ config SND_SOC_SOF_STRICT_ABI_CHECKS
+ 	  is invoked.
+ 	  This option will stop topology creation and firmware load upfront.
+ 	  It is intended for SOF CI/releases and not for users or distros.
+-	  Say Y if you want strict ABI checks for an SOF release
+-	  If you are not involved in SOF releases and CI development
++	  Say Y if you want strict ABI checks for an SOF release.
++	  If you are not involved in SOF releases and CI development,
+ 	  select "N".
+ 
+ config SND_SOC_SOF_DEBUG
+@@ -114,8 +114,8 @@ config SND_SOC_SOF_FORCE_NOCODEC_MODE
+ 	  though there is a codec detected on the real platform. This is
+ 	  typically only enabled for developers for debug purposes, before
+ 	  codec/machine driver is ready, or to exclude the impact of those
+-	  drivers
+-	  Say Y if you need this force nocodec mode option
++	  drivers.
++	  Say Y if you need this force nocodec mode option.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_SOF_DEBUG_XRUN_STOP
+@@ -137,12 +137,12 @@ config SND_SOC_SOF_DEBUG_VERBOSE_IPC
+ config SND_SOC_SOF_DEBUG_FORCE_IPC_POSITION
+ 	bool "SOF force to use IPC for position update on SKL+"
+ 	help
+-	  This option force to handle stream position update IPCs and run pcm
++	  This option forces to handle stream position update IPCs and run PCM
+ 	  elapse to inform ALSA about that, on platforms (e.g. Intel SKL+) that
+ 	  with other approach (e.g. HDAC DPIB/posbuf) to elapse PCM.
+ 	  On platforms (e.g. Intel SKL-) where position update IPC is the only
+ 	  one choice, this setting won't impact anything.
+-	  if you are trying to debug pointer update with position IPCs or where
++	  If you are trying to debug pointer update with position IPCs or where
+ 	  DPIB/posbuf is not ready, select "Y".
+ 	  If unsure select "N".
+ 
+@@ -161,7 +161,7 @@ config SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE
+ 	help
+ 	  The firmware trace can be enabled either at build-time with
+ 	  this option, or dynamically by setting flags in the SOF core
+-	  module parameter (similar to dynamic debug)
++	  module parameter (similar to dynamic debug).
+ 	  If unsure, select "N".
+ 
+ config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
+@@ -190,7 +190,7 @@ config SND_SOC_SOF
+ 	select SND_SOC_SOF_NOCODEC if SND_SOC_SOF_NOCODEC_SUPPORT
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level
++	  'select' statements at a higher level.
+ 	  The selection is made at the top level and does not exactly follow
+ 	  module dependencies but since the module or built-in type is decided
+ 	  at the top level it doesn't matter.
+@@ -199,7 +199,7 @@ config SND_SOC_SOF_PROBE_WORK_QUEUE
+ 	bool
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level
++	  'select' statements at a higher level.
+ 	  When selected, the probe is handled in two steps, for example to
+ 	  avoid lockdeps if request_module is used in the probe.
+ 
