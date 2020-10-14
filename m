@@ -2,102 +2,94 @@ Return-Path: <SRS0=7Yh/=DV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F23EDC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 04:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 797A2C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 05:55:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1E132222A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 04:20:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1A4D82177B
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 05:55:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k8rgHbQs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="OCQRk2XG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1E132222A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HRQ8AQ0U";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bnhC0zvB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A4D82177B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EA2516BB;
-	Wed, 14 Oct 2020 06:19:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EA2516BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 408A816C1;
+	Wed, 14 Oct 2020 07:54:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 408A816C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602649247;
-	bh=2Ny7BcUIi7yDelPN95PAx5itdaCMv/c5gmTpDmj9gNc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1602654928;
+	bh=w/Q6Y2ALEcBoX07SqJPZHTNPd5j9N71xYELA8VhNSs4=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k8rgHbQsNuGDrktJOp5+7gPbMYbbabjzRsEBkIqt44Pran5rXQWO+UTdsVUb8gxf8
-	 QjOoWJL1TdyKGO5HKq0didk2tHIetCnVe2+Uo9LdEWOb5MHjUnAOGue51VPCjGcOK6
-	 PcAUz7IzsCAc2YFYnM8mjJTGURLApCO8a/5t3iic=
+	b=HRQ8AQ0UrcFeYcdur1xxCRslCndzUVaUIH2InFduAA/I9QuSSN56E6yUpUy07VC32
+	 WPuiJhuMIO/uI3TtBh1K6sMUQgQZGvD5eLn/Oxo7+JyqZkR3VreQdFSKmAZeOaPyjB
+	 /D/89n7L4tuOQOIr4QI6KhsTF5dOfGhIBfUG+zbs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78C60F8020D;
-	Wed, 14 Oct 2020 06:19:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C910FF8020D;
+	Wed, 14 Oct 2020 07:54:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19D19F80217; Wed, 14 Oct 2020 06:19:55 +0200 (CEST)
-Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BD775F80217; Wed, 14 Oct 2020 07:54:35 +0200 (CEST)
+Received: from merlin.infradead.org (merlin.infradead.org
+ [IPv6:2001:8b0:10b:1231::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94A80F8012B
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 06:19:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94A80F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6AD2F8012B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 07:54:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6AD2F8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="OCQRk2XG"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1602649187; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=HOggyxgAIuw5vh136a7l4IRaEFhhlZ9M1Zj7qRah5nQ=;
- b=OCQRk2XG9xyBNa9K+EJia7KeshW32qzL/w7WHyqOzhislml02b1XjMwhl0XJg3FvVl+5ket8
- jRPPIfm47gqcbloR1TpoplLzdNPoF0jqvSTJ+8/8K7oKgJPnWF5Teh1Jr8Iy4r5zXrx/JUgB
- w6WUt23sBTunIkQj2Ag8byy8BXg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f867c6183370fa1c1322f4a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 04:19:45
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 46CFCC433FF; Wed, 14 Oct 2020 04:19:45 +0000 (UTC)
-Received: from [192.168.29.24] (unknown [49.37.131.201])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 50618C433CB;
- Wed, 14 Oct 2020 04:19:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 50618C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH 1/2] Asoc: qcom: lpass-cpu: Fix clock disable failure
-To: Mark Brown <broonie@kernel.org>
-References: <1602596386-9886-1-git-send-email-srivasam@codeaurora.org>
- <20201013151505.GA7913@sirena.org.uk>
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <49ac01c8-d270-5e9b-360b-87909e550360@codeaurora.org>
-Date: Wed, 14 Oct 2020 09:49:38 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="bnhC0zvB"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+ Reply-To:Cc:Content-ID:Content-Description;
+ bh=VBhfFbcum7XqbvqnX65rC2cJinR64wvSqBnpbpj4otY=; b=bnhC0zvB0LmWbSJHu5QthQHi3+
+ D3vU89kUm7mR9S1RpJwfliTGWEBvzkNupZKuzr1SPTGMHEv1LXTdW42vUw0CYXWUIgv1/fXcvwHyL
+ qE8+/PwM3wArw7HqzNbb8lCSmHzX1SXQC5k20esROfvocGUfqmZ393Ec76b19KhNVxFR1jGjQdxfe
+ +7/N297i0jo8SKe1J1DE1WUKiplPpWRwc6q8eWAjR8g8iRMh4khoX4QmCuLoEbYFXBpHefJpQf8zy
+ xAqfBfMpKL+B04FbzJKTY3qApVK1i34M+C18ISTzWb9spLCoepokBzMNXmcHeBEZgz1EyTA84Ko/N
+ KgHivglg==;
+Received: from [2601:1c0:6280:3f0::507c]
+ by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kSZjv-0001kM-VH; Wed, 14 Oct 2020 05:54:20 +0000
+Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
+To: Udo van den Heuvel <udovdh@xs4all.nl>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+ Pavel Machek <pavel@ucw.cz>, Takashi Iwai <tiwai@suse.de>,
+ moderated for non-subscribers <alsa-devel@alsa-project.org>
+References: <2835d02a-380b-6a3a-0e4d-abf07aee18bc@xs4all.nl>
+ <53e698c1-86e4-8b1f-afb0-b8471349e701@xs4all.nl>
+ <43b79598-1592-683f-46df-9e5489110780@infradead.org>
+ <6fd1e91e-19d0-6682-dfc6-49f1cd60408b@infradead.org>
+ <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
+ <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
+ <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
+ <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
+ <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
+ <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
+ <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
+Date: Tue, 13 Oct 2020 22:54:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201013151505.GA7913@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
- agross@kernel.org, srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,35 +105,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks  Mark Brown for your time !!!
-
-On 10/13/2020 8:45 PM, Mark Brown wrote:
-> On Tue, Oct 13, 2020 at 07:09:46PM +0530, Srinivasa Rao Mandadapu wrote:
->> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On 10/13/20 10:16 PM, Udo van den Heuvel wrote:
+> On 14-10-2020 07:07, Randy Dunlap wrote:
+>> On 10/13/20 9:56 PM, Udo van den Heuvel wrote:
+> 
+>>> I.e.: it looks like I will lose some funcionality when I disable
+>>> SND_HDA_CODEC_REALTEK.
 >>
->> Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase
->> instead of shutdown time. Acheive this by invoking
->> clk_disable_unprepare API from cpu daiops shutdown to
->> cpu daiops trigger.
-> I'm missing patch 2 here?
-No.. It's a single patch. By mistake I sent with wrong header.
->
->> This Fix is update to the below patch.
->> https://lore.kernel.org/patchwork/patch/1308101/
-> Fixes should be specified using tags like this:
->
->    Fixes: commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs dependency")
->
-> in the changelog.
-Thanks for your guidance. I will take care of it next time.
->
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
+>> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_REALTEK
+>> with no LEDS. That driver apparently wants LEDS.
+> 
+> Thanks but why have I gone for years without LEDS?
+> I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
+> visible, usable, etc).
+> 
+> Please make this selectable instead of forcing more bulk into my kernel.
+> 
+> Kind regards,
+> Udo
 
+Hi Takashi,
+
+Regarding
+commit 7cdf8c49b1df0a385db06c4f9a5ba1b16510fdcc
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Jun 18 13:08:31 2020 +0200
+    ALSA: hda: generic: Add a helper for mic-mute LED with LED classdev
+
+and this Kconfig entry:
+
+config SND_HDA_CODEC_REALTEK
+	tristate "Build Realtek HD-audio codec support"
+	select SND_HDA_GENERIC
+	select SND_HDA_GENERIC_LEDS
+
+it seems that LED support is not always wanted (please see above).
+I.e., user(s) would like to build a kernel without LED support at all.
+
+Can you make it a build option?
+
+thanks.
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+~Randy
 
