@@ -2,56 +2,58 @@ Return-Path: <SRS0=7Yh/=DV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A4D1C433E7
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 08:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6692EC433E7
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 08:18:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E985D2072D
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 08:14:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B771B20BED
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Oct 2020 08:18:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R2NeXXfn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E985D2072D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ucw.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EF69vH8t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B771B20BED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F81216E0;
-	Wed, 14 Oct 2020 10:13:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F81216E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA732172F;
+	Wed, 14 Oct 2020 10:17:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA732172F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602663244;
-	bh=9vHEikThE6lNTE3k2fOB5fl0rf0B9V1x+diidtcPp10=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1602663483;
+	bh=5raMkhb8iEB8dDuAqcuSgTgmV17byHv1QD/VpKUlSok=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R2NeXXfn+ihB12u3CKf+i2Ke+tHTjsfQTkg6H03wKR+rX5Zanu8WPwfedruCHLFKt
-	 mcvVeDPnFS5I4vV//bW9HTCNkCUMhCrDHI5Y8IHPdjgfJdVs/z46D8Dz8/RTwk3oeA
-	 Dw4obcD8GARLO8TH4TQ2u5x3MQ3mRFWr6Qy6ijuc=
+	b=EF69vH8toQCmltCSJugZv/d/2T37M1Qv2G27D37ebl4mY4nl/NsN2vDQmNAIt9BFE
+	 StjDJNVr9RwlIdpbtLVrFSIRW5RT1t3mEnt+d9HZuYXyp8AmE/rhxMpdzKIeWPIpcR
+	 +SU7JGB8riu/P0b65PUp+eaAivTYpG/RkpJy/YZo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF73AF8020D;
-	Wed, 14 Oct 2020 10:13:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D43BF8020D;
+	Wed, 14 Oct 2020 10:17:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1152F80217; Wed, 14 Oct 2020 10:13:12 +0200 (CEST)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id E098CF80217; Wed, 14 Oct 2020 10:17:11 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08C2AF800F6
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 10:13:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08C2AF800F6
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
- id C8CE41C0B87; Wed, 14 Oct 2020 10:13:05 +0200 (CEST)
-Date: Wed, 14 Oct 2020 10:13:05 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 259FDF8012B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 10:17:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 259FDF8012B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id D5977AC4C;
+ Wed, 14 Oct 2020 08:17:08 +0000 (UTC)
+Date: Wed, 14 Oct 2020 10:17:08 +0200
+Message-ID: <s5hzh4pkyrf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pavel Machek <pavel@ucw.cz>
 Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
-Message-ID: <20201014081305.GD29881@amd>
+In-Reply-To: <20201014081305.GD29881@amd>
 References: <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
  <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
  <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
@@ -61,12 +63,12 @@ References: <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
  <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
  <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
  <20201014075458.GA29881@amd> <s5h4kmxmdqc.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="Km1U/tdNT/EmXiR1"
-Content-Disposition: inline
-In-Reply-To: <s5h4kmxmdqc.wl-tiwai@suse.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+ <20201014081305.GD29881@amd>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>,
  Randy Dunlap <rdunlap@infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -87,64 +89,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 14 Oct 2020 10:13:05 +0200,
+Pavel Machek wrote:
+> 
+> On Wed 2020-10-14 10:08:27, Takashi Iwai wrote:
+> > On Wed, 14 Oct 2020 09:54:59 +0200,
+> > Pavel Machek wrote:
+> > > 
+> > > Hi!
+> > > 
+> > > > >>> I.e.: it looks like I will lose some funcionality when I disable
+> > > > >>> SND_HDA_CODEC_REALTEK.
+> > > > >>
+> > > > >> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_REALTEK
+> > > > >> with no LEDS. That driver apparently wants LEDS.
+> > > > > 
+> > > > > Thanks but why have I gone for years without LEDS?
+> > > > > I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
+> > > > > visible, usable, etc).
+> > > > > 
+> > > > > Please make this selectable instead of forcing more bulk into my
+> > > >> kernel.
+> > > 
+> > > LED core is not that big, and this avoided some rather "interesting"
+> > > hacks IIRC. If Udo wants more config complexity, lets first make him
+> > > measure the benefits, second submit a patch.
+> > > 
+> > > But I'd suggest to just live with it.
+> > > 
+> > > And yes, we should probably get rid of "CONFIG_NEW_LEDS" symbol. That
+> > > one is actually useless.
+> > 
+> > IIRC, this was needed for the reverse selection of CONFIG_LEDS_CLASS
+> > and co.  But if it's really useless, I'll happily delete it.
+> 
+> It is needed for now. It is just something we should remove in
+> future. CONFIG options are not that cheap...
 
---Km1U/tdNT/EmXiR1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah I see.  Yes, the config itself is superfluous.
 
-On Wed 2020-10-14 10:08:27, Takashi Iwai wrote:
-> On Wed, 14 Oct 2020 09:54:59 +0200,
-> Pavel Machek wrote:
-> >=20
-> > Hi!
-> >=20
-> > > >>> I.e.: it looks like I will lose some funcionality when I disable
-> > > >>> SND_HDA_CODEC_REALTEK.
-> > > >>
-> > > >> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_RE=
-ALTEK
-> > > >> with no LEDS. That driver apparently wants LEDS.
-> > > >=20
-> > > > Thanks but why have I gone for years without LEDS?
-> > > > I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
-> > > > visible, usable, etc).
-> > > >=20
-> > > > Please make this selectable instead of forcing more bulk into my
-> > >> kernel.
-> >=20
-> > LED core is not that big, and this avoided some rather "interesting"
-> > hacks IIRC. If Udo wants more config complexity, lets first make him
-> > measure the benefits, second submit a patch.
-> >=20
-> > But I'd suggest to just live with it.
-> >=20
-> > And yes, we should probably get rid of "CONFIG_NEW_LEDS" symbol. That
-> > one is actually useless.
->=20
-> IIRC, this was needed for the reverse selection of CONFIG_LEDS_CLASS
-> and co.  But if it's really useless, I'll happily delete it.
 
-It is needed for now. It is just something we should remove in
-future. CONFIG options are not that cheap...
+thanks,
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---Km1U/tdNT/EmXiR1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+GsxEACgkQMOfwapXb+vKj2wCgl8EFtbg190UseqaqnZEYuRJF
-nsYAniWZl08TwB5hCRT99EU4nRv0+Zd+
-=Vqx7
------END PGP SIGNATURE-----
-
---Km1U/tdNT/EmXiR1--
+Takashi
