@@ -2,73 +2,107 @@ Return-Path: <SRS0=7kYh=DW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97AEBC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 05:35:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB61C433E7
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 08:01:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D6C022247
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 05:35:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC3F122243
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 08:01:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ur7Q98XO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D6C022247
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vinetMIF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fZ9DK/wR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC3F122243
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DCB01767;
-	Thu, 15 Oct 2020 07:34:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DCB01767
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE3E1175D;
+	Thu, 15 Oct 2020 10:00:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE3E1175D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602740142;
-	bh=CrhU7SfBpt55aUB5NqVSalowpczGmJ/Q84LiaCjlgN8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1602748859;
+	bh=Zh0U+PCvvfxnWdbdWqE9lAljPHl9uZGOAF5TBPvnItE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ur7Q98XOJtpOV1MPaQ3pPPHUu5XTEfEYs53CmPKqnz0hLIDibYdqNq3EOg8UgeeYH
-	 nKBfQxkee5xnm1r2B8rC55xWXvOSW8UgPFF3+H7voUSJ51LvDQPl64ewJEGa4VPi67
-	 ILG5w3XU9Yp/utXQ0rSJQHT02S6jEaQFZkzyyN1Q=
+	b=vinetMIFEfODy+vD38yjbEDp+cT9ZxMOpv5CbovGYy8QQinTqBwv1C49w+uZs/JUp
+	 JtqWrTqbmi92Dx5nK6UPv01jlllbO1fCj+cHmi5Yc9/qyRBiHPrrfJaFO06MCVcbQV
+	 4GU0RH8kAw/bG9eWHWV5N9FriVKYrwkLbvqJiInA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5070AF80247;
-	Thu, 15 Oct 2020 07:34:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39C0CF800F6;
+	Thu, 15 Oct 2020 10:00:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8ADB5F801A3; Thu, 15 Oct 2020 07:33:54 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 10952F801A3; Thu, 15 Oct 2020 10:00:03 +0200 (CEST)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
+ [IPv6:2607:f8b0:4864:20::d42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42B6BF8016F
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 07:33:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42B6BF8016F
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EF5E6200557;
- Thu, 15 Oct 2020 07:33:45 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AAE992006C9;
- Thu, 15 Oct 2020 07:33:40 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8B10440327;
- Thu, 15 Oct 2020 07:33:34 +0200 (CEST)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
- devicetree@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: fsl_spdif: Add support for i.MX8QM platform
-Date: Thu, 15 Oct 2020 13:28:48 +0800
-Message-Id: <1602739728-4433-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602739728-4433-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1602739728-4433-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FEBAF800F6
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 09:59:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FEBAF800F6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="fZ9DK/wR"
+Received: by mail-io1-xd42.google.com with SMTP id y20so3184290iod.5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 00:59:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=3iwCAX5npGCg/zxSeU8NRUPXRIk3oCwTQT9lW7fSAek=;
+ b=fZ9DK/wR5Q8YUrG20w9OUQzsdTlEfyeuToJdEqyFacXEV+lBftlXXjjyjCS6wZQwgc
+ /01SjIDNc3HRCZR4tg5qJk4JRwXrj1G9lNss5cENSApQhRF3wC4xi0uYfZf1fudpG1AO
+ oPJ1f/J6kf3roUEQk65x9Y1TpOfzGc5A1/1OY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=3iwCAX5npGCg/zxSeU8NRUPXRIk3oCwTQT9lW7fSAek=;
+ b=Pp88SSCU4fLyGUlQdCOgy4Geipj9+Ns3xqjFHLmJLRl/ZFKXcEHfvlYGJk+MvH5euj
+ AQYMis8bn2Z1tAFCZc7zizu96HhVe8D2jPcgz6Ikp5HU/K/oEmjtaNGE2dPxvOSCErHd
+ +/uDmHdqoCDtYSGrfV0Rab06gpkziaX2XYmtOLJ38JnxOuDc+VpdwhZAc7+aQkbwB3J/
+ MeNo8WAq7EVcTIIYLpKxZaM172h4q2IKqmYC5QQzWstFdqpwS8tIBraIXSIERiuf2qb7
+ lktmvyFGpmNfWtxmH+kIPbhcyW9NwH4DGzlc76l3nnuC4GNVlwQysU73Z0x7DJdyAFI0
+ UZJw==
+X-Gm-Message-State: AOAM532vCOv1K6IJf6qYE8YbDjkRplHFoEUkzixr6PN5xSo5yvOnlgOC
+ qcpoLNC/WXP5e3ddlIXoguRMu0heDQNr01UMKPDUDw==
+X-Google-Smtp-Source: ABdhPJxlbvqYnJWRiXtnH0q6kkDHMhsE5tUaF2RfBz9uwNRW1GQ7jLgiIgRHtQF+Fj5YaIUFSB0mJZezBcOKtKdorcI=
+X-Received: by 2002:a02:b617:: with SMTP id h23mr2508854jam.71.1602748792641; 
+ Thu, 15 Oct 2020 00:59:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org>
+ <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+In-Reply-To: <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Date: Thu, 15 Oct 2020 15:59:26 +0800
+Message-ID: <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
+ bindings
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Taniya Das <tdas@codeaurora.org>,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>,
+ Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>,
+ Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
+ "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+ Andy Gross <agross@kernel.org>, Dylan Reid <dgreid@chromium.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Tzung-Bi Shih <tzungbi@chromium.org>,
+ Srinivasa Rao <srivasam@codeaurora.org>, Stephan Gerhold <stephan@gerhold.net>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Doug Anderson <dianders@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,137 +118,96 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On i.MX8QM, there are separate interrupts for TX and RX.
+On Tue, Oct 13, 2020 at 6:36 PM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> Hi Cheng,
+>
+> Sorry for such late review w.r.t compatibles,
+>
+Hi Srini,
+Thank you for taking another look!
 
-As the EDMA can't be configured to swing back to first FIFO
-after writing the second FIFO, so we need to force the burst
-size to be 2 on i.MX8QM. And EDMA don't support to shift
-the data from S24_LE to S16_LE, so the supported TX format
-is also different on i.MX8QM.
+> On 14/09/2020 09:06, Cheng-Yi Chiang wrote:
+> > +---
+> > +$id:http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
+> > +$schema:http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
+> > +
+> > +maintainers:
+> > +  - Rohit kumar<rohitkr@codeaurora.org>
+> > +  - Cheng-Yi Chiang<cychiang@chromium.org>
+> > +
+> > +description:
+> > +  This binding describes the SC7180 sound card which uses LPASS for audio.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: qcom,sc7180-sndcard-rt5682-m98357-1mic
+>
+> This information can come from the dai link description itself, why
+> should compatible string have this information?
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 57 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 47 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index f41496cf5b63..5fa178f3f497 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -49,10 +49,18 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
-  * @imx: for imx platform
-  * @shared_root_clock: flag of sharing a clock source with others;
-  *                     so the driver shouldn't set root clock rate
-+ * @interrupts: interrupt number
-+ * @tx_burst: tx maxburst size
-+ * @rx_burst: rx maxburst size
-+ * @tx_formats: tx supported data format
-  */
- struct fsl_spdif_soc_data {
- 	bool imx;
- 	bool shared_root_clock;
-+	u32 interrupts;
-+	u32 tx_burst;
-+	u32 rx_burst;
-+	u64 tx_formats;
- };
- 
- /*
-@@ -128,16 +136,38 @@ struct fsl_spdif_priv {
- static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
- 	.imx = false,
- 	.shared_root_clock = false,
-+	.interrupts = 1,
-+	.tx_burst = FSL_SPDIF_TXFIFO_WML,
-+	.rx_burst = FSL_SPDIF_RXFIFO_WML,
-+	.tx_formats = FSL_SPDIF_FORMATS_PLAYBACK,
- };
- 
- static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
- 	.imx = true,
- 	.shared_root_clock = false,
-+	.interrupts = 1,
-+	.tx_burst = FSL_SPDIF_TXFIFO_WML,
-+	.rx_burst = FSL_SPDIF_RXFIFO_WML,
-+	.tx_formats = FSL_SPDIF_FORMATS_PLAYBACK,
- };
- 
- static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
- 	.imx = true,
- 	.shared_root_clock = true,
-+	.interrupts = 1,
-+	.tx_burst = FSL_SPDIF_TXFIFO_WML,
-+	.rx_burst = FSL_SPDIF_RXFIFO_WML,
-+	.tx_formats = FSL_SPDIF_FORMATS_PLAYBACK,
-+
-+};
-+
-+static struct fsl_spdif_soc_data fsl_spdif_imx8qm = {
-+	.imx = true,
-+	.shared_root_clock = true,
-+	.interrupts = 2,
-+	.tx_burst = 2,		/* Applied for EDMA */
-+	.rx_burst = 2,		/* Applied for EDMA */
-+	.tx_formats = SNDRV_PCM_FMTBIT_S24_LE,  /* Applied for EDMA */
- };
- 
- /* Check if clk is a root clock that does not share clock source with others */
-@@ -1283,6 +1313,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	/* Initialize this copy of the CPU DAI driver structure */
- 	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
- 	spdif_priv->cpu_dai_drv.name = dev_name(&pdev->dev);
-+	spdif_priv->cpu_dai_drv.playback.formats =
-+				spdif_priv->soc->tx_formats;
- 
- 	/* Get the addresses and IRQ */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -1297,15 +1329,19 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 		return PTR_ERR(spdif_priv->regmap);
- 	}
- 
--	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	for (i = 0; i < spdif_priv->soc->interrupts; i++) {
-+		irq = platform_get_irq(pdev, i);
-+		if (irq < 0) {
-+			dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
-+			return irq;
-+		}
- 
--	ret = devm_request_irq(&pdev->dev, irq, spdif_isr, 0,
--			       dev_name(&pdev->dev), spdif_priv);
--	if (ret) {
--		dev_err(&pdev->dev, "could not claim irq %u\n", irq);
--		return ret;
-+		ret = devm_request_irq(&pdev->dev, irq, spdif_isr, 0,
-+				       dev_name(&pdev->dev), spdif_priv);
-+		if (ret) {
-+			dev_err(&pdev->dev, "could not claim irq %u\n", irq);
-+			return ret;
-+		}
- 	}
- 
- 	/* Get system clock for rx clock rate calculation */
-@@ -1354,8 +1390,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 
- 	spdif_priv->dpll_locked = false;
- 
--	spdif_priv->dma_params_tx.maxburst = FSL_SPDIF_TXFIFO_WML;
--	spdif_priv->dma_params_rx.maxburst = FSL_SPDIF_RXFIFO_WML;
-+	spdif_priv->dma_params_tx.maxburst = spdif_priv->soc->tx_burst;
-+	spdif_priv->dma_params_rx.maxburst = spdif_priv->soc->rx_burst;
- 	spdif_priv->dma_params_tx.addr = res->start + REG_SPDIF_STL;
- 	spdif_priv->dma_params_rx.addr = res->start + REG_SPDIF_SRL;
- 
-@@ -1468,6 +1504,7 @@ static const struct of_device_id fsl_spdif_dt_ids[] = {
- 	{ .compatible = "fsl,imx35-spdif", .data = &fsl_spdif_imx35, },
- 	{ .compatible = "fsl,vf610-spdif", .data = &fsl_spdif_vf610, },
- 	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
-+	{ .compatible = "fsl,imx8qm-spdif", .data = &fsl_spdif_imx8qm, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
--- 
-2.27.0
+I think dailink description is not enough to specify everything
+machine driver needs to know.
+E.g. there is a variation where there are front mic and rear mic. We
+need to tell the machine driver about it so
+it can create proper widget, route, and controls.
+The codec combination also matters. There will be a variation where
+rt5682 is replaced with adau7002 for dmic.
+Although machine driver can derive some information by looking at dailink,
+I think specifying it explicitly in the compatible string is easier to
+tell what machine driver should do, e.g.
+setting PLL related to rt5682 or not.
 
+>
+> Can't we have better compatible string with actual board name or use the
+> same compatible name as used by other boards?
+>
+>
+> Can you give us some details on the advantages of doing this way?
+
+
+Machine driver can easily tell what is expected when it sees the
+compatible string (or model property, as you suggested below).
+E.g. in 1-mic v.s. 2-mic case, the patch by Ajye Huang:
+
+"[v1,2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic"
+
+You can see widget, route, controls are used according to the configuration.
+The alternative approach is to check whether "dmic-gpio" property
+exists to decide adding these stuff or not.
+But it makes the intent less easier to understand.
+
+
+>
+> Or am I missing something?
+>
+> AFAIU, you should add proper board name / model name to the compatible
+> string rather than describe how its connected. Connection is already
+> part of dai link definition.
+>
+> On the other hand model property can include variant information.
+> This can also be used to set card long name which will help in UCM2.
+>
+>
+> The reason I had to bring this up is because the use-space (ucm in this
+> case) will not be in a position to differentiate between different board
+> variants to select correct mixer controls, so its going to be a pain!
+
+
+I think your suggestions makes sense since we need to consider UCM.
+Having the card with the same name doing different things will be
+confusing to user (and to UCM).
+I'll follow your suggestion to use the same compatible string, and put
+the board variation information in card name using model property.
+Thanks a lot for the great help!
+
+
+>
+>
+>
+> Thanks,
+> srini
