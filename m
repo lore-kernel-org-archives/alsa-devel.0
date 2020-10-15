@@ -2,57 +2,68 @@ Return-Path: <SRS0=7kYh=DW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39110C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 19:35:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB3D7C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 23:05:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0C12206E5
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 19:35:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59A70207C4
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 23:05:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="muzGg+N0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0C12206E5
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JziLxSba"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59A70207C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0129177D;
-	Thu, 15 Oct 2020 21:34:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0129177D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B930178A;
+	Fri, 16 Oct 2020 01:04:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B930178A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602790510;
-	bh=nNQdvaLyo8+OfBycDNETPv+t6EKmi4fXfHtGZooHpU0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1602803139;
+	bh=KnfrY2lHppyV+7lMHKu3239BrZgBNSvlFgAJDSpq2RQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=muzGg+N0TB0bMT1TcuVjuZvSLJRgPqOfAG4FIGp5CzB8/y6OV48vSRgutwSmKmmwi
-	 ae3B16eYRkQ56/QoBMMEabYLk01iPnJVe0baI8kA5MTTATSTaTYO1PjM+lggfKnjOn
-	 bhuQMNXKEpFqugarjosHknCxn5lmcJAeoLpsptGA=
+	b=JziLxSbadLc50rg9LiULJ8OTvO3tPTTI1ZKt3U2p8mvIz07sqSR++eIGY4yJQJHFL
+	 y8K3MaFZUOZFAKengX6MPiYY6z2GcPTCIiwprrcnEPPW5yhpKTUCjOt14DGHo2fq22
+	 zGAuZv26cRd51eueIHeqDAhfhHBgEXP40U9YtHMo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FED8F80255;
-	Thu, 15 Oct 2020 21:34:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0A99F80255;
+	Fri, 16 Oct 2020 01:04:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69A16F80268; Thu, 15 Oct 2020 21:34:17 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id BE703F8012A
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 21:34:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE703F8012A
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1602790449426171064-webhooks-bot@alsa-project.org>
-References: <1602790449426171064-webhooks-bot@alsa-project.org>
-Subject: amixer: cset: check control is readable before reading it
-Message-Id: <20201015193417.69A16F80268@alsa1.perex.cz>
-Date: Thu, 15 Oct 2020 21:34:17 +0200 (CEST)
+ id 2D21FF80268; Fri, 16 Oct 2020 01:04:47 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5A0A9F8012A
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2020 01:04:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A0A9F8012A
+Date: 16 Oct 2020 08:04:37 +0900
+X-IronPort-AV: E=Sophos;i="5.77,380,1596466800"; d="scan'208";a="59696657"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 16 Oct 2020 08:04:37 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 939AD400A0E4;
+ Fri, 16 Oct 2020 08:04:37 +0900 (JST)
+Message-ID: <87pn5j3xiu.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: More Generic Audio Graph Sound Card idea
+In-Reply-To: <20201015143254.GC4390@sirena.org.uk>
+References: <87k0xszlep.wl-kuninori.morimoto.gx@renesas.com>
+ <87imbeybq5.wl-kuninori.morimoto.gx@renesas.com>
+ <20201015143254.GC4390@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Sameer Pujar <spujar@nvidia.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,14 +79,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #63 was opened from ViorelSuman:
 
-In current implementation cset command will fail on
-controls which are not readable, ie just writable.
-Check readable state prior calling snd_ctl_elem_read.
+Hi Mark
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Thank you for feedback
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/63
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/63.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+> > -- DT Image --
+> > 
+> >    +--+
+> > => |  |<--> Codec1
+> >    |  |<--> Codec2
+> >    +--+
+> > 
+> > -- DT Sample --
+> > 
+> > 	sound {
+> > 		compatible = "audio-graph-card2";
+> > 
+> > 		dais = <&codec2codec>;
+> > 	};
+> > 
+> > 	CODEC2CODEC {
+> > 		compatible = "audio-graph-card2-codec2codec";
+> > 
+> > 		ports {
+> > 			codec2codec: port@0 { fe_ep: endpoint { remote-endpoint = <&codec1_ep>; }; };
+> > 			             port@1 { be_ep: endpoint { remote-endpoint = <&codec2_ep>; }; };
+> > 		};
+> > 	};
+> 
+> I'm a bit confused about the use of FE and BE here since the two CODECs
+> are peers rather than this being DPCM - I think that's just a bit
+> cut'n'paste rather than anything else though?  The other examples look
+> sensible I think but this one feels odd.
+
+FE here is indicating CPU part's Codec,
+BE is for Codec part's Codec.
+
+> > -- Image ---
+> > 
+> >           *******
+> > PCM0 <--> *     * <--> DAI0: Codec Headset
+> > PCM1 <--> *     * <--> DAI1: Codec Speakers
+> > PCM2 <--> * DSP * <--> DAI2: MODEM
+> > PCM3 <--> *     * <--> DAI3: BT
+> >           *     * <--> DAI4: DMIC
+> >           *     * <--> DAI5: FM
+> >           *******
+> 
+> > 	DSP {
+> > 		compatible = "audio-graph-card2-dsp";
+> > 
+> > 		ports@0 {
+> > 			/* Front-End is pcm0_ep, Back-End is dummy */
+> > 			dsp_fe0: port@0 { dsp_fe0_ep: endpoint { remote-endpoint = <&pcm0_ep>; }; };
+> > 			         port@1 { };
+> > 		};
+> 
+> I'm not clear why we need to represent the dummy port here?
+
+I'm thining that
+port@0 is IN (= CPU), port@1 is OUT (= Codec).
+Empty endpoint means not yet connected (= dummy).
+
+It is difficut to know it was CPU-dummy or dummy-Codec without it.
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
