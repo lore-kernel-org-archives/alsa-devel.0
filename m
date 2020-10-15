@@ -2,122 +2,95 @@ Return-Path: <SRS0=7kYh=DW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EF79C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 03:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B86FC43457
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 04:00:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A66E2222E
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 03:25:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8A2B20776
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 04:00:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hx7iI5ra";
-	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="lcopQqEw";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TYdGD2Mp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A66E2222E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vqudmwZ+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vUbMCg0Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8A2B20776
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD3BF174F;
-	Thu, 15 Oct 2020 05:24:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD3BF174F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5932E1752;
+	Thu, 15 Oct 2020 05:59:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5932E1752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602732347;
-	bh=PFPHv5elys8/Vn9NxtBP32ks3VqmZLEpyX1CfzMTmto=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1602734414;
+	bh=nXh9hjfmDO7FQ2hUMRw8nF7+tBopNyndc7jdbJNPrq0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hx7iI5raUXveonrrnZ+awvopfARvhT4QM7WK5ES2X3QR5Pk1H+ni4nRBNdbXEogpj
-	 +UBrrqB0igoiVHyHW38Gc0KNEeTA6wkX/lnX0ZUMmP0Kenx5eLIFfos9nni08zuudo
-	 LlA6iu9VHpctGbMbVZ4qAHnb1BdQ2XgGzNtq3KhU=
+	b=vqudmwZ+pddjHi4a17mSLOLt0IfcGHzRO684Ris/zTUeUMRSYQVv1Qpuu4Xob0yck
+	 yFw01wFbNtsXmtwKqe9korx1GtzVt6ZO3+rwXUwEN9NE7Xhyc7rIOuuPLXt7u2ediF
+	 U/i5mtUUjPrE1GP4Ep5sug14RFKJb4TLOaTGv9cQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3ED66F8016F;
-	Thu, 15 Oct 2020 05:24:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF630F8016F;
+	Thu, 15 Oct 2020 05:59:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24AB6F801A3; Thu, 15 Oct 2020 05:24:50 +0200 (CEST)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8490DF801A3; Thu, 15 Oct 2020 05:59:21 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89B1AF8012A
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 05:24:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89B1AF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B00EF800F6
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 05:59:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B00EF800F6
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="lcopQqEw"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="TYdGD2Mp"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 4F6FA5C012E;
- Wed, 14 Oct 2020 23:24:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Wed, 14 Oct 2020 23:24:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- subject:to:cc:references:from:message-id:date:mime-version
- :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=6
- 33k04Ermo1an3mDMSvAtzUHQjTooJ4QgvE/Gm77Mdw=; b=lcopQqEwLo//TiwC2
- HBGQskvfTOo33tXcoX1Q80sueYBOJ/xwmLd5vByJljxcNcbVrWyGFV9gfTYLaAf1
- /hf1DxAQH+3n/KZZtatTcAEXbCtfXR9dSaZp121cU/HhdhB+ToPUsShwz/L+LbA9
- NH2YP+7ImGVp+sXdSBufk5cTXS9Ek9Nw6F+mIoBqDPSpI8ghwyHo69xNaff9nCud
- UV6ZypNPvtbSXe/Y5O74TaEr7hxO7ASWZxO3bIz48+RlLEIle4+nnshRbT+5cL2R
- flPsaE83CCBAgfjwEVShp0uyXyPoisyyeYAvbm1k0HWhzcGcVe/GfVXQAeXmxCnY
- pD3Hg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:content-type
- :date:from:in-reply-to:message-id:mime-version:references
- :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm1; bh=633k04Ermo1an3mDMSvAtzUHQjTooJ4QgvE/Gm77M
- dw=; b=TYdGD2MpRujuQmocMfATYuuiZyGB3P3rmv5PokVe0tF5Up4bYpM0GkZ4S
- 5b9ktVsfnffRrbRnzeAMHuPt8hee0hdB5zDPCpNI9u4z5Tb9L77ExYLkUxpbQvDD
- iI+I1gGxusS36Hjd7qnYzHLji/MUoE2UV7AjPektLtYGir3AEnstvS3wA6j3tUkL
- 5tueqM7lVfpOTPrQDv2SFqAu3D7XUqAslAuKTeLoMjIV6UNKeQGZrVJirhhWo9Be
- 5SQD4QldEYf2b/uEuibmueKfuLgLr7SY/gTTif6Fa7J5hiJHW/semE9GArj/qNAn
- u8hsfyb9TYKKyJxj3An0ydTnM0Kbg==
-X-ME-Sender: <xms:9cCHX16awqMqueGRURpMj0UpKoGdahGyBEwfXgEDu-N-kVguQh2ZeA>
- <xme:9cCHXy5KKquC5WjFfKNixUwTTZeLf0fTEC87jHsucAtYs4J1RJwMgALiwVtI8U7NI
- DmgZ-krSzuyQKG_aQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedriedvgdeilecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
- lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
- frrghtthgvrhhnpefgveffteelheffjeeukedvkedviedtheevgeefkeehueeiieeuteeu
- gfettdeggeenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
- iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
- ugdrohhrgh
-X-ME-Proxy: <xmx:9cCHX8dBbx2I2TqKf7EnyAB4l30lAfPlG_SIXmuPBY3Pq6o-cUo6kA>
- <xmx:9cCHX-I3z_ffI6nhpXbCQhXqz1B8VLoFUVZRo9sPjo44I_EV4WvIFw>
- <xmx:9cCHX5KbC2z8-C8owAmCo1Ts3Ck3QrRe6KBAtP-3WunKhh9k5LfHTQ>
- <xmx:9sCHX-q7kpk8MSrDkfLT30wY7hbWBO9xUOT5OqP5ScbPQSIzV7Cj-g>
-Received: from [70.135.148.151]
- (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id B75CC3064680;
- Wed, 14 Oct 2020 23:24:36 -0400 (EDT)
-Subject: Re: [PATCH v2 17/17] ASoC: sun8i-codec: Add the AIF3 DAI, widgets,
- and routes
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <20201014061941.4306-1-samuel@sholland.org>
- <20201014061941.4306-18-samuel@sholland.org>
-From: Samuel Holland <samuel@sholland.org>
-Message-ID: <d2d57d02-206e-534b-ca35-afc27e921596@sholland.org>
-Date: Wed, 14 Oct 2020 22:24:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="vUbMCg0Z"
+Received: by mail-wm1-x329.google.com with SMTP id k18so1783251wmj.5
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2020 20:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Ip6U2yos1bFcfZOuGKXZBrhpB8G/JJ6GoIBaicKoApQ=;
+ b=vUbMCg0ZFoGr93mlVbEPsMHsKd9ffaPlRII/Acdw4LDhltB3PaMSK5t67dooerDJcl
+ tO+VcTK0giTYNnCyZVBpi0t3EBThACEkuvOlwK2FIxZiOCufATiE4t33kC+Ve10Qqwi4
+ 49Y8W6rn1xbk1KFGegCW2NRgynepHUmq1zPcMqxugs0mfHp22ADWNquG738uGgV8YKT7
+ mHTQtptkjztTnc3VQCm6+HPcUEGIzMYP/adR4ZYLuCRq7oICzGEAvi5K94bvEOt82rPL
+ yLDgYtR2welBcjzXRyXLINmXqrvV6MoWFKtyiMsFKrZu8qGsrF/iKdfX0+ITAyBzaSoL
+ Db/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Ip6U2yos1bFcfZOuGKXZBrhpB8G/JJ6GoIBaicKoApQ=;
+ b=FLKqeytTbVaPaCg8EgppkMkoV/osf/hPNKLG8dTRjfnBNeDzPcLcYtm8Fsgk6cstNJ
+ hEUPDZA8Ein2fq+HlnzsFVCu/akrhkEMIXJSmmZwD0EaJz780IMPgWGnbBR8ESLqZyRa
+ qgfaBi7hFFCw8stpErYuwOmFeQZHtMHmEmvcdrCmEyFXQWTyNP1QUiGFILYmsHvtKNnt
+ ivMKyjKoll7qIvt55pqE0m0siupAy/p0hn3p7dU3hnpqppv1F15AnGI/xxFsWttS/GFL
+ 4U7WmNIPgM8klnwwTnq3ilP3+pv5LJ3gEt9x4iz0uxeiP+Q+QUD1iM+hieATsZY9SgRq
+ aUeA==
+X-Gm-Message-State: AOAM533Do71OcTezw+OtMD9bOXlfJ1FaCwlAZPa+E7ktAN+dkL4xzOk6
+ hYxUjuInxnofaCF9cPkgqMo3FETxna1QjwVYJw==
+X-Google-Smtp-Source: ABdhPJxk4H1rzzKUdzTrRip3XYUa1QXP2KUfj6bCN3+Vkx1NkVrwvNyJ1DVBCHs4ll8G2kJD0h/T2BFAaIRzgYcHgco=
+X-Received: by 2002:a1c:7f97:: with SMTP id a145mr1856421wmd.160.1602734354179; 
+ Wed, 14 Oct 2020 20:59:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201014061941.4306-18-samuel@sholland.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <CAANJKekdzYeO7vp9o30a4yiB0M8mqjpuf2ZOPem4d8Ma_V8bjA@mail.gmail.com>
+ <f05763b6-7b1a-29d1-3072-0642bca3d306@ivitera.com>
+ <fb010ee6-3c20-0d2a-1be4-67500253740b@perex.cz>
+In-Reply-To: <fb010ee6-3c20-0d2a-1be4-67500253740b@perex.cz>
+From: Go Peppy <peppy.player@gmail.com>
+Date: Wed, 14 Oct 2020 20:59:03 -0700
+Message-ID: <CAANJKemSd+MSVGyhTVL_5HFBjvWCLBpZDoiFfE5Jei_bzjukBQ@mail.gmail.com>
+Subject: Re: pcm_meter.c issue at s16_update
+To: Jaroslav Kysela <perex@perex.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -133,92 +106,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 10/14/20 1:19 AM, Samuel Holland wrote:
-> AIF3 has some differences from AIF1 and AIF2:
->  - It supports one channel only
->  - It supports master mode only
->  - It is not directly connected to any of the mixers; instead all audio
->    goes through a mux with AIF2.
->  - It does not have its own clock dividers; instead it reuses AIF2 BCLK
->    and LRCK. This means that when both AIF2 and AIF3 are active, they
->    must use the same sample rate and total frame width. Since AIF2 and
->    AIF3 are only used for codec2codec DAI links, constraints are not
->    applicable here; the only thing we can do when the rates don't match
->    is report an error.
-> 
-> Make the necessary adjustments to support this AIF.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  sound/soc/sunxi/sun8i-codec.c | 138 ++++++++++++++++++++++++++++++++--
->  1 file changed, 130 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-> index 6a8232e07983..180442c62be1 100644
-> --- a/sound/soc/sunxi/sun8i-codec.c
-> +++ b/sound/soc/sunxi/sun8i-codec.c
-[snip]
-> @@ -263,19 +273,30 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  		break;
->  	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
->  		value = 0x0;
->  		break;
->  	default:
->  		return -EINVAL;
->  	}
->  
-> -	regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-> -			   BIT(SUN8I_AIF_CLK_CTRL_MSTR_MOD),
-> -			   value << SUN8I_AIF_CLK_CTRL_MSTR_MOD);
-> +	if (dai->id == SUN8I_CODEC_AIF3) {
-> +		/* AIF3 only supports master mode. */
-> +		if (value)
-> +			return -EINVAL;
-> +
-> +		/* Use the AIF2 BCLK and LRCK for AIF3. */
-> +		regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-> +				   SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_MASK,
-> +				   SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF2);
+Hi Jaroslav,
 
-Since the AIF3 clock source is set to AIF2 here...
+I've tested the patch. It works fine. I didn't experience the original
+issue with high CPU utilization after applying the patch.
+When is the next planned release?
 
-> +	} else {
-> +		regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-> +				   BIT(SUN8I_AIF_CLK_CTRL_MSTR_MOD),
-> +				   value << SUN8I_AIF_CLK_CTRL_MSTR_MOD);
-> +	}
->  
->  	/* DAI format */
->  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->  	case SND_SOC_DAIFMT_I2S:
->  		format = 0x0;
->  		break;
->  	case SND_SOC_DAIFMT_LEFT_J:
->  		format = 0x1;
-[snip]
-> @@ -908,16 +1016,22 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
->  	{ "CLK AIF2", NULL, "AIF2CLK" },
->  	{ "CLK AIF2", NULL, "SYSCLK" },
->  	{ "RST AIF2", NULL, "CLK AIF2" },
->  	{ "AIF2 ADCL", NULL, "RST AIF2" },
->  	{ "AIF2 ADCR", NULL, "RST AIF2" },
->  	{ "AIF2 DACL", NULL, "RST AIF2" },
->  	{ "AIF2 DACR", NULL, "RST AIF2" },
->  
-> +	{ "CLK AIF3", NULL, "AIF1CLK" },
-                             ^^^^^^^
-...this should be "AIF2CLK". I will fix it in the next version.
+Thanks!
+PPP
 
-> +	{ "CLK AIF3", NULL, "SYSCLK" },
-> +	{ "RST AIF3", NULL, "CLK AIF3" },
-> +	{ "AIF3 ADC", NULL, "RST AIF3" },
-> +	{ "AIF3 DAC", NULL, "RST AIF3" },
-> +
->  	{ "CLK ADC", NULL, "SYSCLK" },
->  	{ "RST ADC", NULL, "CLK ADC" },
->  	{ "ADC", NULL, "RST ADC" },
->  	{ "ADCL", NULL, "ADC" },
->  	{ "ADCR", NULL, "ADC" },
->  
->  	{ "CLK DAC", NULL, "SYSCLK" },
->  	{ "RST DAC", NULL, "CLK DAC" },
+
+On Tue, Oct 13, 2020 at 10:35 AM Jaroslav Kysela <perex@perex.cz> wrote:
+
+> Dne 17. 09. 20 v 21:13 Pavel Hofman napsal(a):
+> > Hi,
+> >
+> > Dne 15. 09. 20 v 5:40 Go Peppy napsal(a):
+> >>
+> >> Just to remind what the issue is - while switching from one web radio
+> >> station to another there is a high CPU usage for about 20 seconds.
+> Because
+> >> of that high CPU consumption almost all other processes are blocked.
+> >
+> > 20 seconds is only due to 32bit kernel on RPi. On 64bit machines the
+> > boundary value is usually many orders of magnitude larger, basically
+> > making the method never finish.
+>
+> Could you try this patch?
+>
+>
+> https://github.com/alsa-project/alsa-lib/commit/a6c8ac0c85ca1b16684a687c7000c73aa38b7776
+>
+> It should prevent the big copies which are definitely nonsense and this
+> change
+> does not hide the real problem.
+>
+>                                         Jaroslav
+>
+> >
+> > With regards,
+> >
+> > Pavel.
+> >
+>
+>
+> --
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>
