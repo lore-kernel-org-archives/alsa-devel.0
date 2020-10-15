@@ -2,77 +2,86 @@ Return-Path: <SRS0=7kYh=DW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB221C4363A
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 16:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0B53C433E7
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 17:33:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 063D82225A
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 16:53:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D73F422243
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Oct 2020 17:33:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eAqcimfN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 063D82225A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EuZE2Mbr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LD45W972"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D73F422243
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29B531767;
-	Thu, 15 Oct 2020 18:52:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29B531767
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24A121779;
+	Thu, 15 Oct 2020 19:32:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24A121779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602780822;
-	bh=rnI4zEldUvWGv5rJAWwBLU3oVY0dzIhk59CIre1oCqs=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1602783202;
+	bh=7/ktMrN+y9RlPlNt0esVc1KuysNkY3EZ6vHms7U3vkI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eAqcimfNHkqR31qrt24PGWZFDRjecei4OjNvZcjnlyFMn14Elp78tc2Cvaj7isYCL
-	 a4o0xlvldKz822rPyZHzUdoNJkoXYPQb3+q/QnpcaNQLV6dF20cEK+8s9gpZQJNdfm
-	 C7i6vB5DDOIVgcCfOXMu1jZ69Hb2WjrkkSak+zI8=
+	b=EuZE2MbrezaVXtX+70YYBYeyO2crjcJgha6tIOsvkJr910WIy2cTruCoTX22XmLzE
+	 91B8eufn2aPp67DcaQ2eBKmpt8IVlgrgOPOpbTuzErtVXzG7N/XOiZXh8T5x2EnzG4
+	 sjP5T/yfOLTsrJD8t4Fed81jer0NlNINs3soZFdk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B83BFF80255;
-	Thu, 15 Oct 2020 18:52:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90595F80255;
+	Thu, 15 Oct 2020 19:32:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EC55F80268; Thu, 15 Oct 2020 18:52:48 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id DF8D2F8012A
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 18:52:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF8D2F8012A
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFB08D6E;
- Thu, 15 Oct 2020 09:52:38 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D8F013F71F;
- Thu, 15 Oct 2020 09:52:36 -0700 (PDT)
-Subject: Re: [PATCH 1/7] of: base: Add of_count_phandle_with_fixed_args()
-To: Rob Herring <robh+dt@kernel.org>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+ id 78DCDF80268; Thu, 15 Oct 2020 19:32:30 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71816F8012A
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2020 19:32:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71816F8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="LD45W972"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4DA9C22243;
+ Thu, 15 Oct 2020 17:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1602783143;
+ bh=7/ktMrN+y9RlPlNt0esVc1KuysNkY3EZ6vHms7U3vkI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=LD45W9726yurL26MnLtgE/4TPDHPiyUFXea8r3OIhuyK+bTUokXp6nAYQf+SACX7V
+ X/bjtyJ+65dY+/V0mXFmOCRV/DNPxRTAgrxHcZUJ+w4qbX7/fX8MSgRkZ5EfYAchYT
+ cHsBHs7nN1KmigHWJTXNHVqFze2+ZD/Kzk15dsHw=
+Date: Thu, 15 Oct 2020 18:32:16 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: Re: [PATCH 6/7] ARM: dts: Add dts for Raspberry Pi 4 + Cirrus Logic
+ Lochnagar2
+Message-ID: <20201015173216.GH4390@sirena.org.uk>
 References: <20201014145418.31838-1-rf@opensource.cirrus.com>
- <20201014145418.31838-2-rf@opensource.cirrus.com>
- <CAL_Jsq+qdcHc9H7qUVwLieHrLM8E20HZXa8DkarMiuXfCh8WOQ@mail.gmail.com>
-From: Robin Murphy <robin.murphy@arm.com>
-Message-ID: <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
-Date: Thu, 15 Oct 2020 17:52:35 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+ <20201014145418.31838-7-rf@opensource.cirrus.com>
+ <e9db1a11519dce0938cef867179160a818ec4143.camel@suse.de>
+ <89913f8b-fe92-1a31-77ff-49ea3f3d3294@opensource.cirrus.com>
+ <5d2587193f0e99996445d5fa507a8acf7854fed3.camel@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+qdcHc9H7qUVwLieHrLM8E20HZXa8DkarMiuXfCh8WOQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- - <patches@opensource.cirrus.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>,
- Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
- <linux-rpi-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Rn7IEEq3VEzCw+ji"
+Content-Disposition: inline
+In-Reply-To: <5d2587193f0e99996445d5fa507a8acf7854fed3.camel@suse.de>
+X-Cookie: Neutrinos have bad breadth.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, robh+dt@kernel.org,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,124 +97,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-10-14 19:39, Rob Herring wrote:
-> On Wed, Oct 14, 2020 at 9:54 AM Richard Fitzgerald
-> <rf@opensource.cirrus.com> wrote:
->>
->> Add an equivalent of of_count_phandle_with_args() for fixed argument
->> sets, to pair with of_parse_phandle_with_fixed_args().
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> ---
->>   drivers/of/base.c  | 42 ++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/of.h |  9 +++++++++
->>   2 files changed, 51 insertions(+)
->>
->> diff --git a/drivers/of/base.c b/drivers/of/base.c
->> index ea44fea99813..45d8b0e65345 100644
->> --- a/drivers/of/base.c
->> +++ b/drivers/of/base.c
->> @@ -1772,6 +1772,48 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
->>   }
->>   EXPORT_SYMBOL(of_count_phandle_with_args);
->>
->> +/**
->> + * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
->> + * @np:                pointer to a device tree node containing a list
->> + * @list_name: property name that contains a list
->> + * @cell_count: number of argument cells following the phandle
->> + *
->> + * Returns the number of phandle + argument tuples within a property. It
->> + * is a typical pattern to encode a list of phandle and variable
->> + * arguments into a single property.
->> + */
->> +int of_count_phandle_with_fixed_args(const struct device_node *np,
->> +                                    const char *list_name,
->> +                                    int cells_count)
->> +{
-> 
-> Looks to me like you can refactor of_count_phandle_with_args to handle
-> both case and then make this and of_count_phandle_with_args simple
-> wrapper functions.
 
-Although for just counting the number of phandles each with n arguments 
-that a property contains, isn't that simply a case of dividing the 
-property length by n + 1? The phandles themselves will be validated by 
-any subsequent of_parse_phandle*() call anyway, so there doesn't seem 
-much point in doing more work then necessary here.
+--Rn7IEEq3VEzCw+ji
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> +       struct of_phandle_iterator it;
->> +       int rc, cur_index = 0;
->> +
->> +       if (!cells_count) {
->> +               const __be32 *list;
->> +               int size;
->> +
->> +               list = of_get_property(np, list_name, &size);
->> +               if (!list)
->> +                       return -ENOENT;
->> +
->> +               return size / sizeof(*list);
+On Thu, Oct 15, 2020 at 05:12:42PM +0200, Nicolas Saenz Julienne wrote:
+> On Thu, 2020-10-15 at 12:14 +0100, Richard Fitzgerald wrote:
 
-Case in point - if it's OK to do exactly that for n == 0, then clearly 
-we're *aren't* fussed about validating anything, so the n > 0 code below 
-is nothing more than a massively expensive way to check for a nonzero 
-remainder :/
+> > We want something in mainline so that it can be used by people
+> > developing on mainline and taken as a starting point for configuring
+> > the codecs for other host platforms. The RPi is a convenient platform to
+> > use as the base because it is widely available and low-cost.
 
-Robin.
+> If what you want to convey is the proper way of configuring your specific
+> device the way to go is writing a devicetree binding. See
+> Documentation/devicetree. It's even possible to validate a given devicetree
+> against the bindings (given they are written in yaml format).
 
->> +       }
->> +
->> +       rc = of_phandle_iterator_init(&it, np, list_name, NULL, cells_count);
->> +       if (rc)
->> +               return rc;
->> +
->> +       while ((rc = of_phandle_iterator_next(&it)) == 0)
->> +               cur_index += 1;
->> +
->> +       if (rc != -ENOENT)
->> +               return rc;
->> +
->> +       return cur_index;
->> +}
->> +EXPORT_SYMBOL(of_count_phandle_with_fixed_args);
->> +
->>   /**
->>    * __of_add_property - Add a property to a node without lock operations
->>    */
->> diff --git a/include/linux/of.h b/include/linux/of.h
->> index 5cf7ae0465d1..9f315da4e9da 100644
->> --- a/include/linux/of.h
->> +++ b/include/linux/of.h
->> @@ -377,6 +377,8 @@ extern int of_parse_phandle_with_fixed_args(const struct device_node *np,
->>          struct of_phandle_args *out_args);
->>   extern int of_count_phandle_with_args(const struct device_node *np,
->>          const char *list_name, const char *cells_name);
->> +extern int of_count_phandle_with_fixed_args(const struct device_node *np,
->> +       const char *list_name, int cells_count);
->>
->>   /* phandle iterator functions */
->>   extern int of_phandle_iterator_init(struct of_phandle_iterator *it,
->> @@ -886,6 +888,13 @@ static inline int of_count_phandle_with_args(struct device_node *np,
->>          return -ENOSYS;
->>   }
->>
->> +static inline int of_count_phandle_with_fixed_args(const struct device_node *np,
->> +                                                  const char *list_name,
->> +                                                  int cells_count)
->> +{
->> +       return -ENOSYS;
->> +}
->> +
->>   static inline int of_phandle_iterator_init(struct of_phandle_iterator *it,
->>                                             const struct device_node *np,
->>                                             const char *list_name,
->> --
->> 2.20.1
->>
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+These devices already have bindings, that doesn't really help with
+describing how a specific board is wired up.
+
+--Rn7IEEq3VEzCw+ji
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+Ih6AACgkQJNaLcl1U
+h9A9yQf8Dm2aPZjUMMPafvwdr+3w8pMcyoUheiSN5MklP1b8yRi2feJfIB5PqzQn
+bk13oOB7cxs4WNQgbZqLPLjJf8bgkutB5Kwga1mm2xDDIdt620GgvMrOosXH05io
+xcm3oyOP5mZrvhzHyBdQV6J9DTF6t/ITVF1pefQhP0JiyOsG+jgU+ScDHrLlqXcO
+yOpJiU0V2D9PEa38sCfBwHtvqBmYioIfDtAr9IZdoXgIRX+h6TQ2tnzpkrTUmXjY
+vDxYu6IRjpvtT6vSvN9I0hM5VS/2AmOE8+taDkVdLUriN13gPPpk5HVJoKv9/qzw
+nY4VIdhSllJWzlilek+ouj4S61KrwQ==
+=cCIV
+-----END PGP SIGNATURE-----
+
+--Rn7IEEq3VEzCw+ji--
