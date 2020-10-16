@@ -2,69 +2,104 @@ Return-Path: <SRS0=z+9C=DX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 420F8C433E7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Oct 2020 17:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFD1BC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Oct 2020 17:36:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC2E7208E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Oct 2020 17:34:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EFDCB208E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Oct 2020 17:36:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BFUTK8Vr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC2E7208E4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dressmaker.ca
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gLInhw2X";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="K8sEWQL7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFDCB208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 217D017E1;
-	Fri, 16 Oct 2020 19:33:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 217D017E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0795217E3;
+	Fri, 16 Oct 2020 19:35:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0795217E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602869679;
-	bh=OL4iTqCZNoE9t7jxCULnx+PQW+E2PiE9pYckRy4h3+g=;
-	h=Subject:From:To:References:Date:In-Reply-To:List-Id:
+	s=default; t=1602869809;
+	bh=9ip03HrfBiAPRQK0OLmzy2E3wMa2gd3Zh7uATJ6kw/c=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BFUTK8VrQbq9aPnVKlOs97k7uAtY5A6cw1pyt43QsggFovAYuLKeQ1ssKf07gj8fK
-	 PFrPjRMUq2krarr2Pg7dqBeVhPhBZShjh1kO81KIr5uQEElUUivqr/uMOUJWB638mf
-	 O9vuuGnci3XH048QvqWAvQW1JZ0Y6zBgIkX+B4bQ=
+	b=gLInhw2XiLsE0tFhB6E18nTQCUIgpaFZ/DeUSy9vi2YSwrcTTInI+83kxTaRlttxz
+	 xLDBKkWdhiGYGtHgj0TAyV3QC6lD6chuQY4OCg+BrYum1KlrjBJlYscO760mX8vfeZ
+	 PZ7vuqwTEMHnHHkQl94yXHJVrlyLW4mFUQWZL8GM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97602F8020D;
-	Fri, 16 Oct 2020 19:33:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70372F80224;
+	Fri, 16 Oct 2020 19:35:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59E4EF80217; Fri, 16 Oct 2020 19:33:46 +0200 (CEST)
-Received: from mail.earthlovesme.ca (24-65.162.static.aei.ca [216.162.65.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44381F80115
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2020 19:33:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44381F80115
-Received: from localhost.localdomain (Unknown [10.10.10.3])
- by mail.earthlovesme.ca with ESMTPSA
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128)
- ; Fri, 16 Oct 2020 13:33:40 -0400
-Subject: Re: Dead link in wiki under Tutorials
-From: info <info@dressmaker.ca>
-To: alsa-devel@alsa-project.org
-References: <de6ebf17-8f71-c497-28bc-7819338baddb@dressmaker.ca>
- <09f11cd1-473b-726e-84c9-3de8b9cf9fe3@dressmaker.ca>
-Organization: Dressmaker Canada Inc.
-Message-ID: <235e02f7-70f0-d150-4e80-92844ef0f2af@dressmaker.ca>
-Date: Fri, 16 Oct 2020 13:33:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+ id C899DF80279; Fri, 16 Oct 2020 19:35:56 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4DC3F80224
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2020 19:35:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4DC3F80224
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="K8sEWQL7"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 09GHQNpN024410; Fri, 16 Oct 2020 12:35:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=9T+LsXyb9i7uI1E4HpwrFelai64CiEIwmAXKtnGXQt8=;
+ b=K8sEWQL73uz/mscJPLGrNV+/J5uCbWyzu/0OQ6w9rDSXqd9gEjX5vK7RB6vwSaYHbxF/
+ pZemWz0KD2uL/EdHNNJ4MSEEfnXzojUxGhK3s33I/hSoN4tFyo93cfe3L81Q98FGVdel
+ RkB9vRHSlrDP+waqPMBM4pHAVRRaWfV9enWUBlM1EEULKuZthAmOC8AwFNoL4yfbcXnq
+ Qwp2tDmlhJ4meRVopdehLQCXhk3kHROvAuFYB9S/Kj5xcXGrOkL9zdwgdc+r76VphZ4m
+ FoYSM/iiJnSZGoTgOyv/Hi71jVN1DLBWSNF7CBrUhg53hnujngetpLj/QLjJmnKtrOcg Aw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 343ac20jk9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 16 Oct 2020 12:35:47 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
+ 2020 18:35:45 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 16 Oct 2020 18:35:45 +0100
+Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com
+ [198.61.64.143])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1641045;
+ Fri, 16 Oct 2020 17:35:45 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>, <nsaenzjulienne@suse.de>
+Subject: [PATCH v2 2/7] ASoC: audio-graph-card: Add plls and sysclks DT
+ bindings
+Date: Fri, 16 Oct 2020 18:35:36 +0100
+Message-ID: <20201016173541.21180-3-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201016173541.21180-1-rf@opensource.cirrus.com>
+References: <20201016173541.21180-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <09f11cd1-473b-726e-84c9-3de8b9cf9fe3@dressmaker.ca>
-Content-Language: en-US
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=629 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010160130
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,44 +115,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There seems to be zero interest in restoring the tutorials, even though 
-only 1 tutorial link works.
-I totally get it that it may be hard for you to reach out to the authors 
-of external material on dead web sites. But you should have not so much 
-difficulty restoring those 404 pages that link back to your own wiki. 
-Could you?
+This adds the two new properties 'plls' and 'sysclks' to the dt bindings.
+These add the ability to set values that will be
+passed to snd_soc_component_set_sysclk() and snd_soc_component_set_pll().
 
-Thanks
-Alex
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ .../bindings/sound/audio-graph-card.txt       | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-On 2020-10-04 05:17 PM, info wrote:
-> On the page 
-> https://www.alsa-project.org/wiki/Tutorials_and_Presentations there 
-> are dead links.
->
-> ALSA 0.9.0 HOWTO <http://www.suse.de/%7Emana/alsa090_howto.html> - Dr 
-> Matthias Nagorni has writen a comprehensive tutorial for audio 
-> application developers.
-> is dead. The article has been removed.
->
-> Howto use the ALSA API <http://equalarea.com/paul/alsa-audio.html> - 
-> Paul Davis has also written a brief explanation.
-> is dead. His site has been removed from the hosting site.
->
-> ALSA Sequencer (draft) 
-> <http://www.alsa-project.org/%7Efrank/alsa-sequencer/> - Frank van de 
-> Pol's draft on programming the alsa sequencer.
-> is dead, 404 error.
->
-> Kernel OSS-Emulation 
-> <http://www.alsa-project.org/%7Eiwai/OSS-Emulation.html> - Takashi 
-> Iwai has written some notes on how ALSA handles OSS applications.
-> is dead, 404 error.
->
-> It is worth trying to restore them because there are very few 
-> resources on ALSA programming.
->
-> Regards
-> Alex
->
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+index d5f6919a2d69..59bbd5b55b59 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+@@ -32,6 +32,19 @@ Required properties:
+ Optional properties:
+ - pa-gpios: GPIO used to control external amplifier.
+ 
++- plls: A list of component pll settings that will be applied with
++      snd_soc_component_set_pll. Each entry is a phandle to the node of the
++      codec or cpu component, followed by the four arguments id, source,
++      frequency_in, frequency_out. Multiple entries can have the same phandle
++      so that several plls can be set in the same component.
++
++- sysclks: A list of component sysclk settings that will be applied with
++      snd_soc_component_set_sysclk. Each entry is a phandle to the node of
++      the codec or cpu component, followed by the four arguments id, source,
++      frequency, direction. Direction is 0 if the clock is an input, 1 if it
++      is an output. Multiple entries can have the same phandle so that several
++      clocks can be set in the same component.
++
+ -----------------------
+ Example: Single DAI case
+ -----------------------
+@@ -335,3 +348,34 @@ Example: Multi DAI with DPCM
+ 			};
+ 		};
+ 	};
++
++-----------------------
++Example: Set component sysclks and PLLs
++-----------------------
++
++	sound {
++		compatible = "audio-graph-card";
++
++		sysclks = <
++			&cs47l15 1 4 98304000 0
++			&cs47l15 8 4 147456000 0
++		>;
++		plls = <
++			&cs47l15 1 0 24576000 98304000
++		>;
++
++		dais = <&cpu_i2s_port>;
++	};
++
++	cs47l15: codec@0 {
++		...
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			cs47l15_aif1_port: port@0 {
++				reg = <0>;
++				cs47l15_aif1: endpoint {
++					remote-endpoint = <&cpu_i2s_endpoint>;
++				};
++			};
++	};
+-- 
+2.20.1
 
