@@ -1,70 +1,58 @@
-Return-Path: <SRS0=PJQv=DY=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=oKMh=DZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 004A7C433E7
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Oct 2020 08:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9333DC433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 03:33:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5ED2320759
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Oct 2020 08:07:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA6BF2074B
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 03:33:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lDucc/7r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ED2320759
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KAaYjE9s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA6BF2074B
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DE9217FD;
-	Sat, 17 Oct 2020 10:06:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DE9217FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7593A17B5;
+	Sun, 18 Oct 2020 05:32:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7593A17B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602922033;
-	bh=LczCRPE19Aez6NFML7kv6pe+g+Gv2CBau3TVnnK7//o=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1602991981;
+	bh=+vVQR+h7dc3UizWiUrkp+3EK57xN/fnZjfVxd5kb3D8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lDucc/7rmE7E9r9BKl49QqFEdFg+DFBcO9VTPpKt70PlKMH5o1sNOUDPsp9/jVUay
-	 EJRaQb5Oc3P8NbkwojPFkhH6AkG5MoRI/qIx/RS13DlpDRewN8T3ohMIzWnQ7TGlel
-	 kRteYAT1JZv9l31wcxOK8IjeTAjZcDWqIdKV2xc4=
+	b=KAaYjE9sbRSSiMCXTPREUzPZ8DMurarFwVwv1f8Mfx6CQWMzgHxWVBEZQ4WLQOnZY
+	 MQwJOdg9WS/E4+DLksgYMpyZ5juWEIlQ4vX/P/akxquJ7CAmUrhQhKqtGb/7ec6vBg
+	 p3MFAg5/dlR2uKBOqM8IssA0VB9sdoNC844ueh6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3225F80269;
-	Sat, 17 Oct 2020 10:05:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF5AAF8014D;
+	Sun, 18 Oct 2020 05:32:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82F63F8026A; Sat, 17 Oct 2020 10:05:40 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCEC8F800B8
- for <alsa-devel@alsa-project.org>; Sat, 17 Oct 2020 10:05:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCEC8F800B8
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3739AACDB;
- Sat, 17 Oct 2020 08:05:34 +0000 (UTC)
-Date: Sat, 17 Oct 2020 10:05:34 +0200
-Message-ID: <s5hzh4ll1kh.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/ca0132: make some const arrays static,
- makes object smaller
-In-Reply-To: <20201016224913.687724-1-colin.king@canonical.com>
-References: <20201016224913.687724-1-colin.king@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Connor McAdams <conmanx360@gmail.com>
+ id 7C955F801F2; Sun, 18 Oct 2020 05:32:07 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id E575BF80115
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 05:32:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E575BF80115
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1602991922915905952-webhooks-bot@alsa-project.org>
+References: <1602991922915905952-webhooks-bot@alsa-project.org>
+Subject: alsamixer: add "restore defaults" keystroke
+Message-Id: <20201018033207.7C955F801F2@alsa1.perex.cz>
+Date: Sun, 18 Oct 2020 05:32:07 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,27 +68,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 17 Oct 2020 00:49:13 +0200,
-Colin King wrote:
-> 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Don't populate const arrays on the stack but instead make them
-> static. Makes the object code smaller by 57 bytes.
-> 
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->  173256	  38016	    192	 211464	  33a08	sound/pci/hda/patch_ca0132.o
-> 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->  172879	  38336	    192	 211407	  339cf	sound/pci/hda/patch_ca0132.o
-> 
-> (gcc version 10.2.0)
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+alsa-project/alsa-utils issue #64 was opened from jidanni:
 
-Thanks, applied.
+There should be a way to "restore defaults" for all levels for this sound card.
+And perhaps for each level individually too.
 
-
-Takashi
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/64
+Repository URL: https://github.com/alsa-project/alsa-utils
