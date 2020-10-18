@@ -6,71 +6,91 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB50DC388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95237C388F9
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:40:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 296A6208C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:39:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12AFB20BED
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:40:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kbrRky/4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qhWiWAYm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 296A6208C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PtGzoPAr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="QOZMzgTQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="QOZMzgTQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12AFB20BED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 749D0174D;
-	Wed, 21 Oct 2020 15:39:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 749D0174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D14AB1768;
+	Wed, 21 Oct 2020 15:39:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D14AB1768
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603287592;
-	bh=pmFwCbDT1yp/pVy8Y4xGBXjYpeNX1tYdWgAZu9Vfc08=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1603287609;
+	bh=z260bBy56dgN8y3lDRHRQeuKrIr1eALRZNoNPoXlSSo=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kbrRky/4X0d2w6vr9SEyNQKFwveF9cdP80b2qhwzACPfw6SlzlvdFuap6ybYt/76G
-	 53Qp7Ze35DBAbudCAJoGYYfvHzuZUCJH9jAS9Rsyry19G5bdfLcFa4P3LmQZVkrkOF
-	 ycGqfdklC5aTxgJEEhkX9aCIZpVlJ01lHdH5HIUg=
+	b=PtGzoPArvJg/TiLOoTe5+2Tg6GW4DfWSjYQEgnlmV8fTo45uSR9j/M+W2Qj2/zj97
+	 uQHtfvjQdaUYVb7bMv1uHPBc8AmJ4VM1zpdpS7oFlUWYKubgyCXzHa8+tXF7dTZDq2
+	 +hO7wPyGIBQwJatlxf8fQSRpmav7alME72oAsSNg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4A11F80111;
-	Wed, 21 Oct 2020 15:37:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92D71F804BB;
+	Wed, 21 Oct 2020 15:37:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F310F801F2; Sun, 18 Oct 2020 21:00:01 +0200 (CEST)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
+ id 9312FF801F2; Sun, 18 Oct 2020 21:13:55 +0200 (CEST)
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com
+ [IPv6:2607:fcd0:100:8a00::2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0348AF800AD
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 21:13:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0348AF800AD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=hansenpartnership.com
+ header.i=@hansenpartnership.com header.b="QOZMzgTQ"; 
+ dkim=pass (1024-bit key) header.d=hansenpartnership.com
+ header.i=@hansenpartnership.com header.b="QOZMzgTQ"
+Received: from localhost (localhost [127.0.0.1])
+ by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6E9191280300;
+ Sun, 18 Oct 2020 12:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+ s=20151216; t=1603048418;
+ bh=z260bBy56dgN8y3lDRHRQeuKrIr1eALRZNoNPoXlSSo=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=QOZMzgTQH16i5avnDNVW0Ktw3okhOk0UWDzTWl7121p+F93A1Quw31cCRVLQH+SGW
+ zn7QBaZkwCTKpROUCnm6j2wnXTspVYtdUU68F1++PaWc9wHgdj5YeqG30CVReBaxSQ
+ 7zgTTXbB0BvsKBkgxIK2UI/Iu/DopS5PndAYThf8=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id JsjuUxZpqgrR; Sun, 18 Oct 2020 12:13:38 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown
+ [IPv6:2601:600:8280:66d1::c447])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E30BF800AD
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 20:59:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E30BF800AD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="qhWiWAYm"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=q0BhqrN3gbd6Z80uxUuHxnuOGNa3MQpvn/ujKpbjoKc=; b=qhWiWAYm9fZ2KNDR/Yk3WeXFl4
- HF2RciAjYHBQMCf3sjKhvFkXSfibnOaNYa7rSxO4GAjMdOb5lKFie8w5W48ySlrw8CCYSSnOZO0Xg
- 5v+vzHZ7K/VxCxY2aBAso6UvZLXpaapi00aBgR18RXogoXyWfK3p9m9265NrgW55bmABmFf/ljB+D
- 9Af5uL1UZOzL5n8T3eza+cGiO5HDs2I27gnorvuwnA1XSsP05jdLks+n6C8PrE6p/2IOOkRu9s0Qf
- 2gQIITEDGF8BYWCD3hQsOGqb9beW/Q62vFU/IQef0kDvAQTCEweywjgtWsVjiKxR3wbF0iuVRtPwK
- m1h79KbA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kUDuB-0007Wk-NT; Sun, 18 Oct 2020 18:59:43 +0000
-Date: Sun, 18 Oct 2020 19:59:43 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: trix@redhat.com
+ by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1ED2912802BA;
+ Sun, 18 Oct 2020 12:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+ s=20151216; t=1603048418;
+ bh=z260bBy56dgN8y3lDRHRQeuKrIr1eALRZNoNPoXlSSo=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=QOZMzgTQH16i5avnDNVW0Ktw3okhOk0UWDzTWl7121p+F93A1Quw31cCRVLQH+SGW
+ zn7QBaZkwCTKpROUCnm6j2wnXTspVYtdUU68F1++PaWc9wHgdj5YeqG30CVReBaxSQ
+ 7zgTTXbB0BvsKBkgxIK2UI/Iu/DopS5PndAYThf8=
+Message-ID: <45efa7780c79972eae9ca9bdeb9f7edbab4f3643.camel@HansenPartnership.com>
 Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
-Message-ID: <20201018185943.GM20115@casper.infradead.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Matthew Wilcox <willy@infradead.org>, trix@redhat.com
+Date: Sun, 18 Oct 2020 12:13:35 -0700
+In-Reply-To: <20201018185943.GM20115@casper.infradead.org>
 References: <20201017160928.12698-1-trix@redhat.com>
+ <20201018185943.GM20115@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201017160928.12698-1-trix@redhat.com>
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Wed, 21 Oct 2020 15:37:33 +0200
 Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org,
  nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
@@ -111,24 +131,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> clang has a number of useful, new warnings see
-> https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
-
-Please get your IT department to remove that stupidity.  If you can't,
-please send email from a non-Red Hat email address.
-
-I don't understand why this is a useful warning to fix.  What actual
-problem is caused by the code below?
-
-> return and break
+On Sun, 2020-10-18 at 19:59 +0100, Matthew Wilcox wrote:
+> On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+> > clang has a number of useful, new warnings see
+> > https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
 > 
->  	switch (c->x86_vendor) {
->  	case X86_VENDOR_INTEL:
->  		intel_p5_mcheck_init(c);
->  		return 1;
-> -		break;
+> Please get your IT department to remove that stupidity.  If you
+> can't, please send email from a non-Red Hat email address.
 
-Sure, it's unnecessary, but it's not masking a bug.  It's not unclear.
-Why do we want to enable this warning?
+Actually, the problem is at Oracle's end somewhere in the ocfs2 list
+... if you could fix it, that would be great.  The usual real mailing
+lists didn't get this transformation
+
+https://lore.kernel.org/bpf/20201017160928.12698-1-trix@redhat.com/
+
+but the ocfs2 list archive did:
+
+https://oss.oracle.com/pipermail/ocfs2-devel/2020-October/015330.html
+
+I bet Oracle IT has put some spam filter on the list that mangles URLs
+this way.
+
+James
+
 
