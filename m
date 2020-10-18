@@ -2,58 +2,81 @@ Return-Path: <SRS0=oKMh=DZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F39A2C433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 17:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC636C43467
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 19:21:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6850A2222B
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 17:01:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D455222E9
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 19:21:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hQGY9rX/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6850A2222B
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mxZx4OsJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="phBpnZY8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D455222E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1A701774;
-	Sun, 18 Oct 2020 19:01:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1A701774
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDB2D179F;
+	Sun, 18 Oct 2020 21:20:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDB2D179F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603040511;
-	bh=bhb2XMRfCPTvvdJ1t3SS39o3yijqIoKerXOz+/D7kbg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1603048867;
+	bh=6iCJp5uNG4JGnYtuc9D2ok6/pin2tQp8td7WDvk/Se0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hQGY9rX/IVdbWSW8RjfwiIBaE+fJvvlu94yBRNXMlOId6btkJoEHWrNAM2tqp5x4B
-	 zp8tP3AbPlhPzqhmKx0B0ieYXTvj/j2BwpVCcqu9PeKxzKQna851PYFH3vk4rV99Jo
-	 QNvUjWbJEbVRGrEgDtEPrDZGqSx1dOuvYAjJ0LoM=
+	b=mxZx4OsJxsSnFsK37rlg1Kd/M8+09NMQXj5s4Qa15drTV8SbTiCuu9NQn4zBol0uK
+	 YunO+z40XexHlWQA+5gWhm2j5kLZ+a81YkepPROXtjRKxGCqxQcQ6PUTWFpw0ieN3I
+	 1LyNZEhdp2cMVdKZrPlL9vaOar69YNWnmZXQraUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E2BCF80111;
-	Sun, 18 Oct 2020 19:01:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43C2CF8014D;
+	Sun, 18 Oct 2020 21:20:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FA11F801F2; Sun, 18 Oct 2020 19:00:59 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B3C36F80111
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 19:00:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3C36F80111
+ id 68403F8024A; Sun, 18 Oct 2020 21:20:14 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41CA4F8014D
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 21:20:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41CA4F8014D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="phBpnZY8"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5563E222E7;
+ Sun, 18 Oct 2020 19:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1603048805;
+ bh=6iCJp5uNG4JGnYtuc9D2ok6/pin2tQp8td7WDvk/Se0=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=phBpnZY8PGlt7GKtscl8p5aT1Shb4ZLfpYu1wW5rH7G41j4NghIfYzPhj1X0zWK4h
+ CsMjZmafi6FxdSRx4SN2PLkKziI66MXAFd89s67WTLnLYEyzrte8joHhhfuunap03s
+ 0TbkChmw/aPicv7fnth9hxy0kW9qQQZsp1o8MBeg=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 097/111] ALSA: hda/ca0132 - Add new quirk ID for
+ SoundBlaster AE-7.
+Date: Sun, 18 Oct 2020 15:17:53 -0400
+Message-Id: <20201018191807.4052726-97-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201018191807.4052726-1-sashal@kernel.org>
+References: <20201018191807.4052726-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1603040447351521969-webhooks-bot@alsa-project.org>
-References: <1603040447351521969-webhooks-bot@alsa-project.org>
-Subject: dcef48f "add support for AMD acp microphone devices" can break
- pulseaudio
-Message-Id: <20201018170059.5FA11F801F2@alsa1.perex.cz>
-Date: Sun, 18 Oct 2020 19:00:59 +0200 (CEST)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ Connor McAdams <conmanx360@gmail.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,58 +92,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #54 was opened from danielrparks:
+From: Connor McAdams <conmanx360@gmail.com>
 
-I recently upgraded alsa-ucm-conf from 1.2.3 to 1.2.4 on Arch Linux, and now pulseaudio fails to initialize my sound card.
-This system is a Dell Inspiron 7405 with a Ryzen 7 4700U and a Realtek ALC3204 sound card. The microphone is handled by the audio co-processor.
-Pulseaudio generates the following error:
-```
-Failed to find a working profile.
-Failed to load module "module-alsa-card" (argument: "device_id="1" name="pci-0000_03_00.6" card_name="alsa_card.pci-0000_03_00.6" namereg_fail=false tsched=yes fixed_latency_range=no ignore_dB=no deferred_volume=yes use_ucm=yes avoid_resampling=no card_properties="module-udev-detect.discovered=1""): initialization failed.
-```
-[notworking-journal.txt](https://github.com/alsa-project/alsa-ucm-conf/files/5397852/notworking-journal.txt)
-[working-pacmd-list-sinks.txt](https://github.com/alsa-project/alsa-ucm-conf/files/5397853/working-pacmd-list-sinks.txt)
+[ Upstream commit 620f08eea6d6961b789af3fa3ea86725c8c93ece ]
 
-I did a git bisect and got this:
-```
-dcef48f13d4f5db79b006755074940b94730a883 is the first bad commit
-commit dcef48f13d4f5db79b006755074940b94730a883
-Author: Jaroslav Kysela <perex@perex.cz>
-Date:   Wed Jun 24 13:39:07 2020 +0200
+Add a new PCI subsystem ID for the SoundBlaster AE-7 card.
 
-    HDA-Intel: add support for AMD acp microphone devices
-    
-    - move the generic HDA code from sof-hda-dsp to HDA-Intel
-    - add generic codecs/hda/hdmi.conf
-    
-    Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+Link: https://lore.kernel.org/r/20200825201040.30339-11-conmanx360@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/pci/hda/patch_ca0132.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- ucm2/HDA-Intel/HDA-Capture-value.conf   |   4 +
- ucm2/HDA-Intel/HDA-Intel.conf           |  28 +++++++
- ucm2/HDA-Intel/Hdmi.conf                |  37 +++++++++
- ucm2/HDA-Intel/HiFi-acp.conf            |   8 ++
- ucm2/HDA-Intel/HiFi-analog.conf         | 133 +++++++++++++++++++++++++++++++
- ucm2/HDA-Intel/HiFi.conf                |  32 ++++++++
- ucm2/HDA-Intel/init.conf                |  39 +++++++++
- ucm2/codecs/hda/hdmi.conf               |  25 ++++++
- ucm2/module/lib/linked.conf             |   3 +
- ucm2/module/snd_acp3x_rn.conf           |   1 +
- ucm2/sof-hda-dsp/HDA-Capture-value.conf |   4 -
- ucm2/sof-hda-dsp/Hdmi.conf              |  78 +++++-------------
- ucm2/sof-hda-dsp/HiFi.conf              | 135 +-------------------------------
- 13 files changed, 331 insertions(+), 196 deletions(-)
- create mode 100644 ucm2/HDA-Intel/HDA-Capture-value.conf
- create mode 100644 ucm2/HDA-Intel/HDA-Intel.conf
- create mode 100644 ucm2/HDA-Intel/Hdmi.conf
- create mode 100644 ucm2/HDA-Intel/HiFi-acp.conf
- create mode 100644 ucm2/HDA-Intel/HiFi-analog.conf
- create mode 100644 ucm2/HDA-Intel/HiFi.conf
- create mode 100644 ucm2/HDA-Intel/init.conf
- create mode 100644 ucm2/codecs/hda/hdmi.conf
- create mode 100644 ucm2/module/lib/linked.conf
- create mode 120000 ucm2/module/snd_acp3x_rn.conf
- delete mode 100644 ucm2/sof-hda-dsp/HDA-Capture-value.conf
-```
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index c68669911de0a..a3eecdf9185e8 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -1065,6 +1065,7 @@ enum {
+ 	QUIRK_R3DI,
+ 	QUIRK_R3D,
+ 	QUIRK_AE5,
++	QUIRK_AE7,
+ };
+ 
+ #ifdef CONFIG_PCI
+@@ -1184,6 +1185,7 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1102, 0x0013, "Recon3D", QUIRK_R3D),
+ 	SND_PCI_QUIRK(0x1102, 0x0018, "Recon3D", QUIRK_R3D),
+ 	SND_PCI_QUIRK(0x1102, 0x0051, "Sound Blaster AE-5", QUIRK_AE5),
++	SND_PCI_QUIRK(0x1102, 0x0081, "Sound Blaster AE-7", QUIRK_AE7),
+ 	{}
+ };
+ 
+-- 
+2.25.1
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/54
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
