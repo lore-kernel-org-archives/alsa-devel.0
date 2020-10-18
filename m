@@ -7,52 +7,53 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9333DC433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 03:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EE8EC433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 03:35:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA6BF2074B
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 03:33:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D97D2074B
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 03:35:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KAaYjE9s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA6BF2074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vVMrNqze"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D97D2074B
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7593A17B5;
-	Sun, 18 Oct 2020 05:32:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7593A17B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5181817CE;
+	Sun, 18 Oct 2020 05:34:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5181817CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1602991981;
-	bh=+vVQR+h7dc3UizWiUrkp+3EK57xN/fnZjfVxd5kb3D8=;
+	s=default; t=1602992107;
+	bh=mWvsKgn0HIe8tmGpum6RiR/sgw1WKxpS6DXtJe+apeg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KAaYjE9sbRSSiMCXTPREUzPZ8DMurarFwVwv1f8Mfx6CQWMzgHxWVBEZQ4WLQOnZY
-	 MQwJOdg9WS/E4+DLksgYMpyZ5juWEIlQ4vX/P/akxquJ7CAmUrhQhKqtGb/7ec6vBg
-	 p3MFAg5/dlR2uKBOqM8IssA0VB9sdoNC844ueh6U=
+	b=vVMrNqzehmtaycHF5mpsMr1lcRLbv/XQ1VEo8iX8GMnkD6uStphcwJ2X3X5lSFKoe
+	 uyx56nitgVh32jfmlun7jdK2iB0flWQjynDTWOULWXraJGVHHVGe/TyMtD9bf8wkKc
+	 3SkZkgzvxNblvQW2C4C6RtYC4N14aDaeXoqoJEVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF5AAF8014D;
-	Sun, 18 Oct 2020 05:32:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7046F8014D;
+	Sun, 18 Oct 2020 05:34:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C955F801F2; Sun, 18 Oct 2020 05:32:07 +0200 (CEST)
+ id 4C6B6F801F2; Sun, 18 Oct 2020 05:34:15 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id E575BF80115
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 05:32:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E575BF80115
+ by alsa1.perex.cz (Postfix) with ESMTP id 7D288F80115
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 05:34:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D288F80115
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1602991922915905952-webhooks-bot@alsa-project.org>
-References: <1602991922915905952-webhooks-bot@alsa-project.org>
-Subject: alsamixer: add "restore defaults" keystroke
-Message-Id: <20201018033207.7C955F801F2@alsa1.perex.cz>
-Date: Sun, 18 Oct 2020 05:32:07 +0200 (CEST)
+In-Reply-To: <1602992051141307116-webhooks-bot@alsa-project.org>
+References: <1602992051141307116-webhooks-bot@alsa-project.org>
+Subject: =?utf-8?q?arecord/aplay_man_page_should_separate_the_options_into_three_l?=
+ =?utf-8?b?aXN0c+KApg==?=
+Message-Id: <20201018033415.4C6B6F801F2@alsa1.perex.cz>
+Date: Sun, 18 Oct 2020 05:34:15 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,10 +69,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #64 was opened from jidanni:
+alsa-project/alsa-utils issue #65 was opened from jidanni:
 
-There should be a way to "restore defaults" for all levels for this sound card.
-And perhaps for each level individually too.
+The arecord/aplay man page should perhaps separate the options into three lists, ones that
+affect recording, ones that affect playing, and ones that affect both.
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/64
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/65
 Repository URL: https://github.com/alsa-project/alsa-utils
