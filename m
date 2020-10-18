@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD07C433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 19:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74BADC433E7
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 19:24:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7027B20791
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 19:24:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D389222EC
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 19:24:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k6BTaKcO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fToFWezS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7027B20791
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BH9Jy7K/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CLWNAolK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D389222EC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7EDC17CE;
-	Sun, 18 Oct 2020 21:23:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7EDC17CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 901951815;
+	Sun, 18 Oct 2020 21:23:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 901951815
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603049056;
-	bh=P53ED4BShvDlilS5vert2xbkgwQD01dU3Jv7kDeWyIM=;
+	s=default; t=1603049073;
+	bh=ir6FlJ9wXpWc5edmvnrn9AviT3w1Aidz7OhxTJybd7Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k6BTaKcOVsYkytdpmDKTMffNIGDFE0eZFPbEGNOiy1cxo2N8LGkBLrLkjUY4NXlku
-	 ONgB0MueyzSHn2tX9A5rUscb2GwgsXAuEGbyim5g3F/OOTSzdkrYS4sDFp80pcmOnt
-	 IwXQN8N86KqLLWyEdgmTfJNOb31JtRADfPGzEagY=
+	b=BH9Jy7K/HvOzUXFRo5YKtin9jSXP2/IdxjEx0jj1b/N71LCeiOKkFx66qqcwdGBN6
+	 WOAQEK1Ya8LMgXeGDn76ithWQyROu40fzcbW52mkUBgGhTpQZD3+t2qKP4CI8p96Sg
+	 Bdb+JMF2qrep76WhxVzqK5ZibFbNtlhS3N5J+zBc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98C6AF80299;
-	Sun, 18 Oct 2020 21:22:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB999F802A7;
+	Sun, 18 Oct 2020 21:22:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13D60F80257; Sun, 18 Oct 2020 21:22:23 +0200 (CEST)
+ id 35E0AF80257; Sun, 18 Oct 2020 21:22:24 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47B2CF80111
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 21:22:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47B2CF80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89521F800AD
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 21:22:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89521F800AD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fToFWezS"
+ header.b="CLWNAolK"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EE7B3222E8;
- Sun, 18 Oct 2020 19:22:16 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 43253222EA;
+ Sun, 18 Oct 2020 19:22:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603048937;
- bh=P53ED4BShvDlilS5vert2xbkgwQD01dU3Jv7kDeWyIM=;
+ s=default; t=1603048939;
+ bh=ir6FlJ9wXpWc5edmvnrn9AviT3w1Aidz7OhxTJybd7Y=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=fToFWezSrRSwS4ms7l2Btdui5sc4Jld1386KMl8eXqwVLWHa3mcDGU9gVnkPpJFTj
- Izs78rfO/132IXKvvdxXM6q2sGzzK8C4qplKWoyjjEBqZTXx5U65kiHhnthWtHt4/u
- DaIMtuRdoK47dXdqtowtlF933bKU8EQKRJ8aEGso=
+ b=CLWNAolKv51pl3eQcf2Xpt1UiY0S89w709l9xz3dbSAmNccoHWrJP8DsJlD4SppEJ
+ x1zDJ4+r0jBozy5G/m9zeL9+C0KUlRIIbg7jsujBZmHqOln7r/yl/h2vILwtQh+ZEb
+ 8zOSxVR6+pl7bUSKwCeLy6ZtWvD9emhEZ9vKcGL4=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 092/101] ASoC: SOF: Add topology filename override
- based on dmi data match
-Date: Sun, 18 Oct 2020 15:20:17 -0400
-Message-Id: <20201018192026.4053674-92-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 093/101] ASoC: Intel: sof_rt5682: override quirk
+ data for tgl_max98373_rt5682
+Date: Sun, 18 Oct 2020 15:20:18 -0400
+Message-Id: <20201018192026.4053674-93-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201018192026.4053674-1-sashal@kernel.org>
 References: <20201018192026.4053674-1-sashal@kernel.org>
@@ -80,7 +80,7 @@ Cc: Sasha Levin <sashal@kernel.org>,
  Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
+ Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
  Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -99,90 +99,47 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 
-[ Upstream commit 5253a73d567dcd75e62834ff5f502ea9470e5722 ]
+[ Upstream commit 3e1734b64ce786c54dc98adcfe67941e6011d735 ]
 
-Add topology filename override based on system DMI data matching,
-typically to account for a different hardware layout.
-
-In ACPI based systems, the tplg_filename is pre-defined in an ACPI
-machine table. When a DMI quirk is detected, the
-sof_pdata->tplg_filename is not set with the hard-coded ACPI value,
-and instead is set with the DMI-specific filename.
+A Chrome System based on tgl_max98373_rt5682 has different SSP interface
+configurations. Using DMI data of this variant DUT, override quirk
+data.
 
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200821195603.215535-14-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200821195603.215535-13-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda.c   |  8 +++++++-
- sound/soc/sof/sof-pci-dev.c | 24 ++++++++++++++++++++++++
- 2 files changed, 31 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_rt5682.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 63ca920c8e6e0..7152e6d1cf673 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1179,7 +1179,13 @@ void hda_machine_select(struct snd_sof_dev *sdev)
- 
- 	mach = snd_soc_acpi_find_machine(desc->machines);
- 	if (mach) {
--		sof_pdata->tplg_filename = mach->sof_tplg_filename;
-+		/*
-+		 * If tplg file name is overridden, use it instead of
-+		 * the one set in mach table
-+		 */
-+		if (!sof_pdata->tplg_filename)
-+			sof_pdata->tplg_filename = mach->sof_tplg_filename;
-+
- 		sof_pdata->machine = mach;
- 
- 		if (mach->link_mask) {
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index aa3532ba14349..f3a8140773db5 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -35,8 +35,28 @@ static int sof_pci_debug;
- module_param_named(sof_pci_debug, sof_pci_debug, int, 0444);
- MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
- 
-+static const char *sof_override_tplg_name;
-+
- #define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
- 
-+static int sof_tplg_cb(const struct dmi_system_id *id)
-+{
-+	sof_override_tplg_name = id->driver_data;
-+	return 1;
-+}
-+
-+static const struct dmi_system_id sof_tplg_table[] = {
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 13a48b0c35aef..11233c3aeadfb 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -118,6 +118,19 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
+ 		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0)),
+ 	},
 +	{
-+		.callback = sof_tplg_cb,
++		.callback = sof_rt5682_quirk_cb,
 +		.matches = {
 +			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Volteer"),
 +			DMI_MATCH(DMI_PRODUCT_NAME, "Terrador"),
 +		},
-+		.driver_data = "sof-tgl-rt5682-ssp0-max98373-ssp2.tplg",
++		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_MAX98373_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(2) |
++					SOF_RT5682_NUM_HDMIDEV(4)),
 +	},
-+	{}
-+};
-+
- static const struct dmi_system_id community_key_platforms[] = {
- 	{
- 		.ident = "Up Squared",
-@@ -347,6 +367,10 @@ static int sof_pci_probe(struct pci_dev *pci,
- 		sof_pdata->tplg_filename_prefix =
- 			sof_pdata->desc->default_tplg_path;
+ 	{}
+ };
  
-+	dmi_check_system(sof_tplg_table);
-+	if (sof_override_tplg_name)
-+		sof_pdata->tplg_filename = sof_override_tplg_name;
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
- 	/* set callback to enable runtime_pm */
- 	sof_pdata->sof_probe_complete = sof_pci_probe_complete;
 -- 
 2.25.1
 
