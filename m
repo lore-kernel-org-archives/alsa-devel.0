@@ -2,57 +2,58 @@ Return-Path: <SRS0=oKMh=DZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA169C433DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 13:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F39A2C433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 17:01:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26D1121655
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 13:26:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6850A2222B
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Oct 2020 17:01:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Guqh0V3i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26D1121655
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hQGY9rX/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6850A2222B
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F6A917A5;
-	Sun, 18 Oct 2020 15:26:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F6A917A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1A701774;
+	Sun, 18 Oct 2020 19:01:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1A701774
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603027617;
-	bh=u3+MpJT70Nq+Hp67DcOdaRc2nlHsgGYOW6hN6tUBLSM=;
+	s=default; t=1603040511;
+	bh=bhb2XMRfCPTvvdJ1t3SS39o3yijqIoKerXOz+/D7kbg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Guqh0V3iMGhpja0+l3EiND0DciIIrPdgMCpvpeazca4CyC684/weteHlHno+R097F
-	 6cC+6rAK5PosbHMfOnNI7LhASUeSuzO2mvHNl6sbeLy8bpGYBEQ1A2cKVWzhLnE13+
-	 jdEWZ6aKU3onri2JBvLFNXwkwfp1Kn5V1QoxP9BQ=
+	b=hQGY9rX/IVdbWSW8RjfwiIBaE+fJvvlu94yBRNXMlOId6btkJoEHWrNAM2tqp5x4B
+	 zp8tP3AbPlhPzqhmKx0B0ieYXTvj/j2BwpVCcqu9PeKxzKQna851PYFH3vk4rV99Jo
+	 QNvUjWbJEbVRGrEgDtEPrDZGqSx1dOuvYAjJ0LoM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 152E1F8014D;
-	Sun, 18 Oct 2020 15:26:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E2BCF80111;
+	Sun, 18 Oct 2020 19:01:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3405F801F2; Sun, 18 Oct 2020 15:26:05 +0200 (CEST)
+ id 5FA11F801F2; Sun, 18 Oct 2020 19:00:59 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 391AAF800AD
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 15:26:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 391AAF800AD
+ by alsa1.perex.cz (Postfix) with ESMTP id B3C36F80111
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 19:00:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3C36F80111
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1603027559622334957-webhooks-bot@alsa-project.org>
-References: <1603027559622334957-webhooks-bot@alsa-project.org>
-Subject: Add Slovak translation
-Message-Id: <20201018132605.C3405F801F2@alsa1.perex.cz>
-Date: Sun, 18 Oct 2020 15:26:05 +0200 (CEST)
+In-Reply-To: <1603040447351521969-webhooks-bot@alsa-project.org>
+References: <1603040447351521969-webhooks-bot@alsa-project.org>
+Subject: dcef48f "add support for AMD acp microphone devices" can break
+ pulseaudio
+Message-Id: <20201018170059.5FA11F801F2@alsa1.perex.cz>
+Date: Sun, 18 Oct 2020 19:00:59 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,10 +69,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #68 was opened from jose1711:
+alsa-project/alsa-ucm-conf issue #54 was opened from danielrparks:
 
+I recently upgraded alsa-ucm-conf from 1.2.3 to 1.2.4 on Arch Linux, and now pulseaudio fails to initialize my sound card.
+This system is a Dell Inspiron 7405 with a Ryzen 7 4700U and a Realtek ALC3204 sound card. The microphone is handled by the audio co-processor.
+Pulseaudio generates the following error:
+```
+Failed to find a working profile.
+Failed to load module "module-alsa-card" (argument: "device_id="1" name="pci-0000_03_00.6" card_name="alsa_card.pci-0000_03_00.6" namereg_fail=false tsched=yes fixed_latency_range=no ignore_dB=no deferred_volume=yes use_ucm=yes avoid_resampling=no card_properties="module-udev-detect.discovered=1""): initialization failed.
+```
+[notworking-journal.txt](https://github.com/alsa-project/alsa-ucm-conf/files/5397852/notworking-journal.txt)
+[working-pacmd-list-sinks.txt](https://github.com/alsa-project/alsa-ucm-conf/files/5397853/working-pacmd-list-sinks.txt)
 
+I did a git bisect and got this:
+```
+dcef48f13d4f5db79b006755074940b94730a883 is the first bad commit
+commit dcef48f13d4f5db79b006755074940b94730a883
+Author: Jaroslav Kysela <perex@perex.cz>
+Date:   Wed Jun 24 13:39:07 2020 +0200
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/68
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/68.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+    HDA-Intel: add support for AMD acp microphone devices
+    
+    - move the generic HDA code from sof-hda-dsp to HDA-Intel
+    - add generic codecs/hda/hdmi.conf
+    
+    Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+
+ ucm2/HDA-Intel/HDA-Capture-value.conf   |   4 +
+ ucm2/HDA-Intel/HDA-Intel.conf           |  28 +++++++
+ ucm2/HDA-Intel/Hdmi.conf                |  37 +++++++++
+ ucm2/HDA-Intel/HiFi-acp.conf            |   8 ++
+ ucm2/HDA-Intel/HiFi-analog.conf         | 133 +++++++++++++++++++++++++++++++
+ ucm2/HDA-Intel/HiFi.conf                |  32 ++++++++
+ ucm2/HDA-Intel/init.conf                |  39 +++++++++
+ ucm2/codecs/hda/hdmi.conf               |  25 ++++++
+ ucm2/module/lib/linked.conf             |   3 +
+ ucm2/module/snd_acp3x_rn.conf           |   1 +
+ ucm2/sof-hda-dsp/HDA-Capture-value.conf |   4 -
+ ucm2/sof-hda-dsp/Hdmi.conf              |  78 +++++-------------
+ ucm2/sof-hda-dsp/HiFi.conf              | 135 +-------------------------------
+ 13 files changed, 331 insertions(+), 196 deletions(-)
+ create mode 100644 ucm2/HDA-Intel/HDA-Capture-value.conf
+ create mode 100644 ucm2/HDA-Intel/HDA-Intel.conf
+ create mode 100644 ucm2/HDA-Intel/Hdmi.conf
+ create mode 100644 ucm2/HDA-Intel/HiFi-acp.conf
+ create mode 100644 ucm2/HDA-Intel/HiFi-analog.conf
+ create mode 100644 ucm2/HDA-Intel/HiFi.conf
+ create mode 100644 ucm2/HDA-Intel/init.conf
+ create mode 100644 ucm2/codecs/hda/hdmi.conf
+ create mode 100644 ucm2/module/lib/linked.conf
+ create mode 120000 ucm2/module/snd_acp3x_rn.conf
+ delete mode 100644 ucm2/sof-hda-dsp/HDA-Capture-value.conf
+```
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/54
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
