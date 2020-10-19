@@ -2,75 +2,91 @@ Return-Path: <SRS0=W2oN=D2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE42C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E51AC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:48:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E439222203
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:42:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 954782224D
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:48:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bCv46rmI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E439222203
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AE42UDUc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="dWFBSPDc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 954782224D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB5A3178A;
-	Mon, 19 Oct 2020 06:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB5A3178A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A5F0178F;
+	Mon, 19 Oct 2020 06:47:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A5F0178F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603082563;
-	bh=I4598dsAQDWKhAb2TswrfHfRMpRTqG3PwnwQsgsGqbE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bCv46rmIeVRQ5RGB9e42FsWSdg7XrnzpgimdFVrk1dW2z4lJiq8nq/G+sL+6O7JiE
-	 D4Ed5+8rtXnmSu1NdsbZgNUFETxTN2jN+xVzyVf6P3r+x4ecJacvTicJ3rIePyV0GT
-	 xpUtrJ2m6ckgzgSY6m61uZDLb8fWwWOChwQue28A=
+	s=default; t=1603082920;
+	bh=xpooQ390Z4xjNOVmaAwJErNNuxZxQXcgVNqgKNIUopE=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AE42UDUclqQVmM8JlKn6iBTJMZKCorlJEaFGus0pObvSkMVQpohzEBt4Sxp9wtZhJ
+	 va7aSWatcf187spwbhxnFjPW8xPnJsPe+AXfVfPO0T6OmkeutMoMwqkfkrtahkKxHq
+	 9dZL+mL9o6r1DRCXgwYJxnCY2QcD3rWby5CGKA5k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45B58F801D5;
-	Mon, 19 Oct 2020 06:41:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDB8DF801D5;
+	Mon, 19 Oct 2020 06:47:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09F5BF80247; Mon, 19 Oct 2020 06:41:51 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0E31AF8010F
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 06:41:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E31AF8010F
-Date: 19 Oct 2020 13:41:40 +0900
-X-IronPort-AV: E=Sophos;i="5.77,393,1596466800"; d="scan'208";a="59931882"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 19 Oct 2020 13:41:40 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 651EC4002C33;
- Mon, 19 Oct 2020 13:41:40 +0900 (JST)
-Message-ID: <87v9f6hlvb.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v4 09/15] ASoC: dt-bindings: audio-graph: Convert bindings
- to json-schema
-In-Reply-To: <2c9abfd5-f7eb-0b8d-f45f-9f56f37881b5@nvidia.com>
-References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
- <1602859382-19505-10-git-send-email-spujar@nvidia.com>
- <87o8kz9blh.wl-kuninori.morimoto.gx@renesas.com>
- <2c9abfd5-f7eb-0b8d-f45f-9f56f37881b5@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, atalambedu@nvidia.com,
- linux-kernel@vger.kernel.org, thierry.reding@gmail.com, rlokhande@nvidia.com,
- swarren@nvidia.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
- jonathanh@nvidia.com, devicetree@vger.kernel.org, nicoleotsuka@gmail.com,
- robh+dt@kernel.org, linux-tegra@vger.kernel.org, mkumard@nvidia.com,
- viswanathl@nvidia.com, lgirdwood@gmail.com, nwartikar@nvidia.com,
- p.zabel@pengutronix.de, sharadg@nvidia.com, dramesh@nvidia.com
+ id 9A416F80247; Mon, 19 Oct 2020 06:47:46 +0200 (CEST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
+ [IPv6:2607:f8b0:4864:20::b4a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB7B1F8010F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 06:47:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB7B1F8010F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="dWFBSPDc"
+Received: by mail-yb1-xb4a.google.com with SMTP id v4so10314691ybp.3
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 21:47:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=sender:date:message-id:mime-version:subject:from:to:cc;
+ bh=i+hW0NHkwqdVP+vdoT2uhmHt5Woaig2J2wJn4kfZA2Y=;
+ b=dWFBSPDcz9yN0hoCmv0/Dg528NP37Sb/mu6mkXLs7YKzNcf0sxFFknImJkEdo5Kcp/
+ hFzF0l5DbqW0mjuMOoDeJRjHRO1GoD+3Q0D+ZemSonBb9ewnKyFTRXsUmjtpPH7ZI7cF
+ BKOcvjpH+Vi/bLns0AK0Gc4KplpHJ/1HWv2afvuVc4MEiiQuvwOtpg+mQiDjc07gJWET
+ KrjM3jo7QdzLeouBZjTJHvFKXC+33+W38QMZ+Vn0CZeDY8d3NHLI7NtterW4sspaTs81
+ dwYtQTKyif9kIXmZjxuJ1p3bs/iSfEVQDtTg+NRQO7rW9VEFFQeS6r38SkpKnIEH8NWv
+ C9gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+ :to:cc;
+ bh=i+hW0NHkwqdVP+vdoT2uhmHt5Woaig2J2wJn4kfZA2Y=;
+ b=VKCkH5GGytm4vop4dVZ2usVoRY/tGxSqlS7uYyiONZhmpX8y9iuARhctG2S5ecHeoS
+ b4JKEzeZ7xlAPOidlfXOLTqkxbmCJIEzmVWJFWvbAS1tJc0+EmJ/OLUQ79tte4OMHWkN
+ dD8YLM4rv+6hEf5jj/UP+2p7x/ZKLivIB0MrXDmsOqsRFrfumR0xWUDHWo7eHgW1GA0p
+ vOJi6xMUDMLnz0Tq3ZQEMVvr+VQeAelq/A2NVGND5oQjcl0MtGTaqEeqq+F9zD6KIWAp
+ 4GWHaonPzGofQNQ/CEeaqD/ylOI8oWCHTo8rZaI+gEhPqYoRyRJ+xyDN4iBEwhItILzl
+ lNAQ==
+X-Gm-Message-State: AOAM533GgV/qzR1JGTFQN8HaIIeCfQIIUQs94BztA4G/lXp1P8EugX1j
+ DD2f1430RhXaVhTYg7wz/N0TE8ARBsQu
+X-Google-Smtp-Source: ABdhPJwnADu/8APtMIPkgCqiMwm8gvHPWf1g3Diaaya51b6c2E1KldyC3DakL8Jyimirmvg5QAfqMDBo2WS0
+X-Received: from tzungbi-z840.tpe.corp.google.com
+ ([2401:fa00:1:b:725a:fff:fe41:c6a5])
+ (user=tzungbi job=sendgmr) by 2002:a25:b5c2:: with SMTP id
+ d2mr18810600ybg.102.1603082860320; Sun, 18 Oct 2020 21:47:40 -0700 (PDT)
+Date: Mon, 19 Oct 2020 12:47:24 +0800
+Message-Id: <20201019044724.1601476-1-tzungbi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH] ASoC: mediatek: mt8183-da7219: fix DAPM paths for rt1015
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,32 +102,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+RT1015's output widget name is "SPO" instead of "Speaker".  Fixes it to
+use the correct names.
 
-Hi Sameer
-
-> >> Convert device tree bindings of audio graph card to YAML format. Also
-> >> expose some common definitions which can be used by similar graph based
-> >> audio sound cards.
-> >> 
-> >> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> >> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> >> ---
-> > I'm posting this patch to Rob & DT ML.
-> > Not yet accepted, though..
-> 
-> Thanks for letting me know. I guess below is your patch,
-> http://patchwork.ozlabs.org/project/devicetree-bindings/patch/877dtlvsxk.wl-kuninori.morimoto.gx@renesas.com/
-> Do you have plans to resend this or send next revision?
-> 
-> I can drop my patch once yours is merged and refer the same for Tegra
-> audio graph card.
-
-I'm waiting response from Rob now.
-It is merge window now. I will re-post it without his response
-if -rc1 was released.
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
-Kuninori Morimoto
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  | 31 +++++++++++++++----
+ 1 file changed, 25 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index c2c1eb16fcc0..26e7d9a7198f 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -630,15 +630,34 @@ static struct snd_soc_codec_conf mt8183_da7219_rt1015_codec_conf[] = {
+ 	},
+ };
+ 
++static const struct snd_kcontrol_new mt8183_da7219_rt1015_snd_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Left Spk"),
++	SOC_DAPM_PIN_SWITCH("Right Spk"),
++};
++
++static const
++struct snd_soc_dapm_widget mt8183_da7219_rt1015_dapm_widgets[] = {
++	SND_SOC_DAPM_SPK("Left Spk", NULL),
++	SND_SOC_DAPM_SPK("Right Spk", NULL),
++	SND_SOC_DAPM_PINCTRL("TDM_OUT_PINCTRL",
++			     "aud_tdm_out_on", "aud_tdm_out_off"),
++};
++
++static const struct snd_soc_dapm_route mt8183_da7219_rt1015_dapm_routes[] = {
++	{"Left Spk", NULL, "Left SPO"},
++	{"Right Spk", NULL, "Right SPO"},
++	{"I2S Playback", NULL, "TDM_OUT_PINCTRL"},
++};
++
+ static struct snd_soc_card mt8183_da7219_rt1015_card = {
+ 	.name = "mt8183_da7219_rt1015",
+ 	.owner = THIS_MODULE,
+-	.controls = mt8183_da7219_max98357_snd_controls,
+-	.num_controls = ARRAY_SIZE(mt8183_da7219_max98357_snd_controls),
+-	.dapm_widgets = mt8183_da7219_max98357_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(mt8183_da7219_max98357_dapm_widgets),
+-	.dapm_routes = mt8183_da7219_max98357_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(mt8183_da7219_max98357_dapm_routes),
++	.controls = mt8183_da7219_rt1015_snd_controls,
++	.num_controls = ARRAY_SIZE(mt8183_da7219_rt1015_snd_controls),
++	.dapm_widgets = mt8183_da7219_rt1015_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(mt8183_da7219_rt1015_dapm_widgets),
++	.dapm_routes = mt8183_da7219_rt1015_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(mt8183_da7219_rt1015_dapm_routes),
+ 	.dai_link = mt8183_da7219_dai_links,
+ 	.num_links = ARRAY_SIZE(mt8183_da7219_dai_links),
+ 	.aux_dev = &mt8183_da7219_max98357_headset_dev,
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
+
