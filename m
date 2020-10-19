@@ -2,97 +2,140 @@ Return-Path: <SRS0=H+KG=D4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26E54C388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:45:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 691C6C55178
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:46:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C1DB20BED
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:45:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0DC6D20BED
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:46:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TyMEZ43t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C1DB20BED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J21OSkXi";
+	dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b="HDsiYK42"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DC6D20BED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xs4all.nl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A19B179E;
-	Wed, 21 Oct 2020 15:45:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A19B179E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A8211793;
+	Wed, 21 Oct 2020 15:45:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A8211793
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603287954;
-	bh=2qOb9vWNvgKOfWwbwMrGZ1ktChNsq17hEaPZ1eOLuR4=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603287982;
+	bh=kLo5NvtHsNpAO4ncnT/qrhRNiqSelOiihTI3vWKzDhM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TyMEZ43ts35SbcJm4ZaOtnagYkZ0xyc8JlkiNOUxapFS6O2phuLcAthb0Qu3KUpEk
-	 6d16XrOHqtNx92sZ98OuZEMVO4Q3dvPVLtjjTLsK5cjAqELRzV/FqvKTzJAt52SsPT
-	 BHDRmg64A40VGvEXsYcFj/YqC+PKffKsU2qEjBi4=
+	b=J21OSkXiR13hRyUXYKAanGd5oCXYinMwS4ojQ2MgonaLtNEFG4oMzkkVgukNFri+R
+	 M3QUamELggi32tU98FWSDV+Iro35d2Y+4iVxJ6nufvcl6gc4b/09dP4grTILRKXiBh
+	 RTzhe/aelKjeQoMcjiGAWmUr9ns+t4Ft2nyEJdQk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94623F80533;
-	Wed, 21 Oct 2020 15:37:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BF44F80537;
+	Wed, 21 Oct 2020 15:37:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 556E4F801F2; Sun, 18 Oct 2020 21:06:58 +0200 (CEST)
-Received: from smtprelay.hostedemail.com (smtprelay0129.hostedemail.com
- [216.40.44.129])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 124F7F80247; Mon, 19 Oct 2020 10:35:20 +0200 (CEST)
+Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net
+ [194.109.24.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51DF2F80111
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2020 21:06:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51DF2F80111
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
- [216.40.38.60])
- by smtprelay01.hostedemail.com (Postfix) with ESMTP id 70CB3100E7B40;
- Sun, 18 Oct 2020 19:06:49 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: year67_630d5f827230
-X-Filterd-Recvd-Size: 3209
-Received: from XPS-9350.home (unknown [47.151.133.149])
- (Authenticated sender: joe@perches.com)
- by omf09.hostedemail.com (Postfix) with ESMTPA;
- Sun, 18 Oct 2020 19:06:42 +0000 (UTC)
-Message-ID: <18981cad4ac27b4a22b2e38d40bd112432d4a4e7.camel@perches.com>
-Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
-From: Joe Perches <joe@perches.com>
-To: Matthew Wilcox <willy@infradead.org>, trix@redhat.com
-Date: Sun, 18 Oct 2020 12:06:40 -0700
-In-Reply-To: <20201018185943.GM20115@casper.infradead.org>
-References: <20201017160928.12698-1-trix@redhat.com>
- <20201018185943.GM20115@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42937F8010F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 10:35:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42937F8010F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl
+ header.b="HDsiYK42"
+Received: from cust-57f2be97 ([IPv6:fc0c:c196:c6c4:fdf1:aa47:ab6:e251:d2a8])
+ by smtp-cloud7.xs4all.net with ESMTPA
+ id UQdMkcxTkghRkUQdNkr5dO; Mon, 19 Oct 2020 10:35:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+ t=1603096516; bh=Dxlb943mpAZem9qguDW/aZj239fOnb9kmxA8tQ1N2pE=;
+ h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+ Subject;
+ b=HDsiYK424WLIPaq++W+HFCe0keMCSCRMnX+H0tgR1v2VYJkdzIQ0jC27Z6A1anmdn
+ PiK6d/AJYqXF7OqE5vrTzMWlaX7ej9zN5qLiqiOsdACk5OYmuV7Gk37p7zBcS50XBP
+ h8iDg+3BC0bgqA0FsQPJcbvtMwvnQ80537AOcbTChKfLYu7ot+oxUf1Br+3k60Ig/2
+ hhsWKUIT9zp7IqX0EXPqtEha4i4GGGd65vmLZY9uYFzKM1TDHSk7fM6ufnNfK+Eq2w
+ wTvFddOfxmKH+xqtd4rlvpYrcyoAENV0zYCJEfBnK6K3jyGENHGBmrMTLp+ZbkMLfz
+ y+QlKm9Z/b1bQ==
+Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
+To: Takashi Iwai <tiwai@suse.de>, Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+ moderated for non-subscribers <alsa-devel@alsa-project.org>
+References: <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+ <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
+ <s5hblh5mele.wl-tiwai@suse.de> <s5ha6wpmei5.wl-tiwai@suse.de>
+ <20201014075853.GB29881@amd> <056a8933-378f-30f2-c7af-5514d93d3c36@xs4all.nl>
+ <20201014081116.GC29881@amd> <2be6e184-97d4-a2b1-a500-6ea3528cff37@xs4all.nl>
+ <20201014082752.GA31728@amd> <9cf705b9-1fca-2445-43de-916b13b9103f@xs4all.nl>
+ <20201014083758.GB31728@amd>
+From: Udo van den Heuvel <udovdh@xs4all.nl>
+Autocrypt: addr=udovdh@xs4all.nl; prefer-encrypt=mutual; keydata=
+ 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
+Organization: hierzo
+Message-ID: <d8e450ef-cde9-b799-88e9-8ed9940b95fe@xs4all.nl>
+Date: Mon, 19 Oct 2020 10:35:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Wed, 21 Oct 2020 15:37:34 +0200
-Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org,
- nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- virtualization@lists.linux-foundation.org, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, amd-gfx@lists.freedesktop.org,
- linux-stm32@st-md-mailman.stormreply.com, usb-storage@lists.one-eyed-alien.net,
- devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org,
- linux-nvdimm@lists.01.org, linux-pm@vger.kernel.org,
- ath10k@lists.infradead.org, linux-acpi@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, industrypack-devel@lists.sourceforge.net,
- linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
- MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-nfc@lists.01.org,
- linux-serial@vger.kernel.org, linux-can@vger.kernel.org,
- linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
- storagedev@microchip.com, linux-amlogic@lists.infradead.org,
- openipmi-developer@lists.sourceforge.net, platform-driver-x86@vger.kernel.org,
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-edac@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-security-module@vger.kernel.org, clang-built-linux@googlegroups.com,
- patches@opensource.cirrus.com, linux-crypto@vger.kernel.org,
- linux-integrity@vger.kernel.org, ocfs2-devel@oss.oracle.com,
- linux-power@fi.rohmeurope.com
+In-Reply-To: <20201014083758.GB31728@amd>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfMhtmd72LSRj834vWkYq/ZQfiQkrT50q1y4It/03aF6gdz7QKHIgeBqLQogKoObCMiz/quhJtfdNXP5vNe3M1cyzweTd2ICUL0pdUCZTB+E0Y9Gav88j
+ qbTUEm061VZLSBu8/IEcCtoiFy4xxHqWWmWykxCZYTL3CCdtpYnVV+y5EA306c5WG4ukdS3OFHZy2kMGc+beiW5nrINvGzajei1qPDD5z11e0xFsjiMBaBd2
+ 29uyS6MCLtpmKepOPYTCviHk13ywKMj5m6946iFypI23anw4XYVDjIJi2VijNV0Vi/AJFNCqtEYJqsDqkysyL6cQWggnmAvrijAxhAqt/jfdAWM0BOj81AFd
+ ga3mNh3JJrMha22SjmiMYxyfXpE7vDkSWlG9okY0hZFcmRnw2srOn/lHiY243pOQg3LnGBCIIONUjOYtw97+vuAYKXwK5A==
+X-Mailman-Approved-At: Wed, 21 Oct 2020 15:37:33 +0200
+Cc: Pavel Machek <pavel@ucw.cz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,26 +151,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 2020-10-18 at 19:59 +0100, Matthew Wilcox wrote:
-> On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > clang has a number of useful, new warnings see
-> > https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
+People,
+
+At https://www.kernel.org/doc/html/latest/leds/leds-class.html we can
+read that the LEDS code supposedly optimizes away when certain
+conditions are met.
+Especially the Realtek HDA driver *unconditionally* (as found in 5.9.1)
+*wants* to enable LED functionality.
+I.e.: if this blockade is lifted in the source tree then I can live with
+the 'is optimized out' predictions, assuming that gcc (from Fedora 32)
+can do this.
+So the request is clear; we're almost there.
+Please make it so that the compiler can do the 'optimize away' work bij
+changing a tad in the Realtek HDA driver, along the lines of the patch
+sent to me earlier or something even more beautiful.
+
+Thanks in advance and kind regards,
+Udo
+
+
+
+On 14-10-2020 10:37, Pavel Machek wrote:
+> On Wed 2020-10-14 10:34:21, Udo van den Heuvel wrote:
+>> On 14-10-2020 10:27, Pavel Machek wrote:
+>>>> One should have thought about stuff beforehand.
+>>>
+>>> We did. And decided this is best solution.
+>>
+>> Then the thought process went awry.
+>>
+>>>> The non-selectability is not my fault.
+>>>
+>>> It also does not affect you in any way.
+>>
+>> It does.
+>> /boot fills up even sooner thanks to this unused code.
+>> Compiles last longer because of this unused code.
 > 
-> Please get your IT department to remove that stupidity.  If you can't,
-> please send email from a non-Red Hat email address.
-
-I didn't get it this way, neither did lore.
-It's on your end.
-
-https://lore.kernel.org/lkml/20201017160928.12698-1-trix@redhat.com/
-
-> I don't understand why this is a useful warning to fix.
-
-Precision in coding style intent and code minimization
-would be the biggest factors IMO.
-
-> What actual problem is caused by the code below?
-
-Obviously none.
-
+> Have you measured how much slower and how much bigger it is? Do you
+> understand that you propose to make source code bigger and slower to
+> compile for everyone else?
+> 
+> You are filling my inbox.
+> 
+>>> Feel free to go to the mic LED discussion to see why we did it like
+>>> this. Then you can come up with better solution for problem at hand.
+>>
+>> I did not think of forcing code onto somebody. Someone else did.
+>> This is effectively the effect of the LEDs thing.
+> 
+> Without understanding what was decided and why, this discussion is not
+> useful.
+> 
+> 
+> 									Pavel
+> 
 
