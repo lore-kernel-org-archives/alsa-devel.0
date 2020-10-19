@@ -2,90 +2,68 @@ Return-Path: <SRS0=W2oN=D2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 041F4C433E7
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE42C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:42:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F7BA22240
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:32:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E439222203
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 04:42:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="srtRW10u";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="rF7+S2/a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F7BA22240
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bCv46rmI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E439222203
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E86B1788;
-	Mon, 19 Oct 2020 06:31:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E86B1788
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB5A3178A;
+	Mon, 19 Oct 2020 06:41:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB5A3178A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603081936;
-	bh=53ZDBjX76Wu6crbEcXkzj6kGA6iuzYR4kjBAROcngic=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1603082563;
+	bh=I4598dsAQDWKhAb2TswrfHfRMpRTqG3PwnwQsgsGqbE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=srtRW10uXXLO3HFNMpMnOVH7vS5xZFbOezQ/0YcL3CabDN7NfaLpDhV+O1uPRJxLY
-	 XDio6vOAb5hTXfUr20AEjAUiT3IIFhxyhlFEzvNqXrORTs9wJ0WvExcgbRDAQqE3MU
-	 oETUaBMtJqTnMA4asS5f+76KIZfySCrTy/Rqg1/0=
+	b=bCv46rmIeVRQ5RGB9e42FsWSdg7XrnzpgimdFVrk1dW2z4lJiq8nq/G+sL+6O7JiE
+	 D4Ed5+8rtXnmSu1NdsbZgNUFETxTN2jN+xVzyVf6P3r+x4ecJacvTicJ3rIePyV0GT
+	 xpUtrJ2m6ckgzgSY6m61uZDLb8fWwWOChwQue28A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEB8EF801D5;
-	Mon, 19 Oct 2020 06:31:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45B58F801D5;
+	Mon, 19 Oct 2020 06:41:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8357AF80247; Mon, 19 Oct 2020 06:31:23 +0200 (CEST)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB4F5F8010F
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 06:31:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB4F5F8010F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="rF7+S2/a"
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B5f8d16600000>; Sun, 18 Oct 2020 21:30:24 -0700
-Received: from [10.25.98.225] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
- 2020 04:30:58 +0000
+ id 09F5BF80247; Mon, 19 Oct 2020 06:41:51 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0E31AF8010F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 06:41:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E31AF8010F
+Date: 19 Oct 2020 13:41:40 +0900
+X-IronPort-AV: E=Sophos;i="5.77,393,1596466800"; d="scan'208";a="59931882"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 19 Oct 2020 13:41:40 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 651EC4002C33;
+ Mon, 19 Oct 2020 13:41:40 +0900 (JST)
+Message-ID: <87v9f6hlvb.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Sameer Pujar <spujar@nvidia.com>
 Subject: Re: [PATCH v4 09/15] ASoC: dt-bindings: audio-graph: Convert bindings
  to json-schema
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <2c9abfd5-f7eb-0b8d-f45f-9f56f37881b5@nvidia.com>
 References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
  <1602859382-19505-10-git-send-email-spujar@nvidia.com>
  <87o8kz9blh.wl-kuninori.morimoto.gx@renesas.com>
-From: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <2c9abfd5-f7eb-0b8d-f45f-9f56f37881b5@nvidia.com>
-Date: Mon, 19 Oct 2020 10:00:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <87o8kz9blh.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1603081824; bh=JlVHUDKLpcK1i8rBNnQBiUlJRXSUCLWhMPCqRDHsvmI=;
- h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
- MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
- Content-Language:X-Originating-IP:X-ClientProxiedBy;
- b=rF7+S2/aZqYZK1QazdBEO1FX30HJnmmW1idk6J3T9yuuBVdxr/O2FodsXSOZY0d8Q
- oDLeJosw9P2zcz7RL0J9S9imoz7FgiMPulBVhyvZGnBZpB99MJ1K3/vfGZ91m+JC27
- 7qUIdZCU0CKNOuOYhKCBSxPx25QCpz5g9+B6x0b1urfVtOhzN0i9LuWP+Nevk0Llau
- BiHPIUCiltWH4p3WwOUP4KcawDHY4pZDusjMQCzHgE9TlN1b9Dwo5Lzw2YsR7xiqjV
- G8eKfgm9lOME0mIpy7u+TO9KAdhslZkGTz20qIV8fohNH2nc/TiHAMUNa0NkDmJPEC
- M1Zy97K3dr9WA==
+ <2c9abfd5-f7eb-0b8d-f45f-9f56f37881b5@nvidia.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, atalambedu@nvidia.com,
  linux-kernel@vger.kernel.org, thierry.reding@gmail.com, rlokhande@nvidia.com,
  swarren@nvidia.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
@@ -108,26 +86,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Morimoto-san,
 
->> Convert device tree bindings of audio graph card to YAML format. Also
->> expose some common definitions which can be used by similar graph based
->> audio sound cards.
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->> ---
-> I'm posting this patch to Rob & DT ML.
-> Not yet accepted, though..
+Hi Sameer
 
-Thanks for letting me know. I guess below is your patch,
-http://patchwork.ozlabs.org/project/devicetree-bindings/patch/877dtlvsxk.wl-kuninori.morimoto.gx@renesas.com/
-Do you have plans to resend this or send next revision?
+> >> Convert device tree bindings of audio graph card to YAML format. Also
+> >> expose some common definitions which can be used by similar graph based
+> >> audio sound cards.
+> >> 
+> >> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> >> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> >> ---
+> > I'm posting this patch to Rob & DT ML.
+> > Not yet accepted, though..
+> 
+> Thanks for letting me know. I guess below is your patch,
+> http://patchwork.ozlabs.org/project/devicetree-bindings/patch/877dtlvsxk.wl-kuninori.morimoto.gx@renesas.com/
+> Do you have plans to resend this or send next revision?
+> 
+> I can drop my patch once yours is merged and refer the same for Tegra
+> audio graph card.
 
-I can drop my patch once yours is merged and refer the same for Tegra 
-audio graph card.
+I'm waiting response from Rob now.
+It is merge window now. I will re-post it without his response
+if -rc1 was released.
 
-Thanks,
-Sameer.
+Thank you for your help !!
 
-
+Best regards
+---
+Kuninori Morimoto
