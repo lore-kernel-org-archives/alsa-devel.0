@@ -2,70 +2,57 @@ Return-Path: <SRS0=W2oN=D2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2384C433E7
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 23:08:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BCDCC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 23:51:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7004F2242A
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 23:08:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C0B72242C
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 23:51:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mI8jfopf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7004F2242A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kY+IH4p5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C0B72242C
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 944671703;
-	Tue, 20 Oct 2020 01:07:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 944671703
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95CEC1704;
+	Tue, 20 Oct 2020 01:50:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95CEC1704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603148912;
-	bh=AM18naRyOiOiwbfowxNDVd20dMIscCO/qgtHTNm8iD0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603151487;
+	bh=yx9nOctFFFm1dMN27KMlOUBsUNbY6vnza5PuYV06bVQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mI8jfopfOkgh36xkp4WFHBHCOVyGLkotCq5Umf83dloXCmSiJJPyfk9xuCd7ACi0c
-	 d5b3IPbZU9wToYiSM2ggsQ4rUK4PWmvQ6WFR+R10wQ8krWJ3mp+DqfvvUWg2N4pHnF
-	 ShmrP8cX/lDY+7YGCH0nCT8pVCdRtSlkQJidB7TI=
+	b=kY+IH4p5j+ZQf3Ael+sctepsJs/1IYPuuzsWAwCPkIG2UNfXuXjobEyY/bl1tmeoD
+	 E/0SVQNr2bbQ+zpgh+9NBr4tuE9ATAkA1xJ8SmIM7psuBKXs6X/taiRtgyzPtmh4/J
+	 uWczcLJuebx5Wbm8qrDlGTVCKy3mRUPnMwPmN35A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 217AFF80121;
-	Tue, 20 Oct 2020 01:07:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24A4AF801D5;
+	Tue, 20 Oct 2020 01:50:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CF4EF80247; Tue, 20 Oct 2020 01:07:39 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id ACA3CF80121
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 01:07:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACA3CF80121
-Date: 20 Oct 2020 08:07:29 +0900
-X-IronPort-AV: E=Sophos;i="5.77,395,1596466800"; d="scan'208";a="60218746"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Oct 2020 08:07:29 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 40FFD40A976F;
- Tue, 20 Oct 2020 08:07:29 +0900 (JST)
-Message-ID: <87tuupg6oa.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: renesas,
- rsnd: switch to yaml base Documentation
-In-Reply-To: <CAL_JsqJDmw3929BxS2wroVoio6EP5QZ5bC3bJHEckLwfo6wP8g@mail.gmail.com>
-References: <878se1vsy6.wl-kuninori.morimoto.gx@renesas.com>
- <875z95vsx2.wl-kuninori.morimoto.gx@renesas.com>
- <20200908232225.GA1122966@bogus>
- <87eemrlx15.wl-kuninori.morimoto.gx@renesas.com>
- <CAL_JsqJDmw3929BxS2wroVoio6EP5QZ5bC3bJHEckLwfo6wP8g@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>
+ id EAC7DF80247; Tue, 20 Oct 2020 01:50:34 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id E8457F801A3
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 01:50:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8457F801A3
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1603151427982718945-webhooks-bot@alsa-project.org>
+References: <1603151427982718945-webhooks-bot@alsa-project.org>
+Subject: ASoC: error at snd_soc_pcm_dai_trigger on acp_rn_pdm_dma.0
+Message-Id: <20201019235034.EAC7DF80247@alsa1.perex.cz>
+Date: Tue, 20 Oct 2020 01:50:34 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,24 +68,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/alsa-lib issue #88 was opened from JcdeA:
 
-Hi Rob
+I am on Artix and this has been an issue for a while. Pauvcontrol shows Dummy Output as the only output available.
 
-> > As always happen, "xxx,yyy" style will be error for me without patternProperties.
-> > What is wrong ??
-> 
-> Node names shouldn't really have vendor prefixes, but since you
-> already depend on this we shouldn't change that. We'll need to relax
-> the meta-schema, but for now it's fine as-is.
+https://www.reddit.com/r/archlinux/comments/e73u68/dummy_audio_output_after_update/  
+I saw this post and downgraded alsa-lib-1.2.4 to alsa-lib-1.2.3 and it works perfectly now. 
 
-OK, thanks.
+ I tried all of the solutions on the fourms, but none worked except downgrading. Seems like a issue with the latest version.
 
-The original code didn't have vendor prefixes,
-but I was ordered to have it from reviewer.
-I don't remember from whom though...
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/88
+Repository URL: https://github.com/alsa-project/alsa-lib
