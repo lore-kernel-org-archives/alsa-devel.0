@@ -2,89 +2,93 @@ Return-Path: <SRS0=W2oN=D2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28AA7C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 21:15:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0180AC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 21:57:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8DE422282
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 21:15:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1366522404
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Oct 2020 21:57:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ioEMDrCa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8DE422282
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SEvMVL9j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1366522404
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 486E016F3;
-	Mon, 19 Oct 2020 23:14:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 486E016F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C26116F3;
+	Mon, 19 Oct 2020 23:56:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C26116F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603142115;
-	bh=hkvDip51bQ4h8yCy3D737fKgholic78Ig9uZxd1DAsA=;
+	s=default; t=1603144651;
+	bh=yZWk3jU06ZfrimzDC19qf0Fd5wAuClK9rhtWsEHWQnE=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ioEMDrCayguBJuS8mSRWfPv3Cn2AkB3cwZ9E0BXuinA9iLqwviKobslutwOJCXA06
-	 v9jWLAFK9W4rIGasW2XaBYhs8vBXjUQnPDwH5DaoxlnDgIy9bapm77b89Grt9qHi4d
-	 VnhT6HL3eVwS5+kPJUJOsGYlQJPQArk+r33yIgDY=
+	b=SEvMVL9jtVd62nMLSujLeGUuBUzfCRi1jx2w3Dm1s5vvCIKVovX4LdlOcKwjnR17v
+	 Ej63xDiwEa/DTTC6A+grbxj2yqJE9AYpFN6kVhuptIBWht0DvB6LTtKV52QnkBBYPg
+	 7xNi3wTT7yucw0zyyRLX8n9/rHy4PxvP6foScREA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC1B6F801D5;
-	Mon, 19 Oct 2020 23:14:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3AEFF801D5;
+	Mon, 19 Oct 2020 23:56:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F2C5F80247; Mon, 19 Oct 2020 23:14:22 +0200 (CEST)
-Received: from mail-ot1-f66.google.com (mail-ot1-f66.google.com
- [209.85.210.66])
+ id 24854F80247; Mon, 19 Oct 2020 23:56:39 +0200 (CEST)
+Received: from mail-oi1-f195.google.com (mail-oi1-f195.google.com
+ [209.85.167.195])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A3E8F8010F
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 23:14:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A3E8F8010F
-Received: by mail-ot1-f66.google.com with SMTP id m11so1115229otk.13
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 14:14:16 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F7B3F80121
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 23:56:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F7B3F80121
+Received: by mail-oi1-f195.google.com with SMTP id u17so1772471oie.3
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 14:56:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=AkXg9ywvkN5UzvdgIWgHzBaGiXjXW0zCY62KlslqE20=;
- b=uFzDfHOERT+UoJ8xJ4kxqeZUayxaMkip+LBVMcZ/ZUfe8+CVMV9C8MRNMK/VWHrWUh
- jUZP27t43CIdGaQ2MyTu2cRGei6dnC+MK9x7zknb235gdJXG/DZ7ScYVS3Zg1V7TExC8
- qY16uoK1WHQJtmk+3MCy8YUNY0P2HnXchutT8w8dGq1PcYbLQOkqxMZufVPKLkSApT/2
- ud3WlbpIoz5cSiMTB3A32VS36jResLvcqh0jjPyWZQeUi8J7eXtt52x8Egc+qSzEqyyl
- mGVbgWaZ3PbywYEyD2ypu+GNWn546QdJOea9VSud3ZErPdhr0ZdOM51UkjXRljOoTcPF
- s4Qw==
-X-Gm-Message-State: AOAM531Goi3lWe29ETceTJ+EXnhqyCJvzysydXDMIGso7NE8zClCT/bO
- j+JltVVHw3QWvC1rCdisGQ==
-X-Google-Smtp-Source: ABdhPJySWGj+x0Hi8zbrlVaFg82BBb5KUi35oGG9P+zK3XUXlyw0S3QakYsFzPn0pzs9rO9TYNDsEg==
-X-Received: by 2002:a9d:65d7:: with SMTP id z23mr1380659oth.131.1603142054307; 
- Mon, 19 Oct 2020 14:14:14 -0700 (PDT)
+ bh=PjydU190i7GN2JJAnYmlRKleN4kFxmQKH0ztDbomadk=;
+ b=tzDHdjNpzqvrnYlI+9IK5c6SJvKCRe5chx6EYFKdEhNTYXBvCaHYT47kBznZiPkrYX
+ YXhHfzpMXg70bt9FpnVipiSA8B1PxGLDRypn1UfUZ0M1AookZPqLWQrT15WEXo1F4Q3E
+ fmF8GRPXFwh22hYBZX3vDltoBr5FqYBQH91WR6EHc1xmSsrKGRrtGc/KMaWbetTcZiV5
+ GeLEUHq1hf+vQ62Xgi6kB2/+2qlVraJmDsPWydfaPlCqIIOMAv4HJvUNThZ3XiPlNGso
+ e4ftYX5vM4/B7vxgdwx3nXf4Kvca9nIsoROkLgGHLQ7QB59y3afH+0qJg8zhDGvkSp/N
+ cnqA==
+X-Gm-Message-State: AOAM531XsjuIbX1bWMzf4/jY3IdSYh4jQC+onZQ2gmaMpALEO83RG5fh
+ VVRv0b6xkfc6KfTvWcYpFg==
+X-Google-Smtp-Source: ABdhPJw4Lum6ffck1YRawMIIyuUeY33/Wvg9VIm5C8dx7ePCdMYgUxZN7KQBNvd54FJAMw3Kp0RLig==
+X-Received: by 2002:aca:37c5:: with SMTP id e188mr1067613oia.159.1603144590441; 
+ Mon, 19 Oct 2020 14:56:30 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id v11sm221060otj.73.2020.10.19.14.14.12
+ by smtp.gmail.com with ESMTPSA id w128sm285335oie.47.2020.10.19.14.56.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 19 Oct 2020 14:14:13 -0700 (PDT)
-Received: (nullmailer pid 3612712 invoked by uid 1000);
- Mon, 19 Oct 2020 21:14:12 -0000
-Date: Mon, 19 Oct 2020 16:14:12 -0500
+ Mon, 19 Oct 2020 14:56:29 -0700 (PDT)
+Received: (nullmailer pid 3669541 invoked by uid 1000);
+ Mon, 19 Oct 2020 21:56:28 -0000
+Date: Mon, 19 Oct 2020 16:56:28 -0500
 From: Rob Herring <robh@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: fsl_spdif: Add new compatible
- string for i.MX8QM
-Message-ID: <20201019211412.GA3612681@bogus>
-References: <1602739728-4433-1-git-send-email-shengjiu.wang@nxp.com>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v4 08/15] Documentation: of: Convert graph bindings to
+ json-schema
+Message-ID: <20201019215628.GA3650804@bogus>
+References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+ <1602859382-19505-9-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602739728-4433-1-git-send-email-shengjiu.wang@nxp.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@kernel.org,
- Xiubo.Lee@gmail.com, festevam@gmail.com, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com,
- robh+dt@kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <1602859382-19505-9-git-send-email-spujar@nvidia.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+ atalambedu@nvidia.com, linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+ rlokhande@nvidia.com, swarren@nvidia.com, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, jonathanh@nvidia.com,
+ devicetree@vger.kernel.org, nicoleotsuka@gmail.com, broonie@kernel.org,
+ linux-tegra@vger.kernel.org, mkumard@nvidia.com, viswanathl@nvidia.com,
+ lgirdwood@gmail.com, nwartikar@nvidia.com, p.zabel@pengutronix.de,
+ sharadg@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,14 +104,216 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 15 Oct 2020 13:28:47 +0800, Shengjiu Wang wrote:
-> Add new compatible string "fsl,imx8qm-spdif" for supporting spdif
-> module on i.MX8QM.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Fri, Oct 16, 2020 at 08:12:55PM +0530, Sameer Pujar wrote:
+> Convert device tree bindings of graph to YAML format.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thanks for doing this.
+
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/graph.txt  | 128 --------------------
+>  Documentation/devicetree/bindings/graph.yaml | 170 +++++++++++++++++++++++++++
+>  2 files changed, 170 insertions(+), 128 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/graph.txt
+>  create mode 100644 Documentation/devicetree/bindings/graph.yaml
+
+I'd like to move this to the dtschema repository instead.
+
+> diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
+> new file mode 100644
+> index 0000000..67804c1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/graph.yaml
+> @@ -0,0 +1,170 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+
+As the original text defaulted to GPL2, this needs Philipp's permission 
+to re-license.
+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/graph.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Common bindings for device graphs
+> +
+> +description: |
+> +  The hierarchical organisation of the device tree is well suited to describe
+> +  control flow to devices, but there can be more complex connections between
+> +  devices that work together to form a logical compound device, following an
+> +  arbitrarily complex graph.
+> +  There already is a simple directed graph between devices tree nodes using
+> +  phandle properties pointing to other nodes to describe connections that
+> +  can not be inferred from device tree parent-child relationships. The device
+> +  tree graph bindings described herein abstract more complex devices that can
+> +  have multiple specifiable ports, each of which can be linked to one or more
+> +  ports of other devices.
+> +
+> +  These common bindings do not contain any information about the direction or
+> +  type of the connections, they just map their existence. Specific properties
+> +  may be described by specialized bindings depending on the type of connection.
+> +
+> +  To see how this binding applies to video pipelines, for example, see
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +  Here the ports describe data interfaces, and the links between them are
+> +  the connecting data buses. A single port with multiple connections can
+> +  correspond to multiple devices being connected to the same physical bus.
+> +
+> +maintainers:
+> +  - Philipp Zabel <p.zabel@pengutronix.de>
+> +
+> +definitions:
+> +
+> +  port:
+> +    type: object
+> +    description: |
+> +      If there is more than one 'port' or more than one 'endpoint' node
+> +      or 'reg' property present in the port and/or endpoint nodes then
+> +      '#address-cells' and '#size-cells' properties are required in relevant
+> +      parent node.
+
+reg property.
+
+> +
+> +    patternProperties:
+> +      "^endpoint(@[0-9a-f]+)?$":
+> +        type: object
+> +        properties:
+
+reg?
+
+> +          remote-endpoint:
+> +            description: |
+> +              phandle to an 'endpoint' subnode of a remote device node.
+> +            $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  ports:
+> +    type: object
+> +    patternProperties:
+> +      "^port(@[0-9a-f]+)?$":
+> +        $ref: "#/definitions/port"
+
+No reason for this to be under 'definitions'. Just move down.
+
+> +
+> +properties:
+> +  ports:
+> +    $ref: "#/definitions/ports"
+> +
+> +patternProperties:
+> +  "^port(@[0-9a-f]+)?$":
+> +    $ref: "#/definitions/port"
+> +
+> +additionalProperties: false
+
+This needs to be true here. But you need this within 'ports' and 'port'. 
+(I think... I think we only have extra properties within endpoint 
+nodes.) 
+
+> +
+> +examples:
+> +  # Organisation of ports and endpoints:
+> +  #
+> +  # Ports are described by child 'port' nodes contained in the device node.
+> +  # Each port node contains an 'endpoint' subnode for each remote device port
+> +  # connected to this port. If a single port is connected to more than one
+> +  # remote device, an 'endpoint' child node must be provided for each link.
+> +  # If more than one port is present in a device node or there is more than
+> +  # one endpoint at a port, or a port node needs to be associated with a
+> +  # selected hardware interface, a common scheme using '#address-cells',
+> +  # '#size-cells' and 'reg' properties is used to number the nodes.
+> +  - |
+> +    device {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        port@0 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <0>;
+> +
+> +            endpoint@0 {
+> +                reg = <0>;
+> +                // ...
+> +            };
+> +            endpoint@1 {
+> +                reg = <1>;
+> +                // ...
+> +            };
+> +        };
+> +
+> +        port@1 {
+> +            reg = <1>;
+> +
+> +            endpoint {
+> +                // ...
+> +            };
+> +        };
+> +    };
+> +
+> +  # All 'port' nodes can be grouped under an optional 'ports' node, which
+> +  # allows to specify #address-cells, #size-cells properties for the 'port'
+> +  # nodes independently from any other child device nodes a device might
+> +  # have.
+> +  - |
+> +    device {
+> +        // ...
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            port@0 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <0>;
+> +                // ...
+> +
+> +                endpoint@0 {
+> +                    reg = <0>;
+> +                    // ...
+> +                };
+> +                endpoint@1 {
+> +                    reg = <1>;
+> +                    // ...
+> +                };
+> +            };
+> +
+> +            port@1 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <1>;
+> +                // ...
+> +            };
+> +        };
+> +    };
+> +
+> +  # Links between endpoints:
+> +  #
+> +  # Each endpoint should contain a 'remote-endpoint' phandle property that
+> +  # points to the corresponding endpoint in the port of the remote device.
+> +  # In turn, the remote endpoint should contain a 'remote-endpoint' property.
+> +  # If it has one, it must not point to anything other than the local endpoint.
+> +  # Two endpoints with their 'remote-endpoint' phandles pointing at each other
+> +  # form a link between the containing ports.
+> +  - |
+> +    device-1 {
+> +        port {
+> +            device_1_output: endpoint {
+> +                remote-endpoint = <&device_2_input>;
+> +            };
+> +        };
+> +    };
+> +
+> +    device-2 {
+> +        port {
+> +            device_2_input: endpoint {
+> +                remote-endpoint = <&device_1_output>;
+> +            };
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.7.4
+> 
