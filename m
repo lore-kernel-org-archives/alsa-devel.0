@@ -2,81 +2,65 @@ Return-Path: <SRS0=iKR9=D3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87954C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 12:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D89CC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 12:36:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C10822265
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 12:20:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 30A3722283
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 12:36:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mg5BHVJU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJJ/FkLc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C10822265
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vQYkgTpS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30A3722283
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D34E1705;
-	Tue, 20 Oct 2020 14:19:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D34E1705
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74F051712;
+	Tue, 20 Oct 2020 14:36:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F051712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603196421;
-	bh=v6hvzZnm5fO2LRuaf67yjm5Dmk41dAfQBo695kCsG/c=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1603197412;
+	bh=SFm4G1oeNnLyxTaieRmD/4U8AVBNOHNnBZ4F+qviumU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mg5BHVJU6EFom2zLfxWfmAPQm3J0aZkPH01PfL1uQFlGdYRjlbqan3pDQxZlx+Cl2
-	 eAFtJUTFiXfwuK4Xbr/pLcJQy79yseqeLSGFYWagiIYbgFZSJ27egZg7kXDrtrOui2
-	 k1qNtZ5R/2rAFNUY6tq7LGTZGjW04CNqS3QDhQhY=
+	b=vQYkgTpSoCHCWAJhilFFNAxnOI54WespfSWwvei5Ssq5ITbNbwC9wlJsdtbgfBe4h
+	 JDFxKz0UFKPFxeHPCMr6S5ty8q+dFAR+3DnGdfXchLmuwqUK607A/GKPo9eUJyG0jz
+	 qcgfGvcuJyvEtaUdcAFqJbtDhFuoZsSeE1g9Nfn0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6E85F801A3;
-	Tue, 20 Oct 2020 14:19:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2A17F801A3;
+	Tue, 20 Oct 2020 14:36:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7B68F801F2; Tue, 20 Oct 2020 14:19:28 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 9D540F801F2; Tue, 20 Oct 2020 14:35:59 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86066F8010F
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 14:19:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86066F8010F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZJJ/FkLc"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 427942222F;
- Tue, 20 Oct 2020 12:19:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603196363;
- bh=v6hvzZnm5fO2LRuaf67yjm5Dmk41dAfQBo695kCsG/c=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ZJJ/FkLcr/+ezJTlcNE93HVLZFVLAgVCweDitu6Xjjt0lx+j8u2muD2BZeJ5OKhWC
- F/KlgfG/e+ktLqHgxyHqT+l5ubxWadGxHAgHIGncHt3ye3W4AT6Lo4pKaqTEUvnLor
- 29xF8Osd83iq1oX9q5S63X53T3HoF89FKQDuSJiU=
-Date: Tue, 20 Oct 2020 13:19:13 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Olivier Moysan <olivier.moysan@st.com>
-Subject: Re: [PATCH] ASoC: cs42l51: manage mclk shutdown delay
-Message-ID: <20201020121913.GB9448@sirena.org.uk>
-References: <20201020090457.340-1-olivier.moysan@st.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="eAbsdosE1cNLO4uF"
-Content-Disposition: inline
-In-Reply-To: <20201020090457.340-1-olivier.moysan@st.com>
-X-Cookie: The people rule.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, alexandre.torgue@st.com,
- linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com,
- lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, arnaud.patard@rtp-net.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6147BF800AD
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 14:35:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6147BF800AD
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 1305BAF31;
+ Tue, 20 Oct 2020 12:35:55 +0000 (UTC)
+Date: Tue, 20 Oct 2020 14:35:54 +0200
+Message-ID: <s5hh7qpgjmd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Lukasz Halman <lukasz.halman@gmail.com>
+Subject: Re: [PATCH] Line6 Pod Go interface requires static clock rate quirk
+In-Reply-To: <20201020061409.GA24382@TAG009442538903>
+References: <20201020061409.GA24382@TAG009442538903>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,43 +76,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 20 Oct 2020 08:14:09 +0200,
+Lukasz Halman wrote:
+> 
+> Recently released Line6 Pod Go requires static clock rate quirk to make
+> its usb audio interface working. Added its usb id to the list of similar
+> line6 devices.
+> 
+> 
+> Signed-off-by: Lukasz Halman <lukasz.halman@gmail.com>
 
---eAbsdosE1cNLO4uF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks, applied now.
 
-On Tue, Oct 20, 2020 at 11:04:57AM +0200, Olivier Moysan wrote:
 
-> +static int mclk_event(struct snd_soc_dapm_widget *w,
-> +		      struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-> +	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
-> +
-> +	if (SND_SOC_DAPM_EVENT_ON(event))
-> +		return clk_prepare_enable(cs42l51->mclk_handle);
-> +
-> +	/* Delay mclk shutdown to fulfill power-down sequence requirements */
-> +	msleep(20);
-> +	clk_disable_unprepare(cs42l51->mclk_handle);
-
-Why not use a switch statement here?  The control flow is a bit odd with
-what's basically an if/else done with only one branch in the if - this
-isn't idiomatic for DAPM stuff apart from anything else.
-
---eAbsdosE1cNLO4uF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+O1cAACgkQJNaLcl1U
-h9A/vAf+JYXtEW1+AAEACgq9gDYA589X13HKVS73HAERhV2VefPqsSWHlF+UhKx1
-YUOU94GV71Ch7RLyaoFfQhaxVZghyjDXxWeqsMe1mJwxVfBCAxq5N6Q/Mm/hyORl
-fA62L8BHyO2iDoJX72VoaGN0HLxTzqWvHXvnhU7tfaaTAVVVdNpBPSya+pbU8EM6
-Ya6XwOejv7Rr3wcO1OsmVJfxW+n4xjyrM06oM+Ld7VSVTXKxdaAgltBthCPxD9pO
-Km4xA9vhbo76xXiER2/arnWKgqSsXAT8bJbK5oipa/RlpnpFXZvokhd0bxBmkOop
-xss2mjf+rEEkN3hJS2irSUZb0/X5sw==
-=Yz7U
------END PGP SIGNATURE-----
-
---eAbsdosE1cNLO4uF--
+Takashi
