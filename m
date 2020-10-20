@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA230C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 17:09:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D765AC4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 17:14:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E75A92177B
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 17:09:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BCBA122242
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Oct 2020 17:14:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IMnU/MnX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E75A92177B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f0iTim3G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCBA122242
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D8281721;
-	Tue, 20 Oct 2020 19:08:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D8281721
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9594C170D;
+	Tue, 20 Oct 2020 19:13:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9594C170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603213774;
-	bh=lkMkk8I7WnC6PFESHw93jXjtrFjMDWZnxZvU77NUTVk=;
+	s=default; t=1603214046;
+	bh=zIioBnAb+MSY5qoyx6ORH1yrwJ5lt+qZGnCovkBaHMc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IMnU/MnXBJP22KhvSAI01h+C0REwxP077brpNpQ/EjKRzXjcacVDUGbjM5EWgGcKZ
-	 7zKuyjNzCYH1YqoylV53PftHpyIDLGkv66umH998SeNju704rGj9M/pIPadjGMSvmK
-	 nUmrYbk2pUHroNw9T2rZL2Cf9LuFHeRZZQ2lPBC8=
+	b=f0iTim3GojIv9JpHE4Rj4lMh9Wpb6M3viO69Al4YWXvmvPoQlI9R+/SK5kf0t646R
+	 vVGXCiKMKiD9sHXPOP/TyvVEaVbnVJJ16W7ejX7sse5pKBWMTcw5oruecpeZhmmH2N
+	 rp9xgeXm1b4PnbayMRu2OBBTBrpYSMnr5+LCbe98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93746F80447;
-	Tue, 20 Oct 2020 19:08:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A792F804A9;
+	Tue, 20 Oct 2020 19:13:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 068ACF804A9; Tue, 20 Oct 2020 19:08:42 +0200 (CEST)
+ id 97968F804AA; Tue, 20 Oct 2020 19:13:14 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id E9312F80447
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 19:08:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9312F80447
+ by alsa1.perex.cz (Postfix) with ESMTP id 56C2AF8049F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 19:13:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C2AF8049F
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1603213714749353886-webhooks-bot@alsa-project.org>
-References: <1603213714749353886-webhooks-bot@alsa-project.org>
+In-Reply-To: <1603213986151724100-webhooks-bot@alsa-project.org>
+References: <1603213986151724100-webhooks-bot@alsa-project.org>
 Subject: ALSA error on finding "working profile" for a USB MIDI device.
-Message-Id: <20201020170842.068ACF804A9@alsa1.perex.cz>
-Date: Tue, 20 Oct 2020 19:08:42 +0200 (CEST)
+Message-Id: <20201020171314.97968F804AA@alsa1.perex.cz>
+Date: Tue, 20 Oct 2020 19:13:14 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,7 +68,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #89 was opened from radiobla:
+alsa-project/alsa-lib issue #89 was edited from radiobla:
 
 TL;DR: After upgrading alsa-* packages yesterday, on the next reboot, systemd (apparently, pulseaudio.service) begun to show an error message related to "module-alsa-card" not finding a "working profile" for a USB MIDI device I have connected. Despite the error message, the device is working fine (through "raw MIDI" and also with jack2). Anyway, I want go further and find the root cause of this problem, since it's very annoying to see the Sound Service failing on every reboot.
 
@@ -133,7 +133,7 @@ Although the device is working even with the error message, it's very annoying t
 
 Thanks!
 
-More occurrences of this error were provided on Arch Linux forum: [](https://bbs.archlinux.org/viewtopic.php?pid=1932801)
+More occurrences of this error were provided on Arch Linux [forum](https://bbs.archlinux.org/viewtopic.php?pid=1932801)
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/89
 Repository URL: https://github.com/alsa-project/alsa-lib
