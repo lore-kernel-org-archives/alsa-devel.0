@@ -2,129 +2,140 @@ Return-Path: <SRS0=H+KG=D4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BB51C55178
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:47:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57BCAC388F9
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:48:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B5B520BED
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:47:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7506D21481
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:48:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z3vopaCA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="R0THCPfe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B5B520BED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kA02FW+h";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="q8gn83IP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7506D21481
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9154D1806;
-	Wed, 21 Oct 2020 15:46:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9154D1806
+	by alsa0.perex.cz (Postfix) with ESMTPS id A242C178A;
+	Wed, 21 Oct 2020 15:47:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A242C178A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603288051;
-	bh=SP1ybggAfsBFjKTdERFIxuze/5/8lsfKRFCeSEyt8ZM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1603288081;
+	bh=iYRSBCOg7CDwFAK6HM/W3BqCnuVknt3HcQX28n2ksh0=;
+	h=From:Subject:Date:In-Reply-To:To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z3vopaCAw4PIx4jADbhBJ9GohsuXHu/NmIuADe7ZO/tnrYwegD8KwqpzV0/2dwSm8
-	 bW8w8DK249lwMLHt+5My+hwZvS3r5k2UyuNTzC9QrUHxo2UcdL3wxTPOGQ8ltP5z1p
-	 UIPh+K5gklOIxY9phRdZSYPHJRJUcsqdD5fE1CT0=
+	b=kA02FW+hrcnxTwxozrVTF+G6xUVP1RkybWXF5mJwcI7AI+Xe6WD0DQnMX6z4UT1kL
+	 dwX1wD4GgX30CT/2gtJq4Q7P/vsOP6MYHNuIKqMdz6WBNtLTMk/a6YK5usJengyOBM
+	 1e9IJfmRV4yQ7NmcqUojx++MJNBKaF+hXtqSCHg8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46BCBF80551;
-	Wed, 21 Oct 2020 15:37:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 430B1F80553;
+	Wed, 21 Oct 2020 15:38:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A907F80247; Tue, 20 Oct 2020 01:05:59 +0200 (CEST)
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
- [IPv6:2607:f8b0:4864:20::d44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2C849F801F2; Tue, 20 Oct 2020 10:48:21 +0200 (CEST)
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62CC7F8010F
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 01:05:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62CC7F8010F
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD4A2F8010F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 10:48:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD4A2F8010F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca
- header.b="R0THCPfe"
-Received: by mail-io1-xd44.google.com with SMTP id k21so36651ioa.9
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 16:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ziepe.ca; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=KZcwJitFojA7RhzeD/UU8gbzehCBdvf6g5ia0ZYCrq4=;
- b=R0THCPfeT+NjRv5n7wRuWr3+iQQVH5mYQugrcFEorv7jMlZOJpq4gWO8x2sltRZ1S3
- 8+uXkfK+0xraFRPc7RLEyC+L1Eqn+lwfgcQ60rCu3Ir6T0iqCUlHxkXPI8IxQxljNihW
- MxA7dERE+Fo0B6yhfEPLGm6gbjuMrGvt0ee7i4ozPAa6C0OwTV1SJBaz+sj8rzyyiIix
- DQ1LhxNguLsVQ2r9xWcmCur9QDHoeimXQtC/UVpN+4Yl8O9ZbpYKUwlrKFZtzYHwjpgZ
- iC+kREvCZvwgmOBCIm7DmgxG6/6ncKrp6QDCnbxkp/qIzrhuMyauJsg53LWTp//HSslk
- z+3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=KZcwJitFojA7RhzeD/UU8gbzehCBdvf6g5ia0ZYCrq4=;
- b=fRQf4NMsstl+F1T8ECYt+fID5G3C9rSbWFB4VJnwUX8jofP5nXPYKrC/CKDOfQv3eZ
- jp70pbXds/a1lVXwW2ZQj8VNCyDYPjCfSZaG/dG+Xz/QArWRfxvoUZYzyOboarYvM2qn
- pVDXXBrmXUu2r0QOD0wmiOTdt9uyceSEgxa0LghbvLbsRTaspeF5hM+0QudOxtVjw6ca
- rJvvTxc27sceaQP3qXpOo/9/PCq+j70PX6AvCWU2Gpbg78D6h3Y3cqxgPT0TDZcsyrk5
- 9DAcqo0PKsXOu2nqbvs23Y8y84zDBG7vf0RqgKklnGhWVKa9mMd2rFCOpe0BSpVZWsQS
- JG6A==
-X-Gm-Message-State: AOAM533U3F7Rz8j4u+nHkHQny/b1BNDi699oJPmaQ7obDcbxRfAgV+HY
- 7cTYm9lf9/ph1NgpZCaHiMR5Ag==
-X-Google-Smtp-Source: ABdhPJwE/qhLAedndnNRaUrUDMs331Onaq8Iz+VDEVRJN+4h4B5ckC67pNXDnvS9MRF/DxLJjNlnIQ==
-X-Received: by 2002:a6b:5019:: with SMTP id e25mr44377iob.123.1603148748578;
- Mon, 19 Oct 2020 16:05:48 -0700 (PDT)
-Received: from ziepe.ca
- (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net.
- [156.34.48.30])
- by smtp.gmail.com with ESMTPSA id u8sm7938ilm.36.2020.10.19.16.05.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 19 Oct 2020 16:05:47 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94) (envelope-from <jgg@ziepe.ca>)
- id 1kUeDq-002hRf-LL; Mon, 19 Oct 2020 20:05:46 -0300
-Date: Mon, 19 Oct 2020 20:05:46 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="q8gn83IP"
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+ by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09K8i7rI188082;
+ Tue, 20 Oct 2020 08:48:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=from : message-id :
+ content-type : mime-version : subject : date : in-reply-to : cc : to :
+ references; s=corp-2020-01-29;
+ bh=UBSvDuZX45rcdCwz1yIzvCzCqfd2joSCizhea4x+Xao=;
+ b=q8gn83IPPWdFm1HT3taLhd9DUF/VTUU+yXtsd8f9nD6wriupB19ul4FsqzWGdtIZMcde
+ GW+G9oeRVHaGmJfZ8muagtVwvuWLE6AywXuhak+OXkSgdFP6EIR2H2OqKDUhR7yIW2Vz
+ zpamQMFlTWRfwdWHBA7I0p8HYGgPlEg7NOi5pNpKeOCI5/Zqu82RI3DyvlSb3YeNhNvu
+ 1nAbi2LxPOnr/RtC4QoVHdNGHfdCdQB+x9xvmqx+BqjtbEr8lrxt1aMjIali/bjhTn7W
+ dzqjxrXdOv4FjsFo2kwRKNjQX5RScYby9/qqSUitUFXIKeMy4YBvXYVTZYkhax1TMfnU 0w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2120.oracle.com with ESMTP id 347s8msmp0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 20 Oct 2020 08:48:12 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09K8is45150623;
+ Tue, 20 Oct 2020 08:48:12 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by userp3030.oracle.com with ESMTP id 348ahw07cp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 20 Oct 2020 08:48:12 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09K8mAEe159753;
+ Tue, 20 Oct 2020 08:48:10 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by userp3030.oracle.com with ESMTP id 348ahw07bh-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 20 Oct 2020 08:48:10 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09K8lvTX021447;
+ Tue, 20 Oct 2020 08:47:58 GMT
+Received: from [10.175.164.120] (/10.175.164.120)
+ by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 20 Oct 2020 01:47:57 -0700
+From: John Haxby <john.haxby@oracle.com>
+Message-Id: <27A23102-A7F5-48C5-8972-48CE4C283C6E@oracle.com>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
+Date: Tue, 20 Oct 2020 09:47:45 +0100
+In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
 To: Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-Message-ID: <20201019230546.GH36674@ziepe.ca>
 References: <20201017160928.12698-1-trix@redhat.com>
  <20201018054332.GB593954@kroah.com>
  <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-X-Mailman-Approved-At: Wed, 21 Oct 2020 15:37:33 +0200
-Cc: alsa-devel@alsa-project.org,
- clang-built-linux <clang-built-linux@googlegroups.com>,
- Greg KH <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
- Tom Rix <trix@redhat.com>, storagedev@microchip.com, linux-pci@vger.kernel.org,
- dri-devel <dri-devel@lists.freedesktop.org>,
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
+ suspectscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
+ phishscore=0 clxscore=1011 bulkscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010200059
+X-Mailman-Approved-At: Wed, 21 Oct 2020 15:37:34 +0200
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+ linux-iio@vger.kernel.org, Tom Rix <trix@redhat.com>,
+ linux-pci@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>,
  virtualization@lists.linux-foundation.org, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, ath10k@lists.infradead.org,
+ linux-mtd@lists.infradead.org, amd-gfx list <amd-gfx@lists.freedesktop.org>,
  linux-stm32@st-md-mailman.stormreply.com, usb-storage@lists.one-eyed-alien.net,
- linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-nvdimm <linux-nvdimm@lists.01.org>,
- amd-gfx list <amd-gfx@lists.freedesktop.org>, linux-acpi@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, industrypack-devel@lists.sourceforge.net,
- nouveau@lists.freedesktop.org, spice-devel@lists.freedesktop.org,
- MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-nfc@lists.01.org, linux-pm@vger.kernel.org,
+ devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org,
+ clang-built-linux <clang-built-linux@googlegroups.com>,
+ linux-pm@vger.kernel.org, ath10k@lists.infradead.org,
+ linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ industrypack-devel@lists.sourceforge.net, nouveau@lists.freedesktop.org,
+ spice-devel@lists.freedesktop.org, MPT-FusionLinux.pdl@broadcom.com,
+ linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ linux-nfc@lists.01.org, linux-serial@vger.kernel.org,
  linux-can@vger.kernel.org, linux-block@vger.kernel.org,
- linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-gpio@vger.kernel.org, storagedev@microchip.com,
  linux-amlogic@lists.infradead.org, openipmi-developer@lists.sourceforge.net,
- platform-driver-x86@vger.kernel.org, linux-integrity@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, bpf <bpf@vger.kernel.org>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
- George Burgess <gbiv@google.com>, Network Development <netdev@vger.kernel.org>,
- linux-usb@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
+ Greg KH <gregkh@linuxfoundation.org>, linux-nvdimm <linux-nvdimm@lists.01.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>,
  LKML <linux-kernel@vger.kernel.org>, linux-security-module@vger.kernel.org,
+ George Burgess <gbiv@google.com>, Network Development <netdev@vger.kernel.org>,
  "open list:HARDWARE RANDOM NUMBER GENERATOR CORE"
- <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
- bpf <bpf@vger.kernel.org>, ocfs2-devel@oss.oracle.com,
+ <linux-crypto@vger.kernel.org>, linux-integrity@vger.kernel.org,
+ patches@opensource.cirrus.com, ocfs2-devel@oss.oracle.com,
  linux-power@fi.rohmeurope.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -141,36 +152,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 19, 2020 at 12:42:15PM -0700, Nick Desaulniers wrote:
-> On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > > From: Tom Rix <trix@redhat.com>
-> > >
-> > > This is a upcoming change to clean up a new warning treewide.
-> > > I am wondering if the change could be one mega patch (see below) or
-> > > normal patch per file about 100 patches or somewhere half way by collecting
-> > > early acks.
-> >
-> > Please break it up into one-patch-per-subsystem, like normal, and get it
-> > merged that way.
-> >
-> > Sending us a patch, without even a diffstat to review, isn't going to
-> > get you very far...
-> 
-> Tom,
-> If you're able to automate this cleanup, I suggest checking in a
-> script that can be run on a directory.  Then for each subsystem you
-> can say in your commit "I ran scripts/fix_whatever.py on this subdir."
->  Then others can help you drive the tree wide cleanup.  Then we can
-> enable -Wunreachable-code-break either by default, or W=2 right now
-> might be a good idea.
 
-I remember using clang-modernize in the past to fix issues very
-similar to this, if clang machinery can generate the warning, can't
-something like clang-tidy directly generate the patch?
+--Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-You can send me a patch for drivers/infiniband/* as well
 
-Thanks,
-Jason
+
+> On 19 Oct 2020, at 20:42, Nick Desaulniers <ndesaulniers@google.com> =
+wrote:
+>=20
+> We probably should add all 3 to W=3D2 builds (wrapped in cc-option).
+> I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
+> follow up on.
+
+It looks as though the URL mangling has been fixed.   If anyone sees =
+that specific URL mangled, please let me know.
+
+jch
+
+--Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iHUEAREIAB0WIQT+pxvb11CFWUkNSOVFC7t+lC+jyAUCX46kMQAKCRBFC7t+lC+j
+yBKiAP90JVXdPzuAwtRGkROpw1eVCo7wCaZ5nOa8Oo0sN6gC9gD/S0eGTqQhmg+n
+sXPJxPYqQsg09qmS6k/HX+AP5Oz2AMo=
+=xx66
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3--
