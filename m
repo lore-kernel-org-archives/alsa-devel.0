@@ -2,89 +2,145 @@ Return-Path: <SRS0=H+KG=D4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B111C388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8872C388F9
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:42:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27F322053B
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:42:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7FC2C20BED
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 13:42:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R4qBYBiM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tEbU3z7r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27F322053B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uSaRMrJf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dqj1hqYp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FC2C20BED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76EA11716;
-	Wed, 21 Oct 2020 15:41:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76EA11716
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF93D1767;
+	Wed, 21 Oct 2020 15:41:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF93D1767
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603287739;
-	bh=UnR6al4TfI/LHufjFtWYQVkStkD8BNPrASQagY1ffY8=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=R4qBYBiMBZDu9AqlIudV4T5hwQDVSZVkHWIobCRjFRIlKqTMSDYld5Fx3QwygXyOX
-	 yME3W6NYEyAnH4BmqWlw1rNzWcR+szsWrxu76ksgMXKmsXykbW9SuziyCNAstP0ojC
-	 xAI6zuxH7Fa1BRb+O0hv62pj6WoC5l8ETgEPljtg=
+	s=default; t=1603287756;
+	bh=F6WcrlIgyGs45kWYBhfyN5RU9yxwGy8XY7mqdbUyvlc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uSaRMrJffzWexNdva4L7THZu3MVFQtAcqu0wKksodPmsuskJfqQ7rtb1XlO+GAM+G
+	 fvI8jjvr0dAUSRlbGjsiLU5Gh0zl5WQy21ZrM4brNn33kGcxofuTQCXJSM4FaJRsqE
+	 S88+tguOrn1TW3PAuhH2XGoaypJdyBpuDd+3Ad5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE72EF804E7;
-	Wed, 21 Oct 2020 15:37:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9DD4F804EC;
+	Wed, 21 Oct 2020 15:37:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 736F3F801F2; Tue, 20 Oct 2020 05:34:48 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7BCF6F801F2; Tue, 20 Oct 2020 15:56:13 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7E1FF80090
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 05:34:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7E1FF80090
+ by alsa1.perex.cz (Postfix) with ESMTPS id E01A2F8011E
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 15:56:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E01A2F8011E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="tEbU3z7r"
-Received: by mail-wm1-x334.google.com with SMTP id a72so258943wme.5
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2020 20:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=tDT84lPU9uoUk+X4P4mDAOlKQgChPjhQNxlwpYGYatw=;
- b=tEbU3z7rmjQFHTQnaSH7WUhDbj4NW8XqRHDrmeTsA/fwvkkBgS+EnvjNMm9eVe7R+V
- L8SKuLhBIsJ2PP+GERfG2RyRlOmSYwBpmcnWrW6xqKp4ZAo8NJu78WYT6rLjwkh7BUi+
- M+JD2VYQTNSbGTF2aLVnm8hd5jpgGceOZRoO/F7P7iQaNdyczThixEldlYAxRp/rMPrU
- g8di5aGCl7G8DcimH/hSgDXI9+xVI+wCNs1LZiiftyEPjM9pfiC2pg+YXRAvFPGjFG17
- G/kSaWqLDWA9Cx0PSVo7C+yEtKKgmaU+LvGnPBWv7gpZ1NDSNi9XKxQiLctxzg0DYXhj
- ExEQ==
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="dqj1hqYp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1603202165;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=HyQ28xr5/lapv6azTtFCvHFT5XQ1+OzeHk+84iEm66Y=;
+ b=dqj1hqYpU6/y2h8V+kIQptv0xhdOCg30nYjG0UuQPR4HzPGpwcXs8bTMbLhH/MZ4iyaOGe
+ bIsQLktd/HxsejJ6iD6T7AP53V0El8WD9AX/eQ5RKofX+tIH76o2/BtELPXTXNDVWD5wEg
+ LuY4RW3ZSsnbV2leAXQmqfUp5Xe8+Ec=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-7YuG3-eSORu_cUA7qZOzRg-1; Tue, 20 Oct 2020 09:56:01 -0400
+X-MC-Unique: 7YuG3-eSORu_cUA7qZOzRg-1
+Received: by mail-qv1-f71.google.com with SMTP id z9so1420472qvo.20
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2020 06:56:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=tDT84lPU9uoUk+X4P4mDAOlKQgChPjhQNxlwpYGYatw=;
- b=htzx1JtUnkePwBOM+Jbp2u9XCZx1QUmi9CTGiEYZ2IJ7z6gXZt7XUniFsAwsYtV+rD
- DKc8COB/LbsiJlMvYmLefjMITqKUAJwfK9qPsWrYUoJdeFT71avqsAgMuz6txiqheDz4
- fcfR7cWYakr8slsRM2RtwSKkfhzlgQheauEYBJfPHdvstMzBnsYrAwALefAJ2NyAnUKB
- o55uSvzmZ8EGt/ILLIxgNhtcw3TkN7q1gFyOdYG8V/OlsPKGdYxslz158E9PI5C5Q4Ux
- KrG7iZc2QY+F7IgsezzUqHG3AbHpYJshxFFcpwfVbxACDDCERUWn2m1LrA7KHv2e4lAM
- pZLA==
-X-Gm-Message-State: AOAM531Yq3bMjeLU/iwVufpQ5V6ca6R9uwpMG1Z0LkohpcYiCq59f+9N
- oSIzrqREz5AH1ai8HSHM1w0Xe5bIqjBegyyeZpXgnUrRiJeB3A==
-X-Google-Smtp-Source: ABdhPJxS2h6Ryd4EqI/+6RFXQSAiD67siJ+f1Sd3sbg/SkRr+tFHvL8f+M1hKcpm7afP5EyK/xJRQOYgGkC8vgYteBg=
-X-Received: by 2002:a05:600c:d3:: with SMTP id
- u19mr579122wmm.150.1603164882065; 
- Mon, 19 Oct 2020 20:34:42 -0700 (PDT)
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-transfer-encoding
+ :content-language;
+ bh=HyQ28xr5/lapv6azTtFCvHFT5XQ1+OzeHk+84iEm66Y=;
+ b=XzDX98soc1YSrkiFyAVV9ApQMZ5aqQA9tMQu7AyyGVA0uxdTOJC/+LnZkL2YKhj9Zv
+ kTOJ+wpttscfQ5W5xD/4IsHf9eceEXUF2w7UKFEbWTbO39tIEq35A3ugsnhPIXBjvOvJ
+ qU0RoBXpQRmueNpYanCN4y5j2CsNwN6mwwH7yrIzY8wKhazivT6fF0DwCbEM3SzDBK2U
+ aYQ66UZFcGfliliVvgvvVxxuFFolY4CEbUbhyR3IuM6snH3uGh2079sR4IKxu0XOWC26
+ DEOd4IRPej3w0AkvL+gey6UBTAYLpaNLFfEPzoUkE0pYSXvV9Hzdv/7HEtsScfiBuJSX
+ 8d9w==
+X-Gm-Message-State: AOAM530t8tatLO+AKPi3VhCC3+llVpxGjeN+nNUig10qGBpk7ceMAFsE
+ xuE7+3RbkN9hKYyKHT5X7wYnEtGCA2wpaXDVM1IXWdct+3EdPp+U+BL1vhghXkzlgQvPlUVzeQy
+ P5GhFKea8lmrv/rQZSWn0U2c=
+X-Received: by 2002:a05:6214:174f:: with SMTP id
+ dc15mr3370459qvb.25.1603202160691; 
+ Tue, 20 Oct 2020 06:56:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLUAfqrAOJzxwKF3+voCBF5yQYNbMOvfOkDZhumkJj3bEnT15V4x8vUJ5iQ5pWt9KusIZtsQ==
+X-Received: by 2002:a05:6214:174f:: with SMTP id
+ dc15mr3370377qvb.25.1603202160139; 
+ Tue, 20 Oct 2020 06:56:00 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com.
+ [75.142.250.213])
+ by smtp.gmail.com with ESMTPSA id b8sm775938qkn.133.2020.10.20.06.55.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 20 Oct 2020 06:55:59 -0700 (PDT)
+Subject: Re: [RFC] treewide: cleanup unreachable breaks
+To: Nick Desaulniers <ndesaulniers@google.com>
+References: <20201017160928.12698-1-trix@redhat.com>
+ <20201018054332.GB593954@kroah.com>
+ <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+From: Tom Rix <trix@redhat.com>
+Message-ID: <ca1f50d6-1005-8e3d-8d5c-98c82a704338@redhat.com>
+Date: Tue, 20 Oct 2020 06:55:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-From: Amanda Ava Koci Pereira <arsoftware10@gmail.com>
-Date: Mon, 19 Oct 2020 23:32:12 -0300
-Message-ID: <CALAz8EWAKP-LaeDyQZW0BauwYBthSbgJgxRT8hypuXEWEOfPhA@mail.gmail.com>
-Subject: How to downmix 5.1 and 7.1 channels to 2 channels
-To: alsa-devel@alsa-project.org
+In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=trix@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 X-Mailman-Approved-At: Wed, 21 Oct 2020 15:37:33 +0200
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org,
+ clang-built-linux <clang-built-linux@googlegroups.com>,
+ Greg KH <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
+ nouveau@lists.freedesktop.org, storagedev@microchip.com,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ virtualization@lists.linux-foundation.org, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ath10k@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, usb-storage@lists.one-eyed-alien.net,
+ linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
+ linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-nvdimm <linux-nvdimm@lists.01.org>,
+ amd-gfx list <amd-gfx@lists.freedesktop.org>, linux-acpi@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, industrypack-devel@lists.sourceforge.net,
+ linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
+ MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-nfc@lists.01.org, linux-pm@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-amlogic@lists.infradead.org, openipmi-developer@lists.sourceforge.net,
+ platform-driver-x86@vger.kernel.org, linux-integrity@vger.kernel.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
+ George Burgess <gbiv@google.com>, Network Development <netdev@vger.kernel.org>,
+ linux-usb@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, linux-security-module@vger.kernel.org,
+ "open list:HARDWARE RANDOM NUMBER GENERATOR CORE"
+ <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
+ Joe Perches <joe@perches.com>, bpf <bpf@vger.kernel.org>,
+ ocfs2-devel@oss.oracle.com, linux-power@fi.rohmeurope.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,179 +156,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi guys...
 
-We need some clues about to downmix 5.1 and 7.1 channels to 2 channels
+On 10/19/20 12:42 PM, Nick Desaulniers wrote:
+> On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>> On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+>>> From: Tom Rix <trix@redhat.com>
+>>>
+>>> This is a upcoming change to clean up a new warning treewide.
+>>> I am wondering if the change could be one mega patch (see below) or
+>>> normal patch per file about 100 patches or somewhere half way by collecting
+>>> early acks.
+>> Please break it up into one-patch-per-subsystem, like normal, and get it
+>> merged that way.
+>>
+>> Sending us a patch, without even a diffstat to review, isn't going to
+>> get you very far...
+> Tom,
+> If you're able to automate this cleanup, I suggest checking in a
+> script that can be run on a directory.  Then for each subsystem you
+> can say in your commit "I ran scripts/fix_whatever.py on this subdir."
+>  Then others can help you drive the tree wide cleanup.  Then we can
+> enable -Wunreachable-code-break either by default, or W=2 right now
+> might be a good idea.
 
-for the moment we are using the following code ->
+I should have waited for Joe Perches's fixer addition to checkpatch :)
 
-It works but fails miserably if all channels have data at same time
+The easy fixes I did only cover about 1/2 of the problems.
 
+Remaining are mostly nested switches, which from a complexity standpoint is bad.
 
-#define AR_K_P_ATTENUATION_LEVEL 1.0
+>
+> Ah, George (gbiv@, cc'ed), did an analysis recently of
+> `-Wunreachable-code-loop-increment`, `-Wunreachable-code-break`, and
+> `-Wunreachable-code-return` for Android userspace.  From the review:
+> ```
+> Spoilers: of these, it seems useful to turn on
+> -Wunreachable-code-loop-increment and -Wunreachable-code-return by
+> default for Android
 
-int p = 0;
-int i;
-int save_channel_0_k_p;
-int save_channel_1_k_p;
-double save_channel_0_data_double_k_p;
-double save_channel_1_data_double_k_p;
-double sample_double_temp_k_p;
-int number_of_samples_k_p = decoded_frame->nb_samples;
-int ricardo_deslocador__ = 0;
-frame_processed_k_p = 1;
+In my simple add-a-cflag bot, i see there are about 250
 
-int outputBufferLen = number_of_samples_k_p * 2 * 2;
-*size_out=outputBufferLen;
-short *outputBuffer = (int16_t *)buf;
-int16_t * ar_buffer_ = (int16_t *) decoded_frame->data[0];
+issues for -Wunreachable-code-return.
 
-for(i=0; i < number_of_samples_k_p; i++)
-{
-//channel 0
-int16_t sample_k_p = ar_buffer_[ricardo_deslocador__++];
+I'll see about doing this one next.
 
-save_channel_0_k_p = p;
+> ...
+> While these conventions about always having break arguably became
+> obsolete when we enabled -Wfallthrough, my sample turned up zero
+> potential bugs caught by this warning, and we'd need to put a lot of
+> effort into getting a clean tree. So this warning doesn't seem to be
+> worth it.
+> ```
+> Looks like there's an order of magnitude of `-Wunreachable-code-break`
+> than the other two.
+>
+> We probably should add all 3 to W=2 builds (wrapped in cc-option).
+> I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
+> follow up on.
 
-save_channel_0_data_double_k_p = (double) sample_k_p;
+Yes, i think think these should be added.
 
-p++;
+Tom
 
-///////////////////////////////////////////////
-//channel 1
-sample_k_p = ar_buffer_[ricardo_deslocador__++];
-
-save_channel_1_k_p = p;//so usa no final...
-
-save_channel_1_data_double_k_p = (double) sample_k_p;
-
-p++;
-
-////////////////////////////////////////////////
-//center
-sample_k_p = ar_buffer_[ricardo_deslocador__++];
-
-sample_double_temp_k_p = (double) sample_k_p;
-
-sample_double_temp_k_p *= AR_K_P_ATTENUATION_LEVEL;
-
-save_channel_0_data_double_k_p += sample_double_temp_k_p;
-
-if(32767.0 < save_channel_0_data_double_k_p)
-{
-save_channel_0_data_double_k_p = 32767.0;
-}
-
-if(-32768.0 > save_channel_0_data_double_k_p)
-{
-save_channel_0_data_double_k_p = -32768.0;
-}
-
-sample_double_temp_k_p = (double) sample_k_p;
-
-sample_double_temp_k_p *= AR_K_P_ATTENUATION_LEVEL;
-
-save_channel_1_data_double_k_p += sample_double_temp_k_p;
-
-if(32767.0 < save_channel_1_data_double_k_p)
-{
-save_channel_1_data_double_k_p = 32767.0;
-}
-
-if(-32768.0 > save_channel_1_data_double_k_p)
-{
-save_channel_1_data_double_k_p = -32768.0;
-}
-
-//////////////////////////////////////////////////////
-///////subwoffer
-sample_k_p = ar_buffer_[ricardo_deslocador__++];
-
-sample_double_temp_k_p = (double) sample_k_p;
-
-sample_double_temp_k_p *= AR_K_P_ATTENUATION_LEVEL;
-
-save_channel_0_data_double_k_p += sample_double_temp_k_p;
-
-if(32767.0 < save_channel_0_data_double_k_p)
-{
-save_channel_0_data_double_k_p = 32767.0;
-}
-
-if(-32768.0 > save_channel_0_data_double_k_p)
-{
-save_channel_0_data_double_k_p = -32768.0;
-}
-
-sample_double_temp_k_p = (double) sample_k_p;
-
-sample_double_temp_k_p *= AR_K_P_ATTENUATION_LEVEL;
-
-save_channel_1_data_double_k_p += sample_double_temp_k_p;
-
-if(32767.0 < save_channel_1_data_double_k_p)
-{
-save_channel_1_data_double_k_p = 32767.0;
-}
-
-if(-32768.0 > save_channel_1_data_double_k_p)
-{
-save_channel_1_data_double_k_p = -32768.0;
-}
-////////////////////////////////////////////////////
-/////surround left 4
-sample_k_p = ar_buffer_[ricardo_deslocador__++];
-
-sample_double_temp_k_p = (double) sample_k_p;
-
-sample_double_temp_k_p *= AR_K_P_ATTENUATION_LEVEL;
-
-save_channel_0_data_double_k_p += sample_double_temp_k_p;
-
-if(32767.0 < save_channel_0_data_double_k_p)
-{
-save_channel_0_data_double_k_p = 32767.0;
-}
-
-if(-32768.0 > save_channel_0_data_double_k_p)
-{
-save_channel_0_data_double_k_p = -32768.0;
-}
-///////////////////////////////////////////////
-//////////surround right 5
-sample_k_p = ar_buffer_[ricardo_deslocador__++];
-
-sample_double_temp_k_p = (double) sample_k_p;
-
-sample_double_temp_k_p *= AR_K_P_ATTENUATION_LEVEL;
-
-save_channel_1_data_double_k_p += sample_double_temp_k_p;
-
-if(32767.0 < save_channel_1_data_double_k_p)
-{
-save_channel_1_data_double_k_p = 32767.0;
-}
-
-if(-32768.0 > save_channel_1_data_double_k_p)
-{
-save_channel_1_data_double_k_p = -32768.0;
-}
-/////////////////////////////////////////////
-//finalizing
-
-outputBuffer[save_channel_0_k_p] = (signed short)
-save_channel_0_data_double_k_p;
-outputBuffer[save_channel_1_k_p] = (signed short)
-save_channel_1_data_double_k_p;
-}
-
-/*
-
-if possible point us to the files in ALSA that make the downmix and it will
-be enough
-
-Thanks a lot
-
-*/
-
-Ricardo
