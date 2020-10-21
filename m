@@ -2,68 +2,57 @@ Return-Path: <SRS0=H+KG=D4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BCEDC388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 16:00:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6E46C55179
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 16:29:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F34FD2224E
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 16:00:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A02AC2177B
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 16:29:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LoBB7jRk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F34FD2224E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RPqTIjX0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A02AC2177B
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17E6816E2;
-	Wed, 21 Oct 2020 17:59:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17E6816E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07FB5176F;
+	Wed, 21 Oct 2020 18:28:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07FB5176F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603296032;
-	bh=AzMpImxzlOZp2c2VAjusQZ2P9KnyJX97xQb4HTLV0rk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603297741;
+	bh=Fg9cxFyryXTJQNYsnhcv2J9NBRoboZH3ldO2MAVbQdY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LoBB7jRkCE+yglei2FzysOPZV4ZWF88aT1dWwBelr5XsdeSa7gRAwfQJqVfCpCHjN
-	 70qZeO+DuQtKgfERdxeAYxSXDF8waBcKRstPA21lULwUoYYan11PDSuEFqmG/+ycMN
-	 OD1W4RqJvv733aDUliZrDKaZ31VdooXo6rXEl2mA=
+	b=RPqTIjX0VHD3XGlwfDCl+FrW4hRJOpIda6YR+EUZ2x230zlBTeJG60vU7d8ZxKhEb
+	 KFrnlW3ZUGJgWBO8IoTBHW3KiFmTMTamJXDbE66t4KTlFwoaLSqAMYv+MZnMT4kNVu
+	 0eZLv/owAV8e2mRYMFPqu+upfdtu2ddjhU8QYHvg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94813F80253;
-	Wed, 21 Oct 2020 17:59:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87B1EF80253;
+	Wed, 21 Oct 2020 18:28:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE3FCF80264; Wed, 21 Oct 2020 17:59:39 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCF9DF80247
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 17:59:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCF9DF80247
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1B2E4ACB5;
- Wed, 21 Oct 2020 15:59:35 +0000 (UTC)
-Date: Wed, 21 Oct 2020 17:59:34 +0200
-Message-ID: <s5hblgvefix.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [bug report] ALSA: hda - Don't register a cb func if it is
- registered already
-In-Reply-To: <9be5bc31-0118-1542-560f-cfe2cecf2403@canonical.com>
-References: <20201021121904.GA1126544@mwanda>
- <da806361-d1a8-ce20-462f-0ec6acff5bfc@canonical.com>
- <9be5bc31-0118-1542-560f-cfe2cecf2403@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Dan Carpenter <dan.carpenter@oracle.com>
+ id 3A58EF80264; Wed, 21 Oct 2020 18:28:05 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id BFDABF80111
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 18:27:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFDABF80111
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1603297674082875967-webhooks-bot@alsa-project.org>
+References: <1603297674082875967-webhooks-bot@alsa-project.org>
+Subject: bug in the ALSA driver 'snd_hda_intel'
+Message-Id: <20201021162805.3A58EF80264@alsa1.perex.cz>
+Date: Wed, 21 Oct 2020 18:28:05 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,18 +68,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Oct 2020 17:03:11 +0200,
-Hui Wang wrote:
-> 
-> Looks like this will not bring problem on patch_sigmatel.c, NULL and
-> valid kernel pointer are same for IS_ERR(), they will not make
-> IS_ERR() come true.
+alsa-project/alsa-lib issue #90 was opened from Mysgym:
 
-Right, and it's called only once, so the bug doesn't hit.
+Hello,
+after spending some time troubleshooting an issue with an audio interface (using snd_hda_intel). I've stumbled upon this message from PulseAudio in the journal :
+`Oct 17 18:30:58 LaptopName pulseaudio[1782]: E: [alsa-sink-ALC256 Analog] alsa-sink.c: ALSA woke us up to write new data to the device, but there was actually nothing to write.
+Oct 17 18:30:58 LaptopName pulseaudio[1782]: E: [alsa-sink-ALC256 Analog] alsa-sink.c: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
+Oct 17 18:30:58 LaptopName pulseaudio[1782]: E: [alsa-sink-ALC256 Analog] alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another value < min_avail.
+`
+So I filed a bug report
 
-But we should address the potential bug nevertheless, of course :)
+This is Manjaro on Kernel 5.8
 
-
-thanks,
-
-Takashi
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/90
+Repository URL: https://github.com/alsa-project/alsa-lib
