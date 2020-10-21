@@ -2,82 +2,105 @@ Return-Path: <SRS0=H+KG=D4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4C2C4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 09:42:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67961C4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 09:52:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57D1A21D6C
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 09:42:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EC0A22251
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 09:51:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tdgsNePb";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YgAbg2Fi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57D1A21D6C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AzdNn7xg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EC0A22251
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=blennerhassett.gen.nz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 744C61723;
-	Wed, 21 Oct 2020 11:41:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 744C61723
+	by alsa0.perex.cz (Postfix) with ESMTPS id 238291727;
+	Wed, 21 Oct 2020 11:51:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 238291727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603273359;
-	bh=siJzHcRRa4KFW8mbtewNQ0VwcnQmGW8vm6PQQtUwqQQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tdgsNePbvRb3I8c1FdYFxZ2l5kLOIaWp/DtY0kIbgEK4BtWqe3krVKPvavtQW04Rd
-	 ErUapZDwUkjVpXl1bSEPsAZQ6FuoEoP830ffoY7KdtxFs/mIrKksnIKInP0MPRJrxn
-	 NjviVE2Ku4uLfPoMvncpkgWQY2/m3S/+98spIJGQ=
+	s=default; t=1603273917;
+	bh=oPQhGn9w1nGr0cozowNbvQ7iwFqbq1n9DsbXP9WfbVU=;
+	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AzdNn7xgXMuWclNnp5ey2txNSdu+E0xslGyXA2C5Sl6V97eDnku2aNf+H28NOLMto
+	 BFOG0MnfZWGaapg/h1/0cTfsqKLgFPOh5zbIBMAkan3V6fwHKhYugwJJfsh+VhgnPS
+	 4r25tE0wsnf8Q/ZLk19Tn6XV0FP1RekjPmCmiYLQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBEB6F80253;
-	Wed, 21 Oct 2020 11:41:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A27F1F80253;
+	Wed, 21 Oct 2020 11:51:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DDC3F80264; Wed, 21 Oct 2020 11:41:48 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 249BCF80264; Wed, 21 Oct 2020 11:51:05 +0200 (CEST)
+Received: from omr.mail.isx.net.nz (omr.mail.isx.net.nz [111.65.230.130])
+ (using TLSv1 with cipher ADH-CAMELLIA256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE2CDF8011C
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 11:41:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE2CDF8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YgAbg2Fi"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8287A21D6C;
- Wed, 21 Oct 2020 09:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603273301;
- bh=siJzHcRRa4KFW8mbtewNQ0VwcnQmGW8vm6PQQtUwqQQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=YgAbg2FieVVn/zLLhFc75BZ61Uhak3BDPQbyYk+p4SASrDumbeFaeRXG4PX2PzRGF
- byq43QZBbBO6N3GetLDXYLPut8XG/0J65osDeZr8lJlnUrUn//2e+zQMfVPohlbPgw
- KHz43NdCE339fNCA8XtfZJnTWSbIxBXAHgiotvqw=
-Date: Wed, 21 Oct 2020 10:41:29 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Defang Bo <bodefang@126.com>
-Subject: Re: [PATCH v2] ASoC: amd: move the call to devm_kzalloc below
- platform_get_resource()
-Message-ID: <20201021094129.GA4497@sirena.org.uk>
-References: <broonie@kernel.org>
- <1603263867-8754-1-git-send-email-bodefang@126.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB86AF80111
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 11:50:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB86AF80111
+Received: from [192.168.1.210] (unknown [27.252.196.81])
+ (Authenticated sender: eliot@blennerhassett.gen.nz)
+ by omr.mail.isx.net.nz (Postfix) with ESMTPA id 61B59AE660A
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 22:50:48 +1300 (NZDT)
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Subject: dapm, device tree, clock control - questions
+Autocrypt: addr=eliot@blennerhassett.gen.nz; prefer-encrypt=mutual; keydata=
+ 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
+ qoaBAZrJutMr3qtEjA==
+Message-ID: <e0e695de-cbb3-58c4-cc4f-49faa1e7333c@blennerhassett.gen.nz>
+Date: Wed, 21 Oct 2020 22:50:47 +1300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-In-Reply-To: <1603263867-8754-1-git-send-email-bodefang@126.com>
-X-Cookie: That does not compute.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, akshu.agrawal@amd.com, weiyongjun1@huawei.com,
- Vishnuvardhanrao.Ravulapati@amd.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,50 +116,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Greetings,
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+First the basic questions, so you can quickly stop reading if this is
+not your thing.  Background details follow. Specific answers, or
+pointers to relevant reading both appreciated.
 
-On Wed, Oct 21, 2020 at 03:04:27PM +0800, Defang Bo wrote:
+1) How do I force a DAI clock to keep running even when no audio is
+streaming? Can I do this with DT, or some runtime switch?  OR how do I
+disable dapm so everything is powered on all the time?
 
-> Just as the commit <4cb79ef9c6c4>("ASoC: amd: Fix potential NULL pointer dereference"),it makes no sense to allocate any resources if platform_get_resource fails,so move the call to devm_kzalloc() below the mentioned code.
+2) Two devices: one DAC, one dumb digital audio transmitter both
+connected to same serial audio data - how to model the second one in DT
+(or not)? it has some settings needed after clock starts, must keep
+clock running.
 
-As I said on my previous mail:
 
-| Please keep your commit message wrapped at below 80 columns.
+I have host CPU imx8mm
 
-Please don't ignore review comments, people are generally making them
-for a reason and are likely to have the same concerns if issues remain
-unaddressed.  Having to repeat the same comments can get repetitive and
-make people question the value of time spent reviewing.  If you disagree
-with the review comments that's fine but you need to reply and discuss
-your concerns so that the reviewer can understand your decisions.
+DAI is sound/soc/fsl/fsl_sai.c
 
->  	}
-> +
->  	adata = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dev_data), GFP_KERNEL);
->  	if (!adata)
->  		return -ENOMEM;
-> +
->  	adata->acp3x_base = devm_ioremap(&pdev->dev, res->start,
+The codec is sound/soc/codecs/ak4458.c
 
-This appears to add new whitespace, it doesn't seem to do what the
-commit log says?
+The digital audio transmitter is CS8406 (no driver yet?).
 
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
+Both the above are connected to the same DAI signals (MCLK, TXC, TXFS, TXD)
 
------BEGIN PGP SIGNATURE-----
+CS8406 needs MCLK before it can be configured, and loses config if clock
+stops.  Currently it is configured via I2C from userspace, but this is
+completely unaware of stream stop/start.  Is there a way to hook into
+stream state events so that this setup can be done after the MCLK starts
+before audio starts?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+QAkgACgkQJNaLcl1U
-h9BgQAf+JOwEXFuMzMDzjpL/SJstQqvXa6N4Sxd6iMSbuUka+npx/xEAcRW6OZYe
-/61Xayeulywoe7DyncM23aB77FTXZ6UgJXvfMxURFa1Q6a1PJzClKriGLlkFgNbN
-8/UkeUjsur/Lg1zckfGA0K7Nrhjj/BS+n5DF9cKDSdtsQEhRn+FQjPnZth/Vfjvv
-xClrvK9CNQ5Y5xCrMMeUwh9obKeRbN9Pi3eQG+MFfzci0kKul1SkBZUff+PFbgML
-KNYMkHnwcff23/VboGncsbyY6J0z9TWQjqKzPfD4ub1Kco0sPmBp20JCvIQtssoz
-vG6caxw+Hkp9U+vmK36Rex04RGQQUw==
-=ThGY
------END PGP SIGNATURE-----
+I desire for no discontinuity in analog or digital outputs as streams
+stop and start.
 
---SUOF0GtieIMvvwua--
+I have read
+Documentation/sound/soc/dapm.rst and its brothers.
+Documentation/devicetree/*
+is there elsewhere I should read to get a newbies intro to this stuff?
+
+It must be about 8 years since I did any ALSA development, and then I
+wasn't in the ASoC space, so quite a learning curve here.
+
+many thanks
+
+-- 
+Eliot
