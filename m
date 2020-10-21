@@ -2,87 +2,80 @@ Return-Path: <SRS0=H+KG=D4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MIME_BASE64_TEXT,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04038C64E7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 08:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B3C9C4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 09:29:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01CC52242F
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 08:57:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8A3B21D7B
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 09:29:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cOpUT4ue";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="quSHh30X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01CC52242F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YyuTkbb6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8A3B21D7B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FA63173E;
-	Wed, 21 Oct 2020 10:56:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FA63173E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D9ED16FE;
+	Wed, 21 Oct 2020 11:28:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D9ED16FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603270645;
-	bh=2eA5mKkZSX/w+1QgOhh4/7GoKxQze5d+ZVQZMBmbcxQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603272567;
+	bh=zLtH7PTAGL7fqWpdFdru6y56Vuf2R6QhNmddOQ3wXZA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cOpUT4ueV0loDr5JVHU3V+Gx6Cy1g7z6WFfvL+hNW6KJNo9UczCWb/yJSDzYxwxBN
-	 DzXGvHZQrfA3/RYe0glpcGAWujZtbhJbE1V1zpQaJ3J7TynowRrEWo0UJE7XRC9SdU
-	 ATWui3Q6Mz4g4S+1cNm74ym93i3WFYlUpJ0Zqvf4=
+	b=YyuTkbb6AdQ6qFFJpxA/tXXFHH8tHmA+wp1NfIaq4rYPOjT0kvthz01UCPLo7oBK9
+	 GxUEkNOcjKnukzk20RHFvH+4veNarPlXbgrkl5lW7BtUXBe0tThiyT816NsLnEqRYl
+	 lLE63QxGheRhSoXBle3wCs9IdGXsHsNH7+nS+8IQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37284F804D6;
-	Wed, 21 Oct 2020 10:54:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 916F4F80253;
+	Wed, 21 Oct 2020 11:28:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3987EF804B2; Wed, 21 Oct 2020 10:54:20 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa1.perex.cz (Postfix) with ESMTP id 8F7B5F80272
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 10:54:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F7B5F80272
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="quSHh30X"
-X-UUID: c96df0d139f843daa4f1b0bd657be934-20201021
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=2eA5mKkZSX/w+1QgOhh4/7GoKxQze5d+ZVQZMBmbcxQ=; 
- b=quSHh30Xph9924O/gI9tAL0JKzJ+Ve+wVavHYPhoo1TRcXecFe1jENpBK0hNFR/Nrmpcju4B3y5/6Q7KivT43Kq2KoEA929mQgWayZ3wSC9Ebm60ypL2VW+xN3hqh52PzpzeaHzRsonkCntHkgsHlYRzYTFWcqJzED5HbONy49g=;
-X-UUID: c96df0d139f843daa4f1b0bd657be934-20201021
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2
- ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1872985398; Wed, 21 Oct 2020 16:54:02 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 21 Oct 2020 16:54:00 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 21 Oct 2020 16:54:00 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>,
- <robh+dt@kernel.org>, <p.zabel@pengutronix.de>, <tzungbi@google.com>,
- <alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH v2 3/5] dt-bindings: mediatek: mt8192: add audio afe document
-Date: Wed, 21 Oct 2020 16:53:53 +0800
-Message-ID: <1603270435-3548-4-git-send-email-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1603270435-3548-1-git-send-email-jiaxin.yu@mediatek.com>
-References: <1603270435-3548-1-git-send-email-jiaxin.yu@mediatek.com>
+ id 7D88CF80264; Wed, 21 Oct 2020 11:28:32 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5484F80111
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 11:28:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5484F80111
+IronPort-SDR: ZWqg3X0+3vOMvPGeNrJIp//bjrPk8PbcCZIwe27OZv0Zg9r9hz9q2gVYtLpzr7xcLBWD1mYfgP
+ GAi2G9gnJHiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="164733563"
+X-IronPort-AV: E=Sophos;i="5.77,400,1596524400"; d="scan'208";a="164733563"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Oct 2020 02:28:19 -0700
+IronPort-SDR: aWWLbemHqtBu9CB7MlasuVjGUL1vP6vhBPSUnnLyk7Iuf+PSe07DZXqQMO++7ie0lWz26CBjQ3
+ 8e1pzMu4F9ew==
+X-IronPort-AV: E=Sophos;i="5.77,400,1596524400"; d="scan'208";a="466233453"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Oct 2020 02:28:18 -0700
+Date: Wed, 21 Oct 2020 12:26:22 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [GIT PULL] ASoC updates for v5.10
+In-Reply-To: <0cfec32c-c0b4-ddbc-6a23-f5b898966c48@perex.cz>
+Message-ID: <alpine.DEB.2.22.394.2010211150040.864696@eliteleevi.tm.intel.com>
+References: <20201012130845.816462076C@mail.kernel.org>
+ <a31e2b24-9ef4-c84f-a663-c2a44b0c8938@perex.cz>
+ <20201012132857.GC4332@sirena.org.uk>
+ <0cfec32c-c0b4-ddbc-6a23-f5b898966c48@perex.cz>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Content-Transfer-Encoding: base64
-Cc: shane.chien@mediatek.com, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- kuninori.morimoto.gx@renesas.com
+Content-Type: text/plain; charset=US-ASCII
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,73 +91,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-VGhpcyBwYXRjaCBhZGRzIG10ODE5MiBhdWRpbyBhZmUgZG9jdW1lbnQuDQoNClRoaXMgcGF0Y2gg
-ZGVwZW5kcyBvbiBmb2xsb3dpbmcgc2VyaWVzIHRoYXQgaGFzIG5vdCBiZWVuIGFjY2VwdGVkOg0K
-aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9jb3Zlci8xMTc1MjIzMQ0KKGR0LWJpbmRpbmdz
-L2Nsb2NrL210ODE5Mi1jbGsuaCBpcyBpbmNsdWRlZCBpbiBpdC4pDQpodHRwczovL3BhdGNod29y
-ay5rZXJuZWwub3JnL3BhdGNoLzExNzU1ODk1DQooZHQtYmluZGluZ3MvcG93ZXIvbXQ4MTkyLXBv
-d2VyLmggaXMgaW5jbHVkZWQgaW4gaXQuKQ0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3
-b3JrL3BhdGNoLzEzMjExMTgNCihkdC1iaW5kaW5ncy9yZXNldC1jb250cm9sbGVyL210ODE5Mi1y
-ZXNldHMuaCBpcyBpbmNsdWRlZCBpbiBpdC4pDQoNClNpZ25lZC1vZmYtYnk6IEppYXhpbiBZdSA8
-amlheGluLnl1QG1lZGlhdGVrLmNvbT4NCi0tLQ0KIC4uLi9iaW5kaW5ncy9zb3VuZC9tdDgxOTIt
-YWZlLXBjbS55YW1sICAgICAgICB8IDEwMyArKysrKysrKysrKysrKysrKysNCiAxIGZpbGUgY2hh
-bmdlZCwgMTAzIGluc2VydGlvbnMoKykNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210ODE5Mi1hZmUtcGNtLnlhbWwNCg0KZGlmZiAt
-LWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9tdDgxOTItYWZl
-LXBjbS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210ODE5
-Mi1hZmUtcGNtLnlhbWwNCm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAwMDAwMDAwMDAw
-Li43YzJmMDdiOGI2NmRkDQotLS0gL2Rldi9udWxsDQorKysgYi9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3Mvc291bmQvbXQ4MTkyLWFmZS1wY20ueWFtbA0KQEAgLTAsMCArMSwxMDMg
-QEANCisjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMCsgT1IgQlNELTItQ2xhdXNl
-KQ0KKyVZQU1MIDEuMg0KKy0tLQ0KKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMv
-c291bmQvbXQ4MTkyLWFmZS1wY20ueWFtbCMNCiskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5v
-cmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCisNCit0aXRsZTogTWVkaWF0ZWsgQUZFIFBDTSBj
-b250cm9sbGVyIGZvciBtdDgxOTINCisNCittYWludGFpbmVyczoNCisgICAtIEppYXhpbiBZdSA8
-amlheGluLnl1QG1lZGlhdGVrLmNvbT4NCisgICAtIFNoYW5lIENoaWVuIDxzaGFuZS5jaGllbkBt
-ZWRpYXRlay5jb20+DQorDQorcHJvcGVydGllczoNCisgIGNvbXBhdGlibGU6DQorICAgICAgY29u
-c3Q6IG1lZGlhdGVrLG10ODE5Mi1hdWRpbw0KKw0KKyAgaW50ZXJydXB0czoNCisgICAgbWF4SXRl
-bXM6IDENCisNCisgIHJlc2V0czoNCisgICAgbWF4SXRlbXM6IDENCisNCisgIHJlc2V0LW5hbWVz
-Og0KKyAgICBjb25zdDogYXVkaW9zeXMNCisNCisgIG1lZGlhdGVrLGFwbWl4ZWRzeXM6DQorICAg
-ICRyZWY6ICIvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9waGFuZGxlIg0KKyAgICBt
-YXhJdGVtczogMQ0KKyAgICBkZXNjcmlwdGlvbjogVGhlIHBoYW5kbGUgb2YgdGhlIG1lZGlhdGVr
-IGFwbWl4ZWRzeXMgY29udHJvbGxlcg0KKw0KKyAgbWVkaWF0ZWssaW5mcmFjZmc6DQorICAgICRy
-ZWY6ICIvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9waGFuZGxlIg0KKyAgICBtYXhJ
-dGVtczogMQ0KKyAgICBkZXNjcmlwdGlvbjogVGhlIHBoYW5kbGUgb2YgdGhlIG1lZGlhdGVrIGlu
-ZnJhY2ZnIGNvbnRyb2xsZXINCisNCisgIG1lZGlhdGVrLHRvcGNrZ2VuOg0KKyAgICAkcmVmOiAi
-L3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvcGhhbmRsZSINCisgICAgbWF4SXRlbXM6
-IDENCisgICAgZGVzY3JpcHRpb246IFRoZSBwaGFuZGxlIG9mIHRoZSBtZWRpYXRlayB0b3Bja2dl
-biBjb250cm9sbGVyDQorDQorICBwb3dlci1kb21haW5zOg0KKyAgICBtYXhJdGVtczogMQ0KKw0K
-KyAgY2xvY2tzOg0KKyAgICBpdGVtczoNCisgICAgICAtIGRlc2NyaXB0aW9uOiBBRkUgY2xvY2sN
-CisgICAgICAtIGRlc2NyaXB0aW9uOiBBRERBIERBQyBjbG9jaw0KKyAgICAgIC0gZGVzY3JpcHRp
-b246IEFEREEgREFDIHByZS1kaXN0b3J0aW9uIGNsb2NrDQorICAgICAgLSBkZXNjcmlwdGlvbjog
-YXVkaW8gaW5mcmEgc3lzIGNsb2NrDQorICAgICAgLSBkZXNjcmlwdGlvbjogYXVkaW8gaW5mcmEg
-MjZNIGNsb2NrDQorDQorICBjbG9jay1uYW1lczoNCisgICAgaXRlbXM6DQorICAgICAgLSBjb25z
-dDogYXVkX2FmZV9jbGsNCisgICAgICAtIGNvbnN0OiBhdWRfZGFjX2Nsaw0KKyAgICAgIC0gY29u
-c3Q6IGF1ZF9kYWNfcHJlZGlzX2Nsaw0KKyAgICAgIC0gY29uc3Q6IGF1ZF9pbmZyYV9jbGsNCisg
-ICAgICAtIGNvbnN0OiBhdWRfaW5mcmFfMjZtX2Nsaw0KKw0KK3JlcXVpcmVkOg0KKyAgLSBjb21w
-YXRpYmxlDQorICAtIGludGVycnVwdHMNCisgIC0gcmVzZXRzDQorICAtIHJlc2V0LW5hbWVzDQor
-ICAtIG1lZGlhdGVrLGFwbWl4ZWRzeXMNCisgIC0gbWVkaWF0ZWssaW5mcmFjZmcNCisgIC0gbWVk
-aWF0ZWssdG9wY2tnZW4NCisgIC0gcG93ZXItZG9tYWlucw0KKyAgLSBjbG9ja3MNCisgIC0gY2xv
-Y2stbmFtZXMNCisNCithZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCisNCitleGFtcGxlczoN
-CisgIC0gfA0KKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvY2xvY2svbXQ4MTkyLWNsay5oPg0K
-KyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0LWNvbnRyb2xsZXIvYXJtLWdpYy5o
-Pg0KKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0LWNvbnRyb2xsZXIvaXJxLmg+
-DQorICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9wb3dlci9tdDgxOTItcG93ZXIuaD4NCisgICAg
-I2luY2x1ZGUgPGR0LWJpbmRpbmdzL3Jlc2V0LWNvbnRyb2xsZXIvbXQ4MTkyLXJlc2V0cy5oPg0K
-Kw0KKyAgICBhZmU6IG10ODE5Mi1hZmUtcGNtIHsNCisgICAgICAgIGNvbXBhdGlibGUgPSAibWVk
-aWF0ZWssbXQ4MTkyLWF1ZGlvIjsNCisgICAgICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSAyMDIg
-SVJRX1RZUEVfTEVWRUxfSElHSD47DQorICAgICAgICByZXNldHMgPSA8JndhdGNoZG9nIE1UODE5
-Ml9UT1BSR1VfQVVESU9fU1dfUlNUPjsNCisgICAgICAgIHJlc2V0LW5hbWVzID0gImF1ZGlvc3lz
-IjsNCisgICAgICAgIG1lZGlhdGVrLGFwbWl4ZWRzeXMgPSA8JmFwbWl4ZWRzeXM+Ow0KKyAgICAg
-ICAgbWVkaWF0ZWssaW5mcmFjZmcgPSA8JmluZnJhY2ZnPjsNCisgICAgICAgIG1lZGlhdGVrLHRv
-cGNrZ2VuID0gPCZ0b3Bja2dlbj47DQorICAgICAgICBwb3dlci1kb21haW5zID0gPCZzY3BzeXMg
-TVQ4MTkyX1BPV0VSX0RPTUFJTl9BVURJTz47DQorICAgICAgICBjbG9ja3MgPSA8JmF1ZHN5cyBD
-TEtfQVVEX0FGRT4sDQorICAgICAgICAgICAgICAgICA8JmF1ZHN5cyBDTEtfQVVEX0RBQz4sDQor
-ICAgICAgICAgICAgICAgICA8JmF1ZHN5cyBDTEtfQVVEX0RBQ19QUkVESVM+LA0KKyAgICAgICAg
-ICAgICAgICAgPCZpbmZyYWNmZyBDTEtfSU5GUkFfQVVESU8+LA0KKyAgICAgICAgICAgICAgICAg
-PCZpbmZyYWNmZyBDTEtfSU5GUkFfQVVESU9fMjZNX0I+Ow0KKyAgICAgICAgY2xvY2stbmFtZXMg
-PSAiYXVkX2FmZV9jbGsiLA0KKyAgICAgICAgICAgICAgICAgICAgICAiYXVkX2RhY19jbGsiLA0K
-KyAgICAgICAgICAgICAgICAgICAgICAiYXVkX2RhY19wcmVkaXNfY2xrIiwNCisgICAgICAgICAg
-ICAgICAgICAgICAgImF1ZF9pbmZyYV9jbGsiLA0KKyAgICAgICAgICAgICAgICAgICAgICAiYXVk
-X2luZnJhXzI2bV9jbGsiOw0KKyAgICB9Ow0KKw0KKy4uLg0KLS0gDQoyLjE4LjANCg==
+Hi,
 
+On Wed, 21 Oct 2020, Jaroslav Kysela wrote:
+
+> Another week and this is ignored. At least, I cannot find this simple patch
+> set in your for-5.10 tree. I don't care about the cosmetic code fixes, but the
+> last warning suppression can reduce the maintainer / user confusions ("ASoC:
+> SOF: loader: handle all SOF_IPC_EXT types").
+
+maybe bundling the warning suppression to the same patchset was not the 
+best of ideas. Jaroslav is correct the warnings can unfortunately create 
+real confusion as this is on a code path we run on every rt-resume, and if 
+you happen to have a system with FW that has some custom IPC types, you'll 
+get this warning constantly in dmesg.
+
+We did a cleanup of SOF dmesg noise in 5.8, but unfortunately this one 
+slipped through.
+
+Br, Kai
