@@ -2,71 +2,82 @@ Return-Path: <SRS0=H+KG=D4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF381C388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 15:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD24C55178
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 15:14:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 158F520BED
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 15:04:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E91552177B
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Oct 2020 15:14:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jo5yScAJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 158F520BED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y1RVY84h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E91552177B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 342F4176D;
-	Wed, 21 Oct 2020 17:03:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 342F4176D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E4631773;
+	Wed, 21 Oct 2020 17:13:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E4631773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603292657;
-	bh=iV6uzsCsdk+6ZYA2f/qUdLPzLerX/LoR11Vel5HzXsw=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1603293243;
+	bh=Xaw1ZO66HhA2ZRvrOumriSUqHRgsfxV+Cw6pxrqk0aQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jo5yScAJIyiAUMmJfVkHDKUacCOWP7JpIhmZUSXy2PYTsL8U2vZ5URj9zSilln1/I
-	 accTGIQ7TvIWSNtFM47fSn+IlX4PSMhK9VEexS6XKqQa/wABz1Aaf8PwRkrE2kKjyB
-	 rUoYyG95KsGCsXRbXJ2aJjKR15ymx3/5YvNEByAw=
+	b=Y1RVY84hJWHL4hKcdpUAFwxobH/KHIyQVNQT1GdFPmMjIlyzlHunJ5U3ngcCppjSU
+	 U8i1fbYaK4zDLDAMQcWYogCA8n7LlNMRLZdSQGUjrx7X4/1yhgjDARVXNeT+jHrSEL
+	 fHkJOrYZFKt4c7XjKx0diQGtvqtGvDAOJrhR12FM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 955FEF80253;
-	Wed, 21 Oct 2020 17:03:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F051F8011C;
+	Wed, 21 Oct 2020 17:13:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9386F80264; Wed, 21 Oct 2020 17:03:24 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id BD659F80264; Wed, 21 Oct 2020 17:13:10 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 830DFF80247
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 17:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 830DFF80247
-Received: from [222.130.135.198] (helo=[192.168.0.104])
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1kVFe3-0008F3-UT; Wed, 21 Oct 2020 15:03:20 +0000
-Subject: Re: [bug report] ALSA: hda - Don't register a cb func if it is
- registered already
-From: Hui Wang <hui.wang@canonical.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-References: <20201021121904.GA1126544@mwanda>
- <da806361-d1a8-ce20-462f-0ec6acff5bfc@canonical.com>
-Message-ID: <9be5bc31-0118-1542-560f-cfe2cecf2403@canonical.com>
-Date: Wed, 21 Oct 2020 23:03:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68F95F8011C
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2020 17:13:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68F95F8011C
+IronPort-SDR: YWUjkJyaFiVLC1MT0/vjfTn7BDFtMeMoOYByPgvA8hQ/BdUWP1C/Oix+r3kdo9vf4qjMj25hlH
+ MXMDrdtl6lzg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="229007893"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; d="scan'208";a="229007893"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Oct 2020 08:13:04 -0700
+IronPort-SDR: l8kn3qqaFTp2bDSgFp3xuMSI24cjn8WvPRN48DK7FqkSHhdSBijKK1IpaI+U+9/zggmPjRSwyp
+ ckd9o4EbaclQ==
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; d="scan'208";a="533565360"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Oct 2020 08:13:03 -0700
+Date: Wed, 21 Oct 2020 18:11:07 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v5.10
+In-Reply-To: <20201021122209.GC4497@sirena.org.uk>
+Message-ID: <alpine.DEB.2.22.394.2010211719200.864696@eliteleevi.tm.intel.com>
+References: <20201012130845.816462076C@mail.kernel.org>
+ <a31e2b24-9ef4-c84f-a663-c2a44b0c8938@perex.cz>
+ <20201012132857.GC4332@sirena.org.uk>
+ <0cfec32c-c0b4-ddbc-6a23-f5b898966c48@perex.cz>
+ <alpine.DEB.2.22.394.2010211150040.864696@eliteleevi.tm.intel.com>
+ <20201021122209.GC4497@sirena.org.uk>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-In-Reply-To: <da806361-d1a8-ce20-462f-0ec6acff5bfc@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,101 +93,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Looks like this will not bring problem on patch_sigmatel.c, NULL and 
-valid kernel pointer are same for IS_ERR(), they will not make IS_ERR() 
-come true.
+Hey,
 
-On 10/21/20 10:21 PM, Hui Wang wrote:
->
-> On 10/21/20 8:19 PM, Dan Carpenter wrote:
->> Hello Hui Wang,
->>
->> The patch f4794c6064a8: "ALSA: hda - Don't register a cb func if it
->> is registered already" from Sep 30, 2020, leads to the following
->> static checker warning:
->>
->>     sound/pci/hda/patch_sigmatel.c:3075 stac92hd71bxx_fixup_hp_m4()
->>     warn: 'jack' can also be NULL
->>
->> sound/pci/hda/patch_sigmatel.c
->>    3069          /* Enable VREF power saving on GPIO1 detect */
->>    3070          snd_hda_codec_write_cache(codec, codec->core.afg, 0,
->>    3071 AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK, 0x02);
->>    3072          jack = snd_hda_jack_detect_enable_callback(codec, 
->> codec->core.afg,
->>    3073 stac_vref_event);
->>
->> Originally snd_hda_jack_detect_enable_callback() would not return NULL
->> here.
->>
->>    3074          if (!IS_ERR(jack))
->>    3075                  jack->private_data = 0x02;
->>    3076
->>    3077          spec->gpio_mask |= 0x02;
->>
->> But now we have this:
->>
->> sound/pci/hda/hda_jack.c
->>     301  struct hda_jack_callback *
->>     302  snd_hda_jack_detect_enable_callback_mst(struct hda_codec 
->> *codec, hda_nid_t nid,
->>     303                                          int dev_id, 
->> hda_jack_callback_fn func)
->>     304  {
->>     305          struct hda_jack_tbl *jack;
->>     306          struct hda_jack_callback *callback = NULL;
->>     307          int err;
->>     308
->>     309          jack = snd_hda_jack_tbl_new(codec, nid, dev_id);
->>     310          if (!jack)
->>     311                  return ERR_PTR(-ENOMEM);
->>     312          if (func && !func_is_already_in_callback_list(jack, 
->> func)) {
->> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->> We only allocate callback if there isn't one already.
-> Yes, indeed, this is a problem.
->>
->>     313                  callback = kzalloc(sizeof(*callback), 
->> GFP_KERNEL);
->>     314                  if (!callback)
->>     315                          return ERR_PTR(-ENOMEM);
->>     316                  callback->func = func;
->>     317                  callback->nid = jack->nid;
->>     318                  callback->dev_id = jack->dev_id;
->>     319                  callback->next = jack->callback;
->>     320                  jack->callback = callback;
->>     321          }
->>     322
->>     323          if (jack->jack_detect)
->>     324                  return callback; /* already registered */
->>                          ^^^^^^^^^^^^^^^
->> So presumably this should be jack->callback
->
-> Looks like it is also not correct to return the jack->callback.  Need 
-> to take some time to write a fix for it.
->
->
-> Thanks for reporting the issue.
->
->>
->>
->>     325          jack->jack_detect = 1;
->>     326          if (codec->jackpoll_interval > 0)
->>     327                  return callback; /* No unsol if we're 
->> polling instead */
->>                          ^^^^^^^^^^^^^^^^
->>
->>     328          err = snd_hda_codec_write_cache(codec, nid, 0,
->>     329 AC_VERB_SET_UNSOLICITED_ENABLE,
->>     330                                           AC_USRSP_EN | 
->> jack->tag);
->>     331          if (err < 0)
->>     332                  return ERR_PTR(err);
->>     333          return callback;
->>                  ^^^^^^^^^^^^^^^^
->> And these as well.
->>
->>     334  }
->>
->> regards,
->> dan carpenter
+On Wed, 21 Oct 2020, Mark Brown wrote:
+
+> On Wed, Oct 21, 2020 at 12:26:22PM +0300, Kai Vehmanen wrote:
+>> maybe bundling the warning suppression to the same patchset was not the 
+>> best of ideas. Jaroslav is correct the warnings can unfortunately create 
+> 
+> No, and especially putting it at the end of the series - presumably it
+> has dependencies on the rest of it?  You should always put fixes first
+> in a series.
+
+I hadn't realized the warning gets triggered so commonly when sending the 
+series out, so it was just a bad call to have this in the same series with 
+coding-style fixes only. The warning patch has no strict dependency to the 
+others. I know series with no hard dependencies are frowned upon, so this 
+a double-fault on my part.
+
+I can send the fix patch separately and save the rest of the series for 
+5.11 window.
+
+Br, Kai
