@@ -2,66 +2,73 @@ Return-Path: <SRS0=uLsF=D5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1676C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 00:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A0F0C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 01:43:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D4742237B
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 00:48:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 487C821707
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 01:43:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RwagcSXD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D4742237B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IjJ5IntP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 487C821707
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B06F17A5;
-	Thu, 22 Oct 2020 02:47:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B06F17A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id A59CC175E;
+	Thu, 22 Oct 2020 03:42:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A59CC175E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603327714;
-	bh=AWcuWYQgLJv1f195xMLOVytjxjowFcX0rPA/4/x7khA=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603331005;
+	bh=70TXSSD0Z8ay711JQlrYDccvuQlYOtyQ2HUOnbuEBU0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RwagcSXDdE24Mj5+aX5mH3mkUNTDotRtquYNCDDJxsRHgz5V7pV9Mp7OTH6DEwXV6
-	 aROKOB/p749pTQk8YT9HVhlHgsOwPFqUun9NI10U3WeM8G74K6o8JQN+wqhtPadZzO
-	 w83D5jJ355nrRv5PWHJbBPMESr8vVzHyJIKtzPHk=
+	b=IjJ5IntPC+MPWvAM8YpyBlqk/CKt2yg7/uRK1lMmat7D+4/LX8FtWWzeZS6AyrNuZ
+	 KvZO3DCtjMlQjq7q90qegQ1oXoImYJvuSKv2Oq0A7m1vWH8rUJXzngkU5optSaUwHa
+	 Zz0n7VocwXh/4/MLnoVVmmpUdDf5r71kmHoTaqeI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 159D3F804D8;
-	Thu, 22 Oct 2020 02:46:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A53BF800CE;
+	Thu, 22 Oct 2020 03:42:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A06C3F804CA; Thu, 22 Oct 2020 02:46:47 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 17410F804BC
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 02:46:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17410F804BC
-Date: 22 Oct 2020 09:46:43 +0900
-X-IronPort-AV: E=Sophos;i="5.77,402,1596466800"; d="scan'208";a="60445661"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 22 Oct 2020 09:46:43 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 979744142B77;
- Thu, 22 Oct 2020 09:46:43 +0900 (JST)
-Message-ID: <875z73ay6f.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 3/3] dt-bindings: ASoC: renesas,rsnd: Add r8a77961 support
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
-In-Reply-To: <87a6wfay7t.wl-kuninori.morimoto.gx@renesas.com>
-References: <87a6wfay7t.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Sameer Pujar <spujar@nvidia.com>
+ id EC08AF804A9; Thu, 22 Oct 2020 03:42:32 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD346F8025A
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 03:42:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD346F8025A
+Received: from 1.general.hwang4.uk.vpn ([10.172.195.16])
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <hui.wang@canonical.com>)
+ id 1kVPca-0003nC-91; Thu, 22 Oct 2020 01:42:28 +0000
+Subject: Re: [bug report] ALSA: hda - Don't register a cb func if it is
+ registered already
+To: Dan Carpenter <dan.carpenter@oracle.com>
+References: <20201021121904.GA1126544@mwanda>
+ <da806361-d1a8-ce20-462f-0ec6acff5bfc@canonical.com>
+ <9be5bc31-0118-1542-560f-cfe2cecf2403@canonical.com>
+ <20201021172728.GY18329@kadam>
+From: Hui Wang <hui.wang@canonical.com>
+Message-ID: <de6d0948-79cc-6746-282d-db00b8083393@canonical.com>
+Date: Thu, 22 Oct 2020 09:42:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201021172728.GY18329@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,27 +85,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On 10/22/20 1:27 AM, Dan Carpenter wrote:
+> On Wed, Oct 21, 2020 at 11:03:11PM +0800, Hui Wang wrote:
+>> Looks like this will not bring problem on patch_sigmatel.c, NULL and valid
+>> kernel pointer are same for IS_ERR(), they will not make IS_ERR() come true.
+>>
+> Correct, but that is the problem.  You can dereference a valid pointer
+> but you can't dereference a NULL.
+>
+>> On 10/21/20 10:21 PM, Hui Wang wrote:
+>>> On 10/21/20 8:19 PM, Dan Carpenter wrote:
+>>>> Hello Hui Wang,
+>>>>
+>>>> The patch f4794c6064a8: "ALSA: hda - Don't register a cb func if it
+>>>> is registered already" from Sep 30, 2020, leads to the following
+>>>> static checker warning:
+>>>>
+>>>>      sound/pci/hda/patch_sigmatel.c:3075 stac92hd71bxx_fixup_hp_m4()
+>>>>      warn: 'jack' can also be NULL
+>>>>
+>>>> sound/pci/hda/patch_sigmatel.c
+>>>>     3069          /* Enable VREF power saving on GPIO1 detect */
+>>>>     3070          snd_hda_codec_write_cache(codec, codec->core.afg, 0,
+>>>>     3071 AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK, 0x02);
+>>>>     3072          jack = snd_hda_jack_detect_enable_callback(codec,
+>>>> codec->core.afg,
+>>>>     3073 stac_vref_event);
+>>>>
+>>>> Originally snd_hda_jack_detect_enable_callback() would not return NULL
+>>>> here.
+>>>>
+>>>>     3074          if (!IS_ERR(jack))
+>>>>     3075                  jack->private_data = 0x02;
+> So if "jack" is NULL then it will say it's not an error pointer so it
+> will try to assign jack->private_data = 0x02; and oops.
 
-Document R-Car M3-W+ (R8A77961) SoC bindings.
+Right. Will fix it.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Thanks
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-index 6311938f61b1..c1581d0f9b21 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-@@ -43,6 +43,7 @@ properties:
-               - renesas,rcar_sound-r8a774e1  # RZ/G2H
-               - renesas,rcar_sound-r8a7795   # R-Car H3
-               - renesas,rcar_sound-r8a7796   # R-Car M3-W
-+              - renesas,rcar_sound-r8a77961  # R-Car M3-W+
-               - renesas,rcar_sound-r8a77965  # R-Car M3-N
-               - renesas,rcar_sound-r8a77990  # R-Car E3
-               - renesas,rcar_sound-r8a77995  # R-Car D3
--- 
-2.25.1
-
+>
+> regards,
+> dan carpenter
+>
