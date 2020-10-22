@@ -6,62 +6,110 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67F06C388F2
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 13:21:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BFF4C388F7
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 13:25:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FF7C2417D
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 13:21:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 108DE20848
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 13:25:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RKIgYJay"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FF7C2417D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ha7EOOgn";
+	dkim=temperror (0-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="HtZWIK/f";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Gm57Q85H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 108DE20848
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58B3E17B9;
-	Thu, 22 Oct 2020 15:20:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58B3E17B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98BC417B9;
+	Thu, 22 Oct 2020 15:24:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98BC417B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603372905;
-	bh=txwEKPzDbislGiJ1f0iEEb3tuMPQxz3eWniCiB97Auo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603373111;
+	bh=1zrJLUZGihno7MsasjqL6qZB/GBG0CJ6ykiSEy7DrHQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RKIgYJayXQHkqKd/M+BHbbdt31yfbf1AjlG1xtkzG1SB2YIKdxNEPI8NddnPsobP2
-	 xZgM7xmN3g6cZO6+K/Yej4YkWKMgoXSpslTqg7Lj3RMlgRyFlswUwWqi1sGEDFgLJZ
-	 DKb2PQ24lMMWFMUeULt3iumPX1aYE5zNJlvQXMyY=
+	b=Ha7EOOgneo36VA8O/9e4t5T4YnhH8l1e/lwMpB5mVi9l4rv5g29WEa+uXC1UcuQvS
+	 3nLYj90zdu1bIxuUhfB6vkU4k/kHZ57/zPomLM1VvBdiA+bQS+8hy6xATD6kauhyu7
+	 Z4qXnOp1KKEoYTydH0OCbG4xhMmtPMoKODUnCt38=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC4C2F8049C;
-	Thu, 22 Oct 2020 15:20:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A25EF8049C;
+	Thu, 22 Oct 2020 15:24:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C62CF804A9; Thu, 22 Oct 2020 15:20:53 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 1E5D4F804A9; Thu, 22 Oct 2020 15:24:19 +0200 (CEST)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0B7FF800CE
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 15:20:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0B7FF800CE
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id EC29CB904;
- Thu, 22 Oct 2020 13:20:49 +0000 (UTC)
-Date: Thu, 22 Oct 2020 15:20:49 +0200
-Message-ID: <s5ha6webdn2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Maxime Ripard <maxime@cerno.tech>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36B21F800CE
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 15:24:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36B21F800CE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="HtZWIK/f"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="Gm57Q85H"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id CD7C85C008D;
+ Thu, 22 Oct 2020 09:24:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Thu, 22 Oct 2020 09:24:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=WpxzM5T2oXZM9uNlrwwMMJYM97B
+ 01sisUMLV0IHjh+4=; b=HtZWIK/fLwEU3KnyBhFBfIhUhQ4LHqKu5DWhaZwuXHl
+ +9XGi6p9jxOTbkz6BvsuCH1oiu8BdCKAl0aLc7aRmLgcfZTb28KbC4vZ0MpstX+Q
+ 9pmC4QUHFpNvcsjINx0s1R0GwCIEOAZlEgNneyunX+rjCc+BhSnbaGohSqU/+MVD
+ ookqZ7AaAYTxZuEpKXHAaeg/tcXH7l5grhKxdeWQfnOyNNI3HITpnI8DBByloWv5
+ v/sVYjy+2Qs/G5b/Ig7Y3Oino/NO4r3C8D7Bl9oWn/E+dSrZUiudch7Y//FPM7Bm
+ +OjBUPDeC6deak9oVI3l4ed0E9WVpXo+QRNRCzvAPew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WpxzM5
+ T2oXZM9uNlrwwMMJYM97B01sisUMLV0IHjh+4=; b=Gm57Q85Hwi4xddGi9Qavhj
+ CT/IfjHXHVayE5b+BdSwv3OaI8Xl1QNVUouXZb50qiNbMkD62CUFU1iguDqcejqz
+ kBi60h+B+qjb7GMW2+IGRvsiaVUAe6Tt1Zvlci2bestIoZE/4wGA4dj2KVtr8ZJE
+ lpb6B9AyyVABSdDE8VexUiE1U0VviuivCWzlWoAKDk2sdwSQRmwCklKvCpS9//GI
+ L6yCIE1bCTjuyV58NgF74/LaCXL5gsdPXXmvHjV8beU0j2rxJJJ/WPlrGbeeciCL
+ WFz9MEQNSAOAu3A8vKWkFfFXyrVl3wE6FJXnGw6O6FlhPAaYsLlE7FbbjOE9YaAg
+ ==
+X-ME-Sender: <xms:_YeRXy6ZMaXfp82xdOLIZwt4-d8FV_bWXd7IOsNiLPyMsM_2r3viKw>
+ <xme:_YeRX76oG0gcXVW68kXo4JfWFspgUOo3ctRttg5l9lf2v1kAU4Q6oqQGJgcHtSkDV
+ f4WvEQpfh-7v7BvcQs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeejgdeivdcutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+ ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+ gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+ udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+ grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:_YeRXxfl6dfPi6dF8Gk0iK9K_dTuK8DdPDCr_XnSRBiL68JqgacKlw>
+ <xmx:_YeRX_KggHoq606HXTB_6IdLDqaLw31dFfE_ufzcbCZDfWIFrlSjQg>
+ <xmx:_YeRX2K3uTAUg8ENlwirn7SR-yD3xsQ7heaZIe771OHyvnESYgnRBw>
+ <xmx:_oeRX3re2C6qpImTePz1qNECntzKXWXMvLv29TatVriOn8L0hgIlxA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 7C1C23280060;
+ Thu, 22 Oct 2020 09:24:13 -0400 (EDT)
+Date: Thu, 22 Oct 2020 15:24:12 +0200
+From: Maxime Ripard <maxime@cerno.tech>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: Context expectations in ALSA
-In-Reply-To: <20201022125741.xxibhwgcr2mhxehe@gilmour.lan>
+Message-ID: <20201022132412.vntap4kfb2aj24qy@gilmour.lan>
 References: <20201022095041.44jytaelnlako54w@gilmour.lan>
  <30226f94-72e9-34d2-17d0-11d2501053f0@perex.cz>
  <20201022125741.xxibhwgcr2mhxehe@gilmour.lan>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5ha6webdn2.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="rwqqljnlxayusdb4"
+Content-Disposition: inline
+In-Reply-To: <s5ha6webdn2.wl-tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Dom Cobley <dom@raspberrypi.com>,
  Dave Stevenson <dave.stevenson@raspberrypi.com>, linux-kernel@vger.kernel.org,
  Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
@@ -82,34 +130,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Oct 2020 14:57:41 +0200,
-Maxime Ripard wrote:
-> 
-> On Thu, Oct 22, 2020 at 12:03:19PM +0200, Jaroslav Kysela wrote:
-> > Dne 22. 10. 20 v 11:50 Maxime Ripard napsal(a):
-> > 
-> > > So, I'm not really sure what I'm supposed to do here. The drivers
-> > > involved don't appear to be doing anything extraordinary, but the issues
-> > > lockdep report are definitely valid too. What are the expectations in
-> > > terms of context from ALSA when running the callbacks, and how can we
-> > > fix it?
-> > 
-> > I think that you should set the non-atomic flag and wake up the workqueue or
-> > so from interrupt handler in this case. Call snd_pcm_period_elapsed() from the
-> > workqueue not the interrupt handler context.
-> 
-> Yeah, that was my first guess too. However, the DMA driver uses some
-> kind of generic helpers using a tasklet, so getting rid of it would take
-> some work and would very likely not be eligible for stable.
 
-Who sets the nonatomic flag for vc4?  I couldn't find the relevant
-code in the latest upstream.
+--rwqqljnlxayusdb4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ideally dmaengine PCM helper should support the nonatomic mode, but
-until then, the other side needs to drop the nonatomic flag, I
-suppose.
+Hi Takashi,
 
+On Thu, Oct 22, 2020 at 03:20:49PM +0200, Takashi Iwai wrote:
+> On Thu, 22 Oct 2020 14:57:41 +0200,
+> Maxime Ripard wrote:
+> >=20
+> > On Thu, Oct 22, 2020 at 12:03:19PM +0200, Jaroslav Kysela wrote:
+> > > Dne 22. 10. 20 v 11:50 Maxime Ripard napsal(a):
+> > >=20
+> > > > So, I'm not really sure what I'm supposed to do here. The drivers
+> > > > involved don't appear to be doing anything extraordinary, but the i=
+ssues
+> > > > lockdep report are definitely valid too. What are the expectations =
+in
+> > > > terms of context from ALSA when running the callbacks, and how can =
+we
+> > > > fix it?
+> > >=20
+> > > I think that you should set the non-atomic flag and wake up the workq=
+ueue or
+> > > so from interrupt handler in this case. Call snd_pcm_period_elapsed()=
+ from the
+> > > workqueue not the interrupt handler context.
+> >=20
+> > Yeah, that was my first guess too. However, the DMA driver uses some
+> > kind of generic helpers using a tasklet, so getting rid of it would take
+> > some work and would very likely not be eligible for stable.
+>=20
+> Who sets the nonatomic flag for vc4?  I couldn't find the relevant
+> code in the latest upstream.
 
-thanks,
+Sorry if this wasn't clear enough, it's not there at the moment, ALSA
+takes a spinlock and lockdep complains that we're sleeping in an atomic
+context.
 
-Takashi
+I tried to add the nonatomic flag in my tree to see if it was fixing the
+issue, but ran into another lockdep complain now with ALSA taking a
+mutex in a tasklet.
+
+> Ideally dmaengine PCM helper should support the nonatomic mode, but
+> until then, the other side needs to drop the nonatomic flag, I
+> suppose.
+
+In this case, I'm not sure the blame is in the PCM helper but if there's
+any blame, I guess it's the virt-chan layer inside dmaengine (so for
+providers) that use a tasklet instead of something that allows sleeping
+
+Maxime
+
+--rwqqljnlxayusdb4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5GH/AAKCRDj7w1vZxhR
+xepDAP96aJ4MTdcE8LJZ10+kDyzH1UtQlV//DYZWfptlugY+vgEA2+KK5p2ApO4B
+kDALlv1Yd5PHZH7QHStcrelNXI69ygs=
+=e2G2
+-----END PGP SIGNATURE-----
+
+--rwqqljnlxayusdb4--
