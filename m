@@ -2,78 +2,66 @@ Return-Path: <SRS0=uLsF=D5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=BAYES_00,DEAR_SOMETHING,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10048C388F2
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 08:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF918C4363A
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 09:15:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06605223C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 08:05:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A7940222E9
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 09:15:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jXfrkwxt";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="SoLMRQcR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06605223C7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d/gjl1rR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7940222E9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F6181764;
-	Thu, 22 Oct 2020 10:04:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F6181764
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5DDB1759;
+	Thu, 22 Oct 2020 11:14:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5DDB1759
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603353900;
-	bh=DeuuMKS3UDlWGQgRFbHCjvAljCXDdjnuVTBpoNLgQf0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1603358126;
+	bh=CVjmbu5jZVdAcvoU9xd3kOmNSBpmp2+SIh0Dob8ciEA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jXfrkwxtSW/DmaILh3I0uLjvaFi8zUEVcQewrgddX1qknofJCIFVgVkdloiOQubDo
-	 HL7HtcEMcnYyWp3yf5qfsU4TV+sQXm+6ELz4jcSwIyqbkUa5nqWcwcEDyrCwLj1ltZ
-	 yCs7rD2b3w7MUznkAVQ2lilzEEo84xxT3HK4H3vk=
+	b=d/gjl1rRSXPPqxYb4/puzzogHPuharq36bAaTDsoHb466w6Z6UM3Gw7BbwYKWVNo0
+	 oiou+lmMlsp8SRf6sim4Z8ctkYowLFFl+COIFSkrZ8btYxX9wrefv6YyCF/Fq4NDiL
+	 +JaaUMhDxc77MAjZipVp1EiW9vj4WAg3Rv0hNvv8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92446F800CE;
-	Thu, 22 Oct 2020 10:04:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5182FF8049C;
+	Thu, 22 Oct 2020 11:14:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B5D2F804A9; Thu, 22 Oct 2020 10:04:07 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id DCC13F804A9; Thu, 22 Oct 2020 11:14:10 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AEA9F800CE
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 10:03:59 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 92FBEA003F;
- Thu, 22 Oct 2020 10:03:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 92FBEA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1603353835; bh=zK8vG19/hPxCeXJnSg8Mu9SEU1Nk7fk4TP1iF/a4KHY=;
- h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
- b=SoLMRQcRMiNHnI7yw9wTYYnnIuKJIXjQYnQ3PaKPqXDZCIsdPEvovJjb3vjL6B7TD
- JQSoCIK8k/HCl9ShrjQNm90kxtM59clh/ZJHe9YVVsqbYsKDWoG3U4RMS30AJUMWq0
- ZugSsC1x1wtMUYGPkUq/V6MZZVl1i1VYsySncTs0=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 22 Oct 2020 10:03:53 +0200 (CEST)
-Subject: [alsa-devel mailing list / gmail] Re: Excessive bounces
-To: "Eu, acc" <accensi@gmail.com>
-References: <CAA+gEba8Q+KgZbao+ur2roSpxbwRAQcshbfR6ZQCAr6cXLq4JA@mail.gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <5ba74317-1cc0-80ae-44d9-e9f24c065968@perex.cz>
-Date: Thu, 22 Oct 2020 10:03:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <CAA+gEba8Q+KgZbao+ur2roSpxbwRAQcshbfR6ZQCAr6cXLq4JA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: ALSA development <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DD00F800CE
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 11:14:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DD00F800CE
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 5441FB23D;
+ Thu, 22 Oct 2020 09:14:03 +0000 (UTC)
+Date: Thu, 22 Oct 2020 11:14:03 +0200
+Message-ID: <s5hv9f2bp2c.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Dan Aloni <dan@kernelim.com>
+Subject: Re: on-board sound on ASUS TRX-40
+In-Reply-To: <20201022081746.GA1118484@gmail.com>
+References: <20201022081746.GA1118484@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,50 +77,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 21. 10. 20 v 23:09 Eu, acc napsal(a):
-> Dear Sir
+On Thu, 22 Oct 2020 10:17:46 +0200,
+Dan Aloni wrote:
 > 
-> I received an email to confirm membership on alsa-devel list.
+> Hi,
 > 
-> I have doubled checked configuration, possible invasion of my systems. It is
-> strange because I use Gmail for reading the list, there is more than 5 GB of
-> available space, and not other reason for the bounces.
+> The on-board earphone jack does not seem to work on an ASUS TRX-40
+> board. Here's the alsa-info.sh output:
 > 
-> The only curious point is that email from several regular developers, even
-> Jaroslav at a time, are classified as spam by gmail. I tried to discover the
-> reason in the past, but the explanation from Google is that there seems to be
-> a lot of spam in alada-devel and and alsa-users lists.
+> http://alsa-project.org/db/?f=7a94c1b1eec4b2e623c75770364ec43c33d6c95c
+> 
+> Tried coding up the patch below, but it _does not_ fix the problem. It
+> does shows the earphone as 'plugged' though. Verified that it's not an
+> hardware issue via Windows.
+> 
+> Please instruct on how to debug this further.
 
-I need the real examples (for alsa-devel). The alsa-users mailing list is on
-sourceforge and probably dead.
+Did you try to add connector_map, too?
 
-> Thanks and keep the good work.
 
-[Cc: to alsa-devel]
+Takashi
 
-I'm sorry, but it seems that gmail changed something before several weeks for
-incoming e-mail and they have weird message rate limit rules for IP address
-and content classification. It basically does not work for the mailing list. I
-already tried to contact their support, but I've not received any answer.
-
-I already implemented all protections like DKIM, DMARC, SFP. Verified today
-using a dmarc report analyzer tool.
-
-Unfortunately, I cannot do much here. I can assist to fix the issues, but I
-need to know, what I can improve. I suggest to use another e-mail service. It
-seems that google does not care about users now. Or you should ask them what's
-exactly wrong.
-
-The current postmaster.google.com stats for alsa-project.org:
-
-User reported spam rate - 0%
-DKIM, DMARC, SFP success rate - all 100%
-Encryption - 100%
-IP reputation - bad
-Delivery errors - 40% - 100%
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
+> Thanks!
+> 
+> diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+> index 9af7aa93f6fa..ab0f036f385e 100644
+> --- a/sound/usb/mixer_maps.c
+> +++ b/sound/usb/mixer_maps.c
+> @@ -568,6 +568,10 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
+>                 .map = trx40_mobo_map,
+>                 .connector_map = trx40_mobo_connector_map,
+>         },
+> +       {       /* ASUS TRX40-PRO */
+> +               .id = USB_ID(0x0b05, 0x1918),
+> +               .map = trx40_mobo_map,
+> +       },
+>         {       /* Asrock TRX40 Creator */
+>                 .id = USB_ID(0x26ce, 0x0a01),
+>                 .map = trx40_mobo_map,
+> 
+> 
+> -- 
+> Dan Aloni
+> 
