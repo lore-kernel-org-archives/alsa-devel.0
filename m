@@ -2,66 +2,89 @@ Return-Path: <SRS0=uLsF=D5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5B3FC4363A
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 10:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94950C4363A
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 10:33:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45CBC223BF
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 10:25:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1EF4F22267
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 10:33:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WZfxs2ls"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45CBC223BF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pk0Z58cC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="ha60ki7w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EF4F22267
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DF8517CD;
-	Thu, 22 Oct 2020 12:24:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DF8517CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDD2D17D5;
+	Thu, 22 Oct 2020 12:32:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDD2D17D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603362330;
-	bh=IpEHHewSGA29SwPgHEgrIKyIUd+0mI+0wsOEmq81tuw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603362796;
+	bh=mKI//o1Lk40Yi815nVYXanqjQKt/9UrGV5fgSoCAeH4=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WZfxs2lsG5cTqGcl/DEpoWEWJdKC24HHVMoMbZzFXuzN5rUfC1dVUbSTJcNtr4/tF
-	 1qal6n94UHdHqbgiT3JhfOLX/YF7WRWtFiEfZp0XL3Tqol8z6FhbtvcDFRcutgOTsw
-	 0B0lVR2jx8FJKo7iRiovFIdwYWZZfUSV6ngsitIM=
+	b=Pk0Z58cCPQ7PWZertB0iLUz4LyPTFnLcYo8omOHJGPF8kWc0VIslkWbTiN0AjjGHp
+	 L3p9j734zBJs8kitj3BN4q2Cv7oUTAdAWNzdujZKCB2Gxabn04ad9EvkYjiRTRelB2
+	 m1DE6QaZDePFIXBiJHjR6A57oJ2s/u1kTug2737A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D907F8049C;
-	Thu, 22 Oct 2020 12:24:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70732F8049C;
+	Thu, 22 Oct 2020 12:32:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AA1CF804A9; Thu, 22 Oct 2020 12:24:38 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D05FF800CE
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 12:24:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D05FF800CE
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 7C805AAB2;
- Thu, 22 Oct 2020 10:24:31 +0000 (UTC)
-Date: Thu, 22 Oct 2020 12:24:31 +0200
-Message-ID: <s5hmu0eblsw.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dan Aloni <dan@kernelim.com>
-Subject: Re: on-board sound on ASUS TRX-40
-In-Reply-To: <20201022101852.GA1095612@gmail.com>
-References: <20201022081746.GA1118484@gmail.com> <s5hv9f2bp2c.wl-tiwai@suse.de>
- <20201022101852.GA1095612@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ id 57A9FF804A9; Thu, 22 Oct 2020 12:32:23 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa1.perex.cz (Postfix) with ESMTP id CA2A4F800CE
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 12:32:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA2A4F800CE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="ha60ki7w"
+X-UUID: 868ba0ebf25f43d0950ad40bb4dcde45-20201022
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
+ bh=mKI//o1Lk40Yi815nVYXanqjQKt/9UrGV5fgSoCAeH4=; 
+ b=ha60ki7wcIGTs1bJnKkZE/nT8iqEUCUQvZPSayyFFNSw+Sit8wZIHvGXQ6MKVUHaO81aVxrQAHNWcFk5S0uCd9z29rRxt6k9nrAqeej6t12hv0+gge05ANLiQPvB4Y1X5OcE+4YHd/UEmcbFf+6YwWEF7BAwmDvypg6GEGBkDzA=;
+X-UUID: 868ba0ebf25f43d0950ad40bb4dcde45-20201022
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2
+ ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 13254462; Thu, 22 Oct 2020 18:32:06 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs07n1.mediatek.inc
+ (172.21.101.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Thu, 22 Oct 2020 18:32:04 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Oct 2020 18:32:03 +0800
+Message-ID: <1603362723.8921.37.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 5/5] dt-bindings: mediatek: mt8192: add
+ mt8192-mt6358-rt1015-rt5682 document
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: Rob Herring <robh@kernel.org>
+Date: Thu, 22 Oct 2020 18:32:03 +0800
+In-Reply-To: <20201021145605.GA2775711@bogus>
+References: <1603270435-3548-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1603270435-3548-6-git-send-email-jiaxin.yu@mediatek.com>
+ <20201021145605.GA2775711@bogus>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK: N
+Content-Transfer-Encoding: base64
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, shane.chien@mediatek.com, tiwai@suse.com,
+ tzungbi@google.com, broonie@kernel.org, linux-mediatek@lists.infradead.org,
+ p.zabel@pengutronix.de, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,34 +100,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Oct 2020 12:18:52 +0200,
-Dan Aloni wrote:
-> 
-> On Thu, Oct 22, 2020 at 11:14:03AM +0200, Takashi Iwai wrote:
-> > On Thu, 22 Oct 2020 10:17:46 +0200,
-> > Dan Aloni wrote:
-> > > 
-> > > Hi,
-> > > 
-> > > The on-board earphone jack does not seem to work on an ASUS TRX-40
-> > > board. Here's the alsa-info.sh output:
-> > > 
-> > > http://alsa-project.org/db/?f=7a94c1b1eec4b2e623c75770364ec43c33d6c95c
-> > > 
-> > > Tried coding up the patch below, but it _does not_ fix the problem. It
-> > > does shows the earphone as 'plugged' though. Verified that it's not an
-> > > hardware issue via Windows.
-> > > 
-> > > Please instruct on how to debug this further.
-> > 
-> > Did you try to add connector_map, too?
-> 
-> Yes, and it did not help. Anything else I can try?
+T24gV2VkLCAyMDIwLTEwLTIxIGF0IDA5OjU2IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gV2VkLCBPY3QgMjEsIDIwMjAgYXQgMDQ6NTM6NTVQTSArMDgwMCwgSmlheGluIFl1IHdyb3Rl
+Og0KPiA+IFRoaXMgcGF0Y2ggYWRkcyBkb2N1bWVudCBmb3IgdGhlIG1hY2hpbmUgYm9hcmQgd2l0
+aCBtdDYzNTgsIHJ0MTAxNQ0KPiA+IGFuZCBydDU2ODIuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1i
+eTogSmlheGluIFl1IDxqaWF4aW4ueXVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4v
+c291bmQvbXQ4MTkyLW10NjM1OS1ydDEwMTUtcnQ1NjgyLnlhbWwgICAgfCA0MiArKysrKysrKysr
+KysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0MiBpbnNlcnRpb25zKCspDQo+ID4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
+bXQ4MTkyLW10NjM1OS1ydDEwMTUtcnQ1NjgyLnlhbWwNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210ODE5Mi1tdDYzNTktcnQx
+MDE1LXJ0NTY4Mi55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
+L210ODE5Mi1tdDYzNTktcnQxMDE1LXJ0NTY4Mi55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2
+NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAwLi40YzM5ZTg4OTA2ZmMxDQo+ID4gLS0tIC9kZXYv
+bnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9t
+dDgxOTItbXQ2MzU5LXJ0MTAxNS1ydDU2ODIueWFtbA0KPiA+IEBAIC0wLDAgKzEsNDIgQEANCj4g
+PiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjArIE9SIEJTRC0yLUNsYXVzZSkN
+Cj4gDQo+IEdQTC0yLjAtb25seQ0KPiANCj4gPiArJVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICsk
+aWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3NvdW5kL210ODE5Mi1tdDYzNTktcnQx
+MDE1LXJ0NTY4Mi55YW1sIw0KPiA+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0
+YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4gPiArDQo+ID4gK3RpdGxlOiBNZWRpYXRlayBNVDgxOTIg
+d2l0aCBNVDYzNTksIFJUMTAxNSBhbmQgUlQ1NjgyIEFTb0Mgc291bmQgY2FyZCBkcml2ZXINCj4g
+PiArDQo+ID4gK21haW50YWluZXJzOg0KPiA+ICsgICAtIEppYXhpbiBZdSA8amlheGluLnl1QG1l
+ZGlhdGVrLmNvbT4NCj4gPiArICAgLSBTaGFuZSBDaGllbiA8c2hhbmUuY2hpZW5AbWVkaWF0ZWsu
+Y29tPg0KPiA+ICsNCj4gPiArZGVzY3JpcHRpb246DQo+ID4gKyAgVGhpcyBiaW5kaW5nIGRlc2Ny
+aWJlcyB0aGUgTVQ4MTkyIHNvdW5kIGNhcmQuDQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+
+ICsgIGNvbXBhdGlibGU6DQo+ID4gKyAgICAgIGNvbnN0OiBtZWRpYXRlayxtdDgxOTJfbXQ2MzU5
+X3J0MTAxNV9ydDU2ODINCj4gDQo+IEkgc3RpbGwgZG9uJ3QgdGhpbmsgdGhpcyBpcyB0aGUgcmln
+aHQgd2F5IHRvIGRvIHRoaXMuDQo+IA0KRGVhciBSb2IsDQpUaGlzIG5vbWVuY2FsdHVyZSBpcyBl
+eHRlbmRlZCB0byB0aGUgTVRLIG10ODE4My9tdDgxNzMuDQpBbmQgd2UgdGhpbmsgaXQncyBiZXR0
+ZXIgdG8gbWFpbnRhaW4gbXVsdGlwbGUgYm9hcmRzLCBidXQNCnRoZSBkaXNhZHZhbnRhZ2UgaXMg
+bmVlZCB0byB3cml0ZSBvbmUgbW9yZSBtYWNoaW5lIGRyaXZlcnMuDQoNCj4gPiArDQo+ID4gKyAg
+bWVkaWF0ZWsscGxhdGZvcm06DQo+ID4gKyAgICAkcmVmOiAiL3NjaGVtYXMvdHlwZXMueWFtbCMv
+ZGVmaW5pdGlvbnMvcGhhbmRsZSINCj4gPiArICAgIGRlc2NyaXB0aW9uOiBUaGUgcGhhbmRsZSBv
+ZiBNVDgxOTIgQVNvQyBwbGF0Zm9ybS4NCj4gDQo+IEkgc3RpbGwgZG9uJ3QgdW5kZXJzdGFuZCB3
+aGF0IHRoaXMgaXMuDQo+IA0KDQpUaGlzIHByb3BlcnR5IHdpbGwgYXNzaWduIHRvICdzbmRfc29j
+X2RhaV9saW5rLT5wbGF0Zm9ybXMtPm9mX25vZGUnLg0KVGhlIHZhbHVlIG9mICdtZWRpYXRlayxw
+bGF0Zm9ybScgaGVyZSBpcyAmYWZlIHRoYXQgaXMgbXQ4MTkyIHBsYXRmb3JtDQpkcml2ZXIuDQpJ
+dCB3aWxsIGJlIHJlc29sdmVkIGZyb20gYSBwaGFuZGxlIHByb3BlcnR5IHRvIGEgZGV2aWNlX25v
+ZGUgcG9pbnRlci4NCg0KPiA+ICsNCj4gPiArYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQo+
+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUNCj4gPiArICAtIG1lZGlh
+dGVrLHBsYXRmb3JtDQo+ID4gKw0KPiA+ICtleGFtcGxlczoNCj4gPiArICAtIHwNCj4gPiArDQo+
+ID4gKyAgICBzb3VuZDogbXQ4MTkyLXNvdW5kIHsNCj4gPiArICAgICAgICBjb21wYXRpYmxlID0g
+Im1lZGlhdGVrLG10ODE5Mi1tdDYzNTktcnQxMDE1LXJ0NTY4MiI7DQo+ID4gKyAgICAgICAgbWVk
+aWF0ZWsscGxhdGZvcm0gPSA8JmFmZT47DQo+ID4gKyAgICAgICAgcGluY3RybC1uYW1lcyA9ICJh
+dWRfY2xrX21vc2lfb2ZmIiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgImF1ZF9jbGtf
+bW9zaV9vbiI7DQo+ID4gKyAgICAgICAgcGluY3RybC0wID0gPCZhdWRfY2xrX21vc2lfb2ZmPjsN
+Cj4gPiArICAgICAgICBwaW5jdHJsLTEgPSA8JmF1ZF9jbGtfbW9zaV9vbj47DQo+ID4gKyAgICB9
+Ow0KPiA+ICsNCj4gPiArLi4uDQo+ID4gLS0gDQo+ID4gMi4xOC4wDQoNCg==
 
-Well, you need to figure out via trial and error.
-It should receive some event processed in
-snd_usb_mixer_interrupt_v2(), and you can check which widget is
-involved, at least.
-
-
-Takashi
