@@ -2,96 +2,57 @@ Return-Path: <SRS0=uLsF=D5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E54C5C4363A
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 09:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7051C4363A
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 09:38:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01D25222E9
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 09:19:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB37A223BF
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Oct 2020 09:38:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uAA5FDiA";
-	dkim=pass (2048-bit key) header.d=kernelim-com.20150623.gappssmtp.com header.i=@kernelim-com.20150623.gappssmtp.com header.b="le3ppPI7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01D25222E9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernelim.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mFVDOEW9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB37A223BF
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA7CF1787;
-	Thu, 22 Oct 2020 11:19:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA7CF1787
+	by alsa0.perex.cz (Postfix) with ESMTPS id 149A31798;
+	Thu, 22 Oct 2020 11:37:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 149A31798
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603358391;
-	bh=TRI3R2Eqryu4wPkFiaicQ9OWCh+Yyo0J6gaxBhpSWnE=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uAA5FDiAuViXCDm7ggM6TwohTQrQ9RSrYjfabkE9kO10S+So+qImQTGylJntMQ9ol
-	 aaZTPPpMjxtlUORux4IQH1vbqgha7VP5h0V8IP1plt4FIqtoZZE+9NH5wfShsiBXAb
-	 LqpswFVHaRfgS4TS0tPc4N3I5YUSrCS1kDItLzu8=
+	s=default; t=1603359508;
+	bh=O/qdQrkJoGNwaYjEhoAT65h1CYvJ3R0heJ6nHx50nyA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mFVDOEW9utO/Kue9HV3mB/Jfmi+JNmCp1fsKDM2E+KbG8fkPdTGKIv1qgDIQz/1W3
+	 rlHEbq4iWoaSm+naM4UdiuiQ2SUCPbKkZVRgBt2MIYrCXPGFyKMm8pXHOfiPq4kvZ7
+	 UN3+A9qlMSoIVbv1SGK92yj27AbJmVjbXIfc1evw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19439F8025A;
-	Thu, 22 Oct 2020 11:19:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3BA6F8049C;
+	Thu, 22 Oct 2020 11:37:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F3FAF804A9; Thu, 22 Oct 2020 10:17:58 +0200 (CEST)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36712F800CE
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 10:17:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36712F800CE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernelim-com.20150623.gappssmtp.com
- header.i=@kernelim-com.20150623.gappssmtp.com header.b="le3ppPI7"
-Received: by mail-ej1-x632.google.com with SMTP id k3so965487ejj.10
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 01:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=kernelim-com.20150623.gappssmtp.com; s=20150623;
- h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
- bh=igFMdXrmlm7DH4IiFTsflxJUEBAXk6Kgf8L4rtIcqE0=;
- b=le3ppPI7cb4FDz/doF7bhmlskZE4TrGCjYkr732wnnDecCx6lBLmVTYHkckoUAAjN1
- bNf0N1s3YL1OWNQGahF0ngNuAr/GqG6KQXDjB2sGbmRU+HfwEnaWdQDpl3kut/BQG4EL
- uAzSoICfeMwF6y8O9McKDqj5C/cEXf35ik6s2RrwxQ5V+6HYSZ5nqM7ZSA5OjzSfQ2w2
- xSw46GEfq1iYyyyYZyxXR9fpnxxfN5AsxQkQINSw6khtwYkOOkMYOmR6C1W1kw7eSid9
- X1X5wUE+LtZ0XUKAJO4C99Sx/0t9SR2xluNbqB2ynWL4eO02w5jmSHldTYeD5WPSFUbw
- vL7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
- :content-disposition;
- bh=igFMdXrmlm7DH4IiFTsflxJUEBAXk6Kgf8L4rtIcqE0=;
- b=Th2uxgO43oTOwXYOCvrrbG0M7iQNgHg8JjLaMAZCYzbS7WiUOqLAPgt0FsRjSq+p1e
- etO4+TIbf86vLmq3pmATvMPr7//wzGkdeEFFX/n6kJj3USEjdxzE9a/nKGshbzABCn7n
- p6J/mKldmXHYoa5hJKr/N/vGnwuhKnFFvBLErsb/fqG+Qj0cYvfF6jLxlLTjJ1WqN4uC
- WvzbqrR7U+r4dufKEQMgxxn+iTmaJAwvGsEoMBkapGd0wy/Jylnnp/CDuKRa7k+Ht/XL
- z6sauR+a+ZfLfJI6LOLtKyAdmw9s/UcoR4bHUu1FhKMIj2T5VP4vOI+k02yDCh8DXS0Z
- abDw==
-X-Gm-Message-State: AOAM531ZYy8lS8jyrzFJd9IHY59izDqCeenydqYNNfSWm2Ylf3LCTKGT
- S8CMEK+8odQDuGLfXx7IaWeJqlhNhsrHubEy
-X-Google-Smtp-Source: ABdhPJzNKM0+49eStgzFCwT3addtw2KQMNWIaNmwT2orvYRYd6x0m+4iDMbmfVoIVzzoAaL+eqBUeQ==
-X-Received: by 2002:a17:906:4351:: with SMTP id
- z17mr1166314ejm.110.1603354669263; 
- Thu, 22 Oct 2020 01:17:49 -0700 (PDT)
-Received: from gmail.com ([77.124.42.64])
- by smtp.gmail.com with ESMTPSA id m6sm428755ejl.94.2020.10.22.01.17.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 22 Oct 2020 01:17:48 -0700 (PDT)
-Date: Thu, 22 Oct 2020 11:17:46 +0300
-From: Dan Aloni <dan@kernelim.com>
-To: alsa-devel@alsa-project.org
-Subject: on-board sound on ASUS TRX-40
-Message-ID: <20201022081746.GA1118484@gmail.com>
+ id 68262F804A9; Thu, 22 Oct 2020 11:37:34 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id B35B2F8025A
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2020 11:37:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B35B2F8025A
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailman-Approved-At: Thu, 22 Oct 2020 11:18:55 +0200
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1603359446835998058-webhooks-bot@alsa-project.org>
+References: <1603359446835998058-webhooks-bot@alsa-project.org>
+Subject: Fix muted output and low ouput/input volume on a Dell Latitude 3410
+Message-Id: <20201022093734.68262F804A9@alsa1.perex.cz>
+Date: Thu, 22 Oct 2020 11:37:34 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,37 +68,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+alsa-project/alsa-ucm-conf pull request #56 was opened from J-Bu:
 
-The on-board earphone jack does not seem to work on an ASUS TRX-40
-board. Here's the alsa-info.sh output:
+Using following environment on a Dell Latitude 3410 results in muted master channel and low output/input volume:
 
-http://alsa-project.org/db/?f=7a94c1b1eec4b2e623c75770364ec43c33d6c95c
+ - alsa-libs 1.2.4
+ - alsa-ucm-conf 1.2.4
+ - alsa-topology-conf 1.2.4
+ - alsa-utils 1.2.4
+ - kernel 5.9.1 -> with commit 3dca35e applied on top of it 
+ - sof-bin v1.6
 
-Tried coding up the patch below, but it _does not_ fix the problem. It
-does shows the earphone as 'plugged' though. Verified that it's not an
-hardware issue via Windows.
+The propused changes fixes the problem for me. I don't know why but the given values are not 1:1 mapped to levels in alsamixer, please see attached iamges for alsamixer levels before and after the change, the alsamixer levels where captured after running "alsactl init":
 
-Please instruct on how to debug this further.
+before:
+![before](https://user-images.githubusercontent.com/15876551/96853514-bf0f5f80-145a-11eb-9c7f-751834a56491.png)
 
-Thanks!
+after:
+![after](https://user-images.githubusercontent.com/15876551/96853530-c46caa00-145a-11eb-9057-5399382d195d.png)
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index 9af7aa93f6fa..ab0f036f385e 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -568,6 +568,10 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
-                .map = trx40_mobo_map,
-                .connector_map = trx40_mobo_connector_map,
-        },
-+       {       /* ASUS TRX40-PRO */
-+               .id = USB_ID(0x0b05, 0x1918),
-+               .map = trx40_mobo_map,
-+       },
-        {       /* Asrock TRX40 Creator */
-                .id = USB_ID(0x26ce, 0x0a01),
-                .map = trx40_mobo_map,
-
-
--- 
-Dan Aloni
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/56
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/56.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
