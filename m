@@ -6,56 +6,57 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD69DC55178
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2020 11:35:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8A35C55179
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2020 11:37:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5907520EDD
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2020 11:35:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D8D4221F9
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Oct 2020 11:37:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mQilmlve"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5907520EDD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A0aSrAv3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D8D4221F9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37CF4181A;
-	Fri, 23 Oct 2020 13:34:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37CF4181A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43376181E;
+	Fri, 23 Oct 2020 13:36:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43376181E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603452920;
-	bh=+ND0kipef3XhXdvmqrGy9Jdg0+p4SRJoH477N056xaY=;
+	s=default; t=1603453043;
+	bh=wdgAXPv/9VnanNqZEFRdbbHplJnL2UHbdoWw/rRzHVc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mQilmlveW/iX02lxQkrlkDln6IXfmVSFjX4Px/v5OzOA00MXouTkSQ0cUA0UaLuPr
-	 JoLBlUVGyUfFGIc9asxV/JBdhSGBoHqqD+PrjhfQilGI6usvaUk4xGTHVx36uLnSri
-	 hQ8zZnwRKddi3ylH7DsUEFestrsjndqhEB4QxAkY=
+	b=A0aSrAv3e/8Lns5c6EWsn/Mi/3+VonmX8rtMELs2rMQxIYFJfhjUgOwzACZlCyyZA
+	 f1EdTRpKE9p3FLXBWlKjLwzSk73FI/+3o5C8iIQjKH0EykIpEGsmygDWE2BoTbsFWl
+	 Qwg0lgnbEGeVlhFfItu7a1llMac38WgvZUobp1Qs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB34EF80247;
-	Fri, 23 Oct 2020 13:34:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D67EF80247;
+	Fri, 23 Oct 2020 13:36:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A9E7F8025A; Fri, 23 Oct 2020 13:34:28 +0200 (CEST)
+ id 828A4F8025A; Fri, 23 Oct 2020 13:36:31 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DEE8F800BD
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2020 13:34:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DEE8F800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47634F80245
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2020 13:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47634F80245
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 58D8EB1E6;
- Fri, 23 Oct 2020 11:34:25 +0000 (UTC)
-Date: Fri, 23 Oct 2020 13:34:25 +0200
-Message-ID: <s5himb189by.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id F2BBDAAB2;
+ Fri, 23 Oct 2020 11:36:28 +0000 (UTC)
+Date: Fri, 23 Oct 2020 13:36:28 +0200
+Message-ID: <s5hh7ql898j.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH 2/4] ALSA: hda: Stop mangling PCI MSI
-In-Reply-To: <20201023102340.25494-2-kai.heng.feng@canonical.com>
+Subject: Re: [PATCH 3/4] ALSA: hda: Refactor controller PM to use
+ direct-complete optimization
+In-Reply-To: <20201023102340.25494-3-kai.heng.feng@canonical.com>
 References: <20201023102340.25494-1-kai.heng.feng@canonical.com>
- <20201023102340.25494-2-kai.heng.feng@canonical.com>
+ <20201023102340.25494-3-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -81,26 +82,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 23 Oct 2020 12:23:36 +0200,
+On Fri, 23 Oct 2020 12:23:37 +0200,
 Kai-Heng Feng wrote:
-> 
-> @@ -1038,14 +1036,6 @@ static int azx_suspend(struct device *dev)
->  		__azx_runtime_suspend(chip);
->  	else
->  		pm_runtime_force_suspend(dev);
-> -	if (bus->irq >= 0) {
-> -		free_irq(bus->irq, chip);
-> -		bus->irq = -1;
-> -		chip->card->sync_irq = -1;
+> @@ -1103,10 +1096,8 @@ static int azx_runtime_suspend(struct device *dev)
+>  	chip = card->private_data;
+>  
+>  	/* enable controller wake up event */
+> -	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
+> -		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+> -			   STATESTS_INT_MASK);
 > -	}
+> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+> +		   STATESTS_INT_MASK);
 
-This release of irq has nothing to do with MSI.  There has been PCI
-controllers that assign to a different IRQ line after the resume.
-
-> -	if (azx_acquire_irq(chip, 1) < 0)
-> -		return -EIO;
-
-Ditto.
+Hrm, this doesn't look safe.  Applying WAKEEN unconditionally means
+that the machine may get woken up from the system suspend, and we
+don't want that.
 
 
 thanks,
