@@ -2,110 +2,87 @@ Return-Path: <SRS0=pVe7=D7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MIME_BASE64_TEXT,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79855C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Sat, 24 Oct 2020 04:52:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0E09C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Sat, 24 Oct 2020 06:42:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E647214F1
-	for <alsa-devel@archiver.kernel.org>; Sat, 24 Oct 2020 04:52:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C2B8520735
+	for <alsa-devel@archiver.kernel.org>; Sat, 24 Oct 2020 06:42:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qinobRz/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H4F6RhqK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E647214F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CQHiEbTF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="DtJH2YXm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2B8520735
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94B4217C4;
-	Sat, 24 Oct 2020 06:51:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94B4217C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E38B317CF;
+	Sat, 24 Oct 2020 08:41:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E38B317CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603515159;
-	bh=YsfiD5AEpuasgODxoqCEZVMsGHAYJYvvnQdPCit0/kM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qinobRz/8skoC215nJDbwWvFRlb016FpXa1YmbAEWQtNroPNJyCx674IvBa+7LuJY
-	 qybjRMWvvRRwrDdfUEYqf3PfrHmb95mpt/XiRisr7JYlfPMs9Uv8zEGtI/nqHfkYr+
-	 AeC309UNEHSpOJuUXdClnSJhjis4noVFXTDWjlkw=
+	s=default; t=1603521755;
+	bh=eMseszq2LMKp8DF0+brP69RgUkalkJoCAr4vCF2JXvY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CQHiEbTFs/AJHmwZQrbc1ZL9YKlt39Y7iITANJ70UGKpgayuCg/gNqdqm5L+WQJPM
+	 Vhs2Ap6QiANQ2jtofFRgO7tLZJe/lARbmQTkoqssJ0/D0X/IyCsVTJxcZesMO9XqXP
+	 XlH683o2mmXS9WMxGnv50WsvLO905T6f1CYcDzv8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21DD0F8025F;
-	Sat, 24 Oct 2020 06:51:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CE60F8025F;
+	Sat, 24 Oct 2020 08:41:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FA11F8049C; Sat, 24 Oct 2020 06:51:47 +0200 (CEST)
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE571F800CC
- for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2020 06:51:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE571F800CC
+ id B4078F804AA; Sat, 24 Oct 2020 08:41:41 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa1.perex.cz (Postfix) with ESMTP id A011FF8049C
+ for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2020 08:41:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A011FF8049C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="H4F6RhqK"
-Received: by mail-pg1-x542.google.com with SMTP id o3so2818524pgr.11
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2020 21:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=oftBd3rEuUms4LFHcZ1zXa+XWbelil5Yo2PNPupD+gk=;
- b=H4F6RhqKlSAqXMEqVWWJTIuhIEBDs8ZR+tt5HQi6Nh1M6hydFfpbFFEOFhH/5ICusx
- h2Dg1Op/xOIyBTVsKULQtfikXmNNA194qxGk5VBKG8Yait/S03cQW4h4FDOXbPk9rqvA
- /TI86nNeY+6NNFKQuNC2cDNBA4tjdZ1l1JTTUmEH6W2fM3YbjL6MxIWll70f0Y8qtlkJ
- yhUYnvr51R2OVA1mOtuK9b1ikyvZMoMoWCzqv16HrRqXhYVAkhz3u/QkuZ4vm2qSGSmp
- tbUNCaS1GAOazobwgLqHgJp07XrhaMyWPeGILD8A+6+1OkOmyqk6WjK0gDzsArAa7DV/
- j7Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=oftBd3rEuUms4LFHcZ1zXa+XWbelil5Yo2PNPupD+gk=;
- b=mVDfnpycrSnPGxg7XqQcMGtbSqgThVR3fXiP2Cwv9J4L5MGbVXg88+7l2kk8rNNANu
- jaLWsPEJHDB1ZxC4F+TaD0UHEJfl99vqiTmB0d4jqfPHgPL21gZ9767jOVakfIrFBmmD
- gcW5IQzd2rP4NIi8HbsI3uFhPMyiyuZKKoPpf/tE9NdpefmBTIXEv2vZtgSwBY83aP/4
- aia26JggyLLYkpvgLZXxMMTcilLYV9fPJgUhhfaClroJtu78yQZkJD6NXAtR5mXsfA1G
- ZbdDWpZnYFjXcQMknFuAIqVXSEzDKZQCypf43M0P204begfToBszNCtvKU6i+W1CUSZK
- WO2A==
-X-Gm-Message-State: AOAM530M1xLaPDO49sq53JZ6hu7sP5J+PVBBgi/sCKd+WXNzggFnma5n
- DSLO0rLiUgN8wmYWXyXLRXpw2STS/z55fA==
-X-Google-Smtp-Source: ABdhPJwu46oUyIUbsrq389LUndb+oDU2USFtingeaA5whEvdvrcGWIg1d6VGmJ847UEB4E7gh+ijWQ==
-X-Received: by 2002:a05:6a00:13aa:b029:15d:73e6:2e9f with SMTP id
- t42-20020a056a0013aab029015d73e62e9fmr2521013pfg.0.1603515096701; 
- Fri, 23 Oct 2020 21:51:36 -0700 (PDT)
-Received: from localhost.localdomain (36-225-30-31.dynamic-ip.hinet.net.
- [36.225.30.31])
- by smtp.gmail.com with ESMTPSA id q8sm4050749pfg.118.2020.10.23.21.51.31
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 23 Oct 2020 21:51:35 -0700 (PDT)
-From: Keith Tzneg <matsufan@gmail.com>
-X-Google-Original-From: Keith Tzneg <keith.tzeng@quantatw.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v3] ASoC: Intel: boards: Add CML_RT1015 m/c driver
-Date: Sat, 24 Oct 2020 12:51:27 +0800
-Message-Id: <1603515087-4092-1-git-send-email-keith.tzeng@quantatw.com>
-X-Mailer: git-send-email 2.7.4
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Libin Yang <libin.yang@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Krzysztof Kozlowski <krzk@kernel.org>, Fred Oh <fred.oh@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Keith Tzeng <keith.tzeng@quanta.corp-partner.google.com>,
- Rander Wang <rander.wang@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
- Mark Brown <broonie@kernel.org>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Naveen Manohar <naveen.m@intel.com>, Brent Lu <brent.lu@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="DtJH2YXm"
+X-UUID: 53eb1f177ffd4cdfb4dfbe9477512f33-20201024
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=eMseszq2LMKp8DF0+brP69RgUkalkJoCAr4vCF2JXvY=; 
+ b=DtJH2YXmsPm2gzH5NGJKRUoBbObKreRrOpkOTQ0oy21f94j1LEbyKEGLOFIQ7F58Ec2qF1/i5E0QZikU1EwOVOGWfWV3T6A271I1cd0gZNAdlFsytysbyCVN8IZQY3wAtapwG/8mxZZXMp4gVS7PhzjO9Vi+u/5/E9PXIYsvG1k=;
+X-UUID: 53eb1f177ffd4cdfb4dfbe9477512f33-20201024
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2
+ ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 62636198; Sat, 24 Oct 2020 14:41:32 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 24 Oct 2020 14:41:29 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 24 Oct 2020 14:41:29 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>, <matthias.bgg@gmail.com>,
+ <tiwai@suse.com>, <tzungbi@google.com>, <alsa-devel@alsa-project.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>, 
+ <devicetree@vger.kernel.org>
+Subject: [PATCH 1/2] ASoC: mt6359: skip first time data at the beginning of
+ DMIC recording
+Date: Sat, 24 Oct 2020 14:41:25 +0800
+Message-ID: <1603521686-13036-2-git-send-email-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1603521686-13036-1-git-send-email-jiaxin.yu@mediatek.com>
+References: <1603521686-13036-1-git-send-email-jiaxin.yu@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK: N
+Content-Transfer-Encoding: base64
+Cc: shane.chien@mediatek.com, Jiaxin Yu <jiaxin.yu@mediatek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,660 +98,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Keith Tzeng <keith.tzeng@quanta.corp-partner.google.com>
-
-Machine driver to enable RT5682 on SSP0, DMIC, HDMI and RT1015 AMP on
-SSP1: Enabled 4 CH TDM playback with 24 bit data.
-
-Signed-off-by: Keith Tzeng <keith.tzeng@quanta.corp-partner.google.com>
----
- sound/soc/intel/boards/Kconfig                    |  15 +
- sound/soc/intel/boards/Makefile                   |   2 +
- sound/soc/intel/boards/cml_rt1015_rt5682.c        | 570 ++++++++++++++++++++++
- sound/soc/intel/common/soc-acpi-intel-cnl-match.c |   7 +
- 4 files changed, 594 insertions(+)
- create mode 100644 sound/soc/intel/boards/cml_rt1015_rt5682.c
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index c10c378..f674c56 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -496,6 +496,21 @@ config SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-+config SND_SOC_INTEL_SOF_CML_RT1015_RT5682_MACH
-+        tristate "CML with RT1015 and RT5682 in I2S Mode"
-+        depends on I2C && ACPI && GPIOLIB
-+        depends on MFD_INTEL_LPSS || COMPILE_TEST
-+        depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
-+        select SND_SOC_RT1015
-+        select SND_SOC_RT5682_I2C
-+        select SND_SOC_DMIC
-+        select SND_SOC_HDAC_HDMI
-+        help
-+          This adds support for ASoC machine driver for SOF platform with
-+          RT1015 + RT5682 I2S codec.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
- endif ## SND_SOC_SOF_COMETLAKE && SND_SOC_SOF_HDA_LINK
- 
- if SND_SOC_SOF_JASPERLAKE
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index a58e4d2..73131cc 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -20,6 +20,7 @@ snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
- snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
- snd-soc-sof_rt5682-objs := sof_rt5682.o hda_dsp_common.o sof_maxim_common.o
- snd-soc-cml_rt1011_rt5682-objs := cml_rt1011_rt5682.o hda_dsp_common.o
-+snd-soc-cml_rt1015_rt5682-objs := cml_rt1015_rt5682.o
- snd-soc-kbl_da7219_max98357a-objs := kbl_da7219_max98357a.o
- snd-soc-kbl_da7219_max98927-objs := kbl_da7219_max98927.o
- snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
-@@ -60,6 +61,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
- obj-$(CONFIG_SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH) += snd-soc-cml_rt1011_rt5682.o
-+obj-$(CONFIG_SND_SOC_INTEL_SOF_CML_RT1015_RT5682_MACH) += cml_rt1015_rt5682.o
- obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH) += snd-soc-kbl_da7219_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH) += snd-soc-kbl_da7219_max98927.o
- obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH) += snd-soc-kbl_rt5663_max98927.o
-diff --git a/sound/soc/intel/boards/cml_rt1015_rt5682.c b/sound/soc/intel/boards/cml_rt1015_rt5682.c
-new file mode 100644
-index 0000000..9117f52
---- /dev/null
-+++ b/sound/soc/intel/boards/cml_rt1015_rt5682.c
-@@ -0,0 +1,570 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2019 Intel Corporation.
-+
-+/*
-+ * Intel Cometlake I2S Machine driver for RT1015 + RT5682 codec
-+ */
-+
-+#include <linux/input.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/clk.h>
-+#include <linux/dmi.h>
-+#include <linux/slab.h>
-+#include <asm/cpu_device_id.h>
-+#include <linux/acpi.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/rt5682.h>
-+#include <sound/soc-acpi.h>
-+#include "../../codecs/rt1015.h"
-+#include "../../codecs/rt5682.h"
-+#include "../../codecs/hdac_hdmi.h"
-+
-+/* The platform clock outputs 24Mhz clock to codec as I2S MCLK */
-+#define CML_PLAT_CLK	24000000
-+#define CML_RT1015_CODEC_DAI "rt1015-aif"
-+#define CML_RT5682_CODEC_DAI "rt5682-aif1"
-+#define NAME_SIZE 32
-+
-+#define SOF_RT1015_SPEAKER_WL		BIT(0)
-+#define SOF_RT1015_SPEAKER_WR		BIT(1)
-+#define SOF_RT1015_SPEAKER_TL		BIT(2)
-+#define SOF_RT1015_SPEAKER_TR		BIT(3)
-+#define SPK_CH 4
-+
-+/* Default: Woofer speakers  */
-+static unsigned long sof_rt1015_quirk = SOF_RT1015_SPEAKER_WL |
-+					SOF_RT1015_SPEAKER_WR;
-+
-+static int sof_rt1015_quirk_cb(const struct dmi_system_id *id)
-+{
-+	sof_rt1015_quirk = (unsigned long)id->driver_data;
-+	return 1;
-+}
-+
-+static const struct dmi_system_id sof_rt1015_quirk_table[] = {
-+	{
-+		.callback = sof_rt1015_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Dooly"),
-+	},
-+		.driver_data = (void *)(SOF_RT1015_SPEAKER_WL | SOF_RT1015_SPEAKER_WR),
-+	},
-+	{
-+	}
-+};
-+
-+static struct snd_soc_jack hdmi_jack[3];
-+
-+struct hdmi_pcm {
-+	struct list_head head;
-+	struct snd_soc_dai *codec_dai;
-+	int device;
-+};
-+
-+struct card_private {
-+	char codec_name[SND_ACPI_I2C_ID_LEN];
-+	struct snd_soc_jack headset;
-+	struct list_head hdmi_pcm_list;
-+};
-+
-+static const struct snd_kcontrol_new cml_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("WL Ext Spk"),
-+	SOC_DAPM_PIN_SWITCH("WR Ext Spk"),
-+};
-+
-+static const struct snd_kcontrol_new cml_rt1015_tt_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("TL Ext Spk"),
-+	SOC_DAPM_PIN_SWITCH("TR Ext Spk"),
-+};
-+
-+static const struct snd_soc_dapm_widget cml_rt1015_rt5682_widgets[] = {
-+	SND_SOC_DAPM_SPK("WL Ext Spk", NULL),
-+	SND_SOC_DAPM_SPK("WR Ext Spk", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
-+};
-+
-+static const struct snd_soc_dapm_widget cml_rt1015_tt_widgets[] = {
-+	SND_SOC_DAPM_SPK("TL Ext Spk", NULL),
-+	SND_SOC_DAPM_SPK("TR Ext Spk", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route cml_rt1015_rt5682_map[] = {
-+	/*WL/WR speaker*/
-+	{"WL Ext Spk", NULL, "WL SPO"},
-+	{"WR Ext Spk", NULL, "WR SPO"},
-+
-+	/* HP jack connectors - unknown if we have jack detection */
-+	{ "Headphone Jack", NULL, "HPOL" },
-+	{ "Headphone Jack", NULL, "HPOR" },
-+
-+	/* other jacks */
-+	{ "IN1P", NULL, "Headset Mic" },
-+
-+	/* DMIC */
-+	{ "DMic", NULL, "SoC DMIC" },
-+};
-+
-+static const struct snd_soc_dapm_route cml_rt1015_tt_map[] = {
-+	/*TL/TR speaker*/
-+	{"TL Ext Spk", NULL, "TL SPO" },
-+	{"TR Ext Spk", NULL, "TR SPO" },
-+};
-+
-+static int cml_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_component *component = rtd->codec_dai->component;
-+	struct snd_soc_jack *jack;
-+	int ret;
-+
-+	/* need to enable ASRC function for 24MHz mclk rate */
-+	rt5682_sel_asrc_clk_src(component, RT5682_DA_STEREO1_FILTER |
-+				RT5682_AD_STEREO1_FILTER,
-+				RT5682_CLK_SEL_I2S1_ASRC);
-+
-+	/*
-+	 * Headset buttons map to the google Reference headset.
-+	 * These can be configured by userspace.
-+	 */
-+	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
-+				    SND_JACK_HEADSET | SND_JACK_BTN_0 |
-+				    SND_JACK_BTN_1 | SND_JACK_BTN_2 |
-+				    SND_JACK_BTN_3,
-+				    &ctx->headset, NULL, 0);
-+	if (ret) {
-+		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	jack = &ctx->headset;
-+
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+	ret = snd_soc_component_set_jack(component, jack, NULL);
-+	if (ret)
-+		dev_err(rtd->dev, "Headset Jack call-back failed: %d\n", ret);
-+
-+	return ret;
-+};
-+
-+static int cml_rt1015_spk_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	int ret = 0;
-+	struct snd_soc_card *card = rtd->card;
-+
-+	if (sof_rt1015_quirk & (SOF_RT1015_SPEAKER_TL |
-+				SOF_RT1015_SPEAKER_TR)) {
-+
-+		ret = snd_soc_add_card_controls(card, cml_rt1015_tt_controls,
-+					ARRAY_SIZE(cml_rt1015_tt_controls));
-+		if (ret)
-+			return ret;
-+
-+		ret = snd_soc_dapm_new_controls(&card->dapm,
-+					cml_rt1015_tt_widgets,
-+					ARRAY_SIZE(cml_rt1015_tt_widgets));
-+		if (ret)
-+			return ret;
-+
-+		ret = snd_soc_dapm_add_routes(&card->dapm, cml_rt1015_tt_map,
-+					ARRAY_SIZE(cml_rt1015_tt_map));
-+
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int cml_rt5682_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int clk_id, clk_freq, pll_out, ret;
-+
-+	clk_id = RT5682_PLL1_S_MCLK;
-+	clk_freq = CML_PLAT_CLK;
-+
-+	pll_out = params_rate(params) * 512;
-+
-+	ret = snd_soc_dai_set_pll(codec_dai, 0, clk_id, clk_freq, pll_out);
-+	if (ret < 0)
-+		dev_warn(rtd->dev, "snd_soc_dai_set_pll err = %d\n", ret);
-+
-+	/* Configure sysclk for codec */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
-+				     pll_out, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		dev_warn(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-+
-+	/*
-+	 * slot_width should be equal or large than data length, set them
-+	 * be the same
-+	 */
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x0, 0x0, 2,
-+				       params_width(params));
-+	if (ret < 0)
-+		dev_warn(rtd->dev, "set TDM slot err:%d\n", ret);
-+	return ret;
-+}
-+
-+static int cml_rt1015_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_card *card = rtd->card;
-+	int srate, i, ret = 0;
-+
-+	srate = params_rate(params);
-+
-+	for_each_rtd_codec_dai(rtd, i, codec_dai) {
-+		/* Set tdm/i2s1 master bclk ratio */
-+		ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
-+		if (ret < 0) {
-+			dev_err(card->dev, "failed to set bclk ratio\n");
-+			return ret;
-+		}
-+		/* 64 Fs to drive 24 bit data */
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, RT1015_PLL_S_BCLK,
-+					  64 * srate, 256 * srate);
-+		if (ret < 0) {
-+			dev_err(card->dev, "codec_dai clock not set\n");
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_sysclk(codec_dai,
-+					     RT1015_SCLK_S_PLL,
-+					     256 * srate, SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			dev_err(card->dev, "codec_dai clock not set\n");
-+			return ret;
-+		}
-+
-+	}
-+	return 0;
-+}
-+
-+static struct snd_soc_ops cml_rt5682_ops = {
-+	.hw_params = cml_rt5682_hw_params,
-+};
-+
-+static const struct snd_soc_ops cml_rt1015_ops = {
-+	.hw_params = cml_rt1015_hw_params,
-+};
-+
-+static int sof_card_late_probe(struct snd_soc_card *card)
-+{
-+	struct card_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_component *component = NULL;
-+	char jack_name[NAME_SIZE];
-+	struct hdmi_pcm *pcm;
-+	int ret, i = 0;
-+
-+	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		component = pcm->codec_dai->component;
-+		snprintf(jack_name, sizeof(jack_name),
-+			 "HDMI/DP, pcm=%d Jack", pcm->device);
-+		ret = snd_soc_card_jack_new(card, jack_name,
-+					    SND_JACK_AVOUT, &hdmi_jack[i],
-+					    NULL, 0);
-+		if (ret)
-+			return ret;
-+
-+		ret = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
-+					  &hdmi_jack[i]);
-+		if (ret < 0)
-+			return ret;
-+
-+		i++;
-+	}
-+	if (!component)
-+		return -EINVAL;
-+
-+	return hdac_hdmi_jack_port_init(component, &card->dapm);
-+}
-+
-+static int hdmi_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_dai *dai = rtd->codec_dai;
-+	struct hdmi_pcm *pcm;
-+
-+	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	pcm->device = dai->id;
-+	pcm->codec_dai = dai;
-+
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
-+}
-+
-+/* Cometlake digital audio interface glue - connects codec <--> CPU */
-+
-+SND_SOC_DAILINK_DEF(ssp0_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("SSP0 Pin")));
-+SND_SOC_DAILINK_DEF(ssp0_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00",
-+				CML_RT5682_CODEC_DAI)));
-+
-+SND_SOC_DAILINK_DEF(ssp1_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
-+SND_SOC_DAILINK_DEF(ssp1_codec,
-+	DAILINK_COMP_ARRAY(
-+	/* WL */ COMP_CODEC("i2c-10EC1015:00", CML_RT1015_CODEC_DAI),
-+	/* WR */ COMP_CODEC("i2c-10EC1015:01", CML_RT1015_CODEC_DAI)));
-+
-+SND_SOC_DAILINK_DEF(dmic_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
-+
-+SND_SOC_DAILINK_DEF(dmic16k_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC16k Pin")));
-+
-+SND_SOC_DAILINK_DEF(dmic_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
-+
-+SND_SOC_DAILINK_DEF(idisp1_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
-+SND_SOC_DAILINK_DEF(idisp1_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
-+
-+SND_SOC_DAILINK_DEF(idisp2_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")));
-+SND_SOC_DAILINK_DEF(idisp2_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi2")));
-+
-+SND_SOC_DAILINK_DEF(idisp3_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp3 Pin")));
-+SND_SOC_DAILINK_DEF(idisp3_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi3")));
-+
-+SND_SOC_DAILINK_DEF(platform,
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:1f.3")));
-+
-+static struct snd_soc_dai_link cml_rt1015_rt5682_dailink[] = {
-+	/* Back End DAI links */
-+	{
-+		/* SSP0 - Codec */
-+		.name = "SSP0-Codec",
-+		.id = 0,
-+		.init = cml_rt5682_codec_init,
-+		.ignore_pmdown_time = 1,
-+		.ops = &cml_rt5682_ops,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(ssp0_pin, ssp0_codec, platform),
-+	},
-+	{
-+		.name = "dmic01",
-+		.id = 1,
-+		.ignore_suspend = 1,
-+		.dpcm_capture = 1,
-+		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
-+	},
-+	{
-+		.name = "dmic16k",
-+		.id = 2,
-+		.ignore_suspend = 1,
-+		.dpcm_capture = 1,
-+		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(dmic16k_pin, dmic_codec, platform),
-+	},
-+	{
-+		.name = "iDisp1",
-+		.id = 3,
-+		.init = hdmi_init,
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(idisp1_pin, idisp1_codec, platform),
-+	},
-+	{
-+		.name = "iDisp2",
-+		.id = 4,
-+		.init = hdmi_init,
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(idisp2_pin, idisp2_codec, platform),
-+	},
-+	{
-+		.name = "iDisp3",
-+		.id = 5,
-+		.init = hdmi_init,
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
-+	},
-+	{
-+		/*
-+		 * SSP1 - Codec : added to end of list ensuring
-+		 * reuse of common topologies for other end points
-+		 * and changing only SSP1's codec
-+		 */
-+		.name = "SSP1-Codec",
-+		.id = 6,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1, /* Capture stream provides Feedback */
-+		.no_pcm = 1,
-+		.init = cml_rt1015_spk_init,
-+		.ops = &cml_rt1015_ops,
-+		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
-+	},
-+};
-+
-+static struct snd_soc_codec_conf rt1015_conf[] = {
-+	{
-+		.dev_name = "i2c-10EC1015:00",
-+		.name_prefix = "WL",
-+	},
-+	{
-+		.dev_name = "i2c-10EC1015:01",
-+		.name_prefix = "WR",
-+	},
-+};
-+
-+/* Cometlake audio machine driver for RT1015 and RT5682 */
-+static struct snd_soc_card snd_soc_card_cml = {
-+	.name = "cml_rt1015_rt5682",
-+	.dai_link = cml_rt1015_rt5682_dailink,
-+	.num_links = ARRAY_SIZE(cml_rt1015_rt5682_dailink),
-+	.codec_conf = rt1015_conf,
-+	.num_configs = ARRAY_SIZE(rt1015_conf),
-+	.dapm_widgets = cml_rt1015_rt5682_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cml_rt1015_rt5682_widgets),
-+	.dapm_routes = cml_rt1015_rt5682_map,
-+	.num_dapm_routes = ARRAY_SIZE(cml_rt1015_rt5682_map),
-+	.controls = cml_controls,
-+	.num_controls = ARRAY_SIZE(cml_controls),
-+	.fully_routed = true,
-+	.late_probe = sof_card_late_probe,
-+};
-+
-+static int snd_cml_rt1015_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_dai_link_component *rt1015_dais_components;
-+	struct snd_soc_codec_conf *rt1015_dais_confs;
-+	struct card_private *ctx;
-+	struct snd_soc_acpi_mach *mach;
-+	const char *platform_name;
-+	int ret, i;
-+
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
-+	mach = (&pdev->dev)->platform_data;
-+	snd_soc_card_cml.dev = &pdev->dev;
-+	platform_name = mach->mach_params.platform;
-+
-+	dmi_check_system(sof_rt1015_quirk_table);
-+
-+	dev_info(&pdev->dev, "sof_rt1015_quirk = %lx\n", sof_rt1015_quirk);
-+
-+	if (sof_rt1015_quirk & (SOF_RT1015_SPEAKER_TL |
-+				SOF_RT1015_SPEAKER_TR)) {
-+		rt1015_dais_confs = devm_kzalloc(&pdev->dev,
-+					sizeof(struct snd_soc_codec_conf) *
-+					SPK_CH, GFP_KERNEL);
-+
-+		if (!rt1015_dais_confs)
-+			return -ENOMEM;
-+
-+		rt1015_dais_components = devm_kzalloc(&pdev->dev,
-+					sizeof(struct snd_soc_dai_link_component) *
-+					SPK_CH, GFP_KERNEL);
-+
-+		if (!rt1015_dais_components)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < SPK_CH; i++) {
-+			rt1015_dais_confs[i].dev_name = devm_kasprintf(&pdev->dev,
-+								GFP_KERNEL,
-+								"i2c-10EC1015:0%d",
-+								i);
-+
-+			if (!rt1015_dais_confs[i].dev_name)
-+				return -ENOMEM;
-+
-+			switch (i) {
-+			case 0:
-+				rt1015_dais_confs[i].name_prefix = "WL";
-+				break;
-+			case 1:
-+				rt1015_dais_confs[i].name_prefix = "WR";
-+				break;
-+			case 2:
-+				rt1015_dais_confs[i].name_prefix = "TL";
-+				break;
-+			case 3:
-+				rt1015_dais_confs[i].name_prefix = "TR";
-+				break;
-+			default:
-+				return -EINVAL;
-+			}
-+			rt1015_dais_components[i].name = devm_kasprintf(&pdev->dev,
-+								GFP_KERNEL,
-+								"i2c-10EC1015:0%d",
-+								i);
-+			if (!rt1015_dais_components[i].name)
-+				return -ENOMEM;
-+
-+			rt1015_dais_components[i].dai_name = CML_RT1015_CODEC_DAI;
-+		}
-+
-+		snd_soc_card_cml.codec_conf = rt1015_dais_confs;
-+		snd_soc_card_cml.num_configs = SPK_CH;
-+
-+		for (i = 0; i < ARRAY_SIZE(cml_rt1015_rt5682_dailink); i++) {
-+			if (!strcmp(cml_rt1015_rt5682_dailink[i].codecs->dai_name,
-+					CML_RT1015_CODEC_DAI)) {
-+				cml_rt1015_rt5682_dailink[i].codecs = rt1015_dais_components;
-+				cml_rt1015_rt5682_dailink[i].num_codecs = SPK_CH;
-+			}
-+		}
-+	}
-+
-+	/* set platform name for each dailink */
-+	ret = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cml,
-+						    platform_name);
-+	if (ret)
-+		return ret;
-+	snd_soc_card_set_drvdata(&snd_soc_card_cml, ctx);
-+
-+	return devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cml);
-+}
-+
-+static struct platform_driver snd_cml_rt1015_rt5682_driver = {
-+	.probe = snd_cml_rt1015_probe,
-+	.driver = {
-+		.name = "cml_rt1015_rt5682",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+};
-+module_platform_driver(snd_cml_rt1015_rt5682_driver);
-+
-+/* Module information */
-+MODULE_DESCRIPTION("Cometlake Audio Machine driver - RT1015 and RT5682 in I2S mode");
-+MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
-+MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
-+MODULE_AUTHOR("Shuming Fan <shumingf@realtek.com>");
-+MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:cml_rt1015_rt5682");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index b80f032a..4f99da8 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -23,6 +23,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
- 		.sof_fw_filename = "sof-cnl.ri",
- 		.sof_tplg_filename = "sof-cnl-rt274.tplg",
- 	},
-+	{
-+		.id = "10EC1015",
-+		.drv_name = "cml_rt1015_rt5682",
-+		.quirk_data = &cml_codecs,
-+		.sof_fw_filename = "sof-cnl.ri",
-+		.sof_tplg_filename = "sof-cml-rt1015-rt5682.tplg",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_machines);
--- 
-2.7.4
+V2UgY2FuIGNob29zZSB0byBkcm9wIGF3YXkgYW55IGxlbmd0aCBvZiBkYXRhIGZyb20gdGhlIGJl
+Z2lubmluZyBhY2NvcmRpbmcNCnRvIHByb2plY3QgbmVlZHMuIFNvbWUgcHJvamVjdHMgZG9uJ3Qg
+d2FudCB0byB0aHJvdyBhd2F5IGFueSBkYXRhLCBiZWNhdXNlDQp0aGV5IHdhbnQgdG8gdXNlIHJl
+Y29yZGVkIGRhdGEgdG8gZG8gZWNobyBjYW5jZWxsYXRpb24sIHNvIHRoZXkgaGF2ZSB0bw0KbWFr
+ZSBzdXJlIHRoYXQgdGhleSBhcmUgYWxpZ25lZCB3aXRoIHRoZSByZWZlcmVuY2UgZGF0YSBhcyBt
+dWNoIGFzDQpwb3NzaWJsZS4gT3IgdGhlcmUgYXJlIG90aGVyIGFsZ29yaXRobXMgaW4gdGhlIHVw
+cGVyIGxheWVyIHRvIGVsaW1pbmF0ZQ0KdGhpcyBub2lzZS4gT3Igc29tZSBwcm9qZWN0cyB3YW50
+IHRvIGVsaW1pbmF0ZSB0aGlzIG5vaXNlIGZvcm0gdGhlIGtlcm5lbA0KbGF5ZXIuIEhvd2V2ZXIs
+IHRoZSBtaW5pbXVtIHJlY29tbWVuZGVkIHZhbHVlIGlzIDUwbXMgdG8gc2tpcCBwb3Agbm9pc2Uu
+DQoNClNpZ25lZC1vZmYtYnk6IEppYXhpbiBZdSA8amlheGluLnl1QG1lZGlhdGVrLmNvbT4NCi0t
+LQ0KIHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LmMgfCAzOCArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLQ0KIHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LmggfCAgMSArDQogMiBm
+aWxlcyBjaGFuZ2VkLCAzNSBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2NvZGVjcy9tdDYzNTkuYyBiL3NvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5
+LmMNCmluZGV4IDgxYWFmYjU1M2JkZDkuLjlhNjg2NTZhOWY3MzEgMTAwNjQ0DQotLS0gYS9zb3Vu
+ZC9zb2MvY29kZWNzL210NjM1OS5jDQorKysgYi9zb3VuZC9zb2MvY29kZWNzL210NjM1OS5jDQpA
+QCAtMTI3Niw2ICsxMjc2LDI5IEBAIHN0YXRpYyBpbnQgbXRfbXRrYWlmX3R4X2V2ZW50KHN0cnVj
+dCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LA0KIAlyZXR1cm4gMDsNCiB9DQogDQorc3RhdGljIGlu
+dCBtdF91bF9zcmNfZXZlbnQoc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgKncsDQorCQkJICAg
+c3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsDQorCQkJICAgaW50IGV2ZW50KQ0KK3sNCisJ
+c3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjbXBudCA9IHNuZF9zb2NfZGFwbV90b19jb21wb25l
+bnQody0+ZGFwbSk7DQorCXN0cnVjdCBtdDYzNTlfcHJpdiAqcHJpdiA9IHNuZF9zb2NfY29tcG9u
+ZW50X2dldF9kcnZkYXRhKGNtcG50KTsNCisJdW5zaWduZWQgaW50IHRpbWUgPSBwcml2LT51bF9k
+ZWxheV9tczsNCisNCisJZGV2X2RiZyhwcml2LT5kZXYsICIlcygpLCBldmVudCA9IDB4JXhcbiIs
+IF9fZnVuY19fLCBldmVudCk7DQorDQorCXN3aXRjaCAoZXZlbnQpIHsNCisJY2FzZSBTTkRfU09D
+X0RBUE1fUE9TVF9QTVU6DQorCQkvKiBza2lwIGZpcnN0IHRpbWUgZGF0YSB0byBhdm9pZCByZWNv
+cmRpbmcgcG9wIG5vaXNlICovDQorCQlpZiAodGltZSkNCisJCQl1c2xlZXBfcmFuZ2UoMTAwMCAq
+IHRpbWUsIDEwMDAgKiAodGltZSArIDEpKTsNCisJCWJyZWFrOw0KKwlkZWZhdWx0Og0KKwkJYnJl
+YWs7DQorCX0NCisNCisJcmV0dXJuIDA7DQorfQ0KKw0KIHN0YXRpYyBpbnQgbXRfdWxfc3JjX2Rt
+aWNfZXZlbnQoc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgKncsDQogCQkJCXN0cnVjdCBzbmRf
+a2NvbnRyb2wgKmtjb250cm9sLA0KIAkJCQlpbnQgZXZlbnQpDQpAQCAtMjA1MCw5ICsyMDczLDgg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IG10NjM1OV9kYXBtX3dp
+ZGdldHNbXSA9IHsNCiAJCQkgICAgICBTTkRfU09DX0RBUE1fUFJFX1BNVSB8IFNORF9TT0NfREFQ
+TV9QT1NUX1BNRCksDQogDQogCVNORF9TT0NfREFQTV9TVVBQTFlfUygiVUxfU1JDIiwgU1VQUExZ
+X1NFUV9VTF9TUkMsDQotCQkJICAgICAgTVQ2MzU5X0FGRV9VTF9TUkNfQ09OMF9MLA0KLQkJCSAg
+ICAgIFVMX1NSQ19PTl9UTVBfQ1RMX1NGVCwgMCwNCi0JCQkgICAgICBOVUxMLCAwKSwNCisJCQkg
+ICAgICBNVDYzNTlfQUZFX1VMX1NSQ19DT04wX0wsIFVMX1NSQ19PTl9UTVBfQ1RMX1NGVCwNCisJ
+CQkgICAgICAwLCBtdF91bF9zcmNfZXZlbnQsIFNORF9TT0NfREFQTV9QT1NUX1BNVSksDQogDQog
+CVNORF9TT0NfREFQTV9TVVBQTFlfUygiVUxfU1JDX0RNSUMiLCBTVVBQTFlfU0VRX1VMX1NSQ19E
+TUlDLA0KIAkJCSAgICAgIFNORF9TT0NfTk9QTSwgMCwgMCwNCkBAIC0yMDYyLDcgKzIwODQsNyBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgbXQ2MzU5X2RhcG1fd2lk
+Z2V0c1tdID0gew0KIAlTTkRfU09DX0RBUE1fU1VQUExZX1MoIlVMX1NSQ18zNCIsIFNVUFBMWV9T
+RVFfVUxfU1JDLA0KIAkJCSAgICAgIE1UNjM1OV9BRkVfQUREQTZfVUxfU1JDX0NPTjBfTCwNCiAJ
+CQkgICAgICBBRERBNl9VTF9TUkNfT05fVE1QX0NUTF9TRlQsIDAsDQotCQkJICAgICAgTlVMTCwg
+MCksDQorCQkJICAgICAgbXRfdWxfc3JjX2V2ZW50LCBTTkRfU09DX0RBUE1fUE9TVF9QTVUpLA0K
+IA0KIAlTTkRfU09DX0RBUE1fU1VQUExZX1MoIlVMX1NSQ18zNF9ETUlDIiwgU1VQUExZX1NFUV9V
+TF9TUkNfRE1JQywNCiAJCQkgICAgICBTTkRfU09DX05PUE0sIDAsIDAsDQpAQCAtMjY3NCw2ICsy
+Njk2LDE0IEBAIHN0YXRpYyBpbnQgbXQ2MzU5X3BhcnNlX2R0KHN0cnVjdCBtdDYzNTlfcHJpdiAq
+cHJpdikNCiAJCXByaXYtPm11eF9zZWxlY3RbTVVYX01JQ19UWVBFXzJdID0gTUlDX1RZUEVfTVVY
+X0lETEU7DQogCX0NCiANCisJcmV0ID0gb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJtZWRpYXRl
+ayx1bC1kZWxheS1tcyIsDQorCQkJCSAgICZwcml2LT51bF9kZWxheV9tcyk7DQorCWlmIChyZXQp
+IHsNCisJCWRldl93YXJuKHByaXYtPmRldiwgIiVzKCkgZmFpbGVkIHRvIHJlYWQgdWwtZGVsYXkt
+bXNcbiIsDQorCQkJIF9fZnVuY19fKTsNCisJCXByaXYtPnVsX2RlbGF5X21zID0gMDsNCisJfQ0K
+Kw0KIAlyZXR1cm4gMDsNCiB9DQogDQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9tdDYz
+NTkuaCBiL3NvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LmgNCmluZGV4IDM3OTJlNTM0YTkxYjYuLmRl
+NjZlNDliMTcwMTEgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvY29kZWNzL210NjM1OS5oDQorKysg
+Yi9zb3VuZC9zb2MvY29kZWNzL210NjM1OS5oDQpAQCAtMjYyNSw2ICsyNjI1LDcgQEAgc3RydWN0
+IG10NjM1OV9wcml2IHsNCiAJaW50IGFuYV9nYWluW0FVRElPX0FOQUxPR19WT0xVTUVfVFlQRV9N
+QVhdOw0KIAl1bnNpZ25lZCBpbnQgbXV4X3NlbGVjdFtNVVhfTlVNXTsNCiAJdW5zaWduZWQgaW50
+IGRtaWNfb25lX3dpcmVfbW9kZTsNCisJdW5zaWduZWQgaW50IHVsX2RlbGF5X21zOw0KIAlpbnQg
+ZGV2X2NvdW50ZXJbREVWSUNFX05VTV07DQogCWludCBocF9nYWluX2N0bDsNCiAJaW50IGhwX2hp
+ZmlfbW9kZTsNCi0tIA0KMi4xOC4wDQo=
 
