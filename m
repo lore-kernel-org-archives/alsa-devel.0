@@ -2,72 +2,67 @@ Return-Path: <SRS0=iTaG=EB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF82CC56201
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23F23C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:53:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EB6C21D42
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:48:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E42DD2463D
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:53:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MMHzy8/U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EB6C21D42
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s1PpmiLS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42DD2463D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C465F16DB;
-	Mon, 26 Oct 2020 14:48:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C465F16DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C28616C7;
+	Mon, 26 Oct 2020 14:52:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C28616C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603720136;
-	bh=7mYtxgkw8lsqEG465iApk7es1uCzsZQ0csRigCqdcR8=;
+	s=default; t=1603720403;
+	bh=xKyb5GrLJELaTIC697FT7VBjRKQZz9i9lyskw0tvmZ8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MMHzy8/UvvTlUC2Xs2fGVIR0nqz7cre1wm2Zq/BAoh6VXeKnOv+QsNMeqIWfr8rqO
-	 nR0WkV0NTgZ5iMCBfxMcEhCL/edLEuKuOG7FE3gTCnnLbETkV1iB0n6+ur7P1foR2/
-	 QVYbjGLBOphD68GqL+MqUYsyj26lonbOmcwVOpoc=
+	b=s1PpmiLSUp4LGTTGhEipK7YlGgTmRS4+pmJZ0A3cdV7lRt02D1OVM0tmyhoB0V8SS
+	 OTgbE7vfHGU9b6NfQ2VU9eum+mirI+zQL6wKwaHpC4oGBRCpFzQoqTH5lhAx9ybYH0
+	 qhFa1NkU76K/aIE8O48JAzqvVyFTJn+17tGt+Bn4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65FFAF80249;
-	Mon, 26 Oct 2020 14:48:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 923D8F801D8;
+	Mon, 26 Oct 2020 14:52:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DC8AF801D8; Mon, 26 Oct 2020 14:48:05 +0100 (CET)
+ id 3E483F80212; Mon, 26 Oct 2020 14:52:31 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92854F801D8
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 14:48:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92854F801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7D6AF801D5
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 14:52:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7D6AF801D5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B81B3AD18;
- Mon, 26 Oct 2020 13:47:58 +0000 (UTC)
-Date: Mon, 26 Oct 2020 14:47:57 +0100
-Message-ID: <s5h4kmh5caa.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9DEDDAD83;
+ Mon, 26 Oct 2020 13:52:28 +0000 (UTC)
+Date: Mon, 26 Oct 2020 14:52:28 +0100
+Message-ID: <s5h36215c2r.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: trix@redhat.com
-Subject: Re: [PATCH] sound: remove unneeded break
-In-Reply-To: <20201019164857.27223-1-trix@redhat.com>
-References: <20201019164857.27223-1-trix@redhat.com>
+To: Keith Winstein <keithw@cs.stanford.edu>
+Subject: Re: [PATCH] ALSA: usb-audio: Add implicit feedback quirk for Zoom
+ UAC-2
+In-Reply-To: <20201026080143.GA145492@trolley.csail.mit.edu>
+References: <CAMzhQmP+Y_=XpCueCxPdjG6rtYn+YhtRSeRkXkv5mJ3NWtxA9Q@mail.gmail.com>
+ <20201026080143.GA145492@trolley.csail.mit.edu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Julia.Lawall@inria.fr,
- cezary.rojewski@intel.com, romain.perier@gmail.com,
- kuninori.morimoto.gx@renesas.com, arnd@arndb.de, baolin.wang@linaro.org,
- naoki.hayama@lineo.co.jp, linux-kernel@vger.kernel.org, tiwai@suse.com,
- yang.jie@linux.intel.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, peter.ujfalusi@ti.com,
- broonie@kernel.org, srinivas.kandagatla@linaro.org,
- ranjani.sridharan@linux.intel.com, allen.lkml@gmail.com
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,17 +78,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 19 Oct 2020 18:48:57 +0200,
-trix@redhat.com wrote:
+On Mon, 26 Oct 2020 09:01:43 +0100,
+Keith Winstein wrote:
 > 
-> From: Tom Rix <trix@redhat.com>
-> 
-> A break is not needed if it is preceded by a return, goto
-> or break
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Here is the patch again without line-wrapping.
 
-Applied now.  Thanks.
+Could you put the patch description in the patch itself?
+Basically I'm fine to merge this as is, just missing information for
+git.
 
+
+thanks,
 
 Takashi
