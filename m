@@ -2,100 +2,103 @@ Return-Path: <SRS0=iTaG=EB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C849DC4363A
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 17:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A84C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 18:53:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 220F4206FA
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 17:11:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CCD1E207E8
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 18:53:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N2MENP19";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QyVBpuNW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 220F4206FA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gCCfYEpn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PgQ4zBHo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCD1E207E8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6345C84A;
-	Mon, 26 Oct 2020 18:10:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6345C84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E1571672;
+	Mon, 26 Oct 2020 19:52:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E1571672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603732309;
-	bh=1Un2KkYt8SdwtKmuQs41llTpnRnIuDWF+rYorremO5I=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N2MENP19Bo23u3bubok+SwF/+jPuBhOQjSLJoGw+zgzzAeld7fgWTzOV3JfJiyj59
-	 sEipGmF4kR93imxZajoK9aD4MGgQM32O/ccVElK/5u7TXs4Rtltd99qRyvnlPS4/ci
-	 BMjBaYuNUwF9tuu2oALjzFpAxCuDghXIUMsJDyuY=
+	s=default; t=1603738419;
+	bh=yFp3WQ3rRs12gtCaLRvFW0Zc81F3+ULafKm4dwnZGDM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gCCfYEpnXw7PY5vK6kh8hGhxjGAZ9CMMH3icoR1aF+zTSl31m4H4Xca+eikEv7+g/
+	 XGHw91am6QQMOa/N7ZFKoQeC+oOHs2C3+ws3ut2JJssNDddMbe0hGCp5cQFJzor4D/
+	 Ryl0Ujx/haB2gZyi1GSjUU7kJgr57qGyd/4pSIl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8E1DF800CC;
-	Mon, 26 Oct 2020 18:10:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F08CF80249;
+	Mon, 26 Oct 2020 19:52:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9CAFF80272; Mon, 26 Oct 2020 18:09:59 +0100 (CET)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ id BEC8FF801D8; Mon, 26 Oct 2020 19:52:46 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC7CDF80086
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 18:09:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC7CDF80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D17AF801D5
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 19:52:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D17AF801D5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="QyVBpuNW"
-Received: by mail-wr1-x431.google.com with SMTP id h5so13510084wrv.7
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 10:09:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=2w2zKDInoE0nEOTDxRu7ShBOzqjTt9h0UybMigLUZ7A=;
- b=QyVBpuNWrUnrnE3nTTLRUCTTT7/VWyI7mqP6SZtt6v6Yh+Vi69RNMQPZ3o69D3F35h
- 6DVQ0nFx8sAjMCDjq57ChbigaaQiARydxivJHmF76gmNGhyLkIr2iZop2GQokTPbviM5
- HjsmiNXw1FVzyc7T8Dp4NavK4QbWTiK7BTQy4p0Qao49DiTdS34k1uRdczQnl/rfU211
- DeDMue360GnBjFdGc+AS4BaSwFRudBqxnpjJ3cDw99VJajlid8o0K+YMkzG8KQU+b6wl
- 4TAGsmXNOaRQDEOYaeXTA096bZDNyY5gSOQ6DtZ0klKQbYbiOmNBOJ8TDDuJyLUsPaiy
- hLwQ==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="PgQ4zBHo"
+Received: by mail-wr1-x443.google.com with SMTP id i1so13910774wro.1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 11:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=cQUhXvV9ngizC4642GzTTm7/Hlvt6fgB3K3UUaUSFT8=;
+ b=PgQ4zBHoGONM0EuDC+MSQZsCD9loQzQ/78CLuJDg4QV+2Go3bxkFWh9IyXcuIHBroL
+ rbIUa+IRjeisxRCJpYXzD8hUNyeJEy13yexO7FQG9+VKCziLjOxCJkYvV0uNeHvVnxMm
+ ufM/sUnjs1kE9IZFM3gKlAzTESp7DfjYbofyZ7CBGQX0e3sjDSPbzIWVkqjQV4spTsuP
+ 4PXu/623TZ+FKcLB03A+TsGN7W6bkZ3qVfpT/yuuchwgFM4TaFHY4C3dTdhz8qvAMuXF
+ MNmtzUOWHuYANxu+HF6BtbLrSEdHDFZg/5Ck488Rnww18A7Y/CLeTc7fGEAr1wlAeSwx
+ WUDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=2w2zKDInoE0nEOTDxRu7ShBOzqjTt9h0UybMigLUZ7A=;
- b=Sfg3Zoznozf9M4qEk+CUPAwBtEGuR19BBGYbV0gUj377ROEmnhF2kKqiJHMaWgGiDd
- NG0uZ+dh1EDMHO3e+EvPSSF5Q/izUTDvQgciYEcbYDD29afsjfuG7HefpZa3Kcj481NG
- GR9ZVr7wNEA5f7mcRjG975ELboVAmUIYAP8RDa8SjZmgrSvD/knUlboOqTjjYz6gJvIV
- t1iOhhoFwyxTcWREl53wUqrHBu7NQSV/T9ddy4oUy0kQLulriTJK3bLVQlFmziVVqrZf
- Lr4N9QEisULLC6plf6BzVGKf+ak7dFCRXYPISL12pj5PwIj2hwwrt6qLmlmZU/lU4JB1
- TYPQ==
-X-Gm-Message-State: AOAM530Kq6dwPBhlUyJ1H6TnkaaW6wcW0SWiHYeRrdTui0iqy6miXxRw
- X3xEPJXXDeYUULQveqmbXhOibg==
-X-Google-Smtp-Source: ABdhPJzKEdmT+P+QVCtJT7v9CNbZUhOtFVFaiIx+8jOI4D+7abuPMZkk56f8H5emMxrZ2Xr3U3VXEg==
-X-Received: by 2002:adf:f44d:: with SMTP id f13mr18201344wrp.385.1603732192856; 
- Mon, 26 Oct 2020 10:09:52 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id u133sm23136174wmb.6.2020.10.26.10.09.51
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=cQUhXvV9ngizC4642GzTTm7/Hlvt6fgB3K3UUaUSFT8=;
+ b=YKK+3ZoaQinhP1G+MLCCfwMZuhhZTB6lc0uSJHE/TxevIKN4XZ1it1IFh5E31WJhil
+ ph2mO3aSJkvwCDGyV7tByinkeJUd2OL0dxOg+djPZn8091ehD28FLoeeiprsTQdwZP/u
+ JaEFXczfpntceuWDdc1PVWWMccQFF8kTo7GiwsZxBZ0z2yUY0TUp/i1fNwOXm/je/P12
+ c5/c79h1tn+kAy9kbB1n8um+n1pg92aBSYaWunQ2KGbNdtZTgxzvmcmSHslsgxymQAXF
+ wLolW8foi809dLJR4EHG3Ys/VBFWVhA+fyEU2DsX19MiW00UXY08n5bl8gQaR5dM7et+
+ Qjkw==
+X-Gm-Message-State: AOAM5332FGGPK1o+IU1NzSJxy1odJJlW+SSV+ZaRBrPugcaIwkfNKqs+
+ ml4kBiIYRfGsgICTcmdDhYQ=
+X-Google-Smtp-Source: ABdhPJywDncUnB846jl9ZKKaIOxZYjnQy76ipa3mbrDKAR3UpGtLZXtIwqM4R8XMtakeYjC0yhYG8A==
+X-Received: by 2002:adf:b787:: with SMTP id s7mr20509135wre.390.1603738362970; 
+ Mon, 26 Oct 2020 11:52:42 -0700 (PDT)
+Received: from localhost.localdomain
+ (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
+ by smtp.gmail.com with ESMTPSA id f7sm24885193wrx.64.2020.10.26.11.52.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 26 Oct 2020 10:09:52 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Add SM8250 sound card bindings
-Date: Mon, 26 Oct 2020 17:09:46 +0000
-Message-Id: <20201026170947.10567-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201026170947.10567-1-srinivas.kandagatla@linaro.org>
-References: <20201026170947.10567-1-srinivas.kandagatla@linaro.org>
+ Mon, 26 Oct 2020 11:52:42 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v8 00/14] Add Allwinner H3/H5/H6/A64 HDMI audio
+Date: Mon, 26 Oct 2020 19:52:25 +0100
+Message-Id: <20201026185239.379417-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, plai@codeaurora.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, spapothi@codeaurora.org
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>,
+ linux-sunxi@googlegroups.com,
+ =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,183 +114,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds bindings required for SM8250 based soundcards
-for example Qualcomm Robotics RB5 Development Kit which makes
-use of ADSP and Internal LPASS codec.
+Hi,
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- .../bindings/sound/qcom,sm8250.yaml           | 161 ++++++++++++++++++
- 1 file changed, 161 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+This is the same as v7 but rebased on next-20201026 and added a comment
+about slots and slot_width.
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-new file mode 100644
-index 000000000000..b8f97fe6e92c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -0,0 +1,161 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,sm8250.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Technologies Inc. SM8250 ASoC sound card driver
-+
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+
-+description:
-+  This bindings describes SC8250 SoC based sound cards
-+  which uses LPASS internal codec for audio.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: qcom,qrb5165-rb5
-+      - items:
-+        - const: qcom,sm8250
-+        - const: qcom,qrb5165-rb5
-+
-+  audio-routing:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description:
-+      A list of the connections between audio components. Each entry is a
-+      pair of strings, the first being the connection's sink, the second
-+      being the connection's source. Valid names could be power supplies,
-+      MicBias of codec and the jacks on the board.
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User visible long sound card name
-+
-+patternProperties:
-+  ".*-dai-link$":
-+    description:
-+      Each subnode represents a dai link. Subnodes of each dai links would be
-+      cpu/codec dais.
-+
-+    type: object
-+
-+    properties:
-+      link-name:
-+        description: Indicates dai-link name and PCM stream name.
-+        $ref: /schemas/types.yaml#/definitions/string
-+        maxItems: 1
-+
-+      cpu:
-+        description: Holds subnode which indicates cpu dai.
-+        type: object
-+        properties:
-+          sound-dai: true
-+
-+      platform:
-+        description: Holds subnode which indicates platform dai.
-+        type: object
-+        properties:
-+          sound-dai: true
-+
-+      codec:
-+        description: Holds subnode which indicates codec dai.
-+        type: object
-+        properties:
-+          sound-dai: true
-+
-+    required:
-+      - link-name
-+      - cpu
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - model
-+
-+additionalProperties: false
-+
-+examples:
-+
-+  - |
-+    #include <dt-bindings/sound/qcom,q6afe.h>
-+    #include <dt-bindings/sound/qcom,q6asm.h>
-+    sound {
-+        compatible = "qcom,qrb5165-rb5";
-+        model = "Qualcomm-qrb5165-RB5-WSA8815-Speakers-DMIC0";
-+        audio-routing = "SpkrLeft IN", "WSA_SPK1 OUT",
-+                    "SpkrRight IN", "WSA_SPK2 OUT",
-+                    "VA DMIC0", "vdd-micb",
-+                    "VA DMIC1", "vdd-micb",
-+                    "MM_DL1",  "MultiMedia1 Playback",
-+                    "MM_DL2",  "MultiMedia2 Playback",
-+                    "MultiMedia3 Capture", "MM_UL3";
-+
-+        mm1-dai-link {
-+            link-name = "MultiMedia0";
-+            cpu {
-+                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+            };
-+        };
-+
-+        mm2-dai-link {
-+            link-name = "MultiMedia2";
-+            cpu {
-+                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA2>;
-+            };
-+        };
-+
-+        mm3-dai-link {
-+            link-name = "MultiMedia3";
-+            cpu {
-+                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
-+            };
-+        };
-+
-+        hdmi-dai-link {
-+            link-name = "HDMI Playback";
-+            cpu {
-+                sound-dai = <&q6afedai TERTIARY_MI2S_RX>;
-+            };
-+
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
-+
-+            codec {
-+                sound-dai = <&lt9611_codec 0>;
-+            };
-+        };
-+
-+        wsa-dai-link {
-+            link-name = "WSA Playback";
-+            cpu {
-+                sound-dai = <&q6afedai WSA_CODEC_DMA_RX_0>;
-+            };
-+
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
-+
-+            codec {
-+                sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&wsamacro>;
-+            };
-+        };
-+
-+        va-dai-link {
-+            link-name = "VA Capture";
-+            cpu {
-+                sound-dai = <&q6afedai VA_CODEC_DMA_TX_0>;
-+            };
-+
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
-+
-+            codec {
-+                sound-dai = <&vamacro 0>;
-+            };
-+        };
-+    };
+A proper sound card will be introduced later.
+
+This was tested on H6 only.
+
+Regards,
+Clement
+
+Change since v7:
+- rebase on next-20201026
+- comment about slots and slot_width
+
+Change since v6:
+- move set_channel_cfg() in first position
+- convert return value to decimal
+
+Change since v5:
+- Drop HDMI simple soundcard
+- Collect Chen-Yu Tsai tags
+- Configure channels from 9 to 15.
+- Remove DMA RX for H3/H5
+- Fix Documentation for H3/H5
+
+Change since v4:
+- add more comment on get_wss() and set_channel_cfg() patch
+- merge soundcard and DAI HDMI patches
+
+Change since v3:
+- add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is enabled
+- readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
+- Fix get_wss() for sun4i
+- Add a commit to fix checkpatch warning
+
+Change since v2:
+- rebase on next-20200918
+- drop revert LRCK polarity patch
+- readd simple-audio-card,frame-inversion in dts
+- Add patch for changing set_chan_cfg params
+
+Change since v1:
+- rebase on next-20200828
+- add revert LRCK polarity
+- remove all simple-audio-card,frame-inversion in dts
+- add Ondrej patches for Orange Pi board
+- Add arm64 defconfig patch
+
+Clément Péron (6):
+  ASoC: sun4i-i2s: Change set_chan_cfg() params
+  ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
+  ASoC: sun4i-i2s: Fix sun8i volatile regs
+  ASoC: sun4i-i2s: fix coding-style for callback definition
+  arm64: defconfig: Enable Allwinner i2s driver
+  dt-bindings: sound: sun4i-i2s: Document H3 with missing RX channel
+    possibility
+
+Jernej Skrabec (3):
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  arm64: dts: allwinner: h6: Add I2S1 node
+
+Marcus Cooper (4):
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  arm64: dts: allwinner: a64: Add I2S2 node
+  arm: dts: sunxi: h3/h5: Add I2S2 node
+
+Samuel Holland (1):
+  ASoC: sun4i-i2s: Fix setting of FIFO modes
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   6 +-
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  13 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  14 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  13 +
+ arch/arm64/configs/defconfig                  |   1 +
+ sound/soc/sunxi/sun4i-i2s.c                   | 385 +++++++++++++++---
+ 6 files changed, 376 insertions(+), 56 deletions(-)
+
 -- 
-2.21.0
+2.25.1
 
