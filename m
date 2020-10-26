@@ -2,77 +2,78 @@ Return-Path: <SRS0=iTaG=EB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C467C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:46:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD06BC4363A
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:47:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8067320878
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:46:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C6B920714
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:47:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BHjsIwQr";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yz8lb+7H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8067320878
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sLe4DZgv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWTwigaZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C6B920714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0710E16A9;
-	Tue, 27 Oct 2020 00:45:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0710E16A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9F1A16B8;
+	Tue, 27 Oct 2020 00:46:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9F1A16B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603755985;
-	bh=W0GHurfLARJJgjJlVQfEHZ2+dhsR3twtgbYlogiwXaA=;
+	s=default; t=1603756035;
+	bh=lLxjByEzEqHVGHizHikGSChzrt/ikoW1DrIWmsD1Oog=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BHjsIwQrIBnoGnPLk03ly59Gnbqvh6B7FJuJD+CrnruwdlH8y7MpAjHtoc7JWyiDu
-	 ATOysNBcepiOdh1c/V88grBsWAzFsOi/wH60LD9nEumndR8ylw5hmsRyO6NfPlDdeA
-	 bikIOMCVuoQg1EvPtlAF92CQqiy/xbqMnMnQVJ1A=
+	b=sLe4DZgvVMNuPp4NRlBgso/fhse9SUn4AdmItkNXqox7l71bNSnC2v1KCd7ajQUut
+	 6+6j+TpilMtz2AbBF/BSU92ZlYpdQT7ZEqSUlH7vZRnA9/X2dzbeAaqHk6iQrP9Cfe
+	 9uym/1jdducjAM65OLdsDv/DVj/mzKYAq8MqrZ/A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C4E4F801D8;
-	Tue, 27 Oct 2020 00:45:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56530F801D5;
+	Tue, 27 Oct 2020 00:45:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F44EF80212; Tue, 27 Oct 2020 00:45:33 +0100 (CET)
+ id 7E750F80272; Tue, 27 Oct 2020 00:45:37 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6968DF80086
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 00:45:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6968DF80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2244F80212
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 00:45:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2244F80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Yz8lb+7H"
+ header.b="SWTwigaZ"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4E9D220714;
- Mon, 26 Oct 2020 23:45:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7726320714;
+ Mon, 26 Oct 2020 23:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603755927;
- bh=W0GHurfLARJJgjJlVQfEHZ2+dhsR3twtgbYlogiwXaA=;
+ s=default; t=1603755933;
+ bh=lLxjByEzEqHVGHizHikGSChzrt/ikoW1DrIWmsD1Oog=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Yz8lb+7H9sq3ef9LwgvLJkqXJdBGord+M51p3ULMYoUFXPA5UZ0JECfvUu2GR56w5
- ifKXrxvwpf7S4k3iXGP7Ype3JA9Ie+K5C6/eCplWzMHZ38QP1N/3q5XqC/qsJXzjQl
- cWQoutw5FwocAGv9T24Hqhzl+c+9HmpElL+cSwPg=
-Date: Mon, 26 Oct 2020 23:45:23 +0000
+ b=SWTwigaZOVO7f3S++lfl04YJUrkFgbnxmXPHO31eWkDjAHTzjRRxJUWcs/7YaUTZc
+ ZC3mAbYhjZau+jyu1y3M2dHjO8sNBws+ZBr/jYLS+8rjghVgg50yv/S8HHL5XTtoCo
+ k5VHv1MqWslDAxir2E9h6unNdsc33hGRRi8BsPlM=
+Date: Mon, 26 Oct 2020 23:45:28 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Xiubo.Lee@gmail.com, timur@kernel.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz, tiwai@suse.com,
- festevam@gmail.com, alsa-devel@alsa-project.org, nicoleotsuka@gmail.com
-In-Reply-To: <1602557360-18795-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1602557360-18795-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2] ASoC: fsl_spdif: Add support for higher sample rates
-Message-Id: <160375592346.31132.5202638686787064614.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20201012141911.3150996-1-codrin.ciubotariu@microchip.com>
+References: <20201012141911.3150996-1-codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH] ASoC: pcm5102a: Make codec selectable
+Message-Id: <160375592346.31132.3991305992600286336.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: kernel@martin.sperl.org, florian.meier@koalo.de, tiwai@suse.com,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,9 +89,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 13 Oct 2020 10:49:20 +0800, Shengjiu Wang wrote:
-> Add 88200Hz and 176400Hz sample rates support for TX.
-> Add 88200Hz, 176400Hz, 192000Hz sample rates support for RX.
+On Mon, 12 Oct 2020 17:19:11 +0300, Codrin Ciubotariu wrote:
+> The TI PCM5102A codec driver can be used with the generic sound card
+> drivers, so it should be selectable. For example, with the addition
+> of #sound-dai-cells = <0> property in DT, it can be used with simple/graph
+> card drivers.
 
 Applied to
 
@@ -98,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_spdif: Add support for higher sample rates
-      commit: 1bfa3eaa4511256ab14555ab2573e6e75194b1fa
+[1/1] ASoC: pcm5102a: Make codec selectable
+      commit: 76b5f68bbf7df9343b69fbee04d5edf50680c231
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
