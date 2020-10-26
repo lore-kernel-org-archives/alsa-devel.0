@@ -7,88 +7,89 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 825B7C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C42A9C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:23:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9CE8A20756
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:22:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B3C9021655
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:23:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W3SeLAcI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UKwPglDk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CE8A20756
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p9/ALgXz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lovqLYAt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3C9021655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4555716DD;
-	Mon, 26 Oct 2020 15:21:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4555716DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id F289D169C;
+	Mon, 26 Oct 2020 15:22:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F289D169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603722161;
-	bh=OQymyD+t3K1JGEFq4NwVCpviv5sdfYpzCvXkTIeKPik=;
+	s=default; t=1603722200;
+	bh=Kxxokm/CRfbYwfCTfC+sintDPohiflQvUQr89mEF05I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W3SeLAcIH2f7Pb1SQgulVPGC7Bg73Jy1o0r+heVMTLHkXvk5jApqNzUD+zXmCevkW
-	 3BEiqrZ3RQ0lttcmJe7W+u5nrx/S4k8MTcQMgZlaXOa9vuGzOObWKFSp46BNnF6dw1
-	 7EdN7t3pUIAABI1tLpYhAHZ21LZ2ryigDUXzDyd4=
+	b=p9/ALgXzQYrvvPvhkjiTH5lzqvnn+hi5xS4YK6pSGaabx+6AqdKmzk5BXa9dwa6Jy
+	 +G83dLJ3PiFTIEbq2d1ZLu48A9cJrGyChYzUzgpIP725PVdR2+xG+PFUhIC1S2ZUko
+	 QDH0dIcd3MFdQcOfM1ut8F5lsn0qj2fAEzr1s7Ws=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82C9FF804BD;
-	Mon, 26 Oct 2020 15:20:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCBB4F804CC;
+	Mon, 26 Oct 2020 15:20:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66E74F801D5; Mon, 26 Oct 2020 15:20:12 +0100 (CET)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
+ id DFFE7F804B4; Mon, 26 Oct 2020 15:20:13 +0100 (CET)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 955E3F80249
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 15:19:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 955E3F80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6CBCF80212
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 15:20:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6CBCF80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="UKwPglDk"
-Received: by mail-wm1-x333.google.com with SMTP id c194so11835971wme.2
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 07:19:58 -0700 (PDT)
+ header.b="lovqLYAt"
+Received: by mail-wr1-x444.google.com with SMTP id s9so12760062wro.8
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 07:20:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=JwJEkhvFul5vDGHlnJ3Gao9MsJy2NcjTpJ2lWQ2eKBg=;
- b=UKwPglDkCAf8Y8zX5OxyWpXUuJJoEWkgiA5sDOxCofniL1Gqpk9gYydBVD4bzd0Uux
- KyvObdIl8HH48/2jkUuKO4mp+RgcKA0v1mnAPZKslLxTKvioqrsCixf0ufGcZ/nQUrHN
- J2fVi/VdW7zTiTWcMgVfR+ttmyoPsnrZiigVUfPjfv58vfHI5cURWsKwDThg+fsO/bKZ
- mUA+MYSHA49plN/xJqS0JTN+BGAGS7PQkGK910Rkbjifx2SjL2si/3hSSD0u1BXumuJ3
- Nh0wrifhOErHIQpJ91A4byfUrcs2eZJuI6OmlvJ3QNcYcB1gIlbcuIX0VR1NF0D7D40t
- 7Eng==
+ bh=2aUgbdr53T1UgR0Yju4pH8dbeug73XZ4DbafrpXWl3k=;
+ b=lovqLYAt/OiqWPG/I4Lr2xUjvKjO6hxXpShV437c3It+qClwuPjs7qrN0dE9YxsmRZ
+ ksEadV2BATCroOlE2iuS3FEevurQiScr5hkSdNP0XapH3b2ErvkbC2Xht7LzB5InCHXo
+ oLntqqxIn0RSApc+F8nes9x4NlTY2vYts2I6PcQ88QlR6pZmtxQjhbZ2lue5vA5QDnNF
+ 8UJvYlOIRp7ypYedNlHV6EMIHhv7E2y436eKV468/7sXbiXsjD3xoL/1TKNm7cMZiper
+ SAP7Aqds2IilYbPBDlGVxpCWI7fYjoTEZeRRWdPvKhlyHrYqgfpnKlSvM5rVMUnhitUF
+ 1iaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=JwJEkhvFul5vDGHlnJ3Gao9MsJy2NcjTpJ2lWQ2eKBg=;
- b=fjzEsO9lUWhpXCVAKqPcFiqoqdmHuo0wAB9Uk2ij1L+S2wWoc/O4fZ6Ks+6xmB1mob
- GxN2A1n3uLqcw7H06PvWep8TfrNdcQKsMpxlRq/QWhNzSFNOdVo6ThNSyngoSSOoWHpL
- JJxqT1c6XZhZt/at15iQiQPeMa2MJgSPaAwOR+PKZAUmmErQbS93iACHMKpibEPVG89k
- C2eUNc0xf1Op+Kx4COw/UrRVxm/HrnD7ZofhLBBecG+lFnwHWAoLkgQ80FLGKrPHuKcK
- ugf6UduoynwOnR2G8BINDEAsP+GMxYiSx0de2o6O2A58+F0k6Zdz3341B3nB2yimiHl2
- WtDg==
-X-Gm-Message-State: AOAM5328HDCJaH0wXWlGIZ1P+Oo+5hpIdXmYZDuJlVfuwOLvAUl5Hlni
- YbXpeJMjdsmNWbs/0Gxs+b8t7w==
-X-Google-Smtp-Source: ABdhPJw3z6Eyfbe8k2spvNHnWa5xDF2s+xvHloOILfuvOe0UQ8nFDn4cdvWKQ0qOofu/yTqiza5oEQ==
-X-Received: by 2002:a1c:4887:: with SMTP id v129mr17160191wma.13.1603721997685; 
- Mon, 26 Oct 2020 07:19:57 -0700 (PDT)
+ bh=2aUgbdr53T1UgR0Yju4pH8dbeug73XZ4DbafrpXWl3k=;
+ b=lkZhoHJwFY3gRRzwUNMOSnvk4RtjUo8ivBcIGpljtpVIyg5M9ZFV+FnTbOmRk8xDCM
+ Y7pS2SJWWmMEb5GaeIUhRf4rI4+4PNGND35Hhj/Rchm9wjFDAkz449YI/a1Sq93U3+iU
+ oDPLT9n2/9DKRVbG85bd/GA+hx6lTm7zjR3+4lK2URBb09Doi36AjjZ5K7YAFXwu4vVG
+ qgzYASYQGmYLGE2GR7IpM34oMwenA9aiJzTIFhs2ccBlZpima51MoGL+Fc1MTpYImkyM
+ DOY0DDKGk7fpzHvlW4p0ii0iQ3DQ9SA5RVJRyQMc8nRXHmTYY2S0XihwqGKG6oh2+t1t
+ SNaQ==
+X-Gm-Message-State: AOAM531AixQRcuYl9OQkmUIU7EV4ovxXa6n/D4epSlh/rGrVBYHrTT5t
+ 2BlKKzti7K+bfKO4ERSV+PXhxmPz5RYrbQ==
+X-Google-Smtp-Source: ABdhPJyjTWlGVKEsitVsN67qw3Z7NkkIgcR0i5Ot1JXvjyw2cACO3iGpG4xqaJIQtukZE8K+Muu/GQ==
+X-Received: by 2002:a05:6000:36f:: with SMTP id
+ f15mr18016523wrf.78.1603722001963; 
+ Mon, 26 Oct 2020 07:20:01 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id g4sm20253333wmh.13.2020.10.26.07.19.56
+ by smtp.gmail.com with ESMTPSA id g4sm20253333wmh.13.2020.10.26.07.20.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 26 Oct 2020 07:19:56 -0700 (PDT)
+ Mon, 26 Oct 2020 07:20:01 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v1 3/6] ASoC: codecs: lpass-wsa-macro: add dapm widgets and
- route
-Date: Mon, 26 Oct 2020 14:19:42 +0000
-Message-Id: <20201026141945.19707-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v1 6/6] ASoC: codecs: lpass-va-macro: add dapm widgets and
+ routes
+Date: Mon, 26 Oct 2020 14:19:45 +0000
+Message-Id: <20201026141945.19707-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201026141945.19707-1-srinivas.kandagatla@linaro.org>
 References: <20201026141945.19707-1-srinivas.kandagatla@linaro.org>
@@ -112,781 +113,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds dapm widgets and routes on this codec
+Add dapm widgets and routes for this codec.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-wsa-macro.c | 1014 ++++++++++++++++++++++++++++
- 1 file changed, 1014 insertions(+)
+ sound/soc/codecs/lpass-va-macro.c | 618 ++++++++++++++++++++++++++++++
+ 1 file changed, 618 insertions(+)
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 8c2c3b0062a6..58da9951ae8e 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -398,6 +398,21 @@ static const struct soc_enum rx0_mix_chain_enum =
- static const struct soc_enum rx0_sidetone_mix_enum =
- 	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 2, rx_sidetone_mix_text);
- 
-+static const struct snd_kcontrol_new rx0_prim_inp0_mux =
-+	SOC_DAPM_ENUM("WSA_RX0 INP0 Mux", rx0_prim_inp0_chain_enum);
-+
-+static const struct snd_kcontrol_new rx0_prim_inp1_mux =
-+	SOC_DAPM_ENUM("WSA_RX0 INP1 Mux", rx0_prim_inp1_chain_enum);
-+
-+static const struct snd_kcontrol_new rx0_prim_inp2_mux =
-+	SOC_DAPM_ENUM("WSA_RX0 INP2 Mux", rx0_prim_inp2_chain_enum);
-+
-+static const struct snd_kcontrol_new rx0_mix_mux =
-+	SOC_DAPM_ENUM("WSA_RX0 MIX Mux", rx0_mix_chain_enum);
-+
-+static const struct snd_kcontrol_new rx0_sidetone_mix_mux =
-+	SOC_DAPM_ENUM("WSA_RX0 SIDETONE MIX Mux", rx0_sidetone_mix_enum);
-+
- /* RX INT1 */
- static const struct soc_enum rx1_prim_inp0_chain_enum =
- 	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT1_CFG0,
-@@ -435,6 +450,12 @@ static const struct soc_enum rx_mix_ec1_enum =
- 	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_MIX_CFG0,
- 		3, 3, rx_mix_ec_text);
- 
-+static const struct snd_kcontrol_new rx_mix_ec0_mux =
-+	SOC_DAPM_ENUM("WSA RX_MIX EC0_Mux", rx_mix_ec0_enum);
-+
-+static const struct snd_kcontrol_new rx_mix_ec1_mux =
-+	SOC_DAPM_ENUM("WSA RX_MIX EC1_Mux", rx_mix_ec1_enum);
-+
- static const struct reg_default wsa_defaults[] = {
- 	/* WSA Macro */
- 	{ CDC_WSA_CLK_RST_CTRL_MCLK_CONTROL, 0x00},
-@@ -1136,6 +1157,623 @@ static int wsa_macro_mclk_enable(struct wsa_macro *wsa, bool mclk_enable)
- 	return ret;
- }
- 
-+static int wsa_macro_mclk_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		wsa_macro_mclk_enable(wsa, true);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		wsa_macro_mclk_enable(wsa, false);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wsa_macro_enable_vi_feedback(struct snd_soc_dapm_widget *w,
-+					struct snd_kcontrol *kcontrol,
-+					int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+	u32 tx_reg0, tx_reg1;
-+
-+	if (test_bit(WSA_MACRO_TX0, &wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+		tx_reg0 = CDC_WSA_TX0_SPKR_PROT_PATH_CTL;
-+		tx_reg1 = CDC_WSA_TX1_SPKR_PROT_PATH_CTL;
-+	} else if (test_bit(WSA_MACRO_TX1, &wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+		tx_reg0 = CDC_WSA_TX2_SPKR_PROT_PATH_CTL;
-+		tx_reg1 = CDC_WSA_TX3_SPKR_PROT_PATH_CTL;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+			/* Enable V&I sensing */
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_8K);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_8K);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Disable V&I sensing */
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
-+				     struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	u16 gain_reg;
-+	int offset_val = 0;
-+	int val = 0;
-+
-+	switch (w->reg) {
-+	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
-+		gain_reg = CDC_WSA_RX0_RX_VOL_MIX_CTL;
-+		break;
-+	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
-+		gain_reg = CDC_WSA_RX1_RX_VOL_MIX_CTL;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		val = snd_soc_component_read(component, gain_reg);
-+		val += offset_val;
-+		snd_soc_component_write(component, gain_reg, val);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_component_update_bits(component, w->reg,
-+					      CDC_WSA_RX_PATH_MIX_CLK_EN_MASK,
-+					      CDC_WSA_RX_PATH_MIX_CLK_DISABLE);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static void wsa_macro_hd2_control(struct snd_soc_component *component,
-+				  u16 reg, int event)
-+{
-+	u16 hd2_scale_reg;
-+	u16 hd2_enable_reg = 0;
-+
-+	if (reg == CDC_WSA_RX0_RX_PATH_CTL) {
-+		hd2_scale_reg = CDC_WSA_RX0_RX_PATH_SEC3;
-+		hd2_enable_reg = CDC_WSA_RX0_RX_PATH_CFG0;
-+	}
-+	if (reg == CDC_WSA_RX1_RX_PATH_CTL) {
-+		hd2_scale_reg = CDC_WSA_RX1_RX_PATH_SEC3;
-+		hd2_enable_reg = CDC_WSA_RX1_RX_PATH_CFG0;
-+	}
-+
-+	if (hd2_enable_reg && SND_SOC_DAPM_EVENT_ON(event)) {
-+		snd_soc_component_update_bits(component, hd2_scale_reg,
-+					      CDC_WSA_RX_PATH_HD2_ALPHA_MASK,
-+					      0x10);
-+		snd_soc_component_update_bits(component, hd2_scale_reg,
-+					      CDC_WSA_RX_PATH_HD2_SCALE_MASK,
-+					      0x1);
-+		snd_soc_component_update_bits(component, hd2_enable_reg,
-+					      CDC_WSA_RX_PATH_HD2_EN_MASK,
-+					      CDC_WSA_RX_PATH_HD2_ENABLE);
-+	}
-+
-+	if (hd2_enable_reg && SND_SOC_DAPM_EVENT_OFF(event)) {
-+		snd_soc_component_update_bits(component, hd2_enable_reg,
-+					      CDC_WSA_RX_PATH_HD2_EN_MASK, 0);
-+		snd_soc_component_update_bits(component, hd2_scale_reg,
-+					      CDC_WSA_RX_PATH_HD2_SCALE_MASK,
-+					      0);
-+		snd_soc_component_update_bits(component, hd2_scale_reg,
-+					      CDC_WSA_RX_PATH_HD2_ALPHA_MASK,
-+					      0);
-+	}
-+}
-+
-+static int wsa_macro_config_compander(struct snd_soc_component *component,
-+				      int comp, int event)
-+{
-+	u16 comp_ctl0_reg, rx_path_cfg0_reg;
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+
-+	if (!wsa->comp_enabled[comp])
-+		return 0;
-+
-+	comp_ctl0_reg = CDC_WSA_COMPANDER0_CTL0 +
-+					(comp * WSA_MACRO_RX_COMP_OFFSET);
-+	rx_path_cfg0_reg = CDC_WSA_RX0_RX_PATH_CFG0 +
-+					(comp * WSA_MACRO_RX_PATH_OFFSET);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		/* Enable Compander Clock */
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_CLK_EN_MASK,
-+					      CDC_WSA_COMPANDER_CLK_ENABLE);
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
-+					      CDC_WSA_COMPANDER_SOFT_RST_ENABLE);
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
-+					      0);
-+		snd_soc_component_update_bits(component, rx_path_cfg0_reg,
-+					      CDC_WSA_RX_PATH_COMP_EN_MASK,
-+					      CDC_WSA_RX_PATH_COMP_ENABLE);
-+	}
-+
-+	if (SND_SOC_DAPM_EVENT_OFF(event)) {
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_HALT_MASK,
-+					      CDC_WSA_COMPANDER_HALT);
-+		snd_soc_component_update_bits(component, rx_path_cfg0_reg,
-+					      CDC_WSA_RX_PATH_COMP_EN_MASK, 0);
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
-+					      CDC_WSA_COMPANDER_SOFT_RST_ENABLE);
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
-+					      0);
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_CLK_EN_MASK, 0);
-+		snd_soc_component_update_bits(component, comp_ctl0_reg,
-+					      CDC_WSA_COMPANDER_HALT_MASK, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static void wsa_macro_enable_softclip_clk(struct snd_soc_component *component,
-+					 struct wsa_macro *wsa,
-+					 int path,
-+					 bool enable)
-+{
-+	u16 softclip_clk_reg = CDC_WSA_SOFTCLIP0_CRC +
-+			(path * WSA_MACRO_RX_SOFTCLIP_OFFSET);
-+	u8 softclip_mux_mask = (1 << path);
-+	u8 softclip_mux_value = (1 << path);
-+
-+	if (enable) {
-+		if (wsa->softclip_clk_users[path] == 0) {
-+			snd_soc_component_update_bits(component,
-+						softclip_clk_reg,
-+						CDC_WSA_SOFTCLIP_CLK_EN_MASK,
-+						CDC_WSA_SOFTCLIP_CLK_ENABLE);
-+			snd_soc_component_update_bits(component,
-+				CDC_WSA_RX_INP_MUX_SOFTCLIP_CFG0,
-+				softclip_mux_mask, softclip_mux_value);
-+		}
-+		wsa->softclip_clk_users[path]++;
-+	} else {
-+		wsa->softclip_clk_users[path]--;
-+		if (wsa->softclip_clk_users[path] == 0) {
-+			snd_soc_component_update_bits(component,
-+						softclip_clk_reg,
-+						CDC_WSA_SOFTCLIP_CLK_EN_MASK,
-+						0);
-+			snd_soc_component_update_bits(component,
-+				CDC_WSA_RX_INP_MUX_SOFTCLIP_CFG0,
-+				softclip_mux_mask, 0x00);
-+		}
-+	}
-+}
-+
-+static int wsa_macro_config_softclip(struct snd_soc_component *component,
-+				     int path, int event)
-+{
-+	u16 softclip_ctrl_reg = 0;
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+	int softclip_path = 0;
-+
-+	if (path == WSA_MACRO_COMP1)
-+		softclip_path = WSA_MACRO_SOFTCLIP0;
-+	else if (path == WSA_MACRO_COMP2)
-+		softclip_path = WSA_MACRO_SOFTCLIP1;
-+
-+	if (!wsa->is_softclip_on[softclip_path])
-+		return 0;
-+
-+	softclip_ctrl_reg = CDC_WSA_SOFTCLIP0_SOFTCLIP_CTRL +
-+				(softclip_path * WSA_MACRO_RX_SOFTCLIP_OFFSET);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		/* Enable Softclip clock and mux */
-+		wsa_macro_enable_softclip_clk(component, wsa, softclip_path,
-+					      true);
-+		/* Enable Softclip control */
-+		snd_soc_component_update_bits(component, softclip_ctrl_reg,
-+					      CDC_WSA_SOFTCLIP_EN_MASK,
-+					      CDC_WSA_SOFTCLIP_ENABLE);
-+	}
-+
-+	if (SND_SOC_DAPM_EVENT_OFF(event)) {
-+		snd_soc_component_update_bits(component, softclip_ctrl_reg,
-+					      CDC_WSA_SOFTCLIP_EN_MASK, 0);
-+		wsa_macro_enable_softclip_clk(component, wsa, softclip_path,
-+					      false);
-+	}
-+
-+	return 0;
-+}
-+
-+static bool wsa_macro_adie_lb(struct snd_soc_component *component,
-+			      int interp_idx)
-+{
-+	u16 int_mux_cfg0 = 0, int_mux_cfg1 = 0;
-+	u8 int_mux_cfg0_val = 0, int_mux_cfg1_val = 0;
-+	u8 int_n_inp0 = 0, int_n_inp1 = 0, int_n_inp2 = 0;
-+
-+	int_mux_cfg0 = CDC_WSA_RX_INP_MUX_RX_INT0_CFG0 + interp_idx * 8;
-+	int_mux_cfg1 = int_mux_cfg0 + 4;
-+	int_mux_cfg0_val = snd_soc_component_read(component, int_mux_cfg0);
-+	int_mux_cfg1_val = snd_soc_component_read(component, int_mux_cfg1);
-+
-+	int_n_inp0 = int_mux_cfg0_val & 0x0F;
-+	if (int_n_inp0 == INTn_1_INP_SEL_DEC0 ||
-+		int_n_inp0 == INTn_1_INP_SEL_DEC1)
-+		return true;
-+
-+	int_n_inp1 = int_mux_cfg0_val >> 4;
-+	if (int_n_inp1 == INTn_1_INP_SEL_DEC0 ||
-+		int_n_inp1 == INTn_1_INP_SEL_DEC1)
-+		return true;
-+
-+	int_n_inp2 = int_mux_cfg1_val >> 4;
-+	if (int_n_inp2 == INTn_1_INP_SEL_DEC0 ||
-+		int_n_inp2 == INTn_1_INP_SEL_DEC1)
-+		return true;
-+
-+	return false;
-+}
-+
-+static int wsa_macro_enable_main_path(struct snd_soc_dapm_widget *w,
-+				      struct snd_kcontrol *kcontrol,
-+				      int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	u16 reg = 0;
-+
-+	reg = CDC_WSA_RX0_RX_PATH_CTL + WSA_MACRO_RX_PATH_OFFSET * w->shift;
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		if (wsa_macro_adie_lb(component, w->shift)) {
-+			snd_soc_component_update_bits(component, reg,
-+					     CDC_WSA_RX_PATH_CLK_EN_MASK,
-+					     CDC_WSA_RX_PATH_CLK_ENABLE);
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int wsa_macro_interp_get_primary_reg(u16 reg, u16 *ind)
-+{
-+	u16 prim_int_reg = 0;
-+
-+	switch (reg) {
-+	case CDC_WSA_RX0_RX_PATH_CTL:
-+	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
-+		prim_int_reg = CDC_WSA_RX0_RX_PATH_CTL;
-+		*ind = 0;
-+		break;
-+	case CDC_WSA_RX1_RX_PATH_CTL:
-+	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
-+		prim_int_reg = CDC_WSA_RX1_RX_PATH_CTL;
-+		*ind = 1;
-+		break;
-+	}
-+
-+	return prim_int_reg;
-+}
-+
-+static int wsa_macro_enable_prim_interpolator(struct snd_soc_component *component,
-+					      u16 reg, int event)
-+{
-+	u16 prim_int_reg;
-+	u16 ind = 0;
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+
-+	prim_int_reg = wsa_macro_interp_get_primary_reg(reg, &ind);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		wsa->prim_int_users[ind]++;
-+		if (wsa->prim_int_users[ind] == 1) {
-+			snd_soc_component_update_bits(component,
-+						      prim_int_reg + WSA_MACRO_RX_PATH_CFG3_OFFSET,
-+						      CDC_WSA_RX_DC_DCOEFF_MASK,
-+						      0x3);
-+			snd_soc_component_update_bits(component, prim_int_reg,
-+					CDC_WSA_RX_PATH_PGA_MUTE_EN_MASK,
-+					CDC_WSA_RX_PATH_PGA_MUTE_ENABLE);
-+			wsa_macro_hd2_control(component, prim_int_reg, event);
-+			snd_soc_component_update_bits(component,
-+				prim_int_reg + WSA_MACRO_RX_PATH_DSMDEM_OFFSET,
-+				CDC_WSA_RX_DSMDEM_CLK_EN_MASK,
-+				CDC_WSA_RX_DSMDEM_CLK_ENABLE);
-+		}
-+		if ((reg != prim_int_reg) &&
-+		    ((snd_soc_component_read(
-+				component, prim_int_reg)) & 0x10))
-+			snd_soc_component_update_bits(component, reg,
-+					0x10, 0x10);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		wsa->prim_int_users[ind]--;
-+		if (wsa->prim_int_users[ind] == 0) {
-+			snd_soc_component_update_bits(component,
-+				prim_int_reg + WSA_MACRO_RX_PATH_DSMDEM_OFFSET,
-+				CDC_WSA_RX_DSMDEM_CLK_EN_MASK, 0);
-+			wsa_macro_hd2_control(component, prim_int_reg, event);
-+		}
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wsa_macro_config_ear_spkr_gain(struct snd_soc_component *component,
-+					  struct wsa_macro *wsa,
-+					  int event, int gain_reg)
-+{
-+	int comp_gain_offset, val;
-+
-+	switch (wsa->spkr_mode) {
-+	/* Compander gain in WSA_MACRO_SPKR_MODE1 case is 12 dB */
-+	case WSA_MACRO_SPKR_MODE_1:
-+		comp_gain_offset = -12;
-+		break;
-+	/* Default case compander gain is 15 dB */
-+	default:
-+		comp_gain_offset = -15;
-+		break;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* Apply ear spkr gain only if compander is enabled */
-+		if (wsa->comp_enabled[WSA_MACRO_COMP1] &&
-+		    (gain_reg == CDC_WSA_RX0_RX_VOL_CTL) &&
-+		    (wsa->ear_spkr_gain != 0)) {
-+			/* For example, val is -8(-12+5-1) for 4dB of gain */
-+			val = comp_gain_offset + wsa->ear_spkr_gain - 1;
-+			snd_soc_component_write(component, gain_reg, val);
-+		}
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/*
-+		 * Reset RX0 volume to 0 dB if compander is enabled and
-+		 * ear_spkr_gain is non-zero.
-+		 */
-+		if (wsa->comp_enabled[WSA_MACRO_COMP1] &&
-+		    (gain_reg == CDC_WSA_RX0_RX_VOL_CTL) &&
-+		    (wsa->ear_spkr_gain != 0)) {
-+			snd_soc_component_write(component, gain_reg, 0x0);
-+		}
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
-+					 struct snd_kcontrol *kcontrol,
-+					 int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	u16 gain_reg;
-+	u16 reg;
-+	int val;
-+	int offset_val = 0;
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+
-+	if (w->shift == WSA_MACRO_COMP1) {
-+		reg = CDC_WSA_RX0_RX_PATH_CTL;
-+		gain_reg = CDC_WSA_RX0_RX_VOL_CTL;
-+	} else if (w->shift == WSA_MACRO_COMP2) {
-+		reg = CDC_WSA_RX1_RX_PATH_CTL;
-+		gain_reg = CDC_WSA_RX1_RX_VOL_CTL;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* Reset if needed */
-+		wsa_macro_enable_prim_interpolator(component, reg, event);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		wsa_macro_config_compander(component, w->shift, event);
-+		wsa_macro_config_softclip(component, w->shift, event);
-+		/* apply gain after int clk is enabled */
-+		if ((wsa->spkr_gain_offset == WSA_MACRO_GAIN_OFFSET_M1P5_DB) &&
-+		    (wsa->comp_enabled[WSA_MACRO_COMP1] ||
-+		     wsa->comp_enabled[WSA_MACRO_COMP2])) {
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX0_RX_PATH_SEC1,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX0_RX_PATH_MIX_SEC0,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX1_RX_PATH_SEC1,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
-+			offset_val = -2;
-+		}
-+		val = snd_soc_component_read(component, gain_reg);
-+		val += offset_val;
-+		snd_soc_component_write(component, gain_reg, val);
-+		wsa_macro_config_ear_spkr_gain(component, wsa,
-+						event, gain_reg);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		wsa_macro_config_compander(component, w->shift, event);
-+		wsa_macro_config_softclip(component, w->shift, event);
-+		wsa_macro_enable_prim_interpolator(component, reg, event);
-+		if ((wsa->spkr_gain_offset == WSA_MACRO_GAIN_OFFSET_M1P5_DB) &&
-+		    (wsa->comp_enabled[WSA_MACRO_COMP1] ||
-+		     wsa->comp_enabled[WSA_MACRO_COMP2])) {
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX0_RX_PATH_SEC1,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX0_RX_PATH_MIX_SEC0,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX1_RX_PATH_SEC1,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
-+			snd_soc_component_update_bits(component,
-+					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
-+					CDC_WSA_RX_PGA_HALF_DB_MASK,
-+					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
-+			offset_val = 2;
-+			val = snd_soc_component_read(component, gain_reg);
-+			val += offset_val;
-+			snd_soc_component_write(component, gain_reg, val);
-+		}
-+		wsa_macro_config_ear_spkr_gain(component, wsa,
-+						event, gain_reg);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
-+				     struct snd_kcontrol *kcontrol,
-+				     int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	u16 boost_path_ctl, boost_path_cfg1;
-+	u16 reg, reg_mix;
-+
-+	if (!strcmp(w->name, "WSA_RX INT0 CHAIN")) {
-+		boost_path_ctl = CDC_WSA_BOOST0_BOOST_PATH_CTL;
-+		boost_path_cfg1 = CDC_WSA_RX0_RX_PATH_CFG1;
-+		reg = CDC_WSA_RX0_RX_PATH_CTL;
-+		reg_mix = CDC_WSA_RX0_RX_PATH_MIX_CTL;
-+	} else if (!strcmp(w->name, "WSA_RX INT1 CHAIN")) {
-+		boost_path_ctl = CDC_WSA_BOOST1_BOOST_PATH_CTL;
-+		boost_path_cfg1 = CDC_WSA_RX1_RX_PATH_CFG1;
-+		reg = CDC_WSA_RX1_RX_PATH_CTL;
-+		reg_mix = CDC_WSA_RX1_RX_PATH_MIX_CTL;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_component_update_bits(component, boost_path_cfg1,
-+					      CDC_WSA_RX_PATH_SMART_BST_EN_MASK,
-+					      CDC_WSA_RX_PATH_SMART_BST_ENABLE);
-+		snd_soc_component_update_bits(component, boost_path_ctl,
-+					      CDC_WSA_BOOST_PATH_CLK_EN_MASK,
-+					      CDC_WSA_BOOST_PATH_CLK_ENABLE);
-+		if ((snd_soc_component_read(component, reg_mix)) & 0x10)
-+			snd_soc_component_update_bits(component, reg_mix,
-+						0x10, 0x00);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_component_update_bits(component, reg, 0x10, 0x00);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_component_update_bits(component, boost_path_ctl,
-+					      CDC_WSA_BOOST_PATH_CLK_EN_MASK,
-+					      CDC_WSA_BOOST_PATH_CLK_DISABLE);
-+		snd_soc_component_update_bits(component, boost_path_cfg1,
-+					      CDC_WSA_RX_PATH_SMART_BST_EN_MASK,
-+					      CDC_WSA_RX_PATH_SMART_BST_DISABLE);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wsa_macro_enable_echo(struct snd_soc_dapm_widget *w,
-+				 struct snd_kcontrol *kcontrol,
-+				 int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+	u16 val, ec_tx = 0, ec_hq_reg;
-+
-+	val = snd_soc_component_read(component, CDC_WSA_RX_INP_MUX_RX_MIX_CFG0);
-+
-+	switch (w->shift) {
-+	case WSA_MACRO_EC0_MUX:
-+		val = val & CDC_WSA_RX_MIX_TX0_SEL_MASK;
-+		ec_tx = val - 1;
-+		break;
-+	case WSA_MACRO_EC1_MUX:
-+		val = val & CDC_WSA_RX_MIX_TX1_SEL_MASK;
-+		ec_tx = (val >> CDC_WSA_RX_MIX_TX1_SEL_SHFT) - 1;
-+		break;
-+	}
-+
-+	if (wsa->ec_hq[ec_tx]) {
-+		ec_hq_reg = CDC_WSA_EC_HQ0_EC_REF_HQ_PATH_CTL +	0x40 * ec_tx;
-+		snd_soc_component_update_bits(component, ec_hq_reg,
-+					     CDC_WSA_EC_HQ_EC_CLK_EN_MASK,
-+					     CDC_WSA_EC_HQ_EC_CLK_ENABLE);
-+		ec_hq_reg = CDC_WSA_EC_HQ0_EC_REF_HQ_CFG0 + 0x40 * ec_tx;
-+		/* default set to 48k */
-+		snd_soc_component_update_bits(component, ec_hq_reg,
-+				      CDC_WSA_EC_HQ_EC_REF_PCM_RATE_MASK,
-+				      CDC_WSA_EC_HQ_EC_REF_PCM_RATE_48K);
-+	}
-+
-+	return 0;
-+}
-+
- static int wsa_macro_get_ec_hq(struct snd_kcontrol *kcontrol,
- 			       struct snd_ctl_elem_value *ucontrol)
- {
-@@ -1213,6 +1851,75 @@ static int wsa_macro_ear_spkr_pa_gain_put(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+index 6f1565cf0d01..40865f2c438b 100644
+--- a/sound/soc/codecs/lpass-va-macro.c
++++ b/sound/soc/codecs/lpass-va-macro.c
+@@ -451,6 +451,327 @@ static int va_macro_mclk_enable(struct va_macro *va, bool mclk_enable)
  	return 0;
  }
  
-+static int wsa_macro_rx_mux_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
++static int va_macro_mclk_event(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol, int event)
 +{
-+	struct snd_soc_dapm_widget *widget =
-+		snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct snd_soc_component *component =
-+				snd_soc_dapm_to_component(widget->dapm);
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	struct va_macro *va = snd_soc_component_get_drvdata(comp);
 +
-+	ucontrol->value.integer.value[0] =
-+			wsa->rx_port_value[widget->shift];
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		return va_macro_mclk_enable(va, true);
++	case SND_SOC_DAPM_POST_PMD:
++		return va_macro_mclk_enable(va, false);
++	}
++
 +	return 0;
 +}
 +
-+static int wsa_macro_rx_mux_put(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
++static int va_macro_put_dec_enum(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct snd_soc_dapm_widget *widget =
 +		snd_soc_dapm_kcontrol_widget(kcontrol);
 +	struct snd_soc_component *component =
-+				snd_soc_dapm_to_component(widget->dapm);
++		snd_soc_dapm_to_component(widget->dapm);
 +	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	struct snd_soc_dapm_update *update = NULL;
-+	u32 rx_port_value = ucontrol->value.integer.value[0];
-+	u32 bit_input = 0;
-+	u32 aif_rst;
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	unsigned int val;
++	u16 mic_sel_reg;
 +
-+	aif_rst = wsa->rx_port_value[widget->shift];
-+	if (!rx_port_value) {
-+		if (aif_rst == 0) {
-+			dev_err(component->dev, "%s: AIF reset already\n", __func__);
-+			return 0;
-+		}
-+		if (aif_rst >= WSA_MACRO_RX_MAX) {
-+			dev_err(component->dev, "%s: Invalid AIF reset\n", __func__);
-+			return 0;
-+		}
-+	}
-+	wsa->rx_port_value[widget->shift] = rx_port_value;
++	val = ucontrol->value.enumerated.item[0];
 +
-+	bit_input = widget->shift;
-+
-+	switch (rx_port_value) {
-+	case 0:
-+		if (wsa->active_ch_cnt[aif_rst]) {
-+			clear_bit(bit_input,
-+				  &wsa->active_ch_mask[aif_rst]);
-+			wsa->active_ch_cnt[aif_rst]--;
-+		}
++	switch (e->reg) {
++	case CDC_VA_INP_MUX_ADC_MUX0_CFG0:
++		mic_sel_reg = CDC_VA_TX0_TX_PATH_CFG0;
 +		break;
-+	case 1:
-+	case 2:
-+		set_bit(bit_input,
-+			&wsa->active_ch_mask[rx_port_value]);
-+		wsa->active_ch_cnt[rx_port_value]++;
++	case CDC_VA_INP_MUX_ADC_MUX1_CFG0:
++		mic_sel_reg = CDC_VA_TX1_TX_PATH_CFG0;
++		break;
++	case CDC_VA_INP_MUX_ADC_MUX2_CFG0:
++		mic_sel_reg = CDC_VA_TX2_TX_PATH_CFG0;
++		break;
++	case CDC_VA_INP_MUX_ADC_MUX3_CFG0:
++		mic_sel_reg = CDC_VA_TX3_TX_PATH_CFG0;
 +		break;
 +	default:
-+		dev_err(component->dev,
-+			"%s: Invalid AIF_ID for WSA RX MUX %d\n",
-+			__func__, rx_port_value);
++		dev_err(component->dev, "%s: e->reg: 0x%x not expected\n",
++			__func__, e->reg);
 +		return -EINVAL;
 +	}
 +
-+	snd_soc_dapm_mux_update_power(widget->dapm, kcontrol,
-+					rx_port_value, e, update);
-+	return 0;
++	if (val != 0)
++		snd_soc_component_update_bits(component, mic_sel_reg,
++					      CDC_VA_TX_PATH_ADC_DMIC_SEL_MASK,
++					      CDC_VA_TX_PATH_ADC_DMIC_SEL_DMIC);
++
++	return snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
 +}
 +
- static int wsa_macro_soft_clip_enable_get(struct snd_kcontrol *kcontrol,
- 					  struct snd_ctl_elem_value *ucontrol)
- {
-@@ -1271,6 +1978,309 @@ static const struct snd_kcontrol_new wsa_macro_snd_controls[] = {
- 		       wsa_macro_get_ec_hq, wsa_macro_set_ec_hq),
- };
- 
-+static const struct soc_enum rx_mux_enum =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_mux_text), rx_mux_text);
-+
-+static const struct snd_kcontrol_new rx_mux[WSA_MACRO_RX_MAX] = {
-+	SOC_DAPM_ENUM_EXT("WSA RX0 Mux", rx_mux_enum,
-+			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
-+	SOC_DAPM_ENUM_EXT("WSA RX1 Mux", rx_mux_enum,
-+			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
-+	SOC_DAPM_ENUM_EXT("WSA RX_MIX0 Mux", rx_mux_enum,
-+			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
-+	SOC_DAPM_ENUM_EXT("WSA RX_MIX1 Mux", rx_mux_enum,
-+			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
-+};
-+
-+static int wsa_macro_vi_feed_mixer_get(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
++static int va_macro_tx_mixer_get(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct snd_soc_dapm_widget *widget = snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(widget->dapm);
-+	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+	u32 spk_tx_id = mixer->shift;
++	struct snd_soc_dapm_widget *widget =
++		snd_soc_dapm_kcontrol_widget(kcontrol);
++	struct snd_soc_component *component =
++				snd_soc_dapm_to_component(widget->dapm);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
 +	u32 dai_id = widget->shift;
++	u32 dec_id = mc->shift;
++	struct va_macro *va = snd_soc_component_get_drvdata(component);
 +
-+	if (test_bit(spk_tx_id, &wsa->active_ch_mask[dai_id]))
++	if (test_bit(dec_id, &va->active_ch_mask[dai_id]))
 +		ucontrol->value.integer.value[0] = 1;
 +	else
 +		ucontrol->value.integer.value[0] = 0;
@@ -894,291 +205,564 @@ index 8c2c3b0062a6..58da9951ae8e 100644
 +	return 0;
 +}
 +
-+static int wsa_macro_vi_feed_mixer_put(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
++static int va_macro_tx_mixer_put(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct snd_soc_dapm_widget *widget = snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(widget->dapm);
-+	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	struct snd_soc_dapm_widget *widget =
++					snd_soc_dapm_kcontrol_widget(kcontrol);
++	struct snd_soc_component *component =
++				snd_soc_dapm_to_component(widget->dapm);
++	struct snd_soc_dapm_update *update = NULL;
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	u32 dai_id = widget->shift;
++	u32 dec_id = mc->shift;
 +	u32 enable = ucontrol->value.integer.value[0];
-+	u32 spk_tx_id = mixer->shift;
++	struct va_macro *va = snd_soc_component_get_drvdata(component);
 +
 +	if (enable) {
-+		if (spk_tx_id == WSA_MACRO_TX0 &&
-+			!test_bit(WSA_MACRO_TX0,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+			set_bit(WSA_MACRO_TX0,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
-+			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]++;
-+		}
-+		if (spk_tx_id == WSA_MACRO_TX1 &&
-+			!test_bit(WSA_MACRO_TX1,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+			set_bit(WSA_MACRO_TX1,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
-+			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]++;
-+		}
++		set_bit(dec_id, &va->active_ch_mask[dai_id]);
++		va->active_ch_cnt[dai_id]++;
++		va->active_decimator[dai_id] = dec_id;
 +	} else {
-+		if (spk_tx_id == WSA_MACRO_TX0 &&
-+			test_bit(WSA_MACRO_TX0,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+			clear_bit(WSA_MACRO_TX0,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
-+			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]--;
-+		}
-+		if (spk_tx_id == WSA_MACRO_TX1 &&
-+			test_bit(WSA_MACRO_TX1,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+			clear_bit(WSA_MACRO_TX1,
-+				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
-+			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]--;
-+		}
++		clear_bit(dec_id, &va->active_ch_mask[dai_id]);
++		va->active_ch_cnt[dai_id]--;
++		va->active_decimator[dai_id] = -1;
 +	}
-+	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, enable, NULL);
++
++	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, enable, update);
 +
 +	return 0;
 +}
 +
-+static const struct snd_kcontrol_new aif_vi_mixer[] = {
-+	SOC_SINGLE_EXT("WSA_SPKR_VI_1", SND_SOC_NOPM, WSA_MACRO_TX0, 1, 0,
-+			wsa_macro_vi_feed_mixer_get,
-+			wsa_macro_vi_feed_mixer_put),
-+	SOC_SINGLE_EXT("WSA_SPKR_VI_2", SND_SOC_NOPM, WSA_MACRO_TX1, 1, 0,
-+			wsa_macro_vi_feed_mixer_get,
-+			wsa_macro_vi_feed_mixer_put),
++static int va_dmic_clk_enable(struct snd_soc_component *component,
++			      u32 dmic, bool enable)
++{
++	struct va_macro *va = snd_soc_component_get_drvdata(component);
++	u8  dmic_clk_en = 0x01;
++	u16 dmic_clk_reg = 0;
++	s32 *dmic_clk_cnt = NULL;
++	u8 *dmic_clk_div = NULL;
++	u8 freq_change_mask = 0;
++	u8 clk_div = 0;
++
++	switch (dmic) {
++	case 0:
++	case 1:
++		dmic_clk_cnt = &(va->dmic_0_1_clk_cnt);
++		dmic_clk_div = &(va->dmic_0_1_clk_div);
++		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC0_CTL;
++		freq_change_mask = CDC_VA_DMIC0_FREQ_CHANGE_MASK;
++		break;
++	case 2:
++	case 3:
++		dmic_clk_cnt = &(va->dmic_2_3_clk_cnt);
++		dmic_clk_div = &(va->dmic_2_3_clk_div);
++		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC1_CTL;
++		freq_change_mask = CDC_VA_DMIC1_FREQ_CHANGE_MASK;
++		break;
++	case 4:
++	case 5:
++		dmic_clk_cnt = &(va->dmic_4_5_clk_cnt);
++		dmic_clk_div = &(va->dmic_4_5_clk_div);
++		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC2_CTL;
++		freq_change_mask = CDC_VA_DMIC2_FREQ_CHANGE_MASK;
++		break;
++	case 6:
++	case 7:
++		dmic_clk_cnt = &(va->dmic_6_7_clk_cnt);
++		dmic_clk_div = &(va->dmic_6_7_clk_div);
++		dmic_clk_reg = CDC_VA_TOP_CSR_DMIC3_CTL;
++		freq_change_mask = CDC_VA_DMIC3_FREQ_CHANGE_MASK;
++		break;
++	default:
++		dev_err(component->dev, "%s: Invalid DMIC Selection\n",
++			__func__);
++		return -EINVAL;
++	}
++
++	if (enable) {
++		clk_div = va->dmic_clk_div;
++		(*dmic_clk_cnt)++;
++		if (*dmic_clk_cnt == 1) {
++			snd_soc_component_update_bits(component,
++					      CDC_VA_TOP_CSR_DMIC_CFG,
++					      CDC_VA_RESET_ALL_DMICS_MASK,
++					      CDC_VA_RESET_ALL_DMICS_DISABLE);
++			snd_soc_component_update_bits(component, dmic_clk_reg,
++					CDC_VA_DMIC_CLK_SEL_MASK,
++					clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
++			snd_soc_component_update_bits(component, dmic_clk_reg,
++					dmic_clk_en, dmic_clk_en);
++		} else {
++			if (*dmic_clk_div > clk_div) {
++				snd_soc_component_update_bits(component,
++						CDC_VA_TOP_CSR_DMIC_CFG,
++						freq_change_mask,
++						freq_change_mask);
++				snd_soc_component_update_bits(component, dmic_clk_reg,
++						CDC_VA_DMIC_CLK_SEL_MASK,
++						clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
++				snd_soc_component_update_bits(component,
++					      CDC_VA_TOP_CSR_DMIC_CFG,
++					      freq_change_mask,
++					      CDC_VA_DMIC_FREQ_CHANGE_DISABLE);
++			} else {
++				clk_div = *dmic_clk_div;
++			}
++		}
++		*dmic_clk_div = clk_div;
++	} else {
++		(*dmic_clk_cnt)--;
++		if (*dmic_clk_cnt  == 0) {
++			snd_soc_component_update_bits(component, dmic_clk_reg,
++					dmic_clk_en, 0);
++			clk_div = 0;
++			snd_soc_component_update_bits(component, dmic_clk_reg,
++						CDC_VA_DMIC_CLK_SEL_MASK,
++						clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
++		} else {
++			clk_div = va->dmic_clk_div;
++			if (*dmic_clk_div > clk_div) {
++				clk_div = va->dmic_clk_div;
++				snd_soc_component_update_bits(component,
++							CDC_VA_TOP_CSR_DMIC_CFG,
++							freq_change_mask,
++							freq_change_mask);
++				snd_soc_component_update_bits(component, dmic_clk_reg,
++						CDC_VA_DMIC_CLK_SEL_MASK,
++						clk_div << CDC_VA_DMIC_CLK_SEL_SHFT);
++				snd_soc_component_update_bits(component,
++						      CDC_VA_TOP_CSR_DMIC_CFG,
++						      freq_change_mask,
++						      CDC_VA_DMIC_FREQ_CHANGE_DISABLE);
++			} else {
++				clk_div = *dmic_clk_div;
++			}
++		}
++		*dmic_clk_div = clk_div;
++	}
++
++	return 0;
++}
++
++static int va_macro_enable_dmic(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	unsigned int dmic = w->shift;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		va_dmic_clk_enable(comp, dmic, true);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		va_dmic_clk_enable(comp, dmic, false);
++		break;
++	}
++
++	return 0;
++}
++
++static int va_macro_enable_dec(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	unsigned int decimator;
++	u16 tx_vol_ctl_reg, dec_cfg_reg, hpf_gate_reg;
++	u16 tx_gain_ctl_reg;
++	u8 hpf_cut_off_freq;
++
++	struct va_macro *va = snd_soc_component_get_drvdata(comp);
++
++	decimator = w->shift;
++
++	tx_vol_ctl_reg = CDC_VA_TX0_TX_PATH_CTL +
++				VA_MACRO_TX_PATH_OFFSET * decimator;
++	hpf_gate_reg = CDC_VA_TX0_TX_PATH_SEC2 +
++				VA_MACRO_TX_PATH_OFFSET * decimator;
++	dec_cfg_reg = CDC_VA_TX0_TX_PATH_CFG0 +
++				VA_MACRO_TX_PATH_OFFSET * decimator;
++	tx_gain_ctl_reg = CDC_VA_TX0_TX_VOL_CTL +
++				VA_MACRO_TX_PATH_OFFSET * decimator;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_update_bits(comp,
++			dec_cfg_reg, CDC_VA_ADC_MODE_MASK,
++			va->dec_mode[decimator] << CDC_VA_ADC_MODE_SHIFT);
++		/* Enable TX PGA Mute */
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/* Enable TX CLK */
++		snd_soc_component_update_bits(comp, tx_vol_ctl_reg,
++					      CDC_VA_TX_PATH_CLK_EN_MASK,
++					      CDC_VA_TX_PATH_CLK_EN);
++		snd_soc_component_update_bits(comp, hpf_gate_reg,
++					      CDC_VA_TX_HPF_ZERO_GATE_MASK,
++					      CDC_VA_TX_HPF_ZERO_GATE);
++
++		usleep_range(1000, 1010);
++		hpf_cut_off_freq = (snd_soc_component_read(comp, dec_cfg_reg) &
++				    TX_HPF_CUT_OFF_FREQ_MASK) >> 5;
++
++		if (hpf_cut_off_freq != CF_MIN_3DB_150HZ) {
++			snd_soc_component_update_bits(comp, dec_cfg_reg,
++						      TX_HPF_CUT_OFF_FREQ_MASK,
++						      CF_MIN_3DB_150HZ << 5);
++
++			snd_soc_component_update_bits(comp, hpf_gate_reg,
++				      CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_MASK,
++				      CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_REQ);
++
++			/*
++			 * Minimum 1 clk cycle delay is required as per HW spec
++			 */
++			usleep_range(1000, 1010);
++
++			snd_soc_component_update_bits(comp,
++				hpf_gate_reg,
++				CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_MASK,
++				0x0);
++		}
++
++
++		usleep_range(1000, 1010);
++		snd_soc_component_update_bits(comp, hpf_gate_reg,
++					      CDC_VA_TX_HPF_ZERO_GATE_MASK,
++					      CDC_VA_TX_HPF_ZERO_NO_GATE);
++		/*
++		 * 6ms delay is required as per HW spec
++		 */
++		usleep_range(6000, 6010);
++		/* apply gain after decimator is enabled */
++		snd_soc_component_write(comp, tx_gain_ctl_reg,
++			snd_soc_component_read(comp, tx_gain_ctl_reg));
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/* Disable TX CLK */
++		snd_soc_component_update_bits(comp, tx_vol_ctl_reg,
++						CDC_VA_TX_PATH_CLK_EN_MASK,
++						CDC_VA_TX_PATH_CLK_DISABLE);
++		break;
++	}
++	return 0;
++}
++
+ static int va_macro_dec_mode_get(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -630,6 +951,299 @@ static struct snd_soc_dai_driver va_macro_dais[] = {
+ 	},
+ };
+ 
++static const char * const adc_mux_text[] = {
++	"VA_DMIC", "SWR_MIC"
 +};
 +
-+static const struct snd_soc_dapm_widget wsa_macro_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_IN("WSA AIF1 PB", "WSA_AIF1 Playback", 0,
-+			    SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("WSA AIF_MIX1 PB", "WSA_AIF_MIX1 Playback", 0,
-+			    SND_SOC_NOPM, 0, 0),
++static SOC_ENUM_SINGLE_DECL(va_dec0_enum, CDC_VA_INP_MUX_ADC_MUX0_CFG1,
++		   0, adc_mux_text);
++static SOC_ENUM_SINGLE_DECL(va_dec1_enum, CDC_VA_INP_MUX_ADC_MUX1_CFG1,
++		   0, adc_mux_text);
++static SOC_ENUM_SINGLE_DECL(va_dec2_enum, CDC_VA_INP_MUX_ADC_MUX2_CFG1,
++		   0, adc_mux_text);
++static SOC_ENUM_SINGLE_DECL(va_dec3_enum, CDC_VA_INP_MUX_ADC_MUX3_CFG1,
++		   0, adc_mux_text);
 +
-+	SND_SOC_DAPM_AIF_OUT_E("WSA AIF_VI", "WSA_AIF_VI Capture", 0,
-+			       SND_SOC_NOPM, WSA_MACRO_AIF_VI, 0,
-+			       wsa_macro_enable_vi_feedback,
-+			       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_AIF_OUT("WSA AIF_ECHO", "WSA_AIF_ECHO Capture", 0,
-+			     SND_SOC_NOPM, 0, 0),
++static const struct snd_kcontrol_new va_dec0_mux = SOC_DAPM_ENUM("va_dec0",
++								 va_dec0_enum);
++static const struct snd_kcontrol_new va_dec1_mux = SOC_DAPM_ENUM("va_dec1",
++								 va_dec1_enum);
++static const struct snd_kcontrol_new va_dec2_mux = SOC_DAPM_ENUM("va_dec2",
++								 va_dec2_enum);
++static const struct snd_kcontrol_new va_dec3_mux = SOC_DAPM_ENUM("va_dec3",
++								 va_dec3_enum);
 +
-+	SND_SOC_DAPM_MIXER("WSA_AIF_VI Mixer", SND_SOC_NOPM, WSA_MACRO_AIF_VI,
-+			   0, aif_vi_mixer, ARRAY_SIZE(aif_vi_mixer)),
-+	SND_SOC_DAPM_MUX_E("WSA RX_MIX EC0_MUX", SND_SOC_NOPM,
-+			   WSA_MACRO_EC0_MUX, 0,
-+			   &rx_mix_ec0_mux, wsa_macro_enable_echo,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_MUX_E("WSA RX_MIX EC1_MUX", SND_SOC_NOPM,
-+			   WSA_MACRO_EC1_MUX, 0,
-+			   &rx_mix_ec1_mux, wsa_macro_enable_echo,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++static const char * const dmic_mux_text[] = {
++	"ZERO", "DMIC0", "DMIC1", "DMIC2", "DMIC3",
++	"DMIC4", "DMIC5", "DMIC6", "DMIC7"
++};
 +
-+	SND_SOC_DAPM_MUX("WSA RX0 MUX", SND_SOC_NOPM, WSA_MACRO_RX0, 0,
-+			 &rx_mux[WSA_MACRO_RX0]),
-+	SND_SOC_DAPM_MUX("WSA RX1 MUX", SND_SOC_NOPM, WSA_MACRO_RX1, 0,
-+			 &rx_mux[WSA_MACRO_RX1]),
-+	SND_SOC_DAPM_MUX("WSA RX_MIX0 MUX", SND_SOC_NOPM, WSA_MACRO_RX_MIX0, 0,
-+			 &rx_mux[WSA_MACRO_RX_MIX0]),
-+	SND_SOC_DAPM_MUX("WSA RX_MIX1 MUX", SND_SOC_NOPM, WSA_MACRO_RX_MIX1, 0,
-+			 &rx_mux[WSA_MACRO_RX_MIX1]),
++static SOC_ENUM_SINGLE_DECL(va_dmic0_enum, CDC_VA_INP_MUX_ADC_MUX0_CFG0,
++			4, dmic_mux_text);
 +
-+	SND_SOC_DAPM_MIXER("WSA RX0", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("WSA RX1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("WSA RX_MIX0", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("WSA RX_MIX1", SND_SOC_NOPM, 0, 0, NULL, 0),
++static SOC_ENUM_SINGLE_DECL(va_dmic1_enum, CDC_VA_INP_MUX_ADC_MUX1_CFG0,
++			4, dmic_mux_text);
 +
-+	SND_SOC_DAPM_MUX("WSA_RX0 INP0", SND_SOC_NOPM, 0, 0, &rx0_prim_inp0_mux),
-+	SND_SOC_DAPM_MUX("WSA_RX0 INP1", SND_SOC_NOPM, 0, 0, &rx0_prim_inp1_mux),
-+	SND_SOC_DAPM_MUX("WSA_RX0 INP2", SND_SOC_NOPM, 0, 0, &rx0_prim_inp2_mux),
-+	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", CDC_WSA_RX0_RX_PATH_MIX_CTL,
-+			   0, 0, &rx0_mix_mux, wsa_macro_enable_mix_path,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_MUX("WSA_RX1 INP0", SND_SOC_NOPM, 0, 0, &rx1_prim_inp0_mux),
-+	SND_SOC_DAPM_MUX("WSA_RX1 INP1", SND_SOC_NOPM, 0, 0, &rx1_prim_inp1_mux),
-+	SND_SOC_DAPM_MUX("WSA_RX1 INP2", SND_SOC_NOPM, 0, 0, &rx1_prim_inp2_mux),
-+	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", CDC_WSA_RX1_RX_PATH_MIX_CTL,
-+			   0, 0, &rx1_mix_mux, wsa_macro_enable_mix_path,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++static SOC_ENUM_SINGLE_DECL(va_dmic2_enum, CDC_VA_INP_MUX_ADC_MUX2_CFG0,
++			4, dmic_mux_text);
 +
-+	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 MIX", SND_SOC_NOPM, 0, 0, NULL, 0,
-+			     wsa_macro_enable_main_path, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_MIXER_E("WSA_RX INT1 MIX", SND_SOC_NOPM, 1, 0, NULL, 0,
-+			     wsa_macro_enable_main_path, SND_SOC_DAPM_PRE_PMU),
++static SOC_ENUM_SINGLE_DECL(va_dmic3_enum, CDC_VA_INP_MUX_ADC_MUX3_CFG0,
++			4, dmic_mux_text);
 +
-+	SND_SOC_DAPM_MIXER("WSA_RX INT0 SEC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("WSA_RX INT1 SEC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
++static const struct snd_kcontrol_new va_dmic0_mux = SOC_DAPM_ENUM_EXT("va_dmic0",
++			 va_dmic0_enum, snd_soc_dapm_get_enum_double,
++			 va_macro_put_dec_enum);
 +
-+	SND_SOC_DAPM_MUX("WSA_RX0 INT0 SIDETONE MIX", CDC_WSA_RX0_RX_PATH_CFG1,
-+			 4, 0, &rx0_sidetone_mix_mux),
++static const struct snd_kcontrol_new va_dmic1_mux = SOC_DAPM_ENUM_EXT("va_dmic1",
++			 va_dmic1_enum, snd_soc_dapm_get_enum_double,
++			 va_macro_put_dec_enum);
 +
-+	SND_SOC_DAPM_INPUT("WSA SRC0_INP"),
-+	SND_SOC_DAPM_INPUT("WSA_TX DEC0_INP"),
-+	SND_SOC_DAPM_INPUT("WSA_TX DEC1_INP"),
++static const struct snd_kcontrol_new va_dmic2_mux = SOC_DAPM_ENUM_EXT("va_dmic2",
++			 va_dmic2_enum, snd_soc_dapm_get_enum_double,
++			 va_macro_put_dec_enum);
 +
-+	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 INTERP", SND_SOC_NOPM,
-+			     WSA_MACRO_COMP1, 0, NULL, 0,
-+			     wsa_macro_enable_interpolator,
-+			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			     SND_SOC_DAPM_POST_PMD),
++static const struct snd_kcontrol_new va_dmic3_mux = SOC_DAPM_ENUM_EXT("va_dmic3",
++			 va_dmic3_enum, snd_soc_dapm_get_enum_double,
++			 va_macro_put_dec_enum);
 +
-+	SND_SOC_DAPM_MIXER_E("WSA_RX INT1 INTERP", SND_SOC_NOPM,
-+			     WSA_MACRO_COMP2, 0, NULL, 0,
-+			     wsa_macro_enable_interpolator,
-+			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			     SND_SOC_DAPM_POST_PMD),
++static const struct snd_kcontrol_new va_aif1_cap_mixer[] = {
++	SOC_SINGLE_EXT("DEC0", SND_SOC_NOPM, VA_MACRO_DEC0, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC1", SND_SOC_NOPM, VA_MACRO_DEC1, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC2", SND_SOC_NOPM, VA_MACRO_DEC2, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC3", SND_SOC_NOPM, VA_MACRO_DEC3, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC4", SND_SOC_NOPM, VA_MACRO_DEC4, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC5", SND_SOC_NOPM, VA_MACRO_DEC5, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC6", SND_SOC_NOPM, VA_MACRO_DEC6, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC7", SND_SOC_NOPM, VA_MACRO_DEC7, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++};
 +
-+	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 CHAIN", SND_SOC_NOPM, 0, 0,
-+			     NULL, 0, wsa_macro_spk_boost_event,
-+			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			     SND_SOC_DAPM_POST_PMD),
++static const struct snd_kcontrol_new va_aif2_cap_mixer[] = {
++	SOC_SINGLE_EXT("DEC0", SND_SOC_NOPM, VA_MACRO_DEC0, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC1", SND_SOC_NOPM, VA_MACRO_DEC1, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC2", SND_SOC_NOPM, VA_MACRO_DEC2, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC3", SND_SOC_NOPM, VA_MACRO_DEC3, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC4", SND_SOC_NOPM, VA_MACRO_DEC4, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC5", SND_SOC_NOPM, VA_MACRO_DEC5, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC6", SND_SOC_NOPM, VA_MACRO_DEC6, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC7", SND_SOC_NOPM, VA_MACRO_DEC7, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++};
 +
-+	SND_SOC_DAPM_MIXER_E("WSA_RX INT1 CHAIN", SND_SOC_NOPM, 0, 0,
-+			     NULL, 0, wsa_macro_spk_boost_event,
-+			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+			     SND_SOC_DAPM_POST_PMD),
++static const struct snd_kcontrol_new va_aif3_cap_mixer[] = {
++	SOC_SINGLE_EXT("DEC0", SND_SOC_NOPM, VA_MACRO_DEC0, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC1", SND_SOC_NOPM, VA_MACRO_DEC1, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC2", SND_SOC_NOPM, VA_MACRO_DEC2, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC3", SND_SOC_NOPM, VA_MACRO_DEC3, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC4", SND_SOC_NOPM, VA_MACRO_DEC4, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC5", SND_SOC_NOPM, VA_MACRO_DEC5, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC6", SND_SOC_NOPM, VA_MACRO_DEC6, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++	SOC_SINGLE_EXT("DEC7", SND_SOC_NOPM, VA_MACRO_DEC7, 1, 0,
++			va_macro_tx_mixer_get, va_macro_tx_mixer_put),
++};
 +
-+	SND_SOC_DAPM_INPUT("VIINPUT_WSA"),
-+	SND_SOC_DAPM_OUTPUT("WSA_SPK1 OUT"),
-+	SND_SOC_DAPM_OUTPUT("WSA_SPK2 OUT"),
++static const struct snd_soc_dapm_widget va_macro_dapm_widgets[] = {
++	SND_SOC_DAPM_AIF_OUT("VA_AIF1 CAP", "VA_AIF1 Capture", 0,
++		SND_SOC_NOPM, VA_MACRO_AIF1_CAP, 0),
 +
-+	SND_SOC_DAPM_SUPPLY("WSA_RX0_CLK", CDC_WSA_RX0_RX_PATH_CTL, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("WSA_RX1_CLK", CDC_WSA_RX1_RX_PATH_CTL, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("WSA_RX_MIX0_CLK", CDC_WSA_RX0_RX_PATH_MIX_CTL, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("WSA_RX_MIX1_CLK", CDC_WSA_RX1_RX_PATH_MIX_CTL, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("WSA_MCLK", 0, SND_SOC_NOPM, 0, 0,
-+			      wsa_macro_mclk_event,
++	SND_SOC_DAPM_AIF_OUT("VA_AIF2 CAP", "VA_AIF2 Capture", 0,
++		SND_SOC_NOPM, VA_MACRO_AIF2_CAP, 0),
++
++	SND_SOC_DAPM_AIF_OUT("VA_AIF3 CAP", "VA_AIF3 Capture", 0,
++		SND_SOC_NOPM, VA_MACRO_AIF3_CAP, 0),
++
++	SND_SOC_DAPM_MIXER("VA_AIF1_CAP Mixer", SND_SOC_NOPM,
++		VA_MACRO_AIF1_CAP, 0,
++		va_aif1_cap_mixer, ARRAY_SIZE(va_aif1_cap_mixer)),
++
++	SND_SOC_DAPM_MIXER("VA_AIF2_CAP Mixer", SND_SOC_NOPM,
++		VA_MACRO_AIF2_CAP, 0,
++		va_aif2_cap_mixer, ARRAY_SIZE(va_aif2_cap_mixer)),
++
++	SND_SOC_DAPM_MIXER("VA_AIF3_CAP Mixer", SND_SOC_NOPM,
++		VA_MACRO_AIF3_CAP, 0,
++		va_aif3_cap_mixer, ARRAY_SIZE(va_aif3_cap_mixer)),
++
++	SND_SOC_DAPM_MUX("VA DMIC MUX0", SND_SOC_NOPM, 0, 0, &va_dmic0_mux),
++	SND_SOC_DAPM_MUX("VA DMIC MUX1", SND_SOC_NOPM, 0, 0, &va_dmic1_mux),
++	SND_SOC_DAPM_MUX("VA DMIC MUX2", SND_SOC_NOPM, 0, 0, &va_dmic2_mux),
++	SND_SOC_DAPM_MUX("VA DMIC MUX3", SND_SOC_NOPM, 0, 0, &va_dmic3_mux),
++
++	SND_SOC_DAPM_REGULATOR_SUPPLY("vdd-micb", 0, 0),
++	SND_SOC_DAPM_INPUT("DMIC0 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC1 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC2 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC3 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC4 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC5 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC6 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC7 Pin"),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC0", NULL, SND_SOC_NOPM, 0, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC1", NULL, SND_SOC_NOPM, 1, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC2", NULL, SND_SOC_NOPM, 2, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC3", NULL, SND_SOC_NOPM, 3, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC4", NULL, SND_SOC_NOPM, 4, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC5", NULL, SND_SOC_NOPM, 5, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC6", NULL, SND_SOC_NOPM, 6, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("VA DMIC7", NULL, SND_SOC_NOPM, 7, 0,
++		va_macro_enable_dmic, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_INPUT("VA SWR_ADC0"),
++	SND_SOC_DAPM_INPUT("VA SWR_ADC1"),
++	SND_SOC_DAPM_INPUT("VA SWR_ADC2"),
++	SND_SOC_DAPM_INPUT("VA SWR_ADC3"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC0"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC1"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC2"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC3"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC4"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC5"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC6"),
++	SND_SOC_DAPM_INPUT("VA SWR_MIC7"),
++
++	SND_SOC_DAPM_MUX_E("VA DEC0 MUX", SND_SOC_NOPM, VA_MACRO_DEC0, 0,
++			   &va_dec0_mux, va_macro_enable_dec,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MUX_E("VA DEC1 MUX", SND_SOC_NOPM, VA_MACRO_DEC1, 0,
++			   &va_dec1_mux, va_macro_enable_dec,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MUX_E("VA DEC2 MUX", SND_SOC_NOPM, VA_MACRO_DEC2, 0,
++			   &va_dec2_mux, va_macro_enable_dec,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MUX_E("VA DEC3 MUX", SND_SOC_NOPM, VA_MACRO_DEC3, 0,
++			   &va_dec3_mux, va_macro_enable_dec,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_SUPPLY_S("VA_MCLK", -1, SND_SOC_NOPM, 0, 0,
++			      va_macro_mclk_event,
 +			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
 +};
 +
-+static const struct snd_soc_dapm_route wsa_audio_map[] = {
-+	/* VI Feedback */
-+	{"WSA_AIF_VI Mixer", "WSA_SPKR_VI_1", "VIINPUT_WSA"},
-+	{"WSA_AIF_VI Mixer", "WSA_SPKR_VI_2", "VIINPUT_WSA"},
-+	{"WSA AIF_VI", NULL, "WSA_AIF_VI Mixer"},
-+	{"WSA AIF_VI", NULL, "WSA_MCLK"},
++static const struct snd_soc_dapm_route va_audio_map[] = {
++	{"VA_AIF1 CAP", NULL, "VA_MCLK"},
++	{"VA_AIF2 CAP", NULL, "VA_MCLK"},
++	{"VA_AIF3 CAP", NULL, "VA_MCLK"},
 +
-+	{"WSA RX_MIX EC0_MUX", "RX_MIX_TX0", "WSA_RX INT0 SEC MIX"},
-+	{"WSA RX_MIX EC1_MUX", "RX_MIX_TX0", "WSA_RX INT0 SEC MIX"},
-+	{"WSA RX_MIX EC0_MUX", "RX_MIX_TX1", "WSA_RX INT1 SEC MIX"},
-+	{"WSA RX_MIX EC1_MUX", "RX_MIX_TX1", "WSA_RX INT1 SEC MIX"},
-+	{"WSA AIF_ECHO", NULL, "WSA RX_MIX EC0_MUX"},
-+	{"WSA AIF_ECHO", NULL, "WSA RX_MIX EC1_MUX"},
-+	{"WSA AIF_ECHO", NULL, "WSA_MCLK"},
++	{"VA_AIF1 CAP", NULL, "VA_AIF1_CAP Mixer"},
++	{"VA_AIF2 CAP", NULL, "VA_AIF2_CAP Mixer"},
++	{"VA_AIF3 CAP", NULL, "VA_AIF3_CAP Mixer"},
 +
-+	{"WSA AIF1 PB", NULL, "WSA_MCLK"},
-+	{"WSA AIF_MIX1 PB", NULL, "WSA_MCLK"},
++	{"VA_AIF1_CAP Mixer", "DEC0", "VA DEC0 MUX"},
++	{"VA_AIF1_CAP Mixer", "DEC1", "VA DEC1 MUX"},
++	{"VA_AIF1_CAP Mixer", "DEC2", "VA DEC2 MUX"},
++	{"VA_AIF1_CAP Mixer", "DEC3", "VA DEC3 MUX"},
 +
-+	{"WSA RX0 MUX", "AIF1_PB", "WSA AIF1 PB"},
-+	{"WSA RX1 MUX", "AIF1_PB", "WSA AIF1 PB"},
-+	{"WSA RX_MIX0 MUX", "AIF1_PB", "WSA AIF1 PB"},
-+	{"WSA RX_MIX1 MUX", "AIF1_PB", "WSA AIF1 PB"},
++	{"VA_AIF2_CAP Mixer", "DEC0", "VA DEC0 MUX"},
++	{"VA_AIF2_CAP Mixer", "DEC1", "VA DEC1 MUX"},
++	{"VA_AIF2_CAP Mixer", "DEC2", "VA DEC2 MUX"},
++	{"VA_AIF2_CAP Mixer", "DEC3", "VA DEC3 MUX"},
 +
-+	{"WSA RX0 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
-+	{"WSA RX1 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
-+	{"WSA RX_MIX0 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
-+	{"WSA RX_MIX1 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
++	{"VA_AIF3_CAP Mixer", "DEC0", "VA DEC0 MUX"},
++	{"VA_AIF3_CAP Mixer", "DEC1", "VA DEC1 MUX"},
++	{"VA_AIF3_CAP Mixer", "DEC2", "VA DEC2 MUX"},
++	{"VA_AIF3_CAP Mixer", "DEC3", "VA DEC3 MUX"},
 +
-+	{"WSA RX0", NULL, "WSA RX0 MUX"},
-+	{"WSA RX1", NULL, "WSA RX1 MUX"},
-+	{"WSA RX_MIX0", NULL, "WSA RX_MIX0 MUX"},
-+	{"WSA RX_MIX1", NULL, "WSA RX_MIX1 MUX"},
++	{"VA DEC0 MUX", "VA_DMIC", "VA DMIC MUX0"},
++	{"VA DMIC MUX0", "DMIC0", "VA DMIC0"},
++	{"VA DMIC MUX0", "DMIC1", "VA DMIC1"},
++	{"VA DMIC MUX0", "DMIC2", "VA DMIC2"},
++	{"VA DMIC MUX0", "DMIC3", "VA DMIC3"},
++	{"VA DMIC MUX0", "DMIC4", "VA DMIC4"},
++	{"VA DMIC MUX0", "DMIC5", "VA DMIC5"},
++	{"VA DMIC MUX0", "DMIC6", "VA DMIC6"},
++	{"VA DMIC MUX0", "DMIC7", "VA DMIC7"},
 +
-+	{"WSA RX0", NULL, "WSA_RX0_CLK"},
-+	{"WSA RX1", NULL, "WSA_RX1_CLK"},
-+	{"WSA RX_MIX0", NULL, "WSA_RX_MIX0_CLK"},
-+	{"WSA RX_MIX1", NULL, "WSA_RX_MIX1_CLK"},
++	{"VA DEC1 MUX", "VA_DMIC", "VA DMIC MUX1"},
++	{"VA DMIC MUX1", "DMIC0", "VA DMIC0"},
++	{"VA DMIC MUX1", "DMIC1", "VA DMIC1"},
++	{"VA DMIC MUX1", "DMIC2", "VA DMIC2"},
++	{"VA DMIC MUX1", "DMIC3", "VA DMIC3"},
++	{"VA DMIC MUX1", "DMIC4", "VA DMIC4"},
++	{"VA DMIC MUX1", "DMIC5", "VA DMIC5"},
++	{"VA DMIC MUX1", "DMIC6", "VA DMIC6"},
++	{"VA DMIC MUX1", "DMIC7", "VA DMIC7"},
 +
-+	{"WSA_RX0 INP0", "RX0", "WSA RX0"},
-+	{"WSA_RX0 INP0", "RX1", "WSA RX1"},
-+	{"WSA_RX0 INP0", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX0 INP0", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX0 INP0", "DEC0", "WSA_TX DEC0_INP"},
-+	{"WSA_RX0 INP0", "DEC1", "WSA_TX DEC1_INP"},
-+	{"WSA_RX INT0 MIX", NULL, "WSA_RX0 INP0"},
++	{"VA DEC2 MUX", "VA_DMIC", "VA DMIC MUX2"},
++	{"VA DMIC MUX2", "DMIC0", "VA DMIC0"},
++	{"VA DMIC MUX2", "DMIC1", "VA DMIC1"},
++	{"VA DMIC MUX2", "DMIC2", "VA DMIC2"},
++	{"VA DMIC MUX2", "DMIC3", "VA DMIC3"},
++	{"VA DMIC MUX2", "DMIC4", "VA DMIC4"},
++	{"VA DMIC MUX2", "DMIC5", "VA DMIC5"},
++	{"VA DMIC MUX2", "DMIC6", "VA DMIC6"},
++	{"VA DMIC MUX2", "DMIC7", "VA DMIC7"},
 +
-+	{"WSA_RX0 INP1", "RX0", "WSA RX0"},
-+	{"WSA_RX0 INP1", "RX1", "WSA RX1"},
-+	{"WSA_RX0 INP1", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX0 INP1", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX0 INP1", "DEC0", "WSA_TX DEC0_INP"},
-+	{"WSA_RX0 INP1", "DEC1", "WSA_TX DEC1_INP"},
-+	{"WSA_RX INT0 MIX", NULL, "WSA_RX0 INP1"},
++	{"VA DEC3 MUX", "VA_DMIC", "VA DMIC MUX3"},
++	{"VA DMIC MUX3", "DMIC0", "VA DMIC0"},
++	{"VA DMIC MUX3", "DMIC1", "VA DMIC1"},
++	{"VA DMIC MUX3", "DMIC2", "VA DMIC2"},
++	{"VA DMIC MUX3", "DMIC3", "VA DMIC3"},
++	{"VA DMIC MUX3", "DMIC4", "VA DMIC4"},
++	{"VA DMIC MUX3", "DMIC5", "VA DMIC5"},
++	{"VA DMIC MUX3", "DMIC6", "VA DMIC6"},
++	{"VA DMIC MUX3", "DMIC7", "VA DMIC7"},
 +
-+	{"WSA_RX0 INP2", "RX0", "WSA RX0"},
-+	{"WSA_RX0 INP2", "RX1", "WSA RX1"},
-+	{"WSA_RX0 INP2", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX0 INP2", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX0 INP2", "DEC0", "WSA_TX DEC0_INP"},
-+	{"WSA_RX0 INP2", "DEC1", "WSA_TX DEC1_INP"},
-+	{"WSA_RX INT0 MIX", NULL, "WSA_RX0 INP2"},
-+
-+	{"WSA_RX0 MIX INP", "RX0", "WSA RX0"},
-+	{"WSA_RX0 MIX INP", "RX1", "WSA RX1"},
-+	{"WSA_RX0 MIX INP", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX0 MIX INP", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX INT0 SEC MIX", NULL, "WSA_RX0 MIX INP"},
-+
-+	{"WSA_RX INT0 SEC MIX", NULL, "WSA_RX INT0 MIX"},
-+	{"WSA_RX INT0 INTERP", NULL, "WSA_RX INT0 SEC MIX"},
-+	{"WSA_RX0 INT0 SIDETONE MIX", "SRC0", "WSA SRC0_INP"},
-+	{"WSA_RX INT0 INTERP", NULL, "WSA_RX0 INT0 SIDETONE MIX"},
-+	{"WSA_RX INT0 CHAIN", NULL, "WSA_RX INT0 INTERP"},
-+
-+	{"WSA_SPK1 OUT", NULL, "WSA_RX INT0 CHAIN"},
-+	{"WSA_SPK1 OUT", NULL, "WSA_MCLK"},
-+
-+	{"WSA_RX1 INP0", "RX0", "WSA RX0"},
-+	{"WSA_RX1 INP0", "RX1", "WSA RX1"},
-+	{"WSA_RX1 INP0", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX1 INP0", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX1 INP0", "DEC0", "WSA_TX DEC0_INP"},
-+	{"WSA_RX1 INP0", "DEC1", "WSA_TX DEC1_INP"},
-+	{"WSA_RX INT1 MIX", NULL, "WSA_RX1 INP0"},
-+
-+	{"WSA_RX1 INP1", "RX0", "WSA RX0"},
-+	{"WSA_RX1 INP1", "RX1", "WSA RX1"},
-+	{"WSA_RX1 INP1", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX1 INP1", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX1 INP1", "DEC0", "WSA_TX DEC0_INP"},
-+	{"WSA_RX1 INP1", "DEC1", "WSA_TX DEC1_INP"},
-+	{"WSA_RX INT1 MIX", NULL, "WSA_RX1 INP1"},
-+
-+	{"WSA_RX1 INP2", "RX0", "WSA RX0"},
-+	{"WSA_RX1 INP2", "RX1", "WSA RX1"},
-+	{"WSA_RX1 INP2", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX1 INP2", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX1 INP2", "DEC0", "WSA_TX DEC0_INP"},
-+	{"WSA_RX1 INP2", "DEC1", "WSA_TX DEC1_INP"},
-+	{"WSA_RX INT1 MIX", NULL, "WSA_RX1 INP2"},
-+
-+	{"WSA_RX1 MIX INP", "RX0", "WSA RX0"},
-+	{"WSA_RX1 MIX INP", "RX1", "WSA RX1"},
-+	{"WSA_RX1 MIX INP", "RX_MIX0", "WSA RX_MIX0"},
-+	{"WSA_RX1 MIX INP", "RX_MIX1", "WSA RX_MIX1"},
-+	{"WSA_RX INT1 SEC MIX", NULL, "WSA_RX1 MIX INP"},
-+
-+	{"WSA_RX INT1 SEC MIX", NULL, "WSA_RX INT1 MIX"},
-+	{"WSA_RX INT1 INTERP", NULL, "WSA_RX INT1 SEC MIX"},
-+
-+	{"WSA_RX INT1 CHAIN", NULL, "WSA_RX INT1 INTERP"},
-+	{"WSA_SPK2 OUT", NULL, "WSA_RX INT1 CHAIN"},
-+	{"WSA_SPK2 OUT", NULL, "WSA_MCLK"},
++	{ "VA DMIC0", NULL, "DMIC0 Pin" },
++	{ "VA DMIC1", NULL, "DMIC1 Pin" },
++	{ "VA DMIC2", NULL, "DMIC2 Pin" },
++	{ "VA DMIC3", NULL, "DMIC3 Pin" },
++	{ "VA DMIC4", NULL, "DMIC4 Pin" },
++	{ "VA DMIC5", NULL, "DMIC5 Pin" },
++	{ "VA DMIC6", NULL, "DMIC6 Pin" },
++	{ "VA DMIC7", NULL, "DMIC7 Pin" },
 +};
 +
- static int wsa_swrm_clock(struct wsa_macro *wsa, bool enable)
- {
- 	struct regmap *regmap = wsa->regmap;
-@@ -1398,6 +2408,10 @@ static const struct snd_soc_component_driver wsa_macro_component_drv = {
- 	.probe = wsa_macro_component_probe,
- 	.controls = wsa_macro_snd_controls,
- 	.num_controls = ARRAY_SIZE(wsa_macro_snd_controls),
-+	.dapm_widgets = wsa_macro_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wsa_macro_dapm_widgets),
-+	.dapm_routes = wsa_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wsa_audio_map),
+ static const char * const dec_mode_mux_text[] = {
+ 	"ADC_DEFAULT", "ADC_LOW_PWR", "ADC_HIGH_PERF",
+ };
+@@ -679,6 +1293,10 @@ static const struct snd_soc_component_driver va_macro_component_drv = {
+ 	.probe = va_macro_component_probe,
+ 	.controls = va_macro_snd_controls,
+ 	.num_controls = ARRAY_SIZE(va_macro_snd_controls),
++	.dapm_widgets = va_macro_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(va_macro_dapm_widgets),
++	.dapm_routes = va_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(va_audio_map),
  };
  
- static int wsa_macro_probe(struct platform_device *pdev)
+ static int fsgen_gate_enable(struct clk_hw *hw)
 -- 
 2.21.0
 
