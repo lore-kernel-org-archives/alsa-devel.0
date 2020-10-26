@@ -3,75 +3,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3E48C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A6DCC4363A
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B0C52075B
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C5BD72075B
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ElLe52ap";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bzSAfGmI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B0C52075B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hquFIPEe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k0yy62xy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5BD72075B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F9E416CA;
-	Tue, 27 Oct 2020 00:47:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F9E416CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 001D216C1;
+	Tue, 27 Oct 2020 00:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 001D216C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603756095;
-	bh=NspwDaZqy3nAkIB43DAYA/ssB6nBIB+pWbF77pV9LjQ=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1603756137;
+	bh=5T4AL1BqRu1ARMLqlPYicJ4G84AujjuS4vWXEtGsgds=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ElLe52ap2NWjzS5Gjn1wat3OVugDJdC+5qQS/qtBGo+2E1b02WyCHIoYYQUDXRdMy
-	 wntAVng5aW3CV4RfBG5Gxt9i9mBqPOqIw9Q5fMBIANjlT5M7zJCIa+e8weS0/njwor
-	 8OEg7vu0lBS5w0B2yflHzP1u+aWA4JV9OZCShZQU=
+	b=hquFIPEes5H4aVj8IsZB6cMIJKIntEKBLmwuLq1MBo835bWwMLVWCoHngJc35bFIg
+	 4DaKz4taVUqrjHnpMwkPVeecWVgc+J/fUTs+MHdqS3oT7X1A7LreyPgnfyrGoWYkB5
+	 gcRlJeQKecVocccI2vyrXkd4UOXF5+dLOqAAgft8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF780F804CB;
-	Tue, 27 Oct 2020 00:45:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4081EF804E4;
+	Tue, 27 Oct 2020 00:46:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43FABF804CA; Tue, 27 Oct 2020 00:45:58 +0100 (CET)
+ id 3B939F804C3; Tue, 27 Oct 2020 00:45:59 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18AC4F804C1;
- Tue, 27 Oct 2020 00:45:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18AC4F804C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C170F804C2
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 00:45:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C170F804C2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bzSAfGmI"
+ header.b="k0yy62xy"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CA53120714;
- Mon, 26 Oct 2020 23:45:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 74BDD20874;
+ Mon, 26 Oct 2020 23:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603755949;
- bh=NspwDaZqy3nAkIB43DAYA/ssB6nBIB+pWbF77pV9LjQ=;
+ s=default; t=1603755955;
+ bh=5T4AL1BqRu1ARMLqlPYicJ4G84AujjuS4vWXEtGsgds=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=bzSAfGmIMkHfTLpzcgfLtvnLqtZryeWeCdrUoXP0fBu0wiOKdYy2FXg2VAvzqsrb/
- BbHRIO7H0X1omRzF9Yui+gT0F+O2b39PI4ScS/5ckgE9YHz1wZoWwixqhbxjmZll2F
- iCUELKGQigTVfChcMTDFYl4qlXNWJGAdd83DPKBc=
-Date: Mon, 26 Oct 2020 23:45:44 +0000
+ b=k0yy62xyK6pARRGeQH/8tZh7EQvK+Pk4WiCSWb1+LFc5QFneQ0G327u4wby7WIl3D
+ Yf6pruWjkRFbttJ/itSDa5AXhtf/n//zacPvMvI0H4IggveE4OYc/TlSMWuFcFFV6J
+ bIyT+yGjcFDcaBVkg9p6wOPf1CabCQbD6f5jj9Jc=
+Date: Mon, 26 Oct 2020 23:45:50 +0000
 From: Mark Brown <broonie@kernel.org>
-To: sound-open-firmware@alsa-project.org, Julia Lawall <Julia.Lawall@inria.fr>
-In-Reply-To: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
-References: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
-Subject: Re: [PATCH 0/8] use semicolons rather than commas to separate
- statements
-Message-Id: <160375592345.31132.6591979922895862381.b4-ty@kernel.org>
+To: linuxppc-dev@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Viorel Suman <viorel.suman@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>, linux-kernel@vger.kernel.org,
+ Fabio Estevam <festevam@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20201013121733.83684-1-viorel.suman@oss.nxp.com>
+References: <20201013121733.83684-1-viorel.suman@oss.nxp.com>
+Subject: Re: [PATCH v4 0/2] DAI driver for new XCVR IP
+Message-Id: <160375592347.31132.18055383544502605577.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Valdis Klētnieks <valdis.kletnieks@vt.edu>, patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Thomas Gleixner <tglx@linutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,15 +95,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 11 Oct 2020 11:19:31 +0200, Julia Lawall wrote:
-> These patches replace commas by semicolons.  This was done using the
-> Coccinelle semantic patch (http://coccinelle.lip6.fr/) shown below.
+On Tue, 13 Oct 2020 15:17:31 +0300, Viorel Suman (OSS) wrote:
+> DAI driver for new XCVR IP found in i.MX8MP.
 > 
-> This semantic patch ensures that commas inside for loop headers will not be
-> transformed.  It also doesn't touch macro definitions.
+> Viorel Suman (2):
+>   ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+>   ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
 > 
-> Coccinelle ensures that braces are added as needed when a single-statement
-> branch turns into a multi-statement one.
+> Changes since v1:
+>  - improved 6- and 12-ch layout comment
+>  - used regmap polling function, improved
+>    clocks handling in runtime_resume
+>  - added FW size check in FW load function,
+>    improved IRQ handler, removed dummy IRQ handlers
+>  - fixed yaml file
 > 
 > [...]
 
@@ -105,18 +118,10 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: wm8350: use semicolons rather than commas to separate statements
-      commit: 2db5fa77cd7ea4bd18c7e1afb49417debc9f498a
-[2/6] ASoC: Intel: bytcr_rt5651: use semicolons rather than commas to separate statements
-      commit: edc3f5b43a4446c84069e59df7e48663ec28579d
-[3/6] ASoC: SOF: Intel: hda: use semicolons rather than commas to separate statements
-      commit: bed5ed644c741fd69a19a3cb811b5c1da1d50755
-[4/6] ASoC: samsung: snow: use semicolons rather than commas to separate statements
-      commit: 40faaca03bf7d7ca1480677f0c8c543016cf426d
-[5/6] ASoC: madera: use semicolons rather than commas to separate statements
-      commit: 94fa760d01c21350261388f404e167d5cb752573
-[6/6] ASoC: dapm: use semicolons rather than commas to separate statements
-      commit: a1344daeab95b93dd1d19fcfbc7dbaf2a4735129
+[1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+      commit: 28564486866fa889b78264360022c94836fa8072
+[2/2] ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
+      commit: 0afb88d5a602488f877380ad1ec37cc20c927c68
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
