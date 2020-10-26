@@ -2,76 +2,90 @@ Return-Path: <SRS0=iTaG=EB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AE12C4363A
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90DE3C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:35:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 544D32075B
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:26:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5773820780
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 14:35:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iRCSGiDK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 544D32075B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fEWNojw/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5773820780
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE1F6168E;
-	Mon, 26 Oct 2020 15:25:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE1F6168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C58F16B2;
+	Mon, 26 Oct 2020 15:34:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C58F16B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603722371;
-	bh=p6IPUY4hPZSqVqj0pVjc0oo1YJFPm4FiIer2gIsh7cc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603722910;
+	bh=rhucgPrQo05ZoYOS3Q1MmlcIuYc9RHCHXgRdEpX9XLk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iRCSGiDKA2dy7gHOHjdBfFJPBR3CXASjJLleXTJ6hQyyhb5MI4zot1Jg7sjSqmOOP
-	 J5XpYnr0N902jezqBGpX93vat4AbFlSEvAeXTgC4F+VqwGg3FNo0exk1eZf7TZKxm0
-	 qIma0hxCH2ZOWoCjeSnhOnO/Txez7c/uj3oyKYxE=
+	b=fEWNojw/REjoKgTXgEj/zFEYcHkzTDEFu0DK5z8cANdf4zFEcvOpe6+2v6y/jIP6l
+	 jFeeMLxjVoDrl05hv/regwjvd8Yj7rl7W0P5Zb+3tGY7y+aWNwiYDLtulKO8km3oax
+	 yPENSgGiKV1fwPkksy6fxSdk1G0mKUISzJeYKFis=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D625F801D5;
-	Mon, 26 Oct 2020 15:25:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 172E5F80086;
+	Mon, 26 Oct 2020 15:34:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 159EBF80212; Mon, 26 Oct 2020 15:25:19 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 7F8B4F80212; Mon, 26 Oct 2020 15:34:18 +0100 (CET)
+Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com
+ [209.85.210.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E06BF800CC
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 15:25:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E06BF800CC
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 46EDAAC3C;
- Mon, 26 Oct 2020 14:25:12 +0000 (UTC)
-Date: Mon, 26 Oct 2020 15:25:12 +0100
-Message-ID: <s5htuuh3vzr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v3 48/56] sound: fix kernel-doc markups
-In-Reply-To: <20201026151423.622f847e@coco.lan>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
- <535182d6f55d7a7de293dda9676df68f5f60afc6.1603469755.git.mchehab+huawei@kernel.org>
- <s5h5z6x5cdg.wl-tiwai@suse.de> <20201026151423.622f847e@coco.lan>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
- linux-kernel@vger.kernel.org, Baolin Wang <baolin.wang@linaro.org>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, paulhsia <paulhsia@chromium.org>,
- Dan Carpenter <dan.carpenter@oracle.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7EE11F80086
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 15:34:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EE11F80086
+Received: by mail-ot1-f65.google.com with SMTP id f97so8175804otb.7
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 07:34:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=Gu70+4d8Zu8/uxoB6xBSb3yW/hLHlyYk/LMJt3p6Pnk=;
+ b=XTSpcLAcYDW+8di3O/34r753GImLglb9kC+cXGpfc02gfI18xShRFzWzjQX4FWspfg
+ oeNMGro6+5GkaoI2B54+uExU+0penwjIbaS+hZl7LbPucFL5g/Pc8CQhEeV1bK8teuug
+ 5KWgFfog5h/++nLuiYALXhFgJZaoNV0DiMx5G/WC7a1AG2e7m1e+eh364Yl1nIq8Hu9H
+ EIKJKC9RCvWMzbYkYzXbQ6cYskiAlt9PZZIPX85R07yo6VcpcoEl+CNntDNeTRKwlZmo
+ /wUgaCHHk2wcgxClhSWBUHDJCfG1foHI/37sYeeXypQsKpz0MgprIkwAHDG3vZZ1fMee
+ TuMA==
+X-Gm-Message-State: AOAM530CmQmd/HnwSR6KpjGSq5sZKo+OJ/pzEm4yh5zNXiToIpa2zTCC
+ Q736MesMI8evi0mgVIq9WA==
+X-Google-Smtp-Source: ABdhPJw+O158CQSA6jqE9RrNha1lkKYpXpyDC9T1facmMZ7+/cjPi+O4C7tiVHVLFM1bBF8uzV9oKg==
+X-Received: by 2002:a05:6830:1e44:: with SMTP id
+ e4mr15220194otj.346.1603722850794; 
+ Mon, 26 Oct 2020 07:34:10 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id e3sm3969247ooq.0.2020.10.26.07.34.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 26 Oct 2020 07:34:10 -0700 (PDT)
+Received: (nullmailer pid 117630 invoked by uid 1000);
+ Mon, 26 Oct 2020 14:34:09 -0000
+Date: Mon, 26 Oct 2020 09:34:09 -0500
+From: Rob Herring <robh@kernel.org>
+To: Olivier Moysan <olivier.moysan@st.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: stm32: dfsdm: update audio properties
+Message-ID: <20201026143409.GA117596@bogus>
+References: <20201020155709.2621-1-olivier.moysan@st.com>
+ <20201020155709.2621-2-olivier.moysan@st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020155709.2621-2-olivier.moysan@st.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, alexandre.torgue@st.com, tiwai@suse.com,
+ arnaud.pouliquen@st.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ broonie@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,36 +101,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 26 Oct 2020 15:14:23 +0100,
-Mauro Carvalho Chehab wrote:
+On Tue, 20 Oct 2020 17:57:08 +0200, Olivier Moysan wrote:
+> - Add missing compatible property in audio node.
+> - Remove obsolete "st,stm32-dfsdm-pdm" compatible.
+> - Remove useless comment in adc io-channels description.
 > 
-> Em Mon, 26 Oct 2020 14:46:03 +0100
-> Takashi Iwai <tiwai@suse.de> escreveu:
+> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+> ---
+>  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml    | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> > On Fri, 23 Oct 2020 18:33:35 +0200,
-> > Mauro Carvalho Chehab wrote:
-> > > 
-> > > Kernel-doc markups should use this format:
-> > >         identifier - description
-> > > 
-> > > There is a common comment marked, instead, with kernel-doc
-> > > notation.
-> > > 
-> > > Some identifiers have different names between their prototypes
-> > > and the kernel-doc markup.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > 
-> > Shall I merge this through sound git tree?
-> > 
-> > Or if this goes via doc tree, feel free to take my ack
-> >   Reviewed-by: Takashi Iwai <tiwai@suse.de>
-> 
-> Thanks for reviewing it!
-> 
-> Feel free to merge it though sound tree.
 
-OK, applied now.  Thanks!
-
-
-Takashi
+Reviewed-by: Rob Herring <robh@kernel.org>
