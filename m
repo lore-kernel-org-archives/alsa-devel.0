@@ -4,73 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2068BC4363A
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:47:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF82CC56201
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:48:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49E622076B
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:47:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9EB6C21D42
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 13:48:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PHyjYQxh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49E622076B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MMHzy8/U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EB6C21D42
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD1EF16C7;
-	Mon, 26 Oct 2020 14:46:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD1EF16C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C465F16DB;
+	Mon, 26 Oct 2020 14:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C465F16DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603720055;
-	bh=yazHEiPxEZUBKFyPhYz9IczgHEASgo61/VbAzZwBZJY=;
+	s=default; t=1603720136;
+	bh=7mYtxgkw8lsqEG465iApk7es1uCzsZQ0csRigCqdcR8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PHyjYQxh8OCM46M1v1GvWpenS5w7+8wPL/mZFTtZsiv4PK6HszAkZ0ucXf1h0gLld
-	 8auPaSOEd91gySeWoZIEwS8Esis9njM1R5KAo9zrOKTQQ0IatrCrHgQbcJqjvUBh1w
-	 gqHutocJ3rmbbfRuaW6gtFYwrEdoIaH8BixYbZ24=
+	b=MMHzy8/UvvTlUC2Xs2fGVIR0nqz7cre1wm2Zq/BAoh6VXeKnOv+QsNMeqIWfr8rqO
+	 nR0WkV0NTgZ5iMCBfxMcEhCL/edLEuKuOG7FE3gTCnnLbETkV1iB0n6+ur7P1foR2/
+	 QVYbjGLBOphD68GqL+MqUYsyj26lonbOmcwVOpoc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67ABAF801D8;
-	Mon, 26 Oct 2020 14:46:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65FFAF80249;
+	Mon, 26 Oct 2020 14:48:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBEE1F801D5; Mon, 26 Oct 2020 14:46:43 +0100 (CET)
+ id 0DC8AF801D8; Mon, 26 Oct 2020 14:48:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26C20F80086
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 14:46:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26C20F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92854F801D8
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2020 14:48:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92854F801D8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4BE21AD18;
- Mon, 26 Oct 2020 13:46:04 +0000 (UTC)
-Date: Mon, 26 Oct 2020 14:46:03 +0100
-Message-ID: <s5h5z6x5cdg.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B81B3AD18;
+ Mon, 26 Oct 2020 13:47:58 +0000 (UTC)
+Date: Mon, 26 Oct 2020 14:47:57 +0100
+Message-ID: <s5h4kmh5caa.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v3 48/56] sound: fix kernel-doc markups
-In-Reply-To: <535182d6f55d7a7de293dda9676df68f5f60afc6.1603469755.git.mchehab+huawei@kernel.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
- <535182d6f55d7a7de293dda9676df68f5f60afc6.1603469755.git.mchehab+huawei@kernel.org>
+To: trix@redhat.com
+Subject: Re: [PATCH] sound: remove unneeded break
+In-Reply-To: <20201019164857.27223-1-trix@redhat.com>
+References: <20201019164857.27223-1-trix@redhat.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
- linux-kernel@vger.kernel.org, Baolin Wang <baolin.wang@linaro.org>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, paulhsia <paulhsia@chromium.org>,
- Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Julia.Lawall@inria.fr,
+ cezary.rojewski@intel.com, romain.perier@gmail.com,
+ kuninori.morimoto.gx@renesas.com, arnd@arndb.de, baolin.wang@linaro.org,
+ naoki.hayama@lineo.co.jp, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ yang.jie@linux.intel.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, peter.ujfalusi@ti.com,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ ranjani.sridharan@linux.intel.com, allen.lkml@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,26 +83,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 23 Oct 2020 18:33:35 +0200,
-Mauro Carvalho Chehab wrote:
+On Mon, 19 Oct 2020 18:48:57 +0200,
+trix@redhat.com wrote:
 > 
-> Kernel-doc markups should use this format:
->         identifier - description
+> From: Tom Rix <trix@redhat.com>
 > 
-> There is a common comment marked, instead, with kernel-doc
-> notation.
+> A break is not needed if it is preceded by a return, goto
+> or break
 > 
-> Some identifiers have different names between their prototypes
-> and the kernel-doc markup.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Shall I merge this through sound git tree?
+Applied now.  Thanks.
 
-Or if this goes via doc tree, feel free to take my ack
-  Reviewed-by: Takashi Iwai <tiwai@suse.de>
-
-
-thanks,
 
 Takashi
