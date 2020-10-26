@@ -3,79 +3,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF29C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3E48C4363A
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57C8820773
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B0C52075B
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Oct 2020 23:48:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IYhHs04w";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HM/xoo0i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57C8820773
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ElLe52ap";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bzSAfGmI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B0C52075B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0EA116B2;
-	Tue, 27 Oct 2020 00:47:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0EA116B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F9E416CA;
+	Tue, 27 Oct 2020 00:47:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F9E416CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603756081;
-	bh=yizclJtwFHsgpdbAeytsLNpgwGTh0czj9w5bj6puFao=;
+	s=default; t=1603756095;
+	bh=NspwDaZqy3nAkIB43DAYA/ssB6nBIB+pWbF77pV9LjQ=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IYhHs04wmNCGcjtOCPXKJ3o+JQijW5Eyv13kstBeJ4FaLT6Zilf1tYNt/q4Venx8X
-	 OPPZlTqZ+YQkSiXmFbT283hnm+xKtRSUEO5Bfb6jSb4mCxKikTo4LZkN6DDs9bQGmQ
-	 qBU2LDs+KHS0J2VI0MZyQl8zWXOIosSKFdas9vUc=
+	b=ElLe52ap2NWjzS5Gjn1wat3OVugDJdC+5qQS/qtBGo+2E1b02WyCHIoYYQUDXRdMy
+	 wntAVng5aW3CV4RfBG5Gxt9i9mBqPOqIw9Q5fMBIANjlT5M7zJCIa+e8weS0/njwor
+	 8OEg7vu0lBS5w0B2yflHzP1u+aWA4JV9OZCShZQU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B7BDF8027C;
-	Tue, 27 Oct 2020 00:45:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF780F804CB;
+	Tue, 27 Oct 2020 00:45:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FEA2F804BC; Tue, 27 Oct 2020 00:45:47 +0100 (CET)
+ id 43FABF804CA; Tue, 27 Oct 2020 00:45:58 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBB86F8027C
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 00:45:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBB86F8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18AC4F804C1;
+ Tue, 27 Oct 2020 00:45:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18AC4F804C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HM/xoo0i"
+ header.b="bzSAfGmI"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E02C420872;
- Mon, 26 Oct 2020 23:45:42 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id CA53120714;
+ Mon, 26 Oct 2020 23:45:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603755943;
- bh=yizclJtwFHsgpdbAeytsLNpgwGTh0czj9w5bj6puFao=;
+ s=default; t=1603755949;
+ bh=NspwDaZqy3nAkIB43DAYA/ssB6nBIB+pWbF77pV9LjQ=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=HM/xoo0iHClbn3JNr7iBUB8MqDDL+S3IgGq4nMlUf5NisfoG+WdcI3CdUZKBkFTLW
- vj+Yue/oLQuqXpd9x3pvqu/Xlhytm1uOixd5CTmdsDFw6H1bnnuFJtIpKSiq918E62
- bpYGx+6MTtYDUlL6yIXNHJcizQe1K0Rx7S7LumfQ=
-Date: Mon, 26 Oct 2020 23:45:39 +0000
+ b=bzSAfGmIMkHfTLpzcgfLtvnLqtZryeWeCdrUoXP0fBu0wiOKdYy2FXg2VAvzqsrb/
+ BbHRIO7H0X1omRzF9Yui+gT0F+O2b39PI4ScS/5ckgE9YHz1wZoWwixqhbxjmZll2F
+ iCUELKGQigTVfChcMTDFYl4qlXNWJGAdd83DPKBc=
+Date: Mon, 26 Oct 2020 23:45:44 +0000
 From: Mark Brown <broonie@kernel.org>
-To: mark.rutland@arm.com, lgirdwood@gmail.com, robh@kernel.org, perex@perex.cz,
- tiwai@suse.com, alexandre.torgue@st.com,
- Olivier Moysan <olivier.moysan@st.com>
-In-Reply-To: <20201020155709.2621-1-olivier.moysan@st.com>
-References: <20201020155709.2621-1-olivier.moysan@st.com>
-Subject: Re: [PATCH v2 0/2] dt-bindings: stm32: convert audio dfsdm to
- json-schema
-Message-Id: <160375592348.31132.11289357992457782423.b4-ty@kernel.org>
+To: sound-open-firmware@alsa-project.org, Julia Lawall <Julia.Lawall@inria.fr>
+In-Reply-To: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
+References: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
+Subject: Re: [PATCH 0/8] use semicolons rather than commas to separate
+ statements
+Message-Id: <160375592345.31132.6591979922895862381.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- arnaud.pouliquen@st.com, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Valdis Klētnieks <valdis.kletnieks@vt.edu>, patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Thomas Gleixner <tglx@linutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,14 +87,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 20 Oct 2020 17:57:07 +0200, Olivier Moysan wrote:
-> Some audio properties documented in st,stm32-adfsdm.txt are already documented
-> in Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml bindings.
-> Move remaining properties from st,stm32-adfsdm.txt to st,stm32-dfsdm-adc.yaml,
-> and remove st,stm32-adfsdm.txt.
+On Sun, 11 Oct 2020 11:19:31 +0200, Julia Lawall wrote:
+> These patches replace commas by semicolons.  This was done using the
+> Coccinelle semantic patch (http://coccinelle.lip6.fr/) shown below.
 > 
-> Changes in v2:
-> - Complete st,stm32-dfsdm-adc.yaml rather than converting st,stm32-adfsdm.txt
+> This semantic patch ensures that commas inside for loop headers will not be
+> transformed.  It also doesn't touch macro definitions.
+> 
+> Coccinelle ensures that braces are added as needed when a single-statement
+> branch turns into a multi-statement one.
 > 
 > [...]
 
@@ -108,10 +105,18 @@ Applied to
 
 Thanks!
 
-[1/2] dt-bindings: stm32: dfsdm: update audio properties
-      commit: f24fd10bea5961629f22e1da0f56e8c918bdb2da
-[2/2] ASoC: dt-bindings: stm32: dfsdm: remove stm32-adfsdm.txt binding
-      commit: ea8650730332ee3c707883a2de37756ea9122981
+[1/6] ASoC: wm8350: use semicolons rather than commas to separate statements
+      commit: 2db5fa77cd7ea4bd18c7e1afb49417debc9f498a
+[2/6] ASoC: Intel: bytcr_rt5651: use semicolons rather than commas to separate statements
+      commit: edc3f5b43a4446c84069e59df7e48663ec28579d
+[3/6] ASoC: SOF: Intel: hda: use semicolons rather than commas to separate statements
+      commit: bed5ed644c741fd69a19a3cb811b5c1da1d50755
+[4/6] ASoC: samsung: snow: use semicolons rather than commas to separate statements
+      commit: 40faaca03bf7d7ca1480677f0c8c543016cf426d
+[5/6] ASoC: madera: use semicolons rather than commas to separate statements
+      commit: 94fa760d01c21350261388f404e167d5cb752573
+[6/6] ASoC: dapm: use semicolons rather than commas to separate statements
+      commit: a1344daeab95b93dd1d19fcfbc7dbaf2a4735129
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
