@@ -8,89 +8,91 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE6E7C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE64AC55178
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:35:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E535620738
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:34:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3BDDD207E8
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:35:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="re9aPqdc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xa3aRlWC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E535620738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VrSbOa2V";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DNkj+Piz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BDDD207E8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BC4B16AF;
-	Tue, 27 Oct 2020 19:33:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BC4B16AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74AD316B8;
+	Tue, 27 Oct 2020 19:34:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74AD316B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603823683;
-	bh=OjaANNkL37VQb2Bt/YTBcMfjEpLjvwltZ3tSbx3Hz04=;
+	s=default; t=1603823720;
+	bh=D9YEaMYswMMfIVTwOMD5ti7XQBJ9bbORKiZPwVN2rGs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=re9aPqdceBMUaX2V20W4JWmL0LLqF1blQB1AorhmfYInqsuu4l8JU47cyjQbmLpMy
-	 TUPQQNiNb2G9Z5T53BjG5joqwRf043pl5xqk27tTxbJ3iKfvQTlSlD8GuhxkLsdLWP
-	 LjNqYzwd+o+Uy5ToJp2WXneGQ2VrV94ZTRYvp5+s=
+	b=VrSbOa2VuVn1FTVa26dwE+v5iG4bTUTRuxrsNSG6GisN0Cexf0OpXD9xTVMwyfPYd
+	 BcsFBMvTgZk879yvVl+UCTuYaheKAINaWGDlTiMy66epfxYjb1wxuBOEtungyeyemB
+	 r9z7caS7KnSi1aYYGFkxqM+lzFuzvGuwPgyEiHFI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5097F804E2;
-	Tue, 27 Oct 2020 19:32:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF0F2F804B3;
+	Tue, 27 Oct 2020 19:32:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA73FF804D6; Tue, 27 Oct 2020 19:32:14 +0100 (CET)
+ id DECD4F804E6; Tue, 27 Oct 2020 19:32:16 +0100 (CET)
 Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
  [IPv6:2a00:1450:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1274BF80086
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:31:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1274BF80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 737CDF8019D
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:32:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 737CDF8019D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Xa3aRlWC"
-Received: by mail-wm1-x342.google.com with SMTP id e2so2472310wme.1
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 11:31:58 -0700 (PDT)
+ header.b="DNkj+Piz"
+Received: by mail-wm1-x342.google.com with SMTP id t3so83587wmi.3
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 11:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=HWW+ZfyCHyBaIjHVek844VU+H74q8wumivr8pDBz3+c=;
- b=Xa3aRlWC9ljsRrq+ZxZgYJULHxsgPA0ckHAQ19+tNrf10j+9QY8DA/WYBZS1fMKzl5
- 8GYE10EvUT32mxJHeLCKJ/Mcqp6ZYITrS/Lw6JWjGM0JoUXfwC0OZCPBrbXH4lYllfHL
- 7Nsu8vWTkAFdyvMqwm7YbggvoUv+zhP08zPknzg/lVE+UkS5kOPLMSWdsJaaN8rVqPi/
- hJPJyDbwvwA6ZzCHRnjE1TpbnXlFcdUJDy5IsJd0h4KZ5bcDHZ0fZZ97gbUuCkvsIaym
- gI+NtTldqxulAoFlhrBoVALDkSpwyrdNhozI7M8Cq7gEpbZZPrBVwjNcTQDmY1ao8fQS
- +JEQ==
+ bh=MyrgB1AwEElcU6uoJ2FqX5PMdFXQkCgXivSbRL5ep4E=;
+ b=DNkj+Piz0Om+GlBXB1VmhimTuK/nSLowEHG2zWBgg3WSp6WoZYjj8lxB6MeqJxwLLK
+ H9f44Pe3Qgm+GQQb53ymB9f3zFKJxuIWrkGDM12YXn3RLqHzTDPoD363A3fULoK5xPRt
+ U39PLKCsU4BCqQkKxYnUdUjbAzodsCkdfyMr0FSpdMDZDzZ4UOFkK7+Hqx15+bf4lNg9
+ 2Ts8vi/G/ktxoS+PxSPNw3hFotL7a69jPTSjbh4Cb6zLT/RS1R46aouo4C8scKpaC2jT
+ +fvo5BhsI7euEErtYqaYf0Ph0bCwizCeGr8VRlnrSvcnTQZxcOjN5r9LJxW3Qwjr8VBH
+ +f4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=HWW+ZfyCHyBaIjHVek844VU+H74q8wumivr8pDBz3+c=;
- b=p76let4vrW/NqfZQEWaYCbLaPP5UDdeYtMMvIF2ZvXhazXKgm74D16hdzQ0MO2Z+C9
- Yhrdp1vqz1By3cRJpPKpevgl11uKHBCEUr04xxvHxgXKBuEHNjbLZ2KSJceBgMF3Y7am
- tiuwEOjjilGpJWOxGCujYqDQKgPhhrBzZQ4WVPQsnVmgSf9axEipjg8n4u51Gu7SavWJ
- GjPX8ah6URstfJ9oMBjC1A3H9Tcs5We6ObOouGl0r7Jsyt5Rly2JW+3SrRa4viveD19+
- Qkq68HsIWWD9lmGCUx2OkbPxUeoLTbJss8YhmDkYsvgkW2Yd/oDPu5vxCKiesnU9SV5t
- g8mw==
-X-Gm-Message-State: AOAM532y3anstdFKFX4awxzWDaPMG8zDTctnE9pmspIx+OrZ0FkXacoH
- uSIMov1EmUtPdEUfcOzlIaE=
-X-Google-Smtp-Source: ABdhPJw5odAjh3G76+qql0JT4kD/cXQYlrTOXEYaGxulwmcWowGzECtkFMHPjpCXF16eHf3suW/ukQ==
-X-Received: by 2002:a1c:4d05:: with SMTP id o5mr4002368wmh.94.1603823513610;
- Tue, 27 Oct 2020 11:31:53 -0700 (PDT)
+ bh=MyrgB1AwEElcU6uoJ2FqX5PMdFXQkCgXivSbRL5ep4E=;
+ b=ZMu7t19BudLxABtMZE2Q4Zm0ch6JrUtODYUdu49bw1ELRJUPA2PvFjGkSE7PU/9Mmk
+ L6i4UMXima6p5BtCvk0rqodLOz8qtZeGkq9wy3Ij6dAWwzZMjR0Ti3sUtf3N67uxBrR6
+ e36+nxy/6B5CPlQw51C9bKrLUvIcJcfnB6RhousCw4ZOyF5wGZlAnbCcckuXRSq/AUZi
+ ehAGNREZfmE992wjMcwcmxuMfHlOGsHlNb8DXsYi4PJBkDMK4tWSxDCO7pWJCCQ8Iile
+ hUCtR898yf84v3qQ5N+ITOdGmFi/TOfto8pf7dLFSUI3hYkXUQamUDqGltSnhJZOsyoM
+ 3Uww==
+X-Gm-Message-State: AOAM533tC8GX2uA1HRprwNwJlBITtsokU9g3oGVZkWD0zHwm+419tDGy
+ XE/o1FS48z2kAjpxYxOgNc0=
+X-Google-Smtp-Source: ABdhPJyF6ZdXaQzST5/s0N2Dhm9FeBiO3dYoy4glx6HJq/VUSfo5xXU9LEg9PIBhahO1EuL7oBl4GA==
+X-Received: by 2002:a05:600c:214c:: with SMTP id
+ v12mr3948227wml.23.1603823515538; 
+ Tue, 27 Oct 2020 11:31:55 -0700 (PDT)
 Received: from localhost.localdomain
  (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
- by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.31.52
+ by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.31.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Oct 2020 11:31:52 -0700 (PDT)
+ Tue, 27 Oct 2020 11:31:54 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v9 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
-Date: Tue, 27 Oct 2020 19:31:36 +0100
-Message-Id: <20201027183149.145165-2-peron.clem@gmail.com>
+Subject: [PATCH v9 03/14] ASoC: sun4i-i2s: Change get_sr() and get_wss() to be
+ more explicit
+Date: Tue, 27 Oct 2020 19:31:38 +0100
+Message-Id: <20201027183149.145165-4-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201027183149.145165-1-peron.clem@gmail.com>
 References: <20201027183149.145165-1-peron.clem@gmail.com>
@@ -98,9 +100,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
- alsa-devel@alsa-project.org, Samuel Holland <samuel@sholland.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Marcus Cooper <codekipper@gmail.com>, linux-sunxi@googlegroups.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>,
+ linux-sunxi@googlegroups.com,
  =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -118,114 +120,131 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As slots and slot_width can be set manually using set_tdm().
-These values are then kept in sun4i_i2s struct.
-So we need to check if these values are set or not.
+We are actually using a complex formula to just return a bunch of
+simple values. Also this formula is wrong for sun4i when calling
+get_wss() the function return 4 instead of 3.
 
-This is not done actually and will trigger a bug.
-For example, if we set to the simple soundcard in the device-tree
-dai-tdm-slot-width = <32> and then start a stream using S16_LE,
-currently we would calculate BCLK for 32-bit slots, but program
-lrck_period for 16-bit slots, making the sample rate double what we
-expected.
+Replace this with a simpler switch case.
 
-To fix this, we need to check if these values are set or not but as
-this logic is already done by the caller. Avoid duplicating this
-logic and just pass the required values as params to set_chan_cfg().
+Also drop the i2s params which is unused and return a simple int as
+returning an error code could be out of range for an s8 and there is
+no optim to return a s8 here.
 
-Suggested-by: Samuel Holland <samuel@sholland.org>
+Fixes: 619c15f7fac9 ("ASoC: sun4i-i2s: Change SR and WSS computation")
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Acked-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 69 +++++++++++++++++++++++--------------
+ 1 file changed, 44 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index f23ff29e7c1d..7c1f57eb2462 100644
+index 9aa837d4fe99..073ee60da011 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -162,8 +162,15 @@ struct sun4i_i2s_quirks {
- 	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
- 	s8	(*get_sr)(const struct sun4i_i2s *, int);
- 	s8	(*get_wss)(const struct sun4i_i2s *, int);
--	int	(*set_chan_cfg)(const struct sun4i_i2s *,
--				const struct snd_pcm_hw_params *);
-+
-+	/*
-+	 * In the set_chan_cfg() function pointer:
-+	 * @slots: channels per frame + padding slots, regardless of format
-+	 * @slot_width: bits per sample + padding bits, regardless of format
-+	 */
-+	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
-+				unsigned int channels,	unsigned int slots,
-+				unsigned int slot_width);
- 	int	(*set_fmt)(const struct sun4i_i2s *, unsigned int);
- };
+@@ -175,8 +175,8 @@ struct sun4i_i2s_quirks {
+ 	unsigned int			num_mclk_dividers;
  
-@@ -399,10 +406,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
+ 	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
+-	s8	(*get_sr)(const struct sun4i_i2s *, int);
+-	s8	(*get_wss)(const struct sun4i_i2s *, int);
++	int	(*get_sr)(unsigned int width);
++	int	(*get_wss)(unsigned int width);
+ 
+ 	/*
+ 	 * In the set_chan_cfg() function pointer:
+@@ -387,37 +387,56 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 	return 0;
+ }
+ 
+-static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
++static int sun4i_i2s_get_sr(unsigned int width)
+ {
+-	if (width < 16 || width > 24)
+-		return -EINVAL;
+-
+-	if (width % 4)
+-		return -EINVAL;
++	switch (width) {
++	case 16:
++		return 0;
++	case 20:
++		return 1;
++	case 24:
++		return 2;
++	}
+ 
+-	return (width - 16) / 4;
++	return -EINVAL;
+ }
+ 
+-static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
++static int sun4i_i2s_get_wss(unsigned int width)
+ {
+-	if (width < 16 || width > 32)
+-		return -EINVAL;
+-
+-	if (width % 4)
+-		return -EINVAL;
++	switch (width) {
++	case 16:
++		return 0;
++	case 20:
++		return 1;
++	case 24:
++		return 2;
++	case 32:
++		return 3;
++	}
+ 
+-	return (width - 16) / 4;
++	return -EINVAL;
+ }
+ 
+-static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
++static int sun8i_i2s_get_sr_wss(unsigned int width)
+ {
+-	if (width % 4)
+-		return -EINVAL;
+-
+-	if (width < 8 || width > 32)
+-		return -EINVAL;
++	switch (width) {
++	case 8:
++		return 1;
++	case 12:
++		return 2;
++	case 16:
++		return 3;
++	case 20:
++		return 4;
++	case 24:
++		return 5;
++	case 28:
++		return 6;
++	case 32:
++		return 7;
++	}
+ 
+-	return (width - 8) / 4 + 1;
++	return -EINVAL;
  }
  
  static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
--				  const struct snd_pcm_hw_params *params)
-+				  unsigned int channels, unsigned int slots,
-+				  unsigned int slot_width)
- {
--	unsigned int channels = params_channels(params);
--
- 	/* Map the channels for playback and capture */
- 	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210);
- 	regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210);
-@@ -419,15 +425,11 @@ static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- }
+@@ -582,11 +601,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	i2s->playback_dma_data.addr_width = width;
  
- static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
--				  const struct snd_pcm_hw_params *params)
-+				  unsigned int channels, unsigned int slots,
-+				  unsigned int slot_width)
- {
--	unsigned int channels = params_channels(params);
--	unsigned int slots = channels;
- 	unsigned int lrck_period;
+-	sr = i2s->variant->get_sr(i2s, word_size);
++	sr = i2s->variant->get_sr(word_size);
+ 	if (sr < 0)
+ 		return -EINVAL;
  
--	if (i2s->slots)
--		slots = i2s->slots;
--
- 	/* Map the channels for playback and capture */
- 	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
- 	regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210);
-@@ -452,11 +454,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 	case SND_SOC_DAIFMT_DSP_B:
- 	case SND_SOC_DAIFMT_LEFT_J:
- 	case SND_SOC_DAIFMT_RIGHT_J:
--		lrck_period = params_physical_width(params) * slots;
-+		lrck_period = slot_width * slots;
- 		break;
+-	wss = i2s->variant->get_wss(i2s, slot_width);
++	wss = i2s->variant->get_wss(slot_width);
+ 	if (wss < 0)
+ 		return -EINVAL;
  
- 	case SND_SOC_DAIFMT_I2S:
--		lrck_period = params_physical_width(params);
-+		lrck_period = slot_width;
- 		break;
- 
- 	default:
-@@ -482,7 +484,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int word_size = params_width(params);
- 	unsigned int slot_width = params_physical_width(params);
- 	unsigned int channels = params_channels(params);
-+
- 	unsigned int slots = channels;
-+
- 	int ret, sr, wss;
- 	u32 width;
- 
-@@ -492,7 +496,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	if (i2s->slot_width)
- 		slot_width = i2s->slot_width;
- 
--	ret = i2s->variant->set_chan_cfg(i2s, params);
-+	ret = i2s->variant->set_chan_cfg(i2s, channels, slots, slot_width);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "Invalid channel configuration\n");
- 		return ret;
 -- 
 2.25.1
 
