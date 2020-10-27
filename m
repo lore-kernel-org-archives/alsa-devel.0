@@ -2,66 +2,93 @@ Return-Path: <SRS0=gpx6=EC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84680C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:42:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CF60C55179
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 06:05:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 243E3217A0
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:42:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F1BC207BB
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 06:05:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ak8fdTv1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 243E3217A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RKFbkXbn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="D3DUonb4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F1BC207BB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9256A16B6;
-	Tue, 27 Oct 2020 06:42:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9256A16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 759D31689;
+	Tue, 27 Oct 2020 07:04:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 759D31689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603777376;
-	bh=RPJk60lKTg6ia8lKw3p+axl+z6xAM+H/NOiohc8OZdA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603778700;
+	bh=yCJkYl3yrlRSFGXgo8G/f5269t/0Tgfkz+ytyxmRiIA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ak8fdTv1DA9WqD27eqZ8Mnc+QRFeNZhBHm8Kzft3lBx7nE+5xN40cFABtPIc8XqvD
-	 8u3VmLGs1HIubZX5nbXXrA5uwwYvu4NmMV9LjDN8leNPFfHnnJMPfRVmKzNKZUq6xW
-	 +cKJ3a9UyTXHS++91hA+vAEX9pZU4xJl8DZeeTUU=
+	b=RKFbkXbn2+z08nh471EAuNbjL1naEhyEdIeOUBxJE1ylAP++E7lGhxeqZNcKAhE+0
+	 AslGckaJyZeENsxETqmoE35VrI5k7PTjoWjBXjIUVZmqdtX5W5WgkhfWJAmbZdOHo8
+	 5XDRKWVj4gbp4kP+rW53dTy/zVnIUu1JWosqrpuA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F528F804C1;
-	Tue, 27 Oct 2020 06:40:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AFBDF801D8;
+	Tue, 27 Oct 2020 07:04:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7CE8F804C3; Tue, 27 Oct 2020 06:40:52 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 02306F80086; Tue, 27 Oct 2020 07:04:06 +0100 (CET)
+Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
+ [216.228.121.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76E5AF804C1
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 06:40:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76E5AF804C1
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
- helo=localhost) by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>)
- id 1kXHiX-0002dZ-MG; Tue, 27 Oct 2020 05:40:22 +0000
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH v2 3/4] ALSA: hda: Separate runtime and system suspend
-Date: Tue, 27 Oct 2020 13:40:00 +0800
-Message-Id: <20201027054001.1800-4-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027054001.1800-1-kai.heng.feng@canonical.com>
-References: <20201027054001.1800-1-kai.heng.feng@canonical.com>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- linux-kernel@vger.kernel.org, hui.wang@canonical.com,
- Kai-Heng Feng <kai.heng.feng@canonical.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A8CEF8019D
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 07:03:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A8CEF8019D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="D3DUonb4"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B5f97b84f0000>; Mon, 26 Oct 2020 23:03:59 -0700
+Received: from [10.25.99.37] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 27 Oct
+ 2020 06:03:52 +0000
+Subject: Re: [PATCH v3 1/3] ASoC: dt-bindings: audio-graph-card: switch to
+ yaml base Documentation
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <87a6wfay7t.wl-kuninori.morimoto.gx@renesas.com>
+ <878sbzay6u.wl-kuninori.morimoto.gx@renesas.com>
+ <75ca7528-3177-46cb-73c5-46e32e63ad44@nvidia.com>
+ <87h7qgw848.wl-kuninori.morimoto.gx@renesas.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <eba1f18a-0b2e-d52b-593a-9ef5304f9199@nvidia.com>
+Date: Tue, 27 Oct 2020 11:33:49 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <87h7qgw848.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1603778639; bh=j5+Ddn/F47IduMD7D47vsNvoRG9UFowAZei94y/ho/4=;
+ h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+ MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+ Content-Language:X-Originating-IP:X-ClientProxiedBy;
+ b=D3DUonb4PTxHrjJnyPM11NJIK257d4N2PhCaZ/jFn56di3CkO5DaKQJf3/gqv+9go
+ mWXSiDquNXbUqJ/0KfhTtsIiejMgJmOGOfZit3UwLGMYaf+Kj9F5Pa/QBmusaWgJx0
+ ggkPeUCpnnYXTYGFcMUddfNYELSglMAR9miqfmyAZNbJ+/sFqbxrRCR0h2Pl16bqST
+ ZRDQiHdvH+lvt7/dOXdIR/xAEMv11g3Cw+iEMZbZPzXXz4lyGiclasEd1zftEwh2n/
+ KAaczMJqG+b7dmq9XIrldnLwxSGTNLKYCGRqInDornWengyQhw1QdqugHLgpbsA6r8
+ Rky2FoXC18Myg==
+Cc: devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,181 +104,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Both pm_runtime_force_suspend() and pm_runtime_force_resume() have
-some implicit checks, so it can make code flow more straightfoward if we
-separate runtime and systemd suspend callbacks.
+Hi Morimoto-san,
 
-High Definition Audio Specification, 4.5.9.3 Codec Wake From System S3
-states that codec can wake the system up from S3 if WAKEEN is toggled.
-Since HDA controller has different wakeup settings for runtime and
-system susend, we also need to explicitly disable direct-complete which
-can be enabled automatically by PCI core. In addition to that, avoid
-waking up codec if runtime resume is for system suspend, to not break
-direct-complete for codecs.
+>>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>>
+>>> This patch switches from .txt base to .yaml base Document.
+>>>
+>>> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> (snip)
+>> Since I am trying to re-use most of audio-graph for Tegra, can
+>> 'compatible' be moved to a separate schema?
+>> For example,
+>> audio-graph.yaml -> defines all the common stuff
+>> audio-graph-card.yaml -> audio-graph.yaml + 'compatible' property
+>> Similarly, tegra-audio-graph-card.yaml -> audio-graph.yaml + Tegra
+>> 'compatible' property
+> I'm not expert of Json-Schema, and it sound very expert technique for me.
+> (It always indicates me unknown errors...)
+> I'm posting this patch since many month ago, and not yet accepted
+> for many reasons (audio-graph DT is very complex).
+> I spend many times for it and finally come to the point where it
+> can (might) be accepted.
+> I'm sorry but I want to finish this work,
+> this means I don't want to customize it any more.
+> If I try it, it needs more month...
 
-While at it, also remove AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP, as the
-original bug commit a6630529aecb ("ALSA: hda: Workaround for spurious
-wakeups on some Intel platforms") solves doesn't happen with this
-patch.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2:
- - Make sure WAKEEN is disabled for system suspend.
- - Avoid waking up codec if runtime resume is for system suspend
-
- sound/pci/hda/hda_controller.h |  3 +-
- sound/pci/hda/hda_intel.c      | 61 +++++++++++++++++++---------------
- 2 files changed, 37 insertions(+), 27 deletions(-)
-
-diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index be63ead8161f..7176ef8170ba 100644
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -41,7 +41,7 @@
- /* 24 unused */
- #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
- #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
--#define AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP (1 << 27) /* Workaround for spurious wakeups after suspend */
-+/* 27 unused */
- #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
- #define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
- #define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and playback use separate stream tag */
-@@ -143,6 +143,7 @@ struct azx {
- 	unsigned int align_buffer_size:1;
- 	unsigned int region_requested:1;
- 	unsigned int disabled:1; /* disabled by vga_switcheroo */
-+	unsigned int prepared:1;
- 
- 	/* GTS present */
- 	unsigned int gts_present:1;
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index b4aa1dcf1aae..4cf90e4602c7 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -297,8 +297,7 @@ enum {
- /* PCH for HSW/BDW; with runtime PM */
- /* no i915 binding for this as HSW/BDW has another controller for HDMI */
- #define AZX_DCAPS_INTEL_PCH \
--	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
--	 AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
-+	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME)
- 
- /* HSW HDMI */
- #define AZX_DCAPS_INTEL_HASWELL \
-@@ -1002,7 +1001,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
- 	azx_init_pci(chip);
- 	hda_intel_init_chip(chip, true);
- 
--	if (from_rt) {
-+	/* Avoid codec resume if runtime resume is for system suspend */
-+	if (from_rt && !chip->prepared) {
- 		list_for_each_codec(codec, &chip->bus) {
- 			if (codec->relaxed_resume)
- 				continue;
-@@ -1018,6 +1018,29 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
- }
- 
- #ifdef CONFIG_PM_SLEEP
-+static int azx_prepare(struct device *dev)
-+{
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip;
-+
-+	chip = card->private_data;
-+	chip->prepared = 1;
-+
-+	/* HDA controller always requires different WAKEEN for runtime suspend
-+	 * and system suspend, so don't use direct-complete here.
-+	 */
-+	return 0;
-+}
-+
-+static void azx_complete(struct device *dev)
-+{
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip;
-+
-+	chip = card->private_data;
-+	chip->prepared = 0;
-+}
-+
- static int azx_suspend(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
-@@ -1028,14 +1051,7 @@ static int azx_suspend(struct device *dev)
- 
- 	chip = card->private_data;
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
--	/* An ugly workaround: direct call of __azx_runtime_suspend() and
--	 * __azx_runtime_resume() for old Intel platforms that suffer from
--	 * spurious wakeups after S3 suspend
--	 */
--	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
--		__azx_runtime_suspend(chip);
--	else
--		pm_runtime_force_suspend(dev);
-+	__azx_runtime_suspend(chip);
- 
- 	trace_azx_suspend(chip);
- 	return 0;
-@@ -1050,11 +1066,7 @@ static int azx_resume(struct device *dev)
- 		return 0;
- 
- 	chip = card->private_data;
--
--	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
--		__azx_runtime_resume(chip, false);
--	else
--		pm_runtime_force_resume(dev);
-+	__azx_runtime_resume(chip, false);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 
- 	trace_azx_resume(chip);
-@@ -1103,10 +1115,8 @@ static int azx_runtime_suspend(struct device *dev)
- 	chip = card->private_data;
- 
- 	/* enable controller wake up event */
--	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
--		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
--			   STATESTS_INT_MASK);
--	}
-+	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
-+		   STATESTS_INT_MASK);
- 
- 	__azx_runtime_suspend(chip);
- 	trace_azx_runtime_suspend(chip);
-@@ -1117,18 +1127,15 @@ static int azx_runtime_resume(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
--	bool from_rt = snd_power_get_state(card) == SNDRV_CTL_POWER_D0;
- 
- 	if (!azx_is_pm_ready(card))
- 		return 0;
- 	chip = card->private_data;
--	__azx_runtime_resume(chip, from_rt);
-+	__azx_runtime_resume(chip, true);
- 
- 	/* disable controller Wake Up event*/
--	if (from_rt) {
--		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
--			   ~STATESTS_INT_MASK);
--	}
-+	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
-+		   ~STATESTS_INT_MASK);
- 
- 	trace_azx_runtime_resume(chip);
- 	return 0;
-@@ -1162,6 +1169,8 @@ static int azx_runtime_idle(struct device *dev)
- static const struct dev_pm_ops azx_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(azx_suspend, azx_resume)
- #ifdef CONFIG_PM_SLEEP
-+	.prepare = azx_prepare,
-+	.complete = azx_complete,
- 	.freeze_noirq = azx_freeze_noirq,
- 	.thaw_noirq = azx_thaw_noirq,
- #endif
--- 
-2.17.1
-
+I am not a json-schema expert either :) From earlier comments on Tegra 
+audio graph series, above re-use is possible I suppose. I depend on your 
+audio-graph documentation and for 'compatible' I am seeing error. So I 
+thought it may be fine to split audio-graph into two json-schemas now 
+itself. Otherwise I need to do it separately in my series if I want to 
+re-use your audio-graph, which is fine with me.
