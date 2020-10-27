@@ -6,56 +6,57 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3894C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65CD3C4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 08:13:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5273F207F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:47:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06A4D20878
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 08:13:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pF0SVELu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5273F207F7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hOK+CoBm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06A4D20878
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3D4F169C;
-	Tue, 27 Oct 2020 08:46:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3D4F169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FC71169A;
+	Tue, 27 Oct 2020 09:12:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FC71169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603784820;
-	bh=K80mSVUu8Ox4RIpggAqPrrzSxMNuK0Vfnycqz8Tci60=;
+	s=default; t=1603786383;
+	bh=5EUa4L20SPbsfR7qG4JsA6MqSTyzycilr5mdi6cC+2I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pF0SVELuzd3dHBmU4MvGWM+uoFPMUfyqXQK2QZFCUgI8DnCKrnyTFGNyRRSy3xLSE
-	 2UNXiyPg1zYWDoIIaH7lIgQk7yEAU4a/h9f4GvNHH1/T9uez+DQs8hfDAGFkPuhJSR
-	 tDgwXoR1Lfqfu9sK4VyjCft5h6geLUpO8bPBpCSM=
+	b=hOK+CoBmfd9yj1vQ7Ss8UDTd1TTMCqDxx2f935igTpoulBEIsebOyBReuXyWee416
+	 n+OzRCOSyz9lPVPi+xOyfCFI2g/KCR76iSsMAbh0jOge207E6QuwmnDhBh6Hjhza3d
+	 xp9j8RFG+3WabQRO+O3DL96sx8yXoo7i+liqHD70=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B25FF80086;
-	Tue, 27 Oct 2020 08:46:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1DFEF801D8;
+	Tue, 27 Oct 2020 09:12:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 909F2F8020D; Tue, 27 Oct 2020 08:46:08 +0100 (CET)
+ id E3E2DF8020D; Tue, 27 Oct 2020 09:12:10 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB5F5F80086
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 08:46:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB5F5F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 503D9F800FF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 09:12:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 503D9F800FF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 18D0FAF72;
- Tue, 27 Oct 2020 07:46:05 +0000 (UTC)
-Date: Tue, 27 Oct 2020 08:46:05 +0100
-Message-ID: <s5hlffs2jsy.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 80099AC2F;
+ Tue, 27 Oct 2020 08:12:07 +0000 (UTC)
+Date: Tue, 27 Oct 2020 09:12:07 +0100
+Message-ID: <s5himaw2ilk.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai-Heng Feng <kai.heng.feng@canonical.com>
 Subject: Re: [PATCH v2 3/4] ALSA: hda: Separate runtime and system suspend
-In-Reply-To: <20201027054001.1800-4-kai.heng.feng@canonical.com>
+In-Reply-To: <s5hlffs2jsy.wl-tiwai@suse.de>
 References: <20201027054001.1800-1-kai.heng.feng@canonical.com>
  <20201027054001.1800-4-kai.heng.feng@canonical.com>
+ <s5hlffs2jsy.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,34 +79,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Oct 2020 06:40:00 +0100,
-Kai-Heng Feng wrote:
-> @@ -1002,7 +1001,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
->  	azx_init_pci(chip);
->  	hda_intel_init_chip(chip, true);
->  
-> -	if (from_rt) {
-> +	/* Avoid codec resume if runtime resume is for system suspend */
-> +	if (from_rt && !chip->prepared) {
+On Tue, 27 Oct 2020 08:46:05 +0100,
+Takashi Iwai wrote:
+> > @@ -1103,10 +1115,8 @@ static int azx_runtime_suspend(struct device *dev)
+> >  	chip = card->private_data;
+> >  
+> >  	/* enable controller wake up event */
+> > -	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
+> > -		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+> > -			   STATESTS_INT_MASK);
+> > -	}
+> > +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+> > +		   STATESTS_INT_MASK);
+> 
+> ... here we should have the check of chip->prepared, and set WAKEEN
+> only when it's false.  Otherwise WAKEEN is set up for the system
+> suspend, and it might lead to spurious wakeups.  (IOW, checking the
+> flag at resume doesn't help for preventing the spurious wakeup :)
 
-The check of chip->prepared is superfluous here.  Its check should be
-applied rather at setting WAKEEN, namely...
-
-> @@ -1103,10 +1115,8 @@ static int azx_runtime_suspend(struct device *dev)
->  	chip = card->private_data;
->  
->  	/* enable controller wake up event */
-> -	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
-> -		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
-> -			   STATESTS_INT_MASK);
-> -	}
-> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
-> +		   STATESTS_INT_MASK);
-
-... here we should have the check of chip->prepared, and set WAKEEN
-only when it's false.  Otherwise WAKEEN is set up for the system
-suspend, and it might lead to spurious wakeups.  (IOW, checking the
-flag at resume doesn't help for preventing the spurious wakeup :)
+Scratch my comment above; it's the code path only for the runtime
+suspend in your new code, then this cleanup makes sense.
 
 
 thanks,
