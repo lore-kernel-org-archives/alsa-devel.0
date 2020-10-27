@@ -2,64 +2,65 @@ Return-Path: <SRS0=gpx6=EC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D3A5C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 04:53:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D12BC4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:23:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06414216FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 04:53:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 32AA121707
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:23:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LQnyEMm3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06414216FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H741MqO1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32AA121707
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6348D169D;
-	Tue, 27 Oct 2020 05:52:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6348D169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B0731699;
+	Tue, 27 Oct 2020 06:22:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B0731699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603774385;
-	bh=9QpwOXLGDwsCBJV0BZy7+GlLa+e5cV06g/KAGNBvEzg=;
+	s=default; t=1603776206;
+	bh=gnejb9j9bJ8BLUPq6dKtsT97icoEN+ecZBBGJHtgBxE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LQnyEMm3JOh1WP77By0yOiIbxIPTXE7dzMfuwhFcpp23iPWoP3JOwqPffwBcsARRg
-	 KdjHYliui8iqXsDag7t2iyX/h80wagwqOwyshg9DAQBSf8rcgKqynENKleRA0COpHV
-	 8PMrEiaWBmTQRaZpAy5UZEKqHVmVHwJ++hg19Rbo=
+	b=H741MqO1jzsUOa8nJdTdQfkwJEFXI9/JNdgOqlmGTDhhM+YNfUB+enSIYtulRN9il
+	 45FXOptYbdDt4Y7BWBZYyrZlWQonN0SN4VDlo1H7YA18u/jKTdW9GIaU1ncG1HzOKT
+	 U+0BUF/G97e9uWHDgqCCcsQSskXB6GPH7qo1Ink0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84582F801D8;
-	Tue, 27 Oct 2020 05:52:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C23F1F801D8;
+	Tue, 27 Oct 2020 06:22:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CACC7F8020D; Tue, 27 Oct 2020 05:52:12 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B9B83F8019D
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 05:52:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9B83F8019D
-Date: 27 Oct 2020 13:52:01 +0900
-X-IronPort-AV: E=Sophos;i="5.77,422,1596466800"; d="scan'208";a="60687839"
+ id 9AC05F8020D; Tue, 27 Oct 2020 06:22:33 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A5D5EF80086
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 06:22:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5D5EF80086
+Date: 27 Oct 2020 14:22:22 +0900
+X-IronPort-AV: E=Sophos;i="5.77,422,1596466800"; d="scan'208";a="60906555"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 Oct 2020 13:52:01 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 27 Oct 2020 14:22:22 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 701EF4005E03;
- Tue, 27 Oct 2020 13:52:01 +0900 (JST)
-Message-ID: <87k0vcw9zd.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 787E94009655;
+ Tue, 27 Oct 2020 14:22:22 +0900 (JST)
+Message-ID: <87imaww8ks.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Sameer Pujar <spujar@nvidia.com>
 Subject: Re: [PATCH v3 1/3] ASoC: dt-bindings: audio-graph-card: switch to
  yaml base Documentation
-In-Reply-To: <75ca7528-3177-46cb-73c5-46e32e63ad44@nvidia.com>
+In-Reply-To: <963ea81c-f1c4-580c-f336-f9e5a98d2cae@nvidia.com>
 References: <87a6wfay7t.wl-kuninori.morimoto.gx@renesas.com>
  <878sbzay6u.wl-kuninori.morimoto.gx@renesas.com>
- <75ca7528-3177-46cb-73c5-46e32e63ad44@nvidia.com>
+ <92de1324-7845-a0ee-7962-aa297c0dced7@nvidia.com>
+ <873621lxhv.wl-kuninori.morimoto.gx@renesas.com>
+ <963ea81c-f1c4-580c-f336-f9e5a98d2cae@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -83,21 +84,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Sameer
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > This patch switches from .txt base to .yaml base Document.
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-(snip)
-> > +additionalProperties: false
-> > +
+> >> Can these be referenced from graph.yaml (port and ports properties)
+> >> and only additonal properties (specific to audio-graph) could be
+> >> populated here?
+> > Yes of course.
+> > In such case, I need to wait graph.yaml first I think.
 > 
-> This needs to be true when other files want to reference this schema
-> and/or define some additional properties.
+> Yes we first need to add graph.yaml, which I started to add in series
+> https://lkml.org/lkml/2020/10/16/645
+> Since there is cyclic dependency between your patch and my series, I
+> could probably pull out graph.yaml out of my series and independently
+> submit that first.
 
-*Current* audio-graph-card doesn't assume such case.
-I think you need to update it when you support tegra-audio-graph
+I noticed that graph.yaml is not enough for audio-graph.
+Because audio-graph needs extra propaties for endpoint,
+and your endpoint is defined under port.
+Maybe can't add additonal propaties (?) for it ?
+
+Maybe we can, but I'm not expert of Json-Schema.
+It is very difficult for me to create even *standard* ones.
+I will continue current style to avoid unknown error
+(It always indicates me unknown error :()
 
 Thank you for your help !!
 
