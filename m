@@ -8,89 +8,90 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81676C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCBDDC388F9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:36:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8D1020724
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:35:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 81F5920724
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:36:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FyEazxT4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JFgeG23Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8D1020724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t+v05rKe";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZqDATcv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81F5920724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46D011699;
-	Tue, 27 Oct 2020 19:34:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46D011699
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9DDC16C3;
+	Tue, 27 Oct 2020 19:35:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9DDC16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603823729;
-	bh=BewnauDF/pdfaMjQKVYly+KokETkb3wOlXv4OXrcmmA=;
+	s=default; t=1603823765;
+	bh=fY1QD1eNAdFnUAu5zm1Qiepufw1KwvTEMUud5+9KZYY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FyEazxT4zJsmSeUA6fyz0OzhPyS0YBM1NPnBP+mc292B5xmxoS/sfgwtRCzZk1b/d
-	 IJmakoYYK8bQChPpkY55deFf4l2wfrcqQFqrFKHW1dzxRKISWNnhjyH2+EofZvz3Yr
-	 bsy+zzFvDClS7MH3jQj+oYpfVcz3VjlcBWMqy22U=
+	b=t+v05rKemQlmkiKU6iimdxahjqVwDrBdUBOdaLVpFKXqKUwBAXGQxPGERfHGH1YHP
+	 Qv7Fjc97G2tQMtjKoVDNOSycBSgzjPSHxrvVAgXKonsS/nff781QIKkgF6jCL4Yuz1
+	 vv9SuHiwdx/F5TX18tUKbyxFUw9UU1nkKDS9fE1c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D737F804BC;
-	Tue, 27 Oct 2020 19:32:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C46C2F804F1;
+	Tue, 27 Oct 2020 19:32:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7706DF804E5; Tue, 27 Oct 2020 19:32:17 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
+ id 03629F804E2; Tue, 27 Oct 2020 19:32:18 +0100 (CET)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF495F80274
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:32:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF495F80274
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AF39F800FF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:32:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AF39F800FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JFgeG23Q"
-Received: by mail-wm1-x344.google.com with SMTP id k18so2465348wmj.5
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 11:32:02 -0700 (PDT)
+ header.b="hZqDATcv"
+Received: by mail-wm1-x343.google.com with SMTP id l8so797063wmg.3
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 11:32:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=oVJ/FVhCtH2Sw1ZFhzCNscPSk9Fte7d6nvWFGpvDBLs=;
- b=JFgeG23QtomWzS6Bha5qw611bEGje19zVx46h+fkAYzTIEQEBDZbDytqruHW1MHBYh
- hbc8NB4nOr8thDTFGHqduRXOXoFBlnKpnO0wrSfxEobmMiLKB6sgx0DSlrrbd/e8XGcc
- v3Q1np6j6sYXNpfOwkyo7ckuOUPScb55Qpob9lT1bzzh7g6w2Z52RaquJtpBmeFg59A+
- VlcLTMlpwf3+F4jjd3BnuiuWlxkJKnD+y7H5nW9kv+8EbPPjJmmRUyT/j9vhqbN/xt+4
- Cl7lri2vSikNhdmr83MYTg/n9cNYPlgX0Dv3lDkirzJ92qxxVXAF/Qm+GbCv5d9qy0AH
- EyBw==
+ bh=bUF5LSgnsfdi9Dmz32t5Nlmik5QNgZUZsDGC5+lF6a4=;
+ b=hZqDATcv7sSLnWgYfAMp+DE8B3SYkc7T1qPxhtHamQ8G9lmchPk2WzxorNxeTFrJWd
+ 5uTBtwsOaTvNyQ6H/UDRhnF2uVgsRX2zywHbu9x2yodGCI6OKL80PBolnrHeKFI1SOqi
+ TGVVCyPJxqU6+7lnohzcVFnrUkWGtpPQ0vEXUxGVKxn3T8TOTORluO1rcmkO2bovYqbT
+ 0VJ8i3cdlPDd5TfiNW71oWgaXMXWrZMyTi0muxL1XywTxNOIv0MRcwLNMROJjuhI/+zt
+ tcDtM6ijantgPtcIIgzWuac7mgj30zYs6eXj3sHdzo1Jvm1rjKrjbJUX1zbeme8MHnKa
+ uwvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=oVJ/FVhCtH2Sw1ZFhzCNscPSk9Fte7d6nvWFGpvDBLs=;
- b=jM0EPS2+C43S7UVGNG55c1ho15BQ+1NG1Y1I5No48QKZWHayPf8mWE22PTn/+lHDor
- v+MKomamwA3wqmcwBUfG6Dj9TZo8wyVg5qSYFm3pUvproZSofRoh6f4I7CbllP8TusmV
- s1NL70PMY3lmRSooZy7RTxX45uEkkzChXaTQ+89RjSWoNwf1PKYdlqbUSr+hsJ8uVQAB
- QInfaZQtsPv6ynOg4cugwro/c2sZAV2cw74OOZffm0p84JIqPcOpHvHLdEDxLEGMkNKg
- BXvBUBwx3LfxSIjmI8hzqFm2cRP5nGz2btdUaAzrR3/f3bdm/R9Pk6Gp07Qe9rOt3mAR
- xINw==
-X-Gm-Message-State: AOAM5322XwBNyen7BHTbCWfO9UifDpwscADbdhZuPDSsJJsVtTnjQ6wd
- BsY4f5w5YU7rNBMAGv5Vnuk=
-X-Google-Smtp-Source: ABdhPJwFXy7NDinDWuVTnQgP1h3IJuPLQhmkRksX/wb66eKevjZt2XttkN7abcq/vklzoDAAuVhS7Q==
-X-Received: by 2002:a7b:cc85:: with SMTP id p5mr3993245wma.24.1603823522148;
- Tue, 27 Oct 2020 11:32:02 -0700 (PDT)
+ bh=bUF5LSgnsfdi9Dmz32t5Nlmik5QNgZUZsDGC5+lF6a4=;
+ b=mxYTKDXssMEYedQwAOFji1DPpQwhwjGwaUjGjqSG4yoEmHyFNic2Lgs6OCqbmSqIaH
+ BBmSBcheux0UNk4JbdUxmXc5GDI3VnrrKFkOkhDtyiN6e7V/KuHrR4SxXotMPEaEA4tX
+ qHqFVZfnJoJI8HAbydpyDYGOPHYmxcxw7DlAMsb+V2F/ZBMh4hULrrXMQ4ozRWqZOc7o
+ XSfei6bzsf3lmlidArPp20YlyxaE3ErDcC6kXwZ56I2msclTRnimUDQffBoYC+vpLS+Z
+ PMQ5P7roFULde6gSrcAYLsqPHlgeY59xOzCC7+SpodI3ts/CBIjQFTKz/Q/Lzbs63L53
+ 6BJQ==
+X-Gm-Message-State: AOAM530GmKJCd6Ehg/STnCEdnYGOGtsDNfMqly6x7fjfp3x8/ODOVzdo
+ 2MaQ09hQfyh+Lsy85x7HGZQ=
+X-Google-Smtp-Source: ABdhPJxjwsMwLtBKVCXnxljYQoMq6SnwnRLll3li843xrx/nJ4SWKVIUQOMkaz8TmPSCbRJjnMpaiA==
+X-Received: by 2002:a05:600c:cb:: with SMTP id
+ u11mr3924703wmm.112.1603823517828; 
+ Tue, 27 Oct 2020 11:31:57 -0700 (PDT)
 Received: from localhost.localdomain
  (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
- by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.32.01
+ by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.31.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Oct 2020 11:32:01 -0700 (PDT)
+ Tue, 27 Oct 2020 11:31:57 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v9 09/14] dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
-Date: Tue, 27 Oct 2020 19:31:44 +0100
-Message-Id: <20201027183149.145165-10-peron.clem@gmail.com>
+Subject: [PATCH v9 05/14] ASoc: sun4i-i2s: Add 20 and 24 bit support
+Date: Tue, 27 Oct 2020 19:31:40 +0100
+Message-Id: <20201027183149.145165-6-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201027183149.145165-1-peron.clem@gmail.com>
 References: <20201027183149.145165-1-peron.clem@gmail.com>
@@ -98,9 +99,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
- alsa-devel@alsa-project.org, Rob Herring <robh@kernel.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Marcus Cooper <codekipper@gmail.com>, linux-sunxi@googlegroups.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>,
+ linux-sunxi@googlegroups.com,
  =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -118,41 +119,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Marcus Cooper <codekipper@gmail.com>
 
-H6 I2S is very similar to H3, except that it supports up to 16 channels
-and thus few registers have fields on different position.
+Extend the functionality of the driver to include support of 20 and
+24 bits per sample.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Acked-by: Maxime Ripard <mripard@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- .../devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml      | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-index 112ae00d63c1..606ad2d884a8 100644
---- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-@@ -24,6 +24,7 @@ properties:
-       - items:
-           - const: allwinner,sun50i-a64-i2s
-           - const: allwinner,sun8i-h3-i2s
-+      - const: allwinner,sun50i-h6-i2s
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 9f9d3e7baad0..39b56d0de1fd 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -600,6 +600,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case 16:
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 		break;
++	case 32:
++		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++		break;
+ 	default:
+ 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
+ 			params_physical_width(params));
+@@ -1081,6 +1084,10 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
  
-   reg:
-     maxItems: 1
-@@ -59,6 +60,7 @@ allOf:
-               - allwinner,sun8i-a83t-i2s
-               - allwinner,sun8i-h3-i2s
-               - allwinner,sun50i-a64-codec-i2s
-+              - allwinner,sun50i-h6-i2s
- 
-     then:
-       required:
++#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++			 SNDRV_PCM_FMTBIT_S20_LE | \
++			 SNDRV_PCM_FMTBIT_S24_LE)
++
+ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 	.probe = sun4i_i2s_dai_probe,
+ 	.capture = {
+@@ -1088,14 +1095,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.ops = &sun4i_i2s_dai_ops,
+ 	.symmetric_rates = 1,
 -- 
 2.25.1
 
