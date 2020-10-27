@@ -2,116 +2,145 @@ Return-Path: <SRS0=HcWj=ED=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCE8BC4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16FC3C4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:14:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E587E24196
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:13:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2ABA222447
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:14:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hA4QlVRu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="fei0ANa2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E587E24196
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ro6AY1jL";
+	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="1BNOWCaz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2ABA222447
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C0C61696;
-	Wed, 28 Oct 2020 09:12:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C0C61696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48C7E16A9;
+	Wed, 28 Oct 2020 09:13:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48C7E16A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603872821;
-	bh=7IkW+rHL9rt8zmLb2zBirvIaxwmvirDaVJKBhP+fBAk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603872842;
+	bh=ac/SAnqL8ktqaehYfSxKRSya3xXW1k43ZABKcQf1xKk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hA4QlVRukFeXpXZ08cPu6PeUDvBYW1QBIQ2bnF3FByikX4e4egOq087kPPsHiGN3K
-	 C+8gCOjsiMszFTTjou6pyXatGU6+6pBrOoao/8FxrBpbkI3iVXRlKm4+yJWCviEvKH
-	 RS49UwyCVQ6gIbrRk87qmkXTCe+C5M5A3DbRWgtg=
+	b=ro6AY1jLqf/z7DXhEwOAMDfoTtb7MwIYx9np1aLqnyCgFHMlr4iSN4AZZS/T+NE90
+	 i0hVAIqN5W3xzrJ020zjMkV1iV0FNfW/SUeIybujA8R6SL+1kVP9GSy54z0IOlv/QA
+	 L6PmQ8CM4i9A7xKpaS3RsD2H44teM1XpUjzqy1yQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EEA5F80534;
-	Wed, 28 Oct 2020 09:07:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 832CAF80539;
+	Wed, 28 Oct 2020 09:07:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CCEAF80274; Tue, 27 Oct 2020 13:17:58 +0100 (CET)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8016FF80217; Tue, 27 Oct 2020 13:22:00 +0100 (CET)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on2074.outbound.protection.outlook.com [40.107.244.74])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BEEBCF8021D
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 13:17:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEEBCF8021D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DDA6F800FF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 13:21:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DDA6F800FF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com
- header.i=@bgdev-pl.20150623.gappssmtp.com header.b="fei0ANa2"
-Received: by mail-wr1-x441.google.com with SMTP id n15so1670252wrq.2
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 05:17:48 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
+ header.i=@amdcloud.onmicrosoft.com header.b="1BNOWCaz"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BLlrvziaIyuU3SspzYokz812M6cAod9QDKRsYTjeVro9M9hRQj7GGw7BPR11x2cN1uLC6DJssjbXuhiQ0L+yR2tZfVSBxjuzoiOJmAjVIMmbFYkt1oiLTIFtFSnyJXFECom9XqjoiFGTi9kLxE/2UfRmSAEzA8h2sCIqTZGe7A5k5OFfikGzDcHKgn7WMqDC1Q5SDou1EsnyzT8X5UPY67SqzkCOfvxJT8qlj9SpuitPsqKc2iQ1Fhpeixn5s2dwl91IfEBmPiwe1foLrgcKuu9EOrnwE507Ep3ExZudvwlyEtcT0IvyGWVybbwAj+fTl9w2/h56WpZDufSwZlZ5Og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z0uywEG7ytgt5hsUFXKH12dLQ6cokqZFnsWdRhpAxSs=;
+ b=flQrEhDqknXkt2sCJuTO1KNW94HMgu43a/2yhpYZzhqPEb67GWtAJTEglRNDTqyVPexm8r9lCnynn1V8CbpmOzRsmRZnuF768h9IuzCtSkgTcI0+r5y+LdA1hqsyIOMkb6coLwu7+D+WBu5d1vfverFBpkJqF1APxaneI4tOcLprgjPG3HyB7RhSCcrEQkKNgAqsIcSRUr+xIHZrgnY943oaPnwDsnK6RAa5WmBCvi9t5CwPj/YyVZF65JKhUM2sBFybGz2vluHsMLG5XhXhTXAsowXsUQm0pqtFQ1+O+pi3LpjMMehXSAfOlQTBN0/GiLHe39Pi1K+ZmuuKV7evuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Yv5nQ3yDPCTR6Qr42pQX9T0J3MZN9NU/gU5iZJIrkWk=;
- b=fei0ANa2ElSFo4FKASLBvqdzEpQMc369lxMXy79AWLlLE4ldM0t9l6k8RVF3buSnvA
- InRbHn9r2hR680pZZ+gYHBH0cxjnXEpWTBjRsyn3pPicTDT7ROS1njEmMsQ0EtyoYRv/
- vBz+LlGkNh9F45O2WPmNPaWYUC2TRs+1c28W6I2DHNQSUKyUoBTvCUXW/RmCgB8tOU8G
- g5O/0EGVAt658IQXZb3tOQIDePMiXd3i3GdEI4By620HO0ioGffbTx/3svpvzdtTVEbj
- pJSbSja7AzYXp5nq6dTEmNRhW6+2gmmrtbUq1fP5SW49DL3CQr9yND4Z3iXAPYqZ02Lj
- 0X6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Yv5nQ3yDPCTR6Qr42pQX9T0J3MZN9NU/gU5iZJIrkWk=;
- b=JuaMle6Re6oEGCmHh4C5RGTgIGbcfxwp6r2/EDyclNcagB9rkjwVBFQijwQazAYt17
- ouxnZS66twYcr2rdevMw0o1lfo6zRWGUvB583tcWMVgUN3Qc5x/vI04vFmmhcClga9sr
- knwhPYVP+qYDJ1r37wmaT0+nGDJxaC0uG7MCtVzrO6V8tDJmkom8RIcaLhj/ucF7B2TB
- k8yySy8soOSOvSgPeSMsNFNVa4azJtlfl1SfJ5seHCk0nAPH6WHTxXJs8MoTmEYcTYfx
- eaHbdf73bQ9CJu+lc0xMTPccuOGgwG77pd8+wiok30HNwbBe4uwljswc1JrRej0WMc6B
- Aeww==
-X-Gm-Message-State: AOAM532woqyP0a+tpR6Dc5Bj9iaqqsaD+W8rQ4zve/+PacWy6SaSTNvL
- yAbci0zMuAo/XeRKhErG8bVrOQ==
-X-Google-Smtp-Source: ABdhPJwBy/86P9NLjWm4ayzRrNeTPV1ezoUeA/zg5bUjnQJez1TgK6PN9H/ezjMnvntOGwzzJ6JYWg==
-X-Received: by 2002:a05:6000:108:: with SMTP id
- o8mr2545710wrx.256.1603801064364; 
- Tue, 27 Oct 2020 05:17:44 -0700 (PDT)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr.
- [90.8.158.167])
- by smtp.gmail.com with ESMTPSA id a2sm1731908wrs.55.2020.10.27.05.17.42
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Oct 2020 05:17:43 -0700 (PDT)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- Gustavo Padovan <gustavo@padovan.org>,
- =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Borislav Petkov <bp@alien8.de>,
- Tony Luck <tony.luck@intel.com>, James Morse <james.morse@arm.com>,
- Robert Richter <rric@kernel.org>,
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z0uywEG7ytgt5hsUFXKH12dLQ6cokqZFnsWdRhpAxSs=;
+ b=1BNOWCazcq7ahc70MoqU1trdaxNis6GohUxx3jzCA98xFHWR7SURRJNv5VqHsjjiZ9JzcV0S3t2selQp5r1wwDDrs1J6Bhu6WZmCc0JId52tWvLW6gWqHiRlDgpAuG18kXXKdaD6B25uN/2ofrPdV5tLTaPZnrWGY1SegCZ3zOQ=
+Authentication-Results: baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4536.namprd12.prod.outlook.com (2603:10b6:208:263::19)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Tue, 27 Oct
+ 2020 12:21:40 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
+ 12:21:40 +0000
+Subject: Re: [PATCH 8/8] dma-buf: use krealloc_array()
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>, Gustavo Padovan
+ <gustavo@padovan.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
+ James Morse <james.morse@arm.com>, Robert Richter <rric@kernel.org>,
  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  Linus Walleij <linus.walleij@linaro.org>,
  "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
  Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
  David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 4/8] pinctrl: use krealloc_array()
-Date: Tue, 27 Oct 2020 13:17:21 +0100
-Message-Id: <20201027121725.24660-5-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027121725.24660-1-brgl@bgdev.pl>
+ Andrew Morton <akpm@linux-foundation.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
 References: <20201027121725.24660-1-brgl@bgdev.pl>
-MIME-Version: 1.0
+ <20201027121725.24660-9-brgl@bgdev.pl>
+From: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <0b41d541-30a9-a020-f065-fb55dc766bc1@amd.com>
+Date: Tue, 27 Oct 2020 13:21:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201027121725.24660-9-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR04CA0005.eurprd04.prod.outlook.com
+ (2603:10a6:208:122::18) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+ (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by
+ AM0PR04CA0005.eurprd04.prod.outlook.com (2603:10a6:208:122::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend
+ Transport; Tue, 27 Oct 2020 12:21:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4a9ccb29-0bf0-4bbc-8097-08d87a72dbcb
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4536:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB453650BEAA05349A6A4E2BA283160@MN2PR12MB4536.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pqEq0WXz7JKgB6Ql3KJBLH5AYrTjK5M2jtAgZS6kH16rbGMXsVzP+JfXQ7zg8W69imE0I//FAjeKtQnAD2TIhsEiBUwKveQd4GNpiZ8yylbm7Jo9XSV3isikrahqC98Wy9DyBPGDIKgL3GFq47D2+03ouhYdRXwuSlIhrYKdBT3WRcB0uo2g1m3Dsh/3vwIvxUHq9zYmJHagvGRHwmNyGgJshBakvkmsOxNy2PlAFU+1p7FmH+xcizm15aKfdSC9HAQZ8usGklEJFwFGrkeY0RSB8H1Wx7VB0dzabYQej+qYBNkaVsjHHHWi2SRxyczrreMc/2KPgliWfBJi/aLcnDtWVjvpduwqEr3fo5Yb24OTL1jrpkAW0b4VBzxvpnk2v0QlMFTGy+8CD7/dszJWow==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MN2PR12MB3775.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(4744005)(7406005)(5660300002)(83380400001)(66556008)(16526019)(66946007)(52116002)(8936002)(316002)(186003)(66476007)(6486002)(31696002)(110136005)(2616005)(6666004)(7416002)(2906002)(4326008)(478600001)(86362001)(8676002)(36756003)(31686004)(921003)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData: 97vJT1bWj4JuIqlB3lM08hOS0mbbkIwaaXA6HIMCZNnSevvdudkGUonMw0ndN+QpRlA3y/XWlf7zdiV3f60aiQYfbK7Tuu0gok7qk8Kl4TtW79Z7FeFIk1HsvnAP+Zmo2/deeOl+GNycCCX/ePKCNbThOaY8bQWv/LKUJ794ioHxdrFjF2EE40yqHrqZXlGhsc6t+I4WvCjqt7ly60LO6dFIDRDCYa7+2jDo7JtpulC9ytwm0TfqnuILkPJkGod2Si10tRDxSTD3YbcQorkCNTDRccQAGoCBCGKn0qt24xJIrZLswFNBb8rSvGBTu3oPpieaN9G4b9qp7jZ4E8OSOzTKaxKh0pEA7oHFxtv7HRHDJ8KScCMGjOdazN6IarDcf2jYchVCQYWactUH82DiKZJNQdy7tU3WVEMjf7W9y7hkWJIMOhzOlP/qeN9QpKC4UWJXzzH0z25BhlJCvYeCg55+ik2Wbe2MA0E8w6hkNtvdZKm59W6/JOCPWqC/uYvlUuTKFo4lewjVZfO9egZcJtNyWpX5Cnt8jcUiyeXOCo1Q5mVHaOazxJ+8hqYEABObaNNuMLo9QMuAYlP0Tg/YpLq7PNSaGJ9q9w6r9h+wfBvv7MOvej0d9laooqe/jvbEXyzdahKmpZVzcDACJCTJqp3RCr1ukyHHzTTj+/BYVJc4vZO0ue9kBNsIHg955Dio0EYLPZmb6JNURZI/lHBgJg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a9ccb29-0bf0-4bbc-8097-08d87a72dbcb
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2020 12:21:40.8550 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oEKxYQK0NHX7xk+/r0yZhJpur2OX1UekLRtALy6oFy5OGVfFhixUWxfCnPfM0nef
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4536
 X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:30 +0100
 Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-mm@kvack.org,
  netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -134,29 +163,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Am 27.10.20 um 13:17 schrieb Bartosz Golaszewski:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> Use the helper that checks for overflows internally instead of manually
+> calculating the size of the new array.
+>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Use the helper that checks for overflows internally instead of manually
-calculating the size of the new array.
+Acked-by: Christian König <christian.koenig@amd.com>
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/pinctrl/pinctrl-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pinctrl/pinctrl-utils.c b/drivers/pinctrl/pinctrl-utils.c
-index f2bcbf62c03d..93df0d4c0a24 100644
---- a/drivers/pinctrl/pinctrl-utils.c
-+++ b/drivers/pinctrl/pinctrl-utils.c
-@@ -39,7 +39,7 @@ int pinctrl_utils_reserve_map(struct pinctrl_dev *pctldev,
- 	if (old_num >= new_num)
- 		return 0;
- 
--	new_map = krealloc(*map, sizeof(*new_map) * new_num, GFP_KERNEL);
-+	new_map = krealloc_array(*map, new_num, sizeof(*new_map), GFP_KERNEL);
- 	if (!new_map) {
- 		dev_err(pctldev->dev, "krealloc(map) failed\n");
- 		return -ENOMEM;
--- 
-2.29.1
+> ---
+>   drivers/dma-buf/sync_file.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
+> index 5a5a1da01a00..2925ea03eef0 100644
+> --- a/drivers/dma-buf/sync_file.c
+> +++ b/drivers/dma-buf/sync_file.c
+> @@ -270,8 +270,8 @@ static struct sync_file *sync_file_merge(const char *name, struct sync_file *a,
+>   		fences[i++] = dma_fence_get(a_fences[0]);
+>   
+>   	if (num_fences > i) {
+> -		nfences = krealloc(fences, i * sizeof(*fences),
+> -				  GFP_KERNEL);
+> +		nfences = krealloc_array(fences, i,
+> +					 sizeof(*fences), GFP_KERNEL);
+>   		if (!nfences)
+>   			goto err;
+>   
 
