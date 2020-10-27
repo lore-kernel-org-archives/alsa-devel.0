@@ -7,125 +7,116 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DEEFC4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF9CDC4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9068C20724
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1523F20735
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IjoS3t46";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d7xbDRjj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9068C20724
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OcofSvET";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="UoiZn2ej"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1523F20735
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 047CB168A;
-	Wed, 28 Oct 2020 09:11:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 047CB168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F32D168F;
+	Wed, 28 Oct 2020 09:11:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F32D168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603872736;
-	bh=I9wJXlD9PVGCgTYmHQ4SO54uv04OKKhHmkSKr4+jBVQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1603872749;
+	bh=3WYM9aeRCNIwFuSErVshcpp2GYy7Jr//SybcoG5jqHM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IjoS3t46sMShD80Y/G5gBFg9c6Ih74yRVjJWvF+0dhpGUyCvKHDbh53H/mNkr7bvJ
-	 DWU1CqoEB4GyHYfKEzCnpj+LSuv2vYCnvbsHo/WoPDCP6WdYeSfzyw+xVmiJzQlq44
-	 ie2QIyk7CBDuELp48AWcjsWnpQprr/4ulptoVvoo=
+	b=OcofSvET93vMQOyl6KMHbRhSaSOV04RBWsoSuOmCQfMl+nY9wTU6V5V6Yju2iaNYR
+	 9BCgnsTuFpRpKzI8OM/9O4g0fa9xHSYMqcaJywCuC/2fYvoINxqCJAsSg/DvfxnBi2
+	 9PyEEWm6j+jy5/IjKTNPzKe3Js+9GirBxe3TW4T4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31DB3F8051B;
+	by alsa1.perex.cz (Postfix) with ESMTP id E5D96F8051F;
 	Wed, 28 Oct 2020 09:06:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA397F8020D; Tue, 27 Oct 2020 16:28:59 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id D59BFF80227; Tue, 27 Oct 2020 19:01:06 +0100 (CET)
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
+ [IPv6:2607:f8b0:4864:20::d44])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1139F8019D
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 16:28:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1139F8019D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45E94F80086
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:00:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45E94F80086
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="d7xbDRjj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1603812532;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mlWO+8V1OcYguip2KBsMhYWBSFJwL/+zUDmEZaIbfJ4=;
- b=d7xbDRjjLjeEvhiw7mqjgDGX3VuMUoomMciVmv0YKgMaZPut6z0vEv97siHsvwv8UUTeza
- /1DTh5nRa//2JOfEAnDH55hMpwPFTTvTbuI95HpY3JmzdFo5XmWEE2wQDjAQoBkMgJQSM/
- IZtliz4GjC6Nx2Qb/9PxpBdXwE25qQU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-iCsUzPFHO_OboEGAEA0vvw-1; Tue, 27 Oct 2020 11:28:49 -0400
-X-MC-Unique: iCsUzPFHO_OboEGAEA0vvw-1
-Received: by mail-wr1-f72.google.com with SMTP id t17so884165wrm.13
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 08:28:48 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com
+ header.i=@bgdev-pl.20150623.gappssmtp.com header.b="UoiZn2ej"
+Received: by mail-io1-xd44.google.com with SMTP id z5so2536828iob.1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 11:00:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Ed3AIF7qFllVghkuMSpgY+e4IbkAvQfdceeKpQaUdxk=;
+ b=UoiZn2ejgC7wXGBMzC5P1HZYY0nl6Wa3KE0/4S9Ciuieo7WYMXpDS0Iaqpc4XiAPdO
+ qMSPbldaS4qotDJxt10RTbnG9MLtwWkVWivTQZrOtp1ibfKEiirPfM/hcYKscWcE5G9+
+ hdA0OqGIyHCG+6wpH2Tcj5TcpWPTkljgGKnbGOzRrgHXz7X+jipA9gLH6g8zN/Jx0l4s
+ /OKkLzKstGxFD2CYIuU1B33wI1K0Ml8+qKW5x8c0LoZzpt+1zSKoX87G79JYtOSZ/rG6
+ gJ+d5QJ1DFf7m/UdqRG6MK7XEwKpEIVQ7cBBbC41y7jJlAMtCPK8jhzSkqrf6tO37h92
+ JCSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=mlWO+8V1OcYguip2KBsMhYWBSFJwL/+zUDmEZaIbfJ4=;
- b=D6VyV0PURvBiCw24ID0FbIdf9HugYWAA5gsIPtOiFRNJjVsthAzLewd2YU+WFPpvKW
- 1j2miClj8xTj6m7357dTBj4fAa6u1P+Mk/p2NawlUs7k5nH+KVHj2E7RAUFUplblon7f
- R4qUQE7Z1I4AE1lkanNbpiku/P4CP8nMfLZVI2n3Z55Q+B0E+5jIby0JWO/MSIi4ehzq
- /RmsLW1nLOTTQr1C8Z2yH5iX5Ilx/49hzw6oq1v8+1dTZZfKUbH/2X9IE23IbVlvO6iQ
- D94Ei72RHrSVNZAfr/HI8BbDtaqo6rjUjjdBvVUgu2z6yDSyHjdYSGl44uClTPPM5R9R
- s4ag==
-X-Gm-Message-State: AOAM531j+6imOgLEAIyxwyrnf8p0H3lEb+8ezEeZUJ8K2H6kV3U1jxOf
- DXqQ3jcAtYAG6+hOAdduexWXTVz4cipr40t7ckuobjlCU1tPdMnIzpEkxEiGFfWHolvvUUF7UjW
- 2NAO2D8AF1m81fo9o50g0+kc=
-X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr3177577wms.182.1603812526994; 
- Tue, 27 Oct 2020 08:28:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyuH3n7lQ9eR5dnqf6yc1oFeHmyleXhbTjubsRyj6zs3Jak/y/oaUl12gqM18qHQ8tFGKD6AA==
-X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr3177537wms.182.1603812526789; 
- Tue, 27 Oct 2020 08:28:46 -0700 (PDT)
-Received: from redhat.com (bzq-109-65-21-184.red.bezeqint.net. [109.65.21.184])
- by smtp.gmail.com with ESMTPSA id 3sm2370433wmd.19.2020.10.27.08.28.42
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Oct 2020 08:28:45 -0700 (PDT)
-Date: Tue, 27 Oct 2020 11:28:40 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
-Message-ID: <20201027112607-mutt-send-email-mst@kernel.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Ed3AIF7qFllVghkuMSpgY+e4IbkAvQfdceeKpQaUdxk=;
+ b=lJ5I2O9+xIZmUphnp/dfVrwawyxChVdZ0JGRWNOJAWnW1oyJC9McGZxyHUvm0R3dYB
+ IrhIRlu1crYkwhXnpjhKMpD87T+eikL2S3zUnWTR+IPkKbCK0aYieggWkiKcuOQLOeBK
+ +nJUdzep8jgNeqTpPv0PB0EPF+LXiAci9knEjfiBeyxDNKhcT2IWXVtoqPrWTlqpqFbW
+ 5fdsOOweoNeK8qAzWAUIN+ecUVBp998W00Y7MY948+qhCIrfopBvK1QjTgLFZNfsInDr
+ pS40Se26dRnRKi+09+ijasstJVOVHf/fYzoqDRHyptOXIHsIUOdQb4SH5cv/b3lJA2HD
+ rQ9Q==
+X-Gm-Message-State: AOAM532F/yPFyEZOYS5f/TdQ9k/y+SHoxShNp735VLCrrxu4YNzfGVUi
+ 4ECGG9ipbxn8c7iZ/dUog8/+yHzAHiR4Wqp+ZwVnKw==
+X-Google-Smtp-Source: ABdhPJwN08N0ZyzhoITVdnvB4ryeaKood+3vq0iIUYgCE2JJfuXumCj2bIDB2qD60OdiaWwDhRbGH3iAIo+DCc+ziro=
+X-Received: by 2002:a6b:f401:: with SMTP id i1mr3323522iog.130.1603821657825; 
+ Tue, 27 Oct 2020 11:00:57 -0700 (PDT)
+MIME-Version: 1.0
 References: <20201027121725.24660-1-brgl@bgdev.pl>
  <20201027121725.24660-4-brgl@bgdev.pl>
-MIME-Version: 1.0
-In-Reply-To: <20201027121725.24660-4-brgl@bgdev.pl>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=mst@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:29 +0100
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
- David Airlie <airlied@linux.ie>, Gustavo Padovan <gustavo@padovan.org>,
- Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
- linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
+ <20201027112607-mutt-send-email-mst@kernel.org>
+ <685d850347a1191bba8ba7766fc409b140d18f03.camel@perches.com>
+ <CAMpxmJU0C84DjPmqmWvPgv0zwgGLhkpKLRDuKkZHAa=wi+LvBA@mail.gmail.com>
+ <2767969b94fd66db1fb0fc13b5783ae65b7deb2f.camel@perches.com>
+In-Reply-To: <2767969b94fd66db1fb0fc13b5783ae65b7deb2f.camel@perches.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 27 Oct 2020 19:00:46 +0100
+Message-ID: <CAMRc=McvW_E0aE2Ep=3aZvb=kNDMz6=ZH-EQzARAD-tyJG5Rrg@mail.gmail.com>
+Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
+To: Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:30 +0100
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, kvm@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
+ Gustavo Padovan <gustavo@padovan.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ linux-drm <dri-devel@lists.freedesktop.org>, linux-mm@kvack.org,
+ Christoph Lameter <cl@linux.com>, Sumit Semwal <sumit.semwal@linaro.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  David Rientjes <rientjes@google.com>,
  virtualization@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
- linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>,
+ linux-media <linux-media@vger.kernel.org>, Robert Richter <rric@kernel.org>,
  Thomas Zimmermann <tzimmermann@suse.de>,
  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
  Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
- linux-gpio@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-edac@vger.kernel.org,
- Tony Luck <tony.luck@intel.com>, netdev@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Pekka Enberg <penberg@kernel.org>, James Morse <james.morse@arm.com>,
- Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
- Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+ linux-gpio <linux-gpio@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-edac@vger.kernel.org,
+ Tony Luck <tony.luck@intel.com>, netdev <netdev@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, Pekka Enberg <penberg@kernel.org>,
+ James Morse <james.morse@arm.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -141,38 +132,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> Use the helper that checks for overflows internally instead of manually
-> calculating the size of the new array.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Tue, Oct 27, 2020 at 6:08 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Tue, 2020-10-27 at 17:58 +0100, Bartosz Golaszewski wrote:
+> > On Tue, Oct 27, 2020 at 5:50 PM Joe Perches <joe@perches.com> wrote:
+> > >
+> > > On Tue, 2020-10-27 at 11:28 -0400, Michael S. Tsirkin wrote:
+> > > > On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
+> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > >
+> > > > > Use the helper that checks for overflows internally instead of manually
+> > > > > calculating the size of the new array.
+> > > > >
+> > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > >
+> > > > No problem with the patch, it does introduce some symmetry in the code.
+> > >
+> > > Perhaps more symmetry by using kmemdup
+> > > ---
+> > >  drivers/vhost/vringh.c | 23 ++++++++++-------------
+> > >  1 file changed, 10 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> > > index 8bd8b403f087..99222a3651cd 100644
+> > > --- a/drivers/vhost/vringh.c
+> > > +++ b/drivers/vhost/vringh.c
+> > > @@ -191,26 +191,23 @@ static int move_to_indirect(const struct vringh *vrh,
+> > >  static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
+> > >  {
+> > >         struct kvec *new;
+> > > -       unsigned int flag, new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
+> > > +       size_t new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
+> > > +       size_t size;
+> > >
+> > >         if (new_num < 8)
+> > >                 new_num = 8;
+> > >
+> > > -       flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
+> > > -       if (flag)
+> > > -               new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
+> > > -       else {
+> > > -               new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
+> > > -               if (new) {
+> > > -                       memcpy(new, iov->iov,
+> > > -                              iov->max_num * sizeof(struct iovec));
+> > > -                       flag = VRINGH_IOV_ALLOCATED;
+> > > -               }
+> > > -       }
+> > > +       if (unlikely(check_mul_overflow(new_num, sizeof(struct iovec), &size)))
+> > > +               return -ENOMEM;
+> > > +
+> >
+> > The whole point of using helpers such as kmalloc_array() is not doing
+> > these checks manually.
+>
+> Tradeoffs for in readability for overflow and not mistyping or doing
+> the multiplication of iov->max_num * sizeof(struct iovec) twice.
+>
 
-No problem with the patch, it does introduce some symmetry in the code.
+It's out of scope for this series - I want to add users for
+krealloc_array(), not refactor code I don't really know. If the
+maintainer of this bit objects, it can be dropped.
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> Just fyi:
+>
+> the realloc doesn't do a multiplication overflow test as written so the
+> suggestion is slightly more resistant to defect.
+>
 
+I'm not sure what your point is. I used krealloc_array() exactly for
+this reason - to add the overflow test.
 
+BTW I suppose kmalloc_array() here can be replaced with
+krealloc_array() if the original pointer is NULL the first time it's
+called.
 
-> ---
->  drivers/vhost/vringh.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index 8bd8b403f087..08a0e1c842df 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -198,7 +198,8 @@ static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
->  
->  	flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
->  	if (flag)
-> -		new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
-> +		new = krealloc_array(iov->iov, new_num,
-> +				     sizeof(struct iovec), gfp);
->  	else {
->  		new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
->  		if (new) {
-> -- 
-> 2.29.1
-
+Bartosz
