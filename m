@@ -2,98 +2,67 @@ Return-Path: <SRS0=gpx6=EC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 805D3C388F9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:44:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3894C4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:47:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F641207F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:44:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5273F207F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:47:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nezjf/bx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F641207F7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pF0SVELu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5273F207F7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5005D168F;
-	Tue, 27 Oct 2020 08:43:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5005D168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3D4F169C;
+	Tue, 27 Oct 2020 08:46:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3D4F169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603784638;
-	bh=EmajjuODeoy2bGP4LE6LWcSm+88zUoXnt8ljsimwoHA=;
-	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	s=default; t=1603784820;
+	bh=K80mSVUu8Ox4RIpggAqPrrzSxMNuK0Vfnycqz8Tci60=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nezjf/bxcWtLc7dSRwcvpfhlHE40kasQQYGok6vd2DlZYkR80gkWBuhRO/ehXsod/
-	 fyYvuzqXiguNbArlb7ZY2Me3sq1BqPIdEnRSbLe0CAvEvsSA3ZK64p+FV3YIiHmuab
-	 qmLBh3OBG0BJ9QjJKcgB2A6CXm4sqO9xkdpgVR2M=
+	b=pF0SVELuzd3dHBmU4MvGWM+uoFPMUfyqXQK2QZFCUgI8DnCKrnyTFGNyRRSy3xLSE
+	 2UNXiyPg1zYWDoIIaH7lIgQk7yEAU4a/h9f4GvNHH1/T9uez+DQs8hfDAGFkPuhJSR
+	 tDgwXoR1Lfqfu9sK4VyjCft5h6geLUpO8bPBpCSM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0408F80086;
-	Tue, 27 Oct 2020 08:43:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B25FF80086;
+	Tue, 27 Oct 2020 08:46:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA3EBF8020D; Tue, 27 Oct 2020 08:43:06 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 909F2F8020D; Tue, 27 Oct 2020 08:46:08 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4DF1F80086
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 08:43:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4DF1F80086
-Received: from mail-pf1-f199.google.com ([209.85.210.199])
- by youngberry.canonical.com with esmtps
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>) id 1kXJdC-000241-VF
- for alsa-devel@alsa-project.org; Tue, 27 Oct 2020 07:42:59 +0000
-Received: by mail-pf1-f199.google.com with SMTP id x24so431042pfi.18
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 00:42:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
- :content-transfer-encoding:message-id:references:to;
- bh=vjBTmlur4S+6L78WlNF3x++nFUbCLvDVi46xZz3zYpE=;
- b=Ro4pjCFRavsfuPF92Z9GrijKEsjF3vHqp4AYwNjxu/WUSm6juG65CVqH2NaafemxBE
- jk5azAmv48wZQjSdVui+ob5xsFAKg4qFhx6TnJpBhDygL1El4deuDS9HzGs6LO2yXG4g
- sagMjtb2OGBPMNtc1SKLcV5BAyRCRHi/S8TfXmNMMRQRcw51Vd1S6+S+kHM0EjlcEocS
- 9WkPAvG3svWnGLPdoxz9nTwUFa6/q+9rbQDiZ8gOuNKvbJzwLkAKK5CuaubUyRcv5wr2
- c89/MZlBMCVuo09UswmJ/ThpxK7DzNBbNZ9NQAsnGiZkSzwGK4x6aoJ/RT/YwgPJoKpO
- 1QnA==
-X-Gm-Message-State: AOAM531gQICIftnANNVbp08xfjVY6rt4Gr7C5mG4F08nKDPgqdc3OVZm
- /28uvfsA7cPQm1yZs4k7eMHbxF3585tddIu+Zrs7R5fN83bMstVpCPoFOYNs0gMQuzlkAMbO7jK
- UKtqjdX5YO1PnXwNan4aXJoj3UA7OwZFdeWMs8FNW
-X-Received: by 2002:a65:508a:: with SMTP id r10mr842468pgp.307.1603784576727; 
- Tue, 27 Oct 2020 00:42:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpWh5uvxiSN6j6mhUOK56nhuZlhIjzT3g50otq4ptMM3LFXs8p+I7SF+v5vqGOHjNuYzcwIw==
-X-Received: by 2002:a65:508a:: with SMTP id r10mr842439pgp.307.1603784576242; 
- Tue, 27 Oct 2020 00:42:56 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net.
- [220.133.187.190])
- by smtp.gmail.com with ESMTPSA id s131sm998111pgc.18.2020.10.27.00.42.53
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 27 Oct 2020 00:42:55 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2 2/4] ALSA: hda: Stop mangling PCI IRQ
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <s5hmu082k8s.wl-tiwai@suse.de>
-Date: Tue, 27 Oct 2020 15:42:52 +0800
-Content-Transfer-Encoding: 7bit
-Message-Id: <5A5FF9D8-25B6-4AE0-B7A0-449BB6E40D98@canonical.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB5F5F80086
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 08:46:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB5F5F80086
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 18D0FAF72;
+ Tue, 27 Oct 2020 07:46:05 +0000 (UTC)
+Date: Tue, 27 Oct 2020 08:46:05 +0100
+Message-ID: <s5hlffs2jsy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2 3/4] ALSA: hda: Separate runtime and system suspend
+In-Reply-To: <20201027054001.1800-4-kai.heng.feng@canonical.com>
 References: <20201027054001.1800-1-kai.heng.feng@canonical.com>
- <20201027054001.1800-3-kai.heng.feng@canonical.com>
- <s5hmu082k8s.wl-tiwai@suse.de>
-To: Takashi Iwai <tiwai@suse.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- linux-kernel@vger.kernel.org, tiwai@suse.com,
- Hui Wang <hui.wang@canonical.com>
+ <20201027054001.1800-4-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, hui.wang@canonical.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,101 +78,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 27 Oct 2020 06:40:00 +0100,
+Kai-Heng Feng wrote:
+> @@ -1002,7 +1001,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+>  	azx_init_pci(chip);
+>  	hda_intel_init_chip(chip, true);
+>  
+> -	if (from_rt) {
+> +	/* Avoid codec resume if runtime resume is for system suspend */
+> +	if (from_rt && !chip->prepared) {
 
-> On Oct 27, 2020, at 15:36, Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> On Tue, 27 Oct 2020 06:39:59 +0100,
-> Kai-Heng Feng wrote:
->> 
->> The code predates 2005, it should be unnecessary now as PCI core handles
->> IRQ much better nowadays.
->> 
->> So stop PCI IRQ mangling in suspend/resume callbacks.
->> 
->> Takashi Iwai mentioned that IRQ number can change after S3 on some
->> really old hardwares. We should use quirks to handle those platforms, as
->> most modern systems won't have that issue.
-> 
-> I believe it was S4.  And this pretty much depends on BIOS, hence it's
-> hard to apply the quirk, honestly speaking.
+The check of chip->prepared is superfluous here.  Its check should be
+applied rather at setting WAKEEN, namely...
 
-Ok, S4 is indeed hard to handle.
+> @@ -1103,10 +1115,8 @@ static int azx_runtime_suspend(struct device *dev)
+>  	chip = card->private_data;
+>  
+>  	/* enable controller wake up event */
+> -	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
+> -		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+> -			   STATESTS_INT_MASK);
+> -	}
+> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+> +		   STATESTS_INT_MASK);
 
-> 
-> And, if we know that we need a quirk, dropping the code completely now
-> is a bad move.  If any, this should be applied conditionally to the
-> "known to be modern" platforms, but this will make the code rather
-> messier, OTOH.
-> 
-> Do we need this change inevitably?  Otherwise I'd skip this one.
+... here we should have the check of chip->prepared, and set WAKEEN
+only when it's false.  Otherwise WAKEEN is set up for the system
+suspend, and it might lead to spurious wakeups.  (IOW, checking the
+flag at resume doesn't help for preventing the spurious wakeup :)
 
-Ok, please drop this one.
 
-Kai-Heng
+thanks,
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
->> 
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> ---
->> v2:
->> - Wording.
->> - Add info on IRQ # can change on old hardwares.
->> 
->> sound/pci/hda/hda_intel.c | 15 ---------------
->> 1 file changed, 15 deletions(-)
->> 
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index 749b88090970..b4aa1dcf1aae 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -1022,13 +1022,11 @@ static int azx_suspend(struct device *dev)
->> {
->> 	struct snd_card *card = dev_get_drvdata(dev);
->> 	struct azx *chip;
->> -	struct hdac_bus *bus;
->> 
->> 	if (!azx_is_pm_ready(card))
->> 		return 0;
->> 
->> 	chip = card->private_data;
->> -	bus = azx_bus(chip);
->> 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
->> 	/* An ugly workaround: direct call of __azx_runtime_suspend() and
->> 	 * __azx_runtime_resume() for old Intel platforms that suffer from
->> @@ -1038,14 +1036,6 @@ static int azx_suspend(struct device *dev)
->> 		__azx_runtime_suspend(chip);
->> 	else
->> 		pm_runtime_force_suspend(dev);
->> -	if (bus->irq >= 0) {
->> -		free_irq(bus->irq, chip);
->> -		bus->irq = -1;
->> -		chip->card->sync_irq = -1;
->> -	}
->> -
->> -	if (chip->msi)
->> -		pci_disable_msi(chip->pci);
->> 
->> 	trace_azx_suspend(chip);
->> 	return 0;
->> @@ -1060,11 +1050,6 @@ static int azx_resume(struct device *dev)
->> 		return 0;
->> 
->> 	chip = card->private_data;
->> -	if (chip->msi)
->> -		if (pci_enable_msi(chip->pci) < 0)
->> -			chip->msi = 0;
->> -	if (azx_acquire_irq(chip, 1) < 0)
->> -		return -EIO;
->> 
->> 	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
->> 		__azx_runtime_resume(chip, false);
->> -- 
->> 2.17.1
->> 
-
+Takashi
