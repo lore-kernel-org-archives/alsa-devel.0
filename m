@@ -2,70 +2,110 @@ Return-Path: <SRS0=HcWj=ED=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F05B3C4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DEEFC4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7EE32072E
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:11:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9068C20724
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c3ypzS6/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7EE32072E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IjoS3t46";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d7xbDRjj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9068C20724
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5059A1691;
-	Wed, 28 Oct 2020 09:10:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5059A1691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 047CB168A;
+	Wed, 28 Oct 2020 09:11:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 047CB168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603872705;
-	bh=BOV5HPvzqGgMsw+lBt4vkOT5yfomz6dfa4+7+E8nmYE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603872736;
+	bh=I9wJXlD9PVGCgTYmHQ4SO54uv04OKKhHmkSKr4+jBVQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c3ypzS6/e2N0OiN0IJ+8+XF8oU9kcpBxpdWROd4C5xa1Cv20311CDyw+UbwNflLnB
-	 yZuMq3s6KFZr5EClUwWG4o35780eph6SevKvNl0GErGam13txgHuROXmuxcTeO0RLE
-	 1QA+cgZi+rk5mtBdlgQj9E0J/p1IZZcqppcMhtFw=
+	b=IjoS3t46sMShD80Y/G5gBFg9c6Ih74yRVjJWvF+0dhpGUyCvKHDbh53H/mNkr7bvJ
+	 DWU1CqoEB4GyHYfKEzCnpj+LSuv2vYCnvbsHo/WoPDCP6WdYeSfzyw+xVmiJzQlq44
+	 ie2QIyk7CBDuELp48AWcjsWnpQprr/4ulptoVvoo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22659F80511;
-	Wed, 28 Oct 2020 09:06:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31DB3F8051B;
+	Wed, 28 Oct 2020 09:06:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E5BBF8020D; Tue, 27 Oct 2020 13:39:34 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id DA397F8020D; Tue, 27 Oct 2020 16:28:59 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1784F800FF
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 13:39:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1784F800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 04E1BAC5F;
- Tue, 27 Oct 2020 12:39:27 +0000 (UTC)
-Date: Tue, 27 Oct 2020 13:39:26 +0100
-Message-ID: <s5hh7qf2681.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1139F8019D
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 16:28:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1139F8019D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="d7xbDRjj"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1603812532;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mlWO+8V1OcYguip2KBsMhYWBSFJwL/+zUDmEZaIbfJ4=;
+ b=d7xbDRjjLjeEvhiw7mqjgDGX3VuMUoomMciVmv0YKgMaZPut6z0vEv97siHsvwv8UUTeza
+ /1DTh5nRa//2JOfEAnDH55hMpwPFTTvTbuI95HpY3JmzdFo5XmWEE2wQDjAQoBkMgJQSM/
+ IZtliz4GjC6Nx2Qb/9PxpBdXwE25qQU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-iCsUzPFHO_OboEGAEA0vvw-1; Tue, 27 Oct 2020 11:28:49 -0400
+X-MC-Unique: iCsUzPFHO_OboEGAEA0vvw-1
+Received: by mail-wr1-f72.google.com with SMTP id t17so884165wrm.13
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 08:28:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=mlWO+8V1OcYguip2KBsMhYWBSFJwL/+zUDmEZaIbfJ4=;
+ b=D6VyV0PURvBiCw24ID0FbIdf9HugYWAA5gsIPtOiFRNJjVsthAzLewd2YU+WFPpvKW
+ 1j2miClj8xTj6m7357dTBj4fAa6u1P+Mk/p2NawlUs7k5nH+KVHj2E7RAUFUplblon7f
+ R4qUQE7Z1I4AE1lkanNbpiku/P4CP8nMfLZVI2n3Z55Q+B0E+5jIby0JWO/MSIi4ehzq
+ /RmsLW1nLOTTQr1C8Z2yH5iX5Ilx/49hzw6oq1v8+1dTZZfKUbH/2X9IE23IbVlvO6iQ
+ D94Ei72RHrSVNZAfr/HI8BbDtaqo6rjUjjdBvVUgu2z6yDSyHjdYSGl44uClTPPM5R9R
+ s4ag==
+X-Gm-Message-State: AOAM531j+6imOgLEAIyxwyrnf8p0H3lEb+8ezEeZUJ8K2H6kV3U1jxOf
+ DXqQ3jcAtYAG6+hOAdduexWXTVz4cipr40t7ckuobjlCU1tPdMnIzpEkxEiGFfWHolvvUUF7UjW
+ 2NAO2D8AF1m81fo9o50g0+kc=
+X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr3177577wms.182.1603812526994; 
+ Tue, 27 Oct 2020 08:28:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuH3n7lQ9eR5dnqf6yc1oFeHmyleXhbTjubsRyj6zs3Jak/y/oaUl12gqM18qHQ8tFGKD6AA==
+X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr3177537wms.182.1603812526789; 
+ Tue, 27 Oct 2020 08:28:46 -0700 (PDT)
+Received: from redhat.com (bzq-109-65-21-184.red.bezeqint.net. [109.65.21.184])
+ by smtp.gmail.com with ESMTPSA id 3sm2370433wmd.19.2020.10.27.08.28.42
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 27 Oct 2020 08:28:45 -0700 (PDT)
+Date: Tue, 27 Oct 2020 11:28:40 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
 To: Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH 2/8] ALSA: pcm: use krealloc_array()
-In-Reply-To: <20201027121725.24660-3-brgl@bgdev.pl>
+Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
+Message-ID: <20201027112607-mutt-send-email-mst@kernel.org>
 References: <20201027121725.24660-1-brgl@bgdev.pl>
- <20201027121725.24660-3-brgl@bgdev.pl>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:30 +0100
+ <20201027121725.24660-4-brgl@bgdev.pl>
+MIME-Version: 1.0
+In-Reply-To: <20201027121725.24660-4-brgl@bgdev.pl>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=mst@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:29 +0100
 Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
- "Michael S . Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
- Gustavo Padovan <gustavo@padovan.org>,
+ David Airlie <airlied@linux.ie>, Gustavo Padovan <gustavo@padovan.org>,
  Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
  linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
  Sumit Semwal <sumit.semwal@linaro.org>,
@@ -80,12 +120,12 @@ Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
  Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
  linux-gpio@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-edac@vger.kernel.org,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-edac@vger.kernel.org,
  Tony Luck <tony.luck@intel.com>, netdev@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
  Pekka Enberg <penberg@kernel.org>, James Morse <james.morse@arm.com>,
- Daniel Vetter <daniel@ffwll.ch>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
+ Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
+ Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,9 +141,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Oct 2020 13:17:19 +0100,
-Bartosz Golaszewski wrote:
-> 
+On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
 > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
 > Use the helper that checks for overflows internally instead of manually
@@ -111,9 +149,30 @@ Bartosz Golaszewski wrote:
 > 
 > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+No problem with the patch, it does introduce some symmetry in the code.
+
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
 
-thanks,
 
-Takashi
+> ---
+>  drivers/vhost/vringh.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> index 8bd8b403f087..08a0e1c842df 100644
+> --- a/drivers/vhost/vringh.c
+> +++ b/drivers/vhost/vringh.c
+> @@ -198,7 +198,8 @@ static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
+>  
+>  	flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
+>  	if (flag)
+> -		new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
+> +		new = krealloc_array(iov->iov, new_num,
+> +				     sizeof(struct iovec), gfp);
+>  	else {
+>  		new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
+>  		if (new) {
+> -- 
+> 2.29.1
+
