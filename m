@@ -2,68 +2,69 @@ Return-Path: <SRS0=gpx6=EC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AED04C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32C1EC4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:28:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54F9D20809
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:19:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0348F22264
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 07:28:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kdEo5lEJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54F9D20809
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cs.stanford.edu
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gDTPg0Er"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0348F22264
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BA3B169A;
-	Tue, 27 Oct 2020 08:19:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BA3B169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69653169A;
+	Tue, 27 Oct 2020 08:27:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69653169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603783193;
-	bh=yVKW7r44e5sKI+GehIl3BVeq/g8qCL8oa9PmphR1bT8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1603783712;
+	bh=odbOx04f0qVekH6jM/DT4KH0KUqxyIVb067AsagqFYw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kdEo5lEJfDTfZIdpDIqglAcOXXA1T65Hs/LQ/hrDGHZ7mXRfKPFGRnz5AW4yH1KEe
-	 +4p9cZ1x8fq2uk7cCfcflyc47YPDbfh5tDmy8p96PhKH9/APYkYA0Z/P7s1q9lc+ED
-	 nve3cn9jrgCku8TcSwHkn6lHRDWxze9NMZ5eq7Qw=
+	b=gDTPg0ErE4bZbM6LCKjHry05y7PK0TBqXv0SsrTPWvc+Jxn+rb3+EZdqSTIxe+7rk
+	 A53Rk4A8L0R6iQk1nghi+t6foG/rsqVFE62DebZzfOUYuQPZSMpjrsOWSn0U/Odjlm
+	 ynkZw7hunGut0phD+8BGyUawwbajK/jRFihCPMbY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCAF7F801D8;
-	Tue, 27 Oct 2020 08:19:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D77EFF801D8;
+	Tue, 27 Oct 2020 08:27:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C60AF801D8; Tue, 27 Oct 2020 08:19:01 +0100 (CET)
-Received: from smtp3.cs.Stanford.EDU (smtp3.cs.stanford.edu [171.64.64.27])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 397E8F8020D; Tue, 27 Oct 2020 08:27:40 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AB45F800FF
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 08:18:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AB45F800FF
-Received: from dn200on4g.stanford.edu ([128.12.92.144]:37614
- helo=trolley.csail.mit.edu) by smtp3.cs.Stanford.EDU with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.92.3)
- (envelope-from <keithw@cs.stanford.edu>)
- id 1kXJFq-0005lS-Cw; Tue, 27 Oct 2020 00:18:50 -0700
-Date: Tue, 27 Oct 2020 00:18:41 -0700
-From: Keith Winstein <keithw@cs.stanford.edu>
-To: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC61CF8019D
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 08:27:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC61CF8019D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 15391ABA2;
+ Tue, 27 Oct 2020 07:27:31 +0000 (UTC)
+Date: Tue, 27 Oct 2020 08:27:31 +0100
+Message-ID: <s5ho8ko2knw.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Keith Winstein <keithw@cs.stanford.edu>
 Subject: Re: [PATCH] ALSA: usb-audio: Add implicit feedback quirk for Zoom
  UAC-2
-Message-ID: <20201027071841.GA164525@trolley.csail.mit.edu>
+In-Reply-To: <20201027071841.GA164525@trolley.csail.mit.edu>
 References: <CAMzhQmP+Y_=XpCueCxPdjG6rtYn+YhtRSeRkXkv5mJ3NWtxA9Q@mail.gmail.com>
  <20201026080143.GA145492@trolley.csail.mit.edu>
  <s5h36215c2r.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h36215c2r.wl-tiwai@suse.de>
-X-Scan-Signature: 127ff6e1eac6b45a32dc112250ed777d
+ <20201027071841.GA164525@trolley.csail.mit.edu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -80,53 +81,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 26, 2020 at 02:52:28PM +0100, Takashi Iwai wrote:
-> On Mon, 26 Oct 2020 09:01:43 +0100,
-> Keith Winstein wrote:
-> > 
-> > Here is the patch again without line-wrapping.
+On Tue, 27 Oct 2020 08:18:41 +0100,
+Keith Winstein wrote:
 > 
-> Could you put the patch description in the patch itself?
-> Basically I'm fine to merge this as is, just missing information for
-> git.
+> On Mon, Oct 26, 2020 at 02:52:28PM +0100, Takashi Iwai wrote:
+> > On Mon, 26 Oct 2020 09:01:43 +0100,
+> > Keith Winstein wrote:
+> > > 
+> > > Here is the patch again without line-wrapping.
+> > 
+> > Could you put the patch description in the patch itself?
+> > Basically I'm fine to merge this as is, just missing information for
+> > git.
+> 
+> Sure, here you go:
+> 
+> >From 51fac91fa3a5da656ca6a49ca6cc98be7664efd7 Mon Sep 17 00:00:00 2001
+> From: Keith Winstein <keithw@cs.stanford.edu>
+> Date: Sun, 25 Oct 2020 22:05:47 -0700
+> Subject: [PATCH] ALSA: usb-audio: Add implicit feedback quirk for Zoom UAC-2
+> 
+> The Zoom UAC-2 USB audio interface provides an async playback endpoint ("1 OUT (ASYNC)") and
+> capture endpoint ("2 IN (ASYNC)"), both with 2-channel S32_LE in 44.1, 48, 88.2, 96, 176.4,
+> or 192 kilosamples/s. The device provides explicit feedback to adjust the host's playback
+> rate, but the feedback appears unstable and biased relative to the device's capture rate.
+> "alsaloop -t 1000" experiences playback underruns and tries to resample the captured audio
+> to match the varying playback rate. Forcing the kernel to use implicit feedback appears to
+> produce more stable results. This causes the host to transmit one playback sample for each
+> capture sample received. (Zoom North America has been notified of this change.)
+> 
+> Signed-off-by: Keith Winstein <keithw@cs.stanford.edu>
+> Tested-by: Keith Winstein <keithw@cs.stanford.edu>
 
-Sure, here you go:
+Applied now.  Thanks.
 
-From 51fac91fa3a5da656ca6a49ca6cc98be7664efd7 Mon Sep 17 00:00:00 2001
-From: Keith Winstein <keithw@cs.stanford.edu>
-Date: Sun, 25 Oct 2020 22:05:47 -0700
-Subject: [PATCH] ALSA: usb-audio: Add implicit feedback quirk for Zoom UAC-2
 
-The Zoom UAC-2 USB audio interface provides an async playback endpoint ("1 OUT (ASYNC)") and
-capture endpoint ("2 IN (ASYNC)"), both with 2-channel S32_LE in 44.1, 48, 88.2, 96, 176.4,
-or 192 kilosamples/s. The device provides explicit feedback to adjust the host's playback
-rate, but the feedback appears unstable and biased relative to the device's capture rate.
-"alsaloop -t 1000" experiences playback underruns and tries to resample the captured audio
-to match the varying playback rate. Forcing the kernel to use implicit feedback appears to
-produce more stable results. This causes the host to transmit one playback sample for each
-capture sample received. (Zoom North America has been notified of this change.)
-
-Signed-off-by: Keith Winstein <keithw@cs.stanford.edu>
-Tested-by: Keith Winstein <keithw@cs.stanford.edu>
----
- sound/usb/pcm.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index b401ee894e1b..31b1edf53c41 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -352,6 +352,10 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
- 		ep = 0x81;
- 		ifnum = 2;
- 		goto add_sync_ep_from_ifnum;
-+	case USB_ID(0x1686, 0xf029): /* Zoom UAC-2 */
-+		ep = 0x82;
-+		ifnum = 2;
-+		goto add_sync_ep_from_ifnum;
- 	case USB_ID(0x1397, 0x0001): /* Behringer UFX1604 */
- 	case USB_ID(0x1397, 0x0002): /* Behringer UFX1204 */
- 		ep = 0x81;
--- 
-2.25.1
-
+Takashi
