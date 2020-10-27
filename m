@@ -2,84 +2,114 @@ Return-Path: <SRS0=gpx6=EC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77BF6C388F9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 16:28:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB76C388F9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 16:44:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0994520829
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 16:28:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8621121707
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 16:44:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NTR7U/TP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="J0pkkZf0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0994520829
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TpvGz5q1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FbJgonJ1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8621121707
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B166167B;
-	Tue, 27 Oct 2020 17:27:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B166167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA199167E;
+	Tue, 27 Oct 2020 17:43:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA199167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603816079;
-	bh=kM+q5a/4CSozUbBt556ksVRBHVXOCmkxyQA/MctuzVE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NTR7U/TPTCYDcawYfcBoRgVdb+38Q5dhxR2YSL1hYjhMNDwT23i7oFvG5YR7TJUOD
-	 waPvx7VukWEHN9cfLb0YtyyKWk+tITwrT+gGcdbfO+qH1WNiEFeo6GGKmPlCdlvAp4
-	 Q0qVY/XvMFm6fimQA/5qwV6RSfJhFAsaJz9lrHyo=
+	s=default; t=1603817058;
+	bh=OQOHVS8bcGZvkTBJmwKxlEuTZIWdxWntvNhv0TMn9AQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TpvGz5q1yx5ZeFrpIg1ok6P2bxj4Y3wUfep4KTTwvOp7r2HhBB3KwJz0NML91PTMd
+	 7I1cw7DX8/3sMqZi0mNxMrShDeb8n270gOOIOhP7qvHWuGL9S1FHcOb3v+Ewd6wf/5
+	 J9JL6Sksq3tjBH7ooXd+81fqsJFDVaUCBtUBRBic=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C538F801D8;
-	Tue, 27 Oct 2020 17:27:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11AFFF801D8;
+	Tue, 27 Oct 2020 17:43:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D095F8020D; Tue, 27 Oct 2020 17:27:07 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3F6FEF8020D; Tue, 27 Oct 2020 17:43:26 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41F67F800FF
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 17:27:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41F67F800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A3ABF800FF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 17:43:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A3ABF800FF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="J0pkkZf0"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 385F121655;
- Tue, 27 Oct 2020 16:27:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603816020;
- bh=kM+q5a/4CSozUbBt556ksVRBHVXOCmkxyQA/MctuzVE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=J0pkkZf0nkd5hT9kQnPgSGqY293gEZG5Qc5BHBXrcbnsjmpn7NKuFW75bGu28c4a/
- EeqnOK5o8KAPYd5pBFQmUXT4YcTrGa19RXW64meYpoXNSnooTYR5sgm17RtcwuREzK
- bdrStVPco0ZHfBJlJZTfCPNBx1yXpBkD0ZP8f7/o=
-Date: Tue, 27 Oct 2020 16:26:55 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH] drm/vc4: hdmi: Avoid sleeping in atomic context
-Message-ID: <20201027162655.GB4895@sirena.org.uk>
-References: <20201027101558.427256-1-maxime@cerno.tech>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="7iMSBzlTiPOCCT2k"
-Content-Disposition: inline
-In-Reply-To: <20201027101558.427256-1-maxime@cerno.tech>
-X-Cookie: That's no moon...
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Dom Cobley <dom@raspberrypi.com>,
- Tim Gover <tim.gover@raspberrypi.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Dave Stevenson <dave.stevenson@raspberrypi.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Takashi Iwai <tiwai@suse.com>, Thomas Zimmermann <tzimmermann@suse.de>,
- Phil Elwell <phil@raspberrypi.com>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="FbJgonJ1"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1603817000;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:content-type:content-type;
+ bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
+ b=FbJgonJ171jSzvgL5bSjkunUgVE0c/JRuU5j7wHHrOq44T6Rc1XG2YIppSgfyNdgm3+H4+
+ ctgWgWSzC+v9k4HbynT7FMiok41p91k/1D9XSsa58LSES6Nnoq9aGdn6qgLfcJgVN5pG0T
+ MbesBu30ocjhHLF8C5sYgz0ikBjQ+6w=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-NLrcfGp1PICkKHs6CRK8zg-1; Tue, 27 Oct 2020 12:43:15 -0400
+X-MC-Unique: NLrcfGp1PICkKHs6CRK8zg-1
+Received: by mail-oo1-f69.google.com with SMTP id w3so1026653oov.6
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 09:43:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
+ b=aFVxFvc3rmQUUxLnQGrBv+1lqJDWzIfVJx+ymEPELeaRf/8ovmTTudftL0zbXpgGLp
+ MoHlVZ6i9Z9FdKDtQzK8Lgn4UZdcHBf2J0p3KXtn3Ey4PDJsK2woAKoHfS14pw2ZPjD9
+ 6B/oVFcQSPNdyAmgSK8dZg7uWK17TCax7pKlK2B6mZQHIyXE98FOyF4iVketGFJHkv31
+ 1MN0VDg9nUYddbZWzJEB3abYUwRZszanawImteXjQk6ZK9W7iHuajTUNFwK9iA4CXHgs
+ 7N2UJ37+x2Av1Z2BaRdK8IQNBbHLCGa6W6/fq53DIUhIhL4qO8dnWOy8fUg0RPMww3Xv
+ 4scA==
+X-Gm-Message-State: AOAM531jzR62Bh4wyn0B4CrIx0PXpKn+bIbpaA1QpXJPjlHOBQqTV2A0
+ OWMUPn7lscRY/j3UqkvVTGVs6NXnGutu+sa3RaHml8EGR1+MTFC86ZgqaznoTZP1vp/JAc+AvE5
+ MLAYTLlPXQYs/kBErubSXPWM=
+X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048484oih.67.1603816994021;
+ Tue, 27 Oct 2020 09:43:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw7y1eCX7WfRNi9tkZnfLpiDio1qtG9FKTpwYlLMD9SlPYp6FIE57BquNUx5oTk2cs+UUc+WA==
+X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048435oih.67.1603816993577;
+ Tue, 27 Oct 2020 09:43:13 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com.
+ [75.142.250.213])
+ by smtp.gmail.com with ESMTPSA id l89sm90968otc.6.2020.10.27.09.43.10
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 27 Oct 2020 09:43:12 -0700 (PDT)
+From: trix@redhat.com
+To: linux-kernel@vger.kernel.org,
+	clang-built-linux@googlegroups.com
+Subject: Subject: [RFC] clang tooling cleanups
+Date: Tue, 27 Oct 2020 09:42:55 -0700
+Message-Id: <20201027164255.1573301-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=trix@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="US-ASCII"
+Cc: alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
+ linux-iio@vger.kernel.org,
+ =?UTF-8?q?=EF=BB=BFFrom=20=3A=20Tom=20Rix?= <trix@redhat.com>,
+ dri-devel@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, qat-linux@intel.com,
+ amd-gfx@lists.freedesktop.org, linux-pm@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-nfs@vger.kernel.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, linux-crypto@vger.kernel.org,
+ linux-btrfs@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,30 +125,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This rfc will describe
+An upcoming treewide cleanup.
+How clang tooling was used to programatically do the clean up.
+Solicit opinions on how to generally use clang tooling.
 
---7iMSBzlTiPOCCT2k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The clang warning -Wextra-semi-stmt produces about 10k warnings.
+Reviewing these, a subset of semicolon after a switch looks safe to
+fix all the time.  An example problem
 
-On Tue, Oct 27, 2020 at 11:15:58AM +0100, Maxime Ripard wrote:
-> When running the trigger hook, ALSA by default will take a spinlock, and
-> thus will run the trigger hook in atomic context.
+void foo(int a) {
+     switch(a) {
+     	       case 1:
+	       ...
+     }; <--- extra semicolon
+}
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
+These fixes will be the upcoming cleanup.
 
---7iMSBzlTiPOCCT2k
-Content-Type: application/pgp-signature; name="signature.asc"
+clang already supports fixing this problem. Add to your command line
 
------BEGIN PGP SIGNATURE-----
+  clang -c -Wextra-semi-stmt -Xclang -fixit foo.c
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+YSk4ACgkQJNaLcl1U
-h9Cr7AgAhRoOc4Gjttyj+tM4Dayl68xyuva+089cuxgC2SZpu4kBZCMfygj42A1b
-XyU1mHn4CDblQ9xUZWdn5nhjNlxwhFLswRxz/f42ZiwsKk/GmYkiPEUM8gi31jBh
-VyoWXXcDVeb+sUZi6wo7Oqca3PBC6xhUsdIVUh+zAksbJ6nTPKv5H+x3JnSY+l1A
-Uk8k8xz9k00PdUJ08F6yLDFgWOIpurIRfrgcoSw69XXlcc2EOn55rf5k6ahS2jox
-xw4p3amLaWmdna+zkFZEgorUskjjxO5tfcZenKZMTgXqvEjYo0h0Hl1d9qYwTxM0
-P6XTxa6tghfpUovKg2IG87FZ1BZV2g==
-=DS6+
------END PGP SIGNATURE-----
+  foo.c:8:3: warning: empty expression statement has no effect;
+    remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        };
+         ^
+  foo.c:8:3: note: FIX-IT applied suggested code changes
+  1 warning generated.
 
---7iMSBzlTiPOCCT2k--
+The big problem is using this treewide is it will fix all 10k problems.
+10k changes to analyze and upstream is not practical.
+
+Another problem is the generic fixer only removes the semicolon.
+So empty lines with some tabs need to be manually cleaned.
+
+What is needed is a more precise fixer.
+
+Enter clang-tidy.
+https://clang.llvm.org/extra/clang-tidy/
+
+Already part of the static checker infrastructure, invoke on the clang
+build with
+  make clang-tidy
+
+It is only a matter of coding up a specific checker for the cleanup.
+Upstream this is review is happening here
+https://reviews.llvm.org/D90180
+
+The development of a checker/fixer is
+Start with a reproducer
+
+void foo (int a) {
+  switch (a) {};
+}
+
+Generate the abstract syntax tree (AST)
+
+  clang -Xclang -ast-dump foo.c
+
+`-FunctionDecl 
+  |-ParmVarDecl 
+  `-CompoundStmt 
+    |-SwitchStmt 
+    | |-ImplicitCastExpr
+    | | `-DeclRefExpr
+    | `-CompoundStmt
+    `-NullStmt
+
+Write a matcher to get you most of the way
+
+void SwitchSemiCheck::registerMatchers(MatchFinder *Finder) {
+  Finder->addMatcher(
+      compoundStmt(has(switchStmt().bind("switch"))).bind("comp"), this);
+}
+
+The 'bind' method is important, it allows a string to be associated
+with a node in the AST.  In this case these are
+
+`-FunctionDecl 
+  |-ParmVarDecl 
+  `-CompoundStmt <-------- comp
+    |-SwitchStmt <-------- switch
+    | |-ImplicitCastExpr
+    | | `-DeclRefExpr
+    | `-CompoundStmt
+    `-NullStmt
+
+When a match is made the 'check' method will be called.
+
+  void SwitchSemiCheck::check(const MatchFinder::MatchResult &Result) {
+    auto *C = Result.Nodes.getNodeAs<CompoundStmt>("comp");
+    auto *S = Result.Nodes.getNodeAs<SwitchStmt>("switch");
+
+This is where the string in the bind calls are changed to nodes
+
+`-FunctionDecl 
+  |-ParmVarDecl 
+  `-CompoundStmt <-------- comp, C
+    |-SwitchStmt <-------- switch, S
+    | |-ImplicitCastExpr
+    | | `-DeclRefExpr
+    | `-CompoundStmt
+    `-NullStmt <---------- looking for N
+
+And then more logic to find the NullStmt
+
+  auto Current = C->body_begin();
+  auto Next = Current;
+  Next++;
+  while (Next != C->body_end()) {
+    if (*Current == S) {
+      if (const auto *N = dyn_cast<NullStmt>(*Next)) {
+
+When it is found, a warning is printed and a FixItHint is proposed.
+
+  auto H = FixItHint::CreateReplacement(
+    SourceRange(S->getBody()->getEndLoc(), N->getSemiLoc()), "}");
+  diag(N->getSemiLoc(), "unneeded semicolon") << H;
+
+This fixit replaces from the end of switch to the semicolon with a
+'}'.  Because the end of the switch is '}' this has the effect of
+removing all the whitespace as well as the semicolon.
+
+Because of the checker's placement in clang-tidy existing linuxkernel
+checkers, all that was needed to fix the tree was to add a '-fix'to the
+build's clang-tidy call.
+
+I am looking for opinions on what we want to do specifically with
+cleanups and generally about other source-to-source programmatic
+changes to the code base.
+
+For cleanups, I think we need a new toplevel target
+
+clang-tidy-fix
+
+And an explicit list of fixers that have a very high (100%?) fix rate.
+
+Ideally a bot should make the changes, but a bot could also nag folks.
+Is there interest in a bot making the changes? Does one already exist?
+
+The general source-to-source is a bit blue sky.  Ex/ could automagicly
+refactor api, outline similar cut-n-pasted functions etc. Anything on
+someone's wishlist you want to try out ?
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+
