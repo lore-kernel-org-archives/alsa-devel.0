@@ -2,81 +2,120 @@ Return-Path: <SRS0=gpx6=EC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9365AC55179
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 16:48:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C729C4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 17:51:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7793220790
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 16:48:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A26EE22456
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 17:50:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NDkC3Z3F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7793220790
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h9DSyMiA";
+	dkim=temperror (0-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="h7KV/WVi";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XVv6/Yux"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A26EE22456
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6A2A1688;
-	Tue, 27 Oct 2020 17:47:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6A2A1688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B98D167B;
+	Tue, 27 Oct 2020 18:49:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B98D167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603817280;
-	bh=lbnIl8C60QZBbT8nZixp+Y+angODHnT0IKUKHxucKpc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1603821024;
+	bh=MlOe8J1DrS34+CcQ8+PDRc8VQ1TjW8TNpBn1dHf+8l8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NDkC3Z3FvsKyDZQjqlMsv6kcde3xWaNVXPAFjPIqFaN3h4EROUcHoymcbw3Mvhb0n
-	 4lthvx20g8kHQ4PE+DxX8Szg3WGCAM1Mzovq6rGMCJGYAKEBGp/54T65ohTgNXOEaj
-	 1wztES7QutuphaNjiRCBie2H/0ulHZcQzMtdKesM=
+	b=h9DSyMiAbCtz5rEfmsR+yk25rs68jNyIhjI7RDUTzpMGyCOgNyZ5I/zMohVxxZvV+
+	 JwO3+7DgJzCJaa7HjB2A7dN/xMm6Z8jcEYe/gQsU9aXgvh7db+1q1rdYFHOx2LCzmD
+	 CwZLo43SBJrwxlEIFyIPbfgWtRtfU0eWr1gAmvjI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 203F6F801D8;
-	Tue, 27 Oct 2020 17:46:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFFEFF80086;
+	Tue, 27 Oct 2020 18:49:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2A11F80240; Tue, 27 Oct 2020 17:46:20 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 81B3AF8020D; Tue, 27 Oct 2020 18:49:31 +0100 (CET)
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com
+ [66.111.4.224])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D906F80086
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 17:46:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D906F80086
-IronPort-SDR: UpbYbX6jFgRwO7MecpBYnj9rHFt/FvZjoqGNILKmY4YCE62M7j1+nFufSXpcVe7b3xyyb5Ktk8
- x98vtGu1Onzg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="168245815"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; d="scan'208";a="168245815"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2020 09:46:11 -0700
-IronPort-SDR: uplTI+FdS/8Zy2oa802eVL8155PjTeCFJb07xaLqtb3MHOhG5H48R+VfEXdfaf30+Ve++1rM5z
- gP9lbZqpCLEA==
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; d="scan'208";a="318289168"
-Received: from bretdavi-mobl2.amr.corp.intel.com (HELO [10.209.106.41])
- ([10.209.106.41])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2020 09:46:10 -0700
-Subject: Re: [PATCH 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>
-References: <87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com>
- <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <699d5b33-d88f-ba08-7d63-61ec9fbdc5d8@linux.intel.com>
-Date: Tue, 27 Oct 2020 11:05:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3D7EF80086
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 18:49:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3D7EF80086
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="h7KV/WVi"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="XVv6/Yux"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id A9E4558042B;
+ Tue, 27 Oct 2020 13:49:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Tue, 27 Oct 2020 13:49:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=MsmV9Z4JXukxzIFQdHmCny1TjoP
+ 05fwA8qrcsr9qy/s=; b=h7KV/WViQ0UiwMczpn6rH1EPG33wpRrwKzbH4KOzwh5
+ 3j9eYZeE3ZBPpYSN3c1Mx4Vch9p+LY69Pd9TPa/5z3ImXtlUOVS1pT0jTH9sFM7T
+ g3F40yAhJaPifICvvIP4R4wF1VoVwI5wnQdVWlw5Hl5uSyWjkQtyUHkjZ31YhTy5
+ YkX16oZ7vJ3EChuY/JwnYqNTt8qtnnsUyMuGW+fxq+PFbLdhGBuYY8qyJDLQ+gAs
+ Yg5UwbzqXUeRuE9SOa/rUVFjgXS80ghVIyVJ9olGUPdSy9apIkVl6VnrFEDOKAHK
+ 67+iFLGg22ypLI6XDyIY19TwKK3+CnAiOJa5gA685Vg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=MsmV9Z
+ 4JXukxzIFQdHmCny1TjoP05fwA8qrcsr9qy/s=; b=XVv6/YuxVmo5v0OdaTrYAs
+ XdO15ZsvwDxYhcHX2jCLuwRL1Ue0J3RzQg+43qvd9Z+iHGU6GKfkCWn2UkcZUI97
+ xVZ2mR3kH26WQGmS335PFRv7HXo62N/9SeY/ZlkePbKa0gjXt3RaDxmmOMUO7WnE
+ JuoDYo/EwfQvP0wRny6Zujxy9NrEsNmtl1NS3kCyN8COWvSqArpuSioV/OW3VGno
+ qsB4I6kx3W3MNarb64BljE3130iRuT1Ay68LQ6E9S0wc14XwoPCAeqQVa3Yp2KJF
+ TN4fNqmEZlCDQrxYqD5wey4O7b8P6/1IZ9qCtp+ru0IyosBbpVezOrU+1FwteYDg
+ ==
+X-ME-Sender: <xms:oF2YX-ygThuCjsYQTyiVDSuKFtAdZZbA0-sSpqI5YcgYCV5UfETYYA>
+ <xme:oF2YX6SolI7gXgecm3Zb8liOSjx0w-N7I6fODULifSD-ZqFWMSh7TpqrYXk2Z3cmS
+ qf378B67_tdBzu1zBo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgddutdehucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+ htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+ gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+ frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:oF2YXwV-X-ueLSQi83KIk-gZkYQWJ3OH6QiQKTsSv--w_I60NNujiQ>
+ <xmx:oF2YX0iSYModQthJsG4hldDrZTOHibVnSUSOtRBJwBxbqLhRnds6eA>
+ <xmx:oF2YXwC9LnWThwlecR8Iri87T0H05xvtoJYnMbMv4i_mAaSjZeYcwQ>
+ <xmx:ol2YX86NyPFR8-QKGroZZJOYKR5JVcHoypDJKku_NBDqt_s95ZlD9Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id DED77328005D;
+ Tue, 27 Oct 2020 13:49:19 -0400 (EDT)
+Date: Tue, 27 Oct 2020 18:49:17 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Subject: Re: [PATCH v8 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
+Message-ID: <20201027174917.xushgbmiohxwydnh@gilmour.lan>
+References: <20201026185239.379417-1-peron.clem@gmail.com>
+ <20201026185239.379417-2-peron.clem@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="67cr3wcl2dnlxsfd"
+Content-Disposition: inline
+In-Reply-To: <20201026185239.379417-2-peron.clem@gmail.com>
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-sunxi@googlegroups.com, Takashi Iwai <tiwai@suse.com>,
+ Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,40 +132,131 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--67cr3wcl2dnlxsfd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/26/20 8:51 PM, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> snd_soc_runtime_activate() and
-> snd_soc_dai_digital_mute() need SNDRV_PCM_STREAM_xxx
-> instead of SND_COMPRESS_xxx.
-> 
-> These are bug but nothing happen because these are same value.
-> 
-> 	enum {
-> 		SNDRV_PCM_STREAM_PLAYBACK = 0,
-> 		SNDRV_PCM_STREAM_CAPTURE,
-> 		...
-> 	};
-> 
-> 	enum snd_compr_direction {
-> 		SND_COMPRESS_PLAYBACK = 0,
-> 		SND_COMPRESS_CAPTURE
-> 	};
-> 
-> This patch tidyup it.
+On Mon, Oct 26, 2020 at 07:52:26PM +0100, Cl=E9ment P=E9ron wrote:
+> As slots and slot_width can be set manually using set_tdm().
+> These values are then kept in sun4i_i2s struct.
+> So we need to check if these values are set or not.
+>=20
+> This is not done actually and will trigger a bug.
+> For example, if we set to the simple soundcard in the device-tree
+> dai-tdm-slot-width =3D <32> and then start a stream using S16_LE,
+> currently we would calculate BCLK for 32-bit slots, but program
+> lrck_period for 16-bit slots, making the sample rate double what we
+> expected.
+>=20
+> To fix this, we need to check if these values are set or not but as
+> this logic is already done by the caller. Avoid duplicating this
+> logic and just pass the required values as params to set_chan_cfg().
+>=20
+> Suggested-by: Samuel Holland <samuel@sholland.org>
+> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+> ---
+>  sound/soc/sunxi/sun4i-i2s.c | 33 ++++++++++++++++++---------------
+>  1 file changed, 18 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index f23ff29e7c1d..6c10f810b114 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -162,8 +162,9 @@ struct sun4i_i2s_quirks {
+>  	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
+>  	s8	(*get_sr)(const struct sun4i_i2s *, int);
+>  	s8	(*get_wss)(const struct sun4i_i2s *, int);
+> -	int	(*set_chan_cfg)(const struct sun4i_i2s *,
+> -				const struct snd_pcm_hw_params *);
+> +	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
+> +				unsigned int channels,	unsigned int slots,
+> +				unsigned int slot_width);
+>  	int	(*set_fmt)(const struct sun4i_i2s *, unsigned int);
+>  };
+> =20
+> @@ -399,10 +400,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2=
+s *i2s, int width)
+>  }
+> =20
+>  static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> -				  const struct snd_pcm_hw_params *params)
+> +				  unsigned int channels, unsigned int slots,
+> +				  unsigned int slot_width)
+>  {
+> -	unsigned int channels =3D params_channels(params);
+> -
+>  	/* Map the channels for playback and capture */
+>  	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+>  	regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210);
+> @@ -419,15 +419,11 @@ static int sun4i_i2s_set_chan_cfg(const struct sun4=
+i_i2s *i2s,
+>  }
+> =20
+>  static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> -				  const struct snd_pcm_hw_params *params)
+> +				  unsigned int channels, unsigned int slots,
+> +				  unsigned int slot_width)
+>  {
+> -	unsigned int channels =3D params_channels(params);
+> -	unsigned int slots =3D channels;
+>  	unsigned int lrck_period;
+> =20
+> -	if (i2s->slots)
+> -		slots =3D i2s->slots;
+> -
+>  	/* Map the channels for playback and capture */
+>  	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+>  	regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210);
+> @@ -452,11 +448,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4=
+i_i2s *i2s,
+>  	case SND_SOC_DAIFMT_DSP_B:
+>  	case SND_SOC_DAIFMT_LEFT_J:
+>  	case SND_SOC_DAIFMT_RIGHT_J:
+> -		lrck_period =3D params_physical_width(params) * slots;
+> +		lrck_period =3D slot_width * slots;
+>  		break;
+> =20
+>  	case SND_SOC_DAIFMT_I2S:
+> -		lrck_period =3D params_physical_width(params);
+> +		lrck_period =3D slot_width;
+>  		break;
+> =20
+>  	default:
+> @@ -480,9 +476,16 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substr=
+eam *substream,
+>  {
+>  	struct sun4i_i2s *i2s =3D snd_soc_dai_get_drvdata(dai);
+>  	unsigned int word_size =3D params_width(params);
+> -	unsigned int slot_width =3D params_physical_width(params);
+>  	unsigned int channels =3D params_channels(params);
+> +
+> +	/*
+> +	 * Here and in set_chan_cfg(), "slots" means channels per frame +
+> +	 * padding slots, regardless of format. "slot_width" means bits
+> +	 * per sample + padding bits, regardless of format.
+> +	 */
+>  	unsigned int slots =3D channels;
+> +	unsigned int slot_width =3D params_physical_width(params);
+> +
 
+what I meant was to put that comment next to the function pointer in the
+structure sun4i_i2s_quirks, it would be fairly easy to miss here.
 
-Could we use this instead:
+With that fixed,
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-enum snd_compr_direction {
-	SND_COMPRESS_PLAYBACK = SNDRV_PCM_STREAM_PLAYBACK,
-	SND_COMPRESS_CAPTURE = SNDRV_PCM_STREAM_CAPTURE
-};
+Maxime
 
-Or remove this duplication completely and get rid of snd_compr_direction?
+--67cr3wcl2dnlxsfd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I find it odd to convert two things that had no reason to be different 
-in the first place.
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5hdnQAKCRDj7w1vZxhR
+xbuKAP4qVFe78UXC3b9DvZpYUdWGUCY/VGZSLSXi3GdDuCMVQAEA3j/Z7cbXxoBR
+i6RGE6IeueH9LlJHR8Nvh9ySsrcOQAk=
+=h45Y
+-----END PGP SIGNATURE-----
+
+--67cr3wcl2dnlxsfd--
