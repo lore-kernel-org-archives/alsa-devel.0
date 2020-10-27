@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BE96C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6490CC4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:10:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37E3821556
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:00:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62F1F2076D
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 18:10:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U4jOEKS4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37E3821556
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WcTjSKAI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62F1F2076D
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22F391694;
-	Tue, 27 Oct 2020 18:59:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22F391694
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2A37168D;
+	Tue, 27 Oct 2020 19:09:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2A37168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603821629;
-	bh=inz92PuM2C5a+eciu6nsPHEXP/S8x61ddH6PzsFNseY=;
+	s=default; t=1603822211;
+	bh=lzp9flCUanNB/9ztEK5+MoHGbSMCLV+CrnCW8FjQofg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U4jOEKS4ERYe5lR6u7zN5CkRCHBdDuzHhylW9PAw3641gCDM41qbvJ5zQTxKMu3Vj
-	 Pc1dONOUFAzY19AfrYqOQMl6/sz9L6Vkuil9TjeVzO+I4EcnDU7aBttbzv5aYD0u8w
-	 dNCrmkuN2spNFcoWZaTkb3Ejq+z7FBmrkAi/mHYw=
+	b=WcTjSKAIFIo7qTWRw6sxNzhXbDghuI4jc0HceHhyE6CDJXp0KBiSO8U032OeHVuGY
+	 YGT4N74aqh8HQm7X4raQsiFedzISkK3CTbL35iKYBrgyH0WDFYMqer0q5F/K7QIaSC
+	 bsm535R5oBNqUa6BAmtluJ5+V0S5VeVBDinhwtyE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A79FF8019D;
-	Tue, 27 Oct 2020 18:59:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28E46F80086;
+	Tue, 27 Oct 2020 19:09:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20D56F8020D; Tue, 27 Oct 2020 18:59:37 +0100 (CET)
+ id 92D88F8020D; Tue, 27 Oct 2020 19:09:19 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5E813F80086
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 18:59:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E813F80086
+ by alsa1.perex.cz (Postfix) with ESMTP id 09F8FF80086
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:09:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09F8FF80086
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1603821572850699902-webhooks-bot@alsa-project.org>
-References: <1603821572850699902-webhooks-bot@alsa-project.org>
+In-Reply-To: <1603822155188082933-webhooks-bot@alsa-project.org>
+References: <1603822155188082933-webhooks-bot@alsa-project.org>
 Subject: how to properly release all memory after use?
-Message-Id: <20201027175937.20D56F8020D@alsa1.perex.cz>
-Date: Tue, 27 Oct 2020 18:59:37 +0100 (CET)
+Message-Id: <20201027180919.92D88F8020D@alsa1.perex.cz>
+Date: Tue, 27 Oct 2020 19:09:19 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,7 +68,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #93 was opened from xatian:
+alsa-project/alsa-lib issue #93 was edited from xatian:
 
 ```C++
 int main () {
@@ -135,7 +135,7 @@ snd_pcm_close: 0
 ```
 
 Did I do something wrong?
-What makes matters worse is that if I duplicate the code more leaks get reported so this is not just some global state that gets left behind. And what about the 64kB still reachable?
+What makes matters worse is that if I duplicate the code more leaks get reported so this is not just some global state that gets left behind.
 I am using libasound2 1.2.3.2-1 amd64
 
 Thank you!
