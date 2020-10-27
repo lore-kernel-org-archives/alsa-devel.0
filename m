@@ -2,66 +2,119 @@ Return-Path: <SRS0=gpx6=EC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB8FC388F9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 20:53:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78E07C4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 21:36:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F325221D24
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 20:53:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A883E221FB
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 21:35:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PM+0tf/s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F325221D24
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=blennerhassett.gen.nz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CsuQljU9";
+	dkim=temperror (0-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="sbDvA38l";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Nz1cpbLS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A883E221FB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F81E16AF;
-	Tue, 27 Oct 2020 21:52:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F81E16AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 070F516B2;
+	Tue, 27 Oct 2020 22:35:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 070F516B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603832014;
-	bh=bKG+VoCTwCp4xJxmhWyut+e+nTkuJDT5RcCckR0fbUU=;
-	h=Subject:From:To:References:Date:In-Reply-To:List-Id:
+	s=default; t=1603834555;
+	bh=CezU/dgj5+5orBpUNPrDSyKMRKG0im0x8YN75ut3nvo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PM+0tf/sXGyPwzEQ7KUjzxciv+S3iSbtD7bhynGdoPzgsb/F9uNnlubbgnSEtolkZ
-	 tt13ZswK2Qhrk+XoZ/J+x0o4DhtYB8Y4mlymdJoHl13Vw0Ekqv/xPs8+RI5hVYAdHs
-	 W6uuWrBpA38ER0tkz2RWtEikI2aTZALk5GgeMSQc=
+	b=CsuQljU9MchT7tIAmKUtD5kADmhMPI90UunYh/5q+uVMJf75unL9jbpKrA/49oI0P
+	 rbRT6MXbI2dP6IXNVQKiqqtWq8HAKb5dLNK+clGHI5tjLwxaUHsrPYr8P8OOnY/7oE
+	 1TF0g2yggw9n1cGxDY9TwLC5EBq9vL5g6xkfOmoY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9F26F801D8;
-	Tue, 27 Oct 2020 21:52:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59389F801D8;
+	Tue, 27 Oct 2020 22:35:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26821F8020D; Tue, 27 Oct 2020 21:52:42 +0100 (CET)
-Received: from omr.mail.isx.net.nz (omr.mail.isx.net.nz [111.65.230.130])
- (using TLSv1 with cipher ADH-CAMELLIA256-SHA (256/256 bits))
+ id 9016EF8020D; Tue, 27 Oct 2020 22:35:01 +0100 (CET)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E57FDF800FF
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 21:52:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E57FDF800FF
-Received: from [10.36.0.139] (unknown [27.252.196.81])
- (Authenticated sender: eliot@blennerhassett.gen.nz)
- by omr.mail.isx.net.nz (Postfix) with ESMTPA id 8A690AE673C
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 09:52:25 +1300 (NZDT)
-Subject: Re: dapm, device tree, clock control - questions
-From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <e0e695de-cbb3-58c4-cc4f-49faa1e7333c@blennerhassett.gen.nz>
-Message-ID: <892f0511-9bee-be4a-cc08-5508531223ca@blennerhassett.gen.nz>
-Date: Wed, 28 Oct 2020 09:52:24 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC4B6F80086
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 22:34:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC4B6F80086
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="sbDvA38l"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="Nz1cpbLS"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 931105803F4;
+ Tue, 27 Oct 2020 17:34:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Tue, 27 Oct 2020 17:34:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=CezU/dgj5+5orBpUNPrDSyKMRKG
+ 0im0x8YN75ut3nvo=; b=sbDvA38lKlV3Myf7YFDHWT7g2d8dUkSuLFD84ZYAKVL
+ +WVldz6qL8WCE/Uzj/8+qUDzbCPMi+9cWfJqcbSksccvEX3RgUk47VrQDf3OM245
+ MmVU1MNmNfLhlqthIV7RebrjsLy/hiifeGuaxtA0upHDVNPOmmzDQxUHWE9fRKoP
+ XhTUHdQwW4e6VKEFw9ULtKSrk1s25lG7ZZ8E1eZWqCZgFe+oxQ4yEJwMfKwLjh0B
+ UwUc6kYieyzS2KrAQJYWbz+t2f+I3OZfiQ7H///vrEfkTfTF58Qy2DcYrTLsVM0d
+ mvKufPfT6xnXYZLeZGAaV6p2xn+Cxk6UL5Rs2HE8SQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=CezU/d
+ gj5+5orBpUNPrDSyKMRKG0im0x8YN75ut3nvo=; b=Nz1cpbLS25Dw7CsQif2C2s
+ RL8tHiZ3e1Lws1hPpcYS/IqnDMc8ZFiB6DVrhLn7N3q2ZiKuuQPNcOUTpleRJwzM
+ HPp9eOlAsgC7U44TeBzu07VNrNB1i3bTW3zvOF1iZmv/0cwznnqGeUnahoz+8+yf
+ Sc+E9U5kgLNjkU0fI5/zJK+1E9oXClS9OnF6G2g+RXe3Pyl+cPZfTCfIMqBeZsuE
+ 030++v/mKaaqcfcbOetaknwSmDWnj9MwfSQ3jlJhgfAmGSVsDZIaesE6LQyFMfOT
+ 58hHeYHkcoxepRbjEPRoLncUyPcNA6ZC/ktwtUJV82xMz2q9L40Il9kS0cZxCMdw
+ ==
+X-ME-Sender: <xms:eZKYXwNy_8kp7QIDC_165xZQOn5t2Kd2IQqBiWOLkjMO2xLUqCicXA>
+ <xme:eZKYX29Z7H5lh_RmePqHVxOQipDdsCBfknwF25LWPnFgzOhH32zZvUCS_mRjxxA0o
+ -8I_nEmMeznNVLdVAM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgdduhedtucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+ htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+ gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+ frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:eZKYX3QmsA5eVPmhEes7rjlMCGTku1exXMkHulPUewAUKk5dtwOmYQ>
+ <xmx:eZKYX4sDYNMH5lYzPGbxXyLheQSAo_tpKVIN1V6JigvzQuS438Iyuw>
+ <xmx:eZKYX4coeE2inv7SzSVoH1U94EzJOsgbxQq1RBBuVM40aG2Wr16J0Q>
+ <xmx:fJKYX5XqZSmy_VErqnXBPkdDc_HVlz8MsSpIdmc2KMWeLJTScVauow>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 6712E3280060;
+ Tue, 27 Oct 2020 17:34:49 -0400 (EDT)
+Date: Tue, 27 Oct 2020 22:34:47 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH] drm/vc4: hdmi: Avoid sleeping in atomic context
+Message-ID: <20201027213447.3fhnkqqik3pbhw5d@gilmour.lan>
+References: <20201027101558.427256-1-maxime@cerno.tech>
 MIME-Version: 1.0
-In-Reply-To: <e0e695de-cbb3-58c4-cc4f-49faa1e7333c@blennerhassett.gen.nz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="rg67p2rixirimeqk"
+Content-Disposition: inline
+In-Reply-To: <20201027101558.427256-1-maxime@cerno.tech>
+Cc: alsa-devel@alsa-project.org, Dom Cobley <dom@raspberrypi.com>,
+ Tim Gover <tim.gover@raspberrypi.com>,
+ Dave Stevenson <dave.stevenson@raspberrypi.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ Thomas Zimmermann <tzimmermann@suse.de>, Phil Elwell <phil@raspberrypi.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,74 +130,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello again,
 
-I got no answers last time I posted this
+--rg67p2rixirimeqk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So, the meta-questions are
-* Should I be asking somewhere else?
-* Should I be reading something else to find my answers?
-* Is there a better way to ask these questions?
+On Tue, Oct 27, 2020 at 11:15:58AM +0100, Maxime Ripard wrote:
+> When running the trigger hook, ALSA by default will take a spinlock, and
+> thus will run the trigger hook in atomic context.
+>=20
+> However, our HDMI driver will send the infoframes as part of the trigger
+> hook, and part of that process is to wait for a bit to be cleared for up =
+to
+> 100ms. To be nicer to the system, that wait has some usleep_range that
+> interact poorly with the atomic context.
+>=20
+> There's several ways we can fix this, but the more obvious one is to make
+> ALSA take a mutex instead by setting the nonatomic flag on the DAI link.
+> That doesn't work though, since now the cyclic callback installed by the
+> dmaengine helpers in ALSA will take a mutex, while that callback is run by
+> dmaengine's virt-chan code in a tasklet where sleeping is not allowed
+> either.
+>=20
+> Given the delay we need to poll the bit for, changing the usleep_range for
+> a udelay and keep running it from a context where interrupts are disabled
+> is not really a good option either.
+>=20
+> However, we can move the infoframe setup code in the hw_params hook, like
+> is usually done in other HDMI controllers, that isn't protected by a
+> spinlock and thus where we can sleep. Infoframes will be sent on a regular
+> basis anyway, and since hw_params is where the audio parameters that end =
+up
+> in the infoframes are setup, this also makes a bit more sense.
+>=20
+> Fixes: bb7d78568814 ("drm/vc4: Add HDMI audio support")
+> Suggested-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-thanks
+Applied to drm-misc-fixes
 
-On 21/10/20 10:50 pm, Eliot Blennerhassett wrote:
-> Greetings,
-> 
-> First the basic questions, so you can quickly stop reading if this is
-> not your thing.  Background details follow. Specific answers, or
-> pointers to relevant reading both appreciated.
-> 
-> 1) How do I force a DAI clock to keep running even when no audio is
-> streaming? Can I do this with DT, or some runtime switch?  OR how do I
-> disable dapm so everything is powered on all the time?
-> 
-> 2) Two devices: one DAC, one dumb digital audio transmitter both
-> connected to same serial audio data - how to model the second one in DT
-> (or not)? it has some settings needed after clock starts, must keep
-> clock running.
+Maxime
 
-> I have host CPU imx8mm
->               
-> DAI is sound/soc/fsl/fsl_sai.c
-> 
-> The codec is sound/soc/codecs/ak4458.c
-> 
-> The digital audio transmitter is CS8406 (no driver yet?).
-> 
-> Both the above are connected to the same DAI signals (MCLK, TXC, TXFS, TXD)
+--rg67p2rixirimeqk
+Content-Type: application/pgp-signature; name="signature.asc"
 
---------.
-imx8mm  |
-        |
-    SAI *======+======[ ak4458 ]
-        |      I      [        ]->Line_Out
-   I2C2 *------I--+---[        ]
---------'      I  |
-               I  `---[ cs8406 ]
-               "======[        ]->iec958_out
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5iSdwAKCRDj7w1vZxhR
+xe5LAQD2z4jrHFI7lepdfsHTZyw73NdLCmF62GCIDGYB6AmypgD+KFUl+5dP9Xj/
+iu2xv69jA6EvGgqK5hY1OaSNYbOXrwg=
+=sECL
+-----END PGP SIGNATURE-----
 
-> CS8406 needs MCLK before it can be configured, and loses config if clock
-> stops.  Currently it is configured via I2C from userspace, but this is
-> completely unaware of stream stop/start.  Is there a way to hook into
-> stream state events so that this setup can be done after the MCLK starts
-> before audio starts?
-> 
-> I desire for no discontinuity in analog or digital outputs as streams
-> stop and start.
-> 
-> I have read
-> Documentation/sound/soc/dapm.rst and its brothers.
-> Documentation/devicetree/*
-> is there elsewhere I should read to get a newbies intro to this stuff?
-> 
-> It must be about 8 years since I did any ALSA development, and then I
-> wasn't in the ASoC space, so quite a learning curve here.
-> 
-> many thanks
-> 
-
-
--- 
-Eliot
+--rg67p2rixirimeqk--
