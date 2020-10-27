@@ -7,55 +7,56 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E66E3C4363A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:42:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 582F2C4363A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:42:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 051C421D7B
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:42:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6FC0721556
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Oct 2020 05:42:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H/Frft71"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 051C421D7B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kt2HqSdP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FC0721556
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D51B16AB;
-	Tue, 27 Oct 2020 06:41:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D51B16AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id E883616B8;
+	Tue, 27 Oct 2020 06:41:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E883616B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603777330;
-	bh=BBvyFObIX62RxNwPPLhi09FjCDEB0pSw6QAkVfWTsPM=;
+	s=default; t=1603777367;
+	bh=DHX+kZFJYiy5AO9WJGG+34aE8DUTlzvoBkcRs1DvDP8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H/Frft71hm4umgKAmeHPLKrjXHXsQn+TSO7f8697wSympbjrv8bqs2FQkXq78aM62
-	 FagX7NeiqntCeA8fCnvYR9ibnx0VoqyLbrsVfj4JqkkTRqXGYK7PI+oAS+pbKiM+tq
-	 1lw5n66fzCvQUCAA+EwDNh6dLZMh5whbsbWyj2Go=
+	b=Kt2HqSdPhFgQfemtyaH2Ffr8hr57OLAJ/3rErlJFC8olRLQfhVuxStBUFbic/cmS3
+	 YQPxtcoH1wYSz5XwAoBkqGFY4YAs5LwCh2ODwHwVlvb9kAOsivduzUxf9g8JrVZFtw
+	 AnfEMez6ftCt6jLuh/CY8iMZGOCaty8Rd9uXYUdk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23423F8027C;
-	Tue, 27 Oct 2020 06:40:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A70BF804BB;
+	Tue, 27 Oct 2020 06:40:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A59DF8028B; Tue, 27 Oct 2020 06:40:29 +0100 (CET)
+ id 9E8E4F804BC; Tue, 27 Oct 2020 06:40:36 +0100 (CET)
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 753DCF8019D
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 06:40:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 753DCF8019D
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3E93F804B3
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 06:40:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3E93F804B3
 Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
  helo=localhost) by youngberry.canonical.com with esmtpsa
  (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
  (envelope-from <kai.heng.feng@canonical.com>)
- id 1kXHiU-0002dF-BK; Tue, 27 Oct 2020 05:40:18 +0000
+ id 1kXHib-0002eA-1D; Tue, 27 Oct 2020 05:40:25 +0000
 From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 To: tiwai@suse.com
-Subject: [PATCH v2 2/4] ALSA: hda: Stop mangling PCI IRQ
-Date: Tue, 27 Oct 2020 13:39:59 +0800
-Message-Id: <20201027054001.1800-3-kai.heng.feng@canonical.com>
+Subject: [PATCH v2 4/4] ALSA: hda: Reinstate runtime_allow() for all hda
+ controllers
+Date: Tue, 27 Oct 2020 13:40:01 +0800
+Message-Id: <20201027054001.1800-5-kai.heng.feng@canonical.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201027054001.1800-1-kai.heng.feng@canonical.com>
 References: <20201027054001.1800-1-kai.heng.feng@canonical.com>
@@ -77,69 +78,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The code predates 2005, it should be unnecessary now as PCI core handles
-IRQ much better nowadays.
-
-So stop PCI IRQ mangling in suspend/resume callbacks.
-
-Takashi Iwai mentioned that IRQ number can change after S3 on some
-really old hardwares. We should use quirks to handle those platforms, as
-most modern systems won't have that issue.
+The broken jack detection should be fixed by commit a6e7d0a4bdb0 ("ALSA:
+hda: fix jack detection with Realtek codecs when in D3"), let's try
+enabling runtime PM by default again.
 
 Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
 v2:
- - Wording.
- - Add info on IRQ # can change on old hardwares.
+ - No change.
 
- sound/pci/hda/hda_intel.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/pci/hda/hda_intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 749b88090970..b4aa1dcf1aae 100644
+index 4cf90e4602c7..573250d2c6c9 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -1022,13 +1022,11 @@ static int azx_suspend(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
--	struct hdac_bus *bus;
+@@ -2350,6 +2350,7 @@ static int azx_probe_continue(struct azx *chip)
  
- 	if (!azx_is_pm_ready(card))
- 		return 0;
+ 	if (azx_has_pm_runtime(chip)) {
+ 		pm_runtime_use_autosuspend(&pci->dev);
++		pm_runtime_allow(&pci->dev);
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 	}
  
- 	chip = card->private_data;
--	bus = azx_bus(chip);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
- 	/* An ugly workaround: direct call of __azx_runtime_suspend() and
- 	 * __azx_runtime_resume() for old Intel platforms that suffer from
-@@ -1038,14 +1036,6 @@ static int azx_suspend(struct device *dev)
- 		__azx_runtime_suspend(chip);
- 	else
- 		pm_runtime_force_suspend(dev);
--	if (bus->irq >= 0) {
--		free_irq(bus->irq, chip);
--		bus->irq = -1;
--		chip->card->sync_irq = -1;
--	}
--
--	if (chip->msi)
--		pci_disable_msi(chip->pci);
- 
- 	trace_azx_suspend(chip);
- 	return 0;
-@@ -1060,11 +1050,6 @@ static int azx_resume(struct device *dev)
- 		return 0;
- 
- 	chip = card->private_data;
--	if (chip->msi)
--		if (pci_enable_msi(chip->pci) < 0)
--			chip->msi = 0;
--	if (azx_acquire_irq(chip, 1) < 0)
--		return -EIO;
- 
- 	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
- 		__azx_runtime_resume(chip, false);
 -- 
 2.17.1
 
