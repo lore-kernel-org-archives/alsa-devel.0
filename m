@@ -7,116 +7,98 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF9CDC4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8A15C4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:13:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1523F20735
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:12:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62B4322447
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:13:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OcofSvET";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="UoiZn2ej"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1523F20735
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VgjGbrjW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=alien8.de header.i=@alien8.de header.b="EgbFsJdf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62B4322447
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alien8.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F32D168F;
-	Wed, 28 Oct 2020 09:11:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F32D168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA3CC1680;
+	Wed, 28 Oct 2020 09:12:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA3CC1680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603872749;
-	bh=3WYM9aeRCNIwFuSErVshcpp2GYy7Jr//SybcoG5jqHM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1603872778;
+	bh=fBlhrFAdd5cWHt9K6UiCMlcQpEqyfwM6Ddhw6Y4ClJU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OcofSvET93vMQOyl6KMHbRhSaSOV04RBWsoSuOmCQfMl+nY9wTU6V5V6Yju2iaNYR
-	 9BCgnsTuFpRpKzI8OM/9O4g0fa9xHSYMqcaJywCuC/2fYvoINxqCJAsSg/DvfxnBi2
-	 9PyEEWm6j+jy5/IjKTNPzKe3Js+9GirBxe3TW4T4=
+	b=VgjGbrjWyolFpHYlbomKOHQkJ+wV4bKwe21bw12ZNtWNxgh4NLokM9z3I4h+D3m8u
+	 Q7COmPiZEjsoz3rv9X49G3MhHo7Ec66k4UDms8pJKUMR6zpEnG9QjRVhMXrlZImMS2
+	 0Sb4avToSIYIbZfKxIA8JyMWlFsi4LDPWJ89Lw70=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5D96F8051F;
-	Wed, 28 Oct 2020 09:06:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F050EF80525;
+	Wed, 28 Oct 2020 09:06:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D59BFF80227; Tue, 27 Oct 2020 19:01:06 +0100 (CET)
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
- [IPv6:2607:f8b0:4864:20::d44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 77E50F8020D; Tue, 27 Oct 2020 19:25:44 +0100 (CET)
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45E94F80086
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:00:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45E94F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6ADA3F80086
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 19:25:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ADA3F80086
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com
- header.i=@bgdev-pl.20150623.gappssmtp.com header.b="UoiZn2ej"
-Received: by mail-io1-xd44.google.com with SMTP id z5so2536828iob.1
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 11:00:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Ed3AIF7qFllVghkuMSpgY+e4IbkAvQfdceeKpQaUdxk=;
- b=UoiZn2ejgC7wXGBMzC5P1HZYY0nl6Wa3KE0/4S9Ciuieo7WYMXpDS0Iaqpc4XiAPdO
- qMSPbldaS4qotDJxt10RTbnG9MLtwWkVWivTQZrOtp1ibfKEiirPfM/hcYKscWcE5G9+
- hdA0OqGIyHCG+6wpH2Tcj5TcpWPTkljgGKnbGOzRrgHXz7X+jipA9gLH6g8zN/Jx0l4s
- /OKkLzKstGxFD2CYIuU1B33wI1K0Ml8+qKW5x8c0LoZzpt+1zSKoX87G79JYtOSZ/rG6
- gJ+d5QJ1DFf7m/UdqRG6MK7XEwKpEIVQ7cBBbC41y7jJlAMtCPK8jhzSkqrf6tO37h92
- JCSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Ed3AIF7qFllVghkuMSpgY+e4IbkAvQfdceeKpQaUdxk=;
- b=lJ5I2O9+xIZmUphnp/dfVrwawyxChVdZ0JGRWNOJAWnW1oyJC9McGZxyHUvm0R3dYB
- IrhIRlu1crYkwhXnpjhKMpD87T+eikL2S3zUnWTR+IPkKbCK0aYieggWkiKcuOQLOeBK
- +nJUdzep8jgNeqTpPv0PB0EPF+LXiAci9knEjfiBeyxDNKhcT2IWXVtoqPrWTlqpqFbW
- 5fdsOOweoNeK8qAzWAUIN+ecUVBp998W00Y7MY948+qhCIrfopBvK1QjTgLFZNfsInDr
- pS40Se26dRnRKi+09+ijasstJVOVHf/fYzoqDRHyptOXIHsIUOdQb4SH5cv/b3lJA2HD
- rQ9Q==
-X-Gm-Message-State: AOAM532F/yPFyEZOYS5f/TdQ9k/y+SHoxShNp735VLCrrxu4YNzfGVUi
- 4ECGG9ipbxn8c7iZ/dUog8/+yHzAHiR4Wqp+ZwVnKw==
-X-Google-Smtp-Source: ABdhPJwN08N0ZyzhoITVdnvB4ryeaKood+3vq0iIUYgCE2JJfuXumCj2bIDB2qD60OdiaWwDhRbGH3iAIo+DCc+ziro=
-X-Received: by 2002:a6b:f401:: with SMTP id i1mr3323522iog.130.1603821657825; 
- Tue, 27 Oct 2020 11:00:57 -0700 (PDT)
-MIME-Version: 1.0
+ dkim=pass (1024-bit key) header.d=alien8.de header.i=@alien8.de
+ header.b="EgbFsJdf"
+Received: from zn.tnic (p200300ec2f0dae00bf53706700052072.dip0.t-ipconnect.de
+ [IPv6:2003:ec:2f0d:ae00:bf53:7067:5:2072])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BAB771EC0212;
+ Tue, 27 Oct 2020 19:25:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+ t=1603823132;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+ bh=HIlEQ668ZK65lA6MbCzNrMzTRfwiOqR1WIXbuHA3yjs=;
+ b=EgbFsJdf1OZ3IGcke8XXZo3hz2cAmj/RcULw8QVmtef7YinSrbWCYFvbL5yywQPkzemwXO
+ N724w3YmM6BIy+GiS4LbNct6nLnnKYjmBEbvDSj3xaVvbYC4cp66jlosXNW/p8ekCy1vAQ
+ YuPzn8Qmf75kT/ZiIBq27HMK3PaA71Y=
+Date: Tue, 27 Oct 2020 19:25:20 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH 5/8] edac: ghes: use krealloc_array()
+Message-ID: <20201027182520.GK15580@zn.tnic>
 References: <20201027121725.24660-1-brgl@bgdev.pl>
- <20201027121725.24660-4-brgl@bgdev.pl>
- <20201027112607-mutt-send-email-mst@kernel.org>
- <685d850347a1191bba8ba7766fc409b140d18f03.camel@perches.com>
- <CAMpxmJU0C84DjPmqmWvPgv0zwgGLhkpKLRDuKkZHAa=wi+LvBA@mail.gmail.com>
- <2767969b94fd66db1fb0fc13b5783ae65b7deb2f.camel@perches.com>
-In-Reply-To: <2767969b94fd66db1fb0fc13b5783ae65b7deb2f.camel@perches.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 27 Oct 2020 19:00:46 +0100
-Message-ID: <CAMRc=McvW_E0aE2Ep=3aZvb=kNDMz6=ZH-EQzARAD-tyJG5Rrg@mail.gmail.com>
-Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
-To: Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+ <20201027121725.24660-6-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201027121725.24660-6-brgl@bgdev.pl>
 X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:30 +0100
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, kvm@vger.kernel.org,
- "Michael S. Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
+Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
+ "Michael S . Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
  Gustavo Padovan <gustavo@padovan.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-drm <dri-devel@lists.freedesktop.org>, linux-mm@kvack.org,
- Christoph Lameter <cl@linux.com>, Sumit Semwal <sumit.semwal@linaro.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
+ linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  David Rientjes <rientjes@google.com>,
  virtualization@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
- linux-media <linux-media@vger.kernel.org>, Robert Richter <rric@kernel.org>,
+ linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>,
  Thomas Zimmermann <tzimmermann@suse.de>,
  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
  Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
- linux-gpio <linux-gpio@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-edac@vger.kernel.org,
- Tony Luck <tony.luck@intel.com>, netdev <netdev@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- LKML <linux-kernel@vger.kernel.org>, Pekka Enberg <penberg@kernel.org>,
- James Morse <james.morse@arm.com>, Daniel Vetter <daniel@ffwll.ch>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+ linux-gpio@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-edac@vger.kernel.org,
+ Tony Luck <tony.luck@intel.com>, netdev@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Pekka Enberg <penberg@kernel.org>, James Morse <james.morse@arm.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
+ Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -132,79 +114,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 27, 2020 at 6:08 PM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2020-10-27 at 17:58 +0100, Bartosz Golaszewski wrote:
-> > On Tue, Oct 27, 2020 at 5:50 PM Joe Perches <joe@perches.com> wrote:
-> > >
-> > > On Tue, 2020-10-27 at 11:28 -0400, Michael S. Tsirkin wrote:
-> > > > On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
-> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > >
-> > > > > Use the helper that checks for overflows internally instead of manually
-> > > > > calculating the size of the new array.
-> > > > >
-> > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > >
-> > > > No problem with the patch, it does introduce some symmetry in the code.
-> > >
-> > > Perhaps more symmetry by using kmemdup
-> > > ---
-> > >  drivers/vhost/vringh.c | 23 ++++++++++-------------
-> > >  1 file changed, 10 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> > > index 8bd8b403f087..99222a3651cd 100644
-> > > --- a/drivers/vhost/vringh.c
-> > > +++ b/drivers/vhost/vringh.c
-> > > @@ -191,26 +191,23 @@ static int move_to_indirect(const struct vringh *vrh,
-> > >  static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
-> > >  {
-> > >         struct kvec *new;
-> > > -       unsigned int flag, new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-> > > +       size_t new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-> > > +       size_t size;
-> > >
-> > >         if (new_num < 8)
-> > >                 new_num = 8;
-> > >
-> > > -       flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
-> > > -       if (flag)
-> > > -               new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
-> > > -       else {
-> > > -               new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
-> > > -               if (new) {
-> > > -                       memcpy(new, iov->iov,
-> > > -                              iov->max_num * sizeof(struct iovec));
-> > > -                       flag = VRINGH_IOV_ALLOCATED;
-> > > -               }
-> > > -       }
-> > > +       if (unlikely(check_mul_overflow(new_num, sizeof(struct iovec), &size)))
-> > > +               return -ENOMEM;
-> > > +
-> >
-> > The whole point of using helpers such as kmalloc_array() is not doing
-> > these checks manually.
->
-> Tradeoffs for in readability for overflow and not mistyping or doing
-> the multiplication of iov->max_num * sizeof(struct iovec) twice.
->
+On Tue, Oct 27, 2020 at 01:17:22PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Use the helper that checks for overflows internally instead of manually
+> calculating the size of the new array.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  drivers/edac/ghes_edac.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+> index a918ca93e4f7..6d1ddecbf0da 100644
+> --- a/drivers/edac/ghes_edac.c
+> +++ b/drivers/edac/ghes_edac.c
+> @@ -207,8 +207,8 @@ static void enumerate_dimms(const struct dmi_header *dh, void *arg)
+>  	if (!hw->num_dimms || !(hw->num_dimms % 16)) {
+>  		struct dimm_info *new;
+>  
+> -		new = krealloc(hw->dimms, (hw->num_dimms + 16) * sizeof(struct dimm_info),
+> -			        GFP_KERNEL);
+> +		new = krealloc_array(hw->dimms, hw->num_dimms + 16,
+> +				     sizeof(struct dimm_info), GFP_KERNEL);
+>  		if (!new) {
+>  			WARN_ON_ONCE(1);
+>  			return;
+> -- 
 
-It's out of scope for this series - I want to add users for
-krealloc_array(), not refactor code I don't really know. If the
-maintainer of this bit objects, it can be dropped.
+Sure, why not.
 
-> Just fyi:
->
-> the realloc doesn't do a multiplication overflow test as written so the
-> suggestion is slightly more resistant to defect.
->
+Acked-by: Borislav Petkov <bp@suse.de>
 
-I'm not sure what your point is. I used krealloc_array() exactly for
-this reason - to add the overflow test.
+-- 
+Regards/Gruss,
+    Boris.
 
-BTW I suppose kmalloc_array() here can be replaced with
-krealloc_array() if the original pointer is NULL the first time it's
-called.
-
-Bartosz
+https://people.kernel.org/tglx/notes-about-netiquette
