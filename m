@@ -2,67 +2,77 @@ Return-Path: <SRS0=HcWj=ED=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12CC6C4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 19:39:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EAE3C4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 21:23:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7D59247AF
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 19:39:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D45B624840
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 21:23:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vm4SvCRo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7D59247AF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oBc9BZYa";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0lch2UH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D45B624840
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE5D482E;
-	Wed, 28 Oct 2020 20:38:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5D482E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45202828;
+	Wed, 28 Oct 2020 22:22:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45202828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603913956;
-	bh=nKk29Uu7tJJAFdL9d35IpTp+Llz1ATWjtlFLVeKwAw0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603920189;
+	bh=6OAbUy4jL6Bx1P3st+/vdMDyglfJGd3vOkanNKHQnkA=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vm4SvCRor/AQBdPOF9LQX3z2A4qJZXTlN6tRT2AVAOfu3iNQyGdaEx/AojN9uP2bo
-	 wSAv+VMgBbrAf6QFm2TZezvK/T9ytfnpSiYyOAv/AE5SQJE+jEZWr97twBhLajR9j/
-	 hK6MUJ/Fq1T5ilZXsDIu6Hbh02nhfymUl+wMheK0=
+	b=oBc9BZYa1YcIZI7wIpKDZCpbKxsfmL33alzdcKvRwUw7TwvZiJVV7rRzbUh2LSnrM
+	 Z59GvEb+8vvVAjgprHlu1JqnxQ7DvmOufgVcg8LdeyxS4W5WZwwb5NQ2mnHCnK4NCC
+	 2baghXdPKxEdArEMtcMJqSWxJg2X1p1CjxV5E8zU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D094F801D5;
-	Wed, 28 Oct 2020 20:38:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3E20F80134;
+	Wed, 28 Oct 2020 22:22:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A81F8F80212; Wed, 28 Oct 2020 20:38:24 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 719A9F80212; Wed, 28 Oct 2020 22:22:17 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE00CF80134
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 20:38:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE00CF80134
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 82F16B1BE;
- Wed, 28 Oct 2020 19:38:19 +0000 (UTC)
-Date: Wed, 28 Oct 2020 20:38:19 +0100
-Message-ID: <s5h1rhixhsk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v3 0/3] HDA controller PM and codec PM cleanups
-In-Reply-To: <20201027130038.16463-1-kai.heng.feng@canonical.com>
-References: <20201027130038.16463-1-kai.heng.feng@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, mwolf@adiumentum.com,
- kai.vehmanen@linux.intel.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
- hui.wang@canonical.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D3DFF80134
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 22:22:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D3DFF80134
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="B0lch2UH"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D2EB224838;
+ Wed, 28 Oct 2020 21:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1603920130;
+ bh=6OAbUy4jL6Bx1P3st+/vdMDyglfJGd3vOkanNKHQnkA=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=B0lch2UHpafpd1SgSfTrs7u2APbezZCJcbm1+rN+3tSYW+odtUqfaF/lXiykxj16J
+ xl5HeqCshjUNhFE2z+7CxkuYB94LQfTkG5UbJwJYXbIjwdHXyamWKC3FBfiO18Hdcf
+ 3ZQ9zHhpGCOFItmP3jhNy/+WYKkdZXzFxhYTXYgQ=
+Date: Wed, 28 Oct 2020 21:22:04 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20201028154340.17090-1-srinivas.kandagatla@linaro.org>
+References: <20201028154340.17090-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: codecs: wcd934x: Set digital gain range
+ correctly
+Message-Id: <160392012411.40829.13831056962403963010.b4-ty@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,38 +88,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Oct 2020 14:00:35 +0100,
-Kai-Heng Feng wrote:
+On Wed, 28 Oct 2020 15:43:39 +0000, Srinivas Kandagatla wrote:
+> digital gain range is -84dB min to 40dB max, however this was not
+> correctly specified in the range.
 > 
-> While working on the issue "ALSA: hda: fix jack detection with Realtek
-> codecs when in D3", I've found using pm_runtime_force_{suspend,resume}()
-> have surprising behavior, specifically, pm_runtime_need_not_resume()
-> uses pm_runtime_need_not_resume() to avoid calling resume callback, so
-> jackpoll was used to really power up the codec.
-> 
-> We can use direct-complete to do the keep the codec suspended throughout
-> the system PM flow, namely, keep the codec suspended all the way, unless
-> the codec needs to be woken up after resume.
-> 
-> For HDA controller, PCI core may enable direct-complete for it if
-> conditions are met. So make runtime and system PM distinctive to always
-> apply correct wake up setting.
-> 
-> At least point, hopefully all runtime PM issues are solved, let's enable
-> runtime PM by default again.
-> 
-> v3:
->  - Drop "ALSA: hda: Stop mangling PCI IRQ"
-> 
-> Kai-Heng Feng (3):
->   ALSA: hda: Refactor codec PM to use direct-complete optimization
->   ALSA: hda: Separate runtime and system suspend
->   ALSA: hda: Reinstate runtime_allow() for all hda controllers
+> Fix this by with correct range!
 
-Now I applied all three patches.
-Since it's a nice improvement, I'm going to push to 5.10.
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-thanks,
+Thanks!
 
-Takashi
+[1/2] ASoC: codecs: wcd934x: Set digital gain range correctly
+      commit: fc0522bbe02fa4beb95c0514ace66b585616f111
+[2/2] ASoC: codecs: wcd9335: Set digital gain range correctly
+      commit: 6d6bc54ab4f2404d46078abc04bf4dee4db01def
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
