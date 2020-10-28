@@ -2,148 +2,71 @@ Return-Path: <SRS0=HcWj=ED=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05293C4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 671CBC4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:16:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5FD022447
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:15:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 85C65208C7
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:16:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kgzB+m97";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="Sld6hciH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5FD022447
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vQBpfIqh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85C65208C7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=telegraphics.com.au
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B5D816C9;
-	Wed, 28 Oct 2020 09:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B5D816C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC4F7169D;
+	Wed, 28 Oct 2020 09:15:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC4F7169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603872953;
-	bh=P64s9+E0g30k1qQWU7wqXAuppA2TLKuGnQeGuDs0fqY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1603872978;
+	bh=TKvqJLlkLbq3Kj5f1V4maIueIwHzwDwk5+8EMQJmvPA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kgzB+m97AFX/T+1c3+CpmG9ZcEy8IA5VhuKb06/VXzCxrhfgM2ifJbARo6v/nDDBv
-	 7SKXnEbnkuPPyalcdWF3Y2ga7R+bg8kBnGXjzWtdH89rzpCBhhZpJnsty4k52BpwgY
-	 W5HD9jM6zpQe6yZS1dLRFmHR1lvyQpjShlC/CLbo=
+	b=vQBpfIqhS/XwBj2buqumXBJ6YLBfvxTzeRwgrg+mWtXeQHtJ38CVVXwFw8ks5vGXg
+	 detmNB/JKPntwN6Vm1GRzHduelLW7V9zs1csTSiih0IIbBLCb7Cc4AcZh6upl8nJ3p
+	 d5MbE86j4QPfU2AMQyjUI2bfaW7orRIeYqU6srSg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FA7CF80564;
-	Wed, 28 Oct 2020 09:07:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2A16F80567;
+	Wed, 28 Oct 2020 09:07:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5F95F8020D; Tue, 27 Oct 2020 20:19:41 +0100 (CET)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D79B5F8019D
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 20:19:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D79B5F8019D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch
- header.b="Sld6hciH"
-Received: by mail-wr1-x441.google.com with SMTP id s9so3170005wro.8
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2020 12:19:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ffwll.ch; s=google;
- h=date:from:to:cc:subject:message-id:mail-followup-to:references
- :mime-version:content-disposition:in-reply-to;
- bh=94FVc/lhmQBJbpQ0I0StwCkg4DMhTbsduFiN4bjClk4=;
- b=Sld6hciHThDqeso8S8+jXbwutFt+C8GMsFv9uR38kkL9A2ymfTua46NMT/Q9ZBn3uh
- noluYBIeHRwknPmU94BZzwh6l7DE4uJbJLLOru2dF0iDS5wDVUIl89TAYeWKJJDtgD9J
- qGm+daZidj774s7wADWav2trLrU+zVLJfeX5A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id
- :mail-followup-to:references:mime-version:content-disposition
- :in-reply-to;
- bh=94FVc/lhmQBJbpQ0I0StwCkg4DMhTbsduFiN4bjClk4=;
- b=Jdwt7Usahyj6N03Js4MOovPg89nfKhPQxzjWY/5k2oaPXuqM7zJ/Z7bC5PP7ua6812
- lcfw8ufjkNpm4Fi5vdE5w2fICI8T7YGQRogYZl97rA7xtPwzc/tWlQk5idNJGnLVKdQL
- Zgw8KNTFcBY2jPMAt0EAgJOOnWv4fh24BZoiPSlYxgtBocqfapC1Zjj9rmNnOZEwlsdo
- qORpPFpdwAs2e3S8wtc7A4i0qnoECrg4i5XClo9IbbICle7aXhxyZhYlaVbjeCETkqJC
- q39NzmHcMrGcKOA3K6Fgv/fnCX7Rf1gCb5ZgaRV46aPIEBMso76oFiBYu2D5LouZEXSO
- R+eQ==
-X-Gm-Message-State: AOAM533VgtRvv799HgxFReOL4X2Z5rlHNADiD7kcs74/tZ63MGcb1rWh
- 5i8I+FZSalKUCFQiuupbcmVbAA==
-X-Google-Smtp-Source: ABdhPJxSeCImtuoOwiJ2SgVqpZLT/QAEeRHxQ9b1eMNAwd7xtGe8jna3O2uLNWNIxJE6aH3a1ktGnQ==
-X-Received: by 2002:a5d:4dc7:: with SMTP id f7mr4027819wru.375.1603826373382; 
- Tue, 27 Oct 2020 12:19:33 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
- by smtp.gmail.com with ESMTPSA id h206sm3012251wmf.47.2020.10.27.12.19.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Oct 2020 12:19:32 -0700 (PDT)
-Date: Tue, 27 Oct 2020 20:19:30 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH 6/8] drm: atomic: use krealloc_array()
-Message-ID: <20201027191930.GQ401619@phenom.ffwll.local>
-Mail-Followup-To: Bartosz Golaszewski <brgl@bgdev.pl>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- Gustavo Padovan <gustavo@padovan.org>,
- Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
- James Morse <james.morse@arm.com>, Robert Richter <rric@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@linux.ie>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- "Michael S . Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>, Christoph Lameter <cl@linux.com>,
- Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
- linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org,
- kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
- netdev@vger.kernel.org, linux-mm@kvack.org,
- alsa-devel@alsa-project.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20201027121725.24660-1-brgl@bgdev.pl>
- <20201027121725.24660-7-brgl@bgdev.pl>
+ id 5AF90F80212; Wed, 28 Oct 2020 04:26:29 +0100 (CET)
+Received: from kvm5.telegraphics.com.au (kvm5.telegraphics.com.au
+ [98.124.60.144])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2FD04F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 04:26:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FD04F800FF
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by kvm5.telegraphics.com.au (Postfix) with ESMTP id A654929A58;
+ Tue, 27 Oct 2020 23:26:19 -0400 (EDT)
+Date: Wed, 28 Oct 2020 14:26:12 +1100 (AEDT)
+From: Finn Thain <fthain@telegraphics.com.au>
+To: Tom Rix <trix@redhat.com>
+Subject: Re: [RFC] clang tooling cleanups
+In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
+Message-ID: <alpine.LNX.2.23.453.2010281344120.31@nippy.intranet>
+References: <20201027164255.1573301-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027121725.24660-7-brgl@bgdev.pl>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset=US-ASCII
 X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:30 +0100
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
- "Michael S . Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
- Gustavo Padovan <gustavo@padovan.org>,
- Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
- linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- David Rientjes <rientjes@google.com>,
- virtualization@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
- linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
- linux-gpio@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-edac@vger.kernel.org,
- Tony Luck <tony.luck@intel.com>, netdev@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Pekka Enberg <penberg@kernel.org>, James Morse <james.morse@arm.com>,
- Daniel Vetter <daniel@ffwll.ch>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
+ linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-rtc@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-rdma@vger.kernel.org, qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
+ clang-built-linux@googlegroups.com, linux-pm@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-nfs@vger.kernel.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+ linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -159,44 +82,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 27, 2020 at 01:17:23PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> Use the helper that checks for overflows internally instead of manually
-> calculating the size of the new array.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+On Tue, 27 Oct 2020, trix@redhat.com wrote:
 
-I don't expect conflicts with this going through some other tree, so
-please make that happen. Or resend once I can apply this to drm trees.
-
-Thanks, Daniel
-
-> ---
->  drivers/gpu/drm/drm_atomic.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
-> index 58527f151984..09ad6a2ec17b 100644
-> --- a/drivers/gpu/drm/drm_atomic.c
-> +++ b/drivers/gpu/drm/drm_atomic.c
-> @@ -960,7 +960,8 @@ drm_atomic_get_connector_state(struct drm_atomic_state *state,
->  		struct __drm_connnectors_state *c;
->  		int alloc = max(index + 1, config->num_connector);
->  
-> -		c = krealloc(state->connectors, alloc * sizeof(*state->connectors), GFP_KERNEL);
-> +		c = krealloc_array(state->connectors, alloc,
-> +				   sizeof(*state->connectors), GFP_KERNEL);
->  		if (!c)
->  			return ERR_PTR(-ENOMEM);
->  
-> -- 
-> 2.29.1
+> This rfc will describe
+> An upcoming treewide cleanup.
+> How clang tooling was used to programatically do the clean up.
+> Solicit opinions on how to generally use clang tooling.
 > 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+This tooling is very impressive. It makes possible an idea that I had a 
+while ago, to help make code review more efficient. It works like this. 
+
+Suppose a patch, p, is the difference between the new tree, n, and the old 
+tree, o. That is, p = n - o.
+
+Now let clang-tidy be the transformation 't'. This gets you a much more 
+readable patch submission, P = t(n) - t(o).
+
+The only difficulty is that, if I submit P intead of p then 'git am' will 
+probably reject it. This is solved by a little tooling around git, such 
+that, should a patch P fail to apply, the relevant files are automatically 
+reformatted with the officially endorsed transformation t, to generate a 
+minimal cleanup patch, such that P can be automatically applied on top.
+
+If the patch submission process required* that every patch submission was 
+generated like P and not like p, it would immediately eliminate all 
+clean-up patches from the workload of all reviewers, and also make the 
+reviewers' job easier because all submissions are now formatted correctly, 
+and also avoid time lost to round-trips, such as, "you can have a 
+reviewed-by if you respin to fix some minor style issues".
+
+* Enforcing this, e.g. with checkpatch, is slightly more complicated, but 
+it works the same way: generate a minimal cleanup patch for the relevant 
+files, apply the patch-to-be-submitted, and finally confirm that the 
+modified files are unchanged under t.
