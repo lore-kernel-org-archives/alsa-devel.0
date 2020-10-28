@@ -2,107 +2,100 @@ Return-Path: <SRS0=HcWj=ED=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03DCDC388F7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 15:20:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57616C55178
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 15:44:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB9E3247C5
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 15:20:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 29029247D2
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 15:44:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="phww7AGg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rUP+JJfw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB9E3247C5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rQIPJZPl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gV58zQ7b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29029247D2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B6E0851;
-	Wed, 28 Oct 2020 16:19:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B6E0851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35ABA851;
+	Wed, 28 Oct 2020 16:44:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35ABA851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603898447;
-	bh=F+AzjqEpoAaHHMF7j7CaliNkSn0nJMbhAhc375L5yFM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1603899890;
+	bh=nwZZllA5AVjSzqJVYvyFUYoVdBrzZTDOvBh4UeOgEqw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=phww7AGghWyyCvNofOA9FI/9BjmJR+nYR9kAJXwlW2skqKu3o0sSIPlfg/2XVCpmu
-	 7duHYoy/TuE6qbiTErGyHA9KWu0PNeYXr/LvXaRUW386WPlfSOao3R4Nlc4+7AXCSp
-	 50YO5qbVElykrPyRyA8O8bzTvKhZx6tXAhyWTHwI=
+	b=rQIPJZPlsEDHVmZ0Y5c7F7uIXPyOrPwTnWxyJCcjLX3otNOGur4+Yucq9/fr0qXS6
+	 lrfE5UnMmsy4ZNUKBXmBHivEFhRQJuwOGVGp4AAu7YS2uj6TaM9bK+2+MLJ7wdE+f8
+	 +LK8eizbV6Gu0XUkLElRHQU6yNoQ1b9USzcIuL/8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9DC4F801D5;
-	Wed, 28 Oct 2020 16:19:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFDFAF80134;
+	Wed, 28 Oct 2020 16:43:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 712AFF80212; Wed, 28 Oct 2020 16:19:55 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ id BAB84F80249; Wed, 28 Oct 2020 16:43:57 +0100 (CET)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E0C1F80134
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 16:19:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E0C1F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF904F80134
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 16:43:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF904F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="rUP+JJfw"
-Received: by mail-wr1-x444.google.com with SMTP id n18so6123536wrs.5
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 08:19:48 -0700 (PDT)
+ header.b="gV58zQ7b"
+Received: by mail-wm1-x343.google.com with SMTP id v5so22298wmh.1
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 08:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=x514F6gZYdZ6Ml7d5BwMRGVQM3GbGutbqJsB1Ozu+Nc=;
- b=rUP+JJfwCO3GMrN5WC7KVKpPvj7+iVkYGyHDLhTqKl5FYjGMBB9DnL1ZGaYO/jNIg8
- Lmt5mX1qdOC0eGxqN5xlwtilpqSAObS9rs51EeMhivf7Vs+z9mMXkB+CRPyqPURdSIfN
- JYCHh3ZhhOGtzQi+iaReVKTHtfPLu/WSSsAVeGL9zlWzem15a2h3Or/1GODbdn4s/8B5
- l3XBxCxYTKHt9pf2QV2L8p2L+OoUXBjb8sU8nAE4H63h4nygaKide9qwB5WpLHNPS8eP
- tR6lyFTZ4x6cYyBJyrR2JVtzrNA1ikmJ7rDagJims9vxm3CmJbcrmuPaFDCn4tCiRv1G
- U7Nw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=ctzgjv+NmABx1Kt3m2tDVwm2LGH0KuiBAUYDbPhDv1Q=;
+ b=gV58zQ7bh4+ztDSwyh2p5Aqif/Pag750BWBT8Py2nSDCISM6Unz+z27j16xVcBQbNE
+ hjvcViqHWR/L7BtIkZnthPnJ2CJ6z3qgAEMLUtU2lIElxal1mAqnniCxVHx3+ElDsMxO
+ jANfc2MOEaSJ4xP5hR7BtOpiSyOoKBayf4UxlRj7G4gqApUM2g0jMOEaLbT4JW4JUZEq
+ Lgrod5Zv6t1uKsv3IcmkOE2w/30StqfebZopmwDllb6UNI65U5ImhUIO09K9eo6Q41EI
+ TGLz0FX49l0KvJohNis8hdD4NCGOyA19ubHAqd3yfpZfgx2hwpiy7NKm/5Vuo+ds7vFX
+ sthg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=x514F6gZYdZ6Ml7d5BwMRGVQM3GbGutbqJsB1Ozu+Nc=;
- b=jGuJ5N5PweT+2sFyLT+1NZ467w5BHUpvaIUiukMh5ii1ZIX5QOTFpAIuuRKUjWx5aL
- dF0AgoZlHVNAiBLkK8bjZ52xbP9iHdtTCmFw8FiO3wvZyFfRAzpewHKbHp7XP51VU7nr
- UIzYCbXpUBJShmrN6bjha7DkcZZuzbWy/EJWn/qBG1JB+BRoCQDY51lfklcjZ9nPgOqW
- P65anyIUBMnU1HOgP+C1nFKO7Nodp1JFvOJ9RDaR4lElEcCEMzJ9auO8Ir1ypsTn1zP4
- IaRDoiPkZMBx095+ET5Hj+8cWzVZ7tn9bWMik+qKhvZXiO7vimsQeOF8v9W7qxAbrJB1
- M79Q==
-X-Gm-Message-State: AOAM531twdjQPu99eZZaUJJKGkdzonaBaYYoy7wWRse4/b4UbOoGpZUU
- TXAHTurIWX3N5lAae3mDx+za7Q==
-X-Google-Smtp-Source: ABdhPJxmgjy0sWYNhQDDvIzYf6zbC83N2esx/kijWUC+e1Ze75JVCM/aZaXbPnw77v647Bv/IDoHrA==
-X-Received: by 2002:adf:f146:: with SMTP id y6mr3245254wro.418.1603898386817; 
- Wed, 28 Oct 2020 08:19:46 -0700 (PDT)
-Received: from [192.168.86.34]
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=ctzgjv+NmABx1Kt3m2tDVwm2LGH0KuiBAUYDbPhDv1Q=;
+ b=tAaKoSvi2DV1PSfJQM54ox80Yt8GU+139o7Bpd/Ztll8r+KyDAZhQ+eofDpW2EB691
+ if1/P/U7jN6dnzlMvHTBFfKiAqTfLw4QClI1kuo0CSh6suXxavnFExMVxynJ9/9UKKla
+ eSj8wcYTmzYg/yiHIfawFuMPTQ+GsqgtCeiIX8BoJ32rv4+q+7RhT/Uw+yLAeuKgk9vl
+ beMM8D5Wvurxj0ZdIH6WGQCsFoVEY0y6liqsG6MQggQuHirC+ERRZkZ44fc15LXUDu26
+ oYsZXHQDwGLyFV6Qri+fxuwUhTKWczUfwT8XRLlaldisiJ3It6Vb4U0NjprFV3jAYDuh
+ bsqg==
+X-Gm-Message-State: AOAM531Ew/KishrGAKmzauULBSfAjyzAS/zDuyyj/qdI7j8TZvHFQRQi
+ A1tjwt9qbZymlEVYX9y29UJxyA==
+X-Google-Smtp-Source: ABdhPJwcaqp3i4eiwneqkNGjFUh8FzXBxoYJHVg6VFa94j4eRxJJuLa5s7T5KrPNDyh0rG8MALMp+Q==
+X-Received: by 2002:a7b:c7c3:: with SMTP id z3mr8803418wmk.43.1603899829707;
+ Wed, 28 Oct 2020 08:43:49 -0700 (PDT)
+Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id e2sm5699576wrr.85.2020.10.28.08.19.45
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 28 Oct 2020 08:19:45 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Add SM8250 sound card
- bindings
-To: Rob Herring <robh@kernel.org>
-References: <20201026170947.10567-1-srinivas.kandagatla@linaro.org>
- <20201026170947.10567-2-srinivas.kandagatla@linaro.org>
- <20201028150135.GA4009047@bogus>
+ by smtp.gmail.com with ESMTPSA id u9sm7884114wrp.65.2020.10.28.08.43.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 28 Oct 2020 08:43:49 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <31981724-b260-e94d-ebc6-ccea21763531@linaro.org>
-Date: Wed, 28 Oct 2020 15:19:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+To: broonie@kernel.org
+Subject: [PATCH 2/2] ASoc: codecs: wcd9335: Set digital gain range correctly
+Date: Wed, 28 Oct 2020 15:43:40 +0000
+Message-Id: <20201028154340.17090-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20201028154340.17090-1-srinivas.kandagatla@linaro.org>
+References: <20201028154340.17090-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201028150135.GA4009047@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, spapothi@codeaurora.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
- plai@codeaurora.org
+Content-Transfer-Encoding: 8bit
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,241 +111,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+digital gain range is -84dB min to 40dB max, however this was not
+correctly specified in the range.
 
+Fix this by with correct range!
 
-On 28/10/2020 15:01, Rob Herring wrote:
-> On Mon, Oct 26, 2020 at 05:09:46PM +0000, Srinivas Kandagatla wrote:
->> This patch adds bindings required for SM8250 based soundcards
->> for example Qualcomm Robotics RB5 Development Kit which makes
->> use of ADSP and Internal LPASS codec.
-> 
-> You didn't send to DT list...
+Fixes: 8c4f021d806a ("ASoC: wcd9335: add basic controls")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/wcd9335.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ah.. my bad.. I did not realize that I missed it!
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index f2d9d52ee171..4d2b1ec7c03b 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -618,7 +618,7 @@ static const char * const sb_tx8_mux_text[] = {
+ 	"ZERO", "RX_MIX_TX8", "DEC8", "DEC8_192"
+ };
+ 
+-static const DECLARE_TLV_DB_SCALE(digital_gain, 0, 1, 0);
++static const DECLARE_TLV_DB_SCALE(digital_gain, -8400, 100, -8400);
+ static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
+ static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
+ static const DECLARE_TLV_DB_SCALE(ear_pa_gain, 0, 150, 0);
+-- 
+2.21.0
 
-> 
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../bindings/sound/qcom,sm8250.yaml           | 161 ++++++++++++++++++
->>   1 file changed, 161 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
->> new file mode 100644
->> index 000000000000..b8f97fe6e92c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
->> @@ -0,0 +1,161 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/qcom,sm8250.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm Technologies Inc. SM8250 ASoC sound card driver
->> +
->> +maintainers:
->> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> +
->> +description:
->> +  This bindings describes SC8250 SoC based sound cards
->> +  which uses LPASS internal codec for audio.
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - const: qcom,qrb5165-rb5
->> +      - items:
->> +        - const: qcom,sm8250
-> 
-> This collides with the top level SoC compatible resulting in:
-> 
-
-I did run dt_binding_check before sending out this patch, I might have 
-missed it somehow because the make dt_binding_check did not 
-end/termnitate in any errors, however if I had scrolled 15-20 Page ups 
-it does have this error log!
-
-
-> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: $nodename:0: '/' was expected
-> 	From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/arm/qcom.yaml
-> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible: ['qcom,qrb5165-rb5'] is not valid under any of the given schemas (Possible causes of the failure):
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible: ['qcom,qrb5165-rb5'] is too short
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,apq8016-sbc']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,apq8064-cm-qs600', 'qcom,apq8064-ifc6410']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,apq8074-dragonboard']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,apq8060-dragonboard', 'qcom,msm8660-surf']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,apq8084-mtp', 'qcom,apq8084-sbc']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,msm8960-cdp']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['fairphone,fp2', 'lge,hammerhead', 'sony,xperia-amami', 'sony,xperia-castor', 'sony,xperia-honami']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,msm8916-mtp/1' was expected
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['longcheer,l8150', 'samsung,a3u-eur', 'samsung,a5u-eur']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,msm8996-mtp' was expected
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,ipq4019-ap-dk04.1-c3', 'qcom,ipq4019-ap-dk07.1-c1', 'qcom,ipq4019-ap-dk07.1-c2', 'qcom,ipq4019-dk04.1-c1']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,ipq8064-ap148']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,ipq8074-hk01', 'qcom,ipq8074-hk10-c1', 'qcom,ipq8074-hk10-c2']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,sc7180-idp']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['xiaomi,lavender']
-> 	/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165-rb5' is not one of ['qcom,ipq6018-cp01-c1']
-> 
-> 	From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/arm/qcom.yaml
-> 
-Documentation/devicetree/bindings/arm/qcom.yaml does have 
-qcom,qrb5165-rb5 entry under [qcom,sm8250]
-
-Can you help me understand why is this not a valid compatible?
-
-
-> Also, the indentation is off:
-> ./Documentation/devicetree/bindings/sound/qcom,sm8250.yaml:21:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> 
-I will fix it!
-
---srini
->> +        - const: qcom,qrb5165-rb5
->> +
->> +  audio-routing:
->> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->> +    description:
->> +      A list of the connections between audio components. Each entry is a
->> +      pair of strings, the first being the connection's sink, the second
->> +      being the connection's source. Valid names could be power supplies,
->> +      MicBias of codec and the jacks on the board.
->> +
->> +  model:
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    description: User visible long sound card name
->> +
->> +patternProperties:
->> +  ".*-dai-link$":
-> 
-> '.*' at the beginning is not necessary.
-> 
->> +    description:
->> +      Each subnode represents a dai link. Subnodes of each dai links would be
->> +      cpu/codec dais.
->> +
->> +    type: object
->> +
->> +    properties:
->> +      link-name:
->> +        description: Indicates dai-link name and PCM stream name.
->> +        $ref: /schemas/types.yaml#/definitions/string
->> +        maxItems: 1
->> +
->> +      cpu:
->> +        description: Holds subnode which indicates cpu dai.
->> +        type: object
->> +        properties:
->> +          sound-dai: true
->> +
->> +      platform:
->> +        description: Holds subnode which indicates platform dai.
->> +        type: object
->> +        properties:
->> +          sound-dai: true
->> +
->> +      codec:
->> +        description: Holds subnode which indicates codec dai.
->> +        type: object
->> +        properties:
->> +          sound-dai: true
->> +
->> +    required:
->> +      - link-name
->> +      - cpu
->> +
->> +    additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - model
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +
->> +  - |
->> +    #include <dt-bindings/sound/qcom,q6afe.h>
->> +    #include <dt-bindings/sound/qcom,q6asm.h>
->> +    sound {
->> +        compatible = "qcom,qrb5165-rb5";
->> +        model = "Qualcomm-qrb5165-RB5-WSA8815-Speakers-DMIC0";
->> +        audio-routing = "SpkrLeft IN", "WSA_SPK1 OUT",
->> +                    "SpkrRight IN", "WSA_SPK2 OUT",
->> +                    "VA DMIC0", "vdd-micb",
->> +                    "VA DMIC1", "vdd-micb",
->> +                    "MM_DL1",  "MultiMedia1 Playback",
->> +                    "MM_DL2",  "MultiMedia2 Playback",
->> +                    "MultiMedia3 Capture", "MM_UL3";
->> +
->> +        mm1-dai-link {
->> +            link-name = "MultiMedia0";
->> +            cpu {
->> +                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
->> +            };
->> +        };
->> +
->> +        mm2-dai-link {
->> +            link-name = "MultiMedia2";
->> +            cpu {
->> +                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA2>;
->> +            };
->> +        };
->> +
->> +        mm3-dai-link {
->> +            link-name = "MultiMedia3";
->> +            cpu {
->> +                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
->> +            };
->> +        };
->> +
->> +        hdmi-dai-link {
->> +            link-name = "HDMI Playback";
->> +            cpu {
->> +                sound-dai = <&q6afedai TERTIARY_MI2S_RX>;
->> +            };
->> +
->> +            platform {
->> +                sound-dai = <&q6routing>;
->> +            };
->> +
->> +            codec {
->> +                sound-dai = <&lt9611_codec 0>;
->> +            };
->> +        };
->> +
->> +        wsa-dai-link {
->> +            link-name = "WSA Playback";
->> +            cpu {
->> +                sound-dai = <&q6afedai WSA_CODEC_DMA_RX_0>;
->> +            };
->> +
->> +            platform {
->> +                sound-dai = <&q6routing>;
->> +            };
->> +
->> +            codec {
->> +                sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&wsamacro>;
->> +            };
->> +        };
->> +
->> +        va-dai-link {
->> +            link-name = "VA Capture";
->> +            cpu {
->> +                sound-dai = <&q6afedai VA_CODEC_DMA_TX_0>;
->> +            };
->> +
->> +            platform {
->> +                sound-dai = <&q6routing>;
->> +            };
->> +
->> +            codec {
->> +                sound-dai = <&vamacro 0>;
->> +            };
->> +        };
->> +    };
->> -- 
->> 2.21.0
->>
