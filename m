@@ -6,67 +6,62 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 671CBC4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BCE9C4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:16:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85C65208C7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:16:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2E3F22447
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 08:16:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vQBpfIqh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85C65208C7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=telegraphics.com.au
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IKGA9cWE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2E3F22447
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC4F7169D;
-	Wed, 28 Oct 2020 09:15:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC4F7169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F39616D4;
+	Wed, 28 Oct 2020 09:15:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F39616D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603872978;
-	bh=TKvqJLlkLbq3Kj5f1V4maIueIwHzwDwk5+8EMQJmvPA=;
+	s=default; t=1603872996;
+	bh=ilt2KGgFBFCnzyO0+Fe0cATL3I555KO+I8GoH0lmP+w=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vQBpfIqhS/XwBj2buqumXBJ6YLBfvxTzeRwgrg+mWtXeQHtJ38CVVXwFw8ks5vGXg
-	 detmNB/JKPntwN6Vm1GRzHduelLW7V9zs1csTSiih0IIbBLCb7Cc4AcZh6upl8nJ3p
-	 d5MbE86j4QPfU2AMQyjUI2bfaW7orRIeYqU6srSg=
+	b=IKGA9cWEjkYRjJ4cSdtjFvbG+zWqbxcLvSxLOhg0RRB9KS1dy1WWMJCLKvc3jR26D
+	 hr8DbSYGh9d3VbpPgHwCqmrbWKbrXrHKBjnlN9OT2uhsm0H2q+5L+7RkVzmxF0+7yt
+	 ojM6ZH1slpE7sDVsx6XG/LALZ+u8eLNZGI8pW+gQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2A16F80567;
-	Wed, 28 Oct 2020 09:07:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39DB3F80578;
+	Wed, 28 Oct 2020 09:07:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AF90F80212; Wed, 28 Oct 2020 04:26:29 +0100 (CET)
-Received: from kvm5.telegraphics.com.au (kvm5.telegraphics.com.au
- [98.124.60.144])
- by alsa1.perex.cz (Postfix) with ESMTP id 2FD04F800FF
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 04:26:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FD04F800FF
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by kvm5.telegraphics.com.au (Postfix) with ESMTP id A654929A58;
- Tue, 27 Oct 2020 23:26:19 -0400 (EDT)
-Date: Wed, 28 Oct 2020 14:26:12 +1100 (AEDT)
-From: Finn Thain <fthain@telegraphics.com.au>
-To: Tom Rix <trix@redhat.com>
-Subject: Re: [RFC] clang tooling cleanups
-In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
-Message-ID: <alpine.LNX.2.23.453.2010281344120.31@nippy.intranet>
-References: <20201027164255.1573301-1-trix@redhat.com>
-MIME-Version: 1.0
+ id 49BA2F8053B; Wed, 28 Oct 2020 09:07:12 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D2E0F8053B
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 09:07:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D2E0F8053B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 6C5B6AD1A;
+ Wed, 28 Oct 2020 08:07:06 +0000 (UTC)
+Date: Wed, 28 Oct 2020 09:07:06 +0100
+Message-ID: <s5hh7qezsd1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kailang <kailang@realtek.com>
+Subject: Re: HP AIO Headset Mic issue
+In-Reply-To: <f42ae1ede1cf47029ae2bef1a42caf03@realtek.com>
+References: <f42ae1ede1cf47029ae2bef1a42caf03@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-X-Mailman-Approved-At: Wed, 28 Oct 2020 09:06:30 +0100
-Cc: alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
- linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-rtc@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-rdma@vger.kernel.org, qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
- clang-built-linux@googlegroups.com, linux-pm@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-nfs@vger.kernel.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
- linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org
+Cc: Hui Wang <hui.wang@canonical.com>,
+ " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,38 +77,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-On Tue, 27 Oct 2020, trix@redhat.com wrote:
-
-> This rfc will describe
-> An upcoming treewide cleanup.
-> How clang tooling was used to programatically do the clean up.
-> Solicit opinions on how to generally use clang tooling.
+On Wed, 28 Oct 2020 07:19:27 +0100,
+Kailang wrote:
 > 
+> Hi Takashi,
+> 
+> HP AIO had headset Mic can't be detected by boot time.
+> Attach patch will fix it.
+> 
+> Many Thanks.
+> Kailang
 
-This tooling is very impressive. It makes possible an idea that I had a 
-while ago, to help make code review more efficient. It works like this. 
+Applied now.  Thanks.
 
-Suppose a patch, p, is the difference between the new tree, n, and the old 
-tree, o. That is, p = n - o.
 
-Now let clang-tidy be the transformation 't'. This gets you a much more 
-readable patch submission, P = t(n) - t(o).
-
-The only difficulty is that, if I submit P intead of p then 'git am' will 
-probably reject it. This is solved by a little tooling around git, such 
-that, should a patch P fail to apply, the relevant files are automatically 
-reformatted with the officially endorsed transformation t, to generate a 
-minimal cleanup patch, such that P can be automatically applied on top.
-
-If the patch submission process required* that every patch submission was 
-generated like P and not like p, it would immediately eliminate all 
-clean-up patches from the workload of all reviewers, and also make the 
-reviewers' job easier because all submissions are now formatted correctly, 
-and also avoid time lost to round-trips, such as, "you can have a 
-reviewed-by if you respin to fix some minor style issues".
-
-* Enforcing this, e.g. with checkpatch, is slightly more complicated, but 
-it works the same way: generate a minimal cleanup patch for the relevant 
-files, apply the patch-to-be-submitted, and finally confirm that the 
-modified files are unchanged under t.
+Takashi
