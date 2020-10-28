@@ -6,67 +6,63 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F639C55179
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 23:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B2EDC4363A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 23:44:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E03CB207BC
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 23:34:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A040207CD
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 23:44:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pzNveW5d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E03CB207BC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lgwev6vl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A040207CD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE035825;
-	Thu, 29 Oct 2020 00:33:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE035825
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5002828;
+	Thu, 29 Oct 2020 00:43:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5002828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603928067;
-	bh=gaYf8gq6R9dneLtqv2s25TEc0wBVQcZkRG31YAWycEY=;
+	s=default; t=1603928652;
+	bh=RzkUBmmcxDkJVRGKbX1KofF0EdyhOcKkq1f9UxfuAc8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pzNveW5dSTvlY9TDXsE9Wp8YjT8OoqxVwm12sLGJwlGFY5lSsJlJDF2ScXHZzsqrB
-	 HKO2E+RuuPL9Juq3CMpuqpgGzcoodAXHnOVwXXRL+g1+S/hZP0wZ/3OwVDg9kbuasp
-	 zYrzxiCFVA0p5lRQK3cRwv3tBlPJbWyEPyG3BQdU=
+	b=Lgwev6vl1qta3JuNvri4xRcIG1jzeZkYAlruvpRzUC+7fCt2A68RufrYouJa5mTne
+	 2X3QDaYXQRKMUwwO+HlAg7anraTFejpMXEk8tOZQn2fsR0ijHLzMWUMlbw8agTo94L
+	 34x2ZsDX1iFzq41wpf7kYERXEIo3h92y++Pyt6AY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4321AF801D5;
-	Thu, 29 Oct 2020 00:33:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B14BF801D5;
+	Thu, 29 Oct 2020 00:43:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25F74F80212; Thu, 29 Oct 2020 00:33:35 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id AEEB7F80134
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:33:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEEB7F80134
-Date: 29 Oct 2020 08:33:24 +0900
-X-IronPort-AV: E=Sophos;i="5.77,428,1596466800"; d="scan'208";a="61089711"
+ id A8111F801D5; Thu, 29 Oct 2020 00:43:20 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6F9A7F80134
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:43:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F9A7F80134
+Date: 29 Oct 2020 08:43:08 +0900
+X-IronPort-AV: E=Sophos;i="5.77,428,1596466800"; d="scan'208";a="60874618"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 29 Oct 2020 08:33:24 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 29 Oct 2020 08:43:08 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 620E4400618E;
- Thu, 29 Oct 2020 08:33:24 +0900 (JST)
-Message-ID: <87k0vadj5i.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id A09CE400C9F9;
+ Thu, 29 Oct 2020 08:43:08 +0900 (JST)
+Message-ID: <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 1/3] ASoC: dt-bindings: audio-graph-card: switch to
- yaml base Documentation
-In-Reply-To: <20201028160427.GA4094628@bogus>
-References: <87a6wfay7t.wl-kuninori.morimoto.gx@renesas.com>
- <878sbzay6u.wl-kuninori.morimoto.gx@renesas.com>
- <75ca7528-3177-46cb-73c5-46e32e63ad44@nvidia.com>
- <87h7qgw848.wl-kuninori.morimoto.gx@renesas.com>
- <eba1f18a-0b2e-d52b-593a-9ef5304f9199@nvidia.com>
- <20201028160427.GA4094628@bogus>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
+In-Reply-To: <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
+References: <87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com>
+ <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
+ <699d5b33-d88f-ba08-7d63-61ec9fbdc5d8@linux.intel.com>
+ <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
- Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,15 +79,25 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Rob
+Hi Pierre-Louis, again
 
-> However, What is 'audio-graph-scu-card' supposed to mean compared to 
-> 'audio-graph-card'. It's never used by the driver or in any dts file.
+> > enum snd_compr_direction {
+> > 	SND_COMPRESS_PLAYBACK = SNDRV_PCM_STREAM_PLAYBACK,
+> > 	SND_COMPRESS_CAPTURE = SNDRV_PCM_STREAM_CAPTURE
+> > };
+> > 
+> > Or remove this duplication completely and get rid of snd_compr_direction?
+> > 
+> > I find it odd to convert two things that had no reason to be different
+> > in the first place.
+> 
+> Yes I agree with you.
+> I'm not sure why this duplication was created,
+> but my patch tried to make it sane.
+> If Mark can agree, I can post snd_compr_direction remove patch.
 
-It supports advanced use case of audio-graph-card,
-but because of it, no *upstream* code is using it so far
-(user need to select it locally for now).
-Now I'm planning to remove it, but it will be next year.
+Oops, snd_compr_direction was uapi.
+We can't remove it, and can't use your above suggestion...
 
 Thank you for your help !!
 
