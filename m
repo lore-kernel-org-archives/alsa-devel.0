@@ -2,68 +2,99 @@ Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12E92C55178
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:49:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D05CDC2D0A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:50:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00CC520EDD
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:49:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F3C4214DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:50:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qexiwYN5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00CC520EDD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jElUpkIR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qaRJrHsp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F3C4214DB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F8A31612;
-	Thu, 29 Oct 2020 08:49:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F8A31612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45DA31667;
+	Thu, 29 Oct 2020 08:49:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45DA31667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603957791;
-	bh=C53kM1rSfqwn85yvpz8+QAFn7yd/eKnN9WzOY+PZbpY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1603957847;
+	bh=QEXxMmSUj2Vd+E59vReAFx2mSILQlDhT0GF7L4nT79k=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qexiwYN5oh/itpFQdU4OANP2SSMM2yzyAhQrOxU66++RZ8FGSs0Ju/3hZt2BW6R7U
-	 4s3KyAUypvf23UWgiO+V2bsepNiOEe10+HbVf3511dSCeFxt6Xj1e63ajc+vEfILPu
-	 chHq9HBrTaFcfADNJDe8K+RCYIHg73CgjG/K42TA=
+	b=jElUpkIRru91r8J2N1je3ZTaZhhAW+ONaWcYDi+JPj7qNFdL8uDs0olLTtYgqxFPj
+	 IyFABHOLFGPfUWSJfmNmi1aP5zHe3rHj5LeeiRYVkJBCBmle4aOafKluem/yKJqU+T
+	 GTjO1Tot1wGJBOF++S+m6GE3FNd8dytUt5j3M10o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A734CF80095;
-	Thu, 29 Oct 2020 08:49:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C817EF801D8;
+	Thu, 29 Oct 2020 08:49:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C146F8020D; Thu, 29 Oct 2020 08:48:59 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 53A10F80212; Wed, 28 Oct 2020 09:47:24 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABE86F80095
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:48:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABE86F80095
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9900FB02D;
- Thu, 29 Oct 2020 07:48:55 +0000 (UTC)
-Date: Thu, 29 Oct 2020 08:48:55 +0100
-Message-ID: <s5hpn51wjyw.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Coiby Xu <coiby.xu@gmail.com>
-Subject: Re: [PATCH 01/25] ALSA: core: pcm: remove unnecessary CONFIG_PM_SLEEP
-In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
-References: <20201029074301.226644-1-coiby.xu@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: open list <linux-kernel@vger.kernel.org>,
- "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FB51F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2020 09:47:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB51F800FF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qaRJrHsp"
+Received: from kernel.org (unknown [87.70.96.83])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 50EBD2465E;
+ Wed, 28 Oct 2020 08:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1603874836;
+ bh=QEXxMmSUj2Vd+E59vReAFx2mSILQlDhT0GF7L4nT79k=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qaRJrHspISAML2s3M6ow+As8fnofPQBijjHMbHMdR+I3658FQOTlnTwjnXNz0MlyX
+ aAw8A460MACJ1IDHW1x+02Uv9Atn0b3fP/Jb97ArZSIbrkmzQ92h9/ls1ePhoOhjJH
+ 6jiwMskK6vWDnhTMrSRMXIc62N90Wg6wJ7a8TvRg=
+Date: Wed, 28 Oct 2020 10:47:03 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH 1/8] mm: slab: provide krealloc_array()
+Message-ID: <20201028084703.GC1428094@kernel.org>
+References: <20201027121725.24660-1-brgl@bgdev.pl>
+ <20201027121725.24660-2-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027121725.24660-2-brgl@bgdev.pl>
+X-Mailman-Approved-At: Thu, 29 Oct 2020 08:49:54 +0100
+Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
+ "Michael S . Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
+ Gustavo Padovan <gustavo@padovan.org>,
+ Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
+ linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ David Rientjes <rientjes@google.com>,
+ virtualization@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
+ linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
+ linux-gpio@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-edac@vger.kernel.org,
+ Tony Luck <tony.luck@intel.com>, netdev@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Pekka Enberg <penberg@kernel.org>, James Morse <james.morse@arm.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,47 +110,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Oct 2020 08:42:37 +0100,
-Coiby Xu wrote:
+On Tue, Oct 27, 2020 at 01:17:18PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+> When allocating an array of elements, users should check for
+> multiplication overflow or preferably use one of the provided helpers
+> like: kmalloc_array().
 > 
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-
-It caused compile warnings.  Was it already addressed in general?
-
-Or we may use __maybe_unused attribute instead, but it's just a matter
-of taste.
-
-
-thanks,
-
-Takashi
-
+> There's no krealloc_array() counterpart but there are many users who use
+> regular krealloc() to reallocate arrays. Let's provide an actual
+> krealloc_array() implementation.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > ---
->  sound/core/pcm.c | 2 --
->  1 file changed, 2 deletions(-)
+>  include/linux/slab.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-> index be5714f1bb58..5a281ac92958 100644
-> --- a/sound/core/pcm.c
-> +++ b/sound/core/pcm.c
-> @@ -599,7 +599,6 @@ static const struct attribute_group *pcm_dev_attr_groups[];
->   * PM callbacks: we need to deal only with suspend here, as the resume is
->   * triggered either from user-space or the driver's resume callback
->   */
-> -#ifdef CONFIG_PM_SLEEP
->  static int do_pcm_suspend(struct device *dev)
->  {
->  	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
-> @@ -608,7 +607,6 @@ static int do_pcm_suspend(struct device *dev)
->  		snd_pcm_suspend_all(pstr->pcm);
->  	return 0;
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index dd6897f62010..0e6683affee7 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -592,6 +592,17 @@ static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
+>  	return __kmalloc(bytes, flags);
 >  }
-> -#endif
 >  
->  static const struct dev_pm_ops pcm_dev_pm_ops = {
->  	SET_SYSTEM_SLEEP_PM_OPS(do_pcm_suspend, NULL)
+
+Can you please add kernel-doc here and a word or two about this function
+to Documentation/core-api/memory-allocation.rst?
+
+> +static __must_check inline void *
+> +krealloc_array(void *p, size_t new_n, size_t new_size, gfp_t flags)
+> +{
+> +	size_t bytes;
+> +
+> +	if (unlikely(check_mul_overflow(new_n, new_size, &bytes)))
+> +		return NULL;
+> +
+> +	return krealloc(p, bytes, flags);
+> +}
+> +
+>  /**
+>   * kcalloc - allocate memory for an array. The memory is set to zero.
+>   * @n: number of elements.
 > -- 
-> 2.28.0
+> 2.29.1
 > 
+> 
+
+-- 
+Sincerely yours,
+Mike.
