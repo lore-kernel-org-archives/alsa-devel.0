@@ -1,4 +1,4 @@
-Return-Path: <SRS0=HcWj=ED=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,63 +6,59 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B2EDC4363A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 23:44:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B84F9C55179
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 00:05:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A040207CD
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Oct 2020 23:44:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9263B207DE
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 00:05:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lgwev6vl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A040207CD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vCUeD5L3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9263B207DE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5002828;
-	Thu, 29 Oct 2020 00:43:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5002828
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF571828;
+	Thu, 29 Oct 2020 01:05:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF571828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603928652;
-	bh=RzkUBmmcxDkJVRGKbX1KofF0EdyhOcKkq1f9UxfuAc8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Lgwev6vl1qta3JuNvri4xRcIG1jzeZkYAlruvpRzUC+7fCt2A68RufrYouJa5mTne
-	 2X3QDaYXQRKMUwwO+HlAg7anraTFejpMXEk8tOZQn2fsR0ijHLzMWUMlbw8agTo94L
-	 34x2ZsDX1iFzq41wpf7kYERXEIo3h92y++Pyt6AY=
+	s=default; t=1603929954;
+	bh=ZUSkA9Md6/Lp/8dRnp7d2r2XidkS7GV/y7HtC76mrs4=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vCUeD5L3CnGDE49LK0zR/dzfPWr02Nom55GWbqhh4acxPpWSm5tQdjrwqL6loMu2R
+	 8TvWYJf8ovTOEJBfXn+DOHNPkKUINjcYwpLYXc/p9+oyYVmhIfuFLNeqxaWr5S0ZvT
+	 3hr21YeMqDsmlXZas22SqehnidKM0FjBpyZ7fPa8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B14BF801D5;
-	Thu, 29 Oct 2020 00:43:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54298F801D5;
+	Thu, 29 Oct 2020 01:05:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8111F801D5; Thu, 29 Oct 2020 00:43:20 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6F9A7F80134
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:43:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F9A7F80134
-Date: 29 Oct 2020 08:43:08 +0900
-X-IronPort-AV: E=Sophos;i="5.77,428,1596466800"; d="scan'208";a="60874618"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 29 Oct 2020 08:43:08 +0900
+ id 6BA69F80212; Thu, 29 Oct 2020 01:05:02 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C0F0DF80134
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 01:04:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0F0DF80134
+Date: 29 Oct 2020 09:04:53 +0900
+X-IronPort-AV: E=Sophos;i="5.77,428,1596466800"; d="scan'208";a="61092506"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 29 Oct 2020 09:04:53 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id A09CE400C9F9;
- Thu, 29 Oct 2020 08:43:08 +0900 (JST)
-Message-ID: <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A089A41288AA;
+ Thu, 29 Oct 2020 09:04:53 +0900 (JST)
+Message-ID: <87h7qdew9h.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
-In-Reply-To: <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
-References: <87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com>
- <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
- <699d5b33-d88f-ba08-7d63-61ec9fbdc5d8@linux.intel.com>
- <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v4 0/3] ASoC: dt-bindings: audio-graph-card: switch to yaml
+ base Documentation
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sameer Pujar <spujar@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,28 +75,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Pierre-Louis, again
+Hi Rob, Mark
+Cc: Sameer
 
-> > enum snd_compr_direction {
-> > 	SND_COMPRESS_PLAYBACK = SNDRV_PCM_STREAM_PLAYBACK,
-> > 	SND_COMPRESS_CAPTURE = SNDRV_PCM_STREAM_CAPTURE
-> > };
-> > 
-> > Or remove this duplication completely and get rid of snd_compr_direction?
-> > 
-> > I find it odd to convert two things that had no reason to be different
-> > in the first place.
-> 
-> Yes I agree with you.
-> I'm not sure why this duplication was created,
-> but my patch tried to make it sane.
-> If Mark can agree, I can post snd_compr_direction remove patch.
+These are v4 of switch to yaml base Documentation for
+audio-graph-card and renesas,rsnd which uses audio-graph-card.
 
-Oops, snd_compr_direction was uapi.
-We can't remove it, and can't use your above suggestion...
+v3 -> v4
+	- fixuped yamllint warnings/errors
 
-Thank you for your help !!
+v2 -> v3
+	- fixuped Rob's pointed points
 
-Best regards
----
-Kuninori Morimoto
+v1 -> v2
+	- upgrade dt-schema, and fixup errors for [2/2] patch
+
+Kuninori Morimoto (3):
+  dt-bindings: ASoC: audio-graph-card: switch to yaml base Documentation
+  dt-bindings: ASoC: renesas,rsnd: switch to yaml base Documentation
+  dt-bindings: ASoC: renesas,rsnd: Add r8a77961 support
+
+ .../bindings/sound/audio-graph-card.txt       | 337 ------------
+ .../bindings/sound/audio-graph-card.yaml      | 165 ++++++
+ .../bindings/sound/renesas,rsnd.txt           | 520 ------------------
+ .../bindings/sound/renesas,rsnd.yaml          | 457 +++++++++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +-
+ 5 files changed, 623 insertions(+), 858 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+
+-- 
+2.25.1
+
