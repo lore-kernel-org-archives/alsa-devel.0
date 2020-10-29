@@ -2,82 +2,72 @@ Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0934C55179
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E25DFC4363A
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:48:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9BB420FC3
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:42:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AAFE20838
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:48:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q56KMIXS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9BB420FC3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aV/D29BT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AAFE20838
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F22F515E5;
-	Thu, 29 Oct 2020 17:42:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F22F515E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EBE6950;
+	Thu, 29 Oct 2020 17:48:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EBE6950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603989778;
-	bh=Yrkj47yWPXEwwXp2Y57HzfMAAqDAGWFL2e28Dfr1hDA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1603990130;
+	bh=piDogI6LDtDh71Y95cPpr+yTqO5C7FRloCReLS6jB/0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q56KMIXSYTPhSQmPEs7BZVA2xoawB1qB51C22EjlhzC6FkVMCb8L0nV+BbNPcou27
-	 Wn0Iu/GHJBMkK9Pc+i4yXcFwGmHVe01vd/GVmFu6Yej4jKu4ivWJzk+A53s2Bc74N+
-	 epuco0AwxDDEM+qHuhpQCojhYSXy8Y9UMzESL6QA=
+	b=aV/D29BTqweh0k3yRkw5AbFr/OFArIEbhyTW0gGniN5KOI+eqiLzKgMN2cjU2NLK5
+	 +mHdwg6rdCuq2o5cKBXC9bdCD4QnUnwpwk1ZicxGyLic4/A1vLh71vGtWogJXeHIAM
+	 IWgEGNO0C6A8rqVQAsaQblU7YpAuyovSK+blNPeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52B2CF804BB;
-	Thu, 29 Oct 2020 17:40:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC7FCF801D8;
+	Thu, 29 Oct 2020 17:47:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB038F800FF; Thu, 29 Oct 2020 17:40:33 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5A125F8020D; Thu, 29 Oct 2020 17:47:57 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57C72F8020D
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 17:40:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57C72F8020D
-IronPort-SDR: N33pkRrSgomg/cwe63165KeyZVDksu0/anfsDFwYfHyq89D3hCTw4NspH9xchE7iDHdbtq/wJK
- 2sw812g1/T3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="168563742"
-X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; d="scan'208";a="168563742"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Oct 2020 09:40:18 -0700
-IronPort-SDR: rhlsDb9jKbP9HmivfA60EelfBvva7vwMyla+F7xP7GJYM2vXrKjZr34cYyp9ayF3KKbtSdb+TL
- BOuH47ax5DiA==
-X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; d="scan'208";a="323762890"
-Received: from mghaffa-mobl1.amr.corp.intel.com (HELO [10.212.235.9])
- ([10.212.235.9])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Oct 2020 09:40:17 -0700
-Subject: Re: [PATCH v2 5/6] ASoC: codecs: lpass-va-macro: Add support to VA
- Macro
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
-References: <20201029110829.16425-1-srinivas.kandagatla@linaro.org>
- <20201029110829.16425-6-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8f33aac3-7a41-1482-ae8b-e24d13ba8f13@linux.intel.com>
-Date: Thu, 29 Oct 2020 10:56:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201029110829.16425-6-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6FF7AF800D8
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 17:47:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FF7AF800D8
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7A7A7ACDF;
+ Thu, 29 Oct 2020 16:47:53 +0000 (UTC)
+Date: Thu, 29 Oct 2020 17:47:53 +0100
+Message-ID: <s5hsg9xt1vq.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
+In-Reply-To: <200088ab-d186-4c28-ea4a-ed92c105d187@linux.intel.com>
+References: <87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com>
+ <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
+ <699d5b33-d88f-ba08-7d63-61ec9fbdc5d8@linux.intel.com>
+ <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
+ <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
+ <s5hsg9xwm0h.wl-tiwai@suse.de>
+ <200088ab-d186-4c28-ea4a-ed92c105d187@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,31 +83,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 29 Oct 2020 16:33:35 +0100,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> 
+> 
+> >>>> enum snd_compr_direction {
+> >>>> 	SND_COMPRESS_PLAYBACK = SNDRV_PCM_STREAM_PLAYBACK,
+> >>>> 	SND_COMPRESS_CAPTURE = SNDRV_PCM_STREAM_CAPTURE
+> >>>> };
+> >>>>
+> >>>> Or remove this duplication completely and get rid of snd_compr_direction?
+> >>>>
+> >>>> I find it odd to convert two things that had no reason to be different
+> >>>> in the first place.
+> >>>
+> >>> Yes I agree with you.
+> >>> I'm not sure why this duplication was created,
+> >>> but my patch tried to make it sane.
+> >>> If Mark can agree, I can post snd_compr_direction remove patch.
+> >>
+> >> Oops, snd_compr_direction was uapi.
+> >> We can't remove it, and can't use your above suggestion...
+> 
+> I knew I was missing something... Thanks for correcting my flawed assertion.
+> 
+> > Right, such uapi can't be removed.
+> >
+> > Essentially both compress and PCM definitions are identical, and can
+> > be never different because of ABI compatibility, which means it's safe
+> > to mix both variants in the code.  If you're unsure, we may add
+> > BUILD_BUG_ON() to check the coincidence of both values.
+> 
+> 
+> In case we add this BUILD_BUG_ON(), can we keep the code as is then,
+> there's no need to convert values?
 
-> diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-> new file mode 100644
-> index 000000000000..8cb23c32631d
-> --- /dev/null
-> +++ b/sound/soc/codecs/lpass-va-macro.c
-> @@ -0,0 +1,882 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
+Unless any strong type is used, it should be fine as is.
+BUILD_BUG_ON() would catch if the value is changed inconsistently.
 
-Missing copyright information?
 
-[...]
+thanks,
 
-> +module_platform_driver(va_macro_driver);
-> +MODULE_DESCRIPTION("VA macro driver");
-> +MODULE_LICENSE("GPL v2");
-
-"GPL" ? The v2 adds no information.
-
-https://www.kernel.org/doc/html/latest/process/license-rules.html
-
-“GPL”	Module is licensed under GPL version 2. This does not express any 
-distinction between GPL-2.0-only or GPL-2.0-or-later. The exact license 
-information can only be determined via the license information in the 
-corresponding source files.
-
-“GPL v2”	Same as “GPL”. It exists for historic reasons.
+Takashi
