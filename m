@@ -2,57 +2,70 @@ Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E13E5C4363A
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 06:59:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF943C4363A
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:05:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6508B21775
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 06:59:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE2D2218AC
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:05:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vnaSZ9Pa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6508B21775
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IBZLnB/q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE2D2218AC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 639B715E0;
-	Thu, 29 Oct 2020 07:58:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 639B715E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BEC415E0;
+	Thu, 29 Oct 2020 08:04:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BEC415E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603954752;
-	bh=eNqhsd4/KszbC9N7KkEJK5gwnRec7EFD+lUYBln5IwQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1603955142;
+	bh=i88Z7f6xNOobKkXSl06lLzE2GHNPiepAp0wptcBb5G0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vnaSZ9PauX7KuBPRg7ju5jnaxe6GcJMO1O+XySSrM0YZ/keIHOstu+o4Azi2SR6Aa
-	 dE2B9/4IzktfJUoQ2ZvkqkeuUCHy1rPzjM4fGMnRCpl1wjmLoPHJ82zTKaFVRIgryg
-	 drHn2xeaa00kcl7AP2zX3ArZTNPwf7OC3P6e28F0=
+	b=IBZLnB/qrTB6Mb3S5onFQCPIyUUT+LPUx/fh+TPdh4HAgezOdgqFgc9IM52srvM0k
+	 L/4LdBfNS6fG61Wi9SSJQJKa6CZ6g9eFTJphTNZbsVrtk1UlFpNEo3CSdQ9+xYuLEp
+	 x6oXrpv3OR1STSTPWwganFoZHu/H7ayvV4rItldU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D51C9F80095;
-	Thu, 29 Oct 2020 07:58:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 095C8F801D8;
+	Thu, 29 Oct 2020 08:04:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0E4CF8020D; Thu, 29 Oct 2020 07:58:20 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id A25C7F80095
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 07:58:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A25C7F80095
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1603954693201121092-webhooks-bot@alsa-project.org>
-References: <1603954693201121092-webhooks-bot@alsa-project.org>
-Subject: ucm: return error if boot_list is empty
-Message-Id: <20201029065820.B0E4CF8020D@alsa1.perex.cz>
-Date: Thu, 29 Oct 2020 07:58:20 +0100 (CET)
+ id D5B01F8020D; Thu, 29 Oct 2020 08:04:49 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 787BDF80095
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:04:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 787BDF80095
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7F999ABF5;
+ Thu, 29 Oct 2020 07:04:46 +0000 (UTC)
+Date: Thu, 29 Oct 2020 08:04:46 +0100
+Message-ID: <s5hsg9xwm0h.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
+In-Reply-To: <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
+References: <87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com>
+ <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
+ <699d5b33-d88f-ba08-7d63-61ec9fbdc5d8@linux.intel.com>
+ <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
+ <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,15 +81,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib pull request #94 was opened from jason77-wang:
+On Thu, 29 Oct 2020 00:43:08 +0100,
+Kuninori Morimoto wrote:
+> 
+> 
+> Hi Pierre-Louis, again
+> 
+> > > enum snd_compr_direction {
+> > > 	SND_COMPRESS_PLAYBACK = SNDRV_PCM_STREAM_PLAYBACK,
+> > > 	SND_COMPRESS_CAPTURE = SNDRV_PCM_STREAM_CAPTURE
+> > > };
+> > > 
+> > > Or remove this duplication completely and get rid of snd_compr_direction?
+> > > 
+> > > I find it odd to convert two things that had no reason to be different
+> > > in the first place.
+> > 
+> > Yes I agree with you.
+> > I'm not sure why this duplication was created,
+> > but my patch tried to make it sane.
+> > If Mark can agree, I can post snd_compr_direction remove patch.
+> 
+> Oops, snd_compr_direction was uapi.
+> We can't remove it, and can't use your above suggestion...
 
-If bootlist is empty, that means there is no BootSequence defined
-in the ucm for this sound card, let set_boot_user() return error,
-then alsactl could have chance to use non-ucm ways to initialize the
-sound card.
+Right, such uapi can't be removed.
 
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Essentially both compress and PCM definitions are identical, and can
+be never different because of ABI compatibility, which means it's safe
+to mix both variants in the code.  If you're unsure, we may add
+BUILD_BUG_ON() to check the coincidence of both values.
 
-Request URL   : https://github.com/alsa-project/alsa-lib/pull/94
-Patch URL     : https://github.com/alsa-project/alsa-lib/pull/94.patch
-Repository URL: https://github.com/alsa-project/alsa-lib
+
+thanks,
+
+Takashi
