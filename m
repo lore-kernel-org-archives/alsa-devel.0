@@ -8,88 +8,87 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33359C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:53:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39607C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:54:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 566CE20782
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:53:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66D832151B
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:54:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fWvVcYyp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f6yk89vg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 566CE20782
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CfxFbK69";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QXaJtgDU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66D832151B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3952166D;
-	Thu, 29 Oct 2020 08:53:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3952166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CADFF167A;
+	Thu, 29 Oct 2020 08:53:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CADFF167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603958033;
-	bh=ySHldnunD7enUs04BlkeCA5RbYH6rX3c0OJ03BNbGJ4=;
+	s=default; t=1603958044;
+	bh=4DeplbETW4fyikai3AjTqHX7VVrkWDqX0tH6hlFUzAA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fWvVcYypTr8W0QsuraMj4oYB5n8ejKMrdgMl2MgI7fw7tVeD+4CUNPbEZDZ4DtZp+
-	 4Wu7UpVQHSzepuhZ4QRlDEKsHaqc0aHl9+yyMYU07P2C+5mT5/bL1Pp5mcYEAwhwKU
-	 1MGAseVK6yKIXvvN0bAsTwSP95z/WztO7v4Bgw14=
+	b=CfxFbK69Y1HCO6fS54gBL9qtgUB5ZVLMTv+3Y+uKeZLaoRQmDEyyuxTzmdp/auE0j
+	 KQJB0lF4oRbdybVvFm3vvo1g4/4UZjAjWl/yvkRK7Fl3cxbsYv1KhnXzRe7+z/rYh9
+	 AyuMscI4K8jlGB1HMAUc0T4m4dEzlQ5v6AJ12uEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0943F804EC;
-	Thu, 29 Oct 2020 08:50:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0046F804ED;
+	Thu, 29 Oct 2020 08:50:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01AC8F800FF; Thu, 29 Oct 2020 08:44:10 +0100 (CET)
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
- [IPv6:2607:f8b0:4864:20::644])
+ id E98A6F80217; Thu, 29 Oct 2020 08:44:15 +0100 (CET)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
+ [IPv6:2607:f8b0:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2262FF801D8
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:44:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2262FF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id E52DEF80095
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:44:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E52DEF80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="f6yk89vg"
-Received: by mail-pl1-x644.google.com with SMTP id p17so880945pli.13
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:44:07 -0700 (PDT)
+ header.b="QXaJtgDU"
+Received: by mail-pf1-x443.google.com with SMTP id o129so1661936pfb.1
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=TpBMm8g68pTx9DqIx3h+hx1vGqrNoMOX/Q5L49wwIlo=;
- b=f6yk89vg+qNSCOZtGKP6o4XSw44ktFR5O/1XFznnntptHHnL0+qBgyXM4wq7ghfeyo
- I3JupIjev6TG41pCUKUEOvPuEywsgWMReZZ7NlzrqcAPpjMh6Pxlj/WGA4SkEjbP0qwC
- vjv495mn1+cr0bglnS2V4hf4SCXBwYTrSJQZst+MQDNfWnb4sZB40YXw6u66l8FXjNY+
- w0E4lPqr7m/ENjVS/PeGpCEc85t1xSQ1/hznWT9to1SyQBNi3sj5JOVagFg2IhtRunmf
- nJUSVpTKk6c842awUDRUOdSHzH+SgP2oOEz8o5iIXjf5qrm+/+4hD5RgzvbR8AotFXS6
- ec6w==
+ bh=ESVv+pY5jSD1d+HDXCLrZGsW+m8ltnbCHyHJOCs8m+I=;
+ b=QXaJtgDUeYsx+AcGbv7NKaPCw/bNzWl7kGcmJ8UeBrLmEBrptvJTXdbPEdNcUqcjvS
+ T9pUt8/HfBrbFIKq4OyEgYw6ozuCyIOATOKkehoUZPuZGvf6s6b4G80OhfbdlgCzmh8D
+ 7H3+BJFK+iK+v7/NKL6FUSbsJT6cGSzQ20a2NtQju6a40ATQ65huUbx76b+EmuzKG1//
+ m0BZ+AYHX8/4e3HzYF0QIYp+pF/gDOSi3gU+oXDpHgv1Cha/xPY3eXzwhlqFnf0YTBeS
+ nSlPC7+zT6IZJhLUiWJ5uODsK8PKb/XgShs/rfyHug0//TfXmQe++1QQWuVNm223KBsI
+ WGFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=TpBMm8g68pTx9DqIx3h+hx1vGqrNoMOX/Q5L49wwIlo=;
- b=JTExPUta0Gg+eQBRue6uxTVoQCybFPzDdFEBUgId5v4kEvICyi4xtDqJ1w1nkJyQxH
- KC8G0S6W5kslpXEDnL0jZGPnsUJrlCkMn5rLmRwC4UHPjbhB5ZuFTYtci9raTeAbemG6
- veArjIIGia+Ez58qm4xEl5q7ziETcbbDTxMovkHMrjYJBlnbf6gT6QhufujWFvoKKcrj
- 7SqFthGwzdyQvLaaQLsGfxaAp5BQ0PXnn1QRTstd1x6H7Z0qY5Ph2+gLFqGSRj9eD1RC
- An0Y+l3JxxKej5ek9hJUCnGjl3B1i0DP7M22qk+sAJ73NYysVMI/SAMT9Jr7vmqGz09Q
- KVrA==
-X-Gm-Message-State: AOAM533+Y/TuwuhOoGH7C2FUvMSDlIpsUZhote5MZEQzhSxgiTvpyIx1
- Oybv7XgHH+U317kDtyCpDB/H3GIEwGRkzRlV
-X-Google-Smtp-Source: ABdhPJyJYs8Hm3RbNRVfredcnwtafkPurb0Ozj/n6XbH3XxzaDaN5PEg476VGV/RBDSEyV7o9cImKg==
-X-Received: by 2002:a17:902:8647:b029:d3:d448:98a8 with SMTP id
- y7-20020a1709028647b02900d3d44898a8mr2865766plt.29.1603957445560; 
- Thu, 29 Oct 2020 00:44:05 -0700 (PDT)
+ bh=ESVv+pY5jSD1d+HDXCLrZGsW+m8ltnbCHyHJOCs8m+I=;
+ b=L8rP0VsfDDFkz9DvrAULIaiTBbPVH/Zq4BFeUDu/czpmJHqUEi/Br2XqJsdFASDRJ9
+ aYMBjJoDxciuOh08W60n9l6XiK3tgx4FLlssymFJ6HMuw8dFBssMHQo+GwfDsQpvl+bD
+ rtW/9SxTmcvxBuP8D4DNBqFZgrpslBr/fvsKeqim1tPG3OzP506YP6gwpze0ilYGNBeX
+ r7V0WMWR8ZboniLD1d28/BZzuQDtrn4R5SZ8JzuqMogLcYIxgb6NcG/SyB3vyOpQ7RUn
+ 96XxCjBwsmQGd0GveNdHo4Mfn2t4dj5A5zQIh6+Pf6qMhz9nGefRA8RnjRfhyxdnG65m
+ jIjg==
+X-Gm-Message-State: AOAM5300QjKIZT79ZxYV26XtU/7gQcJbkV9Whi0PaDExsppxMREff+g7
+ OyU2OHG7qfiY/pY+qa44ovw8+MrFhSjy27Gh
+X-Google-Smtp-Source: ABdhPJzfU3gWLWZn9sHRpVXg6rAqMMuzgyKIAJpqJHIJWbB6Z1zMoTjgOJ8HqL/1lFSZ4IlWTLfSpg==
+X-Received: by 2002:a63:b819:: with SMTP id p25mr3005032pge.282.1603957451120; 
+ Thu, 29 Oct 2020 00:44:11 -0700 (PDT)
 Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
- by smtp.gmail.com with ESMTPSA id n6sm1562177pjj.34.2020.10.29.00.44.04
+ by smtp.gmail.com with ESMTPSA id nm11sm1920467pjb.24.2020.10.29.00.44.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2020 00:44:05 -0700 (PDT)
+ Thu, 29 Oct 2020 00:44:10 -0700 (PDT)
 From: Coiby Xu <coiby.xu@gmail.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 08/25] ASoC: img-i2s-out: remove unnecessary CONFIG_PM_SLEEP
-Date: Thu, 29 Oct 2020 15:42:44 +0800
-Message-Id: <20201029074301.226644-8-coiby.xu@gmail.com>
+Subject: [PATCH 09/25] ASoC: tegra: remove unnecessary CONFIG_PM_SLEEP
+Date: Thu, 29 Oct 2020 15:42:45 +0800
+Message-Id: <20201029074301.226644-9-coiby.xu@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
 References: <20201029074301.226644-1-coiby.xu@gmail.com>
@@ -97,8 +96,10 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Thu, 29 Oct 2020 08:49:54 +0100
 Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>
+ <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
+ "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,29 +119,29 @@ SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 
 Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 ---
- sound/soc/img/img-i2s-out.c | 2 --
+ sound/soc/tegra/tegra30_ahub.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
-index b56a18e7f3ac..7693b7fdf299 100644
---- a/sound/soc/img/img-i2s-out.c
-+++ b/sound/soc/img/img-i2s-out.c
-@@ -551,7 +551,6 @@ static int img_i2s_out_dev_remove(struct platform_device *pdev)
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 156e3b9d613c..9fc22d5e9f6e 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -629,7 +629,6 @@ static int tegra30_ahub_remove(struct platform_device *pdev)
  	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
- static int img_i2s_out_suspend(struct device *dev)
+ static int tegra30_ahub_suspend(struct device *dev)
  {
- 	struct img_i2s_out *i2s = dev_get_drvdata(dev);
-@@ -598,7 +597,6 @@ static int img_i2s_out_resume(struct device *dev)
+ 	regcache_mark_dirty(ahub->regmap_ahub);
+@@ -653,7 +652,6 @@ static int tegra30_ahub_resume(struct device *dev)
  
- 	return 0;
+ 	return ret;
  }
 -#endif
  
- static const struct of_device_id img_i2s_out_of_match[] = {
- 	{ .compatible = "img,i2s-out" },
+ static const struct dev_pm_ops tegra30_ahub_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(tegra30_ahub_runtime_suspend,
 -- 
 2.28.0
 
