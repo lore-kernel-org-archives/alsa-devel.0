@@ -7,88 +7,88 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14F93C55179
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:12:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDB07C55178
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:12:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1460420759
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:12:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B4FFB206D4
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:12:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UrfAIR0c";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jgJxFffG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1460420759
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pnbfaw/M";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hw/xYO0G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4FFB206D4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFBB79F6;
-	Thu, 29 Oct 2020 12:11:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFBB79F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F24F950;
+	Thu, 29 Oct 2020 12:11:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F24F950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603969933;
-	bh=Q1a52leT7GpR4d6WkgpBYbnD27iGl6bo3nQ9ygJ72M8=;
+	s=default; t=1603969946;
+	bh=GxKMwOquG6WMYTUgVryjARETI4Kjl4XXgYvxlGHijzU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UrfAIR0cjNZA01aK9x1OICD3Px7s0EYZsKPg+DstXuZF9dpwUV/X013eQylKnGtrq
-	 kAkLBwezHM8HL7f5iREVFz/ceXZ+QLvtEdw123CnyS3AAJfg3MSlUgUwDM/innAIin
-	 K2clPmA1sZu6ldReBBRWUtCLmQcG/HWGOlGU3yIE=
+	b=pnbfaw/MDnIYPLHaLzRNripc5jNNOXIvEPQBWaVBHwVPc/8yRqLoUkw0dhjpps+Xp
+	 0YUFAp4Tx8sNM8uZnUc9ug/4fxUDKrc0ULNVC+G793nhXsBRTXWmkcSVTodwxIGlsW
+	 pZj6PotSNEP6evhRqY5oB2ChNYPgKrWhUDr7NJ08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3D46F804E5;
-	Thu, 29 Oct 2020 12:09:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 807E0F804F1;
+	Thu, 29 Oct 2020 12:09:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 527BDF804E1; Thu, 29 Oct 2020 12:09:01 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id DE53CF804E1; Thu, 29 Oct 2020 12:09:01 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 708AEF801D8
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 12:08:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 708AEF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3635F80257
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 12:08:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3635F80257
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="jgJxFffG"
-Received: by mail-wr1-x443.google.com with SMTP id g12so2262378wrp.10
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 04:08:48 -0700 (PDT)
+ header.b="hw/xYO0G"
+Received: by mail-wr1-x434.google.com with SMTP id n18so2283536wrs.5
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 04:08:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=FTuZyJ8JxpIEXHPxTn6kLWOgO6Y2g8Ce4lW6jLuRkfw=;
- b=jgJxFffGg8HdL71K3i3TUJAJ4nhai3LKqv9RKMImkGMeeyk06mTt5v9m3tMHy7keaC
- 62sy9lLsckVwKg/lVm5BWANPi1QPvxIdMd5tVrc4AJAsNCQStWAnQThwJ4hw5zE1mX4m
- cKMqTDCUa5mceXT7TUj1e71St23k1RMxyfIQGmc2D2+BNuWbRNFKQrM3uQYFESIqCeb3
- LSwIgxEYwg1Oa3IBTkbLLYJ/UTOH3Xcnt3zfIUXjOsUvgLJEyOqqegcfrEkJ8cH2rOQZ
- agmPWM2aNIMxrzHMCBthPk02iK++3ko9whJmTUtTEPxDvHcqA+krDlmURuWtWhHLjnCF
- UwRw==
+ bh=tNcu5pK7Vv83Z8075zV8libGDO3vTkbX/x1/cSqu6qU=;
+ b=hw/xYO0Gbo1nJTqA8ub+tzh9yR1ha3LoO4ICGZMLBguD+N2z79VI5FKLDtvQcUPZFb
+ lfy5l/3q/RMiJskJRYfBwuEYfmhVqoLHvthWEEMnJ6PepewGCcIO1HS39qGfYTeqRKNH
+ GzgaDSbx9DCOCXUDDBztc5Siqago1SBTrqU3zGhW+wJ330v9WyHBgwzVbo3zm5w0Gdv8
+ 47zqMyA0gi6t7LlHVahLg1UtQPC5RHUmm3YMwaEcFVod3n0qThpoxByL2QyTRvPxKTH1
+ BsZqInsjVO5AsDS/+Q42XIUK9KKv5Nj1OseY3AwY29GgHyExYYJ8wLggfTv/rb8+XgVT
+ MSgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=FTuZyJ8JxpIEXHPxTn6kLWOgO6Y2g8Ce4lW6jLuRkfw=;
- b=aQStAiO9jT45GRaavaN2R5CtYoeZp2gXwgMHXXry6+BumzjURV/YbhdA4FMX/F3NIG
- fz3nO+BvH4y3WfXZfY9y4Y7Q0o640JXB7ZXwKNMtvpEQ7lggsgOVJkcPTZdRc5RNfy1P
- BCqaseHjqvVwwDpw2vlQDamFdCwx/xqp1x4VWVmreUlgsB9IWIhswqllTLV3BwEgfBhr
- 1vcLvTowQPedwZzXu/BnVX0qxvonkYhNgwwtHfhVlRdFX9d9UaXBGiIn+d/FfErbwqII
- p13boCZoEYJsF4bG0EbOdGVwKB7hb/D1Guf49/t0/ZbYOd6/U7JdUvRsclddjsf9HnbY
- +Rwg==
-X-Gm-Message-State: AOAM532N+jqS9eHC0XhpBXiEapM0uK0GMvUy9DkSgGZrwDJt81Th0eY4
- HRylvUoeYaKgeLyhcok6UIsIuA==
-X-Google-Smtp-Source: ABdhPJwt4K1XPNw4/lptJ4xiwuHwjjJSXBI3Qhfb+Bwe/gA8vbJokOHIVWK0eYAIlc6UIjtk1UQAbg==
-X-Received: by 2002:a05:6000:1185:: with SMTP id
- g5mr4883838wrx.42.1603969727395; 
- Thu, 29 Oct 2020 04:08:47 -0700 (PDT)
+ bh=tNcu5pK7Vv83Z8075zV8libGDO3vTkbX/x1/cSqu6qU=;
+ b=dBOubLHWvDt5FtKKmsXrAjjXHg8L2mNyQEGp9AOOiUSURmH1S85x7zhiPqLIbqGMF8
+ 3VadvEuZ+4emQ3Nl0pjCOTPgHUbW0Iq4IvFNm7K3vHqgd3cLkJL32Lvyka+jxIyw+0GB
+ RpJGuTxA3M1nAN7/27t0cJxKbD4pdBMS5ZgJLaHsGWkJ7B8oLZwXwWljBac3kDa+Lts5
+ tXrFEQP0FnEbozmlCZ1gApbR+kQeRPal/fwdyl6ud8r3nHeotac3oHjr483fwaIzLDWK
+ IGieCoo83H/jQt9PfQaRwfM8eyvkdXClfymYDSrFehEc9MoMT5r7HB1AIl3hJnFrMKtC
+ bQag==
+X-Gm-Message-State: AOAM5316mAcxfEqFDj8LpU3OLLFRi+L/PYx/FTg/yjDpoi/L9LOsnfQG
+ ZIj0WzSW1MtHCPBGdZpdQhNqQQ==
+X-Google-Smtp-Source: ABdhPJyujSozDbcjehMl5XbPe+3kGeMVmafaAL6xQ5feojhThoTp1+cBh8lpnHPU9VlLqTTSHR+EXA==
+X-Received: by 2002:adf:9b8e:: with SMTP id d14mr3095923wrc.360.1603969724734; 
+ Thu, 29 Oct 2020 04:08:44 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id n4sm3710830wmi.32.2020.10.29.04.08.46
+ by smtp.gmail.com with ESMTPSA id n4sm3710830wmi.32.2020.10.29.04.08.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2020 04:08:46 -0700 (PDT)
+ Thu, 29 Oct 2020 04:08:44 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 5/6] ASoC: codecs: lpass-va-macro: Add support to VA Macro
-Date: Thu, 29 Oct 2020 11:08:28 +0000
-Message-Id: <20201029110829.16425-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 3/6] ASoC: codecs: lpass-wsa-macro: add dapm widgets and
+ route
+Date: Thu, 29 Oct 2020 11:08:26 +0000
+Message-Id: <20201029110829.16425-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201029110829.16425-1-srinivas.kandagatla@linaro.org>
 References: <20201029110829.16425-1-srinivas.kandagatla@linaro.org>
@@ -112,937 +112,1065 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Qualcomm LPASS (Low Power Audio SubSystem) has internal codec
-VA macro block which is used for connecting with DMICs.
-
-This patch adds support to the codec part of the VA Macro block
+This patch adds dapm widgets and routes on this codec
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/Kconfig          |   4 +
- sound/soc/codecs/Makefile         |   2 +
- sound/soc/codecs/lpass-va-macro.c | 882 ++++++++++++++++++++++++++++++
- 3 files changed, 888 insertions(+)
- create mode 100644 sound/soc/codecs/lpass-va-macro.c
+ sound/soc/codecs/lpass-wsa-macro.c | 1006 ++++++++++++++++++++++++++++
+ 1 file changed, 1006 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index d91b51470a73..98d8624fec26 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1788,4 +1788,8 @@ config SND_SOC_LPASS_WSA_MACRO
- 	depends on COMMON_CLK
- 	tristate "Qualcomm WSA Macro in LPASS(Low Power Audio SubSystem)"
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 75381d80a791..d3de35e80cf0 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -398,6 +398,21 @@ static const struct soc_enum rx0_mix_chain_enum =
+ static const struct soc_enum rx0_sidetone_mix_enum =
+ 	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 2, rx_sidetone_mix_text);
  
-+config SND_SOC_LPASS_VA_MACRO
-+	depends on COMMON_CLK
-+	tristate "Qualcomm VA Macro in LPASS(Low Power Audio SubSystem)"
++static const struct snd_kcontrol_new rx0_prim_inp0_mux =
++	SOC_DAPM_ENUM("WSA_RX0 INP0 Mux", rx0_prim_inp0_chain_enum);
 +
- endmenu
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 9f24b3daf5df..5d68da2b1182 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -104,6 +104,7 @@ snd-soc-lm4857-objs := lm4857.o
- snd-soc-lm49453-objs := lm49453.o
- snd-soc-lochnagar-sc-objs := lochnagar-sc.o
- snd-soc-lpass-wsa-macro-objs := lpass-wsa-macro.o
-+snd-soc-lpass-va-macro-objs := lpass-va-macro.o
- snd-soc-madera-objs := madera.o
- snd-soc-max9759-objs := max9759.o
- snd-soc-max9768-objs := max9768.o
-@@ -615,3 +616,4 @@ obj-$(CONFIG_SND_SOC_MAX98504)	+= snd-soc-max98504.o
- obj-$(CONFIG_SND_SOC_SIMPLE_AMPLIFIER)	+= snd-soc-simple-amplifier.o
- obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
- obj-$(CONFIG_SND_SOC_LPASS_WSA_MACRO)	+= snd-soc-lpass-wsa-macro.o
-+obj-$(CONFIG_SND_SOC_LPASS_VA_MACRO)	+= snd-soc-lpass-va-macro.o
-diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-new file mode 100644
-index 000000000000..8cb23c32631d
---- /dev/null
-+++ b/sound/soc/codecs/lpass-va-macro.c
-@@ -0,0 +1,882 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++static const struct snd_kcontrol_new rx0_prim_inp1_mux =
++	SOC_DAPM_ENUM("WSA_RX0 INP1 Mux", rx0_prim_inp1_chain_enum);
 +
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_clk.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
++static const struct snd_kcontrol_new rx0_prim_inp2_mux =
++	SOC_DAPM_ENUM("WSA_RX0 INP2 Mux", rx0_prim_inp2_chain_enum);
 +
-+/* VA macro registers */
-+#define CDC_VA_CLK_RST_CTRL_MCLK_CONTROL	(0x0000)
-+#define CDC_VA_MCLK_CONTROL_EN			BIT(0)
-+#define CDC_VA_CLK_RST_CTRL_FS_CNT_CONTROL	(0x0004)
-+#define CDC_VA_FS_CONTROL_EN			BIT(0)
-+#define CDC_VA_CLK_RST_CTRL_SWR_CONTROL		(0x0008)
-+#define CDC_VA_TOP_CSR_TOP_CFG0			(0x0080)
-+#define CDC_VA_FS_BROADCAST_EN			BIT(1)
-+#define CDC_VA_TOP_CSR_DMIC0_CTL		(0x0084)
-+#define CDC_VA_TOP_CSR_DMIC1_CTL		(0x0088)
-+#define CDC_VA_TOP_CSR_DMIC2_CTL		(0x008C)
-+#define CDC_VA_TOP_CSR_DMIC3_CTL		(0x0090)
-+#define CDC_VA_DMIC_CLK_SEL_MASK		GENMASK(3, 1)
-+#define CDC_VA_DMIC_CLK_SEL_SHFT		1
-+#define CDC_VA_DMIC_CLK_SEL_DIV0		0x0
-+#define CDC_VA_DMIC_CLK_SEL_DIV1		0x2
-+#define CDC_VA_DMIC_CLK_SEL_DIV2		0x4
-+#define CDC_VA_DMIC_CLK_SEL_DIV3		0x6
-+#define CDC_VA_DMIC_CLK_SEL_DIV4		0x8
-+#define CDC_VA_DMIC_CLK_SEL_DIV5		0xa
-+#define CDC_VA_TOP_CSR_DMIC_CFG			(0x0094)
-+#define CDC_VA_RESET_ALL_DMICS_MASK		BIT(7)
-+#define CDC_VA_RESET_ALL_DMICS_RESET		BIT(7)
-+#define CDC_VA_RESET_ALL_DMICS_DISABLE		0
-+#define CDC_VA_DMIC3_FREQ_CHANGE_MASK		BIT(3)
-+#define CDC_VA_DMIC3_FREQ_CHANGE_EN		BIT(3)
-+#define CDC_VA_DMIC2_FREQ_CHANGE_MASK		BIT(2)
-+#define CDC_VA_DMIC2_FREQ_CHANGE_EN		BIT(2)
-+#define CDC_VA_DMIC1_FREQ_CHANGE_MASK		BIT(1)
-+#define CDC_VA_DMIC1_FREQ_CHANGE_EN		BIT(1)
-+#define CDC_VA_DMIC0_FREQ_CHANGE_MASK		BIT(0)
-+#define CDC_VA_DMIC0_FREQ_CHANGE_EN		BIT(0)
-+#define CDC_VA_DMIC_FREQ_CHANGE_DISABLE		0
-+#define CDC_VA_TOP_CSR_DEBUG_BUS		(0x009C)
-+#define CDC_VA_TOP_CSR_DEBUG_EN			(0x00A0)
-+#define CDC_VA_TOP_CSR_TX_I2S_CTL		(0x00A4)
-+#define CDC_VA_TOP_CSR_I2S_CLK			(0x00A8)
-+#define CDC_VA_TOP_CSR_I2S_RESET		(0x00AC)
-+#define CDC_VA_TOP_CSR_CORE_ID_0		(0x00C0)
-+#define CDC_VA_TOP_CSR_CORE_ID_1		(0x00C4)
-+#define CDC_VA_TOP_CSR_CORE_ID_2		(0x00C8)
-+#define CDC_VA_TOP_CSR_CORE_ID_3		(0x00CC)
-+#define CDC_VA_TOP_CSR_SWR_MIC_CTL0		(0x00D0)
-+#define CDC_VA_TOP_CSR_SWR_MIC_CTL1		(0x00D4)
-+#define CDC_VA_TOP_CSR_SWR_MIC_CTL2		(0x00D8)
-+#define CDC_VA_TOP_CSR_SWR_CTRL			(0x00DC)
-+#define CDC_VA_INP_MUX_ADC_MUX0_CFG0		(0x0100)
-+#define CDC_VA_INP_MUX_ADC_MUX0_CFG1		(0x0104)
-+#define CDC_VA_INP_MUX_ADC_MUX1_CFG0		(0x0108)
-+#define CDC_VA_INP_MUX_ADC_MUX1_CFG1		(0x010C)
-+#define CDC_VA_INP_MUX_ADC_MUX2_CFG0		(0x0110)
-+#define CDC_VA_INP_MUX_ADC_MUX2_CFG1		(0x0114)
-+#define CDC_VA_INP_MUX_ADC_MUX3_CFG0		(0x0118)
-+#define CDC_VA_INP_MUX_ADC_MUX3_CFG1		(0x011C)
-+#define CDC_VA_TX0_TX_PATH_CTL			(0x0400)
-+#define CDC_VA_TX_PATH_CLK_EN_MASK		BIT(5)
-+#define CDC_VA_TX_PATH_CLK_EN			BIT(5)
-+#define CDC_VA_TX_PATH_CLK_DISABLE		0
-+#define CDC_VA_TX_PATH_PGA_MUTE_EN_MASK		BIT(4)
-+#define CDC_VA_TX_PATH_PGA_MUTE_EN		BIT(4)
-+#define CDC_VA_TX_PATH_PGA_MUTE_DISABLE		0
-+#define CDC_VA_TX0_TX_PATH_CFG0			(0x0404)
-+#define CDC_VA_ADC_MODE_MASK			GENMASK(2, 1)
-+#define CDC_VA_ADC_MODE_SHIFT			1
-+#define  TX_HPF_CUT_OFF_FREQ_MASK		GENMASK(6, 5)
-+#define  CF_MIN_3DB_4HZ			0x0
-+#define  CF_MIN_3DB_75HZ		0x1
-+#define  CF_MIN_3DB_150HZ		0x2
-+#define CDC_VA_TX0_TX_PATH_CFG1			(0x0408)
-+#define CDC_VA_TX0_TX_VOL_CTL			(0x040C)
-+#define CDC_VA_TX0_TX_PATH_SEC0			(0x0410)
-+#define CDC_VA_TX0_TX_PATH_SEC1			(0x0414)
-+#define CDC_VA_TX0_TX_PATH_SEC2			(0x0418)
-+#define CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_MASK	BIT(1)
-+#define CDC_VA_TX_HPF_CUTOFF_FREQ_CHANGE_REQ	BIT(1)
-+#define CDC_VA_TX_HPF_ZERO_GATE_MASK		BIT(0)
-+#define CDC_VA_TX_HPF_ZERO_NO_GATE		BIT(0)
-+#define CDC_VA_TX_HPF_ZERO_GATE			0
-+#define CDC_VA_TX0_TX_PATH_SEC3			(0x041C)
-+#define CDC_VA_TX0_TX_PATH_SEC4			(0x0420)
-+#define CDC_VA_TX0_TX_PATH_SEC5			(0x0424)
-+#define CDC_VA_TX0_TX_PATH_SEC6			(0x0428)
-+#define CDC_VA_TX0_TX_PATH_SEC7			(0x042C)
-+#define CDC_VA_TX1_TX_PATH_CTL			(0x0480)
-+#define CDC_VA_TX1_TX_PATH_CFG0			(0x0484)
-+#define CDC_VA_TX1_TX_PATH_CFG1			(0x0488)
-+#define CDC_VA_TX1_TX_VOL_CTL			(0x048C)
-+#define CDC_VA_TX1_TX_PATH_SEC0			(0x0490)
-+#define CDC_VA_TX1_TX_PATH_SEC1			(0x0494)
-+#define CDC_VA_TX1_TX_PATH_SEC2			(0x0498)
-+#define CDC_VA_TX1_TX_PATH_SEC3			(0x049C)
-+#define CDC_VA_TX1_TX_PATH_SEC4			(0x04A0)
-+#define CDC_VA_TX1_TX_PATH_SEC5			(0x04A4)
-+#define CDC_VA_TX1_TX_PATH_SEC6			(0x04A8)
-+#define CDC_VA_TX2_TX_PATH_CTL			(0x0500)
-+#define CDC_VA_TX2_TX_PATH_CFG0			(0x0504)
-+#define CDC_VA_TX2_TX_PATH_CFG1			(0x0508)
-+#define CDC_VA_TX2_TX_VOL_CTL			(0x050C)
-+#define CDC_VA_TX2_TX_PATH_SEC0			(0x0510)
-+#define CDC_VA_TX2_TX_PATH_SEC1			(0x0514)
-+#define CDC_VA_TX2_TX_PATH_SEC2			(0x0518)
-+#define CDC_VA_TX2_TX_PATH_SEC3			(0x051C)
-+#define CDC_VA_TX2_TX_PATH_SEC4			(0x0520)
-+#define CDC_VA_TX2_TX_PATH_SEC5			(0x0524)
-+#define CDC_VA_TX2_TX_PATH_SEC6			(0x0528)
-+#define CDC_VA_TX3_TX_PATH_CTL			(0x0580)
-+#define CDC_VA_TX3_TX_PATH_CFG0			(0x0584)
-+#define CDC_VA_TX_PATH_ADC_DMIC_SEL_MASK	BIT(7)
-+#define CDC_VA_TX_PATH_ADC_DMIC_SEL_DMIC	BIT(7)
-+#define CDC_VA_TX_PATH_ADC_DMIC_SEL_ADC		0
-+#define CDC_VA_TX3_TX_PATH_CFG1			(0x0588)
-+#define CDC_VA_TX3_TX_VOL_CTL			(0x058C)
-+#define CDC_VA_TX3_TX_PATH_SEC0			(0x0590)
-+#define CDC_VA_TX3_TX_PATH_SEC1			(0x0594)
-+#define CDC_VA_TX3_TX_PATH_SEC2			(0x0598)
-+#define CDC_VA_TX3_TX_PATH_SEC3			(0x059C)
-+#define CDC_VA_TX3_TX_PATH_SEC4			(0x05A0)
-+#define CDC_VA_TX3_TX_PATH_SEC5			(0x05A4)
-+#define CDC_VA_TX3_TX_PATH_SEC6			(0x05A8)
++static const struct snd_kcontrol_new rx0_mix_mux =
++	SOC_DAPM_ENUM("WSA_RX0 MIX Mux", rx0_mix_chain_enum);
 +
-+#define VA_MAX_OFFSET				(0x07A8)
++static const struct snd_kcontrol_new rx0_sidetone_mix_mux =
++	SOC_DAPM_ENUM("WSA_RX0 SIDETONE MIX Mux", rx0_sidetone_mix_enum);
 +
-+#define VA_MACRO_NUM_DECIMATORS 4
-+#define VA_MACRO_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
-+			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
-+			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
-+#define VA_MACRO_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+		SNDRV_PCM_FMTBIT_S24_LE |\
-+		SNDRV_PCM_FMTBIT_S24_3LE)
+ /* RX INT1 */
+ static const struct soc_enum rx1_prim_inp0_chain_enum =
+ 	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT1_CFG0,
+@@ -435,6 +450,12 @@ static const struct soc_enum rx_mix_ec1_enum =
+ 	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_MIX_CFG0,
+ 		3, 3, rx_mix_ec_text);
+ 
++static const struct snd_kcontrol_new rx_mix_ec0_mux =
++	SOC_DAPM_ENUM("WSA RX_MIX EC0_Mux", rx_mix_ec0_enum);
 +
-+#define VA_MACRO_MCLK_FREQ 9600000
-+#define VA_MACRO_TX_PATH_OFFSET 0x80
-+#define VA_MACRO_SWR_MIC_MUX_SEL_MASK 0xF
-+#define VA_MACRO_ADC_MUX_CFG_OFFSET 0x8
++static const struct snd_kcontrol_new rx_mix_ec1_mux =
++	SOC_DAPM_ENUM("WSA RX_MIX EC1_Mux", rx_mix_ec1_enum);
 +
-+static const DECLARE_TLV_DB_SCALE(digital_gain, -8400, 100, -8400);
-+
-+enum {
-+	VA_MACRO_AIF_INVALID = 0,
-+	VA_MACRO_AIF1_CAP,
-+	VA_MACRO_AIF2_CAP,
-+	VA_MACRO_AIF3_CAP,
-+	VA_MACRO_MAX_DAIS,
-+};
-+
-+enum {
-+	VA_MACRO_DEC0,
-+	VA_MACRO_DEC1,
-+	VA_MACRO_DEC2,
-+	VA_MACRO_DEC3,
-+	VA_MACRO_DEC4,
-+	VA_MACRO_DEC5,
-+	VA_MACRO_DEC6,
-+	VA_MACRO_DEC7,
-+	VA_MACRO_DEC_MAX,
-+};
-+
-+enum {
-+	VA_MACRO_CLK_DIV_2,
-+	VA_MACRO_CLK_DIV_3,
-+	VA_MACRO_CLK_DIV_4,
-+	VA_MACRO_CLK_DIV_6,
-+	VA_MACRO_CLK_DIV_8,
-+	VA_MACRO_CLK_DIV_16,
-+};
-+
-+#define VA_NUM_CLKS_MAX		3
-+
-+struct va_macro {
-+	struct device *dev;
-+	unsigned long active_ch_mask[VA_MACRO_MAX_DAIS];
-+	unsigned long active_ch_cnt[VA_MACRO_MAX_DAIS];
-+	unsigned long active_decimator[VA_MACRO_MAX_DAIS];
-+	u16 dmic_clk_div;
-+
-+	int dec_mode[VA_MACRO_NUM_DECIMATORS];
-+	struct regmap *regmap;
-+	struct clk_bulk_data clks[VA_NUM_CLKS_MAX];
-+	struct clk_hw hw;
-+
-+	s32 dmic_0_1_clk_cnt;
-+	s32 dmic_2_3_clk_cnt;
-+	s32 dmic_4_5_clk_cnt;
-+	s32 dmic_6_7_clk_cnt;
-+	u8 dmic_0_1_clk_div;
-+	u8 dmic_2_3_clk_div;
-+	u8 dmic_4_5_clk_div;
-+	u8 dmic_6_7_clk_div;
-+};
-+
-+#define to_va_macro(_hw) container_of(_hw, struct va_macro, hw)
-+
-+static bool va_is_volatile_register(struct device *dev, unsigned int reg)
+ static const struct reg_default wsa_defaults[] = {
+ 	/* WSA Macro */
+ 	{ CDC_WSA_CLK_RST_CTRL_MCLK_CONTROL, 0x00},
+@@ -1121,6 +1142,615 @@ static void wsa_macro_mclk_enable(struct wsa_macro *wsa, bool mclk_enable)
+ 	}
+ }
+ 
++static int wsa_macro_mclk_event(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *kcontrol, int event)
 +{
-+	switch (reg) {
-+	case CDC_VA_TOP_CSR_CORE_ID_0:
-+	case CDC_VA_TOP_CSR_CORE_ID_1:
-+	case CDC_VA_TOP_CSR_CORE_ID_2:
-+	case CDC_VA_TOP_CSR_CORE_ID_3:
-+	case CDC_VA_TOP_CSR_DMIC0_CTL:
-+	case CDC_VA_TOP_CSR_DMIC1_CTL:
-+	case CDC_VA_TOP_CSR_DMIC2_CTL:
-+	case CDC_VA_TOP_CSR_DMIC3_CTL:
-+		return true;
-+	}
-+	return false;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++
++	wsa_macro_mclk_enable(wsa, event == SND_SOC_DAPM_PRE_PMU);
++	return 0;
 +}
 +
-+static const struct reg_default va_defaults[] = {
-+	/* VA macro */
-+	{ CDC_VA_CLK_RST_CTRL_MCLK_CONTROL, 0x00},
-+	{ CDC_VA_CLK_RST_CTRL_FS_CNT_CONTROL, 0x00},
-+	{ CDC_VA_CLK_RST_CTRL_SWR_CONTROL, 0x00},
-+	{ CDC_VA_TOP_CSR_TOP_CFG0, 0x00},
-+	{ CDC_VA_TOP_CSR_DMIC0_CTL, 0x00},
-+	{ CDC_VA_TOP_CSR_DMIC1_CTL, 0x00},
-+	{ CDC_VA_TOP_CSR_DMIC2_CTL, 0x00},
-+	{ CDC_VA_TOP_CSR_DMIC3_CTL, 0x00},
-+	{ CDC_VA_TOP_CSR_DMIC_CFG, 0x80},
-+	{ CDC_VA_TOP_CSR_DEBUG_BUS, 0x00},
-+	{ CDC_VA_TOP_CSR_DEBUG_EN, 0x00},
-+	{ CDC_VA_TOP_CSR_TX_I2S_CTL, 0x0C},
-+	{ CDC_VA_TOP_CSR_I2S_CLK, 0x00},
-+	{ CDC_VA_TOP_CSR_I2S_RESET, 0x00},
-+	{ CDC_VA_TOP_CSR_CORE_ID_0, 0x00},
-+	{ CDC_VA_TOP_CSR_CORE_ID_1, 0x00},
-+	{ CDC_VA_TOP_CSR_CORE_ID_2, 0x00},
-+	{ CDC_VA_TOP_CSR_CORE_ID_3, 0x00},
-+	{ CDC_VA_TOP_CSR_SWR_MIC_CTL0, 0xEE},
-+	{ CDC_VA_TOP_CSR_SWR_MIC_CTL1, 0xEE},
-+	{ CDC_VA_TOP_CSR_SWR_MIC_CTL2, 0xEE},
-+	{ CDC_VA_TOP_CSR_SWR_CTRL, 0x06},
-+
-+	/* VA core */
-+	{ CDC_VA_INP_MUX_ADC_MUX0_CFG0, 0x00},
-+	{ CDC_VA_INP_MUX_ADC_MUX0_CFG1, 0x00},
-+	{ CDC_VA_INP_MUX_ADC_MUX1_CFG0, 0x00},
-+	{ CDC_VA_INP_MUX_ADC_MUX1_CFG1, 0x00},
-+	{ CDC_VA_INP_MUX_ADC_MUX2_CFG0, 0x00},
-+	{ CDC_VA_INP_MUX_ADC_MUX2_CFG1, 0x00},
-+	{ CDC_VA_INP_MUX_ADC_MUX3_CFG0, 0x00},
-+	{ CDC_VA_INP_MUX_ADC_MUX3_CFG1, 0x00},
-+	{ CDC_VA_TX0_TX_PATH_CTL, 0x04},
-+	{ CDC_VA_TX0_TX_PATH_CFG0, 0x10},
-+	{ CDC_VA_TX0_TX_PATH_CFG1, 0x0B},
-+	{ CDC_VA_TX0_TX_VOL_CTL, 0x00},
-+	{ CDC_VA_TX0_TX_PATH_SEC0, 0x00},
-+	{ CDC_VA_TX0_TX_PATH_SEC1, 0x00},
-+	{ CDC_VA_TX0_TX_PATH_SEC2, 0x01},
-+	{ CDC_VA_TX0_TX_PATH_SEC3, 0x3C},
-+	{ CDC_VA_TX0_TX_PATH_SEC4, 0x20},
-+	{ CDC_VA_TX0_TX_PATH_SEC5, 0x00},
-+	{ CDC_VA_TX0_TX_PATH_SEC6, 0x00},
-+	{ CDC_VA_TX0_TX_PATH_SEC7, 0x25},
-+	{ CDC_VA_TX1_TX_PATH_CTL, 0x04},
-+	{ CDC_VA_TX1_TX_PATH_CFG0, 0x10},
-+	{ CDC_VA_TX1_TX_PATH_CFG1, 0x0B},
-+	{ CDC_VA_TX1_TX_VOL_CTL, 0x00},
-+	{ CDC_VA_TX1_TX_PATH_SEC0, 0x00},
-+	{ CDC_VA_TX1_TX_PATH_SEC1, 0x00},
-+	{ CDC_VA_TX1_TX_PATH_SEC2, 0x01},
-+	{ CDC_VA_TX1_TX_PATH_SEC3, 0x3C},
-+	{ CDC_VA_TX1_TX_PATH_SEC4, 0x20},
-+	{ CDC_VA_TX1_TX_PATH_SEC5, 0x00},
-+	{ CDC_VA_TX1_TX_PATH_SEC6, 0x00},
-+	{ CDC_VA_TX2_TX_PATH_CTL, 0x04},
-+	{ CDC_VA_TX2_TX_PATH_CFG0, 0x10},
-+	{ CDC_VA_TX2_TX_PATH_CFG1, 0x0B},
-+	{ CDC_VA_TX2_TX_VOL_CTL, 0x00},
-+	{ CDC_VA_TX2_TX_PATH_SEC0, 0x00},
-+	{ CDC_VA_TX2_TX_PATH_SEC1, 0x00},
-+	{ CDC_VA_TX2_TX_PATH_SEC2, 0x01},
-+	{ CDC_VA_TX2_TX_PATH_SEC3, 0x3C},
-+	{ CDC_VA_TX2_TX_PATH_SEC4, 0x20},
-+	{ CDC_VA_TX2_TX_PATH_SEC5, 0x00},
-+	{ CDC_VA_TX2_TX_PATH_SEC6, 0x00},
-+	{ CDC_VA_TX3_TX_PATH_CTL, 0x04},
-+	{ CDC_VA_TX3_TX_PATH_CFG0, 0x10},
-+	{ CDC_VA_TX3_TX_PATH_CFG1, 0x0B},
-+	{ CDC_VA_TX3_TX_VOL_CTL, 0x00},
-+	{ CDC_VA_TX3_TX_PATH_SEC0, 0x00},
-+	{ CDC_VA_TX3_TX_PATH_SEC1, 0x00},
-+	{ CDC_VA_TX3_TX_PATH_SEC2, 0x01},
-+	{ CDC_VA_TX3_TX_PATH_SEC3, 0x3C},
-+	{ CDC_VA_TX3_TX_PATH_SEC4, 0x20},
-+	{ CDC_VA_TX3_TX_PATH_SEC5, 0x00},
-+	{ CDC_VA_TX3_TX_PATH_SEC6, 0x00},
-+};
-+
-+static bool va_is_rw_register(struct device *dev, unsigned int reg)
++static int wsa_macro_enable_vi_feedback(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kcontrol,
++					int event)
 +{
-+	switch (reg) {
-+	case CDC_VA_CLK_RST_CTRL_MCLK_CONTROL:
-+	case CDC_VA_CLK_RST_CTRL_FS_CNT_CONTROL:
-+	case CDC_VA_CLK_RST_CTRL_SWR_CONTROL:
-+	case CDC_VA_TOP_CSR_TOP_CFG0:
-+	case CDC_VA_TOP_CSR_DMIC0_CTL:
-+	case CDC_VA_TOP_CSR_DMIC1_CTL:
-+	case CDC_VA_TOP_CSR_DMIC2_CTL:
-+	case CDC_VA_TOP_CSR_DMIC3_CTL:
-+	case CDC_VA_TOP_CSR_DMIC_CFG:
-+	case CDC_VA_TOP_CSR_DEBUG_BUS:
-+	case CDC_VA_TOP_CSR_DEBUG_EN:
-+	case CDC_VA_TOP_CSR_TX_I2S_CTL:
-+	case CDC_VA_TOP_CSR_I2S_CLK:
-+	case CDC_VA_TOP_CSR_I2S_RESET:
-+	case CDC_VA_INP_MUX_ADC_MUX0_CFG0:
-+	case CDC_VA_INP_MUX_ADC_MUX0_CFG1:
-+	case CDC_VA_INP_MUX_ADC_MUX1_CFG0:
-+	case CDC_VA_INP_MUX_ADC_MUX1_CFG1:
-+	case CDC_VA_INP_MUX_ADC_MUX2_CFG0:
-+	case CDC_VA_INP_MUX_ADC_MUX2_CFG1:
-+	case CDC_VA_INP_MUX_ADC_MUX3_CFG0:
-+	case CDC_VA_INP_MUX_ADC_MUX3_CFG1:
-+	case CDC_VA_TX0_TX_PATH_CTL:
-+	case CDC_VA_TX0_TX_PATH_CFG0:
-+	case CDC_VA_TX0_TX_PATH_CFG1:
-+	case CDC_VA_TX0_TX_VOL_CTL:
-+	case CDC_VA_TX0_TX_PATH_SEC0:
-+	case CDC_VA_TX0_TX_PATH_SEC1:
-+	case CDC_VA_TX0_TX_PATH_SEC2:
-+	case CDC_VA_TX0_TX_PATH_SEC3:
-+	case CDC_VA_TX0_TX_PATH_SEC4:
-+	case CDC_VA_TX0_TX_PATH_SEC5:
-+	case CDC_VA_TX0_TX_PATH_SEC6:
-+	case CDC_VA_TX0_TX_PATH_SEC7:
-+	case CDC_VA_TX1_TX_PATH_CTL:
-+	case CDC_VA_TX1_TX_PATH_CFG0:
-+	case CDC_VA_TX1_TX_PATH_CFG1:
-+	case CDC_VA_TX1_TX_VOL_CTL:
-+	case CDC_VA_TX1_TX_PATH_SEC0:
-+	case CDC_VA_TX1_TX_PATH_SEC1:
-+	case CDC_VA_TX1_TX_PATH_SEC2:
-+	case CDC_VA_TX1_TX_PATH_SEC3:
-+	case CDC_VA_TX1_TX_PATH_SEC4:
-+	case CDC_VA_TX1_TX_PATH_SEC5:
-+	case CDC_VA_TX1_TX_PATH_SEC6:
-+	case CDC_VA_TX2_TX_PATH_CTL:
-+	case CDC_VA_TX2_TX_PATH_CFG0:
-+	case CDC_VA_TX2_TX_PATH_CFG1:
-+	case CDC_VA_TX2_TX_VOL_CTL:
-+	case CDC_VA_TX2_TX_PATH_SEC0:
-+	case CDC_VA_TX2_TX_PATH_SEC1:
-+	case CDC_VA_TX2_TX_PATH_SEC2:
-+	case CDC_VA_TX2_TX_PATH_SEC3:
-+	case CDC_VA_TX2_TX_PATH_SEC4:
-+	case CDC_VA_TX2_TX_PATH_SEC5:
-+	case CDC_VA_TX2_TX_PATH_SEC6:
-+	case CDC_VA_TX3_TX_PATH_CTL:
-+	case CDC_VA_TX3_TX_PATH_CFG0:
-+	case CDC_VA_TX3_TX_PATH_CFG1:
-+	case CDC_VA_TX3_TX_VOL_CTL:
-+	case CDC_VA_TX3_TX_PATH_SEC0:
-+	case CDC_VA_TX3_TX_PATH_SEC1:
-+	case CDC_VA_TX3_TX_PATH_SEC2:
-+	case CDC_VA_TX3_TX_PATH_SEC3:
-+	case CDC_VA_TX3_TX_PATH_SEC4:
-+	case CDC_VA_TX3_TX_PATH_SEC5:
-+	case CDC_VA_TX3_TX_PATH_SEC6:
-+		return true;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	u32 tx_reg0, tx_reg1;
++
++	if (test_bit(WSA_MACRO_TX0, &wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
++		tx_reg0 = CDC_WSA_TX0_SPKR_PROT_PATH_CTL;
++		tx_reg1 = CDC_WSA_TX1_SPKR_PROT_PATH_CTL;
++	} else if (test_bit(WSA_MACRO_TX1, &wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
++		tx_reg0 = CDC_WSA_TX2_SPKR_PROT_PATH_CTL;
++		tx_reg1 = CDC_WSA_TX3_SPKR_PROT_PATH_CTL;
 +	}
 +
-+	return false;
-+}
-+
-+static bool va_is_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CDC_VA_TOP_CSR_CORE_ID_0:
-+	case CDC_VA_TOP_CSR_CORE_ID_1:
-+	case CDC_VA_TOP_CSR_CORE_ID_2:
-+	case CDC_VA_TOP_CSR_CORE_ID_3:
-+		return true;
-+	}
-+
-+	return va_is_rw_register(dev, reg);
-+}
-+
-+static const struct regmap_config va_regmap_config = {
-+	.name = "va_macro",
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = 4,
-+	.cache_type = REGCACHE_FLAT,
-+	.reg_defaults = va_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(va_defaults),
-+	.max_register = VA_MAX_OFFSET,
-+	.volatile_reg = va_is_volatile_register,
-+	.readable_reg = va_is_readable_register,
-+	.writeable_reg = va_is_rw_register,
-+};
-+
-+static int va_clk_rsc_fs_gen_request(struct va_macro *va, bool enable)
-+{
-+	struct regmap *regmap = va->regmap;
-+
-+	if (enable) {
-+		regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_MCLK_CONTROL,
-+				   CDC_VA_MCLK_CONTROL_EN,
-+				   CDC_VA_MCLK_CONTROL_EN);
-+
-+		regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_FS_CNT_CONTROL,
-+				   CDC_VA_FS_CONTROL_EN,
-+				   CDC_VA_FS_CONTROL_EN);
-+
-+		regmap_update_bits(regmap, CDC_VA_TOP_CSR_TOP_CFG0,
-+				   CDC_VA_FS_BROADCAST_EN,
-+				   CDC_VA_FS_BROADCAST_EN);
-+	} else {
-+		regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_MCLK_CONTROL,
-+				   CDC_VA_MCLK_CONTROL_EN, 0x0);
-+
-+		regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_FS_CNT_CONTROL,
-+				   CDC_VA_FS_CONTROL_EN, 0x0);
-+
-+		regmap_update_bits(regmap, CDC_VA_TOP_CSR_TOP_CFG0,
-+				   CDC_VA_FS_BROADCAST_EN, 0x0);
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++			/* Enable V&I sensing */
++		snd_soc_component_update_bits(component, tx_reg0,
++					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
++					      CDC_WSA_TX_SPKR_PROT_RESET);
++		snd_soc_component_update_bits(component, tx_reg1,
++					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
++					      CDC_WSA_TX_SPKR_PROT_RESET);
++		snd_soc_component_update_bits(component, tx_reg0,
++					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
++					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_8K);
++		snd_soc_component_update_bits(component, tx_reg1,
++					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
++					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_8K);
++		snd_soc_component_update_bits(component, tx_reg0,
++					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
++					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
++		snd_soc_component_update_bits(component, tx_reg1,
++					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
++					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
++		snd_soc_component_update_bits(component, tx_reg0,
++					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
++					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
++		snd_soc_component_update_bits(component, tx_reg1,
++					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
++					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/* Disable V&I sensing */
++		snd_soc_component_update_bits(component, tx_reg0,
++					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
++					      CDC_WSA_TX_SPKR_PROT_RESET);
++		snd_soc_component_update_bits(component, tx_reg1,
++					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
++					      CDC_WSA_TX_SPKR_PROT_RESET);
++		snd_soc_component_update_bits(component, tx_reg0,
++					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
++					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
++		snd_soc_component_update_bits(component, tx_reg1,
++					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
++					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
++		break;
 +	}
 +
 +	return 0;
 +}
 +
-+static int va_macro_mclk_enable(struct va_macro *va, bool mclk_enable)
++static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
++				     struct snd_kcontrol *kcontrol, int event)
 +{
-+	struct regmap *regmap = va->regmap;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	u16 gain_reg;
++	int offset_val = 0;
++	int val = 0;
 +
-+	if (mclk_enable) {
-+		va_clk_rsc_fs_gen_request(va, true);
-+		regcache_mark_dirty(regmap);
-+		regcache_sync_region(regmap, 0x0, VA_MAX_OFFSET);
-+	} else {
-+		va_clk_rsc_fs_gen_request(va, false);
-+	}
-+
-+	return 0;
-+}
-+
-+static int va_macro_dec_mode_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
-+	struct va_macro *va = snd_soc_component_get_drvdata(comp);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	int path = e->shift_l;
-+
-+	ucontrol->value.integer.value[0] = va->dec_mode[path];
-+
-+	return 0;
-+}
-+
-+static int va_macro_dec_mode_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
-+	int value = ucontrol->value.integer.value[0];
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	int path = e->shift_l;
-+	struct va_macro *va = snd_soc_component_get_drvdata(comp);
-+
-+	va->dec_mode[path] = value;
-+
-+	return 0;
-+}
-+
-+static int va_macro_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params,
-+			      struct snd_soc_dai *dai)
-+{
-+	int tx_fs_rate = -EINVAL;
-+	struct snd_soc_component *component = dai->component;
-+	u32 decimator, sample_rate;
-+	u16 tx_fs_reg = 0;
-+	struct device *va_dev = component->dev;
-+	struct va_macro *va = snd_soc_component_get_drvdata(component);
-+
-+	sample_rate = params_rate(params);
-+	switch (sample_rate) {
-+	case 8000:
-+		tx_fs_rate = 0;
++	switch (w->reg) {
++	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
++		gain_reg = CDC_WSA_RX0_RX_VOL_MIX_CTL;
 +		break;
-+	case 16000:
-+		tx_fs_rate = 1;
-+		break;
-+	case 32000:
-+		tx_fs_rate = 3;
-+		break;
-+	case 48000:
-+		tx_fs_rate = 4;
-+		break;
-+	case 96000:
-+		tx_fs_rate = 5;
-+		break;
-+	case 192000:
-+		tx_fs_rate = 6;
-+		break;
-+	case 384000:
-+		tx_fs_rate = 7;
++	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
++		gain_reg = CDC_WSA_RX1_RX_VOL_MIX_CTL;
 +		break;
 +	default:
-+		dev_err(va_dev, "%s: Invalid TX sample rate: %d\n",
-+			__func__, params_rate(params));
++		return 0;
++	}
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		val = snd_soc_component_read(component, gain_reg);
++		val += offset_val;
++		snd_soc_component_write(component, gain_reg, val);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_update_bits(component, w->reg,
++					      CDC_WSA_RX_PATH_MIX_CLK_EN_MASK,
++					      CDC_WSA_RX_PATH_MIX_CLK_DISABLE);
++		break;
++	}
++
++	return 0;
++}
++
++static void wsa_macro_hd2_control(struct snd_soc_component *component,
++				  u16 reg, int event)
++{
++	u16 hd2_scale_reg;
++	u16 hd2_enable_reg = 0;
++
++	if (reg == CDC_WSA_RX0_RX_PATH_CTL) {
++		hd2_scale_reg = CDC_WSA_RX0_RX_PATH_SEC3;
++		hd2_enable_reg = CDC_WSA_RX0_RX_PATH_CFG0;
++	}
++	if (reg == CDC_WSA_RX1_RX_PATH_CTL) {
++		hd2_scale_reg = CDC_WSA_RX1_RX_PATH_SEC3;
++		hd2_enable_reg = CDC_WSA_RX1_RX_PATH_CFG0;
++	}
++
++	if (hd2_enable_reg && SND_SOC_DAPM_EVENT_ON(event)) {
++		snd_soc_component_update_bits(component, hd2_scale_reg,
++					      CDC_WSA_RX_PATH_HD2_ALPHA_MASK,
++					      0x10);
++		snd_soc_component_update_bits(component, hd2_scale_reg,
++					      CDC_WSA_RX_PATH_HD2_SCALE_MASK,
++					      0x1);
++		snd_soc_component_update_bits(component, hd2_enable_reg,
++					      CDC_WSA_RX_PATH_HD2_EN_MASK,
++					      CDC_WSA_RX_PATH_HD2_ENABLE);
++	}
++
++	if (hd2_enable_reg && SND_SOC_DAPM_EVENT_OFF(event)) {
++		snd_soc_component_update_bits(component, hd2_enable_reg,
++					      CDC_WSA_RX_PATH_HD2_EN_MASK, 0);
++		snd_soc_component_update_bits(component, hd2_scale_reg,
++					      CDC_WSA_RX_PATH_HD2_SCALE_MASK,
++					      0);
++		snd_soc_component_update_bits(component, hd2_scale_reg,
++					      CDC_WSA_RX_PATH_HD2_ALPHA_MASK,
++					      0);
++	}
++}
++
++static int wsa_macro_config_compander(struct snd_soc_component *component,
++				      int comp, int event)
++{
++	u16 comp_ctl0_reg, rx_path_cfg0_reg;
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++
++	if (!wsa->comp_enabled[comp])
++		return 0;
++
++	comp_ctl0_reg = CDC_WSA_COMPANDER0_CTL0 +
++					(comp * WSA_MACRO_RX_COMP_OFFSET);
++	rx_path_cfg0_reg = CDC_WSA_RX0_RX_PATH_CFG0 +
++					(comp * WSA_MACRO_RX_PATH_OFFSET);
++
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		/* Enable Compander Clock */
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_CLK_EN_MASK,
++					      CDC_WSA_COMPANDER_CLK_ENABLE);
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
++					      CDC_WSA_COMPANDER_SOFT_RST_ENABLE);
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
++					      0);
++		snd_soc_component_update_bits(component, rx_path_cfg0_reg,
++					      CDC_WSA_RX_PATH_COMP_EN_MASK,
++					      CDC_WSA_RX_PATH_COMP_ENABLE);
++	}
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_HALT_MASK,
++					      CDC_WSA_COMPANDER_HALT);
++		snd_soc_component_update_bits(component, rx_path_cfg0_reg,
++					      CDC_WSA_RX_PATH_COMP_EN_MASK, 0);
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
++					      CDC_WSA_COMPANDER_SOFT_RST_ENABLE);
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_SOFT_RST_MASK,
++					      0);
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_CLK_EN_MASK, 0);
++		snd_soc_component_update_bits(component, comp_ctl0_reg,
++					      CDC_WSA_COMPANDER_HALT_MASK, 0);
++	}
++
++	return 0;
++}
++
++static void wsa_macro_enable_softclip_clk(struct snd_soc_component *component,
++					 struct wsa_macro *wsa,
++					 int path,
++					 bool enable)
++{
++	u16 softclip_clk_reg = CDC_WSA_SOFTCLIP0_CRC +
++			(path * WSA_MACRO_RX_SOFTCLIP_OFFSET);
++	u8 softclip_mux_mask = (1 << path);
++	u8 softclip_mux_value = (1 << path);
++
++	if (enable) {
++		if (wsa->softclip_clk_users[path] == 0) {
++			snd_soc_component_update_bits(component,
++						softclip_clk_reg,
++						CDC_WSA_SOFTCLIP_CLK_EN_MASK,
++						CDC_WSA_SOFTCLIP_CLK_ENABLE);
++			snd_soc_component_update_bits(component,
++				CDC_WSA_RX_INP_MUX_SOFTCLIP_CFG0,
++				softclip_mux_mask, softclip_mux_value);
++		}
++		wsa->softclip_clk_users[path]++;
++	} else {
++		wsa->softclip_clk_users[path]--;
++		if (wsa->softclip_clk_users[path] == 0) {
++			snd_soc_component_update_bits(component,
++						softclip_clk_reg,
++						CDC_WSA_SOFTCLIP_CLK_EN_MASK,
++						0);
++			snd_soc_component_update_bits(component,
++				CDC_WSA_RX_INP_MUX_SOFTCLIP_CFG0,
++				softclip_mux_mask, 0x00);
++		}
++	}
++}
++
++static int wsa_macro_config_softclip(struct snd_soc_component *component,
++				     int path, int event)
++{
++	u16 softclip_ctrl_reg = 0;
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	int softclip_path = 0;
++
++	if (path == WSA_MACRO_COMP1)
++		softclip_path = WSA_MACRO_SOFTCLIP0;
++	else if (path == WSA_MACRO_COMP2)
++		softclip_path = WSA_MACRO_SOFTCLIP1;
++
++	if (!wsa->is_softclip_on[softclip_path])
++		return 0;
++
++	softclip_ctrl_reg = CDC_WSA_SOFTCLIP0_SOFTCLIP_CTRL +
++				(softclip_path * WSA_MACRO_RX_SOFTCLIP_OFFSET);
++
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		/* Enable Softclip clock and mux */
++		wsa_macro_enable_softclip_clk(component, wsa, softclip_path,
++					      true);
++		/* Enable Softclip control */
++		snd_soc_component_update_bits(component, softclip_ctrl_reg,
++					      CDC_WSA_SOFTCLIP_EN_MASK,
++					      CDC_WSA_SOFTCLIP_ENABLE);
++	}
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		snd_soc_component_update_bits(component, softclip_ctrl_reg,
++					      CDC_WSA_SOFTCLIP_EN_MASK, 0);
++		wsa_macro_enable_softclip_clk(component, wsa, softclip_path,
++					      false);
++	}
++
++	return 0;
++}
++
++static bool wsa_macro_adie_lb(struct snd_soc_component *component,
++			      int interp_idx)
++{
++	u16 int_mux_cfg0 = 0, int_mux_cfg1 = 0;
++	u8 int_mux_cfg0_val = 0, int_mux_cfg1_val = 0;
++	u8 int_n_inp0 = 0, int_n_inp1 = 0, int_n_inp2 = 0;
++
++	int_mux_cfg0 = CDC_WSA_RX_INP_MUX_RX_INT0_CFG0 + interp_idx * 8;
++	int_mux_cfg1 = int_mux_cfg0 + 4;
++	int_mux_cfg0_val = snd_soc_component_read(component, int_mux_cfg0);
++	int_mux_cfg1_val = snd_soc_component_read(component, int_mux_cfg1);
++
++	int_n_inp0 = int_mux_cfg0_val & 0x0F;
++	if (int_n_inp0 == INTn_1_INP_SEL_DEC0 ||
++		int_n_inp0 == INTn_1_INP_SEL_DEC1)
++		return true;
++
++	int_n_inp1 = int_mux_cfg0_val >> 4;
++	if (int_n_inp1 == INTn_1_INP_SEL_DEC0 ||
++		int_n_inp1 == INTn_1_INP_SEL_DEC1)
++		return true;
++
++	int_n_inp2 = int_mux_cfg1_val >> 4;
++	if (int_n_inp2 == INTn_1_INP_SEL_DEC0 ||
++		int_n_inp2 == INTn_1_INP_SEL_DEC1)
++		return true;
++
++	return false;
++}
++
++static int wsa_macro_enable_main_path(struct snd_soc_dapm_widget *w,
++				      struct snd_kcontrol *kcontrol,
++				      int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	u16 reg = 0;
++
++	reg = CDC_WSA_RX0_RX_PATH_CTL + WSA_MACRO_RX_PATH_OFFSET * w->shift;
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (wsa_macro_adie_lb(component, w->shift)) {
++			snd_soc_component_update_bits(component, reg,
++					     CDC_WSA_RX_PATH_CLK_EN_MASK,
++					     CDC_WSA_RX_PATH_CLK_ENABLE);
++		}
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static int wsa_macro_interp_get_primary_reg(u16 reg, u16 *ind)
++{
++	u16 prim_int_reg = 0;
++
++	switch (reg) {
++	case CDC_WSA_RX0_RX_PATH_CTL:
++	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
++		prim_int_reg = CDC_WSA_RX0_RX_PATH_CTL;
++		*ind = 0;
++		break;
++	case CDC_WSA_RX1_RX_PATH_CTL:
++	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
++		prim_int_reg = CDC_WSA_RX1_RX_PATH_CTL;
++		*ind = 1;
++		break;
++	}
++
++	return prim_int_reg;
++}
++
++static int wsa_macro_enable_prim_interpolator(struct snd_soc_component *component,
++					      u16 reg, int event)
++{
++	u16 prim_int_reg;
++	u16 ind = 0;
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++
++	prim_int_reg = wsa_macro_interp_get_primary_reg(reg, &ind);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		wsa->prim_int_users[ind]++;
++		if (wsa->prim_int_users[ind] == 1) {
++			snd_soc_component_update_bits(component,
++						      prim_int_reg + WSA_MACRO_RX_PATH_CFG3_OFFSET,
++						      CDC_WSA_RX_DC_DCOEFF_MASK,
++						      0x3);
++			snd_soc_component_update_bits(component, prim_int_reg,
++					CDC_WSA_RX_PATH_PGA_MUTE_EN_MASK,
++					CDC_WSA_RX_PATH_PGA_MUTE_ENABLE);
++			wsa_macro_hd2_control(component, prim_int_reg, event);
++			snd_soc_component_update_bits(component,
++				prim_int_reg + WSA_MACRO_RX_PATH_DSMDEM_OFFSET,
++				CDC_WSA_RX_DSMDEM_CLK_EN_MASK,
++				CDC_WSA_RX_DSMDEM_CLK_ENABLE);
++		}
++		if ((reg != prim_int_reg) &&
++		    ((snd_soc_component_read(
++				component, prim_int_reg)) & 0x10))
++			snd_soc_component_update_bits(component, reg,
++					0x10, 0x10);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		wsa->prim_int_users[ind]--;
++		if (wsa->prim_int_users[ind] == 0) {
++			snd_soc_component_update_bits(component,
++				prim_int_reg + WSA_MACRO_RX_PATH_DSMDEM_OFFSET,
++				CDC_WSA_RX_DSMDEM_CLK_EN_MASK, 0);
++			wsa_macro_hd2_control(component, prim_int_reg, event);
++		}
++		break;
++	}
++
++	return 0;
++}
++
++static int wsa_macro_config_ear_spkr_gain(struct snd_soc_component *component,
++					  struct wsa_macro *wsa,
++					  int event, int gain_reg)
++{
++	int comp_gain_offset, val;
++
++	switch (wsa->spkr_mode) {
++	/* Compander gain in WSA_MACRO_SPKR_MODE1 case is 12 dB */
++	case WSA_MACRO_SPKR_MODE_1:
++		comp_gain_offset = -12;
++		break;
++	/* Default case compander gain is 15 dB */
++	default:
++		comp_gain_offset = -15;
++		break;
++	}
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		/* Apply ear spkr gain only if compander is enabled */
++		if (wsa->comp_enabled[WSA_MACRO_COMP1] &&
++		    (gain_reg == CDC_WSA_RX0_RX_VOL_CTL) &&
++		    (wsa->ear_spkr_gain != 0)) {
++			/* For example, val is -8(-12+5-1) for 4dB of gain */
++			val = comp_gain_offset + wsa->ear_spkr_gain - 1;
++			snd_soc_component_write(component, gain_reg, val);
++		}
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/*
++		 * Reset RX0 volume to 0 dB if compander is enabled and
++		 * ear_spkr_gain is non-zero.
++		 */
++		if (wsa->comp_enabled[WSA_MACRO_COMP1] &&
++		    (gain_reg == CDC_WSA_RX0_RX_VOL_CTL) &&
++		    (wsa->ear_spkr_gain != 0)) {
++			snd_soc_component_write(component, gain_reg, 0x0);
++		}
++		break;
++	}
++
++	return 0;
++}
++
++static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
++					 struct snd_kcontrol *kcontrol,
++					 int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	u16 gain_reg;
++	u16 reg;
++	int val;
++	int offset_val = 0;
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++
++	if (w->shift == WSA_MACRO_COMP1) {
++		reg = CDC_WSA_RX0_RX_PATH_CTL;
++		gain_reg = CDC_WSA_RX0_RX_VOL_CTL;
++	} else if (w->shift == WSA_MACRO_COMP2) {
++		reg = CDC_WSA_RX1_RX_PATH_CTL;
++		gain_reg = CDC_WSA_RX1_RX_VOL_CTL;
++	}
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Reset if needed */
++		wsa_macro_enable_prim_interpolator(component, reg, event);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		wsa_macro_config_compander(component, w->shift, event);
++		wsa_macro_config_softclip(component, w->shift, event);
++		/* apply gain after int clk is enabled */
++		if ((wsa->spkr_gain_offset == WSA_MACRO_GAIN_OFFSET_M1P5_DB) &&
++		    (wsa->comp_enabled[WSA_MACRO_COMP1] ||
++		     wsa->comp_enabled[WSA_MACRO_COMP2])) {
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX0_RX_PATH_SEC1,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX0_RX_PATH_MIX_SEC0,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX1_RX_PATH_SEC1,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
++			offset_val = -2;
++		}
++		val = snd_soc_component_read(component, gain_reg);
++		val += offset_val;
++		snd_soc_component_write(component, gain_reg, val);
++		wsa_macro_config_ear_spkr_gain(component, wsa,
++						event, gain_reg);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		wsa_macro_config_compander(component, w->shift, event);
++		wsa_macro_config_softclip(component, w->shift, event);
++		wsa_macro_enable_prim_interpolator(component, reg, event);
++		if ((wsa->spkr_gain_offset == WSA_MACRO_GAIN_OFFSET_M1P5_DB) &&
++		    (wsa->comp_enabled[WSA_MACRO_COMP1] ||
++		     wsa->comp_enabled[WSA_MACRO_COMP2])) {
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX0_RX_PATH_SEC1,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX0_RX_PATH_MIX_SEC0,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX1_RX_PATH_SEC1,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
++			snd_soc_component_update_bits(component,
++					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
++					CDC_WSA_RX_PGA_HALF_DB_MASK,
++					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
++			offset_val = 2;
++			val = snd_soc_component_read(component, gain_reg);
++			val += offset_val;
++			snd_soc_component_write(component, gain_reg, val);
++		}
++		wsa_macro_config_ear_spkr_gain(component, wsa,
++						event, gain_reg);
++		break;
++	}
++
++	return 0;
++}
++
++static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
++				     struct snd_kcontrol *kcontrol,
++				     int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	u16 boost_path_ctl, boost_path_cfg1;
++	u16 reg, reg_mix;
++
++	if (!strcmp(w->name, "WSA_RX INT0 CHAIN")) {
++		boost_path_ctl = CDC_WSA_BOOST0_BOOST_PATH_CTL;
++		boost_path_cfg1 = CDC_WSA_RX0_RX_PATH_CFG1;
++		reg = CDC_WSA_RX0_RX_PATH_CTL;
++		reg_mix = CDC_WSA_RX0_RX_PATH_MIX_CTL;
++	} else if (!strcmp(w->name, "WSA_RX INT1 CHAIN")) {
++		boost_path_ctl = CDC_WSA_BOOST1_BOOST_PATH_CTL;
++		boost_path_cfg1 = CDC_WSA_RX1_RX_PATH_CFG1;
++		reg = CDC_WSA_RX1_RX_PATH_CTL;
++		reg_mix = CDC_WSA_RX1_RX_PATH_MIX_CTL;
++	}
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_update_bits(component, boost_path_cfg1,
++					      CDC_WSA_RX_PATH_SMART_BST_EN_MASK,
++					      CDC_WSA_RX_PATH_SMART_BST_ENABLE);
++		snd_soc_component_update_bits(component, boost_path_ctl,
++					      CDC_WSA_BOOST_PATH_CLK_EN_MASK,
++					      CDC_WSA_BOOST_PATH_CLK_ENABLE);
++		if ((snd_soc_component_read(component, reg_mix)) & 0x10)
++			snd_soc_component_update_bits(component, reg_mix,
++						0x10, 0x00);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_component_update_bits(component, reg, 0x10, 0x00);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_update_bits(component, boost_path_ctl,
++					      CDC_WSA_BOOST_PATH_CLK_EN_MASK,
++					      CDC_WSA_BOOST_PATH_CLK_DISABLE);
++		snd_soc_component_update_bits(component, boost_path_cfg1,
++					      CDC_WSA_RX_PATH_SMART_BST_EN_MASK,
++					      CDC_WSA_RX_PATH_SMART_BST_DISABLE);
++		break;
++	}
++
++	return 0;
++}
++
++static int wsa_macro_enable_echo(struct snd_soc_dapm_widget *w,
++				 struct snd_kcontrol *kcontrol,
++				 int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	u16 val, ec_tx = 0, ec_hq_reg;
++
++	val = snd_soc_component_read(component, CDC_WSA_RX_INP_MUX_RX_MIX_CFG0);
++
++	switch (w->shift) {
++	case WSA_MACRO_EC0_MUX:
++		val = val & CDC_WSA_RX_MIX_TX0_SEL_MASK;
++		ec_tx = val - 1;
++		break;
++	case WSA_MACRO_EC1_MUX:
++		val = val & CDC_WSA_RX_MIX_TX1_SEL_MASK;
++		ec_tx = (val >> CDC_WSA_RX_MIX_TX1_SEL_SHFT) - 1;
++		break;
++	}
++
++	if (wsa->ec_hq[ec_tx]) {
++		ec_hq_reg = CDC_WSA_EC_HQ0_EC_REF_HQ_PATH_CTL +	0x40 * ec_tx;
++		snd_soc_component_update_bits(component, ec_hq_reg,
++					     CDC_WSA_EC_HQ_EC_CLK_EN_MASK,
++					     CDC_WSA_EC_HQ_EC_CLK_ENABLE);
++		ec_hq_reg = CDC_WSA_EC_HQ0_EC_REF_HQ_CFG0 + 0x40 * ec_tx;
++		/* default set to 48k */
++		snd_soc_component_update_bits(component, ec_hq_reg,
++				      CDC_WSA_EC_HQ_EC_REF_PCM_RATE_MASK,
++				      CDC_WSA_EC_HQ_EC_REF_PCM_RATE_48K);
++	}
++
++	return 0;
++}
++
+ static int wsa_macro_get_ec_hq(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -1198,6 +1828,75 @@ static int wsa_macro_ear_spkr_pa_gain_put(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
++static int wsa_macro_rx_mux_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *widget =
++		snd_soc_dapm_kcontrol_widget(kcontrol);
++	struct snd_soc_component *component =
++				snd_soc_dapm_to_component(widget->dapm);
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++
++	ucontrol->value.integer.value[0] =
++			wsa->rx_port_value[widget->shift];
++	return 0;
++}
++
++static int wsa_macro_rx_mux_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *widget =
++		snd_soc_dapm_kcontrol_widget(kcontrol);
++	struct snd_soc_component *component =
++				snd_soc_dapm_to_component(widget->dapm);
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	struct snd_soc_dapm_update *update = NULL;
++	u32 rx_port_value = ucontrol->value.integer.value[0];
++	u32 bit_input = 0;
++	u32 aif_rst;
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++
++	aif_rst = wsa->rx_port_value[widget->shift];
++	if (!rx_port_value) {
++		if (aif_rst == 0) {
++			dev_err(component->dev, "%s: AIF reset already\n", __func__);
++			return 0;
++		}
++		if (aif_rst >= WSA_MACRO_RX_MAX) {
++			dev_err(component->dev, "%s: Invalid AIF reset\n", __func__);
++			return 0;
++		}
++	}
++	wsa->rx_port_value[widget->shift] = rx_port_value;
++
++	bit_input = widget->shift;
++
++	switch (rx_port_value) {
++	case 0:
++		if (wsa->active_ch_cnt[aif_rst]) {
++			clear_bit(bit_input,
++				  &wsa->active_ch_mask[aif_rst]);
++			wsa->active_ch_cnt[aif_rst]--;
++		}
++		break;
++	case 1:
++	case 2:
++		set_bit(bit_input,
++			&wsa->active_ch_mask[rx_port_value]);
++		wsa->active_ch_cnt[rx_port_value]++;
++		break;
++	default:
++		dev_err(component->dev,
++			"%s: Invalid AIF_ID for WSA RX MUX %d\n",
++			__func__, rx_port_value);
 +		return -EINVAL;
 +	}
 +
-+	for_each_set_bit(decimator, &va->active_ch_mask[dai->id],
-+			 VA_MACRO_DEC_MAX) {
-+		if (decimator >= 0) {
-+			tx_fs_reg = CDC_VA_TX0_TX_PATH_CTL +
-+				    VA_MACRO_TX_PATH_OFFSET * decimator;
-+			snd_soc_component_update_bits(component, tx_fs_reg,
-+						0x0F, tx_fs_rate);
-+		} else {
-+			dev_err(va_dev,
-+				"%s: ERROR: Invalid decimator: %d\n",
-+				__func__, decimator);
-+			return -EINVAL;
++	snd_soc_dapm_mux_update_power(widget->dapm, kcontrol,
++					rx_port_value, e, update);
++	return 0;
++}
++
+ static int wsa_macro_soft_clip_enable_get(struct snd_kcontrol *kcontrol,
+ 					  struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -1256,6 +1955,309 @@ static const struct snd_kcontrol_new wsa_macro_snd_controls[] = {
+ 		       wsa_macro_get_ec_hq, wsa_macro_set_ec_hq),
+ };
+ 
++static const struct soc_enum rx_mux_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_mux_text), rx_mux_text);
++
++static const struct snd_kcontrol_new rx_mux[WSA_MACRO_RX_MAX] = {
++	SOC_DAPM_ENUM_EXT("WSA RX0 Mux", rx_mux_enum,
++			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
++	SOC_DAPM_ENUM_EXT("WSA RX1 Mux", rx_mux_enum,
++			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
++	SOC_DAPM_ENUM_EXT("WSA RX_MIX0 Mux", rx_mux_enum,
++			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
++	SOC_DAPM_ENUM_EXT("WSA RX_MIX1 Mux", rx_mux_enum,
++			  wsa_macro_rx_mux_get, wsa_macro_rx_mux_put),
++};
++
++static int wsa_macro_vi_feed_mixer_get(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *widget = snd_soc_dapm_kcontrol_widget(kcontrol);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(widget->dapm);
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	u32 spk_tx_id = mixer->shift;
++	u32 dai_id = widget->shift;
++
++	if (test_bit(spk_tx_id, &wsa->active_ch_mask[dai_id]))
++		ucontrol->value.integer.value[0] = 1;
++	else
++		ucontrol->value.integer.value[0] = 0;
++
++	return 0;
++}
++
++static int wsa_macro_vi_feed_mixer_put(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *widget = snd_soc_dapm_kcontrol_widget(kcontrol);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(widget->dapm);
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
++	u32 enable = ucontrol->value.integer.value[0];
++	u32 spk_tx_id = mixer->shift;
++
++	if (enable) {
++		if (spk_tx_id == WSA_MACRO_TX0 &&
++			!test_bit(WSA_MACRO_TX0,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
++			set_bit(WSA_MACRO_TX0,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
++			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]++;
++		}
++		if (spk_tx_id == WSA_MACRO_TX1 &&
++			!test_bit(WSA_MACRO_TX1,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
++			set_bit(WSA_MACRO_TX1,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
++			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]++;
++		}
++	} else {
++		if (spk_tx_id == WSA_MACRO_TX0 &&
++			test_bit(WSA_MACRO_TX0,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
++			clear_bit(WSA_MACRO_TX0,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
++			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]--;
++		}
++		if (spk_tx_id == WSA_MACRO_TX1 &&
++			test_bit(WSA_MACRO_TX1,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
++			clear_bit(WSA_MACRO_TX1,
++				&wsa->active_ch_mask[WSA_MACRO_AIF_VI]);
++			wsa->active_ch_cnt[WSA_MACRO_AIF_VI]--;
 +		}
 +	}
-+	return 0;
-+}
-+
-+static int va_macro_get_channel_map(struct snd_soc_dai *dai,
-+				    unsigned int *tx_num, unsigned int *tx_slot,
-+				    unsigned int *rx_num, unsigned int *rx_slot)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct device *va_dev = component->dev;
-+	struct va_macro *va = snd_soc_component_get_drvdata(component);
-+
-+	switch (dai->id) {
-+	case VA_MACRO_AIF1_CAP:
-+	case VA_MACRO_AIF2_CAP:
-+	case VA_MACRO_AIF3_CAP:
-+		*tx_slot = va->active_ch_mask[dai->id];
-+		*tx_num = va->active_ch_cnt[dai->id];
-+		break;
-+	default:
-+		dev_err(va_dev, "%s: Invalid AIF\n", __func__);
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int va_macro_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct va_macro *va = snd_soc_component_get_drvdata(component);
-+	u16 tx_vol_ctl_reg, decimator;
-+
-+	decimator = va->active_decimator[dai->id];
-+
-+	tx_vol_ctl_reg = CDC_VA_TX0_TX_PATH_CTL +
-+				VA_MACRO_TX_PATH_OFFSET * decimator;
-+	if (mute)
-+		snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-+					      CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-+					      CDC_VA_TX_PATH_PGA_MUTE_EN);
-+	else
-+		snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-+					      CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-+					      CDC_VA_TX_PATH_PGA_MUTE_DISABLE);
++	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, enable, NULL);
 +
 +	return 0;
 +}
 +
-+static struct snd_soc_dai_ops va_macro_dai_ops = {
-+	.hw_params = va_macro_hw_params,
-+	.get_channel_map = va_macro_get_channel_map,
-+	.mute_stream = va_macro_digital_mute,
++static const struct snd_kcontrol_new aif_vi_mixer[] = {
++	SOC_SINGLE_EXT("WSA_SPKR_VI_1", SND_SOC_NOPM, WSA_MACRO_TX0, 1, 0,
++			wsa_macro_vi_feed_mixer_get,
++			wsa_macro_vi_feed_mixer_put),
++	SOC_SINGLE_EXT("WSA_SPKR_VI_2", SND_SOC_NOPM, WSA_MACRO_TX1, 1, 0,
++			wsa_macro_vi_feed_mixer_get,
++			wsa_macro_vi_feed_mixer_put),
 +};
 +
-+static struct snd_soc_dai_driver va_macro_dais[] = {
-+	{
-+		.name = "va_macro_tx1",
-+		.id = VA_MACRO_AIF1_CAP,
-+		.capture = {
-+			.stream_name = "VA_AIF1 Capture",
-+			.rates = VA_MACRO_RATES,
-+			.formats = VA_MACRO_FORMATS,
-+			.rate_max = 192000,
-+			.rate_min = 8000,
-+			.channels_min = 1,
-+			.channels_max = 8,
-+		},
-+		.ops = &va_macro_dai_ops,
-+	},
-+	{
-+		.name = "va_macro_tx2",
-+		.id = VA_MACRO_AIF2_CAP,
-+		.capture = {
-+			.stream_name = "VA_AIF2 Capture",
-+			.rates = VA_MACRO_RATES,
-+			.formats = VA_MACRO_FORMATS,
-+			.rate_max = 192000,
-+			.rate_min = 8000,
-+			.channels_min = 1,
-+			.channels_max = 8,
-+		},
-+		.ops = &va_macro_dai_ops,
-+	},
-+	{
-+		.name = "va_macro_tx3",
-+		.id = VA_MACRO_AIF3_CAP,
-+		.capture = {
-+			.stream_name = "VA_AIF3 Capture",
-+			.rates = VA_MACRO_RATES,
-+			.formats = VA_MACRO_FORMATS,
-+			.rate_max = 192000,
-+			.rate_min = 8000,
-+			.channels_min = 1,
-+			.channels_max = 8,
-+		},
-+		.ops = &va_macro_dai_ops,
-+	},
++static const struct snd_soc_dapm_widget wsa_macro_dapm_widgets[] = {
++	SND_SOC_DAPM_AIF_IN("WSA AIF1 PB", "WSA_AIF1 Playback", 0,
++			    SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("WSA AIF_MIX1 PB", "WSA_AIF_MIX1 Playback", 0,
++			    SND_SOC_NOPM, 0, 0),
++
++	SND_SOC_DAPM_AIF_OUT_E("WSA AIF_VI", "WSA_AIF_VI Capture", 0,
++			       SND_SOC_NOPM, WSA_MACRO_AIF_VI, 0,
++			       wsa_macro_enable_vi_feedback,
++			       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_AIF_OUT("WSA AIF_ECHO", "WSA_AIF_ECHO Capture", 0,
++			     SND_SOC_NOPM, 0, 0),
++
++	SND_SOC_DAPM_MIXER("WSA_AIF_VI Mixer", SND_SOC_NOPM, WSA_MACRO_AIF_VI,
++			   0, aif_vi_mixer, ARRAY_SIZE(aif_vi_mixer)),
++	SND_SOC_DAPM_MUX_E("WSA RX_MIX EC0_MUX", SND_SOC_NOPM,
++			   WSA_MACRO_EC0_MUX, 0,
++			   &rx_mix_ec0_mux, wsa_macro_enable_echo,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MUX_E("WSA RX_MIX EC1_MUX", SND_SOC_NOPM,
++			   WSA_MACRO_EC1_MUX, 0,
++			   &rx_mix_ec1_mux, wsa_macro_enable_echo,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MUX("WSA RX0 MUX", SND_SOC_NOPM, WSA_MACRO_RX0, 0,
++			 &rx_mux[WSA_MACRO_RX0]),
++	SND_SOC_DAPM_MUX("WSA RX1 MUX", SND_SOC_NOPM, WSA_MACRO_RX1, 0,
++			 &rx_mux[WSA_MACRO_RX1]),
++	SND_SOC_DAPM_MUX("WSA RX_MIX0 MUX", SND_SOC_NOPM, WSA_MACRO_RX_MIX0, 0,
++			 &rx_mux[WSA_MACRO_RX_MIX0]),
++	SND_SOC_DAPM_MUX("WSA RX_MIX1 MUX", SND_SOC_NOPM, WSA_MACRO_RX_MIX1, 0,
++			 &rx_mux[WSA_MACRO_RX_MIX1]),
++
++	SND_SOC_DAPM_MIXER("WSA RX0", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("WSA RX1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("WSA RX_MIX0", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("WSA RX_MIX1", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_MUX("WSA_RX0 INP0", SND_SOC_NOPM, 0, 0, &rx0_prim_inp0_mux),
++	SND_SOC_DAPM_MUX("WSA_RX0 INP1", SND_SOC_NOPM, 0, 0, &rx0_prim_inp1_mux),
++	SND_SOC_DAPM_MUX("WSA_RX0 INP2", SND_SOC_NOPM, 0, 0, &rx0_prim_inp2_mux),
++	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", CDC_WSA_RX0_RX_PATH_MIX_CTL,
++			   0, 0, &rx0_mix_mux, wsa_macro_enable_mix_path,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MUX("WSA_RX1 INP0", SND_SOC_NOPM, 0, 0, &rx1_prim_inp0_mux),
++	SND_SOC_DAPM_MUX("WSA_RX1 INP1", SND_SOC_NOPM, 0, 0, &rx1_prim_inp1_mux),
++	SND_SOC_DAPM_MUX("WSA_RX1 INP2", SND_SOC_NOPM, 0, 0, &rx1_prim_inp2_mux),
++	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", CDC_WSA_RX1_RX_PATH_MIX_CTL,
++			   0, 0, &rx1_mix_mux, wsa_macro_enable_mix_path,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 MIX", SND_SOC_NOPM, 0, 0, NULL, 0,
++			     wsa_macro_enable_main_path, SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_MIXER_E("WSA_RX INT1 MIX", SND_SOC_NOPM, 1, 0, NULL, 0,
++			     wsa_macro_enable_main_path, SND_SOC_DAPM_PRE_PMU),
++
++	SND_SOC_DAPM_MIXER("WSA_RX INT0 SEC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("WSA_RX INT1 SEC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_MUX("WSA_RX0 INT0 SIDETONE MIX", CDC_WSA_RX0_RX_PATH_CFG1,
++			 4, 0, &rx0_sidetone_mix_mux),
++
++	SND_SOC_DAPM_INPUT("WSA SRC0_INP"),
++	SND_SOC_DAPM_INPUT("WSA_TX DEC0_INP"),
++	SND_SOC_DAPM_INPUT("WSA_TX DEC1_INP"),
++
++	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 INTERP", SND_SOC_NOPM,
++			     WSA_MACRO_COMP1, 0, NULL, 0,
++			     wsa_macro_enable_interpolator,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MIXER_E("WSA_RX INT1 INTERP", SND_SOC_NOPM,
++			     WSA_MACRO_COMP2, 0, NULL, 0,
++			     wsa_macro_enable_interpolator,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 CHAIN", SND_SOC_NOPM, 0, 0,
++			     NULL, 0, wsa_macro_spk_boost_event,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MIXER_E("WSA_RX INT1 CHAIN", SND_SOC_NOPM, 0, 0,
++			     NULL, 0, wsa_macro_spk_boost_event,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_INPUT("VIINPUT_WSA"),
++	SND_SOC_DAPM_OUTPUT("WSA_SPK1 OUT"),
++	SND_SOC_DAPM_OUTPUT("WSA_SPK2 OUT"),
++
++	SND_SOC_DAPM_SUPPLY("WSA_RX0_CLK", CDC_WSA_RX0_RX_PATH_CTL, 5, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("WSA_RX1_CLK", CDC_WSA_RX1_RX_PATH_CTL, 5, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("WSA_RX_MIX0_CLK", CDC_WSA_RX0_RX_PATH_MIX_CTL, 5, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("WSA_RX_MIX1_CLK", CDC_WSA_RX1_RX_PATH_MIX_CTL, 5, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("WSA_MCLK", 0, SND_SOC_NOPM, 0, 0,
++			      wsa_macro_mclk_event,
++			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
 +};
 +
-+static const char * const dec_mode_mux_text[] = {
-+	"ADC_DEFAULT", "ADC_LOW_PWR", "ADC_HIGH_PERF",
++static const struct snd_soc_dapm_route wsa_audio_map[] = {
++	/* VI Feedback */
++	{"WSA_AIF_VI Mixer", "WSA_SPKR_VI_1", "VIINPUT_WSA"},
++	{"WSA_AIF_VI Mixer", "WSA_SPKR_VI_2", "VIINPUT_WSA"},
++	{"WSA AIF_VI", NULL, "WSA_AIF_VI Mixer"},
++	{"WSA AIF_VI", NULL, "WSA_MCLK"},
++
++	{"WSA RX_MIX EC0_MUX", "RX_MIX_TX0", "WSA_RX INT0 SEC MIX"},
++	{"WSA RX_MIX EC1_MUX", "RX_MIX_TX0", "WSA_RX INT0 SEC MIX"},
++	{"WSA RX_MIX EC0_MUX", "RX_MIX_TX1", "WSA_RX INT1 SEC MIX"},
++	{"WSA RX_MIX EC1_MUX", "RX_MIX_TX1", "WSA_RX INT1 SEC MIX"},
++	{"WSA AIF_ECHO", NULL, "WSA RX_MIX EC0_MUX"},
++	{"WSA AIF_ECHO", NULL, "WSA RX_MIX EC1_MUX"},
++	{"WSA AIF_ECHO", NULL, "WSA_MCLK"},
++
++	{"WSA AIF1 PB", NULL, "WSA_MCLK"},
++	{"WSA AIF_MIX1 PB", NULL, "WSA_MCLK"},
++
++	{"WSA RX0 MUX", "AIF1_PB", "WSA AIF1 PB"},
++	{"WSA RX1 MUX", "AIF1_PB", "WSA AIF1 PB"},
++	{"WSA RX_MIX0 MUX", "AIF1_PB", "WSA AIF1 PB"},
++	{"WSA RX_MIX1 MUX", "AIF1_PB", "WSA AIF1 PB"},
++
++	{"WSA RX0 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
++	{"WSA RX1 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
++	{"WSA RX_MIX0 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
++	{"WSA RX_MIX1 MUX", "AIF_MIX1_PB", "WSA AIF_MIX1 PB"},
++
++	{"WSA RX0", NULL, "WSA RX0 MUX"},
++	{"WSA RX1", NULL, "WSA RX1 MUX"},
++	{"WSA RX_MIX0", NULL, "WSA RX_MIX0 MUX"},
++	{"WSA RX_MIX1", NULL, "WSA RX_MIX1 MUX"},
++
++	{"WSA RX0", NULL, "WSA_RX0_CLK"},
++	{"WSA RX1", NULL, "WSA_RX1_CLK"},
++	{"WSA RX_MIX0", NULL, "WSA_RX_MIX0_CLK"},
++	{"WSA RX_MIX1", NULL, "WSA_RX_MIX1_CLK"},
++
++	{"WSA_RX0 INP0", "RX0", "WSA RX0"},
++	{"WSA_RX0 INP0", "RX1", "WSA RX1"},
++	{"WSA_RX0 INP0", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX0 INP0", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX0 INP0", "DEC0", "WSA_TX DEC0_INP"},
++	{"WSA_RX0 INP0", "DEC1", "WSA_TX DEC1_INP"},
++	{"WSA_RX INT0 MIX", NULL, "WSA_RX0 INP0"},
++
++	{"WSA_RX0 INP1", "RX0", "WSA RX0"},
++	{"WSA_RX0 INP1", "RX1", "WSA RX1"},
++	{"WSA_RX0 INP1", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX0 INP1", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX0 INP1", "DEC0", "WSA_TX DEC0_INP"},
++	{"WSA_RX0 INP1", "DEC1", "WSA_TX DEC1_INP"},
++	{"WSA_RX INT0 MIX", NULL, "WSA_RX0 INP1"},
++
++	{"WSA_RX0 INP2", "RX0", "WSA RX0"},
++	{"WSA_RX0 INP2", "RX1", "WSA RX1"},
++	{"WSA_RX0 INP2", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX0 INP2", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX0 INP2", "DEC0", "WSA_TX DEC0_INP"},
++	{"WSA_RX0 INP2", "DEC1", "WSA_TX DEC1_INP"},
++	{"WSA_RX INT0 MIX", NULL, "WSA_RX0 INP2"},
++
++	{"WSA_RX0 MIX INP", "RX0", "WSA RX0"},
++	{"WSA_RX0 MIX INP", "RX1", "WSA RX1"},
++	{"WSA_RX0 MIX INP", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX0 MIX INP", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX INT0 SEC MIX", NULL, "WSA_RX0 MIX INP"},
++
++	{"WSA_RX INT0 SEC MIX", NULL, "WSA_RX INT0 MIX"},
++	{"WSA_RX INT0 INTERP", NULL, "WSA_RX INT0 SEC MIX"},
++	{"WSA_RX0 INT0 SIDETONE MIX", "SRC0", "WSA SRC0_INP"},
++	{"WSA_RX INT0 INTERP", NULL, "WSA_RX0 INT0 SIDETONE MIX"},
++	{"WSA_RX INT0 CHAIN", NULL, "WSA_RX INT0 INTERP"},
++
++	{"WSA_SPK1 OUT", NULL, "WSA_RX INT0 CHAIN"},
++	{"WSA_SPK1 OUT", NULL, "WSA_MCLK"},
++
++	{"WSA_RX1 INP0", "RX0", "WSA RX0"},
++	{"WSA_RX1 INP0", "RX1", "WSA RX1"},
++	{"WSA_RX1 INP0", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX1 INP0", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX1 INP0", "DEC0", "WSA_TX DEC0_INP"},
++	{"WSA_RX1 INP0", "DEC1", "WSA_TX DEC1_INP"},
++	{"WSA_RX INT1 MIX", NULL, "WSA_RX1 INP0"},
++
++	{"WSA_RX1 INP1", "RX0", "WSA RX0"},
++	{"WSA_RX1 INP1", "RX1", "WSA RX1"},
++	{"WSA_RX1 INP1", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX1 INP1", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX1 INP1", "DEC0", "WSA_TX DEC0_INP"},
++	{"WSA_RX1 INP1", "DEC1", "WSA_TX DEC1_INP"},
++	{"WSA_RX INT1 MIX", NULL, "WSA_RX1 INP1"},
++
++	{"WSA_RX1 INP2", "RX0", "WSA RX0"},
++	{"WSA_RX1 INP2", "RX1", "WSA RX1"},
++	{"WSA_RX1 INP2", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX1 INP2", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX1 INP2", "DEC0", "WSA_TX DEC0_INP"},
++	{"WSA_RX1 INP2", "DEC1", "WSA_TX DEC1_INP"},
++	{"WSA_RX INT1 MIX", NULL, "WSA_RX1 INP2"},
++
++	{"WSA_RX1 MIX INP", "RX0", "WSA RX0"},
++	{"WSA_RX1 MIX INP", "RX1", "WSA RX1"},
++	{"WSA_RX1 MIX INP", "RX_MIX0", "WSA RX_MIX0"},
++	{"WSA_RX1 MIX INP", "RX_MIX1", "WSA RX_MIX1"},
++	{"WSA_RX INT1 SEC MIX", NULL, "WSA_RX1 MIX INP"},
++
++	{"WSA_RX INT1 SEC MIX", NULL, "WSA_RX INT1 MIX"},
++	{"WSA_RX INT1 INTERP", NULL, "WSA_RX INT1 SEC MIX"},
++
++	{"WSA_RX INT1 CHAIN", NULL, "WSA_RX INT1 INTERP"},
++	{"WSA_SPK2 OUT", NULL, "WSA_RX INT1 CHAIN"},
++	{"WSA_SPK2 OUT", NULL, "WSA_MCLK"},
 +};
 +
-+static const struct soc_enum dec_mode_mux_enum[] = {
-+	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, ARRAY_SIZE(dec_mode_mux_text),
-+			dec_mode_mux_text),
-+	SOC_ENUM_SINGLE(SND_SOC_NOPM, 1, ARRAY_SIZE(dec_mode_mux_text),
-+			dec_mode_mux_text),
-+	SOC_ENUM_SINGLE(SND_SOC_NOPM, 2,  ARRAY_SIZE(dec_mode_mux_text),
-+			dec_mode_mux_text),
-+	SOC_ENUM_SINGLE(SND_SOC_NOPM, 3, ARRAY_SIZE(dec_mode_mux_text),
-+			dec_mode_mux_text),
-+};
-+
-+static const struct snd_kcontrol_new va_macro_snd_controls[] = {
-+	SOC_SINGLE_S8_TLV("VA_DEC0 Volume", CDC_VA_TX0_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("VA_DEC1 Volume", CDC_VA_TX1_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("VA_DEC2 Volume", CDC_VA_TX2_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("VA_DEC3 Volume", CDC_VA_TX3_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+
-+	SOC_ENUM_EXT("VA_DEC0 MODE", dec_mode_mux_enum[0],
-+		     va_macro_dec_mode_get, va_macro_dec_mode_put),
-+	SOC_ENUM_EXT("VA_DEC1 MODE", dec_mode_mux_enum[1],
-+		     va_macro_dec_mode_get, va_macro_dec_mode_put),
-+	SOC_ENUM_EXT("VA_DEC2 MODE", dec_mode_mux_enum[2],
-+		     va_macro_dec_mode_get, va_macro_dec_mode_put),
-+	SOC_ENUM_EXT("VA_DEC3 MODE", dec_mode_mux_enum[3],
-+		     va_macro_dec_mode_get, va_macro_dec_mode_put),
-+};
-+
-+static int va_macro_component_probe(struct snd_soc_component *component)
-+{
-+	struct va_macro *va = snd_soc_component_get_drvdata(component);
-+
-+	snd_soc_component_init_regmap(component, va->regmap);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_component_driver va_macro_component_drv = {
-+	.name = "VA MACRO",
-+	.probe = va_macro_component_probe,
-+	.controls = va_macro_snd_controls,
-+	.num_controls = ARRAY_SIZE(va_macro_snd_controls),
-+};
-+
-+static int fsgen_gate_enable(struct clk_hw *hw)
-+{
-+	return va_macro_mclk_enable(to_va_macro(hw), true);
-+}
-+
-+static void fsgen_gate_disable(struct clk_hw *hw)
-+{
-+	va_macro_mclk_enable(to_va_macro(hw), false);
-+}
-+
-+static int fsgen_gate_is_enabled(struct clk_hw *hw)
-+{
-+	struct va_macro *va = to_va_macro(hw);
-+	int val;
-+
-+	regmap_read(va->regmap, CDC_VA_TOP_CSR_TOP_CFG0, &val);
-+
-+	return  !!(val & CDC_VA_FS_BROADCAST_EN);
-+}
-+
-+static const struct clk_ops fsgen_gate_ops = {
-+	.prepare = fsgen_gate_enable,
-+	.unprepare = fsgen_gate_disable,
-+	.is_enabled = fsgen_gate_is_enabled,
-+};
-+
-+static int va_macro_register_fsgen_output(struct va_macro *va)
-+{
-+	struct clk *parent = va->clks[2].clk;
-+	struct device *dev = va->dev;
-+	struct device_node *np = dev->of_node;
-+	const char *parent_clk_name;
-+	const char *clk_name = "fsgen";
-+	struct clk_init_data init;
-+	int ret;
-+
-+	parent_clk_name = __clk_get_name(parent);
-+
-+	of_property_read_string(np, "clock-output-names", &clk_name);
-+
-+	init.name = clk_name;
-+	init.ops = &fsgen_gate_ops;
-+	init.flags = 0;
-+	init.parent_names = &parent_clk_name;
-+	init.num_parents = 1;
-+	va->hw.init = &init;
-+	ret = devm_clk_hw_register(va->dev, &va->hw);
-+	if (ret)
-+		return ret;
-+
-+	return of_clk_add_provider(np, of_clk_src_simple_get, va->hw.clk);
-+}
-+
-+static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
-+					      struct va_macro *va)
-+{
-+	u32 div_factor;
-+	u32 mclk_rate = VA_MACRO_MCLK_FREQ;
-+
-+	if (!dmic_sample_rate || mclk_rate % dmic_sample_rate != 0)
-+		goto undefined_rate;
-+
-+	div_factor = mclk_rate / dmic_sample_rate;
-+
-+	switch (div_factor) {
-+	case 2:
-+		va->dmic_clk_div = VA_MACRO_CLK_DIV_2;
-+		break;
-+	case 3:
-+		va->dmic_clk_div = VA_MACRO_CLK_DIV_3;
-+		break;
-+	case 4:
-+		va->dmic_clk_div = VA_MACRO_CLK_DIV_4;
-+		break;
-+	case 6:
-+		va->dmic_clk_div = VA_MACRO_CLK_DIV_6;
-+		break;
-+	case 8:
-+		va->dmic_clk_div = VA_MACRO_CLK_DIV_8;
-+		break;
-+	case 16:
-+		va->dmic_clk_div = VA_MACRO_CLK_DIV_16;
-+		break;
-+	default:
-+		/* Any other DIV factor is invalid */
-+		goto undefined_rate;
-+	}
-+
-+	return dmic_sample_rate;
-+
-+undefined_rate:
-+	dev_err(va->dev, "%s: Invalid rate %d, for mclk %d\n",
-+		__func__, dmic_sample_rate, mclk_rate);
-+	dmic_sample_rate = 0;
-+
-+	return dmic_sample_rate;
-+}
-+
-+static int va_macro_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct va_macro *va;
-+	void __iomem *base;
-+	u32 sample_rate = 0;
-+	int ret;
-+
-+	va = devm_kzalloc(dev, sizeof(*va), GFP_KERNEL);
-+	if (!va)
-+		return -ENOMEM;
-+
-+	va->dev = dev;
-+	va->clks[0].id = "macro";
-+	va->clks[1].id = "dcodec";
-+	va->clks[2].id = "mclk";
-+
-+	ret = devm_clk_bulk_get(dev, VA_NUM_CLKS_MAX, va->clks);
-+	if (ret) {
-+		dev_err(dev, "Error getting VA Clocks (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	ret = of_property_read_u32(dev->of_node, "qcom,dmic-sample-rate",
-+				   &sample_rate);
-+	if (ret) {
-+		dev_err(dev, "qcom,dmic-sample-rate dt entry missing\n");
-+		va->dmic_clk_div = VA_MACRO_CLK_DIV_2;
-+	} else {
-+		ret = va_macro_validate_dmic_sample_rate(sample_rate, va);
-+		if (!ret)
-+			return -EINVAL;
-+	}
-+
-+	/* mclk rate */
-+	clk_set_rate(va->clks[1].clk, VA_MACRO_MCLK_FREQ);
-+	ret = clk_bulk_prepare_enable(VA_NUM_CLKS_MAX, va->clks);
-+	if (ret)
-+		return ret;
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base)) {
-+		ret = PTR_ERR(base);
-+		goto err;
-+	}
-+
-+	va->regmap = devm_regmap_init_mmio(dev, base,  &va_regmap_config);
-+	if (IS_ERR(va->regmap)) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	dev_set_drvdata(dev, va);
-+	ret = va_macro_register_fsgen_output(va);
-+	if (ret)
-+		goto err;
-+
-+	ret = devm_snd_soc_register_component(dev, &va_macro_component_drv,
-+					      va_macro_dais,
-+					      ARRAY_SIZE(va_macro_dais));
-+	if (ret)
-+		goto soc_err;
-+
-+	return ret;
-+
-+soc_err:
-+	of_clk_del_provider(pdev->dev.of_node);
-+err:
-+	clk_bulk_disable_unprepare(VA_NUM_CLKS_MAX, va->clks);
-+
-+	return ret;
-+}
-+
-+static int va_macro_remove(struct platform_device *pdev)
-+{
-+	struct va_macro *va = dev_get_drvdata(&pdev->dev);
-+
-+	of_clk_del_provider(pdev->dev.of_node);
-+	clk_bulk_disable_unprepare(VA_NUM_CLKS_MAX, va->clks);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id va_macro_dt_match[] = {
-+	{ .compatible = "qcom,sm8250-lpass-va-macro" },
-+	{}
-+};
-+
-+static struct platform_driver va_macro_driver = {
-+	.driver = {
-+		.name = "va_macro",
-+		.of_match_table = va_macro_dt_match,
-+		.suppress_bind_attrs = true,
-+	},
-+	.probe = va_macro_probe,
-+	.remove = va_macro_remove,
-+};
-+
-+module_platform_driver(va_macro_driver);
-+MODULE_DESCRIPTION("VA macro driver");
-+MODULE_LICENSE("GPL v2");
+ static int wsa_swrm_clock(struct wsa_macro *wsa, bool enable)
+ {
+ 	struct regmap *regmap = wsa->regmap;
+@@ -1375,6 +2377,10 @@ static const struct snd_soc_component_driver wsa_macro_component_drv = {
+ 	.probe = wsa_macro_component_probe,
+ 	.controls = wsa_macro_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wsa_macro_snd_controls),
++	.dapm_widgets = wsa_macro_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wsa_macro_dapm_widgets),
++	.dapm_routes = wsa_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(wsa_audio_map),
+ };
+ 
+ static int wsa_macro_probe(struct platform_device *pdev)
 -- 
 2.21.0
 
