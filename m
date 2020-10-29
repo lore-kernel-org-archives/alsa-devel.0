@@ -8,104 +8,99 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89F96C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38E30C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:52:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 602C22076B
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:51:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B9FF2076B
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:52:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XScOvPG2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ImwowdAX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 602C22076B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NtDq9txK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TW8C3K8Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B9FF2076B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C819B1664;
-	Thu, 29 Oct 2020 08:50:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C819B1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id B105B166C;
+	Thu, 29 Oct 2020 08:51:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B105B166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603957902;
-	bh=Sl4LEjyqv2ejlShcI1UnhB70Y5TNAbUomAeLOuIR48s=;
+	s=default; t=1603957941;
+	bh=/yptHEfgAHDBUpNeJkQCtilbV87nzjR1vMI4H3rK6/Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XScOvPG2EFFoUAjvOfDA4SYwZXhI89QAp1q2BJlIxIk5ZO5KmTc39/+bwMPRKkYpr
-	 sci73nlnyCa0nMaVH8PJZtStwUcG8gZh9hCbD/zJCJ/xkgsc4FLd0exIKiMMg2EHol
-	 iEhWTxWfYg1kOt1HWTz7zoauVRqULT2gN/vJPuW8=
+	b=NtDq9txKVoXWun5g3n3mg5glb6TnUvgzgUgPaPoMt1WRH9+nVPUgv2ZaL0JuTJ1np
+	 V319D42ky4+vJRZNZDfTtEM1JdvSV8QRUnGjK3evKImAk7PkU2rf30UjF6yUY0A/Rx
+	 9/7S53/F/hGelJuyw61lD6tP4NURLjg+VusT5Yzk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17B9FF804BD;
-	Thu, 29 Oct 2020 08:50:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66960F804CB;
+	Thu, 29 Oct 2020 08:50:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E227F8020D; Thu, 29 Oct 2020 08:43:42 +0100 (CET)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
+ id 074ABF800FF; Thu, 29 Oct 2020 08:43:49 +0100 (CET)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
+ [IPv6:2607:f8b0:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 361FCF80217
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:43:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 361FCF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D932F80095
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:43:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D932F80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ImwowdAX"
-Received: by mail-pg1-x541.google.com with SMTP id s22so1639548pga.9
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:43:39 -0700 (PDT)
+ header.b="TW8C3K8Z"
+Received: by mail-pf1-x443.google.com with SMTP id j18so1665035pfa.0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:43:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=8u+cDEJ8AUe2fZreqSM2kctIiSNg1XEO6m83AlYJL7M=;
- b=ImwowdAXgeuskRRBCZOSYoc+noyNDsE7KVpUYFOdB/iwsNWyxeSa3KG4jvkGkcrbqS
- W+5ku5C1hxDug2UmHCXShNUvqJ/yinRCbh5r65F52i/HjK5RvAreAYThIwDpqH+neJu6
- qpLFLZfK3jNXX1A1NMJVy/f0XZcdks4BvDt7R9vRukBulBng8L6ExJT3saGcHY6Uh3oI
- HsSCwfEifi9SFo2N69TZoYyk31UBMqzsA9PiDn7sKI9BluMdq8TdPurU6JyCVqJkM88+
- g8HT//uvrMOYWqSv9fuIwhlvIJnwGhv3zTAjrOu7hCBPbCDtn4SK9gK0vU41eeL5OsFN
- m8mQ==
+ bh=bmwHyHUIe/uWSPHK3YvMcr+QNlICBVXmu7Dmq71Pi0M=;
+ b=TW8C3K8ZXzrnZ/kDBmjrdImT1Eh0azgxxqO8H4AGCR1kRROB0CStWcbr6WtfqSABhy
+ kXCczW2+hlMauiG/YErbKtsw2wdcj5jzplWFyl7Xpe90BQ7TPzpYJJm11fAEGCBVgQvh
+ RYegV/nuBaTdc55uXOQJETTYXuWFacSw6LZhiek/ePJ881lATgHSeSob9TowpLuX/OPq
+ U7gVEy/pznph5meEOt8okdP06Oe6K03C1LI8VkSWDJ8kP2hJ9a4AH/M9sSmNV2XvFMga
+ 2N2PW80BUq2R3aXQi2z6ZKzxxUTMzexnuru3+jnEVGgT+x4ZzwclB5Vv5765mfWOkhXp
+ 0X5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=8u+cDEJ8AUe2fZreqSM2kctIiSNg1XEO6m83AlYJL7M=;
- b=Ncr92cz/WfcqKzt2EzF6gBazcAjE75X6bhWi3lEmRO0WbLt9jNlNpSNn6zh9iFyaPO
- xu53S+sG9P2e7nC9bayVQVJrE6GDEU950hMp2XlW6YvAwpjXskwPDLsc0oxixr6ZgxZL
- 6fEUl4FUzhFpl4LFB3RRcl6cf/tjULdWnk6Dq2/wSgHHtV1Zi1Yd6CkcNujhAfm0jpsz
- 2aCzlHHmniEJtLWWdxpa5lSZpko+6kwqxfTguI+v10BPF9DqYiAb8hrYtGo5TNzwrQqS
- K8mEWcbd1A8pw5/gqGDpfI2zYjnnPqyhK8JOzQPaqF1B5eQ9WAd8bMpaDjDE2Z5qr6wd
- ETWg==
-X-Gm-Message-State: AOAM532tZ7R50dCEWJss/Cxz0pNP0zYCkV8Il6gOzxHGmwySz+pYMrr3
- iYjBffk/8gXn3miIfluteC0=
-X-Google-Smtp-Source: ABdhPJw26LSjGJv0gkcHfnY3aVLwVaP63zCatI+cHlBpP4L5G2DQaRcfDxL/I3kfzEgHZfcdG92f0A==
-X-Received: by 2002:a62:1c8f:0:b029:156:6ebd:3361 with SMTP id
- c137-20020a621c8f0000b02901566ebd3361mr3272158pfc.42.1603957417705; 
- Thu, 29 Oct 2020 00:43:37 -0700 (PDT)
+ bh=bmwHyHUIe/uWSPHK3YvMcr+QNlICBVXmu7Dmq71Pi0M=;
+ b=tHQfD87Ad/1jdnMxL5eyy3GPqIE0gxduulJ3oWViPqnfPQG5hDoY6PYwtLALvOzVdM
+ +x4k9bQrjVgMticLJDDRbh+qE/DMv6yB61pr4vcot/6Dc5ww+WcGx9NBzQgKJ7xIXVTL
+ 8qvrXBpc1xj6UfYGDQXbaWmDYd83GUiD6iXH9wzHUyKbNhcFdCs1J78ntgFTmwKZ87E/
+ 9cnNiDH5ncak224TQcX/JP8R8pqkmiURRv3IVM94fRir12XfB7QvOqHhrmctqtrAp9ro
+ gHiPRaBTezQxitll8WjSexrYvrpI5hmcsDBeIi0N2m8EYbUuFTG03Y5FcQW5cpkpfTmw
+ Id/w==
+X-Gm-Message-State: AOAM531bpB/F40YX253JKFGeijlhE6lX7Lxji61UTVpIvNRQUItBsnN3
+ FJPfhfU98Z2mkavJYVlDR5o=
+X-Google-Smtp-Source: ABdhPJy0skDQDIihaScK9yxAZVkcjC9QRMMPRrKoqNU1oPRXmYHp15+NFjKFrr9TjeWjwlnY8B2wVQ==
+X-Received: by 2002:a62:8f4d:0:b029:163:d24d:e0ae with SMTP id
+ n74-20020a628f4d0000b0290163d24de0aemr2904319pfd.49.1603957423589; 
+ Thu, 29 Oct 2020 00:43:43 -0700 (PDT)
 Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
- by smtp.gmail.com with ESMTPSA id b142sm1872361pfb.186.2020.10.29.00.43.36
+ by smtp.gmail.com with ESMTPSA id z10sm1837779pff.218.2020.10.29.00.43.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2020 00:43:37 -0700 (PDT)
+ Thu, 29 Oct 2020 00:43:43 -0700 (PDT)
 From: Coiby Xu <coiby.xu@gmail.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 03/25] ASoC: fsl: remove unnecessary CONFIG_PM_SLEEP
-Date: Thu, 29 Oct 2020 15:42:39 +0800
-Message-Id: <20201029074301.226644-3-coiby.xu@gmail.com>
+Subject: [PATCH 04/25] ASoC: rockchip: remove unnecessary CONFIG_PM_SLEEP
+Date: Thu, 29 Oct 2020 15:42:40 +0800
+Message-Id: <20201029074301.226644-4-coiby.xu@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
 References: <20201029074301.226644-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Thu, 29 Oct 2020 08:49:54 +0100
-Cc: "moderated list:FREESCALE SOC SOUND DRIVERS" <alsa-devel@alsa-project.org>,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- "open list:FREESCALE SOC SOUND DRIVERS" <linuxppc-dev@lists.ozlabs.org>,
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>,
  Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Shawn Guo <shawnguo@kernel.org>, Shengjiu Wang <shengjiu.wang@gmail.com>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ "open list:ARM/Rockchip SoC support" <linux-rockchip@lists.infradead.org>,
+ Mark Brown <broonie@kernel.org>, "moderated list:ARM/Rockchip SoC support"
  <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -126,29 +121,29 @@ SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 
 Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 ---
- sound/soc/fsl/imx-audmux.c | 2 --
+ sound/soc/rockchip/rockchip_pdm.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 25c18b9e348f..6d77188a4eab 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -349,7 +349,6 @@ static int imx_audmux_remove(struct platform_device *pdev)
+diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
+index 5adb293d0435..f3c19310aeeb 100644
+--- a/sound/soc/rockchip/rockchip_pdm.c
++++ b/sound/soc/rockchip/rockchip_pdm.c
+@@ -574,7 +574,6 @@ static int rockchip_pdm_remove(struct platform_device *pdev)
  	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
- static int imx_audmux_suspend(struct device *dev)
+ static int rockchip_pdm_suspend(struct device *dev)
  {
- 	int i;
-@@ -377,7 +376,6 @@ static int imx_audmux_resume(struct device *dev)
+ 	struct rk_pdm_dev *pdm = dev_get_drvdata(dev);
+@@ -601,7 +600,6 @@ static int rockchip_pdm_resume(struct device *dev)
  
- 	return 0;
+ 	return ret;
  }
--#endif /* CONFIG_PM_SLEEP */
+-#endif
  
- static const struct dev_pm_ops imx_audmux_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(imx_audmux_suspend, imx_audmux_resume)
+ static const struct dev_pm_ops rockchip_pdm_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(rockchip_pdm_runtime_suspend,
 -- 
 2.28.0
 
