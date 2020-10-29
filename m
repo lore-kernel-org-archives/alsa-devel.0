@@ -8,101 +8,103 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F171DC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:54:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A27DC2D0A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:55:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26DAD2151B
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:54:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C025218AC
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:55:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g6vHWdcU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bdYT7RCK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26DAD2151B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JLuXd438";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TkJ1akdf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C025218AC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5936E168C;
-	Thu, 29 Oct 2020 08:54:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5936E168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB1711661;
+	Thu, 29 Oct 2020 08:54:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB1711661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603958093;
-	bh=OwiIhAML4zA3HbWp93vzpABDWcLSvS5lfwUHPew2Xss=;
+	s=default; t=1603958112;
+	bh=kdKtFn3j/dG8N9u04x3uspzraK0dPwqBQ2cSyUSuOvk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g6vHWdcUPwtam9DG9wAlp3PzTAE7107y3bY4TsTS8U9u0zO+c7xTsHscvNcWfIQVa
-	 Ge7wiAvF5vcJc5lNQyZazdSAc9zkQcNZWgcvHi+XOol8us0mo/qXuWBbRlVUhnk+bX
-	 2q1s8DWJAoDPLPGuPCODK++UIkFif3Ugau6kh8x0=
+	b=JLuXd438EKLRyPt5deRirG3Dd1V1O7j911LuiVpJiIrAOVru3+Vk8U6UHpFqCa476
+	 vdgs/WjyMUp4POUKc4qhx+e0tq6E4QShUNe86Igdj0y1yx9oVHX2nCRTfpzK2x8q71
+	 y2TD2/dyMamNrH0xWsJdF0XtnOUgCBdLv6vejsuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04FD0F804FF;
+	by alsa1.perex.cz (Postfix) with ESMTP id F3C02F80511;
 	Thu, 29 Oct 2020 08:50:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3E81F80217; Thu, 29 Oct 2020 08:44:24 +0100 (CET)
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
- [IPv6:2607:f8b0:4864:20::442])
+ id 70CE7F80217; Thu, 29 Oct 2020 08:44:29 +0100 (CET)
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com
+ [IPv6:2607:f8b0:4864:20::544])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15BDFF800FF
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:44:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15BDFF800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id C280AF80095
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:44:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C280AF80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="bdYT7RCK"
-Received: by mail-pf1-x442.google.com with SMTP id e15so1646178pfh.6
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:44:21 -0700 (PDT)
+ header.b="TkJ1akdf"
+Received: by mail-pg1-x544.google.com with SMTP id z24so1661710pgk.3
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:44:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=OYt9DPsIOPNIqy5dqkJ5lCLLGf00bKzjgHV7/FKrm30=;
- b=bdYT7RCKiIF5bBkrbTYntlKdOqtia2YZXQxKoyrwimF4rI/i2LTRqUQwxtRz0JGJOK
- pJRd47FrtAMSOfTJ2MDoZXbTvtK/dw/1a/SMrHOhliTQlsu7NLGPDe6FLeTDqqVW7Zwd
- /u5vQxnES6QQW3KTbWdE8TQmp5yzB9TOuVCV3+wQNH26bIe0mim3pCggXrQDZPepbrDj
- 239M/hFcPQOtqluGwkNXrQv286qOU6i4dX4LxERLdXOOYNY6SiEjhAywks7briuClUVH
- t2adBUU0kc1uK5VE5F5nq3FcryezcqR2epcnnBlciA/4MSZsn0D9Xrcl4vkglSHi7Slh
- KLtw==
+ bh=nVqH6ZdDZsxjhz6ACxTIa4F9n2pNeqLVCfy2un8GTaA=;
+ b=TkJ1akdfIG0oF27sYc+gc8WT0yjtsPijZW5V4jOCBNoMk3VeHalSL2CyeLWeT2FEL8
+ I6Q1Cj2eSEz4INHzkIZuePaC7S86drVW9TDaVxNS2PWkqc5eckuuAWzdTxpSp3yzfV6i
+ 5nbuNAJQB5dSfCGWywWkWo+j36Mvdt1UpiDiLfGFEOCcX0PMKUBpngEqIKDSP06MtHQi
+ 1FPCuRdZjfcV8VHzvRerkB6Kqq2D91okuEuDNWXX8nmXfVCMULqI6HcDujDqOqVEteqE
+ Cov05UKf9ZngGAHfEGIljZ/T0AQcjjlzfX0zQwW1mv9SL5fcEx63QNS2Q0++I6J7gYVc
+ VtIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=OYt9DPsIOPNIqy5dqkJ5lCLLGf00bKzjgHV7/FKrm30=;
- b=Mx90f7xbFZXqjiD1y3oBGUPVa9jCKcYW62+sxyZxpDm7eeqNde+CxenTVl3IFi4MnL
- OB/bAwbHA0SvMZNCJTT7hHfh8Q8HCFmotQL8nuCCM8Wfu2hX40DJnh6zOEkHIQdhxat4
- 88U+SasXC99XD6f5HjZH8U1+bF6cIn0nQ07ggjWBzrhw+SW3FEI5UzwwBjR70Qz8kXeE
- gLmbgqn8/h+7+FneIKOH7ChTTsGq3sJ7yTkkebAkKpuAgV2UTCs+MXzrOsw59SVvQJ9s
- 7+WerIlsnj+3gTkIa/+hTiRUGw5wZUqz3sp0ROCPC6JoeuWaFvNEnxZMpCjXvbUh7/tE
- U1uw==
-X-Gm-Message-State: AOAM5301I3e61KIGqn5aWL6UIb1dSfAGOOkam9Vyk1OhIDtpw7pi75OU
- cKDMChehsoSx3c9ARcmDjWo=
-X-Google-Smtp-Source: ABdhPJzgm6erpGiPMEQPgP+rXdOPNC3MCgogID7xTCjo1ei4Pu9gFwMcSe9ios3QobaPjrqK6DtEcw==
-X-Received: by 2002:aa7:815a:0:b029:164:cc2e:2c56 with SMTP id
- d26-20020aa7815a0000b0290164cc2e2c56mr447859pfn.21.1603957460017; 
- Thu, 29 Oct 2020 00:44:20 -0700 (PDT)
+ bh=nVqH6ZdDZsxjhz6ACxTIa4F9n2pNeqLVCfy2un8GTaA=;
+ b=aYe77xH5g6UoGaow7R7EfiTponyNQbnKE7p2M14Z4ZijtMvJVz0MTGDp4XAssQp8Lr
+ ctpKg7GyWJM/gmDzLHqabqv4uOAArwac8tQNWrqvZeVMF9OfLlxlgkDqvZlqCng7+Rub
+ GB33U5m6zevDXlzMRFFd1oaeikHKOXDhZJdjXysdKjWmRxVa9XHqfliT6q4BeH78UAqo
+ RKPR06jtH8y6FZhEtJgzBfrL6nL4WK+Yt//md+XDimhnkskEv7/TJHu6eeX1sTCyy+ml
+ QuJec+UAapP3wqR8nHMaWPZltdGoob5eG9PvGct9e7erbp6I/FlELs0pnKMwLyGC6muP
+ 61Tw==
+X-Gm-Message-State: AOAM530dXv3JpUoqafAMri5PVH+GbAqOi6lqTb0KQQh+Xe4Bcxci5BYz
+ 65IGNRHWH1TpnT4Q32YorgQ=
+X-Google-Smtp-Source: ABdhPJzXC8sP+c39Xx1NVeZuvBhUppi3iLLlmqr3BQXMvhyTNMf7wD/5G8LbipRnbyxWoNz0D3NnRQ==
+X-Received: by 2002:a17:90a:784b:: with SMTP id
+ y11mr2950425pjl.165.1603957464479; 
+ Thu, 29 Oct 2020 00:44:24 -0700 (PDT)
 Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
- by smtp.gmail.com with ESMTPSA id f8sm1541140pga.78.2020.10.29.00.44.18
+ by smtp.gmail.com with ESMTPSA id o4sm1855935pjj.38.2020.10.29.00.44.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2020 00:44:19 -0700 (PDT)
+ Thu, 29 Oct 2020 00:44:24 -0700 (PDT)
 From: Coiby Xu <coiby.xu@gmail.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 11/25] ASoC: hdac: remove unnecessary CONFIG_PM_SLEEP
-Date: Thu, 29 Oct 2020 15:42:47 +0800
-Message-Id: <20201029074301.226644-11-coiby.xu@gmail.com>
+Subject: [PATCH 12/25] ASoC: stm32: sai: remove unnecessary CONFIG_PM_SLEEP
+Date: Thu, 29 Oct 2020 15:42:48 +0800
+Message-Id: <20201029074301.226644-12-coiby.xu@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
 References: <20201029074301.226644-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Thu, 29 Oct 2020 08:49:55 +0100
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
+Cc: "moderated list:STM32 AUDIO ASoC DRIVERS" <alsa-devel@alsa-project.org>,
+ Olivier Moysan <olivier.moysan@st.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ "moderated list:ARM/STM32 ARCHITECTURE"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ "moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,29 +124,29 @@ SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 
 Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 ---
- sound/soc/intel/skylake/skl.c | 2 --
+ sound/soc/stm/stm32_sai_sub.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 8b993722f74e..da32d68080be 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -322,7 +322,6 @@ static int _skl_resume(struct hdac_bus *bus)
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 3aa1cf262402..38dd7e30af1b 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1582,7 +1582,6 @@ static int stm32_sai_sub_remove(struct platform_device *pdev)
+ 	return 0;
  }
- #endif
  
 -#ifdef CONFIG_PM_SLEEP
- /*
-  * power management
-  */
-@@ -400,7 +399,6 @@ static int skl_resume(struct device *dev)
+ static int stm32_sai_sub_suspend(struct device *dev)
+ {
+ 	struct stm32_sai_sub_data *sai = dev_get_drvdata(dev);
+@@ -1616,7 +1615,6 @@ static int stm32_sai_sub_resume(struct device *dev)
  
  	return ret;
  }
 -#endif /* CONFIG_PM_SLEEP */
  
- #ifdef CONFIG_PM
- static int skl_runtime_suspend(struct device *dev)
+ static const struct dev_pm_ops stm32_sai_sub_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(stm32_sai_sub_suspend, stm32_sai_sub_resume)
 -- 
 2.28.0
 
