@@ -6,61 +6,61 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F574C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 12:42:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5435C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 12:42:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23EBB20838
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 12:42:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 431EE2087E
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 12:42:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uFaGaNuZ";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="k7uitV9J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23EBB20838
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ifNHkoXw";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="j3yDLKE8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 431EE2087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42D0F950;
-	Thu, 29 Oct 2020 13:41:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42D0F950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1912D15E2;
+	Thu, 29 Oct 2020 13:41:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1912D15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603975327;
-	bh=fPrirToVDeWiBXGhzdGLCnc48Zdw7+8TGyRC7szzpq0=;
+	s=default; t=1603975334;
+	bh=uDEi8l3tLwU6LdqHUgog52VUPP3I1HsdRFofzCw0ukY=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uFaGaNuZ9lcTgxF1c75FGP5qjFNy5O9cuaHNhUf2dIkTotD9y+KdFVLNQT+ZVZdcL
-	 9ATyWJridDJzFnMnixWa4Q414Xh791RQFAAm0urDr/1z5RNgzqh0aQ4k5amhRZQwol
-	 IKosRYDloVRcjsvK+kjprIEv6614u7rgDQRD9hHw=
+	b=ifNHkoXwUBYo2p5tQDR5Rrh9+kik32T7ZBRXxqw5CmlrGq9JQw6IG0C7tv2dmsK33
+	 hoLw0JsnBI4dayl0FWPqw0bQVLegcTnh3IFVlNpU6vGnZKAHjbckk8pENgR9hKf+ST
+	 TlOydBdEeR+qvcuO5h0bT1NKgA/WjQCT5lhZuRBs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFF15F8021D;
-	Thu, 29 Oct 2020 13:40:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5265F8027C;
+	Thu, 29 Oct 2020 13:40:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A842FF80240; Thu, 29 Oct 2020 13:40:26 +0100 (CET)
+ id 74614F8027C; Thu, 29 Oct 2020 13:40:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16824F80095
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 13:40:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16824F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F748F801D8
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 13:40:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F748F801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="k7uitV9J"
+ header.b="j3yDLKE8"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3DD0C20809;
- Thu, 29 Oct 2020 12:40:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id CFB492075E;
+ Thu, 29 Oct 2020 12:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603975221;
- bh=fPrirToVDeWiBXGhzdGLCnc48Zdw7+8TGyRC7szzpq0=;
+ s=default; t=1603975227;
+ bh=uDEi8l3tLwU6LdqHUgog52VUPP3I1HsdRFofzCw0ukY=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=k7uitV9Jro8A3P74bQTJwyhnCaOrWxBlJPgEUuca3JVgkj96SXM3vCAw59a4tQTsO
- /LAaZ3UWyZuVQHLanIa32IH57Ss2OhsvbAjlQ50YVT7owWKidgLvlhLJ0XkuWhLx5E
- pOPho6XxMs7ioKmgYG6gMW/9rhHyuJWo7Q4orL+0=
-Date: Thu, 29 Oct 2020 12:40:15 +0000
+ b=j3yDLKE8Wp8Q1jPOTKmVjhE3oBiG+HZWB6zJftxnxe4d/5KVCxSeRi6G4rtckRCI0
+ jolHYITB5hlAs94rx72pDbftxSOn8E0/+zfodwJTaFAMr1V/F8c1XXqh+ltDP2DgJl
+ 3QDO43EUXr3lMO2OjrJlE+MM8m1kHIM0Z8hsHybw=
+Date: Thu, 29 Oct 2020 12:40:21 +0000
 From: Mark Brown <broonie@kernel.org>
 To: devicetree@vger.kernel.org, perex@perex.cz, robh+dt@kernel.org,
  linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
@@ -68,10 +68,11 @@ To: devicetree@vger.kernel.org, perex@perex.cz, robh+dt@kernel.org,
  srinivas.kandagatla@linaro.org, agross@kernel.org, plai@codeaurora.org,
  linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org,
  tiwai@suse.com, bjorn.andersson@linaro.org, alsa-devel@alsa-project.org
-In-Reply-To: <1603098363-9251-1-git-send-email-srivasam@codeaurora.org>
-References: <1603098363-9251-1-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v2] Asoc: qcom: lpass-cpu: Fix clock disable failure
-Message-Id: <160397520897.55401.4677277662633686101.b4-ty@kernel.org>
+In-Reply-To: <1603798474-4897-1-git-send-email-srivasam@codeaurora.org>
+References: <1603798474-4897-1-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v2] Asoc: qcom: lpass-sc7180: Fix MI2S bitwidth field bit
+ positions
+Message-Id: <160397520896.55401.5296685926917915952.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -91,14 +92,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 19 Oct 2020 14:36:03 +0530, Srinivasa Rao Mandadapu wrote:
-> Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase instead of
-> shutdown time. Acheive this by invoking clk_disable API from
-> cpu daiops trigger instead of cpu daiops shutdown.
-> Change non-atomic API "clk_prepare_enable" to atomic API
-> "clk_enable" in trigger, as trigger is being called from atomic context.
-> 
-> Fixes: commit 7e6799d8f87d ("ASoC: qcom: lpass-cpu: Enable MI2S BCLK and LRCLK together")
+On Tue, 27 Oct 2020 17:04:34 +0530, Srinivasa Rao Mandadapu wrote:
+> Update SC7180 lpass_variant structure with proper I2S bitwidth
+> field bit positions, as bitwidth denotes 0 to 1 bits,
+> but previously used only 0 bit.
 
 Applied to
 
@@ -106,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: lpass-cpu: Fix clock disable failure
-      commit: 6ec6c3693a389841d8ca952072aea8020da54ef4
+[1/1] ASoC: qcom: lpass-sc7180: Fix MI2S bitwidth field bit positions
+      commit: cf9d21984da2c8e852320d12c03ddb7d11760a32
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
