@@ -2,57 +2,63 @@ Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 292B3C4363A
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 05:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD20C4363A
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 06:06:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D8D12151B
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 05:55:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B134216C4
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 06:06:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oBLZ6cyu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D8D12151B
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ynchp2aG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B134216C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C20E011C;
-	Thu, 29 Oct 2020 06:54:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C20E011C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EF6185D;
+	Thu, 29 Oct 2020 07:05:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EF6185D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603950920;
-	bh=5GBkczd+ZTuAjq4J9AWbcoD1614GRgj+jLYvDRZ78a4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oBLZ6cyuPqGQ5pS11m1lQCRLiNzNMSl1UhY8Vql0knSX8CaJ2PgaU+vm1Tdn0mo0R
-	 xPG8UeLfXFu4sZcTPIMFlbS9NA/fajQWkib+pJJGZVItbEVr220TqvTfra1+ojPizz
-	 yXz7RQEfUZg7SBiwafyhG7uPM73fTC0TbKHn3+d0=
+	s=default; t=1603951601;
+	bh=Ou3S42OyyKDAaNlhfQp/EJWLPntCJmuc7p9RrvU8GS8=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Ynchp2aGElJQhAxefJxtrnELiWSdBajrEuI9E5BaldQkF7nbcNlqf2AKReVMLtj3i
+	 fx+mBwZTZEvU5nr16vEemN+ftEF6aFKx1HWeeL79TGbh3pWHbjYMF6KeDdYWUhQL9x
+	 9uaSJo9+Wn4Io0v7M+omvSiUb70QnnICgjUgeEHQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 155CFF800FF;
-	Thu, 29 Oct 2020 06:54:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 213EDF801D8;
+	Thu, 29 Oct 2020 07:05:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2E1BF8020D; Thu, 29 Oct 2020 06:54:27 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 3479AF800FF
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 06:54:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3479AF800FF
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1603950863071362972-webhooks-bot@alsa-project.org>
-References: <1603950863071362972-webhooks-bot@alsa-project.org>
-Subject: Fix initsetting
-Message-Id: <20201029055427.E2E1BF8020D@alsa1.perex.cz>
-Date: Thu, 29 Oct 2020 06:54:27 +0100 (CET)
+ id EC0C3F8020D; Thu, 29 Oct 2020 07:05:49 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3FE08F800D8
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 07:05:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FE08F800D8
+Date: 29 Oct 2020 15:05:41 +0900
+X-IronPort-AV: E=Sophos;i="5.77,429,1596466800"; d="scan'208";a="61128873"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 29 Oct 2020 15:05:41 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DE10E41D8760;
+ Thu, 29 Oct 2020 15:05:41 +0900 (JST)
+Message-ID: <87zh45d0zp.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH v5 0/3] ASoC: dt-bindings: audio-graph-card: switch to yaml
+ base Documentation
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sameer Pujar <spujar@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,15 +74,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #57 was opened from jason77-wang:
 
-This issue was found when we prepared ubuntu 20.10. When users install the OS to a machine with HDA codec and use sof driver, the audio output is muted after installation. And even we set the master playback switch to on, the output volume from speaker is too low.
+Hi Rob, Mark
+Cc: Sameer
 
-This issue could be easily reproduced by:
-sudo rm /var/lib/asla/*
-rm ~/.config/pulse/* (optional)
-sudo /usr/sbin/alsactl -E HOME=/run/alsa -E XDG_RUNTIME_DIR=/run/alsa/runtime restore
+These are v5 of switch to yaml base Documentation for
+audio-graph-card and renesas,rsnd which uses audio-graph-card.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/57
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/57.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+v4 -> v5
+	- move "endpoint" under "port"
+
+v3 -> v4
+	- fixuped yamllint warnings/errors
+
+v2 -> v3
+	- fixuped Rob's pointed points
+
+v1 -> v2
+	- upgrade dt-schema, and fixup errors for [2/2] patch
+
+Kuninori Morimoto (3):
+  dt-bindings: ASoC: audio-graph-card: switch to yaml base Documentation
+  dt-bindings: ASoC: renesas,rsnd: switch to yaml base Documentation
+  dt-bindings: ASoC: renesas,rsnd: Add r8a77961 support
+
+ .../bindings/sound/audio-graph-card.txt       | 337 ------------
+ .../bindings/sound/audio-graph-card.yaml      | 162 ++++++
+ .../bindings/sound/renesas,rsnd.txt           | 520 ------------------
+ .../bindings/sound/renesas,rsnd.yaml          | 457 +++++++++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +-
+ 5 files changed, 620 insertions(+), 858 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+
+-- 
+2.25.1
+
