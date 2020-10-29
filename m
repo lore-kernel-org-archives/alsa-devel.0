@@ -2,70 +2,68 @@ Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF943C4363A
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12E92C55178
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:49:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE2D2218AC
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:05:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 00CC520EDD
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 07:49:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IBZLnB/q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE2D2218AC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qexiwYN5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00CC520EDD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BEC415E0;
-	Thu, 29 Oct 2020 08:04:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BEC415E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F8A31612;
+	Thu, 29 Oct 2020 08:49:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F8A31612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603955142;
-	bh=i88Z7f6xNOobKkXSl06lLzE2GHNPiepAp0wptcBb5G0=;
+	s=default; t=1603957791;
+	bh=C53kM1rSfqwn85yvpz8+QAFn7yd/eKnN9WzOY+PZbpY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IBZLnB/qrTB6Mb3S5onFQCPIyUUT+LPUx/fh+TPdh4HAgezOdgqFgc9IM52srvM0k
-	 L/4LdBfNS6fG61Wi9SSJQJKa6CZ6g9eFTJphTNZbsVrtk1UlFpNEo3CSdQ9+xYuLEp
-	 x6oXrpv3OR1STSTPWwganFoZHu/H7ayvV4rItldU=
+	b=qexiwYN5oh/itpFQdU4OANP2SSMM2yzyAhQrOxU66++RZ8FGSs0Ju/3hZt2BW6R7U
+	 4s3KyAUypvf23UWgiO+V2bsepNiOEe10+HbVf3511dSCeFxt6Xj1e63ajc+vEfILPu
+	 chHq9HBrTaFcfADNJDe8K+RCYIHg73CgjG/K42TA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 095C8F801D8;
-	Thu, 29 Oct 2020 08:04:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A734CF80095;
+	Thu, 29 Oct 2020 08:49:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5B01F8020D; Thu, 29 Oct 2020 08:04:49 +0100 (CET)
+ id 6C146F8020D; Thu, 29 Oct 2020 08:48:59 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 787BDF80095
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:04:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 787BDF80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABE86F80095
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:48:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABE86F80095
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 7F999ABF5;
- Thu, 29 Oct 2020 07:04:46 +0000 (UTC)
-Date: Thu, 29 Oct 2020 08:04:46 +0100
-Message-ID: <s5hsg9xwm0h.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9900FB02D;
+ Thu, 29 Oct 2020 07:48:55 +0000 (UTC)
+Date: Thu, 29 Oct 2020 08:48:55 +0100
+Message-ID: <s5hpn51wjyw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
-In-Reply-To: <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
-References: <87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com>
- <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
- <699d5b33-d88f-ba08-7d63-61ec9fbdc5d8@linux.intel.com>
- <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
- <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
+To: Coiby Xu <coiby.xu@gmail.com>
+Subject: Re: [PATCH 01/25] ALSA: core: pcm: remove unnecessary CONFIG_PM_SLEEP
+In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
+References: <20201029074301.226644-1-coiby.xu@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: open list <linux-kernel@vger.kernel.org>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,38 +79,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Oct 2020 00:43:08 +0100,
-Kuninori Morimoto wrote:
+On Thu, 29 Oct 2020 08:42:37 +0100,
+Coiby Xu wrote:
 > 
+> SET_SYSTEM_SLEEP_PM_OPS has already took good care of CONFIG_PM_CONFIG.
 > 
-> Hi Pierre-Louis, again
-> 
-> > > enum snd_compr_direction {
-> > > 	SND_COMPRESS_PLAYBACK = SNDRV_PCM_STREAM_PLAYBACK,
-> > > 	SND_COMPRESS_CAPTURE = SNDRV_PCM_STREAM_CAPTURE
-> > > };
-> > > 
-> > > Or remove this duplication completely and get rid of snd_compr_direction?
-> > > 
-> > > I find it odd to convert two things that had no reason to be different
-> > > in the first place.
-> > 
-> > Yes I agree with you.
-> > I'm not sure why this duplication was created,
-> > but my patch tried to make it sane.
-> > If Mark can agree, I can post snd_compr_direction remove patch.
-> 
-> Oops, snd_compr_direction was uapi.
-> We can't remove it, and can't use your above suggestion...
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 
-Right, such uapi can't be removed.
+It caused compile warnings.  Was it already addressed in general?
 
-Essentially both compress and PCM definitions are identical, and can
-be never different because of ABI compatibility, which means it's safe
-to mix both variants in the code.  If you're unsure, we may add
-BUILD_BUG_ON() to check the coincidence of both values.
+Or we may use __maybe_unused attribute instead, but it's just a matter
+of taste.
 
 
 thanks,
 
 Takashi
+
+> ---
+>  sound/core/pcm.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+> index be5714f1bb58..5a281ac92958 100644
+> --- a/sound/core/pcm.c
+> +++ b/sound/core/pcm.c
+> @@ -599,7 +599,6 @@ static const struct attribute_group *pcm_dev_attr_groups[];
+>   * PM callbacks: we need to deal only with suspend here, as the resume is
+>   * triggered either from user-space or the driver's resume callback
+>   */
+> -#ifdef CONFIG_PM_SLEEP
+>  static int do_pcm_suspend(struct device *dev)
+>  {
+>  	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
+> @@ -608,7 +607,6 @@ static int do_pcm_suspend(struct device *dev)
+>  		snd_pcm_suspend_all(pstr->pcm);
+>  	return 0;
+>  }
+> -#endif
+>  
+>  static const struct dev_pm_ops pcm_dev_pm_ops = {
+>  	SET_SYSTEM_SLEEP_PM_OPS(do_pcm_suspend, NULL)
+> -- 
+> 2.28.0
+> 
