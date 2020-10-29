@@ -2,77 +2,82 @@ Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 950D9C4363A
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:28:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66C22C4363A
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:41:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 098732076E
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:27:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68AE320825
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 16:41:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NRyJ8w0S";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AVQf49Um"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 098732076E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UlXQsscy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68AE320825
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 985F5950;
-	Thu, 29 Oct 2020 17:27:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 985F5950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 277BA950;
+	Thu, 29 Oct 2020 17:40:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 277BA950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603988877;
-	bh=t+PBJ0NHId5QAZDzuBrDGNlV6g1PCH9iZXJKI+sMxMw=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1603989681;
+	bh=CVfsd9lqKCXm9WRwl3QdSN2zIPKKpCvAwoPptXIL2gE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NRyJ8w0SGYHl0IE5OAwi0N3rGs0r5mBQ5gb/7IDcZuBOiv/MkM2KiCV1nNTP5tb/I
-	 w2yNbjZqIKhr42zybVsUwuaK4nHjpn5B8E/8eAtQMg973SIWSaz6mS7oGjVzUl3oBK
-	 KPujVPPKR+wRiTLirnJ5vux4GBzQxYp4S2r+bV/8=
+	b=UlXQsscykWBnUXkgwkD/H+w5roE59Qhjke4iwgoi05shgOZU6LlRw84JHiYQucjpD
+	 a+JyYZmhz5RZrVaqFUIQGV8POSKNLBYNZaEWTSz00rRAuLI1QnmjyOWixOE9Q53O3A
+	 U80DvUs0/KrsS5KeMqjuZzJgccaaH4ZgZYt3eObg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 199A9F800D8;
-	Thu, 29 Oct 2020 17:27:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 716CAF80217;
+	Thu, 29 Oct 2020 17:40:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEF42F8020D; Thu, 29 Oct 2020 17:27:05 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C66BF800D8
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 17:27:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C66BF800D8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AVQf49Um"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id B853AF800FF; Thu, 29 Oct 2020 17:40:28 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 611922076E;
- Thu, 29 Oct 2020 16:26:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603988817;
- bh=t+PBJ0NHId5QAZDzuBrDGNlV6g1PCH9iZXJKI+sMxMw=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=AVQf49UmZSCKirXj8VEFT7AM5GxmOOW2d1zUOMzZL+fF9cKQfQPy+RA/vxrnvAdIl
- YNViTwonflNW7tToWEuTx/vKAURkz4BULmyNJGUGG++LI65Lizy/glAXE1wFc93ssu
- 8XBUL51CsE7vfoA3hxd4g6Tgv/G9qmhgdf5E2m4I=
-Date: Thu, 29 Oct 2020 16:26:50 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20201029101550.31695-1-srinivas.kandagatla@linaro.org>
-References: <20201029101550.31695-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] ASoC: qcom: dt-bindings: sm8250: update compatibles
-Message-Id: <160398881039.39922.12061096532284319098.b4-ty@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EC5FF800FF
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 17:40:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EC5FF800FF
+IronPort-SDR: YWD7PBTORkwWNP8yGIodUrq/+DTE4ZCk21nNiwglEdOlwXaVGDPZ4F6/1FapXvLEchnaCnBAei
+ O+qRuHBEUjrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="168563734"
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; d="scan'208";a="168563734"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Oct 2020 09:40:16 -0700
+IronPort-SDR: ff0QrJ4MtgF2phCB4taCFLTeIZk/DLnPIIRD+XCN5+M+BdmRYYp21ogVdAablqM+r9XWgHBWjK
+ XjCTnwzzWYSQ==
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; d="scan'208";a="323762885"
+Received: from mghaffa-mobl1.amr.corp.intel.com (HELO [10.212.235.9])
+ ([10.212.235.9])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Oct 2020 09:40:15 -0700
+Subject: Re: [PATCH v2 3/6] ASoC: codecs: lpass-wsa-macro: add dapm widgets
+ and route
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20201029110829.16425-1-srinivas.kandagatla@linaro.org>
+ <20201029110829.16425-4-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3300f31e-28d1-becf-41e7-814b38082dcb@linux.intel.com>
+Date: Thu, 29 Oct 2020 10:52:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- robh+dt@kernel.org
+In-Reply-To: <20201029110829.16425-4-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,39 +93,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Oct 2020 10:15:49 +0000, Srinivas Kandagatla wrote:
-> Update compatible string as board compatible and device compatible
-> should not be same!. New compatible is now suffixed with -sndcard
-> to be inline with other Qualcomm Sound cards.
-> 
-> This also fixes the warnings/error reported by dt_binding_check.
 
-Applied to
+> +static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
+> +				     struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+> +	u16 gain_reg;
+> +	int offset_val = 0;
+> +	int val = 0;
+> +
+> +	switch (w->reg) {
+> +	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
+> +		gain_reg = CDC_WSA_RX0_RX_VOL_MIX_CTL;
+> +		break;
+> +	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
+> +		gain_reg = CDC_WSA_RX1_RX_VOL_MIX_CTL;
+> +		break;
+> +	default:
+> +		return 0;
+> +	}
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		val = snd_soc_component_read(component, gain_reg);
+> +		val += offset_val;
+> +		snd_soc_component_write(component, gain_reg, val);
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+missed from v1: offset_val is zero so the sequence is reading and 
+writing the same thing. Is this intentional or useful?
 
-Thanks!
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		snd_soc_component_update_bits(component, w->reg,
+> +					      CDC_WSA_RX_PATH_MIX_CLK_EN_MASK,
+> +					      CDC_WSA_RX_PATH_MIX_CLK_DISABLE);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
-[1/2] ASoC: qcom: dt-bindings: sm8250: update compatibles
-      commit: a889583a19206636082c44625141b26392e46a62
-[2/2] ASoC: qcom: sm8250: update compatible with new bindings
-      commit: bbc4e1bb5fd6577ed668e7c2ba0705dff1783bce
+[...]
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> +static bool wsa_macro_adie_lb(struct snd_soc_component *component,
+> +			      int interp_idx)
+> +{
+> +	u16 int_mux_cfg0 = 0, int_mux_cfg1 = 0;
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+these inits are ignored
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +	u8 int_mux_cfg0_val = 0, int_mux_cfg1_val = 0;
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+these as well
 
-Thanks,
-Mark
+> +	u8 int_n_inp0 = 0, int_n_inp1 = 0, int_n_inp2 = 0;
+
+and these are also ignored.
+
+> +	int_mux_cfg0 = CDC_WSA_RX_INP_MUX_RX_INT0_CFG0 + interp_idx * 8;
+> +	int_mux_cfg1 = int_mux_cfg0 + 4;
+> +	int_mux_cfg0_val = snd_soc_component_read(component, int_mux_cfg0);
+> +	int_mux_cfg1_val = snd_soc_component_read(component, int_mux_cfg1);
+> +
+> +	int_n_inp0 = int_mux_cfg0_val & 0x0F;
+> +	if (int_n_inp0 == INTn_1_INP_SEL_DEC0 ||
+> +		int_n_inp0 == INTn_1_INP_SEL_DEC1)
+> +		return true;
+> +
+> +	int_n_inp1 = int_mux_cfg0_val >> 4;
+> +	if (int_n_inp1 == INTn_1_INP_SEL_DEC0 ||
+> +		int_n_inp1 == INTn_1_INP_SEL_DEC1)
+> +		return true;
+> +
+> +	int_n_inp2 = int_mux_cfg1_val >> 4;
+> +	if (int_n_inp2 == INTn_1_INP_SEL_DEC0 ||
+> +		int_n_inp2 == INTn_1_INP_SEL_DEC1)
+> +		return true;
+> +
+> +	return false;
+> +}
+
