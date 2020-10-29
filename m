@@ -2,105 +2,76 @@ Return-Path: <SRS0=XEtc=EE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27AFDC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 08:00:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2797C55178
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 08:26:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7750021481
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 08:00:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C2E1C2076E
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Oct 2020 08:26:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hrvMGmvX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vQuYh02Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7750021481
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jag1rYbm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2E1C2076E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C573B16E8;
-	Thu, 29 Oct 2020 08:59:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C573B16E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 188C4167F;
+	Thu, 29 Oct 2020 09:25:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 188C4167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1603958403;
-	bh=XUoOP9xg7cSnAQdhwbP0Ez8487Pc2Qfpps7JP1j5vmU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hrvMGmvXK7BDUNPMNjnF2wJpoDad7eHYjrUz9Z/MSI8NxkZa2fhKdq9dlPBywn16o
-	 QKZt4ie7HTjfSd+njqnhUbQIIJBXVhpb5Rorl6KBG7xWGyj59ohMtvs6PM+iJAARLb
-	 04dMIQRgUpEHPEdrn6OFz009H1rgmibrStx64v7o=
+	s=default; t=1603959982;
+	bh=ymmw/VPBma7CTH4kF/YpY/EkpD7p/sdtC8kfYBWRnZ0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Jag1rYbmv2sXHhjfCGfxyCGy7KKUx8VNKm0K7P8+z0cEBEm10OPes1ZcUOQCwDnZJ
+	 UMKyuvF7VTIfVvdAR0PnmNa+F0a7q1H60qu2/Sgtvk40sf+ZgnCWjo0npXHzPBZGBP
+	 XEeQ+05/IP5MTq+hWQHTQZirgMlcgAqPgA7QEajU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7543F80570;
-	Thu, 29 Oct 2020 08:50:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62975F800FF;
+	Thu, 29 Oct 2020 09:25:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E52C5F8020D; Thu, 29 Oct 2020 08:46:40 +0100 (CET)
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
- [IPv6:2607:f8b0:4864:20::643])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00E1EF80095
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 08:46:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00E1EF80095
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="vQuYh02Y"
-Received: by mail-pl1-x643.google.com with SMTP id z1so888311plo.12
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 00:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=YfuBmTvMg9MUKxvXP6ERdTgdyYc2LTvWkNxHfpwVAwc=;
- b=vQuYh02YfBH3Q+Cu83OMh2Zw+ddNnqCqUof8ZKGw2KlqXfKzFZgQ3CKG7n4D04vneY
- VIveM2fn6WoY+IaxjawuSGrxQac5F9E4ANI6VTeELqU82avE9JRXNCnS6LUEtmrH6thS
- 4OJMnyNpzOZU5Sd6GpLLXjgcS/OaTHx+D1IxWBTCTFNV6ZuPp5AUAZq+s4Se4VrpbL6i
- bJYrAPOy87/ZvYuzKR8N+zeFKT/b+nN02CPJqOMQkGz4XcOdkdss3dqVhGllpWfL8wm6
- it6HxpZ336KvN6kbphzOfgTxQ/D14TG9gEOA68EaBOGJeHX9+Y4PKt13gw3gykmzb/+I
- yCNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=YfuBmTvMg9MUKxvXP6ERdTgdyYc2LTvWkNxHfpwVAwc=;
- b=FGTyYD1lHIJ06bbuX7N8FDUBZxVXt6UfV51J5bIqo1XpsgvZr9W4xzmBbdbnd1jyK2
- uGsIVepAYvIte5258Xvw+8cuCDZuCI+6QCH92qMr959vtcnA3W1sBMZ4WZF6B2+sUxEt
- m5E9J3w1tGhVBNzVp+ay+XU4T9XMhLE5y/4vGiuPh6PUCuEDJghAqm9n1qttQSqaygi6
- XvhJ6K9NkvWiO+VJKMeDJ5lqOm2AD6MsbnDL8iElJT9+JMUSPhdsacSPLkF1YEsD9/wf
- PDhsvlLfFis+9+n1fT4oM3GygMgXoaJaBF1ddvMVg5ZpBPc/dpfFUXM/Z5f0Nc3H9NQg
- j1uA==
-X-Gm-Message-State: AOAM530r0wb9aCgioOWRVi8ZSDNHRAhputG23tJ0p4dCmunU1ny6f1a3
- 39dYWmXP/qXtgo6q1yXbvM0=
-X-Google-Smtp-Source: ABdhPJxf8E/8cKa23EfUte88B96UerFuRSXyvagG8YXcECd1HyINeZl2Eec9Usnqoet1h037d3io5A==
-X-Received: by 2002:a17:902:23:b029:d5:b88a:c782 with SMTP id
- 32-20020a1709020023b02900d5b88ac782mr2750215pla.5.1603957595930; 
- Thu, 29 Oct 2020 00:46:35 -0700 (PDT)
-Received: from localhost ([2409:8a28:3c42:6840:9efc:e8ff:fef2:1cdc])
- by smtp.gmail.com with ESMTPSA id s4sm1737502pjp.17.2020.10.29.00.46.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2020 00:46:35 -0700 (PDT)
-From: Coiby Xu <coiby.xu@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 25/25] ALSA: aoa: remove unnecessary CONFIG_PM_SLEEP
-Date: Thu, 29 Oct 2020 15:43:01 +0800
-Message-Id: <20201029074301.226644-25-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201029074301.226644-1-coiby.xu@gmail.com>
-References: <20201029074301.226644-1-coiby.xu@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Thu, 29 Oct 2020 08:49:55 +0100
-Cc: Johannes Berg <johannes@sipsolutions.net>,
- "open list:AOA Apple Onboard Audio ALSA DRIVER"
- <linuxppc-dev@lists.ozlabs.org>,
- "moderated list:AOA Apple Onboard Audio ALSA DRIVER"
- <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+ id 6C653F8020D; Thu, 29 Oct 2020 09:25:30 +0100 (CET)
+Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
+ by alsa1.perex.cz (Postfix) with ESMTP id 64CF6F80095
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2020 09:25:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64CF6F80095
+Received: from localhost.localdomain (unknown [124.16.141.242])
+ by APP-05 (Coremail) with SMTP id zQCowABnV1BtfJpfZ51KAA--.28505S2;
+ Thu, 29 Oct 2020 16:25:18 +0800 (CST)
+From: Xu Wang <vulab@iscas.ac.cn>
+To: peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: ti: davinci-evm: Remove redundant null check before
+ clk_disable_unprepare
+Date: Thu, 29 Oct 2020 08:25:13 +0000
+Message-Id: <20201029082513.28233-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowABnV1BtfJpfZ51KAA--.28505S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw45GFW8AFWkJFb_yoW3KFg_Aw
+ 1Fg393Wa4UZw1ay34DK3yrAF1ktr4kuan5urnYqr4UtryUWrW5urykta1fur97Ww48J3W3
+ Z34qqF4fXr92vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUb7AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+ 6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+ 8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+ cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+ A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+ w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
+ vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
+ c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+ 026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+ 0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+ vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+ jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU00PfPUUUUU==
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAwEA18J9vch6gAAsf
+Cc: linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,43 +87,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+Because clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove it.
 
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- sound/aoa/fabrics/layout.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/ti/davinci-evm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
-index d2e85b83f7ed..197d13f23141 100644
---- a/sound/aoa/fabrics/layout.c
-+++ b/sound/aoa/fabrics/layout.c
-@@ -1126,7 +1126,6 @@ static int aoa_fabric_layout_remove(struct soundbus_dev *sdev)
- 	return 0;
+diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
+index 105e56ab9cdc..b043a0070d20 100644
+--- a/sound/soc/ti/davinci-evm.c
++++ b/sound/soc/ti/davinci-evm.c
+@@ -46,8 +46,7 @@ static void evm_shutdown(struct snd_pcm_substream *substream)
+ 	struct snd_soc_card_drvdata_davinci *drvdata =
+ 		snd_soc_card_get_drvdata(soc_card);
+ 
+-	if (drvdata->mclk)
+-		clk_disable_unprepare(drvdata->mclk);
++	clk_disable_unprepare(drvdata->mclk);
  }
  
--#ifdef CONFIG_PM_SLEEP
- static int aoa_fabric_layout_suspend(struct device *dev)
- {
- 	struct layout_dev *ldev = dev_get_drvdata(dev);
-@@ -1150,7 +1149,6 @@ static int aoa_fabric_layout_resume(struct device *dev)
- static SIMPLE_DEV_PM_OPS(aoa_fabric_layout_pm_ops,
- 	aoa_fabric_layout_suspend, aoa_fabric_layout_resume);
- 
--#endif
- 
- static struct soundbus_driver aoa_soundbus_driver = {
- 	.name = "snd_aoa_soundbus_drv",
-@@ -1159,9 +1157,7 @@ static struct soundbus_driver aoa_soundbus_driver = {
- 	.remove = aoa_fabric_layout_remove,
- 	.driver = {
- 		.owner = THIS_MODULE,
--#ifdef CONFIG_PM_SLEEP
- 		.pm = &aoa_fabric_layout_pm_ops,
--#endif
- 	}
- };
- 
+ static int evm_hw_params(struct snd_pcm_substream *substream,
 -- 
-2.28.0
+2.17.1
 
