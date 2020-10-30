@@ -3,92 +3,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C560CC4741F
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED105C00A89
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 17:03:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0503D2076E
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:55:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 810D120791
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 17:03:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NCFK+HHS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0503D2076E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gwAnZ3up";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2ZEhx0g0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 810D120791
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 334EB1612;
-	Fri, 30 Oct 2020 17:54:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 334EB1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F19D1607;
+	Fri, 30 Oct 2020 18:02:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F19D1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604076935;
-	bh=jumTg99QhxBe1QGvNjH8MMWNfc09B+CIFrqDnxnCjNk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1604077381;
+	bh=thwyGLEm4QiHSUYxEzQuu9UgKpF/qQOjUSxHK4o2wTk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NCFK+HHSuY24/NZvWZV2gTNHAR3RCWBoNHSoIr8OJzQUGTSbQSyCg+RjitcRaMCuM
-	 ysI2NUA8Kqe891Yx3tBOuR+qkSLkcO33yMBXNKBeT7HTTEPsDQxThbk8wK47OLLyM7
-	 yFulnALkeuQHDDgT3ojlGk1jOVHpP5iUurZpLOrI=
+	b=gwAnZ3uprMYpXchWDr4d1aM0+siUORdvg5OlSonHYlvDzQqY3YcqZzbmCsFOlQEMl
+	 UDOWZxS1l5GiHvaZSgHCkisaP+rBO3cHhj11pP/hw0XArOnYujOo5WMkyHtyZV2PYr
+	 Gy1fDsUo52mA/xdw16rrS5NLY49F53lrKVGNH8vY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 750C9F801D5;
-	Fri, 30 Oct 2020 17:54:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12DBBF801D5;
+	Fri, 30 Oct 2020 18:02:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B105F80212; Fri, 30 Oct 2020 17:54:43 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id A1D7CF80212; Fri, 30 Oct 2020 18:02:09 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C59F5F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 18:02:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C59F5F800FF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="2ZEhx0g0"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B55F0F800FF
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 17:54:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B55F0F800FF
-IronPort-SDR: rofsWRzlCNsg+/l5xAYKWLy7t7BN9qOml5mKIXbW4fbHuBbgIjxVm0QCUNJg914V33sNuQ8QuH
- 0D9g4whNt57Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="165136818"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; d="scan'208";a="165136818"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2020 09:54:36 -0700
-IronPort-SDR: PLekFtLEEY6YTiYO9pHHlQ2RtiqVwr2QLS6Dk/6e85wc5VXor0qhwFoEcmpxbknRBx5PX/4SMx
- bENMMqlCIQ5w==
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; d="scan'208";a="469577604"
-Received: from rdchavez-mobl2.amr.corp.intel.com (HELO [10.212.91.180])
- ([10.212.91.180])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2020 09:54:34 -0700
+ by mail.kernel.org (Postfix) with ESMTPSA id 5D6BD2075E;
+ Fri, 30 Oct 2020 17:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1604077324;
+ bh=thwyGLEm4QiHSUYxEzQuu9UgKpF/qQOjUSxHK4o2wTk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=2ZEhx0g09DBf1d8fdkG/MFXgVasXBurxJ7QkWWlv89l7Fe4GB+iaF/3bmw42X49Bx
+ Kul72KIfFdo099hGDKsz/86Z+lK0C9GzMbGAREk0BNicTwp6bkfw34B7+Vzac+aTmF
+ FbmLceXnbVquFqk86Vm1StP/qG+Z4mtM42pWVXLw=
+Date: Fri, 30 Oct 2020 17:01:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "Lu, Brent" <brent.lu@intel.com>
 Subject: Re: [PATCH 2/2] ASoC: intel: sof_rt5682: Add quirk for Dooly
-To: "Lu, Brent" <brent.lu@intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Message-ID: <20201030170156.GH4405@sirena.org.uk>
 References: <20201030063654.25877-1-brent.lu@intel.com>
  <20201030063654.25877-3-brent.lu@intel.com>
  <c83b3f20-2afd-12da-c349-31f35f8f6aa5@linux.intel.com>
  <DM6PR11MB3642F7AB13991ACF8A32B1DE97150@DM6PR11MB3642.namprd11.prod.outlook.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <95b8d2f7-3b8d-ee61-c99f-a62fce165618@linux.intel.com>
-Date: Fri, 30 Oct 2020 11:54:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="gTtJ75FAzB1T2CN6"
+Content-Disposition: inline
 In-Reply-To: <DM6PR11MB3642F7AB13991ACF8A32B1DE97150@DM6PR11MB3642.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, "Rojewski,
- Cezary" <cezary.rojewski@intel.com>,
+X-Cookie: Blow it out your ear.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Jason Yan <yanaijie@huawei.com>,
- Jie Yang <yang.jie@linux.intel.com>,
+ Jason Yan <yanaijie@huawei.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, "Nujella,
+ Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Fred Oh <fred.oh@linux.intel.com>, "Nujella,
  Sathyanarayana" <sathyanarayana.nujella@intel.com>, "Wang,
  Rander" <rander.wang@intel.com>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, "Zhi, Yong" <yong.zhi@intel.com>
+ "Zhi, Yong" <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,55 +106,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--gTtJ75FAzB1T2CN6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 10/30/20 11:44 AM, Lu, Brent wrote:
+On Fri, Oct 30, 2020 at 04:44:17PM +0000, Lu, Brent wrote:
 > , Brent Lu wrote:
->>> This DMI product family string of this board is "Google_Hatch" so the
->>> DMI quirk will take place. However, this board is using rt1015 speaker
->>> amp instead of max98357a specified in the quirk. Therefore, we need an
->>> new DMI quirk for this board.
->>
->> Do you actually need a DMI quirk for this platform?
->>
->> the .driver_data below uses the exact same settings as what you would use
->> with the generic solution based on ACPI IDs, see below.
->>
->> Wondering if patch1 would be enough?
->>
-> 
+
+> > Wondering if patch1 would be enough?
+
 > Dooly has DMI family string " Google_Hatch" so the DMI quirk will overwrite the
 > driver_data. I asked google but they prefer not removing this string so it seems to
 > me that one extra DMI quirk is needed.
 
-I find this pretty funny. The PRODUCT_FAMILY was added to reduce the 
-number of quirks, but of course there's a variant that has nothing to do 
-with this 'FAMILY'.
+I think this needs at least a comment otherwise someone might come along
+later and clean it up.
 
-You should add a comment on this, to make sure this information remains 
-in the code and we don't lose it during code cleanups.
-
-> 
->                  {
->                                  .callback = sof_rt5682_quirk_cb,
->                                  .matches = {
->                                                  DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Hatch"),
->                                  },
->                                  .driver_data = (void *)(SOF_RT5682_MCLK_EN |
->                                                                                  SOF_RT5682_MCLK_24MHZ |
->                                                                                  SOF_RT5682_SSP_CODEC(0) |
->                                                                                  SOF_SPEAKER_AMP_PRESENT |
->                                                                                  SOF_RT5682_SSP_AMP(1)),
->                  },
-> 
 > The other way is using acpi_dev_present() in probe to update the quirk with correct
 > codec setting. Which one do you think is better?
 
-The DMI quirk you added is probably better for now, I don't know if the 
-odds of getting things right with acpi_dev_present() are that high or if 
-we are going to get even more variants on top of this variant (e.g. 
-tweeter/booster cases...).
-If we get too many quirks we'll see later if we can simplify.
+I don't have a strong opinion either way.
 
-So if you don't mind adding a comment on the 'Dooly' quirk in a v3 that 
-series is good to go.  Thank you!
+--gTtJ75FAzB1T2CN6
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cRwMACgkQJNaLcl1U
+h9DcZgf/Qof6PGRurGnpQ2XocAW1wp2HhEjd7S7B/IAYbKmBkwbI06mg6nhYV49v
+38OE3/ESsSQ7+9T0rdFp6SAfYXMBb0vvfXVeYh9eF7v8m4g9fnWmC4UUHc6d022B
+qQ+mboj7lpV54GTPr+5Y2xlpQ7azr/e33gz2TOh8cio7LGO2cbWyMLOlWBmtRrvg
+9dxsKUXYFfIDd+D7chU5idKR/YQFgH2mSiQo6xiiuIzpjTPnC51BUP3w94iXdLfm
+1Dohd/zMFnieeAilSo1rTmPMzkDBvGt6hHliXTo6hNlecNVldek4ucgVWv771sRb
+OhCdZhVvfNdOLN4YEc7M/iEoQFwymg==
+=NzJb
+-----END PGP SIGNATURE-----
+
+--gTtJ75FAzB1T2CN6--
