@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8F99C4363A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5382C4363A
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:41:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3AA7221EB
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:41:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA336221EB
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:41:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sDpyBn4J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3AA7221EB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pclPUYm6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA336221EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F4A41680;
-	Fri, 30 Oct 2020 13:40:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F4A41680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2740E166E;
+	Fri, 30 Oct 2020 13:40:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2740E166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604061663;
-	bh=c6WLYg49vV2esP9nfd89JPsZ/QOfCsLDtNliwuY6/3Y=;
+	s=default; t=1604061673;
+	bh=bSjRZaSojxVdQvDg0wqWdDE7CNRIjEOTMByEdIXRbfE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sDpyBn4JuFRAIXDci5mCColt9CfA7p6FeP7S7UrQO6ihkg/baW5ZJUcpiaEVxWHio
-	 sSiik8jb4hOAYi3pSBr9VxAsnONWHC5e/4H2TcOx+gvr9MRMf3eKM471W8pgbcVofI
-	 8SXLFMIIAerilnlUcT+BXKDC3TLvzLgW/G9UbRd4=
+	b=pclPUYm6+n8lFxnez9uhBvqtaPFl5Ot/lpJ9Q08DafzEng/nRPSMuzTH1cvaRj/NP
+	 6emKv9n6swGccvLtpgvpMMpp4oEHDfDVgqvdpyfgLGhunsOfTxI21yKOTUnzFXZlwo
+	 f+LE1JAwLfZY8pdpxwZG1CRYsVCHp+aLhn8LKTr8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44EBBF804D8;
-	Fri, 30 Oct 2020 13:37:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C880F804E5;
+	Fri, 30 Oct 2020 13:37:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA913F804CC; Fri, 30 Oct 2020 13:37:52 +0100 (CET)
+ id 34A29F804CC; Fri, 30 Oct 2020 13:37:53 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E075F80212
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 13:37:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E075F80212
-IronPort-SDR: azqECG/6l9gyBgC/vMOtBMGS4Qic71wyhc8bTdwqK6TFmsLvRp7vbsKrLWnZ6Ctxz5ZkQvHEUS
- j4ymaJp4XN9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="230234015"
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="230234015"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72DB7F800C0
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 13:37:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72DB7F800C0
+IronPort-SDR: d8iOHrmxLS3Ua5vMTK5z2J7bYLpClUucxkQqhEX5JPPZh2SJyAnumqipQlX/3ElWD+LkEiQJeQ
+ CzrEDKHeDX/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="230234022"
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="230234022"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2020 05:37:43 -0700
-IronPort-SDR: BpV29W/C2tvqFhD7q2ZdtQwVVMXSo5Gz8xojKWAHkFliKEJtwNy0iHESs+R7K/4LFhi+dhSUVu
- 80DbddPe+TPg==
+ 30 Oct 2020 05:37:46 -0700
+IronPort-SDR: gdXUZL32QU7wRGqV5QzrJ8WIMDD6B+GP0AMd73hH27K9X34eKyRnk2wNGtPEVQoP9Me7dZZsUy
+ nhb/i5p1rKPg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="362433739"
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="362433745"
 Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by orsmga007.jf.intel.com with ESMTP; 30 Oct 2020 05:37:41 -0700
+ by orsmga007.jf.intel.com with ESMTP; 30 Oct 2020 05:37:43 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 5/6] ASoC: topology: Remove empty functions
-Date: Fri, 30 Oct 2020 10:54:26 -0400
-Message-Id: <20201030145427.3497990-6-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 6/6] ASoC: topology: Simplify remove_widget function
+Date: Fri, 30 Oct 2020 10:54:27 -0400
+Message-Id: <20201030145427.3497990-7-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201030145427.3497990-1-amadeuszx.slawinski@linux.intel.com>
 References: <20201030145427.3497990-1-amadeuszx.slawinski@linux.intel.com>
@@ -95,145 +95,48 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-After changing memory management to resource managed one, some of the
-functions became no ops, remove them as they are no longer needed.
+Now that enum and mixer kcontrols are freed by resource management
+framework, removing kcontrol becomes one function call, so simplify code
+in remove_widget.
 
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 44 ----------------------------------------
- 1 file changed, 44 deletions(-)
+ sound/soc/soc-topology.c | 22 ++--------------------
+ 1 file changed, 2 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 6ef508f56a5f..4f632aeeeb5e 100644
+index 4f632aeeeb5e..07c60187e9ea 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -79,8 +79,6 @@ struct soc_tplg {
+@@ -431,26 +431,8 @@ static void remove_widget(struct snd_soc_component *comp,
+ 	if (!w->kcontrols)
+ 		goto free_news;
  
- static int soc_tplg_process_headers(struct soc_tplg *tplg);
- static void soc_tplg_complete(struct soc_tplg *tplg);
--static void soc_tplg_denum_remove_texts(struct soc_enum *se);
--static void soc_tplg_denum_remove_values(struct soc_enum *se);
- 
- /* check we dont overflow the data for this control chunk */
- static int soc_tplg_check_elem_count(struct soc_tplg *tplg, size_t elem_size,
-@@ -375,7 +373,6 @@ static void remove_enum(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
- {
- 	struct snd_card *card = comp->card->snd_card;
--	struct soc_enum *se = container_of(dobj, struct soc_enum, dobj);
- 
- 	if (pass != SOC_TPLG_PASS_MIXER)
- 		return;
-@@ -385,9 +382,6 @@ static void remove_enum(struct snd_soc_component *comp,
- 
- 	snd_ctl_remove(card, dobj->control.kcontrol);
- 	list_del(&dobj->list);
+-	/*
+-	 * Dynamic Widgets either have 1..N enum kcontrols or mixers.
+-	 * The enum may either have an array of values or strings.
+-	 */
+-	if (dobj->widget.kcontrol_type == SND_SOC_TPLG_TYPE_ENUM) {
+-		/* enumerated widget mixer */
+-		for (i = 0; w->kcontrols != NULL && i < w->num_kcontrols; i++) {
+-			struct snd_kcontrol *kcontrol = w->kcontrols[i];
 -
--	soc_tplg_denum_remove_values(se);
--	soc_tplg_denum_remove_texts(se);
- }
- 
- /* remove a byte kcontrol */
-@@ -445,15 +439,9 @@ static void remove_widget(struct snd_soc_component *comp,
- 		/* enumerated widget mixer */
- 		for (i = 0; w->kcontrols != NULL && i < w->num_kcontrols; i++) {
- 			struct snd_kcontrol *kcontrol = w->kcontrols[i];
--			struct soc_enum *se =
--				(struct soc_enum *)kcontrol->private_value;
- 
- 			snd_ctl_remove(card, kcontrol);
- 
--			/* free enum kcontrol's dvalues and dtexts */
--			soc_tplg_denum_remove_values(se);
--			soc_tplg_denum_remove_texts(se);
+-			snd_ctl_remove(card, kcontrol);
 -
- 		}
- 	} else {
- 		/* volume mixer or bytes controls */
-@@ -703,11 +691,6 @@ static int soc_tplg_create_tlv(struct soc_tplg *tplg,
- 	return 0;
- }
- 
--static inline void soc_tplg_free_tlv(struct soc_tplg *tplg,
--	struct snd_kcontrol_new *kc)
--{
--}
--
- static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned int count,
- 	size_t size)
- {
-@@ -868,7 +851,6 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
- 		if (err < 0) {
- 			dev_err(tplg->dev, "ASoC: failed to init %s\n",
- 				mc->hdr.name);
--			soc_tplg_free_tlv(tplg, &kc);
- 			break;
- 		}
- 
-@@ -878,7 +860,6 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
- 		if (err < 0) {
- 			dev_err(tplg->dev, "ASoC: failed to add %s\n",
- 				mc->hdr.name);
--			soc_tplg_free_tlv(tplg, &kc);
- 			break;
- 		}
- 
-@@ -918,15 +899,9 @@ static int soc_tplg_denum_create_texts(struct soc_tplg *tplg, struct soc_enum *s
- 	return 0;
- 
- err:
--	se->items = i;
--	soc_tplg_denum_remove_texts(se);
- 	return ret;
- }
- 
--static inline void soc_tplg_denum_remove_texts(struct soc_enum *se)
--{
--}
--
- static int soc_tplg_denum_create_values(struct soc_tplg *tplg, struct soc_enum *se,
- 					struct snd_soc_tplg_enum_control *ec)
- {
-@@ -949,10 +924,6 @@ static int soc_tplg_denum_create_values(struct soc_tplg *tplg, struct soc_enum *
- 	return 0;
- }
- 
--static inline void soc_tplg_denum_remove_values(struct soc_enum *se)
--{
--}
--
- static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 	size_t size)
- {
-@@ -1322,10 +1293,6 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 	return kc;
- 
- err_sm:
--	for (; i >= 0; i--) {
--		soc_tplg_free_tlv(tplg, &kc[i]);
--	}
--
- 	return NULL;
- }
- 
-@@ -1422,17 +1389,6 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 	return kc;
- 
- err_se:
--	for (; i >= 0; i--) {
--		/* free values and texts */
--		se = (struct soc_enum *)kc[i].private_value;
--
--		if (se) {
--			soc_tplg_denum_remove_values(se);
--			soc_tplg_denum_remove_texts(se);
 -		}
+-	} else {
+-		/* volume mixer or bytes controls */
+-		for (i = 0; w->kcontrols != NULL && i < w->num_kcontrols; i++) {
+-			struct snd_kcontrol *kcontrol = w->kcontrols[i];
 -
+-			snd_ctl_remove(card, kcontrol);
+-		}
 -	}
--
- 	return NULL;
- }
++	for (i = 0; w->kcontrols && i < w->num_kcontrols; i++)
++		snd_ctl_remove(card, w->kcontrols[i]);
+ 
+ free_news:
  
 -- 
 2.25.1
