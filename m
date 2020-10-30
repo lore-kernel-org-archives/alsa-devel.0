@@ -2,58 +2,62 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74D72C4742C
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 01:01:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD094C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 01:02:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BAFD2076D
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 01:01:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3190720720
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 01:02:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tniDaMtq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BAFD2076D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UncaXF2X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3190720720
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58797950;
-	Fri, 30 Oct 2020 02:00:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58797950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 274161616;
+	Fri, 30 Oct 2020 02:01:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 274161616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604019699;
-	bh=F5HU6jCUGGg9VkXKCfEYzWMCw3cFWtvMV675uHSSiRw=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tniDaMtqcEMuiZXuVuvmbZ123h3ECu4afw3wjy5T8hX49LGS2ZbR3dqNolh1wnJ53
-	 5XZ2e/DcDT+0PvKx7xH3GbL5BQ6EVbU2g+NxsnmFtU5Qhq3fzFhmWE8QkH9bfq1Zpe
-	 pynd0OWG1OOY9trxslm9X2xz/VMWyLBpOopHRrd4=
+	s=default; t=1604019750;
+	bh=mwtxsqD/YfRPUbgO/jp6K4jd+COnovqAC85LtsP4k2w=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UncaXF2XScTygyjtZyjlBJ2GGECXtZMPmIvdIsSJwNwjWlquP/0DutgS+GIb/jvdo
+	 uLs/VbCAZrBI0kQlJRG6wUUkU2KDeLao/FjlrrACGYufcmUn5SwK9JklTcqq1AGB5h
+	 nTxHtkjd0fcHg2lTGyAdBd0/Ljh4Zg9KJxVWvHcc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D994EF801D8;
-	Fri, 30 Oct 2020 02:00:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93BC5F80227;
+	Fri, 30 Oct 2020 02:01:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09E48F8020D; Fri, 30 Oct 2020 02:00:48 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 62C30F800FF
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 02:00:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62C30F800FF
-Date: 30 Oct 2020 10:00:43 +0900
-X-IronPort-AV: E=Sophos;i="5.77,431,1596466800"; d="scan'208";a="60987403"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 30 Oct 2020 10:00:43 +0900
+ id 0C8BDF80227; Fri, 30 Oct 2020 02:01:24 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9ABCCF800FF
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 02:01:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ABCCF800FF
+Date: 30 Oct 2020 10:01:15 +0900
+X-IronPort-AV: E=Sophos;i="5.77,431,1596466800"; d="scan'208";a="61203532"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 30 Oct 2020 10:01:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B47294009423;
- Fri, 30 Oct 2020 10:00:43 +0900 (JST)
-Message-ID: <875z6smszj.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id D9B98413E641;
+ Fri, 30 Oct 2020 10:01:15 +0900 (JST)
+Message-ID: <874kmcmsyn.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 0/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
+Subject: [PATCH v2 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <875z6smszj.wl-kuninori.morimoto.gx@renesas.com>
+References: <875z6smszj.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,26 +77,99 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v2 of tidyup patch-set for SNDRV_PCM_STREAM_xxx and SND_COMPRESS_xxx.
-soc-compress is using both SNDRV_PCM_STREAM_xxx and SND_COMPRESS_xxx, but mixed use.
-This is confusable, but no problem. Because these are defined as UAPI and
-are using same value.
-This patch-set make sure these are same value.
+snd_soc_runtime_activate() and
+snd_soc_dai_digital_mute() need SNDRV_PCM_STREAM_xxx
+instead of SND_COMPRESS_xxx.
 
-v1 -> v2
-	- checks COMPRESS vs PCM_STREAM by using BUILD_BUG_ON()
+These are bug but nothing happen because these are same value.
 
-Link: https://lore.kernel.org/r/87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com
+	enum {
+		SNDRV_PCM_STREAM_PLAYBACK = 0,
+		SNDRV_PCM_STREAM_CAPTURE,
+		...
+	};
 
-Kuninori Morimoto (2):
-  ASoC: soc-compress: tidyup STREAM vs COMPRESS
-  ASoC: soc-compress: assume SNDRV_PCM_STREAM_xxx and SND_COMPRESS_xxx are same
+	enum snd_compr_direction {
+		SND_COMPRESS_PLAYBACK = 0,
+		SND_COMPRESS_CAPTURE
+	};
 
- sound/soc/soc-compress.c | 63 +++++++++++++++-------------------------
- 1 file changed, 23 insertions(+), 40 deletions(-)
+This patch tidyup it.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-compress.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 3a6a60215e81..52544a85725d 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -75,8 +75,14 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_component *component = NULL;
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	int stream;
+ 	int ret;
+ 
++	if (cstream->direction == SND_COMPRESS_PLAYBACK)
++		stream = SNDRV_PCM_STREAM_PLAYBACK;
++	else
++		stream = SNDRV_PCM_STREAM_CAPTURE;
++
+ 	ret = snd_soc_pcm_component_pm_runtime_get(rtd, cstream);
+ 	if (ret < 0)
+ 		goto pm_err;
+@@ -95,7 +101,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ 	if (ret < 0)
+ 		goto machine_err;
+ 
+-	snd_soc_runtime_activate(rtd, cstream->direction);
++	snd_soc_runtime_activate(rtd, stream);
+ 
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+ 
+@@ -208,7 +214,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 
+ 	snd_soc_runtime_deactivate(rtd, stream);
+ 
+-	snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
++	snd_soc_dai_digital_mute(codec_dai, 1, stream);
+ 
+ 	if (!snd_soc_dai_active(cpu_dai))
+ 		cpu_dai->rate = 0;
+@@ -304,10 +310,16 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	int stream;
+ 	int ret;
+ 
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+ 
++	if (cstream->direction == SND_COMPRESS_PLAYBACK)
++		stream = SNDRV_PCM_STREAM_PLAYBACK;
++	else
++		stream = SNDRV_PCM_STREAM_CAPTURE;
++
+ 	ret = soc_compr_components_trigger(cstream, cmd);
+ 	if (ret < 0)
+ 		goto out;
+@@ -318,10 +330,10 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+-		snd_soc_dai_digital_mute(codec_dai, 0, cstream->direction);
++		snd_soc_dai_digital_mute(codec_dai, 0, stream);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+-		snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
++		snd_soc_dai_digital_mute(codec_dai, 1, stream);
+ 		break;
+ 	}
+ 
 -- 
 2.25.1
 
