@@ -7,73 +7,84 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19DEFC4363A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 11:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DF6EC4363A
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 11:56:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9AB1207DE
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 11:40:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BCEE020723
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 11:56:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fQ+j8gjq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9AB1207DE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ulNJ9VRu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+89YjSb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCEE020723
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15B2C1614;
-	Fri, 30 Oct 2020 12:39:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15B2C1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDD651654;
+	Fri, 30 Oct 2020 12:55:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDD651654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604058044;
-	bh=HLhoijkNrdlbFusqkv7IeAd838tOmpp39eqaym03zS0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1604059002;
+	bh=GHUqnP30QnFDQVRADMiWAbr0GSZ/P1pZnhw04MG+w0M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fQ+j8gjqaoGITNTywdb5fkRc7pgzoSUmyppRfdwPFgH5r924CyTYoBwl0dthDlKJL
-	 7W+LF1NRqzH/8oGCKPMZiSCESrUNcfxMn9RKRkc656SjUOtnY8mP6Ha+FIXGdAwwKW
-	 WlbsBrC+PdgvxIoOAhBMiJj3ezf9AyUpPR0OeTzE=
+	b=ulNJ9VRuqVgga4Hmp5TB6wb65zGmyfD3adp+sUjv8gv7NpYrPqdnbPOWHbvdv+WRq
+	 hA8mLahPRSHK0JBKYsU2T99XKBUolFHQeX3QbKLK+6R5ug0jzRrqjoJTLcGldmQcPW
+	 xnZ6CcHwrwgTjwkZC9IXRxHXPt48v2O4B40V3+lg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 919E0F801D5;
-	Fri, 30 Oct 2020 12:39:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3ACD3F801D5;
+	Fri, 30 Oct 2020 12:55:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72B6EF80212; Fri, 30 Oct 2020 12:39:51 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id BF98FF80212; Fri, 30 Oct 2020 12:55:50 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 212BFF800FF
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 12:39:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 212BFF800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 281B6B914;
- Fri, 30 Oct 2020 11:39:44 +0000 (UTC)
-Date: Fri, 30 Oct 2020 12:39:43 +0100
-Message-ID: <s5hsg9wrlhc.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3179F80107
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 12:55:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3179F80107
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="E+89YjSb"
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 189D620706;
+ Fri, 30 Oct 2020 11:55:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1604058940;
+ bh=GHUqnP30QnFDQVRADMiWAbr0GSZ/P1pZnhw04MG+w0M=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=E+89YjSbYh/iUeHa3z/IW+SCOdV3Pe6IcshXCPjajGAcnSXnA1JvLYdAV4Ck/2sN1
+ nMbq6H7PZBoPwr58j/g2ZEtsH/QItp81WL+vfiuV/FWvTpRdws1zMggKtSMAuvtRAF
+ LQRGz2F+HMfKpOwHRm1fKqAoeeCUHwhthjVds/y0=
+Date: Fri, 30 Oct 2020 12:56:28 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
 To: "Liao, Bard" <bard.liao@intel.com>
 Subject: Re: [PATCH v3] soundwire: SDCA: add helper macro to access controls
-In-Reply-To: <DM6PR11MB40748AD8D57C73E4D79D4676FF150@DM6PR11MB4074.namprd11.prod.outlook.com>
+Message-ID: <20201030115628.GA2414235@kroah.com>
 References: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
  <20201030093651.GA2080962@kroah.com>
  <DM6PR11MB40748AD8D57C73E4D79D4676FF150@DM6PR11MB4074.namprd11.prod.outlook.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB40748AD8D57C73E4D79D4676FF150@DM6PR11MB4074.namprd11.prod.outlook.com>
+Cc: "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  "vinod.koul@linaro.org" <vinod.koul@linaro.org>, "Lin,
  Mengdong" <mengdong.lin@intel.com>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
  "hui.wang@canonical.com" <hui.wang@canonical.com>,
  "vkoul@kernel.org" <vkoul@kernel.org>,
  "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
- "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
- "jank@cadence.com" <jank@cadence.com>, Greg KH <gregkh@linuxfoundation.org>,
- "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
+ "jank@cadence.com" <jank@cadence.com>, "Kale,
+ Sanyog R" <sanyog.r.kale@intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
  "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -91,9 +102,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 30 Oct 2020 12:24:35 +0100,
-Liao, Bard wrote:
-> 
+On Fri, Oct 30, 2020 at 11:24:35AM +0000, Liao, Bard wrote:
 > 
 > 
 > > -----Original Message-----
@@ -239,14 +248,12 @@ Liao, Bard wrote:
 > SDW_SDCA_MBQ_CTL will be used in a new regmap method.
 > SDW_SDCA_NEXT_CTL can be used in sdca codec drivers, too.
 
-Well, the point is that it's hard to review without seeing how the
-code of actual users are.
+Then submit the users with the macro, otherwise it makes no sense to try
+to review something that we do not see being used.
 
-BTW, the bit definitions can be simplified with GENMASK().
-I personally don't think GENMASK() necessarily good, but it may fit
-better in a case like this.
-
+We do not add apis or code to the kernel that is not used, otherwise it
+is impossible to maintain over time.
 
 thanks,
 
-Takashi
+greg k-h
