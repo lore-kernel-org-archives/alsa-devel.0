@@ -2,110 +2,100 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEFD0C00A89
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 07:59:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67DAFC00A89
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 08:30:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 562662220B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 07:59:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67662208B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 08:30:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lp1yzF91";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tQoyLfsy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 562662220B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gCbu1nMc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i1bDXsBm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67662208B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A02F5165E;
-	Fri, 30 Oct 2020 08:58:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A02F5165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BEFD15E0;
+	Fri, 30 Oct 2020 09:29:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BEFD15E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604044775;
-	bh=kETDoqMKTE+zThQA56d6TB35Xd4BEuNwrobrnGjB2A8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1604046630;
+	bh=5aG0OoLrJuN/4lMve0As2arDf2khH+IajAllE76GAq0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lp1yzF91h10K0jBeVJbetW+EOXRpKlto0CWCXYxs+MGSK1HLlU0wXseZFD6In9efc
-	 FvvKNb/HLNXTjDMqhaexTyOHX0NnpFuYTwzBHwirHLhqcRQXm1AbEjYkXuHuUinDkA
-	 DNaHzHjElwVr/040bO2BAcKsG1712ihrXbyBqFME=
+	b=gCbu1nMcRRfPPdW2B743bBZzTgSowEEBFo/wrKGwmOpqTRYXYemdpTTM5/Zz63KHy
+	 k+J8isWEMZc9uhrl/ulkgXOS76pP5to9wBbArImRykM7JcqK6hEu07B7KOnTuwLLsh
+	 xgzf/0kNymWGcUq7d0Lo8yU10IGRMozmw5p5k3v4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FA1EF8025E;
-	Fri, 30 Oct 2020 08:57:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15886F801D5;
+	Fri, 30 Oct 2020 09:29:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5C81F8028B; Fri, 30 Oct 2020 08:57:52 +0100 (CET)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
+ id 46591F80212; Fri, 30 Oct 2020 09:29:34 +0100 (CET)
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
+ [IPv6:2607:f8b0:4864:20::844])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64353F8025E
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 08:57:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64353F8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C01EF80107
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 09:29:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C01EF80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="tQoyLfsy"
-Received: by mail-pg1-x541.google.com with SMTP id i26so4523624pgl.5
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 00:57:47 -0700 (PDT)
+ header.b="i1bDXsBm"
+Received: by mail-qt1-x844.google.com with SMTP id m65so3518543qte.11
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 01:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=PdodUo+6mcNMJwIz8HCiSd/BPrJxVSi77oUzRemdDVU=;
- b=tQoyLfsyZlXvHg2b1MunUYxzh17UMQmrrYCBspTbicI7tC8VuB0FbNbVRCUIuoZgxP
- 1yq7jk0/YnRMA1qLOLLJ4K6q/K/rVnEa5FPA1f3EZNExA37wdvy8GXHh/hnTjf+3xoGp
- ASskqvXt7SCPfELXlJD2UFCqwhnMLfug3Cf3j3x4TGYptej0TZEihb+wGLfcjlUHqAaf
- luQu9EQyaV3O0U99lydlXufUR6zUitfBX/J6h1B9u+zviLuN4raKOOG2oen2jJL679tt
- izRQwYT2zqLL7dpxhXb84uZ4gz0dE95sNod5mskV+/pkOk2k3bMYNu9Mv8rxrOZJWJT4
- Vwgw==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=2SmP2XG2z3yyrdfUO9SkbT5PkhpXi9KOLge2mZeMb5U=;
+ b=i1bDXsBm1niQ4dkdDbmR9gg6PC1JZxcVuqDMoIU0x9yV4eCKiO7o8WT1gLVhGbua+W
+ VSQZz/9X1dfTZK7P3wLdKlpscV6K9QmiH3GTCxZkVydSulOWMgGtX1r8H2KdukRelmYV
+ edizOroqwJafVC6nOIPEiBOx37tjE8bEon36kr6517o7gv5RrScCd7ln8wa8xhnpGqsU
+ b3auk81D2jZttt3Ztoa/HIhlJh3DakWKMdVWiXa85ZDKeLn4IAPgv7Zo/hpuTilTU9gA
+ oyW+WpiGsqHa2x3pWM0/xE7mMhPGN5KP4Gb11NEJo4XszZzED+eirG1lNWhaHn4vo1Dl
+ upGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=PdodUo+6mcNMJwIz8HCiSd/BPrJxVSi77oUzRemdDVU=;
- b=YEZsZ7Fh2G43VlP5alve++NBI/6gd8mzi+fO86qvgPkZ4lL9Zr4zhYQd4p91akDtYi
- K43BEYRfPjIGPr+B0FDkWBySOi0DMucAeK5VGCrdomylusQuJXgL/H2Nft2xaUZl9wx5
- Ts4MZafMO6FZMi5xAeWgIfTl0Zni2DBQVJNCIOPnxxpkA75Ix93QY46SiRlZiTOW9He4
- q3ttSx8woT5eD4WYyivCE2h9Zt2jM8mT1exPpvNzoxj0yD2DS141xWTr4I8jWZTsSqZx
- kFX5q/nypYLOJxaI36tifvZLY6f+rdyhMn5l0SZpUeblAnDUa7r9na4xPUdbx26D/E4x
- U7Vg==
-X-Gm-Message-State: AOAM530m9w6iQCObI7Lf/m/ZLUM+Ionf+LQJBk3KnfOn2bvROsght/UQ
- khhbyuPeTNDUQ/V4+WwXR4M=
-X-Google-Smtp-Source: ABdhPJzNlDsxhwQNEze1EEKkOurdKJhokUzfb3AC4vmpr4YhZDvoUJ56zx/W4XVqnFo9vWYKxhrM8A==
-X-Received: by 2002:aa7:96f6:0:b029:164:2def:5ef7 with SMTP id
- i22-20020aa796f60000b02901642def5ef7mr8009841pfq.44.1604044666400; 
- Fri, 30 Oct 2020 00:57:46 -0700 (PDT)
-Received: from localhost (114-34-18-97.HINET-IP.hinet.net. [114.34.18.97])
- by smtp.gmail.com with ESMTPSA id e4sm2388392pjg.44.2020.10.30.00.57.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 30 Oct 2020 00:57:45 -0700 (PDT)
-From: Ajye Huang <ajye.huang@gmail.com>
-X-Google-Original-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
-Date: Fri, 30 Oct 2020 15:57:24 +0800
-Message-Id: <20201030075724.1616766-3-ajye_huang@compal.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201030075724.1616766-1-ajye_huang@compal.corp-partner.google.com>
-References: <20201030075724.1616766-1-ajye_huang@compal.corp-partner.google.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2SmP2XG2z3yyrdfUO9SkbT5PkhpXi9KOLge2mZeMb5U=;
+ b=qupb3VSXkLerfR037DfoBDa47VCYOlKsCiu7ZyEdySgRxE3I6ScSPUTI4c3hvqqkvL
+ dQI7egMIAjUo03iK+IT6+c+mLixsFQGEJTRGsYX0Mqv8TDg35N+OJL8Py4lB4Gem5Xsd
+ 144/KZ7+P3Qng9be1qjUNNmej1TNmnt/upQi4msoeV6k76GbK+tohwCL5jXAolkcA4mQ
+ uTBsDxiwY7bTm38WrkGQW1PmuULiaijMeRZLfWm9VHD/SZHOsS5WO5zg8ImE3UTZnwL7
+ H6uEDDnTwj0Wf/YjTsWy2u3Wie6FCBNvkBB4nxqCCMAG8ywo8NLfKIVblNPTa0tHB3A2
+ RPDQ==
+X-Gm-Message-State: AOAM532Pxs97w0SpMwKcGZsF5cegQ16zLzMHJqN5/64mXBuTTi0WAW30
+ xBZYwXwfJWm6sJb5Dog6a24ffDtCi3p6P8lxWV0=
+X-Google-Smtp-Source: ABdhPJzkbx+wUo5qTc/A5mLSgJdG9vfP6tbrvgVQoe1Oj4ip/QKJPl/1/B4em0IUQc5bqYk4VWdgJWXeCNWIuiLyc9s=
+X-Received: by 2002:aed:26e3:: with SMTP id q90mr947606qtd.121.1604046566560; 
+ Fri, 30 Oct 2020 01:29:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: dianders@chromium.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
- Patrick Lai <plai@codeaurora.org>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Mark Brown <broonie@kernel.org>,
- Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
- srinivas.kandagatla@linaro.org, linux-arm-kernel@lists.infradead.org,
- cychiang@chromium.org
+References: <1603877930-10553-1-git-send-email-shengjiu.wang@nxp.com>
+ <20201029152721.GB1901783@bogus>
+In-Reply-To: <20201029152721.GB1901783@bogus>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Fri, 30 Oct 2020 16:29:15 +0800
+Message-ID: <CAA+D8AOC3FSCH48p8e61W7Vz5Ri9Hhz_Hbw24cXtEp0OO2gT8g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc
+ for aud2htx module
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,115 +111,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In addition, having mixer control to switch between DMICs by
-using "dmic-gpios" property.
+On Thu, Oct 29, 2020 at 11:28 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, 28 Oct 2020 17:38:49 +0800, Shengjiu Wang wrote:
+> > AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
+> > IP module found on i.MX8MP.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> > changes in v2:
+> > - fix indentation issue
+> > - remove nodename
+> >
+> >  .../bindings/sound/fsl,aud2htx.yaml           | 64 +++++++++++++++++++
+> >  1 file changed, 64 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
+> >
+>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml: 'additionalProperties' is a required property
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml: ignoring, error in schema:
+> warning: no schema found in file: ./Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
+>
+>
+> See https://patchwork.ozlabs.org/patch/1389813
+>
+> The base for the patch is generally the last rc1. Any dependencies
+> should be noted.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
 
-Refer to this one as an example,
-commit b7a742cff3f6 ("ASoC: AMD: Use mixer control to switch between DMICs")
+ok, will fix it.
 
-Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
----
- sound/soc/qcom/sc7180.c | 59 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
-
-diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-index b391f64c3a80..e9366bb5f3c2 100644
---- a/sound/soc/qcom/sc7180.c
-+++ b/sound/soc/qcom/sc7180.c
-@@ -5,6 +5,8 @@
- // sc7180.c -- ALSA SoC Machine driver for SC7180
- 
- #include <dt-bindings/sound/sc7180-lpass.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-@@ -23,6 +25,9 @@
- 
- #define DRIVER_NAME "SC7180"
- 
-+static struct gpio_desc *dmic_sel;
-+static int dmic_switch;
-+
- struct sc7180_snd_data {
- 	struct snd_soc_card card;
- 	u32 pri_mi2s_clk_count;
-@@ -169,6 +174,23 @@ static int sc7180_snd_startup(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
-+static int dmic_get(struct snd_kcontrol *kcontrol,
-+		    struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = dmic_switch;
-+	return 0;
-+}
-+
-+static int dmic_set(struct snd_kcontrol *kcontrol,
-+		    struct snd_ctl_elem_value *ucontrol)
-+{
-+	if (dmic_sel) {
-+		dmic_switch = ucontrol->value.integer.value[0];
-+		gpiod_set_value(dmic_sel, dmic_switch);
-+	}
-+	return 0;
-+}
-+
- static void sc7180_snd_shutdown(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -206,6 +228,30 @@ static const struct snd_soc_dapm_widget sc7180_snd_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- };
- 
-+static const char * const dmic_mux_text[] = {
-+	"Front Mic",
-+	"Rear Mic",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(sc7180_dmic_enum,
-+			    SND_SOC_NOPM, 0, dmic_mux_text);
-+
-+static const struct snd_kcontrol_new sc7180_dmic_mux_control =
-+	SOC_DAPM_ENUM_EXT("DMIC Select Mux", sc7180_dmic_enum,
-+			  dmic_get, dmic_set);
-+
-+static const struct snd_soc_dapm_widget sc7180_snd_dual_mic_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("DMIC", NULL),
-+	SND_SOC_DAPM_MUX("Dmic Mux", SND_SOC_NOPM, 0, 0, &sc7180_dmic_mux_control),
-+};
-+
-+static const struct snd_soc_dapm_route sc7180_snd_dual_mic_audio_route[] = {
-+	{"Dmic Mux", "Front Mic", "DMIC"},
-+	{"Dmic Mux", "Rear Mic", "DMIC"},
-+};
-+
- static void sc7180_add_ops(struct snd_soc_card *card)
- {
- 	struct snd_soc_dai_link *link;
-@@ -238,6 +284,19 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
- 	card->dapm_widgets = sc7180_snd_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets);
- 
-+	if (of_property_read_bool(dev->of_node, "dmic-gpios")) {
-+		card->dapm_widgets = sc7180_snd_dual_mic_widgets,
-+		card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_dual_mic_widgets),
-+		card->dapm_routes = sc7180_snd_dual_mic_audio_route,
-+		card->num_dapm_routes = ARRAY_SIZE(sc7180_snd_dual_mic_audio_route),
-+		dmic_sel = devm_gpiod_get(&pdev->dev, "dmic", GPIOD_OUT_LOW);
-+		if (IS_ERR(dmic_sel)) {
-+			dev_err(&pdev->dev, "DMIC gpio failed err=%d\n",
-+				PTR_ERR(dmic_sel));
-+				return PTR_ERR(dmic_sel);
-+		}
-+	}
-+
- 	ret = qcom_snd_parse_of(card);
- 	if (ret)
- 		return ret;
--- 
-2.25.1
-
+best regards
+wang shengjiu
