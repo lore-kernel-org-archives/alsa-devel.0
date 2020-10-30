@@ -2,108 +2,79 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D4CC4363A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:59:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90327C00A89
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 13:27:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3385A20725
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:59:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F325C22210
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 13:27:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cfOSqsP2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HBlLv1td"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3385A20725
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KjRXpEGc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="X9vV0qbH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F325C22210
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED9B11612;
-	Fri, 30 Oct 2020 13:58:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED9B11612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54AFA1612;
+	Fri, 30 Oct 2020 14:26:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54AFA1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604062760;
-	bh=PD8IIz3xmHes+6xizscwPFxY6dVUIKHCcvv7yodn2cY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1604064418;
+	bh=P+jMGvjIJHiVTFEarHqp4FfED29smo6QZPjm7uy1/Xw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cfOSqsP23fzSDOLieC0DWAaAAKi44gqE2XavPcHMwRrYwJN9NAirr0peM/ocSUdPL
-	 jESnq8XUIGB0YKxSIG0KA/vvUozDMq970gpg4oC8rmpfjtresIp2fIEB7LgspspVTX
-	 1e60+186Yw5OdB7JAKYaNwnyjq3AU0hvqeSxLccU=
+	b=KjRXpEGcXr9RvMfHZdozMUxqqZJXyONj50GMXTLCC8ObIISBc8q3KUr+xdCS6AcFl
+	 xMMe3lkmz38gqZbMXmKvgEhyIURqpfNqzVgdZ+LHiR+FG3GzxiaxFc4UOvOWvNAxm5
+	 GdzYVgCnGYqmWVyPEUe6qLiQVEAcIBXq8+F1W+Ok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B17CF800FF;
-	Fri, 30 Oct 2020 13:58:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D38E2F801D5;
+	Fri, 30 Oct 2020 14:26:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E555DF80212; Fri, 30 Oct 2020 13:58:27 +0100 (CET)
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
- [IPv6:2607:f8b0:4864:20::d43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3901DF80212; Fri, 30 Oct 2020 14:26:07 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75D96F800FF
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 13:58:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75D96F800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3763F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 14:25:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3763F800FF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HBlLv1td"
-Received: by mail-io1-xd43.google.com with SMTP id r9so7368257ioo.7
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 05:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=DEjwCz6RYcTNQfWnCWPDSlK+EiMHXu1I2qKUPcY2Sh4=;
- b=HBlLv1td8ZGbbQpa0MJPMXQx1wDSoEh19ueH+HpLQn7HCeunMObf8TyVowEs6h3R1m
- iO4vu+D+ag+gypjHMSJ/h5TbRu/++9EMN4/xsfsDdMPaUZtE4oFglwtgR08CcW2G2AdX
- UmlQm9AfRndgv1zsgN3sTlb+QByMJzLQycWwoPdDgQWPlOLC+3cw/yAxHS9xGEcsfk25
- oL5Gr2GsEfDIMPaQ/3v0cjoZYemL+EIxWgI9EmA1QEc1Kc55bB7q7X6z5rvkgrdV8Wln
- YUSHz2U73sjUjSPC7fP0Cum01fYXKZPtnwqJrgS23oaIaaD/6+9OjVGgGaguXxagZ3Lq
- 1xAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=DEjwCz6RYcTNQfWnCWPDSlK+EiMHXu1I2qKUPcY2Sh4=;
- b=LLoW836qjnp/suJOwDlhwgxCo6a61sMY00kCmlouEBMf0cgoLMXPrp0h3/9kPF8ZKN
- RcGfoRvPFcjudOkv6Cw2Lfm7Dk6PiVSmcOnSW2rPEdBT/cJXznp/X+j9AkSIIRbkUF35
- T5KtAiv59fYF77PyWZ/vtzOnQugrw4L+wZi1QwMfXc4UmFCgnltrB0jHuiOUmzuPmDUE
- N8oz+TPWOaBIlYUZm6C66xz5LmnJHmiQx3Qy5o/K79In4EzJOrzuk1cdYo4ggdKPyDDz
- zVUTpBk7KUxe3q5i23K2ygU92RZhi7tlMgwnl+Ta0F8sHWEwmCiMaMw/66ExTy3UxoXB
- gGUA==
-X-Gm-Message-State: AOAM531eBXYea2/0vnqVDLZEMh7oBxLIcKVPK6vWZmT1YGhlYDga5Bqd
- d5kABqLvmAKMmd/RPQCAk4iHi3ycksfnRI9gn3o=
-X-Google-Smtp-Source: ABdhPJzgAY6KtKOPC6tfzKmvA8QQMoxhHFJsZyDBWBxynYs54LG5exJnFVce2ePcyXh7zbs+RcwK2Q1VsHbq+C9CSvQ=
-X-Received: by 2002:a05:6638:1351:: with SMTP id
- u17mr1911170jad.120.1604062698162; 
- Fri, 30 Oct 2020 05:58:18 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="X9vV0qbH"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5B6D62075E;
+ Fri, 30 Oct 2020 13:25:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1604064355;
+ bh=P+jMGvjIJHiVTFEarHqp4FfED29smo6QZPjm7uy1/Xw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=X9vV0qbHAYMvtPjepkL9QkT37wNdnBJNdHsPZ6e3RAt3M+4F2noobRG0upqXnPJpe
+ yCd7HL6gKy6rHIHTxgbF+XEFW9agJSeNGuV4zGdRS8qHpwjSymoj6kr57Z5rzR7NDI
+ P586PLKJAiVhFTwSaM4jJ1USAroxja7uELkvX/vY=
+Date: Fri, 30 Oct 2020 13:25:48 +0000
+From: Mark Brown <broonie@kernel.org>
+To: David Lin <CTLIN0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8315: add codec driver
+Message-ID: <20201030132548.GB4405@sirena.org.uk>
+References: <20201030050146.535983-1-CTLIN0@nuvoton.com>
 MIME-Version: 1.0
-References: <20201027183149.145165-1-peron.clem@gmail.com>
- <20201027183149.145165-2-peron.clem@gmail.com>
- <01e34ad3-c695-c6eb-95dd-76c2cda77c6f@linux.intel.com>
- <CAJiuCcdX7jc-VMWYfPPL3qu9RcUU7VMdjshyPH_xLA0yVXftUw@mail.gmail.com>
- <3f0c46e2-24a4-b6ee-1ea2-9de5344cfb9d@sholland.org>
-In-Reply-To: <3f0c46e2-24a4-b6ee-1ea2-9de5344cfb9d@sholland.org>
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date: Fri, 30 Oct 2020 13:58:07 +0100
-Message-ID: <CAJiuCceqhGjzJV+=KQkzswpiG2QRb3NhVHqmrXHBi50wNZBFXw@mail.gmail.com>
-Subject: Re: [PATCH v9 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
-To: Samuel Holland <samuel@sholland.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree <devicetree@vger.kernel.org>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- linux-sunxi <linux-sunxi@googlegroups.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
+Content-Disposition: inline
+In-Reply-To: <20201030050146.535983-1-CTLIN0@nuvoton.com>
+X-Cookie: Blow it out your ear.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org,
+ KCHSU0@nuvoton.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,66 +90,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Samuel
 
-On Fri, 30 Oct 2020 at 02:20, Samuel Holland <samuel@sholland.org> wrote:
->
-> On 10/27/20 4:43 PM, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Hi Pierre-Louis,
-> >
-> > On Tue, 27 Oct 2020 at 19:59, Pierre-Louis Bossart
-> > <pierre-louis.bossart@linux.intel.com> wrote:
-> >>
-> >>
-> >>> @@ -452,11 +454,11 @@ static int sun8i_i2s_set_chan_cfg(const struct =
-sun4i_i2s *i2s,
-> >>>       case SND_SOC_DAIFMT_DSP_B:
-> >>>       case SND_SOC_DAIFMT_LEFT_J:
-> >>>       case SND_SOC_DAIFMT_RIGHT_J:
-> >>> -             lrck_period =3D params_physical_width(params) * slots;
-> >>> +             lrck_period =3D slot_width * slots;
-> >>>               break;
-> >>>
-> >>>       case SND_SOC_DAIFMT_I2S:
-> >>> -             lrck_period =3D params_physical_width(params);
-> >>> +             lrck_period =3D slot_width;
-> >>>               break;
-> >>
-> >> Aren't I2S, LEFT_J and RIGHT_J pretty much the same in terms of lrclk
-> >> rate/period? the only thing that can change is the polarity, no?
-> >>
-> >> Not sure why it's handled differently here?
-> >
-> > I just had a look at the User Manual for H3 and H6 and I didn't find
-> > any reason why LEFT_J and RIGHT_J should be computed in a different
-> > way as I2S.
->
-> Yes, and the manual explicitly groups LEFT_J and RIGHT_J with I2S when
-> describing this field:
->
->    PCM Mode: Number of BCLKs within (Left + Right) channel width.
->    I2S/Left-Justified/Right-Justified Mode: Number of BCLKs within each
-> individual channel width(Left or Right)
->
-> So I agree that the code is wrong here.
+--UHN/qo2QbUvPLonB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks, I will send a fix in the v10.
+On Fri, Oct 30, 2020 at 01:01:48PM +0800, David Lin wrote:
+> Add codec driver for Nuvoton NAU8315.
 
-Regards,
-Clement
+This has still got issues - it looks like all the tabs in the patch have
+been replaced by spaces, that's going to make it impossible for any of
+the tools to handle.  I'm not sure how your colleagues handled this,
+another approach some people use is to send from a non-work account and
+bypass all the issues with corporate mail servers :/
 
->
-> Regards,
-> Samuel
->
-> > Also the commit introducing this doesn't mention it.
-> > 7ae7834ec446 ("ASoC: sun4i-i2s: Add support for DSP formats")
-> >
-> > I can't test it with my board but if nobody complains about it, I will
-> > introduce a fix for this in the next version and change this also for
-> > H6.
-> >
-> > Thanks for your review,
-> > Clement
-> >
->
+--UHN/qo2QbUvPLonB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cFFsACgkQJNaLcl1U
+h9AvNQf/dcw7V9i1/r9FH2iqgaNto1mzvgH6WG8RIkgU55pstQKJRb3PV2dkPmi5
+fLQwtGP6XoCrAAVjUx/OCcCb9ZdHyrofZvpjlgOqisgy/Cr6movk3JgDujrUNl7U
+HRbkmHbTC2SWb1wiau1+WFliT4gzHAK2rp5A2zafm+TO5k7mCmMRUfMJdDDyYKZd
+ziZPvsYh/ptfsTjawwdWbRLh5cJ26YaQFwL7+QzGZYUB+7X4zeWIJsiHSijn2WFu
+kwXWqKx8WzDGkRhkblRjoWTbmAZNQoG2KFqGosJZw9zNpc9sUNcAvuqIVQxZ+xnD
+g5/aDi8py6qhJGLYwduMkC6q7mD3eg==
+=7dME
+-----END PGP SIGNATURE-----
+
+--UHN/qo2QbUvPLonB--
