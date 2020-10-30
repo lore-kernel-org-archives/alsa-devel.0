@@ -2,81 +2,69 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05EDDC00A89
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 662F6C00A89
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:37:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E1FB20719
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:20:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F1E6120706
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:37:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZbcMbkBF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E1FB20719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CUhHCm91"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1E6120706
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54C311662;
-	Fri, 30 Oct 2020 17:19:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54C311662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B1B61614;
+	Fri, 30 Oct 2020 17:36:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B1B61614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604074848;
-	bh=f8bT7W8G1+uvNv2g6gfgNavmFvbGxxCnfbu6m55G+QE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1604075852;
+	bh=mVqihXSqv63Ht/T1rFXKFbQ9tSGJMZ/9pimGnI/O3qo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZbcMbkBFtdwPVO4UQx9/1lD+eaD/lG7ALLAhXNEXqV1628fHk1RET0Abe6+tbZ4mX
-	 7U9yopzXyX7UsNDGoruxOpwqU9H9AVcLSe6Fz2e3Xcv4TSgAY2QBbrDNCJ8zxpncsz
-	 C2Ax1cN7i31x7P9c0mr1zRyfe8nqp0jjpPJXsxAU=
+	b=CUhHCm91okPb2NF70q3gvc9lfXZl+b007C6IhMWA+vyf8Au8pZaPJTubvzEQm/9QS
+	 DYdEG5EicdK0m1RYBbW/8eaMRAdEw/NUI8vTngAbl/mayJ3nOcjevuA5HOXoRro6IZ
+	 tWU0/0k9CqnIQ81zDzb/Vy1yl50HhcEhngJJfmHA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF43DF8025E;
-	Fri, 30 Oct 2020 17:19:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 576CCF801D5;
+	Fri, 30 Oct 2020 17:36:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17BC4F8026D; Fri, 30 Oct 2020 17:19:16 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DB3CEF80212; Fri, 30 Oct 2020 17:36:39 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA98FF80249
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 17:19:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA98FF80249
-IronPort-SDR: uOZ17fEW7fBMtKi3HTX09xqTq437JfjEVqweWT6EbSfHiKJ96mmLF2lzZyE5EDnyLN7moMAMam
- SfLEXdUADs+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="148485512"
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="148485512"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2020 09:18:57 -0700
-IronPort-SDR: v7d++dT9BRThG0MG1InxV2OTTNixcD8NCJY7V1esU0gaTNU1hG5s3uil8latuNTB6EgBv6iowb
- /iR8hjJs+bjg==
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="469569456"
-Received: from rdchavez-mobl2.amr.corp.intel.com (HELO [10.212.91.180])
- ([10.212.91.180])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2020 09:18:56 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7E1DF80107
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 17:36:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7E1DF80107
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 791B6ACF5;
+ Fri, 30 Oct 2020 16:36:35 +0000 (UTC)
+Date: Fri, 30 Oct 2020 17:36:35 +0100
+Message-ID: <s5hr1pfr7qk.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH v3] soundwire: SDCA: add helper macro to access controls
-To: Takashi Iwai <tiwai@suse.de>, "Liao, Bard" <bard.liao@intel.com>
+In-Reply-To: <880a22a2-49f6-fa1c-46ad-6388cbd26ee4@linux.intel.com>
 References: <20201029204955.8568-1-yung-chuan.liao@linux.intel.com>
  <20201030093651.GA2080962@kroah.com>
  <DM6PR11MB40748AD8D57C73E4D79D4676FF150@DM6PR11MB4074.namprd11.prod.outlook.com>
  <s5hsg9wrlhc.wl-tiwai@suse.de>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <880a22a2-49f6-fa1c-46ad-6388cbd26ee4@linux.intel.com>
-Date: Fri, 30 Oct 2020 10:52:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <s5hsg9wrlhc.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <880a22a2-49f6-fa1c-46ad-6388cbd26ee4@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  "vinod.koul@linaro.org" <vinod.koul@linaro.org>, "Lin,
  Mengdong" <mengdong.lin@intel.com>,
@@ -88,7 +76,8 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  "jank@cadence.com" <jank@cadence.com>, Greg KH <gregkh@linuxfoundation.org>,
  "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
- "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
+ "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>, "Liao,
+ Bard" <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,68 +93,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
->>>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |
->>> 		\
->>>> +						 (((fun) & 0x7) << 22) |	\
->>>> +						 (((ent) & 0x40) << 15) |	\
->>>> +						 (((ent) & 0x3f) << 7) |	\
->>>> +						 (((ctl) & 0x30) << 15) |	\
->>>> +						 (((ctl) & 0x0f) << 3) |	\
->>>> +						 (((ch) & 0x38) << 12) |	\
->>>> +						 ((ch) & 0x07))
->>>> +
->>>> +#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
->>>> +#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
->>>> +
->>>>   #endif /* __SDW_REGISTERS_H */
->>>
->>>
->>> No users of these macros?
->>
->> SDW_SDCA_CTL is used in sdca codec drivers which are not upstream yet.
->> SDW_SDCA_MBQ_CTL will be used in a new regmap method.
->> SDW_SDCA_NEXT_CTL can be used in sdca codec drivers, too.
+On Fri, 30 Oct 2020 16:52:24 +0100,
+Pierre-Louis Bossart wrote:
 > 
-> Well, the point is that it's hard to review without seeing how the
-> code of actual users are.
+> 
+> 
+> >>>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |
+> >>> 		\
+> >>>> +						 (((fun) & 0x7) << 22) |	\
+> >>>> +						 (((ent) & 0x40) << 15) |	\
+> >>>> +						 (((ent) & 0x3f) << 7) |	\
+> >>>> +						 (((ctl) & 0x30) << 15) |	\
+> >>>> +						 (((ctl) & 0x0f) << 3) |	\
+> >>>> +						 (((ch) & 0x38) << 12) |	\
+> >>>> +						 ((ch) & 0x07))
+> >>>> +
+> >>>> +#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
+> >>>> +#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
+> >>>> +
+> >>>>   #endif /* __SDW_REGISTERS_H */
+> >>>
+> >>>
+> >>> No users of these macros?
+> >>
+> >> SDW_SDCA_CTL is used in sdca codec drivers which are not upstream yet.
+> >> SDW_SDCA_MBQ_CTL will be used in a new regmap method.
+> >> SDW_SDCA_NEXT_CTL can be used in sdca codec drivers, too.
+> >
+> > Well, the point is that it's hard to review without seeing how the
+> > code of actual users are.
+> 
+> Agree, but our job is not made easy by the three-way dependency on
+> regmap, SoundWire before we can submit ASoC codec drivers (developed
+> by Realtek and tested by Intel).
+> 
+> If you prefer us to send all patches for SDCA codec support in one
+> shot, that would be fine with us.
 
-Agree, but our job is not made easy by the three-way dependency on 
-regmap, SoundWire before we can submit ASoC codec drivers (developed by 
-Realtek and tested by Intel).
+It's not necessarily mandatory to send the whole series, but if a
+relevant code is already available, mentioning a repo URL in the patch
+description (or in the comment below the delimiter) would be helpful,
+for example.
 
-If you prefer us to send all patches for SDCA codec support in one shot, 
-that would be fine with us.
-> BTW, the bit definitions can be simplified with GENMASK().
-> I personally don't think GENMASK() necessarily good, but it may fit
-> better in a case like this.
+> > BTW, the bit definitions can be simplified with GENMASK().
+> > I personally don't think GENMASK() necessarily good, but it may fit
+> > better in a case like this.
+> 
+> we use this macro in switch cases, e.g. for regmap properties to
+> define read/volatile registers:
+> 
+> case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49,
+> RT711_SDCA_CTL_SELECTED_MODE, 0):
+> 	case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49,
+> RT711_SDCA_CTL_DETECTED_MODE, 0):
+> 	case SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01,
+> RT711_SDCA_CTL_HIDTX_CURRENT_OWNER, 0) ...
+> 		SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01,
+> RT711_SDCA_CTL_HIDTX_MESSAGE_LENGTH, 0):
+> 	case RT711_BUF_ADDR_HID1 ... RT711_BUF_ADDR_HID2:
+> 		return true;
+> 
+> https://github.com/thesofproject/linux/blob/70fe32e776dafb4b03581d62a4569f65c2f13ada/sound/soc/codecs/rt711-sdca-sdw.c#L35
+> 
+> and unfortunately all our attempts to use FIELD_PREP, FIELD_GET,
+> u32_encode, as suggested by Vinod, failed for this case due to
+> compilation issues (can't use these macros outside of a function
+> scope). The errors were shared with Vinod.
+> 
+> That's why we went back to the initial suggestion to deal with the
+> shifts/masks by hand. For now we don't have a better solution that
+> works in all cases were the macro is used.
 
-we use this macro in switch cases, e.g. for regmap properties to define 
-read/volatile registers:
+Hrm, OK, in this case the value is masked then shifted, so it's not
+trivial to deal with a macro.
 
-case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49, 
-RT711_SDCA_CTL_SELECTED_MODE, 0):
-	case SDW_SDCA_CTL(FUN_JACK_CODEC, RT711_SDCA_ENT_GE49, 
-RT711_SDCA_CTL_DETECTED_MODE, 0):
-	case SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01, 
-RT711_SDCA_CTL_HIDTX_CURRENT_OWNER, 0) ...
-		SDW_SDCA_CTL(FUN_HID, RT711_SDCA_ENT_HID01, 
-RT711_SDCA_CTL_HIDTX_MESSAGE_LENGTH, 0):
-	case RT711_BUF_ADDR_HID1 ... RT711_BUF_ADDR_HID2:
-		return true;
 
-https://github.com/thesofproject/linux/blob/70fe32e776dafb4b03581d62a4569f65c2f13ada/sound/soc/codecs/rt711-sdca-sdw.c#L35
+thanks,
 
-and unfortunately all our attempts to use FIELD_PREP, FIELD_GET, 
-u32_encode, as suggested by Vinod, failed for this case due to 
-compilation issues (can't use these macros outside of a function scope). 
-The errors were shared with Vinod.
-
-That's why we went back to the initial suggestion to deal with the 
-shifts/masks by hand. For now we don't have a better solution that works 
-in all cases were the macro is used.
-
-Thanks
--Pierre
-
+Takashi
