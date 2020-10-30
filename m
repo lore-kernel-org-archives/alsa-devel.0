@@ -2,78 +2,82 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 194EEC4363A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BA74C4363A
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:39:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B6EB2071A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:38:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B5986221EB
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 12:39:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qN01P9RZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B6EB2071A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eTc55Eju"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5986221EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6837A1612;
-	Fri, 30 Oct 2020 13:37:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6837A1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D19B1663;
+	Fri, 30 Oct 2020 13:38:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D19B1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604061512;
-	bh=CLeJ0uXR60i3YKbOcrj/O0Bf0wrsOSfO54ZoPoL8//g=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qN01P9RZz7/345QntX1iQJWRJNIKKVAHGKG19Awu3zOaZ0EKiBW5L2o21anXofRoO
-	 7D4rJ0jXkpqdBC6XxCnWS41+fEA1RMMgrzdy3KZXxf7r/FKfPj66oZ7bAybZb5ZNAr
-	 em3ij0MJ8aJi1OFnc/ubLdHpiyjpxihv3IDfyRzI=
+	s=default; t=1604061563;
+	bh=lzmqiMbGXWX07g4Q8ZJri5FjXeFDhHzjBIwbHHVNVU0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=eTc55EjupwoqkNvsykNRPgetybTzU6hSbzaGpgg5WLYF/xwfvfnl7dty6KjwIeZk5
+	 EG+gsoZ1P5D78/eufzqmHUw4CoiueTAxjX/7Ck6xpf/80dBwxXF5/jz0FddfX53LsO
+	 rLXRSwbV/+cUr+7Ry75KJ2coB18u/um7RAHRa/d0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4FB8F8025E;
-	Fri, 30 Oct 2020 13:37:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE109F8027C;
+	Fri, 30 Oct 2020 13:37:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20201F80107; Fri, 30 Oct 2020 13:37:40 +0100 (CET)
+ id 12AC2F8027C; Fri, 30 Oct 2020 13:37:45 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BEF5BF80107
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 13:37:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEF5BF80107
-IronPort-SDR: JLNTZnKPtwh6RYTI/ldsEsQ9LDefzmcjxkGpFNOsrsWNd7HVCNwDPe0r4YPZTqH5Z/7pwZ5ySM
- BmI3+9zVP4qQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="230233996"
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="230233996"
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE824F800C0
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 13:37:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE824F800C0
+IronPort-SDR: xCw8qk+lCKqtPMnwUSAyB7BOAxv6jM3HCTdfoNQlb7VWmj2tnBVxJD3tTYoYnlnxoXFUBQrgkZ
+ QJMqFcOTmnEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="230234007"
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="230234007"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2020 05:37:30 -0700
-IronPort-SDR: DhroVS1WuPf0M8PE6mqg7mv2tzbf9w0DpyJt+4cbd24+979Ej4xGLFZQxYVY+5grYa7RcNt6iq
- rIPCCntdNUSA==
+ 30 Oct 2020 05:37:36 -0700
+IronPort-SDR: 1vaYukO3gzOqldnk1z5Kt9jfvV0ws4ftGs7cmr66gpyLlIJ/WDZ0qH5Ks4nNqiGb2cEMRsePLO
+ S7Qu07Z+p/Uw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="362433692"
+X-IronPort-AV: E=Sophos;i="5.77,433,1596524400"; d="scan'208";a="362433709"
 Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by orsmga007.jf.intel.com with ESMTP; 30 Oct 2020 05:37:28 -0700
+ by orsmga007.jf.intel.com with ESMTP; 30 Oct 2020 05:37:33 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 0/7] ASoC: topology: Change to resource managed memory
-Date: Fri, 30 Oct 2020 10:54:21 -0400
-Message-Id: <20201030145427.3497990-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 2/6] ASoC: topology: Remove multistep topology loading
+Date: Fri, 30 Oct 2020 10:54:23 -0400
+Message-Id: <20201030145427.3497990-3-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201030145427.3497990-1-amadeuszx.slawinski@linux.intel.com>
+References: <20201030145427.3497990-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,27 +93,172 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Almost all other allocations in ASoC API are resource managed, the only
-exception is soc-topology.c.
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-This patchset clean ups few unnecessary functions in preparation for
-change and then changes to devm_ functions for allocation.
+In theory topology can be loaded in multiple steps by providing index to
+snd_soc_tplg_component_load, however, from usability point of view it
+doesn't make sense, as can be seen from all current users loading
+topology in one go. Remove the unnecessary parameter.
 
-Amadeusz Sławiński (6):
-  ASoC: topology: Remove unused functions from topology API
-  ASoC: topology: Remove multistep topology loading
-  ASoC: topology: Unify all device references
-  ASoC: topology: Change allocations to resource managed
-  ASoC: topology: Remove empty functions
-  ASoC: topology: Simplify remove_widget function
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ include/sound/soc-topology.h           |  8 ++------
+ sound/soc/intel/skylake/skl-topology.c |  9 ++-------
+ sound/soc/soc-topology.c               | 18 +++---------------
+ sound/soc/sof/pcm.c                    |  2 +-
+ sound/soc/sof/topology.c               |  4 +---
+ 5 files changed, 9 insertions(+), 32 deletions(-)
 
- include/sound/soc-topology.h           |  13 +-
- sound/soc/intel/skylake/skl-topology.c |   9 +-
- sound/soc/soc-topology.c               | 302 +++++--------------------
- sound/soc/sof/pcm.c                    |   2 +-
- sound/soc/sof/topology.c               |   4 +-
- 5 files changed, 57 insertions(+), 273 deletions(-)
-
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index b1ac5df82dba..328cf763d9b4 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -31,9 +31,6 @@ struct snd_soc_dai_driver;
+ struct snd_soc_dai;
+ struct snd_soc_dapm_route;
+ 
+-/* object scan be loaded and unloaded in groups with identfying indexes */
+-#define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
+-
+ /* dynamic object type */
+ enum snd_soc_dobj_type {
+ 	SND_SOC_DOBJ_NONE		= 0,	/* object is not dynamic */
+@@ -181,9 +178,8 @@ static inline const void *snd_soc_tplg_get_data(struct snd_soc_tplg_hdr *hdr)
+ 
+ /* Dynamic Object loading and removal for component drivers */
+ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+-	struct snd_soc_tplg_ops *ops, const struct firmware *fw,
+-	u32 index);
+-int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index);
++	struct snd_soc_tplg_ops *ops, const struct firmware *fw);
++int snd_soc_tplg_component_remove(struct snd_soc_component *comp);
+ 
+ /* Binds event handlers to dynamic widgets */
+ int snd_soc_tplg_widget_bind_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 40bee10b0c65..ae466cd59292 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3742,12 +3742,7 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+ 	}
+ 
+ component_load:
+-
+-	/*
+-	 * The complete tplg for SKL is loaded as index 0, we don't use
+-	 * any other index
+-	 */
+-	ret = snd_soc_tplg_component_load(component, &skl_tplg_ops, fw, 0);
++	ret = snd_soc_tplg_component_load(component, &skl_tplg_ops, fw);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
+ 		goto err;
+@@ -3777,5 +3772,5 @@ void skl_tplg_exit(struct snd_soc_component *component, struct hdac_bus *bus)
+ 		list_del(&ppl->node);
+ 
+ 	/* clean up topology */
+-	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
++	snd_soc_tplg_component_remove(component);
+ }
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 7919097c162f..2a71cec7277e 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -64,7 +64,6 @@ struct soc_tplg {
+ 	struct device *dev;
+ 	struct snd_soc_component *comp;
+ 	u32 index;	/* current block index */
+-	u32 req_index;	/* required index, only loaded/free matching blocks */
+ 
+ 	/* vendor specific kcontrol operations */
+ 	const struct snd_soc_tplg_kcontrol_ops *io_ops;
+@@ -2680,11 +2679,6 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
+ 
+ 	tplg->pos = tplg->hdr_pos + sizeof(struct snd_soc_tplg_hdr);
+ 
+-	/* check for matching ID */
+-	if (le32_to_cpu(hdr->index) != tplg->req_index &&
+-		tplg->req_index != SND_SOC_TPLG_INDEX_ALL)
+-		return 0;
+-
+ 	tplg->index = le32_to_cpu(hdr->index);
+ 
+ 	switch (le32_to_cpu(hdr->type)) {
+@@ -2804,7 +2798,7 @@ static int soc_tplg_load(struct soc_tplg *tplg)
+ 
+ /* load audio component topology from "firmware" file */
+ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+-	struct snd_soc_tplg_ops *ops, const struct firmware *fw, u32 id)
++	struct snd_soc_tplg_ops *ops, const struct firmware *fw)
+ {
+ 	struct soc_tplg tplg;
+ 	int ret;
+@@ -2819,7 +2813,6 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	tplg.dev = comp->dev;
+ 	tplg.comp = comp;
+ 	tplg.ops = ops;
+-	tplg.req_index = id;
+ 	tplg.io_ops = ops->io_ops;
+ 	tplg.io_ops_count = ops->io_ops_count;
+ 	tplg.bytes_ext_ops = ops->bytes_ext_ops;
+@@ -2828,14 +2821,14 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	ret = soc_tplg_load(&tplg);
+ 	/* free the created components if fail to load topology */
+ 	if (ret)
+-		snd_soc_tplg_component_remove(comp, SND_SOC_TPLG_INDEX_ALL);
++		snd_soc_tplg_component_remove(comp);
+ 
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_tplg_component_load);
+ 
+ /* remove dynamic controls from the component driver */
+-int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
++int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
+ {
+ 	struct snd_soc_dobj *dobj, *next_dobj;
+ 	int pass = SOC_TPLG_PASS_END;
+@@ -2847,11 +2840,6 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+ 		list_for_each_entry_safe(dobj, next_dobj, &comp->dobj_list,
+ 			list) {
+ 
+-			/* match index */
+-			if (dobj->index != index &&
+-				index != SND_SOC_TPLG_INDEX_ALL)
+-				continue;
+-
+ 			switch (dobj->type) {
+ 			case SND_SOC_DOBJ_MIXER:
+ 				remove_mixer(comp, dobj, pass);
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index cbac6f17c52f..0a70e685f826 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -780,7 +780,7 @@ static int sof_pcm_probe(struct snd_soc_component *component)
+ static void sof_pcm_remove(struct snd_soc_component *component)
+ {
+ 	/* remove topology */
+-	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
++	snd_soc_tplg_component_remove(component);
+ }
+ 
+ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 523a386fce4b..44fddeda6043 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -3734,9 +3734,7 @@ int snd_sof_load_topology(struct snd_soc_component *scomp, const char *file)
+ 		return ret;
+ 	}
+ 
+-	ret = snd_soc_tplg_component_load(scomp,
+-					  &sof_tplg_ops, fw,
+-					  SND_SOC_TPLG_INDEX_ALL);
++	ret = snd_soc_tplg_component_load(scomp, &sof_tplg_ops, fw);
+ 	if (ret < 0) {
+ 		dev_err(scomp->dev, "error: tplg component load failed %d\n",
+ 			ret);
 -- 
 2.25.1
 
