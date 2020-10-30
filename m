@@ -2,85 +2,90 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 857C7C00A89
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 19:43:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAC54C00A89
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 19:52:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4ED1720709
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 19:43:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2DF220719
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 19:52:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L7zCXjM2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EiRFCM8k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4ED1720709
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iW+LxXsa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oTHOmNUY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2DF220719
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E1A91667;
-	Fri, 30 Oct 2020 20:42:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E1A91667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 312B61607;
+	Fri, 30 Oct 2020 20:51:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 312B61607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604086999;
-	bh=6APAouS5gTipcXWfVkIabBDcftgnh4LjNXjLSb8L+3Q=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1604087557;
+	bh=9ZRCCkWjnZUueRC68oDdNBqS1TZdbPgE5YZdnDRB3/I=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L7zCXjM2p4zIDLs47qIFwrSPaaJac75aQ6OqRlxbY21+SLQKpyTcPMnGwELyXXaqn
-	 3IWK/zPQIfjMdELnNqFfOwYib6abZ5+8OLwromsjUJED5fOgfZrEJYZvsP7DKjV9Ul
-	 osFYc73ZL2no++j5n/HxJzAowpTlXWl1zPwZy7uw=
+	b=iW+LxXsac5EqeYp4aDc+iVJN3gHAeYzDn/Ej5x3b0bELtqPopanl/6NCjBSeQBGXW
+	 q2wVR4Tt/YF7nK/pTYlXXjuJFe8229k4BL1IfFvyYZdeMd8dxrQ5Ph8Dh1tzeM8uQC
+	 G/laYfpo503MgLAaQvIajOpSo3vpqQaeMGl5NJ4k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 359FCF80249;
-	Fri, 30 Oct 2020 20:41:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 972B4F801D5;
+	Fri, 30 Oct 2020 20:51:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C30FF80272; Fri, 30 Oct 2020 20:41:39 +0100 (CET)
+ id CAFB3F80212; Fri, 30 Oct 2020 20:51:39 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81882F80107
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 20:41:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81882F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03D21F80107
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 20:51:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03D21F80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EiRFCM8k"
+ header.b="oTHOmNUY"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EE76820739;
- Fri, 30 Oct 2020 19:41:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E07C220729;
+ Fri, 30 Oct 2020 19:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604086894;
- bh=6APAouS5gTipcXWfVkIabBDcftgnh4LjNXjLSb8L+3Q=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=EiRFCM8k8ht84bI9je+gxuuqS1xxj9UReHpl8DG7oDaMD9NFD9ryzM+koPnR1JAwt
- SWA+uenTovAUvAka7GgmBntTLIZvYAqKDbmIHVWnq+cgfMJ90b512IV9duTXkNCWLR
- AAiG2waZw5dXLwpc04+lk2nQY6FrCNH8YncVdmGI=
-Date: Fri, 30 Oct 2020 19:41:27 +0000
+ s=default; t=1604087494;
+ bh=9ZRCCkWjnZUueRC68oDdNBqS1TZdbPgE5YZdnDRB3/I=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=oTHOmNUYOEfKVnR1QCvHebYO0x6lLtMcGFbixpY00xTMVVFOPc1vAwJDHa6tZ11RA
+ bUb93qwcWheji5sX/+n/pBmwmijYJsVttdKxHVEaXsB9j3aD0njQdRUrx3oZytSock
+ rhikceoV39pm7hIacRRfTyi/g/4tZ0SpgTxah6qc=
+Date: Fri, 30 Oct 2020 19:51:27 +0000
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <20201030170559.20370-1-brent.lu@intel.com>
-References: <20201030170559.20370-1-brent.lu@intel.com>
-Subject: Re: [PATCH v2 0/2] Add rt1015 support to CML boards
-Message-Id: <160408688150.11950.1006967503782392855.b4-ty@kernel.org>
+To: =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
+Subject: Re: [PATCH v10 14/15] dt-bindings: sound: sun4i-i2s: Document H3
+ with missing RX channel possibility
+Message-ID: <20201030195127.GM4405@sirena.org.uk>
+References: <20201030144648.397824-1-peron.clem@gmail.com>
+ <20201030144648.397824-15-peron.clem@gmail.com>
+ <20201030181935.GJ4405@sirena.org.uk>
+ <CAJiuCccAjEHX4BmL9A81EwM_xnHTPVyHu3BOPGKKUQ=1HNaZGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Jason Yan <yanaijie@huawei.com>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Fred Oh <fred.oh@linux.intel.com>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="QqzFzR/RUlLahzby"
+Content-Disposition: inline
+In-Reply-To: <CAJiuCccAjEHX4BmL9A81EwM_xnHTPVyHu3BOPGKKUQ=1HNaZGw@mail.gmail.com>
+X-Cookie: Blow it out your ear.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree <devicetree@vger.kernel.org>,
+ Jernej Skrabec <jernej.skrabec@siol.net>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Rob Herring <robh@kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, Takashi Iwai <tiwai@suse.com>,
+ Maxime Ripard <mripard@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,45 +101,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 31 Oct 2020 01:05:57 +0800, Brent Lu wrote:
-> First patch adds tdm 4-slot 100fs DAI setting to avoid jitter of using
-> 64fs on CML boards. Second patch is a DMI quirk for HP Dooly.
-> 
-> Changes since v1:
-> -Add comment on Dooly's DMI quirk
-> 
-> Brent Lu (2):
->   ASoC: intel: sof_rt5682: Add support for cml_rt1015_rt5682
->   ASoC: intel: sof_rt5682: Add quirk for Dooly
-> 
-> [...]
 
-Applied to
+--QqzFzR/RUlLahzby
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Oct 30, 2020 at 08:05:31PM +0100, Cl=E9ment P=E9ron wrote:
 
-Thanks!
+> But basically for the next dt-bindings change you will prefer somethings =
+like:
+> "ASoC: dt-bindings: sun4i-i2s: Document H3 with missing RX channel possib=
+ility"
 
-[1/2] ASoC: intel: sof_rt5682: Add support for cml_rt1015_rt5682
-      commit: 35249a5684fd01377bb40e20b8a604774cb073d8
-[2/2] ASoC: intel: sof_rt5682: Add quirk for Dooly
-      commit: bdd088ce5bfd32b95ab1bd90b49405e7c1f1fff5
+Yes.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--QqzFzR/RUlLahzby
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cbr4ACgkQJNaLcl1U
+h9AqCQf9E93+zMG/HSEdhPKPqXgjzUt1swTeI7YiMio/V6bPjwLCeRSCS0UAwmQc
+JEAcRVumyz7G4UhJFyHpbqdVhoXWJXKScO9yw7YfddlWjFfPUd4L3yQWsM1tIwyh
+mHqxntSNQFqxetoi1joWEfT0y4n7t5zU/CZw747lwj8yJiv/L37FD4Y4KTXVSh9D
+c7nElGLJdxSw4oSztS2sdbZp9QoZQRmIrcIjq4HCYhpRh2vvKm6WhBR0cSIE6sle
+mEwrO2rH6Wu8Wb1H77WBB7apG2VAzp0nczFXEj14Zr+OyQcnHwHHMqkBk06l+XbH
+iO7qVPiQIlNQKYGvC0ToiHDGrFcZYQ==
+=BIOs
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--QqzFzR/RUlLahzby--
