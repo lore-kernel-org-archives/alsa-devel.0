@@ -6,68 +6,57 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF7F1C4742C
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 00:49:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 927F8C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 00:57:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0BA02072C
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 00:49:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A0F9B2071A
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 00:57:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="goUpymgx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0BA02072C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t3L/sJZL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0F9B2071A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2204950;
-	Fri, 30 Oct 2020 01:48:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2204950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CA1885D;
+	Fri, 30 Oct 2020 01:56:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CA1885D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604018987;
-	bh=/o6Sv8kmlQQ3eVtJVMJQe9u8A0VYJoBH4x8xznPUo5Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=goUpymgxtfR9HRxzrn3VrDyZoIRSLR58p3zGHGNq46g8o43otg7giIrQhsgHPz4zN
-	 0JhMD4L3jhYZyD1CWgDdeVwelaxBh3FdCArHDa2IILeEZTWdxxFKOpNjSWMqlYLJ7Y
-	 yChP8n+s6ShsY8SjxCrw9CBNkM4MqxmejY1gbv28=
+	s=default; t=1604019449;
+	bh=OLbmqrkt3RhLrhi8+KDyIeDopB7rq7xoEvYB8paYyzQ=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=t3L/sJZLow6c1koKFlZzN+15hP3mGdDaTV627lEEy05JI67pVPZiqk0eiicZnid3+
+	 yji+8c/hlb2NeXCtDVWPwDrycDWobnS3VpIJDc9z+p9maYlmT4HU1ySkgVBPFu4eQK
+	 19ISappPHV/cODTeEwInaYcHGSB6vpiUCL5X/h4Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A1A1F801D8;
-	Fri, 30 Oct 2020 01:48:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE867F801D8;
+	Fri, 30 Oct 2020 01:56:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D24EF8020D; Fri, 30 Oct 2020 01:48:55 +0100 (CET)
+ id 2202FF8020D; Fri, 30 Oct 2020 01:56:37 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8CF06F80095
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 01:48:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CF06F80095
-Date: 30 Oct 2020 09:48:45 +0900
-X-IronPort-AV: E=Sophos;i="5.77,431,1596466800"; d="scan'208";a="60986413"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 30 Oct 2020 09:48:45 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 654E8F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 01:56:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 654E8F800FF
+Date: 30 Oct 2020 09:56:31 +0900
+X-IronPort-AV: E=Sophos;i="5.77,431,1596466800"; d="scan'208";a="60987003"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 30 Oct 2020 09:56:31 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B89AF4009423;
- Fri, 30 Oct 2020 09:48:45 +0900 (JST)
-Message-ID: <87a6w4mtjh.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id D58F2413B646;
+ Fri, 30 Oct 2020 09:56:31 +0900 (JST)
+Message-ID: <878sbomt6j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 1/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
-In-Reply-To: <s5hsg9xt1vq.wl-tiwai@suse.de>
-References: <87wnzcfnkk.wl-kuninori.morimoto.gx@renesas.com>
- <87v9ewfnj9.wl-kuninori.morimoto.gx@renesas.com>
- <699d5b33-d88f-ba08-7d63-61ec9fbdc5d8@linux.intel.com>
- <87mu06djl8.wl-kuninori.morimoto.gx@renesas.com>
- <87imatex9q.wl-kuninori.morimoto.gx@renesas.com>
- <s5hsg9xwm0h.wl-tiwai@suse.de>
- <200088ab-d186-4c28-ea4a-ed92c105d187@linux.intel.com>
- <s5hsg9xt1vq.wl-tiwai@suse.de>
+Subject: [PATCH v2 0/2] ASoC: soc-compress: tidyup STREAM vs COMPRESS
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,27 +73,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+Hi Mark
 
-> > > Right, such uapi can't be removed.
-> > >
-> > > Essentially both compress and PCM definitions are identical, and can
-> > > be never different because of ABI compatibility, which means it's safe
-> > > to mix both variants in the code.  If you're unsure, we may add
-> > > BUILD_BUG_ON() to check the coincidence of both values.
-> > 
-> > 
-> > In case we add this BUILD_BUG_ON(), can we keep the code as is then,
-> > there's no need to convert values?
-> 
-> Unless any strong type is used, it should be fine as is.
-> BUILD_BUG_ON() would catch if the value is changed inconsistently.
+These are v2 of tidyup patch-set for SNDRV_PCM_STREAM_xxx and SND_COMPRESS_xxx.
+soc-compress is using both SNDRV_PCM_STREAM_xxx and SND_COMPRESS_xxx, but mixed use.
+This is confusable, but no problem. Because these are defined as UAPI and
+are using same value.
+This patch-set make sure these are same value.
 
-OK, Thanks.
-v2 Will use BUILD_BUG_ON().
+Kuninori Morimoto (2):
+  ASoC: soc-compress: tidyup STREAM vs COMPRESS
+  ASoC: soc-compress: assume SNDRV_PCM_STREAM_xxx and SND_COMPRESS_xxx are same
 
-Thank you for your help !!
+ sound/soc/soc-compress.c | 63 +++++++++++++++-------------------------
+ 1 file changed, 23 insertions(+), 40 deletions(-)
 
-Best regards
----
-Kuninori Morimoto
+-- 
+2.25.1
+
