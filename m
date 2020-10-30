@@ -2,85 +2,119 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1FF7C4363A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 15:15:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98C22C55178
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:12:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8787C20756
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 15:14:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 994262151B
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 16:12:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="czqzYjWz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JAmO4VFc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8787C20756
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QhBzAA1r";
+	dkim=temperror (0-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="KM0eAH89";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EEJJYkcx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 994262151B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D17115F2;
-	Fri, 30 Oct 2020 16:14:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D17115F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 132D215F9;
+	Fri, 30 Oct 2020 17:11:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 132D215F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604070896;
-	bh=pPiXS2mW1/f2W1unM/FQYVWjCc8CEmjH+3MTSNc4q9M=;
+	s=default; t=1604074356;
+	bh=I8F4Vvc3wYb2t0jaStGMcb1u5A3f20Qozjl95gbByVE=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=czqzYjWz1vp45xGGHXXOJazAvvkk4ZRLrj587WlevxEXZs+3/A5qbQp33ohtlsj0G
-	 0qvYBmTqH34BaZifmOs9miarobFmI09KKjMH9UyqtOPSwELmRIV5iE24N4c8YoUo+N
-	 65jf0+Kj4m5Y/wnXQDLovZjaYFwRPRx94fcw51NE=
+	b=QhBzAA1rbhyAMlyDwV7r9S93b/rsm7hQl+jQj/UHmYK+HB7ggzsD+VKnMrzjBhCNO
+	 ludMQPfWxzG0cdFlDladY7ZOQfkkhhaRVG26yc5WrFFTyuxch+ovTYD8PzQsvIOJvJ
+	 yuo0PfeRgAbIrOM5R5QxdPZl27jfM4Bip8W/gOMM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 808BBF80107;
-	Fri, 30 Oct 2020 16:14:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 931C9F801D5;
+	Fri, 30 Oct 2020 17:11:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03CFAF801D5; Fri, 30 Oct 2020 16:14:04 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 98839F80212; Fri, 30 Oct 2020 17:11:44 +0100 (CET)
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com
+ [64.147.123.27])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2384EF800C0
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 16:14:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2384EF800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23A76F80107
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 17:11:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23A76F80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JAmO4VFc"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 02A6E2076E;
- Fri, 30 Oct 2020 15:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604070837;
- bh=pPiXS2mW1/f2W1unM/FQYVWjCc8CEmjH+3MTSNc4q9M=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JAmO4VFcfTr29sqAFL//ZYeZJI/+LWSzSjAPQj8ivi5D0Pd59FowG6y+BTeg3X+Ze
- 4N//F7KpzJiQJcnE3Tf+IkaqJ+yIU2UHiMhTRGVNHFWeQqWXmwv2ZiA3nO8ms5uHHw
- Y2ZDFHqgjW+BMV+nqE2RhrS9GE8q2qm+MGQCEvjg=
-Date: Fri, 30 Oct 2020 15:13:50 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: Re: [PATCH v3 4/9] ASoC: mediatek: mt8192: support add in platform
- driver
-Message-ID: <20201030151350.GG4405@sirena.org.uk>
-References: <1603526339-15005-1-git-send-email-jiaxin.yu@mediatek.com>
- <1603526339-15005-5-git-send-email-jiaxin.yu@mediatek.com>
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="KM0eAH89"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="EEJJYkcx"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailnew.west.internal (Postfix) with ESMTP id BA37EC0C;
+ Fri, 30 Oct 2020 12:11:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Fri, 30 Oct 2020 12:11:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=I8F4Vvc3wYb2t0jaStGMcb1u5A3
+ f20Qozjl95gbByVE=; b=KM0eAH89hcGm74JgpqCVReajJ5sitCSIfF9KokHfMzH
+ FJ540m6wtAPhsDozzz+I81AFzGNx9Fta1ioujkGze7oIEbT58kE3OjGxD9hhhRR9
+ MIhsEFi9CGE3/STJYeTxUoChf3e6fe524G+b9QjHtEQJS8tb38GOrt9pKnRM79J9
+ v29QJIspqJEc+IOIg164Z6Xa1bQkUnESaizZxhg8GFiuBp/Cewx7fuWtmO2B34kq
+ 9bpVvKZMly3rx2dRMFf1vUZ5GLY+ZPNxmV7FxRgn7Yk3Athr0246JQS8fAWIm+il
+ gmrF3WII/39h/SlTn0MWyX9Z9jMfK9S+OVOWRXUvz1g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=I8F4Vv
+ c3wYb2t0jaStGMcb1u5A3f20Qozjl95gbByVE=; b=EEJJYkcx0Wxx4TTZNb96f+
+ AhCGRm4Yajet73OZz3G87tcxKYIIadEqyjyv08LfTNPaj9tDaHMeNY87uPsYLeLA
+ AQNOQ7RIQdyINRjDXGdrDJgRETxMr6TfNl71pAB28lMNO4/Oyvi0fnu+cA4044ad
+ KXx367lbvvyax9gYyQXkUM1wUeczrCd1tyHGsq7PSKkHq9hBbbYhS6bzB7jzQPu5
+ cOSw5ZTip9Pofpayo+/RWRe0P7acmS3IfRh1B9+GpLJBS0OM3ypfv1iD+rFE3qfm
+ Gbhu+T/lVmSoClCIC7BoG9ZfJBD/EUbTuJeQHbUac94DPFNMTbclbeNhTo7aIXHg
+ ==
+X-ME-Sender: <xms:NDucX8tQx8dGb5cvVDDmYQ5HE6Hh1mrvK2dNFFVGg5lPBYj2COLGLw>
+ <xme:NDucX5fkje_WvE3LA_rL41kHZPLXohVHhzDvxSfHMtGgEJc_QMmk_m2BSfVRxEoOA
+ x043uFSJfQIvNoXerU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleehgdekudcutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+ ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+ gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+ veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+ grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:NDucX3xWXh_BVrIGSOeflhr3mwvh_PbGv8_f1eDBGzLMJVMpBXHoUQ>
+ <xmx:NDucX_OmEaT0TQtR5Zm-i_K-FRXLF4PgYCSIO2_6XCsKRvh4Tlki4A>
+ <xmx:NDucX88rypVhIP8XD-kMFAgL26qmSRBxYm2JFAC6rx46Bsq428tg2g>
+ <xmx:NzucX3WXDyla1eE7ywu2msQ1C_n0Dwgbw-bk8XAYZU1wg35y8FA2dLiT0ds>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 82E243280059;
+ Fri, 30 Oct 2020 12:11:32 -0400 (EDT)
+Date: Fri, 30 Oct 2020 17:11:31 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Subject: Re: [PATCH v10 01/15] ASoC: sun4i-i2s: Fix lrck_period computation
+ for I2S justified mode
+Message-ID: <20201030161131.dlzzpy3atiiddx4n@gilmour.lan>
+References: <20201030144648.397824-1-peron.clem@gmail.com>
+ <20201030144648.397824-2-peron.clem@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="+1TulI7fc0PCHNy3"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="fpfjkluh6h53itoj"
 Content-Disposition: inline
-In-Reply-To: <1603526339-15005-5-git-send-email-jiaxin.yu@mediatek.com>
-X-Cookie: Blow it out your ear.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, shane.chien@mediatek.com,
- Bicycle.Tsai@mediatek.com, tiwai@suse.com, tzungbi@google.com,
- robh+dt@kernel.org, linux-mediatek@lists.infradead.org, Trevor.Wu@mediatek.com,
- p.zabel@pengutronix.de, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20201030144648.397824-2-peron.clem@gmail.com>
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-sunxi@googlegroups.com, Takashi Iwai <tiwai@suse.com>,
+ Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,38 +131,39 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---+1TulI7fc0PCHNy3
-Content-Type: text/plain; charset=us-ascii
+--fpfjkluh6h53itoj
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 24, 2020 at 03:58:54PM +0800, Jiaxin Yu wrote:
+On Fri, Oct 30, 2020 at 03:46:34PM +0100, Cl=E9ment P=E9ron wrote:
+> Left and Right justified mode are computed using the same formula
+> as DSP_A and DSP_B mode.
+> Which is wrong and the user manual explicitly says:
+>=20
+> LRCK_PERDIOD:
+> PCM Mode: Number of BCLKs within (Left + Right) channel width.
+> I2S/Left-Justified/Right-Justified Mode: Number of BCLKs within each
+> individual channel width(Left or Right)
+>=20
+> Fix this by using the same formula as the I2S mode.
+>=20
+> Fixes: 7ae7834ec446 ("ASoC: sun4i-i2s: Add support for DSP formats")
+> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
 
-> +/* mtkaif dmic */
-> +static const char * const mt8192_adda_off_on_str[] = {
-> +	"Off", "On"
-> +};
-> +
-> +static const struct soc_enum mt8192_adda_enum[] = {
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(mt8192_adda_off_on_str),
-> +			    mt8192_adda_off_on_str),
-> +};
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Thanks!
+Maxime
 
-This should be a standard boolean control with a name ending in Switch
-rather than an enum.
-
---+1TulI7fc0PCHNy3
+--fpfjkluh6h53itoj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cLa0ACgkQJNaLcl1U
-h9B3mQf+IE/V4fVVJUw8bu2K5OgDC+dzzOkFhc1RMgevIXZErAn7w1rRfNixP5+p
-bxPBf8cJgi7WP90wmkGlqRSZMAte4s+T2Bv85D+JadK8HAvJVUifXZTIunErmzyk
-HTqxun6K6Fi2Ud61b8h51dMZA/XlBFfkDg4rgb+uAnMQ8gxmxkPjfhDjKqN9N0gt
-Ymr+3RsmyETHFq37rS9k1RRb3OdkSVZpnHONfcLsJ1s/lGiS1XMp7b2dJskqotnN
-IFeSqpoDfpAXhCioX3Wurw3kHAXaqByDIIq5Pyg9SIBFk5mczZEsCSrMcK8nbTG3
-+iZkU7z8BsjBmysZsO4vr/hY6JLPVg==
-=3vj9
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5w7MwAKCRDj7w1vZxhR
+xZ5FAP4xHWt9NXh9CE1ls2RUHb+wsO2JxSZ2VAcW/7oL3xdsYAD/aOAW4nVDE3be
++/sQDYsXuA2f+QvTA8TR19kiWsovUAo=
+=1lV8
 -----END PGP SIGNATURE-----
 
---+1TulI7fc0PCHNy3--
+--fpfjkluh6h53itoj--
