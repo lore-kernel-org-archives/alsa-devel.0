@@ -2,85 +2,83 @@ Return-Path: <SRS0=7OoL=EF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23C07C00A89
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 17:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 671B9C00A89
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 17:55:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D67172083B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 17:18:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A35EF20724
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Oct 2020 17:55:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oyLgXCC1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D67172083B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZmctYNbI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="zDy+5mup"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A35EF20724
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21E5B1663;
-	Fri, 30 Oct 2020 18:18:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21E5B1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id B20381612;
+	Fri, 30 Oct 2020 18:54:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B20381612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604078338;
-	bh=PoxswvhHn5xOV4gcbHvYMA420DBiT0mALEIcLoI733k=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1604080530;
+	bh=WyIRFsjXv5w+8VVFK7eNxhmPJtSeLSv3UXi+yyCplRM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oyLgXCC1Q9Cwq+2fYkIPO2qURa/DhhImgWMCeFETIdtJGbXQuu6CM30IQoHfBXCOw
-	 bS1DG73xUvNMJZuiC/OeTLEVQObxoeOgfiOgXJUyQRcNNhHnl1sI6k+FKl5bmexJPw
-	 2RQuRqdH4b542S2ZZuhxiyE3tasgmnmjQnC7P96s=
+	b=ZmctYNbI1wFEFJF+buOofh8avenEdZVN4A8p41Z1l1yTynyH/vy5IFX0nbxxWsRZ1
+	 R13QoTenlv1F7zHCsRlp3yFd/2xQ0j250dW4wAcHVo8mRmR3fnbOtqvE7u4Frq43WO
+	 ABIQ1vh8hyRtNBN9IWqffVG8jqRF7EUAbtTT7nWM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64B24F8027C;
-	Fri, 30 Oct 2020 18:17:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4891F800FF;
+	Fri, 30 Oct 2020 18:54:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2438BF8028B; Fri, 30 Oct 2020 18:17:22 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 565BEF80212; Fri, 30 Oct 2020 18:54:38 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49263F80107
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 18:54:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49263F80107
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="zDy+5mup"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F8EBF8027C
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2020 18:17:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F8EBF8027C
-IronPort-SDR: pvW9hIjh6T+Mqw0fkUNKPvgOEGORhAu/vDJ9i7aRby20RmexzvJKOBuPbG6yUq3i1YIf5RjcF7
- mbdxM4Pu4YwA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9790"; a="155614094"
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; d="scan'208";a="155614094"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2020 10:17:11 -0700
-IronPort-SDR: 1kklI0b9O1wKMbbpvK/ZW2KDzAGwZBabH/P6SCpUgvKOB81gxahNsi0TinDJ1ft+YdwxAcZKWJ
- c3fhczMXsJaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,434,1596524400"; d="scan'208";a="469584718"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
- by orsmga004.jf.intel.com with ESMTP; 30 Oct 2020 10:17:08 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/2] ASoC: intel: sof_rt5682: Add quirk for Dooly
-Date: Sat, 31 Oct 2020 01:05:59 +0800
-Message-Id: <20201030170559.20370-3-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201030170559.20370-1-brent.lu@intel.com>
-References: <20201030170559.20370-1-brent.lu@intel.com>
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Jason Yan <yanaijie@huawei.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
- Yong Zhi <yong.zhi@intel.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id 63DD920724;
+ Fri, 30 Oct 2020 17:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1604080471;
+ bh=WyIRFsjXv5w+8VVFK7eNxhmPJtSeLSv3UXi+yyCplRM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=zDy+5mupTyPqwhFZOW7mD744CDzWz58CLBw1/RPEp2gnxtjY6r4JFNj/VDvnlhhp+
+ pk2QAaOyZ5gyxO4gIX+zwUMJRMhleQKzIkIO+q1di43F49Ru8IN/q+vSv4SsFaJhJg
+ hCRnoBCCokXd8NYCs+yLUMy1VE0MThP5FkMvpdOA=
+Date: Fri, 30 Oct 2020 17:54:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH v3 0/9] ASoC: Mediatek: Add support for MT8192 SoC
+Message-ID: <20201030175423.GI4405@sirena.org.uk>
+References: <1603526339-15005-1-git-send-email-jiaxin.yu@mediatek.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="qLni7iB6Dl8qUSwk"
+Content-Disposition: inline
+In-Reply-To: <1603526339-15005-1-git-send-email-jiaxin.yu@mediatek.com>
+X-Cookie: Blow it out your ear.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, shane.chien@mediatek.com,
+ Bicycle.Tsai@mediatek.com, tiwai@suse.com, tzungbi@google.com,
+ robh+dt@kernel.org, linux-mediatek@lists.infradead.org, Trevor.Wu@mediatek.com,
+ p.zabel@pengutronix.de, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,45 +94,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This DMI product family string of this board is "Google_Hatch" so the
-DMI quirk will take place. However, this board is using rt1015 speaker
-amp instead of max98357a specified in the quirk. Therefore, we need an
-new DMI quirk for this board.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+--qLni7iB6Dl8qUSwk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 7701957e0eb7..e7d9a82ca70d 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -100,6 +100,24 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
- 					SOF_RT5682_MCLK_24MHZ |
- 					SOF_RT5682_SSP_CODEC(1)),
- 	},
-+	{
-+		/*
-+		 * Dooly is hatch family but using rt1015 amp so it
-+		 * requires a quirk before "Google_Hatch".
-+		 */
-+		.callback = sof_rt5682_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Dooly"),
-+		},
-+		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_MCLK_24MHZ |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015_SPEAKER_AMP_100FS |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
- 	{
- 		.callback = sof_rt5682_quirk_cb,
- 		.matches = {
--- 
-2.17.1
+On Sat, Oct 24, 2020 at 03:58:50PM +0800, Jiaxin Yu wrote:
+> This series of patches adds support for Mediatek AFE for MT8192 SoC. At the same
+> time, the calibration function of MT6359 is completed with real machine driver.
+> The patch is based on broonie tree "for-next" branch.
 
+I had some small comments but they were all pretty minor - overall this
+is basically fine once those are addressed.
+
+--qLni7iB6Dl8qUSwk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+cU04ACgkQJNaLcl1U
+h9C1ggf/YtHZAAqO9N519wguyC9a/9FWSK1GJNx4NkUmdW2O/CX/iCOyQUxNzKnt
+uZTt9o6BWcs/GpIk8tDx5KtSsZc+fciFLz8wqlXmu5hgEgJ/pT9+5Wv9GSnAfiAQ
+wkY98BDiiTXDFZqUUfkbMOW/gDjuCWhWYwxZCS7AVU+v3+3Mm6kw4fsbwAk2anUo
+U98Sjh/26RgPpUaPXGJR2gCGhzYwy0aYodnKxEdsgF/5mhXyzjpG+ps/G1xfWDEe
+Nk5T7UoQCGAwaWZYVc4DV4dk0jVGZR7h5Cywf97pUYaANBV4UUGwdH2Ssqt0tOc2
+g1v0F4GmGt5dT98mnx4H6+Xiw3wiaw==
+=FE4p
+-----END PGP SIGNATURE-----
+
+--qLni7iB6Dl8qUSwk--
