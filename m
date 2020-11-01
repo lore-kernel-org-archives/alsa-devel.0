@@ -7,68 +7,67 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ACACC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 20:21:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B12E6C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 20:21:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8166320723
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 20:21:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B60C20760
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 20:21:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AZ8v7Pda";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DVgRRFf+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8166320723
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i5fqWwHH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HuM41gDs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B60C20760
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1365B16FF;
-	Sun,  1 Nov 2020 21:20:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1365B16FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id B33FE16F8;
+	Sun,  1 Nov 2020 21:20:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B33FE16F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604262074;
-	bh=GknPAsGox6eqIGBWl7y4981lZX9Czt/oaEu2JVpxmpQ=;
+	s=default; t=1604262085;
+	bh=Q9+DNPy01/d6QOTNLTpXmnb96hr2wRSaRSliuVZgSfw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AZ8v7PdaA9v1hBCphnDItmksnPjLG2KEt/FM2JPyPngN7rlIKNrLRw23OAXex9Lax
-	 /elFjdZ+1hDMzIBekQbDcH9IROdTWV9CQdyxrbaLYfGZYaG0DOhSuRymGb5ZSxmIUW
-	 0pnx9bSQhmNKXNCO7pQfGXghUyJP2W7uPYIw8h+c=
+	b=i5fqWwHHuHW23CdwCZWsTW4JO/3wSlqXrCpvSwVqTrtd7qjDg2BWOCLN4FqB74SoL
+	 CzKUvFnmRlC+jZoRnqOuNMaCt052mMx9b4qQucMWeo6WbJuAQwZAs3i1EB/RJgDE3m
+	 aKnKukyUzEVYFUEpKX/rZ+A60l6AoqE5pHe+6qjY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05999F80520;
-	Sun,  1 Nov 2020 21:16:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C76ADF80527;
+	Sun,  1 Nov 2020 21:16:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17343F8051B; Sun,  1 Nov 2020 21:16:25 +0100 (CET)
+ id 27EA6F80528; Sun,  1 Nov 2020 21:16:28 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60B29F804E6
- for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2020 21:16:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60B29F804E6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14FC4F80524
+ for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2020 21:16:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14FC4F80524
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DVgRRFf+"
+ header.b="HuM41gDs"
 Received: from localhost (host-213-179-129-39.customer.m-online.net
  [213.179.129.39])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A134B2224F;
- Sun,  1 Nov 2020 20:16:19 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id F1A5A22253;
+ Sun,  1 Nov 2020 20:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604261780;
- bh=GknPAsGox6eqIGBWl7y4981lZX9Czt/oaEu2JVpxmpQ=;
+ s=default; t=1604261783;
+ bh=Q9+DNPy01/d6QOTNLTpXmnb96hr2wRSaRSliuVZgSfw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DVgRRFf+rDadTypKXvXbiQRFt49saePqDEzOMbaEdx7V75t4tKXpYiBb9yt3bT24N
- J5vtQ1VB75NiDsuG3P9Bkw5ut6X12hTaaheWu7DNsMIJkkp8Tra1FRReGs42C4zeyn
- 7A0gE9q++k4v0iX6jh1Bv2lmFqPZELPhLi4ixatk=
+ b=HuM41gDsnUSP+oOKwGhvqCR8H8RP66Er0wiLHxdgacfs+Gpf9awx8liietvFpcOOk
+ MxaypMf0W+Y5cv14JFrH03yAeA87saQiAmXDqQiSlPJoXafF6nFNnXrVlxihv3dXNz
+ hGoki06zj7bh2hXPgvc/ArR1dcSypdVPpu3MfidA=
 From: Leon Romanovsky <leon@kernel.org>
 To: Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@nvidia.com>,
  gregkh <gregkh@linuxfoundation.org>
-Subject: [PATCH mlx5-next v1 02/11] net/mlx5: Properly convey driver version
- to firmware
-Date: Sun,  1 Nov 2020 22:15:33 +0200
-Message-Id: <20201101201542.2027568-3-leon@kernel.org>
+Subject: [PATCH mlx5-next v1 11/11] RDMA/mlx5: Remove IB representors dead code
+Date: Sun,  1 Nov 2020 22:15:42 +0200
+Message-Id: <20201101201542.2027568-12-leon@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201101201542.2027568-1-leon@kernel.org>
 References: <20201101201542.2027568-1-leon@kernel.org>
@@ -101,40 +100,135 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-mlx5 firmware expects driver version in specific format X.X.X, so
-make it always correct and based on real kernel version aligned with
-the driver.
+Delete dead code.
 
-Fixes: 012e50e109fd ("net/mlx5: Set driver version into firmware")
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/ib_rep.c | 31 +++++++----------------------
+ drivers/infiniband/hw/mlx5/ib_rep.h | 31 -----------------------------
+ 2 files changed, 7 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 8ff207aa1479..71e210f22f69 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -50,6 +50,7 @@
- #ifdef CONFIG_RFS_ACCEL
- #include <linux/cpu_rmap.h>
- #endif
-+#include <linux/version.h>
- #include <net/devlink.h>
- #include "mlx5_core.h"
- #include "lib/eq.h"
-@@ -233,7 +234,10 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
- 	strncat(string, ",", remaining_size);
+diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
+index 9810bdd7f3bc..a1a9450ed92c 100644
+--- a/drivers/infiniband/hw/mlx5/ib_rep.c
++++ b/drivers/infiniband/hw/mlx5/ib_rep.c
+@@ -13,7 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+ 	struct mlx5_ib_dev *ibdev;
+ 	int vport_index;
 
- 	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
--	strncat(string, DRIVER_VERSION, remaining_size);
+-	ibdev = mlx5_ib_get_uplink_ibdev(dev->priv.eswitch);
++	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
+ 	vport_index = rep->vport_index;
+
+ 	ibdev->port[vport_index].rep = rep;
+@@ -74,6 +74,11 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+ 	return ret;
+ }
+
++static void *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
++{
++	return rep->rep_data[REP_IB].priv;
++}
 +
-+	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
-+		 (u8)(LINUX_VERSION_CODE >> 16), (u8)(LINUX_VERSION_CODE >> 8),
-+		 (u16)(LINUX_VERSION_CODE & 0xff));
+ static void
+ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
+ {
+@@ -91,40 +96,18 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
+ 		__mlx5_ib_remove(dev, dev->profile, MLX5_IB_STAGE_MAX);
+ }
 
- 	/*Send the command*/
- 	MLX5_SET(set_driver_version_in, in, opcode,
+-static void *mlx5_ib_vport_get_proto_dev(struct mlx5_eswitch_rep *rep)
+-{
+-	return mlx5_ib_rep_to_dev(rep);
+-}
+-
+ static const struct mlx5_eswitch_rep_ops rep_ops = {
+ 	.load = mlx5_ib_vport_rep_load,
+ 	.unload = mlx5_ib_vport_rep_unload,
+-	.get_proto_dev = mlx5_ib_vport_get_proto_dev,
++	.get_proto_dev = mlx5_ib_rep_to_dev,
+ };
+
+-struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+-					  u16 vport_num)
+-{
+-	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_IB);
+-}
+-
+ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+ 					  u16 vport_num)
+ {
+ 	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_ETH);
+ }
+
+-struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
+-{
+-	return mlx5_eswitch_uplink_get_proto_dev(esw, REP_IB);
+-}
+-
+-struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+-					   u16 vport_num)
+-{
+-	return mlx5_eswitch_vport_rep(esw, vport_num);
+-}
+-
+ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+ 						   struct mlx5_ib_sq *sq,
+ 						   u16 port)
+diff --git a/drivers/infiniband/hw/mlx5/ib_rep.h b/drivers/infiniband/hw/mlx5/ib_rep.h
+index 93f562735e89..ce1dcb105dbd 100644
+--- a/drivers/infiniband/hw/mlx5/ib_rep.h
++++ b/drivers/infiniband/hw/mlx5/ib_rep.h
+@@ -12,11 +12,6 @@
+ extern const struct mlx5_ib_profile raw_eth_profile;
+
+ #ifdef CONFIG_MLX5_ESWITCH
+-struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+-					  u16 vport_num);
+-struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw);
+-struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+-					   u16 vport_num);
+ int mlx5r_rep_init(void);
+ void mlx5r_rep_cleanup(void);
+ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+@@ -25,26 +20,6 @@ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+ 					  u16 vport_num);
+ #else /* CONFIG_MLX5_ESWITCH */
+-static inline
+-struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+-					  u16 vport_num)
+-{
+-	return NULL;
+-}
+-
+-static inline
+-struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
+-{
+-	return NULL;
+-}
+-
+-static inline
+-struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+-					   u16 vport_num)
+-{
+-	return NULL;
+-}
+-
+ static inline int mlx5r_rep_init(void) { return 0; }
+ static inline void mlx5r_rep_cleanup(void) {}
+ static inline
+@@ -62,10 +37,4 @@ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+ 	return NULL;
+ }
+ #endif
+-
+-static inline
+-struct mlx5_ib_dev *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
+-{
+-	return rep->rep_data[REP_IB].priv;
+-}
+ #endif /* __MLX5_IB_REP_H__ */
 --
 2.28.0
 
