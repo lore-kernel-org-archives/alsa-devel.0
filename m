@@ -1,101 +1,131 @@
-Return-Path: <SRS0=Ue9j=EG=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=+QmS=EH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D12DC388F9
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Oct 2020 11:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1253CC2D0A3
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 06:01:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29BC020731
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Oct 2020 11:40:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A3C6E22226
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 06:01:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bJE9F/qR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="MzPO9MZk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29BC020731
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ecP1K0/a";
+	dkim=pass (1024-bit key) header.d=nuvoton.onmicrosoft.com header.i=@nuvoton.onmicrosoft.com header.b="sCZ1cCfl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3C6E22226
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nuvoton.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84A3B166D;
-	Sat, 31 Oct 2020 12:39:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84A3B166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 142C61695;
+	Sun,  1 Nov 2020 07:00:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 142C61695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604144406;
-	bh=lwI65AlzGazZwxvIjte3MfnV/3o7x26JrigynfqZ8Ao=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1604210473;
+	bh=uhrLn1Yhkuw3+8BBk2Ptr1eSCFfzEWV6CGsfxzrfy3Y=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bJE9F/qRG56CNbh5PDlNJtABtpe6kEonqwRbS92nAk0vBJFQH74apcoDdzkW28pN2
-	 BOAc9CHGSWUTg8z6cvldo9GWRC27XLaj7smA2cGfl2vpuWYD1bf4TsnyfT6TDVI+BX
-	 7yRTbbL0IWEjGLfdTIeDbhWFZyhihN6NdGJrkrSE=
+	b=ecP1K0/aXIVeP7No5VtfExke/Ad85MzY6T7SWRi57NXcrWZuOl+K9gOOERWGFwQ/U
+	 2q7p50J28KrtKBK1NbptB90MhI8aKqeWabxRGSUn/xWokJsikB03yj7+oEC443Vduo
+	 k6CgqUgdUH9qG+Cj9X3Xf/s4L/e16p2oFN/urNjI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE2DCF801D8;
-	Sat, 31 Oct 2020 12:39:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75C97F8015F;
+	Sun,  1 Nov 2020 07:00:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2703FF8020D; Sat, 31 Oct 2020 12:39:05 +0100 (CET)
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
- [IPv6:2607:f8b0:4864:20::141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2F45BF8015F; Sun,  1 Nov 2020 07:00:20 +0100 (CET)
+Received: from APC01-HK2-obe.outbound.protection.outlook.com
+ (mail-hk2apc01on061a.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:febc::61a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7F4EF800FF
- for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2020 12:39:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7F4EF800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 687B4F80158
+ for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2020 07:00:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 687B4F80158
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="MzPO9MZk"
-Received: by mail-il1-x141.google.com with SMTP id v18so8837550ilg.1
- for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2020 04:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=iWr+b4d6vRwF0t5pomRiiNEuuSgjMZV6gdO6R0PGLGI=;
- b=MzPO9MZkXm8AlGd0bbcmenmj7NNR02MYFGX58iMzgPYBVdibEAsD6rhrnBbLTiSN2e
- QJ2+W9cgZrEAyuJKQuK8CSpJMY29IJKDaQEnU8V6duBohUzStWQhsAsy6k2z+6hSU12u
- ASW0Uzerm/BtVE/Ah1sBFrIxjkP3lrHBg9XwGiCigGkMGA3+4mY06kR6JZwSsXnonGrn
- eQwZ2wbLdZQokDrDN8o+VLv9+LBf6tOHq1JqxalVnAd1sENv2Pbv0tDw4quoHb2w6lY2
- rRQpLQ2F6ppixFa5jX8QaNEAX9JhEfoqJmr1Ocgvpg+tgLg4XYSYqPpx94/Mqhv9JKmC
- FDKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=iWr+b4d6vRwF0t5pomRiiNEuuSgjMZV6gdO6R0PGLGI=;
- b=P8K1/QyE3sCmXEC9nz1WTO+Ieorfo2RYBJw/KuuLm8Pn6gbZ+u5XoCVTmUIKgvqY+0
- 5wWTRt/ZfQGzLZ3jTbgefpiaEfkbSOB+5GYwcfL4a/2z9n0mJxJyabmRpJVRIizP3//Z
- JFK95g/D5yuQTaRlIw0jS2qiswYY/mWnHGDZHBT207Kssn5IF9aLXM6bk71nupQ+EPPC
- 3w9TzKpBYqQB/EG8WaYd5/uJumMEQJxKY1m/rMzaebLUi7FfuwOAcAc+8ZpAERoZfHoC
- yWh5pXZADHQYG1g1r9+yRalAN61FUBpCn35aYQtUT2dFI7A9VOczG+crFhEYjg3LUwsN
- Vl+A==
-X-Gm-Message-State: AOAM533fR9441kXd0K88vCEhFsGyz68yUcqEyhFGEccF8+u49bSOc77L
- +oDW8w67I9/X8b/YRGzQkEiHjRyAE/ZWXQVbsz12YQ==
-X-Google-Smtp-Source: ABdhPJxbtHT4iEyYwAkR4uBqXRY1zR99kXZQu5XEK1tkG0oSS3Wtm3zR0200hnrm2sMfkJJaP+DMIB2xXM3V68/vRfQ=
-X-Received: by 2002:a92:480e:: with SMTP id v14mr4468180ila.218.1604144338898; 
- Sat, 31 Oct 2020 04:38:58 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=nuvoton.onmicrosoft.com
+ header.i=@nuvoton.onmicrosoft.com header.b="sCZ1cCfl"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CFSOzrgn+8Znm4P7QRhSKs89A6Ia66hVVMZX7AOPaGP7zVVDeP9ajyPoUsNAZX0TZzJsY4C0Zftdd40NDJuXOtoE+e0NbwoZFiqcjb0SuLgsxtPaOZh5Fxc8S/sxjDnMver+C8C8EtoSETrn9tQSoO7QefomGMOCTPwu2DOBIp6fhgszo8UaYK5smDwDfpIznTdIvUj5IviMSggoXYb8Wq4d5CjX7TZWDgRoMisTMLYyfoSqwE5Ogo9EyHI5LcT1JW+m334x/FLGPGUSzSGMQuhqyJNUzK1HQ5pgMaIZsM4NYgKjXqtgS06c9eJ92ph5GxvUfFikSImGhV9T2M18VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g+I7QgzOTAT9x1DEBYVgmetxqxrP/tQWYy7vgmRAkyo=;
+ b=Bg+ezylFA6RgXVOklMSCmTcmn19l2wNHFqiLaHdEUJL2C5FM93X+RrmuWXo8+P13rZN/kocA1Sk1oZ2TYC11mpLpNcGaoNSY7pSBWDDRaRs6VeYoBL6wBVSoc1KekdaKRrzfiKWUQ/lUSWP0QEDpYgyjb95XgCuXK98cGJ9Fuwitsq4c8dlQIHinUyeuqbs2d4DLo7fo7Q0MBQ8Y2qrV6WvW7CTJkzfwxZlrn74UlQFmIzeDpLojFUIgQ2wRQfp+YRhXFJi6AND8vHuJl55LsbZnskNvKu5p4Iycow2DDebn8V0CP6NKQ98o1zcK8Q/jitb2s68qZTa2mdrSfOZyWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nuvoton.com; dmarc=pass action=none header.from=nuvoton.com;
+ dkim=pass header.d=nuvoton.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g+I7QgzOTAT9x1DEBYVgmetxqxrP/tQWYy7vgmRAkyo=;
+ b=sCZ1cCflNpuPhmL3MWP08patZ1tYmqLeHw4d6a3BIcZ+F210aanxPZEYIv01/9Ea/0dfD0ULXeyj5tYvOCYtC97STJ0u+Skx5t6ASIzgO0jgGIme00TVRRZCYr0wft8GYvZM/o9VPFTwPMSFLWQkzy4XMcFzRDpBSDW3JZMMnvQ=
+Authentication-Results: nuvoton.com; dkim=none (message not signed)
+ header.d=none;nuvoton.com; dmarc=none action=none header.from=nuvoton.com;
+Received: from HK0PR03MB3154.apcprd03.prod.outlook.com (2603:1096:203:44::11)
+ by HK0PR03MB4964.apcprd03.prod.outlook.com (2603:1096:203:bd::13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10; Sun, 1 Nov
+ 2020 05:59:55 +0000
+Received: from HK0PR03MB3154.apcprd03.prod.outlook.com
+ ([fe80::7c3e:ca32:232f:ef71]) by HK0PR03MB3154.apcprd03.prod.outlook.com
+ ([fe80::7c3e:ca32:232f:ef71%6]) with mapi id 15.20.3541.010; Sun, 1 Nov 2020
+ 05:59:55 +0000
+Subject: Re: [PATCH] ASoC: nau8315: add codec driver
+To: Mark Brown <broonie@kernel.org>
+References: <20201030050146.535983-1-CTLIN0@nuvoton.com>
+ <20201030132548.GB4405@sirena.org.uk>
+From: CTLIN0 <CTLIN0@nuvoton.com>
+Message-ID: <8abcc921-26b9-5eff-103b-cfd292a67cde@nuvoton.com>
+Date: Sun, 1 Nov 2020 13:59:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+In-Reply-To: <20201030132548.GB4405@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Originating-IP: [123.192.228.110]
+X-ClientProxiedBy: HK2PR04CA0051.apcprd04.prod.outlook.com
+ (2603:1096:202:14::19) To HK0PR03MB3154.apcprd03.prod.outlook.com
+ (2603:1096:203:44::11)
 MIME-Version: 1.0
-References: <1603521686-13036-1-git-send-email-jiaxin.yu@mediatek.com>
- <1603521686-13036-3-git-send-email-jiaxin.yu@mediatek.com>
- <20201030182339.GA4069524@bogus>
-In-Reply-To: <20201030182339.GA4069524@bogus>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Sat, 31 Oct 2020 19:38:48 +0800
-Message-ID: <CA+Px+wV5v2NK5hQ7sqHHFXVE34iLmi8+7caHZpD5Y=SX5x57ag@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: mediatek: mt8192: add ul-delay-ms
- property
-To: Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- shane.chien@mediatek.com, Mark Brown <broonie@kernel.org>,
- "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- "moderated list:ARM/Mediatek SoC support"
- <linux-arm-kernel@lists.infradead.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.117.35.112] (123.192.228.110) by
+ HK2PR04CA0051.apcprd04.prod.outlook.com (2603:1096:202:14::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.19 via Frontend Transport; Sun, 1 Nov 2020 05:59:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9425a255-9b6c-4474-b77e-08d87e2b5a9d
+X-MS-TrafficTypeDiagnostic: HK0PR03MB4964:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HK0PR03MB4964CDB95B6E0198CD6F4FA98E130@HK0PR03MB4964.apcprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ci5mMcl7wqjrKhG/KkFf5XkGadhc2foBCP3BpvhWVCUP2D/o70yN1x5SYZyByRdb4EAc0kGZ5vEc/5mcAw9SOhrI4ALEbUAJD7OlZ5zDCuLottFW7/FQPTZAY+0BFHCUJw3X96kvHYxNP5Q3yxxV49Mm0lH942HtHVTMyMB5TeqaEfplgPRARglWJCeBpg9Pf02nE3DAS5BWs5vRe4WEj1tfhb3IvSXfPOLS9p5NC/QZ+CltJbaAm2H6+xnww7QP0qzqvk01SrQ74E/7mDxq7A7Agq2nowR952HXVg3qfO1p0M1WMjVDhVy9UDFK5v1fiETn82Zn7SP99LpLoTJIUK6mt/QbK+JDC3Pp4vpRCf4YsvNzmlCDRgZugY+f2MSh
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:HK0PR03MB3154.apcprd03.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39840400004)(52116002)(6916009)(83380400001)(4326008)(107886003)(2906002)(86362001)(2616005)(8936002)(956004)(31686004)(6486002)(8676002)(478600001)(16576012)(31696002)(316002)(66946007)(66556008)(66476007)(36756003)(186003)(16526019)(26005)(5660300002)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData: 5iCRSdaCIHcf9t7UNSUwpYMk8HnHzF6XwxA9olHKKvps4svxc6NsuWY5M61KRJqJUMzxQsDVQ+zedB3pzR9xtrYyqU7pXO3c3GUBbzgNlrbbeLpipjWQjmSP8DYCACCUaRRP0Vf4t0tewGMiMQUX1BAKXwZSLZAIAh3rSFHtyCBZDtaMQrFB7owU/mgED8wEUKNxhwH2DhIUnfC8oU1T2baJ6wW1+Sgk+Nr0YV1DzXLE1GwBBv9oH3mXTTrqnfQrjNFlHqlK6OZnyIYRs+MCoAkKSgmkiZrE7qpX7JtiKYINu+DfQ6a3NJLQgwd/c61G1brJfwFd+zsd/NpuiWRqvXB0t995WoONzS9mRgDGElRjZhhP8/H2SXB6IgTs3GCKcyBr/N1UQwChZcjGVjb+qcTzQq9f7LkJPLvi+XcwSGgynKVNRlZLFbgZtPjnDA9JGGRNfjjb6Pgg//ASNHJWpVMHgWJDsgYPVWUREiR0mf5kRc9Gd1wKEp99atysn6PUcXUi2U1+PC80nJTynToBxen1veeH5j2CinGpr/9SOe8fHWjqNM0tQMe+2AZHolVoJtUV6Oa/PGsJWtkir4YOLvleckCDYJvqfEaBjVlRQiqJajz8udLa8gPFel2lB9LJS7J2qhdL32aIW1pw8KpNsQ==
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9425a255-9b6c-4474-b77e-08d87e2b5a9d
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR03MB3154.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2020 05:59:55.0599 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O3K3kPqoRXnuuK+wuJ+5d6gULSSCyVM4IPPlRd/xM1QUmtm6bXbx5DV5t7DSHM4INbvEMChLgaAg47o6u9E/aA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR03MB4964
+Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org,
+ KCHSU0@nuvoton.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,19 +141,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Oct 31, 2020 at 2:23 AM Rob Herring <robh@kernel.org> wrote:
-> On Sat, Oct 24, 2020 at 02:41:26PM +0800, Jiaxin Yu wrote:
-> > +  mediatek,ul-delay-ms:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description: |
-> > +      Skip first time data at the beginning of DMIC recording
->
-> What does 'ul' mean? Nothing tells me this is DMIC related in the name
-> and 'ul' is not used anywhere in the description.
+On 2020/10/30 =E4=B8=8B=E5=8D=88 09:25, Mark Brown wrote:
+> On Fri, Oct 30, 2020 at 01:01:48PM +0800, David Lin wrote:
+>> Add codec driver for Nuvoton NAU8315.
+> This has still got issues - it looks like all the tabs in the patch have
+> been replaced by spaces, that's going to make it impossible for any of
+> the tools to handle.  I'm not sure how your colleagues handled this,
+> another approach some people use is to send from a non-work account and
+> bypass all the issues with corporate mail servers :/
+After checking with the administrator of mail server, he think it might
+be the related setting not transfer to new IP due to office relocation
+recent.
 
-UL stands for Up-Link.
+I am sorry to have confused you. I will resend after the setting of mail
+server is ready.
 
-Please ignore the patch series.  We won't implement the delay in
-mt6359.c.  Instead, we'll leverage generic dmic.c.  See
-https://patchwork.kernel.org/project/alsa-devel/patch/1603521686-13036-2-git-send-email-jiaxin.yu@mediatek.com/#23716495
-for previous discussion.
+________________________________
+________________________________
+ The privileged confidential information contained in this email is intende=
+d for use only by the addressees as indicated by the original sender of thi=
+s email. If you are not the addressee indicated in this email or are not re=
+sponsible for delivery of the email to such a person, please kindly reply t=
+o the sender indicating this fact and delete all copies of it from your com=
+puter and network server immediately. Your cooperation is highly appreciate=
+d. It is advised that any unauthorized use of confidential information of N=
+uvoton is strictly prohibited; and any information in this email irrelevant=
+ to the official business of Nuvoton shall be deemed as neither given nor e=
+ndorsed by Nuvoton.
