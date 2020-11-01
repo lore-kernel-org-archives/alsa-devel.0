@@ -7,102 +7,99 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C68CC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 16:01:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D6A8C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 16:04:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 793642084C
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 16:01:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E0BF2084C
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 16:04:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u10ySdZQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GYZamvlH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 793642084C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CQA5QZ6G";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D65XPG8+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E0BF2084C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9278169E;
-	Sun,  1 Nov 2020 17:00:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9278169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5C691685;
+	Sun,  1 Nov 2020 17:03:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5C691685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604246503;
-	bh=VLmd45+G/SH3+vLzOEqGIp5CD4jVfyKYAIaoVD1Y3dM=;
+	s=default; t=1604246657;
+	bh=7QD/V8+1TY1yFi/NqmtD/t2v+VoGjxZJCcCe+MXzx80=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=u10ySdZQI8bcTk82FVJRO9GsE03EjjHPJ1xCUNszK1FJj6fbEafF7Zfq8rH9ZrDqe
-	 SX80HwFohSuDa5qR8VKp7RGAd2y/gHSqDKdMc/ksbKZ34hlxzXfRQekmabt6bx1LfS
-	 tjiYXJIjV0T0FXqHL6apf1d44Kyk6YEvrz7DHkfk=
+	b=CQA5QZ6Geds6ZnUXKDvSEdcWAWTKkrOpy/H3umHpbWQk+URJl5XhpEIcBQWGIskW8
+	 qLi54NATDYDAjpQQVf5OZag72Ipqk7QRMte+MY/ftSXaBw8Y+0rrShjWG5GbKA0qM+
+	 emnWkTTT7z20eLRMXMqjH1ugDeClXn37TML3bFOc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5704AF8015F;
-	Sun,  1 Nov 2020 17:00:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 481CAF80158;
+	Sun,  1 Nov 2020 17:03:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E24EEF8012B; Sun,  1 Nov 2020 17:00:50 +0100 (CET)
+ id 2563BF80162; Sun,  1 Nov 2020 17:03:26 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 992C7F8012B
- for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2020 17:00:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 992C7F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 882E4F80158
+ for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2020 17:03:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 882E4F80158
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="GYZamvlH"
+ header.b="D65XPG8+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1604246446;
+ s=mimecast20190719; t=1604246600;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:content-type:content-type;
- bh=vgk9YLGxl+ilKw1iu6HtFxOj8hP02Lb3fum/BlBAQ6s=;
- b=GYZamvlH/4AG1M/SKfm12ffvarjkNMNNZy9xojqqwEg2P2SkEKABjNfKfaMXltsu0RqEvz
- 2p0IP0s4URIJf8QszYnf5lQyCYXwLG6tidu3UEh1d4ytYt7P75BbzI8LxN/RX511actR8m
- OtUptjbzpgrCuUyU/eKTyAHKU37DvF4=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-vn7Y90hcOPCw-7VcyGGjBg-1; Sun, 01 Nov 2020 11:00:44 -0500
-X-MC-Unique: vn7Y90hcOPCw-7VcyGGjBg-1
-Received: by mail-oo1-f71.google.com with SMTP id f12so4601063oos.23
- for <alsa-devel@alsa-project.org>; Sun, 01 Nov 2020 08:00:44 -0800 (PST)
+ bh=IO0WphOpYfe5qfktjcb4gZWmqgtIIkYaSyI84BD9VQc=;
+ b=D65XPG8+6I2/76LN4pAEPdi3ShTPKSQXnbFGolTO3JbLA0MpAO0g1uLzIdOAEYTI1V4Um7
+ sFPRkWzszXm9ST9IR7qJyM7mebKaF7G/gYOfTjW0a/vUxTicC86Et69vJQ1YJ+AjK8e81Y
+ YsxMRk9SBQO4TRjKWqADwZIcsab/x7Y=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-aYZdzff7OgKGuvXfp3Lrig-1; Sun, 01 Nov 2020 11:03:19 -0500
+X-MC-Unique: aYZdzff7OgKGuvXfp3Lrig-1
+Received: by mail-ot1-f70.google.com with SMTP id 5so5215373oti.20
+ for <alsa-devel@alsa-project.org>; Sun, 01 Nov 2020 08:03:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=vgk9YLGxl+ilKw1iu6HtFxOj8hP02Lb3fum/BlBAQ6s=;
- b=E8lt0/onLHkNHpUNhkadRg9320AbP+oblib2vk/n0yQnBGWowfOTxy6w+PUjNtCvrp
- D6LIXcQbiD7oI5dhvPVAlhe08QuaYKw8DGUMkfFxVFWj44n+izmSyR6/pAUxlOInokqt
- kv+G9PGp43AtgDsdpgM7nHLg5ZFMWIB/DXPDndwbfUO230uCi8PBvQiiHEkBDl9VXar4
- QzVizKMTs2zwjteffA6I6/4XxVDEljaBrTm2yWSRINA0RHR0Aa0pZHHf8ZK/E39jWF2a
- hkbevdwaiRvtio2OSmgAtT1t3VlomE13rRFtIshHeFGQnU+FymbyCE62SIi28Oh5BhGQ
- 27sQ==
-X-Gm-Message-State: AOAM531BiujdOTkN8I+nLb1pj2IjEzR6OfMLacSZeILvlUqbgXvVmtPK
- 2KqAFpah7oIrptsLDt7lysJ8hdcJsrT3ohcYrTiTskqVRNpso5Et8j9gqhxLI92YH1hOIhYSk7l
- focTxDXR5szkmrDM91PVa+Do=
-X-Received: by 2002:a4a:9806:: with SMTP id y6mr9128888ooi.45.1604246443588;
- Sun, 01 Nov 2020 08:00:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxVyT7JnEH2SuCBhZK8HzwoPK0Mcb7KeVaGChmVC3EtVOOG9EZ3UBdgb3/gT//qUNh8YjQFnQ==
-X-Received: by 2002:a4a:9806:: with SMTP id y6mr9128857ooi.45.1604246443225;
- Sun, 01 Nov 2020 08:00:43 -0800 (PST)
+ bh=IO0WphOpYfe5qfktjcb4gZWmqgtIIkYaSyI84BD9VQc=;
+ b=g6rQfRpwl8CCw4VF0I5lV7VWv8h6WtKAaqDVAYKPHCYoV1DdYAU1FZ5IpFlus8eKAA
+ 4Vp8C7iwom+tcuYHkQsNY9FRPzIG3QkcEiHkZHqLZeDe8o5/QV35lUAz3it+8HHeq9Eo
+ tIdKOwsQte15J8Yny3qkVmhhaCjHYrpPJ+xGoJORtoSEWSS69q3KVI8Z7ME4M1E4oKKq
+ Dle/fgwTL57hWUJoLXwsLkCI8tpb5e8oHD0UTDHaqerM9MxQKMUM+wI9bff0pQG9VRdx
+ LK7zcDURUXZspb3ps+pUsdD/Ii0XycB1awt6n5QrsHkpG+Fnq0viY2UXB/I4I3CkNa5S
+ JgHw==
+X-Gm-Message-State: AOAM530Pa8VuCggQhhZuuABrIEk+49Zi+U5qHv2nOiOc/7H1oc1Pr6QA
+ 9e4cAMYVFZdxY1vjy+n58XmEO9vwBoOEXaaoHEnBtpigKDcFimJa9SQQVB9ODry9WjDmJ/NZcEH
+ dMi0ugRD75vmZtf54AxG42B8=
+X-Received: by 2002:a9d:6c16:: with SMTP id f22mr8504214otq.173.1604246598399; 
+ Sun, 01 Nov 2020 08:03:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz0NVhAd3RAFy1ChJ73q5Yk5OCmScu2Gyt/6ini7be7gafypppYbsM9VIcGjknqQa0IpZA2LQ==
+X-Received: by 2002:a9d:6c16:: with SMTP id f22mr8504194otq.173.1604246598034; 
+ Sun, 01 Nov 2020 08:03:18 -0800 (PST)
 Received: from trix.remote.csb (075-142-250-213.res.spectrum.com.
  [75.142.250.213])
- by smtp.gmail.com with ESMTPSA id m11sm2806572oop.6.2020.11.01.08.00.41
+ by smtp.gmail.com with ESMTPSA id m13sm2983573otn.20.2020.11.01.08.03.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 01 Nov 2020 08:00:42 -0800 (PST)
+ Sun, 01 Nov 2020 08:03:17 -0800 (PST)
 From: trix@redhat.com
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
- sbranden@broadcom.com, ranjani.sridharan@linux.intel.com,
- sw0312.kim@samsung.com, kuninori.morimoto.gx@renesas.com
-Subject: [PATCH] ASoC: bcm2835-i2s: remove unneeded semicolon
-Date: Sun,  1 Nov 2020 08:00:37 -0800
-Message-Id: <20201101160037.2295512-1-trix@redhat.com>
+To: steven.eckhoff.opensource@gmail.com, lgirdwood@gmail.com,
+ broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH] ASoC: TSCS42xx: remove unneeded semicolon
+Date: Sun,  1 Nov 2020 08:03:12 -0800
+Message-Id: <20201101160312.2296146-1-trix@redhat.com>
 X-Mailer: git-send-email 2.18.1
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=trix@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset="US-ASCII"
-Cc: alsa-devel@alsa-project.org, Tom Rix <trix@redhat.com>,
- linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -124,14 +121,14 @@ A semicolon is not needed after a switch statement.
 
 Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tscs42xx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index dc34fe1559c6..c2f7631e8705 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -797,7 +797,7 @@ static bool bcm2835_i2s_volatile_reg(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
+index 3265d3e8cb28..6200fab7896f 100644
+--- a/sound/soc/codecs/tscs42xx.c
++++ b/sound/soc/codecs/tscs42xx.c
+@@ -66,7 +66,7 @@ static bool tscs42xx_volatile(struct device *dev, unsigned int reg)
  		return true;
  	default:
  		return false;
@@ -139,8 +136,8 @@ index dc34fe1559c6..c2f7631e8705 100644
 +	}
  }
  
- static bool bcm2835_i2s_precious_reg(struct device *dev, unsigned int reg)
-@@ -807,7 +807,7 @@ static bool bcm2835_i2s_precious_reg(struct device *dev, unsigned int reg)
+ static bool tscs42xx_precious(struct device *dev, unsigned int reg)
+@@ -81,7 +81,7 @@ static bool tscs42xx_precious(struct device *dev, unsigned int reg)
  		return true;
  	default:
  		return false;
@@ -148,7 +145,16 @@ index dc34fe1559c6..c2f7631e8705 100644
 +	}
  }
  
- static const struct regmap_config bcm2835_regmap_config = {
+ static const struct regmap_config tscs42xx_regmap = {
+@@ -1294,7 +1294,7 @@ static int part_is_valid(struct tscs42xx *tscs42xx)
+ 		return true;
+ 	default:
+ 		return false;
+-	};
++	}
+ }
+ 
+ static int set_sysclk(struct snd_soc_component *component)
 -- 
 2.18.1
 
