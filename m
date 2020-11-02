@@ -1,68 +1,72 @@
-Return-Path: <SRS0=+QmS=EH=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=b8gG=EI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDD98C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 23:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FC04C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 01:59:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF367222EA
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Nov 2020 23:10:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B0C22225B
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 01:59:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BDsccCnz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF367222EA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pVMHkttj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B0C22225B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F278116C3;
-	Mon,  2 Nov 2020 00:09:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F278116C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6381416C5;
+	Mon,  2 Nov 2020 02:58:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6381416C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604272202;
-	bh=36GDlDTdmo8gwfkCCSyeTIprGx3Phf9l3Ua3eDz+BnY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BDsccCnz9Y0t4eTv3dsLSgV3jDEnY2F6ZiEh6KacDmlheUeQL9QHGJIi2eHafruVu
-	 rtRdGL1AUBxrGDHqVjAGikNUat2bFBtPTYBMtQyQgrXQ2t6j1hNAd7IO7jRox0Svog
-	 Um1jp53g6TUWsZmF7bY7wsIWfLF00r2+FzeWLc48=
+	s=default; t=1604282369;
+	bh=I2eInCD4nij/M/aZP5/gR6/rcjugIuzfErcJlM1xjw8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pVMHkttjaatsTRA+2ufXQU7WkTcu6zdelVXM5uLgdMmnWZRcg20097mjH2Z5ykvn1
+	 Cn+BlSN/VGAUAy4th25nXKZcp+yQtWKiz6vwatyC1ZC3M6OlaVLOS9Y1Gp+oPtsgBl
+	 +lqI+nIlaFmFsfikpm8wtzebJSlAOWX+NTOqQn4Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83F1EF8012B;
-	Mon,  2 Nov 2020 00:09:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE635F8015D;
+	Mon,  2 Nov 2020 02:58:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CAD62F80162; Mon,  2 Nov 2020 00:09:09 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6A252F8012B
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 00:09:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A252F8012B
-Date: 02 Nov 2020 08:08:57 +0900
-X-IronPort-AV: E=Sophos;i="5.77,443,1596466800"; d="scan'208";a="61185607"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Nov 2020 08:08:57 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id B4E5241142D2;
- Mon,  2 Nov 2020 08:08:57 +0900 (JST)
-Message-ID: <87v9eohe5t.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: soc-compress: assume SNDRV_PCM_STREAM_xxx
- and SND_COMPRESS_xxx are same
-In-Reply-To: <20201030140150.GE4405@sirena.org.uk>
-References: <875z6smszj.wl-kuninori.morimoto.gx@renesas.com>
- <87361wmsyg.wl-kuninori.morimoto.gx@renesas.com>
- <20201030140150.GE4405@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ id 4772FF80272; Mon,  2 Nov 2020 02:58:36 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5993AF8015D
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 02:58:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5993AF8015D
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 044FC20140E;
+ Mon,  2 Nov 2020 02:58:28 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E2269201418;
+ Mon,  2 Nov 2020 02:58:22 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5A4044029C;
+ Mon,  2 Nov 2020 02:58:16 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+ devicetree@vger.kernel.org
+Subject: [PATCH v3 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc for
+ aud2htx module
+Date: Mon,  2 Nov 2020 09:52:26 +0800
+Message-Id: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,22 +82,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
+IP module found on i.MX8MP.
 
-Hi Mark
-
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> > soc-compress.c is using both SND_COMPRESS_xxx and SND_COMPRESS_xxx.
-> 
-> I think one of these is supposed to be SND_PCM_STREAM_xxx!  Otherwise
-> this looks OK.
-
-Grr, indeed.
-Do I need to resend ?
-Or can you fixup it ?
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
-Kuninori Morimoto
+changes in v3:
+- Add additionalProperties
+
+changes in v2:
+- fix indentation issue
+- remove nodename
+
+ .../bindings/sound/fsl,aud2htx.yaml           | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml b/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
+new file mode 100644
+index 000000000000..aa4be7170717
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/fsl,aud2htx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP Audio Subsystem to HDMI RTX Subsystem Controller
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++properties:
++  compatible:
++    const: fsl,imx8mp-aud2htx
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Peripheral clock
++
++  clock-names:
++    items:
++      - const: bus
++
++  dmas:
++    items:
++      - description: DMA controller phandle and request line for TX
++
++  dma-names:
++    items:
++      - const: tx
++
++  power-domains:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/imx8mp-clock.h>
++
++    aud2htx: aud2htx@30cb0000 {
++        compatible = "fsl,imx8mp-aud2htx";
++        reg = <0x30cb0000 0x10000>;
++        interrupts = <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&audiomix_clk IMX8MP_CLK_AUDIOMIX_AUD2HTX_IPG>;
++        clock-names = "bus";
++        dmas = <&sdma2 26 2 0>;
++        dma-names = "tx";
++        power-domains = <&audiomix_pd>;
++    };
+-- 
+2.27.0
+
