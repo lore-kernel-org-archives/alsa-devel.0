@@ -2,68 +2,114 @@ Return-Path: <SRS0=b8gG=EI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26F34C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 02:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA3F2C00A89
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 05:07:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0E33221FC
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 02:34:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EABB421D91
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 05:07:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="At0De9JK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0E33221FC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nuvoton.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cr/pnk70";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oxLWWeV0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EABB421D91
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 649A716CB;
-	Mon,  2 Nov 2020 03:33:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 649A716CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42B6316CC;
+	Mon,  2 Nov 2020 06:06:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42B6316CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604284468;
-	bh=4iU7TNER8XO3BVU7f/WJNS8fWXSxtvoYyU7kzvLcFjs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=At0De9JKMgRRJ6rBS7hAYOVoz7PEUYLEeaD1ropOWjXL4qbL/D50o8CeHnfwCAwP8
-	 Z8/6ASJ4SIc/Cyq7soKisDNT7kWoFK8PXchyvMJXDZyBFLYykjIdMza0p2soi3deO4
-	 CnLx5It5CZV7EQMN8aaCJeFo/y+cHbWSmLlMkzr0=
+	s=default; t=1604293639;
+	bh=bTbYZ6f3Vu9T+1x8GWMSV/2rgiTNLAtDdz5UArlVlNU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Cr/pnk707g1IEbCKbGhR3Do+4jbjiwruAXR4iEYyGEqzAZhGAn+k9o/05+pMRaA3H
+	 yb754UArjUdQQ8YX1OZii4TDYJsMRdiLicJPcmit0lIGMFF5tCA/2cA2dFN5fFJm2H
+	 0s7DSLAuLghMQIh2ppkJ/pg3S7Mj0zonLWlF0kgM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC517F80229;
-	Mon,  2 Nov 2020 03:33:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9CB5F80229;
+	Mon,  2 Nov 2020 06:06:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFA3DF80232; Mon,  2 Nov 2020 03:33:36 +0100 (CET)
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 439E4F80083
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 03:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 439E4F80083
-Received: from NTHCCAS04.nuvoton.com (nthccas04.nuvoton.com [10.1.8.29])
- by maillog.nuvoton.com (Postfix) with ESMTP id 6B7481C80D1F;
- Mon,  2 Nov 2020 10:33:23 +0800 (CST)
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS04.nuvoton.com
- (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 2 Nov
- 2020 10:33:23 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
- (10.1.12.25) with Microsoft SMTP Server id 15.1.1847.3 via Frontend
- Transport; Mon, 2 Nov 2020 10:33:23 +0800
-From: David Lin <CTLIN0@nuvoton.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: nau8315: add codec driver
-Date: Mon, 2 Nov 2020 10:32:13 +0800
-Message-ID: <20201102023212.594137-1-CTLIN0@nuvoton.com>
-X-Mailer: git-send-email 2.25.1
+ id 8743EF80229; Mon,  2 Nov 2020 06:06:27 +0100 (CET)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BA80F8015A
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 06:06:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BA80F8015A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="oxLWWeV0"
+Received: by mail-pl1-x642.google.com with SMTP id r3so6259305plo.1
+ for <alsa-devel@alsa-project.org>; Sun, 01 Nov 2020 21:06:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=0i5kulrXeAXUUmHumUD66U2ITbxD8qnUW4/n36OfF0g=;
+ b=oxLWWeV0SaX8q4sdK7/2sB2mbbneJH+6xiBYeqoFyU0KRp6CX4AAHRz6ZcIpCMuGs1
+ K57ec6IiNS0f09FIv7F0ALXBwtlgJkApB7AmFEzolud2Scts1RGkIMpChWza8ZWYqq32
+ iG9jnd6FoC1qoTUt8FG+Tqh96LB63osUaZFzASsd331qTXlfszZF8qEYTXDyIEPza1g6
+ rCQ6+kS0iVGm1BZVWvdi5ujQ+XT4q5cIgozr9tH4CuJAWawDb1tPvyX1UyBa64dZOmY/
+ Qseu2Xk2wdM8W4NJUc/aIg4txizhbYAMC1xRU1E+saPOrw0Lb6Opw2ZfetN7H7my9w9C
+ FGgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=0i5kulrXeAXUUmHumUD66U2ITbxD8qnUW4/n36OfF0g=;
+ b=esO0QUrHH8uqy23XA8xbTyXFZ8bqhxTazd9Tq4xiSLo0jOdoDYGerD/V2SUl3gaWzC
+ gK73+o908aCtjk5jYStg1afPxBNw4a5Z1S32zmjDnNq9I+EVcgtjBC/FrlWPMQY9aU8N
+ 6O9ePctrq4cIj2xtBwxzV3pF7L8E5YETVY6clt+jnN0JuiLmsR0YuR75MHhF2Q/k0D5B
+ ihBbAusPCH3I/CndqKtPO2eR6e0Rs6PLdKW64XVk1hqJNpsJxfU28ALzwNxG14AyYJRi
+ n6JNRqraQkHOXgCitOoZfO35zHeqFypTkUmzOypzq63j5+jE5Me7xgZBTUKYTHeaH0iU
+ nEsQ==
+X-Gm-Message-State: AOAM53087Nl5I1BZNyYWGd3ujJf2bjbzriyDCUzHTXW0zno+Bo7WGylQ
+ ma16n/FrIhCZq+SulwiRjcswShrYqFREXtYcPjY=
+X-Google-Smtp-Source: ABdhPJzWpC1jLa2KqR8b6+I+di15SNciBGq8RyUOeA6dDIbQSFfhtHxvZw1hOKfw0BDne7Nf3l3IdI42sswxOrnNTvA=
+X-Received: by 2002:a17:902:8eca:b029:d2:4276:1b2d with SMTP id
+ x10-20020a1709028ecab02900d242761b2dmr19651785plo.17.1604293580359; Sun, 01
+ Nov 2020 21:06:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NotRedirectTo-PP: TRUE
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, KCHSU0@nuvoton.com,
- lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+References: <20201030075724.1616766-1-ajye_huang@compal.corp-partner.google.com>
+ <20201030075724.1616766-3-ajye_huang@compal.corp-partner.google.com>
+ <CA+Px+wXPRg7aDU5+vr6R_BxuFfhuDeG3iEQeAUKWNtX8YmVC1Q@mail.gmail.com>
+ <CALprXBZ+NmR8Y4sMkh4Y-N_FG+rGEOhUBVTKXRXNFp8H+f0btw@mail.gmail.com>
+ <CA+Px+wWouXWS2F+Bqs3MkJxCuXORhpXcUF5ZuSHo6exprBF4hg@mail.gmail.com>
+In-Reply-To: <CA+Px+wWouXWS2F+Bqs3MkJxCuXORhpXcUF5ZuSHo6exprBF4hg@mail.gmail.com>
+From: ajye huang <ajye.huang@gmail.com>
+Date: Mon, 2 Nov 2020 13:06:06 +0800
+Message-ID: <CACCVik-enBjUsaB1cZPb4Dp01Wj222jsT5Y-fjSL5E50XAFLcA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
+To: Tzung-Bi Shih <tzungbi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: Douglas Anderson <dianders@chromium.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ Patrick Lai <plai@codeaurora.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>,
+ Andy Gross <agross@kernel.org>, Tzung-Bi Shih <tzungbi@chromium.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>,
+ Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,257 +125,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add codec driver for Nuvoton NAU8315.
+Hi, Tzung-Bi
+I will release v3 version base on your suggestion
 
-Signed-off-by: David Lin <CTLIN0@nuvoton.com>
----
- .../devicetree/bindings/sound/nau8315.txt     |  18 ++
- sound/soc/codecs/Kconfig                      |   5 +
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/nau8315.c                    | 166 ++++++++++++++++++
- 4 files changed, 191 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nau8315.txt
- create mode 100644 sound/soc/codecs/nau8315.c
+Thank you for your reply
+Ajye
 
-diff --git a/Documentation/devicetree/bindings/sound/nau8315.txt b/Documentation/devicetree/bindings/sound/nau8315.txt
-new file mode 100644
-index 000000000000..6eaec46f384c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nau8315.txt
-@@ -0,0 +1,18 @@
-+Nuvoton NAU8315 Mono Class-D Amplifier
-+
-+Required properties:
-+- compatible   : "nuvoton,nau8315"
-+
-+Optional properties:
-+- enable-gpios : GPIO specifier for the chip's device enable input(EN) pin.
-+        If this option is not specified then driver does not manage
-+        the pin state (e.g. chip is always on).
-+
-+Example:
-+
-+#include <dt-bindings/gpio/gpio.h>
-+
-+nau8315 {
-+	compatible = "nuvoton,nau8315";
-+	enable-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
-+};
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 5791b7056af6..2b6eceb3573c 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -130,6 +130,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_MT6358
- 	imply SND_SOC_MT6359
- 	imply SND_SOC_MT6660
-+	imply SND_SOC_NAU8315
- 	imply SND_SOC_NAU8540
- 	imply SND_SOC_NAU8810
- 	imply SND_SOC_NAU8822
-@@ -1760,6 +1761,10 @@ config SND_SOC_MT6660
- 	  Select N if you don't have MT6660 on board.
- 	  Select M to build this as module.
- 
-+config SND_SOC_NAU8315
-+	tristate "Nuvoton Technology Corporation NAU8315 CODEC"
-+	depends on GPIOLIB
-+
- config SND_SOC_NAU8540
-        tristate "Nuvoton Technology Corporation NAU85L40 CODEC"
-        depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 11ce98c25d6c..144d9256d4d5 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -129,6 +129,7 @@ snd-soc-mt6351-objs := mt6351.o
- snd-soc-mt6358-objs := mt6358.o
- snd-soc-mt6359-objs := mt6359.o
- snd-soc-mt6660-objs := mt6660.o
-+snd-soc-nau8315-objs := nau8315.o
- snd-soc-nau8540-objs := nau8540.o
- snd-soc-nau8810-objs := nau8810.o
- snd-soc-nau8822-objs := nau8822.o
-@@ -438,6 +439,7 @@ obj-$(CONFIG_SND_SOC_MT6351)	+= snd-soc-mt6351.o
- obj-$(CONFIG_SND_SOC_MT6358)	+= snd-soc-mt6358.o
- obj-$(CONFIG_SND_SOC_MT6359)	+= snd-soc-mt6359.o
- obj-$(CONFIG_SND_SOC_MT6660)	+= snd-soc-mt6660.o
-+obj-$(CONFIG_SND_SOC_NAU8315)   += snd-soc-nau8315.o
- obj-$(CONFIG_SND_SOC_NAU8540)   += snd-soc-nau8540.o
- obj-$(CONFIG_SND_SOC_NAU8810)   += snd-soc-nau8810.o
- obj-$(CONFIG_SND_SOC_NAU8822)   += snd-soc-nau8822.o
-diff --git a/sound/soc/codecs/nau8315.c b/sound/soc/codecs/nau8315.c
-new file mode 100644
-index 000000000000..e6bc5c0a5036
---- /dev/null
-+++ b/sound/soc/codecs/nau8315.c
-@@ -0,0 +1,166 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// nau8315.c  --  NAU8315 ALSA SoC Audio Amplifier Driver
-+//
-+// Copyright 2020 Nuvoton Technology Crop.
-+//
-+// Author: David Lin <ctlin0@nuvoton.com>
-+//
-+// Based on MAX98357A.c
-+
-+#include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include <sound/soc-dapm.h>
-+
-+struct nau8315_priv {
-+	struct gpio_desc *enable;
-+	int enpin_switch;
-+};
-+
-+static int nau8315_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct nau8315_priv *nau8315 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	if (!nau8315->enable)
-+		return 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (nau8315->enpin_switch) {
-+			gpiod_set_value(nau8315->enable, 1);
-+			dev_dbg(component->dev, "set enable to 1");
-+		}
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		gpiod_set_value(nau8315->enable, 0);
-+		dev_dbg(component->dev, "set enable to 0");
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int nau8315_enpin_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct nau8315_priv *nau8315 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	if (event & SND_SOC_DAPM_POST_PMU)
-+		nau8315->enpin_switch = 1;
-+	else if (event & SND_SOC_DAPM_POST_PMD)
-+		nau8315->enpin_switch = 0;
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget nau8315_dapm_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("Speaker"),
-+	SND_SOC_DAPM_OUT_DRV_E("EN_Pin", SND_SOC_NOPM, 0, 0, NULL, 0,
-+			nau8315_enpin_event,
-+			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+};
-+
-+static const struct snd_soc_dapm_route nau8315_dapm_routes[] = {
-+	{"EN_Pin", NULL, "HiFi Playback"},
-+	{"Speaker", NULL, "EN_Pin"},
-+};
-+
-+static const struct snd_soc_component_driver nau8315_component_driver = {
-+	.dapm_widgets		= nau8315_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(nau8315_dapm_widgets),
-+	.dapm_routes		= nau8315_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(nau8315_dapm_routes),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static const struct snd_soc_dai_ops nau8315_dai_ops = {
-+	.trigger	= nau8315_daiops_trigger,
-+};
-+
-+#define NAU8315_RATES SNDRV_PCM_RATE_8000_96000
-+#define NAU8315_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_3LE)
-+
-+static struct snd_soc_dai_driver nau8315_dai_driver = {
-+	.name = "nau8315-hifi",
-+	.playback = {
-+		.stream_name	= "HiFi Playback",
-+		.formats	= NAU8315_FORMATS,
-+		.rates		= NAU8315_RATES,
-+		.channels_min	= 1,
-+		.channels_max	= 2,
-+	},
-+	.ops    = &nau8315_dai_ops,
-+};
-+
-+static int nau8315_platform_probe(struct platform_device *pdev)
-+{
-+	struct nau8315_priv *nau8315;
-+
-+	nau8315 = devm_kzalloc(&pdev->dev, sizeof(*nau8315), GFP_KERNEL);
-+	if (!nau8315)
-+		return -ENOMEM;
-+
-+	nau8315->enable = devm_gpiod_get_optional(&pdev->dev,
-+				"enable", GPIOD_OUT_LOW);
-+	if (IS_ERR(nau8315->enable))
-+		return PTR_ERR(nau8315->enable);
-+
-+	dev_set_drvdata(&pdev->dev, nau8315);
-+
-+	return devm_snd_soc_register_component(&pdev->dev,
-+			&nau8315_component_driver,
-+			&nau8315_dai_driver, 1);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id nau8315_device_id[] = {
-+	{ .compatible = "nuvoton,nau8315" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, nau8315_device_id);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id nau8315_acpi_match[] = {
-+	{ "NVTN2010", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, nau8315_acpi_match);
-+#endif
-+
-+static struct platform_driver nau8315_platform_driver = {
-+	.driver = {
-+		.name = "nau8315",
-+		.of_match_table = of_match_ptr(nau8315_device_id),
-+		.acpi_match_table = ACPI_PTR(nau8315_acpi_match),
-+	},
-+	.probe	= nau8315_platform_probe,
-+};
-+module_platform_driver(nau8315_platform_driver);
-+
-+MODULE_DESCRIPTION("ASoC NAU8315 Mono Class-D Amplifier Driver");
-+MODULE_AUTHOR("David Lin <ctlin0@nuvoton.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
-
+Tzung-Bi Shih <tzungbi@google.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8830=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=887:19=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Fri, Oct 30, 2020 at 6:55 PM Ajye Huang
+> <ajye_huang@compal.corp-partner.google.com> wrote:
+> > But dmic_get() will need dmic_switch, should i keep dmic_switch?
+>
+> I see.  I overlooked it.  You can keep the dmic_switch for this
+> purpose or just call gpiod_get_value_cansleep().
