@@ -2,59 +2,68 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	RCVD_DOTEDU_SUSP,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6672C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:48:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD7ACC2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:48:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E41842222B
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:48:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F98F22384
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:48:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gc8YkoAt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E41842222B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uWA7s0Jk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F98F22384
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F070B177A;
-	Tue,  3 Nov 2020 08:47:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F070B177A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5C841743;
+	Tue,  3 Nov 2020 08:47:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5C841743
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604389679;
-	bh=lhw9FnjD6Wwwvzfpr9PEb9Dfr5qwa1WPnFbHC8N3SYQ=;
+	s=default; t=1604389718;
+	bh=T+165QLrgXu6NY9kDdOJj9CbzRu3iu81XTbfFCT1plk=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=gc8YkoAt4vSWjMHGi3oqbBiccv3PVvCMTua9SwKMyRcb4OF/BAXllpQKLbJhy+6Xo
-	 /PV5B9FH/OelFdPIUHF8CNAwvxX+k5PNuV8v11IBzrxkpob7oS4nJZP/4i/N4NXoaJ
-	 nzds/Ryuv8SJirx4nwEIeawG4U1IbsUzlbCnWkk4=
+	b=uWA7s0JkU0DTqiN6nw4oX+quFzKDHuGw3ytzM/B0j3SLiFPI6WZ3LtnSzHK/UqOHJ
+	 9fNM5TTc1hTZ7cVTn6D+aR9SRhaBFhsr8VnyzVy32yFnPwRsBx24tW1l7j8yPSxcKj
+	 rHmjdQLJbuZ8DluB3efJMFTmjN0VfYrNmE/Zumbc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 194E8F804CA;
+	by alsa1.perex.cz (Postfix) with ESMTP id BABBFF804D6;
 	Tue,  3 Nov 2020 08:45:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2598EF80232; Mon,  2 Nov 2020 08:12:05 +0100 (CET)
-Received: from zerg.cs.ucr.edu (zerg.cs.ucr.edu [169.235.26.103])
- by alsa1.perex.cz (Postfix) with ESMTP id 1AD12F8015A
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 08:12:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AD12F8015A
-Received: by zerg.cs.ucr.edu (Postfix, from userid 69049)
- id 9ADE41C20851; Sun,  1 Nov 2020 23:11:57 -0800 (PST)
-From: Yu Hao <yuhaobehappy@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] sound/core/seq: remove dead code
-Date: Sun,  1 Nov 2020 23:11:54 -0800
-Message-Id: <20201102071154.23563-1-yuhaobehappy@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id D947AF80232; Mon,  2 Nov 2020 09:44:10 +0100 (CET)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3EB7F80083
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 09:44:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3EB7F80083
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CPmfh5d72zkddh;
+ Mon,  2 Nov 2020 16:43:56 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
+ 16:43:53 +0800
+From: Zhang Qilong <zhangqilong3@huawei.com>
+To: <peter.ujfalusi@ti.com>, <perex@perex.cz>, <tiwai@suse.com>
+Subject: [PATCH v2] ASoC: ti: davinci-mcasp: fix error handling in
+ davinci_mcasp_probe
+Date: Mon, 2 Nov 2020 16:54:36 +0800
+Message-ID: <20201102085436.14450-1-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Tue, 03 Nov 2020 08:45:21 +0100
-Cc: yuhaobehappy@gmail.com, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,47 +79,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The function snd_seq_queue_client_termination() is only called from
-function seq_free_client1(). The seq_free_client1() calls function
-snd_seq_queue_client_leave(), which deletes all objects whose owner
-equals to client->number in global array queue_list, before the function
-snd_seq_queue_client_termination(), which checks whether there are
-any objects in global array queue_list whose owner equals to
-client->number, with the same argument client->number. So
-the checking code in function snd_seq_queue_client_termination() is
-dead code. Remove those dead code.
+Forgetting to call pm_runtime_disable if davinci_mcasp_get_dt_params
+failed in function davinci_mcasp_probe, and we should go to error
+handling branch.
 
-Signed-off-by: Yu Hao <yuhaobehappy@gmail.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
 ---
- sound/core/seq/seq_queue.c | 11 -----------
- 1 file changed, 11 deletions(-)
+Changelog:
+V2
+- changed the subject and fixed the description.
+---
+ sound/soc/ti/davinci-mcasp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
-index 71a6ea62c3be..91b3f3295d0b 100644
---- a/sound/core/seq/seq_queue.c
-+++ b/sound/core/seq/seq_queue.c
-@@ -545,21 +545,10 @@ void snd_seq_queue_client_termination(int client)
- 	unsigned long flags;
- 	int i;
- 	struct snd_seq_queue *q;
--	bool matched;
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index 4b46dd827f3f..ec90c23c9e20 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -2362,8 +2362,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		goto err;
  
- 	for (i = 0; i < SNDRV_SEQ_MAX_QUEUES; i++) {
- 		if ((q = queueptr(i)) == NULL)
- 			continue;
--		spin_lock_irqsave(&q->owner_lock, flags);
--		matched = (q->owner == client);
--		if (matched)
--			q->klocked = 1;
--		spin_unlock_irqrestore(&q->owner_lock, flags);
--		if (matched) {
--			if (q->timer->running)
--				snd_seq_timer_stop(q->timer);
--			snd_seq_timer_reset(q->timer);
--		}
- 		queuefree(q);
- 	}
- }
+ 	ret = davinci_mcasp_get_dt_params(mcasp);
+-	if (ret)
+-		return -EINVAL;
++	if (ret) {
++		ret = -EINVAL;
++		goto err;
++	}
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					&davinci_mcasp_component,
 -- 
 2.17.1
 
