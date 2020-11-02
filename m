@@ -2,93 +2,121 @@ Return-Path: <SRS0=b8gG=EI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 164BAC00A89
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 14:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5462C00A89
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 14:03:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E60D223AB
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 14:02:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E7E84223C7
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 14:03:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B/lLacm1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CHgJADqg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E60D223AB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EgtX5Q8R";
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="YSED8k3B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7E84223C7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DE1716FF;
-	Mon,  2 Nov 2020 15:02:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DE1716FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 412841710;
+	Mon,  2 Nov 2020 15:02:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 412841710
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604325775;
-	bh=7Ohm+i94CyHrsbtz1AvHD7wdVoimYNKt5El0LPVZWvI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1604325826;
+	bh=0soCGfwvMicyNsKlnQavfnjgADWiW/AiWtZZPXweAi8=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B/lLacm1axOqeyR+O9MiaNZ1mDKXTf9RLZtXP80WX16vAWfqYVfvu66oaki/7GQMG
-	 BhBHJBUv4hp6lLGKiQAA7KZ885wfBx51RZEMNvbUUr1u6HH23Au7zAXERwf2LLmfWP
-	 zmkEWAT8N6bqcA0PLxxaOU8lR0nFxXnlQZ6X3Sv0=
+	b=EgtX5Q8RIO4BhWT2S9cUtzyvFxyCREGi+/vWyPfpNizqYhGp0W7zwNsw+MQ+pfLC2
+	 34fk6rKN8SJZaCLNNBk5/+NqZWExlSInYH4pIzHn4YUvCkLuSO6evaRUQG2diJxw68
+	 jFmZepZ5WhgYTOUMx4KT9N3NOgC3no8TPROLODPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AC4BF80229;
-	Mon,  2 Nov 2020 15:02:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0AE0EF8023E;
+	Mon,  2 Nov 2020 15:02:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E3E0F80232; Mon,  2 Nov 2020 15:02:02 +0100 (CET)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ id E6FCEF80256; Mon,  2 Nov 2020 15:02:46 +0100 (CET)
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-eopbgr00069.outbound.protection.outlook.com [40.107.0.69])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB21BF80083
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 15:01:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB21BF80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3067DF8012B
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 15:02:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3067DF8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CHgJADqg"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A2E1qgr086965;
- Mon, 2 Nov 2020 08:01:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1604325712;
- bh=kQz4zXsRQht99vb39ccr75+jyFACg/Or7s3atKvkrVk=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=CHgJADqgkjXbzbhbDzLRYHM9jVl456Bd6FvwzQNuXWHhb7iIx2j6jOHaOqLMVSjB3
- 55GsdgKoFoa/Iz7Q0KhfOEBuJzlw4sjTtlrr1AFfgM6a3/44g9n3tJ+7aAdglxYU9V
- VdwImiwUrkIyddsFfM8WryfPKeLLz0PTv3qCb5ME=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A2E1q0j047631
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 2 Nov 2020 08:01:52 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
- 2020 08:01:08 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 2 Nov 2020 08:01:08 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A2E164N082717;
- Mon, 2 Nov 2020 08:01:07 -0600
-Subject: Re: [PATCH] ASoC: ti: davinci-mcasp: remove always zero of
- davinci_mcasp_get_dt_params
-To: Zhang Qilong <zhangqilong3@huawei.com>, <perex@perex.cz>, <tiwai@suse.com>
-References: <20201102103428.32678-1-zhangqilong3@huawei.com>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <4b6487dc-5b23-11bc-3c3f-a38ce182f149@ti.com>
-Date: Mon, 2 Nov 2020 16:01:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201102103428.32678-1-zhangqilong3@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="YSED8k3B"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HNqeQTlWJp9xMG1UhxKmE6CWBuyasDjIfrmZLG4NqB1Dd5b+SMk6tIb/ruJa9JGAP06uDasSR0VdrRHUhg1dHgV7+1zDSpUSR4RAeYutZvJoD6rcJ6B++2LuAXBEnBFGmYSIuR7q6LK6COAZQIdxeyMl+K6ksuiXXSYoFcBVTMx7W9Nt0R4BFULfmT9LDwn5rH/7/pdrudoIUzX8prz4fjveoJp4y/Rr5vWu8/Hv8N6QUrAnnjo5YAM78zcUC7CyqTRjidLkZdpoPYXEYPDcwRxvf3da/sdEk7tQvVXQ5Eh7h0hAiqZR/WJAHjxFp5k0pJqSfE0oUNHM5N9ZM9Ckrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zP2dx0uOBO3WqQ5LnJaQ4fS0lkyEspGZhISFQfnDud8=;
+ b=aJnFymbYlkDH+WYsz45g9AMUfBjJxOwa7Is9v/H2uE4UDJz6uIZLo7RcNwHIHPqmzHXibTOvCKIV5p3U6yVcEswRVYQemnKx9or+HlRiyi3vjOzazF6jlW+cpSRxIopgCxchIEVu+iJmiQex55nSoejmN2hD2GTaWFZ/4Pfs7Y4PQ0sf6els3f+DSYdKmQt5XZZ9EcUfqAuQ5+W1zt5FnxGxeee1aBtGitMTRrNzKGrvsrQAfm6GJROh2+Q8QrogVa6Us1ajFGez7TU+gSGn+iYoqzLJCZzra15bcko/OOLKVWEYA8wK/fbQnl4hGagCm+lhcPb96Rp/HI7Gin29FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zP2dx0uOBO3WqQ5LnJaQ4fS0lkyEspGZhISFQfnDud8=;
+ b=YSED8k3BYGWODmGo5770YjvD/LyIbpJMOl+PbaNXOvnWzdzKfmbz9guChiLPGCSHKSd8HFdsK1nTgFyQtBQHeyRlfdGovgqwNor4HgwgRass37TCNIVuErZjAwPf484LUfnzuuTxy5hMR1VxeC4xSis/9GY6KxWhnILHQqTRCJQ=
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB4621.eurprd04.prod.outlook.com
+ (2603:10a6:803:6c::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
+ 2020 14:02:42 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 14:02:42 +0000
+From: Viorel Suman <viorel.suman@nxp.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: RE: [bug report] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+Thread-Topic: [bug report] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+Thread-Index: AQHWsR+OncT3nuMUC0OCAKoMyE+ASam03Vlw
+Date: Mon, 2 Nov 2020 14:02:42 +0000
+Message-ID: <VI1PR0401MB2272D142F42AA5A2BDA10F6092100@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+References: <20201102135317.GA41527@mwanda>
+In-Reply-To: <20201102135317.GA41527@mwanda>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [5.12.106.221]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 56bfefcc-f566-4022-85ef-08d87f37f767
+x-ms-traffictypediagnostic: VI1PR04MB4621:
+x-microsoft-antispam-prvs: <VI1PR04MB46215EF5AB47EC9ACB2072CE92100@VI1PR04MB4621.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9naPz9z+kCJllMpT7mpi1Mn9nxdeQ+Zer3RfKl0yLYooW1urPM/KLp0+f4bSUjdK0yIyL+SQg8hcZAyQ0mv/92dNf9swI8c5YQ11PG6aar9fV9vqC113+JfNxo8TQI73psk3NzW8GN4Oxwca1kkB0dRkbzh+tIiE4foHUT+JzQllug7Uu8he6MqhxstEDOcUa1CkN1y6DlwjfhqEkWSCCkHjjF38uZV1GlQ8CnQjeiBLSvAm4V8tJ9gLMEi4gutaUCKpoIJqtZS5/wa0Yb/2EeEnLZ/pwc1Y8gCSeuxlCC7ctdgBfY3TsPviUUilSDND
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR0401MB2272.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(376002)(396003)(39860400002)(346002)(366004)(136003)(26005)(186003)(2906002)(9686003)(53546011)(6506007)(7696005)(83380400001)(8936002)(33656002)(44832011)(55016002)(8676002)(5660300002)(66446008)(76116006)(316002)(86362001)(478600001)(6916009)(71200400001)(64756008)(4326008)(66946007)(66476007)(66556008)(52536014);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: frc2I3QhiRO5tPETuOyWL/+4jDM1eYxNVx/VHLm/pOukrnxJSDDXmL942IqFVjiZSouicEHPgN12GOQ02S9c3551rLm+XzPLDCTouIhF693azOndWf1pGh5GHJo4IbJjPUbbpwPt+KvQ6eWKiaLOPdnR8VFB2hMWZotlVTv+sgC3TG2FxX4LzPyctcRs9cIwUpINDDwK+U9yrW8g6/sTF3Qu8mASISw+DRyxzUuhgJvHckMCgZ4iKbOpzgwgGwsDsLFpAZ749kYijfwENRLXi2mRkxgH1ocvuXYNaBaxiAHjcLMQqsNX0BN+0HigCbffozxA5jZWzWGRxuy5cLLiThQ+wJbG/dUGWs+ErJpLNXL6mhOC0IYboIBCCzCCZFwmVO0rrYi/b4lhkDAVWXYR1UyV5Ktn/fMLrCBFZu5opA3H5q75WSp4vqL8rR2TLI5FffJo9ma+pJYk82ztOcQ40GX3n5BTmolfqTYyH8mAsWxGiIrSo1g/ZFR1zov3KmAny7yRj/YKFq/ykhogcarYy0Sg7410H3zaXYJVXIa19R403gGm45qZOrrK5/J4UyNCGnn1rkel0PMI0O/QbO4xDrWbD5T5GlFEuXseRLvj+fpDqzpzeEh41UkBj/2OxFnqpbl0qdCQUvahTzXt3U2BoA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56bfefcc-f566-4022-85ef-08d87f37f767
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 14:02:42.2921 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6ywC8Y2O4JiqksV07NH2cAzAXFW0M/iYjF6Ul1rzitCmJMtB3R+VKABVJhJJ/IynkiJfpXtyZSK++jBVQCpWlg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4621
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,65 +132,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Hi Dan,
 
-On 02/11/2020 12.34, Zhang Qilong wrote:
-> davinci_mcasp_get_dt_params alway return zero, and its return value
-> could be ignored by the caller. So make it 'void' type to avoid the
-> check its return value.
+There is no issue, the context is that the clock is enabled when " fsl_xcvr=
+_en_aud_pll"
+function is called - please check the line 356. The clock is disabled at li=
+ne 356 in order
+to allow the rate change at line 357, and then enabled at line 362.=20
 
-Thanks for updating the patch!
+Thank you,
+Viorel
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-> 
-> Fixes: 764958f2b5239 ("ASoC: ti: davinci-mcasp: Support for auxclk-fs-ratio")
-> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-> ---
->  sound/soc/ti/davinci-mcasp.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index 4b46dd827f3f..63c492862383 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -2112,20 +2112,18 @@ static inline int davinci_mcasp_init_gpiochip(struct davinci_mcasp *mcasp)
->  }
->  #endif /* CONFIG_GPIOLIB */
->  
-> -static int davinci_mcasp_get_dt_params(struct davinci_mcasp *mcasp)
-> +static void davinci_mcasp_get_dt_params(struct davinci_mcasp *mcasp)
->  {
->  	struct device_node *np = mcasp->dev->of_node;
->  	int ret;
->  	u32 val;
->  
->  	if (!np)
-> -		return 0;
-> +		return;
->  
->  	ret = of_property_read_u32(np, "auxclk-fs-ratio", &val);
->  	if (ret >= 0)
->  		mcasp->auxclk_fs_ratio = val;
-> -
-> -	return 0;
->  }
->  
->  static int davinci_mcasp_probe(struct platform_device *pdev)
-> @@ -2361,9 +2359,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err;
->  
-> -	ret = davinci_mcasp_get_dt_params(mcasp);
-> -	if (ret)
-> -		return -EINVAL;
-> +	davinci_mcasp_get_dt_params(mcasp);
->  
->  	ret = devm_snd_soc_register_component(&pdev->dev,
->  					&davinci_mcasp_component,
-> 
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> -----Original Message-----
+> From: Dan Carpenter [mailto:dan.carpenter@oracle.com]
+> Sent: Monday, November 2, 2020 3:53 PM
+> To: Viorel Suman <viorel.suman@nxp.com>
+> Cc: alsa-devel@alsa-project.org
+> Subject: [bug report] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+>=20
+> Hello Viorel Suman,
+>=20
+> The patch 28564486866f: "ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver" fr=
+om
+> Oct 13, 2020, leads to the following static checker
+> warning:
+>=20
+> 	sound/soc/fsl/fsl_xcvr.c:393 fsl_xcvr_en_aud_pll()
+> 	warn: 'xcvr->phy_clk' not released on lines: 373.
+>=20
+> sound/soc/fsl/fsl_xcvr.c
+>    351  static int fsl_xcvr_en_aud_pll(struct fsl_xcvr *xcvr, u32 freq)
+>    352  {
+>    353          struct device *dev =3D &xcvr->pdev->dev;
+>    354          int ret;
+>    355
+>    356          clk_disable_unprepare(xcvr->phy_clk);
+>    357          ret =3D clk_set_rate(xcvr->phy_clk, freq);
+>    358          if (ret < 0) {
+>    359                  dev_err(dev, "Error while setting AUD PLL rate: %=
+d\n", ret);
+>    360                  return ret;
+>    361          }
+>    362          ret =3D clk_prepare_enable(xcvr->phy_clk);
+>    363          if (ret) {
+>    364                  dev_err(dev, "failed to start PHY clock: %d\n", r=
+et);
+>    365                  return ret;
+>    366          }
+>    367
+>    368          /* Release AI interface from reset */
+>    369          ret =3D regmap_write(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL_S=
+ET,
+>    370                             FSL_XCVR_PHY_AI_CTRL_AI_RESETN);
+>    371          if (ret < 0) {
+>    372                  dev_err(dev, "Error while setting IER0: %d\n", re=
+t);
+>=20
+> clck_disable_unprepare(xcvr->phy_clk)?
+>=20
+>    373                  return ret;
+>    374          }
+>    375
+>    376          if (xcvr->mode =3D=3D FSL_XCVR_MODE_EARC) { /* eARC mode =
+*/
+>    377                  /* PHY: CTRL_SET: TX_DIFF_OE, PHY_EN */
+>    378                  fsl_xcvr_ai_write(xcvr, FSL_XCVR_PHY_CTRL_SET,
+>    379                                    FSL_XCVR_PHY_CTRL_TSDIFF_OE |
+>    380                                    FSL_XCVR_PHY_CTRL_PHY_EN, 1);
+>    381                  /* PHY: CTRL2_SET: EARC_TX_MODE */
+>    382                  fsl_xcvr_ai_write(xcvr, FSL_XCVR_PHY_CTRL2_SET,
+>    383                                    FSL_XCVR_PHY_CTRL2_EARC_TXMS, 1=
+);
+>    384          } else { /* SPDIF mode */
+>    385                  /* PHY: CTRL_SET: TX_CLK_AUD_SS | SPDIF_EN */
+>    386                  fsl_xcvr_ai_write(xcvr, FSL_XCVR_PHY_CTRL_SET,
+>    387                                    FSL_XCVR_PHY_CTRL_TX_CLK_AUD_SS=
+ |
+>    388                                    FSL_XCVR_PHY_CTRL_SPDIF_EN, 1);
+>    389          }
+>    390
+>    391          dev_dbg(dev, "PLL Fexp: %u\n", freq);
+>    392
+>    393          return 0;
+>    394  }
+>=20
+>=20
+> regards,
+> dan carpenter
