@@ -2,120 +2,101 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2AC4C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEFCC2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:50:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66FED2222B
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:50:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03AEA2222B
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:50:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jxYQZ9mi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="Qx6XIDDk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66FED2222B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uXLLk+q8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cf1MSWB7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03AEA2222B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF9031773;
-	Tue,  3 Nov 2020 08:49:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF9031773
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90147178B;
+	Tue,  3 Nov 2020 08:49:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90147178B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604389824;
-	bh=rvVtYJy7mJVMGmkChP9ZeKeWnqzB2nhWEUheDW88sfM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jxYQZ9mirRfKYb2TnZSfPpD5SK5Sr68rv9xdPzYy3MSUgPbTaUBDgSHtraGEtEfUL
-	 eTLhFTggLed357+vyLlY/ZtJReurIY3/ySXcdomtNOiQ8Jf0g5O4sj9pn+BNS2tT35
-	 Jf+Bo3Y8ETT6Gq6Dh7poHW1cH1TV02vhENl2V5s0=
+	s=default; t=1604389836;
+	bh=jAq/Z8SL0B8yo1ovuOe22KMrwKRKb8HoLKSh4m+py5A=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uXLLk+q8WmwopG1mkn6jbMqZV9XRoKY+pY5SmpFKoJF/f8pEudiFmdU2wNVbqd0Cx
+	 vDU3q6hku5lFABo6qXv/5/eNiKy0QicIt982tLEx7AuNixM4cwN8tBGruF5zsR7DUI
+	 BfAu2fgJqnjDM6koltPJVtWnufPEi+wK8MSiA/fw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 712E2F804FD;
-	Tue,  3 Nov 2020 08:45:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72FD4F80507;
+	Tue,  3 Nov 2020 08:45:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A30FFF80234; Mon,  2 Nov 2020 16:20:50 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 615CEF80256; Mon,  2 Nov 2020 16:41:58 +0100 (CET)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4BFDF8015A
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 16:20:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4BFDF8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9EFFF80232
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 16:41:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9EFFF80232
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com
- header.i=@bgdev-pl.20150623.gappssmtp.com header.b="Qx6XIDDk"
-Received: by mail-wm1-x344.google.com with SMTP id d142so1145523wmd.4
- for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2020 07:20:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=87j4CzgTjIznAlAGNVYlsLolKCjEqxgXtItxHQqBT+c=;
- b=Qx6XIDDkn/kgktIUkUO/8COUc5pZ7Xmrd4WIhOhtRKLqRH4jXfWsq4XQF+tviij2AS
- vQP1d5+o7im6WeNCxad2viztsEaWhYtaJWG1Vhj6E1J8UjnspJVoxf806Ry3jv4BdHop
- xwURD6IJS7yc8ElYCbGBoudPzERtKy2XkZUjWqe32YJYz8gF1KzLAhJg0Sgft+3IMCWa
- mV4JR08o+DnkkGEu+pVGUnHdRkfznAvaeW1sFyAveCP1kOZvsLyq+TKkJLfHFzK57TIm
- KW7GgBKwfAnVfidT0ZnlSAScho5vr6Rjk96VIp+X50g2am696JF1i4Ih5IAkrxiZq5BJ
- Pdug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=87j4CzgTjIznAlAGNVYlsLolKCjEqxgXtItxHQqBT+c=;
- b=m7/al3OqXKh9Rk2x2hE6ZXg7toVIMCLRp6HXsqLzX4xOet9obnFu4kT6wzd+XLql82
- tysoMJZip2Apdw/+AgJ/bJigHErJxk9E3MFp0ty3Lag+te2l4iYJUqVrqcJkBkjhVt3+
- xsnqDe7IlILonVd6FO4MJk7p6G6U5uFKoJSozKVoKVFoBa0AdyWn43TPGge+lCeDmt+U
- sgmKIr+TrTXV+RQIvP6XUFz6ijLfGI7dvUw5PLAuY0OxR7HWviejWoL+ECIU4IJgqYkm
- nBoXh738Nmd7B3vAMb3E9BeybQQ9NRGyTtlg6RRNstDUi/F25p0vId68hjFErWJHUmJc
- 4t/Q==
-X-Gm-Message-State: AOAM5304c0JiEOXzgfKMsz2EON34n3wPiSjXICUZr15Ihi8ECM0TXAYK
- zSJHv2Qp4MGpnMkAobr2Ou3ZnA==
-X-Google-Smtp-Source: ABdhPJyrNQzSj1QE+Qkm5CWvnTtBNZHgXZdYRD5QsBgAGl8HowPGK/ocdDyRBmSt205H50cLvofh/w==
-X-Received: by 2002:a1c:9848:: with SMTP id a69mr18051505wme.158.1604330441469; 
- Mon, 02 Nov 2020 07:20:41 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr.
- [90.8.158.167])
- by smtp.gmail.com with ESMTPSA id b18sm15138014wmj.41.2020.11.02.07.20.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 Nov 2020 07:20:40 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- Gustavo Padovan <gustavo@padovan.org>,
- =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Borislav Petkov <bp@alien8.de>,
- Tony Luck <tony.luck@intel.com>, James Morse <james.morse@arm.com>,
- Robert Richter <rric@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 0/8] slab: provide and use krealloc_array()
-Date: Mon,  2 Nov 2020 16:20:29 +0100
-Message-Id: <20201102152037.963-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="cf1MSWB7"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=UmWNoo+0jio1rsbpATbpnTKOP6YpDT2+8aHnhsn1BNQ=; b=cf1MSWB7BC+d/XGfBcQ2kzWTKP
+ Peh8sMqwcaL1avawa0skij5vzCJuMhLjyf5+3duC9LV64xK5h7mYlExaCNl16g5xIgy0XYatg9Kkf
+ 8MzQdAQ7nqnViyK6PC8RcELKGC+j9GZJ7ckJm169iVg6QlV5ggKqdv+lcQqqbrPMl+FlSrL0fJtVH
+ h3aIS4VO2YSOq9iZcZt7+s5WtKwHYRjz80MESyljeOHnTABAzm0KwnO67EhkQGqAYQ3ow0H2PyBl3
+ OZ6Wcz1eC4cFYhDOYdlGwsV1WdJGKy68/ZW9RvzSJwxRicr1Ax69ZJI0224mH0dP7B11Lada3H09n
+ ylAgZRSA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
+ Hat Linux)) id 1kZbx7-0002Pe-5d; Mon, 02 Nov 2020 15:41:01 +0000
+Date: Mon, 2 Nov 2020 15:41:01 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v2 1/8] mm: slab: provide krealloc_array()
+Message-ID: <20201102154101.GO27442@casper.infradead.org>
+References: <20201102152037.963-1-brgl@bgdev.pl>
+ <20201102152037.963-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 03 Nov 2020 08:45:22 +0100
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
- linaro-mm-sig@lists.linaro.org, linux-gpio@vger.kernel.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-media@vger.kernel.org,
- linux-edac@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102152037.963-2-brgl@bgdev.pl>
+X-Mailman-Approved-At: Tue, 03 Nov 2020 08:45:21 +0100
+Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
+ "Michael S . Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
+ Gustavo Padovan <gustavo@padovan.org>,
+ Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
+ linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ David Rientjes <rientjes@google.com>,
+ virtualization@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
+ linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
+ linux-gpio@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>,
+ linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+ netdev@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+ James Morse <james.morse@arm.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -131,46 +112,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Mon, Nov 02, 2020 at 04:20:30PM +0100, Bartosz Golaszewski wrote:
+> +Chunks allocated with `kmalloc` can be resized with `krealloc`. Similarly
+> +to `kmalloc_array`: a helper for resising arrays is provided in the form of
+> +`krealloc_array`.
 
-Andy brought to my attention the fact that users allocating an array of
-equally sized elements should check if the size multiplication doesn't
-overflow. This is why we have helpers like kmalloc_array().
+Is there any reason you chose to `do_this` instead of do_this()?  The
+automarkup script turns do_this() into a nice link to the documentation
+which you're adding below.
 
-However we don't have krealloc_array() equivalent and there are many
-users who do their own multiplication when calling krealloc() for arrays.
-
-This series provides krealloc_array() and uses it in a couple places.
-
-A separate series will follow adding devm_krealloc_array() which is
-needed in the xilinx adc driver.
-
-v1 -> v2:
-- added a kernel doc for krealloc_array()
-- mentioned krealloc et al in the docs
-- collected review tags
-
-Bartosz Golaszewski (8):
-  mm: slab: provide krealloc_array()
-  ALSA: pcm: use krealloc_array()
-  vhost: vringh: use krealloc_array()
-  pinctrl: use krealloc_array()
-  edac: ghes: use krealloc_array()
-  drm: atomic: use krealloc_array()
-  hwtracing: intel: use krealloc_array()
-  dma-buf: use krealloc_array()
-
- Documentation/core-api/memory-allocation.rst |  4 ++++
- drivers/dma-buf/sync_file.c                  |  4 ++--
- drivers/edac/ghes_edac.c                     |  4 ++--
- drivers/gpu/drm/drm_atomic.c                 |  3 ++-
- drivers/hwtracing/intel_th/msu.c             |  2 +-
- drivers/pinctrl/pinctrl-utils.c              |  2 +-
- drivers/vhost/vringh.c                       |  3 ++-
- include/linux/slab.h                         | 18 ++++++++++++++++++
- sound/core/pcm_lib.c                         |  4 ++--
- 9 files changed, 34 insertions(+), 10 deletions(-)
-
--- 
-2.29.1
-
+Typo 'resising' resizing.
