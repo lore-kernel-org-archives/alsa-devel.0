@@ -2,118 +2,102 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38E44C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56021C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:51:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 277C422384
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:51:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9ABA42222B
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:51:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="huwuZ0g7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="GeZOTcEL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 277C422384
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KkPEW2rC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pstbj7ke"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9ABA42222B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8D17178E;
-	Tue,  3 Nov 2020 08:50:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8D17178E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F30A175C;
+	Tue,  3 Nov 2020 08:50:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F30A175C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604389870;
-	bh=h2jxAMuk7kvrVYkKCjwHUS2g/tF/U56UI4VY0a18gQ8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1604389882;
+	bh=T7pAXRTWrNkZzZOxk4+j+rXfOhA1DNTWcksQFxpsxZc=;
+	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=huwuZ0g7RWMpw7wH6bS/7/KfdhYNr9keji84eglMjBnkmGGKOEq+9yffboAfB1gFd
-	 Cs6pqkVM48vsyERGKd+4oMZkbEFHpB0Zkf/lm1sxa46ZD4dFWbgVruJTOOIq3BYkZ3
-	 CtKA/Ljw80SXZLaO9AUwl3aWpdxZlLpqmjJLQXGk=
+	b=KkPEW2rC+Ti9MFTZScfGcu6P3mDaPjKyBgFckrHUc8BKMCszSrvNKASPjM/cyGgaS
+	 HMk0mh/P6tHmd1X2oU+B+oGzSkDHSIqZYSmb6hrZkRWo5osCTCwQDEr3JdklWTYr0j
+	 nVU9yOdCK5jjUVz9HCx2hcInOSFUFDwVHwODRMRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A851F8050F;
-	Tue,  3 Nov 2020 08:45:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7552CF80518;
+	Tue,  3 Nov 2020 08:45:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA81FF80232; Mon,  2 Nov 2020 16:43:43 +0100 (CET)
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com
- [IPv6:2a00:1450:4864:20::642])
+ id B4419F80232; Mon,  2 Nov 2020 22:16:02 +0100 (CET)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com
+ [IPv6:2607:f8b0:4864:20::532])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80F7FF8012B
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 16:43:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80F7FF8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FF99F80083
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 22:15:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FF99F80083
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="GeZOTcEL"
-Received: by mail-ej1-x642.google.com with SMTP id dk16so18913165ejb.12
- for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2020 07:43:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=nS8GcWnRvgAze9eGONKgTm54dvXOecWjyagLlZce7Is=;
- b=GeZOTcELL0wHCC2LsYMp4AHDK/U4F0TpiMBx0TLSL9ySl4L4C8XcHcbUz5fZNLjniM
- TuvyR4acGxkL9PjF4zrWBiY258C6IcsF0J9LR6SowCpPKmCKno9m8GSu4pQU9/WnDZH7
- 7UkFNkQaU4R7nVWteNdPvBIJxPPgU8WHblr0zM6zQdwUqyKaEmqLaDFu3SLFEdkz8070
- +tw2ItP8FRhBWa/R+2tqWgkisP8VzJCQvEhMDs6cgObDq+FQOIe0RTsRoPUGJizua2af
- DerEr/5gFY6bKe9hU6ejx4bsKfOsV8bd9SlGakYbkn/eCz8qeemmHfgRz2JwvgXFT4AO
- tsEg==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="pstbj7ke"
+Received: by mail-pg1-x532.google.com with SMTP id w4so1637542pgg.13
+ for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2020 13:15:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=T7pAXRTWrNkZzZOxk4+j+rXfOhA1DNTWcksQFxpsxZc=;
+ b=pstbj7keOE/AfkVZxo9jl/ASVmNChfeXJZvMYU7/bA5rxeqW2h7oz4K1QGdee1ap8h
+ qfDTMOZLbOGzSwUsB1k+j+qdtH+E0JPFaouadWTZcUrcZ6/NpeR84/e+g5KMiWGL0Mv8
+ 0lzvvQ7e0sDO3ny7Tmm4sQlbnfohJPik/sKy45dFk86yO6H7sCfmMIshbecK27vWuskx
+ KvEofqXkjx++54uIJSGY49FZytDN4/GV5oEnuki41Ai9/nuMExFLymtbpRk0/PDBmv1P
+ dXYJQmE5FLx3Y1gwfOm7H7GCkMRc7TPIF/MR+uEWjXSshMxjHJbZNxWe7OP6LPHyi5r4
+ ciog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=nS8GcWnRvgAze9eGONKgTm54dvXOecWjyagLlZce7Is=;
- b=IoyI3v92uGGUa4hH08vAMed5Fvy5wNtaF3xhCDOD4+XYuJwsWP/FBm17W06EahEs40
- L1EQ6p/6uxcDSUPOY+lW3mfFNQlgyixwLUl2/9HLrHoV5WFFczrudGcXVX8rLdSMG2Xh
- YhILJimPdCa7om4KWpVSzJ9scKC/SeS2HZzf0iKiYhpMzCjWH6d2QWqXjfeH7q4Yzv37
- hwpjEtVNJTIVy0uDM3kKngo0RACSLEcYkx4viZ6X2J3SJc90cm5npID925pRko4KAvIC
- vMhG6UYufDPG+DLBaLLAum+Dzd3OeDz13yOhHlFjuccZHtiWQvX9uyPCozE9H+Zfapfh
- +grw==
-X-Gm-Message-State: AOAM532IvXCmOX+ULomi1pf8TwSDM2I3/baoCgkwPWqZHzeckvA6YMyZ
- RAgIg1rrZcrjlJ5uaWlM0ZNpt9vRx26jUT/odaPXSg==
-X-Google-Smtp-Source: ABdhPJyfQCPRUI5fZkO4PkZURO7NzoV9R0m8AUPk0K6Fot5LT+TZuLggUEPGTEcOXrVbpzMXVwNY7147yllEhTQsoPY=
-X-Received: by 2002:a17:906:1c84:: with SMTP id
- g4mr2189231ejh.155.1604331814011; 
- Mon, 02 Nov 2020 07:43:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201102152037.963-1-brgl@bgdev.pl>
- <20201102152037.963-2-brgl@bgdev.pl>
- <20201102154101.GO27442@casper.infradead.org>
-In-Reply-To: <20201102154101.GO27442@casper.infradead.org>
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date: Mon, 2 Nov 2020 16:43:22 +0100
-Message-ID: <CAMpxmJUOb+tR25_h0R1kq7K0d=4DpmutW_V6UggL-+u8u3271g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] mm: slab: provide krealloc_array()
-To: Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=T7pAXRTWrNkZzZOxk4+j+rXfOhA1DNTWcksQFxpsxZc=;
+ b=YlwIscNb0cbry6QlAbOEONXmqbbQOur4anLsmYyytOEX/stUPZy8RRxEoIXv98RM0k
+ 6P/Mj4UIueuxwfBXeJ8YZI/JxhfBVAVwC5FF1rWthtDhVZYaF7PkPSjDfyTf0bJjh8mn
+ rPGDnWaM6EK3hUvNlK/L3BHOYp1ccwE/4Tg8WmkfJfst/XI8of2/QtLE8pnlmT3nWA7F
+ CG9h2jBkkSGWwnri0tj24mu72hiAkFITlbOHsbWQRc00y9u8eo/yrY3l64q99xDqnCdi
+ OAlyvHePYi/RNa1vye56u6rZDyk42d60wozrFqd5N3gwNIwBX3f3nLywU3M/8ZrPkla2
+ nIag==
+X-Gm-Message-State: AOAM532KfW4hiHLbh+f/6jNCIViQXNKqZZtMJLW6VYng4DHqndcpZRt6
+ rMI9FE4QJo2gWFQpn0Kd2LZoEmVbLpIxIg==
+X-Google-Smtp-Source: ABdhPJzpglJzUhmaRLlIlX0ZNNffUIUU+bduqyAI4kQF0MD2rk/W3vHOS2fwnljdadGAXGKeXRxqhg==
+X-Received: by 2002:a62:2e47:0:b029:155:853a:80d5 with SMTP id
+ u68-20020a622e470000b0290155853a80d5mr22856896pfu.29.1604351753069; 
+ Mon, 02 Nov 2020 13:15:53 -0800 (PST)
+Received: from [192.168.1.140] ([14.189.119.19])
+ by smtp.gmail.com with ESMTPSA id g16sm414119pju.5.2020.11.02.13.15.52
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 02 Nov 2020 13:15:52 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
+Mime-Version: 1.0 (1.0)
+Subject: Re: sound: PCM/I2S Digital Mic & SPDIF
+From: linux lover <caprianking2002@gmail.com>
+X-Mailer: iPhone Mail (15D60)
+In-Reply-To: <CAHhAz+jd3h6YdBvv5+4zEr0546qRUuCgHfKJtoF=EQ=+4tQoGg@mail.gmail.com>
+Date: Mon, 2 Nov 2020 13:15:50 -0800
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0CFC798D-3F52-4D41-B122-3BAA4E72C5B8@gmail.com>
+References: <CAHhAz+jd3h6YdBvv5+4zEr0546qRUuCgHfKJtoF=EQ=+4tQoGg@mail.gmail.com>
+To: Muni Sekhar <munisekharrms@gmail.com>
 X-Mailman-Approved-At: Tue, 03 Nov 2020 08:45:21 +0100
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, kvm@vger.kernel.org,
- "Michael S . Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
- Gustavo Padovan <gustavo@padovan.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-drm <dri-devel@lists.freedesktop.org>, linux-mm@kvack.org,
- Christoph Lameter <cl@linux.com>, Sumit Semwal <sumit.semwal@linaro.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Bartosz Golaszewski <brgl@bgdev.pl>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- David Rientjes <rientjes@google.com>,
- virtualization@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
- linux-media <linux-media@vger.kernel.org>, Robert Richter <rric@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
- linux-gpio <linux-gpio@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>,
- linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
- netdev <netdev@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- LKML <linux-kernel@vger.kernel.org>, Pekka Enberg <penberg@kernel.org>,
- James Morse <james.morse@arm.com>, Daniel Vetter <daniel@ffwll.ch>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org,
+ kernelnewbies <kernelnewbies@kernelnewbies.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,22 +113,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Nov 2, 2020 at 4:41 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Nov 02, 2020 at 04:20:30PM +0100, Bartosz Golaszewski wrote:
-> > +Chunks allocated with `kmalloc` can be resized with `krealloc`. Similarly
-> > +to `kmalloc_array`: a helper for resising arrays is provided in the form of
-> > +`krealloc_array`.
->
-> Is there any reason you chose to `do_this` instead of do_this()?  The
-> automarkup script turns do_this() into a nice link to the documentation
-> which you're adding below.
->
+I=E2=80=99m grateful for having you as a friend!
 
-No, I just didn't know better. Thanks for bringing this to my attention.
+Sent from my iPhone
 
-> Typo 'resising' resizing.
-
-Will fix in the next iteration.
-
-Bartosz
+> On Nov 1, 2020, at 7:19 AM, Muni Sekhar <munisekharrms@gmail.com> wrote:
+>=20
+> Hello all,
+>=20
+> I=E2=80=99m having a Linux X86 machine and interfacing with Xilinx FPGA
+> endpoint over PCIe. FPGA endpoint supports various audio engines like
+> PCM/I2S ,Digital Mic & SPDIF.
+>=20
+> I=E2=80=99m looking for any existing linux device driver to port it for my=
+ hardware.
+>=20
+> Does the Linux kernel tree have any reference examples for these audio
+> engines which I can use for porting it to my hardware? If so can
+> someone please share your inputs on this.
+>=20
+> --=20
+> Thanks,
+> Sekhar
+>=20
+> _______________________________________________
+> Kernelnewbies mailing list
+> Kernelnewbies@kernelnewbies.org
+> https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
