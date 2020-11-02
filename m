@@ -7,80 +7,80 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F1AAC00A89
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 15:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 116D9C00A89
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 15:14:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4520321D40
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 15:14:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFC6721D91
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Nov 2020 15:14:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gqGSfSG6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="J0TiS14y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4520321D40
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ki9OwNWN";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="qPxYRKPc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFC6721D91
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B33E21746;
-	Mon,  2 Nov 2020 16:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B33E21746
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0ED23173C;
+	Mon,  2 Nov 2020 16:13:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ED23173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604330046;
-	bh=YbX3Xs+IlkZvwttFLiXjgQc2kMiTtiyWfEmqYnyAdCc=;
+	s=default; t=1604330085;
+	bh=CApja9/3i4SSZxCyu1S8rCuEjQ9eENWhYSW5FFnSQuQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gqGSfSG6WlVKUfpdtcv+/7atPMDSgM5oTPPUBPT+Ytew4FyQvxRfXYC1tGw4+YKvI
-	 lNWJ52pPlE+1eMTcWNT4hEsAmWbMJj3liqXenSEE3Fv4TYoY9DMqXHb0j11MHqdzi6
-	 EoJfLWjh++3IwIG2e193dZY+1TCF9Sqzxtu0KxPQ=
+	b=Ki9OwNWN5QZsgPWClz/i6FUE+4CcfDgVVY/TRKhT8lIRxFKTNClQ3RdeBRLd61QDT
+	 KNd5KXBRQgt7JqUbsYoHwNBryZB1ZK9bnGQosuFgXgjiQfgh8pOsyrwp1Nh3HiI+aD
+	 oo6LdYtbfwc68Qmgr9D564utZyxh7dKWWTtLUnIs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A338DF804E0;
-	Mon,  2 Nov 2020 16:11:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95455F804E4;
+	Mon,  2 Nov 2020 16:11:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DD3FF804E0; Mon,  2 Nov 2020 16:11:43 +0100 (CET)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
+ id 2ABDEF804E5; Mon,  2 Nov 2020 16:11:49 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53C24F804BB
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 16:11:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53C24F804BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id DACCAF804D2
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 16:11:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DACCAF804D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="J0TiS14y"
+ header.b="qPxYRKPc"
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B5fa021a80000>; Mon, 02 Nov 2020 07:11:36 -0800
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B5fa021b70000>; Mon, 02 Nov 2020 07:11:51 -0800
 Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
- 2020 15:11:32 +0000
+ 2020 15:11:36 +0000
 Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
  (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Mon, 2 Nov 2020 15:11:29 +0000
+ Transport; Mon, 2 Nov 2020 15:11:33 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>,
  <kuninori.morimoto.gx@renesas.com>, <pierre-louis.bossart@linux.intel.com>,
  <perex@perex.cz>, <tiwai@suse.com>
-Subject: [PATCH v5 4/7] ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM
-Date: Mon, 2 Nov 2020 20:40:11 +0530
-Message-ID: <1604329814-24779-5-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v5 5/7] ASoC: audio-graph: Support empty Codec endpoint
+Date: Mon, 2 Nov 2020 20:40:12 +0530
+Message-ID: <1604329814-24779-6-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
 References: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1604329896; bh=FxtLB3V25/9092fJImUbmEK5DDd1xaC11DWTieE2aCs=;
+ t=1604329911; bh=xesz+C4t0YPTEFk/rqoe+zcMPgDi6HPptJd7hjC0VQQ=;
  h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
  References:MIME-Version:Content-Type;
- b=J0TiS14ySJ6VSZiUMAQ9K6ym9L4kBsHIijkaX1DZS1kYNd+YbASCFvEb5IjhwFjqG
- dpMBwG11IkBmE0ugtirafAzSZjy92+Mx3niF9UV5NMqwztRfFOQC4eQB+elJW6c0rC
- he8FP1PQAIfaeJz4YOylx6YN1UQklxT6eLmcJW9+e0pj9Ra3BVHAaMBadPHSajZspq
- hFU2Rzds2KbqdfA6lpW2HyB24e1kVzU0P5yoAlyY86kvXBjpiGu8WeVIazaUFraYNn
- KpE1aTCMZxkXjur/g8NLERhyD5vofY0lI1o7dYWzWf1UHCq2hnolnEBDtf3+A/vXCo
- vE9sDTUUKxDsA==
+ b=qPxYRKPcTu4iRyAtYj/ydiyHZQ4dJ81Vp/LD1yP1sHbmH+zksJaPph+eZNe+R3xup
+ maWGcfQReaoe7s7AgW7xolUdnG/tA9hxHTzvB+saBNE1fdFYug/ZvuxL/XaalEwegW
+ rMZnSEs/82h0osg7Dp7HrGqwW45pn6hWetvegfWwf5fFPBlXUs077Dv6BG7vMmdyyV
+ OA3oVcCI1nFA7iJ6YzdWPjoj3C5KSwDE3deGw5V2ZFRegFe04xVn87jB2lj3vinY7U
+ daHj06u8DZe/DuIgZtzBtzKp7b5cEeK6gBTjjPrjktiZMkur1zhI05DKlzlKjgChL7
+ eMNYNGWATpFcg==
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
  thierry.reding@gmail.com, linux-tegra@vger.kernel.org
@@ -99,71 +99,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCM devices are created for FE dai links with 'no-pcm' flag as '0'.
-Such DAI links have CPU component which implement either pcm_construct()
-or pcm_new() at component or dai level respectively. Based on this,
-current patch exposes a helper function to identify such components
-and populate 'no_pcm' flag for DPCM DAI link.
-
-This helps to have BE<->BE component links where PCM devices need
-not be created for CPU component involved in such links.
+For open platforms, which can support pluggable audio cards, Codec
+endpoint is not fixed always. It actually depends on the compatible
+HW module that is going to be connected. From SoC side the given I/O
+interface is always available. Hence such links have fixed CPU endpoint
+but no Codec endpoint. This patch helps to support such links where
+user can populate Codec endpoint only and its fields in Platform DT
+depending on the plugged HW.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/audio-graph-card.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ sound/soc/generic/audio-graph-card.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 1e20562..9b06841 100644
+index 9b06841..0ba50be9 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -111,6 +111,17 @@ static int graph_get_dai_id(struct device_node *ep)
- 	return id;
- }
+@@ -229,6 +229,14 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
+ 	int ret;
  
-+static bool soc_component_is_pcm(struct snd_soc_dai_link_component *dlc)
-+{
-+	struct snd_soc_dai *dai = snd_soc_find_dai_with_mutex(dlc);
++	/*
++	 * Codec endpoint can be NULL for pluggable audio HW.
++	 * Platform DT can populate the Codec endpoint depending on the
++	 * plugged HW.
++	 */
++	if (!li->cpu && !codec_ep)
++		return 0;
 +
-+	if (dai && (dai->component->driver->pcm_construct ||
-+		    dai->driver->pcm_new))
-+		return true;
-+
-+	return false;
-+}
-+
- static int asoc_simple_parse_dai(struct device_node *ep,
- 				 struct snd_soc_dai_link_component *dlc,
- 				 int *is_single_link)
-@@ -205,6 +216,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 				  int dup_codec)
- {
- 	struct device *dev = simple_priv_to_dev(priv);
-+	struct snd_soc_card *card = simple_priv_to_card(priv);
- 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
- 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
- 	struct device_node *top = dev->of_node;
-@@ -259,6 +271,19 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 		if (ret < 0)
- 			goto out_put_node;
+ 	/* Do it all CPU endpoint, and 1st Codec endpoint */
+ 	if (!li->cpu && dup_codec)
+ 		return 0;
+@@ -565,7 +573,7 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
+ 	li->link++; /* 1xCPU-dummy */
+ 	li->dais++; /* 1xCPU */
  
-+		/*
-+		 * In BE<->BE connections it is not required to create
-+		 * PCM devices at CPU end of the dai link and thus 'no_pcm'
-+		 * flag needs to be set. It is useful when there are many
-+		 * BE components and some of these have to be connected to
-+		 * form a valid audio path.
-+		 *
-+		 * For example: FE <-> BE1 <-> BE2 <-> ... <-> BEn where
-+		 * there are 'n' BE components in the path.
-+		 */
-+		if (card->component_chaining && !soc_component_is_pcm(cpus))
-+			dai_link->no_pcm = 1;
-+
- 		/* card->num_links includes Codec */
- 		asoc_simple_canonicalize_cpu(dai_link, is_single_links);
- 	} else {
+-	if (!dup_codec) {
++	if (!dup_codec && codec_ep) {
+ 		li->link++; /* 1xdummy-Codec */
+ 		li->conf++; /* 1xdummy-Codec */
+ 		li->dais++; /* 1xCodec */
 -- 
 2.7.4
 
