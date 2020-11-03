@@ -2,79 +2,107 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48032C00A89
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 02:26:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A5D4C388F2
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 02:55:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D40A722265
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 02:26:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2D9722265
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 02:55:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gAsgHu11"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D40A722265
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z/+/3WHs";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h3//92rp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2D9722265
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5056F839;
-	Tue,  3 Nov 2020 03:25:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5056F839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56FE91739;
+	Tue,  3 Nov 2020 03:54:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56FE91739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604370374;
-	bh=ypGEbefHiBYOqBh2eyM8jMRpQpPyT5klns5XpVjR6CU=;
+	s=default; t=1604372101;
+	bh=1heWOxX45caqxqta4L8VaEJrC9lsVKW3q3CgUfOAEkk=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=gAsgHu11h9MfTzEjlogW53HVBw0ZqQYIRkgLyBSoX257gEu/mfyz7YnW1uwFKWSJS
-	 MDn6avewY/s+UpgDj0rvlABgDcfJ/7kveWE3hH84cwj9F/mJPMZizc+PMQZvW6r7EF
-	 3AvQ9P+JClUCZcMiGu6E7hPnJLjW/MlzIh37S0RU=
+	b=Z/+/3WHsLJyM8MBgW5w5SJrXyTow+AiYZzPebniLHLL0gtg4XCOcKVBXcueqJsdd/
+	 Uq6uWlDm3opbV7mWVP5lgF5zA2DllkYX2hK5IhEut+S0e37poAlVt7PkKHeKFwsNvO
+	 t+lzFdrwG2/8taIImVd4+fSmIColBscBZfjHvgq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4637F8015A;
-	Tue,  3 Nov 2020 03:25:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0244F80162;
+	Tue,  3 Nov 2020 03:54:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE844F80232; Tue,  3 Nov 2020 03:25:21 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AC4E5F80171; Tue,  3 Nov 2020 03:54:08 +0100 (CET)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com
+ [IPv6:2607:f8b0:4864:20::62e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E9ECF8015A
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 03:25:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E9ECF8015A
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A32P8ciC010781,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A32P8ciC010781
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 3 Nov 2020 10:25:08 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.36) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 3 Nov 2020 10:25:08 +0800
-Received: from localhost.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 3 Nov 2020 10:25:07 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt1015: add delay to fix pop noise from speaker
-Date: Tue, 3 Nov 2020 10:25:00 +0800
-Message-ID: <20201103022500.23980-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.28.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0EF2F80108
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 03:54:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0EF2F80108
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="h3//92rp"
+Received: by mail-pl1-x62e.google.com with SMTP id z1so7842839plo.12
+ for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2020 18:54:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gqs+1TnFEGdD9FcDOYfC91qpqXfct7hE2tf3ECPoBSs=;
+ b=h3//92rpvD3iQ/zyByZAkFZ0BcjqX4Qh4TZ04zul6pRXuCGJp0XP6iG2eb+QPXZJR1
+ XdpSkDIMU5SAQOv3YMwCT6nO7shM5yIuxEJrsr7QvxqjrJAmYvOpEmAApFJEGXDo/bjM
+ PeUjA73o8WqXAUjuXo8YW3FnYIv0Y2qd0mfI6WWEo0XKjAK700F6op3TGjSb+7OXgB9/
+ 0c67pawv5YMb6LBKecao9lO9U1U4j8kQ4k4OAiTRl7kiKSxzOfgnPs4m6TLp+Xqvhr+A
+ W2Yu2+pCvAg0CQlwpnuLYREU2+Na6oipsN9HlgWdZjpbaV0vRYR3Sd8a/JBUXghp8ZOX
+ MNcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gqs+1TnFEGdD9FcDOYfC91qpqXfct7hE2tf3ECPoBSs=;
+ b=ELXk9fmTO5wnpwq2PDOqRLVU7PZaaw5scZNW/QAxf0nh9NTSuQVAN9gH4pdmnjNB3f
+ N3Xre3c0a8Nli13j7EakSsoLlnzyXz+xeqm9XhV6zqlR0SMtV2OttbaGkgdf8EbYOpxk
+ nGE22EsP8+FhMG/FzQVAOyChv9qhCtrCUL3qboOJH4ePvwceFwmfE0V6w+BCZsP+7giO
+ ncA7wUKkLbaxnOukKVRzg+QlbzT0bL36WhoQ8ge2Q+r36Foc6EiVugemJkZmvJA5hZOs
+ mo/FwXm1vtAsy/AntfjnKQ/pO6PhYhFHo8L0xmlQQBvTjHLxDLrRALchODBWv+UZFRAR
+ y+ug==
+X-Gm-Message-State: AOAM532FFm3rS3ZDfuWDwWLprImRzpD7GCA/Z0mn8DaZGq/K00e1BSoB
+ ZLqazuX4IojB7S5UhR8GGuw=
+X-Google-Smtp-Source: ABdhPJzu5XHybPXfvvmK+2kjYSsHvClT7MzkEy+gcpckiXpa1Cg6UrXC6bbxPS0EIU1BkvkV/2Ek9g==
+X-Received: by 2002:a17:902:bb8c:b029:d2:2503:e458 with SMTP id
+ m12-20020a170902bb8cb02900d22503e458mr23372102pls.18.1604372038547; 
+ Mon, 02 Nov 2020 18:53:58 -0800 (PST)
+Received: from localhost (114-34-18-97.HINET-IP.hinet.net. [114.34.18.97])
+ by smtp.gmail.com with ESMTPSA id cv4sm886145pjb.1.2020.11.02.18.53.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 02 Nov 2020 18:53:57 -0800 (PST)
+From: Ajye Huang <ajye.huang@gmail.com>
+X-Google-Original-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] Modify documentation and machine driver for SC7180
+ sound card
+Date: Tue,  3 Nov 2020 10:53:45 +0800
+Message-Id: <20201103025347.510940-1-ajye_huang@compal.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
- RTEXMBS01.realtek.com.tw (172.21.6.36)
-Cc: oder_chiou@realtek.com, Jack Yu <jack.yu@realtek.com>,
- alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
- kenny_chen@realtek.com, tzungbi@google.com, derek.fang@realtek.com,
- shumingf@realtek.com, flove@realtek.com
+Cc: dianders@chromium.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
+ Patrick Lai <plai@codeaurora.org>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Mark Brown <broonie@kernel.org>,
+ Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
+ srinivas.kandagatla@linaro.org, linux-arm-kernel@lists.infradead.org,
+ cychiang@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,140 +118,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
+Note:
+- The patch is made by the collaboration of
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+ Cheng-Yi Chiang <cychiang@chromium.org>
 
-Add delay to fix pop noise from speaker.
+Changes from v1 to v2:
+- Ducumentation: Modify the dimc-gpios property description and examples.
+- Machine driver: 
+  - Remove "qcom,sc7180-sndcard-rt5682-m98357-2mic" compatible
+  - See gpio property and use anadditional control.
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- .../devicetree/bindings/sound/rt1015.txt      |  6 ++++++
- include/sound/rt1015.h                        | 15 ++++++++++++++
- sound/soc/codecs/rt1015.c                     | 20 +++++++++++++++++++
- sound/soc/codecs/rt1015.h                     |  2 ++
- 4 files changed, 43 insertions(+)
- create mode 100644 include/sound/rt1015.h
+Changes from v2 to v3:
+- Machine driver: Addressed suggestions from Tzung-Bi.
+  - move variables "dmic_switch" and "dmic_sel" into struct sc7180_snd_data.
+  - Remove redundant judgments in dmic_set().
 
-diff --git a/Documentation/devicetree/bindings/sound/rt1015.txt b/Documentation/devicetree/bindings/sound/rt1015.txt
-index fcfd02d8d32f..2c92c8cf3c7f 100644
---- a/Documentation/devicetree/bindings/sound/rt1015.txt
-+++ b/Documentation/devicetree/bindings/sound/rt1015.txt
-@@ -8,10 +8,16 @@ Required properties:
- 
- - reg : The I2C address of the device.
- 
-+Optional properties:
-+
-+- realtek,realtek,power-up-delay-ms
-+  Set a delay time for flush work to be completed,
-+  this value is adjustable depending on platform.
- 
- Example:
- 
- rt1015: codec@28 {
- 	compatible = "realtek,rt1015";
- 	reg = <0x28>;
-+	realtek,realtek,power-up-delay-ms = <50>;
- };
-diff --git a/include/sound/rt1015.h b/include/sound/rt1015.h
-new file mode 100644
-index 000000000000..70a7538d4c89
---- /dev/null
-+++ b/include/sound/rt1015.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * linux/sound/rt1015.h -- Platform data for RT1015
-+ *
-+ * Copyright 2020 Realtek Microelectronics
-+ */
-+
-+#ifndef __LINUX_SND_RT1015_H
-+#define __LINUX_SND_RT1015_H
-+
-+struct rt1015_platform_data {
-+	unsigned int power_up_delay_ms;
-+};
-+
-+#endif
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 25fe2ddedd54..967193518349 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -27,10 +27,15 @@
- #include <sound/soc-dapm.h>
- #include <sound/soc.h>
- #include <sound/tlv.h>
-+#include <sound/rt1015.h>
- 
- #include "rl6231.h"
- #include "rt1015.h"
- 
-+static const struct rt1015_platform_data i2s_default_platform_data = {
-+	.power_up_delay_ms = 50,
-+};
-+
- static const struct reg_default rt1015_reg[] = {
- 	{ 0x0000, 0x0000 },
- 	{ 0x0004, 0xa000 },
-@@ -650,6 +655,7 @@ static int rt1015_amp_drv_event(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMU:
- 		if (rt1015->hw_config == RT1015_HW_28)
- 			schedule_delayed_work(&rt1015->flush_work, msecs_to_jiffies(10));
-+		msleep(rt1015->pdata.power_up_delay_ms);
- 		break;
- 	default:
- 		break;
-@@ -1067,9 +1073,16 @@ static struct acpi_device_id rt1015_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, rt1015_acpi_match);
- #endif
- 
-+static void rt1015_parse_dt(struct rt1015_priv *rt1015, struct device *dev)
-+{
-+	device_property_read_u32(dev, "realtek,power-up-delay-ms",
-+		&rt1015->pdata.power_up_delay_ms);
-+}
-+
- static int rt1015_i2c_probe(struct i2c_client *i2c,
- 	const struct i2c_device_id *id)
- {
-+	struct rt1015_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt1015_priv *rt1015;
- 	int ret;
- 	unsigned int val;
-@@ -1081,6 +1094,13 @@ static int rt1015_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, rt1015);
- 
-+	rt1015->pdata = i2s_default_platform_data;
-+
-+	if (pdata)
-+		rt1015->pdata = *pdata;
-+	else
-+		rt1015_parse_dt(rt1015, &i2c->dev);
-+
- 	rt1015->regmap = devm_regmap_init_i2c(i2c, &rt1015_regmap);
- 	if (IS_ERR(rt1015->regmap)) {
- 		ret = PTR_ERR(rt1015->regmap);
-diff --git a/sound/soc/codecs/rt1015.h b/sound/soc/codecs/rt1015.h
-index d3fdd30aca6d..15cadb361ec3 100644
---- a/sound/soc/codecs/rt1015.h
-+++ b/sound/soc/codecs/rt1015.h
-@@ -12,6 +12,7 @@
- 
- #ifndef __RT1015_H__
- #define __RT1015_H__
-+#include <sound/rt1015.h>
- 
- #define RT1015_DEVICE_ID_VAL			0x1011
- #define RT1015_DEVICE_ID_VAL2			0x1015
-@@ -380,6 +381,7 @@ enum {
- 
- struct rt1015_priv {
- 	struct snd_soc_component *component;
-+	struct rt1015_platform_data pdata;
- 	struct regmap *regmap;
- 	int sysclk;
- 	int sysclk_src;
+Changes from v3 to v4:
+- Machine driver: Addressed suggestions from Tzung-Bi.
+  - Remove redundant judgments in dmic_set() and dmic_get().
+  - Remove 1 level indent of judgment of IS_ERR(data->dmic_sel).
+  
+Thanks for the review!
+
+Ajye Huang (2):
+  ASoC: google: dt-bindings: modify machine bindings for two MICs case
+  ASoC: qcom: sc7180: Modify machine driver for 2mic
+
+ .../bindings/sound/google,sc7180-trogdor.yaml | 58 ++++++++++++++++++
+ sound/soc/qcom/sc7180.c                       | 61 +++++++++++++++++++
+ 2 files changed, 119 insertions(+)
+
 -- 
-2.28.0
+2.25.1
 
