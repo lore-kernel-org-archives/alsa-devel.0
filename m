@@ -7,62 +7,76 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9168C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 16:13:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7422AC2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 16:16:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14C6522370
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 16:13:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D88A206CB
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 16:15:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pAXLQvLM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14C6522370
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ladisch.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VFGiWn+2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D88A206CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9425D169D;
-	Tue,  3 Nov 2020 17:12:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9425D169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7974C16A6;
+	Tue,  3 Nov 2020 17:15:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7974C16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604420012;
-	bh=ZAwy1SyCHUV+1HTbl2YK9B/0PuANQqx/C+z/bSEyiwM=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1604420157;
+	bh=HOyvG6sVZy5dEo4f1fjgmSbr+W139I6XdVCQWs1rvG8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pAXLQvLMH6ohRvi8+nsiqXp9o1Yrezs0VuVciyIIKBhwQZzdymRNCLJQ4pyXmTcKZ
-	 cOf+KSPcEclVV8RT7P/U+a4H7yzKb625W2PHO2d96+9sfRkqHImxf0u7i0W8ocOFqL
-	 RnzNGJqhzQqjk81qIvmZCSYBNPIycTOlLWzWOALY=
+	b=VFGiWn+2DuS2CSrP3lEePDMVR9Vc327Zvb5QAhsceYvGi4ZI9/firRzvoHhbN1OYC
+	 aXdbxfHlcp5cCVNyfnbH8WImg3pvDVaHEUj2McnZlQ3qn8SifUQ/OxIEr/H7xH0mR5
+	 kAAzT1CoYdjMwj0Jy6Irjn3GHM2LPo2uYT+rVIdQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 153E4F80162;
-	Tue,  3 Nov 2020 17:12:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D9EAF80162;
+	Tue,  3 Nov 2020 17:15:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7968F80171; Tue,  3 Nov 2020 17:12:39 +0100 (CET)
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [IPv6:2a01:4f8:212:88::2])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 57983F80272; Tue,  3 Nov 2020 17:15:05 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98522F80083
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 17:12:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98522F80083
-Received: from [10.1.0.120] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 76A3E56205C4
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 17:12:34 +0100 (CET)
-Subject: Re: snd_bt87x on Kworld KW-TV878RF
-To: alsa-devel@alsa-project.org
-References: <CAOoeSP+sPgxziFPPTWsCWHTK7cotXQPxJiZwJnj6ciEpK06zsA@mail.gmail.com>
-From: Clemens Ladisch <clemens@ladisch.de>
-Message-ID: <ef21f7ca-7f79-c59b-9e9b-d90c8bf4db97@ladisch.de>
-Date: Tue, 3 Nov 2020 17:13:43 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1783EF8015A
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 17:15:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1783EF8015A
+IronPort-SDR: Kd7L+YQy4a5Q3sl+ynlxMOWE5YIAzqO+Q/Bg4MaG029PeivuDASptN53Pv4hMBMNUFu6SoCJvo
+ QhVSfjopHWjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="169185042"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; d="scan'208";a="169185042"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Nov 2020 08:14:57 -0800
+IronPort-SDR: jZab5oytGyFLlQrCaugEYKYWs/Q++oi1xtSDTpne7+dCcvGLfESup5K/p3518AfKjku2Tocl66
+ XnG3nmSJfmNg==
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; d="scan'208";a="528532316"
+Received: from ctanriov-mobl1.amr.corp.intel.com (HELO [10.212.114.78])
+ ([10.212.114.78])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Nov 2020 08:14:56 -0800
+Subject: Re: [PATCH v2] ASoC: rt1015: support TDM slot configuration
+To: shumingf@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
+References: <20201103091402.8126-1-shumingf@realtek.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <659af5ba-9854-b6d2-95f7-36fd1a5b2bfe@linux.intel.com>
+Date: Tue, 3 Nov 2020 09:47:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAOoeSP+sPgxziFPPTWsCWHTK7cotXQPxJiZwJnj6ciEpK06zsA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.101.5 at webclient5
-X-Virus-Status: Clean
+In-Reply-To: <20201103091402.8126-1-shumingf@realtek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, kent_chen@realtek.com, Keith.Tzeng@quantatw.com,
+ derek.fang@realtek.com, brent.lu@intel.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,11 +92,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Tamás Hámor wrote:
-> I load ... snd-bt87x with "load_all".
 
-Does it work?
+> +	/* This is an assumption that the system sends stereo audio to the amplifier typically.
+> +	 * And the stereo audio is placed in slot 0/2/4/6 as the starting slot.
+> +	 * According to the slot number, we also set the mono LR to select the right slot.
+> +	 */
+> +	first_bit = __ffs(rx_mask);
+> +	switch (first_bit) {
+> +	case 0:
+> +	case 2:
+> +	case 4:
+> +	case 6:
+> +		snd_soc_component_update_bits(component,
+> +			RT1015_PAD_DRV2, RT1015_MONO_LR_SEL_MASK,
+> +			RT1015_MONO_L_CHANNEL);
+> +		snd_soc_component_update_bits(component,
+> +			RT1015_TDM1_4,
+> +			RT1015_TDM_I2S_TX_L_DAC1_1_MASK |
+> +			RT1015_TDM_I2S_TX_R_DAC1_1_MASK,
+> +			(first_bit << RT1015_TDM_I2S_TX_L_DAC1_1_SFT) |
+> +			((first_bit+1) << RT1015_TDM_I2S_TX_R_DAC1_1_SFT));
+> +		break;
+> +	case 1:
+> +	case 3:
+> +	case 5:
+> +	case 7:
+> +		snd_soc_component_update_bits(component,
+> +			RT1015_PAD_DRV2, RT1015_MONO_LR_SEL_MASK,
+> +			RT1015_MONO_R_CHANNEL);
+> +		snd_soc_component_update_bits(component,
+> +			RT1015_TDM1_4,
+> +			RT1015_TDM_I2S_TX_L_DAC1_1_MASK |
+> +			RT1015_TDM_I2S_TX_R_DAC1_1_MASK,
+> +			((first_bit-1) << RT1015_TDM_I2S_TX_L_DAC1_1_SFT) |
+> +			(first_bit << RT1015_TDM_I2S_TX_R_DAC1_1_SFT));
+> +		break;
 
+One more question from me: if you have 2 amplifiers on the same link and 
+use slot 0 and 1, what would be the rx_mask for each amplifier? If the 
+mask is BIT(0) for left and BIT(1) for right, it looks like both would 
+render L+R?
 
-Regards,
-Clemens
+Also should the settings and channel selection be modifiable using the 
+codec configuration as we've done for RT1308, e.g. rt1015-1 would use LL 
+and rt1015-2 would use RR?
+
+Thanks
+-Pierre
