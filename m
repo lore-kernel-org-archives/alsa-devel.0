@@ -2,101 +2,101 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A29BC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:55:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6A12C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:55:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75FC02222B
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:55:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3CBD02222B
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 07:55:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m0GT04bN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75FC02222B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EfVbfGlT";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="Dah3vnxq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CBD02222B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA20217DA;
-	Tue,  3 Nov 2020 08:54:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA20217DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3B581773;
+	Tue,  3 Nov 2020 08:54:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3B581773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604390117;
-	bh=ybkS1rDhXiw7/51Suxmbqs/1DBuiboIz632uH+O5FyM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1604390129;
+	bh=F+RVJUPd6N3NlSo8lsMsGcW2JPuwTx9aScvjRYc3mOQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m0GT04bNOZWMIJP1szG7DdfLxQIAuYiol6qeIrbuUUf/oHbTEysfXYXh0Qd8ojvdQ
-	 QH48+BhSlIXxDfapVG8hfybYqt0ww5y5hoJXj5PK3zr6TJRpR4mbaKiwE2Jf8V4V9E
-	 fnH6KkX0/K0cNX3x7jq4BaRfZwQ8GBizdh27s3RQ=
+	b=EfVbfGlTUwfEpX1+FVJiw3cDAvX5pgsuPayXrPmsfR4+/pGMCDNa3YvxKITwWHsX1
+	 YbI7ok5C5Hb43byptooVsE9A/yGcQmfKBLEwYGefDPW0E8jnHs+xTdqBi6/iQjmHz2
+	 Ov1jBbEjJCDdcSgf5jKOmUMln4eQxm+FYdJP0XPM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38CB3F80564;
+	by alsa1.perex.cz (Postfix) with ESMTP id DA75EF80566;
 	Tue,  3 Nov 2020 08:45:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21E0EF80232; Mon,  2 Nov 2020 17:09:29 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id AA715F80108; Tue,  3 Nov 2020 08:11:09 +0100 (CET)
+Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
+ [216.228.121.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF98FF8012B
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2020 17:09:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF98FF8012B
-IronPort-SDR: 1FJaw2aXFfwCigA7ABmPynoMpcLSY5j6vfgFb73ifBExjX8u9W6GWm5ARsClhnkobEUw2uyPcu
- FUPPkrGUI2KQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="165403231"
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; d="scan'208";a="165403231"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Nov 2020 08:09:23 -0800
-IronPort-SDR: uAmx+dUdaysdZ8K1ZgB/geKvq5lS0JI21tbuv4XFXThi2WCN7w4HiDrVU0NNXviB6iE/0DR06f
- TbeWixYEDTxw==
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; d="scan'208";a="352851467"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Nov 2020 08:09:15 -0800
-Received: from andy by smile with local (Exim 4.94)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1kZcPQ-003FnO-49; Mon, 02 Nov 2020 18:10:16 +0200
-Date: Mon, 2 Nov 2020 18:10:16 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v2 8/8] dma-buf: use krealloc_array()
-Message-ID: <20201102161016.GN4077@smile.fi.intel.com>
-References: <20201102152037.963-1-brgl@bgdev.pl>
- <20201102152037.963-9-brgl@bgdev.pl>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4813F80108
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 08:11:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4813F80108
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="Dah3vnxq"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B5fa102830000>; Mon, 02 Nov 2020 23:10:59 -0800
+Received: from [172.27.13.204] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
+ 2020 07:10:51 +0000
+Subject: Re: [PATCH mlx5-next v1 11/11] RDMA/mlx5: Remove IB representors dead
+ code
+To: Leon Romanovsky <leon@kernel.org>, Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, gregkh <gregkh@linuxfoundation.org>
+References: <20201101201542.2027568-1-leon@kernel.org>
+ <20201101201542.2027568-12-leon@kernel.org>
+From: Roi Dayan <roid@nvidia.com>
+Message-ID: <845b26c8-4dfa-5ef2-67a8-1ae6f556fd71@nvidia.com>
+Date: Tue, 3 Nov 2020 09:10:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102152037.963-9-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201101201542.2027568-12-leon@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1604387459; bh=4WUhWdFgickYDSVFf73IeSlsegDSnCyqJHXLcImggck=;
+ h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+ MIME-Version:In-Reply-To:Content-Type:Content-Language:
+ Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+ b=Dah3vnxqaguW+nzDWpLeyjsmEMHzddxz/bOE8aJ2quo8SYWhPfZW9duce4clcU2ej
+ GDvO7zRgP2eEzc57IkWZzFs0B8FdA4oKAREzx4GKnuosH6K8N+gYKCzkRksHIwl+BY
+ J/lDEDeZ/jEIpOjtHSLOLEuTrWFl7yRZOjGW0s9jh0zRZFgVXmWM6aWYdZpEf4+sBU
+ py9TwqCM+HnDehlKgL3fsLF3JZPH3K0pmL260bnNDmwfiW9C6vnS4YaXSX/rdNX2uZ
+ ih2ncLS8xu/ZN9QxF8Ygw1/FKacbdTF/cGpwDzDrqYWjFzaJI/phkRuYPZhzRozU3o
+ Z1jQ9+kZh73JA==
 X-Mailman-Approved-At: Tue, 03 Nov 2020 08:45:22 +0100
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
- "Michael S . Tsirkin" <mst@redhat.com>, David Airlie <airlied@linux.ie>,
- Gustavo Padovan <gustavo@padovan.org>,
- Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
- linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- David Rientjes <rientjes@google.com>,
- virtualization@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
- linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
- linux-gpio@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-edac@vger.kernel.org,
- Tony Luck <tony.luck@intel.com>, netdev@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Pekka Enberg <penberg@kernel.org>, James Morse <james.morse@arm.com>,
- Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
- Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ kiran.patil@intel.com, "Michael S.
+ Tsirkin" <mst@redhat.com>, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+ Jason Wang <jasowang@redhat.com>, ranjani.sridharan@linux.intel.com,
+ virtualization@lists.linux-foundation.org, fred.oh@linux.intel.com,
+ tiwai@suse.de, broonie@kernel.org, Parav Pandit <parav@nvidia.com>,
+ shiraz.saleem@intel.com, Jakub Kicinski <kuba@kernel.org>,
+ dan.j.williams@intel.com, Leon Romanovsky <leonro@nvidia.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, linux-kernel@vger.kernel.org,
+ "David S . Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,22 +112,142 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Nov 02, 2020 at 04:20:37PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+
+
+On 2020-11-01 10:15 PM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Use the helper that checks for overflows internally instead of manually
-> calculating the size of the new array.
+> Delete dead code.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>   drivers/infiniband/hw/mlx5/ib_rep.c | 31 +++++++----------------------
+>   drivers/infiniband/hw/mlx5/ib_rep.h | 31 -----------------------------
+>   2 files changed, 7 insertions(+), 55 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
+> index 9810bdd7f3bc..a1a9450ed92c 100644
+> --- a/drivers/infiniband/hw/mlx5/ib_rep.c
+> +++ b/drivers/infiniband/hw/mlx5/ib_rep.c
+> @@ -13,7 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+>   	struct mlx5_ib_dev *ibdev;
+>   	int vport_index;
+> 
+> -	ibdev = mlx5_ib_get_uplink_ibdev(dev->priv.eswitch);
+> +	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
+>   	vport_index = rep->vport_index;
+> 
+>   	ibdev->port[vport_index].rep = rep;
+> @@ -74,6 +74,11 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+>   	return ret;
+>   }
+> 
+> +static void *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
+> +{
+> +	return rep->rep_data[REP_IB].priv;
+> +}
+> +
+>   static void
+>   mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
+>   {
+> @@ -91,40 +96,18 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
+>   		__mlx5_ib_remove(dev, dev->profile, MLX5_IB_STAGE_MAX);
+>   }
+> 
+> -static void *mlx5_ib_vport_get_proto_dev(struct mlx5_eswitch_rep *rep)
+> -{
+> -	return mlx5_ib_rep_to_dev(rep);
+> -}
+> -
+>   static const struct mlx5_eswitch_rep_ops rep_ops = {
+>   	.load = mlx5_ib_vport_rep_load,
+>   	.unload = mlx5_ib_vport_rep_unload,
+> -	.get_proto_dev = mlx5_ib_vport_get_proto_dev,
+> +	.get_proto_dev = mlx5_ib_rep_to_dev,
+>   };
+> 
+> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+> -					  u16 vport_num)
+> -{
+> -	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_IB);
+> -}
+> -
+>   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+>   					  u16 vport_num)
+>   {
+>   	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_ETH);
+>   }
+> 
+> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
+> -{
+> -	return mlx5_eswitch_uplink_get_proto_dev(esw, REP_IB);
+> -}
+> -
+> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+> -					   u16 vport_num)
+> -{
+> -	return mlx5_eswitch_vport_rep(esw, vport_num);
+> -}
+> -
+>   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+>   						   struct mlx5_ib_sq *sq,
+>   						   u16 port)
+> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.h b/drivers/infiniband/hw/mlx5/ib_rep.h
+> index 93f562735e89..ce1dcb105dbd 100644
+> --- a/drivers/infiniband/hw/mlx5/ib_rep.h
+> +++ b/drivers/infiniband/hw/mlx5/ib_rep.h
+> @@ -12,11 +12,6 @@
+>   extern const struct mlx5_ib_profile raw_eth_profile;
+> 
+>   #ifdef CONFIG_MLX5_ESWITCH
+> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+> -					  u16 vport_num);
+> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw);
+> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+> -					   u16 vport_num);
+>   int mlx5r_rep_init(void);
+>   void mlx5r_rep_cleanup(void);
+>   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+> @@ -25,26 +20,6 @@ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+>   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+>   					  u16 vport_num);
+>   #else /* CONFIG_MLX5_ESWITCH */
+> -static inline
+> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+> -					  u16 vport_num)
+> -{
+> -	return NULL;
+> -}
+> -
+> -static inline
+> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
+> -{
+> -	return NULL;
+> -}
+> -
+> -static inline
+> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+> -					   u16 vport_num)
+> -{
+> -	return NULL;
+> -}
+> -
+>   static inline int mlx5r_rep_init(void) { return 0; }
+>   static inline void mlx5r_rep_cleanup(void) {}
+>   static inline
+> @@ -62,10 +37,4 @@ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+>   	return NULL;
+>   }
+>   #endif
+> -
+> -static inline
+> -struct mlx5_ib_dev *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
+> -{
+> -	return rep->rep_data[REP_IB].priv;
+> -}
+>   #endif /* __MLX5_IB_REP_H__ */
+> --
+> 2.28.0
+> 
 
-...
-
-> +		nfences = krealloc_array(fences, i,
-> +					 sizeof(*fences), GFP_KERNEL);
-
-On 80 position is closing parenthesis, which, I think, makes it okay to put on
-one line.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Roi Dayan <roid@nvidia.com>
