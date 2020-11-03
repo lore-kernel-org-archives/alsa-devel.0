@@ -2,109 +2,159 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B531DC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 16:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42EC5C388F7
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 17:14:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 074CB22264
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 16:28:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4E5BC21556
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 17:13:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="faUsT+5y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dell.com header.i=@dell.com header.b="Du6+RNFQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 074CB22264
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=dell.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dTKMbVZp";
+	dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com header.i=@intel.onmicrosoft.com header.b="rjEFE6Qu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E5BC21556
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73A8416C8;
-	Tue,  3 Nov 2020 17:27:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73A8416C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id F21FF1695;
+	Tue,  3 Nov 2020 18:13:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F21FF1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604420926;
-	bh=Njw/2Z6h3EbMmFbdDIqFHZbB609XPZJX9YQCSkVTafQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=faUsT+5y5/HEhn3rT1il8FcitMx2cvEizSQiFviQwnn3Ry3BLsF1XNqPN05iTbHl3
-	 TYXJ2E6sfYxYkLD3kPZDQCxg4DRyPFpj88K7Oh4dGuU8vm+KBWllGSf0sPsHBvL3dt
-	 gPmPSAhom+RZ9JKrUHQPR6soCG6AEu+5E+uh4d3Y=
+	s=default; t=1604423637;
+	bh=zF24QUel7se/0TUURD5P9cggk8iWLbzVbwi4O6n2K2s=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dTKMbVZpaciWYtVQOgbkJlW/BdWiaHlr6Ubj8ApsnCPst3YfeYHp9JCCYwCsw0veH
+	 9sTMYWGlEWyo5+o1MjXh18SmFYneGukE1oZ76n41LnMqFiUFWsjHdd09QhS5jXfS4A
+	 hOm1/6pGF1vzHNcsUrax51zShPdYPMS4n03fKcCM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6114CF804CB;
-	Tue,  3 Nov 2020 17:26:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FFA3F80162;
+	Tue,  3 Nov 2020 18:13:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD739F80171; Tue,  3 Nov 2020 13:59:21 +0100 (CET)
-Received: from mx0a-00154904.pphosted.com (mx0a-00154904.pphosted.com
- [148.163.133.20])
+ id 1589CF80171; Tue,  3 Nov 2020 18:13:05 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2ECBF80108
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 13:59:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2ECBF80108
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6DC0F80083
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 18:12:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6DC0F80083
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=dell.com header.i=@dell.com
- header.b="Du6+RNFQ"
-Received: from pps.filterd (m0170390.ppops.net [127.0.0.1])
- by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 0A3CuoqA000919
- for <alsa-devel@alsa-project.org>; Tue, 3 Nov 2020 07:59:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=smtpout1; bh=gXiXEbn51dmWApabI5YJtghO8VjiHbPBfHDnqtSPYug=;
- b=Du6+RNFQm7y6sBg9rTCWKAytw59tv6joyKSNOUT8usHfQqyL5dlxpGMCELkZdEn7i+dt
- Jmt1t1B4lL+JmsGfixR8DJMymYPBqEciVsLd9yyr7GxZIbcwSpbSTAt8VGUOUpZISAHm
- jsCkCNdgXTY8YLKdrVCGiXNnQC6nfoJZSVfgaoBJFnOkLuiHLU4eL4jT/C2EEhD7s3gE
- E2G5hhHMtNsSG4DkPFP9rYcB4kpxLJa5RI5whoSShWiqTHFhK335TLEpHm0VKnepA24c
- 5A75UMapeimzA2cZuD+gm1QHBBSOPl9FWMVbLEMWeOOm50fIFz3NfZgQjBG6zQMQ/Xi3 0A== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com
- [67.231.149.39])
- by mx0a-00154904.pphosted.com with ESMTP id 34h302t6kp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2020 07:59:15 -0500
-Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
- by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 0A3Co64q109691
- for <alsa-devel@alsa-project.org>; Tue, 3 Nov 2020 07:59:15 -0500
-Received: from ausxipps310.us.dell.com (AUSXIPPS310.us.dell.com
- [143.166.148.211])
- by mx0a-00154901.pphosted.com with ESMTP id 34k6pg91hc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2020 07:59:15 -0500
-X-LoopCount0: from 10.69.132.19
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.77,448,1596517200"; d="scan'208";a="559511945"
-From: Perry Yuan <Perry.Yuan@dell.com>
-To: oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com
-Subject: [PATCH] ASoC: rt715:add Mic Mute LED control support
-Date: Tue,  3 Nov 2020 04:58:59 -0800
-Message-Id: <20201103125859.8759-1-Perry_Yuan@Dell.com>
-X-Mailer: git-send-email 2.24.3
+ dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
+ header.i=@intel.onmicrosoft.com header.b="rjEFE6Qu"
+IronPort-SDR: H4Po9MRhyBpdj3MDh668jvaPPSgeKKsdZEZzjMRTZVwZshvIOPcXY8QN4K5qMdpfimQ3JHbS3T
+ l6UTsU/ugCaQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156868137"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; d="scan'208";a="156868137"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Nov 2020 09:12:43 -0800
+IronPort-SDR: jP9zFvxx2WWX8ajEuGLkZkl7u0n8be2xeSKO8jE2vfi7qzoESq+Idv1wnZBEo03XefqPgQRD/U
+ axUfzJ8GRh7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; d="scan'208";a="426412873"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+ by fmsmga001.fm.intel.com with ESMTP; 03 Nov 2020 09:12:43 -0800
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 3 Nov 2020 09:11:54 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 3 Nov 2020 09:11:54 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 3 Nov 2020 09:11:54 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 3 Nov 2020 09:11:53 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ELn067b+fyK4JkxxIG+2G9VVmcbzqrB9H7GrMBXZPVwobNdDigr1qK2mkCkd1fFj2LyR8OvLVfF7PZwsCOPZdWxh305ASjkshcrMXees0vxJBk5JPnZoTimLcvE5Mc+7TF4c7oxdqYjLJOnL23u/SniEeuaHPRLXBaOkzXuhVEpnY0freaawNNK9EzlslFKUIf5KXrSQfLhzMjFy6YEgpOJ4qI4I6VptyiLmdYpPKJ6gEuHTGgq2EX9pjIWPfKGrvbIgEzrGkecSbxrwkSlXwjQQk0ZI4i+F2Pt84p6ruip6XhYY8l7H4S6VOkbakau+g5phG5q3vxCNQSXxjGlF+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zF24QUel7se/0TUURD5P9cggk8iWLbzVbwi4O6n2K2s=;
+ b=IJQJSgRvRckf3jSmorix8dDei7C8Ykr31UdQtAXxoeUixHbkknPNJE0E8rDv6k76qhOUOw/xuBsOdXXHmj2cNhpOcQeSDZErCWCQuO2CNCqPE+g8cYjMZBNHH/8MM1TKZPmXfZh3rKCeYEzx6L02R7DQ+53qlchaimUHxiJBOiNeQbdT7UwbyL+QT97IK0J1/PgS1DkJZQqSS7iMODsEyw2gCATESYRwAIUX/bilroFJzCag2L9NtDorweBmHKkoNhL0QNOO+KZviyiyk50pyts204NF+zZKeorpxE/2iZSJswDmprFzz/KttXvi5wKzPD3VdSuHFo+sxVq0U+1IFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zF24QUel7se/0TUURD5P9cggk8iWLbzVbwi4O6n2K2s=;
+ b=rjEFE6Quz3F1GitdIUfTxXCaNQvr8WjfOnOSH1s5l/q4HtO5l0dRVDU4DWtMa4MpufBjUcJQY0+WoA3pC6+lXCVDTg3lsitxQjX4NC3Eh6v7vQIIeOdFtCikcw8WlJt1ZlOLCP6/D3qETOD09dG7OXIrN2smVDDrezOivk2jv/4=
+Received: from DM6PR11MB2905.namprd11.prod.outlook.com (2603:10b6:5:62::18) by
+ DM5PR11MB1369.namprd11.prod.outlook.com (2603:10b6:3:c::7) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.18; Tue, 3 Nov 2020 17:11:48 +0000
+Received: from DM6PR11MB2905.namprd11.prod.outlook.com
+ ([fe80::4c03:991d:7286:305b]) by DM6PR11MB2905.namprd11.prod.outlook.com
+ ([fe80::4c03:991d:7286:305b%7]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
+ 17:11:48 +0000
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+To: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH] ASoC: pcm: DRAIN support reactivation
+Thread-Topic: [PATCH] ASoC: pcm: DRAIN support reactivation
+Thread-Index: AQHWq38O0EJZPK/kKESDEaXWzw8r9Km2sdKA
+Date: Tue, 3 Nov 2020 17:11:47 +0000
+Message-ID: <6a701e24725c938d7ffa7f119159062a395d4bf6.camel@intel.com>
+References: <20201026100129.8216-1-cezary.rojewski@intel.com>
+In-Reply-To: <20201026100129.8216-1-cezary.rojewski@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.3-0ubuntu1 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.151.36]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e2b61bd2-9bce-42fc-ed4e-08d8801b8c81
+x-ms-traffictypediagnostic: DM5PR11MB1369:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR11MB1369D3491BCA802E8F49EA07E8110@DM5PR11MB1369.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3JxRap5XgtZMtUSp9jd9nZZO2JTv/CcWpPqLwYybTljaXk/hn2nAgtr2Id/VR9p2M9Kl6Mh9NulBmnta6W9bm0idKMOvDETV6VT5nmAu/IAg7srB3VCgPDC6thA+I6fp0BIu8OXGOmkjg1Ou4KmAt+t2IbGWej8C9yF7sv4gyoJ1yzzh/CnCPUl62XSxAVPn6LTu0Zsse5uYmslTTpAmyE6lSv7PmmJyODAvFuJd5Z8hqADfFhFndJf0IYfKzTWsgBQqCVFMzl2vPVP0rMc7W0AAaz2rhcrn0znJRFGTV3zrBPeuHyr6XO9PdoTk4X7vQqYNlcxZTcHAbGbBbZtVwwLO8jfkkXWmETLJ9n+Y+A+DDrsyQriMT4QGMikHBgEF
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM6PR11MB2905.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(6506007)(36756003)(186003)(2616005)(83380400001)(478600001)(5660300002)(316002)(4744005)(66446008)(64756008)(66556008)(66476007)(71200400001)(76116006)(91956017)(66946007)(4326008)(2906002)(86362001)(54906003)(26005)(6486002)(8936002)(4001150100001)(8676002)(6512007)(110136005)(21314003);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: US3/tnTOiPOxmC3MQFFfA2shan5gg2Y2QE+7mjV0zM5Vdu/WSl1SgvEBTGYXEOrrn2hpzVLJE+sWRUKGq0KQN5dnimqePXxPZd/nivsZlERl99FpbuCGpLQHvy4vbtIZCI2hn1Pd8GrqPv8STud6pBDGSJexxbfKOHzRsLEO70aA6zGkv71zFLrkI6wkZv+5fIsckzogiKs1+CiJeJxT5BsOOFLmRU6lU4kCby3UyIuoH6jcUgc1QI+NLJ1XnqH51oSj/gDbSjy0/Nh117BTf+8SrS9hhjo0LHQQleFrJ00DHnvbJbvFPRzu9OTYIkZpV0ag9mPIxcLuF3jg/LLk886EILQ8Xc3indMnFF/JJFqO0Pngq9J+LmUYpPtSALPFq8tIlvLD9x4uLHzcvlMhj56Sx0lbJO+mE5tT5aMCdPXFwJKX+o241kIIaY5hEacrTKL9mNBo9dfeRSFDkzRJrt/oEo/wbbg9vhexrCN5PKo3QuJwQcfKZKRo/hKsiw5Nj1Pyt1sK9E8LMaiwkV9lA/DqujpH+1xNga3CvgOiK+22Kk/sRDzYjZF14IRwV+EbizQNmY9DVJB9PJN5dJxIcpVCgb7IKU3i8Oj3hEfJSGdpkS1XIXG2Dz1OyTYxSsLHW1guEsaCXglD7cT1EpFIcg==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1B9D352B0141D243B118CA820AF07AF4@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312, 18.0.737
- definitions=2020-11-03_08:2020-11-03,
- 2020-11-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxlogscore=765 priorityscore=1501 clxscore=1011
- impostorscore=0 malwarescore=0 suspectscore=0 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011030087
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- mlxscore=0 phishscore=0
- adultscore=0 bulkscore=0 mlxlogscore=901 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011030088
-X-Mailman-Approved-At: Tue, 03 Nov 2020 17:26:07 +0100
-Cc: alsa-devel@alsa-project.org, Limonciello Mario <Mario.Limonciello@dell.com>,
- linux-kernel@vger.kernel.org, perry_yuan <Perry.Yuan@dell.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2905.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2b61bd2-9bce-42fc-ed4e-08d8801b8c81
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 17:11:48.1103 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MkXqpp1dNz4bf2wIOLCadt4tBx3koHh3X5mIjzPP7dnpCzIe6OE4spoK8Z/AZ1jN8pY+srXx14+urn1A4nop5Zb62xfRmwT5W7zSW1zgCqo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1369
+X-OriginatorOrg: intel.com
+Cc: "tiwai@suse.com" <tiwai@suse.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,101 +170,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: perry_yuan <perry_yuan@dell.com>
-
-Some new Dell system is going to support audio internal micphone
-privacy setting from hardware level with micmute led state changing
-
-This patch allow to change micmute led state through this micphone
-led control interface like hda_generic provided.
-
-Signed-off-by: Perry Yuan  <perry_yuan@dell.com>
-Signed-off-by: Limonciello Mario <mario_limonciello@dell.com>
----
- sound/soc/codecs/rt715.c | 43 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt715.h |  1 +
- 2 files changed, 44 insertions(+)
-
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index 099c8bd20006..2df2895d0092 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -26,6 +26,7 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/of_device.h>
-+#include <linux/leds.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -213,6 +214,45 @@ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
- 	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
- 					    xmax, xinvert) }
- 
-+static const char *rt715_micmute_led_mode[] = {
-+  "Off", "On"
-+};
-+
-+static const struct soc_enum rt715_micmute_led_mode_enum =
-+  SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rt715_micmute_led_mode),
-+              rt715_micmute_led_mode);
-+
-+static int rt715_mic_mute_led_mode_get(struct snd_kcontrol *kcontrol,
-+      struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+    struct rt715_priv *rt715 = snd_soc_component_get_drvdata(component);
-+    int led_mode = rt715->micmute_led;
-+
-+    ucontrol->value.integer.value[0] = led_mode;
-+#if IS_ENABLED(CONFIG_LEDS_TRIGGER_AUDIO)
-+    ledtrig_audio_set(LED_AUDIO_MICMUTE,
-+            rt715->micmute_led ? LED_ON : LED_OFF);
-+#endif
-+    return 0;
-+}
-+
-+static int rt715_micmute_led_mode_put(struct snd_kcontrol *kcontrol,
-+      struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+    struct rt715_priv *rt715 = snd_soc_component_get_drvdata(component);
-+    int led_mode = ucontrol->value.integer.value[0];
-+
-+    rt715->micmute_led = led_mode;
-+#if IS_ENABLED(CONFIG_LEDS_TRIGGER_AUDIO)
-+    ledtrig_audio_set(LED_AUDIO_MICMUTE,
-+               rt715->micmute_led ? LED_ON : LED_OFF);
-+#endif
-+  return 0;
-+}
-+
-+
- static const struct snd_kcontrol_new rt715_snd_controls[] = {
- 	/* Capture switch */
- 	SOC_DOUBLE_R_EXT("ADC 07 Capture Switch", RT715_SET_GAIN_MIC_ADC_H,
-@@ -277,6 +317,9 @@ static const struct snd_kcontrol_new rt715_snd_controls[] = {
- 			RT715_SET_GAIN_LINE2_L, RT715_DIR_IN_SFT, 3, 0,
- 			rt715_set_amp_gain_get, rt715_set_amp_gain_put,
- 			mic_vol_tlv),
-+    /*Micmute Led Control*/
-+    SOC_ENUM_EXT("Micmute Led Mode", rt715_micmute_led_mode_enum,
-+            rt715_mic_mute_led_mode_get, rt715_micmute_led_mode_put),
- };
- 
- static int rt715_mux_get(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/codecs/rt715.h b/sound/soc/codecs/rt715.h
-index df0f24f9bc0c..32917b7846b4 100644
---- a/sound/soc/codecs/rt715.h
-+++ b/sound/soc/codecs/rt715.h
-@@ -22,6 +22,7 @@ struct rt715_priv {
- 	struct sdw_bus_params params;
- 	bool hw_init;
- 	bool first_hw_init;
-+    int micmute_led;
- };
- 
- struct sdw_stream_data {
--- 
-2.25.1
-
+T24gTW9uLCAyMDIwLTEwLTI2IGF0IDExOjAxICswMTAwLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6
+DQo+IHNvYy1wY20ncyBkcGNtX2ZlX2RhaV9kb190cmlnZ2VyKCkgc3VwcG9ydGVkIERSQUlOIGNv
+bW1uYWQgdXAgdG8NCj4ga2VybmVsDQo+IHY1LjQgd2hlcmUgZXhwbGljaXQgc3dpdGNoKGNtZCkg
+aGFzIGJlZW4gaW50cm9kdWNlZCB3aGljaCB0YWtlcyBpbnRvDQo+IGFjY291bnQgYWxsIFNORFJW
+X1BDTV9UUklHR0VSX3h4eCBidXQgU05EUlZfUENNX1RSSUdHRVJfRFJBSU4uIFVwZGF0ZQ0KPiBz
+d2l0Y2ggc3RhdGVtZW50IHRvIHJlYWN0aXZlIHN1cHBvcnQgZm9yIGl0Lg0KPiANCj4gQXMgRFJB
+SU4gaXMgc29tZXdoYXQgdW5pcXVlIGJ5IGxhY2tpbmcgbmVnYXRpdmUvc3RvcCBjb3VudGVycGFy
+dCwNCj4gYnJpbmcNCj4gYmVoYXZpb3VyIG9mIGRwY21fZmVfZGFpX2RvX3RyaWdnZXIoKSBmb3Ig
+c2FpZCBjb21tYW5kIGJhY2sgdG8gaXRzDQo+IHByZS12NS40IHN0YXRlIGJ5IGFkZGluZyBpdCB0
+byBTVEFSVC9SRVNVTUUvUEFVU0VfUkVMRUFTRSBncm91cC4NCj4gDQo+IEZpeGVzOiBhY2JmMjc3
+NDZlY2YgKCJBU29DOiBwY206IHVwZGF0ZSBGRS9CRSB0cmlnZ2VyIG9yZGVyIGJhc2VkIG9uDQo+
+IHRoZSBjb21tYW5kIikNCj4gU2lnbmVkLW9mZi1ieTogQ2V6YXJ5IFJvamV3c2tpIDxjZXphcnku
+cm9qZXdza2lAaW50ZWwuY29tPg0KTG9va3MgZ29vZCB0byBtZS4gVGhhbmtzLCBDZXphcnkhDQoN
+ClJldmlld2VkLWJ5OiBSYW5qYW5pIFNyaWRoYXJhbiA8cmFuamFuaS5zcmlkaGFyYW5AbGludXgu
+aW50ZWwuY29tPg0K
