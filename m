@@ -2,64 +2,68 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 604F7C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 13:10:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 440FBC388F9
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 13:13:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A4FB22243
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 13:10:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12EA6223BF
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 13:13:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YS8RRtAA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A4FB22243
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U16qoThg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12EA6223BF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DAF217AA;
-	Tue,  3 Nov 2020 14:09:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DAF217AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37C8B17AA;
+	Tue,  3 Nov 2020 14:12:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37C8B17AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604409043;
-	bh=pSxqJBZMEdoaL2LlELujSoNLnaUIb9rGdsgHvdH2mFM=;
+	s=default; t=1604409212;
+	bh=iQsLWBeRnAmXzPDAIj5LZPm7YrQqV5W6jGSlDyZXYEA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YS8RRtAAW213Ft3nEcfcY0stRDdtBZucLH1qDfotKiJxOoZtizLhJvvqM7ZzJVgQ1
-	 he6AKmjxjRyxA3bAVUPI7j/XflbYNAXQGLpcktO5Y+mLCuE5OKr1frjHcYqJ6+UfzE
-	 Ml21rwcfyPr22GzJlFEoO7cWz0QcTIey8GDFDmLI=
+	b=U16qoThgnECScqsDIbXZK9V/5b05WtelcTkfCWl/gHsNjOGXKx/ellpsdDqWSyTw6
+	 HR289Qel1sB4o/Ju0n7ctXhWcKsGh/QW5zwm2CUkveuzETvnQa+zZ9EXkabG+m3XTw
+	 QWOIQPbceY9UGnzdEaqfQ9II4ZUNjDloQ0fIVWyY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2C3CF80162;
-	Tue,  3 Nov 2020 14:09:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCB2AF80108;
+	Tue,  3 Nov 2020 14:12:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EA77F80171; Tue,  3 Nov 2020 14:09:51 +0100 (CET)
+ id 2F165F80083; Tue,  3 Nov 2020 14:12:40 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa1.perex.cz (Postfix) with ESMTP id DF0EEF80108
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 14:09:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF0EEF80108
+ by alsa1.perex.cz (Postfix) with ESMTP id DB83DF80083
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 14:12:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB83DF80083
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 880B3AD18;
- Tue,  3 Nov 2020 13:09:42 +0000 (UTC)
-Date: Tue, 03 Nov 2020 14:09:42 +0100
-Message-ID: <s5himamoacp.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6B91BAD18;
+ Tue,  3 Nov 2020 13:12:32 +0000 (UTC)
+Date: Tue, 03 Nov 2020 14:12:32 +0100
+Message-ID: <s5hh7q6oa7z.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Yu Hao <yuhaobehappy@gmail.com>
-Subject: Re: [PATCH] sound/core/seq: remove dead code
-In-Reply-To: <20201102071154.23563-1-yuhaobehappy@gmail.com>
-References: <20201102071154.23563-1-yuhaobehappy@gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] ALSA: hda: prevent undefined shift in
+ snd_hdac_ext_bus_get_link()
+In-Reply-To: <20201103101807.GC1127762@mwanda>
+References: <20201103101807.GC1127762@mwanda>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ kernel-janitors@vger.kernel.org, Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,65 +79,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 02 Nov 2020 08:11:54 +0100,
-Yu Hao wrote:
+On Tue, 03 Nov 2020 11:18:07 +0100,
+Dan Carpenter wrote:
 > 
-> The function snd_seq_queue_client_termination() is only called from
-> function seq_free_client1(). The seq_free_client1() calls function
-> snd_seq_queue_client_leave(), which deletes all objects whose owner
-> equals to client->number in global array queue_list, before the function
-> snd_seq_queue_client_termination(), which checks whether there are
-> any objects in global array queue_list whose owner equals to
-> client->number, with the same argument client->number. So
-> the checking code in function snd_seq_queue_client_termination() is
-> dead code. Remove those dead code.
+> This is harmless, but the "addr" comes from the user and it could lead
+> to a negative shift or to shift wrapping if it's too high.
 > 
-> Signed-off-by: Yu Hao <yuhaobehappy@gmail.com>
+> Fixes: 0b00a5615dc4 ("ALSA: hdac_ext: add hdac extended controller")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Actually the whole function snd_seq_queue_client_termination() can be
-removed.  It's a quite old code and I don't remember clearly, but I
-guess the intention was to call this before the actual queue
-deletion.  OTOH, it doesn't make any sense to change that order any
-longer, as the snd_seq_queue_client_leave() already takes similar
-procedure anyway, so let's rather wipe off the useless function.
+Thanks, applied.
 
-Could you resubmit with that change?
-
-
-thanks,
 
 Takashi
-
-> ---
->  sound/core/seq/seq_queue.c | 11 -----------
->  1 file changed, 11 deletions(-)
-> 
-> diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
-> index 71a6ea62c3be..91b3f3295d0b 100644
-> --- a/sound/core/seq/seq_queue.c
-> +++ b/sound/core/seq/seq_queue.c
-> @@ -545,21 +545,10 @@ void snd_seq_queue_client_termination(int client)
->  	unsigned long flags;
->  	int i;
->  	struct snd_seq_queue *q;
-> -	bool matched;
->  
->  	for (i = 0; i < SNDRV_SEQ_MAX_QUEUES; i++) {
->  		if ((q = queueptr(i)) == NULL)
->  			continue;
-> -		spin_lock_irqsave(&q->owner_lock, flags);
-> -		matched = (q->owner == client);
-> -		if (matched)
-> -			q->klocked = 1;
-> -		spin_unlock_irqrestore(&q->owner_lock, flags);
-> -		if (matched) {
-> -			if (q->timer->running)
-> -				snd_seq_timer_stop(q->timer);
-> -			snd_seq_timer_reset(q->timer);
-> -		}
->  		queuefree(q);
->  	}
->  }
-> -- 
-> 2.17.1
-> 
