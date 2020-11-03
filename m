@@ -2,94 +2,98 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DB68C388F2
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 10:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C97D4C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 10:33:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB5BD21D40
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 10:32:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA265206F1
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 10:33:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dz2TmUg7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UQZvAR/U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB5BD21D40
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KLDNJMoK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qEcXY4b5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA265206F1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AD5A175A;
-	Tue,  3 Nov 2020 11:31:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AD5A175A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B25217A3;
+	Tue,  3 Nov 2020 11:32:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B25217A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604399537;
-	bh=Qs+HuCzY5JkfXj1+wAR4/wBV61DLgjv4CLSWekVUehc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=dz2TmUg7FH7MysMUgM3y9EPb8+yVmi8xBuchWneo8904nOjUdiv3gy+JmcngvU6bm
-	 QiglH3e78Q1b3naNS0Ng6IK4Qttfcib+Pi5NVgsWcsdH5p6cp0u6wnm36kDRIflCDb
-	 8mYXDYBCboZnSc+/WK4LJEvXGN+wCgPTPvpBJT3E=
+	s=default; t=1604399590;
+	bh=8jFFfd5FZlXfJQQ/XS4ynI7hHnjF99N8OxZP9RrXIoA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KLDNJMoKk99oHcnCDfWVu+WtRBkyz6mUOal2HxMrAQoh3me37jvj/WE5qKp6bQ5Wo
+	 mJAOUCeZQX/CglQgqcoc6RqWFMF+ICPU1tMxMaG6SmPrYGAnO4cRWk7z1Tl+gEi9VZ
+	 zs59q3Ux3R/3o6I3+hjHRyDz5fc6HX8aseRlsCbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8A35F80162;
-	Tue,  3 Nov 2020 11:31:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30D70F804BB;
+	Tue,  3 Nov 2020 11:31:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AA9AF80171; Tue,  3 Nov 2020 11:31:24 +0100 (CET)
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
+ id CD3E1F804BC; Tue,  3 Nov 2020 11:31:32 +0100 (CET)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com
+ [IPv6:2607:f8b0:4864:20::42a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0453F80108
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 11:31:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0453F80108
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2847EF804B4
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 11:31:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2847EF804B4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="UQZvAR/U"
-Received: by mail-pg1-x542.google.com with SMTP id i7so11403753pgh.6
- for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2020 02:31:20 -0800 (PST)
+ header.b="qEcXY4b5"
+Received: by mail-pf1-x42a.google.com with SMTP id w65so13827864pfd.3
+ for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2020 02:31:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RwCtdM6b4YnLjvtF8V5rJbVv42DObRc22ofZtbywkoY=;
- b=UQZvAR/UeA2aq5TkvBMNg5oIDgOrWLrClw42qxh46HFMKXlIpXT3ncoh/MumsJYKvU
- FgzwtrDYJlyU2fOZjkh/DlO4gUFtIZlHDt76cAdycCpF4q4QiZCUC0uT3K0ENeQan4wZ
- 3lIazIqT09oR/tjrddyUtqirSs5lvwJ8u8pEqP/hv27dtjZFgACeWpdVSxFNDt6eUYNc
- aBrwYjHWCIsof63x9EU9Q89UIwGGyFCfAejGYIPJQS/XDbniwLgozK0s9NUZjUtaVQx/
- cUsdbrpsBJoey+4Z+wrz6bDNNU1B049jWI7C/7MML6J8Wn3yo/vY/P0UyA3EgaAW5Y+4
- 3P/Q==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=mdVPkO/q4ig27b41Ma0ipj3qPAj1LWAThPCU+KMAntY=;
+ b=qEcXY4b5+HsZ8QmEcS2mZoob/YDmUeALkVfKMydU//PeD4Rq2m9kJwiGgtCJBz6UgX
+ IZdR84A6YmHIvUL09z/m+0oYjTfneLbMddaB0sEu8+oBLMlN9EFFLh/NrvH7AhwJUDgo
+ 5kzT/wuWml2sOih/jxF68j2HeUeNjnWsT/RXz6vHL5/fxVRCw3PivqoWd/xLsJogmNy4
+ 2pE2rlkfbSyd5aRYQ7uZvoXd+QX2s27UJVL5Ig9q2f/aKmKhge9RoWaTlrq+Pm6jCXOF
+ 475KXOHVGFP4DwO3DJCfRwbep7EN6znzEHGvdfsSMfJBtaxCN2KxxmIe6JVY1iKJYUpI
+ jvAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RwCtdM6b4YnLjvtF8V5rJbVv42DObRc22ofZtbywkoY=;
- b=di3IE/qDJD8E2/H7mmaUWIMPiD7ylyawHZbnpUF6zgxUHtXDrzTiO7azQTusahR/jx
- 1n71HDWjKf5mXC+hjZwMEO0LqaZsqcfjWI9VpFxQjvnIzvwSlXiyR55JNX5nUU3m1+I2
- Uoe3UqYygEJmJCTB2QG9skTe5fLoyWL4pcLLrzfdLFHrIoH68bFBFLr7vkXxumj5U4jt
- 7rH2SjA1Hv95Bj/kRUhtWT0hxeJ+/TtDAmmPzGaBGne/tiTXAFcKPA29I36UPTO31oDm
- bfRaJGoJgOzMKTcq4YiTe+LCa3vMEXNAq9lq/nhEalFmmREIdRi9ks54DlN5i2jc+cn3
- E8qA==
-X-Gm-Message-State: AOAM532fWXDH4V+UiJggQtMMKMz+hH9CcKHM9i6QQlBOj1hU24/jVjS/
- n4DBNl26E1VonYKINtAEnRs=
-X-Google-Smtp-Source: ABdhPJxOkMLdjKssOgQo2Tmo6jO227+Icksti352LshSjn6MUs89LphDpnDlbGA2KYYZdcxdzqlbBg==
-X-Received: by 2002:a17:90a:7e0a:: with SMTP id
- i10mr3144330pjl.89.1604399476622; 
- Tue, 03 Nov 2020 02:31:16 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=mdVPkO/q4ig27b41Ma0ipj3qPAj1LWAThPCU+KMAntY=;
+ b=HCJDeHrkDTM4v9mk3Q23ZFwjC5I36x/eiKbrpp3ifGk9n1GTAOGZhUV/86e4UTKowu
+ hvTXURmkQgRY1cjLB6DH0yTPsooWBQzmwgjGjF4CaWLRAcQXL58hsGYV+VnnN0qdU1VN
+ 28Ypf6kVcq8/NV/Sd3DZGdspU8LeleKEEYZenuL32gSgWqdFipNQZtl8PYX/Z9xpDSN1
+ LVYW2eHk4rkANkMvl6umCTvDTQ11Y2th4o8SnHxQEAaS/jZUu991hAPJ6jBNnfqxBX+7
+ WpQU4er4oK9ASlImB2BW7yBzQMKybLXAB21A0e2Bt0EfYaQzeVZUKcZR7oxZczdUFlaD
+ 35dA==
+X-Gm-Message-State: AOAM531No0mq2t0SRxWwPTWEwVMoQ81IWVANmCnCUr4T69kTd/SR04be
+ FbuTxbsOoG081WcBXb8io4w=
+X-Google-Smtp-Source: ABdhPJx5yus/r8C+63EtUuVe15Jc9Q3Xu6wxrB3O21Hs9YTeDXWxR2YQfWWRJYnszdqtEUVpE7YyMA==
+X-Received: by 2002:a17:90a:d246:: with SMTP id
+ o6mr3085560pjw.14.1604399485498; 
+ Tue, 03 Nov 2020 02:31:25 -0800 (PST)
 Received: from localhost (114-34-18-97.HINET-IP.hinet.net. [114.34.18.97])
- by smtp.gmail.com with ESMTPSA id 6sm9777051pfh.112.2020.11.03.02.31.15
+ by smtp.gmail.com with ESMTPSA id v16sm14733951pgk.26.2020.11.03.02.31.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Nov 2020 02:31:16 -0800 (PST)
+ Tue, 03 Nov 2020 02:31:24 -0800 (PST)
 From: Ajye Huang <ajye.huang@gmail.com>
 X-Google-Original-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH v5 0/2] Modify documentation and machine driver for SC7180
- sound card
-Date: Tue,  3 Nov 2020 18:30:49 +0800
-Message-Id: <20201103103051.34553-1-ajye_huang@compal.corp-partner.google.com>
+Subject: [PATCH v5 1/2] ASoC: google: dt-bindings: modify machine bindings for
+ two MICs case
+Date: Tue,  3 Nov 2020 18:30:50 +0800
+Message-Id: <20201103103051.34553-2-ajye_huang@compal.corp-partner.google.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201103103051.34553-1-ajye_huang@compal.corp-partner.google.com>
+References: <20201103103051.34553-1-ajye_huang@compal.corp-partner.google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: dianders@chromium.org, devicetree@vger.kernel.org,
@@ -118,42 +122,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Note:
-- The patch is made by the collaboration of
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>
- Cheng-Yi Chiang <cychiang@chromium.org>
+Add a property "dmic-gpios" for switching between two MICs.
 
-v5:
-- Machine driver:
-  - Fix a format string warning (Reported-by: kernel test robot <lkp@intel.com>).
-    detailed info at https://lore.kernel.org/patchwork/patch/1331087/
+Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+---
+ .../bindings/sound/google,sc7180-trogdor.yaml | 58 +++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
-v4:
-- Machine driver: Addressed suggestions from Tzung-Bi.
-  - Remove redundant judgments in dmic_set() and dmic_get().
-  - Remove 1 level indent of judgment of IS_ERR(data->dmic_sel).
-
-v3:
-- Machine driver: Addressed suggestions from Tzung-Bi.
-  - move variables "dmic_switch" and "dmic_sel" into struct sc7180_snd_data.
-  - Remove redundant judgments in dmic_set().
-
-v2:
-- Documentation: Modify the dimc-gpios property description and examples.
-- Machine driver: 
-  - Remove "qcom,sc7180-sndcard-rt5682-m98357-2mic" compatible
-  - See gpio property and use anadditional control.
-
-Thanks for the review!
-
-Ajye Huang (2):
-  ASoC: google: dt-bindings: modify machine bindings for two MICs case
-  ASoC: qcom: sc7180: Modify machine driver for 2mic
-
- .../bindings/sound/google,sc7180-trogdor.yaml | 58 ++++++++++++++++++
- sound/soc/qcom/sc7180.c                       | 61 +++++++++++++++++++
- 2 files changed, 119 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+index efc34689d6b5..9e0505467e57 100644
+--- a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
++++ b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+@@ -34,6 +34,9 @@ properties:
+   "#size-cells":
+     const: 0
+ 
++  dmic-gpios:
++    description: GPIO for switching between DMICs
++
+ patternProperties:
+   "^dai-link(@[0-9])?$":
+     description:
+@@ -81,6 +84,7 @@ additionalProperties: false
+ examples:
+ 
+   - |
++    //Example 1
+     sound {
+         compatible = "google,sc7180-trogdor";
+         model = "sc7180-rt5682-max98357a-1mic";
+@@ -128,3 +132,57 @@ examples:
+             };
+         };
+     };
++
++  - |
++    //Example 2 (2mic case)
++    sound {
++        compatible = "google,sc7180-trogdor";
++        model = "sc7180-rt5682-max98357a-2mic";
++
++        audio-routing =
++                    "Headphone Jack", "HPOL",
++                    "Headphone Jack", "HPOR";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dmic-gpios = <&tlmm 86 0>;
++
++        dai-link@0 {
++            link-name = "MultiMedia0";
++            reg = <0>;
++            cpu {
++                sound-dai = <&lpass_cpu 0>;
++            };
++
++            codec {
++                sound-dai = <&alc5682 0>;
++            };
++        };
++
++        dai-link@1 {
++            link-name = "MultiMedia1";
++            reg = <1>;
++            cpu {
++                sound-dai = <&lpass_cpu 1>;
++            };
++
++            codec {
++                sound-dai = <&max98357a>;
++            };
++        };
++
++        dai-link@2 {
++            link-name = "MultiMedia2";
++            reg = <2>;
++            cpu {
++                sound-dai = <&lpass_hdmi 0>;
++            };
++
++            codec {
++                sound-dai = <&msm_dp>;
++            };
++        };
++    };
++
++...
 -- 
 2.25.1
 
