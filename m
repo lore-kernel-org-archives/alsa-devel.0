@@ -2,81 +2,78 @@ Return-Path: <SRS0=G+7e=EJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDCD7C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 15:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C186C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 15:36:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D481B20735
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 15:35:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F3FE20735
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Nov 2020 15:36:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bkb0s8Kd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D481B20735
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bwxbhPmy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MIX7/2dm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F3FE20735
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BD57168F;
-	Tue,  3 Nov 2020 16:34:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BD57168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D7FE16B8;
+	Tue,  3 Nov 2020 16:35:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D7FE16B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604417722;
-	bh=rVGzk2BHAJU/Jd2DjsGZoslAqNundca2LdeDuhdr6L4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1604417775;
+	bh=XmePEw9JU0rAZFEeNQ5n/UYCqWNsboTn5hyfBC16x4k=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bkb0s8KdxXtkYOdcENByefhDevyLabTCQFXk45p4dxMfaffF+FRhgeokt5hu2vfbi
-	 PXvzVeO2le+TlhHOlOqkkmesWvkkn5vwnXA/EXsPGuJ3XpdvglAdos+vZhOs6EzUc8
-	 t3sO1VMBKPAIpdO+hj+mFxfAHLoL1UtsV1frYvIo=
+	b=bwxbhPmydnI8krYe3JeDAjdGyxZGbK6tZ8ibHw1vYuIP+H8Vc+15Bw2x1K7+fdVQv
+	 heJBnwApXNlIWc85N90QTh+cuvhC4PZudmHnygNIdw++BXa3HbRReqW2ygmHkEbclJ
+	 28TFe2BJIErDltmynGPXZFLSp4g2vo7obEKulhgI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E512EF80162;
-	Tue,  3 Nov 2020 16:34:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9842EF804BB;
+	Tue,  3 Nov 2020 16:35:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DD0CF80171; Tue,  3 Nov 2020 16:34:29 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EF019F804BC; Tue,  3 Nov 2020 16:34:58 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB8D3F80108
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 16:34:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB8D3F80108
-IronPort-SDR: JM0rAQQHIpfWkciU5X6sMW57ZxOwftWrLr9Xje1ciMururkVVkwWZuHoXMl8gjeUr4pegcAQjS
- sopxKLgvs1zQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="169203134"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; d="scan'208";a="169203134"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Nov 2020 07:34:08 -0800
-IronPort-SDR: S29bXhYgUrlxF/oivst2fYtK3UZL27tH7lcjonqC2ya1bb6ko+zpijcuhrIdJ0GjLXwzCYbVxz
- Yr0hcUntnpkg==
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; d="scan'208";a="528514487"
-Received: from ctanriov-mobl1.amr.corp.intel.com (HELO [10.212.114.78])
- ([10.212.114.78])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Nov 2020 07:34:07 -0800
-Subject: Re: [PATCH] ASoC: rt1015: add delay to fix pop noise from speaker
-To: jack.yu@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
-References: <20201103022500.23980-1-jack.yu@realtek.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cb2a8ccf-65fd-ac61-9994-bfc0ab13d1c8@linux.intel.com>
-Date: Tue, 3 Nov 2020 09:34:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 202A5F80083
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2020 16:34:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 202A5F80083
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MIX7/2dm"
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 03D3020735;
+ Tue,  3 Nov 2020 15:34:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1604417689;
+ bh=XmePEw9JU0rAZFEeNQ5n/UYCqWNsboTn5hyfBC16x4k=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=MIX7/2dmsXSV9/1SZ2NGVDwZM90tDQjQ+FigSzWSKfN00vScP2rdeOoMO4/5+raZa
+ vzLX04WsgV2vnZ+MESIwsPz76w86R9u6eIMZRNj7K5u572vhd7yQ8du46CLv0LiCxN
+ CZZAc1SumiOdLZUtcst3noBy39gBF6z3lgEvZHVY=
+Date: Tue, 3 Nov 2020 16:35:41 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary name
+Message-ID: <20201103153541.GC3267686@kroah.com>
+References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103022500.23980-1-jack.yu@realtek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
- kent_chen@realtek.com, kenny_chen@realtek.com, tzungbi@google.com,
- derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
+Cc: cezary.rojewski@intel.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,145 +89,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-That should have been a [PATCH v2] ?
-
-On 11/2/20 8:25 PM, jack.yu@realtek.com wrote:
-> From: Jack Yu <jack.yu@realtek.com>
+On Tue, Nov 03, 2020 at 03:10:47PM +0100, Mateusz Gorski wrote:
+> [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
 > 
-> Add delay to fix pop noise from speaker.
+> Add alternative topology binary file name based on used machine driver
+> and fallback to use this name after failed attempt to load topology file
+> with name based on NHLT.
+> This change addresses multiple issues with current mechanism, for
+> example - there are devices without NHLT table, and that currently
+> results in tplg_name being empty.
 > 
-> Signed-off-by: Jack Yu <jack.yu@realtek.com>
+> Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Link: https://lore.kernel.org/r/20200427132727.24942-2-mateusz.gorski@linux.intel.com
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 > ---
->   .../devicetree/bindings/sound/rt1015.txt      |  6 ++++++
->   include/sound/rt1015.h                        | 15 ++++++++++++++
->   sound/soc/codecs/rt1015.c                     | 20 +++++++++++++++++++
->   sound/soc/codecs/rt1015.h                     |  2 ++
->   4 files changed, 43 insertions(+)
->   create mode 100644 include/sound/rt1015.h
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/rt1015.txt b/Documentation/devicetree/bindings/sound/rt1015.txt
-> index fcfd02d8d32f..2c92c8cf3c7f 100644
-> --- a/Documentation/devicetree/bindings/sound/rt1015.txt
-> +++ b/Documentation/devicetree/bindings/sound/rt1015.txt
-> @@ -8,10 +8,16 @@ Required properties:
->   
->   - reg : The I2C address of the device.
->   
-> +Optional properties:
-> +
-> +- realtek,realtek,power-up-delay-ms
-> +  Set a delay time for flush work to be completed,
-> +  this value is adjustable depending on platform.
->   
->   Example:
->   
->   rt1015: codec@28 {
->   	compatible = "realtek,rt1015";
->   	reg = <0x28>;
-> +	realtek,realtek,power-up-delay-ms = <50>;
+> This functionality is merged on upstream kernel and widely used. Merging
+> it to LTS kernel would improve the user experience and resolve some of the
+> problems regarding topology naming that the users are facing.
 
-is the repetition of 'realtek' intended? looks like a typo or copy/paste 
-to me?
+What problems are people facing, and what kernel(s) are you asking for
+this to be ported to, and why can't people just use 5.8 or newer if they
+have this new hardware?
 
->   };
-> diff --git a/include/sound/rt1015.h b/include/sound/rt1015.h
-> new file mode 100644
-> index 000000000000..70a7538d4c89
-> --- /dev/null
-> +++ b/include/sound/rt1015.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * linux/sound/rt1015.h -- Platform data for RT1015
-> + *
-> + * Copyright 2020 Realtek Microelectronics
-> + */
-> +
-> +#ifndef __LINUX_SND_RT1015_H
-> +#define __LINUX_SND_RT1015_H
-> +
-> +struct rt1015_platform_data {
-> +	unsigned int power_up_delay_ms;
-> +};
-> +
-> +#endif
-> diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-> index 25fe2ddedd54..967193518349 100644
-> --- a/sound/soc/codecs/rt1015.c
-> +++ b/sound/soc/codecs/rt1015.c
-> @@ -27,10 +27,15 @@
->   #include <sound/soc-dapm.h>
->   #include <sound/soc.h>
->   #include <sound/tlv.h>
-> +#include <sound/rt1015.h>
->   
->   #include "rl6231.h"
->   #include "rt1015.h"
->   
-> +static const struct rt1015_platform_data i2s_default_platform_data = {
-> +	.power_up_delay_ms = 50,
-> +};
-> +
->   static const struct reg_default rt1015_reg[] = {
->   	{ 0x0000, 0x0000 },
->   	{ 0x0004, 0xa000 },
-> @@ -650,6 +655,7 @@ static int rt1015_amp_drv_event(struct snd_soc_dapm_widget *w,
->   	case SND_SOC_DAPM_POST_PMU:
->   		if (rt1015->hw_config == RT1015_HW_28)
->   			schedule_delayed_work(&rt1015->flush_work, msecs_to_jiffies(10));
-> +		msleep(rt1015->pdata.power_up_delay_ms);
->   		break;
->   	default:
->   		break;
-> @@ -1067,9 +1073,16 @@ static struct acpi_device_id rt1015_acpi_match[] = {
->   MODULE_DEVICE_TABLE(acpi, rt1015_acpi_match);
->   #endif
->   
-> +static void rt1015_parse_dt(struct rt1015_priv *rt1015, struct device *dev)
-> +{
-> +	device_property_read_u32(dev, "realtek,power-up-delay-ms",
-> +		&rt1015->pdata.power_up_delay_ms);
-> +}
-> +
->   static int rt1015_i2c_probe(struct i2c_client *i2c,
->   	const struct i2c_device_id *id)
->   {
-> +	struct rt1015_platform_data *pdata = dev_get_platdata(&i2c->dev);
->   	struct rt1015_priv *rt1015;
->   	int ret;
->   	unsigned int val;
-> @@ -1081,6 +1094,13 @@ static int rt1015_i2c_probe(struct i2c_client *i2c,
->   
->   	i2c_set_clientdata(i2c, rt1015);
->   
-> +	rt1015->pdata = i2s_default_platform_data;
-> +
-> +	if (pdata)
-> +		rt1015->pdata = *pdata;
-> +	else
-> +		rt1015_parse_dt(rt1015, &i2c->dev);
-> +
->   	rt1015->regmap = devm_regmap_init_i2c(i2c, &rt1015_regmap);
->   	if (IS_ERR(rt1015->regmap)) {
->   		ret = PTR_ERR(rt1015->regmap);
-> diff --git a/sound/soc/codecs/rt1015.h b/sound/soc/codecs/rt1015.h
-> index d3fdd30aca6d..15cadb361ec3 100644
-> --- a/sound/soc/codecs/rt1015.h
-> +++ b/sound/soc/codecs/rt1015.h
-> @@ -12,6 +12,7 @@
->   
->   #ifndef __RT1015_H__
->   #define __RT1015_H__
-> +#include <sound/rt1015.h>
->   
->   #define RT1015_DEVICE_ID_VAL			0x1011
->   #define RT1015_DEVICE_ID_VAL2			0x1015
-> @@ -380,6 +381,7 @@ enum {
->   
->   struct rt1015_priv {
->   	struct snd_soc_component *component;
-> +	struct rt1015_platform_data pdata;
->   	struct regmap *regmap;
->   	int sysclk;
->   	int sysclk_src;
-> 
+thanks,
+
+greg k-h
