@@ -2,69 +2,63 @@ Return-Path: <SRS0=j4zi=EL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39614C4741F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 04:53:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D7C3C4741F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 06:05:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28CA520867
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 04:53:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3581D20739
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 06:05:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b3IgvYLN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28CA520867
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cNOLzqcw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3581D20739
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 394BD166E;
-	Thu,  5 Nov 2020 05:52:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 394BD166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89D9D166D;
+	Thu,  5 Nov 2020 07:04:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89D9D166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604552025;
-	bh=2UDuIhlRBsS+rNtKkdpEzvo9P8qDg8usvW3QqUtkL+c=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=b3IgvYLNIArG4DbzrXyaC8RhZbqiyMc+xXYbVqPgX3acErSFVi65X3kJhzAnj6sN4
-	 N0Zo2MO2ks3d1TvBsfrov0YdGcOCvKQgoFq+Hwr5IxqpU2r8HTDpG64PwF6S1I+b+G
-	 71EZGTca9NkmxfFJItDwTcwIlCCJkyYANgcJweNM=
+	s=default; t=1604556327;
+	bh=yXToXdDp9YWK27/ghGL4FFfZvZcVwjZg/q+HwIKY1i8=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cNOLzqcwrsBk1Xx6IMC83c+DSet9vkKfLTM7ZyZ1R4n5zSpzcj8dVpRyeHooKP/wK
+	 ByQKHbf1zfK8OSmafZpQ76N4RYZbW6Fes4N5wxG3nd2q7A8BW9ic1QlKUzaa3zKYS9
+	 QFr3HQSh+pVEgpbgpi3tsYWLZEJHOfm99mQUo5gk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD021F80162;
-	Thu,  5 Nov 2020 05:52:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01C15F80162;
+	Thu,  5 Nov 2020 07:04:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3089F80150; Thu,  5 Nov 2020 05:52:51 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 186B8F80150
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 05:52:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 186B8F80150
-Date: 05 Nov 2020 13:52:39 +0900
-X-IronPort-AV: E=Sophos;i="5.77,452,1596466800"; d="scan'208";a="61722081"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2020 13:52:39 +0900
+ id B92DCF80171; Thu,  5 Nov 2020 07:04:34 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id CD051F800BA
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 07:04:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD051F800BA
+Date: 05 Nov 2020 15:04:25 +0900
+X-IronPort-AV: E=Sophos;i="5.77,452,1596466800"; d="scan'208";a="61512698"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 05 Nov 2020 15:04:25 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4E1A941B7CC3;
- Thu,  5 Nov 2020 13:52:39 +0900 (JST)
-Message-ID: <87ft5obe8z.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D9D4E400D4D7;
+ Thu,  5 Nov 2020 15:04:25 +0900 (JST)
+Message-ID: <87eel8baxc.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: soc-compress: assume SNDRV_PCM_STREAM_xxx
- and SND_COMPRESS_xxx are same
-In-Reply-To: <20201102143907.GA5014@sirena.org.uk>
-References: <875z6smszj.wl-kuninori.morimoto.gx@renesas.com>
- <87361wmsyg.wl-kuninori.morimoto.gx@renesas.com>
- <20201030140150.GE4405@sirena.org.uk>
- <87v9eohe5t.wl-kuninori.morimoto.gx@renesas.com>
- <20201102143907.GA5014@sirena.org.uk>
+Subject: [PATCH v6 0/3] ASoC: dt-bindings: audio-graph-card: switch to yaml
+ base Documentation
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sameer Pujar <spujar@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,24 +74,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Rob, Mark
+Cc: Sameer
 
-Hi Mark
+These are v6 of switch to yaml base Documentation for
+audio-graph-card and renesas,rsnd which uses audio-graph-card.
 
-> > > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > > 
-> > > > soc-compress.c is using both SND_COMPRESS_xxx and SND_COMPRESS_xxx.
-> > > 
-> > > I think one of these is supposed to be SND_PCM_STREAM_xxx!  Otherwise
-> > > this looks OK.
-> 
-> > Grr, indeed.
-> > Do I need to resend ?
-> > Or can you fixup it ?
-> 
-> I should be able to update it.
+v5 -> v6
+	- add Acked-by/Reviewed-by on each patch
+	- remove "audio-graph-card,xxx" property
+	- remove un-needed if "ok"
 
-Thank you for your help !!
+v4 -> v5
+	- move "endpoint" under "port"
 
-Best regards
----
-Kuninori Morimoto
+v3 -> v4
+	- fixuped yamllint warnings/errors
+
+v2 -> v3
+	- fixuped Rob's pointed points
+
+v1 -> v2
+	- upgrade dt-schema, and fixup errors for [2/2] patch
+
+
+Kuninori Morimoto (3):
+  dt-bindings: ASoC: audio-graph-card: switch to yaml base Documentation
+  dt-bindings: ASoC: renesas,rsnd: switch to yaml base Documentation
+  dt-bindings: ASoC: renesas,rsnd: Add r8a77961 support
+
+ .../bindings/sound/audio-graph-card.txt       | 337 ------------
+ .../bindings/sound/audio-graph-card.yaml      | 153 ++++++
+ .../bindings/sound/renesas,rsnd.txt           | 520 ------------------
+ .../bindings/sound/renesas,rsnd.yaml          | 451 +++++++++++++++
+ 4 files changed, 604 insertions(+), 857 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+
+-- 
+2.25.1
+
