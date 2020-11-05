@@ -2,97 +2,108 @@ Return-Path: <SRS0=j4zi=EL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8278DC4741F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 12:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 409F7C5517A
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 12:53:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC8C52087D
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 12:51:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6FA2B2087D
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 12:53:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g7skmQyY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f8u26zDO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC8C52087D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pIEkGbbS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="z7UuwcOt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FA2B2087D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2449E166E;
-	Thu,  5 Nov 2020 13:50:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2449E166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45E3F167B;
+	Thu,  5 Nov 2020 13:52:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45E3F167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604580658;
-	bh=2uGp3txTzBcEfus81BIzcgmm+kobTWdSRDzGDuG0tCs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1604580797;
+	bh=R318Uag5rPPyrpJtRWPBOOUISI44ubhYIz1eOXQWK2c=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=g7skmQyY5LbWo9+UpoxbRew3ApEIjgOameraoWw3Du7/lcRet/HLKJqun3WgndFZP
-	 OFiywxmqTwM2Z3PUKlFh7+ivB0RfZUZjU0SYe55giruM1LULeB7XAbPKArQCGA5JY5
-	 3+ifaCc8wDogrPWzj5kGclFf5/T4vX0P5iOjdzh8=
+	b=pIEkGbbSAWRedzFoKa/33IKedkJQda6pYSgNBP16lx/57kZJHISDdQ1SLTmI67e5h
+	 cP+iYSX9SgcUMGJv0wNjCp/riBAw06jcNoT84SK+AJ1HkeKA2woayiz0t+k3kcRODO
+	 bfmfEhHQO9lOF/IfAeg5WXQzP7OqofsEK5hv9fzY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FB7FF800EC;
-	Thu,  5 Nov 2020 13:50:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA9BFF80162;
+	Thu,  5 Nov 2020 13:52:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D26D7F80171; Thu,  5 Nov 2020 13:50:04 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 23797F80171; Thu,  5 Nov 2020 13:52:26 +0100 (CET)
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B108F800EC
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 13:50:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B108F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1DB4F800EC
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 13:52:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1DB4F800EC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="f8u26zDO"
-Received: by mail-wr1-x444.google.com with SMTP id n18so1621054wrs.5
- for <alsa-devel@alsa-project.org>; Thu, 05 Nov 2020 04:50:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=+C+hFQf4fR17sqAg53ZRGOMsBqw3qEsg3zbacKAW2d8=;
- b=f8u26zDOnu1BHe89VUV3H5l7cWUXq3IOJJDl3y9WOFjOWmn9enFSVWlENWcnFAVlyf
- FWW36yGMR49eouTFeMSwwlCN0RzZUoO7J+ZmVG5zfNzP7UJ0IyjS9lEF0PxD8Mg7U8yb
- 3TuvgD62sf0Q6+wkpvAPJ7QiZ1jKRwJceI6KW7o9o3iGSISI0HrZi719NZTNn9YaEPBq
- n0q5VzdIkgpGpMmdadSqhXACzqhgQ0hdCvY/ifc3feBtkPGkTxhOZOjjnIsyZGaPmsXr
- pnj/+6oNEMgEaNaZkEEXX5paKK17nM+/J2NZl5aWlAeBCzybf4uFAQhOQuyB+5HfSeO3
- gv7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=+C+hFQf4fR17sqAg53ZRGOMsBqw3qEsg3zbacKAW2d8=;
- b=YkNSexXqeRHOhPtcczgWbH9+qnhDl/YJLgt88bHmnl0bPUAbLHQ3b8eDIbSacHoxph
- j5PQbZeBylc+0GFaqLUsnU66lyknFLGB2lvd6+4Cx5693KnwL2916Ihx3czzqBoSWal4
- kQcRlmGsz+XbnoH3PlF27Ae4emO7SEJd0xB5JzTXFLg/NwJHkJA2RyYMZlO1VC8WWsTt
- 4Fqn3BMg10+/njdTUDkO2IY7mk5KL1pslpIYX0fyHzSMuN+Ht8UFxYjAS+Dg7EPFj25C
- tlVzf8I4+utsGrhf02Ezz0lv7y2U2LgYLnHLlmSAZfvWkaeBMJLE9nWhHw0pJtpMKz55
- EOAQ==
-X-Gm-Message-State: AOAM533Y34hMOy+MxJfpMLz/YkTNB3JFihssF1Yss2UC73i8BO/ulbBE
- QGZpCoQLySNpwlX2iwyIxlY=
-X-Google-Smtp-Source: ABdhPJy/qX5s2E/jLJsvII8+siT5LuOIrYywzGOEyLvMOrkQ6pRobv0L+e6n83dwD/3JM2IetjjaRA==
-X-Received: by 2002:a5d:4ed2:: with SMTP id s18mr2744512wrv.36.1604580600491; 
- Thu, 05 Nov 2020 04:50:00 -0800 (PST)
-Received: from localhost.localdomain (host-92-5-241-147.as43234.net.
- [92.5.241.147])
- by smtp.gmail.com with ESMTPSA id n17sm2188378wrw.69.2020.11.05.04.49.59
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 05 Nov 2020 04:50:00 -0800 (PST)
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: mt8192: Fix build failure
-Date: Thu,  5 Nov 2020 12:47:47 +0000
-Message-Id: <20201105124747.18383-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="z7UuwcOt"
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+ by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5CXfPa114157;
+ Thu, 5 Nov 2020 12:52:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=g3xt2UF1ZPzuXHrMzZZoLtQMegZLsoQCOlA9okPYIXo=;
+ b=z7UuwcOtVb9bCTfZQUzfFjh16MAMbWYX7zScJCWaJ/fDpoFEcz4ffbR6WczAhoL+S3X0
+ 6kKbqGZE9XJZiOoUgDZLJrKED+cPFA/rygl8DLbaiw6cIDs7Ga8vy0JmBzWEsVUS9Oto
+ yfa96QL3/5TQMQgm5iklDRQ2XkkNZDcGje+LqR7CwqRlCjxtzEtZ66yVKtRWDD/1Mt81
+ 19ZPyIVJeZgJOa9XnzkLM9U5s4gG8EhKsdKkW9LzT5QzTCLsKFnl2wf+MIg9rVC0gJA6
+ JQVqr3WF/X+CaATHTIhvtc9qbcfU70QhLOr+tSok6D2brEycXRUFWo2Z6UxQiPBceW2o KQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by aserp2130.oracle.com with ESMTP id 34hhb2bp7e-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 05 Nov 2020 12:52:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A5CYZMC158578;
+ Thu, 5 Nov 2020 12:52:17 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+ by aserp3020.oracle.com with ESMTP id 34hw0mn83e-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 05 Nov 2020 12:52:17 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+ by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A5Cq4S3010848;
+ Thu, 5 Nov 2020 12:52:04 GMT
+Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Thu, 05 Nov 2020 04:52:03 -0800
+Date: Thu, 5 Nov 2020 15:51:54 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Patrick Lai <plai@codeaurora.org>, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: qcom: common: Fix refcounting in qcom_snd_parse_of()
+Message-ID: <20201105125154.GA176426@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ adultscore=0 bulkscore=0
+ mlxscore=0 suspectscore=2 spamscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ phishscore=0 suspectscore=2
+ clxscore=1011 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011050086
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,37 +119,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A build of arm64 allmodconfig with next-20201105 fails with the error:
-ERROR: modpost: "mt8192_afe_gpio_request" undefined!
-ERROR: modpost: "mt8192_afe_gpio_init" undefined!
+There are two issues in this function.
 
-Export the symbols so that mt8192-mt6359-rt1015-rt5682.ko finds it.
+1) We can't drop the refrences on "cpu", "codec" and "platform" before
+   we take the reference.  This doesn't cause a problem on the first
+   iteration because those pointers start as NULL so the of_node_put()
+   is a no-op.  But on the subsequent iterations, it will lead to a use
+   after free.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+2) If the devm_kzalloc() allocation failed then the code returned
+   directly instead of cleaning up.
+
+Fixes: c1e6414cdc37 ("ASoC: qcom: common: Fix refcount imbalance on error")
+Fixes: 1e36ea360ab9 ("ASoC: qcom: common: use modern dai_link style")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
+ sound/soc/qcom/common.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-build log at: https://travis-ci.com/github/sudipm-mukherjee/linux-test/jobs/428486008
-
- sound/soc/mediatek/mt8192/mt8192-afe-gpio.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c b/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c
-index ea000888c9e8..fbbe9ed9adb3 100644
---- a/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-afe-gpio.c
-@@ -160,6 +160,7 @@ int mt8192_afe_gpio_init(struct device *dev)
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 54660f126d09..09af00700700 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -58,7 +58,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 		dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
+ 		if (!dlc) {
+ 			ret = -ENOMEM;
+-			goto err;
++			goto err_put_np;
+ 		}
+ 
+ 		link->cpus	= &dlc[0];
+@@ -70,7 +70,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 		ret = of_property_read_string(np, "link-name", &link->name);
+ 		if (ret) {
+ 			dev_err(card->dev, "error getting codec dai_link name\n");
+-			goto err;
++			goto err_put_np;
+ 		}
+ 
+ 		cpu = of_get_child_by_name(np, "cpu");
+@@ -130,8 +130,10 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 		} else {
+ 			/* DPCM frontend */
+ 			dlc = devm_kzalloc(dev, sizeof(*dlc), GFP_KERNEL);
+-			if (!dlc)
+-				return -ENOMEM;
++			if (!dlc) {
++				ret = -ENOMEM;
++				goto err;
++			}
+ 
+ 			link->codecs	 = dlc;
+ 			link->num_codecs = 1;
+@@ -158,10 +160,11 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
  
  	return 0;
+ err:
+-	of_node_put(np);
+ 	of_node_put(cpu);
+ 	of_node_put(codec);
+ 	of_node_put(platform);
++err_put_np:
++	of_node_put(np);
+ 	return ret;
  }
-+EXPORT_SYMBOL(mt8192_afe_gpio_init);
- 
- static int mt8192_afe_gpio_adda_dl(struct device *dev, bool enable)
- {
-@@ -304,3 +305,4 @@ int mt8192_afe_gpio_request(struct device *dev, bool enable,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(mt8192_afe_gpio_request);
+ EXPORT_SYMBOL(qcom_snd_parse_of);
 -- 
-2.11.0
+2.28.0
 
