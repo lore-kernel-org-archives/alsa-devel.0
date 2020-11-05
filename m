@@ -2,78 +2,82 @@ Return-Path: <SRS0=gYtK=EM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8B1FC388F2
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 08:45:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E962BC388F2
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 08:46:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB2C720936
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 08:45:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9D3E208B3
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 08:46:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r9rIzSJa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB2C720936
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="evCZDxYw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9D3E208B3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D792D16A0;
-	Fri,  6 Nov 2020 09:45:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D792D16A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1634D1681;
+	Fri,  6 Nov 2020 09:45:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1634D1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604652351;
-	bh=EOR9QDti6PjBdGlGEXLUW3DrtDi/OSl4ifFUzgwBtf4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1604652392;
+	bh=wZFY2gDOL7d1xIozmeZaaG4vSi5kL3ZDsc11ysCDakk=;
+	h=To:References:From:Subject:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r9rIzSJaepTGDw/aZ8mzjp8/CFfHG8uxP3ISwmwZdcVgIK44p0DST57SMYX7CGwKp
-	 i37noRtw5D6tBKz1uab4cQHCpkI0X+BR4XJqm6Vcy/HSQEaupaLRHc971NjKZlaZot
-	 tJ3cLBHZmvWXp6Gn2QXqtpR9yLlVnXrzA71dtKKY=
+	b=evCZDxYwosfbXtPgk5mR4ct625dZ0EIdjl5uXsU+sLrRKENCegXbmbZySwI6PDFOt
+	 SoM+g1SO4cSFKG+FmbRwa4tco575p5cFwFlWZgJrR8Iryp9bwNYkkEiXP8Ok82qcj7
+	 TjmEBofHDjA36D3QpTrN/atB8dcelmktJzmjqzRk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA9A2F804B4;
-	Fri,  6 Nov 2020 09:43:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEB59F804D8;
+	Fri,  6 Nov 2020 09:43:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72728F80171; Thu,  5 Nov 2020 10:47:34 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27ADEF800EC
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 10:47:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27ADEF800EC
-Received: from localhost (searspoint.nvidia.com [216.228.112.21])
+ id CEB2BF80171; Thu,  5 Nov 2020 14:48:54 +0100 (CET)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
+ [80.237.130.52])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2A6012080D;
- Thu,  5 Nov 2020 09:47:22 +0000 (UTC)
-Date: Thu, 5 Nov 2020 11:47:19 +0200
-From: Leon Romanovsky <leonro@nvidia.com>
-To: Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-Message-ID: <20201105094719.GQ5429@unreal>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
- <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEF73F80150;
+ Thu,  5 Nov 2020 14:48:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEF73F80150
+Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48]
+ helo=[192.168.66.101]); authenticated
+ by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ id 1kafcw-0004jl-Bi; Thu, 05 Nov 2020 14:48:34 +0100
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20201026234905.1022767-1-sashal@kernel.org>
+ <20201026234905.1022767-39-sashal@kernel.org>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Build error with 5.9.5 in sound/soc/sof/intel/hda-codec.c (was:
+ [PATCH AUTOSEL 5.9 039/147] ASoC: SOF: fix a runtime pm issue in SOF when
+ HDMI codec doesn't work)
+Message-ID: <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
+Date: Thu, 5 Nov 2020 14:48:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
-X-Mailman-Approved-At: Fri, 06 Nov 2020 09:43:15 +0100
-Cc: alsa-devel@alsa-project.org, Parav Pandit <parav@mellanox.com>,
- Greg KH <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>,
- Netdev <netdev@vger.kernel.org>,
+In-Reply-To: <20201026234905.1022767-39-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1604584129;4287bb41;
+X-HE-SMSGID: 1kafcw-0004jl-Bi
+X-Mailman-Approved-At: Fri, 06 Nov 2020 09:43:14 +0100
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, linux-rdma <linux-rdma@vger.kernel.org>,
- Doug Ledford <dledford@redhat.com>, Mark Brown <broonie@kernel.org>,
- Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
- Dave Ertman <david.m.ertman@intel.com>, "Saleem,
- Shiraz" <shiraz.saleem@intel.com>, David Miller <davem@davemloft.net>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Patil,
- Kiran" <kiran.patil@intel.com>
+ Mark Brown <broonie@kernel.org>, Rander Wang <rander.wang@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,33 +93,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 05, 2020 at 01:19:09AM -0800, Dan Williams wrote:
-> Some doc fixups, and minor code feedback. Otherwise looks good to me.
->
-> On Thu, Oct 22, 2020 at 5:35 PM Dave Ertman <david.m.ertman@intel.com> wrote:
-> >
+Lo! I just tried to compile 5.9.5 and ran into a build error with below 
+patch. I only did a quick look (I have to leave the keyboard soon), but 
+seems the patch quoted below that was added to 5.9.5 depends on 
+11ec0edc6408 (git.kernel.org/linus/11ec0edc6408) which wasn't backported.
 
-<...>
+The build error can be found here:
+https://kojipkgs.fedoraproject.org//work/tasks/8246/54978246/build.log
 
-> >
-> > +config AUXILIARY_BUS
-> > +       bool
->
-> tristate? Unless you need non-exported symbols, might as well let this
-> be a module.
+Relevant part:
 
-I asked it to be "bool", because bus as a module is an invitation for
-a disaster. For example if I compile-in mlx5 which is based on this bus,
-and won't add auxiliary_bus as a module to initramfs, the system won't boot.
++ make -s 'HOSTCFLAGS=-O2 -flto=auto -ffat-lto-objects -fexceptions -g 
+-grecord-gcc-switches -pipe -Wall -Werror=format-security 
+-Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS 
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong 
+-specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -fcommon -m64 
+-mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection' 
+'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now 
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld ' ARCH=x86_64 'KCFLAGS= ' 
+WITH_GCOV=0 -j48 modules
+sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
+sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not 
+defined
+   177 |    goto error;
+       |    ^~~~
+make[4]: *** [scripts/Makefile.build:283: 
+sound/soc/sof/intel/hda-codec.o] Error 1
+make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
+make: *** [Makefile:1784: sound] Error 2
+make: *** Waiting for unfinished jobs....
++ exit 1
 
-<...>
+Looks like the compiler is right from a quick look at
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/sound/soc/sof/intel/hda-codec.c?h=linux-5.9.y&id=43836fdc9e318a11233cf19c5ee7ffb04e8e5d8f
 
->
-> Per above SPDX is v2 only, so...
+But as I said, I lack the time for a closer look.
 
-Isn't it default for the Linux kernel?
+Ciao, Thorsten
 
->
-> MODULE_LICENSE("GPL v2");
+Am 27.10.20 um 00:47 schrieb Sasha Levin:
+> From: Rander Wang <rander.wang@intel.com>
+> 
+> [ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
+> 
+> When hda_codec_probe() doesn't initialize audio component, we disable
+> the codec and keep going. However,the resources are not released. The
+> child_count of SOF device is increased in snd_hdac_ext_bus_device_init
+> but is not decrease in error case, so SOF can't get suspended.
+> 
+> snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
+> gets a error. Now copy this behavior to release resources and decrease
+> SOF device child_count to release SOF device.
+> 
+> Signed-off-by: Rander Wang <rander.wang@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   sound/soc/sof/intel/hda-codec.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> index 2c5c451fa19d7..c475955c6eeba 100644
+> --- a/sound/soc/sof/intel/hda-codec.c
+> +++ b/sound/soc/sof/intel/hda-codec.c
+> @@ -151,7 +151,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+>   		if (!hdev->bus->audio_component) {
+>   			dev_dbg(sdev->dev,
+>   				"iDisp hw present but no driver\n");
+> -			return -ENOENT;
+> +			goto error;
+>   		}
+>   		hda_priv->need_display_power = true;
+>   	}
+> @@ -174,7 +174,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+>   		 * other return codes without modification
+>   		 */
+>   		if (ret == 0)
+> -			ret = -ENOENT;
+> +			goto error;
+>   	}
+>   
+>   	return ret;
+> 
 
-Thanks
