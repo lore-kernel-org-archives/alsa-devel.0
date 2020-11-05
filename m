@@ -2,96 +2,79 @@ Return-Path: <SRS0=j4zi=EL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93423C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 02:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4690AC2D0A3
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 03:09:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8595F20735
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 02:21:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D226F20715
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 03:09:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q254s63B";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Lv3LadzM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8595F20735
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oEHP35Vw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D226F20715
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC4271654;
-	Thu,  5 Nov 2020 03:20:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC4271654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B6C11661;
+	Thu,  5 Nov 2020 04:08:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B6C11661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604542903;
-	bh=Fu3ENaCB30uVCvZ6mgiGLSxhcCMgev6Ni3UTSwhTfeQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=q254s63BvzSFspzrgx1fdZd2pnUzmlShCxXf2Qc5NaIftpHTuuOUAj3SBfe0kMzKc
-	 Bxg2r/dcUCAwMxZloAomoRB3unC8aSjRlPRdx54Cy0pZhHrudnYslSIVsD1MowlUUx
-	 WP2jRz0499OD9drPl9TWAH2qmLvvntm2Vt5uFEfQ=
+	s=default; t=1604545758;
+	bh=p+l99zVyUt+mQV1hYKTea38EWXK4ZYCLeqMYjPcl8bs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=oEHP35VwXWH7ues5ITEZK5Y/gLTu5N0SKjDfsWp7OMDzLU4O0mSkyQOvAEaDeLVAF
+	 24BwncY2oLd6mD2JoyZQ23Ju9oDsx2QxnKsFiqXy112DVqxmn4qiHUwgOOmhz9Tpny
+	 3RLUc6PP0pQ4amoolkbjQx1/t6w+t2JywuerIPp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 074F2F80232;
-	Thu,  5 Nov 2020 03:20:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97008F80162;
+	Thu,  5 Nov 2020 04:08:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1A3CF80234; Thu,  5 Nov 2020 03:20:51 +0100 (CET)
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
- [IPv6:2607:f8b0:4864:20::d44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5ED36F80171; Thu,  5 Nov 2020 04:08:25 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F2CBF80229
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 03:20:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F2CBF80229
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="Lv3LadzM"
-Received: by mail-io1-xd44.google.com with SMTP id p7so234360ioo.6
- for <alsa-devel@alsa-project.org>; Wed, 04 Nov 2020 18:20:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=I/solZ431t0ggIQdrbszncAywIR8InJEHuB8KzVvg5U=;
- b=Lv3LadzM6ypzDnHnsKLmwzknaoDC4VUm946mAn1XlPgK8h1iuIh8II8FxYR71qOCWz
- s4otSQXgi7Kk3Q2T8hBHZ/9FleIqA7xUL16Ixnu6+Ydwa20QTSyNYSRLfH4relPBs3+J
- QdZRnTWNjRjxoJYCorP4bH+GqJRQigbK6jU3IZBmyGVTKi2gNcYphZTXAhVP8sl35ztO
- NFFEmVzmuTMQm1fqJx2f6Er6AiFaIF4mUvDT2Cq3hf4VM03nzCecUiBcYRefwdGKlVGn
- 5eXdmsFbfO5qWTUuN+I36KrKfcL0+2ng6iw2TnkhELwT5rm5ezTAaDW7e6qrOzDlT8R7
- 5ZUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=I/solZ431t0ggIQdrbszncAywIR8InJEHuB8KzVvg5U=;
- b=XVH5nUJY3NYCSDhnRWlZlVdXnoyQQQUW3YEL5BcJQvsSF7+n6UoaRHq2jWhjqTY/Fs
- Zaj92Jj4BGEPb25GdM9wigRWQfBvV29XXszLgSGvbtUCSjrwsssi75Wlz2xSJ2bPNbH5
- pBUWhTtoQbahYqXi0XH7WxSBiV7LHnZ2ImifzjuUDDvu8WFbJo8oYqNwBoO8Aqe3mAdd
- U4QatOaZ0uyRRaNIqFDAA8BrirPE4VsPYjaebGecKGZf0YkvbQGKlM+OS4jvBC+qDx5t
- vEGEOFH77OCeNv/pbhdvKYydOyy4IjCaN4NRi4W2P5aee/a8H6Qf+vPssQDAeq7BdjOu
- Uw/g==
-X-Gm-Message-State: AOAM5307C2/TbK520a9ajCJ4Toulwx5qtsD5FlTW+xDZeWCHvmOP8zKp
- cP93ebhxMsBradDkx1OarlhjdiL6xP3KRrljni22KQ==
-X-Google-Smtp-Source: ABdhPJwiA2C3+vnjHU42UxPYeHuPugOQSHpCTWPQPcYcceiwEkxo9azkHnnfWljI9iXtaUN74q9zN225g8vU5L8xZm4=
-X-Received: by 2002:a02:1c8a:: with SMTP id c132mr390360jac.126.1604542844792; 
- Wed, 04 Nov 2020 18:20:44 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B4D7F80150
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 04:08:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B4D7F80150
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A538BSr8026428,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb04.realtek.com.tw[172.21.6.97])
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A538BSr8026428
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 5 Nov 2020 11:08:11 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.36) by
+ RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Thu, 5 Nov 2020 11:08:11 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 5 Nov 2020 11:08:10 +0800
+From: <jack.yu@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH v3] ASoC: rt1015: add delay to fix pop noise from speaker
+Date: Thu, 5 Nov 2020 11:08:04 +0800
+Message-ID: <20201105030804.31115-1-jack.yu@realtek.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201102023212.594137-1-CTLIN0@nuvoton.com>
- <0adb99c2-d0d9-5052-c163-4d9a341239fc@linux.intel.com>
- <da4d4666-3c91-16d7-926b-b339ae4e39be@nuvoton.com>
- <da9232f9-15c9-01ea-44cf-107ff4dd6c58@linux.intel.com>
-In-Reply-To: <da9232f9-15c9-01ea-44cf-107ff4dd6c58@linux.intel.com>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Thu, 5 Nov 2020 10:20:33 +0800
-Message-ID: <CA+Px+wVGosx=pmSkJKtYd9dQZ98D0aYG0KaDq6-ov67UoiV8Jw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: nau8315: add codec driver
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>, WTLI@nuvoton.com,
- KCHSU0@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com,
- Mark Brown <broonie@kernel.org>, CTLIN0 <CTLIN0@nuvoton.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
+ RTEXMBS01.realtek.com.tw (172.21.6.36)
+Cc: oder_chiou@realtek.com, Jack Yu <jack.yu@realtek.com>,
+ alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
+ kenny_chen@realtek.com, tzungbi@google.com, derek.fang@realtek.com,
+ shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,33 +90,140 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 4, 2020 at 10:51 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> The model from the Max98357a seems to come from 128f825aeab79 ('
-> ASoC: max98357a: move control of SD_MODE to DAPM')
->
-> It doesn't seem like this additional EN_PIN is useful at the codec level
-> but may help with machine integration.
+From: Jack Yu <jack.yu@realtek.com>
 
-We have a platform that max98357a shares the I2S with another codec.
-The software control here is for separating them.  See the commit
-message of 128f825aeab79 ("ASoC: max98357a: move control of SD_MODE to
-DAPM") for more details.
+Add delay to fix pop noise from speaker.
 
-> I still don't get the POST_PMU/POST_PMD. This was changed in
-> 04a646ff5acaa by Tzung-Bi Shih @ Google, wondering if there is an
-> explanation?
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+---
+ .../devicetree/bindings/sound/rt1015.txt      |  6 ++++++
+ include/sound/rt1015.h                        | 15 ++++++++++++++
+ sound/soc/codecs/rt1015.c                     | 20 +++++++++++++++++++
+ sound/soc/codecs/rt1015.h                     |  2 ++
+ 4 files changed, 43 insertions(+)
+ create mode 100644 include/sound/rt1015.h
 
-There was a report for max98357a pop noise on rk3399-gru-kevin due to
-commit 128f825aeab79.  Commit 04a646ff5acaa ("ASoC: max98357a: move
-control of SD_MODE back to DAI ops") fixes it.  See
-https://patchwork.kernel.org/project/alsa-devel/patch/20200721114232.2812254-1-tzungbi@google.com/#23502085.
+diff --git a/Documentation/devicetree/bindings/sound/rt1015.txt b/Documentation/devicetree/bindings/sound/rt1015.txt
+index fcfd02d8d32f..e498966d436f 100644
+--- a/Documentation/devicetree/bindings/sound/rt1015.txt
++++ b/Documentation/devicetree/bindings/sound/rt1015.txt
+@@ -8,10 +8,16 @@ Required properties:
+ 
+ - reg : The I2C address of the device.
+ 
++Optional properties:
++
++- realtek,power-up-delay-ms
++  Set a delay time for flush work to be completed,
++  this value is adjustable depending on platform.
+ 
+ Example:
+ 
+ rt1015: codec@28 {
+ 	compatible = "realtek,rt1015";
+ 	reg = <0x28>;
++	realtek,power-up-delay-ms = <50>;
+ };
+diff --git a/include/sound/rt1015.h b/include/sound/rt1015.h
+new file mode 100644
+index 000000000000..70a7538d4c89
+--- /dev/null
++++ b/include/sound/rt1015.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * linux/sound/rt1015.h -- Platform data for RT1015
++ *
++ * Copyright 2020 Realtek Microelectronics
++ */
++
++#ifndef __LINUX_SND_RT1015_H
++#define __LINUX_SND_RT1015_H
++
++struct rt1015_platform_data {
++	unsigned int power_up_delay_ms;
++};
++
++#endif
+diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
+index 25fe2ddedd54..967193518349 100644
+--- a/sound/soc/codecs/rt1015.c
++++ b/sound/soc/codecs/rt1015.c
+@@ -27,10 +27,15 @@
+ #include <sound/soc-dapm.h>
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
++#include <sound/rt1015.h>
+ 
+ #include "rl6231.h"
+ #include "rt1015.h"
+ 
++static const struct rt1015_platform_data i2s_default_platform_data = {
++	.power_up_delay_ms = 50,
++};
++
+ static const struct reg_default rt1015_reg[] = {
+ 	{ 0x0000, 0x0000 },
+ 	{ 0x0004, 0xa000 },
+@@ -650,6 +655,7 @@ static int rt1015_amp_drv_event(struct snd_soc_dapm_widget *w,
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		if (rt1015->hw_config == RT1015_HW_28)
+ 			schedule_delayed_work(&rt1015->flush_work, msecs_to_jiffies(10));
++		msleep(rt1015->pdata.power_up_delay_ms);
+ 		break;
+ 	default:
+ 		break;
+@@ -1067,9 +1073,16 @@ static struct acpi_device_id rt1015_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt1015_acpi_match);
+ #endif
+ 
++static void rt1015_parse_dt(struct rt1015_priv *rt1015, struct device *dev)
++{
++	device_property_read_u32(dev, "realtek,power-up-delay-ms",
++		&rt1015->pdata.power_up_delay_ms);
++}
++
+ static int rt1015_i2c_probe(struct i2c_client *i2c,
+ 	const struct i2c_device_id *id)
+ {
++	struct rt1015_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt1015_priv *rt1015;
+ 	int ret;
+ 	unsigned int val;
+@@ -1081,6 +1094,13 @@ static int rt1015_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, rt1015);
+ 
++	rt1015->pdata = i2s_default_platform_data;
++
++	if (pdata)
++		rt1015->pdata = *pdata;
++	else
++		rt1015_parse_dt(rt1015, &i2c->dev);
++
+ 	rt1015->regmap = devm_regmap_init_i2c(i2c, &rt1015_regmap);
+ 	if (IS_ERR(rt1015->regmap)) {
+ 		ret = PTR_ERR(rt1015->regmap);
+diff --git a/sound/soc/codecs/rt1015.h b/sound/soc/codecs/rt1015.h
+index d3fdd30aca6d..15cadb361ec3 100644
+--- a/sound/soc/codecs/rt1015.h
++++ b/sound/soc/codecs/rt1015.h
+@@ -12,6 +12,7 @@
+ 
+ #ifndef __RT1015_H__
+ #define __RT1015_H__
++#include <sound/rt1015.h>
+ 
+ #define RT1015_DEVICE_ID_VAL			0x1011
+ #define RT1015_DEVICE_ID_VAL2			0x1015
+@@ -380,6 +381,7 @@ enum {
+ 
+ struct rt1015_priv {
+ 	struct snd_soc_component *component;
++	struct rt1015_platform_data pdata;
+ 	struct regmap *regmap;
+ 	int sysclk;
+ 	int sysclk_src;
+-- 
+2.28.0
 
-There is no reason for the asymmetric POST_PMU/POST_PMD here.  You
-should find that the sdmode_switch doesn't take effect immediately in
-the DAPM event.  I guess I was trying something (e.g. turning on/off
-when the stream is opening) but failed.  And I probably forgot to
-recover the DAPM events back to symmetric (to avoid confusing people).
-
-If nau8315 doesn't share I2S with other components for now, it could
-be better to not introduce the software mute control.
