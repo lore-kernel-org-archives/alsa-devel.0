@@ -2,89 +2,80 @@ Return-Path: <SRS0=j4zi=EL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1859C55179
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 15:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68C1DC4741F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 16:21:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F2AD20782
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 15:40:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 43FF52080D
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 16:21:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B7yhJSfD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AkYgF9uK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F2AD20782
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ksMjxx2k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43FF52080D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DAFB2166D;
-	Thu,  5 Nov 2020 16:39:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAFB2166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9510F1671;
+	Thu,  5 Nov 2020 17:20:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9510F1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604590819;
-	bh=BK6UyQbmVZaBa7NHXAUIlJ5OUAFt3Xj/7AwhJMn1cVw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1604593265;
+	bh=I+PhcVbCdyYdG/m4R/pJlGLcfSs5SGi03gSFn8+aQ/I=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B7yhJSfDXBtSTplRXYSpLK/a/jWMzeGZHb+b6eHikBhydMC8C9fmbDdf6NQedVxfK
-	 QtUB/Zcm0kiVIrsrNyRP6fofDF19SwNuZGWM62ijzSQgmlnTIgaUiT8YrS778LEH/A
-	 mxP0RdWmuAxtCIoVen6Z7QNa8gSRh+tfWsrwNTu8=
+	b=ksMjxx2kwSanv3KKHfEgXDMWt+TMthRk7sla+c/bRPZqRzIHLHt6Oq8WSkPhiPV/c
+	 yCTmSSHf4fb96zbdcM1GxDpSZuIq01c9CKdPa5lfzqamf8S/+3auIIjRRzQfEMSx1U
+	 6VupGe8w23VjRJTbXzVcyTob9t4vmqpghevIN1Ec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E6A3F80162;
-	Thu,  5 Nov 2020 16:39:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33E8BF80150;
+	Thu,  5 Nov 2020 17:20:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83F91F80171; Thu,  5 Nov 2020 16:39:27 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 37973F80162; Thu,  5 Nov 2020 17:20:13 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B857F800EC;
- Thu,  5 Nov 2020 16:39:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B857F800EC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AkYgF9uK"
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3C49220782;
- Thu,  5 Nov 2020 15:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604590752;
- bh=BK6UyQbmVZaBa7NHXAUIlJ5OUAFt3Xj/7AwhJMn1cVw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=AkYgF9uKJZZtRdT8X6LKIae1sySM/N/v47rI7VnsqRSz7TZv0zNqnEJo071ui7RTF
- EOrtVRvV7JZgzKu7nJoVrdFkVQTKVQdeXchIZB6Lg7cy1QnCd/+Qc/WKr+iuH3vNut
- gCm/vjMoy7Icxu7PJsjWZub89kcW6akJzo98iLck=
-Date: Thu, 5 Nov 2020 16:40:01 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: Build error with 5.9.5 in sound/soc/sof/intel/hda-codec.c (was:
- [PATCH AUTOSEL 5.9 039/147] ASoC: SOF: fix a runtime pm issue in SOF when
- HDMI codec doesn't work)
-Message-ID: <20201105154001.GA1166450@kroah.com>
-References: <20201026234905.1022767-1-sashal@kernel.org>
- <20201026234905.1022767-39-sashal@kernel.org>
- <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A15F9F800EC
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 17:20:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A15F9F800EC
+IronPort-SDR: gptXBiJ3JBH9GY/5MukVNkW7nT5L6q4vdcP1lexwErhgsVbk3lVLzAzlu7pRwATkVHuPhcBTLI
+ FnvgQQzq9c/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="157192118"
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; d="scan'208";a="157192118"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Nov 2020 08:20:02 -0800
+IronPort-SDR: ZUeKpsT88n2eEQDLWRohP3as8XuAKRILY7VEXFRa6wAxHjAow/TenrS0Eacz+7M0E1caHY3EyM
+ LcTKxgSuoBXw==
+X-IronPort-AV: E=Sophos;i="5.77,453,1596524400"; d="scan'208";a="539465896"
+Received: from umedepal-mobl2.amr.corp.intel.com (HELO [10.254.6.114])
+ ([10.254.6.114])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Nov 2020 08:20:01 -0800
+Subject: Re: [PATCH v3 0/6] ASoC: codecs: add support for LPASS Codec macros
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20201105113458.12360-1-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <f4cf1bd6-cf11-60bb-3169-c54d2cf72e19@linux.intel.com>
+Date: Thu, 5 Nov 2020 10:20:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f254331d-7ae2-e26f-3e1b-33a870349126@leemhuis.info>
-Cc: Sasha Levin <sashal@kernel.org>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- stable@vger.kernel.org, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+In-Reply-To: <20201105113458.12360-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,46 +91,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 05, 2020 at 02:48:33PM +0100, Thorsten Leemhuis wrote:
-> Lo! I just tried to compile 5.9.5 and ran into a build error with below
-> patch. I only did a quick look (I have to leave the keyboard soon), but
-> seems the patch quoted below that was added to 5.9.5 depends on 11ec0edc6408
-> (git.kernel.org/linus/11ec0edc6408) which wasn't backported.
-> 
-> The build error can be found here:
-> https://kojipkgs.fedoraproject.org//work/tasks/8246/54978246/build.log
-> 
-> Relevant part:
-> 
-> + make -s 'HOSTCFLAGS=-O2 -flto=auto -ffat-lto-objects -fexceptions -g
-> -grecord-gcc-switches -pipe -Wall -Werror=format-security
-> -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS
-> -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong
-> -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -fcommon -m64 -mtune=generic
-> -fasynchronous-unwind-tables -fstack-clash-protection'
-> 'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now
-> -specs=/usr/lib/rpm/redhat/redhat-hardened-ld ' ARCH=x86_64 'KCFLAGS= '
-> WITH_GCOV=0 -j48 modules
-> sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
-> sound/soc/sof/intel/hda-codec.c:177:4: error: label 'error' used but not
-> defined
->   177 |    goto error;
->       |    ^~~~
-> make[4]: *** [scripts/Makefile.build:283: sound/soc/sof/intel/hda-codec.o]
-> Error 1
-> make[3]: *** [scripts/Makefile.build:500: sound/soc/sof/intel] Error 2
-> make[3]: *** Waiting for unfinished jobs....
-> make[2]: *** [scripts/Makefile.build:500: sound/soc/sof] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [scripts/Makefile.build:500: sound/soc] Error 2
-> make: *** [Makefile:1784: sound] Error 2
-> make: *** Waiting for unfinished jobs....
-> + exit 1
-> 
-> Looks like the compiler is right from a quick look at
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/sound/soc/sof/intel/hda-codec.c?h=linux-5.9.y&id=43836fdc9e318a11233cf19c5ee7ffb04e8e5d8f
-> 
-> But as I said, I lack the time for a closer look.
 
-Thanks, people are looking at it already:
-	https://lore.kernel.org/r/1f0c6a62-5208-801d-d7c2-725ee8da19b2@linux.intel.com
+
+On 11/5/20 5:34 AM, Srinivas Kandagatla wrote:
+> This patchset adds support for two Codec Macro blocks( WSA and VA) available in
+> Qualcomm LPASS (Low Power Audio SubSystem).
+> 
+> There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
+> has specific connectivity like WSA Macros are intended to connect
+> to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
+> and TX/RX for Analog codecs via SoundWire like other WCD Codecs to provide
+> headphone/ear/lineout etc ..
+> 
+> Most of the work is derived from downstream Qualcomm kernels.
+> Credits to various Qualcomm authors from Patrick Lai's team who have
+> contributed to this code.
+> 
+> This patchset has been tested on support to Qualcomm Robotics RB5 Development
+> Kit based on QRB5165 Robotics SoC. This board has 2 WSA881X smart speakers
+> with onboard DMIC connected to internal LPASS codec via WSA  and VA macros
+> respectively.
+
+For the series,
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
